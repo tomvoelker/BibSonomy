@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -51,6 +51,8 @@ public class AjaxCvCommand extends AjaxCommand {
 	 */
 	private String wikiText;
 
+	private String requestedGroup;	
+	
 	/**
 	 * @return the layout
 	 */
@@ -91,6 +93,20 @@ public class AjaxCvCommand extends AjaxCommand {
 	 */
 	public void setRenderOptions(final String renderOptions) {
 		this.renderOptions = renderOptions;
+	}
+	
+	/**
+	 * @return the requestedGroup
+	 */
+	public String getRequestedGroup() {
+		return this.requestedGroup;
+	}
+
+	/**
+	 * @param requestedGroup the requestedGroup to set
+	 */
+	public void setRequestedGroup(String requestedGroup) {
+		this.requestedGroup = requestedGroup;
 	}
 
 }

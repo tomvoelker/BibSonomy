@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -91,6 +91,11 @@ public class Group implements Serializable {
 	private boolean sharedDocuments;
 	
 	/**
+	 * If <code>true</code>, other users can send join requests to the group
+	 */
+	private boolean allowJoin;
+	
+	/**
 	 * If you add a tagset to a group and a user marks this group as 
 	 * 'relevent for' a post, then the user has to tag one entry of this set
 	 * to his post. A tagset has the following form: Map<SetName,Tags>.
@@ -142,6 +147,7 @@ public class Group implements Serializable {
 		this.groupId = groupid;
 		this.privlevel = Privlevel.MEMBERS;
 		this.sharedDocuments = false;
+		this.allowJoin = false;
 	}
 	
 	/**
@@ -233,6 +239,22 @@ public class Group implements Serializable {
 	 */
 	public void setSharedDocuments(boolean sharedDocuments) {
 		this.sharedDocuments = sharedDocuments;
+	}
+	
+	/**
+	 * If <code>true</code>, other users can send join requests to the group
+	 * 
+	 * @return The truth value regarding the permission to receive join requests
+	 */
+	public boolean isAllowJoin() {
+		return this.allowJoin;
+	}
+
+	/**
+	 * @param allowJoin
+	 */
+	public void setAllowJoin(boolean allowJoin) {
+		this.allowJoin = allowJoin;
 	}
 
 	@Override

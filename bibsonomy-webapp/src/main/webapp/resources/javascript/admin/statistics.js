@@ -1,7 +1,8 @@
 $(function() {
-	$('td[data-url]').each(function(){
-		var countContainer = $(this);
+	$('td[data-url] a').click(function(){
+		var countContainer = $(this).parent();
 		countContainer.addClass('loading');
+		countContainer.text("loading …")
 		var urlToCall = countContainer.data('url');
 		$.ajax({
 			url: urlToCall,
@@ -11,5 +12,6 @@ $(function() {
 				countContainer.removeClass('loading');
 			}
 		});
+		return false;
 	});
 });

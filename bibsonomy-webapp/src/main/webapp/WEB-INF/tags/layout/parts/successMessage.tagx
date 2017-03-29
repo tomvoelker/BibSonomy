@@ -1,0 +1,16 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<c:if test="${not empty flashAttributes.successMessageKey}">
+		<bs:alert style="success" id="globalSuccess" dismissable="${true}">
+			<jsp:attribute name="alertBody">
+				<fmt:message key="${flashAttributes.successMessageKey}" />
+			</jsp:attribute>
+		</bs:alert>
+	</c:if>
+</jsp:root>

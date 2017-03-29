@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,23 +30,26 @@ import org.bibsonomy.database.systemstags.SystemTagsUtil;
 
 /**
  * System tag for representing relationships in social networking systems 
- * such as facebook, BibSonomy, etc.  
+ * such as Facebook, BibSonomy, etc.  
  * 
  * @author fmi
  */
 public class NetworkRelationSystemTag extends UserRelationSystemTag {
 
-	/**
-	 * the name of the network system tag
-	 */
+	/** the name of the network system tag */
 	public static final String NAME = "network";
+
+	// TODO: remove BibSonomy from name
+	/** the network system tag for reporting a user as spammer */
+	public final static String BibSonomySpammerSystemTag = SystemTagsUtil.buildSystemTagString(NAME, "bibsonomy-spammer");
 	
-	// FIXME: SystemTagsUtil and SystemTagFactory have a cyclic dependency which is triggered if included here
+	// TODO: remove BibSonomy from name
 	/** the system tag for representing BibSonomy's friendship relation (==trust network) */
-	public final static String BibSonomyFriendSystemTag = SystemTagsUtil.buildSystemTagString(NAME, "bibsonomy-friend");// "sys:network:bibsonomy-friend";  // 
+	public final static String BibSonomyFriendSystemTag = SystemTagsUtil.buildSystemTagString(NAME, "bibsonomy-friend");
 	
+	// TODO: remove BibSonomy from name
 	/** the system tag for representing BibSonomy's follower relation  */
-	public final static String BibSonomyFollowerSystemTag = "sys:network:bibsonomy-follower";  //SystemTagsUtil.buildSystemTagString(NAME, "bibsonomy-follower");
+	public final static String FOLLOWER_SYSTEMTAG = SystemTagsUtil.buildSystemTagString(NAME, "bibsonomy-follower");
 	
 	@Override
 	public String getName() {

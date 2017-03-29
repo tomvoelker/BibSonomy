@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -51,8 +51,7 @@ public class GravatarPictureHandler extends ExternalPictureHandler {
 	 * </ul>
 	 * See also {@link <a href="http://gravatar.com/site/implement/images/">http://gravatar.com/site/implement/images/</a>}
 	 */
-	protected final static String GRAVATAR_REQ_URL 
-										= "http://www.gravatar.com/avatar/%s%s?d=%s&s=128";
+	protected static final String GRAVATAR_REQ_URL = "https://www.gravatar.com/avatar/%s%s?d=%s&s=128";
 	
 	/**
 	 * Gravatar request url actual parameter indicating the behaviour, if there isn't any picture file uploaded.</br>
@@ -61,7 +60,7 @@ public class GravatarPictureHandler extends ExternalPictureHandler {
 	 * 	See also {@link <a href="http://de.gravatar.com/site/implement/images/">http://de.gravatar.com/site/implement/images/</a>}
 	 * </p>
 	 */
-	protected final static String DEFAULT_BEHAVIOUR = "mm";
+	protected static final String DEFAULT_BEHAVIOUR = "mm";
 	
 	
 	/**
@@ -77,7 +76,7 @@ public class GravatarPictureHandler extends ExternalPictureHandler {
 		// hash user's gravatar email, use default-picture "mystery-man", use resolution 128x128;
 		try {
 			return new URL(String.format(GRAVATAR_REQ_URL, StringUtils.getMD5Hash(requestedUser.getEmail()), fileExtension, DEFAULT_BEHAVIOUR));
-		} catch (MalformedURLException ex) {
+		} catch (final MalformedURLException ex) {
 			//shouldn't happen!
 			return null;
 		}

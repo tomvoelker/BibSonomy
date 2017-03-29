@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -49,7 +49,7 @@ public class GetTagsViewable extends TagChainElement {
 		final String requestedGroupName = param.getRequestedGroupName();
 		final String loginUserName = param.getUserName();
 		// retrieve ID of the requested group
-		final Integer groupId = this.groupDb.getGroupIdByGroupNameAndUserName(requestedGroupName, loginUserName, session);
+		final int groupId = this.groupDb.getGroupIdByGroupNameAndUserName(requestedGroupName, loginUserName, session).intValue();
 		if (groupId == GroupID.INVALID.getId()) {
 			log.debug("groupId " + requestedGroupName + " not found");
 			return Collections.emptyList();

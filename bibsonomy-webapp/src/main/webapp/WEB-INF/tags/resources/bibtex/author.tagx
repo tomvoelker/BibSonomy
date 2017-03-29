@@ -6,38 +6,36 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
-	<jsp:directive.attribute name="schemaOrgMarkUp" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="useAbsoluteURL" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="false"/>
 	
 	<c:choose>
 		<c:when test="${not empty post}">
 			<c:set var="resourceType" value="${post.resource.getClass().getSimpleName()}"/>
-			<c:choose>
-				<c:when test="${not empty post.systemUrl }">
-					<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
-				</c:when>
-				<c:otherwise>
-					<c:set var ="isRemotePost" value="false"/>
-				</c:otherwise>
-			</c:choose>
+			<c:set var="isRemotePost" value="${not empty post.systemUrl and not mtl:isSameHost(post.systemUrl, properties['project.home'])}" />
 		</c:when>
 		<c:otherwise>
 			<c:set var ="isRemotePost" value="false"/>
 		</c:otherwise>
 	</c:choose>
+	<c:set var="urlGenerator" value="${relativeUrlGenerator}" />
+	<c:if test="${useAbsoluteURL}">
+		<c:set var="urlGenerator" value="${absoluteUrlGenerator}" />
+	</c:if>
+	
 	<!-- initialize with empty list -->
 	<c:set var="personList" value=""/>
-	<!-- determine personType for schema.org markup -->
 	<c:set var="authorEditor" value=""/>
 	<c:choose>
 		<c:when test="${not empty publication.author}">
 			<c:set var="personList" value="${publication.author}"/>
 			<c:set var="authorEditor" value="author"/>
+			<c:set var="authorEditorUppper" value="AUTHOR"/>
 		</c:when>
 		<c:when test="${not empty publication.editor}">
 			<c:set var="personList" value="${publication.editor}"/>
 			<c:set var="authorEditor" value="editor"/>
+			<c:set var="authorEditorUppper" value="EDITOR"/>
 		</c:when>
 	</c:choose>
 	
@@ -48,59 +46,43 @@
 				it is displayed later only via c:out, which escapes XML chars 
 				anyway. 
 			 -->
-			<c:set var="personName" value="${mtl:cleanBibtex(person.firstName)} ${mtl:cleanBibtex(person.lastName)}" />
+			<c:set var="firstName" value="${mtl:cleanBibtex(person.firstName)}" />
+			<c:set var="lastName" value="${mtl:cleanBibtex(person.lastName)}" />
+			<c:choose>
+				<c:when test="${not empty firstName and not empty lastName}">
+					<c:set var="personName" value="${fn:substring(person.firstName, 0, 1)}. ${lastName}" />
+				</c:when>
+				<c:otherwise>
+					<c:set var="personName" value="${lastName}" />
+				</c:otherwise>
+			</c:choose>
 			
 			<c:if test="${loopStatus.last and not loopStatus.first}">
 				<c:out value=" "/><fmt:message key="and"/><c:out value=" "/>
 			</c:if>
+			
+			<!-- FIXME: urls should be build correctly for remote posts. urls should be built using urlgenerator methods -->
+			
 			<c:choose>
-				<c:when test="${isRemotePost}">
-					<c:choose>
-						<c:when test="${useAbsoluteUrl}">
-							<a href="${absoluteUrlGenerator.getAuthorUrlByNameAndSysUrl(person.lastName, post.systemUrl)}" itemprop="name">
-								<c:out value="${personName}"/>
-							</a>
-						</c:when>
-						<c:otherwise>
-							<a href="${relativeUrlGenerator.getAuthorUrlByNameAndSysUrl(person.lastName, post.systemUrl)}" itemprop="name">
-								<c:out value="${personName}"/>
-							</a>
-						</c:otherwise>
-					</c:choose>
+				<c:when test="${properties['genealogy.activated'] eq 'true'}">
+					<c:url var='pubAuthorUrl' value='${urlGenerator.getDisambiguationUrl(publication.interHash, authorEditorUppper, loopStatus.index)}'/>
 				</c:when>
 				<c:otherwise>
-					<c:choose>
-						<c:when test="${schemaOrgMarkUp}">
-							<span itemprop="${authorEditor}" itemscope="itemscope" itemtype="http://schema.org/Person">
-								<c:choose>
-									<c:when test="${useAbsoluteUrl}">
-										<a href="${absoluteUrlGenerator.getAuthorUrlByName(person.lastName)}" itemprop="name">
-											<c:out value="${personName}"/>
-										</a>
-									</c:when>
-									<c:otherwise>
-										<a href="${relativeUrlGenerator.getAuthorUrlByName(person.lastName)}" itemprop="name">
-											<c:out value="${personName}"/>
-										</a>
-									</c:otherwise>
-								</c:choose>
-							</span>
-						</c:when>
-						<c:otherwise>
-						 	<c:choose>
-									<c:when test="${useAbsoluteUrl}">
-										<a href="${absoluteUrlGenerator.getAuthorUrlByName(person.lastName)}" itemprop="name">
-											<c:out value="${personName}"/>
-										</a>
-									</c:when>
-									<c:otherwise>
-										<a href="${relativeUrlGenerator.getAuthorUrlByName(person.lastName)}" itemprop="name">
-											<c:out value="${personName}"/>
-										</a>
-									</c:otherwise>
-								</c:choose>
-						</c:otherwise>
-					</c:choose>
+					<c:url var='pubAuthorUrl' value='${urlGenerator.getAuthorUrlByPersonName(person)}'/>
+				</c:otherwise>
+			</c:choose>
+			<c:choose>
+				<c:when test="${isRemotePost}">
+					<a href="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getAuthorUrlByPersonName(person)}">
+						<c:out value="${personName}" />
+					</a>
+				</c:when>
+				<c:otherwise>
+					<span itemprop="${authorEditor}" itemscope="itemscope" itemtype="http://schema.org/Person">
+						<a href="${pubAuthorUrl}" itemprop="url" title="${fn:escapeXml(firstName)} ${fn:escapeXml(lastName)}">
+							<span itemprop="name"><c:out value="${personName}"/></span>
+						</a>
+					</span>
 				</c:otherwise>
 			</c:choose>
 			

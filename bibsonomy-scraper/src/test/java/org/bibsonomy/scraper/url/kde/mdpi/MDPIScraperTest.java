@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.mdpi;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -33,13 +34,12 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #275 for MDPIScraper
+ * Scraper URL tests for MDPIScraper
  *
  * @author Haile
  */
@@ -50,7 +50,9 @@ public class MDPIScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_275");
+		final String url = "http://www.mdpi.com/2072-4292/5/10/5122";
+		final String resultFile = "MDPIScraperUnitURLTest.bib";
+		assertScraperResult(url, null, MDPIScraper.class, resultFile);
 	}
 	
 	/**

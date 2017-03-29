@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -65,9 +65,9 @@ public class HomepageController extends SingleResourceListController implements 
 		
 		// handle the case when only tags are requested
 		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, null, null, MAX_TAGS, null);
-				
+		
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			// disable manual setting of start value for homepage
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			listCommand.setStart(0);
@@ -91,8 +91,7 @@ public class HomepageController extends SingleResourceListController implements 
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
-			command.setPageTitle("home"); // TODO: i18n
-			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, MAX_TAGS, null);
+			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, null, MAX_TAGS, null);
 			
 			/*
 			 * add news posts (= latest blog posts)

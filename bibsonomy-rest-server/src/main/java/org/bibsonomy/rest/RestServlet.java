@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -52,6 +52,8 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.InvalidModelException;
+import org.bibsonomy.common.exceptions.ReadOnlyDatabaseException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -60,6 +62,7 @@ import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
+import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
 import org.bibsonomy.rest.exceptions.UnsupportedMediaTypeException;
 import org.bibsonomy.rest.fileupload.DualUploadedFileAccessor;
 import org.bibsonomy.rest.fileupload.UploadedFileAccessor;
@@ -69,6 +72,7 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.utils.HeaderUtils;
+import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.StringUtils;
 import org.springframework.beans.factory.annotation.Required;
@@ -81,7 +85,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  */
 public final class RestServlet extends HttpServlet {
 	private static final long serialVersionUID = -1737804091652029470L;
-	
+
 	private static final Log log = LogFactory.getLog(RestServlet.class);
 
 	/** the file with the main XML */
@@ -112,25 +116,28 @@ public final class RestServlet extends HttpServlet {
 
 	private List<AuthenticationHandler<?>> authenticationHandlers;
 	private FileLogic fileLogic;
-	
+
 	private UrlRenderer urlRenderer;
 	private RendererFactory rendererFactory;
-
-	// store some infos about the specific request or the webservice (i.e. document path)
+	
+	// store some infos about the specific request or the webservice (i.e.
+	// document path)
 	private final Map<String, String> additionalInfos = new HashMap<String, String>();
 
 	/**
-	 * Sets the base URL of the project. Typically "project.home" in the 
-	 * file <tt>project.properties</tt>. 
+	 * Sets the base URL of the project. Typically "project.home" in the file
+	 * <tt>project.properties</tt>.
+	 * 
 	 * @param projectHome
 	 */
 	@Required
 	public void setProjectHome(final String projectHome) {
-		additionalInfos.put(PROJECT_HOME_KEY, projectHome);
+		this.additionalInfos.put(PROJECT_HOME_KEY, projectHome);
 	}
 
 	/**
-	 * @param projectName the name of the project
+	 * @param projectName
+	 *            the name of the project
 	 */
 	public void setProjectName(final String projectName) {
 		this.additionalInfos.put(PROJECT_NAME_KEY, projectName);
@@ -138,6 +145,7 @@ public final class RestServlet extends HttpServlet {
 
 	/**
 	 * Renders the URLs returned by the servlet, e.g., in the XML.
+	 * 
 	 * @param urlRenderer
 	 */
 	@Required
@@ -146,27 +154,29 @@ public final class RestServlet extends HttpServlet {
 	}
 
 	/**
-	 * @param rendererFactory the rendererFactory to set
+	 * @param rendererFactory
+	 *            the rendererFactory to set
 	 */
 	public void setRendererFactory(final RendererFactory rendererFactory) {
 		this.rendererFactory = rendererFactory;
 	}
 
 	/**
-	 * @param fileLogic the fileLogic to set
+	 * @param fileLogic
+	 *            the fileLogic to set
 	 */
-	public void setFileLogic(FileLogic fileLogic) {
+	public void setFileLogic(final FileLogic fileLogic) {
 		this.fileLogic = fileLogic;
 	}
 
 	/**
 	 * Respond to a GET request for the content produced by this servlet.
-	 * 
+	 *
 	 * @param request
 	 *            The servlet request we are processing
 	 * @param response
 	 *            The servlet response we are producing
-	 * 
+	 *
 	 * @exception IOException
 	 *                if an input/output error occurs
 	 * @exception ServletException
@@ -174,27 +184,31 @@ public final class RestServlet extends HttpServlet {
 	 */
 	@Override
 	public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
-		handle(request, response, HttpMethod.GET);
+		this.handle(request, response, HttpMethod.GET);
 	}
 
 	@Override
 	public void doPut(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-		handle(request, response, HttpMethod.PUT);
+		this.handle(request, response, HttpMethod.PUT);
 	}
 
 	@Override
 	public void doDelete(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-		handle(request, response, HttpMethod.DELETE);
+		this.handle(request, response, HttpMethod.DELETE);
 	}
 
 	@Override
 	public void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-		handle(request, response, HttpMethod.POST);
+		this.handle(request, response, HttpMethod.POST);
 	}
 
 	@Override
 	public void doHead(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-		validateAuthorization(request);
+		try {
+			this.validateAuthorization(request);
+		} catch (final AuthenticationException e) {
+			this.handleAuthenticationException(request, response, e);
+		}
 	}
 
 	/**
@@ -212,22 +226,23 @@ public final class RestServlet extends HttpServlet {
 
 		try {
 			// validate the requesting user's authorization
-			final LogicInterface logic = validateAuthorization(request);
+			final LogicInterface logic = this.validateAuthorization(request);
 
 			/*
-			 * Extract a file from the request if it is a MultiPartRequest.
-			 * XXX: This expects that the extraction of the file has been done
-			 * before - typically by Spring's DispatcherServlet. If this is not
-			 * the case, the document upload fails! 
+			 * Extract a file from the request if it is a MultiPartRequest. XXX:
+			 * This expects that the extraction of the file has been done before
+			 * - typically by Spring's DispatcherServlet. If this is not the
+			 * case, the document upload fails!
 			 */
-			UploadedFileAccessor uploadAccessor = new DualUploadedFileAccessor(request);
+			final UploadedFileAccessor uploadAccessor = new DualUploadedFileAccessor(request);
 
 			// choose rendering format (defaults to xml)
-			final RenderingFormat renderingFormat = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), getMainContentType(request));
+			final RenderingFormat renderingFormat = getRenderingFormatForError(request);
 
-			// create Context
+			// create Context which selects the appropriate strategy for the
+			// requested API URL
 			final Reader reader = RESTUtils.getInputReaderForStream(getMainInputStream(request), REQUEST_ENCODING);
-			final Context context = new Context(method, request.getRequestURI(), renderingFormat, rendererFactory, reader, uploadAccessor, logic, this.fileLogic, request.getParameterMap(), additionalInfos);
+			final Context context = new Context(method, request.getRequestURI(), renderingFormat, this.rendererFactory, reader, uploadAccessor, logic, this.fileLogic, request.getParameterMap(), this.additionalInfos);
 
 			// validate request
 			context.canAccess();
@@ -240,7 +255,8 @@ public final class RestServlet extends HttpServlet {
 
 			// send answer
 			if (method.equals(HttpMethod.POST)) {
-				// if a POST request completes successfully this means that a resource has been created
+				// if a POST request completes successfully this means that a
+				// resource has been created
 				response.setStatus(HttpServletResponse.SC_CREATED);
 			} else {
 				response.setStatus(HttpServletResponse.SC_OK);
@@ -248,11 +264,13 @@ public final class RestServlet extends HttpServlet {
 
 			// just define an ByteArrayOutputStream to store all outgoing data
 			final ByteArrayOutputStream cachingStream = new ByteArrayOutputStream();
+			// Perform the strategy
 			context.perform(cachingStream);
 
 			/*
-			 * XXX: note: cachingStream.size() != cachingStream.toString().length() !!
-			 * the correct value is the first one!
+			 * XXX: note: cachingStream.size() !=
+			 * cachingStream.toString().length() !! the correct value is the
+			 * first one!
 			 */
 			response.setContentLength(cachingStream.size());
 
@@ -263,29 +281,28 @@ public final class RestServlet extends HttpServlet {
 
 			cachingStream.writeTo(response.getOutputStream());
 		} catch (final AuthenticationException e) {
-			log.warn(e.getMessage());
-			response.setHeader("WWW-Authenticate", "Basic realm=\"" + this.additionalInfos.get(PROJECT_NAME_KEY) + "WebService\"");
-			sendError(request, response, HttpURLConnection.HTTP_UNAUTHORIZED, e.getMessage());
+			this.handleAuthenticationException(request, response, e);
 		} catch (final InternServerException e) {
 			log.error(e.getMessage());
-			sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+			this.sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 		} catch (final NoSuchResourceException e) {
-			log.error(e.getMessage());
-			sendError(request, response, HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-		} catch (final BadRequestOrResponseException e) {
-			log.error(e.getMessage(), e);
-			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+			log.info(e.getMessage());
+			this.sendError(request, response, HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+		} catch (final BadRequestOrResponseException | InvalidModelException | InvalidSearchRequestException | UnsupportedResourceTypeException | UnsupportedHttpMethodException e) {
+			log.info(e.getMessage(), e);
+			this.sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
 		} catch (final AccessDeniedException e) {
-			log.error(e.getMessage());
-			sendError(request, response, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+			log.info(e.getMessage());
+			this.sendError(request, response, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		} catch (final ResourceMovedException e) {
-			log.error(e.getMessage());
+			log.info(e.getMessage());
 			/*
-			 * sending new location
-			 * TODO: add date using
+			 * sending new location TODO: add date using
 			 */
-			response.setHeader("Location", urlRenderer.createHrefForResource(e.getUserName(), e.getNewIntraHash()));
-			sendError(request, response, HttpServletResponse.SC_MOVED_PERMANENTLY, e.getMessage());
+			response.setHeader("Location", this.urlRenderer.createHrefForResource(e.getUserName(), e.getNewIntraHash()));
+			this.sendError(request, response, HttpServletResponse.SC_MOVED_PERMANENTLY, e.getMessage());
+		} catch (final ReadOnlyDatabaseException e) {
+			this.sendError(request, response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
 		} catch (final DatabaseException e) {
 			final StringBuilder returnMessage = new StringBuilder("");
 			for (final String hash : e.getErrorMessages().keySet()) {
@@ -294,21 +311,24 @@ public final class RestServlet extends HttpServlet {
 					returnMessage.append(em.toString() + "\n ");
 				}
 			}
-			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, returnMessage.toString());
+			this.sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, returnMessage.toString());
 		} catch (final UnsupportedMediaTypeException e) {
 			log.error(e.getMessage());
-			sendError(request, response, HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, e.getMessage());
-		} catch (final UnsupportedResourceTypeException e) {
-			// the user has not specified the resource type
-			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-		} catch (final Exception e) {
-			log.error(e, e);
+			this.sendError(request, response, HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, e.getMessage());
+		}catch (final Exception e) {
+			log.error(e.getMessage(), e);
 			// well, lets fetch each and every error...
-			sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+			this.sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 		}
 	}
 
-	protected static String getMainContentType(HttpServletRequest request) {
+	private void handleAuthenticationException(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException {
+		log.info(e.getMessage());
+		response.setHeader("WWW-Authenticate", "Basic realm=\"" + this.additionalInfos.get(PROJECT_NAME_KEY) + "WebService\"");
+		this.sendError(request, response, HttpURLConnection.HTTP_UNAUTHORIZED, e.getMessage());
+	}
+
+	protected static String getMainContentType(final HttpServletRequest request) {
 		if (request instanceof MultipartHttpServletRequest) {
 			// TODO: add comment
 			final MultipartFile mainFile = ((MultipartHttpServletRequest) request).getFile(MAIN_FILE);
@@ -322,10 +342,13 @@ public final class RestServlet extends HttpServlet {
 
 	/**
 	 * @param request
-	 * @return bei einem {@link MultipartHttpServletRequest} der {@link InputStream} des "main" files - falls keines da ist oder es kein {@link MultipartHttpServletRequest} ist, dann request.getInputStream()
+	 * @return bei einem {@link MultipartHttpServletRequest} der
+	 *         {@link InputStream} des "main" files - falls keines da ist oder
+	 *         es kein {@link MultipartHttpServletRequest} ist, dann
+	 *         request.getInputStream()
 	 * @throws IOException
 	 */
-	protected static InputStream getMainInputStream(HttpServletRequest request) throws IOException {
+	protected static InputStream getMainInputStream(final HttpServletRequest request) throws IOException {
 		if (request instanceof MultipartHttpServletRequest) {
 			final MultipartFile main = ((MultipartHttpServletRequest) request).getFile(MAIN_FILE);
 			if (main != null) {
@@ -337,7 +360,7 @@ public final class RestServlet extends HttpServlet {
 
 	/**
 	 * Sends an error to the client.
-	 * 
+	 *
 	 * @param request
 	 *            the current {@link HttpServletRequest} object.
 	 * @param response
@@ -350,8 +373,9 @@ public final class RestServlet extends HttpServlet {
 	 */
 	private void sendError(final HttpServletRequest request, final HttpServletResponse response, final int code, final String message) throws IOException {
 		// get renderer
-		final RenderingFormat mediaType = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), getMainContentType(request));
-		final Renderer renderer = rendererFactory.getRenderer(mediaType);
+		// FIXME: handle exception if accept != content rendering format
+		final RenderingFormat mediaType = getRenderingFormatForError(request);
+		final Renderer renderer = this.rendererFactory.getRenderer(mediaType);
 
 		// send error
 		response.setCharacterEncoding(RESPONSE_ENCODING);
@@ -359,7 +383,7 @@ public final class RestServlet extends HttpServlet {
 		response.setContentType(mediaType.getErrorFormat().getMimeType());
 		final ByteArrayOutputStream cachingStream = new ByteArrayOutputStream();
 		final Writer writer = new OutputStreamWriter(cachingStream, Charset.forName(RESPONSE_ENCODING));
-		
+
 		renderer.serializeError(writer, message);
 		writer.close();
 		response.setContentLength(cachingStream.size());
@@ -368,9 +392,29 @@ public final class RestServlet extends HttpServlet {
 
 	/**
 	 * @param request
+	 * @return the rendering format 
+	 */
+	protected static RenderingFormat getRenderingFormatForError(final HttpServletRequest request) {
+		try {
+			return RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), getMainContentType(request));
+		} catch (final UnsupportedMediaTypeException e) {
+			// ignore unsupported media types
+			try {
+				// try only with url parameter and accept header
+				return RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), null);
+			} catch (final UnsupportedMediaTypeException e2) {
+				// ignore the last time and just return the default rendering format
+			}
+		}
+		
+		return RESTUtils.DEFAULT_RENDERING_FORMAT;
+	}
+
+	/**
+	 * @param request
 	 *            the reuqest
 	 * @return the val
-	 * @throws AuthenticationException 
+	 * @throws AuthenticationException
 	 * @throws IOException
 	 */
 	protected LogicInterface validateAuthorization(final HttpServletRequest request) throws AuthenticationException {
@@ -383,8 +427,8 @@ public final class RestServlet extends HttpServlet {
 		}
 		throw new AuthenticationException(AuthenticationHandler.NO_AUTH_ERROR);
 	}
-	
-	private static <T> LogicInterface getLogic(final AuthenticationHandler<T> authenticationHandler, HttpServletRequest request) {
+
+	private static <T> LogicInterface getLogic(final AuthenticationHandler<T> authenticationHandler, final HttpServletRequest request) {
 		final T extractAuthentication = authenticationHandler.extractAuthentication(request);
 		if (authenticationHandler.canAuthenticateUser(extractAuthentication)) {
 			return authenticationHandler.authenticateUser(extractAuthentication);
@@ -393,8 +437,8 @@ public final class RestServlet extends HttpServlet {
 	}
 
 	/**
-	 * Checks the SSL headers for configured sync clients.
-	 * 
+	 * Checks the SSL headers for configured sync client
+	 *
 	 * @param request
 	 * @param logic
 	 */
@@ -413,31 +457,30 @@ public final class RestServlet extends HttpServlet {
 		}
 
 		/*
-		 * get all available sync clients
+		 * get syncClient from SSLDn
 		 */
-		log.debug("checking list of available sync clients against SSL_CLIENT_S_DN '" + sslClientSDn + "'.");
-		final List<SyncService> syncClients = logic.getAllSyncServices(false);
-		for (final SyncService syncClient : syncClients) {
-			if (log.isDebugEnabled()) {
-				log.debug("sync client:" + syncClient.getService() + " | service ssl_s_dn:" + syncClient.getSslDn());
-			}
-			if (sslClientSDn.equals(syncClient.getSslDn())) {
-				/*
-				 * FIXME: check, that request URI contains service URI
-				 * 
-				 * service with requested ssl_client_s_dn found in available client list -> give user the sync-role
-				 */
-				log.debug("setting user role to SYNC");
-				logic.getAuthenticatedUser().setRole(Role.SYNC);
-				return;
-			}
+		log.debug("checking available sync client against SSL_CLIENT_S_DN '" + sslClientSDn + "'.");
+		final List<SyncService> syncClient = logic.getSyncServices(false, sslClientSDn);
+
+		if (present(syncClient)) {
+			final SyncService syncService = syncClient.get(0);
+			log.debug("sync client:" + syncService.getService() + " | " + "service ssl_s_dn:" + syncService.getSslDn());
+
+			/*
+			 * service with requested ssl_client_s_dn found in available client
+			 * list -> give user the sync-role
+			 */
+			log.debug("setting user role to SYNC");
+			logic.getAuthenticatedUser().setRole(Role.SYNC);
+			return;
 		}
 	}
 
 	/**
-	 * @param authenticationHandlers the authenticationHandlers to set
+	 * @param authenticationHandlers
+	 *            the authenticationHandlers to set
 	 */
-	public void setAuthenticationHandlers(List<AuthenticationHandler<?>> authenticationHandlers) {
+	public void setAuthenticationHandlers(final List<AuthenticationHandler<?>> authenticationHandlers) {
 		this.authenticationHandlers = authenticationHandlers;
 	}
 }

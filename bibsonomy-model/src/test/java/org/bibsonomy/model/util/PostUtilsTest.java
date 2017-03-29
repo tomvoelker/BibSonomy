@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -40,6 +40,16 @@ import org.junit.Test;
  * @author rja
  */
 public class PostUtilsTest {
+	
+	@Test
+	public void testGetOwnerFromKey() {
+		final String owner = "test_test";
+		final String hash = "121212";
+		final String key = PostUtils.getKeyForPost(hash, owner);
+		assertEquals(hash + "_" + owner, key);
+		assertEquals(owner, PostUtils.getOwnerFromKey(key));
+		assertEquals(hash, PostUtils.getHashFromKey(key));
+	}
 
 	@Test
 	public void testSetGroupIdsPostOfQextendsResourceBoolean() {

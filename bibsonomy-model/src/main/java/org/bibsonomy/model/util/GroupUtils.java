@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,9 +26,12 @@
  */
 package org.bibsonomy.model.util;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
@@ -283,5 +286,21 @@ public class GroupUtils {
 		}
 		
 		return null;
+	}
+
+	/**
+	 * @param memberships
+	 * @return all memberships except the dummy user
+	 */
+	public static List<GroupMembership> getGroupMemberShipsWithoutDummyUser(List<GroupMembership> memberships) {
+		final List<GroupMembership> list = new LinkedList<>();
+		
+		for (final GroupMembership groupMembership : memberships) {
+			if (!GroupRole.DUMMY.equals(groupMembership.getGroupRole())) {
+				list.add(groupMembership);
+			}
+		}
+		
+		return list;
 	}
 }

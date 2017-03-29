@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -24,7 +24,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.model;
 
 import java.io.Serializable;
@@ -86,6 +85,11 @@ public class User implements Serializable {
 	 * Which role the user has in the system (e.g. admin, ...)
 	 */
 	private Role role;
+	
+	/**
+	 * a set of usernames, this user marked as spammers. 
+	 */
+	private Set<User> reportedSpammers;
 
 	
 	/* ****************************** profile ****************************** */ 
@@ -181,9 +185,9 @@ public class User implements Serializable {
 	 */
 	private UserSettings settings;
 	/**
-	 * Basket of this user where he can pick some entries
+	 * Clipboard of this user where he can pick some entries
 	 */
-	private Basket basket;
+	private Clipboard clipboard;
 	/**
 	 * Inbox of this user where he gets Posts sent by other users
 	 */
@@ -226,6 +230,10 @@ public class User implements Serializable {
 	 */ 
 	private String mode;
 	
+	/**
+	 * The logged interaction at registration form
+	 */
+	private String registrationLog;
 	
 	/* ****************************** account management ****************************** */
 	
@@ -673,20 +681,20 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * @return basket
+	 * @return clipboard
 	 */
-	public Basket getBasket() {
-		if (this.basket == null) {
-			this.basket = new Basket();
+	public Clipboard getClipboard() {
+		if (this.clipboard == null) {
+			this.clipboard = new Clipboard();
 		}
-		return this.basket;
+		return this.clipboard;
 	}
 
 	/**
-	 * @param basket
+	 * @param clipboard
 	 */
-	public void setBasket(final Basket basket) {
-		this.basket = basket;
+	public void setClipboard(final Clipboard clipboard) {
+		this.clipboard = clipboard;
 	}
 	
 	/**
@@ -1022,8 +1030,8 @@ public class User implements Serializable {
 		return this.getGroupLevelPermissions().contains(groupLevelPermission);
 	}
 	
-	/*
-	 * Return all group level permissions this user has from any group he is a member of
+	/**
+	 * @return all group level permissions this user has from any group he is a member of
 	 */
 	public Set<GroupLevelPermission> getGroupLevelPermissions() {
 		Set<GroupLevelPermission> groupLevelPermissions = new HashSet<GroupLevelPermission>();
@@ -1032,5 +1040,32 @@ public class User implements Serializable {
 		}
 		return groupLevelPermissions;
 	}
-	
+
+	/**
+	 * @return the reportedSpammers
+	 */
+	public Set<User> getReportedSpammers() {
+		return this.reportedSpammers;
+	}
+
+	/**
+	 * @param reportedSpammers the reportedSpammers to set
+	 */
+	public void setReportedSpammers(Set<User> reportedSpammers) {
+		this.reportedSpammers = reportedSpammers;
+	}
+
+	/**
+	 * @return the logged interaction at registration form
+	 */
+	public String getRegistrationLog() {
+		return this.registrationLog;
+	}
+
+	/**
+	 * @param registrationLog the logged interaction at registration form to set
+	 */
+	public void setRegistrationLog(String registrationLog) {
+		this.registrationLog = registrationLog;
+	}
 }

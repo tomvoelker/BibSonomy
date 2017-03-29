@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -49,9 +49,9 @@ public class ServerPictureHandler implements PictureHandler {
 	public View getProfilePictureView (final User requestedUser, final PictureCommand command) {
 		final UploadedFile profilePicture = requestedUser.getProfilePicture();
 		
-		command.setPathToFile( profilePicture.getAbsolutePath() );
-		command.setContentType( FileUtil.getContentType(profilePicture.getFileName()) );
-		command.setFilename( requestedUser.getName() + ProfilePictureLogic.FILE_EXTENSION );
+		command.setPathToFile(profilePicture.getAbsolutePath());
+		command.setContentType(FileUtil.getContentType(profilePicture.getFileName()));
+		command.setFilename(requestedUser.getName() + ProfilePictureLogic.FILE_EXTENSION);
 		
 		return Views.DOWNLOAD_FILE;
 	}

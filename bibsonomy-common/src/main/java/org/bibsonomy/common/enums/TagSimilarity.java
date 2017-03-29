@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,7 +30,6 @@ package org.bibsonomy.common.enums;
  * Defines types of relatedness between tags
  * 
  * @author Dominik Benz
-
  */
 public enum TagSimilarity {
 	/** tag co-occurrence */

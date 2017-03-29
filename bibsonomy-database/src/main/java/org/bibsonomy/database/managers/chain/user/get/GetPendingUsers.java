@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -41,15 +41,14 @@ import org.bibsonomy.model.User;
  */
 public class GetPendingUsers extends UserChainElement {
 
-    @Override
-    protected List<User> handle(final UserParam param, final DBSession session) {
-        return this.userDB.getPendingUsers(param.getOffset(), param.getLimit(),
-                session);
-    }
+	@Override
+	protected List<User> handle(final UserParam param, final DBSession session) {
+		return this.userDB.getPendingUsers(param.getOffset(), param.getLimit(), session);
+	}
 
-    @Override
-    protected boolean canHandle(final UserParam param) {
-        return (GroupingEntity.PENDING.equals(param.getGrouping())
-                && param.getSearch() == null && param.getRequestedGroupName() == null);
-    }
+	@Override
+	protected boolean canHandle(final UserParam param) {
+		return (GroupingEntity.PENDING.equals(param.getGrouping())
+			&& param.getSearch() == null && param.getRequestedGroupName() == null);
+	}
 }

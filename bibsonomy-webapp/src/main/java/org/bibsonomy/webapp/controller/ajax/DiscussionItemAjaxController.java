@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -34,8 +34,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONObject;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -66,6 +64,8 @@ import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
+import net.sf.json.JSONObject;
+
 /**
  * @author dzo
  * @param <D> 
@@ -83,6 +83,10 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 		return commentCommand;
 	}
 	
+	/**
+	 * inits the discussion item 
+	 * @return the new discussion item
+	 */
 	protected abstract D initDiscussionItem();
 
 	@Override
@@ -115,7 +119,11 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 		 * don't call the validator
 		 */
 		if (HttpMethod.DELETE.equals(this.requestLogic.getHttpMethod())) {
+			if (this.errors.hasErrors()) {
+				return this.getErrorView();
+			}
 			this.logic.deleteDiscussionItem(userName, interHash, command.getDiscussionItem().getHash());
+			command.setResponseString("{}");
 			return Views.AJAX_JSON;
 		}
 		
@@ -192,7 +200,6 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 			 * then the postUserName contains the owner of the post to which the user wants to start a discussion.
 			 * We first retrieve a suitable post (originalPost) to create a goldstandard from 
 			 */
-			reloadPage = true;
 			log.debug("no gold standard found for intraHash " + interHash + ". Creating new gold standard");
 			Post<? extends Resource> originalPost = null;
 			
@@ -272,15 +279,16 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 	private static boolean firstCommentInPreprint(final Post<? extends Resource> goldStandard, final String userName) {
 		final Resource res = goldStandard.getResource();
 		if (res.getClass().equals(BibTex.class)) {
-			if (((BibTex)res).getEntrytype().equals(PREPRINT)) {
+			if (((BibTex) res).getEntrytype().equals(PREPRINT)) {
 				for (final DiscussionItem item : res.getDiscussionItems()) {
 					if (item.getUser().getName().equals(userName)) {
 						return false;
 					}
 				}
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 	
 	@Override

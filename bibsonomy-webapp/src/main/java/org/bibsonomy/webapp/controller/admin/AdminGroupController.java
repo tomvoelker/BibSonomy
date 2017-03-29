@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -29,6 +29,8 @@ package org.bibsonomy.webapp.controller.admin;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.logging.Log;
@@ -44,143 +46,117 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.admin.AdminGroupViewCommand;
+import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.Errors;
 
 /**
  * Controller for group admin page
- * 
- * @author bsc
+ *
+ * @author bsc, tni
  */
-// TODO: Needs loads of polishing
-// TODO: Make ErrorAware for proper error messages
-public class AdminGroupController implements MinimalisticController<AdminGroupViewCommand> {
+public class AdminGroupController implements MinimalisticController<AdminGroupViewCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(AdminGroupController.class);
+
 	private LogicInterface logic;
 	private MailUtils mailUtils;
+	private Errors errors;
 
 	@Override
 	public View workOn(final AdminGroupViewCommand command) {
 		final RequestWrapperContext context = command.getContext();
 		final User loginUser = context.getLoginUser();
-		command.setPermissionsUpdated(false);
-		
-		/* Check user role
-		 * If user is not logged in or not an admin: show error message */
+
+		/*
+		 * check user role
+		 * If user is not logged in or not an admin: show error message
+		 */
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
 			throw new AccessDeniedException("please log in as admin");
 		}
 
 		/* Check for and perform the specified action */
 		final AdminGroupOperation action = command.getAction();
-		User requestingUser;
-		if(!present(action)) {
-			log.debug("No action specified.");
-		} else {
+		if (present(action)) {
 			Group group = command.getGroup();
+			User requestingUser;
 			switch(action) {
-				case ACCEPT:
-					for (Group g : logic.getGroups(true, 0, Integer.MAX_VALUE)) {
-						if (g.getName().equals(group.getName())) {
-							group = g;
-							break;
-						}
-					}
-					
-					requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
-					this.logic.updateGroup(group, GroupUpdateOperation.ACTIVATE, null);
-					if (present(requestingUser.getEmail())) {
-						this.mailUtils.sendGroupActivationNotification(group, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
-					}
+			case ACCEPT_GROUP:
+				group = this.logic.getGroupDetails(group.getName(), true);
+
+				requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
+				this.logic.updateGroup(group, GroupUpdateOperation.ACTIVATE, null);
+				if (present(requestingUser.getEmail())) {
+					this.mailUtils.sendGroupActivationNotification(group, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
+				}
+				return new ExtendedRedirectView("/admin/group");
+			case DECLINE_GROUP:
+				final String groupName = group.getName();
+				group = this.logic.getGroupDetails(groupName, true);
+
+				requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
+
+				// delete the group
+				log.debug("grouprequest for group \"" + groupName + "\" declined");
+				this.logic.deleteGroup(groupName, true, false);
+
+				// send mail
+				String declineMessage = command.getDeclineMessage();
+				if (!present(declineMessage)) {
+					declineMessage = "";
+				}
+				if (present(requestingUser.getEmail())) {
+					this.mailUtils.sendGroupDeclineNotification(groupName, declineMessage, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
+				}
+				return new ExtendedRedirectView("/admin/group");
+			case FETCH_GROUP_SETTINGS:
+				this.setGroupOrMarkNonExistent(command);
+				break;
+			case UPDATE_PERMISSIONS:
+				this.updateGroupPermissions(command);
+				break;
+			case DELETE_GROUP:
+				final Group groupToDelete = this.logic.getGroupDetails(command.getGroup().getName(), false);
+
+				if (!present(groupToDelete)) {
+					this.errors.reject("group.doesnotexist.header");
+					command.setGroup(null);
 					break;
-				case CREATE:
-					command.setAdminResponse(createGroup(group));
-					requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
-					if (present(requestingUser.getEmail())) {
-						this.mailUtils.sendGroupActivationNotification(group, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
-					}
-					break;
-				case DECLINE:
-					log.debug("grouprequest for group \"" + group.getName() + "\" declined");
-					this.logic.updateGroup(group, GroupUpdateOperation.DELETE, null);
-					// TODO: send mail
-					break;
-				case FETCH_GROUP_SETTINGS:
-					setGroupOrMarkNonExistent(command);
-					break;
-				case UPDATE:
-					updateGroup(command);
-					break;
-				case UPDATE_PERMISSIONS:
-					this.updateGroupPermissions(command);
-					break;
-				default:
-					break;
-			}
+				}
 				
+				this.logic.deleteGroup(groupToDelete.getName(), false, true);
+				command.setGroup(null);
+				command.setAdminResponse("settings.group.delete.success");
+				break;
+			default:
+				break;
+			}
 		}
-		
+
 		// load the pending groups
-		command.setPendingGroups(logic.getGroups(true, 0, Integer.MAX_VALUE));
-	
+		command.setPendingGroups(this.logic.getGroups(true, null, 0, Integer.MAX_VALUE));
+		
+		// TODO: move extracting of the username to the view
+		final List<Group> allGroups = this.logic.getGroups(false, null, 0, Integer.MAX_VALUE);
+		final List<String> allGroupnames = new LinkedList<>();
+		for (final Group group : allGroups) {
+			allGroupnames.add(group.getName());
+		}
+		command.setAllGroupNames(allGroupnames);
+
 		return Views.ADMIN_GROUP;
 	}
 
 	/**
-	 * Create a new group
-	 * TODO: Proper Error messages.
-	 * @param command
-	 */
-	private String createGroup(final Group group) {
-		/*
-		 * Check if group-name is empty
-		 */
-		final String groupName = group.getName();
-		if (!present(groupName)) {
-			return "Group-creation failed: Group-name is empty!";
-		}
-		/*
-		 * check database for existing group or pending group
-		 */
-		if (logic.getGroups(false, 0, Integer.MAX_VALUE).contains(group)
-				|| logic.getGroups(true, 0, Integer.MAX_VALUE).contains(group)) {
-			return "Group already exists!";
-		}
-		
-		// Create the group ...
-		logic.createGroup(group);
-		// ... and activate it
-		logic.updateGroup(group, GroupUpdateOperation.ACTIVATE, null);
-		return "Successfully created new group " + group.getName() + "!";
-	}
-
-	/**
-	 * Update the settings of a group.
-	 * 
-	 * TODO: Find out when this is used.
-	 * 
-	 */
-	private void updateGroup(final AdminGroupViewCommand command) {
-		final Group dbGroup = getGroupOrMarkNonExistent(command);
-		if (present(dbGroup)) {
-			Group commandGroup = command.getGroup();
-			dbGroup.setPrivlevel(commandGroup.getPrivlevel());
-			dbGroup.setSharedDocuments(commandGroup.isSharedDocuments());
-
-			logic.updateGroup(dbGroup, GroupUpdateOperation.UPDATE_SETTINGS, null);
-			command.setAdminResponse("Group updated successfully!");
-		}
-	}
-
-	
-	/**
 	 * TODO: Documentation.
 	 */
 	private void updateGroupPermissions(final AdminGroupViewCommand command) {
-		final Group dbGroup = getGroupOrMarkNonExistent(command);
+		final Group dbGroup = this.getGroupOrMarkNonExistent(command);
 		if (present(dbGroup) && GroupID.INVALID.getId() != dbGroup.getGroupId()) {
 			dbGroup.setGroupLevelPermissions(new HashSet<GroupLevelPermission>());
 			if (command.isCommunityPostInspectionPermission()) {
@@ -188,11 +164,11 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 				command.setCommunityPostInspectionPermission(false);
 			}
 			try {
-				logic.updateGroup(dbGroup, GroupUpdateOperation.UPDATE_PERMISSIONS, null);
+				this.logic.updateGroup(dbGroup, GroupUpdateOperation.UPDATE_PERMISSIONS, null);
 				command.setAdminResponse("settings.group.update.success");
 				command.setPermissionsUpdated(true);
 				command.setGroup(null);
-			} catch (IllegalArgumentException e) {
+			} catch (final IllegalArgumentException e) {
 				command.setAdminResponse(e.getMessage());
 			}
 		}
@@ -207,12 +183,12 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 			command.setGroup(dbGroup);
 		}
 	}
-	
+
 	/**
 	 * TODO: Documentation.
 	 */
 	private Group getGroupOrMarkNonExistent(final AdminGroupViewCommand command) {
-		final Group dbGroup = logic.getGroupDetails(command.getGroup().getName());
+		final Group dbGroup = this.logic.getGroupDetails(command.getGroup().getName(), false);
 
 		if (!GroupUtils.isValidGroup(dbGroup)) {
 			command.setAdminResponse("The group \"" + command.getGroup().getName() + "\" does not exist.");
@@ -232,7 +208,31 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		this.logic = logic;
 	}
 
-	public void setMailUtils(MailUtils mailUtils) {
+	/**
+	 * @param mailUtils the mailUtils to set
+	 */
+	public void setMailUtils(final MailUtils mailUtils) {
 		this.mailUtils = mailUtils;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.bibsonomy.webapp.util.ErrorAware#getErrors()
+	 */
+	@Override
+	public Errors getErrors() {
+		return this.errors;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.bibsonomy.webapp.util.ErrorAware#setErrors(org.springframework.
+	 * validation.Errors)
+	 */
+	@Override
+	public void setErrors(final Errors errors) {
+		this.errors = errors;
 	}
 }

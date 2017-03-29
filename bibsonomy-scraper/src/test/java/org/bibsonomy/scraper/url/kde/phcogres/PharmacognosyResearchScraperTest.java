@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -24,11 +24,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.scraper.url.kde.phcogres;
+
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.url.kde.biorxiv.BioRxivScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -44,6 +46,8 @@ public class PharmacognosyResearchScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		UnitTestRunner.runSingleTest("url_251");
+		final String url = "http://www.phcogres.com/article.asp?issn=0974-8490;year=2009;volume=1;issue=4;spage=172;epage=174;aulast=Shuge;t=6";
+		final String resultFile = "PharmacognosyResearchScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, PharmacognosyResearchScraper.class, resultFile);
 	}
 }

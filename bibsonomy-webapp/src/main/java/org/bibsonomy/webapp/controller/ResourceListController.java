@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -116,12 +116,13 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param groupingEntity the grouping entity
 	 * @param groupingName the grouping name
 	 * @param regex regular expression for tag filtering
+	 * @param order forced order
 	 * @param tags list of tags
 	 * @param start start parameter
 	 * @param end end parameter
 	 */
-	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, final List<String> tags, final String hash, final int max, final String search) {
-		this.setTags(cmd, resourceType, groupingEntity, groupingName, regex, tags, hash, max, search, SearchType.LOCAL);
+	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, Order order, final List<String> tags, final String hash, final int max, final String search) {
+		this.setTags(cmd, resourceType, groupingEntity, groupingName, regex, order, tags, hash, max, search, SearchType.LOCAL);
 	}
 	
 	/**
@@ -132,6 +133,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param groupingEntity the grouping entity
 	 * @param groupingName the grouping name
 	 * @param regex regular expression for tag filtering
+	 * @param order forced order
 	 * @param tags list of tags
 	 * @param hash 
 	 * @param max 
@@ -140,7 +142,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param start start parameter
 	 * @param end end parameter
 	 */
-	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, final List<String> tags, final String hash, final int max, final String search, final SearchType searchType) {
+	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, Order order, final List<String> tags, final String hash, final int max, final String search, final SearchType searchType) {
 		final TagCloudCommand tagCloudCommand = cmd.getTagcloud();
 		// retrieve tags
 		log.debug("getTags " + " " + groupingEntity + " " + groupingName);
@@ -173,6 +175,10 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 		 */
 		tagMax = this.getFixedTagMax(tagMax);
 		tagOrder = this.getFixedTagOrder(tagOrder);
+		
+		if (present(order)) {
+			tagOrder = order;
+		}
 		
 		tagCloudCommand.setTags(this.logic.getTags(resourceType, groupingEntity, groupingName, tags, hash, search, searchType,regex, null, tagOrder, cmd.getStartDate(), cmd.getEndDate(), 0, tagMax));
 		// retrieve tag cloud settings
@@ -238,7 +244,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 			}
 
 			// fetch tags, store them in bean
-			this.setTags(cmd, resourcetype, groupingEntity, groupingName, regex, tags, hash, max, search);
+			this.setTags(cmd, resourcetype, groupingEntity, groupingName, regex, null, tags, hash, max, search);
 
 			// when tags only are requested, we don't need any resources
 			this.setInitializeNoResources(true);
@@ -250,14 +256,13 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * do some post processing with the retrieved resources
 	 * 
 	 * @param cmd
+	 * @param posts 
 	 */
 	protected void postProcessAndSortList(final ResourceViewCommand cmd, final List<Post<BibTex>> posts) {
-		for (final Post<BibTex> post : posts) {
-			// insert openURL into bibtex objects
-			post.getResource().setOpenURL(BibTexUtils.getOpenurl(post.getResource()));
-		}
 		// if a jabref layout is to be rendered and no special order is given, set to default order 
-		if (Views.LAYOUT.getName().equalsIgnoreCase(cmd.getFormat()) && ResourceViewCommand.DEFAULT_SORTPAGE.equalsIgnoreCase(cmd.getSortPage())) {
+		if (Views.LAYOUT.getName().equalsIgnoreCase(cmd.getFormat()) &&
+				ResourceViewCommand.DEFAULT_SORTPAGE.equalsIgnoreCase(cmd.getSortPage()) &&
+				ResourceViewCommand.DEFAULT_SORTPAGEORDER.equals(cmd.getSortPageOrder())) {
 			cmd.setSortPage(DEFAULT_SORTPAGE_JABREF_LAYOUTS);
 			cmd.setSortPageOrder(DEFAULT_SORTPAGEORDER_JABREF_LAYOUTS);
 		}
@@ -268,6 +273,8 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 			// re-sort list by date in descending order, if nothing else requested
 			if (ResourceViewCommand.DEFAULT_SORTPAGE.equals(cmd.getSortPage())) {
 				cmd.setSortPage("date");
+			}
+			if (ResourceViewCommand.DEFAULT_SORTPAGEORDER.equals(cmd.getSortPageOrder())) {
 				cmd.setSortPageOrder("desc");
 			}
 		}
@@ -277,7 +284,8 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 			BibTexUtils.mergeDuplicates(posts);
 		}
 		
-		if (!ResourceViewCommand.DEFAULT_SORTPAGE.equals(cmd.getSortPage())) {
+		if (!ResourceViewCommand.DEFAULT_SORTPAGE.equals(cmd.getSortPage()) ||
+				! ResourceViewCommand.DEFAULT_SORTPAGEORDER.equals(cmd.getSortPageOrder())) {
 			BibTexUtils.sortBibTexList(posts, SortUtils.parseSortKeys(cmd.getSortPage()), SortUtils.parseSortOrders(cmd.getSortPageOrder()) );
 		}
 	}
@@ -290,6 +298,13 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param resourceType the resource type
 	 * @param groupingEntity the grouping entity
 	 * @param groupingName the grouping name
+	 * @param tags 
+	 * @param hash 
+	 * @param search 
+	 * @param filter 
+	 * @param order 
+	 * @param startDate 
+	 * @param endDate 
 	 * @param itemsPerPage number of items to be displayed on each page
 	 */
 	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int itemsPerPage) {
@@ -316,7 +331,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 */
 	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int itemsPerPage) {
 		final ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType);
-		// retrieve posts		
+		// retrieve posts
 		log.debug("getPosts " + resourceType + " " + searchType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
 		final int start = listCommand.getStart();
 		final Set<Filter> filters = new HashSet<Filter>();
@@ -368,7 +383,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @return true if only publications are requested, false otherwise
 	 */
 	private boolean isPublicationOnlyRequested(final ResourceViewCommand cmd) {
-		final Set<Class<? extends Resource>> listsToInitialize = this.getListsToInitialize(cmd.getFormat(), cmd.getResourcetype());
+		final Set<Class<? extends Resource>> listsToInitialize = this.getListsToInitialize(cmd);
 		return (listsToInitialize.size() == 1) && listsToInitialize.contains(BibTex.class);
 	}
 
@@ -379,7 +394,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @return true if only bookmarks are requested, false otherwise
 	 */
 	private boolean isBookmarkOnlyRequested(final ResourceViewCommand cmd) {
-		final Set<Class<? extends Resource>> listsToInitialize = this.getListsToInitialize(cmd.getFormat(), cmd.getResourcetype());
+		final Set<Class<? extends Resource>> listsToInitialize = this.getListsToInitialize(cmd);
 		return (listsToInitialize.size() == 1) && listsToInitialize.contains(Bookmark.class);
 	}
 
@@ -445,26 +460,25 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * Hereby the resources requested/supported by (i) the controller itself, (ii) the format param, 
 	 * (iii) URL param and (iv) user settings are considered. Parameter settings override user settings,
 	 * if possible.
+	 * @param command
 	 * 
-	 * @param format e.g. "json"
-	 * @param resourcesToInitialize initially filled by ?resourcetype=bookmark&resourcetype=publication
 	 * @return all resources that must be initialized by this controller
 	 */
-	public Set<Class<? extends Resource>> getListsToInitialize(final String format, final Set<Class<? extends Resource>> resourcesToInitialize) {
-		// explictly don't intialize resources (e.g. when only tags are requested)
+	public Set<Class<? extends Resource>> getListsToInitialize(final ResourceViewCommand command) {
+		final Set<Class<? extends Resource>> resourcesToInitializeFromUser = command.getResourcetype();
+		final String format = command.getFormat();
+		final Set<Class<? extends Resource>> resourcesToInitialize = new HashSet<Class<? extends Resource>>(resourcesToInitializeFromUser);
+		// explicitly don't initialize resources (e.g. when only tags are requested)
 		if (this.initializeNoResources) {
 			resourcesToInitialize.clear();
-		}
-		// some pages (e.g. CV) don't allow to change resources by settings / url params
-		else if (present(this.forcedResources)) {
+		} else if (present(this.forcedResources)) { // some pages (e.g. CV) don't allow to change resources by settings / url params
 			resourcesToInitialize.clear();
 			resourcesToInitialize.addAll(this.forcedResources);
-		}
-		else {
+		} else {
 			// resources supported by format parameter 
 			final Set<Class<? extends Resource>> supportFormat = intersection(this.supportedResources, this.getResourcesForFormat(format));
 			// resources given by URL params
-			final Set<Class<? extends Resource>> supportParam = intersection(this.supportedResources, resourcesToInitialize);
+			final Set<Class<? extends Resource>> supportParam = intersection(this.supportedResources, resourcesToInitializeFromUser);
 			// resources selected by user settings
 			final Set<Class<? extends Resource>> supportUser = intersection(this.supportedResources, this.getUserResourcesFromSettings());
 			// we start with an empty return set
@@ -472,34 +486,30 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 			// controller does not support resources required by format param -> empty list
 			if (!present(supportFormat) && !present(supportParam)) {
 				// do nothing -> return empty set
-			}			
-			else if (present(supportFormat)) {
+			} else if (present(supportFormat)) {
 				final Set<Class<? extends Resource>> supportFormatParam = intersection(supportFormat, supportParam);
 				if (present(supportFormatParam)) {
 					// controller supports resources requested by format & URL param
 					resourcesToInitialize.addAll(supportFormatParam);
-				}
-				else {
+				} else {
 					final Set<Class<? extends Resource>> supportFormatUser = intersection(supportFormat, supportUser);
 					if (present(supportFormatUser)) {
 						// controller supports resources requested by format & user settings
 						resourcesToInitialize.addAll(supportFormatUser);
-					}
-					else {
+					} else {
 						// controller supports resources requested by format
 						resourcesToInitialize.addAll(supportFormat);
 					}
 				}
-			}
-			else if (!present(supportFormat) && present(supportParam)) {
+			} else if (!present(supportFormat) && present(supportParam)) {
 				// resources requested by URL param don't match resources supported by format -> empty list
 				// do nothing -> return empty set
-			}
-			else {
+			} else {
 				// default: initialize all resources supported by current controller
 				resourcesToInitialize.addAll(this.supportedResources);
 			}
 		}
+		command.setResourcetype(resourcesToInitialize);
 		return resourcesToInitialize;
 	}
 	

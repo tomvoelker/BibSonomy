@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -32,6 +32,8 @@ import org.springframework.web.multipart.MultipartFile;
  * @author wla
  */
 public class AjaxDocumentCommand extends AjaxCommand<String> {
+
+	private String ownerName;
 
 	private String intraHash;
 	
@@ -146,6 +148,14 @@ public class AjaxDocumentCommand extends AjaxCommand<String> {
 	public void setNewFileName(String newFileName) {
 		this.newFileName = newFileName;
 	}
-	
-		
+
+
+	public String getOwnerName() {
+		return ownerName;
+	}
+
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
+	}
+
 }

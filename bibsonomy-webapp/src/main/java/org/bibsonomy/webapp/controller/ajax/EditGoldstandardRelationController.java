@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -51,17 +51,15 @@ import org.springframework.validation.Errors;
  * @author lka
  */
 public class EditGoldstandardRelationController extends AjaxController implements MinimalisticController<EditGoldstandardRelationCommand>, ErrorAware {
+	private Errors errors;
 	
 	@Override
 	public EditGoldstandardRelationCommand instantiateCommand() {
 		return new EditGoldstandardRelationCommand();
 	}
-
-	private Errors errors;
 	
 	@Override
 	public View workOn(final EditGoldstandardRelationCommand command) {
-
 		final RequestWrapperContext context = command.getContext();
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(context.getLoginUser().getRole())) {
 			throw new AccessDeniedException("You are not allowed to edit references of a goldstandard");
@@ -69,7 +67,7 @@ public class EditGoldstandardRelationController extends AjaxController implement
 
 		//check if ckey is valid
 		if (!context.isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
+			this.errors.reject("error.field.valid.ckey");
 			return Views.ERROR;
 		}
 		
@@ -86,7 +84,6 @@ public class EditGoldstandardRelationController extends AjaxController implement
 		
 		switch (httpMethod) {
 		case POST: 
-		
 			this.logic.createRelations(hash, references, relation);
 			break;
 		case DELETE: 

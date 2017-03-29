@@ -1,7 +1,7 @@
 /**
  * BibSonomy-MARC-Parser - Marc Parser for BibSonomy
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -56,9 +56,9 @@ public class MarcToBibTexReader implements BibTexReader {
 	private static final PicaPlusReader picaReader = new PicaPlusReader();
 	
 	@Override
-	public Collection<ImportResource> read(ImportResource importRes) {
+	public Collection<BibTex> read(ImportResource importRes) {
 		Data data = importRes.getData();
-		List<ImportResource> rVal = new ArrayList<ImportResource>();
+		final List<BibTex> rVal = new ArrayList<BibTex>();
 		
 		MarcReader reader;
 		Iterator<PicaRecord> picaRecords;
@@ -105,15 +105,13 @@ public class MarcToBibTexReader implements BibTexReader {
 			initialize(b, importRes.getResource());
 
 			try {
-				ex.extraxtAndSetAttribute(b, er);
+				ex.extractAndSetAttribute(b, er);
 			} catch (IllegalArgumentException e) {
-				//System.err.println(e.toString());
+				// TODO: log exception?
 			}
 			
 			b.setBibtexKey(BibTexUtils.generateBibtexKey(b));
 			rVal.add(b);
-
-			//System.out.println(r.toString());
 		}
 		return rVal;
 	}

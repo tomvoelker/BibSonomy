@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -29,6 +29,7 @@ package org.bibsonomy.webapp.controller;
 import java.io.IOException;
 
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
+import org.bibsonomy.layout.csl.CSLFilesManager;
 import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
 import org.bibsonomy.layout.standard.StandardLayouts;
 import org.bibsonomy.services.renderer.LayoutRenderer;
@@ -44,6 +45,7 @@ import org.bibsonomy.webapp.view.Views;
 public class ExportPageController implements MinimalisticController<ExportPageCommand> {
 
 	private LayoutRenderer<AbstractJabRefLayout> layoutRenderer;
+	private CSLFilesManager cslFilesManager;
 	private StandardLayouts layouts;
 
 	/**
@@ -85,6 +87,7 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 		}
 
 		command.addLayoutMap(this.layouts.getLayoutMap());
+		command.setCslLayoutMap(cslFilesManager.getCslFiles());
 
 		if (command.getFormatEmbedded()) {
 			return Views.EXPORT_EMBEDDED;
@@ -106,5 +109,12 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	 */
 	public void setLayouts(StandardLayouts layouts) {
 		this.layouts = layouts;
+	}
+
+	/**
+	 * @param cslFilesManager
+	 */
+	public void setCslFilesManager(CSLFilesManager cslFilesManager) {
+		this.cslFilesManager = cslFilesManager;
 	}
 }

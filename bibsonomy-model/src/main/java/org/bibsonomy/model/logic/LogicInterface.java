@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,10 +26,7 @@
  */
 package org.bibsonomy.model.logic;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -56,37 +53,33 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 
 /**
  * This interface is an adapter to BibSonomy's core functionality. <br/>
- * 
+ *
  * The methods returning information return in general, if there are no matches,
  * an empty set (if a list is requested), or null (if a single entity is
  * requested (e.g. a post)). <br/>
- * 
+ *
  * <b>Please try to be as close to the method-conventions as possible.</b> If
  * something is unclear, guess, check occurences and document your result. If
  * you have to change a convention, check all occurences and document it
  * properly! Try to check each possibility with a test-case.<br/>
- * 
+ *
  * BE AWARE that this might grow quickly. So distribute methods across classes
  * or at least interfaces (like it has been done with PostLogicInterface) and
  * use these in your code.
- * 
+ *
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @author Jens Illig <illig@innofinity.de>
  * @author Christian Kramer
@@ -97,10 +90,10 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @return the name of the authenticated user
 	 */
 	public User getAuthenticatedUser();
-	
+
 	/**
 	 * Generic method to retrieve lists of users
-	 * 
+	 *
 	 * @param resourceType
 	 * 			- restrict users by a certain resource type
 	 * @param grouping
@@ -110,7 +103,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param tags
 	 * 			- a list of tags by which to retrieve users (e.g., users related to these tags by folkrank)
 	 * @param hash
-	 * 			- a resourcehash 
+	 * 			- a resourcehash
 	 * @param order
 	 * 			- the order by which to retrieve the users
 	 * @param relation
@@ -119,81 +112,83 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * 			- a search string
 	 * @param start
 	 * @param end
-	 * 
+	 *
 	 * @return list of user
 	 */
-	public List<User> getUsers (Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, UserRelation relation, String search, int start, int end);	
-	
+	public List<User> getUsers (Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, UserRelation relation, String search, int start, int end);
+
 	/**
 	 * @param grouping TODO
 	 * @param filters TODO
-	 * @param classifier 
-	 * @param status 
+	 * @param classifier
+	 * @param status
 	 * @param startDate
 	 * @param endDate
-	 * @param constraints 
+	 * @param constraints
 	 * @return statistic informations about the users
 	 */
 	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, final Classifier classifier, final SpamStatus status, Date startDate, Date endDate);
-	
+
 	/**
 	 * Returns details about a specified user
-	 * 
+	 *
 	 * In case of the requesting user is not logged in or he's not allowed to access <br>
 	 * the requested users data, a user containing only it's name is returned. <br>
-	 * 
+	 *
 	 * In case of the a non existing requested user or a deleted account, a complete empty user is returned.
-	 * 
+	 *
 	 * @param userName name of the user we want to get details from
 	 * @return details about a named user
 	 */
 	public User getUserDetails(String userName);
-	
+
 	/**
 	 * @param userName
 	 * @return WikiVersions
 	 */
 	public List<Date> getWikiVersions(String userName);
-	        
+
 	/**
 	 * @param userName
 	 * @param date the date of creation from the wikitext, null describe the actual wikitext
 	 * @return the requested wikitext from the given user
 	 */
-	public Wiki getWiki(String userName, Date date); 
-	
+	public Wiki getWiki(String userName, Date date);
+
 	/**
-	 * @param userName 
-	 * @param wiki 
-	 */
-	public void createWiki(String userName, Wiki wiki); 
-	
-	/**
-	 * @param userName 
+	 * @param userName
 	 * @param wiki
 	 */
-	public void updateWiki(String userName, Wiki wiki); 
-	
+	public void createWiki(String userName, Wiki wiki);
+
+	/**
+	 * @param userName
+	 * @param wiki
+	 */
+	public void updateWiki(String userName, Wiki wiki);
+
 
 	/**
 	 * Returns all groups of the system.
 	 * @param pending
+	 * @param userName if pending equals <code>true</code> restrict pending groups to this user
 	 * @param start
 	 * @param end
-	 * 
 	 * @return a set of groups, an empty set else
 	 */
-	public List<Group> getGroups(boolean pending, int start, int end);
-	
+	public List<Group> getGroups(boolean pending, String userName, int start, int end);
+
 	/**
 	 * Returns details of one group.
-	 * 
+	 *
 	 * @param groupName
+	 * @param pending	<code>true</code> iff you want to get group details of
+	 * 					a pending group
 	 * @return the group's details, null else
 	 */
-	public Group getGroupDetails(String groupName);
+	public Group getGroupDetails(String groupName, boolean pending);
 
-	/** 
+	/**
 	 * Returns a list of tags which can be filtered.
 	 * @param resourceType
 	 * 			  a resourceType (i.e. {@link BibTex} or {@link Bookmark}) to get tags
@@ -212,16 +207,16 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param regex
 	 *            a regular expression used to filter the tagnames
 	 * @param relation TODO
-	 * @param order 
-	 * @param startDate - if given, only tags of posts that have been created after (inclusive) startDate are returned  
-	 * @param endDate - if given, only tags of posts that have been created before (inclusive) endDate are returned 
+	 * @param order
+	 * @param startDate - if given, only tags of posts that have been created after (inclusive) startDate are returned
+	 * @param endDate - if given, only tags of posts that have been created before (inclusive) endDate are returned
 	 * @param start
 	 * @param end
 	 * @return a set of tags, an empty list else
 	 */
 	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end);
 
-	/** 
+	/**
 	 * Returns a list of tags which can be filtered.
 	 * @param resourceType
 	 * 			  a resourceType (i.e. {@link BibTex} or {@link Bookmark}) to get tags
@@ -241,18 +236,18 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param regex
 	 *            a regular expression used to filter the tagnames
 	 * @param relation TODO
-	 * @param order 
-	 * @param startDate - if given, only tags of posts that have been created after (inclusive) startDate are returned  
-	 * @param endDate - if given, only tags of posts that have been created before (inclusive) endDate are returned 
+	 * @param order
+	 * @param startDate - if given, only tags of posts that have been created after (inclusive) startDate are returned
+	 * @param endDate - if given, only tags of posts that have been created before (inclusive) endDate are returned
 	 * @param start
 	 * @param end
 	 * @return a set of tags, an empty list else
 	 */
 	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end);
 
-	/**  
+	/**
 	 * retrieves a filterable list of authors.
-	 * 
+	 *
 	 * @param grouping
 	 *            grouping tells whom authors are to be shown: the authors of a
 	 *            user, of a group or of the viewables.
@@ -276,7 +271,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @return a filtered list of authors. may be empty but not null
 	 */
 	public List<Author> getAuthors(GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search);
-	
+
 	/**
 	 * Returns details about a tag. Those details are:
 	 * <ul>
@@ -284,12 +279,12 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * <li>list of subtags</li>
 	 * <li>list of supertags</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param tagName name of the tag
 	 * @return the tag's details, null else
 	 */
 	public Tag getTagDetails(String tagName);
-	
+
 	/**
 	 * Returns the relations of a list of tags.
 	 * @param start
@@ -304,38 +299,44 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 
 	/** Updates the tags of the given user by replacing ALL tags of <code>tagsToReplace</code>
 	 * with ALL tags from <code>replacementTags</code>.
-	 * <p>That means, in all posts which contain all of the first tags, those tags will be 
+	 * <p>That means, in all posts which contain all of the first tags, those tags will be
 	 * replaced by the second tags.</p>
 	 * <p>This method does not change relations/concepts!</p>
-	 * 
+	 *
 	 * @param user - the user whose tags should be updated.
 	 * @param tagsToReplace - the tags which should be replaced. Only when all tags occur
 	 * together at the same post, they're replaced!
-	 * 
+	 *
 	 * @param replacementTags - the tags which replace the other tags.
 	 * @param updateRelations - if true additional to the replace of the tags the corresponding relations are updated,
 	 * be aware that this can only be done if tagsToReplace.size == 1 and replacementTags == 1
 	 * @return - The number of posts which were updated.
 	 */
 	public int updateTags(User user, List<Tag> tagsToReplace, List<Tag> replacementTags, boolean updateRelations);
-	
+
 	/**
 	 * Removes the given user.
-	 * 
+	 *
 	 * @param userName the user to delete
 	 */
 	public void deleteUser(String userName);
 
 	/**
 	 * Removes the given group.
-	 * 
-	 * @param groupName the group to delete
+	 *
+	 * @param groupName
+	 *            the group to delete
+	 * @param pending
+	 *            the given group is pending
+	 * @param quickDelete
+	 *            quick delete that group. Only possible for logged in system
+	 *            admins.
 	 */
-	public void deleteGroup(String groupName);
+	public void deleteGroup(String groupName, boolean pending, boolean quickDelete);
 
 	/**
 	 * Adds a user to the database.
-	 * 
+	 *
 	 * @param user  the user to add
 	 * @return userid the user id of the created user
 	 */
@@ -343,7 +344,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 
 	/**
 	 * Updates a user to the database.
-	 * 
+	 *
 	 * @param user  the user to update
 	 * @param operation the user operation
 	 * @return userid the user id of the updated user TODO: the user id doesn't change at all
@@ -353,7 +354,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 
 	/**
 	 * Adds a group to the database.
-	 * 
+	 *
 	 * @param group  the group to add
 	 * @return groupID the group id of the created group
 	 */
@@ -361,7 +362,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 
 	/**
 	 * Updates a group in the database.
-	 * 
+	 *
 	 * Depending on the {@link GroupUpdateOperation}, different actions are done:
 	 * <dl>
 	 * <dt>{@link GroupUpdateOperation#ADD_MEMBER}</dt><dd>Adds an existing user to an existing group.</dd>
@@ -370,11 +371,11 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * <dt>{@link GroupUpdateOperation#ACTIVATE}</dt><dd>Activates the group.</dd>
 	 * <dt>{@link GroupUpdateOperation#DELETE}</dt><dd>Deletes the pending group.</dd>
 	 * </dl>
-	 * 
-	 * 
+	 *
+	 *
 	 * @param group  the group to update
 	 * @param operation the operation which should be performed
-	 * @param membership 
+	 * @param membership
 	 * @return the group name of the updated group
 	 */
 	public String updateGroup(Group group, final GroupUpdateOperation operation, final GroupMembership membership);
@@ -383,10 +384,10 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * Adds a document. If the resourceHash is given, the document is connected
 	 * to the corresponding post. Otherwise, the document is independent of any
 	 * post (e.g., a layout file.
-	 * 
+	 *
 	 * @param document
 	 * @param resourceHash
-	 * 
+	 *
 	 * @return The hash of the created document.
 	 */
 	public String createDocument(Document document, String resourceHash);
@@ -398,18 +399,18 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @return document
 	 */
 	public Document getDocument(final String userName, final String fileHash);
-	
+
 	/**
 	 * Get a document from an existing Bibtex entry
-	 * @param userName 
-	 * @param resourceHash 
-	 * @param fileName 
-	 * 
+	 * @param userName
+	 * @param resourceHash
+	 * @param fileName
+	 *
 	 * @return document
 	 * @throws AccessDeniedException if user is not allowed to access the requested document
 	 */
 	public Document getDocument(String userName, String resourceHash, String fileName);
-	
+
 	/**
 	 * Get statistics about document(s)
 	 * @param groupingEntity
@@ -424,43 +425,43 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 
 	/**
 	 * Deletes an existing document. If the resourceHash is given, the document
-	 * is assumed to be connected to the corresponding resource (identified by 
+	 * is assumed to be connected to the corresponding resource (identified by
 	 * the user name in the document). Otherwise the document is independent of
 	 * any post.
-     *
-	 * @param document - the document which should be deleted.  
+	 *
+	 * @param document - the document which should be deleted.
 	 * @param resourceHash - the hash of a post the document belongs to.
 	 */
 	public void deleteDocument(Document document, String resourceHash);
 
 	/**
-	 * Renames an existing document to the given new name. 
+	 * Renames an existing document to the given new name.
 	 * The resourceHash is to find the corresponding
-	 * resource if existing. 
+	 * resource if existing.
 	 * @param userName TODO
 	 * @param resourceHash - the resourceHash of the document
 	 * @param documentName TODO
 	 * @param document - the document to rename
-	 * 	 
+	 *
 	 */
 	public void updateDocument(String userName, String resourceHash, String documentName, Document document);
-	
+
 	/**
 	 * Adds an InetAddress (IP) with the given status to the list of addresses.
-	 * Note that an InetAddress has exactly one status - so adding the status 
-	 * really means setting it. TODO: this should be cleaned - either by renaming 
-	 * the method to "setInetAddressStatus" or by allowing several states for an 
+	 * Note that an InetAddress has exactly one status - so adding the status
+	 * really means setting it. TODO: this should be cleaned - either by renaming
+	 * the method to "setInetAddressStatus" or by allowing several states for an
 	 * InetAddress (use case?).
-	 * 
+	 *
 	 * @param address - the address for which we want to set the status
-	 * @param status  - the status of the address (e.g. "blocked") 
+	 * @param status  - the status of the address (e.g. "blocked")
 	 * @author Robert Jäschke
 	 */
 	public void createInetAddressStatus (InetAddress address, InetAddressStatus status);
 
-	/** 
+	/**
 	 * Returns the current status of an InetAddress.
-	 * 
+	 *
 	 * @param address - the InetAddress which status to get
 	 * @return The status of the given address.
 	 * @author Robert Jäschke
@@ -469,9 +470,9 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 
 	/** Removes the address from the the list of stati for InetAddresses. Since
 	 * currently one address can have only one status, it is not neccessary to
-	 * say which status for that address should be removed. TODO: see comment 
+	 * say which status for that address should be removed. TODO: see comment
 	 * for {@link #createInetAddressStatus(InetAddress, InetAddressStatus)}.
-	 * 
+	 *
 	 * @param address - the InetAddress which should be removed from the status list.
 	 * @author Robert Jäschke
 	 */
@@ -479,18 +480,18 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 
 	/**
 	 * Retrieve relations
-	 * 
+	 *
 	 * @param conceptName - the supertag of the concept
 	 * @param grouping - grouping entity
-	 * @param groupingName - the grouping name	
+	 * @param groupingName - the grouping name
 	 * @return a concept, i.e. a tag containing its assigned subtags
-     * @author sts
+	 * @author sts
 	 */
 	public Tag getConceptDetails(String conceptName, GroupingEntity grouping, String groupingName);
 
 	/**
 	 * Create a new relation/concept
-	 * 
+	 *
 	 * @param concept - the new concept
 	 * @param grouping - grouping entity
 	 * @param groupingName - the grouping name
@@ -502,55 +503,56 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 
 	/**
 	 * Update an existing relation/concept
-	 * 
+	 *
 	 * @param concept - the concept to update
 	 * @param grouping - grouping entity
-	 * @param groupingName - the grouping name	
+	 * @param groupingName - the grouping name
 	 * @param operation
-	 * @return the name of the superconcept-tag  
+	 * @return the name of the superconcept-tag
 	 * @author sts
 	 */
 	public String updateConcept(Tag concept, GroupingEntity grouping, String groupingName, final ConceptUpdateOperation operation);
 
 	/**
 	 * Delete an existing concept
-	 * 
+	 *
 	 * @param concept - the concept to delete
 	 * @param grouping - grouping entity
-	 * @param groupingName - the grouping name	 
-     * @author sts
+	 * @param groupingName - the grouping name
+	 * @author sts
 	 */
 	public void deleteConcept(String concept, GroupingEntity grouping, String groupingName);
 
 	/**
 	 * Delete an existing relation
-	 * 
+	 *
 	 * @param upper - the concept to delete
 	 * @param lower - the subtag of the conceptname
 	 * @param grouping - grouping entity
-	 * @param groupingName - the grouping name	 
-     * @author sts
+	 * @param groupingName - the grouping name
+	 * @author sts
 	 */
 	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName);
 
 	/**
 	 * TODO: can we merge this with the {@link #getUsers(Class, GroupingEntity, String, List, String, Order, UserRelation, String, int, int)}
 	 * method?
-	 * 
+	 *
 	 * Returns all users that are classified to the specified state by
-	 * the given classifier 
-	 * 
+	 * the given classifier
+	 *
 	 * @param classifier something that classfied the user
 	 * @param status the state to which the user was classified
 	 * @return list of classified users
-	 * @param limit 
+	 * @param limit
 	 * @author sts
 	 */
+	@Deprecated // use getUsers
 	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, int limit);
-	
+
 	/**
 	 * Returns the value of the specified classifier setting
-	 * 
+	 *
 	 * @param key The key for which to retrieve the value for
 	 * @return The setting value
 	 */
@@ -558,16 +560,16 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 
 	/**
 	 * Updates the specified classifier setting
-	 * 
+	 *
 	 * @param key the setting to update
 	 * @param value the new setting value
 	 */
-	public void updateClassifierSettings(ClassifierSettings key, final String value);	
+	public void updateClassifierSettings(ClassifierSettings key, final String value);
 
 	/**
-	 * Returns the history of classifier predictions 
-	 * 
-	 * @param userName the user  
+	 * Returns the history of classifier predictions
+	 *
+	 * @param userName the user
 	 * @return prediction history
 	 */
 	public List<User> getClassifierHistory(String userName);
@@ -575,44 +577,44 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	/**
 	 * Retrieves a comparison of classification results
 	 * of admins and the automatic classifier
-	 * 
-	 * @param interval 
+	 *
+	 * @param interval
 	 * @param limit - the number of users to return
-	 * @return Userlist with spammer flag of admin and prediction of classifier 
+	 * @return Userlist with spammer flag of admin and prediction of classifier
 	 */
 	public List<User> getClassifierComparison(int interval, int limit);
-	
+
 	/**
 	 * TODO: replace with a more generic method {@link #getUsernameByLdapUserId(String)}
-	 * 
+	 *
 	 * Returns a username corresponding to a given openid
-	 * 
+	 *
 	 * @param openID
 	 * @return username
 	 */
 	public String getOpenIDUser(final String openID);
-	
+
 	/**
 	 * TODO: replace with a more generic method {@link #getOpenIDUser(String)}
-	 * 
+	 *
 	 * Retrieves bibsonomy username for given ldap user id
-	 * 
-	 * @param userId User ID 
+	 *
+	 * @param userId User ID
 	 * @return username
 	 */
 	public String getUsernameByLdapUserId(String userId);
-	
+
 	/**
 	 * Retrieves bibsonomy username for given RemoteUserId
 	 * @param remoteUserId
 	 * @return username
 	 */
 	public String getUsernameByRemoteUserId(RemoteUserId remoteUserId);
-	
+
 	/**
 	 * Create an extended field for a publication
-	 * 
-	 * @param resourceType - the type of resource for which the extended field shall be created 
+	 *
+	 * @param resourceType - the type of resource for which the extended field shall be created
 	 * @param userName
 	 * @param intraHash
 	 * @param key
@@ -622,7 +624,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 
 	/**
 	 * Delete an extended field for a publication
-	 * 
+	 *
 	 * @param resourceType - the type of resource for which the extended field shall be created
 	 * @param userName
 	 * @param intraHash
@@ -630,10 +632,10 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param value
 	 */
 	public void deleteExtendedField(Class<? extends Resource> resourceType, String userName, String intraHash, String key, String value);
-	
+
 	/**
 	 * Get all or just specific extended fields for a given publication
-	 * 
+	 *
 	 * @param resourceType - the type of resource for which the extended field shall be created
 	 * @param userName
 	 * @param intraHash
@@ -642,10 +644,10 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 */
 	public Map<String, List<String>> getExtendedFields(Class<? extends Resource> resourceType, String userName, String intraHash, String key);
 
-	
+
 	/**
 	 * Retrieve relations
-	 * 
+	 *
 	 * @param resourceType - the reqtested resourcetype
 	 * @param grouping - grouping entity
 	 * @param groupingName - the grouping name
@@ -655,30 +657,30 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param start - start index
 	 * @param end - end index
 	 * @return a list of concepts, i.e. tags containing their assigned subtags
-     * @author dbe
+	 * @author dbe
 	 */
 	public List<Tag> getConcepts(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end);
-	
+
 	/**
 	 * Retrieve the number of relations from a user
-	 * 
+	 *
 	 * @param resourceType
 	 * @param grouping
 	 * @param groupingName
 	 * @param tags
 	 * @param regex
 	 * @param status
-	 * @param filters TODO
+	 * @param filters
 	 * @param contraints the statistic contraint
-	 * @param startDate TODO
-	 * @param endDate TODO
+	 * @param startDate
+	 * @param endDate
 	 * @param start
 	 * @param end
 	 * @return the number of relations from a user
 	 */
 	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String regex, ConceptStatus status, Set<Filter> filters, Date startDate, Date endDate, int start, int end);
 
-	/** 
+	/**
 	 * We return all Users that are in (the) relation with the sourceUser
 	 * as targets.
 	 * @param sourceUser - leftHandSide of the relation
@@ -688,55 +690,55 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * (sourceUser, u)\in relation
 	 */
 	public List<User> getUserRelationship(String sourceUser, UserRelation relation, String tag);
-	
+
 	/**
 	 * We delete a UserRelation of the form (sourceUser, targetUser)\in relation
 	 * sourceUser should be logged in to have access to this
-	 * 
+	 *
 	 * @param sourceUser - leftHandSide of the relation
-	 * @param targetUser - rightHandSie of the relation 
+	 * @param targetUser - rightHandSie of the relation
 	 * @param relation - the type of the relation
 	 * @param tag - relations can also be tagged
-	 * 
+	 *
 	 */
 	public void deleteUserRelationship(String sourceUser, String targetUser, UserRelation relation, String tag);
-	
+
 	/**
 	 * We create a UserRelation of the form (sourceUser, targetUser)\in relation
 	 * sourceUser should be logged in for this
-	 * 
+	 *
 	 * @param sourceUser - leftHandSide of the relation
-	 * @param targetUser - rightHandSie of the relation 
+	 * @param targetUser - rightHandSie of the relation
 	 * @param relation - the type of the relation
 	 * @param tag - relations can also be tagged
 	 */
 	public void createUserRelationship(String sourceUser, String targetUser, UserRelation relation, String tag);
-	
+
 	/**
 	 * TODO: rename to createClipboardItems
-	 * Create basket items
-	 * 
-	 * @param posts - list of posts which should be added to the basket
-	 * @return size of basket
+	 * Create clipboard items
+	 *
+	 * @param posts - list of posts which should be added to the clipboard
+	 * @return size of clipboard
 	 */
-	public int createBasketItems(List<Post<? extends Resource>> posts);
-	
+	public int createClipboardItems(List<Post<? extends Resource>> posts);
+
 	/**
 	 * TODO: rename to deleteClipboardItems
-	 * Delete basket items 
-	 * 
-	 * @param posts - list of posts which should be deleted from the basket
-	 * @param clearBasket - this should be true if the whole basket should be dropped, in all other cases false. It's necessary because 
-	 * 		you have to differ if you want to delete some posts or all. This parameter is true if you call the "Remove all from Basket"-link
-	 * 		on the new basket page.
-	 * @return size of basket
+	 * Delete clipboard items
+	 *
+	 * @param posts - list of posts which should be deleted from the clipboard
+	 * @param clearClipboard - this should be true if the whole clipboard should be dropped, in all other cases false. It's necessary because
+	 * 		you have to differ if you want to delete some posts or all. This parameter is true if you call the "Remove all from Clipboard"-link
+	 * 		on the new clipboard page.
+	 * @return size of clipboard
 	 */
-	public int deleteBasketItems(List<Post<? extends Resource>> posts, boolean clearBasket);
-	
+	public int deleteClipboardItems(List<Post<? extends Resource>> posts, boolean clearClipboard);
+
 	/**
 	 * Delete Messages from the inbox by resourceHash sender and receiver
-	 * @param posts 
-	 * @param clearInbox 
+	 * @param posts
+	 * @param clearInbox
 	 * @return the new size of the inbox
 	 */
 	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);

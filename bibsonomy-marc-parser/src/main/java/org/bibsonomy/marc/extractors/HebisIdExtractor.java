@@ -1,7 +1,7 @@
 /**
  * BibSonomy-MARC-Parser - Marc Parser for BibSonomy
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,6 +30,7 @@ import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
 import org.bibsonomy.marc.ExtendedMarcWithPicaRecord;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.util.MiscFieldConflictResolutionStrategy;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
@@ -38,11 +39,12 @@ import org.bibsonomy.util.ValidationUtils;
 public class HebisIdExtractor implements AttributeExtractor{
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		String ppn = null;
 		if (src instanceof ExtendedMarcWithPicaRecord) {
-			ppn = ((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("003@", "$0", null);
-			String s = ((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("002@", "$0");
+			final ExtendedMarcWithPicaRecord extendedMarcPicaRecord = (ExtendedMarcWithPicaRecord) src;
+			ppn = extendedMarcPicaRecord.getFirstPicaFieldValue("003@", "$0", null);
+			String s = extendedMarcPicaRecord.getFirstPicaFieldValue("002@", "$0");
 			// preliminary solution for retro
 			if ((s != null) && (s.indexOf("r") == 0)) {
 				ppn = "r" + ppn;
@@ -52,14 +54,15 @@ public class HebisIdExtractor implements AttributeExtractor{
 //		if (!ValidationUtils.present(pages)) {
 //			pages = src.getFirstFieldValue("300", 'a');
 //		}
+
 		if (ValidationUtils.present(ppn)) {
-			target.parseMiscField();
+			// FIXME: ppn can't be null here (present checks for null)
 			if (ppn != null) {
 				target.addMiscField("uniqueid", "HEB" + ppn.trim());
 			} else {
 				target.addMiscField("uniqueid","HEB" + ppn);
 			}
-			target.serializeMiscFields();
+			target.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS);
 		}
 		// + 31A $h (pages) (bei pages extractor)
 	}

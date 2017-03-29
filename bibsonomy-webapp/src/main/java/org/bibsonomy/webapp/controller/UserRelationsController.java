@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -82,7 +82,7 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 		command.setPageTitle("relations :: " + groupingName);
 		
 		if ("html".equals(command.getFormat())) {
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, 20000, null);
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 20000, null);
 
 			// log if a user has reached threshold
 			if (command.getTagcloud().getTags().size() >= Parameters.TAG_THRESHOLD) {

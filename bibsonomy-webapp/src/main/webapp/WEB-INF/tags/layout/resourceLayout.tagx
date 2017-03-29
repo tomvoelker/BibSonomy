@@ -4,51 +4,54 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:publication="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
+	xmlns:goldstandardbookmark="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardbookmark"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.SimpleResourceViewCommand" required="true"/>	
+	
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
+	
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="disableSort" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
-	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
-	<jsp:directive.attribute name="beforeMainContainer" fragment="true" required="false"/>
-	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>
-	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>	
+
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
-	<jsp:directive.attribute name="contentHeading" fragment="true" required="false"/>
-	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
+
 	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showPageOptions" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>
+	
 	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
 	<jsp:directive.attribute name="customBookmarksHeaderText" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="customPublicationsHeaderText" type="java.lang.String" required="false"/>
+	
+	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>
+	
+	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
+	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
+	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>	
+	<jsp:directive.attribute name="contentHeading" fragment="true" required="false"/>
+	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
 	<jsp:directive.attribute name="discussion" fragment="true" required="false"/>
-	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="content" fragment="true" required="false" />
+	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 	
-	<!-- quick fix for discussion page -->
-	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="false" />
-	<jsp:directive.attribute name="discussionBox" type="java.lang.Boolean" required="false"/>
-	
+	<jsp:directive.attribute name="additionalSorting" fragment="true"/>
 	<!--+
 		|
 		| variables & messages
 		|
 		+-->
 	<fmt:message key="feeds.bookmark" var="bookmarkRssFeed"/>
-	<fmt:message key="feeds.publication" var="publicationRssFeed"/>
-	<fmt:message key="feeds.burst" var="burstRssFeed"/>
-	<fmt:message key="feeds.swrc" var="swrcFeed"/>
 	
 	<!--+
 		| which resource types to display (controlled via URL-param, format, user settings; see ResourceListController.getListsToInitialize)
@@ -58,198 +61,97 @@
 	<c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
 	<c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
 	<c:set var="excapedRequestPath" value="${fn:escapeXml(requPath)}" />
+	
 	<!--+
 		+ main layout
 		+-->	
-	<layout:layout loginUser="${command.context.loginUser}" 
-			pageTitle="${pageTitle}" heading="${heading}" 
-			requestedUser="${command.requestedUser}" 
-			infobox="${infobox}" 
-			sidebar="${sidebar}" 
-			newsbar="${newsbar}" 
-			requPath="${requPath}" 
-			activeTab="${activeTab}" 
+	<layout:layout loginUser="${command.context.loginUser}"
+			pageTitle="${pageTitle}" heading="${heading}"
+			requestedUser="${command.requestedUser}"
+			infobox="${infobox}"
+			sidebar="${sidebar}"
+			noSidebar="${noSidebar}"
+			newsbar="${newsbar}"
+			requPath="${requPath}"
+			activeTab="${activeTab}"
 			personalized="${command.personalized}"
-			hideFooterContainer="${hideFooterContainer}"
-			beforeMainContainer="${beforeMainContainer}"
-			minimizedContentWidth="${minimizedContentWidth}" >
+			breadcrumbs="${breadcrumbs}">
 			
 		<!--+
 			+ HTML header extension
-			+ -->		
+			+ -->
 		<jsp:attribute name="headerExt">
-			
 			<c:if test="${showPublication}">
-				<link rel="alternate" type="application/rss+xml" title="${publicationRssFeed} /${excapedRequestPath}" href="/publrss/${excapedRequestPath}" />
-				<link rel="alternate" type="application/rss+xml" title="${burstRssFeed} /${excapedRequestPath}" href="/burst/${excapedRequestPath}" />
-				<link rel="alternate" type="application/rdf+xml" title="${swrcFeed} /${excapedRequestPath}" href="/swrc/${excapedRequestPath}" />
+				<publication:feeds path="/${fn:escapeXml(requPath)}" />
 			</c:if>
 			<c:if test="${showBookmark}">
 				<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${excapedRequestPath}" href="/rss/${excapedRequestPath}" />
 			</c:if>
+			
 			<!-- UnAPI service -->
-			<link rel="unapi-server" type="application/xml" title="unAPI" href="${relativeUrlGenerator.getProjectHome()}unapi"/>
-			
-			<c:if test="${not empty param.cleanlayout}">
-				<!--+
-					| add css
-					+ -->
-				<link rel="stylesheet" type="text/css" href="/resources/css/publicationdetails.css" />
-				
-				<!--+
-					| add js
-					+ -->
-				<script type="text/javascript" src="${resdir}/javascript/publicationdetails.js"><!-- keep me --></script>
-			</c:if>
-			
+			<link rel="unapi-server" type="application/xml" title="unAPI" href="${properties['project.home']}unapi"/>
+
 			<jsp:invoke fragment="headerExt"/>
 		</jsp:attribute>
-
-			
-		<!--+
-			| header for resource lists and sidebar
-			+-->
-		<jsp:attribute name="headerContainer">
-			<c:if test="${discussionBox}">
-				<!-- Headline -->
-				<div class="header">
-					${mtl:cleanBibtex(resource.title)}
-				</div>
-			</c:if>
-			
-			<c:if test="${empty discussion}">
-				<parts:postHeader 
-					headerHideable="${false}"
-					showPageOptions="${empty showPageOptions or showPageOptions == true}"
-					publicationsWidthClass="${publicationsWidthClass}"
-					bookmarksWidthClass="${bookmarksWidthClass}"
-					customPageOptions="${customPageOptions}"
-					showBookmark="${showBookmark}"
-					showPublication="${showPublication}"
-					isClipboard="${isClipboard}"
-					disableListNavigation="${disableListNavigation}"
-					disableResourcetypeSelection="${disableResourcetypeSelection}"
-					disableSort="${disableSort}"
-					showInboxActions="${showInboxActions}"
-					customBookmarksHeaderText="${customBookmarksHeaderText}"
-					customPublicationsHeaderText="${customPublicationsHeaderText}"
-					command="${command}">
-					<!-- keep me -->
-				</parts:postHeader>	
-			</c:if>
-		</jsp:attribute>
-		
-		<!-- TODO: remove?! -->
-		<!--+
-		  	+ footer for resource lists and sidebar
-		  	+-->
-<!--		<jsp:attribute name="footerContainer">-->
-			<!-- bookmarks -->
-<!--			<div id="bookmarksfooter" class="${bookmarksWidthClass}">-->
-<!--				<div class="footer">-->
-<!--					<c:if test="${not disableListNavigation}">-->
-<!--						<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>						-->
-<!--					</c:if>-->
-<!--				</div>-->
-<!--			</div>			-->
-			<!-- publications -->
-<!--			<div id="publicationsfooter" class="${publicationsWidthClass}">-->
-<!--				<div class="footer">-->
-<!--					<c:if test="${not disableListNavigation}">-->
-<!--						<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>						-->
-<!--					</c:if>-->
-<!--				</div>-->
-<!--			</div>			-->
-<!--		</jsp:attribute>		-->
-		
 		
 		<!--+
 			+ main content (resource lists)
 			+-->
 		<jsp:attribute name="content">
-			<c:if test="${not empty content}">
-				<div id="innercontent" style="margin-left: 8px;">
-					<jsp:invoke fragment="content" />
-				</div>
-			</c:if>
-			<jsp:invoke fragment="discussion" />
-			<c:if test="${not empty discussion}">
-				<parts:postHeader 
-					headerHideable="${true}"
-					showPageOptions="${empty showPageOptions or showPageOptions == true}"
-					publicationsWidthClass="${publicationsWidthClass}"
-					bookmarksWidthClass="${bookmarksWidthClass}"
-					customPageOptions="${customPageOptions}"
-					showBookmark="${showBookmark}"
-					showPublication="${showPublication}"
-					isClipboard="${isClipboard}"
-					disableListNavigation="${disableListNavigation}"
-					disableResourcetypeSelection="${disableResourcetypeSelection}"
-					showInboxActions="${showInboxActions}"
-					customBookmarksHeaderText="${customBookmarksHeaderText}"
-					customPublicationsHeaderText="${customPublicationsHeaderText}"
-					command="${command}">
-					<!-- keep me -->
-				</parts:postHeader>
+			<jsp:invoke fragment="content" />
+			<!-- additional heading for content area -->
+			<c:if  test="${not empty contentHeading}">
+				<jsp:invoke fragment="contentHeading" />
 			</c:if>
 			
-			<div id="hideableContent">
-			<c:choose>
-				<!-- if a community post is present show the community post, not the list of posts -->
-				<c:when test="${not empty command.goldStandardPublications.list}">
-					<c:choose>
-						<c:when test="${not empty param.cleanlayout}">
-							<goldstandardpublication:detailsclean otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
-						</c:when>
-						<c:otherwise>
-							<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
-						</c:otherwise>
-					</c:choose>
-				</c:when>
-				<c:otherwise>
-				<div id="fullscreen">
-
-					<!-- additional heading for content area -->
-					<c:if  test="${not empty contentHeading}">
-						<jsp:invoke fragment="contentHeading" />
-						
-					</c:if>
-
-				</div>
-					<!-- bibtex/bookmark lists -->
+			<c:set var="all" value="${mtl:containsResourceClass(command.resourcetype, 'all')}" />
+			<c:set var="bm" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark')}" />
+			<c:set var="pub" value="${mtl:containsResourceClass(command.resourcetype, 'publication')}" />
+			
+			<export:modal />
+			
+			<!-- bibtex/bookmark lists -->
+			<div class="row">
+				<div class="${ (bm and pub) ? 'col-md-6' : ( (bm and not pub) ? 'col-md-12' : ((not bm) ? 'hide' : ''))} bookmark-list">
+					
 					<resources:bookmarks listView="${command.bookmark}" 
-							loginUserName="${command.context.loginUser.name}" 
-							disableListNavigation="${disableListNavigation}" 
-							requPath="${excapedRequestPath}" 
-							widthClassName="${bookmarksWidthClass}">
+						loginUserName="${command.context.loginUser.name}"
+						disableListNavigation="${disableListNavigation}"
+						requPath="${excapedRequestPath}" 
+						widthClassName="${bookmarksWidthClass}"
+						isClipboard="${isClipboard}"
+						showBookmark="${showBookmark}"
+						showPublication="${showPublication}"
+						additionalSorting="${additionalSorting}">
+					
 						<jsp:attribute name="addAsLastItem">
 							<c:if test="${not disableListNavigation}">
 								<div id="bookmarksfooter" class="${bookmarksWidthClass}">
-									<div class="footer">
-										<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>
-									</div>
+									<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>
 								</div>
 							</c:if>
 						</jsp:attribute>
 					</resources:bookmarks>
-					
+				</div>
+				<div class="${ (pub and bm) ? 'col-md-6' : ( (pub and not bm) ? 'col-md-12' : ((not pub) ? 'hide' : ''))} publication-list">
 					<resources:bibtexs listView="${command.bibtex}" 
 							loginUserName="${command.context.loginUser.name}" 
 							disableListNavigation="${disableListNavigation}" 
 							requPath="${excapedRequestPath}" 
-							widthClassName="${publicationsWidthClass}">
+							widthClassName="${publicationsWidthClass}"
+							isClipboard="${isClipboard}"
+							showBookmark="${showBookmark}"
+							showPublication="${showPublication}"
+							additionalSorting="${additionalSorting}">
 						<jsp:attribute name="addAsLastItem">
 							<c:if test="${not disableListNavigation}">
 								<div id="publicationsfooter" class="${publicationsWidthClass}">
-									<div class="footer">
-										<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
-									</div>
+									<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
 								</div>
 							</c:if>
 						</jsp:attribute>
 					</resources:bibtexs>
-				</c:otherwise>
-			</c:choose>
+				</div>
 			</div>
 		</jsp:attribute>
 	</layout:layout>

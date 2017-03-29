@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -32,11 +32,7 @@ package org.bibsonomy.common.exceptions;
  * @author Dominik Benz
  */
 public class UnsupportedSystemTagException extends RuntimeException {
-
-	/**
-	 * uid
-	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1334124737104117889L;
 
 	/**
 	 * Exception for unsupported types of system tags

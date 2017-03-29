@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -354,5 +354,4 @@ public class Tag implements Comparable<Tag>, Serializable {
 		// FIXME: what about upper vs. lower case?
 		return this.getName().compareTo(tag.getName());
 	}
-	
 }

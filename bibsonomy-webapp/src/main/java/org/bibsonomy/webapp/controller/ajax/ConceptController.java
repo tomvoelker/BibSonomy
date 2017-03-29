@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -57,7 +57,6 @@ import org.w3c.dom.Element;
 
 /**
  * This controller is used to pick and unpick one or all concepts of the logged in user.
- * 
  * 
  * @author Christian Kramer
  */
@@ -121,15 +120,15 @@ public class ConceptController extends AjaxController implements MinimalisticCon
 		return Views.AJAX_XML;
 	}
 	
-	/*
+	/**
 	 * This private method gets the list of picked concepts and
 	 * transform them into XML which will serialized as a string and returned.
-	 * 
-	 * @param groupingname
+	 * @param loginUserName 
+	 * @param pickedConcepts 
 	 * @return String
 	 */
-	protected String prepareResponseString(final String loginUserName, final List<Tag> pickedConcepts){
-		final StringWriter response = new StringWriter();  
+	protected static String prepareResponseString(final String loginUserName, final List<Tag> pickedConcepts){
+		final StringWriter response = new StringWriter();
 
 		try {
 			final Document doc = DocumentBuilderFactoryImpl.newInstance().newDocumentBuilder().newDocument();
@@ -163,7 +162,7 @@ public class ConceptController extends AjaxController implements MinimalisticCon
 			new XMLSerializer (response, new OutputFormat (doc)).serialize(doc);
 		
 			// return it as string
-            return response.toString();
+			return response.toString();
 			
 		} catch (ParserConfigurationException ex) {
 			log.error("Could not parse XML ", ex);
@@ -187,5 +186,5 @@ public class ConceptController extends AjaxController implements MinimalisticCon
 	@Override
 	public void setErrors(Errors errors) {
 		this.errors = errors;
-	}	
+	}
 }

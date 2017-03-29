@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -49,6 +49,7 @@ import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.opensocial.oauth.database.OAuthLogic;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -74,6 +75,9 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	protected OAuthLogic oauthLogic;
 	protected LogicInterface logic;
 	protected RequestLogic requestLogic;
+	
+	protected URLGenerator urlGenerator;
+	
 	/**
 	 * The List is used in a hack to protect certain oAuth Tokens from
 	 * deletions. Particularly, the oAuth-Tokens in PUMA are created
@@ -127,6 +131,11 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		if (loggedinUserIsSpammer && present(selectedTab) && selectedTab.intValue() == SettingsViewCommand.SYNC_IDX) {
 			command.setSelTab(Integer.valueOf(SettingsViewCommand.MY_PROFILE_IDX));
 		}
+		
+		/*
+		 * Get pending requested groups
+		 */
+		command.setPendingRequestedgroups(this.logic.getGroups(true, loginUser.getName(), 0, Integer.MAX_VALUE));
 		
 		if (!present(selectedTab) || selectedTab.intValue() < SettingsViewCommand.MY_PROFILE_IDX || selectedTab.intValue() > SettingsViewCommand.OAUTH_IDX) {
 			this.errors.reject("error.settings.tab");
@@ -234,8 +243,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 * @param command
 	 */
 	private void workOnSyncSettingsTab(final SettingsViewCommand command) {
-		final List<SyncService> userServers = this.logic.getSyncService(command.getUser().getName(), null, true);
-		final List<URI> allServers = this.logic.getSyncServices(true);
+		final List<SyncService> userServers = this.logic.getSyncServiceSettings(command.getUser().getName(), null, true);
+		final List<SyncService> allServers = this.logic.getSyncServices(true, null);
 
 		/*
 		 * Remove all servers the user already has configured.
@@ -248,7 +257,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		}
 		command.setAvailableSyncServers(allServers);
 		command.setSyncServer(userServers);
-		command.setAvailableSyncClients(this.logic.getSyncServices(false));
+		command.setAvailableSyncClients(this.logic.getSyncServices(false, null));
 	}
 
 	/**
@@ -307,16 +316,18 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		try {
 			final User loginUser = command.getContext().getLoginUser();
 			final String requestedUser = loginUser.getName();
-			final Group requestedGroup = this.logic.getGroupDetails(requestedUser);
+			final Group requestedGroup = this.logic.getGroupDetails(requestedUser, false);
 			/*
 			 * check if the group is present. If it should be a user. If its no
 			 * user the we will catch the exception and return an error message
 			 * to the user s
 			 */
 			if (present(requestedGroup)) {
-				this.handleGroupCV(requestedGroup, command);
+				command.setIsGroup(true);
+				this.handleCV(command, null, requestedGroup);
 			} else {
-				this.handleUserCV(loginUser, command);
+				command.setUser(loginUser);
+				this.handleCV(command, loginUser, null);
 			}
 		} catch (final RuntimeException e) {
 			// If the name does not fit to anything a runtime exception is
@@ -328,17 +339,20 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	}
 
 	/**
-	 * Handles the group cv page request
-	 * 
-	 * @param reqGroup
+	 * Handles the cv page request
 	 * @param command
+	 * @param reqGroup
 	 */
-	private void handleGroupCV(final Group requestedGroup, final SettingsViewCommand command) {
-		final String groupName = requestedGroup.getName();
-		command.setIsGroup(true);
-
+	private void handleCV(final SettingsViewCommand command, final User requestedUser, final Group requestedGroup) {
+		final String wikiUserName;
+		if (present(requestedGroup)) {
+			wikiUserName = requestedGroup.getName();
+		} else {
+			wikiUserName = requestedUser.getName();
+		}
+		
 		// TODO: Implement date selection on the editing page
-		final Wiki wiki = this.logic.getWiki(groupName, null);
+		final Wiki wiki = this.logic.getWiki(wikiUserName, null);
 		final String wikiText;
 
 		if (present(wiki)) {
@@ -351,36 +365,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		 * set the group to render
 		 */
 		this.wikiRenderer.setRequestedGroup(requestedGroup);
-		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
-		command.setWikiText(wikiText);
-	}
-
-	/**
-	 * Handles the user cv page request
-	 * 
-	 * @param reqUser
-	 * @param command
-	 */
-	private void handleUserCV(final User requestedUser, final SettingsViewCommand command) {
-		command.setUser(requestedUser);
-		final String userName = requestedUser.getName();
-
-		/*
-		 * convert the wiki syntax
-		 */
-		// TODO: Implement date selection on the editing page
-		final Wiki wiki = this.logic.getWiki(userName, null);
-		final String wikiText;
-
-		if (present(wiki)) {
-			wikiText = wiki.getWikiText();
-		} else {
-			wikiText = "";
-		}
-
-		/*
-		 * set the user to render
-		 */
 		this.wikiRenderer.setRequestedUser(requestedUser);
 		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
 		command.setWikiText(wikiText);
@@ -410,4 +394,10 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		this.invisibleOAuthConsumers = invisibleOAuthConsumers;
 	}
 
+	/**
+	 * @param urlGenerator the urlGenerator to set
+	 */
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
+	}
 }

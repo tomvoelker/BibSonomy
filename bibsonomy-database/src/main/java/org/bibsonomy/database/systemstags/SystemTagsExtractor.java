@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -46,6 +46,28 @@ import org.bibsonomy.model.Tag;
  */
 public class SystemTagsExtractor {
 
+	private static interface ISystemTagsExtractor {
+		/**
+		 * @param tag
+		 * @return <code>true</code> iff the tag (systemtag) should be removed
+		 */
+		public boolean removeSystemTag(final Tag tag);
+	}
+
+	private static final ISystemTagsExtractor ALL_SYSTEM_TAGS_EXTRACTOR = new ISystemTagsExtractor() {
+		@Override
+		public boolean removeSystemTag(Tag tag) {
+			return SystemTagsUtil.isSystemTag(tag.getName());
+		}
+	};
+
+	private static final ISystemTagsExtractor ALL_EXECUTABLE_SYSTEM_TAGS_EXTRACTOR = new ISystemTagsExtractor() {
+		@Override
+		public boolean removeSystemTag(Tag tag) {
+			return SystemTagsUtil.isExecutableSystemTag(tag.getName());
+		}
+	};
+
 	/**
 	 * Removes all systemTags from a given set of tags Warning: the given
 	 * Collection must support iterator.remove()
@@ -55,10 +77,18 @@ public class SystemTagsExtractor {
 	 * @return number of tags, that were removed
 	 */
 	public static int removeAllSystemTags(final Collection<Tag> tags) {
+		return extractSystemTags(tags, ALL_SYSTEM_TAGS_EXTRACTOR);
+	}
+
+	/**
+	 * @param tags
+	 * @return
+	 */
+	private static int extractSystemTags(final Collection<Tag> tags, final ISystemTagsExtractor systemTagsExtractor) {
 		int removeCounter = 0;
-		for (final Iterator<Tag> iter= tags.iterator(); iter.hasNext();) {
+		for (final Iterator<Tag> iter = tags.iterator(); iter.hasNext();) {
 			final Tag tag = iter.next();
-			if (SystemTagsUtil.isSystemTag(tag.getName())) {
+			if (systemTagsExtractor.removeSystemTag(tag)) {
 				iter.remove();
 				removeCounter++;
 			}
@@ -67,10 +97,19 @@ public class SystemTagsExtractor {
 	}
 
 	/**
+	 * @param tags
+	 * @return number of tags, that were removed
+	 */
+	public static int removeAllExecutableSystemTags(final Collection<Tag> tags) {
+		return extractSystemTags(tags, ALL_EXECUTABLE_SYSTEM_TAGS_EXTRACTOR);
+	}
+
+	/**
 	 * Removes all non-systemTags from a given set of tagNames Warning: the
 	 * given Collection must support iterator.remove()
 	 * 
-	 * @param tagNames the set of tagNames
+	 * @param tagNames
+	 *            the set of tagNames
 	 * @return number of tags, that were removed
 	 */
 	public static int removeAllNonSystemTags(final Collection<String> tagNames) {
@@ -85,107 +124,116 @@ public class SystemTagsExtractor {
 		return removeCounter;
 	}
 
-    /**
-     * Returns a new List containing the names of all systemTags of a given Collection of tagNames
-     * 
-     * @param tagNames collection of tags
-     * @return a new list with all system tags which are contained in input tags
-     */
-    public static List<String> extractSystemTags(final Collection<String> tagNames) {
-	final List<String> sysTags = new LinkedList<String>();
-	for( final String tagName : tagNames ) {
-	    if (SystemTagsUtil.isSystemTag(tagName)) {
-		sysTags.add(tagName);
-	    }
+	/**
+	 * Returns a new List containing the names of all systemTags of a given
+	 * Collection of tagNames
+	 * 
+	 * @param tagNames
+	 *            collection of tags
+	 * @return a new list with all system tags which are contained in input tags
+	 */
+	public static List<String> extractSystemTags(final Collection<String> tagNames) {
+		final List<String> sysTags = new LinkedList<String>();
+		for (final String tagName : tagNames) {
+			if (SystemTagsUtil.isSystemTag(tagName)) {
+				sysTags.add(tagName);
+			}
+		}
+		return sysTags;
 	}
-	return sysTags;
-    }
 
-    /**
-     * Returns a list of all executable systemTags of a post that have not previously been executed
-     * @param alreadyExecutedTags - the list of all tags, that have been executed and therefore shall not be used again
-     * @param tags
-     * @return a list 
-     */
-    public static List<ExecutableSystemTag> extractExecutableSystemTags(final Set<Tag> tags, final Set<Tag> alreadyExecutedTags) {
-	final List<ExecutableSystemTag> sysTags = new ArrayList<ExecutableSystemTag>();
-	for (final Tag tag : tags) {
-	    final ExecutableSystemTag stt = SystemTagsUtil.createExecutableTag(tag);
-	    if (present(stt) && !alreadyExecutedTags.contains(stt)) {
-		sysTags.add(stt);
-	    }
+	/**
+	 * Returns a list of all executable systemTags of a post that have not
+	 * previously been executed
+	 * 
+	 * @param alreadyExecutedTags
+	 *            - the list of all tags, that have been executed and therefore
+	 *            shall not be used again
+	 * @param tags
+	 * @return a list
+	 */
+	public static List<ExecutableSystemTag> extractExecutableSystemTags(final Set<Tag> tags, final Set<Tag> alreadyExecutedTags) {
+		final List<ExecutableSystemTag> sysTags = new ArrayList<ExecutableSystemTag>();
+		for (final Tag tag : tags) {
+			final ExecutableSystemTag stt = SystemTagsUtil.createExecutableTag(tag);
+			if (present(stt) && !alreadyExecutedTags.contains(stt)) {
+				sysTags.add(stt);
+			}
+		}
+		return sysTags;
 	}
-	return sysTags;
-    }
 
-    /**
-     * Parses a given string for system tags
-     * @param search = a string to be searched for system tags
-     * @param delim = the delimiter by which the string is to be tokenized
-     * @return a list of Strings that were recognized as SearchSystemTags
-     */
-    public static List<String> extractSearchSystemTagsFromString(final String search, final String delim) {
-	final List<String> sysTags = new ArrayList<String>();
-	if (search == null) {
-	    return sysTags;
+	/**
+	 * Parses a given string for system tags
+	 * 
+	 * @param search
+	 *            = a string to be searched for system tags
+	 * @param delim
+	 *            = the delimiter by which the string is to be tokenized
+	 * @return a list of Strings that were recognized as SearchSystemTags
+	 */
+	public static List<String> extractSearchSystemTagsFromString(final String search, final String delim) {
+		final List<String> sysTags = new ArrayList<String>();
+		if (search == null) {
+			return sysTags;
+		}
+		for (String s : search.split(delim)) {
+			s = s.trim();
+			if (SystemTagsUtil.isSearchSystemTag(s)) {
+				sysTags.add(s);
+			}
+		}
+		return sysTags;
 	}
-	for (String s : search.split(delim)) {
-	    s = s.trim();
-	    if (SystemTagsUtil.isSearchSystemTag(s)) {
-		sysTags.add(s);
-	    }
-	}
-	return sysTags;
-    }
 
+	/**
+	 * Go through a collection of tags and removes all hidden System Tags
+	 * 
+	 * @param tags
+	 * @param loginUserName
+	 */
+	public static void removeHiddenSystemTags(Collection<Tag> tags) {
+		for (final Iterator<Tag> iter = tags.iterator(); iter.hasNext();) {
+			Tag tag = iter.next();
+			SystemTag sysTag = SystemTagsUtil.createSystemTag(tag);
+			if (present(sysTag) && sysTag.isToHide()) {
+				// We have found a system tag that should be hidden
+				iter.remove();
+			}
+		}
+	}
 
-     /**
-     * Go through a collection of tags and removes all hidden System Tags
-     * @param <T>
-     * @param posts
-     * @param loginUserName
-     */
-    public static <T extends Resource> void removeHiddenSystemTags(Collection<Tag> tags) {
-	for (final Iterator<Tag> iter = tags.iterator(); iter.hasNext();) {
-	    Tag tag = iter.next();
-	    SystemTag sysTag = SystemTagsUtil.createSystemTag(tag);
-	    if (present(sysTag) && sysTag.isToHide()) {
-		// We have found a system tag that should be hidden
-		iter.remove();
-	    }
+	private static <T extends Resource> void separateHiddenSystemTags(Post<T> post) {
+		for (final Iterator<Tag> iter = post.getTags().iterator(); iter.hasNext();) {
+			Tag tag = iter.next();
+			SystemTag sysTag = SystemTagsUtil.createSystemTag(tag);
+			if (present(sysTag) && sysTag.isToHide()) {
+				// We have found a system tag that should be hidden
+				post.addHiddenSystemTag(tag);
+			} else {
+				post.addVisibleTag(tag);
+			}
+		}
+
 	}
-    }
-   
-    
-    private static <T extends Resource> void separateHiddenSystemTags(Post<T> post) {
-	for (final Iterator<Tag> iter = post.getTags().iterator(); iter.hasNext();) {
-	    Tag tag = iter.next();
-	    SystemTag sysTag = SystemTagsUtil.createSystemTag(tag);
-	    if (present(sysTag) && sysTag.isToHide()) {
-		// We have found a system tag that should be hidden
-		post.addHiddenSystemTag(tag);
-	    } else {
-		post.addVisibleTag(tag);
-	    }
-	}
-	
-    }
-    
-    /**
-     * Go through a list of posts and removes all hidden System Tags
-     * if the loginUser is not the posts owner
-     * @param <T>
-     * @param posts
-     * @param loginUserName
-     */
+
+	/**
+	 * Go through a list of posts and removes all hidden System Tags if the
+	 * loginUser is not the posts owner
+	 * 
+	 * @param <T>
+	 * @param posts
+	 * @param loginUserName
+	 */
 	public static <T extends Resource> void handleHiddenSystemTags(Collection<Post<T>> posts, String loginUserName) {
-		for (Post<T> post: posts) {
+		for (final Post<T> post : posts) {
 			handleHiddenSystemTags(post, loginUserName);
 		}
 	}
-	
+
 	/**
-	 * removes all hidden System Tags if the loginUser ist not he posts owner
+	 * removes all hidden System Tags if the loginUser is not the post's owner
+	 * 
 	 * @param post
 	 * @param loginUserName
 	 */
@@ -202,6 +250,7 @@ public class SystemTagsExtractor {
 
 	/**
 	 * extracts all systemtag of the specified tag type from the provided tags
+	 * 
 	 * @param tags
 	 * @param tagType
 	 * @return the system tags
@@ -214,7 +263,7 @@ public class SystemTagsExtractor {
 				systemTags.add(SystemTagFactory.getInstance().createSystemTag(tag));
 			}
 		}
-		
+
 		return systemTags;
 	}
 

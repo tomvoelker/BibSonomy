@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,11 +26,11 @@
  */
 package tags;
 
-import static org.bibsonomy.model.util.BibTexUtils.ENTRYTYPES;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -44,6 +44,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.SpamStatus;
@@ -78,11 +79,12 @@ import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.web.spring.converter.StringToEnumConverter;
-import org.bibsonomy.webapp.command.BaseCommand;
+import org.bibsonomy.webapp.util.TagViewUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
+import org.pegdown.PegDownProcessor;
 
 import com.google.caja.util.Sets;
 import com.sksamuel.diffpatch.DiffMatchPatch;
@@ -115,18 +117,7 @@ public class Functions {
 
 	private static final DateTimeFormatter MEMENTO_FORMAT = DateTimeFormat.forPattern("yyyyMMddHHmm");
 
-	/*
-	 * used by computeTagFontSize.
-	 * 
-	 * - scalingFactor: Controls difference between smallest and largest tag
-	 * (size of largest: 90 -> 200% font size; 40 -> ~170%; 20 -> ~150%; all for
-	 * offset = 10) - offset: controls size of smallest tag ( 10 -> 100%) -
-	 * default: default tag size returned in case of an error during computation
-	 */
-	private static final int TAGCLOUD_SIZE_SCALING_FACTOR = 45;
-	private static final int TAGCLOUD_SIZE_OFFSET = 10;
-	private static final int TAGCLOUD_SIZE_DEFAULT = 100;
-
+	
 	// load special characters
 	static {
 		try {
@@ -142,6 +133,7 @@ public class Functions {
 	 * @param key
 	 * @return String
 	 */
+	@Deprecated // TODO: remove
 	public static String ch(final String key) {
 		if (chars.getProperty(key) != null) {
 			return chars.getProperty(key);
@@ -183,6 +175,15 @@ public class Functions {
 		 */
 		return s.replaceAll("(?m)\n\\s*\n", "\n");
 	}
+	
+	/**
+	 * converts markdown to html
+	 * @param markdown
+	 * @return the converted markdown
+	 */
+	public static String markdownToHtml(final String markdown) {
+		return new PegDownProcessor().markdownToHtml(StringEscapeUtils.escapeHtml(markdown));
+	}
 
 	/**
 	 * Removes all "non-trivial" characters from the file name. If the file name
@@ -201,25 +202,14 @@ public class Functions {
 	}
 
 	/**
-	 * wrapper for {@link UrlUtils#safeURIDecode(String)}
-	 * 
-	 * @param uri
-	 *        a URI string
-	 * @return the decoded URI string
-	 */
-	public static String decodeURI(final String uri) {
-		return UrlUtils.safeURIDecode(uri);
-	}
-
-	/**
-	 * wrapper for {@link UrlUtils#safeURIEncode(String)}
+	 * wrapper for {@link UrlUtils#encodePathSegment(String)}
 	 * 
 	 * @param uri
 	 *        a URI string
 	 * @return the encoded URI string
 	 */
-	public static String encodeURI(final String uri) {
-		return UrlUtils.safeURIEncode(uri);
+	public static String encodePathSegment(final String uri) {
+		return UrlUtils.encodePathSegment(uri);
 	}
 
 	/**
@@ -315,37 +305,16 @@ public class Functions {
 	}
 
 	/**
-	 * Computes font size for given tag frequency and maximum tag frequency
-	 * inside tag cloud.
+	 * @see TagViewUtils#computeTagFontsize(Integer, Integer, Integer, String)
 	 * 
-	 * This is used as attribute font-size=X%. We expect 0 < tagMinFrequency <=
-	 * tagFrequency <= tagMaxFrequency. We return a value between 200 and 300 if
-	 * tagsizemode=popular, and between 100 and 200 otherwise.
-	 * 
-	 * @param tagFrequency
-	 *        - the frequency of the tag
-	 * @param tagMinFrequency
-	 *        - the minimum frequency within the tag cloud
-	 * @param tagMaxFrequency
-	 *        - the maximum frequency within the tag cloud
-	 * @param tagSizeMode
-	 *        - which kind of tag cloud is to be done (the one for the
-	 *        popular tags page vs. standard)
+	 * @param tagFrequency 
+	 * @param tagMinFrequency 
+	 * @param tagMaxFrequency 
+	 * @param tagSizeMode 
 	 * @return font size for the tag cloud with the given parameters
 	 */
 	public static Integer computeTagFontsize(final Integer tagFrequency, final Integer tagMinFrequency, final Integer tagMaxFrequency, final String tagSizeMode) {
-		try {
-			Double size = ((tagFrequency.doubleValue() - tagMinFrequency) / (tagMaxFrequency - tagMinFrequency)) * TAGCLOUD_SIZE_SCALING_FACTOR;
-			if ("popular".equals(tagSizeMode)) {
-				size *= 10;
-			}
-			size += TAGCLOUD_SIZE_OFFSET;
-			size = Math.log10(size);
-			size *= 100;
-			return size.intValue() == 0 ? TAGCLOUD_SIZE_DEFAULT : size.intValue();
-		} catch (final Exception ex) {
-			return TAGCLOUD_SIZE_DEFAULT;
-		}
+		return TagViewUtils.computeTagFontsize(tagFrequency, tagMinFrequency, tagMaxFrequency, tagSizeMode);
 	}
 
 	/**
@@ -659,7 +628,7 @@ public class Functions {
 	 * @return The list of available bibtex entry types
 	 */
 	public static String[] getBibTeXEntryTypes() {
-		return ENTRYTYPES;
+		return BibTexUtils.ENTRYTYPES;
 	}
 
 	/**
@@ -683,7 +652,7 @@ public class Functions {
 	}
 
 	/**
-	 * returns the css Class for a given tag
+	 * @see TagViewUtils#getTagSize(Integer, Integer)
 	 * 
 	 * @param tagCount
 	 *        the count aof the current Tag
@@ -692,26 +661,7 @@ public class Functions {
 	 * @return the css class for the tag
 	 */
 	public static String getTagSize(final Integer tagCount, final Integer maxTagCount) {
-		/*
-		 * catch incorrect values
-		 */
-		if ((tagCount == 0) || (maxTagCount == 0)) {
-			return "tagtiny";
-		}
-
-		final int percentage = ((tagCount * 100) / maxTagCount);
-
-		if (percentage < 25) {
-			return "tagtiny";
-		} else if ((percentage >= 25) && (percentage < 50)) {
-			return "tagnormal";
-		} else if ((percentage >= 50) && (percentage < 75)) {
-			return "taglarge";
-		} else if (percentage >= 75) {
-			return "taghuge";
-		}
-
-		return "";
+		return TagViewUtils.getTagSize(tagCount, maxTagCount);
 	}
 
 	/**
@@ -1087,36 +1037,28 @@ public class Functions {
 		return users;
 	}
 
-	/**
-	 * 
-	 * @param filename
-	 * @return all invalid characters for html attribute id replaced by '-'.
-	 */
-	public static String downloadFileId(final String filename) {
-		return filename.replaceAll("[^A-Za-z0-9]", "-");
-	}
-
-	/**
-	 * returns true, if command implements DidYouKnowMessageCommand interface
-	 * 
-	 * @param command
-	 * @return true|false
-	 */
-	/**
-	 * returns true, if command implements DidYouKnowMessageCommand interface
-	 * and has a didYouKnowMessage set
-	 * 
-	 * @param command
-	 * @return true|false
-	 */
-	@Deprecated
-	// TODO: (bootstrap) remove and use not empty check
-	public static Boolean hasDidYouKnowMessage(final BaseCommand command) {
-		return (command.getDidYouKnowMessage() != null);
-	}
-
 	public static Boolean isRegularGroup(final Group group) {
 		return GroupUtils.isValidGroup(group) && !GroupUtils.isExclusiveGroup(group);
+	}
+	
+	/**
+	 * 
+	 * @param url1
+	 * @param url2
+	 * @return <code>true</code> iff url1 and url2 has the same host
+	 */
+	public static boolean isSameHost(final String url1, final String url2) {
+		if (!present(url1) || !present(url2)) {
+			return false;
+		}
+		try {
+			final URI uri1 = new URI(url1);
+			final URI uri2 = new URI(url2);
+			return uri1.getHost().equals(uri2.getHost());
+		} catch (final URISyntaxException e) {
+			log.error("error while checking for same host", e);
+		}
+		return false;
 	}
 
 }

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-MARC-Parser - Marc Parser for BibSonomy
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -32,5 +32,5 @@ import org.bibsonomy.model.BibTex;
  * @author jensi
  */
 public interface AttributeExtractor {
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src);
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src);
 }

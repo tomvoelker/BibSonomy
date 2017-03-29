@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Synchronization - Handles user synchronization between BibSonomy authorities
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,11 +30,10 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -93,7 +92,7 @@ public abstract class AbstractSynchronizationClient {
 	 * @return syncService
 	 */
 	public SyncService getServerByURI(final LogicInterface clientLogic, final URI service) {
-		final List<SyncService> syncServers = clientLogic.getSyncService(clientLogic.getAuthenticatedUser().getName(), service, true);
+		final List<SyncService> syncServers = clientLogic.getSyncServiceSettings(clientLogic.getAuthenticatedUser().getName(), service, true);
 
 		// return the first found service (there should be at most one with the given URI! 
 		if (present(syncServers)) {
@@ -364,9 +363,8 @@ public abstract class AbstractSynchronizationClient {
 	 */
 	private static int getDuplicateCount(final DatabaseException exception) {
 		int duplicatesOnClient = 0;
-		final Set<Entry<String, List<ErrorMessage>>> entrySet = exception.getErrorMessages().entrySet();
-		for (final Entry<String, List<ErrorMessage>> entry : entrySet) {
-			final List<ErrorMessage> errorMessages = entry.getValue();
+		final Collection<List<ErrorMessage>> values = exception.getErrorMessages().values();
+		for (final List<ErrorMessage> errorMessages : values) {
 			for (final ErrorMessage em: errorMessages) {
 				if (em instanceof DuplicatePostErrorMessage) {
 					duplicatesOnClient++;

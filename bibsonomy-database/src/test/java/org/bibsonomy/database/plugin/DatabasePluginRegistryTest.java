@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -43,8 +43,8 @@ public class DatabasePluginRegistryTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void testThatPluginsAreCalled() {
-		pluginRegistry.clearPlugins();
-		pluginRegistry.add(this.pluginMock);
+		pluginRegistry.removeAllPlugins();
+		pluginRegistry.addPlugin(this.pluginMock);
 		
 		assertFalse(this.pluginMock.isOnBibTexDelete());
 		assertFalse(this.pluginMock.isOnBibTexInsert());
@@ -75,11 +75,11 @@ public class DatabasePluginRegistryTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void onlyOnePluginInstancePerTypeAllowed() {
-		pluginRegistry.clearPlugins();
-		pluginRegistry.add(this.pluginMock);
+		pluginRegistry.removeAllPlugins();
+		pluginRegistry.addPlugin(this.pluginMock);
 
 		try {
-			pluginRegistry.add(this.pluginMock);
+			pluginRegistry.addPlugin(this.pluginMock);
 			fail("Should throw exception");
 		} catch (final RuntimeException ex) {
 		}

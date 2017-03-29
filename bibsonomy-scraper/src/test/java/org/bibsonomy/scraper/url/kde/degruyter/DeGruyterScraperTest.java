@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.degruyter;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,5 +45,10 @@ public class DeGruyterScraperTest {
 	@Test
 	public void urlTest1Run(){
 		UnitTestRunner.runSingleTest("url_268");
+	}
+	
+	@Test
+	public void urlTest2() {
+		assertScraperResult("http://www.degruyter.com/view/j/itit.2014.56.issue-5/itit-2014-1048/itit-2014-1048.xml", null, DeGruyterScraper.class, "degruyter/DeGruyterScraperUnitURLTest2.bib");
 	}
 }

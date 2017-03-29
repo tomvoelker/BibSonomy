@@ -10,7 +10,8 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
   	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
   	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
@@ -20,14 +21,22 @@
     		pageTitle="${pageTitle}" 
     		requPath="${requPath}" 
     		activeTab="popular"
-    		showPageOptions="${command.context.userLoggedIn}"
-    		minimizedContentWidth="${true}">
-      	
-    	<jsp:attribute name="heading">
+    		showPageOptions="${command.context.userLoggedIn}">
+
+		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.relations" formAction="/concept/tag/" formInputName="tag"/>
-    	</jsp:attribute>
-    	
-    	<!--+
+		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:popular />
+					<fmt:message var="concepts" key="navi.relations" />
+					<nav:crumb name="${concepts}" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		<!--+
 			| infobox
 			+-->
 		<jsp:attribute name="infobox">
@@ -37,6 +46,7 @@
 			        <fmt:message key="tagrelations.all.text.partOne">
 			        	<fmt:param value="${properties['project.name']}"/>
 			        </fmt:message>
+			         <p><fmt:message key="tagrelations.all.text.conceptsExplained"></fmt:message></p>
 				    <c:if test="${command.context.userLoggedIn}">
 				    <c:out value=" " />
 						<fmt:message key="tagrelations.all.text.partTwo">
@@ -70,13 +80,13 @@
 						</fmt:message>
 					<a style="font-size: ${mtl:computeTagFontsize(upperTag.usercount, minUppercount, maxUpperCount, '')*1.1}%"
 					 title="${upperTagTitle}"  
-					href="/concept/tag/${mtl:encodeURI(upperTag.name)}"><c:out value="${upperTag.name}"/></a>
+					href="/concept/tag/${mtl:encodePathSegment(upperTag.name)}"><c:out value="${upperTag.name}"/></a>
 				</td>
 				<td>&#8592;</td>
 				<td>
 					<ul class="tagcloud" style="text-align:left;">
 						<c:forEach var="relation" items="${upperTag.subTags}" >  
-							<c:set var="link" value="${mtl:encodeURI(relation.name)}" />
+							<c:set var="link" value="${mtl:encodePathSegment(relation.name)}" />
 				            <li> 
 				  	        	<!-- determine subTag title depending on its frequency -->
 				    	      	<fmt:message var="subTagUsers" key="users" /> <!-- plural -->		
@@ -85,7 +95,7 @@
 							  	</c:if>
 					          	<!-- We hand over maxUpperCount to the local variable tagMaxFrequency to ensure that 
 					          	subTags in every tagCloud have the same size if their usercount is the same.  -->
-					          	<a style="font-size:${mtl:computeTagFontsize(relation.usercount, minUpperCount, maxUpperCount, '')*1.1}%" title="${relation.usercount} ${subTagUsers}" href="${relativeUrlGenerator.getTagUrlByTagName(relation.name)}"><c:out value="${relation.name}"/></a>	  	
+					          	<a style="font-size:${mtl:computeTagFontsize(relation.usercount, minUpperCount, maxUpperCount, '')*1.1}%" title="${relation.usercount} ${subTagUsers}" href="/tag/${mtl:encodePathSegment(relation.name)}"><c:out value="${relation.name}"/></a>	  	
 					    	  	<c:out value="&#32;"/>
 							</li>
 			        	</c:forEach>

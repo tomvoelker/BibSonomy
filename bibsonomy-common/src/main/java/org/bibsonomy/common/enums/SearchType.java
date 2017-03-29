@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,16 +31,13 @@ package org.bibsonomy.common.enums;
  *
  * @author lutful
  */
+@Deprecated // TODO: discuss
 public enum SearchType {
 
 	/**
 	 * search public posts of all connected BibSonomy-based systems (including PUMA)
 	 */
 	FEDERATED, 
-	/**
-	 * search public posts based on author of all connected BibSonomy-based systems (including PUMA)
-	 */
-	FEDERATED_AUTHOR, 
 	/**
 	 * search all viewable posts on the local system
 	 */

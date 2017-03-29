@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -258,7 +258,7 @@ public final class Context {
 	 * @param parameterName
 	 * @param enumType name of enum type to be searched for the constant
 	 * @param defaultValue
-	 * @return paramter value
+	 * @return parameter value
 	 */
 	public <X extends Enum<X>> X getEnumAttribute(final String parameterName, Class<X> enumType, X defaultValue) {
 		String valueStr = RESTUtils.getStringAttribute(this.parameterMap, parameterName, null);

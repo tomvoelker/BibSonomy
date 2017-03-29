@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -64,16 +64,17 @@ public class MetapressScraper extends AbstractUrlScraper {
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
-
+	
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
 		sc.setScraper(this);
 
 		final Matcher matcherHref = patternHref.matcher(sc.getUrl().toString());
-
-		if(matcherHref.find()){
+		if (matcherHref.find()) {
 			String url = PREFIX_DOWNLOAD_URL + matcherHref.group(1) + SUFFIX_DOWNLOAD_URL;
 
 			String ris = null;
@@ -91,38 +92,40 @@ public class MetapressScraper extends AbstractUrlScraper {
 				WebUtils.getContentAsString(client, url);
 				ris = WebUtils.getContentAsString(client, url);
 				
-				if(ris!=null){
+				if (ris != null) {
 					RisToBibtexConverter converter = new RisToBibtexConverter();
-					String bibtex = converter.risToBibtex(ris);
+					String bibtex = converter.toBibtex(ris);
 
 					//replace /r with /n
 					bibtex = bibtex.replace("\r", "\n");
 
-					if(bibtex != null){
+					if (bibtex != null) {
 						sc.setBibtexResult(bibtex);
 						return true;
-					}else
-						throw new ScrapingFailureException("convert to bibtex failed");
-				}else
-					throw new ScrapingFailureException("ris download failed");
-
+					}
+					throw new ScrapingFailureException("convert to bibtex failed");
+				}
+				throw new ScrapingFailureException("ris download failed");
 			} catch (MalformedURLException ex) {
 				throw new InternalFailureException(ex);
 			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
 			}
-		}else
-			throw new PageNotSupportedException("no RIS download available");
+		}
+		throw new PageNotSupportedException("no RIS download available");
 	}
-
+	
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}

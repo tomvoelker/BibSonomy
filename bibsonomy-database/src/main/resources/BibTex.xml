@@ -60,7 +60,7 @@
 	</select>
 
 	<select id="getBibTexByTagNamesCount" resultClass="int" timeout="2" parameterClass="bibtexParam">
-		SELECT count(*)
+		SELECT COUNT(*)
 		FROM <include refid="tagFromQuery"/>
 		WHERE <include refid="tagWhereQuery"/>
 			AND t1.content_type = #contentType#
@@ -116,7 +116,7 @@
 		SELECT <include refid="allBibtexAttributesWithSimHashes"/>,t.change_date, t.tag_name, h.ctr AS count, g.group, g.group_name, <include refid="allDocumentAttributes"/>, <include refid="reviewRatingsRows" />
 		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, tas t, groupids g, bibhash h,
 			(SELECT t1.content_id
-				FROM <include refid="tagFromQuery"/>			
+				FROM <include refid="tagFromQuery"/>
 				WHERE <include refid="tagWhereQuery"/>
 					<include refid="restrictToGroups"/>
 					AND t1.content_type = #contentType#
@@ -138,7 +138,7 @@
 		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.change_date, t.tag_name, h.ctr AS count, g.group, g.group_name, tt.*, <include refid="reviewRatingsRows" />
 		FROM bibtex b  <include refid="reviewRatingsJoinPublication" />, tas t, groupids g, bibhash h,
 			(SELECT t1.content_id, <include refid="allDocumentAttributes"/>
-			FROM document d, <include refid="tagFromQuery"/>			
+			FROM document d, <include refid="tagFromQuery"/>
 				WHERE <include refid="tagWhereQuery"/>
 					<include refid="restrictToGroups"/>
 					AND t1.content_type = #contentType#
@@ -156,7 +156,7 @@
 	</select>
 
 	<select id="getBibTexByTagNamesForUserCount" resultClass="int" parameterClass="bibtexParam">
-		SELECT count(*) AS count
+		SELECT COUNT(*) AS count
 		FROM <include refid="tagFromQuery"/>
 		WHERE <include refid="tagWhereQuery"/>
 			<include refid="restrictToGroups"/>
@@ -230,27 +230,26 @@
 		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
 		      <include refid="sysTagsEntryType"/>
 		ORDER BY bb.date DESC, bb.content_id DESC
-	</select>	
+	</select>
 	
 	<select id="getBibTexByFollowedUsers" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.change_date, t.tag_name, g.group_name, g.group, h.ctr AS count,  <include refid="reviewRatingsRows" />
 		FROM (SELECT b.*                             <!-- publications from users currUser is following which currUser may see -->
-			  FROM bibtex b, followers f
-			  WHERE f.user_name = #userName#         <!-- retrieve all people wich currUser is following -->
-			        AND b.user_name = f.f_user_name  <!-- take alle rows, which are owned by followed users -->			       									
-			        AND b.group IN 					 <!--  iterate over all groups the logged-in user may see -->
+			  FROM bibtex b, friends f
+			  WHERE f.tag_name = #followerTag#
+			        AND f.user_name = #userName#     			    <!-- retrieve all people wich currUser is following -->
+			        AND b.user_name = f.f_user_name  				<!-- take alle rows, which are owned by followed users -->			       									
+			        AND b.group IN 					 				<!--  iterate over all groups the logged-in user may see -->
 			        		(<iterate property="groups" conjunction=",">$groups[]$</iterate>)
 			  ORDER BY date DESC
 			  LIMIT #limit# OFFSET #offset# ) AS b
 		JOIN bibhash h ON <include refid="bibtexSimHash"/>                         <!-- join counts -->
-		LEFT JOIN bibtex my ON b.simHash1 = my.simHash1 AND my.user_name = #userName#  <!--  exclude posts of logged-in user (1) -->
 		LEFT OUTER JOIN tas AS t ON b.content_id = t.content_id <include refid="reviewRatingsJoinPublication" />, groupids AS g     <!-- join with tas (get tags) -->
 		WHERE t.group = g.group                                                    <!-- join groupname -->
-		      AND my.user_name IS NULL											   <!--  exclude posts of logged-in user (2) -->
 		ORDER BY b.date DESC, b.content_id DESC
-	</select>	
+	</select>
 
-	<select id="getBibTexFromBasketForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+	<select id="getBibTexFromClipboardForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.change_date, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		FROM (SELECT content_id, date
 		      FROM collector
@@ -515,7 +514,7 @@
 	</select>
 	
 	<select id="getBibTexDuplicateCount" resultClass="int" parameterClass="bibtexParam">
-		SELECT count(*) FROM (<include refid ="duplicatesCount"/>) AS duplicates
+		SELECT COUNT(*) FROM (<include refid ="duplicatesCount"/>) AS duplicates
 	</select>
 
 	<select id="getBibTexForGroup" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
@@ -624,7 +623,7 @@
 	</select>
 
 	<select id="getBibTexForGroupCount" resultClass="int" parameterClass="bibtexParam" timeout="1">
-		SELECT count(*)
+		SELECT COUNT(*)
 		FROM bibtex t1, group_memberships g
 		WHERE g.group = #groupId#
 		      AND t1.user_name = g.user_name
@@ -731,16 +730,16 @@
 		FROM (
 				SELECT interHash, MAX(date) AS date
 				FROM discussion d <include refid="spammerClassifiedJoin"/>
- 				WHERE <include refid="discussionVisible"/>
-  				  AND content_type = 2 
-  				  AND (type=1 OR type=2)
-  				  AND `group` >=0
-  				  <include refid="spammerClassified"/>
-  				GROUP BY interHash
+				WHERE <include refid="discussionVisible"/>
+				  AND content_type = 2 
+				  AND (type=1 OR type=2)
+				  AND `group` >= 0
+				  <include refid="spammerClassified"/>
+				GROUP BY interHash
 				ORDER BY date DESC
 				LIMIT #limit# OFFSET #offset#
 		) as d2
- 		JOIN gold_standard b ON d2.interHash = b.simhash1 <include refid="reviewRatingsJoinPublication" />
+		JOIN gold_standard b ON d2.interHash = b.simhash1 <include refid="reviewRatingsJoinPublication" />
 		ORDER BY d2.date DESC
 	</select>
 	
@@ -751,7 +750,7 @@
 		  AND content_type = 2 
 		  AND (type=1 OR type=2)
 		  AND `group` >= 0
-  		  <include refid="spammerClassified"/>	  
+  		  <include refid="spammerClassified"/>
   	</select>
  	
 	<select id="getBibTexWithDiscussionsForGroup" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="bibtexParam">
@@ -786,7 +785,7 @@
   	</select> 
 
 	<select id="getBibTexForUserCount" resultClass="int" parameterClass="bibtexParam" timeout="1">
-		SELECT count(*)
+		SELECT COUNT(*)
 		FROM bibtex t1
 		WHERE t1.user_name = #requestedUserName#
 	      <include refid="restrictToGroups"/>
@@ -993,7 +992,7 @@
 	</select>
 	
 	<select id="getUniqueBibTexCount" resultClass="int" parameterClass="bibtexParam" timeout="0">
-		SELECT count(DISTINCT simhash1) AS ctr FROM bibtex
+		SELECT COUNT(DISTINCT simhash1) AS ctr FROM bibtex
 		<include refid="statisticRestrictions" />
 	</select>
 	

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Client - The REST-client.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -29,6 +29,7 @@ package org.bibsonomy.rest.client.queries.get;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.exceptions.UnsupportedGroupingException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.data.NoDataAccessor;
@@ -45,12 +46,13 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post<? extend
 
 	private final int start;
 	private final int end;
+	private int periodIndex = 0;
 	private Class<? extends Resource> resourceType;
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;
 
 	/**
-	 * Gets bibsonomy's posts list.
+	 * Gets popular posts list.
 	 */
 	public GetPopularPostsQuery() {
 		this(0, 19);
@@ -73,6 +75,13 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post<? extend
 	}
 
 	/**
+	 * @param periodIndex the periodIndex to set
+	 */
+	public void setPeriodIndex(int periodIndex) {
+		this.periodIndex = periodIndex;
+	}
+
+	/**
 	 * Set the grouping used for this query. If {@link GroupingEntity#ALL} is
 	 * chosen, the groupingValue isn't evaluated (-> it can be null or empty).
 	 * 
@@ -90,10 +99,12 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post<? extend
 			this.grouping = grouping;
 			return;
 		}
-		if (groupingValue == null || groupingValue.length() == 0) throw new IllegalArgumentException("no grouping value given");
-
-		this.grouping = grouping;
-		this.groupingValue = groupingValue;
+		// currently we only support ALL grouping
+		throw new UnsupportedGroupingException(grouping.toString());
+//		if (groupingValue == null || groupingValue.length() == 0) throw new IllegalArgumentException("no grouping value given");
+//
+//		this.grouping = grouping;
+//		this.groupingValue = groupingValue;
 	}
 
 	/**
@@ -113,7 +124,7 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post<? extend
 
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException {
-		final String url = this.getUrlRenderer().createHrefForPopularPosts(this.grouping, this.groupingValue, this.resourceType, this.start, this.end);
+		final String url = this.getUrlRenderer().createHrefForPopularPosts(this.grouping, this.groupingValue, this.resourceType, this.periodIndex, this.start, this.end);
 		this.downloadedDocument = performGetRequest(url);
 	}
 }

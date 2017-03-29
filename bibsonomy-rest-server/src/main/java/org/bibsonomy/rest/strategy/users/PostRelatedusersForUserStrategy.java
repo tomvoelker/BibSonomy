@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,15 +26,15 @@
  */
 package org.bibsonomy.rest.strategy.users;
 
+import static org.bibsonomy.rest.strategy.users.GetRelatedusersForUserStrategy.chooseRelation;
+import static org.bibsonomy.rest.strategy.users.GetRelatedusersForUserStrategy.chooseRelationship;
+
 import java.io.Writer;
 
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
 import org.bibsonomy.rest.strategy.Context;
-
-import static org.bibsonomy.rest.strategy.users.GetRelatedusersForUserStrategy.chooseRelationship;
-import static org.bibsonomy.rest.strategy.users.GetRelatedusersForUserStrategy.chooseRelation;
 
 /**
  * @author dbe
@@ -67,7 +67,7 @@ public class PostRelatedusersForUserStrategy extends AbstractCreateStrategy {
 
 	@Override
 	protected String create() {
-		User targetUser = parseUser();
+		User targetUser = this.getRenderer().parseUser(this.doc);
 		/*
 		 * perform DB query. Exceptions are handled within the RestServlet.
 		 */
@@ -77,10 +77,6 @@ public class PostRelatedusersForUserStrategy extends AbstractCreateStrategy {
 		 * response in case of success 
 		 */
 		return this.userName;
-	}
-	
-	private User parseUser() {
-		return this.getRenderer().parseUser(this.doc);		
 	}
 
 }

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-OpenAccess - Check Open Access Policies for Publications
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -97,11 +97,10 @@ public class JELClassification extends ClassificationXMLParser {
 		final String actual = name.charAt(0) +"";
 		name = name.substring(1);
 	
-		if(object.getChildren().containsKey(actual)) {
+		if (object.getChildren().containsKey(actual)) {
 			this.requClassificate(name, description, object.getChildren().get(actual));
-		
 		} else {
-			if(name.isEmpty()) {
+			if (name.isEmpty()) {
 				final ClassificationObject co = new ClassificationObject(actual, description);
 				object.addChild(actual, co);
 				
@@ -118,7 +117,7 @@ public class JELClassification extends ClassificationXMLParser {
 		final String actual = name.charAt(0) +"";
 		name = name.substring(1);
 	
-		if(this.classifications.containsKey(actual)) {
+		if (this.classifications.containsKey(actual)) {
 			this.requClassificate(name, description, this.classifications.get(actual));
 		} else {
 			final ClassificationObject co = new ClassificationObject(actual, description);

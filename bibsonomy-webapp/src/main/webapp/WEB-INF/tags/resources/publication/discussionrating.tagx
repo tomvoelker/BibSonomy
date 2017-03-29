@@ -3,35 +3,17 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
 	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
-    <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
-	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
-	<c:set var="href" value="${otherPostsUrlPrefix}${post.resource.interHash}#discussionbox"/>
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
+	<c:set var="href" value="${otherPostsUrlPrefix}${post.resource.interHash}#discussionbox" />
 	
-	<h4>
-		<span style="display:block; float:left"><fmt:message key="publications.discussion.headline"/>&amp;nbsp;&amp;nbsp;</span>
-		<div style="float:left;" class="rating">
-			<c:if test="${not empty post.resource.rating}">
-				<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource['class'].simpleName)}" />
-				
-				<!--+
-					|TODO: Once we know for each post whether a goldstandard exists,
-					| we can use that information for the decision between long or short link
-					+-->
-				
-				<c:set var="href" value="${otherPostsUrlPrefix}${post.resource.interHash}#discussionbox"/>
-				<c:if test="${post.resource.numberOfRatings eq 0}">
-					<c:set var="href" value="${otherPostsUrlPrefix}${post.resource.interHash}?postOwner=${post.user.name}&amp;amp;intraHash=${post.resource.intraHash}#discussionbox"/>
-				</c:if>
-				<a href="${href}" title="${title}"> 
-					<review:reviewStars rating="${post.resource.rating}" dimension="0.75" /> 
-				</a>
-				<span class="reviewInfo">(<c:out value="${post.resource.numberOfRatings}" />)</span>
-			</c:if>
-		</div>
-		<div class="clearfix"><!-- keep me --></div>
+	<h4 class="pub-details"><span class="pull-left"><spann class="fa fa-comments"><!-- --></spann><c:out value=" " /><fmt:message key="publications.discussion.headline"/>&amp;nbsp;&amp;nbsp;</span>
+		<discussion:rating post="${post}" />
 	</h4>
 	<div id="discussion" style="margin-top: 0.5em;">
 	
@@ -64,10 +46,10 @@
 							<c:forEach var="discussionUser" items="${discussionUsers}">
 								<c:choose>
 									<c:when test="${(empty discussionUser) or ('' eq discussionUser)}">
-										<fmt:param><fmt:message key="post.resource.discussionItem.anonymous"/></fmt:param>					
+										<fmt:param><fmt:message key="post.resource.discussionItem.anonymous"/></fmt:param>
 									</c:when>
 									<c:otherwise>
-										<fmt:param><a href="${relativeUrlGenerator.getUserUrlByUserName(discussionUser)}">@${mtl:encodeURI(discussionUser)}</a></fmt:param>
+										<fmt:param><user:username username="${discussionUser}" /></fmt:param>
 									</c:otherwise>
 								</c:choose>
 							</c:forEach>
@@ -80,10 +62,10 @@
 								<c:if test="${count lt 3}">
 									<c:choose>
 										<c:when test="${(empty discussionUser) or ('' eq discussionUser)}">
-											<fmt:param><fmt:message key="post.resource.discussionItem.anonymous"/></fmt:param>					
+											<fmt:param><fmt:message key="post.resource.discussionItem.anonymous"/></fmt:param>
 										</c:when>
 										<c:otherwise>
-											<fmt:param><a href="${relativeUrlGenerator.getUserUrlByUserName(discussionUser)}">@${mtl:encodeURI(discussionUser)}</a></fmt:param>
+											<fmt:param><user:username username="${discussionUser}" /></fmt:param>
 										</c:otherwise>
 									</c:choose>
 								</c:if>
@@ -95,7 +77,7 @@
 					</c:otherwise>
 				</c:choose>
 				&amp;nbsp;<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource['class'].simpleName)}" />
-				<a href="${href}" title="${title}"><!-- href -->
+				<a href="${href}" title="${title}">
 					<fmt:message key="post.resource.discussion.discussionUser.join" />
 				</a>
 			</c:otherwise>

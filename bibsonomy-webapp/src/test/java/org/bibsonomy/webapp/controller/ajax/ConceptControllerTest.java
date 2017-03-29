@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -44,9 +44,7 @@ public class ConceptControllerTest {
 	 */
 	@Test
 	public void testPrepareResponseString() {
-		final ConceptController control = new ConceptController();
-
-		final List<Tag> pickedConcepts = new LinkedList<Tag>();
+		final List<Tag> pickedConcepts = new LinkedList<>();
 
 		final Tag conf = new Tag("conference");
 		conf.addSubTag(new Tag("iccs"));
@@ -63,7 +61,7 @@ public class ConceptControllerTest {
 		pickedConcepts.add(loc);
 
 
-		final String response = control.prepareResponseString("jaeschke", pickedConcepts);
+		final String response = ConceptController.prepareResponseString("jaeschke", pickedConcepts);
 
 		assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 				"<relations user=\"jaeschke\"><relation><upper>conference</upper><lowers id=\"conference\">" +

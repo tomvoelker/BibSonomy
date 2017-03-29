@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Web-Common - Common things for web
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -55,6 +55,7 @@ import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
+import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -69,10 +70,10 @@ public class WebUtils {
 	private static final int MAX_REDIRECT_COUNT = 10;
 	
 	/** the connection timeout */
-	private static final int CONNECTION_TIMEOUT = 30 * 1000;
+	private static final int CONNECTION_TIMEOUT = 5 * 1000;
 	
 	/** the read timeout */
-	private static final int READ_TIMEOUT = 30 * 1000;
+	private static final int READ_TIMEOUT = 5 * 1000;
 
 	/** The user agent used for all requests with {@link HttpURLConnection}. */
 	private static final String USER_AGENT_PROPERTY_VALUE = "BibSonomy/2.0.32 (Linux x86_64; en) Gecko/20120714 Iceweasel/3.5.16 (like Firefox/3.5.16)";
@@ -98,7 +99,13 @@ public class WebUtils {
 	 * according to http://hc.apache.org/httpclient-3.x/threading.html
 	 * HttpClient is thread safe and we can use one instance for several requests.
 	 */
-	private static final MultiThreadedHttpConnectionManager connectionManager =	new MultiThreadedHttpConnectionManager();
+	private static final MultiThreadedHttpConnectionManager CONNECTION_MANAGER = new MultiThreadedHttpConnectionManager();
+	static {
+		final HttpConnectionManagerParams params = new HttpConnectionManagerParams();
+		params.setConnectionTimeout(CONNECTION_TIMEOUT);
+		params.setSoTimeout(READ_TIMEOUT);
+		CONNECTION_MANAGER.setParams(params);
+	}
 	private static final HttpClient CLIENT = getHttpClient();
 
 	
@@ -108,15 +115,17 @@ public class WebUtils {
 	 * call to this method should be documented with an explanation why it is 
 	 * necessary.
 	 * 
-	 * @return
+	 * @return the configured {@link HttpClient}
 	 */
 	public static HttpClient getHttpClient() {
-		final HttpClient client = new HttpClient(connectionManager);
+		final HttpClient client = new HttpClient(CONNECTION_MANAGER);
 		final HttpClientParams params = client.getParams();
 		/*
 		 * configure client
 		 */
 		params.setParameter(HttpMethodParams.USER_AGENT, USER_AGENT_PROPERTY_VALUE);
+		params.setParameter(HttpClientParams.SO_TIMEOUT, Integer.valueOf(READ_TIMEOUT));
+		params.setConnectionManagerTimeout(READ_TIMEOUT);
 		params.setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 		params.setBooleanParameter(HttpMethodParams.SINGLE_COOKIE_HEADER, true);
 		params.setIntParameter(HttpClientParams.MAX_REDIRECTS, MAX_REDIRECT_COUNT);
@@ -312,8 +321,7 @@ public class WebUtils {
 	public static String getContentAsString(final URL inputURL) throws IOException {
 		return getContentAsString(inputURL, null);
 	}
-	
-	
+
 	/**
 	 * Reads from a URL and writes the content into a string.
 	 * 
@@ -533,7 +541,6 @@ public class WebUtils {
 	 * Returns the cookies returned by the server on accessing the URL. 
 	 * The format of the returned cookies is as
 	 * 
-	 * 
 	 * @param url
 	 * @return The cookies as string, build by {@link #buildCookieString(List)}.
 	 * @throws IOException
@@ -553,11 +560,27 @@ public class WebUtils {
 	}
 	
 	/**
+	 * 
+	 * @param url
+	 * @return the cookies
+	 * @throws IOException
+	 */
+	public static String getLongCookies(final URL url) throws IOException {
+		final List<String> cookies = new ArrayList<String>();
+		final GetMethod getMethod = new GetMethod(url.toString());
+		CLIENT.executeMethod(getMethod);
+		final Header[] responseHeaders = getMethod.getResponseHeaders("Set-Cookie");
+		for (int i = 0; i < responseHeaders.length; i++) {
+			cookies.add(responseHeaders[i].getValue().toString());
+		}
+		return buildCookieString(cookies);
+	}
+	/**
 	 * @param url the url
 	 * @return the proper configured http connection for the url
 	 * @throws IOException
 	 */
-	protected static HttpURLConnection createConnnection(URL url) throws IOException {
+	public static HttpURLConnection createConnnection(URL url) throws IOException {
 		final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
 		
 		// set the timeouts
@@ -637,6 +660,13 @@ public class WebUtils {
 					 * utf-8; qs=1
 					 */
 					charSet = charSet.substring(0, charsetEnding);
+				}
+				/*
+				 * reomove the "" from the charSet if it is contained
+				 */
+				
+				if (charSet.startsWith("\"")) {
+					charSet = charSet.replaceAll("\"", "");
 				}
 				return charSet.trim().toUpperCase();
 			} 

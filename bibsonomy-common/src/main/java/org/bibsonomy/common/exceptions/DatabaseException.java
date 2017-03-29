@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -48,14 +48,22 @@ public class DatabaseException extends RuntimeException {
 	 * initiate map
 	 */
 	public DatabaseException() {
-		this.errorMessages = new HashMap<String, List<ErrorMessage>>();
+		this.errorMessages = new HashMap<>();
+	}
+	
+	/**
+	 * @param message
+	 */
+	public DatabaseException(String message) {
+		super(message);
+		this.errorMessages = new HashMap<>();
 	}
 	
 	/**
 	 * @param errorMessages
 	 */
 	public DatabaseException(final Map<String, List<ErrorMessage>> errorMessages) {
-		this.errorMessages = new HashMap<String, List<ErrorMessage>>(errorMessages);
+		this.errorMessages = new HashMap<>(errorMessages);
 	}
 	
 	/**
@@ -115,8 +123,8 @@ public class DatabaseException extends RuntimeException {
 	 * @param de
 	 */
 	public void addErrors(DatabaseException de) {
-		for (String hash: de.getErrorMessages().keySet()) {
-			for (ErrorMessage errorMessage: de.getErrorMessages(hash))  {
+		for (final String hash : de.getErrorMessages().keySet()) {
+			for (final ErrorMessage errorMessage : de.getErrorMessages(hash))  {
 				this.addToErrorMessages(hash, errorMessage);
 			}
 		}

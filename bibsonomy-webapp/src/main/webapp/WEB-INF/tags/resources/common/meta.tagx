@@ -11,15 +11,7 @@
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="showUserSaves" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showTagsLabel" type="java.lang.Boolean" required="false"/>
-		
-	<c:choose>
-		<c:when test="${not empty post.systemUrl }">
-			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
-		</c:when>
-		<c:otherwise>
-			<c:set var ="isRemotePost" value="false"/>
-		</c:otherwise>
-	</c:choose>
+
 	<!-- META DATA (posting date, owner, groups, tags, number of other posts) -->
 	<!--+ 
 	 	| FIXME: user name, tags, etc. for community posts not given -
@@ -30,27 +22,31 @@
 
 		<!-- DATE, OWNER, GROUPS, USERSAVES -->
 		<c:if test="${not empty post.user.name}">
-			<div class="ptime"><rc:metaDate post="${post}"/></div>
-			<div class="puser"><rc:metaUsername post="${post}" /></div>
- 			<div class="pgroup"><rc:metaGroups post="${post}" loginUserName="${loginUserName}" /></div>
+			<div class="ptime pull-left"><rc:metaDate post="${post}"/></div>
+			<div class="puser pull-left">&amp;nbsp;<rc:metaUsername post="${post}" /></div>
+ 			<div class="pgroup pull-left">&amp;nbsp;<rc:metaGroups post="${post}" loginUserName="${loginUserName}" /></div>
 			<c:if test="${showUserSaves}">
-				<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
+				<rc:otherpeople post="${post}" />
 			</c:if>
-		</c:if> 		
+			<br class="clearfix" />
+		</c:if>
 
  		<!-- TAGS -->
 		<div class="ptags"> 
 			<rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/>
+			<!-- NOT STILL EDITING TAGS IN POST LISTS -->
+			<!-- 
 			<c:choose>
-				<c:when test="${not empty loginUserName and loginUserName eq post.user.name and not isRemotePost}">
+				<c:when test="${not empty loginUserName and loginUserName eq post.user.name}">
 					<fmt:message key="post.actions.edit.tags.title" var="editTags"/>
- 					<span class="editTags" href="" title="${editTags}"><!-- Keep Me --> </span>
+ 					<span class="editTags" href="" title="${editTags}"> </span>
 				</c:when>
 				<c:otherwise>
 					<fmt:message key="post.actions.edit.tags.inactive" var="editTags"/>
- 					<span class="ieditTags" href="" title="${editTags}"><!-- Keep Me --> </span>
+ 					<span class="ieditTags" href="" title="${editTags}"> </span>
 				</c:otherwise>
 			</c:choose>
+			 -->
 		</div>
 
 </jsp:root>

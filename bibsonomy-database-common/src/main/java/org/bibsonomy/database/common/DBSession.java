@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database-Common - Helper classes for database interaction
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -49,7 +49,7 @@ public interface DBSession {
 	public void beginTransaction();
 
 	/**
-	 * Marks the current transaction as having been sucessfully completed.
+	 * Marks the current transaction as having been successfully completed.
 	 * However, the real commit may not be called before endTransaction has been
 	 * called.
 	 */
@@ -87,6 +87,12 @@ public interface DBSession {
 	 * @param errorMessage
 	 */
 	public void addError(String key, ErrorMessage errorMessage);
+
+	/**
+	 * @param key
+	 * @return <code>true</code> iff the session has one or more errors for the provided key
+	 */
+	public boolean hasErrorsForKey(final String key);
 
 	/**
 	 * 

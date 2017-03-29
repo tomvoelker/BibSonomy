@@ -7,7 +7,6 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
@@ -28,7 +27,7 @@
 				<h2>
 					<fmt:message key="reporting.group.headline"/>&amp;nbsp;<c:out value="${command.requestedGroup}"/><br />
 					<span style="color: black; font-size: 80%;"><fmt:message key="tags"/>:&amp;nbsp;<c:out value="${command.requestedTags}"/></span>
-				</h2> 
+				</h2>
 				
 	
 				<c:set var="transposeMatrix">
@@ -65,14 +64,14 @@
 
 					<c:if test="${command.transposeMatrix==1}">
 						<table class="report">
-							<tr>			
+							<tr>
 							<th>${transposeMatrix}</th>
 							<c:forEach var="columnHeader" items="${command.publicationCounts.rowHeaders}">
 								<td class="header"><c:out value="${columnHeader}"/></td>
 							</c:forEach>
 							</tr>
 						<c:forEach var="rowHeader" items="${command.publicationCounts.columnHeaders}">
-							<tr>			
+							<tr>
 								<td class="header"><fmt:message key="reporting.publication.type.${rowHeader}"/></td>
 								<c:forEach var="columnHeader" items="${command.publicationCounts.rowHeaders}">
 										<td class="value">

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Layout - Layout engine for the webapp.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -46,22 +46,20 @@ import com.sun.syndication.io.SyndFeedOutput;
  * 
  */
 public class SyndicationFeedWriterTest {
-
-	final List<Post<Bookmark>> bookmarks = ModelUtils.getBookmarks();
-
 	
 	private SyndicationFeedWriter<Bookmark> getSyndicationFeedWriterBookmark() {
 		final SyndicationFeedWriter<Bookmark> sfw = new SyndicationFeedWriter<Bookmark>();
 		sfw.setUrlGenerator(new URLGenerator("http://www.bibsonomy.org/"));
 		// allowed feed types are rss_0.91N, rss_0.93, rss_0.92, rss_1.0, rss_0.94, rss_2.0, rss_0.91U
 		// rss_0.9, atom_1.0, atom_0.3
-		sfw.setFeedType("rss_2.0");		
+		sfw.setFeedType("rss_2.0");
 		return sfw;
 	}
 	
 	
 	@Test
 	public void testCreateFeedStringListOfPostOfRESOURCE() {
+		final List<Post<Bookmark>> bookmarks = ModelUtils.getBookmarks();
 		final SyndicationFeedWriter<Bookmark> sfw = getSyndicationFeedWriterBookmark();
 		final SyndFeed feed = sfw.createFeed("BibSonomy's bookmarks for /tag/web", "/tag/web", "", bookmarks);
 				
@@ -71,11 +69,6 @@ public class SyndicationFeedWriterTest {
 		} catch (FeedException e) {
 			fail(e.getMessage());
 		}
-	}
-
-	@Test
-	public void testCreateFeedString() {
-		//fail("Not yet implemented");
 	}
 
 }

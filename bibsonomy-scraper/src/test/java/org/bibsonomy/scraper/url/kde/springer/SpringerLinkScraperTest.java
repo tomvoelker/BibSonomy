@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,88 +26,73 @@
  */
 package org.bibsonomy.scraper.url.kde.springer;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
  * Scraper URL tests #30 #41 for SpringerLinkScraper
+ * 
  * @author tst
  *
  */
 @Category(RemoteTest.class)
 public class SpringerLinkScraperTest {
-	
+
 	/**
 	 * starts URL test with id url_30
 	 */
 	@Test
-	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_30");
+	public void url1TestRun() {
+		final String url = "http://link.springer.com/article/10.1140%2Fepje%2Fi2002-10160-7";
+		final String resultFile = "SpringerLinkScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, SpringerLinkScraper.class, resultFile);
 	}
-	
+
 	/**
 	 * starts URL test with id url_41
 	 */
 	@Test
-	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_41");
+	public void url2TestRun() {
+		final String url = "http://link.springer.com/chapter/10.1007%2F3-540-34416-0_27";
+		final String resultFile = "SpringerLinkScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, SpringerLinkScraper.class, resultFile);
 	}
 
-	/**
-	 * starts URL test with id url_142
-	 */
-	@Test
-	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_142");
-	}
-
-	/**
-	 * starts URL test with id url_143
-	 */
-	@Test
-	public void url4TestRun(){
-		UnitTestRunner.runSingleTest("url_143");
-	}
-	
 	/**
 	 * starts URL test with id url_183
 	 */
 	@Test
-	public void url5TestRun(){
-		UnitTestRunner.runSingleTest("url_183");
+	public void url4TestRun() {
+		final String url = "http://link.springer.com/article/10.1007%2Fs13222-010-0004-8";
+		final String resultFile = "SpringerLinkScraperUnitURLTest5.bib";
+		assertScraperResult(url, null, SpringerLinkScraper.class, resultFile);
 	}
-	
-	/**
-	 * starts URL test with id url_187
-	 */
-	@Test
-	public void url6TestRun(){
-		UnitTestRunner.runSingleTest("url_187");
-	}
-	
+
 	/**
 	 * starts URL test with id url_235
 	 */
 	@Test
-	public void url7TestRun(){
-		UnitTestRunner.runSingleTest("url_235");
+	public void url5TestRun() {
+		final String url = "http://link.springer.com/chapter/10.1007%2F3-540-44527-7_10?LI=true";
+		final String resultFile = "SpringerLinkScraperUnitURLTest7.bib";
+		assertScraperResult(url, null, SpringerLinkScraper.class, resultFile);
 	}
-	
+
 	/**
 	 * starts URL test with id url_238
 	 */
 	@Test
-	public void url8TestRun(){
-		UnitTestRunner.runSingleTest("url_238");
+	public void url6TestRun() {
+		final String url = "http://link.springer.com/article/10.1023%2FA%3A1008346807097?LI=true#page-1";
+		final String resultFile = "SpringerLinkScraperUnitURLTest8.bib";
+		assertScraperResult(url, null, SpringerLinkScraper.class, resultFile);
 	}
 	
-	/**
-	 * starts URL test with id url_239
-	 */
 	@Test
-	public void url9TestRun(){
-		UnitTestRunner.runSingleTest("url_239");
+	public void url7Test() {
+		assertScraperResult("https://link.springer.com/chapter/10.1007/978-3-540-46332-0_1", null, SpringerLinkScraper.class, "springerlink/SpringerLinkScraperUnitURLTest7.bib");
 	}
 }

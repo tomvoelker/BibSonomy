@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -35,6 +35,7 @@ import javax.servlet.http.Cookie;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.User;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.util.spring.security.rememberMeServices.CookieBasedRememberMeServices;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -62,6 +63,9 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	 * The name of the cookie which holds the spammer cookie.
 	 */
 	private String cookieSpammer = "_lPost";
+
+	/** the name of the cookie which holds the user cookie */
+	private String userCookie = "_user";
 	
 	/**
 	 * The character, which the cookie only contains, if the user is a spammer.
@@ -160,6 +164,14 @@ public class CookieLogic implements RequestAware, ResponseAware {
 		 */
 		addCookie(this.cookieSpammer, value);
 	}
+
+	/**
+	 * adds a cookie containing the logged in user (for recommendation, …)
+	 * @param user
+	 */
+	public void addUserCookie(final User user) {
+		addCookie(this.userCookie, user.getName());
+	}
 	
 	/**
 	 * @param services the services to use
@@ -241,6 +253,13 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	 */
 	public void setCookieSpammer(final String cookieSpammer) {
 		this.cookieSpammer = cookieSpammer;
+	}
+
+	/**
+	 * @param userCookie the userCookie to set
+	 */
+	public void setUserCookie(String userCookie) {
+		this.userCookie = userCookie;
 	}
 
 	/** The age (in seconds) a cookie will stay at most in the browser. Default: One year.

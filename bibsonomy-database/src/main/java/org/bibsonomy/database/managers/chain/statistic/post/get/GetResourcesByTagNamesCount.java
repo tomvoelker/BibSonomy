@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -57,8 +57,8 @@ public class GetResourcesByTagNamesCount extends StatisticChainElement {
 	}
 
 	@Override
-	protected boolean canHandle(StatisticsParam param) {						
-		return 	(param.getGrouping() == GroupingEntity.ALL) &&
+	protected boolean canHandle(StatisticsParam param) {
+		return (param.getGrouping() == GroupingEntity.ALL) &&
 				present(param.getTagIndex()) && 
 				(param.getNumSimpleConcepts() == 0) && 
 				(param.getNumSimpleTags() > 0) && 

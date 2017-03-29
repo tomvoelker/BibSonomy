@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database-Common - Helper classes for database interaction
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,12 +31,13 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.model.util.PersonNameUtils;
 
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 
 /**
+ * @author rja
  */
 public class PersonNameTypeHandlerCallback extends AbstractTypeHandlerCallback {
 

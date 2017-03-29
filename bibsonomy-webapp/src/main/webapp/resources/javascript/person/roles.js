@@ -7,6 +7,7 @@ $(document).ready(function() {
 
 	function addRole(obj) {
 		$("#btnAddRoleSubmit").attr("data-person-id", obj.attr("data-person-id"));
+		// FIXME: seems to be not existing/used. check
 		$("#btnAddRoleSubmit").attr("data-author-index", obj.attr("data-author-index"));
 		$("#btnAddRoleSubmit").attr("data-relation-simhash1", obj.attr("data-relation-simhash1"));
 		$("#btnAddRoleSubmit").attr("data-relation-simhash2", obj.attr("data-relation-simhash2"));
@@ -24,7 +25,7 @@ $(document).ready(function() {
 	function addRoleHtml(resourcePersonRelationid, personFirstName, personLastName, personId, personUrl) {
 		var s = $("<span class='resourcePersonRelation_"+resourcePersonRelationid+"'></span");
 		var a = $("<a href='" + personUrl + "'> "+ personFirstName + " " + personLastName + " </a>");
-		var sss = $(" <span data-toggle='modal' data-target='#deleteRole' data-resourcePersonRelation-id='"+resourcePersonRelationid+"' style='color:darkred;cursor:pointer' href='#deleteRole' class='deleteRole glyphicon glyphicon-remove'>&#160;</span>");
+		var sss = $(" <span data-toggle='modal' data-target='#deleteRole' data-resourcePersonRelation-id='"+resourcePersonRelationid+"' style='color:darkred;cursor:pointer' href='#deleteRole' class='deleteRole fa fa-remove'>&#160;</span>");
 		
 		sss.on("click", function() {
 			deleteRole($(this));
@@ -67,16 +68,20 @@ $(document).ready(function() {
 			var firstName = "";
 			var lastName = nameSplit[0];
 		}
-
-		$.post("/person",
-			{ 	formAction: "addRole",
-				formFirstName: firstName,
-				formLastName: lastName,
-				formPersonId: e.attr("data-person-id"),
-				formInterHash: e.attr("data-relation-simhash1"),
-				formPersonRole: e.attr("data-person-role"),
-				formPersonIndex: e.attr("data-author-index")
-			}).done(
+		
+		var form_data = $("#addRoleForm").serializeArray();
+		form_data.push({name: "formAction", value: "addRole"});
+		form_data.push({name: "newName.firstName", value: firstName});
+		form_data.push({name: "newName.lastName", value: lastName});
+		form_data.push({name: "formPersonId", value: e.attr("data-person-id")});
+		form_data.push({name: "formInterHash", value: e.attr("data-relation-simhash1")});
+		form_data.push({name: "formPersonRole", value: e.attr("data-person-role")});
+		
+		// TODO: validate
+		form_data.push({name: "resourcePersonRelation.personIndex", value: e.attr("data-author-index")});
+		form_data.push({name: "formPersonIndex", value: e.attr("data-author-index")});
+		
+		$.post("/person", form_data).done(
 				function(data) {
 					if (data.exception) {
 						alert(getString('person.show.error.addRoleFailed'));

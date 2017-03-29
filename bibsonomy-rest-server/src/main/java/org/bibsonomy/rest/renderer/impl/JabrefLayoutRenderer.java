@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -29,11 +29,9 @@ package org.bibsonomy.rest.renderer.impl;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,8 +42,6 @@ import org.bibsonomy.layout.jabref.JabRefConfig;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.RecommendedPost;
-import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -120,16 +116,6 @@ public class JabrefLayoutRenderer implements Renderer {
 
 	@Override
 	public List<Post<? extends Resource>> parsePostList(final Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public RecommendedTag parseRecommendedTag(final Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public SortedSet<RecommendedTag> parseRecommendedTagList(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -235,16 +221,6 @@ public class JabrefLayoutRenderer implements Renderer {
 	}
 
 	@Override
-	public void serializeRecommendedTag(final Writer writer, final RecommendedTag tag) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void serializeRecommendedTags(final Writer writer, final Collection<RecommendedTag> tags) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public void serializeResourceHash(final Writer writer, final String hash) {
 		throw new UnsupportedOperationException();
 	}
@@ -308,27 +284,4 @@ public class JabrefLayoutRenderer implements Renderer {
 	public Document parseDocument(Reader reader, DataAccessor uploadFileAccessor) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
-
-	@Override
-	public void serializeRecommendedPosts(Writer writer, List<? extends RecommendedPost<? extends Resource>> posts, ViewModel viewModel) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void serializeRecommendedPost(Writer writer, RecommendedPost<? extends Resource> post, ViewModel viewModel) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<RecommendedPost<? extends Resource>> parseRecommendedItemList(Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public RecommendedPost<? extends Resource> parseRecommendedItem(Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();
-	}
-
-	
-
 }

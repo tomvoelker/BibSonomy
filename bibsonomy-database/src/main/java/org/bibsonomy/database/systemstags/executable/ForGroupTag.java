@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -55,6 +55,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.file.FileSystemFile;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.joda.time.DateTime;
@@ -139,7 +140,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 			return;
 		}
 		final LogicInterface groupDBLogic = this.getGroupDbLogic();
-		if (!present(groupDBLogic.getGroupDetails(groupName))) {
+		if (!present(groupDBLogic.getGroupDetails(groupName, false))) {
 			return;
 		}
 		
@@ -243,7 +244,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		/*
 		 *  Check if the group exists and whether it owns the post already
 		 */
-		if (!present(groupDBLogic.getGroupDetails(groupName))) {
+		if (!present(groupDBLogic.getGroupDetails(groupName, false))) {
 			/*
 			 *  We decided to ignore errors in systemTags. Thus the user
 			 *  is free use any tag. XXX: The drawback: If it is the user's
@@ -285,7 +286,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		 * remove all systemTags to avoid any side effects and contradictions 
 		 */
 		final Set<Tag> groupTags = new HashSet<Tag>(userTags);
-		SystemTagsExtractor.removeAllSystemTags(groupTags);
+		SystemTagsExtractor.removeAllExecutableSystemTags(groupTags);
 		/*
 		 * adding this tag also guarantees, that the new post will
 		 * have an empty tag set (which would be illegal)!
@@ -317,9 +318,9 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 			 */
 			for (final String hash : dbex.getErrorMessages().keySet()) {
 				for (final ErrorMessage errorMessage : dbex.getErrorMessages(hash)) {
-					errorMessage.setDefaultMessage("This error occured while executing the for: tag: "+errorMessage.getDefaultMessage());
+					errorMessage.setDefaultMessage("This error occured while executing the for: tag: " + errorMessage.getDefaultMessage());
 					errorMessage.setErrorCode("database.exception.systemTag.forGroup.copy");
-					session.addError(intraHash, errorMessage);
+					session.addError(PostUtils.getKeyForPost(userPost), errorMessage);
 					log.warn("Added SystemTagErrorMessage (for group: errors while storing group's post) for post " + intraHash);
 				}
 			}

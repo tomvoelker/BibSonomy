@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -59,7 +59,7 @@ public class PostUserStrategy extends AbstractCreateStrategy {
 	}
 
 	@Override
-	protected void render(Writer writer, String userID) {
-		this.getRenderer().serializeUserId(writer, userID);		
+	protected void render(final Writer writer, String userID) {
+		this.getRenderer().serializeUserId(writer, userID);
 	}
 }

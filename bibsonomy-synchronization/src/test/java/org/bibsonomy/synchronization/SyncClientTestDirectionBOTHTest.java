@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Synchronization - Handles user synchronization between BibSonomy authorities
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -33,6 +33,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Map;
 import java.util.Properties;
 
+import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncService;
@@ -80,7 +81,7 @@ public class SyncClientTestDirectionBOTHTest extends AbstractSynchronizationClie
 		
 		final SyncService service = createServerService(STRATEGY, userCredentials, DIRECTION);
 		
-		clientLogic.updateSyncServer(clientLogic.getAuthenticatedUser().getName(), service);
+		clientLogic.updateSyncServer(clientLogic.getAuthenticatedUser().getName(), service, SyncSettingsUpdateOperation.SETTINGS);
 		setModifiedBookmarkKeys(MODIFIED_BOOKMARK_KEYS);
 		setModifiedPublicationKeys(MODIFIED_PUBLICATION_KEYS);
 		
@@ -92,7 +93,7 @@ public class SyncClientTestDirectionBOTHTest extends AbstractSynchronizationClie
 			final SynchronizationData data = syncData.get(resourceType);
 			assertNotNull(data);
 			
-			assertEquals(RESULT_STRING, data.getInfo());		
+			assertEquals(RESULT_STRING, data.getInfo());
 			/*
 			 * compare posts on client and server
 			 */

@@ -1,237 +1,96 @@
 /**
  * for deleting and adding references
  */
-
 var FADE_DURATION = 1000;
 var GOLD_REFERENCE_URL = '/ajax/goldstandards/relation';
-var RELATION=0;
-var REFHASH;
 
 $(function() {
-	$("#gold_exports").tabs();
+	$('div.related-publications-container').each(function(index, container) {
+		if ($(container).find('ul>li').length == 0 && $(container).find('input').length == 0) {
+			$(container).hide();
+		}
+	});
 	
-	// hide reference list if no publication references it
-	if ($("li.reference").length == 1) { // 1 because template for list item is in the list :)
-		$("#gold_references").hide();
-	}
+	// init title autocomplete
+	var publicationSource = new Bloodhound({
+		datumTokenizer: function (datum) {
+			return Bloodhound.tokenizers.whitespace(datum.value);
+		},
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		remote: {
+			url: '/json/tag?tag=sys:title:%QUERY',
+			prepare: function(query, settings) {
+				var url = '/json/tag/';
+				var tokens = query.split(' ');
+				
+				for (var i = 0; i < tokens.length; i++) {
+					url += 'sys:title:' + encodeURIComponent(tokens[i]);
+					url += '%20';
+				}
+				url += '?resourcetype=goldstandardPublication';
+				settings.url = url;
+				return settings;
+			},
+			filter: function (data) {
+				return $.map(data.items, function (publication) {
+					return {
+						value: publication.label,
+						interhash: publication.interHash,
+						authors: publication.authors,
+						user: publication.user,
+						year: publication.year
+					};
+				});
+			}
+		}
+	});
+	publicationSource.initialize();
 	
-	$('.relationMenu').click(function() {
-		var relationKind = $(this).data('relation');
-		if ($('.reference_menu').length > 0 || $('.new_reference_menu').length >0 ) {
-			removeRelationMenu();
-		} else {
-			// display list if hidden
-			$("#gold_references").show();
-			$("#gold_referenceThisPublicationIsPublishedIn").show();
-			$("#gold_referencedBy").show();
-			$("#gold_referencePartOfThisPublication").show();
-			addRelationMenu($(this), relationKind);
+	var searchInput = $('.addRelation').typeahead({
+		highlight: true,
+		minLength: 1
+	}, {
+		displayKey: 'value',
+		source: publicationSource.ttAdapter(),
+		templates: {
+			suggestion: Handlebars.compile("<p>{{value}} ({{year}})<br /><span class='author text-muted'>{{#each authors}}{{first}} {{last}}{{#unless @last}}, {{/unless}}{{/each}}</span></p>"),
+		}
+	});
+	
+	searchInput.on('typeahead:selected', function(evt, typeaheadData) {
+		var relation = $(evt.target).data('relation');
+		var dataToSend = 'ckey=' + ckey + '&hash=' + getGoldInterHash() + '&references=' + typeaheadData.interhash + '&relation=' + relation;
+		
+		$.ajax({
+			url: GOLD_REFERENCE_URL,
+			data: dataToSend,
+			type: 'POST',
+			success: function(data) {
+				location.reload();
+			}
+		});
+	});
+	
+	// delete relation links
+	
+	$('.deleteRelation').click(function() {
+		var relation = $(this).data('relation');
+		var referenceHash = $(this).data('interhash');
+		if (confirm(getString('post.actions.edit.gold.references.delete.confirm'))) {
+			$.ajax({
+				url: GOLD_REFERENCE_URL + '?ckey=' + ckey + '&hash=' + getGoldInterHash() + '&references=' + referenceHash + '&relation=' + relation,
+				type: 'DELETE',
+				success: function(response) {
+							location.reload();
+						}
+			});
 		}
 	});
 });
-
-function addRelationMenu(link, relationKind) {
-	$("li.reference").each(function() {
-		// display delete link
-		var deleteLink = $('<span class="reference_menu"><a href="#">' + getString('post.actions.edit.gold.references.delete') + '</a></span>');
-		deleteLink.hide();
-		$(this).append(deleteLink);
-		deleteLink.fadeIn(FADE_DURATION);
-		
-		deleteLink.click(deleteReference);
-	});
-
-	$("li.referenceThisPublicationIsPublishedIn").each(function() {
-		// display delete link
-		var deleteLink = $('<span class="part_of_menu"><a href="#">' + getString('post.actions.edit.gold.references.delete') + '</a></span>');
-		deleteLink.hide();
-		$(this).append(deleteLink);
-		deleteLink.fadeIn(FADE_DURATION);
-		
-		deleteLink.click(deleteReference);
-	});
-	
-	// display function for searching gold standards
-	var addForm = $('<form class="reference_menu"><h3>' + getString('post.actions.edit.gold.references.addcitation')+'</h3></form>');
-	var relationInput = $('<input type="hidden" id="relation" name="relation" />').attr('value', relationKind);
-	addForm.append(relationInput);
-	
-	addForm.append($('<label>\n' + getString('post.actions.edit.gold.references.publication') + ': </label>'));	
-	var refHashInput = $('<input id= "refHash" type="text" />');
-	addForm.append(refHashInput);
-	var addRefButton =   $('<button id = "addButon" type = "button">\n'+getString('post.actions.edit.gold.references.addbutton')+'</button>');
-	addForm.append(addRefButton);
-	refHashInput.autocomplete({
-		source: function(request, response) {
-			$.ajax({
-				url: '/json/tag/' + createParameters(request.term),
-				data: {items: 10, resourcetype: 'goldStandardPublication', duplicates: 'no'},
-				dataType: 'json',
-				success: function(data) {
-					response($.map(data.items, function(item) {
-						return {
-							label: item.label + ' (' + item.year + ')',
-							value: item.interHash,
-							author: (concatArray(item.author, 40, ' ' + getString('and') + ' ')),
-							authors: item.author,
-							editors: item.editor,
-							year: item.year,
-							title: item.label
-						};
-					}));
-				}
-			});
-		},
-		minLength: 3,
-		select: function(event, ui) {
-			REFHASH = ui.item;
-			return false;
-		},
-		focus: function(event, ui) {
-			return false;
-		}
-	})
-	.data('autocomplete')._renderItem = function(ul, item) {
-		// no A <-> A reference
-		if (item.value == getGoldInterHash()) {
-			return ul;
-		}
-		// TODO: remove already 'referenced' publications
-		
-		return $('<li></li>').data('item.autocomplete', item).append($('<a></a>').html(item.label + '<br><span class="ui-autocomplete-subtext">' + item.author + '</span>')).appendTo(ul);
-	};
-	
-	addForm.hide();
-	var menu = link.closest('.newMenu');
-	
-	menu.after(addForm);
-	
-	addForm.fadeIn(FADE_DURATION);
-	$("#addButon").click(function(){
-		RELATION = $(this).parent().find('[name="relation"]').attr('value');
-		alert(RELATION);
-		addRelation(REFHASH, RELATION);
-	});
-}
-
-function removeRelationMenu() {
-	$('.reference_menu').fadeOut(FADE_DURATION, function() {
-		$(this).remove();
-	});
-	$('.new_reference_menu').fadeOut(FADE_DURATION, function() {
-		$(this).remove();
-	});
-}
-
-function deleteReference() {
-	var referenceView = $(this).parent('li');
-	var referenceHash = referenceView.data("interhash");
-	//to find the relation
-	var referenceRelation = this.className;
-	// TODO: added reference can't be removed!
-	
-	if (confirm(getString('post.actions.edit.gold.references.delete.confirm'))) {
-		$.ajax({
-			url: GOLD_REFERENCE_URL + '?ckey=' + ckey + '&hash=' + getGoldInterHash() + '&references=' + referenceHash + '&relation=' + referenceRelation,
-			type: 'DELETE',
-			success: function(response) {
-					referenceView.fadeOut(FADE_DURATION, function() {
-						referenceView.remove();
-						});
-					}
-		});
-	}
-	
-	return false;
-}
-
-function addRelation(reference, relation) {
-	var referenceHash = reference.value;
-	$.ajax({
-		url: GOLD_REFERENCE_URL,
-		data: {ckey: ckey, hash: getGoldInterHash(), references: referenceHash, relation: relation},
-		type: 'POST',
-		success: function(data) {
-			$("#refHash").removeAttr('value');
-			$("#refHash").prop('disabled', true);
-			$("#relation").prop('disabled', true);
-			$("#addButon").html('Added');
-			setTimeout(function(){
-				$("#refHash").prop('disabled', false);
-				$("#relation").prop('disabled', false);
-				$("#addButon").html(getString('post.actions.edit.gold.references.addbutton'));
-			}, 5000);
-			$("#gold_refs").html();
-			// clone the template
-			var template = $('#referenceTemplate').clone();
-			template.attr('id', ''); // remove id
-			template.attr('data-interhash', referenceHash); // set interHash in data attribute
-			
-			// authors and editors
-			var personList = template.find('.authorEditorList');
-			personList.append(getAuthorsEditors(reference.authors, reference.editors));
-			
-			// title
-			var titleLink = template.find('.publicationLink');
-			titleLink.attr('href', '/bibtex/' + referenceHash);
-			// TODO: bibtex not cleaned
-			titleLink.text(reference.title); // TODO: escape?!
-			
-			// year
-			template.find('.year').text(reference.year);
-			
-			// add template
-			$('#gold_references ol').append(template);
-			template.show();
-			
-			// delete link
-			$('span.reference_menu a').click(deleteReference);
-		}
-	});
-}
-
-function getAuthorsEditors(authors, editors) {
-	if (authors.length > 0) {
-		return getPersonList(authors);
-	}
-	// else return editors
-	return getPersonList(editors) + ' (' + getString('bibtex.editors.abbr') + ')';
-}
-
-function getPersonList(persons) {
-	var result = new Array();
-	for (var i = 0; i < persons.length; i++) {
-		if (i != 0) {
-			result.push(', ');
-		}
-		if (i == (persons.length - 1) && i != 0) { // last item but not the first one
-			result.push(getString('and'));
-			result.push(' ');
-		}
-		
-		var author = persons[i];
-		
-		// FIXME: last name is last string
-		var authorNameSplit = author.split(' ');
-		
-		for (var j = 0; j < authorNameSplit.length - 1; j++) {
-			result.push(authorNameSplit[j]);
-			result.push(' ');
-		}
-		
-		var lastName = authorNameSplit[authorNameSplit.length - 1];
-		// TODO: escape?!
-		result.push('<a href="/author/' + lastName + '">');
-		result.push(lastName);
-		result.push('</a>');
-	}
-	
-	return result.join('');
-}
 
 /** 
  * @returns the hash of the publication
  */
 function getGoldInterHash() {
-	return $('#gold_title').data('interhash');
+	return $('#goldstandard').data('interhash');
 }

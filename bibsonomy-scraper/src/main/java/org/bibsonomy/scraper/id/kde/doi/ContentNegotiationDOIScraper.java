@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -38,6 +38,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -132,16 +133,20 @@ public class ContentNegotiationDOIScraper implements Scraper {
 			 * Unfortunately, content negotiation does not always work (TODO: why?). 
 			 * Hence, we here check, if we really got BibTeX.
 			 */
-			final SimpleBibTeXParser parser = new SimpleBibTeXParser(); // not thread-safe!
-			
-			parser.parseBibTeX(content);
+			if (present(content)) {
+				final SimpleBibTeXParser parser = new SimpleBibTeXParser(); // not thread-safe!
+				final BibTex publication = parser.parseBibTeX(content);
+				if (!present(publication)) {
+					return null;
+				}
+			}
 			
 			return content;
 		} catch (final HttpException ex) {
 			throw new InternalFailureException(ex);
 		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
-		} catch (ParseException e) {
+		} catch (final ParseException e) {
 			throw new InternalFailureException("Server did not return BibTeX during content negotiation. Scraping not supported.");
 		}
 	}

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Web-Common - Common things for web
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -34,6 +34,7 @@ import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.bibsonomy.util.io.LimitedInputStream;
 import org.bibsonomy.util.io.xml.FilterInvalidXMLCharsWriter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -115,11 +116,16 @@ public class XmlUtils {
 	 *             if html file could not be parsed.
 	 */
 	public static Document getDOM(final URL inputURL, final boolean xmlTags) throws IOException {
-		final Tidy tidy = getTidy(xmlTags);
+		// use the connection to get the input encoding of the webpage
 		final HttpURLConnection connection = WebUtils.createConnnection(inputURL);
-		final String encodingName = WebUtils.extractCharset(connection.getContentType());
-		tidy.setInputEncoding(encodingName);
-		return tidy.parseDOM(connection.getInputStream(), null);
+		
+		// TODO: maybe we should check for the correct content type? Before parsing video/image data
+		final String contentType = connection.getContentType();
+		final String encodingName = WebUtils.extractCharset(contentType);
+
+		try (final LimitedInputStream stream = new LimitedInputStream(connection.getInputStream(), (1024*1024))) {
+			return getDOM(stream, encodingName, xmlTags);
+		}
 	}
 
 	/**
@@ -140,10 +146,12 @@ public class XmlUtils {
 	 * @return parsed DOM tree
 	 */
 	public static Document getDOM(final InputStream inputStream, final boolean xmlTags) {
-		final Tidy tidy = getTidy(xmlTags);
+		return getDOM(inputStream, StringUtils.CHARSET_UTF_8, xmlTags);
+	}
 
-		// we don't know the encoding now ... so we assume utf8
-		tidy.setInputEncoding(StringUtils.CHARSET_UTF_8);
+	public static Document getDOM(final InputStream inputStream, final String charset, final boolean xmlTags) {
+		final Tidy tidy = getTidy(xmlTags);
+		tidy.setInputEncoding(charset);
 
 		return tidy.parseDOM(inputStream, null);
 	}

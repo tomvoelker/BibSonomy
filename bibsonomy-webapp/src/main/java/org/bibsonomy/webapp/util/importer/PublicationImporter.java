@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -42,7 +42,6 @@ import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ConversionException;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.services.filesystem.extension.ListExtensionChecker;
-import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.ServerUploadedFile;
@@ -93,13 +92,13 @@ public class PublicationImporter {
 			final String fileName = uploadedFile.getOriginalFilename();
 			
 			// check if uploaded file is one of allowed files, otherwise it can be a endnote or bibtex file
-			if (StringUtils.matchExtension(uploadedFile.getName(), FileLogic.DOCUMENT_EXTENSIONS)) {
+			if (StringUtils.matchExtension(fileName, FileLogic.DOCUMENT_EXTENSIONS)) {
 				log.debug("the file is in pdf format");
 				file = this.fileLogic.writeTempFile(new ServerUploadedFile(uploadedFile), this.fileLogic.getDocumentExtensionChecker());
 				if (!present(command.getFileName())) {
 					command.setFileName(new ArrayList<String>());
 				}
-				command.getFileName().add(HashUtils.getMD5Hash(uploadedFile.getBytes()) + file.getName() + fileName);
+				command.getFileName().add(file.getName() + fileName);
 				keepTempFile = true;
 				return null;
 			}
@@ -157,10 +156,10 @@ public class PublicationImporter {
 	public String handleSelection(final String selection) {
 		// FIXME: at this point we must first convert to bibtex!
 		if (EndnoteToBibtexConverter.canHandle(selection)) {
-			return this.endnoteToBibtexConverter.endnoteToBibtex(selection);
+			return this.endnoteToBibtexConverter.toBibtex(selection);
 		}
 		if (RisToBibtexConverter.canHandle(selection)) {
-			return new RisToBibtexConverter().risToBibtex(selection);
+			return new RisToBibtexConverter().toBibtex(selection);
 		}
 		/*
 		 * should be BibTeX

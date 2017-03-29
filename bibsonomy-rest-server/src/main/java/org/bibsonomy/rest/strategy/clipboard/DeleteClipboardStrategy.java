@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -55,7 +55,7 @@ public class DeleteClipboardStrategy extends PostClipboardStrategy {
 
 	@Override
 	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceMovedException, ObjectNotFoundException {
-		this.getLogic().deleteBasketItems(createPost(resourceHash, userName), clearClipboard);
+		this.getLogic().deleteClipboardItems(createPost(resourceHash, userName), clearClipboard);
 		this.getRenderer().serializeOK(this.writer);
 	}
 

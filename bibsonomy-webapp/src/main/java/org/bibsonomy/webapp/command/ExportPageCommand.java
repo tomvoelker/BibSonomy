@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,10 +26,12 @@
  */
 package org.bibsonomy.webapp.command;
 
+
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.bibsonomy.layout.csl.CSLStyle;
 import org.bibsonomy.model.Layout;
 
 /**
@@ -38,12 +40,14 @@ import org.bibsonomy.model.Layout;
 public class ExportPageCommand extends ResourceViewCommand {
 
 	private Map<String, Layout> layoutMap;
+	private Map<String, CSLStyle> cslLayoutMap;
 	
 	/**
 	 * default constructor
 	 */
 	public ExportPageCommand() {
 		this.layoutMap = new TreeMap<>();
+		this.cslLayoutMap = new TreeMap<>();
 	}
 
 	/**
@@ -71,4 +75,18 @@ public class ExportPageCommand extends ResourceViewCommand {
 	public void addLayout(Layout l) {
 		this.layoutMap.put(l.getDisplayName(), l);
 	}
+
+	/**
+	 * @return the cslLayoutMap
+	 */
+	public Map<String, CSLStyle> getCslLayoutMap() {
+		return this.cslLayoutMap;
+	}
+	
+	/**
+	 * @param map
+	 */
+	public void setCslLayoutMap(final Map<String, CSLStyle> map) {
+		this.cslLayoutMap = map;
+	}	
 }

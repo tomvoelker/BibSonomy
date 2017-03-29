@@ -1,7 +1,7 @@
 /**
  * BibSonomy-MARC-Parser - Marc Parser for BibSonomy
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -53,7 +53,7 @@ public class JournalExtractor implements AttributeExtractor {
 	private ExtendedMarcWithPicaRecord record = null;
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) throws IllegalArgumentException {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) throws IllegalArgumentException {
 		if (src instanceof ExtendedMarcWithPicaRecord) {
 			record = (ExtendedMarcWithPicaRecord) src;
 			final String nullNull2At = record.getFirstPicaFieldValue("002@", "$0", "");

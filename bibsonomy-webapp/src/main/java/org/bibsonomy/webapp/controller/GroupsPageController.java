@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -50,7 +50,7 @@ public class GroupsPageController extends SingleResourceListController implement
 		/*
 		 * get all groups from db; Integer#MAX_VALUE should be enough
 		 */
-		command.setList(logic.getGroups(false, 0, Integer.MAX_VALUE));
+		command.setList(logic.getGroups(false, null, 0, Integer.MAX_VALUE));
 		
 		return Views.GROUPSPAGE;
 	}

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Layout - Layout engine for the webapp.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -51,9 +51,7 @@ import com.sun.syndication.io.SyndFeedOutput;
 /**
  * Creates Atom and RSS feeds.
  * 
- * 
  * @author:  rja
- * 
  */
 public class SyndicationFeedWriter<RESOURCE extends Resource> {
 
@@ -142,13 +140,9 @@ public class SyndicationFeedWriter<RESOURCE extends Resource> {
 			entries.add(entry);
 
 		}
-	    feed.setEntries(entries);
-
-		return feed;	     
+		feed.setEntries(entries);
+		return feed;
 	}
-	
-
-
 
 	public SyndFeed createFeed(final String title, final String path, final String description) {
 		final SyndFeed feed = new SyndFeedImpl();
@@ -179,5 +173,4 @@ public class SyndicationFeedWriter<RESOURCE extends Resource> {
 	public void setFeedType(final String feedType) {
 		this.feedType = feedType;
 	}
-
 }

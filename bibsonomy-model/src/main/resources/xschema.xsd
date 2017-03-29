@@ -107,6 +107,7 @@
 		<xsd:attribute name="algorithm" type="xsd:string" />
 		<xsd:attribute name="toClassify" type="xsd:positiveInteger" />
 		<xsd:attribute name="classifierMode" type="xsd:string" />
+		<xsd:attribute name="registrationLog" type="xsd:string" />
 
 		<!-- link to details page -->
 		<xsd:attribute name="href" type="xsd:anyURI" />
@@ -163,10 +164,8 @@
 		<xsd:attribute name="name" type="xsd:string" use="required" />
 		<xsd:attribute name="globalcount" type="positiveIntegerIncludingZero" />
 		<xsd:attribute name="usercount" type="positiveIntegerIncludingZero" />
-		<xsd:attribute name="score" type="probabilityValue" />
-		<xsd:attribute name="confidence" type="probabilityValue" />
 		<!-- link to details page -->
-		<xsd:attribute name="href" type="xsd:anyURI" />		
+		<xsd:attribute name="href" type="xsd:anyURI" />
 	</xsd:complexType>
 
 	<!--
@@ -201,8 +200,6 @@
 		<xsd:attribute name="description" type="xsd:string" />
 		<xsd:attribute name="postingdate" type="xsd:dateTime" />
 		<xsd:attribute name="changedate" type="xsd:dateTime" />
-		<xsd:attribute name="score" type="probabilityValue" />
-		<xsd:attribute name="confidence" type="probabilityValue" />
 	</xsd:complexType>
 
 	<!--
@@ -266,7 +263,7 @@
 		AbstractPublicationType extracted to be able to deserialize publication
 		in JSON format; seems that JAXB has some problems with inheritance
 		(else GoldStandardPublicationType would extend BibtexType)
-   		-->
+		-->
 	<xsd:complexType name="AbstractPublicationType">
 		<!-- extra URLs -->
 		<xsd:sequence>
@@ -317,8 +314,8 @@
 	-->
 	<xsd:complexType name="BibtexType">
 		<xsd:complexContent>
-   			<xsd:extension base="AbstractPublicationType">
-   				<!-- see comment for abstract publication type -->
+			<xsd:extension base="AbstractPublicationType">
+				<!-- see comment for abstract publication type -->
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
@@ -335,13 +332,44 @@
 	
 	<xsd:complexType name="ReferenceType">
 		<xsd:attribute name="interhash" type="xsd:string" />
+		<xsd:attribute name="href" type="xsd:anyURI" />
+	</xsd:complexType>
+	
+	<!-- 
+		these publications are part of the collection, …
+	 -->
+	<xsd:complexType name="PublicationsType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="publication" type="PublicationType" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="PublicationType">
+		<xsd:complexContent>
+			<xsd:extension base="ReferenceType">
+				<!-- nothing to extend -->
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<!-- 
+		this type connects the incollection to its collection, …
+	 -->
+	<xsd:complexType name="PublishedInType">
+		<xsd:complexContent>
+			<xsd:extension base="ReferenceType">
+				<!-- nothing to extend -->
+			</xsd:extension>
+		</xsd:complexContent>
 	</xsd:complexType>
 	
 	<xsd:complexType name="GoldStandardPublicationType">
 		<xsd:complexContent>
-   			<xsd:extension base="AbstractPublicationType">
-   				<xsd:sequence>
+			<xsd:extension base="AbstractPublicationType">
+				<xsd:sequence>
 					<xsd:element maxOccurs="1" minOccurs="1" name="references" type="ReferencesType" />
+					<xsd:element name="publishedIn" type="PublishedInType" />
+					<xsd:element maxOccurs="1" minOccurs="0" name="publications" type="PublicationsType" />
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -352,18 +380,8 @@
 	-->	
 	<xsd:simpleType name="positiveIntegerIncludingZero">
 		<xsd:restriction base="xsd:integer">
-    		<xsd:minInclusive value="0" />
-    	</xsd:restriction>
-	</xsd:simpleType>
-
-	<!--
-		helper type for statistical values
-	-->	
-	<xsd:simpleType name="probabilityValue">
-		<xsd:restriction base="xsd:double">
-    		<xsd:minInclusive value="0" />
-    		<xsd:maxInclusive value="1" />
-    	</xsd:restriction>
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
 	</xsd:simpleType>
 
 	<!--
@@ -371,9 +389,9 @@
 	-->	
 	<xsd:simpleType name="hashType">
 		<xsd:restriction base="xsd:string">
-    		<xsd:length value="32" />
-    		<xsd:pattern value="([a-z]|[0-9])*" />
-    	</xsd:restriction>
+			<xsd:length value="32" />
+			<xsd:pattern value="([a-z]|[0-9])*" />
+		</xsd:restriction>
 	</xsd:simpleType>
 
 	<!--
@@ -381,10 +399,10 @@
 	-->	
 	<xsd:simpleType name="statType">
 		<xsd:restriction base="xsd:string">
-      		<xsd:enumeration value="ok" />
-      		<xsd:enumeration value="fail" />
-    	</xsd:restriction>
-	</xsd:simpleType>	
+			<xsd:enumeration value="ok" />
+			<xsd:enumeration value="fail" />
+		</xsd:restriction>
+	</xsd:simpleType>
 
 	<!-- 
 		TODO: comment

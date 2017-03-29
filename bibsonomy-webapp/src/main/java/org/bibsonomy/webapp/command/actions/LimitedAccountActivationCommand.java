@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -27,24 +27,16 @@
 package org.bibsonomy.webapp.command.actions;
 
 import java.io.Serializable;
-import java.util.List;
 
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ValidationUtils;
-import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
+import org.bibsonomy.webapp.command.HomepageCommand;
 
 /**
  * @author nilsraabe
  */
-public class LimitedAccountActivationCommand  extends SimpleResourceViewCommand implements Serializable{
+public class LimitedAccountActivationCommand extends HomepageCommand implements Serializable{
 	private static final long serialVersionUID = -4665591098903280881L;
-
-	/**
-	 * Fills the news box in the sidebar
-	 */
-	private List<Post<Bookmark>> news;
 	
 	/**
 	 * Checkbox for activate SAML Account
@@ -57,20 +49,6 @@ public class LimitedAccountActivationCommand  extends SimpleResourceViewCommand 
 	 * Holds the details of the user which wants to register (like name, email, password)
 	 */
 	private User registerUser = new User();
-
-	/**
-	 * @return The latest news posts.
-	 */
-	public List<Post<Bookmark>> getNews() {
-		return this.news;
-	}
-
-	/**
-	 * @param news 
-	 */
-	public void setNews(List<Post<Bookmark>> news) {
-		this.news = news;
-	}
 
 	/**
 	 * @return the checkboxAccept
@@ -119,5 +97,5 @@ public class LimitedAccountActivationCommand  extends SimpleResourceViewCommand 
 	 */
 	public void setRegisterUser(User registerUser) {
 		this.registerUser = registerUser;
-	}	
+	}
 }

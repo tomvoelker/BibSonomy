@@ -1,7 +1,7 @@
 /**
  * BibSonomy-MARC-Parser - Marc Parser for BibSonomy
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -40,12 +40,12 @@ public class YearExtractorTest extends AbstractExtractorTest {
 	public void testYearExtraction() {
 		BibTex b = new BibTex();
 		YearExtractor yearExtractor = new YearExtractor();
-		yearExtractor.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("260", 'c', "1996"));
+		yearExtractor.extractAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("260", 'c', "1996"));
 		assertEquals("1996", b.getYear());
 		
 		//test with noise
 		b = new BibTex();
-		yearExtractor.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("260", 'c', "sdgv1992cc"));
+		yearExtractor.extractAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("260", 'c', "sdgv1992cc"));
 		assertEquals("1992", b.getYear());
 	}
 	

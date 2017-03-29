@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -35,7 +35,11 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.model.Document;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.ServerUploadedFile;
@@ -76,7 +80,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 	}
 
 	@Override
-	public View workOn(AjaxDocumentCommand command) {
+	public View workOn(final AjaxDocumentCommand command) {
 		log.debug("workOn started");
 		final RequestWrapperContext context = command.getContext();
 		final Locale locale = requestLogic.getLocale();
@@ -131,6 +135,24 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 	}
 
 	/**
+	 * TODO: thoni
+	 * @param user
+	 * @param document
+	 * @return
+	 */
+	private boolean canEdit(User user, Document document) {
+		final String documentOwner = document.getUserName();
+		boolean canEdit = user.getName().equals(documentOwner);
+		for (Group g: user.getGroups()) {
+			canEdit = canEdit
+					  || g.getName().equals(documentOwner) 
+					  && g.getGroupMembershipForUser(user.getName()).getGroupRole().hasRole(GroupRole.ADMINISTRATOR);
+		}
+
+		return canEdit;
+	}
+
+	/**
 	 * renames an existing file in the filesystem and database
 	 * @param command
 	 * @param locale
@@ -138,11 +160,12 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 	 */
 	private String renameFile(AjaxDocumentCommand command, Locale locale) {
 		log.debug("start renaming file");
-		final String userName  = command.getContext().getLoginUser().getName();
+		final User loginUser = command.getContext().getLoginUser();
+		final String ownerName = command.getOwnerName();
 		final String intraHash = command.getIntraHash();
 		final String fileName  = command.getFileName();
 		final String newName = command.getNewFileName();
-		final Document document = logic.getDocument(userName, intraHash, fileName);
+		final Document document = logic.getDocument(ownerName, intraHash, fileName);
 		
 		/*
 		 * unsupported file extensions
@@ -166,15 +189,14 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		 * 
 		 * check whether logged-in user is the document owner
 		 */
-		final String documentOwner = document.getUserName();
-		if (!documentOwner.equals(userName)) {
+		if (!this.canEdit(loginUser, document)) {
 			return getXmlRenameError("post.bibtex.wrongUser", null, command.getFileID(), null, locale); 
 		}
 		document.setFileName(newName);
 		/*
 		 * rename document in database
 		 */
-		logic.updateDocument(userName, intraHash, fileName, document);
+		logic.updateDocument(ownerName, intraHash, fileName, document);
 		
 		
 		final String response = messageSource.getMessage("bibtex.actions.filerenamed", new Object[] {StringEscapeUtils.escapeXml(fileName), StringEscapeUtils.escapeXml(newName)}, locale);
@@ -206,10 +228,11 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 	 */
 	private String deleteDocument(final AjaxDocumentCommand command, final Locale locale) {
 		log.debug("start deleting file");
-		final String userName  = command.getContext().getLoginUser().getName();
+		final User loginUser = command.getContext().getLoginUser();
+		final String ownerName  = command.getOwnerName();
 		final String intraHash = command.getIntraHash();
 		final String fileName  = command.getFileName();
-		final Document document = logic.getDocument(userName, intraHash, fileName);
+		final Document document = logic.getDocument(ownerName, intraHash, fileName);
 
 		if (!present(document)) {
 			return getXmlError("error.document_not_found", null, command.getFileID(), null, locale);
@@ -217,8 +240,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		/*
 		 * check whether logged-in user is the document owner
 		 */
-		final String documentOwner = document.getUserName();
-		if (!documentOwner.equals(userName)) {
+		if (!this.canEdit(loginUser, document)) {
 			return getXmlError("post.bibtex.wrongUser", null, command.getFileID(), null, locale); 
 		}
 
@@ -264,7 +286,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		// TODO: move file size check to ServerDocumentFileLogic!
 		final long size = file.getSize();
 		if (size >= this.maxFileSize) {
-			return getXmlError("error.upload.failed.size", new Object[] {maxFileSizeMB}, fileID, fileName, locale);
+			return getXmlError("error.upload.failed.size", new Object[] { Integer.valueOf(maxFileSizeMB) }, fileID, fileName, locale);
 		} else if (size == 0) {
 			return getXmlError("error.upload.failed.size0", null, fileID, fileName, locale);
 		}
@@ -275,7 +297,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 				final File writtenFile = this.fileLogic.writeTempFile(new ServerUploadedFile(file), this.fileLogic.getDocumentExtensionChecker());
 				hash = writtenFile.getName();
 			} else { // /bibtex/....
-				final Document document = this.fileLogic.saveDocumentFile(command.getContext().getLoginUser().getName(), new ServerUploadedFile(file));
+				final Document document = this.fileLogic.saveDocumentFile(command.getOwnerName(), new ServerUploadedFile(file));
 				this.logic.createDocument(document, intraHash);
 				hash = document.getMd5hash();
 			}

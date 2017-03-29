@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -56,6 +56,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ScraperMetadata;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.util.file.FileSystemFile;
@@ -139,7 +140,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		param.setRequestedUserName(requestedUserName);
 
 		final Integer result = this.queryForObject("getBibTexDuplicateCount", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return present(result) ? result.intValue() : 0;
 	}
 
 	/**
@@ -173,7 +174,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 				return this.postList("getBibTexWithDiscussions", param, session);
 			}
 			
-			if (!filters.contains(FilterEntity.ADMIN_SPAM_POSTS)) {
+			if (!(filters.contains(FilterEntity.ADMIN_SPAM_POSTS) && (filters.size() == 1))) {
 				throw new IllegalArgumentException("Filters " + filters + " not supported");
 			}
 		}
@@ -408,7 +409,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 				/*
 				 * get a scraper id
 				 */
-				final int id = this.generalDb.getNewId(ConstantID.IDS_SCRAPER_METADATA, session);
+				final int id = this.generalDb.getNewId(ConstantID.IDS_SCRAPER_METADATA, session).intValue();
 				/*
 				 * store id in metadata
 				 */
@@ -466,7 +467,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		final List<Document> documents = post.getResource().getDocuments();
 		if (present(documents)) {
 			for (final Document document : documents) {
-				if (document.isTemp()) {
+				if (document.isTemp() &&
+						!this.docDb.checkForExistingDocuments(post.getUser().getName(), post.getResource().getIntraHash(), document.getFileName(), session)) {
 					try {
 						final String fileName = document.getFileHash();
 						log.debug("adding temp file " + fileName);
@@ -501,15 +503,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * .lang.Integer, java.lang.Integer, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	protected void onPostUpdate(final Integer oldContentId, final Integer newContentId, final DBSession session) {
+	protected void onPostUpdate(final int oldContentId, final int newContentId, final DBSession session) {
 		this.plugins.onPublicationUpdate(oldContentId, newContentId, session);
-		/*
-		 * rewrites the history
-		 */
-		// BibTexParam param = new BibTexParam();
-		// param.setNewContentId(newContentId);
-		// param.setRequestedContentId(oldContentId);
-		// this.update("updateBibTexHistory", param, session);
 	}
 	
 	/* (non-Javadoc)
@@ -528,7 +523,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * .lang.Integer, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	protected void onPostDelete(final Integer contentId, final DBSession session) {
+	protected void onPostDelete(final int contentId, final DBSession session) {
 		this.plugins.onPublicationDelete(contentId, session);
 	}
 
@@ -565,6 +560,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		insert.setGroupId(groupId);
 
 		// inform plugin
+		// FIXME: why calling the plugins in the create insert param method, not expected here!
 		this.plugins.onPublicationInsert(post, session);
 		return insert;
 	}
@@ -647,11 +643,11 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	@Override
-	protected void workOnOperation(final Post<BibTex> post, final Post<BibTex> oldPost, final PostUpdateOperation operation, final DBSession session) {
+	protected void workOnOperation(final Post<BibTex> post, final Post<BibTex> oldPost, User loggedinUser, final PostUpdateOperation operation, final DBSession session) {
 		if (PostUpdateOperation.UPDATE_REPOSITORY.equals(operation)) {
 			this.performUpdateRepositorys(post, oldPost, session);
 		} else {
-			super.workOnOperation(post, oldPost, operation, session);
+			super.workOnOperation(post, oldPost, loggedinUser, operation, session);
 		}
 	}
 

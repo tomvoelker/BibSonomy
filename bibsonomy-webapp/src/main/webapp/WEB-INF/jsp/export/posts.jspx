@@ -11,6 +11,7 @@
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:bm="urn:jsptagdir:/WEB-INF/tags/resources/bookmark"
 	xmlns:bibgs="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 	> 
 	
 	<!--+
@@ -20,7 +21,7 @@
 		+-->
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
+		
 	<!--+
 		| alternating background color
 	 	+-->
@@ -32,9 +33,10 @@
 		| bookmark posts
 		|
 		+-->
-	<c:if test="${not empty command.bookmark.list}">
+	<c:set var="bookmarkList" value="${command.bookmark.list}" />
+	<c:if test="${not empty bookmarkList}">
 	
-		<c:forEach var="post" items="${command.bookmark.list}">
+		<c:forEach var="post" items="${bookmarkList}">
 			<!--+
 				| alternating background color
 			 	+-->
@@ -43,10 +45,10 @@
 			<!--+
 				| render one post 
 				+-->
-			<rc:post post="${post}" otherPostsUrlPrefix="/url/" loginUserName="${command.context.loginUser.name}" additionalItemClasses="${additionalItemClasses}">
+			<rc:post post="${post}" resourceType="${command.bookmark.resourcetype}" otherPostsUrlPrefix="/url/" loginUserName="${command.context.loginUser.name}" additionalItemClasses="${additionalItemClasses}">
 				<jsp:attribute name="title">     <bm:title      post="${post}"/></jsp:attribute>
 				<jsp:attribute name="desc">	     <bm:desc       post="${post}"/></jsp:attribute>
-				<jsp:attribute name="actions">   <bm:actions    post="${post}" loginUserName="${command.context.loginUser.name}"/></jsp:attribute>
+				<jsp:attribute name="actions">   <buttons:actions post="${post}" loginUserName="${command.context.loginUser.name}" resourceType="bookmark"/></jsp:attribute>
 				<jsp:attribute name="documents"> <bm:documents  post="${post}"/></jsp:attribute>
 			</rc:post>
 		</c:forEach>
@@ -68,7 +70,7 @@
 			<!--+
 				| render one post 
 				+-->
-			<rc:post post="${post}" otherPostsUrlPrefix="/bibtex/" loginUserName="${command.context.loginUser.name}" additionalItemClasses="${additionalItemClasses}">
+			<rc:post post="${post}" resourceType="${command.bibtex.resourcetype}" otherPostsUrlPrefix="/bibtex/" loginUserName="${command.context.loginUser.name}" additionalItemClasses="${additionalItemClasses}">
 				<jsp:attribute name="title">
 					<c:choose>
 						<c:when test="${empty post.user.name}"><bibgs:title post="${post}"/></c:when>
@@ -76,7 +78,7 @@
 					</c:choose>
 				</jsp:attribute>
 				<jsp:attribute name="desc">     <bib:desc publication="${post.resource}"/></jsp:attribute>
-				<jsp:attribute name="actions">  <bib:actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/></jsp:attribute>
+				<jsp:attribute name="actions">  <buttons:actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}" resourceType='bibtex'/></jsp:attribute>
 				<jsp:attribute name="documents"><bib:documents post="${post}"/></jsp:attribute>
 			</rc:post>
 		</c:forEach>

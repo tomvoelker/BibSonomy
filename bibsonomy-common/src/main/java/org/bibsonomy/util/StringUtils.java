@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -44,7 +44,7 @@ import org.bibsonomy.common.exceptions.InvalidModelException;
 
 /**
  * Some methods for handling strings.
- * @author 
+ * @author rja
  */
 public class StringUtils {
 	
@@ -75,7 +75,7 @@ public class StringUtils {
 			} catch (UnsupportedEncodingException e) {}
 		}
 		return null;
-	}	
+	}
 	
 	/**
 	 * Calculates the MD5-Hash of a String s and returns it encoded as a hex
@@ -169,7 +169,7 @@ public class StringUtils {
 
 		return buffer.toString();
 	}
-
+	
 	/**
 	 * Removes everything, but numbers.
 	 * 
@@ -192,8 +192,19 @@ public class StringUtils {
 	 * @return result
 	 */
 	public static String removeNonNumbersOrLetters(final String str) {
+		return replaceNonNumbersOrLetters(str, "");
+	}
+	
+	/**
+	 * replace all non number and letters
+	 * @param str
+	 * @param replacement
+	 * @return the string with the replacements
+	 */
+	public static String replaceNonNumbersOrLetters(String str, final String replacement) {
 		if (str != null) {
-			return NON_NUMBERS_OR_LETTERS.matcher(str).replaceAll("");
+			str = str.trim();
+			return NON_NUMBERS_OR_LETTERS.matcher(str).replaceAll(replacement);
 		}
 		return "";
 	}
@@ -2454,6 +2465,15 @@ public class StringUtils {
 		}
 		sb.replace(i, i + toBeReplaced.length(), replacement);
 		return sb;
+	}
+	
+	/**
+	 * capitalizes the first letter of a word
+	 * @param word
+	 * @return
+	 */
+	public static String capitalizeWord(final String word) {
+		return Character.toUpperCase(word.charAt(0)) + word.substring(1);
 	}
 
 	/**

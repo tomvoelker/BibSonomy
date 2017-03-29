@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -57,6 +57,14 @@ public class ServerDocumentFileLogic extends AbstractServerFileLogic implements 
 		final File file = new File(this.getFilePath(document.getFileHash()));
 		file.setReadOnly();
 		return file;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.filesystem.DocumentFileLogic#getContentCacheFileForDocument(org.bibsonomy.model.Document)
+	 */
+	@Override
+	public File getContentCacheFileForDocument(final Document document) {
+		return new File(this.getFilePath(document.getFileHash()) + "_content.cache");
 	}
 	
 	@Override

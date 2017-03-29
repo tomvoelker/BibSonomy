@@ -57,7 +57,7 @@
 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 		<init-param>
 			<param-name>contextAttribute</param-name>
-			<param-value>org.springframework.web.servlet.FrameworkServlet.CONTEXT.bibsonomy2</param-value>
+			<param-value>org.springframework.web.servlet.FrameworkServlet.CONTEXT.bibsonomy</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>
@@ -72,7 +72,7 @@
 		<init-param>
 			<description>The pattern defines, which URLs should not be touched by the filter.</description>
 			<param-name>excludePattern</param-name>
-			<param-value>^/(api|resources|resources_puma|ajax)/.*</param-value>
+			<param-value>^/(api|resources|resources_puma|ajax|layoutinfo)/.*</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>
@@ -85,7 +85,7 @@
 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 		<init-param>
 			<param-name>contextAttribute</param-name>
-			<param-value>org.springframework.web.servlet.FrameworkServlet.CONTEXT.bibsonomy2</param-value>
+			<param-value>org.springframework.web.servlet.FrameworkServlet.CONTEXT.bibsonomy</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>
@@ -115,11 +115,16 @@
 	</filter-mapping>
 
 	<filter>
-		<filter-name>NoCacheFilter</filter-name>
-		<filter-class>org.bibsonomy.webapp.filters.NoCacheFilter</filter-class>
+		<filter-name>CacheFilter</filter-name>
+		<filter-class>org.bibsonomy.webapp.filters.CacheFilter</filter-class>
+		<init-param>
+			<description>The pattern defines, which files can be cached.</description>
+			<param-name>cachePattern</param-name>
+			<param-value>^/(resources|resources_puma)/.*</param-value>
+		</init-param>
 	</filter>
 	<filter-mapping>
-		<filter-name>NoCacheFilter</filter-name>
+		<filter-name>CacheFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
@@ -138,18 +143,19 @@
 	<filter-mapping>
 		<filter-name>UrlRewriteFilter</filter-name>
 		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
 	</filter-mapping>
 
 	<!-- spring main servlet -->
 	<servlet>
-		<servlet-name>bibsonomy2</servlet-name>
+		<servlet-name>bibsonomy</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
 	<!-- spring main servlet -->
 	<servlet-mapping>
-		<servlet-name>bibsonomy2</servlet-name>
+		<servlet-name>bibsonomy</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 	

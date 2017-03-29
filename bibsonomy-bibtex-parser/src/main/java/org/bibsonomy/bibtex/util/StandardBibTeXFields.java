@@ -1,7 +1,7 @@
 /**
  * BibSonomy-BibTeX-Parser - BibTeX Parser from http://www-plan.cs.colorado.edu/henkel/stuff/javabib/
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -105,5 +105,4 @@ public class StandardBibTeXFields {
 	public static Set<String> getStandardBibTeXFields() {
 		return standardBibTeXFields;
 	}
-	
 }

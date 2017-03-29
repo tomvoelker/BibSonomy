@@ -15,7 +15,7 @@
 		| 
 	 	+-->
 	
-	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>	
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" />
@@ -29,69 +29,46 @@
 	<jsp:directive.attribute name="showPageOptions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="pageOptions" fragment="true" required="false"/>
 	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
-		
+	
 	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
 	<jsp:directive.attribute name="sidebar" fragment="true"/>
-	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
-	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>	
-	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
+	<jsp:directive.attribute name="content" fragment="true" required="true"/>
+	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	
+	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>
+	
+	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 
 	<layout:layout 
 		loginUser="${command.context.loginUser}" 
 		pageTitle="${pageTitle}" 
-		heading="${heading}" 
-		headerExt="${headerExt}"
 		requestedUser="${requestedUser}"
-		infobox="${infobox}" 
-		sidebar="${sidebar}" 
 		requPath="${requPath}"
-		noLoginBox="${noLoginBox}"
-		hideFooterContainer="true"
 		activeTab="${activeTab}"
-		minimizedContentWidth="${minimizedContentWidth}">
+		noSidebar="${noSidebar }">
 	
-			
-		<!--+
-			| page content header
-			+-->
-		<jsp:attribute name="headerContainer">
-			<parts:panelheader headerLogoClass="${not empty headerLogoClass ? 'image' : ''} ${headerLogoClass}" 
-				showPageOptions="${showPageOptions}"
-				pageOptions="${pageOptions}"
-				customPageOptions="${customPageOptions}">
-				<jsp:attribute name="headerContent">
-					<c:choose>
-						<c:when test="${not empty headerMessage}">
-							<c:out value="${headerMessage}"/>
-						</c:when>
-						<c:when test="${not empty headerFragment}">
-							<jsp:invoke fragment="headerFragment"/>
-						</c:when>
-						<c:when test="${not empty headerMessageKey}">
-							<fmt:message key="${headerMessageKey}"/>
-						</c:when>
-						<c:otherwise>
-							<!-- What to do here? -->	
-						</c:otherwise>
-					</c:choose>
-				</jsp:attribute>
-			</parts:panelheader>
+		<jsp:attribute name="breadcrumbs">
+			<jsp:invoke fragment="breadcrumbs" />
 		</jsp:attribute>
-	
-	
+
+		<jsp:attribute name="sidebar">
+			<jsp:invoke fragment="sidebar" />
+		</jsp:attribute>
+
+		<jsp:attribute name="infobox">
+			<jsp:invoke fragment="infobox" />
+ 		</jsp:attribute>
+
+		<jsp:attribute name="headerExt">
+			<jsp:invoke fragment="headerExt" />
+		</jsp:attribute>
+
+		<jsp:attribute name="heading">
+			<jsp:invoke fragment="heading" />
+		</jsp:attribute>
+		
 		<jsp:attribute name="content">
-			<div id="fullscreen">
-				<div id="fscontent">
-					<jsp:invoke fragment="content"/>
-				</div>
-			</div>
-		</jsp:attribute>	
-	
-	
+			<jsp:invoke fragment="content"/>
+		</jsp:attribute>
 	</layout:layout>
-		
-		
-		
 </jsp:root>

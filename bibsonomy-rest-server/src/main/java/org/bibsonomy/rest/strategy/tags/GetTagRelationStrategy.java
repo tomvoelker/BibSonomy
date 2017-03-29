@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,6 +31,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.Context;
 
 /**
@@ -39,9 +40,9 @@ import org.bibsonomy.rest.strategy.Context;
  */
 public class GetTagRelationStrategy extends GetListOfTagsStrategy {
 	
-    /** The list of requested tags. */
+	/** The list of requested tags. */
 	protected List<String> tags;
-    /** The requested relation. */
+	/** The requested relation. */
 	protected TagRelation relation;
 
 	/**
@@ -55,28 +56,28 @@ public class GetTagRelationStrategy extends GetListOfTagsStrategy {
 		
 		this.tags = tags;
 		if (relation == null) {
-			throw new RuntimeException("relation must not be null!");
+			throw new BadRequestOrResponseException("relation unknown!");
 		}
 		this.relation = relation;
 	}
 	
-    /**
-     * Returns a list of tags according to the requested relation. If <tt>relation</tt>
-     * is something else than RELATED, SIMILAR, all tags are returned.
-     * @return 
-     */
+	/**
+	 * Returns a list of tags according to the requested relation. If <tt>relation</tt>
+	 * is something else than RELATED, SIMILAR, all tags are returned.
+	 * @return 
+	 */
 	@Override
 	protected final List<Tag> getList() {
-        switch (this.relation) {
-            case RELATED:
-                return this.handleRelated();
-            case SIMILAR:
-                return this.handleSimilar();
-            default:
-                return this.getLogic().getTags(resourceType, grouping, groupingValue, tags,
-                        hash, null, regex, null, this.getView().getOrder(), null, null,
-                        this.getView().getStartValue(), this.getView().getEndValue());
-        }
+		switch (this.relation) {
+			case RELATED:
+				return this.handleRelated();
+			case SIMILAR:
+				return this.handleSimilar();
+			default:
+				return this.getLogic().getTags(resourceType, grouping, groupingValue, tags,
+						hash, null, regex, null, this.getView().getOrder(), null, null,
+						this.getView().getStartValue(), this.getView().getEndValue());
+		}
 	}
 	
 	/**
@@ -97,7 +98,7 @@ public class GetTagRelationStrategy extends GetListOfTagsStrategy {
 		if (this.tags.size() != 1) {
 			return null;
 		}
-        
+		
 		return this.getLogic().getTags(resourceType, grouping, groupingValue, tags,
 				hash, null, regex, TagSimilarity.COSINE, this.getView().getOrder(),
 				null, null, this.getView().getStartValue(), this.getView().getEndValue());

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -189,7 +189,7 @@ public class TagUtils {
 	 *         or all tags with globalTagCount>=limit (if limitType==FREQUENCY)
 	 */
 	public static List<Tag> mergeTagLists(final List<Tag> src1, final List<Tag> src2, Order tagOrder, Order limitType, int limit) {
-		if( Order.POPULAR.equals(limitType)) {
+		if (Order.POPULAR.equals(limitType)) {
 			return mergePopularityFilteredTagLists(src1, src2, tagOrder, limit);
 		}
 		
@@ -261,7 +261,7 @@ public class TagUtils {
 	private static List<Tag> mergePopularityFilteredTagLists(final List<Tag> src1, final List<Tag> src2, Order tagOrder, int limit ) {
 		List<Tag> mergedList = new LinkedList<Tag>();
 		
-		log.debug("Merging tag lists ("+src1.size()+"/"+src2.size()+")and filter by popularity");
+		log.debug("Merging tag lists (" + src1.size() + "/" + src2.size() + ")and filter by popularity");
 		
 		// collect tags from first tag list
 		Map<String,Tag> tagCollector = new HashMap<String, Tag>();

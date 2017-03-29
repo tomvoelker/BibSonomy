@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,10 +26,13 @@
  */
 package org.bibsonomy.scraper.id.kde.isbn;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+import static org.junit.Assert.assertTrue;
+
 import org.bibsonomy.scraper.ReachabilityTestRunner;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.junit.Assert;
+import org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -45,7 +48,9 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_166");
+		final String selection = "978-3404201600";
+		final String resultFile = "ISBNScraperUnitURLTest1.bib";
+		assertScraperResult(null, selection, ISBNScraper.class, resultFile);
 	}
 	
 	/**
@@ -53,15 +58,20 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_167");
+		final String selection = "9780387485300";
+		final String resultFile = "ISBNScraperUnitURLTest2.bib";
+		assertScraperResult(null, selection, ISBNScraper.class, resultFile);
 	}
 	
 	/**
+	 * XXX: endnote export for this publication is broken
 	 * starts URL test with id url_170
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_170");
+		final String selection = "0025-5858";
+		final String resultFile = "ISSNScraperUnitURLTest1.bib";
+		assertScraperResult(null, selection, ISBNScraper.class, resultFile);
 	}
 	
 	/**
@@ -69,7 +79,9 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		UnitTestRunner.runSingleTest("url_171");
+		final String selection = "9783921568705";
+		final String resultFile = "ISSNScraperUnitURLTest2.bib";
+		assertScraperResult(null, selection, ISBNScraper.class, resultFile);
 	}
 
 	/**
@@ -79,7 +91,6 @@ public class ISBNScraperTest {
 	public void testSupportsScrapingContext() {
 		final ISBNScraper scraper = new ISBNScraper();
 		
-		Assert.assertTrue(scraper.supportsScrapingContext(ReachabilityTestRunner.ISBN_SCRAPER_TEST_CONTEXT));
-		
+		assertTrue(scraper.supportsScrapingContext(ReachabilityTestRunner.ISBN_SCRAPER_TEST_CONTEXT));
 	}
 }

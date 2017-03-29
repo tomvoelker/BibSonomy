@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -41,7 +41,9 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.importer.IUnitTestImporter;
 import org.bibsonomy.scraper.importer.xml.XMLUnitTestImporter;
+import org.bibsonomy.scraper.junit.RemoteTestAssert;
 
+import bibtex.dom.BibtexAbstractEntry;
 import bibtex.dom.BibtexEntry;
 import bibtex.dom.BibtexFile;
 import bibtex.parser.BibtexParser;
@@ -60,7 +62,9 @@ public class UnitTestRunner {
 	 * runs a scraper test
 	 * 
 	 * @param testId ID from URL test
+	 * @deprecated use {@link RemoteTestAssert#assertScraperResult(String, String, Class, String)}
 	 */
+	@Deprecated
 	public static void runSingleTest(final String testId) {
 		try {
 			final ScraperTestData testData = IMPORTER.getUnitTests().get(testId);
@@ -80,7 +84,7 @@ public class UnitTestRunner {
 							// parse source
 							parser.parse(bibtexFile, sr);
 							
-							for (Object potentialEntry:bibtexFile.getEntries())
+							for (final BibtexAbstractEntry potentialEntry : bibtexFile.getEntries())
 								if ((potentialEntry instanceof BibtexEntry))
 									bibtexValid = true;
 							// test if expected bib is equal to scraped bib (which must be valid bibtex) 

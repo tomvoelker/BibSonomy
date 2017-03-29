@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -55,5 +55,12 @@ public class MyOwnSystemTag extends AbstractSystemTagImpl implements MarkUpSyste
 	public boolean isInstance(final String tagName) {
 		return NAME.equals(tagName.toLowerCase());
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.systemstags.AbstractSystemTagImpl#hasArguments()
+	 */
+	@Override
+	public boolean hasArguments() {
+		return false;
+	}
 }

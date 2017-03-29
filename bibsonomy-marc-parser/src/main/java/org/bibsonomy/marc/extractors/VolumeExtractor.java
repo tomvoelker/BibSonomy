@@ -1,7 +1,7 @@
 /**
  * BibSonomy-MARC-Parser - Marc Parser for BibSonomy
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -40,7 +40,7 @@ import org.bibsonomy.util.ValidationUtils;
 public class VolumeExtractor implements AttributeExtractor {
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		
 		/*
 		 * first try to get volume from the marc record

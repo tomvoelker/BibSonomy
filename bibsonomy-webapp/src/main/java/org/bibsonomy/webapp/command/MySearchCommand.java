@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -32,12 +32,12 @@ import java.util.SortedSet;
 
 /**
  * Command class which is used by the MySearchController class.
- * This class stores all information such as relations between serval bibtex informations
+ * This class stores all information such as relations between several publication informations
  * which are needed by the mySearch.jspx side.
  * 
  * @author Christian Voigtmann
  */
-public class MySearchCommand extends SimpleResourceViewCommand{
+public class MySearchCommand extends SimpleResourceViewCommand {
 
 	/**
 	 * user object
@@ -240,12 +240,12 @@ public class MySearchCommand extends SimpleResourceViewCommand{
 		if (list != null) {
 			for (int i=0; i<list.length; i++) {
 				buf.append("[");
-
-				Iterator iter = list[i].iterator();			
-				while(iter.hasNext()) {			
-					buf.append(iter.next());				
-					if(iter.hasNext())
-						buf.append(",");				
+				Iterator iter = list[i].iterator();
+				while(iter.hasNext()) {
+					buf.append(iter.next());
+					if (iter.hasNext()) {
+						buf.append(",");
+					}
 				}
 
 				buf.append("]");
@@ -254,7 +254,7 @@ public class MySearchCommand extends SimpleResourceViewCommand{
 			}
 		}
 		
-		buf.append("]");		
+		buf.append("]");
 		
 		return buf.toString();
 	}

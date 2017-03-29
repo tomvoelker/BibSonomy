@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.muse;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -58,7 +59,7 @@ public class ProjectmuseScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_114");
+		assertScraperResult("http://muse.jhu.edu/article/190166", null, ProjectmuseScraper.class, "ProjectmuseScraperUnitURLTest2.bib");
 	}
 	/**
 	 * @throws Exception

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util 
+	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+	
+	<!-- import the config from the elasticsearch search module -->
+	<import resource="classpath:org/bibsonomy/bibsonomy-search-elasticsearch-context.xml" />
+	
+	<bean id="pdfExtractor" class="org.bibsonomy.search.index.utils.extractor.PDFExtractor" />
+	
+	<alias name="elasticsearchBookmarkManager" alias="searchBookmarkManager" />
+	<alias name="elasticsearchPublicationManager" alias="searchPublicationManager" />
+	<alias name="elasticsearchCommunityBookmarkManager" alias="searchCommunityBookmarkManager" />
+	<alias name="elasticsearchCommunityPublicationManager" alias="searchCommunityPublicationManager" />
+	
+	<alias name="elasticsearchPublicationSearch" alias="personSearch" />
+	
+	<alias name="elasticsearchBookmarkSearch" alias="bookmarkSearch" />
+	<alias name="elasticsearchPublicationSearch" alias="publicationSearch" />
+	
+	<alias name="elasticsearchCommunityPublicationSearch" alias="goldStandardPublicationSearch" />
+	<alias name="elasticsearchCommunityBookmarkSearch" alias="goldStandardBookmarkSearch" />
+</beans>

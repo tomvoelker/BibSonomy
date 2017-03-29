@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -50,15 +50,11 @@
 
 package org.bibsonomy.scraper.url.kde.sciencemag;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Scraper URL test #192 for ScienceMagScraper
@@ -73,7 +69,7 @@ public class ScienceMagScraperTest {
 	 */
 	@Test
 	public void urlTest1Run() {
-		UnitTestRunner.runSingleTest("url_192");
+		assertScraperResult("http://www.sciencemag.org/content/326/5956/1057", null, ScienceMagScraper.class, "scienceMag/ScienceMagScraperUnitURLTest1.bib");
 	}
 
 	/**
@@ -81,12 +77,6 @@ public class ScienceMagScraperTest {
 	 */
 	@Test
 	public void urlTest2Run() {
-		UnitTestRunner.runSingleTest("url_229");
-	}
-	
-	@Test
-	public void testFullToShortUrl() throws MalformedURLException {
-		final ScienceMagScraper sms = new ScienceMagScraper();
-		assertEquals(new URL("http://www.sciencemag.org/content/302/5651/1704.short"), sms.fullUrlToShort(new URL("http://www.sciencemag.org/content/302/5651/1704.full")));
+		assertScraperResult("http://www.sciencemag.org/content/276/5317/1425.full", null, ScienceMagScraper.class, "scienceMag/ScienceMagScraperUnitURLTest2.bib");
 	}
 }

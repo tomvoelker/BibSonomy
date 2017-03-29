@@ -4,7 +4,7 @@
 <sqlMap namespace="Group">
 	<!-- TODO: do we need the memberships here? -->
 	<select id="getAllGroups" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="groupParam">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date 
 		FROM
 			(SELECT * from groupids
 				WHERE `group` > 2
@@ -15,23 +15,31 @@
 		ORDER BY i.group_name
 	</select>
 	
-	<select id="getPendingGroup" resultMap="GroupCommon.group" parameterClass="String">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage
-		FROM pending_groupids i 
-		  JOIN pendingUser u ON (i.group_name = u.user_name)
-		WHERE i.group_name = #groupname#
-	</select>
-	
 	<select id="getPendingGroups" resultMap="GroupCommon.group" parameterClass="groupParam">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage
 		FROM pending_groupids i 
 		  JOIN pendingUser u ON (i.group_name = u.user_name)
+		<dynamic prepend="WHERE">
+			<isNotNull prepend="AND" property="userName">
+				i.request_user_name = #userName# 
+			</isNotNull>
+		</dynamic>
 		ORDER BY i.group_name
 		LIMIT #limit# OFFSET #offset#
 	</select>
+	
+	<select id="getPendingGroup" resultMap="GroupCommon.group" parameterClass="groupParam">
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage
+		FROM pending_groupids i 
+		  JOIN pendingUser u ON (i.group_name = u.user_name)
+		WHERE group_name = #requestedGroupName#
+		<isNotEmpty prepend="AND" property="userName">
+			i.request_user_name = #userName#
+		</isNotEmpty>
+	</select>
 
 	<select id="getGroupWithMemberships" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date
 		FROM groupids i 
 		<!-- LEFT JOIN is necessary because groups are empty at the point of creation. -->
 		  LEFT JOIN group_memberships g USING (`group`) 
@@ -42,7 +50,7 @@
 	</select>
 
 	<select id="getGroupWithPermissions" resultMap="GroupCommon.groupWithPermissions" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, p.permission
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, p.permission
 		FROM groupids i 
 		  LEFT JOIN group_level_permission p USING (`group`)
 		WHERE group_name = #groupname#
@@ -51,7 +59,7 @@
 	
 	<!-- TODO: merge with getGroupWithMembership using a dynamic query -->
 	<select id="getGroupWithMembershipsAndPermissions" resultMap="GroupCommon.groupWithMembershipsAndReportingsAndPermissions" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, p.permission
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription,  <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date, p.permission
 		FROM groupids i 
 		<!-- LEFT JOIN is necessary because groups are empty at the point of creation. -->
 		  LEFT JOIN group_memberships g USING (`group`) 
@@ -68,7 +76,7 @@
 	</select>
 
 	<select id="getGroupsForUser" resultMap="GroupCommon.groupWithMembershipsAndReportingsAndPermissions" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.user_shared_documents, g.group_role, p.permission
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.user_shared_documents, g.group_role, g.start_date, p.permission
 		 FROM groupids i
 		   LEFT JOIN group_memberships g USING (`group`)
 		   LEFT JOIN user u ON (u.user_name = i.group_name)
@@ -78,14 +86,14 @@
 	</select>
 	
 	<select id="getSpecialGroupsForUser" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, "" AS user_realname, NULL AS user_homepage, #userName# AS user_name, FALSE AS user_shared_documents, 2 AS group_role
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="reportingColumns" />, "" AS user_realname, NULL AS user_homepage, #userName# AS user_name, FALSE AS user_shared_documents, 2 AS group_role, DATE('1970-01-01') AS start_date
 		 FROM groupids i
 		 WHERE i.group BETWEEN 0 AND 2
 		ORDER BY i.group_name
 	</select>
 
 	<select id="getGroupsForContentId" resultMap="GroupCommon.group_basic" parameterClass="int">
-		SELECT DISTINCT i.group, i.group_name, i.privlevel, i.sharedDocuments, FALSE as user_shared_documents 
+		SELECT DISTINCT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, FALSE as user_shared_documents 
 		  FROM groupids i JOIN grouptas t USING (`group`) 
 		  WHERE t.content_id = #contentId# 
 	</select>
@@ -136,8 +144,8 @@
 	</delete>
 
 	<insert id="activateGroup" parameterClass="string">
-		INSERT INTO groupids (`group_name`, `group`, `privlevel`, `sharedDocuments`)
-		SELECT `group_name`, `group`, `privlevel`, `sharedDocuments`
+		INSERT INTO groupids (group_name, `group`, privlevel, sharedDocuments, shortDescription)
+		SELECT group_name, `group`, privlevel, sharedDocuments, shortDescription
 		FROM pending_groupids 
 		WHERE pending_groupids.group_name = #name#
 	</insert>
@@ -148,8 +156,8 @@
 	</delete>
 	
 	<insert id="insertPendingGroup" parameterClass="group">
-		INSERT INTO pending_groupids (group_name, `group`, privlevel, sharedDocuments, request_user_name, request_reason)
-		VALUES (#name#, #groupId#, #privlevel#, #sharedDocuments#, #groupRequest.userName#, #groupRequest.reason#)
+		INSERT INTO pending_groupids (group_name, `group`, privlevel, sharedDocuments, shortDescription, request_user_name, request_reason)
+		VALUES (#name#, #groupId#, #privlevel#, #sharedDocuments#, #description#, #groupRequest.userName#, #groupRequest.reason#)
 	</insert>
 
 	<delete id="deletePendingGroup" parameterClass="string">
@@ -174,7 +182,7 @@
 
 	<update id="updateGroupSettings" parameterClass="group">
 		UPDATE groupids 
-		SET privlevel=#privlevel#, sharedDocuments=#sharedDocuments#
+		SET privlevel=#privlevel#, sharedDocuments=#sharedDocuments#, allow_join=#allowJoin#, shortDescription=#description# 
 		WHERE `group` = #groupId#
 	</update>
 	
@@ -199,7 +207,7 @@
 	</select>
 	
 	<select id="getGroupMembershipForUserInGroup" resultMap="GroupCommon.groupMembership" parameterClass="groupParam">
-		SELECT ms.group_role, ms.user_name, u.user_realname, u.user_homepage, ms.user_shared_documents
+		SELECT ms.group_role, ms.user_name, u.user_realname, u.user_homepage, ms.user_shared_documents, ms.start_date 
 		FROM group_memberships ms
 		  JOIN user u ON (u.user_name = ms.user_name)
 		WHERE ms.user_name = #userName# AND ms.`group` = #groupId#;
@@ -207,15 +215,15 @@
 	
 	<!-- PENDING MEMBERSHIPS -->
 	<select id="getPendingMembershipForUserInGroup" resultMap="GroupCommon.groupMembership" parameterClass="groupParam">
-		SELECT ms.group_role, ms.user_name, ms.user_shared_documents
+		SELECT ms.group_role, ms.user_name, ms.user_shared_documents, ms.start_date 
 		FROM pending_group_memberships ms
 		  JOIN groupids g USING (`group`)
 		WHERE ms.user_name = #userName# AND g.group_name = #requestedGroupName#;
 	</select>
 	
 	<insert id="addPendingMembership" parameterClass="groupParam">
-		INSERT INTO pending_group_memberships (user_name, `group`, defaultgroup, `group_role`)
-		VALUES (#membership.user.name#, #groupId#, #groupId#, #membership.groupRole.role#)
+		INSERT INTO pending_group_memberships (user_name, `group`, user_shared_documents, defaultgroup, `group_role`)
+		VALUES (#membership.user.name#, #groupId#, #membership.userSharedDocuments#, #groupId#, #membership.groupRole.role#)
 	</insert>
 
 	<delete id="removePendingMembership" parameterClass="groupParam">
@@ -224,7 +232,7 @@
 	</delete>
 	
 	<select id="getPendingMembershipsForGroup" resultMap="GroupCommon.groupWithMemberships" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date 
 		FROM groupids i 
 		  JOIN pending_group_memberships g USING (`group`) 
 		  LEFT JOIN user u ON (u.user_name = i.group_name) 
@@ -233,7 +241,7 @@
 	</select>
 	
 	<select id="getPendingMembershipsForUser" resultMap="GroupCommon.groupWithMemberships" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, g.user_name, g.user_shared_documents, g.group_role
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, u.user_realname, u.user_homepage, g.user_name, g.user_shared_documents, g.group_role, g.start_date
 		 FROM groupids i
 		   LEFT JOIN pending_group_memberships g USING (`group`)
 		   LEFT JOIN user u ON (u.user_name = i.group_name)

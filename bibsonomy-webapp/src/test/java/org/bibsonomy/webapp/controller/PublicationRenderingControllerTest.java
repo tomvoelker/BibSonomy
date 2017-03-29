@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -41,6 +41,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.util.BibTexReader;
 import org.bibsonomy.testutil.CommonModelUtils;
@@ -61,14 +62,14 @@ public class PublicationRenderingControllerTest {
 	@Test
 	public void testBibtexReaderIntegration() throws IOException {
 		
-		final List<ImportResource> bib = getBibtexFromFile();
+		final List<BibTex> bib = getBibtexFromFile();
 		final byte[] bytes = IOUtils.toByteArray(getTestBibFileStream());
 		
 		Map<String, BibTexReader> m = new HashMap<String, BibTexReader>();
 		m.put("bla", new BibTexReader() {
 			
 			@Override
-			public Collection<ImportResource> read(ImportResource r) {
+			public Collection<BibTex> read(ImportResource r) {
 				byte[] receivedBytes;
 				try {
 					receivedBytes = IOUtils.toByteArray(getTestBibFileStream());
@@ -92,12 +93,11 @@ public class PublicationRenderingControllerTest {
 		CommonModelUtils.assertPropertyEquality(bib.get(0), cmd.getBibtex().getList().get(0).getResource(), 5, null);
 	}
 
-	protected List<ImportResource> getBibtexFromFile() {
+	protected List<BibTex> getBibtexFromFile() {
 		SimpleBibTeXParser parser = new SimpleBibTeXParser();
 		try {
 			BufferedReader sr = new BufferedReader(new InputStreamReader(getTestBibFileStream(), StringUtils.CHARSET_UTF_8));
-			// actually not 100% ok but easier
-			return (List) parser.parseInternal(sr, true);
+			return parser.parseInternal(sr, true);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

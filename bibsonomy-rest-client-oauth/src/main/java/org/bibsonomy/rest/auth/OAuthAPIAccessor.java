@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Client-OAuth - The REST-client OAuth Accessor.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -24,7 +24,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.rest.auth;
 
 import static org.bibsonomy.util.ValidationUtils.present;

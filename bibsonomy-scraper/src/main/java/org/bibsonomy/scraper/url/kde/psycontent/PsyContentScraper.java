@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -104,7 +104,7 @@ public class PsyContentScraper extends AbstractUrlScraper implements ReferencesS
 
 				//convert the ris file to bibtex
 				String bibtex = null;
-				bibtex = (new RisToBibtexConverter()).risToBibtex(risFile);
+				bibtex = (new RisToBibtexConverter()).toBibtex(risFile);
 
 				if(bibtex != null) {
 					sc.setBibtexResult(bibtex);

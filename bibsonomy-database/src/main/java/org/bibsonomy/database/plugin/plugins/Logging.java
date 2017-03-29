@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -29,10 +29,10 @@ package org.bibsonomy.database.plugin.plugins;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
-import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.database.params.ClipboardParam;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.GoldStandardReferenceParam;
 import org.bibsonomy.database.params.GroupParam;
@@ -53,29 +53,27 @@ import org.bibsonomy.model.enums.GoldStandardRelation;
  * This plugin implements logging: on several occasions it'll save the old state
  * of objects (bookmarks, publications, etc.) into special tables in the
  * database. This way it is possible to track the changes made by users.
- * 
+ *
  * @author Jens Illig
  * @author Christian Schenk
  * @author Stefan Stützer
  * @author Anton Wilhelm
  * @author Daniel Zoller
- * 
+ *
  */
 public class Logging extends AbstractDatabasePlugin {
 
 	private final GeneralDatabaseManager generalManager;
-
-
 	/**
-	 * 
+	 *
 	 */
 	public Logging() {
 		this.generalManager = GeneralDatabaseManager.getInstance();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.bibsonomy.database.plugin.AbstractDatabasePlugin#onCommentUpdate(
 	 * java.lang.String, org.bibsonomy.model.Comment,
@@ -88,7 +86,7 @@ public class Logging extends AbstractDatabasePlugin {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.bibsonomy.database.plugin.AbstractDatabasePlugin#onCommentDelete(
 	 * java.lang.String, org.bibsonomy.model.Comment,
@@ -121,7 +119,7 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onPublicationMassUpdate(String userName, int groupId, DBSession session) {
+	public void onPublicationMassUpdate(final String userName, final int groupId, final DBSession session) {
 		final BibTexParam param = new BibTexParam();
 		param.setGroupId(groupId);
 		param.setRequestedUserName(userName);
@@ -130,11 +128,11 @@ public class Logging extends AbstractDatabasePlugin {
 
 	@Override
 	public void onGoldStandardUpdate(final int contentId, final int newContentId, final String newInterhash, final String interhash, final DBSession session) {
-		final LoggingParam<String> logParam = new LoggingParam<String>();
-		logParam.setNewId(newInterhash);
-		logParam.setOldId(interhash);
+		final LoggingParam logParam = new LoggingParam();
+		logParam.setNewHash(newInterhash);
+		logParam.setOldHash(interhash);
 		logParam.setNewContentId(newContentId);
-		logParam.setContentId(contentId);
+		logParam.setOldContentId(contentId);
 		this.insert("logGoldStandard", logParam, session);
 
 		// Update current_content_id for history
@@ -143,12 +141,12 @@ public class Logging extends AbstractDatabasePlugin {
 
 	@Override
 	public void onGoldStandardDelete(final String interhash, final DBSession session) {
-		final LoggingParam<String> logParam = new LoggingParam<String>();
-		logParam.setOldId(interhash);
+		final LoggingParam logParam = new LoggingParam();
+		logParam.setOldHash(interhash);
 		/*
 		 * FIXME: Should we not use newId 0?
 		 */
-		logParam.setNewId("");
+		logParam.setNewHash("");
 		this.insert("logGoldStandard", logParam, session);
 	}
 
@@ -183,13 +181,13 @@ public class Logging extends AbstractDatabasePlugin {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.bibsonomy.database.plugin.AbstractDatabasePlugin#onBookmarkMassUpdate
 	 * (java.lang.String, int)
 	 */
 	@Override
-	public void onBookmarkMassUpdate(String userName, int groupId, DBSession session) {
+	public void onBookmarkMassUpdate(final String userName, final int groupId, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
 		param.setGroupId(groupId);
 		param.setRequestedUserName(userName);
@@ -197,7 +195,7 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onDiscussionMassUpdate(String userName, int groupId, DBSession session) {
+	public void onDiscussionMassUpdate(final String userName, final int groupId, final DBSession session) {
 		final DiscussionItemParam<DiscussionItem> param = new DiscussionItemParam<>();
 		param.setUserName(userName);
 		param.setGroupId(groupId);
@@ -252,16 +250,6 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onDeleteBasketItem(final BasketParam param, final DBSession session) {
-		this.insert("logBasketItemDelete", param, session);
-	}
-
-	@Override
-	public void onDeleteAllBasketItems(final String userName, final DBSession session) {
-		this.insert("logDeleteAllFromBasket", userName, session);
-	}
-
-	@Override
 	public void onDocumentDelete(final DocumentParam deletedDocumentParam, final DBSession session) {
 		this.insert("logDocument", deletedDocumentParam, session);
 	}
@@ -282,10 +270,20 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
+	public void onDeleteClipboardItem(final ClipboardParam param, final DBSession session) {
+		this.insert("logClipboardItemDelete", param, session);
+	}
+
+	@Override
+	public void onDeleteAllClipboardItems(final String userName, final DBSession session) {
+		this.insert("logDeleteAllFromClipboard", userName, session);
+	}
+
+	@Override
 	public void onPersonNameUpdate(final Integer personChangeId, final DBSession session) {
 		this.insert("logPersonName", personChangeId, session);
 	}
-	
+
 	@Override
 	public void onPersonNameDelete(final PersonName personName, final DBSession session) {
 		this.insert("logPersonName", personName.getPersonNameChangeId(), session);
@@ -294,14 +292,6 @@ public class Logging extends AbstractDatabasePlugin {
 		this.insert("logPersonNameDelete", personName, session);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onDeleteAllNamesOfPerson(java.lang.String, org.bibsonomy.database.common.DBSession)
-	 */
-	@Override
-	public void onDeleteAllNamesOfPerson(String personId, DBSession databaseSession) {
-		this.insert("logPersonNameByPersonId", personId, databaseSession);
-	}
-	
 	@Override
 	public void onPersonUpdate(final String personId, final DBSession session) {
 		this.insert("logPersonUpdate", personId, session);
@@ -318,12 +308,12 @@ public class Logging extends AbstractDatabasePlugin {
 		person.setPersonChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 		this.insert("logPersonDelete", person, session);
 	}
-	
+
 
 	@Override
 	public void onPubPersonDelete(final ResourcePersonRelation rel, final DBSession session) {
 		this.insert("logPubPerson", rel.getPersonRelChangeId(), session);
-		// we need to fetch a new id so the next insert statement can refer to the last generated id
+		// XXX: we need to fetch a new id so the next insert statement can refer to the last generated id
 		this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
 		this.insert("logPubPersonDelete", rel, session);
 	}

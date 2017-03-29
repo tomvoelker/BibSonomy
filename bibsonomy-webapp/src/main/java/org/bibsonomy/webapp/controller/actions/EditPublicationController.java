@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -46,7 +46,6 @@ import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.util.UrlUtils;
-import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.command.actions.EditPublicationCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
@@ -68,7 +67,6 @@ import de.unikassel.puma.openaccess.sword.SwordService;
  * @author rja
  */
 public class EditPublicationController extends AbstractEditPublicationController<EditPublicationCommand> {
-	
 	private static final Log log = LogFactory.getLog(EditPublicationController.class);
 
 	private SwordService swordService = null;
@@ -86,9 +84,9 @@ public class EditPublicationController extends AbstractEditPublicationController
 		 * publication, we forward him to the SWORD service to allow the user to upload the
 		 * publication.
 		 */
-		if (present(swordService) && SystemTagsUtil.containsSystemTag(post.getTags(), MyOwnSystemTag.NAME)) {
+		if (present(this.swordService) && SystemTagsUtil.containsSystemTag(post.getTags(), MyOwnSystemTag.NAME)) {
 			String ref = UrlUtils.safeURIEncode(referer);
-			String publicationUrl = urlGenerator.getPublicationUrlByIntraHashAndUsername(post.getResource().getIntraHash(), userName);
+			String publicationUrl = this.urlGenerator.getPublicationUrlByIntraHashAndUsername(post.getResource().getIntraHash(), userName);
 			return new ExtendedRedirectView(publicationUrl + "?referer=" + ref);
 		}
 		
@@ -101,7 +99,7 @@ public class EditPublicationController extends AbstractEditPublicationController
 	@Override
 	protected String getHttpsReferrer(EditPublicationCommand command) {
 		final String url = command.getUrl();
-		if (UrlUtils.isHTTPs(url)) {
+		if (UrlUtils.isHTTPS(url)) {
 			return url;
 		}
 		
@@ -143,12 +141,15 @@ public class EditPublicationController extends AbstractEditPublicationController
 		
 		final Person person;
 		if (present(command.getPerson().getPersonId())) {
-			person = this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getPerson().getPersonId());
+			// a new publication is added to an existing person
+			person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPerson().getPersonId());
 			if (command.getPersonIndex() == null) {
 				final List<PersonName> publicationNames = pubPost.getResource().getPersonNamesByRole(command.getPersonRole());
 				command.setPersonIndex(findPersonIndex(person, publicationNames));
 			}
 		} else {
+			// a new person entity is created by creating a publication post and taking its author name
+			// as the name of the new person (accessible via add person button on persons/genealogy page)
 			final List<PersonName> publicationNames = pubPost.getResource().getPersonNamesByRole(command.getPersonRole());
 			if ((command.getPersonIndex() != null) && (command.getPersonIndex() >= publicationNames.size())) {
 				this.errors.reject("error.field.valid.personId", "The provided person index is invalid.");
@@ -160,8 +161,6 @@ public class EditPublicationController extends AbstractEditPublicationController
 		}
 		
 		if (person != null) {
-			
-			
 			final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
 			resourcePersonRelation.setPerson(person);
 			resourcePersonRelation.setPost(pubPost);
@@ -205,7 +204,7 @@ public class EditPublicationController extends AbstractEditPublicationController
 		
 		if (command.getPerson() != null) {
 			if (present(command.getPerson().getPersonId())) {
-				final Person person = this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getPersonId());
+				final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPersonId());
 				command.setPerson(person);
 			}
 		}

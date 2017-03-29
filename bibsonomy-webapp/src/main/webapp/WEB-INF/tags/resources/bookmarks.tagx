@@ -4,7 +4,11 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:bm="urn:jsptagdir:/WEB-INF/tags/resources/bookmark"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
@@ -13,19 +17,29 @@
 	<jsp:directive.attribute name="listIndex" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="extTitle" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="widthClassName"  type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
+
+	<!-- list headline options  -->	
+	<jsp:directive.attribute name="showPageOptions" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="showBookmark" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="showPublication" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
+	
+	<!-- fragments -->
 	<jsp:directive.attribute name="addAsFirstItem" fragment="true" required="false" />
 	<jsp:directive.attribute name="addAsLastItem" fragment="true" required="false" />
-		
+	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
+	<jsp:directive.attribute name="additionalSorting" fragment="true"/>
+	
 	<c:if test="${empty listIndex}">
 		<c:set var="listIndex" value="0"/>
 	</c:if>
- 
 	<rc:list
 		titleKey="bookmarks" 
 		loginUserName="${loginUserName}"
 		listViewStartParamName="bookmark.start"
 		otherPostsUrlPrefix="/url/"
-		disableListNavigation="${disableListNavigation}"
 		listID="bookmarks_${listIndex}"
 		className="bookmarksContainer"
 		listView="${listView}"
@@ -34,9 +48,52 @@
 		addAsFirstItem="${addAsFirstItem}"
 		addAsLastItem="${addAsLastItem}">
 		
+		
+		<jsp:attribute name="listHeadline">
+			<c:if test="${showBookmark}">
+				<h3 class="list-headline">
+				
+					<fmt:message key="bookmarks" />	
+					&amp;nbsp;<small class="hidden-lg hidden-md">(<a id="hide-bookmarks" href=""><fmt:message key="list.hide" /></a>)</small>
+					<!-- Display total number of entries in list --> 
+					<c:if test="${!empty command.bookmark.list}">
+						<c:if test="${command.bookmark.totalCount != 0}">
+							<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bookmark.totalCount} "/> <fmt:message key="bookmarks" /></c:set>
+							<span class="badge" title="${totalTitle}" style="position:relative; top: -3px; left: 3px;">${command.bookmark.totalCount}</span>
+						</c:if>
+					</c:if>
+		
+					<!-- default: show page options -->
+					<c:if test="${empty showPageOptions or showPageOptions }">
+						<c:out value=" " />
+						<c:choose>
+							<c:when test="${not empty customPageOptions}">
+								<jsp:invoke fragment="customPageOptions"/>
+							</c:when>
+							<c:otherwise>
+								<div class="pull-right btn-group dropdown-align-right all-resources-menu">
+									<rc:actions 
+											resourceType="bookmark" 
+											sortPage="${command.sortPage}" 
+											sortPageOrder="${command.sortPageOrder}" 
+											showBookmark="${showBookmark}" 
+											showPublication="${showPublication}" 
+											showInboxActions="${showInboxActions}" 
+											isClipboard="${isClipboard}"
+											disableListNavigation="${disableListNavigation}"
+											disableResourcetypeSelection="${disableResourcetypeSelection}"
+											additionalSorting="${additionalSorting}"/>
+								</div>
+							</c:otherwise>
+						</c:choose>
+					</c:if>
+				</h3>
+			</c:if>
+		</jsp:attribute>
+		
 		<jsp:attribute name="title">     <bm:title   post="${post}"/></jsp:attribute>
 		<jsp:attribute name="desc">	     <bm:desc    post="${post}"/></jsp:attribute>
-		<jsp:attribute name="actions">   <bm:actions post="${post}" loginUserName="${loginUserName}"/></jsp:attribute>
+		<jsp:attribute name="actions">   <buttons:actions post="${post}" loginUserName="${loginUserName}" resourceType="bookmark"/></jsp:attribute>
 		<jsp:attribute name="documents"> <bm:documents  post="${post}"/></jsp:attribute>
 	</rc:list>
 	

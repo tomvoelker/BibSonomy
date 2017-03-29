@@ -6,121 +6,87 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:comment="urn:jsptagdir:/WEB-INF/tags/resources/discussion/comment"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem"
 	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
-    
-    <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
-    <jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
-    <jsp:directive.attribute name="discussionItems" type="java.util.List" required="false" />
- 	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true"/>
-    
-   	<!-- create new review / comment for create review / comment form -->
-   	<jsp:useBean id="newDate" class="java.util.Date" />
-    <jsp:useBean id="newReview" class="org.bibsonomy.model.Review">
-    	<jsp:setProperty name="newReview" property="date" value="${newDate}"/>
-    	<jsp:setProperty name="newReview" property="user" value="${loginUser}" />
-    </jsp:useBean>
-    
-    <jsp:useBean id="newComment" class="org.bibsonomy.model.Comment">
-    	<jsp:setProperty name="newComment" property="date" value="${newDate}" />
-    	<jsp:setProperty name="newComment" property="user" value="${loginUser}" />
-    </jsp:useBean>
-    
-    <c:if test="${empty discussionItems}">
-   		<c:set var="discussionItems" value="${resource.discussionItems}" />
-   	</c:if>
-   	
- 	<div class="discussion_all">  	
 	
-		<!-- hide/show discussion field -->    		
-	   	<a class="foldUnfold" href="div#discussion" style="font-size: 16px; margin: 0 auto;">
-	   		<img id="imgCollapseDiscussion" class="imgCollapse" border="0" src="/resources/image/icon_collapse.png" style="display:none;"/>
-	   		<img id="imgExpandDiscussion" class="imgExpand" border="0" src="/resources/image/icon_expand.png" style="display:none;" />
-	   		
-	   		<span id="textCollapseDiscussion" class="imgCollapse" style="display:none;">
-	   			<fmt:message key="post.resource.discussion.actions.hide" />
-	   		</span>
-	   		
-	   		<span id="textExpandDiscussion" class="imgExpand" style="display:none;">
-	   			<fmt:message key="post.resource.discussion.actions.show" />
-	   		</span>
-	   	</a>		
-   		
-   		<!-- The three Buttons -->
-   		<span class="initiallyHidden">
-<!-- 
-			<li>
-				<a href="#discussion" id="toggleDiscussion"><fmt:message key="post.resource.discussion.actions.hide" /></a>
-			</li>
- -->
+	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="discussionItems" type="java.util.List" required="false" />
+	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="postIsPublic" type="java.lang.Boolean" required="true"/>
+	
+	<!-- create new review / comment for create review / comment form -->
+	<jsp:useBean id="newDate" class="java.util.Date" />
+	<jsp:useBean id="newReview" class="org.bibsonomy.model.Review">
+		<jsp:setProperty name="newReview" property="date" value="${newDate}"/>
+		<jsp:setProperty name="newReview" property="user" value="${loginUser}" />
+	</jsp:useBean>
+	
+	<jsp:useBean id="newComment" class="org.bibsonomy.model.Comment">
+		<jsp:setProperty name="newComment" property="date" value="${newDate}" />
+		<jsp:setProperty name="newComment" property="user" value="${loginUser}" />
+	</jsp:useBean>
+	
+	<c:if test="${empty discussionItems}">
+		<c:set var="discussionItems" value="${resource.discussionItems}" />
+	</c:if>
+	
+	<div class="discussion-all">
+		<c:if test="${not postIsPublic}">
+			<bs:alert style="danger">
+				<jsp:attribute name="alertBody">
+					<fmt:message key="post.resource.discusssion.warning.goldstandard" />
+				</jsp:attribute>
+			</bs:alert>
+		</c:if>
+		
+		<c:set var="resourceClass" value="publication" />
+		<c:set var="isBookmark" value="${fn:contains(resource['class'].simpleName, 'Bookmark')}" />
+		<c:if test="${isBookmark}">
+			<c:set var="resourceClass" value="bookmark" />
+		</c:if>
+		<c:if test="${not isBookmark and resource.entrytype=='preprint' and empty resource.discussionItems}">
+			<p class="help-block">
+				<fmt:message key="post.resource.preprint.hint" />
+			</p>
+		</c:if>
+		
+		<!-- The input forms -->
+		<div id="discussion" data-interhash="${resource.interHash}" data-public="${postIsPublic}">
 			<!-- TODO: use spring security tags -->
 			<c:if test="${command.context.userLoggedIn}">
-				<span><span id="discussionRef"><fmt:message key="post.resource.comment.actions.create" /></span></span>
+				<div id="comment-review-info">
+					<p><fmt:message key="discussion.${resourceClass}.reviewCommentInfo" /></p>
+					<div class="text-center">
+						<div class="btn-group">
+							<button class="btn btn-sm btn-default active" data-class="createreview" data-hide-class="createcomment:first"><fmt:message key="discussion.review.create" /></button>
+							<button class="btn btn-sm btn-default" data-class="createcomment:first" data-hide-class="createreview"><fmt:message key="discussion.comment.create" /></button>
+						</div>
+					</div>
+				</div>
+				
+				<review:simpleReviewForm resource="${resource}" postUserName="${postUserName}" userName="${loginUser.name}"/>
 			</c:if>
-		
-			<!--
-				<li><a href="#showOnlyReviews" id="toggleReviews"><fmt:message key="post.resource.discussion.actions.showReviews" /></a></li>
-				<li><a href="#collapseAllThreads" id="collapseAllThreads"><fmt:message key="post.resource.discussion.actions.collapseAllThreads" /></a></li>
-			-->
-		</span>
-		
-		
-   				
-		<!-- Aggregated RatingInfo -->
-    	<review:reviewRatingsInfo resource="${resource}" />
-		
-		<!-- Publication reference link -->
-		<discussion:linkBox resource="${resource}"/>
-    		
-		<div cssClass="fsRow">
-			<c:if test="${not fn:contains(resource['class'].simpleName, 'Bookmark') and resource.entrytype=='preprint' and empty resource.discussionItems}">
-				<fmt:message key="post.resource.preprint.hint" />
-			</c:if>
-		</div>
 	
- 	  	<!-- The input forms -->
- 	  	<div id="discussion" data-interhash="${resource.interHash}">
-	    	<!-- TODO: use spring security tags -->
-		    <c:if test="${command.context.userLoggedIn}">
-		    	<div id="createReview" class="createReview">
-		    		<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}"/>
-		    		<!-- TODO: add tips for reviewing a resource !--> 
-	    		</div>
-		    	<!-- review and comment forms !-->
-	    		<div id="createComment" class="initiallyHidden">
-		    		<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}" type="comment"/>
-		    		<!-- TODO: add tips for reviewing a resource !--> 
-	    		</div>
-	    		<!-- review and comment forms !-->
-	    		<div id="createCommentInstance" class="initiallyHidden">
-		    		<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}" type="comment"/>
-		    		<!-- TODO: add tips for reviewing a resource !--> 
-	    		</div>
-
-<!-- <div id="createComment" class="initiallyHidden">
-			    	<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}" rating="${false}"/>
-			    	<comment:commentForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}"/>
-			    </div> --> 
-			</c:if>
-
-			<discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
+			<discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" postUserName="${postUserName}" />
 		</div>
-
+		
 		<!-- TODO: use spring security tags -->
 		<c:choose>
 			<c:when test="${command.context.userLoggedIn}">
-				<div id="discussionTemplates" class="initiallyHidden">
-					<!-- create comment div structure -->
-					<div id="commentTemplate">
-				   		<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" schemaOrgMarkUp="false"/>
-					</div>
-			    
+				<div id="discussionTemplates" class="hidden">
+					
 					<ul>
-						<!-- create li, div structure for new review -->
-						<li id="newReview">
-							<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" schemaOrgMarkUp="false"/>
+						<!-- create comment div structure -->
+						<li id="commentTemplate" class="media comment">
+							<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" postUserName="${postUserName}"/>
 						</li>
-		    		</ul>
+						<!-- create li, div structure for new review -->
+						<li id="reviewTemplate" class="media review">
+							<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" postUserName="${postUserName}"/>
+						</li>
+					</ul>
 				</div>
 			</c:when>
 			<c:otherwise>

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -52,6 +52,12 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	/** tags to search for, as list */
 	private List<String> requestedTagsList = null;
 	
+	/**
+	 * the number of normal tags (no system tags)
+	 * TODO: remove as soon as we can check for system tags in the view
+	 */
+	private int numberOfNormalTags;
+	
 	/** the specified order */
 	private Order order = Order.ADDED;
 		
@@ -76,16 +82,16 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	/**
 	 * @return the requested tagstring as a list
 	 */
-	public List<String> getRequestedTagsList() {		
+	public List<String> getRequestedTagsList() {
 		// tagstring has not yet been tokenized 
 		if (this.requestedTagsList == null) {
-			this.requestedTagsList = new ArrayList<String>();			
+			this.requestedTagsList = new ArrayList<String>();
 			final StringTokenizer st = new StringTokenizer(requestedTags);
-			while (st.hasMoreTokens()) {			
-				final String tagname = st.nextToken();			
-				this.requestedTagsList.add(tagname);			
-			}			
-		}		
+			while (st.hasMoreTokens()) {
+				final String tagname = st.nextToken();
+				this.requestedTagsList.add(tagname);
+			}
+		}
 		return this.requestedTagsList;
 	}
 	
@@ -94,7 +100,7 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	 */
 	public String getRequestedTags() {
 		return this.requestedTags;
-	}	
+	}
 	
 	/**
 	 * sets the requested tags
@@ -272,6 +278,20 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	 */
 	public List<Tag> getConceptsOfAll() {
 		return conceptsOfAll;
+	}
+
+	/**
+	 * @return the numberOfNormalTags
+	 */
+	public int getNumberOfNormalTags() {
+		return this.numberOfNormalTags;
+	}
+
+	/**
+	 * @param numberOfNormalTags the numberOfNormalTags to set
+	 */
+	public void setNumberOfNormalTags(int numberOfNormalTags) {
+		this.numberOfNormalTags = numberOfNormalTags;
 	}
 
 	/**

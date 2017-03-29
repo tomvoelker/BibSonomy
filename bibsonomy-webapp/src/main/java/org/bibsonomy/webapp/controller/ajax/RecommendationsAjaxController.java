@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -37,17 +37,11 @@ import java.util.TreeSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.recommender.connector.model.PostWrapper;
-import org.bibsonomy.recommender.connector.utilities.RecommendationUtilities;
-import org.bibsonomy.rest.renderer.Renderer;
-import org.bibsonomy.rest.renderer.RendererFactory;
-import org.bibsonomy.rest.renderer.RenderingFormat;
-import org.bibsonomy.rest.renderer.UrlRenderer;
+import org.bibsonomy.recommender.tag.model.RecommendedTag;
 import org.bibsonomy.webapp.command.ajax.AjaxRecommenderCommand;
 import org.bibsonomy.webapp.util.GroupingCommandUtils;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -55,8 +49,8 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
-import recommender.core.Recommender;
-import recommender.core.interfaces.model.TagRecommendationEntity;
+import recommender.core.RecommendationService;
+import recommender.core.interfaces.renderer.RecommendationRenderer;
 
 /**
  * Some common operations for recommendation tasks.
@@ -65,8 +59,6 @@ import recommender.core.interfaces.model.TagRecommendationEntity;
  *       As in the post*controller, the post-command has to be filled -
  *       at least with grouping information, as private posts shouldn't
  *       be sent to remotely installed recommender
- * TODO: controller could use the JSONRenderer to return recommandations as
- * 		JSON and not XML
  *       
  * @param <R>
  *  
@@ -84,13 +76,16 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	 */
 	private LogicInterface adminLogic;
 	
+	/** the renderer for serialing the recommendation results */
+	private RecommendationRenderer<Post<? extends Resource>, RecommendedTag> recommendationRenderer;
+	
 	/** default recommender for serving spammers */
-	private Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> spamTagRecommender;
+	private RecommendationService<Post<? extends Resource>, RecommendedTag> spamTagRecommender;
 	
 	/**
 	 * Provides tag recommendations to the user.
 	 */
-	private Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> recommender;
+	private RecommendationService<Post<? extends Resource>, RecommendedTag> recommender;
 	
 	@Override
 	public View workOn(final AjaxRecommenderCommand<R> command) {
@@ -114,7 +109,8 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 		// TODO: we could probably also filter out those users, which are 
 		//       flagged as 'spammer unsure' 
 		//------------------------------------------------------------------------
-		final User dbUser = this.adminLogic.getUserDetails(loginUser.getName());
+		final String loggedinUserName = loginUser.getName();
+		final User dbUser = this.adminLogic.getUserDetails(loggedinUserName);
 
 		/*
 		 * set the user of the post to the loginUser (the recommender might need
@@ -128,15 +124,15 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 		GroupingCommandUtils.initGroups(command, command.getPost().getGroups());
 		
 		// set postID for recommender
-		command.getPost().setContentId(command.getPostID());
+		command.getPost().setContentId(Integer.valueOf(command.getPostID()));
 
 		if ((dbUser.isSpammer()) && (((dbUser.getPrediction() == null) && (dbUser.getAlgorithm() == null)) ||
-					(dbUser.getPrediction().equals(1) || dbUser.getAlgorithm().equals(USERSPAMALGORITHM)))  ) {
+					(dbUser.getPrediction().equals(Integer.valueOf(1)) || dbUser.getAlgorithm().equals(USERSPAMALGORITHM)))  ) {
 			// the user is a spammer
 			log.debug("Filtering out recommendation request from spammer");
 			if (this.spamTagRecommender != null)	{
-				final SortedSet<recommender.impl.model.RecommendedTag> result = this.spamTagRecommender.getRecommendation(new PostWrapper<R>(command.getPost()));
-				this.processRecommendedTags(command, RecommendationUtilities.getRecommendedTags(result));
+				final SortedSet<RecommendedTag> result = this.spamTagRecommender.getRecommendationsForUser(loggedinUserName, command.getPost());
+				this.processRecommendedTags(command, result);
 			} else {
 				command.setResponseString("");
 			}
@@ -145,8 +141,8 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 			 * get the recommended tags for the post from the normal recommender
 			 */
 			if (this.recommender != null) {
-				final SortedSet<recommender.impl.model.RecommendedTag> result = this.recommender.getRecommendation(new PostWrapper<R>(command.getPost()));
-				this.processRecommendedTags(command, RecommendationUtilities.getRecommendedTags(result));
+				final SortedSet<RecommendedTag> result = this.recommender.getRecommendationsForUser(loggedinUserName, command.getPost());
+				this.processRecommendedTags(command, result);
 			} else {
 				command.setResponseString("");
 			}
@@ -184,19 +180,9 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	//------------------------------------------------------------------------
 	private void processRecommendedTags(final AjaxRecommenderCommand<R> command, final SortedSet<RecommendedTag> tags) {
 		command.setRecommendedTags(tags);
-		// TODO: renderer is thread safe? => constant
-		final Renderer renderer = new RendererFactory(new UrlRenderer("/api/")).getRenderer(RenderingFormat.JSON);
 		final StringWriter sw = new StringWriter(100);
-		renderer.serializeRecommendedTags(sw, command.getRecommendedTags());
+		this.recommendationRenderer.serializeRecommendationResultList(sw, command.getRecommendedTags());
 		command.setResponseString(sw.toString());
-	}
-
-
-	/**
-	 * @param recommender 
-	 */
-	public void setRecommender(final Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> recommender) {
-		this.recommender = recommender;
 	}
 
 	/**
@@ -207,10 +193,23 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	}
 
 	/**
+	 * @param recommendationRenderer the recommendationRenderer to set
+	 */
+	public void setRecommendationRenderer(RecommendationRenderer<Post<? extends Resource>, RecommendedTag> recommendationRenderer) {
+		this.recommendationRenderer = recommendationRenderer;
+	}
+
+	/**
 	 * @param spamTagRecommender the spamTagRecommender to set
 	 */
-	public void setSpamTagRecommender(final Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> spamTagRecommender) {
+	public void setSpamTagRecommender(RecommendationService<Post<? extends Resource>, RecommendedTag> spamTagRecommender) {
 		this.spamTagRecommender = spamTagRecommender;
 	}
 
+	/**
+	 * @param recommender the recommender to set
+	 */
+	public void setRecommender(RecommendationService<Post<? extends Resource>, RecommendedTag> recommender) {
+		this.recommender = recommender;
+	}
 }

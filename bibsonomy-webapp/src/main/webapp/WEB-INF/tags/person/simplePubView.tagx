@@ -1,0 +1,37 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+
+	<div class="simplePubEntry" 
+		data-year="${mtl:getDate('', '', post.resource.year, locale)}" 
+		data-author="${post.resource.author}" 
+		data-title="${mtl:cleanBibtex(post.resource.title)}">
+		
+		<div class="simplePubFirstLine">		
+			<span class="simplePubTitle"><bib:title post="${post}" />
+				<span class="simplePubYear"><bib:year publication="${post.resource}" braces="true" /></span>
+			</span>
+		</div>
+		
+		
+		<div class="clearflat"><!-- KEEP ME --></div>
+		<span class="simplePubAuthor"><bib:author publication="${post.resource}" post="${post}" /></span>
+		<span class="simplePubPublisher"><bib:publisher publication="${post.resource}" noComma="true" /></span>
+	</div>
+	
+</jsp:root>

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-BibTeX-Parser - BibTeX Parser from http://www-plan.cs.colorado.edu/henkel/stuff/javabib/
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -108,11 +108,15 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		/*
 		 * call parseBibTeX
 		 */
-		final BibTex parsedBibTeX = this.parseBibTeX(bibtex);
+		final BibTex parsedPublication = this.parseBibTeX(bibtex);
+		if (!present(parsedPublication)) {
+			return null;
+		}
+
 		/*
 		 * create post and put resource into post
 		 */
-		return this.fillPost(parsedBibTeX);
+		return this.fillPost(parsedPublication);
 	}
 
 	/**
@@ -177,7 +181,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 			 */
 			bibtex.removeMiscField("intrahash");
 			bibtex.removeMiscField("interhash");
-			for (final String additionalMiscField: BibTexUtils.ADDITIONAL_MISC_FIELDS) {
+			for (final String additionalMiscField : BibTexUtils.ADDITIONAL_MISC_FIELDS) {
 				bibtex.removeMiscField(additionalMiscField);	
 			}
 		}
@@ -249,8 +253,9 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 
 		for (final String additionalField: BibTexUtils.ADDITIONAL_MISC_FIELDS) {
 			final BibtexString field = (BibtexString) entry.getFieldValue(additionalField); 
-			if (field != null) bibtex.addMiscField(additionalField, field.getContent());
-
+			if (field != null) {
+				bibtex.addMiscField(additionalField, field.getContent());
+			}
 		}
 
 		return bibtex;

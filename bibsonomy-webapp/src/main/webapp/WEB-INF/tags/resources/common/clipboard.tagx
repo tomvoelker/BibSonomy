@@ -8,20 +8,22 @@
 	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="true" />
 	
 	<!--+
-		+ basket actions (pick all, unpick all, clear basket)
+		+ clipboard actions (pick all, unpick all, clear clipboard)
 		+-->	
 	<c:choose>
 		<c:when test="${isClipboard}">
-			<fmt:message key="basket.removeAllVerbose" var="removeAllVerbose"/>
-			<a href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodeURI(command.context.ckey)}">
-				<fmt:message key="basket.removeAll"/>
-			</a>
+			<fmt:message key="clipboard.removeAllVerbose" var="removeAllVerbose"/>
+			<li>
+				<a href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodePathSegment(command.context.ckey)}">
+					<fmt:message key="clipboard.removeAll"/>
+				</a>
+			</li>
 		</c:when>
 		<c:otherwise>
 			<fmt:message var="pickPublications" key="post.meta.pick.title"/>
-			<a href="" title="${pickPublications}" onclick="return pickAll(event);"><fmt:message key="post.meta.pick.all"/></a>,${mtl:ch('nbsp')}
+			<li><a href="" title="${pickPublications}" onclick="return pickAll(event);"><fmt:message key="post.meta.pick.all"/></a></li>
 			<fmt:message var="unPickPublications" key="post.meta.unpick.title"/>
-			<a href="" title="${unPickPublications}" onclick="return unpickAll(event);"><fmt:message key="post.meta.unpick.all"/></a>
+			<li><a href="" title="${unPickPublications}" onclick="return unpickAll(event);"><fmt:message key="post.meta.unpick.all"/></a></li>
 		</c:otherwise>
 	</c:choose>
 </jsp:root>

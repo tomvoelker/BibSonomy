@@ -1,3 +1,7 @@
+$(function(){
+	myownTagInit($('#myownChkBox'), $('#inpf_tags'));
+});
+
 function highlightMatches(text, input) {
 	var terms = input.split(" ");
 	for (var i=0; i < terms.length; i++) {
@@ -43,52 +47,4 @@ function myownTagInit(chkbox, tagbox) {
 					tagbox.val(tagbox.val().replace(expr, ' ').replace(/^[ ]?/, ''));
 				}
 			}).parent().removeClass('hiddenElement');
-}
-
-$(function(){
-		myownTagInit($('#myownChkBox'), $('#inpf_tags'));
-});
-
-function initSuggestionForPartTitles(el) {
-	el.each(function(index){ $(this).autocomplete({
-		source: function( request, response ) {
-			$.ajax({
-				url: "/json/tag/" + createParameters(request.term),
-				data: {items: 10,resourcetype: 'publication', duplicates: 'no'},
-				dataType: "jsonp",
-				success: function( data ) {
-					response( $.map( data.items, function( post ) {
-						var tags = concatArray(post.tags, null, ' ');
-						return {
-							label: (highlightMatches(post.label, request.term) + ' (' + post.year + ')'),
-							value: post.interHash,
-							url: 'hash=' + post.intraHash + '&user=' + post.user + '&copytag=' + tags,
-							author: (concatArray(post.author, 40, ' ' + getString('and') + ' ')),
-							user: post.user,
-							tags: tags
-						};
-					}));
-				}
-			});
-		},
-		minLength: 3,
-		select: function( event, ui ) {
-			window.location.href = '/editPublication?'+ui.item.url;
-			return false;
-		},
-		focus: function( event, ui ) {
-			return false;
-		}
-	})
-	.data( 'autocomplete' )._renderItem = function( ul, item ) {
-		return $('<li></li>')
-		.data( 'item.autocomplete', item )
-		.append(
-				$('<a></a>')
-				.html(	item.label+'<br><span class="ui-autocomplete-subtext">' 
-						+item.author+' '+getString('by')+' '
-						+item.user+'</span>'))
-						.appendTo( ul );
-	};
-	});
 }

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -25,6 +25,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.bibsonomy.webapp.util.spring.security.exceptionmapper;
+
+import javax.servlet.http.HttpSession;
 
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.util.spring.security.exceptions.LdapUsernameNotFoundException;
@@ -55,6 +57,14 @@ public abstract class UsernameNotFoundExceptionMapper {
 	 * @return A user containing the information from the LDAP server.
 	 */
 	public abstract User mapToUser(final UsernameNotFoundException e);
+	
+	/**
+	 * @param session
+	 * @param e 
+	 */
+	public void writeAdditionAttributes(HttpSession session, UsernameNotFoundException e) {
+		// noop
+	}
 
 	/**
 	 * @return The URL to which the user shall be redirected if she/he needs to
@@ -73,6 +83,4 @@ public abstract class UsernameNotFoundExceptionMapper {
 	public void setRedirectUrl(String redirectUrl) {
 		this.redirectUrl = redirectUrl;
 	}
-
-	
 }

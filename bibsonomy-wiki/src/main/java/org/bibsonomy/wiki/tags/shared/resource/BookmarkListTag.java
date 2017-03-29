@@ -1,7 +1,7 @@
 /**
  * BibSonomy CV Wiki - Wiki for user and group CVs
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -83,9 +84,9 @@ public class BookmarkListTag extends SharedTag {
  		}
  		
  		// TODO: Remove duplicates, if rendered for group
- 		List<Post<Bookmark>> posts = this.logic.getPosts(Bookmark.class, this.getGroupingEntity(), this.getRequestedName(), Arrays.asList(tags.split(" ")), null, null,SearchType.LOCAL, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
-		
-		if (tagAttributes.get(LIMIT) != null) {
+ 		List<Post<Bookmark>> posts = this.logic.getPosts(Bookmark.class, this.getGroupingEntity(), this.getRequestedName(), Arrays.asList(tags.split(" ")), null, null, SearchType.LOCAL, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
+
+ 		if (tagAttributes.get(LIMIT) != null) {
 			try {
 				posts = posts.subList(0, Integer.parseInt(tagAttributes.get(LIMIT)));
 			} catch (final Exception e) {
@@ -93,31 +94,30 @@ public class BookmarkListTag extends SharedTag {
 			}
 		}
 
-		renderedHTML.append("<div class='align' id='bookmarks'>");
+		renderedHTML.append("<div id='bookmarks'>");
 		renderedHTML.append("<ul id='bookmarklist' class='bookmarkList'>");
 
 		for (final Post<Bookmark> post : posts) {
-			renderedHTML.append("<div style='margin:1.2em;' class='entry'><li><span class='entry_title'>");
-			renderedHTML.append("<a href='" + post.getResource().getUrl()
-					+ "' rel='nofollow'>" + post.getResource().getTitle()
-					+ "</a>");
+			renderedHTML.append("<div class='entry'><li><span class='entry_title'>");
+			renderedHTML.append("<a href='");
+			renderedHTML.append(StringEscapeUtils.escapeXml(post.getResource().getUrl()));
+			renderedHTML.append("' rel='nofollow'>");
+			renderedHTML.append(StringEscapeUtils.escapeHtml(post.getResource().getTitle()));
+			renderedHTML.append("</a>");
 			renderedHTML.append("</span>");
 
 			final String description = post.getDescription();
 			if (present(description)) {
-				// TODO: i18n [show details]
-				renderedHTML.append(" <a class='hand' onclick='return toggleDetails(this)' >"
-								+ this.messageSource.getMessage(
-										"cv.options.show_details",
-										new Object[] { this.getName() },
-										this.locale) + " </a>");
+				renderedHTML.append("<a class='cv-bookmark-details' onclick='return toggleDetails(this)'>");
+				renderedHTML.append(this.messageSource.getMessage("cv.options.show_details", new Object[] { this.getName() }, this.locale));
+				renderedHTML.append("</a>");
 				renderedHTML.append("<p class='details'>" + description + "</p>");
 			}
 			renderedHTML.append("</li></div>");
 		}
 
 		renderedHTML.append("</ul>");
-		renderedHTML.append("</div >");
+		renderedHTML.append("</div>");
 		return renderedHTML.toString();
 	}
 }

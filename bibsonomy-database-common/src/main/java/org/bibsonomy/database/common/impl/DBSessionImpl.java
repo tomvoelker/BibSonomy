@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database-Common - Helper classes for database interaction
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -27,6 +27,8 @@
 package org.bibsonomy.database.common.impl;
 
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -37,6 +39,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
+import org.bibsonomy.common.exceptions.DuplicateEntryException;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.util.ExceptionUtils;
@@ -106,7 +109,7 @@ public class DBSessionImpl implements DBSession {
 	}
 
 	/**
-	 * Marks the current (virtual) transaction as having been sucessfully
+	 * Marks the current (virtual) transaction as having been successfully
 	 * completed. If the transaction isn't virtual a following call to
 	 * endTransaction will do a commit on the real transaction.
 	 */
@@ -290,11 +293,11 @@ public class DBSessionImpl implements DBSession {
 	private void handleException(final Exception e, final String query) {
 		// XXX: :(
 		if (e instanceof NestedSQLException) {
-			this.handleException((NestedSQLException)e, query);
+			this.handleException((NestedSQLException) e, query);
 		} else {
 			log.error("Caught exception " + e.getClass().getSimpleName());
 			this.logException(query, e);
-		}		
+		}
 	}
 
 	private void handleException(final NestedSQLException ex, final String query) {
@@ -343,18 +346,24 @@ public class DBSessionImpl implements DBSession {
 				break;
 			}
 		}
-
-		/*
-		 * XXX: this handles a special MySQL exception. We had a check on
-		 * the corresponding class here, which brought in a dependency to
-		 * MySQL. Therefore, the check is now against the class name - 
-		 * which brings problems, if it should change ... 
-		 */
-		if ((cause != null) && cause.getClass().getSimpleName().equals("MySQLTimeoutException")) {
-			log.info("MySQL Query timeout for query " + query);
-			throw new QueryTimeoutException(ex, query);
+		
+		if (cause != null) {
+			/*
+			 * XXX: this handles a special MySQL exception. We had a check on
+			 * the corresponding class here, which brought in a dependency to
+			 * MySQL. Therefore, the check is now against the class name - 
+			 * which brings problems, if it should change ... 
+			 */
+			if (cause.getClass().getSimpleName().equals("MySQLTimeoutException")) {
+				log.info("MySQL Query timeout for query " + query);
+				throw new QueryTimeoutException(ex, query);
+			}
+			
+			String message = cause.getMessage();
+			if (present(message) && message.contains("Duplicate entry")) {
+				throw new DuplicateEntryException();
+			}
 		}
-
 		this.logException(query, ex);
 	}
 
@@ -378,6 +387,11 @@ public class DBSessionImpl implements DBSession {
 		}
 
 		errorMessages.add(errorMessage);
+	}
+
+	@Override
+	public boolean hasErrorsForKey(final String key) {
+		return this.errorMessages.containsKey(key);
 	}
 
 	@Override

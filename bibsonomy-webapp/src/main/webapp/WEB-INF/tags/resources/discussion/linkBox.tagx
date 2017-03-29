@@ -1,5 +1,4 @@
-<jsp:root version="2.0"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:spring="http://www.springframework.org/tags"
@@ -9,35 +8,24 @@
     
    	<c:set var="resourceName" value="publication" />
    	<c:if test="${fn:contains(fn:toLowerCase(resource['class'].simpleName), 'bookmark')}">
+   
    		<c:set var="resourceName" value="url" />
    	</c:if>
-	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
+   	
+   	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
     <c:set var="linkText" value="[[${resourceName}/${interHashId}${resource.interHash}]]" />
     
     
     
     <div id="referenceLinkContainer">
-			<fmt:message var="linkType" key="discussion.info.resource"/>
-			<div >
-				<a href="javascript:linkBox(true);">
-					<fmt:message key="discussion.resourceLink">
-						<fmt:param value="${linkType}"/> 
-					</fmt:message>
-				</a>
-				<div class="help">
-					<b class="smalltext" style="">?</b>
-					<div>
-						<fmt:message key="discussion.resourceLink.help">
-							<fmt:param value="${linkType}" />
-						</fmt:message>
-					</div>
-				</div>
-			</div>
-	<fmt:message var="alternateClose" key="close" />
-	<div id="linkBox" style="display:none">
-		<input type="text" value="${linkText}" size="${fn:length(linkText)}" style="float:left"/>
-		<a href="javascript:linkBox(false);" title="${alternateClose}" style="text-align:bottom"><img src="${resdir}/image/icon_close.png" alt="${alternateClose}" /></a>
-	</div>
-	<script type="text/javascript" src="${resdir}/javascript/discussion/linkbox.js"><!-- keep me --></script>
-	</div>
+		<fmt:message var="linkType" key="discussion.info.resource"/>
+		
+		<input class="form-control help-popover" type="text" value="${linkText}" size="${fn:length(linkText)}" style="width:50%"/>
+		<div class="help help-header hide"><c:out value="${labelText}" /></div>
+		<div class="help help-content hide">
+			<fmt:message key="discussion.resourceLink.help">
+				<fmt:param value="${linkType}" />
+			</fmt:message>
+		</div>
+    </div>
 </jsp:root>

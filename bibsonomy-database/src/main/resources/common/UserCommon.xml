@@ -40,6 +40,7 @@
 		<result property="updatedBy"        column="updated_by"    javaType="string" />
 		<result property="updatedAt"	    column="updated_at"    javaType="date" />
 		<result property="toClassify"       column="to_classify"   javaType="integer" />
+		<result property="registrationLog"  column="reg_log"   	   javaType="string" />
 		<result property="reminderPassword" column="tmp_password"  javaType="string" />
 		<result property="reminderPasswordRequestDate" column="tmp_request_date"  javaType="date" />
 		<result property="ldapId" 			column="ldapUserId"		javaType="string" />
@@ -61,21 +62,26 @@
 	</resultMap>
 	
 	<resultMap id="userSettings" class="userSettings">
-		<result property="listItemcount"   	column="list_itemcount" 	javaType="integer" />	
+		<result property="listItemcount"   	column="list_itemcount" 	javaType="integer" />
 		<result property="tagboxMinfreq"   	column="tagbox_minfreq" 	javaType="integer" />
 		<result property="tagboxMaxCount"  	column="tagbox_max_count" 	javaType="integer" />
 		<result property="isMaxCount"      	column="is_max_count"   	javaType="boolean" />
 		<result property="tagboxSort"      	column="tagbox_sort"    	javaType="integer" />
 		<result property="tagboxStyle"     	column="tagbox_style"   	javaType="integer" />
-		<result property="tagboxTooltip"   	column="tagbox_tooltip" 	javaType="integer" />	
+		<result property="tagboxTooltip"   	column="tagbox_tooltip" 	javaType="integer" />
 		<result property="logLevel"        	column="log_level"      	javaType="integer" />
-		<result property="defaultLanguage" 	column="lang" 	       		javaType="string" />	
+		<result property="defaultLanguage" 	column="lang" 	       		javaType="string" />
 		<result property="confirmDelete"   	column="confirmDelete"  	javaType="boolean" />
-		<result property="profilePrivlevel" column="profilegroup"   	javaType="ProfilePrivlevel" />	
+		<result property="profilePrivlevel" column="profilegroup"   	javaType="ProfilePrivlevel" />
 		<result property="showBookmark"   	column="show_bookmark"  	javaType="boolean" />
 		<result property="showBibtex"   	column="show_bibtex"  		javaType="boolean" />
-		<result property="layoutSettings"   column="simple_interface"  javaType="LayoutSettings" />	
-	</resultMap>	
+		<result property="favouriteLayouts" column="favourite_layouts"  typeHandler="org.bibsonomy.database.common.typehandler.FavouriteLayoutsTypeHandlerCallback" />
+		<result property="layoutSettings"   resultMap="UserCommon.layoutSettings" />
+	</resultMap>
+	
+	<resultMap class="layoutSettings" id="layoutSettings">
+		<result property="simpleInterface" column="simple_interface"   javaType="boolean" />
+	</resultMap>
 
 	<resultMap id="userWithTags" extends="Common.user" class="user">
 		<result property="tags" column="tag" resultMap="Common.tag"/>
@@ -91,7 +97,7 @@
 	<sql id="commonUserAttributes">
 		user_name, user_realname,
 		user_password, user_password_salt, api_key, openurl, tmp_password, tmp_request_date,
-		role, ip_address, reg_date, spammer, updated_by, updated_at, to_classify, 
+		role, ip_address, reg_date, spammer, updated_by, updated_at, to_classify, reg_log, 
 		user_email, user_homepage, birthday, gender, hobbies, interests, place, profession, institution,
 		useExternalPicture
 	</sql>
@@ -100,8 +106,8 @@
 	<sql id="userSettingsAttributes">
 		tagbox_style, tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, 
 		lang, log_level, confirmDelete, profilegroup, tagbox_max_count, is_max_count, 
-		show_bookmark, show_bibtex, simple_interface
-	</sql>	
+		show_bookmark, show_bibtex, simple_interface, favourite_layouts
+	</sql>
 
 	<!-- 
 		for insert and update statements matching 'allUserAttributes'  
@@ -111,13 +117,14 @@
 		#password#, #passwordSalt#, #apiKey#, #openURL#,
 		<isNotNull property="reminderPassword">#reminderPassword#,#reminderPasswordRequestDate#,</isNotNull>
 		<isNull property="reminderPassword">NULL,DEFAULT(tmp_request_date),</isNull>
-		#role#, #IPAddress#, #registrationDate#, #spammer#, #updatedBy#, #updatedAt#, #toClassify#, 
+		#role#, #IPAddress#, #registrationDate#, #spammer#, #updatedBy#, #updatedAt#, #toClassify#, LEFT(#registrationLog#, 1000000),
 		#email#, #homepage#, #birthday#, #gender#, #hobbies#, #interests#, #place#, #profession#, #institution#, #useExternalPicture#,
 		#settings.tagboxStyle#, #settings.tagboxSort#, #settings.tagboxMinfreq#, #settings.tagboxTooltip#, #settings.listItemcount#, 
 		<isNotNull property="settings.defaultLanguage">#settings.defaultLanguage#,</isNotNull>
 		<isNull property="settings.defaultLanguage">DEFAULT(lang),</isNull> 
 		#settings.logLevel#, #settings.confirmDelete#, #settings.profilePrivlevel#, #settings.tagboxMaxCount#, #settings.isMaxCount#, 
-		#settings.showBookmark#, #settings.showBibtex#, #settings.layoutSettings#
+		#settings.showBookmark#, #settings.showBibtex#, #settings.layoutSettings.simpleInterface#,
+		#settings.favouriteLayouts,handler=org.bibsonomy.database.common.typehandler.FavouriteLayoutsTypeHandlerCallback#
 	</sql>
 
 	<sql id="updateUserProfileAttributes">
@@ -148,7 +155,8 @@
 		confirmDelete = #settings.confirmDelete#, 
 		show_bookmark = #settings.showBookmark#,
 		show_bibtex = #settings.showBibtex#, 
-		simple_interface = #settings.layoutSettings#
+		simple_interface = #settings.layoutSettings.simpleInterface#,
+		favourite_layouts = #settings.favouriteLayouts,handler=org.bibsonomy.database.common.typehandler.FavouriteLayoutsTypeHandlerCallback#
 	</sql>
 	
 	<!-- matches resources owned by group members which trust the currUser -->

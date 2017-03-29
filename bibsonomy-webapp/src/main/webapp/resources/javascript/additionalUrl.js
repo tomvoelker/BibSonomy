@@ -39,10 +39,11 @@ function deleteUrl(self, url, hash, ckey) {
 
 /**
  * Function to post the given url which is defined in form: f_addURL
- * (bibtexdetails.tagx)
+ * (publicationdetails.tagx)
  */
 $(function(){
-    $(".postUrl").click(function() {
+    $(".postUrl").click(function(e) {
+    	e.preventDefault();
     	/*
     	 * load the jQuery script for sending the form
     	 */
@@ -59,12 +60,13 @@ $(function(){
 	
 	            	if ("ok" == status) {
 	            		$('#urlList').prepend(function() {
-	            			$("#f_addURL").hide();
-	            			return $("<div><a href='" + url + "'>" + urlText + "</a> (</div>")
-	            				.append($("<a href=''>" + getString("post.bibtex.delete") + "</a>").click(function() {
+	            			$("#add-url-modal").modal("hide");
+	            			
+	            			return $("<li><a href='" + url + "'>" + urlText + "</a> </li>")
+	            				.append($("<a href=''><span class='fa fa-times'><!--  --></span></a>").click(function() {
 	            					deleteUrl(this, url, hash, ckey);
 	            					return false;
-	            				})).append(')');
+	            				}));
 	            		});
 	            	} else {
 	            		alert(data.globalErrors[0].message);
@@ -72,6 +74,7 @@ $(function(){
 	        	}
 	        });
     	});
+    	return false;
     });
 });
 

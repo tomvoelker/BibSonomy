@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,8 +26,6 @@
  */
 package org.bibsonomy.rest.strategy.posts;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.io.Writer;
 import java.util.List;
 
@@ -48,74 +46,51 @@ import org.bibsonomy.util.SortUtils;
  * @author Jens Illig
  */
 public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrategy<List<? extends Post<? extends Resource>>> {
-    protected final Class<? extends Resource> resourceType;
-    protected final String hash;
-    protected final GroupingEntity grouping;
-    protected final String groupingValue;
-    protected final String tagString;
-    protected final List<String> tags;
-    protected final String search;
-    protected final Order order;
-    protected final List<SortKey> sortKeys;
-    protected final List<SortOrder> sortOrders;
-    
-    /**
-     * @param context
-     */
-    public AbstractListOfPostsStrategy(final Context context) {
-        super(context);
-        this.tagString = context.getStringAttribute(RESTConfig.TAGS_PARAM, null);
-        this.resourceType = ResourceFactory.getResourceClass(context.getStringAttribute(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.RESOURCE_CLASS_NAME));
-        this.hash = context.getStringAttribute(RESTConfig.RESOURCE_PARAM, null);
-        this.search = context.getStringAttribute(RESTConfig.SEARCH_PARAM, null);
-        this.order = context.getEnumAttribute(RESTConfig.ORDER_PARAM, Order.class, null);
-        this.sortKeys = SortUtils.parseSortKeys(context.getStringAttribute(RESTConfig.SORTKEY_PARAM, null));
-        this.sortOrders = SortUtils.parseSortOrders(context.getStringAttribute(RESTConfig.SORTORDER_PARAM, null));
-        this.grouping = this.chooseGroupingEntity();
-        this.tags = context.getTags(RESTConfig.TAGS_PARAM);
-        String groupingValue;
-        if (this.grouping != GroupingEntity.ALL) {
-            groupingValue = context.getStringAttribute(this.grouping.toString().toLowerCase(), null);
-            if (this.grouping == GroupingEntity.USER) {
-                groupingValue = RESTUtils.normalizeUser(groupingValue, context);
-            }
-        } else {
-            groupingValue = null;
-        }
-        
-        this.groupingValue = groupingValue;
-    }
+	protected final Class<? extends Resource> resourceType;
+	protected final String hash;
+	protected final GroupingEntity grouping;
+	protected final String groupingValue;
+	protected final String tagString;
+	protected final List<String> tags;
+	protected final String search;
+	protected final Order order;
+	protected final List<SortKey> sortKeys;
+	protected final List<SortOrder> sortOrders;
+	
+	/**
+	 * @param context
+	 */
+	public AbstractListOfPostsStrategy(final Context context) {
+		super(context);
+		this.tagString = context.getStringAttribute(RESTConfig.TAGS_PARAM, null);
+		this.resourceType = ResourceFactory.getResourceClass(context.getStringAttribute(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.RESOURCE_CLASS_NAME));
+		this.hash = context.getStringAttribute(RESTConfig.RESOURCE_PARAM, null);
+		this.search = context.getStringAttribute(RESTConfig.SEARCH_PARAM, null);
+		this.order = context.getEnumAttribute(RESTConfig.ORDER_PARAM, Order.class, null);
+		this.sortKeys = SortUtils.parseSortKeys(context.getStringAttribute(RESTConfig.SORTKEY_PARAM, null));
+		this.sortOrders = SortUtils.parseSortOrders(context.getStringAttribute(RESTConfig.SORTORDER_PARAM, null));
+		this.grouping = this.chooseGroupingEntity();
+		this.tags = context.getTags(RESTConfig.TAGS_PARAM);
+		String groupingValue;
+		if (this.grouping != GroupingEntity.ALL) {
+			groupingValue = context.getStringAttribute(this.grouping.toString().toLowerCase(), null);
+			if (this.grouping == GroupingEntity.USER) {
+				groupingValue = RESTUtils.normalizeUser(groupingValue, context);
+			}
+		} else {
+			groupingValue = null;
+		}
+		
+		this.groupingValue = groupingValue;
+	}
 
-    @Override
-    protected void render(final Writer writer, final List<? extends Post<? extends Resource>> resultList) {
-        this.getRenderer().serializePosts(writer, resultList, this.getView());
-    }
-
-    @Override
-    protected abstract StringBuilder getLinkPrefix();
-
-    @Override
-    protected final String getContentType() {
-        return "posts";
-    }
-
-    @Override
-    protected void appendLinkPostFix(final StringBuilder sb) {
-        // FIXME: urlencode
-        if (this.resourceType != Resource.class) {
-            sb.append("&").append(RESTConfig.RESOURCE_TYPE_PARAM).append("=").append(ResourceFactory.getResourceName(this.resourceType).toLowerCase());
-        }
-        if (present(this.tagString)) {
-            sb.append("&").append(RESTConfig.TAGS_PARAM).append("=").append(this.tagString);
-        }
-        if (present(this.hash)) {
-            sb.append("&").append(RESTConfig.RESOURCE_PARAM).append("=").append(this.hash);
-        }
-        if ((this.grouping != GroupingEntity.ALL) && (present(this.groupingValue))) {
-            sb.append('&').append(this.grouping.toString().toLowerCase()).append('=').append(this.groupingValue);
-        }
-        if (present(this.search)) {
-            sb.append("&").append(RESTConfig.SEARCH_PARAM).append("=").append(this.search);
-        }       
-    }
+	@Override
+	protected void render(final Writer writer, final List<? extends Post<? extends Resource>> resultList) {
+		this.getRenderer().serializePosts(writer, resultList, this.getView());
+	}
+	
+	@Override
+	protected final String getContentType() {
+		return "posts";
+	}
 }

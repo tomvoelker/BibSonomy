@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -29,6 +29,7 @@ package org.bibsonomy.model.util;
 import java.util.Collection;
 import java.util.Map;
 
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.util.data.Data;
 
@@ -47,10 +48,9 @@ public class CompositeBibtexReader implements BibTexReader {
 	}
 	
 	@Override
-	public Collection<ImportResource> read(ImportResource importRes) {
-		
+	public Collection<BibTex> read(final ImportResource importRes) {
 		final Data data = importRes.getData();
-		String type = data.getMimeType();
+		final String type = data.getMimeType();
 		if (type == null) {
 			throw new IllegalArgumentException("null mimetype");
 		}

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -32,31 +32,28 @@ import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
 public class GetNewPostsStrategy extends AbstractListOfPostsStrategy {
-	private final String nextLinkPrefix;
 	
 	/**
 	 * @param context
 	 */
 	public GetNewPostsStrategy(final Context context) {
 		super(context);
-		this.nextLinkPrefix = this.getUrlRenderer().getApiUrl() + RESTConfig.POSTS_ADDED_URL;
 	}
 
 	@Override
-	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.nextLinkPrefix);
+	protected UrlBuilder getLinkPrefix() {
+		return this.getUrlRenderer().createUrlBuilderForAddedPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, this.order);
 	}
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		// TODO: support other search types
 		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, search, SearchType.LOCAL, null, Order.ADDED, null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 }

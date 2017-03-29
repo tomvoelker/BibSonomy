@@ -1,0 +1,44 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	
+	<jsp:directive.tag description="Renders a fontawsome icon"/>
+
+	<jsp:directive.attribute name="icon" type="java.lang.String" required="true" description="the font icon"/>
+	<jsp:directive.attribute name="fixedWidth" type="java.lang.Boolean" required="false" description="add space after icon"/>
+	<jsp:directive.attribute name="stack" type="java.lang.Boolean" required="false" description="stacked"/>
+	<jsp:directive.attribute name="size" type="java.lang.String" required="false" description="size of the icon"/>
+	<jsp:directive.attribute name="spin" type="java.lang.Boolean" required="false" description="spin the icon"/>
+	<jsp:directive.attribute name="spaceAfter" type="java.lang.Integer" required="false" description="space to be added after the icon. supported space: 5"/>
+	
+	<c:if test="${empty stack}">
+		<c:set var="stack" value="${false}" />
+	</c:if>
+	
+	<c:choose>
+		<c:when test="${not empty size and not stack}">
+			<c:set var="size" value="fa-${size}" />
+		</c:when>
+		<c:when test="${not empty size and stack}">
+			<c:set var="sizeValue" value="${size}" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="sizeValue" value="1" />
+		</c:otherwise>
+	</c:choose>
+	
+	<c:if test="${stack}">
+		<c:set var="stacked" value="fa-stack-${sizeValue}x" />
+	</c:if>
+	
+	<c:if test="${not empty spaceAfter}">
+		<c:set var="spaceAfter" value="fa-space-${spaceAfter}" />
+	</c:if>
+	
+	<c:if test="${not empty spin and spin}">
+		<c:set var="spinClass" value="fa-spin" />
+	</c:if>
+	
+	<span class="fa fa-${icon} ${not empty spaceAfter ? spaceAfter : ''} ${not empty fixedWidth and fixedWidth ? 'fa-fw' : ''} ${not empty size and empty stacked ? size : ''} ${not empty stacked ? stacked : ''} ${not empty spinClass ? spinClass : ''}"><!-- keep me --></span>
+</jsp:root>

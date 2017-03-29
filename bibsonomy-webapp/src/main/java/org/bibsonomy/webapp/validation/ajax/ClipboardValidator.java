@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -29,6 +29,8 @@ package org.bibsonomy.webapp.validation.ajax;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.webapp.command.ajax.ClipboardManagerCommand;
+import org.bibsonomy.webapp.command.ajax.action.ClipboardAction;
+import org.bibsonomy.webapp.controller.ajax.ClipboardController;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.validation.Errors;
 
@@ -53,19 +55,24 @@ public class ClipboardValidator implements Validator<ClipboardManagerCommand>{
 	@Override
 	public void validate(Object target, Errors errors) {
 		final ClipboardManagerCommand command = (ClipboardManagerCommand) target;
-		final String action = command.getAction();
+		final ClipboardAction action = command.getAction();
 		if (!present(action)) {
 			errors.reject("error.action.valid");
 		}
 		
-		final String user = command.getUser();
-		if (!present(user)) {
-			errors.rejectValue("user", "error.user.valid");
-		}
-		
-		final String hash = command.getHash();
-		if (!present(hash)) {
-			errors.rejectValue("hash", "error.hash.valid");
+		// only validate user and hash iff the action is not clear all
+		if (!ClipboardAction.CLEARALL.equals(action)) {
+			final String hash = command.getHash();
+			if (!present(hash)) {
+				errors.rejectValue("hash", "error.hash.valid");
+			} else {
+				if (!hash.contains(ClipboardController.HASH_USER_SPLIT)) {
+					final String user = command.getUser();
+					if (!present(user)) {
+						errors.rejectValue("user", "error.user.valid");
+					}
+				}
+			}
 		}
 	}
 

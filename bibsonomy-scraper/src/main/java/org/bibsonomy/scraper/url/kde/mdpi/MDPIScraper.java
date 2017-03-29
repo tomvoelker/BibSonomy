@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -105,7 +105,7 @@ public class MDPIScraper extends AbstractUrlScraper implements CitedbyScraper{
 			final String pageContent = WebUtils.getContentAsString(scrapingContext.getUrl()); // TODO: cache!!
 			Matcher m = CITATION_PATTERN.matcher(pageContent);
 			if (m.find()) {
-				scrapingContext.setCitedBy(WebUtils.getContentAsString(SITE_URL + "citedby/" + m.group(1)));
+				scrapingContext.setCitedBy(WebUtils.getContentAsString(SITE_URL + "citedby/" + m.group(1).replaceAll("/", "%252F")));
 				return true;
 			}
 		} catch (final Exception e) {

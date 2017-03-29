@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.exceptions.UnsupportedOrderingException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.model.Resource;
@@ -60,6 +61,14 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		final String format = command.getFormat();
 		this.startTiming(format);
 		
+		// FIXME: merge sortPage and order, see SearchPageController
+		final String pageSort = command.getSortPage();
+		if ("date".equals(pageSort)) {
+			command.setOrder(Order.ADDED);
+		} else if ("folkrank".equals(pageSort)) {
+			command.setOrder(Order.FOLKRANK);
+		}
+		
 		// if no tags given return
 		if (!present(command.getRequestedTags())) {
 			throw new MalformedURLSchemeException("error.tag_page_without_tag");
@@ -75,26 +84,23 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		if (tagCount == 0 && requTags.size() == 1 && MyOwnSystemTag.NAME.equalsIgnoreCase(requTags.get(0))) {
 			tagCount = 1;
 		}
-			
-			
+		// requested order
+		final Order order = command.getOrder();
+		if (tagCount == 0 && Order.FOLKRANK.equals(order)) {
+			throw new UnsupportedOrderingException(Order.FOLKRANK.name());
+		}
+		
+		command.setNumberOfNormalTags(tagCount);
+		
 		// handle case when only tags are requested
 		// FIXME we can only retrieve 1000 tags here
 		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, requTags, null, 1000, null);
 		
-		// get the information on tags and concepts needed for the sidebar
-		command.setConceptsOfAll(this.getConceptsForSidebar(command, GroupingEntity.ALL, null, requTags));
-		final String loginUser = command.getContext().getLoginUser().getName();
-		if (present(loginUser)) {
-			command.setConceptsOfLoginUser(this.getConceptsForSidebar(command, GroupingEntity.USER, loginUser, requTags));
-			command.setPostCountForTagsForLoginUser(this.getPostCountForSidebar(GroupingEntity.USER, loginUser, requTags));
-		}
 		
-		// requested order
-		final Order order = command.getOrder();
 		int totalNumPosts = 1; 
 		
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 
@@ -103,7 +109,7 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 			
 			this.setTotalCount(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			totalNumPosts += listCommand.getTotalCount();
-		}	
+		}
 		
 		/*
 		 *  if order = folkrank - retrieve related users
@@ -120,6 +126,16 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		// html format - retrieve related tags and return HTML view
 		if ("html".equals(format)) {
 			command.setPageTitle("tag :: " + StringUtils.implodeStringCollection(requTags, " "));
+			
+			// get the information on tags and concepts needed for the sidebar
+			command.setConceptsOfAll(this.getConceptsForSidebar(command, GroupingEntity.ALL, null, requTags));
+			final String loginUser = command.getContext().getLoginUser().getName();
+			if (present(loginUser)) {
+				command.setConceptsOfLoginUser(this.getConceptsForSidebar(command, GroupingEntity.USER, loginUser, requTags));
+				// FIXME: TitleSystemTag changes the grouping to ALL
+				command.setPostCountForTagsForLoginUser(this.getPostCountForSidebar(GroupingEntity.USER, loginUser, requTags));
+			}
+			
 			if (tagCount > 0) {
 				this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, command.getStartDate(), command.getEndDate(), order, 0, Parameters.NUM_RELATED_TAGS, null);
 			}
@@ -136,14 +152,13 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		this.endTiming();
 		// export - return the appropriate view
 		return Views.getViewByFormat(format);
-		
 	}
 	
 	@Override
 	public TagResourceViewCommand instantiateCommand() {
 		return new TagResourceViewCommand();
 	}
-		
+	
 	/**
 	 * retrieve related user by tag
 	 * 
@@ -157,5 +172,4 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		final RelatedUserCommand relatedUserCommand = cmd.getRelatedUserCommand();
 		relatedUserCommand.setRelatedUsers(this.logic.getUsers(null, grouping, null, tags, null, order, relation, null, start, end));
 	}
-	
 }

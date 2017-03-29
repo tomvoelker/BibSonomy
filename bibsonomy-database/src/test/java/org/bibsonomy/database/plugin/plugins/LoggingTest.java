@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -62,19 +62,19 @@ import org.junit.Test;
  * The first methods test the syntax of the methods of the class: Logging.java.
  * The SQL methods test if the SQL statements of the Logging.java class are
  * semantically correct.
- * 
+ *
  * @author Anton Wilhelm
  */
 @Ignore // FIXME adapt to new test db
 public class LoggingTest extends AbstractDatabaseManagerTest {
-	
+
 	private static BookmarkDatabaseManager bookmarkDb;
 	private static BibTexDatabaseManager publicationDb;
 	private static GroupDatabaseManager groupDb;
 	private static TagRelationDatabaseManager tagRelDb;
 	private static TestDatabaseManager testDb;
 	private static final User loginUser = new User("testuser");
-	
+
 	/**
 	 * sets up the used managers
 	 */
@@ -85,15 +85,6 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		publicationDb = BibTexDatabaseManager.getInstance();
 		tagRelDb = TagRelationDatabaseManager.getInstance();
 		testDb = new TestDatabaseManager();
-	}
-
-	/**
-	 * tests whether we can add this plugin to the registry
-	 */
-	@Test
-	public void addLoggingPlugin() {
-		pluginRegistry.clearPlugins();
-		pluginRegistry.add(new Logging());
 	}
 
 	/**
@@ -160,21 +151,21 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * 
+	 *
 	 * SQL - methods
 	 * ------------------------------------------------------------------------------
-	 * 
-	 * 
+	 *
+	 *
 	 * The procedure of all following methods can be describes in the following
 	 * way
-	 * 
+	 *
 	 * 1) Search for each Method any Object (BibTex, Bookmark, etc.) with
 	 * parameter: ContentID, Name, Hash, etc. 2) Build a param for this Object
 	 * ans set the parameter 3) Count in the log_<OBJECT> table for the choosen
 	 * Object, it must be 0 4) Do the Logging ( for example:
 	 * this.bibTexDb.storePost(...); ) 5) Count it again in the log_<OBJECT>
 	 * table, it must 1
-	 * 
+	 *
 	 * All* methods which are calling by the generalDb access to the log_<OBJECT>
 	 * table Example: countNewContentIdFromBibTex(...) access to the log_bibtex
 	 * table * only "countTasIds()" is special
@@ -196,7 +187,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		param.setNewContentId(currentContentId + 1);
 		Integer result = testDb.countNewContentIdFromBibTex(param);
 		assertThat(result, is(0));
-		publicationDb.updatePost(someBibTexPost, someBibTexPost.getResource().getIntraHash(), PostUpdateOperation.UPDATE_ALL, this.dbSession, loginUser);
+		publicationDb.updatePost(someBibTexPost, someBibTexPost.getResource().getIntraHash(), loginUser, PostUpdateOperation.UPDATE_ALL, this.dbSession);
 
 		currentContentId = testDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID);
 		param.setNewContentId(currentContentId);
@@ -221,7 +212,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		int result = testDb.countRequestedContentIdFromBibTex(param);
 		assertEquals(0, result);
 
-		publicationDb.deletePost(someBibTexPost.getUser().getName(), intraHash, this.dbSession);
+		publicationDb.deletePost(someBibTexPost.getUser().getName(), intraHash, null, this.dbSession);
 
 		result = testDb.countRequestedContentIdFromBibTex(param);
 		assertEquals(1, result);
@@ -242,7 +233,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		int result = testDb.countNewContentIdFromBookmark(param);
 		assertEquals(0, result);
 
-		bookmarkDb.updatePost(someBookmarkPost, HASH, PostUpdateOperation.UPDATE_ALL, this.dbSession, loginUser);
+		bookmarkDb.updatePost(someBookmarkPost, HASH, loginUser, PostUpdateOperation.UPDATE_ALL, this.dbSession);
 
 		currentContentId = testDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID);
 		param.setNewContentId(currentContentId);
@@ -266,7 +257,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		int result = testDb.countRequestedContentIdFromBookmark(param);
 		assertEquals(0, result);
 
-		bookmarkDb.deletePost(someBookmarkPost.getUser().getName(), HASH, this.dbSession);
+		bookmarkDb.deletePost(someBookmarkPost.getUser().getName(), HASH, null, this.dbSession);
 
 		result = testDb.countRequestedContentIdFromBookmark(param);
 		assertEquals(1, result);
@@ -276,7 +267,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	 * For Testing the onTagDelete() method you must first build a BibTex and
 	 * then delete it, the Tags will be deleted automatically by the delete
 	 * method of the PostDatabaseManager
-	 * 
+	 *
 	 * 2nd assertion: countTasIds() count the number of TAS with the choosen
 	 * ContentID in the original table: bibtex countLoggedTasIds() count it in
 	 * the logging table: log_bibtex At the end it will be comparing
@@ -300,7 +291,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		int result = testDb.countRequestedContentIdFromBibTex(param);
 		assertEquals(0, result);
 
-		publicationDb.deletePost(someBibTexPost.getUser().getName(), HASH, this.dbSession);
+		publicationDb.deletePost(someBibTexPost.getUser().getName(), HASH, null, this.dbSession);
 
 		result = testDb.countRequestedContentIdFromBibTex(param);
 		assertEquals(1, result);
@@ -313,7 +304,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	 * getBibTexByConceptForUser() will be access before and after logging (in
 	 * the original table!) At the end the tests checks if the TagRelation
 	 * decreases in the orignial table
-	 * 
+	 *
 	 */
 	@Test
 	public void onTagRelationDeleteSQL() {
@@ -347,7 +338,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 
 		int result = testDb.countGroup(param);
 		assertEquals(0, result);
-		groupDb.removeUserFromGroup(groupname, user, this.dbSession);
+		groupDb.removeUserFromGroup(groupname, user, false, this.dbSession);
 		result = testDb.countGroup(param);
 		assertEquals(1, result);
 	}

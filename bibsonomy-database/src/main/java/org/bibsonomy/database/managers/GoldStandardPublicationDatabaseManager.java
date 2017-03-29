@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -63,6 +63,7 @@ public final class GoldStandardPublicationDatabaseManager extends GoldStandardDa
 
 		if (present(post)) {
 			/*
+			 * TODO: this should be done by iBatis
 			 * before the resource leaves the logic parse the misc field
 			 */
 			try {

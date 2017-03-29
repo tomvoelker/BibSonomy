@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -50,6 +50,12 @@ public class BibTexListTitleHoverFormatter {
 	private ResourceBundle rb;
 	
 	private BibTexListTitleHoverFormatter(final BibTex publication, final Locale locale) {
+		if (publication == null) {
+			throw new IllegalArgumentException("publication can't be null!");
+		}
+		if (locale == null) {
+			throw new IllegalArgumentException("locale can't be null!");
+		}
 		this.publication = publication;
 		this.locale = locale;
 		this.output = new StringBuilder();
@@ -281,5 +287,6 @@ public class BibTexListTitleHoverFormatter {
 	private String getOutput() {
 		return output.toString();
 	}
+	
 	
 }

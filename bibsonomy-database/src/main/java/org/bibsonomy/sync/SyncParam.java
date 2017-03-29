@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -43,6 +43,7 @@ public class SyncParam {
 
 	private String userName;
 	private URI service;
+	private String sslDn;
 	private int serviceId;
 	private boolean server;
 
@@ -142,5 +143,19 @@ public class SyncParam {
 	 */
 	public void setSyncService(final SyncService syncService) {
 		this.syncService = syncService;
+	}
+
+	/**
+	 * @return the sslDn of the synService
+	 */
+	public String getSslDn() {
+		return this.sslDn;
+	}
+
+	/**
+	 * @param sslDn the sslDn to set
+	 */
+	public void setSslDn(String sslDn) {
+		this.sslDn = sslDn;
 	}
 }

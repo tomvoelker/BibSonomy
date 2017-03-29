@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -42,7 +42,6 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
-
 /**
  * @author bsc
  */
@@ -50,7 +49,7 @@ public class UserSearchController extends AjaxController implements Minimalistic
 	private static final Log log = LogFactory.getLog(UserSearchController.class);
 	
 	@Override
-	public View workOn(UserSearchCommand command) {
+	public View workOn(final UserSearchCommand command) {
 		log.debug(this.getClass().getSimpleName());
 
 		final RequestWrapperContext context = command.getContext();
@@ -69,6 +68,8 @@ public class UserSearchController extends AjaxController implements Minimalistic
 			/*
 			 * TODO: ugly workaround to deal with showSpammers set to false, which
 			 * may result in a too small list of users after the filtering.
+			 * 
+			 * TODO: move to logic
 			 */
 			if (!command.showSpammers()) {
 				limit *= 3;

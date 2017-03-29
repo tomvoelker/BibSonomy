@@ -1,0 +1,25 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+
+	<div class="col-md-12">		
+		<span class="ptitle"><bib:title post="${post}" /></span>
+		<span class="personPdesc pdesc"><bib:desc post="${post}" publication="${post.resource}"/></span><br/>
+	</div>
+
+</jsp:root>

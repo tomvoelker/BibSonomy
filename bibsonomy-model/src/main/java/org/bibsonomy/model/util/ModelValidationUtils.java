@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -40,6 +40,7 @@ import org.bibsonomy.rest.renderer.xml.BookmarkType;
 import org.bibsonomy.rest.renderer.xml.GroupType;
 import org.bibsonomy.rest.renderer.xml.PostType;
 import org.bibsonomy.rest.renderer.xml.TagType;
+import org.bibsonomy.rest.renderer.xml.UploadDataType;
 import org.bibsonomy.rest.renderer.xml.UserType;
 
 /**
@@ -173,7 +174,7 @@ public class ModelValidationUtils {
 	 * @throws InvalidModelException if there is a lack of sanity
 	 */
 	public static void checkPost(final PostType xmlPost) throws InvalidModelException {
-		if (xmlPost.getTag() == null) throw new InvalidModelException(DOCUMENT_NOT_VALID_ERROR_MESSAGE + "list of tags is missing");
+ 		if (xmlPost.getTag() == null) throw new InvalidModelException(DOCUMENT_NOT_VALID_ERROR_MESSAGE + "list of tags is missing");
 		
 		// 2011/10/05, fei: deactivated test, as system tags are hidden and thus posts without tags are valid
 		// if (xmlPost.getTag().size() == 0) throw new InvalidModelException(XML_IS_INVALID_MSG + "no tags specified");
@@ -182,14 +183,17 @@ public class ModelValidationUtils {
 
 		final BibtexType xmlPublication = xmlPost.getBibtex();
 		final BookmarkType xmlBookmark = xmlPost.getBookmark();
+		final UploadDataType publicationUpload = xmlPost.getPublicationFileUpload();
 		
-		if (xmlPublication == null && xmlBookmark == null) {
-			throw new InvalidModelException(DOCUMENT_NOT_VALID_ERROR_MESSAGE + "resource is missing inside element 'post'");
-		} else if (xmlPublication != null && xmlBookmark != null) {
+		final boolean publicationPresent = xmlPublication != null;
+		final boolean bookmarkPresent = xmlBookmark != null;
+		final boolean uploadPresent = publicationUpload != null;
+		
+		if (!publicationPresent && !bookmarkPresent && !uploadPresent) {
+			throw new InvalidModelException(DOCUMENT_NOT_VALID_ERROR_MESSAGE + "resource (or publication upload) is missing inside element 'post'");
+		}
+		if (publicationPresent && bookmarkPresent || bookmarkPresent && uploadPresent) {
 			throw new InvalidModelException(DOCUMENT_NOT_VALID_ERROR_MESSAGE + "only one resource type is allowed inside element 'post'");
-		} else {
-			// just fine (bibtex xor bookmark):
-			// ( xmlBibtex == null && xmlBookmark != null ) || ( xmlBibtex != null || xmlBookmark == null )
 		}
 	}
 

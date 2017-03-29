@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -69,11 +69,11 @@ public class FriendsOverviewController extends MultiResourceListController imple
 		command.setFriends(this.logic.getUserRelationship(loggedinUser, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
 		command.setOfFriends(this.logic.getUserRelationship(loggedinUser, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
 		
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command.getFormat(), command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			this.addList(command, resourceType, GroupingEntity.VIEWABLE, "friends", null, null, null, null, null, command.getEntriesPerPage());
 		}
 		
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command.getFormat(), command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			this.addList(command, resourceType, GroupingEntity.FRIEND, null, null, null, null, null, null, command.getEntriesPerPage());
 		}
 		

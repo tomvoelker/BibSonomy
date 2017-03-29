@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -28,11 +28,12 @@ package org.bibsonomy.database.plugin;
 
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.params.BasketParam;
+import org.bibsonomy.database.params.ClipboardParam;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
@@ -54,7 +55,7 @@ import org.bibsonomy.model.enums.GoldStandardRelation;
 public class AbstractDatabasePlugin extends AbstractDatabaseManager implements DatabasePlugin {
 
 	@Override
-	public void onPublicationInsert(final Post<? extends Resource> post, final DBSession session) {
+	public void onPublicationInsert(final Post<? extends BibTex> post, final DBSession session) {
 		// noop
 	}
 
@@ -172,14 +173,14 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	}
 
 	@Override
-	public void onDeleteBasketItem(final BasketParam param, final DBSession session) {
+	public void onDeleteClipboardItem(ClipboardParam param, DBSession session) {
 		// noop
-	}
+	};
 
 	@Override
-	public void onDeleteAllBasketItems(final String userName, final DBSession session) {
+	public void onDeleteAllClipboardItems(String userName, DBSession session) {
 		// noop
-	}
+	};
 
 	@Override
 	public void onDiscussionUpdate(final String interHash, final DiscussionItem comment, final DiscussionItem oldComment, final DBSession session) {
@@ -221,15 +222,6 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	 */
 	@Override
 	public void onPersonNameDelete(PersonName personName, DBSession session) {
-		// noop
-	}
-	
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onDeleteAllNamesOfPerson(java.lang.String, org.bibsonomy.database.common.DBSession)
-	 */
-	@Override
-	public void onDeleteAllNamesOfPerson(String personId, DBSession databaseSession) {
 		// noop
 	}
 

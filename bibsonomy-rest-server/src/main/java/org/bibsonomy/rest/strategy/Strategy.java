@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -25,6 +25,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.bibsonomy.rest.strategy;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -143,16 +145,16 @@ public abstract class Strategy {
 	 * @return The GroupingEntity; it defaults to ALL.
 	 */
 	protected GroupingEntity chooseGroupingEntity() {
-		if (this.context.getStringAttribute("user", null) != null) {
+		if (present(this.context.getStringAttribute("user", null))) {
 			return GroupingEntity.USER;
 		}
-		if (this.context.getStringAttribute("group", null) != null) {
+		if (present(this.context.getStringAttribute("group", null))) {
 			return GroupingEntity.GROUP;
 		}
-		if (this.context.getStringAttribute("viewable", null) != null) {
+		if (present(this.context.getStringAttribute("viewable", null))) {
 			return GroupingEntity.VIEWABLE;
 		}
-		if (this.context.getStringAttribute("friend", null) != null) {
+		if (present(this.context.getStringAttribute("friend", null))) {
 			return GroupingEntity.FRIEND;
 		}
 		return GroupingEntity.ALL;

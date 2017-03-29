@@ -40,7 +40,6 @@
 		<result property="name" column="tag_name" javaType="string" />
 	</resultMap>
 	
-
 	<!-- Should be used in conjunction with tagWhereQuery. -->
 	<sql id="tagFromQuery">
 	    tas t1
@@ -250,13 +249,13 @@
 		</isEmpty>
 		<!-- a user is logged in - check groups -->
 		<isNotEmpty property="userName">
-		  <isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">		
+		  <isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">
 			  <include refid="inGroupsUnchecked"/>
 		  </isNotEqual>
 		</isNotEmpty>
 	</sql>
 	
-	<!-- restrict visibility of retrieved items to the groups a user may see -->	
+	<!-- restrict visibility of retrieved items to the groups a user may see -->
 	<sql id="inGroups3">
 	    <!-- no user logged in - only public posts -->
 		<isEmpty property="userName" prepend="AND">
@@ -264,10 +263,10 @@
 		</isEmpty>
 		<!-- a user is logged in - check groups -->
 		<isNotEmpty property="userName">
-		  <isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">		
+		  <isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">
 			  t1.group = 0 
 		  </isNotEqual>
-		  <isEqual property="userName" compareProperty="requestedUserName" prepend="AND">		
+		  <isEqual property="userName" compareProperty="requestedUserName" prepend="AND">
 			  t1.group &lt; 2
 		  </isEqual>
 		</isNotEmpty>
@@ -280,7 +279,7 @@
 		</iterate>)	
 	</sql>
 
-	<!-- restrict visibility of retrieved items to the groups a user may see -->	
+	<!-- restrict visibility of retrieved items to the groups a user may see -->
 	<sql id="discussionVisible">
 		<!-- no user logged in - only public posts-->
 		<isEmpty property="userName">
@@ -297,7 +296,7 @@
 		  		<include refid="inGroupsDiscussion"/>
 			</isEmpty>	
 		  	<isNotEmpty property="requestedUserName">
-		  		d.user_name = #requestedUserName#		  		
+		  		d.user_name = #requestedUserName#
 		  		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">
 		  			<include refid="inGroupsDiscussion"/>
 		  		  	AND d.anonymous = 0
@@ -306,7 +305,7 @@
 		</isNotEmpty>
 	</sql>
 
-	<!-- restrict visibility of retrieved items to the groups a user may see -->	
+	<!-- restrict visibility of retrieved items to the groups a user may see -->
 	<sql id="discussionVisibleForGroup">
 		<!-- no user logged in - only public posts that are not anonymous-->
 		<isEmpty property="userName">
@@ -316,32 +315,32 @@
 		
 		<!-- a user is logged in => if user is not requUser: groups and anonymous checking -->
 		<isNotEmpty property="userName">
-  			(d.user_name = #userName# 
-  				OR 
-  			(d.anonymous = 0 AND <include refid="inGroupsDiscussion"/>))
+			(d.user_name = #userName# 
+				OR 
+			(d.anonymous = 0 AND <include refid="inGroupsDiscussion"/>))
 		</isNotEmpty>
 	</sql>
 
 	<sql id="spammerClassifiedJoin">
-	  	<isEmpty property="requestedUserName">
-			<isNotEqual property="filter" compareValue="POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER">
-					JOIN user u USING(user_name)
-			</isNotEqual>  
-	  	</isEmpty> 
-		</sql>
+		<isEmpty property="requestedUserName">
+			<isNotEqual property="discussionUnclassifiedFilterContained" compareValue="true">
+				JOIN user u USING(user_name)
+			</isNotEqual>
+		</isEmpty>
+	</sql>
 
 	<sql id="spammerClassified">
-	  	<isEmpty property="requestedUserName">
-			<isNotEqual property="filter" compareValue="POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER" prepend="AND">
+		<isEmpty property="requestedUserName">
+			<isNotEqual property="discussionUnclassifiedFilterContained" compareValue="true" prepend="AND">
 				u.to_classify = 0
 			</isNotEqual>
-	  	</isEmpty> 
+		</isEmpty>
 	</sql>
 
 	<sql id="inGroupsDiscussion">
 		d.group IN (
 		<iterate property="groups" conjunction=",">
-	    	$groups[]$
+			$groups[]$
 		</iterate>)	
 	</sql>
 	
@@ -438,7 +437,7 @@
 	<!-- dynamic AND for systag user -->
 	<sql id="sysTagsUser">
 		<dynamic prepend="AND">
-			<isNotNull property="requestedUserName">		
+			<isNotNull property="requestedUserName">
 				s.user_name = #requestedUserName#
 			</isNotNull>
 		</dynamic>

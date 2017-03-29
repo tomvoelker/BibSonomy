@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -75,7 +75,7 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	}
 
 	@Override
-	public List<Post<Bookmark>> getPostsFromBasketForUser(final String loginUser, final int limit, final int offset, final DBSession session) {
+	public List<Post<Bookmark>> getPostsFromClipboardForUser(final String loginUser, final int limit, final int offset, final DBSession session) {
 		throw new UnsupportedOperationException("not available for bookmarks");
 	}
 
@@ -92,7 +92,7 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	 * .lang.Integer, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	protected void onPostDelete(final Integer contentId, final DBSession session) {
+	protected void onPostDelete(final int contentId, final DBSession session) {
 		this.plugins.onBookmarkDelete(contentId, session);
 	}
 
@@ -104,7 +104,7 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	 * .lang.Integer, java.lang.Integer, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	protected void onPostUpdate(final Integer oldContentId, final Integer newContentId, final DBSession session) {
+	protected void onPostUpdate(final int oldContentId, final int newContentId, final DBSession session) {
 		this.plugins.onBookmarkUpdate(oldContentId, newContentId, session);
 	}
 	

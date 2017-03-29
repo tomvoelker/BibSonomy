@@ -1,0 +1,19 @@
+<jsp:root version="2.0"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+	
+	<fmt:message key="system.pumaLogo" var="pumaLogo" />
+	
+	<div class="row">
+		<div class="col-xs-3 puma-logo-left">
+			<img id="puma-logo-img" src="${pumaLogo}" />
+		</div>
+		<div class="col-xs-9 puma-logo-right">
+			<h1>
+				<a title="home" href="${relativeUrlGenerator.getProjectHome()}">${properties['project.name']}</a>
+			</h1>
+			<p class="logo-desc"><small><fmt:message key="system.desc" /></small></p>
+		</div>
+	</div>
+</jsp:root>

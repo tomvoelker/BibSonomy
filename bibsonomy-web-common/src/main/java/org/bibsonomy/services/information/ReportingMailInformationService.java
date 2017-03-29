@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Web-Common - Common things for web
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -57,7 +57,7 @@ public class ReportingMailInformationService extends MailInformationService {
 	}
 
 	private Group getGroup(String username) {
-		Group groupDetails = this.logic.getGroupDetails(username);
+		Group groupDetails = this.logic.getGroupDetails(username, false);
 		if (!present(groupDetails)) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " can only be used in system tags interacting with groups");
 		}

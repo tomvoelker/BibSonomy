@@ -10,7 +10,6 @@
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false" description="Should navigation links (next/pref) be shown? Defaults to true if not set."/>
 	<jsp:directive.attribute name="listID"  type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="className"  type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="widthClassName"  type="java.lang.String" required="true"/>
@@ -23,34 +22,32 @@
 	<jsp:directive.attribute name="documents" fragment="true" required="true"/>
 	<jsp:directive.attribute name="addAsFirstItem" fragment="true" required="false" />
 	<jsp:directive.attribute name="addAsLastItem" fragment="true" required="false" />
+	<jsp:directive.attribute name="listHeadline" fragment="true" required="false"/>
 
 	<jsp:directive.variable name-given="post" scope="NESTED"/>
-
 	
-	<c:if test="${empty disableListNavigation}">
-		<c:set var="disableListNavigation" value="${false}"/>
-	</c:if>	
-		
+	<jsp:invoke fragment="listHeadline" />
+	
 	<div id="${listID}" class="${className} ${widthClassName}">
-			
 		<c:if test="${not empty extTitle}">
  			<div class="postlistTitle posts">${extTitle}</div>
 		</c:if>
 		
-		
 		<!-- iterate over a list of resources and create the list -->
-		<ul class="posts ${widthClassName}">
+		<ul class="posts ${widthClassName} media-list">
+		
 			<c:if test="${not empty addAsFirstItem}">
 				<li class="first"><jsp:invoke fragment="addAsFirstItem"/></li>
-			</c:if>
+			</c:if> 
 			<c:choose>
 				<c:when test="${not empty listView.list}">
 					<c:forEach var="post" items="${listView.list}" varStatus="loopStatus">
 						<!-- TODO: use css selector for this and remove -->
 						<c:set var="additionalItemClasses" value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}"/>
 						
+						<c:set var="resourcetype" value="${listView.resourcetype}" />
 						<!-- show one post -->
-						<rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" additionalItemClasses="${additionalItemClasses}">
+						<rc:post post="${post}" resourceType="${resourcetype}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" additionalItemClasses="${additionalItemClasses}">
 							<jsp:attribute name="title">    <jsp:invoke fragment="title"/>    </jsp:attribute>
 							<jsp:attribute name="actions">  <jsp:invoke fragment="actions"/>  </jsp:attribute>
 							<jsp:attribute name="desc">     <jsp:invoke fragment="desc"/>     </jsp:attribute>
@@ -67,9 +64,7 @@
 					</c:if>
 				</c:otherwise>
 			</c:choose>
-			<c:if test="${not empty addAsLastItem}">
-				<li class="last"><jsp:invoke fragment="addAsLastItem"/></li>
-			</c:if>
 		</ul>
+		<jsp:invoke fragment="addAsLastItem"/>
 	</div>
 </jsp:root>

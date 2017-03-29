@@ -1,7 +1,7 @@
 /**
  * BibSonomy-MARC-Parser - Marc Parser for BibSonomy
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -40,19 +40,19 @@ public class TitleExtractorTest extends AbstractExtractorTest {
 	public void testTrimming() {
 		BibTex b = new BibTex();
 		TitleExtractor e = new TitleExtractor();
-		e.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', " Title "));
+		e.extractAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', " Title "));
 		assertEquals("Title", b.getTitle());
 		b = new BibTex();
-		e.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', ""));
+		e.extractAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', ""));
 		assertEquals("", b.getTitle());
 		b = new BibTex();
-		e.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord());
+		e.extractAndSetAttribute(b, createExtendedMarcWithPicaRecord());
 		assertEquals("", b.getTitle());
 		b = new BibTex();
-		e.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', " Title").withMarcField("245", 'b', "bla ; blub  "));
+		e.extractAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', " Title").withMarcField("245", 'b', "bla ; blub  "));
 		assertEquals("Title : bla", b.getTitle());
 		b = new BibTex();
-		e.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', "Title").withMarcField("245", 'b', "bla ; blub  "));
+		e.extractAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', "Title").withMarcField("245", 'b', "bla ; blub  "));
 		assertEquals("Title : bla", b.getTitle());
 	}
 }

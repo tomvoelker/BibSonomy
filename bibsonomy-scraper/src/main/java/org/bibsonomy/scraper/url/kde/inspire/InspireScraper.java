@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -83,6 +83,7 @@ public class InspireScraper extends AbstractUrlScraper implements ReferencesScra
 			
 			if(idMatcher.find()) {
 				URL bibtexUrl = new URL(SITE_URL + "record/" + idMatcher.group(1) + pattern_download);
+				
 				final Document temp = XmlUtils.getDOM(bibtexUrl);
 				
 				//extract the bibtex snippet which is embedded in pre tags

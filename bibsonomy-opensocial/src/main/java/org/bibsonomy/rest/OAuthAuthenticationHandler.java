@@ -1,7 +1,7 @@
 /**
  * BibSonomy-OpenSocial - Implementation of the Opensocial specification and OAuth Security Handling
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,7 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shindig.auth.SecurityToken;
-import org.bibsonomy.database.ShindigDBLogicUserInterfaceFactory;
+import org.bibsonomy.database.ShindigLogicInterfaceFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.opensocial.oauth.OAuthRequestValidator;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
@@ -47,7 +47,7 @@ public class OAuthAuthenticationHandler implements AuthenticationHandler<Securit
 	private OAuthRequestValidator oauthValidator;
 
 	/** logic interface factory for handling oauth requests */
-	private ShindigDBLogicUserInterfaceFactory oauthLogicFactory;
+	private ShindigLogicInterfaceFactory oauthLogicFactory;
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.AuthenticationHandler#canAuthenticateUser(javax.servlet.http.HttpServletRequest)
@@ -86,7 +86,7 @@ public class OAuthAuthenticationHandler implements AuthenticationHandler<Securit
 	/**
 	 * @param oauthLogicFactory the oauthLogicFactory to set
 	 */
-	public void setOauthLogicFactory(ShindigDBLogicUserInterfaceFactory oauthLogicFactory) {
+	public void setOauthLogicFactory(ShindigLogicInterfaceFactory oauthLogicFactory) {
 		this.oauthLogicFactory = oauthLogicFactory;
 	}
 }

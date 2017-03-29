@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -61,18 +61,21 @@ public class SuccessHandler extends SavedRequestAwareAuthenticationSuccessHandle
 			final User user = adapter.getUser();
 			
 			/* 
-			 * add spammer cookie
+			 * add spammer and user cookie
 			 */
 			final CookieLogic logic = new CookieLogic();
 			logic.setResponseLogic(new ResponseLogic(response));
 			logic.addSpammerCookie(user.isSpammer());
-			// we need to create a session before the parent method redirects to
-			// the authentication success url. This prevents
-			// "IllegalStateException: Cannot create a session after the response has been committed"
-			// which would otherwise be trigered by the
-			// UsernameSecurityContextRepository called from Spring's
-			// SecurityContextPersistenceFilter after the redirect has already
-			// been sent on the same request.
+			logic.addUserCookie(user);
+
+			/*
+			 * we need to create a session before the parent method redirects to
+			 * the authentication success url. This prevents
+			 * "IllegalStateException: Cannot create a session after the response has been committed"
+			 * which would otherwise be triggered by the
+			 * UsernameSecurityContextRepository called from Spring's
+			 * SecurityContextPersistenceFilter after the redirect has already been sent on the same request.
+			 */
 			request.getSession();
 		}
 		

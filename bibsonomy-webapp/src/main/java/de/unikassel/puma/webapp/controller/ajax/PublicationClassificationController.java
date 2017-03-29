@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -34,10 +34,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
-
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Classification;
@@ -46,9 +42,13 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
-import de.unikassel.puma.openaccess.classification.PublicationClassificatorSingleton;
+import de.unikassel.puma.openaccess.classification.PublicationClassificator;
 import de.unikassel.puma.openaccess.sword.SwordService;
 import de.unikassel.puma.webapp.command.ajax.PublicationClassificationCommand;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 
 /**
  * @author philipp
@@ -63,7 +63,7 @@ public class PublicationClassificationController extends AjaxController implemen
 	private static final String GET_POST_CLASSIFICATION_LIST = "GET_POST_CLASSIFICATION_LIST"; 
 	private static final String GET_CLASSIFICATION_DESCRIPTION = "GET_CLASSIFICATION_DESCRIPTION"; 
 
-	private PublicationClassificatorSingleton classificator;
+	private PublicationClassificator classificator;
 
 	@Override
 	public PublicationClassificationCommand instantiateCommand() {
@@ -84,13 +84,13 @@ public class PublicationClassificationController extends AjaxController implemen
 		if (present(action)) {
 			if (GET_AVAILABLE_CLASSIFICATIONS.equals(action)) {
 				final JSONArray jsonArray = new JSONArray();
-				jsonArray.addAll(classificator.getInstance().getAvailableClassifications());
+				jsonArray.addAll(this.classificator.getAvailableClassifications());
 				json.put("available", jsonArray);
 			} else if (SAVE_CLASSIFICATION_ITEM.equals(action)) {
 				// save classification data to database
 				// implement return value to verify storing of classification 
-				logic.deleteExtendedField(BibTex.class, loginUserName, command.getHash(), command.getKey(), command.getValue());				
-				logic.createExtendedField(BibTex.class, loginUserName, command.getHash(), command.getKey(), command.getValue());
+				this.logic.deleteExtendedField(BibTex.class, loginUserName, command.getHash(), command.getKey(), command.getValue());				
+				this.logic.createExtendedField(BibTex.class, loginUserName, command.getHash(), command.getKey(), command.getValue());
 
 				// TODO: why are we here returning "Hello world "?
 				json.put("saveTEST", "Hello World"+command.getHash()+" / "+command.getKey()+" = "+command.getValue());
@@ -100,18 +100,18 @@ public class PublicationClassificationController extends AjaxController implemen
 				// save classification data to database
 				for (final String key : SwordService.AF_FIELD_NAMES) {
 					// implement return value to verify storing of classification 
-					logic.deleteExtendedField(BibTex.class, loginUserName, command.getHash(), key, null);				
-					logic.createExtendedField(BibTex.class, loginUserName, command.getHash(), key, jsonData.getString(key));
+					this.logic.deleteExtendedField(BibTex.class, loginUserName, command.getHash(), key, null);				
+					this.logic.createExtendedField(BibTex.class, loginUserName, command.getHash(), key, jsonData.getString(key));
 				}
 
 				// TODO: why are we here returning "Hello world "?
 				json.put("saveTEST", "Hello World" + command.getHash() + " / " + command.getKey() + " = " + command.getValue());
 			} else if(GET_ADDITIONAL_METADATA.equals(action)) {
 				// get extended fields
-				final Map<String, List<String>> classificationMap = logic.getExtendedFields(BibTex.class, loginUserName, command.getHash(), null);
+				final Map<String, List<String>> classificationMap = this.logic.getExtendedFields(BibTex.class, loginUserName, command.getHash(), null);
 
 				// build json output  
-				final Set<Classification> availableClassifications = classificator.getInstance().getAvailableClassifications();
+				final Set<Classification> availableClassifications = this.classificator.getAvailableClassifications();
 				L: for (final Entry<String, List<String>> entry : classificationMap.entrySet()) {
 					for(final Classification c : availableClassifications) {
 						if(c.getName().equals(entry.getKey()))
@@ -122,16 +122,16 @@ public class PublicationClassificationController extends AjaxController implemen
 				}
 			} else if (REMOVE_CLASSIFICATION_ITEM.equals(action)) {
 				// delete extended fields
-				logic.deleteExtendedField(BibTex.class, loginUserName, command.getHash(), command.getKey(), command.getValue());
+				this.logic.deleteExtendedField(BibTex.class, loginUserName, command.getHash(), command.getKey(), command.getValue());
 
 				// TODO: why are we here returning "Hallo Welt "?
 				json.put("removeTEST", "Hallo Welt " + command.getHash() + " / " + command.getKey());
 			} else if (GET_POST_CLASSIFICATION_LIST.equals(action)) {
 				// get extended fields
-				final Map<String, List<String>> classificationMap = logic.getExtendedFields(BibTex.class, loginUserName, command.getHash(), null);
+				final Map<String, List<String>> classificationMap = this.logic.getExtendedFields(BibTex.class, loginUserName, command.getHash(), null);
 
 				// build json output  
-				final Set<Classification> availableClassifications = classificator.getInstance().getAvailableClassifications();
+				final Set<Classification> availableClassifications = this.classificator.getAvailableClassifications();
 				final Set<String> availableClassificationsNames = new HashSet<String>();
 				for (final Classification cfn : availableClassifications) {
 					availableClassificationsNames.add(cfn.getName());
@@ -144,11 +144,11 @@ public class PublicationClassificationController extends AjaxController implemen
 			} else if (GET_CLASSIFICATION_DESCRIPTION.equals(action)) {
 				json.put("name", command.getKey());
 				json.put("value", command.getValue());
-				json.put("description", classificator.getInstance().getDescription(command.getKey(), command.getValue()));
+				json.put("description", this.classificator.getDescription(command.getKey(), command.getValue()));
 			}
 		} else {
 			final JSONArray jsonArray = new JSONArray();
-			jsonArray.addAll(classificator.getInstance().getChildren(command.getClassificationName(), command.getId()));
+			jsonArray.addAll(this.classificator.getChildren(command.getClassificationName(), command.getId()));
 			json.put("children", jsonArray);
 		}
 		
@@ -160,7 +160,7 @@ public class PublicationClassificationController extends AjaxController implemen
 	 * Sets the classificator which provides access to classification schemes.
 	 * @param classificator
 	 */
-	public void setClassificator(final PublicationClassificatorSingleton classificator) {
+	public void setClassificator(final PublicationClassificator classificator) {
 		this.classificator = classificator;
 	}
 }

@@ -7,37 +7,31 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
-	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>	
 	
-	<c:choose>
-		<c:when test="${not empty post.systemUrl }">
-			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
-		</c:when>
-		<c:otherwise>
-			<c:set var ="isRemotePost" value="false"/>
-		</c:otherwise>
-	</c:choose>
+	<c:set var="resourceType" value="${post.resource.getClass().getSimpleName()}"/>
+	<c:set var="isRemotePost" value="${not empty post.systemUrl and not mtl:isSameHost(post.systemUrl, properties['project.home'])}" />
+	
 	<!-- Groups of a post -->
-	
 	<!-- TODO: Localize group names private and friends. This would have to be done at very many places... -->
-	
 	<c:forEach var="group" items="${post.groups}">
 		<c:if test="${!empty group.name and group.name ne 'public'}">
+			<c:out value=" "/>
 			<c:choose>
 				<c:when test="${group.name eq 'friends'}">
 					<fmt:message key="post.meta.asGroup"/> 
 					<c:out value=" "/>
 					<c:choose>
 						<c:when test="${isRemotePost}">
-							<a class="friends" href="${relativeUrlGenerator.getFriendUrlByUserNameAndSysUrl(fn:escapeXml(post.user.name), post.systemUrl)}"><c:out value="${group.name}" /></a>
+							<a class="friends" href="${post.systemUrl}friend/${fn:escapeXml(post.user.name)}"><c:out value="${group.name}" /></a>
 						</c:when>
 						<c:otherwise>
 							<c:choose>
 								<c:when test="${loginUserName eq post.user.name}">
-									<a class="friends" href="${relativeUrlGenerator.getViewableUrlByGroupName(fn:escapeXml(group.name))}"><c:out value="${group.name}" /></a>
+									<a class="friends" href="/viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
 								</c:when>
 								<c:otherwise>
-									<a class="friends" href="${relativeUrlGenerator.getFriendUrlByUserName(fn:escapeXml(post.user.name))}"><c:out value="${group.name}" /></a>
+									<a class="friends" href="/friend/${fn:escapeXml(post.user.name)}"><c:out value="${group.name}" /></a>
 								</c:otherwise>
 							</c:choose>
 						</c:otherwise>
@@ -48,10 +42,10 @@
 					<c:out value=" "/>
 					<c:choose>
 						<c:when test="${isRemotePost}">
-							<a class="private" href="${relativeUrlGenerator.getViewableUrlByGroupNameAndSysUrl(fn:escapeXml(group.name), post.systemUrl)}"><c:out value="${group.name}" /></a>
+							<a class="private" href="${post.systemUrl}viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
 						</c:when>
 						<c:otherwise>
-							<a class="private" href="${relativeUrlGenerator.getViewableUrlByGroupName(fn:escapeXml(group.name))}"><c:out value="${group.name}" /></a>
+							<a class="private" href="/viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
 						</c:otherwise>
 					</c:choose>
 				</c:when>
@@ -61,10 +55,10 @@
 					<c:out value=" "/>
 					<c:choose>
 						<c:when test="${isRemotePost}">
-							<a class="other" href="${relativeUrlGenerator.getViewableUrlByGroupNameAndSysUrl(fn:escapeXml(group.name), post.systemUrl)}"><c:out value="${group.name}" /></a>						
+							<a class="other" href="${post.systemUrl}viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
 						</c:when>
 						<c:otherwise>
-							<a class="other" href="${relativeUrlGenerator.getViewableUrlByGroupName(fn:escapeXml(group.name))}"><c:out value="${group.name}" /></a>
+							<a class="other" href="/viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
 						</c:otherwise>
 					</c:choose>
 				</c:otherwise>

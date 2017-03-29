@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,12 +31,11 @@ package org.bibsonomy.common.enums;
  * @author niebler
  */
 public enum AdminGroupOperation {
-	
-	FETCH_GROUP_SETTINGS,				// = "fetchGroupSettings"; 
-	UPDATE,  // = "updateGroup";  
-	CREATE,         // = "createGroup";  
-	ACCEPT,         // = "acceptGroup"; 
-	DECLINE,        //  = "declineGroup";
-	UPDATE_PERMISSIONS; // = "updatePermissions";
+
+	FETCH_GROUP_SETTINGS,
+	ACCEPT_GROUP,
+	DECLINE_GROUP,
+	DELETE_GROUP,
+	UPDATE_PERMISSIONS;
 
 }

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,21 +31,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.common.enums.ConstantID;
+import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -61,30 +59,42 @@ import org.junit.Test;
  * 
  */
 public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
-
-	private static TagDatabaseManager tagDb;
+	
+	private static final TagDatabaseManager tagDb = TagDatabaseManager.getInstance();
 	
 	/**
-	 * sets the tag database manager
+	 * tests {@link TagDatabaseManager#getAllTags(TagParam, org.bibsonomy.database.common.DBSession)}
 	 */
-	@BeforeClass
-	public static void setupManager() {
-		tagDb = TagDatabaseManager.getInstance();
-	}
-	
 	@Test
-	@Ignore
+	@Ignore // TODO: insert test data for populartags table
 	public void getAllTags() {
 		final List<Tag> tags = tagDb.getAllTags(ParamUtils.getDefaultTagParam(), this.dbSession);
 		assertEquals(10, tags.size());
 	}
-
+	
+	/**
+	 * tests {@link TagDatabaseManager#getTagsViewable(ConstantID, String, int, Order, int, int, org.bibsonomy.database.common.DBSession)}
+	 */
 	@Test
-	@Ignore
 	public void getTagsViewable() {
-		final TagParam param = ParamUtils.getDefaultTagParam();
-		final List<Tag> tags = tagDb.getTagsViewable(param.getContentTypeConstant(), param.getUserName(), param.getGroupId(), param.getOrder(), param.getLimit(), param.getOffset(), this.dbSession);
-		assertEquals(10, tags.size());
+		final List<Tag> tags = tagDb.getTagsViewable(ConstantID.ALL_CONTENT_TYPE, "testuser1", 4, Order.FREQUENCY, 10, 0, this.dbSession);
+		assertEquals(3, tags.size());
+	}
+	
+	/**
+	 * tests {@link TagDatabaseManager#getRelatedTagsViewable(ConstantID, String, int, List, Order, int, int, org.bibsonomy.database.common.DBSession)}
+	 */
+	@Test
+	public void testGetTagsViewableRelated() {
+		final List<TagIndex> tagIndex = new LinkedList<>();
+		tagIndex.add(new TagIndex("finetune", 1));
+		final List<Tag> relatedTags = tagDb.getRelatedTagsViewable(ConstantID.ALL_CONTENT_TYPE, "testuser1", 4, tagIndex, Order.ADDED, 10, 0, this.dbSession);
+		assertEquals(1, relatedTags.size());
+		
+		tagIndex.add(new TagIndex("radio", 2));
+		
+		final List<Tag> relatedRelatedTag = tagDb.getRelatedTagsViewable(ConstantID.ALL_CONTENT_TYPE, "testuser1", 4, tagIndex, Order.ADDED, 10, 0, this.dbSession);
+		assertEquals(0, relatedRelatedTag.size());
 	}
 	
 	/**
@@ -131,190 +141,171 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			count = tag.getUsercount();
 		}
 	}
-
+	
+	/**
+	 * tests {@link TagDatabaseManager#getTagsByUser(TagParam, org.bibsonomy.database.common.DBSession)}
+	 */
 	@Test
-	@Ignore
 	public void getTagsByUser() {
-		final List<Tag> tags = tagDb.getTagsByUser(ParamUtils.getDefaultTagParam(), this.dbSession);
-		assertEquals(10, tags.size());
+		final TagParam param = new TagParam();
+		param.setRequestedUserName("testuser3");
+		param.setLimit(10);
+		param.setOffset(0);
+		param.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
+		final List<Tag> bookmarkTags = tagDb.getTagsByUser(param, this.dbSession);
+		assertEquals(3, bookmarkTags.size());
+		
+		param.setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
+		final List<Tag> publicationTags = tagDb.getTagsByUser(param, this.dbSession);
+		assertEquals(0, publicationTags.size());
+	}
+	
+	/**
+	 * tests {@link TagDatabaseManager#getTagsByGroup(TagParam, org.bibsonomy.database.common.DBSession)}
+	 */
+	@Test
+	public void testGetTagsByGroup() {
+		final TagParam param = new TagParam();
+		param.setRequestedGroupName("testgroup2");
+		param.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
+		param.setLimit(10);
+		param.setOffset(0);
+		param.setGroupId(4);
+		final List<Tag> tags = tagDb.getTagsByGroup(param, this.dbSession);
+		assertEquals(4, tags.size());
+		
+		param.setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
+		final List<Tag> publTags = tagDb.getTagsByGroup(param, this.dbSession);
+		assertEquals(2, publTags.size());
 	}
 
+	/**
+	 * tests {@link TagDatabaseManager#getTagsByExpression(TagParam, org.bibsonomy.database.common.DBSession)}
+	 */
 	@Test
-	@Ignore
-	public void getTagsByBookmarkResourceType() {
-		final TagParam tagParam = ParamUtils.getDefaultTagParam();
-		// declare the resource type
-		tagParam.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
-		tagParam.setRequestedUserName("hotho");
-		tagParam.setGrouping(GroupingEntity.USER);
-		tagParam.setGroupId(INVALID_GROUP_ID);
-
-		final List<Tag> tags = tagDb.getTagsByUser(tagParam, this.dbSession);
-		assertEquals(10, tags.size());
-		// some spot tests to verify tags with bookmark as content type
-		assertEquals("****", tags.get(0).getName());
-		assertEquals("*****", tags.get(1).getName());
-	}
-
-	@Test
-	@Ignore
-	public void getTagsByBibtexResourceType() {
-		final TagParam tagParam = ParamUtils.getDefaultTagParam();
-		// declare the resource type
-		tagParam.setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
-		tagParam.setRequestedUserName("hotho");
-		tagParam.setGrouping(GroupingEntity.USER);
-		tagParam.setGroupId(INVALID_GROUP_ID);
-
-		final List<Tag> tags = tagDb.getTagsByUser(tagParam, this.dbSession);
-		assertEquals(10, tags.size());
-		// some spot tests to verify tags with bibtex as content type
-		assertEquals("2001", tags.get(4).getName());
-		assertEquals("2002", tags.get(5).getName());
-		assertEquals("2003", tags.get(6).getName());
-		assertEquals("2004", tags.get(7).getName());
-	}
-
-	@Test
-	@Ignore
-	public void getTagsByGroup() {
-		final List<Tag> tags = tagDb.getTagsByGroup(ParamUtils.getDefaultTagParam(), this.dbSession);
-		assertEquals(10, tags.size());
-	}
-
-	@Test
-	@Ignore
-	public void getTagsByExpression() {
+	public void testGetTagsByExpression() {
 		final TagParam tagParam = ParamUtils.getDefaultTagParam();
 		tagParam.setLimit(1000);
-		tagParam.setRegex("web");
-		tagParam.setRequestedUserName("hotho");
+		tagParam.setRegex("such%");
+		tagParam.setRequestedUserName("testuser1");
 		final List<Tag> tags = tagDb.getTagsByExpression(tagParam, this.dbSession);
-		assertEquals(12, tags.size());
+		assertEquals(1, tags.size());
+		assertEquals("suchmaschine", tags.get(0).getName());
 	}
 
-	@Ignore
+	/**
+	 * tests {@link TagDatabaseManager#getTagDetails(User, String, org.bibsonomy.database.common.DBSession)}
+	 */
 	@Test
-	public void insertTas() {
-		// TODO: write test
-	}
-
-	@Test
-	@Ignore
-	public void getTagDetails() {
-		final TagParam tagParam = ParamUtils.getDefaultTagParam();
-		final Tag tag = tagDb.getTagDetails(new User(tagParam.getUserName()), tagParam.getTagName(), this.dbSession);
+	public void testGetTagDetails() {
+		final Tag tag = tagDb.getTagDetails(new User("testuser1"), "google", this.dbSession);
 		assertNotNull(tag);
-		assertEquals(tagParam.getTagIndex().get(0).getTagName(), tag.getName());
-		assertNotNull(tag.getGlobalcount());
-		assertNotNull(tag.getUsercount());
+		assertEquals(1, tag.getGlobalcount());
+		assertEquals(1, tag.getUsercount());
 	}
-
+	
+	/**
+	 * tests {@link TagDatabaseManager#getTagsByBibtexHash(String, String, HashID, List, Order, int, int, org.bibsonomy.database.common.DBSession)}
+	 */
 	@Test
-	@Ignore
-	public void getTags() {
-		final TagParam tagParam = ParamUtils.getDefaultTagParam();
-		tagParam.setLimit(1500);
-		tagParam.setRegex(null);
-		tagParam.setRequestedUserName("hotho");
-		tagParam.setGrouping(GroupingEntity.USER);
-		tagParam.setUserName("hotho");
-		tagParam.setGroupId(INVALID_GROUP_ID);
-		tagParam.setTagIndex(null);
-		List<Tag> tags = tagDb.getTags(tagParam, this.dbSession);
-		assertEquals(1412, tags.size());
-		// hotho is a spammer, so some other user shouldn't see his tags
-		tagParam.setUserName("some_other_user");
-		tagParam.setGroups(Arrays.asList(0));
-		tags = tagDb.getTags(tagParam, this.dbSession);
-		assertEquals(0, tags.size());
+	public void testGetTagsByPublicationHash() {
+		final String loginUserName = "testuser1";
+		final String hash = "097248439469d8f5a1e7fad6b02cbfcd";
+		final List<Integer> visibleGroups = Collections.singletonList(Integer.valueOf(PUBLIC_GROUP_ID));
+		final List<Tag> tags = tagDb.getTagsByPublicationHash(loginUserName, hash, HashID.INTER_HASH, visibleGroups, Order.ALPH, 10, 0, this.dbSession);
+		assertEquals(2, tags.size());
 	}
 
 	/**
-	 * this is just a dummy test to check if the function works; please adapt it
-	 * to check it the correct tags are returned when migrating to the new test
-	 * framwork (dbe)
+	 * tests {@link TagDatabaseManager#getTagsByPublicationHashForUser(String, String, String, HashID, List, int, int, org.bibsonomy.database.common.DBSession)}
 	 */
 	@Test
-	@Ignore
-	public void getTagsByBibtexHash() {
-		final String loginUserName = "hotho";
-		final String hash = "palim palim";
-		final List<Integer> visibleGroups = Collections.singletonList(PUBLIC_GROUP_ID);
-		final List<Tag> tags = tagDb.getTagsByBibtexHash(loginUserName, hash, HashID.INTER_HASH, visibleGroups, 0, 20, this.dbSession);
+	public void testGetTagsByPublicationHashForUser() {
+		final String loginUserName = "testuser1";
+		final String requestedUserName = "testuser1";
+		final String hash = "097248439469d8f5a1e7fad6b02cbfcd";
+		final List<Integer> visibleGroups = Collections.singletonList(Integer.valueOf(PUBLIC_GROUP_ID));
+		final List<Tag> tags = tagDb.getTagsByPublicationHashForUser(loginUserName, requestedUserName, hash, HashID.INTER_HASH, visibleGroups, 10, 0, this.dbSession);
+		assertEquals(3, tags.size());
 	}
 
 	/**
-	 * this is just a dummy test to check if the function works; please adapt it
-	 * to check it the correct tags are returned when migrating to the new test
-	 * framwork (dbe)
+	 * tests {@link TagDatabaseManager#getTagsByBookmarkHash(String, String, List, Order, int, int, org.bibsonomy.database.common.DBSession)}
 	 */
 	@Test
-	@Ignore
-	public void getTagsByBibtexHashForUser() {
-		final String loginUserName = "hotho";
-		final String requestedUserName = "hotho";
-		final String hash = "palim palim";
-		final List<Integer> visibleGroups = Collections.singletonList(PUBLIC_GROUP_ID);
-		final List<Tag> tags = tagDb.getTagsByBibtexHashForUser(loginUserName, requestedUserName, hash, HashID.INTER_HASH, visibleGroups, 0, 20, this.dbSession);
+	public void testGetTagsByBookmarkHash() {
+		final String loginUserName = "testuser2";
+		final String hash = "7eda282d1d604c702597600a06f8a6b0";
+		final List<Integer> visibleGroups = Collections.singletonList(Integer.valueOf(PUBLIC_GROUP_ID));
+		final List<Tag> tags = tagDb.getTagsByBookmarkHash(loginUserName, hash, visibleGroups, Order.FREQUENCY, 10, 0, this.dbSession);
+		assertEquals(2, tags.size());
 	}
 
 	/**
-	 * this is just a dummy test to check if the function works; please adapt it
-	 * to check it the correct tags are returned when migrating to the new test
-	 * framwork (dbe)
+	 * tests {@link TagDatabaseManager#getTagsByBookmarkHashForUser(String, String, String, List, int, int, org.bibsonomy.database.common.DBSession)}
 	 */
 	@Test
-	@Ignore
-	public void getTagsByBookmarkHash() {
-		final String loginUserName = "hotho";
-		final String hash = "palim palim";
-		final List<Integer> visibleGroups = Collections.singletonList(PUBLIC_GROUP_ID);
-		final List<Tag> tags = tagDb.getTagsByBookmarkHash(loginUserName, hash, visibleGroups, 0, 20, this.dbSession);
+	public void testGetTagsByBookmarkHashForUser() {
+		final String loginUserName = "testuser2";
+		final String requestedUserName = loginUserName;
+		final String hash = "7eda282d1d604c702597600a06f8a6b0";
+		final List<Integer> visibleGroups = Collections.singletonList(Integer.valueOf(PUBLIC_GROUP_ID));
+		final List<Tag> tags = tagDb.getTagsByBookmarkHashForUser(loginUserName, requestedUserName, hash, visibleGroups, 10, 0, this.dbSession);
+		assertEquals(2, tags.size());
 	}
-
+	
 	/**
-	 * this is just a dummy test to check if the function works; please adapt it
-	 * to check it the correct tags are returned when migrating to the new test
-	 * framwork (dbe)
+	 * tests {@link TagDatabaseManager#getRelatedTags(TagParam, org.bibsonomy.database.common.DBSession)}
 	 */
 	@Test
-	@Ignore
-	public void getTagsByBookmarkHashForUser() {
-		final String loginUserName = "hotho";
-		final String requestedUserName = "hotho";
-		final String hash = "palim palim";
-		final List<Integer> visibleGroups = Collections.singletonList(PUBLIC_GROUP_ID);
-		final List<Tag> tags = tagDb.getTagsByBookmarkHashForUser(loginUserName, requestedUserName, hash, visibleGroups, 0, 20, this.dbSession);
-	}
-
-	@Test
-	@Ignore
-	public void getRelatedTags() {
+	@Ignore // TODO: insert test data for tagtag table
+	public void testGetRelatedTags() {
 		final TagParam param = new TagParam();
-		param.addTagName("web");
-		param.addTagName("semantic");
-		param.addGroup(PUBLIC_GROUP_ID);
+		param.addTagName("suchmaschine");
+		param.addGroup(Integer.valueOf(PUBLIC_GROUP_ID));
+		param.setLimit(10);
+		param.setOffset(0);
 		final List<Tag> tags = tagDb.getRelatedTags(param, this.dbSession);
+		assertEquals(3, tags.size());
 	}
-
+	
+	/**
+	 * tests {@link TagDatabaseManager#getRelatedTagsForUser(String, String, List, List, int, int, org.bibsonomy.database.common.DBSession)}
+	 */
 	@Test
-	@Ignore
-	public void getRelatedTagsForUser() {
+	public void testGetRelatedTagsForUser() {
 		final TagParam param = new TagParam();
-		param.addTagName("clustering");
-		param.addTagName("text");
-		final List<Integer> visibleGroupIDs = Collections.singletonList(PUBLIC_GROUP_ID);
-		final List<Tag> tags = tagDb.getRelatedTagsForUser(null, "hotho", param.getTagIndex(), visibleGroupIDs, 0, 10, this.dbSession);
+		param.addTagName("google");
+		final List<Integer> visibleGroupIDs = Collections.singletonList(Integer.valueOf(PUBLIC_GROUP_ID));
+		final List<Tag> tags = tagDb.getRelatedTagsForUser(null, "testuser1", param.getTagIndex(), visibleGroupIDs, 10, 0, this.dbSession);
+		assertEquals(2, tags.size());
 	}
-
+	
+	/**
+	 * tests {@link TagDatabaseManager#getRelatedTagsForGroup(TagParam, org.bibsonomy.database.common.DBSession)}
+	 */
+	@Test
+	public void testGetRelatedTagsForGroup() {
+		final TagParam param = new TagParam();
+		param.addTagName("suchmaschine");
+		param.setRequestedGroupName("testgroup1");
+		param.setLimit(100);
+		final List<Tag> relatedTagsForGroup = tagDb.getRelatedTagsForGroup(param, this.dbSession);
+		assertEquals(3, relatedTagsForGroup.size());
+		
+		param.addTagName("google");
+		final List<Tag> relatedTagsForGroup2 = tagDb.getRelatedTagsForGroup(param, this.dbSession);
+		assertEquals(1, relatedTagsForGroup2.size());
+	}
+	
+	/**
+	 * tests {@link TagDatabaseManager#updateTags(User, List, List, org.bibsonomy.database.common.DBSession)}
+	 */
 	@Test
 	public void updateTags() {
 		final User user = new User("testuser1");
-
 		final List<Tag> tagsToReplace = new LinkedList<Tag>();
 		tagsToReplace.add(new Tag("suchmaschine"));
-
 		final List<Tag> replacementTags = new LinkedList<Tag>(ModelUtils.getTagSet("search", "engine"));
 
 		tagDb.updateTags(user, tagsToReplace, replacementTags, this.dbSession);
@@ -323,7 +314,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests getTagsByBibtexkey
+	 * tests {@link TagDatabaseManager#getTagsByBibtexkey(String, List, String, String, int, int, org.bibsonomy.database.common.DBSession)}
 	 */
 	@Test
 	public void getTagsByBibtexkey() {
@@ -357,5 +348,4 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(1, tags.size());
 		assertEquals("privatebibtex", tags.get(0).getName());
 	}
-
 }

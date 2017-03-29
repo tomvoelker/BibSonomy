@@ -1,10 +1,35 @@
+/**
+ * BibSonomy-Database - Database for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.database.managers;
 
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.exceptions.DuplicateEntryException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
@@ -20,24 +45,25 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.services.searcher.PersonSearch;
 
-import com.ibatis.common.jdbc.exception.NestedSQLException;
-
 /**
- * TODO: add documentation to this class
+ * database manger for handling {@link Person} related actions
  *
  * @author jensi
  * @author Christian Pfeiffer / eisfair
  */
 public class PersonDatabaseManager  extends AbstractDatabaseManager {
-	private static final Log log = LogFactory.getLog(PersonDatabaseManager.class);
 
 	private final static PersonDatabaseManager singleton = new PersonDatabaseManager();
+	
 	private final GeneralDatabaseManager generalManager;
 	private final DatabasePluginRegistry plugins;
 	private PersonSearch personSearch;
-
+	
+	// TODO: remove
+	@Deprecated // in favor of spring bean config
 	public static PersonDatabaseManager getInstance() {
 		return singleton;
 	}
@@ -55,6 +81,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 */
 	public void createPerson(final Person person, final DBSession session) {
 		session.beginTransaction();
+		final String tempPersonId = this.generatePersonId(person, session);
+		person.setPersonId(tempPersonId);
 		try {
 			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("insertPerson", person, session);
@@ -63,9 +91,38 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			session.endTransaction();
 		}
 	}
-
-
+	
 	/**
+	 * Generates a unique person ID (used for speaking URL)
+	 * Concatinates the name and a counter variable
+	 * @param person
+	 * @param session
+	 * @return
+	 */
+	private String generatePersonId(final Person person, final DBSession session) {
+		int counter = 1;
+		final String newPersonId = PersonUtils.generatePersonIdBase(person);
+		String tempPersonId = newPersonId;
+		// increment id until we find the first that is not used (for the current name)
+		do {
+			final Person tempPerson = this.getPersonById(tempPersonId, session);
+			if (tempPerson != null) {
+				if (counter < 1000000) {
+					tempPersonId = newPersonId + "." + counter;
+				} else {
+					throw new RuntimeException("Too many person id occurences");
+				}
+			} else {
+				break;
+			}
+			counter++;
+		} while(true);
+		return tempPersonId;
+	}
+	
+	/**
+	 * Returns a Person identified by it's linked username or
+	 * null if the given User has not claimed a Person so far
 	 * @param user
 	 * @param session 
 	 * @return Person
@@ -74,8 +131,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		return (Person) this.queryForObject("getPersonByUser", user, session);
 	}
 
-
 	/**
+	 * Returns a Person identified by it's unique ID
 	 * @param id
 	 * @param session
 	 * @return Person
@@ -84,8 +141,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		return (Person) this.queryForObject("getPersonById", id, session);
 	}
 
-
 	/**
+	 * Returns a Person identified by it's unique DNB ID
 	 * @param dnbid
 	 * @param session
 	 * @return Person
@@ -95,6 +152,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * Creates a new name and adds it to the specified Person
 	 * @param mainName
 	 * @param session
 	 */
@@ -109,8 +167,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}
 	}
 
-
 	/**
+	 * Updates all fields of a given Person
 	 * @param person
 	 * @param session
 	 */
@@ -125,31 +183,111 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			session.endTransaction();
 		}
 	}
-
+	
+	/**
+	 * Update the OrcID of a Person
+	 * @param person
+	 * @param session
+	 */
+	public void updateOrcid(Person person, DBSession session) {
+		session.beginTransaction();
+		try {
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
+			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			this.insert("updateOrcid", person, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
+	/**
+	 * Update the academic degree of a Person
+	 * @param person
+	 * @param session
+	 */
+	public void updateAcademicDegree(Person person, DBSession session) {
+		session.beginTransaction();
+		try {
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
+			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			this.insert("updateAcademicDegree", person, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
+	/**
+	 * Update the College of a Person
+	 * @param person
+	 * @param session
+	 */
+	public void updateCollege(Person person, DBSession session) {
+		session.beginTransaction();
+		try {
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
+			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			this.insert("updateCollege", person, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
+	/**
+	 * Update the Email of a Person
+	 * @param person
+	 * @param session
+	 */
+	public void updateEmail(Person person, DBSession session) {
+		session.beginTransaction();
+		try {
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
+			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			this.insert("updateEmail", person, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
+	/**
+	 * Update the Homepage of a Person
+	 * @param person
+	 * @param session
+	 */
+	public void updateHomepage(Person person, DBSession session) {
+		session.beginTransaction();
+		try {
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
+			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			this.insert("updateHomepage", person, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
 	/**
 	 * @param resourcePersonRelation
 	 * @param session 
+	 * @return TODO: add documentation
 	 */
 	public boolean addResourceRelation(ResourcePersonRelation resourcePersonRelation, DBSession session) {
 		session.beginTransaction();
 		try {
-			resourcePersonRelation.setPersonRelChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			resourcePersonRelation.setPersonRelChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("addResourceRelation", resourcePersonRelation, session);
 			session.commitTransaction();
 			return true;
-		} catch (RuntimeException e) {
-			if (e.getCause() instanceof NestedSQLException) {
-				if ((e.getCause().getCause() != null) && (e.getCause().getCause().getMessage().contains("Duplicate entry"))) {
-					return false;
-				}
-			}
-			throw e;
+		} catch (final DuplicateEntryException e) {
+			session.commitTransaction(); // FIXME: only called to not cancel the transaction
+			return false;
 		} finally {
 			session.endTransaction();
 		}
-		
 	}
-
 
 	/**
 	 * @param personRelChangeId
@@ -171,7 +309,6 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}
 	}
 
-
 	/**
 	 * @param personNameChangeId
 	 * @param databaseSession 
@@ -188,23 +325,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			databaseSession.commitTransaction();
 		} finally {
 			databaseSession.endTransaction();
-		}	
-	}
-
-
-	/**
-	 * @param personId 
-	 * @param databaseSession 
-	 */
-	public void deleteAllNamesOfPerson(String personId, DBSession databaseSession) {
-		databaseSession.beginTransaction();
-		try {
-			this.plugins.onDeleteAllNamesOfPerson(personId, databaseSession);
-			this.delete("deleteAllNamesOfPerson", personId, databaseSession);
-			databaseSession.commitTransaction();
-		} finally {
-			databaseSession.endTransaction();
-		}	
+		}
 	}
 
 	// TODO: write testcase for this method and test whether groupBy of OR-mapping works as expected 

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="RecommendationBibCommon">
+
+	<resultMap id="tagName" class="tag">
+		<result property="name"         column="tag_name"        javaType="string"/>
+	</resultMap>
+	
+	
+	<resultMap id="personName" class="org.bibsonomy.model.PersonName">
+	
+	</resultMap>
+	
+	<resultMap id="tagByID" class="tag">
+		<result property="id" column="tag_id" javaType="integer" />
+		<result property="name" column="tag_name" javaType="string" />
+	</resultMap>
+	
+	<!-- + 
+		 | pair
+	 	 + -->
+	<resultMap id="tagFrequency" class="pair">
+		<result property="first"  column="first"  javaType="string"/>
+		<result property="second" column="second" javaType="integer"/>
+	</resultMap>
+	
+	<sql id="content-id-join">
+		(SELECT p.content_id FROM (
+			SELECT content_id, date FROM bibtex
+			WHERE user_name = #userName#
+			<isNotNull prepend="AND" property="startDate" >
+				date > #startDate#
+			</isNotNull>
+			<isNotNull prepend="AND" property="endDate" >
+				date &lt; #endDate#
+			</isNotNull>
+			UNION
+			SELECT content_id, date FROM bookmark
+			WHERE user_name = #userName#
+			<isNotNull prepend="AND" property="startDate" >
+				date > #startDate#
+			</isNotNull>
+			<isNotNull prepend="AND" property="endDate" >
+				date &lt; #endDate#
+			</isNotNull>
+			) AS p
+			ORDER BY date, content_id DESC LIMIT #range#) AS r
+	</sql>
+</sqlMap>

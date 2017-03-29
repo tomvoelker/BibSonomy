@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -51,14 +51,14 @@ public class DeleteUserConceptStrategy extends AbstractDeleteStrategy {
 		this.conceptName = conceptName;
 		this.userName = userName;
 		
-		this.lowerTag = context.getStringAttribute(RESTConfig.SUB_TAG_PARAM, null);		
+		this.lowerTag = context.getStringAttribute(RESTConfig.SUB_TAG_PARAM, null);
 	}
 
 	@Override
 	protected boolean delete() {
 		// delete whole concept
 		if (this.lowerTag == null) {
-			this.getLogic().deleteConcept(this.conceptName, GroupingEntity.USER, this.userName);		
+			this.getLogic().deleteConcept(this.conceptName, GroupingEntity.USER, this.userName);
 		} else {
 			// delete relation only
 			this.getLogic().deleteRelation(this.conceptName, this.lowerTag, GroupingEntity.USER, this.userName);

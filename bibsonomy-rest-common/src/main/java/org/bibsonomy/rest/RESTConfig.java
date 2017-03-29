@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Common - Common things for the REST-client and server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -24,7 +24,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.rest;
 
 import java.text.DateFormat;
@@ -55,6 +54,8 @@ public final class RESTConfig {
 	public static final String POSTS_ADDED_URL = POSTS_URL + "/" + POSTS_ADDED_SUB_PATH;
 
 	public static final String POSTS_POPULAR_SUB_PATH = "popular";
+	
+	public static final String PERIOD_INDEX = "periodIndex";
 
 	public static final String POSTS_POPULAR_URL = POSTS_URL + "/" + POSTS_POPULAR_SUB_PATH;
 

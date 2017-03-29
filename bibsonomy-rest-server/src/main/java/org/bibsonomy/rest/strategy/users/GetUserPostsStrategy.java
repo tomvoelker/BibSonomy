@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -37,12 +37,14 @@ import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
 public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends Post<? extends Resource>>> {
 
+	/** the requested user name */
 	protected final String userName;
 	private final List<String> tags;
 	private final String tagString;
@@ -63,20 +65,8 @@ public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends
 	}
 
 	@Override
-	protected void appendLinkPostFix(final StringBuilder sb) {
-		if (this.tagString != null) {
-			sb.append("&").append(RESTConfig.TAGS_PARAM).append("=").append(this.tagString);
-		}
-		if (this.resourceType != Resource.class) {
-			sb.append("&").append(RESTConfig.RESOURCE_TYPE_PARAM).append("=").append(ResourceFactory.getResourceName(this.resourceType));
-		}
-	}
-
-	@Override
-	protected StringBuilder getLinkPrefix() {
-		final StringBuilder sb = new StringBuilder(this.getUrlRenderer().getApiUrl());
-		sb.append(RESTConfig.USERS_URL).append("/").append(this.userName).append("/").append(RESTConfig.POSTS_URL);
-		return sb;
+	protected UrlBuilder getLinkPrefix() {
+		return this.getUrlRenderer().getUrlBuilderForUser(this.userName, this.tagString, this.resourceType);
 	}
 
 	@Override

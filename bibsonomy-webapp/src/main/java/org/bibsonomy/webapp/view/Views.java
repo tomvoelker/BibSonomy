@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -55,8 +55,6 @@ public enum Views implements View {
 	 */
 	HASHEXAMPLE("hashexample"),
 	
-	@Deprecated
-	PERSON("person/index"),
 	PERSON_INTRO("persons"),
 	PERSON_SHOW("person/show"),
 	DISAMBIGUATION("disambiguation"),
@@ -129,11 +127,6 @@ public enum Views implements View {
 	TAGPAGE("tag"),
 
 	/**
-	 * cluster page for browsing resources based on clusterings
-	 */
-	CLUSTERPAGE("browsing/cluster"),
-
-	/**
 	 * page for listing all relation tagged users
 	 */
 	SPHERELIST("spheres/sphereList"),
@@ -142,11 +135,6 @@ public enum Views implements View {
 	 * tagged friend page shows all users of the requested group and their posts
 	 */
 	SPHEREDETAILS("spheres/sphere"),
-
-	/**
-	 * topics page for browsing resources based on topics
-	 */
-	TOPICSPAGE("browsing/topics"),
 
 	/**
 	 * inbox page
@@ -187,15 +175,13 @@ public enum Views implements View {
 
 	/**
 	 * publication page shows all publications with the given inter-/intrahash
-	 * TODO: rename to PUBLICATION_PAGE
 	 */
-	BIBTEXPAGE("bibtex"),
+	PUBLICATIONPAGE("publicationpage"),
 
 	/**
 	 * details of a publication
-	 * TODO: rename to PUBLICATION_DETAILS
 	 */
-	BIBTEXDETAILS("bibtexdetails"),
+	PUBLICATIONDETAILS("publicationdetails"),
 
 	/**
 	 * PostHistory-Page. page with post history
@@ -350,9 +336,9 @@ public enum Views implements View {
 	 */
 	ADMIN_SPAM("actions/admin/spam"),
 	/**
-	 * lucene admin page
+	 * full text search admin page
 	 */
-	ADMIN_LUCENE("actions/admin/lucene"),
+	ADMIN_FULL_TEXT_SEARCH("admin/search"),
 	/**
 	 * recommender admin page
 	 */
@@ -470,15 +456,11 @@ public enum Views implements View {
 	 */
 	SUCCESS("actions/success"),
 
-	/**
-	 * import view
-	 */
+	/** import view */
 	IMPORT("actions/post/import"),
-
-	/**
-	 * facebook friends import view
-	 */
-	FACEBOOK_IMPORT("actions/user/import/facebook"),
+	
+	/** the import publication view */
+	IMPORT_PUBLICATION("actions/post/importPublication"),
 
 	/**
 	 * Show a form to request a password reminder.
@@ -624,6 +606,12 @@ public enum Views implements View {
 	 * /layout/* pages which are rendered by JabRef
 	 */
 	LAYOUT("layout"),
+	
+	/**
+	 * csl layout
+	 */
+	CSL_LAYOUT("export/csl-layout"),
+	
 	/**
 	 * csl-compatible JSON output
 	 */
@@ -684,11 +672,14 @@ public enum Views implements View {
 	 * show followers
 	 */
 	FOLLOWERS("followers"),
-
+	
 	/**
-	 * 
+	 * help page
 	 */
-	BOOTSTRAP_DEMO("bootstrapDemo"),
+	HELP("help/help"),
+	
+	/** the search result page */
+	HELP_SEARCH("help/search"),
 
 	/*
 	 * Error pages
@@ -722,6 +713,9 @@ public enum Views implements View {
 	 * 503
 	 */
 	ERROR503("errors/503"),
+	
+	/** view for user that are not allowed to use this application */
+	USE_NOT_ALLOWED("errors/useNotAllowed"),
 
 	/**
 	 * PUMA, author agreement page, form filled in with publication data for
@@ -741,11 +735,6 @@ public enum Views implements View {
 	RECOMMENDEDPAGE("recommended"),
 
 	/**
-	 * show bibsonomy3 demo
-	 */
-	BIBSONOMY3("bibsonomy3"),
-
-	/**
 	 * group request page
 	 */
 	GROUPREQUEST("groupRequest");
@@ -753,6 +742,7 @@ public enum Views implements View {
 	/*
 	 * both bookmarks and publications
 	 */
+	public static final String FORMAT_STRING_HTML = "html";
 	public static final String FORMAT_STRING_CSV = "csv";
 	public static final String FORMAT_STRING_JSON = "json";
 	public static final String FORMAT_STRING_POSTS = "posts";
@@ -885,6 +875,9 @@ public enum Views implements View {
 		}
 		if (FORMAT_STRING_LAYOUT.equals(format)) {
 			return LAYOUT;
+		}
+		if ("csl-layout".equals(format)) {
+			return CSL_LAYOUT;
 		}
 		if ("batcheditbib".equals(format)) {
 			return BATCHEDITBIB;

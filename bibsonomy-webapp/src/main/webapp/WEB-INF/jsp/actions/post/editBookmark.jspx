@@ -7,81 +7,71 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
-	xmlns:editBook="urn:jsptagdir:/WEB-INF/tags/actions/edit/bookmark">
-
-    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
- 
-	<layout:editPostLayout command="${command}" requPath="${requPath}" resourceType="Bookmark" activeTab="post" minimizedContentWidth="${true}">
+	xmlns:editBook="urn:jsptagdir:/WEB-INF/tags/actions/edit/bookmark"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs">
 	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<c:set var="postOwner" value="${command.context.loginUser}" />
+	<c:if test="${command.groupUser ne null and command.context.loginUser.name ne command.groupUser.name}">
+		<c:set var="postOwner" value="${command.groupUser}" />
+	</c:if>
+
+	<layout:editPostLayout 
+		requPath="${requPath}" 
+		command="${command}" 
+		detailedInformation="${detailedInformation}"
+		resourceType="Bookmark"
+		activeTab="post"
+		postOwner="${postOwner}"
+		>
+
 		<jsp:attribute name="generalInformation">
-            <editBook:required post="${command.post}" />
+		
+			<!--+
+				| INPUT FIELDS URL, title, description 
+				+-->
+			
+			<!-- URL -->
+			<bsform:input labelColSpan="3" inputColSpan="9" placeholder="http://" labelText="URL" path="post.resource.url" required="${true}" noHelp="${true}">
+				<jsp:attribute name="appendix">
+					<!-- publication found -->
+					<div class="hide">
+						<span class="publication-found-title"><fmt:message key="post.meta.recommended"/>: <fmt:message key="post.meta.save_as_publication"/></span>
+						<div class="publication-found-content">
+							<div id="publication-found-form-placeholder">
+								<p><fmt:message key="post.resource.bookmark_a_publication2"/></p>
+								<button class="btn btn-primary btn-xs" type="submit" name="submit"><fmt:message key="post.meta.save_as_publication" /></button>
+								<c:out value=" "/><!-- space between buttons -->
+								<button type="button" class="btn btn-default btn-xs" onclick="$('#post\\.resource\\.url').popover('hide');"><fmt:message key="box.close" /></button>
+							</div>
+						</div>
+					</div>
+				</jsp:attribute>
+			</bsform:input>
+			
+			<!-- TITLE -->
+			<fmt:message key="post.resource.title" var="title"/>
+			
+			<bsform:input labelColSpan="3" inputColSpan="9" placeholder="${title}" path="post.resource.title" required="${true}" noHelp="${true}">
+				<jsp:attribute name="appendix">
+					<div class="fsSuggestion" id="suggestion.resource.title"><!-- KEEP ME --></div>
+				</jsp:attribute>
+			</bsform:input>
+			
+			<!-- DESC -->
+			<bsform:textarea labelColSpan="3" inputColSpan="9" path="post.description" labelText="Description">
+				<jsp:attribute name="appendix">
+					<div class="fsSuggestion" id="suggestion.description"><!-- KEEP ME --></div>
+				</jsp:attribute>
+			</bsform:textarea>
+			
 		</jsp:attribute>
-
-        <jsp:attribute name="extraInformation">        
-            <!-- 
-               | check, if this bookmark can be scraped
-               -->	
-            <div id="scrapable" style="display:none">
-                <br/>
-                <form:form action="/editPublication" method="post" id="bibtex_snippet">      
-                  <fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
-                    <fieldset class="fsnoborder" style="position:relative;">
-                      <h2><fmt:message key="post.meta.recommended"/>: <fmt:message key="post.meta.save_as_publication"/></h2>
-                      <p>
-                        <fmt:message key="post.resource.bookmark_a_publication"/>:<c:out value=" "/>
-                        <fmt:message key="post.meta.save_as_publication" var="post_publication"/>
-                        <input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
-                        <input id="button" type="submit" name="submit" value="${post_publication}"/>
-                      </p>
-                      <textarea style="width: 100%;" id="bib" name="selection" rows="15" class="reqinput"><c:out value=" "/></textarea>
-                   </fieldset>
-                 </fieldset>   
-               </form:form>
-            </div>
-
-           <!-- 
-           	  | TODO: move to editBookmark.js
-              | corresponding JavaScript ...
-              -->
-			<script type="text/javascript">
-              //<mtl:cdata>
-              <![CDATA[   
-				function scraping(){
-              		var url=$("#post\\.resource\\.url").val();
-                	if (url.length > 'http://'.length) {
-                		$.ajax({
-            				url : '/scrapingservice?url='+encodeURIComponent(url)+'&format=bibtex&doIE=false&selection='+encodeURIComponent($("#post\\.description").val()),
-            				success : function(data) {
-                            	if (data != '') {
-                    				$("#bib").val(data);
-                              		showHide("scrapable");
-                            	}
-            				},
-            				dataType : "text"
-						});
-                	}
-				}
-        
-              function showHide(id){
-                var b = document.getElementById(id);
-                b.style.display = (b.value != '' ? '' : 'hidden');
-              }
-
-              $(function() {
-              	scraping();
-              	checkUrlForTitle();
-              });
-              ]]> 
-             //</mtl:cdata>
-          </script>
-
-       
-       </jsp:attribute>
-
+		
 	</layout:editPostLayout>
 
 </jsp:root>

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Client - The REST-client.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -48,12 +48,15 @@ public class RestLogicFactory implements LogicInterfaceFactory {
 	public static final String API_SUBPATH = "api/";
 
 	/** the url of BibSonomy (bibsonomy.org) */
-	public static final String BIBSONOMY_URL = "http://www.bibsonomy.org/";
+	public static final String BIBSONOMY_URL = "https://www.bibsonomy.org/";
 	
 	/** the url of the BibSonomy (bibsonomy.org) API */
 	public static final String BIBSONOMY_API_URL = BIBSONOMY_URL + API_SUBPATH;
 	
+	/** the default rendering format */
 	public static final RenderingFormat DEFAULT_RENDERING_FORMAT = RenderingFormat.XML;
+	
+	/** the dafult callback factory */
 	public static final ProgressCallbackFactory DEFAULT_CALLBACK_FACTORY = new ProgressCallbackFactoryImpl();
 	
 	private final String apiUrl;

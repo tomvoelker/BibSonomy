@@ -26,10 +26,6 @@
 
     <batch:skeleton listView="${command.bookmark}" resourceType="bookmark" listViewStartParamName="bookmark.start" otherPostsUrlPrefix="/bookmark" updateExistingPost="${updateExistingPost}" overwrite="${overwrite}">
       <jsp:attribute name="shortPostDescription"><bm:shortDescription post="${post}"/></jsp:attribute>
-      <jsp:attribute name="title">  <bm:title post="${post}"/></jsp:attribute>
-      <jsp:attribute name="desc">   <bm:desc post="${post}"/></jsp:attribute>
-      <jsp:attribute name="documents"> <bm:documents post="${post}"/></jsp:attribute>
-      <jsp:attribute name="actions"><bm:actions post="${post}" loginUserName="${command.context.loginUser.name}"/></jsp:attribute>
     </batch:skeleton>
 
 </jsp:root>

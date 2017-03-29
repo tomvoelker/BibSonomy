@@ -7,16 +7,16 @@
 	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="true" />
 	
 		<div class="sphere_image_container">
-				<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(user.name))}" title="${fn:escapeXml(user.realname)}">
+				<a href="${properties['project.home']}user/${fn:escapeXml(user.name)}" title="${fn:escapeXml(user.realname)}">
 					<div class="imageContainer">
-						<img src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(user.name))}"/>
-				   		<div class="imageCapture">
-				   			<c:choose>
-				   				<c:when test="${not empty user.realname}">${fn:escapeXml(user.realname)}</c:when>
-				   				<c:otherwise>${fn:escapeXml(user.name)}</c:otherwise>	
-				   			</c:choose>				
-				   		</div>
+						<img src="${properties['project.home']}picture/user/${fn:escapeXml(user.name)}"/>
+						<div class="imageCapture">
+							<c:choose>
+								<c:when test="${not empty user.realname}">${fn:escapeXml(user.realname)}</c:when>
+								<c:otherwise>${fn:escapeXml(user.name)}</c:otherwise>	
+							</c:choose>
+						</div>
 					</div>
-   				</a>
+				</a>
 		</div>
- </jsp:root>
+</jsp:root>

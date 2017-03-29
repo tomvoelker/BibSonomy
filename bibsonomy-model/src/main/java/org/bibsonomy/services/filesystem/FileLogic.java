@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -33,7 +33,7 @@ import java.util.Collection;
  * combines all logics to one simple interface to implement
  * @author dzo
  */
-public interface FileLogic extends ProfilePictureLogic, TempFileLogic, JabRefFileLogic, DocumentFileLogic {
+public interface FileLogic extends ProfilePictureLogic, TempFileLogic, JabRefFileLogic, CslFileLogic, DocumentFileLogic {
 
 	/** allowed browser bookmark export extensions */
 	public static final Collection<String> BROWSER_IMPORT_EXTENSIONS = Arrays.asList("html", "htm");

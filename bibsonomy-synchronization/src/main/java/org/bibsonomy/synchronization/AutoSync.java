@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Synchronization - Handles user synchronization between BibSonomy authorities
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -28,10 +28,12 @@ package org.bibsonomy.synchronization;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.SynchronizationRunningException;
@@ -41,19 +43,20 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
-import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.util.MailUtils;
 
 /**
  * @author wla
  */
 public class AutoSync {
 	private static final Log log = LogFactory.getLog(AutoSync.class);
-
+	
 	private LogicInterface adminLogic;
 	private TwoStepSynchronizationClient syncClient;
 	private LogicInterfaceFactory userLogicFactory;
+	private MailUtils mailUtils;
 	
 	
 	/**
@@ -61,21 +64,28 @@ public class AutoSync {
 	 */
 	public void performAutoSync() {
 		log.info("start automatic synchronization");
-		
+	
 		if (!present(this.syncClient)) {
 			log.info("snyc client not available");
 			return;
 		}
-		
-		final List<SyncService> syncServices = this.adminLogic.getSyncService(null, null, true);
+		final Calendar calendar = Calendar.getInstance();
+		// get configured AutoSync-Servers
+		final List<SyncService> syncServices = this.adminLogic.getAutoSyncServer();
 		for (final SyncService syncService : syncServices) {
-			// skip, if autosync not selected or direction is both
-			if (!syncService.isAutosync() || syncService.getDirection() == SynchronizationDirection.BOTH) {
+			final User clientUser = this.adminLogic.getUserDetails(syncService.getUserName());
+
+			// check if user has run a sync in both-directions before; skip service and send sync-notification mail on Sunday otherwise
+			if (!syncService.isAlreadySyncedOnce()) {
+				if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+					log.info("no initial sync in both-directions was done; send eMail to User");
+					this.mailUtils.sendSyncErrorMail(clientUser.getName(), clientUser.getEmail(), syncService.getName(), LocaleUtils.toLocale(clientUser.getSettings().getDefaultLanguage())); 
+				}
 				continue;
 			}
 			
-			final User clientUser = this.adminLogic.getUserDetails(syncService.getUserName());
 			final String userNameToSync = clientUser.getName();
+			
 			log.info("Autosync for user:" + userNameToSync + " and service: " + syncService.getService().toString() + " api: " + syncService.getSecureAPI());
 			try {
 				final LogicInterface clientLogic = this.userLogicFactory.getLogicAccess(userNameToSync, clientUser.getApiKey());
@@ -125,6 +135,13 @@ public class AutoSync {
 	 */
 	public void setUserLogicFactory(final LogicInterfaceFactory userLogicFactory) {
 		this.userLogicFactory = userLogicFactory;
+	}
+
+	/**
+	 * @param mailUtils
+	 */
+	public void setMailUtils(final MailUtils mailUtils) {
+		this.mailUtils = mailUtils;
 	}
 
 }

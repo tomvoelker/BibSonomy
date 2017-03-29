@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Client - The REST-client.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -60,8 +60,7 @@ public class CreateSyncPlanQuery extends AbstractSyncQuery<List<SynchronizationP
 	 * @param strategy the sync strategy to use
 	 * @param direction the sync direction to use
 	 */
-	public CreateSyncPlanQuery(final String serviceURI, final List<SynchronizationPost> posts, final Class<? extends Resource> resourceType, final ConflictResolutionStrategy strategy,
-			final SynchronizationDirection direction) {
+	public CreateSyncPlanQuery(final String serviceURI, final List<SynchronizationPost> posts, final Class<? extends Resource> resourceType, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
 		super(serviceURI, resourceType, strategy, direction);
 		this.posts = posts;
 	}
@@ -72,7 +71,7 @@ public class CreateSyncPlanQuery extends AbstractSyncQuery<List<SynchronizationP
 		final Renderer renderer = this.getRenderer();
 		renderer.serializeSynchronizationPosts(sw, posts);
 
-		final String syncURL = this.getUrlRenderer().createHrefForSync(this.serviceURI, resourceType, strategy, direction, null, null);
+		final String syncURL = this.getUrlRenderer().createHrefForSync(this.serviceURI, this.resourceType, this.strategy, this.direction, null, null);
 		final Reader reader = performRequest(HttpMethod.POST, syncURL, StringUtils.toDefaultCharset(sw.toString()));
 		this.downloadedDocument = reader;
 	}

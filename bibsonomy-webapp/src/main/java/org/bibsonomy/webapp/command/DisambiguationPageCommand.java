@@ -1,5 +1,32 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.command;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.bibsonomy.model.BibTex;
@@ -14,12 +41,13 @@ import org.bibsonomy.services.person.PersonRoleRenderer;
  * @author Christian Pfeiffer
  */
 public class DisambiguationPageCommand extends UserResourceViewCommand {
-
+	
+	@Deprecated // Use a Java JSPTag
 	private PersonRoleRenderer personRoleRenderer;
 	private String requestedAction;
 	private String requestedHash;
 	private PersonResourceRelationType requestedRole;
-	private int requestedIndex;
+	private Integer requestedIndex;
 	
 	private String requestedPersonId;
 	
@@ -27,6 +55,8 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	private PersonName personName;
 	private Post<BibTex> post;
 	private List<ResourcePersonRelation> personSuggestions;
+	private HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts;
+	private List<Post<BibTex>> suggestedPosts;
 
 	/**
 	 * @return the requestedHash
@@ -115,14 +145,14 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the requestedIndex
 	 */
-	public int getRequestedIndex() {
+	public Integer getRequestedIndex() {
 		return this.requestedIndex;
 	}
 
 	/**
 	 * @param requestedIndex the requestedIndex to set
 	 */
-	public void setRequestedIndex(int requestedIndex) {
+	public void setRequestedIndex(final Integer requestedIndex) {
 		this.requestedIndex = requestedIndex;
 	}
 
@@ -144,12 +174,42 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	public List<ResourcePersonRelation> getPersonSuggestions() {
 		return this.personSuggestions;
 	}
-
+	
+	@Deprecated
 	public PersonRoleRenderer getPersonRoleRenderer() {
 		return this.personRoleRenderer;
 	}
-
+	
+	@Deprecated
 	public void setPersonRoleRenderer(PersonRoleRenderer personRoleRenderer) {
 		this.personRoleRenderer = personRoleRenderer;
+	}
+
+	/**
+	 * @return the suggestedPersonPosts
+	 */
+	public HashMap<ResourcePersonRelation, List<Post<?>>> getSuggestedPersonPosts() {
+		return this.suggestedPersonPosts;
+	}
+
+	/**
+	 * @param suggestedPersonPosts the suggestedPersonPosts to set
+	 */
+	public void setSuggestedPersonPosts(HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts) {
+		this.suggestedPersonPosts = suggestedPersonPosts;
+	}
+
+	/**
+	 * @return the suggestedPosts
+	 */
+	public List<Post<BibTex>> getSuggestedPosts() {
+		return this.suggestedPosts;
+	}
+
+	/**
+	 * @param otherAdvisorPosts the suggestedPosts to set
+	 */
+	public void setSuggestedPosts(List<Post<BibTex>> otherAdvisorPosts) {
+		this.suggestedPosts = otherAdvisorPosts;
 	}
 }

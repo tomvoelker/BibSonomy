@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -77,7 +77,6 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 
 	@Override
 	public View workOn(final AdminAjaxCommand command) {
-
 		final RequestWrapperContext context = command.getContext();
 
 		/* Check user role
@@ -98,17 +97,14 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 		/*
 		 * return to form until validation passes
 		 */
-		if (errors.hasErrors()) {
+		if (this.errors.hasErrors()) {
 			/*
 			 * Do not update database as some input fields contain errors
 			 */
-			command.setResponseString("Error in input: " + errors.getFieldError().getObjectName() + " " + errors.getFieldError().getRejectedValue());
+			command.setResponseString("Error in input: " + this.errors.getFieldError().getObjectName() + " " + this.errors.getFieldError().getRejectedValue());
 			return Views.AJAX_TEXT;
 		}
-		/*
-		 * 	
-		 */
-	
+		
 		switch (action) {
 		case FLAG_SPAMMER:
 			log.debug("flag spammer");
@@ -165,7 +161,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 	private void fetchgroupForPermissions(final AdminAjaxCommand cmd) {
 		String groupName = cmd.getGroupname();
 		if (present(groupName)) {
-			Group group = logic.getGroupDetails(groupName);
+			Group group = logic.getGroupDetails(groupName, false);
 			if (present(group) && GroupID.INVALID.getId()!=group.getGroupId()) {
 				cmd.setGroupLevelPermissions(group.getGroupLevelPermissions());
 			}
@@ -271,7 +267,6 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 	@Override
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
-		
 	}
 
 	@Override
@@ -283,5 +278,4 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 	public boolean isValidationRequired(final AdminAjaxCommand command) {
 		return false;
 	}
-	
 }

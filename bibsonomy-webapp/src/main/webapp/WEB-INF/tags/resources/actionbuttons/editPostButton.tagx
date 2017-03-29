@@ -1,0 +1,44 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	>
+
+	<!-- user must be logged in -->
+
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="enforceCommunityPost" type="java.lang.Boolean" required="false"/>
+	
+
+	<!-- TODO: use the urlGenerator for this -->
+	<c:set var="url" value="Publication"/>
+	<c:if test="${resourceType eq 'bookmark'}">
+		<c:set var="url" value="Bookmark"/>
+	</c:if>
+	<c:set var="editTitle" value=""/>
+	
+	<c:choose>
+		<c:when test="${enforceCommunityPost or empty post.user.name}">
+			<fmt:message var="editTitle" key="post.actions.edit.gold.title" />
+			<c:set var="url" value="/editGoldStandard${url}?intraHashToUpdate=${post.resource.interHash}"/>
+		</c:when>
+		<c:otherwise>
+			<fmt:message var="editTitle" key="${resourceType}.actions.edit.title" />
+			<c:set var="url" value="/edit${url}?intraHashToUpdate=${post.resource.intraHash}"/>
+		</c:otherwise>
+	</c:choose>
+	
+	<c:if test="${systemReadOnly}">
+		<fmt:message var="editTitle" key="system.readOnly.info" />
+		<c:set var="buttonClasses" value="${buttonClasses} disabled" />
+	</c:if>
+	
+	<a class="${buttonClasses}" href="${url}" title="${editTitle}">
+		<span class="fa fa-pencil"><!--  --></span>
+		<span class="sr-only"><fmt:message key="post.actions.edit"/></span>
+	</a>
+
+</jsp:root>

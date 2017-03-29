@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.aanda;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -33,7 +34,6 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -48,7 +48,9 @@ public class AandAScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_181");
+		final String url = "http://www.aanda.org/articles/aa/abs/2006/01/aa3694-05/aa3694-05.html";
+		final String resultFile = "AandAScraperUnitURLTest.bib";
+		assertScraperResult(url, null, AandAScraper.class, resultFile);
 	}
 
 	/**
@@ -56,11 +58,13 @@ public class AandAScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_182");
+		final String url = "http://www.aanda.org/articles/aa/abs/2010/05/aa14294-10/aa14294-10.html";
+		final String resultFile = "AandAScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, AandAScraper.class, resultFile);
 	}
 	@Test
 	public void testReferences() throws Exception{
-		final ScrapingContext sc = new ScrapingContext(new URL("http://www.aanda.org/index.php?option=article&amp;access=doi&amp;doi=10.1051/0004-6361/201014294"));
+		final ScrapingContext sc = new ScrapingContext(new URL("http://www.aanda.org/articles/aa/abs/2010/05/aa14294-10/aa14294-10.html"));
 		
 		AandAScraper aas = new AandAScraper();
 		
@@ -72,10 +76,8 @@ public class AandAScraperTest {
 		
 		assertNotNull(reference);
 		
-		assertTrue(reference.length() > 100);
-		
-		assertEquals("<li>\n\t\t\t<a name=\"BH98\"></a>Balbus, S. A., &amp; Hawley, J. F. 1998, Rev. Mod.".trim(), reference.substring(0, 85).trim());
-		
+		assertTrue(reference.length() > 100);		
+		assertEquals("<li>\n"+"                "+"<a name=\"BH98\"></a>Balbus, S. A., &amp; Hawley, J. F. 1998, Rev. Mod.".trim(), reference.substring(0, 119).trim());
 		assertTrue(reference.contains("Balbus, S. A."));
 	}
 }

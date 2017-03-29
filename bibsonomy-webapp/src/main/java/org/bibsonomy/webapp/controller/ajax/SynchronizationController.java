@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -36,14 +36,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.sf.json.JSONObject;
-
+import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.SynchronizationRunningException;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
+import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.sync.util.SynchronizationUtils;
@@ -60,6 +60,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 
 import com.ibm.icu.text.DateFormat;
+
+import net.sf.json.JSONObject;
 
 /**
  * @author wla
@@ -120,6 +122,10 @@ public class SynchronizationController extends AjaxController implements Minimal
 			 */
 			final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan;
 			try {
+				// overwrite sync direction if initialAutoSync & auto-sync configured
+				if (SyncUtils.autoSyncServiceRequiresInitialSync(server)) {
+					server.setDirection(SynchronizationDirection.BOTH);
+				}
 				syncPlan = client.getSyncPlan(logic, server);
 			} catch (final SynchronizationRunningException e) {
 				errors.reject("error.synchronization.running");
@@ -159,22 +165,27 @@ public class SynchronizationController extends AjaxController implements Minimal
 			/*
 			 * run sync plan
 			 */
-			final Map<Class<? extends Resource>, SynchronizationData> syncResult;
 			try {
-				syncResult = client.synchronize(logic, server, syncPlan2);
+				// remove sync plan from session
+				SyncUtils.setSyncPlan(serviceURI, null, this.requestLogic);
+
+				// synchronize
+				final Map<Class<? extends Resource>, SynchronizationData> syncResult = this.client.synchronize(this.logic, server, syncPlan2);
+
+				// check servers initialAutoSync and set the servers alreadySyncedOnce to true on successful synchronize
+				if (SyncUtils.autoSyncServiceRequiresInitialSync(server)) {
+					server.setAlreadySyncedOnce(true);
+					this.logic.updateSyncServer(loginUser.getName(), server, SyncSettingsUpdateOperation.ALL);
+				}
+				
+				/*
+				 * serialize result
+				 */
+				json.put("syncData", serializeSyncData(syncResult));
 			} catch (final SynchronizationRunningException e) {
-				errors.reject("error.synchronization.running");
+				this.errors.reject("error.synchronization.running");
 				return Views.AJAX_ERRORS;
 			}
-			/*
-			 * remove sync plan from session
-			 * FIXME: do this before synchronize()?
-			 */
-			SyncUtils.setSyncPlan(serviceURI, null, requestLogic);
-			/*
-			 * serialize result
-			 */
-			json.put("syncData", serializeSyncData(syncResult));
 			break;
 		case DELETE:
 			/*
@@ -184,11 +195,11 @@ public class SynchronizationController extends AjaxController implements Minimal
 			 */
 			final JSONObject second = new JSONObject();
 			for (final Class<? extends Resource> resourceType : ResourceUtils.getResourceTypesByClass(server.getResourceType())) {
-				client.deleteSyncData(server, resourceType, command.getSyncDate());
+				this.client.deleteSyncData(server, resourceType, command.getSyncDate());
 				/*
 				 * add message for empty result
 				 */
-				second.put(resourceType.getSimpleName(), messageSource.getMessage("synchronization.noresult", null, requestLogic.getLocale()));
+				second.put(resourceType.getSimpleName(), this.messageSource.getMessage("synchronization.noresult", null, this.requestLogic.getLocale()));
 			}
 			json.put("syncData", second);
 			break;
@@ -212,15 +223,15 @@ public class SynchronizationController extends AjaxController implements Minimal
 
 	private JSONObject serializeSyncData(final Map<Class<? extends Resource>, SynchronizationData> data) {
 		final JSONObject json = new JSONObject();
-		final Locale locale = requestLogic.getLocale();
+		final Locale locale = this.requestLogic.getLocale();
 		final DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
 
 		for (final Entry<Class<? extends Resource>, SynchronizationData> entry : data.entrySet()) {
 			final StringBuilder buf = new StringBuilder();
 			final SynchronizationData value = entry.getValue();
 			buf.append(dateFormat.format(value.getLastSyncDate()) + " ");
-			buf.append(messageSource.getMessage("synchronization.result", null, locale));
-			buf.append(" " + messageSource.getMessage("synchronization.result." + value.getStatus().toString().toLowerCase(), null, locale));
+			buf.append(this.messageSource.getMessage("synchronization.result", null, locale));
+			buf.append(" " + this.messageSource.getMessage("synchronization.result." + value.getStatus().toString().toLowerCase(), null, locale));
 			if (present(value.getInfo())) {
 				buf.append(" <em>(" + value.getInfo() + ")</em>");
 			}
@@ -238,7 +249,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 	 */
 	private JSONObject serializeSyncPlan(final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan, final URI serverName) {
 		final JSONObject json = new JSONObject();
-		final Locale locale = requestLogic.getLocale();
+		final Locale locale = this.requestLogic.getLocale();
 		
 		final Map<Class<? extends Resource>, Map<String, String>> planSummary = SyncUtils.getPlanSummary(syncPlan, serverName.toString(), locale, messageSource, projectHome);
 		

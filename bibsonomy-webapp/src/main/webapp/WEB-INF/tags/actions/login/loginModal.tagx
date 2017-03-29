@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" 
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/actions/user"
+	xmlns:login="urn:jsptagdir:/WEB-INF/tags/actions/login"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&amp;times;</span></button>
+					<h2 class="modal-title" id="loginModalLabel"><fmt:message key="auth.header" /> </h2>
+				</div>
+				<div class="modal-body">
+					<c:forEach var="authMethod" items="${authConfig}" varStatus="authMethodLoopState" >
+						<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+						<fmt:message var="authMethodLabel" key="login.method.${authMethodName}" />
+						<c:if test="${not empty authMethodLabel}">
+							<c:if test="${not authMethodLoopState.first}">
+								<hr />
+							</c:if>
+							<p class="authHelp">
+								<fmt:message key="auth.${authMethodName}.help" />
+							</p>
+						</c:if>
+						<c:if test="${authMethod == 'INTERNAL'}">
+							<login:simpleLoginForm authMethod="${authMethodName}" index="${authMethodLoopState.index}">
+								<jsp:attribute name="additionalContent">
+									<p><a href="/reminder"><small><fmt:message key="login.lostPassword_1" /></small></a></p>
+								</jsp:attribute>
+							</login:simpleLoginForm>
+						</c:if>
+						<c:if test="${authMethod == 'OPENID'}">
+							<user:login_openid selectedTab="${authMethodLoopState.index}" compact="${true}"/>
+						</c:if>
+						<c:if test="${authMethod == 'LDAP'}">
+							<login:simpleLoginForm authMethod="${authMethodName}" index="${authMethodLoopState.index}" />
+						</c:if>
+						<c:if test="${authMethod == 'SAML'}">
+							<a href="/login_saml?rememberMe=true" class="btn btn-primary btn-block">
+								<fmt:message key="navi.login" />
+							</a>
+						</c:if>
+					</c:forEach>
+				</div>
+			</div>
+		</div>
+	</div>
+</jsp:root>

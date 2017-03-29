@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -41,58 +41,8 @@ import org.bibsonomy.util.id.ISBNUtils;
 
 /**
  * @author aho
- *
  */
-public class RisToBibtexConverter {
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		String bsp2 = "Content-type: text/application/x-research-info-systems\n\n"+
-		"TY  - JOUR\n"+
-		"AU  - Gosse, Philippe\n"+
-		"TI  - Regression of Left Ventricular Hypertrophy: Should We Echo Echo[quest]\n"+
-		"JA  - Am J Hypertens\n"+
-		"PY  - 2008/03/18/print\n"+
-		"VL  - 21\n"+
-		"IS  - 4\n"+
-		"SP  - 373\n"+
-		"EP  - 373\n"+
-		"PB  - American Journal of Hypertension, Ltd.\n"+
-		"SN  - 0895-7061\n"+
-		"UR  - http://dx.doi.org/10.1038/ajh.2008.9\n"+
-		"ER  - \n";
-		String bsp = "TY  - BOOK\n"+
-		"JF  - Lecture Notes in Computer Science : Engineering Self-Organising Systems\n"+
-		"T1  - T-Man: Gossip-Based Overlay Topology Management\n"+
-		"SP  - 1\n"+
-		"EP  - 15\n"+
-		"PY  - 2006///\n"+
-		"UR  - http://dx.doi.org/10.1007/11734697_1\n"+
-		"M3  - 10.1007/11734697_1\n"+
-		"AU  - M�rk Jelasity\n"+
-		"AU  - Ozalp Babaoglu\n"+
-		"ER  -\n";
-		String bsp3 = "TY  - BOOK\n" +
-		"DB  - /z-wcorg/\n" +
-		"DP  - http://worldcat.org\n" +
-		"ID  - 503308127\n" +
-		"LA  - English\n" +
-		"T1  - Gramsci, language, and translation\n" +
-		"A1  - Ives, Peter,\n" +
-		"A1  - Lacorte, Rocco,\n" +
-		"PB  - Lexington Books\n" +
-		"CY  - Lanham, Md.\n" +
-		"Y1  - 2010///\n" +
-		"SN  - 9780739118597  9780739118603  0739118595  0739118609  9780739147856  0739147854\n" +
-		"ER  - \n";
-
-		System.out.println(new RisToBibtexConverter().risToBibtex(bsp));
-		System.out.println(new RisToBibtexConverter().risToBibtex(bsp2));
-		System.out.println(new RisToBibtexConverter().risToBibtex(bsp3));
-	}
-
+public class RisToBibtexConverter implements BibtexConverter{
 
 	/**
 	 * String array that maps from month number to month string label
@@ -102,20 +52,20 @@ public class RisToBibtexConverter {
 
 	/** Function is taken from JabRef importer
 	 * 
-	 * @param Ris
+	 * @param ris
 	 * @return The resulting BibTeX string.
 	 */
-	public String risToBibtex(String Ris) {
+	@Override
+	public String toBibtex(String ris) {
 		/**
 		 * Parse the entries in the source, and return a List of BibtexEntry
 		 * objects.
 		 */
-
 		String type = "", author = "", editor = "", startPage = "", endPage = "", comment = "";
 		final SortedMap<String,String> bibtexMap = new TreeMap<String,String>();
 
 		// split the Strint into different entries
-		final String[] fields = Ris.split("\n");
+		final String[] fields = skipBOM(ris).split("\n");
 
 		// go through all entries
 		for (int j = 0; j < fields.length; j++) {
@@ -148,181 +98,145 @@ public class RisToBibtexConverter {
 					done = true;
 			}
 			final String entry = current.toString();
-			if (entry.length() < 6)
+			if (entry.length() < 6) {
 				continue;
-			else {
-				final String key = entry.substring(0, 2);
-				String value = entry.substring(6).trim();
-				if (key.equals("TY")) {
-					if (value.equals("BOOK"))
-						type = BibTexUtils.BOOK;
-					else if (value.equals("JOUR") || value.equals("MGZN"))
-						type = BibTexUtils.ARTICLE;
-					else if (value.equals("THES"))
-						type = BibTexUtils.PHD_THESIS;
-					else if (value.equals("UNPB"))
-						type = BibTexUtils.UNPUBLISHED;
-					else if (value.equals("RPRT"))
-						type = BibTexUtils.TECH_REPORT;
-					else if (value.equals("CONF"))
-						type = BibTexUtils.INPROCEEDINGS;
-					else if (value.equals("CTLG"))
-						type = BibTexUtils.BOOKLET;
-					else if (value.equals("CPAPER"))
-						type = BibTexUtils.CONFERENCE;
-					else if (value.equals("EJOUR") || value.equals("BLOG") || value.equals("ELEC"))
-						type = BibTexUtils.ELECTRONIC;
-					else if (value.equals("CHAP"))
-						type = BibTexUtils.INBOOK;
-					//					else if (value.equals("XXXX"))
-					//						type = "manual";
-					//					else if (value.equals("THESIS"))
-					//						type = "mastersthesis";
-					else if (value.equals("PAT"))
-						type = BibTexUtils.PATENT;
-					else if (value.equals("SER") || value.equals("MGZN"))
-						type = BibTexUtils.PERIODICAL;
-					else if (value.equals("SLIDE"))
-						type = BibTexUtils.PRESENTATION;
-					//					else if (value.equals("CONF"))
-					//						type = "proceedings";
-					else if (value.equals("STAND"))
-						type = BibTexUtils.STANDARD;
-					else
-						type = BibTexUtils.MISC;
-				} else if (key.equals("T1") || key.equals("TI")) {
-					if (value.endsWith(",") || value.endsWith(".")) {
-						value = value.substring(0, value.length() - 1);
-					}
-					bibtexMap.put("title", value); 
-				} else if (key.equals("T2") || key.equals("T3") || key.equals("BT")) {
-					bibtexMap.put("booktitle", value);
-				} else if (key.equals("A1") || key.equals("AU")) {
-					// take care of trailing ","
-					if (value.endsWith(",")) {
-						value = value.substring(0, value.length() - 1);
-					}
-					// remove trailing ", Jr." (wrong place for BibTeX)
-					if (value.endsWith(", Jr.")) {
-						value = value.substring(0, value.length() - ", Jr.".length());
-					}
-					// take care of entries like 
-					// A1  - Braams, Johannes.
-					if (value.endsWith(".") && value.lastIndexOf(" ") < value.length() - 3) {
-						value = value.substring(0, value.length() - 1);
-					}
-					if (author.equals("")) // don't add " and " for the first author
-						author = value;
-					else
-						author += " and " + value;
-				} else if (key.equals("A2")) {
-					if (editor.equals("")) // don't add " and " for the first editor
-						editor = value;
-					else
-						editor += " and " + value;
-				} else if (key.equals("JA") || key.equals("JF")	|| key.equals("JO")) {
-					if ("inproceedings".equals(type))
-						bibtexMap.put("booktitle", value);
-					else {
-						/*
-						 * Since we don't want JA (abbreviated journal) to 
-						 * overwrite JO (long journal), we check for JA, if a
-						 * journal entry already exists.
-						 */
-						if (!key.equals("JA") || !bibtexMap.containsKey("journal"))
-							bibtexMap.put("journal", value);
-					}
-				}
-				else if (key.equals("DO")) 
-					bibtexMap.put("doi", value);
-				else if (key.equals("SP"))
-					startPage = value;
-				else if ("PB".equals(key)) {
-					/*
-					 * Special handling for techreports: map the publisher to the
-					 * institution field (as discussed in bibsonomy-discuss).
-					 */
-					if ("techreport".equals(type)) {
-						bibtexMap.put("institution", value);
-					} else {
-						bibtexMap.put("publisher", value);
-					}
-				} else if (key.equals("AD") || key.equals("CY"))
-					bibtexMap.put("address", value);
-				else if (key.equals("EP"))
-					endPage = value;
-				else if (key.equals("SN")) {
-					String[] _s = value.split(" "); 
-					String _isbn = "";
-					String _issn = "";
-
-					for (int i = 0; i < _s.length; ++i) {
-						_s[i] = _s[i].trim();
-						String extractedISBN = ISBNUtils.extractISBN(_s[i]);
-						if (present(extractedISBN)) {
-							_isbn += extractedISBN + " ";
-						} else if (ISBNUtils.extractISSN(_s[i]) != null){
-							_issn += ISBNUtils.extractISSN(_s[i]) + " ";
-						}
-					}
-
-					if (_isbn.length() > 0)
-						bibtexMap.put("isbn", _isbn.trim());
-					if (_issn.length() > 0)
-						bibtexMap.put("issn", _issn.trim());
-				}
-				else if (key.equals("VL"))
-					bibtexMap.put("volume", value);
-				else if (key.equals("IS"))
-					bibtexMap.put("number", value);
-				else if (key.equals("N2") || key.equals("AB"))
-					bibtexMap.put("abstract", value);
-				else if (key.equals("UR"))
-					bibtexMap.put("url", value);
-				else if (key.equals("AD"))
-					bibtexMap.put("address", value);
-				else if ((key.equals("Y1") || key.equals("PY"))
-						&& value.length() >= 4) {
-
-					// handle the case of spaces instead of slashes (ie. 2007 Jan)
-					String delim = "/";
-					if (value.indexOf("/") == -1
-							&& value.indexOf(" ") != -1) {
-						delim = " ";
-					}
-
-					String[] parts = value.split(delim);
-					bibtexMap.put("year", parts[0]);
-					if ((parts.length > 1) && (parts[1].length() > 0)) {
-						try {
-							int month = Integer.parseInt(parts[1]);
-							if ((month > 0) && (month <= 12)) {
-								// System.out.println(Globals.MONTHS[month-1]);
-								bibtexMap.put("month", MONTHS[month - 1]);
-							}
-						} catch (NumberFormatException ex) {
-							// The month part is unparseable, so we ignore it.
-						}
-					}
-				}
-
-				else if (key.equals("KW")) {
-					if (!bibtexMap.containsKey("keywords"))
-						bibtexMap.put("keywords", value);
-					else {
-						String kw = bibtexMap.get("keywords");
-						bibtexMap.put("keywords", kw + " " + value);
-					}
-				} else if (key.equals("U1") || key.equals("U2")
-						|| key.equals("N1")) {
-					if (comment.length() > 0)
-						comment = comment + "\n";
-					comment = comment + value;
-				}
-				// Added ID import 2005.12.01, Morten Alver:
-				else if (key.equals("ID"))
-					bibtexMap.put("refid", value);
 			}
+			final String key = entry.substring(0, 2);
+			String value = entry.substring(6).trim();
+			if (key.equals("TY")) {
+				type = extractType(value);
+			} else if (key.equals("T1") || key.equals("TI")) {
+				if (value.endsWith(",") || value.endsWith(".")) {
+					value = value.substring(0, value.length() - 1);
+				}
+				bibtexMap.put("title", value); 
+			} else if (key.equals("T2") || key.equals("T3") || key.equals("BT")) {
+				bibtexMap.put("booktitle", value);
+			} else if (key.equals("A1") || key.equals("AU")) {
+				// take care of trailing ","
+				if (value.endsWith(",")) {
+					value = value.substring(0, value.length() - 1);
+				}
+				// remove trailing ", Jr." (wrong place for BibTeX)
+				if (value.endsWith(", Jr.")) {
+					value = value.substring(0, value.length() - ", Jr.".length());
+				}
+				// take care of entries like 
+				// A1  - Braams, Johannes.
+				if (value.endsWith(".") && value.lastIndexOf(" ") < value.length() - 3) {
+					value = value.substring(0, value.length() - 1);
+				}
+				if (author.equals("")) // don't add " and " for the first author
+					author = value;
+				else
+					author += " and " + value;
+			} else if (key.equals("A2")) {
+				if (editor.equals("")) // don't add " and " for the first editor
+					editor = value;
+				else
+					editor += " and " + value;
+			} else if (key.equals("JA") || key.equals("JF")	|| key.equals("JO")) {
+				if ("inproceedings".equals(type))
+					bibtexMap.put("booktitle", value);
+				else {
+					/*
+					 * Since we don't want JA (abbreviated journal) to 
+					 * overwrite JO (long journal), we check for JA, if a
+					 * journal entry already exists.
+					 */
+					if (!key.equals("JA") || !bibtexMap.containsKey("journal"))
+						bibtexMap.put("journal", value);
+				}
+			}
+			else if (key.equals("DO")) 
+				bibtexMap.put("doi", value);
+			else if (key.equals("SP"))
+				startPage = value;
+			else if ("PB".equals(key)) {
+				/*
+				 * Special handling for techreports: map the publisher to the
+				 * institution field (as discussed in bibsonomy-discuss).
+				 */
+				if ("techreport".equals(type)) {
+					bibtexMap.put("institution", value);
+				} else {
+					bibtexMap.put("publisher", value);
+				}
+			} else if (key.equals("AD") || key.equals("CY"))
+				bibtexMap.put("address", value);
+			else if (key.equals("EP"))
+				endPage = value;
+			else if (key.equals("SN")) {
+				String[] _s = value.split(" "); 
+				String _isbn = "";
+				String _issn = "";
+
+				for (int i = 0; i < _s.length; ++i) {
+					_s[i] = _s[i].trim();
+					String extractedISBN = ISBNUtils.extractISBN(_s[i]);
+					if (present(extractedISBN)) {
+						_isbn += extractedISBN + " ";
+					} else if (ISBNUtils.extractISSN(_s[i]) != null){
+						_issn += ISBNUtils.extractISSN(_s[i]) + " ";
+					}
+				}
+
+				if (_isbn.length() > 0)
+					bibtexMap.put("isbn", _isbn.trim());
+				if (_issn.length() > 0)
+					bibtexMap.put("issn", _issn.trim());
+			}
+			else if (key.equals("VL"))
+				bibtexMap.put("volume", value);
+			else if (key.equals("IS"))
+				bibtexMap.put("number", value);
+			else if (key.equals("N2") || key.equals("AB"))
+				bibtexMap.put("abstract", value);
+			else if (key.equals("UR"))
+				bibtexMap.put("url", value);
+			else if (key.equals("AD"))
+				bibtexMap.put("address", value);
+			else if ((key.equals("Y1") || key.equals("PY"))
+					&& value.length() >= 4) {
+
+				// handle the case of spaces instead of slashes (ie. 2007 Jan)
+				String delim = "/";
+				if (value.indexOf("/") == -1
+						&& value.indexOf(" ") != -1) {
+					delim = " ";
+				}
+
+				String[] parts = value.split(delim);
+				bibtexMap.put("year", parts[0]);
+				if ((parts.length > 1) && (parts[1].length() > 0)) {
+					try {
+						int month = Integer.parseInt(parts[1]);
+						if ((month > 0) && (month <= 12)) {
+							// System.out.println(Globals.MONTHS[month-1]);
+							bibtexMap.put("month", MONTHS[month - 1]);
+						}
+					} catch (NumberFormatException ex) {
+						// The month part is unparseable, so we ignore it.
+					}
+				}
+			}
+
+			else if (key.equals("KW")) {
+				if (!bibtexMap.containsKey("keywords"))
+					bibtexMap.put("keywords", value);
+				else {
+					String kw = bibtexMap.get("keywords");
+					bibtexMap.put("keywords", kw + " " + value);
+				}
+			} else if (key.equals("U1") || key.equals("U2")
+					|| key.equals("N1")) {
+				if (comment.length() > 0)
+					comment = comment + "\n";
+				comment = comment + value;
+			}
+			// Added ID import 2005.12.01, Morten Alver:
+			else if (key.equals("ID"))
+				bibtexMap.put("refid", value);
 		}
 		// fix authors
 		//	        if (Author.length() > 0) {
@@ -360,10 +274,80 @@ public class RisToBibtexConverter {
 			}
 		}
 		bibtexString.append("\n}\n");
-
+						
 		return bibtexString.toString();
 	}
 
+	/**
+	 * @param value
+	 * @return
+	 */
+	private static String extractType(String value) {
+		if (value.equals("BOOK")) {
+			return BibTexUtils.BOOK;
+		}
+		if (value.equals("JOUR") || value.equals("MGZN")) {
+			return BibTexUtils.ARTICLE;
+		}
+		
+		if (value.equals("THES")) {
+			return BibTexUtils.PHD_THESIS;
+		}
+		if (value.equals("UNPB")) {
+			return BibTexUtils.UNPUBLISHED;
+		}
+		if (value.equals("RPRT")) {
+			return BibTexUtils.TECH_REPORT;
+		}
+		if (value.equals("CONF")) {
+			return BibTexUtils.INPROCEEDINGS;
+		}
+		if (value.equals("CTLG")) {
+			return BibTexUtils.BOOKLET;
+		}
+		if (value.equals("CPAPER")) {
+			return BibTexUtils.CONFERENCE;
+		}
+		if (value.equals("EJOUR") || value.equals("BLOG") || value.equals("ELEC")) {
+			return BibTexUtils.ELECTRONIC;
+		}
+		if (value.equals("CHAP")) {
+			return BibTexUtils.INBOOK;
+		}
+		//					else if (value.equals("XXXX"))
+		//						type = "manual";
+		//					else if (value.equals("THESIS"))
+		//						type = "mastersthesis";
+		if (value.equals("PAT")) {
+			return BibTexUtils.PATENT;
+		}
+		if (value.equals("SER") || value.equals("MGZN")) {
+			return BibTexUtils.PERIODICAL;
+		}
+		if (value.equals("SLIDE")) {
+			return BibTexUtils.PRESENTATION;
+		}
+		//					else if (value.equals("CONF"))
+		//						type = "proceedings";
+		if (value.equals("STAND")) {
+			return BibTexUtils.STANDARD;
+		}
+		return BibTexUtils.MISC;
+	}
+
+	/**
+	 * skip byte order mark
+	 * https://de.wikipedia.org/wiki/Byte_Order_Mark
+	 * @param s
+	 * 
+	 * @return the string without the utf-8 encoding 0xfeff
+	 */
+	public String skipBOM(final String s) {
+		if ((int) s.charAt(0) == 0xfeff) 
+			return s.substring(1);
+		return s;
+	}
+	
 	/**
 	 * returns true if the snippet contains only ris entries, false otherwise
 	 * WARNING: this is a heuristic!

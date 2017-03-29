@@ -1,0 +1,62 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:per="urn:jsptagdir:/WEB-INF/tags/person">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="availableRoles" type="java.util.Collection" required="true"/>
+	
+	<c:set var="loginUserName" value="${loginUser.name}"/>
+	
+	<div class="personThesisEntry row ${post.resource.interHash}_${post.resource.intraHash}">
+	
+		<div class="col-md-6">
+			<span class="ptitle"><bib:title post="${post}" /></span>
+			<div class="personPdesc pdesc ellipsis">
+				<div class="ellipsis-content"><bib:desc post="${post}" publication="${post.resource}"/></div>
+			</div>	
+		</div>
+		
+		<div class="col-md-6" style="border-left: 1px solid lightgrey">
+		
+			<!-- Doctorial advisor and first reviewer should always be visible -->
+			<ul class="list-unstyled">
+				<c:forEach var="role" items="${availableRoles}">
+					<!-- TODO: replace by proper handling -->				
+					<c:if test="${role == 'DOCTOR_VATER' or role == 'FIRST_REVIEWER'}">
+						<per:editRoles post="${post}" loginUser="${loginUser}" role="${role}"></per:editRoles>	
+					</c:if>
+				</c:forEach>
+			</ul>
+			
+			<!-- All other roles are hidden by default -->
+			<ul class="list-unstyled personPageAdditionalRoleFields">
+				<c:forEach var="role" items="${availableRoles}">
+					<!-- TODO: replace by proper handling -->				
+					<c:if test="${role != 'DOCTOR_VATER' and role != 'FIRST_REVIEWER'}">
+						<per:editRoles post="${post}" loginUser="${loginUser}" role="${role}"></per:editRoles>	
+					</c:if>
+				</c:forEach>
+			</ul>
+			
+			<a href="#" class="personPageShowAdditionalRoleFields pull-right">
+				<span class="personPageShowAdditionalRoleFieldsMore"><fmt:message key="more" /></span>
+				<span style="display:none" class="personPageShowAdditionalRoleFieldsLess"><fmt:message key="less" /></span>
+			</a>
+			
+		</div>
+		
+	</div>
+</jsp:root>

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -103,11 +103,12 @@ public class GeneralAjaxController extends AjaxController implements Minimalisti
 	private static void getDetailsForUrl(final GeneralAjaxCommand command) {
 		final String pageURL = command.getPageURL();
 		
-		if (!present(pageURL)) return;
+		if (!present(pageURL)) {
+			return;
+		}
 
 		try {
 			final Document document = XmlUtils.getDOM(new URL(pageURL));
-
 			final NodeList title = document.getElementsByTagName("title");
 			command.setPageTitle(title.item(0).getChildNodes().item(0).getNodeValue());
 

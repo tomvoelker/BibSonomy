@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -33,18 +33,17 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
-import org.bibsonomy.webapp.command.actions.EditPostCommand;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
-
-import recommender.core.interfaces.model.TagRecommendationEntity;
 
 /**
  * @author dzo
@@ -74,7 +73,7 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 	}
 
 	@Override
-	protected void prepareResourceForDatabase(final Bookmark resource) {
+	protected void updateGoldStandardIntraHash(final Bookmark resource) {
 		// noop
 	}
 
@@ -98,7 +97,7 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 
 	@Override
 	protected View finalRedirect(final String userName, final Post<Bookmark> post, final String referer) {
-		return new ExtendedRedirectView(this.urlGenerator.getBookmarkUrl(post.getResource(), null));
+		return new ExtendedRedirectView(this.urlGenerator.getResourceUrl(post.getResource()));
 	}
 
 	private Post<Bookmark> convertToGoldStandard(final Post<Bookmark> post) {
@@ -150,9 +149,17 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 	protected PostValidator<Bookmark> getValidator() {
 		return new GoldStandardPostValidator<Bookmark>();
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#canEditPost(org.bibsonomy.webapp.util.RequestWrapperContext)
+	 */
+	@Override
+	protected boolean canEditPost(final RequestWrapperContext context) {
+		return super.canEditPost(context) && !context.getLoginUser().isSpammer();
+	}
 
 	@Override
-	protected void setRecommendationFeedback(final TagRecommendationEntity post, final int postID) {
+	protected void setRecommendationFeedback(User loggedinUser, Post<? extends Resource> entity, int postID) {
 		// noop gold standards have no tags
 	}
 }

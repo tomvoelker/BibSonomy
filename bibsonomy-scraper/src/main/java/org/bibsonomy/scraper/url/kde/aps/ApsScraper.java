@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -74,7 +74,7 @@ public class ApsScraper extends GenericBibTeXURLScraper{
 	}
 
 	@Override
-	public String getDownloadURL(final URL url) throws ScrapingException {
+	public String getDownloadURL(final URL url, String cookies) throws ScrapingException {
 		try {
 			final Matcher m = BIBTEX_PATTERN.matcher(WebUtils.getContentAsString(url));
 			if (m.find()) {

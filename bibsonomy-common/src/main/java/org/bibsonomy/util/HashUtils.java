@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -53,7 +53,7 @@ public class HashUtils {
 	 * @return the SHA-1 hash
 	 */
 	public static String getSHA1Hash(final byte[] data) {
-		return HashUtils.getHash(data, "SHA-1");	
+		return HashUtils.getHash(data, "SHA-1");
 	}
 
 	private static String getHash(final byte[] data, final String hashAlgorithm) {
@@ -64,7 +64,7 @@ public class HashUtils {
 			return toHexString(md.digest(data));
 		} catch (final NoSuchAlgorithmException e) {
 			return null;
-		}		
+		}
 	}
 	
 	/**

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -68,7 +68,7 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 		// set grouping entity, grouping name, tags, user similarity
 		final GroupingEntity groupingEntity = GroupingEntity.USER;
 		final List<String> requTags = command.getRequestedTagsList();
-		final UserRelation userRelation = EnumUtils.searchEnumByName(UserRelation.values(), command.getUserSimilarity()); 
+		final UserRelation userRelation = EnumUtils.searchEnumByName(UserRelation.values(), command.getUserSimilarity());
 
 		// handle case when only tags are requested
 		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags, null, Integer.MAX_VALUE, null);
@@ -87,7 +87,7 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 		
 		// retrieve and set the requested resource lists, along with total
 		// counts
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			
 			final int origEntriesPerPage = listCommand.getEntriesPerPage();
@@ -112,7 +112,7 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			// set page title
-			command.setPageTitle("user :: " + groupingName + " (personalized)"); // TODO: i18n
+			command.setPageTitle(groupingName + " (personalized)"); // TODO: i18n
 			
 			// re-compute tag weights
 			RankingUtil.computeRanking(loginUserTags, targetUserTags);
@@ -123,7 +123,7 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 			// this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, Integer.MAX_VALUE, null);
 			
 			// retrieve similar users
-			List<User> similarUsers = this.logic.getUsers(null, GroupingEntity.USER, groupingName, null, null, null, userRelation, null, 0, 10);
+			final List<User> similarUsers = this.logic.getUsers(null, GroupingEntity.USER, groupingName, null, null, null, userRelation, null, 0, 10);
 			command.getRelatedUserCommand().setRelatedUsers(similarUsers);
 			
 			this.endTiming();

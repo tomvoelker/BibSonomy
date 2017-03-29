@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -35,6 +35,7 @@ import java.lang.reflect.Method;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.FieldLengthErrorMessage;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.services.database.DatabaseSchemaInformation;
@@ -53,10 +54,10 @@ public class DatabaseModelValidator<T> {
 	 * the database
 	 * 
 	 * @param model 	the model to validate
-	 * @param id    	the id of the model (used for the errormessage)
 	 * @param session	the session
+	 * @return the error message, <code>null</code> iff validation was successful
 	 */
-	public void validateFieldLength(final T model, final String id, final DBSession session) {
+	public ErrorMessage validateFieldLength(final T model, final DBSession session) {
 		final Class<? extends Object> clazz = model.getClass();
 		final FieldLengthErrorMessage fieldLengthError = new FieldLengthErrorMessage();
 		try {
@@ -90,12 +91,13 @@ public class DatabaseModelValidator<T> {
 			}
 			
 			if (fieldLengthError.hasErrors()) {
-				session.addError(id, fieldLengthError);
-				log.debug("added fieldlengthError");
+				log.debug("returning fieldlengthError");
+				return fieldLengthError;
 			} 
 		} catch (final Exception ex) {
 			log.error("could not introspect object of class '" + model.getClass().getSimpleName() + "'", ex);
 		}
+		return null;
 	}
 
 	/**

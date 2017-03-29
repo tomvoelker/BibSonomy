@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,9 +30,9 @@ import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.UrlCompositeScraper;
 
 
-/** General scraper for IEEE Explore
+/**
+ * General scraper for IEEE Explore
  * @author rja
- *
  */
 public class IEEEXploreScraper extends UrlCompositeScraper {
 	private static final String SITE_URL = "http://ieeexplore.ieee.org/";
@@ -47,7 +47,8 @@ public class IEEEXploreScraper extends UrlCompositeScraper {
 		addScraper(new IEEEXploreBookScraper());
 		addScraper(new IEEEXploreStandardsScraper());
 	}
-
+	
+	@Override
 	public String getInfo() {
 		return info;
 	}

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,13 +26,14 @@
  */
 package org.bibsonomy.scraper.url.kde.jstor;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #97 & #98 for JStorScraper
+ * Scraper URL tests for JStorScraper
  * @author wbi
  */
 @Category(RemoteTest.class)
@@ -42,23 +43,29 @@ public class JStorScraperTest {
 	 * starts URL test with id url_97
 	 */
 	@Test
-	public void urlTest1Run(){
-		UnitTestRunner.runSingleTest("url_97");
+	public void urlTest1Run() {
+		final String url = "http://www.jstor.org/stable/4142852";
+		final String resultFile = "JStorScraperUnitURLTest.bib";
+		assertScraperResult(url, null, JStorScraper.class, resultFile);
 	}
 	
 	/**
 	 * starts URL test with id url_98
 	 */
 	@Test
-	public void urlTest2Run(){
-		UnitTestRunner.runSingleTest("url_98");
+	public void urlTest2Run() {
+		final String url = "http://www.jstor.org/stable/j.ctt7zv8mk?Search=yes&resultItemClick=true&searchText=clustering&searchUri=%2Faction%2FdoBasicSearch%3FQuery%3Dclustering%26amp%3Bacc%3Doff%26amp%3Bwc%3Don%26amp%3Bfc%3Doff%26amp%3Bgroup%3Dnone";
+		final String resultFile = "JStorScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, JStorScraper.class, resultFile);
 	}
 	
 	/**
 	 * starts URL test with id url_222
 	 */
 	@Test
-	public void urlTest3Run(){
-		UnitTestRunner.runSingleTest("url_222");
+	public void urlTest3Run() {
+		final String url = "http://www.jstor.org/stable/20569359?seq=1#page_scan_tab_contents";
+		final String resultFile = "JStorScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, JStorScraper.class, resultFile);
 	}
 }

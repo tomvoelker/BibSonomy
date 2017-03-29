@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Web-Common - Common things for web
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -53,6 +53,7 @@ public abstract class ConditionedFactoryBean<T> extends ConditionedPropertyCreat
 		return true;
 	}
 
+	@Override
 	protected T produceFailureBean() {
 		return null;
 	}

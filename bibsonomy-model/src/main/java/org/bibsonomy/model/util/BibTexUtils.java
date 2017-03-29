@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -209,9 +209,6 @@ public class BibTexUtils {
 	
 	/** presentation */
 	public static final String PRESENTATION = "presentation";
-	
-	/** preamble */
-	public static final String PREAMBLE = "preamble";
 
 	/** periodical */
 	public static final String PERIODICAL = "periodical";
@@ -262,7 +259,7 @@ public class BibTexUtils {
 	 * the common entrytypes of a BibTeX
 	 */
 	public static final String[] ENTRYTYPES = {ARTICLE, BOOK, BOOKLET, CONFERENCE, ELECTRONIC, INBOOK, INCOLLECTION, INPROCEEDINGS,
-		MANUAL, MASTERS_THESIS, MISC, PATENT, PERIODICAL, PHD_THESIS, PREAMBLE, PRESENTATION, PROCEEDINGS, STANDARD, TECH_REPORT, UNPUBLISHED,
+		MANUAL, MASTERS_THESIS, MISC, PATENT, PERIODICAL, PHD_THESIS, PRESENTATION, PROCEEDINGS, STANDARD, TECH_REPORT, UNPUBLISHED,
 		PREPRINT
 	};
 
@@ -490,7 +487,7 @@ public class BibTexUtils {
 		if (present(bib.getEditor())) {
 			values.put(BIBTEX_EDITOR_FIELD, addBibTeXBrackets(PersonNameUtils.serializePersonNames(bib.getEditor(), lastFirstNames)));
 		}
-				
+		
 		/*
 		 * process miscFields map, if present
 		 */

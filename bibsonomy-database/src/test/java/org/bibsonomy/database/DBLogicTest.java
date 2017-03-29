@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -44,8 +44,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.Assert;
-
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
@@ -66,8 +64,6 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Repository;
 import org.bibsonomy.model.Resource;
@@ -75,9 +71,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.PersonLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
@@ -86,6 +80,7 @@ import org.bibsonomy.util.Sets;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+
 
 /**
  * @author Jens Illig
@@ -123,8 +118,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		return userDb.getUserNamesByGroupId(groupId, dbSession);
 	}
 	
-	
-	protected LogicInterface getDbLogic() {		
+	protected LogicInterface getDbLogic() {
 		return this.getDbLogic(TEST_USER_NAME);
 	}
 
@@ -720,6 +714,12 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		assertEquals(20, user.size());
 	}
 	
+	@Test
+	public void testGetUsersPendingByUsername() {
+		final List<User> users = this.getDbLogic().getUsers(null, GroupingEntity.PENDING, "activationtestuser1" , null, null, null, null, null, 0, 20);
+		assertEquals(1, users.size());
+	}
+	
 	/**
 	 * tests getUserDetails
 	 */
@@ -952,8 +952,8 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		String hash = createPosts.get(0);
 		
 		final Post<? extends Resource> savedPost = dbl.getPostDetails(hash, userName);
-		Assert.assertEquals(1, savedPost.getGroups().size());
-		Assert.assertTrue(savedPost.getGroups().contains(expectedGroup));
+		assertEquals(1, savedPost.getGroups().size());
+		assertTrue(savedPost.getGroups().contains(expectedGroup));
 		
 		dbl.deletePosts(userName, Collections.singletonList(hash));
 	}

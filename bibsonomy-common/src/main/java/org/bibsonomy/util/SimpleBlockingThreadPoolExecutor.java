@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
+ *
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.util;
 
 import java.util.List;
@@ -8,8 +34,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A very basic executor (similar to {@link Executor})  that keeps track of scheduled and running tasks in a type-safe way and can be easily configured and shut
- * down from spring
+ * A very basic executor (similar to {@link Executor})  that keeps track of
+ * scheduled and running tasks in a type-safe way and can be easily
+ * configured and shut down from spring
  * 
  * @author jensi
  * @param <R>
@@ -64,19 +91,18 @@ public class SimpleBlockingThreadPoolExecutor<R extends Callable<?>> {
 	 *            been executed.
 	 */
 	public void scheduleTaskForExecution(final R task, boolean sync) {
-		
-			try {
-				final ExecutorService exec = getExecutor();
-				if (sync) {
-					exec.submit((Callable<?>) task).get();
-				} else {
-					exec.submit((Callable<?>) task);
-				}
-			} catch (InterruptedException e) {
-				Thread.interrupted();
-			} catch (ExecutionException e) {
-				throw new RuntimeException(e);
+		try {
+			final ExecutorService exec = getExecutor();
+			if (sync) {
+				exec.submit((Callable<?>) task).get();
+			} else {
+				exec.submit((Callable<?>) task);
 			}
+		} catch (InterruptedException e) {
+			Thread.interrupted();
+		} catch (ExecutionException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -133,5 +159,4 @@ public class SimpleBlockingThreadPoolExecutor<R extends Callable<?>> {
 	public void setSecondsBeforeClosingUnusedThreads(long secondsBeforeClosingUnusedThreads) {
 		this.secondsBeforeClosingUnusedThreads = secondsBeforeClosingUnusedThreads;
 	}
-	
 }

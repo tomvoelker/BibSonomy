@@ -4,8 +4,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
-	
-	<c:if test="${not empty publication.organization}">		
-		<em><c:out value="${mtl:cleanBibtex(publication.organization)}" /><c:out value=", "/></em>		
+	<c:if test="${not empty publication.organization}">
+		<em><c:out value="${mtl:cleanBibtex(publication.organization)}" /><c:out value=", "/></em>
 	</c:if>
 </jsp:root>

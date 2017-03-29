@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Synchronization - Handles user synchronization between BibSonomy authorities
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -95,7 +95,7 @@ public class TwoStepSynchronizationClientTest extends AbstractSynchronizationCli
 		/*
 		 * check that synchronization is enabled
 		 */
-		final SyncService syncServer = clientLogic.getSyncService(clientUser.getName(), null, true).get(0);
+		final SyncService syncServer = clientLogic.getSyncServiceSettings(clientUser.getName(), null, true).get(0);
 		final URI syncServerUri = syncServer.getService();
 		assertEquals(SYNC_SERVER_URI, syncServerUri.toString());
 

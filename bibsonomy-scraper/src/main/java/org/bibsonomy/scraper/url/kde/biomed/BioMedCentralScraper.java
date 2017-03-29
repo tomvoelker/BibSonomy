@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,13 +31,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -54,23 +56,43 @@ public class BioMedCentralScraper extends AbstractUrlScraper {
 	private static final String BIOMEDCENTRAL_HOST  = "biomedcentral.com";
 	private static final String BIOMEDCENTRAL_BIBTEX_PATH = "citation";
 	private static final String BIOMEDCENTRAL_BIBTEX_PARAMS = "format=bibtex&include=cit&direct=on&action=submit";
-
+	
+	private static final Pattern DOI_PATTERN_FROM_URL_FOR_SUBHOST_JBIOMEDSEM = Pattern.compile("/articles/(.+?)$");
+	
+	private static final String FORMAT_BIBTEX_FLAVOUR_CITATION = "?format=bibtex&flavour=citation";
+	private static final String DOWNLOAD_URL_FOR_SUBHOST_JBIOMEDSEM = "http://citation-needed.services.springer.com/v2/references/";
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + BIOMEDCENTRAL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
+	@Override
 	public String getInfo() {
 		return info;
 	}
 
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-
+		
 		String url = sc.getUrl().toString();
 
-		if(!(url.endsWith("/" + BIOMEDCENTRAL_BIBTEX_PATH + "/") || 
+		/*
+		 * extract only from the host jbiomedsem.biomedcentral.com/
+		 */
+		if ("jbiomedsem.biomedcentral.com".equals(sc.getUrl().getHost())) {
+			Matcher m = DOI_PATTERN_FROM_URL_FOR_SUBHOST_JBIOMEDSEM.matcher(url);
+			if (m.find()) {
+				try {
+					final String bibtexResult = WebUtils.getContentAsString(new URL(DOWNLOAD_URL_FOR_SUBHOST_JBIOMEDSEM + m.group(1) + FORMAT_BIBTEX_FLAVOUR_CITATION));
+					sc.setBibtexResult(bibtexResult);
+					return true;
+				} catch (IOException ex) {
+					throw new ScrapingFailureException(ex);
+				}
+			}
+		}
+		if (!(url.endsWith("/" + BIOMEDCENTRAL_BIBTEX_PATH + "/") || 
 				url.endsWith("/" + BIOMEDCENTRAL_BIBTEX_PATH) ||
 				url.endsWith(BIOMEDCENTRAL_BIBTEX_PATH))) {
-
-			if(!url.endsWith("/")) {
+			if (!url.endsWith("/")) {
 				url += "/" + BIOMEDCENTRAL_BIBTEX_PATH;
 			} else {
 				url += BIOMEDCENTRAL_BIBTEX_PATH;
@@ -85,24 +107,28 @@ public class BioMedCentralScraper extends AbstractUrlScraper {
 		
 		try {
 			String bibResult = WebUtils.getPostContentAsString(sc.getUrl(), BIOMEDCENTRAL_BIBTEX_PARAMS);
-			if(bibResult != null) {
+			if (bibResult != null) {
 				sc.setBibtexResult(bibResult);
 				return true;
 			}
 		} catch (IOException ex) {
+			throw new ScrapingFailureException(ex);
 		}
 
 		return false;
 	}
 
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}

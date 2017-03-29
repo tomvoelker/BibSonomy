@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SearchGoldStandardPublicationCommon">
+	<resultMap id="goldStandardPublicationWithoutPrivnote" class="goldStandardPublication" extends="BibTexCommon.bibtex_common_without_privnote">
+		<!-- to get a GoldStandardPublication object instead of a normal publication (aka bibtex) -->
+	</resultMap>
+	
+	<resultMap id="searchGoldStandardPublicationPost" class="searchPost" extends="GoldStandardPublicationCommon.posts">
+		<result property="groups"      resultMap="Common.group" />
+		<result property="resource"    resultMap="SearchGoldStandardPublicationCommon.goldStandardPublicationWithoutPrivnote" />
+		<!-- this is intended misuse - it would be better to call lastTasId lastResoucePostId or so -->
+		<result property="lastTasId"   column="content_id" />
+	</resultMap>
+	
+	<sql id="allGoldStandardPublicationAttributesWithSimHashesSearch">
+		<include refid="allGoldStandardPublicationAttributesSearch"/>,
+		<include refid="bibtexSimHashes"/>
+	</sql>
+	
+	<sql id="allGoldStandardPublicationAttributesSearch">
+		b.content_id, b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
+		b.school, b.series, b.type, b.volume, b.day, b.url, b.description, b.bibtexKey, b.misc,
+		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, b.content_type, b.approved
+	</sql>
+</sqlMap>

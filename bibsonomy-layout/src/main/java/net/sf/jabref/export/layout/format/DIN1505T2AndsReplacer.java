@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Layout - Layout engine for the webapp.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,7 +31,7 @@ import net.sf.jabref.export.layout.LayoutFormatter;
 public class DIN1505T2AndsReplacer implements LayoutFormatter {
 
 	@Override
-	public String format(String arg0) {
+	public String format(final String arg0) {
 		return arg0.replaceAll("\\sand\\s", " ; ");
 	}
 

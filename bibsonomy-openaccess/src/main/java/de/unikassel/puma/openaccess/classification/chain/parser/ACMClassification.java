@@ -1,7 +1,7 @@
 /**
  * BibSonomy-OpenAccess - Check Open Access Policies for Publications
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -66,30 +66,25 @@ public class ACMClassification extends ClassificationXMLParser {
 	}
 
 	@Override
-	public void startElement (final String uri, final String name, final String qName, final Attributes atts) throws SAXException {
-		
-		if(this.skip) {
+	public void startElement(final String uri, final String name, final String qName, final Attributes atts) throws SAXException {
+		if (this.skip) {
 			return;
 		}
 
 		if ("node".equals(qName)) {
-
-			if(atts.getLength() == 2) {
-				
-				if(atts.getLocalName(0).equals("id") && atts.getLocalName(1).equals("label")) {
+			if (atts.getLength() == 2) {
+				if (atts.getLocalName(0).equals("id") && atts.getLocalName(1).equals("label")) {
 					final String id = atts.getValue(0);
 					
-					if(id.equals("acmccs98")) {
+					if (id.equals("acmccs98")) {
 						return;
 					}
 					
-					if((id.length() < 4) && !id.endsWith(".")) {
+					if ((id.length() < 4) && !id.endsWith(".")) {
 						this.startNode = id;
 						this.startDescription = atts.getValue(1);
 					} else {
-//						 += ".";
-						
-						if(present(this.startNode)) {
+						if (present(this.startNode)) {
 							this.startNode += ".";
 							this.classificate(this.startNode, this.startDescription);
 							
@@ -101,16 +96,14 @@ public class ACMClassification extends ClassificationXMLParser {
 				}
 			}
 			
-		} else if("isComposedBy".equals(qName)) {
-
-		} else if("isRelatedTo".equals(qName)) {
+		} else if ("isComposedBy".equals(qName)) {
+			// noop
+		} else if ("isRelatedTo".equals(qName)) {
 			this.skip = true;
 			this.skipElement = "isRelatedTo";
-				
-		} else if("hasNote".equals(qName)) {
+		} else if ("hasNote".equals(qName)) {
 			this.skip = true;
 			this.skipElement = "hasNote";
-			
 		} else {
 			throw new SAXException("Unable to parse");
 		}
@@ -122,19 +115,17 @@ public class ACMClassification extends ClassificationXMLParser {
 	 * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
 	 */
 	@Override
-	public void characters (final char ch[], final int start, final int length) {
+	public void characters(final char ch[], final int start, final int length) {
 		this.buf.append(ch, start, length);
 	}
 	
 	@Override
-	public void endElement (final String uri, final String name, final String qName) throws SAXException {
-		if(this.skip) {
-			
-			if(qName.equals(this.skipElement)) {
+	public void endElement(final String uri, final String name, final String qName) throws SAXException {
+		if (this.skip) {
+			if (qName.equals(this.skipElement)) {
 				this.skip = false;
 				this.skipElement = "";
 			}
-			
 		} else if(present(this.startNode)) {
 			this.classificate(this.startNode, this.startDescription);
 			this.startNode = this.startDescription = "";
@@ -143,14 +134,14 @@ public class ACMClassification extends ClassificationXMLParser {
 	}
 	
 	private void requClassificate(String name, final String description, final ClassificationObject object) {
-		if(name.isEmpty()) {
+		if (name.isEmpty()) {
 			return;
 		}
 		
 		final int delimiter = name.indexOf('.') +1;
 		String actual;
 		
-		if(delimiter != 0) {
+		if (delimiter != 0) {
 			actual = name.substring(0, delimiter);
 			name = name.substring(delimiter, name.length());
 		} else {
@@ -158,15 +149,12 @@ public class ACMClassification extends ClassificationXMLParser {
 			name = "";
 		}
 	
-		if(object.getChildren().containsKey(actual)) {
+		if (object.getChildren().containsKey(actual)) {
 			this.requClassificate(name, description, object.getChildren().get(actual));
-		
 		} else {
-
-			if(name.isEmpty()) {
+			if (name.isEmpty()) {
 				final ClassificationObject co = new ClassificationObject(actual, description);
 				object.addChild(actual, co);
-				
 			} else {
 				final ClassificationObject co = new ClassificationObject(actual, description);
 				object.addChild(actual, co);
@@ -175,28 +163,11 @@ public class ACMClassification extends ClassificationXMLParser {
 		}
 	}
 	
-	/*
-	private String removeUnusedChars(String name) {
-		StringBuffer str = new StringBuffer(name);
-		
-		int i = 0;
-		while(i < str.length()) {
-			if(str.charAt(i) == '.') {
-				str.deleteCharAt(i);
-				continue;
-			}
-			i++;
-		}
-		
-		return str.toString();
-	}
-	*/
-	
 	private void classificate(String name, final String description) {
 		final int delimiter = name.indexOf('.') +1;
 		String actual;
 		
-		if(delimiter != 0) {
+		if (delimiter != 0) {
 			actual = name.substring(0, delimiter);
 			name = name.substring(delimiter, name.length());
 		} else {
@@ -204,7 +175,7 @@ public class ACMClassification extends ClassificationXMLParser {
 			name = "";
 		}
 	
-		if(this.classifications.containsKey(actual)) {
+		if (this.classifications.containsKey(actual)) {
 			this.requClassificate(name, description, this.classifications.get(actual));
 		} else {
 			
@@ -223,6 +194,5 @@ public class ACMClassification extends ClassificationXMLParser {
 	public String getDelimiter() {
 		return DELIMITER;
 	}
-
 
 }

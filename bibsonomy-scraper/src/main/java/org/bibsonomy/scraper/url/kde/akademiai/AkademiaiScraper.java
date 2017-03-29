@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -33,23 +33,16 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.WebUtils;
-import org.bibsonomy.util.ValidationUtils;
+import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 
 /**
  *
  * @author Haile
  */
-public class AkademiaiScraper extends AbstractUrlScraper {
-	private static final Log log = LogFactory.getLog(AkademiaiScraper.class);
+public class AkademiaiScraper extends GenericRISURLScraper {
 
 	private static final String SITE_NAME = "Akademiai Kiado";
 	private static final String SITE_URL = "http://www.akademiai.com/home/main.mpx";
@@ -91,38 +84,24 @@ public class AkademiaiScraper extends AbstractUrlScraper {
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return PATTERNS;
 	}
-
+	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.AbstractUrlScraper#scrapeInternal(org.bibsonomy.scraper.ScrapingContext)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
 	 */
-	private static String extractID(final URL url){
+	@Override
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		final Matcher m = URL_PATTERN.matcher(url.toString());
 		if (m.find()) {
-			return m.group(1);
+			return RIS_URL + m.group(1) + "&mode=ris";
 		}
 		return null;
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#retrieveCookiesFromSite()
+	 */
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
-
-		final URL url = sc.getUrl();
-		final String id = extractID(url);
-		final String ris_url = RIS_URL + id + "&mode=ris";
-		try {
-			final String content = WebUtils.getContentAsString(ris_url, WebUtils.getCookies(url));
-			final String bibtex = new RisToBibtexConverter().risToBibtex(content);
-
-			if (ValidationUtils.present(bibtex)) {
-				sc.setBibtexResult(bibtex);
-				return true;
-			}
-
-		} catch (IOException e) {
-			log.error("Requested page could not downloaded ", e);
-		}
-
-		return false;
+	protected boolean retrieveCookiesFromSite() {
+		return true;
 	}
-
 }

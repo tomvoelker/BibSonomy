@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,12 +30,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
-import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.User;
+import org.bibsonomy.recommender.tag.model.RecommendedTag;
 import org.bibsonomy.webapp.command.GroupingCommand;
 import org.bibsonomy.webapp.command.PostCommand;
 
@@ -57,7 +56,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/** TODO: add documentation */
 	private Post<RESOURCE> diffPost;
 
-		/**
+	/**
 	 * If the user edits his own post, this field is used to identify the post.
 	 */
 	private String intraHashToUpdate;
@@ -116,27 +115,29 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 * The file names of the documents uploaded during editing a post.
 	 */
 	private List<String> fileName;
-	
+
 	/**
 	 * whether to redirect to the rating page after editing a post
 	 */
 	private String saveAndRate;
 	private boolean approved;
-	
+
 	private int compareVersion;
 	private List<String> differentEntryKeys;
-	
+
+	private User groupUser;
+
 	/**
 	 * @return saveAndRate
 	 */
 	public String getSaveAndRate() {
-		return saveAndRate;
+		return this.saveAndRate;
 	}
 
 	/**
 	 * @param saveAndRate
 	 */
-	public void setSaveAndRate(String saveAndRate) {
+	public void setSaveAndRate(final String saveAndRate) {
 		this.saveAndRate = saveAndRate;
 	}
 
@@ -234,7 +235,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 
 	/**
 	 * Sets the tags from the copied post. Needed for the (old) "copy" links.
-	 * 
+	 *
 	 * @param tags
 	 */
 	public void setCopytag(final String tags) {
@@ -339,7 +340,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 * The post id is used to uniquely identify a post until it is stored in the
 	 * database. The recommender service needs this to assign recommenders to
 	 * posting processes.
-	 * 
+	 *
 	 * @param postID
 	 */
 	public void setPostID(final int postID) {
@@ -365,7 +366,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/**
 	 * Sets the intra hash of the post which should be copied. Must be used
 	 * together with the name of the user.
-	 * 
+	 *
 	 * @param hash
 	 */
 	public void setHash(final String hash) {
@@ -478,10 +479,10 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/**
 	 * @param differentEntryKeys the differentEntryKeys to set
 	 */
-	public void setDifferentEntryKeys(List<String> differentEntryKeys) {
+	public void setDifferentEntryKeys(final List<String> differentEntryKeys) {
 		this.differentEntryKeys = differentEntryKeys;
 	}
-	
+
 	/**
 	 * @return the compareVersion
 	 */
@@ -492,7 +493,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/**
 	 * @param compareVersion the compareVersion to set
 	 */
-	public void setCompareVersion(int compareVersion) {
+	public void setCompareVersion(final int compareVersion) {
 		this.compareVersion = compareVersion;
 	}
 	/**
@@ -505,8 +506,22 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/**
 	 * @param approved the approved to set
 	 */
-	public void setApproved(boolean approved) {
+	public void setApproved(final boolean approved) {
 		this.approved = approved;
 	}
-	
+
+	/**
+	 * @return the groupUser
+	 */
+	public User getGroupUser() {
+		return this.groupUser;
+	}
+
+	/**
+	 * @param groupUser the groupUser to set
+	 */
+	public void setGroupUser(final User groupUser) {
+		this.groupUser = groupUser;
+	}
+
 }

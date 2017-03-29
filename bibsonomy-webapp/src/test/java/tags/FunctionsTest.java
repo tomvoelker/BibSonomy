@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -27,7 +27,9 @@
 package tags;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -180,5 +182,15 @@ public class FunctionsTest {
 		assertEquals("Book", Functions.getRISEntryType(BibTexUtils.BOOK));
 		assertEquals("Book", Functions.getRISEntryType(BibTexUtils.BOOKLET));
 	}
-
+	
+	/**
+	 * tests {@link Functions#isSameHost(String, String)}
+	 */
+	@Test
+	public void testIsSameHost() {
+		assertTrue(Functions.isSameHost("http://localhost/", "http://localhost/"));
+		assertTrue(Functions.isSameHost("http://localhost/", "https://localhost/"));
+		assertFalse(Functions.isSameHost("http://localhost/", "http://localhost2/"));
+		assertFalse(Functions.isSameHost("http://localhost/", "http://www.localhost/"));
+	}
 }

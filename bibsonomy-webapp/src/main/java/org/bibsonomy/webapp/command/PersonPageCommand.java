@@ -1,44 +1,89 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.command;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.exception.LogicException;
 
 /**
  * @author Christian Pfeiffer
  */
-public class PersonPageCommand extends UserResourceViewCommand {
+public class PersonPageCommand extends BaseCommand {
 
-	private String requestedPersonId;
-	private String requestedAction;
+	/** Used during the generation of new names */
+	private PersonName newName;
 	
-//	private String requestedHash;
-//	private String requestedRole;
-//	private String requestedIndex;
+	/** describes the relation between a person and a resource */
+	private ResourcePersonRelation resourcePersonRelation;
+	
+	/** personId of the person requested */
+	private String requestedPersonId;
 	
 	private String formSelectedName;
-	private String formAcademicDegree;
-	private String formFirstName;
-	private String formMiddleName;
-	private String formLastName;
+
+	
+	@Deprecated // TODO: bind person directly
 	private String formResourceHash;
+	@Deprecated // TODO: bind person directly
 	private String formPersonId;
+	@Deprecated // TODO: bind person directly
 	private PersonResourceRelationType formPersonRole;
-	private String formOrcid;
+
+	@Deprecated // TODO: bind person dier rectly
 	private String formThesisId;
-	private String formUser;
+	@Deprecated // TODO: bind person directly
 	private String formPersonNameId;
+	@Deprecated // TODO: bind person directly
 	private List<String> formPersonRoles;
+	@Deprecated // TODO: bind person directly
 	private String formRequestType;
+	@Deprecated // TODO: bind person directly
 	private String formResourcePersonRelationId;
+	@Deprecated // TODO: bind person directly
 	private String formInterHash;
+	@Deprecated // TODO: bind person directly
 	private String formIntraHash;
+	@Deprecated // TODO: bind person directly
 	private boolean formThatsMe;
+	@Deprecated // TODO: bind person directly
 	private int formPersonIndex = -1;
+	
 	
 	private String formAction;
 	
@@ -48,14 +93,45 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	private List<Post<?>> thesis;
 	private List<Post<?>> advisedThesis;
 	private List<Post<?>> allPosts;
+	
+	@Deprecated // FIXME: access enum directly
 	private List<PersonResourceRelationType> availableRoles = new ArrayList<>();
 	
 	private String responseString;
 	private List<Post<?>> otherPubs;
 	private List<Post<?>> otherAdvisedPubs;
+	
+	private List<Post<BibTex>> similarAuthorPubs;
+	
 	private String okHintKey;
 	
+	@Deprecated // FIXME: remove use errors handling build into spring
+	private final Collection<LogicException> logicExceptions = new ArrayList<>();
 
+	private PersonUpdateOperation updateOperation;
+	
+	/**
+	 * @return the updateOperation
+	 */
+	public PersonUpdateOperation getUpdateOperation() {
+		return this.updateOperation;
+	}
+
+	/**
+	 * @param updateOperation the updateOperation to set
+	 */
+	public void setUpdateOperation(PersonUpdateOperation updateOperation) {
+		this.updateOperation = updateOperation;
+	}
+
+	/**
+	 * @return the logicExceptions
+	 */
+	@Deprecated
+	public Collection<LogicException> getLogicExceptions() {
+		return this.logicExceptions;
+	}
+	
 	/**
 	 * @return the formSelectedName
 	 */
@@ -85,66 +161,10 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	}
 	
 	/**
-	 * @return the formGraduation
-	 */
-	public String getFormAcademicDegree() {
-		return this.formAcademicDegree;
-	}
-
-	/**
-	 * @param formAcademicDegree the formAcademicDegree to set
-	 */
-	public void setFormAcademicDegree(String formAcademicDegree) {
-		this.formAcademicDegree = formAcademicDegree;
-	}
-	
-	/**
-	 * @return the formFirstName
-	 */
-	public String getFormFirstName() {
-		return this.formFirstName;
-	}
-
-	/**
-	 * @param formFirstName the formFirstName to set
-	 */
-	public void setFormFirstName(String formFirstName) {
-		this.formFirstName = formFirstName;
-	}
-
-	/**
-	 * @return the formLastName
-	 */
-	public String getFormLastName() {
-		return this.formLastName;
-	}
-
-	/**
-	 * @param formLastName the formLastName to set
-	 */
-	public void setFormLastName(String formLastName) {
-		this.formLastName = formLastName;
-	}
-
-	/**
 	 * @return String
 	 */
 	public String getRequestedPersonId() {
 		return this.requestedPersonId;
-	}
-
-	/**
-	 * @return the requestedAction
-	 */
-	public String getRequestedAction() {
-		return this.requestedAction;
-	}
-
-	/**
-	 * @param requestedAction the requestedAction to set
-	 */
-	public void setRequestedAction(String requestedAction) {
-		this.requestedAction = requestedAction;
 	}
 	
 	/**
@@ -180,20 +200,6 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	 */
 	public void setPost(Post<? extends Resource> post) {
 		this.post = post;
-	}
-
-	/**
-	 * @return the formMiddleName
-	 */
-	public String getFormMiddleName() {
-		return this.formMiddleName;
-	}
-
-	/**
-	 * @param formMiddleName the formMiddleName to set
-	 */
-	public void setFormMiddleName(String formMiddleName) {
-		this.formMiddleName = formMiddleName;
 	}
 
 	/**
@@ -255,6 +261,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return String
 	 */
+	@Deprecated // TODO: bind person directly
 	public String getFormResourceHash() {
 		return this.formResourceHash;
 	}
@@ -262,6 +269,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the formPersonId
 	 */
+	@Deprecated // TODO: bind person directly
 	public String getFormPersonId() {
 		return this.formPersonId;
 	}
@@ -269,6 +277,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @param formPersonId the formPersonId to set
 	 */
+	@Deprecated // TODO: bind person directly
 	public void setFormPersonId(String formPersonId) {
 		this.formPersonId = formPersonId;
 	}
@@ -276,6 +285,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the formPersonRole
 	 */
+	@Deprecated // TODO: bind person directly
 	public PersonResourceRelationType getFormPersonRole() {
 		return this.formPersonRole;
 	}
@@ -283,6 +293,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @param formPersonRole the formPersonRole to set
 	 */
+	@Deprecated // TODO: bind person directly
 	public void setFormPersonRole(PersonResourceRelationType formPersonRole) {
 		this.formPersonRole = formPersonRole;
 	}
@@ -290,6 +301,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the formThesisId
 	 */
+	@Deprecated // TODO: bind person directly
 	public String getFormThesisId() {
 		return this.formThesisId;
 	}
@@ -297,27 +309,15 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @param formThesisId the formThesisId to set
 	 */
+	@Deprecated // TODO: bind person directly
 	public void setFormThesisId(String formThesisId) {
 		this.formThesisId = formThesisId;
 	}
 
 	/**
-	 * @return the formUser
-	 */
-	public String getFormUser() {
-		return this.formUser;
-	}
-
-	/**
-	 * @param formUser the formUser to set
-	 */
-	public void setFormUser(String formUser) {
-		this.formUser = formUser;
-	}
-
-	/**
 	 * @param formResourceHash the formResourceHash to set
 	 */
+	@Deprecated // TODO: bind person directly
 	public void setFormResourceHash(String formResourceHash) {
 		this.formResourceHash = formResourceHash;
 	}
@@ -325,6 +325,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return String
 	 */
+	@Deprecated // TODO: bind person directly
 	public String getFormPersonNameId() {
 		return this.formPersonNameId;
 	}
@@ -332,22 +333,9 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @param personNameId2 the nameId to set
 	 */
+	@Deprecated // TODO: bind person directly
 	public void setFormPersonNameId(String personNameId2) {
 		this.formPersonNameId = personNameId2;
-	}
-
-	/**
-	 * @return the formOrcid
-	 */
-	public String getFormOrcid() {
-		return this.formOrcid;
-	}
-
-	/**
-	 * @param formOrcid the formOrcid to set
-	 */
-	public void setFormOrcid(String formOrcid) {
-		this.formOrcid = formOrcid;
 	}
 
 	/**
@@ -355,7 +343,6 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	 */
 	public void setResponseString(String jsonString) {
 		this.responseString = jsonString;
-		
 	}
 
 	/**
@@ -424,6 +411,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the availableRoles
 	 */
+	@Deprecated // FIXME: access enum directly
 	public List<PersonResourceRelationType> getAvailableRoles() {
 		return this.availableRoles;
 	}
@@ -431,6 +419,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @param availableRoles the availableRoles to set
 	 */
+	@Deprecated // FIXME: access enum directly
 	public void setAvailableRoles(List<PersonResourceRelationType> availableRoles) {
 		this.availableRoles = availableRoles;
 	}
@@ -438,6 +427,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return true if the current login user is associated to this person
 	 */
+	@Deprecated // TODO: bind person directly
 	public boolean isFormThatsMe() {
 		return this.formThatsMe;
 	}
@@ -445,6 +435,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @param formThatsMe if the current login user is associated to this person
 	 */
+	@Deprecated // TODO: bind person directly
 	public void setFormThatsMe(boolean formThatsMe) {
 		this.formThatsMe = formThatsMe;
 	}
@@ -452,6 +443,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the formAuthorIndex
 	 */
+	@Deprecated // TODO: bind person directly
 	public int getFormPersonIndex() {
 		return this.formPersonIndex;
 	}
@@ -459,6 +451,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @param formAuthorIndex the formAuthorIndex to set
 	 */
+	@Deprecated // TODO: bind person directly
 	public void setFormPersonIndex(int formAuthorIndex) {
 		this.formPersonIndex = formAuthorIndex;
 	}
@@ -498,5 +491,47 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	public String getOkHintKey() {
 		return this.okHintKey;
 	}
-	
+
+	/**
+	 * @return the newName
+	 */
+	public PersonName getNewName() {
+		return this.newName;
+	}
+
+	/**
+	 * @param newName the newName to set
+	 */
+	public void setNewName(PersonName newName) {
+		this.newName = newName;
+	}
+
+	/**
+	 * @return the resourcePersonRelation
+	 */
+	public ResourcePersonRelation getResourcePersonRelation() {
+		return this.resourcePersonRelation;
+	}
+
+	/**
+	 * @param resourcePersonRelation the resourcePersonRelation to set
+	 */
+	public void setResourcePersonRelation(ResourcePersonRelation resourcePersonRelation) {
+		this.resourcePersonRelation = resourcePersonRelation;
+	}
+
+	/**
+	 * @return the similarAuthorPubs
+	 */
+	public List<Post<BibTex>> getSimilarAuthorPubs() {
+		return this.similarAuthorPubs;
+	}
+
+	/**
+	 * @param similarAuthorPubs the similarAuthorPubs to set
+	 */
+	public void setSimilarAuthorPubs(List<Post<BibTex>> similarAuthorPubs) {
+		this.similarAuthorPubs = similarAuthorPubs;
+	}
+
 }

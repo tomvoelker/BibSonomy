@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -29,6 +29,7 @@ package org.bibsonomy.webapp.util.spring.factorybeans;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.util.ReadOnlyLogic;
 import org.springframework.beans.factory.FactoryBean;
 
 /**
@@ -42,11 +43,12 @@ public class LogicFactoryBean extends DBLogicUserInterfaceFactory implements Fac
 
 	private User user;
 	private LogicInterface instance;
+	private boolean readOnly;
 	
 	@Override
 	public LogicInterface getObject() throws Exception {
 		if (instance == null) {
-			instance = this.getLogicAccess(user.getName(), "");
+			instance = ReadOnlyLogic.maskLogic(this.getLogicAccess(user.getName(), ""), this.readOnly);
 		}
 		return instance;
 	}
@@ -79,6 +81,13 @@ public class LogicFactoryBean extends DBLogicUserInterfaceFactory implements Fac
 	 */
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	/**
+	 * @param readOnly the readOnly to set
+	 */
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
 	}
 
 }

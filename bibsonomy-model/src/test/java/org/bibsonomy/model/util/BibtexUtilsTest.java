@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -490,7 +490,7 @@ public class BibtexUtilsTest {
 		/*
 		 * parse and re-write the misc string
 		 */
-		bib.syncMiscFields();
+		bib.resetMiscFieldMap();
 
 		final Post<BibTex> post = new Post<BibTex>();
 		post.setResource(bib);

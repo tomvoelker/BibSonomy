@@ -7,57 +7,85 @@
 	xmlns:comment="urn:jsptagdir:/WEB-INF/tags/resources/discussion/comment"
 	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem">
 	
-	<jsp:directive.attribute name="discussionItems" type="java.util.List" required="true" />
+	<jsp:directive.attribute name="discussionItems" type="java.util.List" required="false" />
+	<jsp:directive.attribute name="parentItem" type="org.bibsonomy.model.DiscussionItem" required="false" />
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
+	<jsp:directive.attribute name="hidden" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="hideCommentsForm" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="false" />
 	
-	<ul class="subdiscussionItems">
-		<c:if test="${not empty discussionItems}">
-			<c:forEach var="discussionItem" items="${discussionItems}">
-				<c:set var="clazz" value="${fn:toLowerCase(discussionItem['class'].simpleName)}" />
-				<c:if test="${discussionItem.anonymous}">
-					<c:set var="clazz" value="${clazz} anonymous" />
-				</c:if>
-				
-				<c:choose>
-					<c:when test="${'Review' eq discussionItem['class'].simpleName}">
-						<c:choose>
-							<!-- check if user has reviewed this resource -->
-							<c:when test="${discussionItem.user.name eq command.context.loginUser.name}">
-								<li id="ownReview" class="${clazz}">
-<!-- 								<li id="ownReview" class="${clazz}" itemprop="reviews" itemscope="itemscope" itemtype="http://schema.org/Review"> -->
-									<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" schemaOrgMarkUp="true"/>
-								</li>
-							</c:when>
-							<c:otherwise>
-								<li class="${clazz}">
-<!-- 								<li class="${clazz}" itemprop="reviews" itemscope="itemscope" itemtype="http://schema.org/Review"> -->
-									<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" schemaOrgMarkUp="true"/>
-								</li>
-							</c:otherwise>
-						</c:choose>
-					</c:when>
-					<c:when test="${'Comment' eq discussionItem['class'].simpleName}">
-						<li class="${clazz}">
-<!-- 						<li class="${clazz}" itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/UserComments"> -->
-							<comment:comment comment="${discussionItem}" loginUser="${loginUser}" resource="${resource}" schemaOrgMarkUp="true"/>
-						</li>
-					</c:when>
-					<c:when test="${discussionItem['class'].simpleName eq 'DiscussionItem'}">
-						<li class="${clazz}">
-							<div class="deletedInfo">
+	<c:if test="${not empty hidden and hidden}">
+		<c:set var="style" value="display: none;" />
+	</c:if>
+	
+	<c:if test="${empty discussionItems}">
+		<c:set var="discussionItems" value="${parentItem.subDiscussionItems}" />
+	</c:if>
+	
+	<c:if test="${empty hideCommentsForm}">
+		<c:set var="hideCommentsForm" value="${false}" />
+	</c:if>
+	
+	<ul class="media-list subdiscussion" style="${style}">
+	<c:if test="${not hideCommentsForm and not empty loginUser.name}">
+		<li class="form">
+			<comment:simpleCommentForm userName="" resource="${resource}" parentItem="${parentItem}" postUserName="${postUserName}" />
+		</li>
+	</c:if>
+	
+	
+	<c:if test="${not empty discussionItems}">
+		<c:forEach var="discussionItem" items="${discussionItems}">
+			<c:set var="clazz" value="${fn:toLowerCase(discussionItem['class'].simpleName)}" />
+			<c:if test="${discussionItem.anonymous}">
+				<c:set var="clazz" value="${clazz} anonymous" />
+			</c:if>
+			
+			<c:choose>
+				<c:when test="${'Review' eq discussionItem['class'].simpleName}">
+					<c:choose>
+						<!-- check if user has reviewed this resource -->
+						<c:when test="${discussionItem.user.name eq command.context.loginUser.name}">
+							<li id="ownReview" class="${clazz} media">
+								<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" postUserName="${postUserName}"/>
+							</li>
+						</c:when>
+						<c:otherwise>
+							<li class="${clazz} media">
+								<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" postUserName="${postUserName}" />
+							</li>
+						</c:otherwise>
+					</c:choose>
+				</c:when>
+				<c:when test="${'Comment' eq discussionItem['class'].simpleName}">
+					<li class="${clazz} media">
+						<comment:comment comment="${discussionItem}" loginUser="${loginUser}" resource="${resource}" postUserName="${postUserName}"/>
+					</li>
+				</c:when>
+				<c:when test="${discussionItem['class'].simpleName eq 'DiscussionItem'}">
+					<li class="${clazz} media">
+						<div class="media-left">
+							<a class="img-circle">
+								<i class="fa fa-3x fa-user"><!-- keep me --></i>
+							</a>
+						</div>
+						<div class="media-body">
+							<div class="alert alert-info">
 								<fmt:message key="post.resource.discussion.info" />
 							</div>
-							<discussionItem:discussionItemActions discussionItem="${discussionItem}" disableReply="true" />
-							<discussionItem:subDiscussionItems discussionItems="${discussionItem.subDiscussionItems}" loginUser="${loginUser}" resource="${resource}" />
-						</li>
-					</c:when>
-					<c:otherwise>
-						WARN: no view for ${discussionItem['class'].simpleName}
-					</c:otherwise>
-				</c:choose>
-			</c:forEach>
-		</c:if>
-		<!-- placeholder keep me -->
+							<div class="actions">
+								<discussionItem:discussionItemActions discussionItem="${discussionItem}" disableReply="true" />
+							</div>
+							<discussionItem:subDiscussionItems discussionItems="${discussionItem.subDiscussionItems}" loginUser="${loginUser}" resource="${resource}" hidden="${true}" hideCommentsForm="${true}"/>
+						</div>
+					</li>
+				</c:when>
+				<c:otherwise>
+					WARN: no view for ${discussionItem['class'].simpleName}
+				</c:otherwise>
+			</c:choose>
+		</c:forEach>
+	</c:if>
 	</ul>
 </jsp:root>

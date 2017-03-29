@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Web-Common - Common things for web
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -45,10 +45,10 @@ public class StringToFilterConverter implements Converter<String, Filter> {
 	private Set<StringToEnumConverter<? extends Filter>> converters = new HashSet<StringToEnumConverter<? extends Filter>>();
 	
 	/**
-	 * 
+	 * inits the converter
 	 */
 	public StringToFilterConverter() {
-		for (Class<?> class1 : FILTER_CLASSES) {
+		for (final Class<?> class1 : FILTER_CLASSES) {
 			converters.add(new StringToEnumConverter(class1));
 		}
 	}

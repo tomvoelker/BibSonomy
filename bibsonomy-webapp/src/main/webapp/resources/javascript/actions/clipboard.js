@@ -1,9 +1,113 @@
+var TITLE_MAX_LENGTH = 60;
+
+$(function() {
+	$('a.publ-export')
+			.click(
+					function(e) {
+						if (e.metaKey || e.ctrlKey) {
+							return true;
+						}
+						var targetElement = $('#exportModalCitation');
+						targetElement
+								.html(getString("bibtex.citation_format.loading"));
+						var exportModal = $('#exportModal');
+						exportModal.modal('show');
+
+						var postListItem = $(this).closest('li.post');
+						var linkToPublication;
+						var titleContainer;
+						if (postListItem.length > 0) {
+							titleContainer = postListItem.find('.ptitle');
+							var link = titleContainer.find('a');
+							linkToPublication = link.attr('href');
+						} else {
+							titleContainer = $('h1.publication-title > span');
+							linkToPublication = $('h1.publication-title').data(
+									'url');
+						}
+
+						var publicationTitle = titleContainer.text();
+						if (publicationTitle !== undefined
+								&& publicationTitle.length > TITLE_MAX_LENGTH) {
+							publicationTitle = publicationTitle.substring(0,
+									TITLE_MAX_LENGTH - 3)
+									+ "…";
+						}
+
+						$('#exportModalLabel').text(publicationTitle);
+
+						$(this).closest('div.btn-group').removeClass('open');
+
+						loadExportLayout($(this), targetElement,
+								linkToPublication);
+
+						return false;
+					});
+	
+	initNewClipboard('#copyToLocalClipboard', '#exportModalCitation');
+	initNewClipboard('.copyToLocalClipboard_citationBox', '#citation-styles .active');
+	
+	// hiding / showing "copy to clipboard" button
+	$(".citation-box .nav li a").each(function(index, link) {
+		if ($(link).attr('id') == "citation-box-citation-all-button") {
+			$(link).click(function() {
+				$("#copyToLocalClipboard_citationBoxButton").hide();
+			});
+		} else {
+			$(link).click(function() {
+				$("#copyToLocalClipboard_citationBoxButton").show();
+			});
+		}
+	});
+});
+
+
+function initNewClipboard(copyButtonString, citationStringContainer){
+	var copyButton = $(copyButtonString);
+	if (copyButton.length > 0) {
+		var clipboard = new Clipboard(copyButton.get(0), {
+			target : function(trigger) {
+				var citationContainer = $(citationStringContainer);
+				var targetElement = citationContainer;
+				var pre = citationContainer.find('pre');
+				if (pre.length > 0) {
+					targetElement = pre;
+				}
+				return targetElement.get(0);
+			}
+		});
+
+		copyButton.mouseleave(function() {
+			copyButton.tooltip('destroy');
+		});
+
+		clipboard.on('success', function(e) {
+			copyButton.tooltip({
+				placement : 'bottom',
+				title : getString('export.copyToLocalClipboard.success')
+			}).tooltip('show');
+		});
+
+		clipboard.on('error', function(e) {
+			copyButton.tooltip({
+				placement : 'bottom',
+				title : getString('export.copyToLocalClipboard.error')
+			}).tooltip('show');
+		});
+	}
+}
+
+
 function pickAll() {
-	return pickUnpickAll("pick");
+	return pickUnpickAll(false);
 }
 
 function unpickAll() {
-	return pickUnpickAll("unpick");
+	return pickUnpickAll(true);
+}
+
+function unescapeAmp(string) {
+	return string.replace(/&amp;/g, "&");
 }
 
 /**
@@ -12,16 +116,25 @@ function unpickAll() {
  * @param pickUnpick
  * @return
  */
-function pickUnpickAll(pickUnpick) {
-	var param  = "";
-	$("#publications_0 ul.posts li.post div.ptitle a").each(function(index) {
-		var href = $(this).attr("href");
-		if (!href.match(/^.*\/documents[\/?].*/)){
-			param += href.replace(/^.*bibtex./, "") + " ";
-		}
+function pickUnpickAll(unpick) {
+	var postsUI = $('#publications_0 ul.posts>li');
+	var allPosts = "";
+	postsUI.each(function() {
+		var hash = $(this).data("intrahash");
+		var user = $(this).data("user");
+		var id = hash + "/" + user;
+
+		allPosts += id + " ";
+	});
+
+	if (unpick && !confirmDeleteByUser("clipboardpost")) {
+		return false;
 	}
-	);
-	return updateBasket("action=" + pickUnpick + "&hash=" + encodeURIComponent(param));
+
+	var param = 'action=' + (unpick ? 'unpick' : 'pick') + '&hash='
+			+ escape(allPosts);
+	updateClipboard(null, param);
+	return false;
 }
 
 /**
@@ -34,11 +147,16 @@ function pickUnpickPublication(element) {
 	/*
 	 * pick/unpick publication
 	 */
-	var params = $(element).attr("href").replace(/^.*?\?/, "");
-	return updateBasket(params);
+	var params = unescapeAmp($(element).attr("href")).replace(/^.*?\?/, "");
+
+	// ask before deleting the pick
+	var isUnpick = params.search(/action=unpick/) != -1;
+	if (isUnpick && !confirmDeleteByUser("clipboardpost")) {
+		return false;
+	}
+
+	return updateClipboard(element, params);
 }
-
-
 
 /**
  * picks/unpicks publications in AJAX style
@@ -46,28 +164,84 @@ function pickUnpickPublication(element) {
  * @param param
  * @return
  */
-function updateBasket (param) {
+function updateClipboard(element, param) {
 	var isUnpick = param.search(/action=unpick/) != -1;
-	if (isUnpick && !confirmDeleteByUser("clipboardpost")) {
-		return false;
-	}
-	
 	$.ajax({
-		type: 'POST',
-		url: "/ajax/pickUnpickPost?ckey=" + ckey,
+		type : 'POST',
+		url : "/ajax/pickUnpickPost?ckey=" + ckey,
 		data : param,
 		dataType : "text",
-		success: function(data) {
-		/*
-		 * update the number of clipboard items
-		 */
-		if (location.pathname.startsWith("/clipboard") && !isUnpick) {
-			// special case for the /clipboard page
-			window.location.reload();
-		} else {
-			$("#pickctr").empty().append(data);
+		success : function(data) {
+			/*
+			 * special case for the /clipboard page remove the post from the
+			 * resource list and update the post count
+			 */
+			if (location.pathname.startsWith("/clipboard") && isUnpick) {
+				var post = $(element).parents('li.post');
+				post.slideUp(400, function() {
+					post.remove();
+				});
+				var postCountBadge = $('h3.list-headline .badge');
+				var postCount = parseInt(postCountBadge.text());
+				postCountBadge.text(postCount - 1);
+			}
+
+			/*
+			 * update the number of clipboard items
+			 */
+			var clipboardCounter = $(".clipboard-counter");
+			var clipboardContainer = clipboardCounter.parent();
+			clipboardCounter.text(data);
+			clipboardCounter.css("display", "block !important").show();
+			updateCounter();
+		}
+	});
+	return false;
+}
+
+/*
+ * update the counter at the navigation bar to reflect the amount of picked
+ * publications and unread messages
+ */
+function updateCounter() {
+	var clipboardNum = $(".clipboard-counter:first");
+	var inboxNum = $(".inbox-counter:first");
+	var counter = $("#inbox-clipboard-counter");
+	if (counter.length != 0) {
+		var totalCount = 0;
+		var clipboardCount = clipboardNum.length == 0 ? 0 : parseInt(clipboardNum.text());
+		if (clipboardCount == 0) {
+			clipboardNum.hide();
+		}
+
+		totalCount += clipboardCount;
+		totalCount += inboxNum.length == 0 ? 0 : parseInt(inboxNum.text());
+		counter.show().text(totalCount);
+		if (totalCount == 0) {
+			counter.hide();
 		}
 	}
+}
+
+// TODO: maybe wrong place ?
+function reportUser(a, userName) {
+	$.ajax({
+		type : 'POST',
+		url : $(a).attr("href") + "?ckey=" + ckey,
+		data : 'requestedUserName=' + userName
+				+ '&userRelation=SPAMMER&action=addRelation',
+		dataType : 'text',
+		success : function(data) {
+			$('a.report-spammer-link ').each(
+					function(index, link) {
+						if ($(link).data('username') == userName) {
+							$(link).parent().append(
+									$("<span class=\"ilitem\"></span>").text(
+											getString("user.reported")));
+							$(link).remove();
+						}
+					});
+		}
 	});
 	return false;
 }

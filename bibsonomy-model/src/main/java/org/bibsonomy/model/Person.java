@@ -1,29 +1,33 @@
 /**
+ * BibSonomy-Model - Java- and JAXB-Model.
  *
- *  BibSonomy-Model - Java- and JAXB-Model.
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.model;
 
 import java.io.Serializable;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -64,6 +68,14 @@ public class Person implements Serializable {
 	private String dnbPersonId;
 	/** the gender */
 	private Gender gender;
+	
+	
+	
+	private String college;
+	private String email;
+	// FIXME use URL instead of string
+	private String homepage;
+	
 	
 	/**
 	 * 
@@ -267,6 +279,7 @@ public class Person implements Serializable {
 		this.postCounter = postCounter;
 	}
 
+
 	public int getPersonChangeId() {
 		return this.personChangeId;
 	}
@@ -289,6 +302,48 @@ public class Person implements Serializable {
 
 	public void setGender(Gender gender) {
 		this.gender = gender;
+	}
+
+	/**
+	 * @return the college
+	 */
+	public String getCollege() {
+		return this.college;
+	}
+
+	/**
+	 * @param college the college to set
+	 */
+	public void setCollege(String college) {
+		this.college = college;
+	}
+
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return this.email;
+	}
+
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	/**
+	 * @return the homepage
+	 */
+	public String getHomepage() {
+		return this.homepage;
+	}
+
+	/**
+	 * @param homepage the homepage to set
+	 */
+	public void setHomepage(String homepage) {
+		this.homepage = homepage;
 	}
 
 }

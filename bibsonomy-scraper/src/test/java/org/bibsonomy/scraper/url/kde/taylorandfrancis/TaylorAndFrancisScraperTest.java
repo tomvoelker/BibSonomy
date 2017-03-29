@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.taylorandfrancis;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -33,9 +34,9 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.bibsonomy.scraper.url.kde.taylorAndFrancis.TaylorAndFrancisScraper;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -51,7 +52,7 @@ public class TaylorAndFrancisScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_197");
+		assertScraperResult("http://www.tandfonline.com/doi/abs/10.1080/09540091.2014.906388#.VNtRzC7_-Uk", null, TaylorAndFrancisScraper.class, "taylorAndFrancis/TaylorAndFrancisScraperUnitURLTest1.bib");
 	}
 
 	/**
@@ -59,31 +60,43 @@ public class TaylorAndFrancisScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_198");
+		assertScraperResult("http://www.tandfonline.com/doi/abs/10.1080/09540091.2011.587505", null, TaylorAndFrancisScraper.class, "taylorAndFrancis/TaylorAndFrancisScraperUnitURLTest2.bib");
 	}
 	/**
 	 * 
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_241");
+		assertScraperResult("http://www.tandfonline.com/doi/abs/10.1080/14786419.2010.534733?url_ver=Z39.88-2003&amp;rfr_id=ori:rid:crossref.org&amp;rfr_dat=cr_pub%3dpubmed", null, TaylorAndFrancisScraper.class, "taylorAndFrancis/TaylorAndFrancisScraperUnitURLTest3.bib");
 	}
+	/**
+	 * 
+	 */
+	@Test
+	public void url4TestRun(){
+		assertScraperResult("http://amstat.tandfonline.com/doi/abs/10.1080/01621459.1977.10479922", null, TaylorAndFrancisScraper.class, "taylorAndFrancis/TaylorAndFrancisScraperUnitURLTest4.bib");
+	}
+	
+	@Test
+	public void url5TestRun() {
+		assertScraperResult("http://www.tandfonline.com/doi/abs/10.2753/MIS0742-1222270205", null, TaylorAndFrancisScraper.class, "taylorAndFrancis/TaylorAndFrancisScraperUnitURLTest5.bib");
+	}
+	
 	/**
 	 * @throws Exception
 	 */
 	@Test
+	@Ignore // XXX: "you need access" :(
 	public void testReferences() throws Exception{
 		final ScrapingContext sc = new ScrapingContext(new URL("http://www.tandfonline.com/doi/abs/10.1080/14786419.2010.534733?url_ver=Z39.88-2003&amp;rfr_id=ori:rid:crossref.org&amp;rfr_dat=cr_pub%3dpubmed#.VClwLRaWeUk"));
-		TaylorAndFrancisScraper tfs = new TaylorAndFrancisScraper();		
-		assertTrue(tfs.scrape(sc));		
+		TaylorAndFrancisScraper tfs = new TaylorAndFrancisScraper();
 		assertTrue(tfs.scrapeReferences(sc));
 	
-		final String reference = sc.getReferences();		
+		final String reference = sc.getReferences();
 		assertNotNull(reference);
 		assertTrue(reference.length() > 100);
 		
-		assertEquals("<li id=\"CIT0001\"><strong>1.".trim(), reference.substring(0, 40).trim());
+		assertEquals("<br /><h2>References</h2> <li id=\"CIT00".trim(), reference.substring(0, 40).trim());
 		assertTrue(reference.contains("Adams, RP."));
 	}
-	
 }

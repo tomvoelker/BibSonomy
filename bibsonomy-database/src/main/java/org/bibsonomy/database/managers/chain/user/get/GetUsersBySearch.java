@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -45,13 +45,12 @@ public class GetUsersBySearch extends UserChainElement {
 
 	@Override
 	protected List<User> handle(final UserParam param, final DBSession session) {
-		return this.userDB.getUsersBySearch(param.getRawSearch(), param.getLimit(), session);
+		return this.userDB.getUsersBySearch(param.getSearch(), param.getLimit(), session);
 	}
 
 	@Override
 	protected boolean canHandle(final UserParam param) {
 		return (GroupingEntity.USER.equals(param.getGrouping()) &&
-				present(param.getSearch()) &&
-				present(param.getLimit()));
+				present(param.getSearch()));
 	}
 }

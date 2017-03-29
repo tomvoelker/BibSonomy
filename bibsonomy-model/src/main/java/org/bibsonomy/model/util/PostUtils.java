@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -42,16 +42,18 @@ import org.bibsonomy.util.Sets;
 
 /**
  * Static methods to handle Posts.
- * 
+ *
  * @author rja
  */
 public class PostUtils {
-	
+
+	private static final String INTRAHASH_OWNER_SPLIT = "_";
+
 	/**
 	 * populates the post
 	 * {@link #populatePostWithDate(Post, User)}
 	 * {@link #populatePostWithUser(Post, User)}
-	 * 
+	 *
 	 * @param post
 	 * @param user
 	 */
@@ -71,12 +73,12 @@ public class PostUtils {
 		if (!present(postUser) || !present(postUser.getName())) {
 			post.setUser(user);
 		}
- 	}
-	
+	}
+
 	/**
 	 * Overwrites the date of the post if the user is not allowed to set it.
-	 * If the post does not contain a date, the current date is set.  
-	 * 
+	 * If the post does not contain a date, the current date is set.
+	 *
 	 * @param post
 	 * @param loginUser
 	 */
@@ -85,10 +87,10 @@ public class PostUtils {
 			post.setDate(new Date());
 		}
 	}
-	
+
 	/**
 	 * overwrites the change date of the post if the user is not allowed to set it
-	 * 
+	 *
 	 * @param post
 	 * @param loginUser
 	 */
@@ -97,26 +99,26 @@ public class PostUtils {
 			post.setChangeDate(new Date());
 		}
 	}
-	
+
 	/**
 	 * Modifies the group IDs in the post to be spam group IDs or non-spam group IDs,
 	 * depending on the spammer status of the given user.
-	 *  
+	 *
 	 * @see #setGroupIds(Post, boolean)
 	 * @param post
-	 * @param user
+	 * @param postOwner
 	 * @throws ValidationException - if the user name of the post does not match the given user name.
 	 */
-	public static void setGroupIds(final Post<? extends Resource> post, final User user) throws ValidationException {
-		if (!present(user.getName()) || !user.getName().equals(post.getUser().getName())) {
+	public static void setGroupIds(final Post<? extends Resource> post, final User postOwner) throws ValidationException {
+		if (!present(postOwner.getName())) {
 			throw new ValidationException("user name of post does not match user name of posting user");
 		}
-		setGroupIds(post, user.isSpammer());
+		setGroupIds(post, postOwner.isSpammer());
 	}
-	
+
 	/**
 	 * Change all groups to private in case of a limited login user
-	 *  
+	 *
 	 * @param post
 	 * @param user
 	 */
@@ -128,14 +130,14 @@ public class PostUtils {
 			}
 		}
 	}
-	
+
 	/**
 	 * Modifies the group IDs in the post to be spam group IDs or non-spam group IDs,
 	 * depending on the given <code>spammer</code> flag.
 	 * <br/>
-	 * Note: the post must already contain the integer IDs of the groups, otherwise 
-	 * flagging does not work! 
-	 * 
+	 * Note: the post must already contain the integer IDs of the groups, otherwise
+	 * flagging does not work!
+	 *
 	 * @param post - the post whose groups should be modified.
 	 * @param isSpammer - <code>true</code> if the user of the post is a spammer.
 	 */
@@ -148,5 +150,55 @@ public class PostUtils {
 			group.setGroupId(GroupID.getGroupId(group.getGroupId(), isSpammer));
 		}
 	}
-	
+
+	/**
+	 * @param post
+	 * @return the key for a post, e.g. used for error mapping
+	 */
+	public static String getKeyForPost(final Post<?> post) {
+		return getKeyForPost(post.getResource().getIntraHash(), post.getUser().getName());
+	}
+
+	/**
+	 * @param intraHash
+	 * @param owner
+	 * @return @see {@link #getKeyForPost(Post)}
+	 */
+	public static String getKeyForPost(final String intraHash, final String owner) {
+		return intraHash + INTRAHASH_OWNER_SPLIT + owner;
+	}
+
+	/**
+	 * @param post
+	 * @return the key for a community post
+	 */
+	public static String getKeyForCommunityPost(final Post<?> post) {
+		return post.getResource().getInterHash();
+	}
+
+	/**
+	 * @param key
+	 * @return the hash encoded in the key
+	 */
+	public static String getHashFromKey(final String key) {
+		return getKeyPart(key, 0);
+	}
+
+	/**
+	 * @param key
+	 * @return
+	 */
+	private static String getKeyPart(final String key, final int index) {
+		final String[] intraHashOwnerSplit = key.split(INTRAHASH_OWNER_SPLIT, 2);
+		return intraHashOwnerSplit[index];
+	}
+
+	/**
+	 * @param key
+	 * @return the hash encoded in the key
+	 */
+	public static String getOwnerFromKey(final String key) {
+		return getKeyPart(key, 1);
+	}
+
 }

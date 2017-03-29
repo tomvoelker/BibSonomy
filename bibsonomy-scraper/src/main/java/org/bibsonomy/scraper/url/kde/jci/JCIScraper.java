@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -52,13 +52,14 @@ public class JCIScraper extends AbstractUrlScraper implements ReferencesScraper{
 	
 	private static final String SITE_NAME = "The Journal of Clinical Investigation";
 
-	private static final String SITE_URL = "www.jci.org";
+	private static final String SITE_HOST = "www.jci.org";
+	private static final String SITE_URL = "http://" + SITE_HOST;
 
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME) + ".";
 
 	private static final String BIBTEX_URL = "/cite/bibtex";
 
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(SITE_URL), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	private static final Pattern REFERENCES = Pattern.compile("(?s)<ol compact>(.*)</ol>");
 	

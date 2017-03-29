@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,20 +26,29 @@
  */
 package org.bibsonomy.webapp.util.spring.controller;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.exceptions.AccessDeniedException;
-import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.*;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.exceptions.UnsupportedMediaTypeException;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.ContextCommand;
+import org.bibsonomy.webapp.command.ListCommand;
+import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
+import org.bibsonomy.webapp.command.TagResourceViewCommand;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -49,44 +58,63 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ResponseLogic;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.WarningAware;
 import org.bibsonomy.webapp.util.spring.condition.Condition;
 import org.bibsonomy.webapp.util.spring.security.exceptions.ServiceUnavailableException;
 import org.bibsonomy.webapp.util.spring.security.exceptions.SpecialAuthMethodRequiredException;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 /**
  * Instances of this class wrap MinimalisticController and adapt them
  * to the spring Controller interface. It also registers a custom
  * databinder to also bind attributes to command-properties and not only
  * parameters.
- * 
+ *
  * @param <T> type of the command object used in the MinimalisticController
- * 
+ *
  * @author Jens Illig
  */
 @SuppressWarnings("deprecation")
 public class MinimalisticControllerSpringWrapper<T extends ContextCommand> extends BaseCommandController {
 	private static final Log log = LogFactory.getLog(MinimalisticControllerSpringWrapper.class);
-	
+
 	private static final String CONTROLLER_ATTR_NAME = "minctrlatrr";
+	public static final String PATH_SEPERATOR = "/";
+	public static final String PATH_QUERY_SEPERATOR = "?";
+	/**
+	 * @param listCommand
+	 * @return
+	 */
+	private static <T extends Resource> int safeSize(final ListCommand<Post<T>> listCommand) {
+		final List<Post<T>> list = listCommand.getList();
+		if (!present(list)) {
+			return 0;
+		}
+		return list.size();
+	}
 
 	private String controllerBeanName;
-	
+
 	private String[] allowedFields;
 	private String[] disallowedFields;
-	
+
 	private URLGenerator urlGenerator;
-	
+
 	private ConversionService conversionService;
-	
+
 	private Condition presenceCondition;
 
 	/**
@@ -97,25 +125,25 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		this.conversionService = conversionService;
 	}
 
-	/** 
+	/**
 	 * Sets the fields which Spring is allowed to bind to command objects.
 	 * <br/>
-	 * Note that in the current implementation, these fields are the same for ALL 
+	 * Note that in the current implementation, these fields are the same for ALL
 	 * controllers.
-	 * 
+	 *
 	 * @param allowedFields
 	 */
 	@Required
 	public void setAllowedFields(final String[] allowedFields) {
 		this.allowedFields = allowedFields;
 	}
-	
-	/** Sets the fields which Spring must not bind to command objects. 
+
+	/** Sets the fields which Spring must not bind to command objects.
 	 * <br/>
 	 * This list overrides the allowedFields, such that a field listed
 	 * here will <em>not</em> be bound, even it appears in the allowed
-	 * fields! 
-	 * 
+	 * fields!
+	 *
 	 * @param disallowedFields
 	 */
 	public void setDisallowedFields(final String[] disallowedFields) {
@@ -130,7 +158,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	public void setControllerBeanName(final String controllerBeanName) {
 		this.controllerBeanName = controllerBeanName;
 	}
-	
+
 	/**
 	 * @param urlGenerator the urlGenerator to set
 	 */
@@ -138,21 +166,27 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	public void setUrlGenerator(final URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected boolean suppressValidation(final HttpServletRequest request, final Object command) {
 		final MinimalisticController<T> controller = (MinimalisticController<T>) request.getAttribute(CONTROLLER_ATTR_NAME);
+
+		// Do not validate on first call
+		if (((T)command).getContext().isFirstCall()) {
+			return true;
+		}
+
 		if (controller instanceof ValidationAwareController<?>) {
 			return !((ValidationAwareController<T>) controller).isValidationRequired((T)command);
 		}
-		
+
 		return false;
 	}
 
 	/**
 	 * instantiates, initializes and runs the MinimalisticController
-	 * 
+	 *
 	 * @see org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@SuppressWarnings("unchecked")
@@ -162,23 +196,26 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		final RequestLogic requestLogic = applicationContext.getBean("requestLogic", RequestLogic.class);
 		requestLogic.setRequest(request); // hack but thats springs fault
 		applicationContext.getBean("responseLogic", ResponseLogic.class).setResponse(response); // hack but thats springs fault
-		
-		log.debug("Processing " + request.getRequestURI() + "?" + request.getQueryString() + " from " + requestLogic.getInetAddress());
-		if ((presenceCondition!= null) && (presenceCondition.eval() == false)) {
-			 throw new NoSuchRequestHandlingMethodException(request);
+
+		final String requestURI = request.getRequestURI();
+		final String realRequestPath = getRequestPath(request);
+		final String query = request.getQueryString();
+		log.debug("Processing " + requestURI + PATH_QUERY_SEPERATOR + query + " from " + requestLogic.getInetAddress());
+		if (this.presenceCondition != null && !this.presenceCondition.eval()) {
+			throw new NoSuchRequestHandlingMethodException(request);
 		}
-		
-		final MinimalisticController<T> controller = (MinimalisticController<T>) applicationContext.getBean(controllerBeanName);
-		
+
+		final MinimalisticController<T> controller = (MinimalisticController<T>) applicationContext.getBean(this.controllerBeanName);
+
 		/*
 		 * Controller is put into request.
-		 * 
+		 *
 		 * FIXME: is this still neccessary?
-		 * 
+		 *
 		 * SuppressValidation retrieves controller from request again!
 		 */
 		request.setAttribute(CONTROLLER_ATTR_NAME, controller);
-		
+
 		/*
 		 * DEBUG: log request attributes
 		 */
@@ -188,16 +225,22 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 				log.debug(e.nextElement().toString());
 			}
 		}
-		
+
 		final T command = controller.instantiateCommand();
 
 		/*
 		 * put context into command
-		 * 
+		 *
 		 * TODO: in the future this is hopefully no longer needed, since the wrapper
 		 * only exists to transfer request attributes into the command.
 		 */
-		command.setContext((RequestWrapperContext) request.getAttribute(RequestWrapperContext.class.getName()));
+		final RequestWrapperContext context = (RequestWrapperContext) request.getAttribute(RequestWrapperContext.class.getName());
+		command.setContext(context);
+
+		/*
+		 * command has only been called previously, if HTTP-Method is POST
+		 */
+		context.setFirstCall(!request.getMethod().equals("POST"));
 
 		/*
 		 * set validator for this instance
@@ -205,18 +248,34 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		if (controller instanceof ValidationAwareController<?>) {
 			this.setValidator(((ValidationAwareController<T>) controller).getValidator());
 		}
-		
+
+		/*
+		 * flash attributes on redirect
+		 */
+		final Map<String, ?> flashAttributes = RequestContextUtils.getInputFlashMap(request);
+
 		/*
 		 * bind request attributes to command
 		 */
-		final ServletRequestDataBinder binder = bindAndValidate(request, command);
+		final ServletRequestDataBinder binder = this.bindAndValidate(request, command);
 		final BindException errors = new BindException(binder.getBindingResult());
+		final Errors warnings = new BeanPropertyBindingResult(null, "");
+
+		if (present(flashAttributes) && flashAttributes.containsKey(ExtendedRedirectViewWithAttributes.ERRORS_KEY)) {
+			final Errors flashErrors = (Errors) flashAttributes.get(ExtendedRedirectViewWithAttributes.ERRORS_KEY);
+			errors.addAllErrors(flashErrors);
+		}
+
 		if (controller instanceof ErrorAware) {
 			((ErrorAware)controller).setErrors(errors);
 		}
-		
+
+		if (controller instanceof WarningAware) {
+			((WarningAware) controller).setWarnings(warnings);
+		}
+
 		View view;
-		
+
 		/*
 		 * define error view
 		 */
@@ -225,7 +284,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		} else {
 			view = Views.ERROR;
 		}
-		
+
 		try {
 			view = controller.workOn(command);
 		} catch (final MalformedURLSchemeException malformed) {
@@ -234,7 +293,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 			log.warn("Could not complete controller (invalid URL scheme) : " + malformed.getMessage());
 		} catch (final AccessDeniedException ad) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			errors.reject(ad.getMessage());
+			errors.reject(ad.getMessage(), ad.getMessage());
 			log.warn("Could not complete controller (AccessDeniedException), occured in: " + ad.getStackTrace()[0] + ", msg is: " + ad.getMessage());
 		} catch (final SpecialAuthMethodRequiredException sam) {
 			// ok -> pass to filter to do the required authentication
@@ -251,10 +310,14 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 			// log.warn("Could not complete controller (Service unavailable): " + e.getMessage());
 		} catch (final ResourceMovedException e) {
 			response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-			response.setHeader("Location", urlGenerator.getPostUrl(e.getResourceType(), e.getNewIntraHash(), e.getUserName()));
+			response.setHeader("Location", this.urlGenerator.getPostUrl(e.getResourceType(), e.getNewIntraHash(), e.getUserName()));
 		} catch (final ObjectNotFoundException e) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			errors.reject("error.object.notfound", e.getMessage());
+			view = Views.ERROR404;
+		} catch (final UserNotFoundException e) {
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			errors.reject("error.user.none_existing_user", new Object[] { e.getUsername() }, e.getMessage());
 			view = Views.ERROR404;
 		} catch (final org.springframework.security.access.AccessDeniedException ex) {
 			/*
@@ -263,37 +326,115 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 			 * page (if user is not logged in) or to the access denied page)
 			 */
 			throw ex;
+		} catch (final ReadOnlyDatabaseException e) {
+			errors.reject("system.readOnly.notice");
+		} catch (final UnsupportedMediaTypeException e) {
+			response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+			errors.reject("system.error.unsupportedmediatype");
+		} catch (final BadRequestOrResponseException | UnsupportedOrderingException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			errors.reject("system.error.badrequest", e.getMessage());
 		} catch (final Exception ex) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			errors.reject("error.internal", new Object[]{ex}, "Internal Server Error: " + ex.getMessage());
-			log.error("Could not complete controller (general exception) for request " + request.getRequestURI() + "?" + request.getQueryString() + " with referer " + request.getHeader("Referer"), ex);
+			log.error("Could not complete controller (general exception) for request " + realRequestPath + PATH_QUERY_SEPERATOR + request.getQueryString() + " with referer " + request.getHeader("Referer"), ex);
 		}
-		
+
 		log.debug("Exception catching block passed, putting comand+errors into model.");
-		
+
 		final Map<String, Object> model = new HashMap<String, Object>();
-		model.put(getCommandName(), command);
-		
+		model.put(this.getCommandName(), command);
+
+		if (command instanceof SimpleResourceViewCommand) {
+			final SimpleResourceViewCommand simpleResourceViewCommand = (SimpleResourceViewCommand) command;
+			final int totalCount = safeSize(simpleResourceViewCommand.getBibtex()) + safeSize(simpleResourceViewCommand.getBookmark()) + safeSize(simpleResourceViewCommand.getGoldStandardBookmarks()) + safeSize(simpleResourceViewCommand.getGoldStandardPublications());
+
+			if (totalCount == 0) {
+				final String format = simpleResourceViewCommand.getFormat();
+				final boolean isHtml = Views.FORMAT_STRING_HTML.equals(format);
+				/*
+				 * here we check if the requested tags contain a + to handle
+				 * our old wrong url form encoding in the url path
+				 */
+				if (command instanceof TagResourceViewCommand) {
+					final TagResourceViewCommand tagResourceViewCommand = (TagResourceViewCommand) command;
+
+					if (tagResourceViewCommand.getRequestedTags().contains("+")) {
+						final List<String> pathElements = Arrays.asList(realRequestPath.split(PATH_SEPERATOR));
+						final StringBuilder newRequestUriBuilder = new StringBuilder(PATH_SEPERATOR);
+
+						if (!isHtml) {
+							newRequestUriBuilder.append(format + "/");
+							if (Views.FORMAT_STRING_LAYOUT.equals(format)) {
+								newRequestUriBuilder.append(simpleResourceViewCommand.getLayout() + PATH_SEPERATOR);
+							}
+						}
+
+						final Iterator<String> pathIterator = pathElements.iterator();
+						while (pathIterator.hasNext()) {
+							final String path = pathIterator.next();
+							if (pathIterator.hasNext()) {
+								newRequestUriBuilder.append(path);
+								newRequestUriBuilder.append(PATH_SEPERATOR);
+							} else {
+								// simple heuristic: the last path element is the path element containing the requested tags
+								newRequestUriBuilder.append(path.replaceAll("\\+", "%20"));
+							}
+						}
+
+						// append query
+						if (present(query)) {
+							newRequestUriBuilder.append(PATH_QUERY_SEPERATOR).append(query);
+						}
+
+						view = new ExtendedRedirectView(newRequestUriBuilder.toString(), true);
+					}
+				}
+
+				// don't render a 404 on the homepage and only on html pages
+				if (!"".equals(realRequestPath) && isHtml) {
+					// no resources found, render 404 for search engines (soft-404 warning)
+					response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+				}
+			}
+		}
+
 		/*
-		 * put errors into model 
+		 * put errors into model
 		 */
 		model.putAll(errors.getModel());
-		
-		log.debug("Returning model and view for " + request.getRequestURI() + "?" + request.getQueryString() + " from " + requestLogic.getInetAddress());
-		
+		model.put("warnings", warnings);
+
+		if (present(flashAttributes)) {
+			model.put("flashAttributes", flashAttributes);
+		}
+
+		log.debug("Returning model and view for " + request.getRequestURI() + PATH_QUERY_SEPERATOR + request.getQueryString() + " from " + requestLogic.getInetAddress());
 		/*
 		 * If the view is already a Spring view, use it directly.
 		 * The primal reason for the this workaround is, that Spring's RedirctView
 		 * automatically appends the model parameters to each redirected URL. This
-		 * can only be avoided by calling setExposeModelAttributes(false) on the 
-		 * RedirectView. Hence, we must directly create a redirect view instead of 
-		 * using a "redirect:..." URL.  
+		 * can only be avoided by calling setExposeModelAttributes(false) on the
+		 * RedirectView. Hence, we must directly create a redirect view instead of
+		 * using a "redirect:..." URL.
 		 */
 		if (org.springframework.web.servlet.View.class.isAssignableFrom(view.getClass())) {
 			return new ModelAndView((org.springframework.web.servlet.View) view, model);
 		}
-		
+
 		return new ModelAndView(view.getName(), model);
+	}
+
+	/**
+	 * @param request
+	 * @return the real request path
+	 */
+	public static String getRequestPath(final HttpServletRequest request) {
+		final Object attribute = request.getAttribute("requPath");
+		if (present(attribute)) {
+			return attribute.toString();
+		}
+		return "";
 	}
 
 	@Override
@@ -304,12 +445,12 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		 * set convertion service
 		 */
 		binder.setConversionService(this.conversionService);
-		
+
 		/*
 		 * setting the dis/allowed fields for the binder
 		 */
-		binder.setAllowedFields(allowedFields);
-		binder.setDisallowedFields(disallowedFields);
+		binder.setAllowedFields(this.allowedFields);
+		binder.setDisallowedFields(this.disallowedFields);
 	}
 
 	/**
@@ -322,7 +463,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	/**
 	 * @param presenceCondition the presenceCondition to set
 	 */
-	public void setPresenceCondition(Condition presenceCondition) {
+	public void setPresenceCondition(final Condition presenceCondition) {
 		this.presenceCondition = presenceCondition;
-	}	
+	}
 }

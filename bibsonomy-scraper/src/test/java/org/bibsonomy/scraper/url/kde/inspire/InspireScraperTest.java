@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.inspire;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -49,7 +50,9 @@ public class InspireScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_196");
+		final String url = "http://inspirehep.net/record/920296";
+		final String resultFile = "InspireScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, InspireScraper.class, resultFile);
 	}
 	@Test
 	public void testReferences() throws Exception{

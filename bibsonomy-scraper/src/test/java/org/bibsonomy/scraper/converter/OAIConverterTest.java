@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -55,7 +55,7 @@ public class OAIConverterTest {
 	private void testFile(final String fileName) throws IOException, ScrapingException {
 		final String xml = TestUtils.readEntryFromFile(OAIConverterTest.PATH_TO_FILES + fileName + ".xml");
 		final String bib = TestUtils.readEntryFromFile(OAIConverterTest.PATH_TO_FILES + fileName + ".bib");
-		
-		assertEquals(bib.trim(), OAIConverter.convert(xml).trim());
+		OAIToBibtexConverter converter = new OAIToBibtexConverter();
+		assertEquals(bib.trim(), converter.toBibtex(xml).trim());
 	}
 }

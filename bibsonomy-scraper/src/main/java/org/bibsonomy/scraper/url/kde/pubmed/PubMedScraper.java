@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -111,7 +111,7 @@ public class PubMedScraper extends AbstractUrlScraper {
 					HttpURL risURL = new HttpURL(new HttpURL(method.getURI().getURI()), risLinkMatcher.group(1));
 					RisToBibtexConverter c = new RisToBibtexConverter();
 					String ris = WebUtils.getContentAsString(client, risURL);
-					bibtexresult = c.risToBibtex(ris);
+					bibtexresult = c.toBibtex(ris);
 				} else {
 					
 					Matcher ma = PMIDPATTERN.matcher(pageContent);

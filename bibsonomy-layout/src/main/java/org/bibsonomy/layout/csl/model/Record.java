@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Layout - Layout engine for the webapp.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -27,7 +27,9 @@
 package org.bibsonomy.layout.csl.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Models an entry. See the file 'csl-variables' at
@@ -110,9 +112,6 @@ public class Record {
 	// the secondary title for the cited item (book title for book chapters,
 	// journal title for articles, etc.).
 	private String container_title;
-
-	/** documents of this bibsonomy post. not official part of csl */
-	private List<DocumentCslWrapper> documents = new ArrayList<DocumentCslWrapper>();
 	
 	// doi identifier
 	private String DOI;
@@ -218,7 +217,20 @@ public class Record {
 
 	// Type
 	private String type;
-
+	
+	/** in case we want to filter duplicates on the client side we need this */
+	private String interhash;
+	
+	private String intrahash;
+	
+	private String username;
+	
+	/** documents of a post. not official part of csl */
+	private List<DocumentCslWrapper> documents = new ArrayList<DocumentCslWrapper>();
+	
+	/** misc fields of a publication, not official part of csl */
+	private Map<String, String> misc = new HashMap<String, String>();
+	
 	/**
 	 * @return the id
 	 */
@@ -987,5 +999,61 @@ public class Record {
 	 */
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	/**
+	 * @return the misc
+	 */
+	public Map<String, String> getMisc() {
+		return this.misc;
+	}
+
+	/**
+	 * @param misc the misc to set
+	 */
+	public void setMisc(Map<String, String> misc) {
+		this.misc = misc;
+	}
+
+	/**
+	 * @return the interhash
+	 */
+	public String getInterhash() {
+		return this.interhash;
+	}
+
+	/**
+	 * @param interhash the interhash to set
+	 */
+	public void setInterhash(String interhash) {
+		this.interhash = interhash;
+	}
+
+	/**
+	 * @return the intrahash
+	 */
+	public String getIntrahash() {
+		return this.intrahash;
+	}
+
+	/**
+	 * @param intrahash the intrahash to set
+	 */
+	public void setIntrahash(String intrahash) {
+		this.intrahash = intrahash;
+	}
+
+	/**
+	 * @return the username
+	 */
+	public String getUsername() {
+		return this.username;
+	}
+
+	/**
+	 * @param username the username to set
+	 */
+	public void setUsername(String username) {
+		this.username = username;
 	}
 }

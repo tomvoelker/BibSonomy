@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -28,7 +28,6 @@ package org.bibsonomy.database.systemstags;
 
 /**
  * @author Andreas Koch
- * @version $Id$ 
  */
 public interface SystemTag extends Cloneable{
 	
@@ -41,6 +40,11 @@ public interface SystemTag extends Cloneable{
 	 * @param argument the argument to set
 	 */
 	public void setArgument(String argument);
+	
+	/**
+	 * @return <code>true</code> if the system tag has at least one argument
+	 */
+	public boolean hasArguments();
 	
 	/**
 	 * @return the name
@@ -59,6 +63,4 @@ public interface SystemTag extends Cloneable{
 	 * @return
 	 */
 	public boolean isToHide();
-	
-	//public SystemTag clone();
 }

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -34,7 +34,7 @@ import java.util.Properties;
 import org.bibsonomy.model.Resource;
 
 /** 
- * @author wla
+ * @author wla, vhem
  */
 public class SyncService {
 	
@@ -49,6 +49,7 @@ public class SyncService {
 	private Map<Class<? extends Resource>, Map<String, String>> plan;
 	private String sslDn;
 	private boolean autosync = false;
+	private boolean alreadySyncedOnce = false;
 	private String userName;
 	
 	/**
@@ -223,6 +224,20 @@ public class SyncService {
 	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	/**
+	 * @return the alreadySyncedOnce
+	 */
+	public boolean isAlreadySyncedOnce() {
+		return this.alreadySyncedOnce;
+	}
+
+	/**
+	 * @param alreadySyncedOnce the alreadySyncedOnce to set
+	 */
+	public void setAlreadySyncedOnce(boolean alreadySyncedOnce) {
+		this.alreadySyncedOnce = alreadySyncedOnce;
 	}
 
 	/* (non-Javadoc)

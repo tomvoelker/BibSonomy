@@ -1,7 +1,7 @@
 /**
  * BibSonomy-MARC-Parser - Marc Parser for BibSonomy
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -46,31 +46,31 @@ public class AuthorExtractorTest extends AbstractExtractorTest{
 			
 			BibTex b = new BibTex();
 			AuthorExtractor aExtract = new AuthorExtractor();
-			aExtract.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField(correspondingFields[i][0], 'a', "Test, Name").
+			aExtract.extractAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField(correspondingFields[i][0], 'a', "Test, Name").
 					withMarcField((correspondingFields[i][0]), '4', "aut"));
 			assertEquals(new PersonName("Name", "Test"), b.getAuthor().get(0));
 			//secure that organization isn't set as author in case of proceedings
 			b = new BibTex();
-			aExtract.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField(correspondingFields[i][1], 'a', "Test Corporation").
+			aExtract.extractAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField(correspondingFields[i][1], 'a', "Test Corporation").
 					withMarcField(correspondingFields[i][1], '4', "aut").withPicaField("013H", "$0", "k"));
 			assertEquals(0, b.getAuthor().size());
 			//author should be set, when it's a person even if entrytype proceedings
 			b = new BibTex();
-			aExtract.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField(correspondingFields[i][1], 'a', "Test Corporation").
+			aExtract.extractAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField(correspondingFields[i][1], 'a', "Test Corporation").
 					withMarcField(correspondingFields[i][1], '4', "aut").withMarcField(correspondingFields[i][0], 'a', "Test, Name").withMarcField(correspondingFields[i][0], '4', "aut").withPicaField("013H", "$0", "k"));
 			assertEquals(new PersonName("Name", "Test"), b.getAuthor().get(0));
 			//organization can be added as author, if entrytype is not proceedings
 			b = new BibTex();
-			aExtract.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField(correspondingFields[i][1], 'a', "Test Corporation").
+			aExtract.extractAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField(correspondingFields[i][1], 'a', "Test Corporation").
 					withMarcField(correspondingFields[i][1], '4', "aut"));
 			assertEquals(new PersonName("", "Test Corporation"), b.getAuthor().get(0));
 			//also meetings should be not set for proceedings as author and vice versa
 			b = new BibTex();
-			aExtract.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField(correspondingFields[i][2], 'a', "Annual Science Meeting").
+			aExtract.extractAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField(correspondingFields[i][2], 'a', "Annual Science Meeting").
 					withMarcField(correspondingFields[i][2], '4', "aut").withPicaField("013H", "$0", "k"));
 			assertEquals(0, b.getAuthor().size());
 			b = new BibTex();
-			aExtract.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField(correspondingFields[i][2], 'a', "Annual Science Meeting").
+			aExtract.extractAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField(correspondingFields[i][2], 'a', "Annual Science Meeting").
 					withMarcField(correspondingFields[i][2], '4', "aut"));
 			assertEquals(new PersonName("", "Annual Science Meeting"), b.getAuthor().get(0));
 		}

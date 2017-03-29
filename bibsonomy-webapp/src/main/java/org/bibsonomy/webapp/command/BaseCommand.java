@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -70,9 +70,6 @@ public class BaseCommand implements ContextCommand, DidYouKnowMessageCommand {
 	public void setPageTitle(final String pageTitle) {
 		this.pageTitle = pageTitle;
 	}
-
-	
-	
 	
 	/** The context contains the loginUser, the ckey, and other things
 	 * which can not be changed by the user.

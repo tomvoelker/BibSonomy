@@ -1,7 +1,7 @@
 /**
  * BibSonomy-OpenAccess - Check Open Access Policies for Publications
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -187,6 +187,7 @@ public class METSRenderer extends JAXBRenderer {
 			// TODO: get info from romeo/sherpa
 			//myPost.setPublisherinfo("");
 		}
+
 		return myPost;
 	}
 

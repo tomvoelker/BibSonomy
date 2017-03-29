@@ -2,14 +2,11 @@ var typeindex = 2;
 var hashindex = 3;
 var nameindex = 4;
 
-var linkImage = "<img src=\"/resources/image/reference_link_icon.png\">";
+var linkImage = ' <span class="fa fa-external-link"></span>';
 
 var style;
 
 $(document).ready(function() {
-
-	var style = elsevierHarvard;
-
 	// handle all list elements with class review
 	$('li.review').each(function() {
 		handleLinks($(this))
@@ -19,12 +16,14 @@ $(document).ready(function() {
 	$('li.comment').each(function() {
 		handleLinks($(this))
 	});
+	
+	loadStyle('elsevier-harvard', function(xml) {
+		style = xml;
+	});
 });
 
 function handleLinks(discussionItem) {
-
-	//find all required links:
-	style = elsevierHarvard;
+	// find all required links:
 	var proceededLinks = new Array();
 	discussionItem.find("a.postlink").each(function() {
 		var matches = $(this).attr("href").match(/(.*?)\/{1}(bibtex|publication|url|bookmark)\/([0-9a-f]{32,33})(?:\/(.*))?/);
@@ -125,7 +124,7 @@ function parsePublicationResult(data, postLinkData) {
 	var bibliographyEntry = citeproc.makeBibliography();
 
 	postLinkData.setCitation(renderedCitation[0][1]);
-	postLinkData.setReference($("" + bibliographyEntry[1]));
+	postLinkData.setReference($("" + bibliographyEntry[1][0]));
 }
 
 function constructId(data, id) {
@@ -205,26 +204,6 @@ function PostLinkResult(publication, hash, name) {
 	this.getName = function() {
 		return name;
 	};
-};
-
-function Sys(data) {
-	this.data = data;
-
-	this.retrieveLocale = function(lang) {
-		return locale[lang];
-	};
-
-	this.retrieveItem = function(id) {
-		return this.data[id];
-	};
-
-	this.getAbbreviations = function(name) {
-		var ABBREVS = {
-			"default" : {}
-		};
-		return ABBREVS[name];
-	};
-
 };
 
 /**

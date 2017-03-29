@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Layout - Layout engine for the webapp.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,7 +26,7 @@
  */
 package org.bibsonomy.layout.csl.model;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * A list of records according to CSL. Basically a HashMap with
@@ -34,7 +34,7 @@ import java.util.HashMap;
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
  */
-public class RecordList extends HashMap<String,Record> {
+public class RecordList extends LinkedHashMap<String, Record> {
 	private static final long serialVersionUID = 7653065827618450435L;
 
 	/**

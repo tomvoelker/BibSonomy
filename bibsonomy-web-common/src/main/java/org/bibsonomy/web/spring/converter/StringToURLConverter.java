@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Web-Common - Common things for web
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -47,7 +47,6 @@ public class StringToURLConverter implements Converter<String, URL> {
 		}
 		
 		try {
-			// TODO: maybe here is the perfect place to call cleanUrl
 			return new URL(source);
 		} catch (final MalformedURLException ex) {
 			throw new ConversionFailedException(TypeDescriptor.valueOf(String.class), TypeDescriptor.valueOf(URL.class), source, ex);

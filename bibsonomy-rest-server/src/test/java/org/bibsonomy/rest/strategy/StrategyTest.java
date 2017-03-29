@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -39,27 +39,31 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.junit.Test;
 
 /**
+ * tests for {@link Strategy}
  */
 public class StrategyTest {
-
+	
+	/**
+	 * tests {@link Strategy#chooseGroupingEntity()}
+	 */
 	@Test
 	public void testChooseGroupingEntity() {
 		final Map<String, String[]> parameterMap = new HashMap<String, String[]>();
 		final Context ctx = new Context(HttpMethod.GET, "/api/users/egal/posts", RenderingFormat.XML, new RendererFactory(new UrlRenderer("/")), null, null, null, null, parameterMap, null);
 
-		parameterMap.put("user", new String[] { "" });
+		parameterMap.put("user", new String[] { "testuser1" });
 		assertEquals(GroupingEntity.USER, ctx.getStrategy().chooseGroupingEntity());
 
 		parameterMap.clear();
-		parameterMap.put("group", new String[] { "" });
+		parameterMap.put("group", new String[] { "testgroup1" });
 		assertEquals(GroupingEntity.GROUP, ctx.getStrategy().chooseGroupingEntity());
 
 		parameterMap.clear();
-		parameterMap.put("viewable", new String[] { "" });
+		parameterMap.put("viewable", new String[] { "private" });
 		assertEquals(GroupingEntity.VIEWABLE, ctx.getStrategy().chooseGroupingEntity());
 
 		parameterMap.clear();
-		parameterMap.put("friend", new String[] { "" });
+		parameterMap.put("friend", new String[] { "testuser2" });
 		assertEquals(GroupingEntity.FRIEND, ctx.getStrategy().chooseGroupingEntity());
 
 		parameterMap.clear();

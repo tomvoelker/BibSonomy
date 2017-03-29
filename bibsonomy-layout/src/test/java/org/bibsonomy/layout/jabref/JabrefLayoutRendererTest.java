@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Layout - Layout engine for the webapp.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,12 +26,6 @@
  */
 package org.bibsonomy.layout.jabref;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
@@ -43,6 +37,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
 /**
  * 
  * @author:  rja
@@ -50,7 +50,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class JabrefLayoutRendererTest extends AbstractJabrefLayoutTest{
 	
-	//Layouts that will be tested
+	// the layouts that will be tested
 	private static final Set<String> TESTEDLAYOUTS = 
 		Sets.asSet(new String[]{"apa_html", "chicago", "din1505", "din1505year", "harvardhtml", "harvardhtmlyear",
 								"harvardhtmlyear-linked", "harvardhtmlyear-linked-full",
@@ -68,7 +68,6 @@ public class JabrefLayoutRendererTest extends AbstractJabrefLayoutTest{
 		return initTests(TESTEDLAYOUTS, TESTCASEFOLDERPATH, ENTRYTYPE_SPLITSUFFIX);
 	}
 	
-	@Override
 	@Test
 	public void testRender() throws Exception {
 		testRender(getPosts(this.entryType));

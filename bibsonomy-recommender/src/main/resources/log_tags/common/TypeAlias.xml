@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<!--
+	All aliases are collected here, because they must not exist twice (i.e. their names).
+-->
+<sqlMap namespace="TypeAliases">
+	<!-- recommender model types -->
+	<typeAlias alias="webserviceRecommender"	type="recommender.impl.webservice.WebserviceRecommender" />
+	
+	<!-- 
+		| SQL Map Config for the recommender database
+		-->
+
+	<typeAlias alias="byteBuffer"      type="byte[]"/>	
+	<typeAlias alias="timestamp"       type="java.sql.Timestamp"/>
+	<typeAlias alias="url"             type="java.net.URL" />
+
+	<typeAlias alias="recSetting"      type="recommender.core.database.params.RecSettingParam" />
+	<typeAlias alias="recQuerySetting" type="recommender.core.database.params.RecQuerySettingParam" />
+	<typeAlias alias="recQuery"        type="org.bibsonomy.recommender.tag.db.params.BibRecQueryParam" />
+	<typeAlias alias="entityParam"     type="recommender.core.database.params.EntityParam" />
+    <typeAlias alias="latencyParam"    type="recommender.core.database.params.LatencyParam" />
+    <typeAlias alias="recResultParam"  type="recommender.core.database.params.ResultParam" />
+    <typeAlias alias="recTag"          type="org.bibsonomy.recommender.tag.model.RecommendedTag" />
+
+	<typeAlias alias="recAdminOverview" type="recommender.core.database.params.RecAdminOverview"/>
+
+	<typeAlias alias="recTagParam"    type="org.bibsonomy.recommender.tag.db.params.RecommendedTagParam" />
+	<typeAlias alias="postParam"      type="org.bibsonomy.recommender.tag.db.params.PostRecParam" />
+	
+	<typeAlias alias="bibtexParam"    type="org.bibsonomy.database.params.BibTexParam"/>
+	<typeAlias alias="bookmarkParam"  type="org.bibsonomy.database.params.BookmarkParam"/>
+
+	<typeAlias alias="pair"            type="recommender.core.model.Pair" />
+	<typeAlias alias="selectorMap"     type="recommender.core.database.params.SelectorQueryMapParam" />
+	<typeAlias alias="selectorSetting" type="recommender.core.database.params.SelectorSettingParam" />
+
+	<typeAlias alias="personNameList"       type="java.util.List" />
+</sqlMap>

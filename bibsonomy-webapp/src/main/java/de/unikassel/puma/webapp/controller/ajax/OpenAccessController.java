@@ -1,11 +1,11 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
- *                               University of WÃ¼rzburg, Germany
+ *                               University of Würzburg, Germany
  *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany

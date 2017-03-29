@@ -3,31 +3,29 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="sortPageOrder" type="java.lang.String" required="true" />
-	
-	<c:set var="escapedRequestPathAndQuery" value="${fn:escapeXml(requPathAndQuery)}" />
 	<!--+
 		+ actions concerning different sorting orders
-		+-->	
-	<fmt:message key="post.meta.sort.order"/>:${mtl:ch('nbsp')}
+		+-->
+	<li class="dropdown-header"><fmt:message key="post.meta.sort.order"/></li>
 	<c:choose>
 		<c:when test="${sortPageOrder eq 'asc'}">
-			<span class="italic"><fmt:message key="post.meta.sort.order.ascending"/></span>
+			<li class="disabled"><a href="#"><fontawesome:icon icon="sort-amount-asc" spaceAfter="5" /><fmt:message key="post.meta.sort.order.ascending"/></a></li>
 		</c:when>
 		<c:otherwise>
-			<a href="${mtl:setParam(escapedRequestPathAndQuery, 'sortPageOrder', 'asc')}"><fmt:message key="post.meta.sort.order.ascending"/></a>
-		</c:otherwise>
-	</c:choose>,${mtl:ch('nbsp')}
-	<c:choose>
-		<c:when test="${sortPageOrder eq 'desc'}">
-			<span class="italic"><fmt:message key="post.meta.sort.order.descending"/></span>
-		</c:when>
-		<c:otherwise>
-			<a href="${mtl:setParam(escapedRequestPathAndQuery, 'sortPageOrder', 'desc')}"><fmt:message key="post.meta.sort.order.descending"/></a>
+			<li><a href="${mtl:setParam(requPathAndQuery, 'sortPageOrder', 'asc')}"><fontawesome:icon icon="sort-amount-asc" spaceAfter="5" /><fmt:message key="post.meta.sort.order.ascending"/></a></li>
 		</c:otherwise>
 	</c:choose>
-
+	<c:choose>
+		<c:when test="${sortPageOrder eq 'desc'}">
+			<li class="disabled"><a href="#"><fontawesome:icon icon="sort-amount-desc" spaceAfter="5" /><fmt:message key="post.meta.sort.order.descending"/></a></li>
+		</c:when>
+		<c:otherwise>
+			<li><a href="${mtl:setParam(requPathAndQuery, 'sortPageOrder', 'desc')}"><fontawesome:icon icon="sort-amount-desc" spaceAfter="5" /><fmt:message key="post.meta.sort.order.descending"/></a></li>
+		</c:otherwise>
+	</c:choose>
 </jsp:root>

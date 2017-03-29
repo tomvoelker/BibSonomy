@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -35,7 +35,6 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
-
 /**
  * TODO: add support for all PUMA instances
  * 
@@ -45,7 +44,7 @@ import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
  */
 public class BibSonomyScraper extends GenericBibTeXURLScraper {
 	private static final String SITE_NAME = "BibSonomy";
-	private static final String SITE_URL = "http://www.bibsonomy.org";
+	private static final String SITE_URL = "https://www.bibsonomy.org";
 	private static final String INFO = "If you don't like the copy button from " + href(SITE_URL, SITE_NAME) + ", use your postPublication button.";
 
 	private static final String BIBSONOMY_HOST = "bibsonomy.org";
@@ -57,8 +56,6 @@ public class BibSonomyScraper extends GenericBibTeXURLScraper {
 		new Pair<Pattern, Pattern>(Pattern.compile(".*" + BIBSONOMY_HOST), Pattern.compile(BIBTEX_PUBLICATION_PATH_PATTERN))
 	);
 	
-
-
 	@Override
 	public String getInfo() {
 		return INFO;
@@ -80,7 +77,7 @@ public class BibSonomyScraper extends GenericBibTeXURLScraper {
 	}
 
 	@Override
-	public String getDownloadURL(URL url) throws ScrapingException {
+	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		final String path = url.getPath();
 		// if /bibtex page or /publication page then change path to add /bib as prefix and download
 		if (!path.startsWith(BIBTEX_FORMAT_PATH_PREFIX + "/")) {

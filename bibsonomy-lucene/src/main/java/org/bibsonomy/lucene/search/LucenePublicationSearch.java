@@ -1,7 +1,7 @@
 /**
- * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ * BibSonomy - A blue social bookmark and publication sharing system.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -42,8 +42,8 @@ import org.bibsonomy.model.BibTex;
  */
 public class LucenePublicationSearch<P extends BibTex> extends LuceneResourceSearch<P> {
 
-    @Override
-    protected BooleanQuery buildSearchQuery(final String userName, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms) {
+	@Override
+	protected BooleanQuery buildSearchQuery(final String userName, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms) {
 		final BooleanQuery searchQuery = super.buildSearchQuery(userName, searchTerms, titleSearchTerms, authorSearchTerms);
 			
 		// search author
@@ -53,5 +53,5 @@ public class LucenePublicationSearch<P extends BibTex> extends LuceneResourceSea
 		}
 		
 		return searchQuery;
-    }
+	}
 }

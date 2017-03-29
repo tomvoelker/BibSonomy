@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -115,7 +115,7 @@ public class ConceptPageController extends SingleResourceListController implemen
 		command.setPageTitle(pageTitle.toString());
 		
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessAndSortList(command, resourceType);
 		}	
@@ -136,7 +136,7 @@ public class ConceptPageController extends SingleResourceListController implemen
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			if (groupingEntity != GroupingEntity.ALL) {
-				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, 1000, null);
+				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 1000, null);
 			}
 			
 			this.endTiming();

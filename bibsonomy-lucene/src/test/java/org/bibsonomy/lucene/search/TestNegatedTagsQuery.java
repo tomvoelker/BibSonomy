@@ -1,7 +1,7 @@
 /**
- * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ * BibSonomy - A blue social bookmark and publication sharing system.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -34,6 +34,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.database.testutil.TestDatabaseLoader;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
@@ -43,6 +44,7 @@ import org.bibsonomy.model.ResultList;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 
 public class TestNegatedTagsQuery extends AbstractDatabaseManagerTest {
 

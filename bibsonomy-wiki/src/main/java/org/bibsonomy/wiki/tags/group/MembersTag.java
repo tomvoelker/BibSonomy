@@ -1,7 +1,7 @@
 /**
  * BibSonomy CV Wiki - Wiki for user and group CVs
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -47,26 +47,25 @@ public class MembersTag extends GroupTag {
 
 	private String renderImage(final String userName) {
 		// TODO: use url generator
-		return "<img height='100px' src='/picture/user/" + this.renderString(userName) + "' />";
+		return "<img class='user-avatar' src='/picture/user/" + this.renderString(userName) + "' />";
 	}
 
 	/**
 	 * creates a list of pictures of all members of this group (except for the group owner itself) as well as their names.
-	 * The HTML div container is of the class imageContainer.
-	 * TODO: Fix this with the new group concept.
 	 */
 	@Override
 	protected String renderGroupTag() {
 		final StringBuilder renderedHTML = new StringBuilder();
-
+		
 		for (final GroupMembership membership : this.requestedGroup.getMemberships()) {
 			final User user = membership.getUser();
 
 			if (!user.getName().equals(this.requestedGroup.getName())) {
 				renderedHTML.append("<div class='imageContainer'>");
+				renderedHTML.append("<a class=\"img-thumbnail img-responsive\" title=\""+user.getName()+"\" href=\"/user/" + user.getName() + "\">");
 				renderedHTML.append(this.renderImage(user.getName()));
-				renderedHTML.append("<p style='text-align:center;'><a href=\"/cv/user/" + user.getName() + "\">" + this.renderString(user.getRealname()) + "</a></p>");
-				renderedHTML.append("</div>");
+				renderedHTML.append("<span>@"+this.renderString(user.getName())+"</span>");
+				renderedHTML.append("</a></div>");
 			}
 		}
 		return renderedHTML.toString();

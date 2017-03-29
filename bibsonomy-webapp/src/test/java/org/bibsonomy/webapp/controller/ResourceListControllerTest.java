@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -49,14 +49,14 @@ import org.junit.Test;
  * 
  * @author dzo
  */
-public class ResourceListControllerTest {	
+public class ResourceListControllerTest {
 	
 	private static class TestResourceListController extends ResourceListController {
 		@Override
 		protected void handleTagsOnly(ResourceViewCommand cmd, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, String hash, int max, String search) {
 			// no logic no web request
 			this.setInitializeNoResources(true);
-		}		
+		}
 	}
 	
 	private static Set<Class<? extends Resource>> STANDARD_VIEW_CLASSES;
@@ -103,8 +103,9 @@ public class ResourceListControllerTest {
 		final ResourceViewCommand cmd = new ResourceViewCommand();
 		cmd.setTagstype(TagsType.DEFAULT);
 		testController.handleTagsOnly(cmd, null, null, null, null, null, 0, null);
-		
-		assertEquals(Collections.emptySet(), testController.getListsToInitialize("", new HashSet<Class<? extends Resource>>()));
+		cmd.setFormat("");
+		cmd.setResourcetype(Collections.<Class<? extends Resource>>emptySet());
+		assertEquals(Collections.emptySet(), testController.getListsToInitialize(cmd));
 	}
 	
 	@Test
@@ -112,12 +113,22 @@ public class ResourceListControllerTest {
 		final TestResourceListController testController = new TestResourceListController();
 		testController.setSupportedResources(new HashSet<Class<? extends Resource>>(BOOKMARK_CLASS));
 		testController.setUserSettings(getSettings(true, false));
-		assertEquals(BOOKMARK_CLASS, testController.getListsToInitialize("html", new HashSet<Class<? extends Resource>>()));
+		final ResourceViewCommand cmd = new ResourceViewCommand();
+		cmd.setFormat("html");
+		cmd.setResourcetype(Collections.<Class<? extends Resource>>emptySet());
+		assertEquals(BOOKMARK_CLASS, testController.getListsToInitialize(cmd));
 		
-		assertEquals(Collections.emptySet(), testController.getListsToInitialize("bibtex", PUBLICATION_CLASS));
+		cmd.setFormat("bibtex");
+		cmd.setResourcetype(PUBLICATION_CLASS);
+		assertEquals(Collections.emptySet(), testController.getListsToInitialize(cmd));
 		
-		assertEquals(Collections.emptySet(), testController.getListsToInitialize("bibtex", new HashSet<Class<? extends Resource>>()));
-		assertEquals(Collections.emptySet(), testController.getListsToInitialize("bibtex", BOOKMARK_CLASS));
+		cmd.setFormat("bibtex");
+		cmd.setResourcetype(Collections.<Class<? extends Resource>>emptySet());
+		assertEquals(Collections.emptySet(), testController.getListsToInitialize(cmd));
+		
+		cmd.setFormat("bibtex");
+		cmd.setResourcetype(BOOKMARK_CLASS);
+		assertEquals(Collections.emptySet(), testController.getListsToInitialize(cmd));
 	}
 	
 	@Test
@@ -129,9 +140,14 @@ public class ResourceListControllerTest {
 		 *  NEW
 		 */
 		final String format = "json";
-		assertEquals(STANDARD_VIEW_CLASSES, testController.getListsToInitialize(format, new HashSet<Class<? extends Resource>>()));
-		assertEquals(PUBLICATION_CLASS, testController.getListsToInitialize(format, PUBLICATION_CLASS));
-		assertEquals(GOLD_PUB_CLASS, testController.getListsToInitialize(format, GOLD_PUB_CLASS));
+		final ResourceViewCommand cmd = new ResourceViewCommand();
+		cmd.setFormat(format);
+		cmd.setResourcetype(Collections.<Class<? extends Resource>>emptySet());
+		assertEquals(STANDARD_VIEW_CLASSES, testController.getListsToInitialize(cmd));
+		cmd.setResourcetype(PUBLICATION_CLASS);
+		assertEquals(PUBLICATION_CLASS, testController.getListsToInitialize(cmd));
+		cmd.setResourcetype(GOLD_PUB_CLASS);
+		assertEquals(GOLD_PUB_CLASS, testController.getListsToInitialize(cmd));
 	}
 	
 	@Test
@@ -139,10 +155,11 @@ public class ResourceListControllerTest {
 		final TestResourceListController testController = new TestResourceListController();
 		testController.setSupportedResources(new HashSet<Class<? extends Resource>>(ALL_CLASSES));
 		testController.setUserSettings(DEFAULT_SETTINGS);
-		
-		final String format = "bookpubl";
+		final ResourceViewCommand cmd = new ResourceViewCommand();
+		cmd.setFormat("bookpubl");
+		cmd.setResourcetype(PUBLICATION_CLASS);
 		// TODO: DISCUSS: bookmark vs empty list (here the format is enforcing to initialize bookmarks)
-		assertEquals(BOOKMARK_CLASS, testController.getListsToInitialize(format, PUBLICATION_CLASS));
+		assertEquals(BOOKMARK_CLASS, testController.getListsToInitialize(cmd));
 	}
 	
 	@Test
@@ -150,10 +167,11 @@ public class ResourceListControllerTest {
 		final TestResourceListController testController = new TestResourceListController();
 		testController.setSupportedResources(new HashSet<Class<? extends Resource>>(ALL_CLASSES));
 		testController.setUserSettings(DEFAULT_SETTINGS);
-		
-		final String format = "bibtex";
+		final ResourceViewCommand cmd = new ResourceViewCommand();
+		cmd.setFormat("bibtex");
+		cmd.setResourcetype(BOOKMARK_CLASS);
 		// TODO: DISCUSS: publication vs empty list (here the format is enforcing to initialize publications)
-		assertEquals(PUBLICATION_CLASS, testController.getListsToInitialize(format, BOOKMARK_CLASS));
+		assertEquals(PUBLICATION_CLASS, testController.getListsToInitialize(cmd));
 	}
 	
 	@Test
@@ -165,24 +183,30 @@ public class ResourceListControllerTest {
 		 * bookmark and publication settings activated
 		 */
 		testController.setUserSettings(getSettings(true, true));
-		assertEquals(STANDARD_VIEW_CLASSES, testController.getListsToInitialize("html", new HashSet<Class<? extends Resource>>()));
+		final ResourceViewCommand cmd = new ResourceViewCommand();
+		cmd.setFormat("html");
+		cmd.setResourcetype(Collections.<Class<? extends Resource>>emptySet());
+		assertEquals(STANDARD_VIEW_CLASSES, testController.getListsToInitialize(cmd));
 		
 		/*
 		 * respects user settings
 		 */
 		testController.setUserSettings(getSettings(true, false));
-		assertEquals(PUBLICATION_CLASS, testController.getListsToInitialize("html", new HashSet<Class<? extends Resource>>()));
+		cmd.setResourcetype(Collections.<Class<? extends Resource>>emptySet()); // reset command
+		assertEquals(PUBLICATION_CLASS, testController.getListsToInitialize(cmd));
 		
 		/*
 		 * url param "overrides" user settings
 		 */
-		assertEquals(BOOKMARK_CLASS, testController.getListsToInitialize("html", BOOKMARK_CLASS));
+		cmd.setResourcetype(BOOKMARK_CLASS);
+		assertEquals(BOOKMARK_CLASS, testController.getListsToInitialize(cmd));
 		
 		
 		testController.setUserSettings(getSettings(false, true));
-		
-		assertEquals(PUBLICATION_CLASS, testController.getListsToInitialize("bibtex", BOOKMARK_CLASS));
-	}	
+		cmd.setFormat("bibtex");
+		cmd.setResourcetype(BOOKMARK_CLASS); // reset command
+		assertEquals(PUBLICATION_CLASS, testController.getListsToInitialize(cmd));
+	}
 	
 	@Test
 	public void complexOne() {
@@ -190,7 +214,11 @@ public class ResourceListControllerTest {
 		testController.setSupportedResources(new HashSet<Class<? extends Resource>>(PUBLICATION_CLASS));
 		testController.setUserSettings(DEFAULT_SETTINGS);
 		
-		assertEquals(Collections.emptySet(), testController.getListsToInitialize("bookpubl", PUBLICATION_CLASS));
+		final ResourceViewCommand cmd = new ResourceViewCommand();
+		cmd.setFormat("bookpubl");
+		cmd.setResourcetype(PUBLICATION_CLASS);
+		
+		assertEquals(Collections.emptySet(), testController.getListsToInitialize(cmd));
 	}
 	
 	@Test
@@ -199,6 +227,11 @@ public class ResourceListControllerTest {
 		testController.setSupportedResources(new HashSet<Class<? extends Resource>>(ALL_CLASSES));
 		testController.setUserSettings(DEFAULT_SETTINGS);
 		testController.setForcedResources(STANDARD_VIEW_CLASSES);
-		assertEquals(STANDARD_VIEW_CLASSES, testController.getListsToInitialize("bibtex", GOLD_PUB_CLASS));
+		
+		final ResourceViewCommand cmd = new ResourceViewCommand();
+		cmd.setFormat("bibtex");
+		cmd.setResourcetype(GOLD_PUB_CLASS);
+		
+		assertEquals(STANDARD_VIEW_CLASSES, testController.getListsToInitialize(cmd));
 	}
 }

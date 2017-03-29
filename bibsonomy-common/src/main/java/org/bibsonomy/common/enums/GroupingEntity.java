@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -83,9 +83,9 @@ public enum GroupingEntity {
 	
 	/**
 	 * for constraining the entities in the list to the ones contained in the
-	 * basket collection of a given user
+	 * clipboard collection of a given user
 	 */
-	CLIPBOARD, 
+	CLIPBOARD,
 	
 	/**
 	 * for constraining the entities in the list to the ones contained in the 

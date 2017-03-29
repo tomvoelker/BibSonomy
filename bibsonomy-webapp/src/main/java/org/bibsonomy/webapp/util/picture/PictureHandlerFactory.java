@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -41,7 +41,6 @@ public interface PictureHandlerFactory {
 	 * and the actual picture command.
 	 * 
 	 * @param requestedUser - requested user
-	 * @param command - the actual picture command
 	 * @return target {@link PictureHandler} implementation
 	 */
 	public PictureHandler getPictureHandler(User requestedUser);

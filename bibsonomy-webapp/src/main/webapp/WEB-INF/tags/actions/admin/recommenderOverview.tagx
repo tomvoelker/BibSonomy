@@ -1,0 +1,72 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" 
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	
+	
+	<jsp:directive.attribute name="recommenderInfos" type="java.util.List" required="true" />
+	
+	<jsp:directive.attribute name="recommender" type="java.lang.Class" required="true" />
+	
+	<div class="table-responsive">
+		<table class="admin-rectable table table-hover table-condensed">
+			<thead>
+				<tr>
+					<th>Recommender</th>
+					<th>Info</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach var="recommenderInfo" items="${recommenderInfos}">
+					<c:set var="classForRec" value="${recommenderInfo.active ? '' : 'inactive'}" />
+					<tr data-settingsId="${recommenderInfo.settingID}" class="${classForRec}">
+						<td><c:out value="${recommenderInfo.recID}" /></td>
+						<td>
+							<c:choose>
+								<c:when test="${recommenderInfo.active}">
+									latency: <c:out value="${recommenderInfo.latency}"/>ms
+								</c:when>
+								<c:otherwise>
+									<span class="badge">inactive</span>
+								</c:otherwise>
+							</c:choose>
+						</td>
+						<td>
+							<c:choose>
+								<c:when test="${recommenderInfo.active}">
+									<form method="post">
+										<input type="hidden" name="action" value="deactivateRecommender" />
+										<input type="hidden" name="recommendationResultClass" value="${recommender.name}" />
+										<input type="hidden" name="ckey" value="${command.context.ckey}" />
+										<input type="hidden" name="recommenderId" value="${recommenderInfo.settingID}" />
+										<input type="submit" class="btn btn-sm btn-warning" value="deactivate"/>
+									</form>
+								</c:when>
+								<c:otherwise>
+									<form method="post">
+										<input type="hidden" name="action" value="activateRecommender" />
+										<input type="hidden" name="recommendationResultClass" value="${recommender.name}" />
+										<input type="hidden" name="ckey" value="${command.context.ckey}" />
+										<input type="hidden" name="recommenderId" value="${recommenderInfo.settingID}" />
+										<input type="submit" class="btn btn-sm btn-success" value="activate"/>
+									</form>
+								</c:otherwise>
+							</c:choose>
+							<c:if test="${recommenderInfo.local == 0}">
+								<form method="post">
+									<input type="hidden" name="action" value="removeRecommender" />
+									<input type="hidden" name="recommendationResultClass" value="${recommender.name}" />
+									<input type="hidden" name="ckey" value="${command.context.ckey}" />
+									<input type="hidden" name="recommenderId" value="${recommenderInfo.settingID}" />
+									<input type="submit" class="btn btn-sm btn-danger" value="delete"/>
+								</form>
+							</c:if>
+						</td>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
+	</div>
+</jsp:root>

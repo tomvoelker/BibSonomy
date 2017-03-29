@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -51,6 +51,10 @@ public class JoinGroupCommand extends BaseCommand implements CaptchaCommand {
 	 * reason for user to join group
 	 */
 	private String reason;
+	/**
+	 * share documents with the group
+	 */
+	private boolean userSharedDocuments;
 	/**
 	 * group user want join
 	 */
@@ -143,6 +147,20 @@ public class JoinGroupCommand extends BaseCommand implements CaptchaCommand {
 	 */
 	public void setGroup(final String group) {
 		this.group = group;
+	}
+	
+	/**
+	 * @return userSharedDocuments
+	 */
+	public boolean isUserSharedDocuments() {
+		return this.userSharedDocuments;
+	}
+
+	/**
+	 * @param userSharedDocuments
+	 */
+	public void setUserSharedDocuments(boolean userSharedDocuments) {
+		this.userSharedDocuments = userSharedDocuments;
 	}
 
 	/**

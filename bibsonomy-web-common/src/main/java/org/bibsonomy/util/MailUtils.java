@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Web-Common - Common things for web
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -83,15 +83,14 @@ public class MailUtils {
 	 * @return <code>true</code>, if the email could be send without errors.
 	 */
 	public boolean sendActivationMail(final String userName, final String userEmail, final String inetAddress, final Locale locale) {
-		final Object[] messagesParameters = new Object[]{userName,
-			projectName,
-			projectHome,
-			projectBlog,
-			projectEmail,
-			absoluteURLGenerator.getUserUrlByUserName(userName)};
-		/*
-		 * Format the message "mail.registration.body" with the given parameters.
-		 */
+		final Object[] messagesParameters = new Object[]{
+			userName, // 0
+			this.projectName, // 1
+			this.projectHome, // 2
+			this.projectBlog, // 3
+			this.projectEmail, // 4
+			this.absoluteURLGenerator.getUserUrlByUserName(userName)}; // 5
+		
 		final String messageBody = messageSource.getMessage("mail.activation.body", messagesParameters, locale);
 		final String messageSubject = messageSource.getMessage("mail.activation.subject", messagesParameters, locale);
 
@@ -151,15 +150,17 @@ public class MailUtils {
 	 */
 	public boolean sendJoinGroupRequest(final String groupName, final String groupMail, final User loginUser, final String reason, final Locale locale) {
 		final Object[] messagesParameters = new Object[]{
-				groupName,
-				loginUser.getName(),
-				reason,
-				this.absoluteURLGenerator.getGroupSettingsUrlByGroupName(groupName),
-				// TODO: why toLowerCase?
-				UrlUtils.safeURIEncode(groupName).toLowerCase(),
-				UrlUtils.safeURIEncode(loginUser.getName()).toLowerCase(),
-				projectName.toLowerCase(),
-				projectEmail
+			groupName, // 0
+			loginUser.getName(), // 1
+			reason, // 2
+			this.projectHome, // 3
+			// TODO: why toLowerCase?
+			UrlUtils.safeURIEncode(groupName).toLowerCase(), // 4
+			UrlUtils.safeURIEncode(loginUser.getName()).toLowerCase(), // 5
+			this.projectName.toLowerCase(), // 6
+			this.projectEmail, // 7
+			this.absoluteURLGenerator.getGroupSettingsUrlByGroupName(groupName, Integer.valueOf(1)), // 8
+			this.projectBlog // 9
 		};
 		
 		/*
@@ -167,7 +168,7 @@ public class MailUtils {
 		 */
 		final String messageBody    = messageSource.getMessage("mail.joinGroupRequest.body", messagesParameters, locale);
 		final String messageSubject = messageSource.getMessage("mail.joinGroupRequest.subject", messagesParameters, locale);
-
+		
 		/*
 		 * send an e-Mail to the group (from our registration Adress)
 		 */
@@ -206,7 +207,7 @@ public class MailUtils {
 		 */
 		final String messageBody = messageSource.getMessage("mail.joinGroupRequest.denied.body", messagesParameters, locale);
 		final String messageSubject = messageSource.getMessage("mail.joinGroupRequest.denied.subject", messagesParameters, locale);
-
+	
 		/*
 		 * set the recipients
 		 */
@@ -231,26 +232,56 @@ public class MailUtils {
 		final Object[] messagesParameters = new Object[] {
 			UserUtils.getNiceUserName(requestingUser, true),
 			group.getName(),
-			absoluteURLGenerator.getGroupUrlByGroupName(group.getName()),
-			absoluteURLGenerator.getGroupSettingsUrlByGroupName(group.getName()),
-			projectHome,
-			projectEmail
+			this.absoluteURLGenerator.getGroupUrlByGroupName(group.getName()),
+			this.absoluteURLGenerator.getGroupSettingsUrlByGroupName(group.getName(), null),
+			this.projectHome,
+			this.projectEmail
 		};
 		
-		/*
-		 * Format the message "mail.groupInvite.body" with the given parameters.
-		 */
-		final String messageBody    = messageSource.getMessage("mail.group.activation.body", messagesParameters, locale);
+		final String messageBody = messageSource.getMessage("mail.group.activation.body", messagesParameters, locale);
 		final String messageSubject = messageSource.getMessage("mail.group.activation.subject", messagesParameters, locale);
 
 		/*
-		 * send an e-Mail to the group (from our registration Adress)
+		 * send an e-mail to user who requested the group
 		 */
 		try {
 			sendPlainMail(new String[] {requestingUser.getEmail()},  messageSubject, messageBody, projectEmail);
 			return true;
 		} catch (final MessagingException e) {
 			log.fatal("Could not send group activation notification mail: " + e.getMessage());
+		}
+		return false;
+	}
+	
+	/**
+	 * @param groupName 
+	 * @param declineMessage 
+	 * @param requestingUser
+	 * @param locale
+	 * @return <code>true</code> iff mail was sent successfully
+	 */
+	public boolean sendGroupDeclineNotification(final String groupName, final String declineMessage, User requestingUser, final Locale locale) {
+		final Object[] messagesParameters = new Object[] {
+				requestingUser.getName(), // 0
+				groupName, // 1
+				declineMessage, // 2
+				this.projectHome, // 3
+				this.projectEmail, // 4
+				this.projectName, // 5
+				this.projectBlog // 6
+		};
+		
+		final String messageSubject = messageSource.getMessage("mail.group.decline.subject", messagesParameters, locale);
+		final String messageBody = messageSource.getMessage("mail.group.decline.body", messagesParameters, locale);
+		
+		/*
+		 * send an e-mail to the user
+		 */
+		try {
+			sendPlainMail(new String[] {requestingUser.getEmail()},  messageSubject, messageBody, projectEmail);
+			return true;
+		} catch (final MessagingException e) {
+			log.fatal("Could not send group decline notification mail: " + e.getMessage());
 		}
 		return false;
 	}
@@ -266,21 +297,22 @@ public class MailUtils {
 	 */
 	public boolean sendGroupInvite(final String groupName, final User loginUser, final User invitedUser, final Locale locale) {
 		final Object[] messagesParameters = new Object[]{
-				invitedUser.getName(),
-				loginUser.getName(),
-				groupName,
-				absoluteURLGenerator.getSettingsUrlWithSelectedTab(3),
+				invitedUser.getName(), // 0
+				loginUser.getName(), // 1
+				groupName, // 2
+				this.projectHome, // 3
 				// TODO: why toLowerCase?
-				UrlUtils.safeURIEncode(groupName).toLowerCase(),
-				UrlUtils.safeURIEncode(loginUser.getName()).toLowerCase(),
-				projectName.toLowerCase(),
-				projectEmail
+				this.projectBlog, // 4
+				UrlUtils.safeURIEncode(loginUser.getName()).toLowerCase(), // 5
+				this.projectName, // 6
+				this.projectEmail, // 7
+				this.absoluteURLGenerator.getSettingsUrlWithSelectedTab(3) // 8
 		};
 		
 		/*
 		 * Format the message "mail.groupInvite.body" with the given parameters.
 		 */
-		final String messageBody    = messageSource.getMessage("mail.groupInvite.body", messagesParameters, locale);
+		final String messageBody = messageSource.getMessage("mail.groupInvite.body", messagesParameters, locale);
 		final String messageSubject = messageSource.getMessage("mail.groupInvite.subject", messagesParameters, locale);
 
 		/*
@@ -318,6 +350,33 @@ public class MailUtils {
 		final String[] recipient = {userEmail};
 		try {
 			sendPlainMail(recipient,  messageSubject, messageBody, projectRegistrationFromAddress);
+			return true;
+		} catch (final MessagingException e) {
+			log.fatal("Could not send reminder mail: " + e.getMessage());
+		}
+		return false;
+	}
+	
+	/**
+	 * Method to send an eMail notification regarding the auto-sync 
+	 * @param userName
+	 * @param userEmail
+	 * @param syncClientName
+	 * @param locale
+	 * @return true, if the mail could be send without errors
+	 */
+	public boolean sendSyncErrorMail(final String userName, final String userEmail, final String syncClientName, final Locale locale){
+		final Object[] messagesParameters = new Object[]{userName, projectName, projectHome, projectBlog, syncClientName};
+		
+		final String messageBody = messageSource.getMessage("mail.sync.body", messagesParameters, locale);
+		final String messageSubject = messageSource.getMessage("mail.sync.subject", messagesParameters, locale);
+		
+		/*
+		 * set the recipients
+		 */
+		final String[] recipient = {userEmail};
+		try {
+			this.sendHTMLMail(recipient,  messageSubject, messageBody, projectRegistrationFromAddress);
 			return true;
 		} catch (final MessagingException e) {
 			log.fatal("Could not send reminder mail: " + e.getMessage());

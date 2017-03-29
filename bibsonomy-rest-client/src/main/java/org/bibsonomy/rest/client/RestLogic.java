@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Client - The REST-client.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -28,65 +28,44 @@ package org.bibsonomy.rest.client;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.net.InetAddress;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.Classifier;
-import org.bibsonomy.common.enums.ClassifierSettings;
-import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.ConceptUpdateOperation;
 import org.bibsonomy.common.enums.Filter;
-import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
-import org.bibsonomy.model.Author;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
-import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
-import org.bibsonomy.model.metadata.PostMetaData;
-import org.bibsonomy.model.statistics.Statistics;
+import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
-import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
-import org.bibsonomy.model.user.remote.RemoteUserId;
+import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
@@ -137,7 +116,7 @@ import org.bibsonomy.util.ExceptionUtils;
 /**
  * {@link LogicInterface} for a remote BibSonomy/PUMA instance
  */
-public class RestLogic implements LogicInterface {
+public class RestLogic extends AbstractLogicInterface {
 	private static final Log log = LogFactory.getLog(RestLogic.class); // FIXME: who configs the logging?
 
 	private static final User createUser(final String username, final String apiKey) {
@@ -145,7 +124,6 @@ public class RestLogic implements LogicInterface {
 		user.setApiKey(apiKey);
 		return user;
 	}
-	
 	
 	private final User authUser;
 	private final AuthenticationAccessor accessor;
@@ -174,7 +152,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	/**
-	 * constuctor using accessor instead of username and api key
+	 * constructor using accessor instead of username and api key
 	 * 
 	 * @param accessor
 	 * @param apiURL
@@ -213,7 +191,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void deleteGroup(final String groupName) {
+	public void deleteGroup(final String groupName, boolean pending, boolean quickDelete) {
 		execute(new DeleteGroupQuery(groupName));
 	}
 
@@ -240,12 +218,12 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public Group getGroupDetails(final String groupName) {
+	public Group getGroupDetails(final String groupName, final boolean pending) {
 		return execute(new GetGroupDetailsQuery(groupName));
 	}
 
 	@Override
-	public List<Group> getGroups(boolean pending, final int start, final int end) {
+	public List<Group> getGroups(boolean pending, String userName, final int start, final int end) {
 		if (pending) {
 			throw new UnsupportedOperationException("quering for pending groups not supported");
 		}
@@ -255,11 +233,6 @@ public class RestLogic implements LogicInterface {
 	@Override
 	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) {
 		return execute(new GetPostDetailsQuery(userName, resourceHash));
-	}
-
-	@Override
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
-		return getPosts(resourceType, grouping, groupingName, tags, hash, search, SearchType.LOCAL, filters, order, startDate, endDate, start, end);
 	}
 	
 	@Override
@@ -322,7 +295,10 @@ public class RestLogic implements LogicInterface {
 		 */
 		final List<String> resourceHashes = new LinkedList<String>();
 		for (final Post<?> post : posts) {
-			resourceHashes.add(execute(new CreatePostQuery(this.authUser.getName(), post)));
+			final String hash = execute(new CreatePostQuery(this.authUser.getName(), post));
+			if (present(hash)) {
+				resourceHashes.add(hash);
+			}
 		}
 		return resourceHashes;
 	}
@@ -331,9 +307,9 @@ public class RestLogic implements LogicInterface {
 	public String createUser(final User user) {
 		return execute(new CreateUserQuery(user));
 	}
-
-	@Override
+	
 	// TODO: Establish new group concept in here.
+	@Override
 	public String updateGroup(final Group group, final GroupUpdateOperation operation, GroupMembership ms) {
 		final String groupName = group.getName();
 		switch (operation) {
@@ -359,7 +335,7 @@ public class RestLogic implements LogicInterface {
 			final ChangePostQuery query = new ChangePostQuery(this.authUser.getName(), post.getResource().getIntraHash(), post);
 			final String hash = execute(query);
 			if (!query.isSuccess()) {
-				collectedException.addToErrorMessages(post.getResource().getIntraHash(), new ErrorMessage(hash, hash));
+				collectedException.addToErrorMessages(PostUtils.getKeyForPost(post), new ErrorMessage(hash, hash));
 			}
 			// hashes are recalculated by the server
 			resourceHashes.add(hash);
@@ -388,12 +364,7 @@ public class RestLogic implements LogicInterface {
 		final CreatePostDocumentQuery createPostDocumentQuery = new CreatePostDocumentQuery(doc, resourceHash);
 		return execute(createPostDocumentQuery);
 	}
-
-	@Override
-	public Document getDocument(final String userName, final String fileHash) {
-		throw new UnsupportedOperationException();
-	}
-
+	
 	@Override
 	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
 		return executeWithCallback(new GetPostDocumentQuery(userName, resourceHash, fileName, fileFactory), this.progressCallbackFactory.createDocumentDownloadProgressCallback());
@@ -406,26 +377,6 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void createInetAddressStatus(final InetAddress address, final InetAddressStatus status) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void deleteInetAdressStatus(final InetAddress address) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public InetAddressStatus getInetAddressStatus(final InetAddress address) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<Tag> getConcepts(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public String createConcept(final Tag concept, final GroupingEntity grouping, final String groupingName) {
 		return execute(new CreateConceptQuery(concept, concept.getName(), grouping, groupingName));
 	}
@@ -433,30 +384,19 @@ public class RestLogic implements LogicInterface {
 	@Override
 	public String updateConcept(final Tag concept, final GroupingEntity grouping, final String groupingName, final ConceptUpdateOperation operation) {
 		switch(operation) {
-		case PICK: 
+		case PICK:
 			throw new UnsupportedOperationException();
-		case PICK_ALL: 
+		case PICK_ALL:
 			throw new UnsupportedOperationException();
-		case UNPICK: 
+		case UNPICK:
 			throw new UnsupportedOperationException();
-		case UNPICK_ALL: 
+		case UNPICK_ALL:
 			throw new UnsupportedOperationException();
-		case UPDATE: 
+		case UPDATE:
 			return execute(new ChangeConceptQuery(concept, concept.getName(), grouping, groupingName));
-		default: 
+		default:
 			throw new UnsupportedOperationException();
 		}
-		
-	}
-
-	@Override
-	public void deleteConcept(final String concept, final GroupingEntity grouping, final String groupingName) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void deleteRelation(final String upper, final String lower, final GroupingEntity grouping, final String groupingName) {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -484,62 +424,6 @@ public class RestLogic implements LogicInterface {
 		}
 		log.error("grouping entity " + grouping.name() + " not yet supported in RestLogic implementation.");
 		return null;
-	}
-
-	@Override
-	public String getClassifierSettings(final ClassifierSettings key) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void updateClassifierSettings(final ClassifierSettings key, final String value) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int limit) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<User> getClassifierHistory(final String userName) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<User> getClassifierComparison(final int interval, final int limit) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public String getOpenIDUser(final String openID) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags, final boolean updateRelations) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, Set<Filter> filters, final Date startDate, final Date endDate, final int start, final int end) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<Author> getAuthors(final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, final String tag) {
-		throw new UnsupportedOperationException();
-
 	}
 
 	@Override
@@ -575,15 +459,15 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public int createBasketItems(final List<Post<? extends Resource>> posts) {
+	public int createClipboardItems(final List<Post<? extends Resource>> posts) {
 		final PickPostQuery query = new PickPostQuery();
 		query.setUserName(posts.get(0).getUser().getName());
 		query.setResourceHash(posts.get(0).getResource().getIntraHash());
-		return execute(query);
+		return execute(query).intValue();
 	}
 
 	@Override
-	public int deleteBasketItems(final List<Post<? extends Resource>> posts, final boolean clearAll) {
+	public int deleteClipboardItems(final List<Post<? extends Resource>> posts, final boolean clearAll) {
 		final UnpickClipboardQuery query = new UnpickClipboardQuery();
 		query.setClearAll(clearAll);
 
@@ -592,19 +476,9 @@ public class RestLogic implements LogicInterface {
 			query.setResourceHash(posts.get(0).getResource().getIntraHash());
 		}
 
-		return execute(query);
+		return execute(query).intValue();
 	}
-
-	@Override
-	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public String getUsernameByLdapUserId(final String userId) {
-		throw new UnsupportedOperationException();
-	}
-
+	
 	@Override
 	public void createRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
 		if (!present(postHash) || !present(references) || !present(relation)) {
@@ -617,107 +491,7 @@ public class RestLogic implements LogicInterface {
 			execute(query);
 		}
 	}
-
-	@Override
-	public void deleteRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<Date> getWikiVersions(final String userName) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Wiki getWiki(final String userName, final Date date) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void createWiki(final String userName, final Wiki wiki) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void updateWiki(final String userName, final Wiki wiki) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void createExtendedField(final Class<? extends Resource> resourceType, final String userName, final String intraHash, final String key, final String value) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void deleteExtendedField(final Class<? extends Resource> resourceType, final String userName, final String intraHash, final String key, final String value) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Map<String, List<String>> getExtendedFields(final Class<? extends Resource> resourceType, final String userName, final String intraHash, final String key) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void createDiscussionItem(final String interHash, final String username, final DiscussionItem comment) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void updateDiscussionItem(final String username, final String interHash, final DiscussionItem discussionItem) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void deleteDiscussionItem(final String username, final String interHash, final String commentHash) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<DiscussionItem> getDiscussionSpace(final String interHash) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void createSyncService(final SyncService service, final boolean server) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void deleteSyncService(final URI service, final boolean server) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<URI> getSyncServices(final boolean server) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void createSyncServer(final String userName, final SyncService server) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void updateSyncServer(final String userName, final SyncService server) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void deleteSyncServer(final String userName, final URI service) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<SyncService> getSyncService(final String userName, final URI service, final boolean server) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<SynchronizationPost> getSyncPosts(final String userName, final Class<? extends Resource> resourceType) {
-		throw new UnsupportedOperationException();
-	}
-
+	
 	@Override
 	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info, Date newSyncDate) {
 		this.execute(new ChangeSyncStatusQuery(service.toString(), resourceType, null, null, status, info, newSyncDate));
@@ -737,16 +511,7 @@ public class RestLogic implements LogicInterface {
 	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
 		return this.execute(new CreateSyncPlanQuery(service.toString(), clientPosts, resourceType, strategy, direction));
 	}
-
-	@Override
-	public List<SyncService> getAllSyncServices(final boolean server) {
-		throw new UnsupportedOperationException();
-	}
 	
-	@Override
-	public String getUsernameByRemoteUserId(final RemoteUserId remoteUserId) {
-		throw new UnsupportedOperationException();
-	}
 	@Override
 	public void updateDocument(String userName, final String resourceHash, String documentName, final Document document) {
 		if (!present(document.getUserName())) {
@@ -755,117 +520,12 @@ public class RestLogic implements LogicInterface {
 		
 		this.execute(new ChangeDocumentNameQuery(userName, resourceHash, documentName, document));
 	}
-
-	@Override
-	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey) {
-		throw new UnsupportedOperationException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getUserStatistics(org.bibsonomy.common.enums.GroupingEntity, java.util.Set, org.bibsonomy.common.enums.Classifier, org.bibsonomy.common.enums.SpamStatus, java.util.Date, java.util.Date, java.lang.Integer, org.bibsonomy.common.enums.StatisticsUnit)
-	 */
-	@Override
-	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, Classifier classifier, SpamStatus status, Date startDate, Date endDate) {
-		throw new UnsupportedOperationException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getDocumentStatistics(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.Set, java.util.Date, java.util.Date)
-	 */
-	@Override
-	public Statistics getDocumentStatistics(GroupingEntity groupingEntity, String grouping, Set<Filter> filters, Date startDate, Date endDate) {
-		throw new UnsupportedOperationException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
-	 */
-	@Override
-	public PersonSuggestionQueryBuilder getPersonSuggestion(String queryString) {
-		throw new UnsupportedOperationException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#addResourceRelation(org.bibsonomy.model.ResourcePersonRelation)
-	 */
-	@Override
-	public void addResourceRelation(ResourcePersonRelation rpr) {
-		throw new UnsupportedOperationException();
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removeResourceRelation(int)
-	 */
-	@Override
-	public void removeResourceRelation(int resourceRelationId) {
-		throw new UnsupportedOperationException();
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
-	 */
-	@Override
-	public void createOrUpdatePerson(Person person) {
-		throw new UnsupportedOperationException();
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonById(int)
-	 */
-	@Override
-	public Person getPersonById(PersonIdType idType, String id) {
-		throw new UnsupportedOperationException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(java.lang.Integer)
-	 */
-	@Override
-	public void removePersonName(Integer personNameId) {
-		throw new UnsupportedOperationException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePersonName(org.bibsonomy.model.PersonName)
-	 */
-	@Override
-	public void createOrUpdatePersonName(PersonName withPersonId) {
-		throw new UnsupportedOperationException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#linkUser(java.lang.Integer)
-	 */
-	@Override
-	public void linkUser(String personId) {
-		throw new UnsupportedOperationException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#unlinkUser(java.lang.String)
-	 */
-	@Override
-	public void unlinkUser(String username) {
-		throw new UnsupportedOperationException();
-	}
-
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations()
+	 * @see org.bibsonomy.model.logic.util.AbstractLogicInterface#doDefaultAction()
 	 */
 	@Override
-	public ResourcePersonRelationQueryBuilder getResourceRelations() {
-		throw new UnsupportedOperationException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPublicationSuggestion(java.lang.String)
-	 */
-	@Override
-	public List<Post<BibTex>> getPublicationSuggestion(String queryString) {
+	protected void doDefaultAction() {
 		throw new UnsupportedOperationException();
 	}
 }

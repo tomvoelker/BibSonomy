@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,8 +26,6 @@
  */
 package org.bibsonomy.rest.strategy.posts.community;
 
-import java.util.Date;
-
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.strategy.Context;
@@ -51,10 +49,7 @@ public class PutCommunityPostStrategy extends PutPostStrategy {
 	@Override
 	protected Post<? extends Resource> getPost() {
 		final Post<? extends Resource> post = this.getRenderer().parseCommunityPost(this.doc);
-		/*
-		 * set postingdate to current time
-		 */
-		post.setDate(new Date());				
+		
 		/*
 		 * set the (old) intrahash of the resource as specified in the URL
 		 */

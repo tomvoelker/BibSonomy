@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util 
+	                    http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+	
+	<import resource="classpath:org/bibsonomy/bibsonomy-rest-server-context.xml" />
+
+	<!--+
+		|
+		| REST servlet config
+		|
+		+ -->
+	<bean id="restUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="urlMap">
+			<map merge="true">
+				<entry key="/api/**">
+					<bean id="ApiServlet" class="org.bibsonomy.webapp.util.spring.controller.ServletWrappingController">
+						<property name="servletInstance" ref="restServletInstance" />
+						<property name="requireSession" value="false" />
+						<property name="supportedMethods">
+							<array>
+								<value>GET</value>
+								<value>PUT</value>
+								<value>POST</value>
+								<value>DELETE</value>
+								<value>HEAD</value>
+							</array>
+						</property>
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+	<!-- provides access to the database REST servlet -->
+	<bean id="restLogicFactory" class="org.bibsonomy.model.logic.util.ReadOnlyAwareLogicInterfaceFactory">
+		<constructor-arg>
+			<bean class="org.bibsonomy.database.DBLogicApiInterfaceFactory">
+				<property name="dbSessionFactory" ref="dbSessionFactory" />
+				<property name="bibtexReader" ref="bibtexReader"/>
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="${system.mode.readOnly}" />
+	</bean>
+	
+	<util:list id="authenticationHandlers">
+		<ref bean="basicRestAuthenticationHandler" />
+		<ref bean="oauthRestAuthenticationHandler" />
+	</util:list>
+	
+	<bean id="oauthRestAuthenticationHandler" class="org.bibsonomy.rest.OAuthAuthenticationHandler">
+		<property name="oauthValidator" ref="oauthRequestValidator" />
+		<property name="oauthLogicFactory" ref="oauthLogicFactory" />
+	</bean>
+	
+	<bean id="basicRestAuthenticationHandler" class="org.bibsonomy.rest.BasicAuthenticationHandler">
+		<property name="logicFactory" ref="restLogicFactory" />
+	</bean>
+</beans>

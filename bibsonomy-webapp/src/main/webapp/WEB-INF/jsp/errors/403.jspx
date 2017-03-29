@@ -15,6 +15,10 @@
 	</jsp:attribute>
 	
 	<jsp:attribute name="content">
+		<div class="text-center">
+			<h1><fmt:message key="error.403.header" /></h1>
+			<p class="lead"><fmt:message key="error.403" /></p>
+		</div>
 	</jsp:attribute>
 	
 	</layout:paneLayout>

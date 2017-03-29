@@ -231,16 +231,10 @@ INSERT INTO `extended_fields_data` VALUES
 INSERT INTO `friends` VALUES 
 (1, 'testuser1', 'testuser2', 'sys:network:bibsonomy-friend', NULL, '1815-12-10 00:00:00'),
 (3, 'testuser1', 'testuser3', 'sys:network:bibsonomy-friend', NULL, '1815-12-10 00:00:00'),
-(2, 'testuser2', 'testuser1', 'sys:network:bibsonomy-friend', NULL, '1815-12-10 00:00:00');
-
--- 
--- Data for table `followers`
--- 
-
-INSERT INTO `followers` VALUES 
-(1, 'testuser1', 'testuser2', '1815-12-10 00:00:00'),
-(3, 'testuser1', 'testuser3', '1815-12-10 00:00:00'),
-(2, 'testuser2', 'testuser1', '1815-12-10 00:00:00');
+(2, 'testuser2', 'testuser1', 'sys:network:bibsonomy-friend', NULL, '1815-12-10 00:00:00'),
+(4, 'testuser1', 'testuser2', 'sys:network:bibsonomy-follower', NULL, '1815-12-10 00:00:00'),
+(5, 'testuser1', 'testuser3', 'sys:network:bibsonomy-follower', NULL, '1815-12-10 00:00:00'),
+(6, 'testuser2', 'testuser1', 'sys:network:bibsonomy-follower', NULL, '1815-12-10 00:00:00');
 
 
 -- 
@@ -299,7 +293,7 @@ INSERT INTO `ids` VALUES
 (12, 28, 'grouptas id'),
 (14, 3,  'message_id'),
 (15, 4, 'comment_id'),
-(16, 1, 'sync_service_id'),
+(16, 12, 'sync_service_id'),
 (17, 7, 'person_change_id');
 
 
@@ -343,6 +337,8 @@ INSERT INTO log_bibtex (`content_id`, `new_content_id`, `current_content_id`, `l
 -- Data for table `log_bookmark`
 -- 
 
+INSERT INTO `log_bookmark` (`content_id`, `book_url_hash`, `book_description`, `book_extended`, `group`, `date`, `user_name`, `new_content_id`, `change_date`, `rating`, `log_date`, `current_content_id`) VALUES
+(1073742052, 'bbf9b0339a070080a3668c9cb6158ecf', 'IT-News, ct, iX, Technology Review, Telepolis | heise online', 'News und Foren zu Computer, IT, Wissenschaft, Medien und Politik. Preisvergleich von Hardware und Software sowie Downloads beim Heise Zeitschriften Verlag.', 0, '2013-10-23 17:29:05', 'testuser1', 0, '2015-03-08 00:43:45', 0, '2015-04-15 00:15:57', 0);
 
 
 -- 
@@ -375,7 +371,12 @@ INSERT INTO log_bibtex (`content_id`, `new_content_id`, `current_content_id`, `l
 -- Data for table `log_tas`
 -- 
 
-INSERT INTO `log_tas` VALUES (1073741825,'phd',1073741825,2,'2015-07-06 14:15:12','2015-07-06 14:15:12','2015-07-06 12:21:34'),(1073741826,'test',1073741825,2,'2015-07-06 14:15:12','2015-07-06 14:15:12','2015-07-06 12:21:34');
+INSERT INTO `log_tas` VALUES
+(1073741825,'phd',1073741825,2,'2015-07-06 14:15:12','2015-07-06 14:15:12','2015-07-06 12:21:34'),
+(1073741826,'test',1073741825,2,'2015-07-06 14:15:12','2015-07-06 14:15:12','2015-07-06 12:21:34'),
+(1073742431, 'lesezeichen', 1073742052, 1, '2013-10-23 17:29:05', '2015-03-08 00:43:45', '2015-04-15 00:15:57'),
+(1073742432, 'news', 1073742052, 1, '2013-10-23 17:29:05', '2015-03-08 00:43:45', '2015-04-15 00:15:57'),
+(1073742433, 'it', 1073742052, 1, '2013-10-23 17:29:05', '2015-03-08 00:43:45', '2015-04-15 00:15:57');
 
 
 
@@ -476,7 +477,6 @@ INSERT INTO `tags` (`tag_id`, `tag_name`, `tag_stem`, `tag_ctr`, `tag_ctr_public
 -- Data for table `tagtag`
 -- 
 
-
 -- 
 -- Data for table `tagtag_batch`
 -- 
@@ -527,6 +527,7 @@ INSERT INTO `tas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_typ
 (1, 'testtag',        'testtag',        1, 1, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-01-18 10:20:07'),
 (2, 'google',         'google',         2, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:20:17'),
 (3, 'suchmaschine',   'suchmaschine',   2, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:19:51'),
+(25, 'search',        'search',         2, 2, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-03-20 20:35:21'),
 (4, 'yahoo',          'yahoo',          3, 1, 'testuser2',   '1815-12-10 00:00:00', 0, '2008-01-18 10:21:12'),
 (5, 'suchmaschine',   'suchmaschine',   3, 1, 'testuser2',   '1815-12-10 00:00:00', 0, '2008-01-18 10:21:47'),
 (6, 'friends',        'friends',        4, 1, 'testuser1',   '1815-12-10 00:00:00', 2, '2008-01-18 10:24:31'),
@@ -535,7 +536,7 @@ INSERT INTO `tas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_typ
 (9, 'freemail',       'freemail',       5, 1, 'testuser3',   '1815-12-10 00:00:00', 0, '2008-01-18 10:24:14'),
 (10, 'suchmaschine',  'suchmaschine',   5, 1, 'testuser3',   '1815-12-10 00:00:00', 0, '2008-01-18 10:24:14'),
 (11, 'uni',           'uni',            6, 1, 'testuser2',   '1815-12-10 00:00:00', 0, '2008-01-18 11:30:05'),
-(12, 'kassel',        'kassel',         6, 1, 'testuser2',   '0000-00-00 00:00:00', 0, '2008-01-18 11:30:05'),
+(12, 'kassel',        'kassel',         6, 1, 'testuser2',   '1815-12-10 00:00:00', 0, '2008-01-18 11:30:05'),
 (13, 'finetune',      'finetune',       7, 1, 'testuser1',   '1815-12-10 00:00:00', 4, '2008-01-21 13:22:09'),
 (14, 'radio',         'radio',          7, 1, 'testuser1',   '1815-12-10 00:00:00', 4, '2008-01-21 13:22:20'),
 (15, 'apple',         'apple',          8, 1, 'testuser1',   '1815-12-10 00:00:00', 4, '2008-01-21 13:20:37'),
@@ -548,10 +549,6 @@ INSERT INTO `tas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_typ
 (22, 'privatebibtex', 'privatebibtex', 13, 2, 'testuser2',   '1815-12-10 00:00:00', 1, '2008-03-20 20:35:21'),
 (23, 'friendbibtex',  'friendbibtex',  14, 2, 'testuser2',   '1815-12-10 00:00:00', 2, '2008-03-20 20:35:21'),
 (24, 'testbibtex',    'testbibtex',    12, 2, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-03-20 20:35:21'),
-(25, 'suchmaschine',   'suchmaschine',  2, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:19:51'),
-(26, 'suchmaschine',   'suchmaschine',  2, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:19:51'),
-(27, 'suchmaschine',   'suchmaschine',  2, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:19:51'),
-(28, 'google',         'google',        2, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:20:17'),
 (29, 'tomcat',         'tomcat',        15, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:20:17'),
 (30, 'amazon',         'amazon',        15, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:20:17'),
 (31, 'weltmeisterschaft', 'weltmeisterschaft', 16, 1, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-01-18 10:20:17'),
@@ -608,6 +605,7 @@ INSERT INTO `urls` (`book_url_hash`, `book_url`, `book_url_ctr`) VALUES
 ('85ab919107e4cc79b345e996b3c0b097', 'http://www.ard.de', 2),
 ('e9ea2574c49c3778f166e8b4b6ed63dd', 'http://www.apple.com\r\n', 1),
 ('10ab297107e4bb79b345e406b3c2a087', 'http://www.cs.uni-kassel.de', 1),
+('bbf9b0339a070080a3668c9cb6158ecf', 'http://www.heise.de', 0),
 ('2574200000e4bb79b100e406b777a044', 'http://www.wm2010.com', 1);
 
 
@@ -714,7 +712,7 @@ INSERT INTO `grouptas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `conten
 (9, 'freemail',       'freemail',       5, 1, 'testuser3',   '1815-12-10 00:00:00', 2, '2008-01-18 10:24:14'),
 (10, 'suchmaschine',  'suchmaschine',   5, 1, 'testuser3',   '1815-12-10 00:00:00', 2, '2008-01-18 10:24:14'),
 (11, 'uni',           'uni',            6, 1, 'testuser2',   '1815-12-10 00:00:00', 3, '2008-01-18 11:30:05'),
-(12, 'kassel',        'kassel',         6, 1, 'testuser2',   '0000-00-00 00:00:00', 3, '2008-01-18 11:30:05'),
+(12, 'kassel',        'kassel',         6, 1, 'testuser2',   '1815-12-10 00:00:00', 3, '2008-01-18 11:30:05'),
 (13, 'finetune',      'finetune',       7, 1, 'testuser1',   '1815-12-10 00:00:00', 4, '2008-01-21 13:22:09'),
 (14, 'radio',         'radio',          7, 1, 'testuser1',   '1815-12-10 00:00:00', 4, '2008-01-21 13:22:20'),
 (15, 'apple',         'apple',          8, 1, 'testuser1',   '1815-12-10 00:00:00', 4, '2008-01-21 13:20:37'),

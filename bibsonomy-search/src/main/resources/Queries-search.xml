@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Search">
+
+	<select id="getGlobalConceptByName" parameterClass="string" resultClass="string">
+		SELECT DISTINCT(lower_lcase)
+		FROM tagtagrelations JOIN user u USING (user_name)
+		WHERE upper_lcase = #conceptName#
+			AND u.spammer = 0
+	</select>
+	
+	<select id="getUsersByUserRelation" resultClass="string">
+		SELECT f_user_name 
+		FROM bibsonomy.friends 
+		WHERE tag_name = #userRelation# 
+			AND user_name = #userName#;
+	</select>
+	
+	<!-- get given group's members -->
+	<select id="getGroupMembersByGroupName" resultClass="string" parameterClass="string">
+		SELECT g.user_name 
+		FROM group_memberships g 
+		JOIN groupids gn USING (`group`)
+		WHERE gn.group_name = #groupName#
+	</select>
+	
+	<!-- get all friends of the given user -->
+	<select id="getFriendsForUser" resultClass="string" parameterClass="string">
+		SELECT user_name
+		FROM friends
+		WHERE f_user_name = #userName#
+		  AND tag_name  = "sys:network:bibsonomy-friend"
+		  <!-- TODO: find a place for globally define this as a property -->
+	</select>
+	
+	<select id="getDocumentUsers" resultClass="string" parameterClass="string">
+		SELECT DISTINCT other.user_name
+		FROM group_memberships gm
+			JOIN group_memberships other USING(`group`)
+			JOIN groupids g USING(`group`)
+		WHERE gm.user_name = #userName#
+			AND other.user_shared_documents
+			AND g.sharedDocuments = 1
+			AND other.user_name != #userName#
+	</select>
+
+	<!-- get list of all publications for given user -->
+	<select id="getBibTexForUser" resultMap="SearchPublicationCommon.searchLogPublicationPost" parameterClass="searchParam">
+		SELECT b2.content_id, <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count, t.tas_id, b2.change_date AS log_date, b2.change_date, <include refid="allDocumentAttributes"/>, -1 AS rating, -1 AS number_of_ratings
+		FROM (SELECT t1.*, 1 AS count
+		      FROM bibtex t1
+		      WHERE t1.user_name = #userName#
+		            AND t1.group &gt;= 0
+		      ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS b2
+		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id
+		LEFT OUTER JOIN document d ON b2.content_id = d.content_id, groupids AS g
+		WHERE b2.group = g.group
+		ORDER BY b2.date DESC, b2.content_id DESC, t.tas_id DESC
+	</select>
+	
+	<select id="getPostsForDocumentUpdate" resultMap="SearchPublicationCommon.searchLogDocumentPublicationPost">
+		SELECT b.content_id, b.title, <include refid="allDocumentAttributes"/>
+		FROM (SELECT content_id
+			FROM document
+			WHERE date &gt;= #first#
+				AND date &lt;= #second#
+			UNION
+			SELECT content_id
+			FROM log_document
+			WHERE log_date &gt;= #first#
+				AND log_date &lt;= #second#
+			) AS b2
+		LEFT JOIN document d USING(content_id)
+		JOIN bibtex b USING(content_id)
+		WHERE b.group &gt;= 0
+		ORDER BY content_id
+	</select>
+	
+	<!-- get list of all bookmarks for given user -->
+	<select id="getBookmarkForUser" resultMap="SearchBookmarkCommon.searchLogBookmarkPost" parameterClass="searchParam">
+		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
+		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, t.tas_id, bb.change_date AS log_date, bb.change_date, -1 AS rating, -1 AS number_of_ratings
+		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
+		             u.book_url, u.book_url_ctr, t1.group, t1.user_name, t1.change_date
+		      FROM bookmark t1, urls u
+		      WHERE u.book_url_hash = t1.book_url_hash
+		            AND t1.user_name = #userName#
+		            AND t1.group &gt;= 0
+		      ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS bb
+		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g
+		WHERE bb.group = g.group
+		ORDER BY bb.date DESC, bb.content_id DESC, t.tas_id DESC
+	</select>
+
+	<!--  get list of content ids which will should be deleted from index -->
+	<select id="getBibTexContentIdsToDelete"  resultClass="integer" parameterClass="date">
+		SELECT content_id
+		FROM log_bibtex 
+		WHERE log_date &gt; #date# 
+	</select>
+	
+	<select id="getBookmarkContentIdsToDelete"  resultClass="integer" parameterClass="date">
+		SELECT content_id
+		FROM log_bookmark 
+		WHERE log_date &gt; #date# 
+	</select>
+	
+	<select id="getGoldStandardPublicationContentIdsToDelete" resultClass="integer" parameterClass="date">
+		SELECT content_id FROM
+		log_gold_standard WHERE log_date &gt; #date# AND content_type = 2
+	</select>
+	
+	<select id="getGoldStandardBookmarkContentIdsToDelete" resultClass="integer" parameterClass="date">
+		SELECT content_id FROM
+		log_gold_standard WHERE log_date &gt; #date# AND content_type = 1
+	</select>
+	
+	<!--+ 
+		| get list of publication posts within a given time range
+		| Parameter: 
+		|    lastTasId 
+		+-->
+	<select id="getBibTexPostsForTimeRange" parameterClass="searchParam" resultMap="SearchPublicationCommon.searchPublicationPost">
+		SELECT <include refid ="searchPublicationAttributes2"/>, t.tag_name, g.*, 1 AS count, b2.change_date, <include refid="allDocumentAttributes"/>, -1 AS rating, -1 AS number_of_ratings
+		FROM (
+			SELECT DISTINCT t.content_id
+			FROM tas t
+				WHERE t.tas_id &gt; #lastTasId#
+					AND t.group &gt;= 0
+					AND t.content_type = 2
+			ORDER BY t.content_id ASC
+			LIMIT #limit# OFFSET #offset#
+			) AS tt
+		JOIN bibtex b2 USING (content_id)
+		JOIN tas t USING (content_id)
+		JOIN groupids g ON (b2.group = g.group)
+		LEFT JOIN document d USING (content_id)
+	</select>
+	
+	<!--+ 
+		| get list of bookmark posts within a given time range
+		| Parameter: 
+		|    lastTasId 
+		+-->
+	<select id="getBookmarkPostsForTimeRange" resultMap="SearchBookmarkCommon.searchBookmarkPost" parameterClass="searchParam">
+		SELECT <include refid="bookmarkPostAttributes"/>, t.tag_name, g.*, t.tas_id, u.book_url, u.book_url_ctr AS count, -1 AS rating, -1 AS number_of_ratings
+		FROM (
+			SELECT DISTINCT t.content_id
+			FROM tas t
+				WHERE t.tas_id &gt; #lastTasId#
+					AND t.group &gt;= 0
+					AND t.content_type = 1
+			ORDER BY t.content_id ASC
+			LIMIT #limit# OFFSET #offset#
+			) AS tt
+		JOIN bookmark b USING (content_id)
+		JOIN urls u USING (book_url_hash)
+		JOIN tas t USING (content_id)
+		JOIN groupids g ON (b.group = g.group)
+	</select>
+	
+	<select id="getGoldStandardPublicationPostsForTimeRange" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
+		SELECT <include refid="allGoldStandardPublicationAttributesWithSimHashesSearch" />, b.change_date, b.group, 'public' AS group_name, 1 AS count, b.content_id, -1 AS rating, -1 AS number_of_ratings
+		FROM gold_standard b
+		WHERE b.content_type = 2
+			AND b.content_id &gt; #lastTasId#
+		ORDER BY b.date DESC, b.content_id DESC
+	</select>
+	
+	<!-- TODO: merge with getGoldStandardPublicationPostsForTimeRange -->
+	<select id="getGoldStandardBookmarkPostsForTimeRange" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
+		SELECT <include refid ="allGoldStandardBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, 'public' AS group_name, 1 AS count, b.content_id, -1 AS rating, -1 AS number_of_ratings
+		FROM gold_standard b
+		WHERE b.content_type = 1
+			AND b.content_id &gt; #lastTasId#
+		ORDER BY b.date DESC, b.content_id DESC
+	</select>
+	
+</sqlMap>

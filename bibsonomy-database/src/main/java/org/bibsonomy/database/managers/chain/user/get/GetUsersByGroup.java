@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.database.managers.chain.user.get;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,8 +38,6 @@ import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 /**
  * Get group members
  * 
@@ -47,8 +47,8 @@ public class GetUsersByGroup extends UserChainElement {
 
 	@Override
 	protected List<User> handle(final UserParam param, final DBSession session) {
-		List<User> userList = new LinkedList<>();
-		for (GroupMembership ms: this.groupDb.getGroupMembers(param.getUserName(), param.getRequestedGroupName(), false, session).getMemberships()) {
+		final List<User> userList = new LinkedList<>();
+		for (final GroupMembership ms : this.groupDb.getGroupMembers(param.getUserName(), param.getRequestedGroupName(), false, false, session).getMemberships()) {
 			userList.add(ms.getUser());
 		}
 		return userList;

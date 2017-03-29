@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -46,18 +46,18 @@ import org.junit.Test;
  */
 public class URLGeneratorTest {
 
-	private static String projectHome = "http://www.bibsonomy.org/";
+	private static String projectHome = "https://www.bibsonomy.org/";
 	private static URLGenerator ug = new URLGenerator(projectHome);
 	
 	@Test
-	public void testGetAbsoluteUrl() throws Exception{
+	public void testGetAbsoluteUrl() throws Exception {
 		final String ext = "user/jaescke";
 		final String expected = projectHome + ext;
 		assertEquals(expected, ug.getAbsoluteUrl(ext));
 	}
 
 	@Test
-	public void testGetAdminUrlByString() throws Exception{
+	public void testGetAdminUrlByString() throws Exception {
 		//test without username
 		String expected = projectHome + "admin";
 		assertEquals(expected, ug.getAdminUrlByName(""));
@@ -68,26 +68,26 @@ public class URLGeneratorTest {
 	}
 
 	@Test
-	public void testGetAuthorUrlByName() throws Exception{
+	public void testGetAuthorUrlByName() throws Exception {
 		final String expected = projectHome + "author/jaeschke";
 		assertEquals(expected, ug.getAuthorUrlByName("jaeschke"));
 	}
 	
 	@Test
-	public void testGetBasketUrl() throws Exception{
+	public void testGetClipboardUrl() throws Exception {
 		final String expected = projectHome + "clipboard";
-		assertEquals(expected, ug.getBasketUrl());
+		assertEquals(expected, ug.getClipboardUrl());
 	}
 	
 	@Test
-	public void testGetBookmarkUrl() throws Exception{
+	public void testGetBookmarkUrl() throws Exception {
 		final Post<Bookmark> post = ModelUtils.generatePost(Bookmark.class);
 		final Bookmark bm = post.getResource();
 		final User user = post.getUser();
 		
 		//Test without user
 		String expected = projectHome + "url/" + bm.getInterHash();
-		assertEquals(expected, ug.getBookmarkUrl(bm, null));
+		assertEquals(expected, ug.getBookmarkUrl(bm, (User) null));
 		
 		//Test with user
 		expected = projectHome + "url/" + bm.getIntraHash() + "/" + UrlUtils.safeURIEncode(user.getName());
@@ -102,128 +102,108 @@ public class URLGeneratorTest {
 	}
 	
 	@Test
-	public void testGetBookmarkUrlByIntraHash() throws Exception{
+	public void testGetBookmarkUrlByIntraHash() throws Exception {
 		final Bookmark bm = ModelUtils.generatePost(Bookmark.class).getResource();
 		
 		final String expected = projectHome + "url/" + bm.getIntraHash();
-		assertEquals(expected, ug.getBookmarkUrlByIntraHash(bm.getIntraHash()));
+		assertEquals(expected, ug.getBookmarkUrl(bm, (User) null));
 	}
 
 	@Test
-	public void testGetBookmarkUrlByIntraHashAndUsername() throws Exception{
+	public void testGetBookmarkUrlByIntraHashAndUsername() throws Exception {
 		final Post<Bookmark> post = ModelUtils.generatePost(Bookmark.class);
 		final Bookmark bm = post.getResource();
 		final String userName = post.getUser().getName();
 		final String intraHash = bm.getIntraHash();
-		String url = projectHome + "url/" + intraHash + "/" +
-				     UrlUtils.safeURIEncode(userName);
-		assertEquals(url, ug.getBookmarkUrlByIntraHashAndUsername(intraHash, 
-															      userName));
+		String url = projectHome + "url/" + intraHash + "/" + UrlUtils.safeURIEncode(userName);
+		assertEquals(url, ug.getBookmarkUrlByIntraHashAndUsername(intraHash, userName));
 	}
 
 	@Test
-	public void testGetConceptsUrlByString() throws Exception{
-		//test without username
+	public void testGetConceptsUrlByString() throws Exception {
+		// test without username
 		String expected = projectHome + "concepts";
 		assertEquals(expected, ug.getConceptsUrlByString(""));
 		
-		//test with username
+		// test with username
 		expected += "/jaescke";
 		assertEquals(expected, ug.getConceptsUrlByString("jaescke"));
 	}
 
 	@Test
-	public void testGetConceptUrlByUserNameAndTagName() throws Exception{
+	public void testGetConceptUrlByUserNameAndTagName() throws Exception {
 		final String expected = projectHome + "concept/user/jaescke/kde";
 		assertEquals(expected, ug.getConceptUrlByUserNameAndTagName("jaescke", "kde"));
 	}
 
 	@Test
-	public void testGetFollowersUrl() throws Exception{
+	public void testGetFollowersUrl() throws Exception {
 		final String expected = projectHome + "followers";
 		assertEquals(expected, ug.getFollowersUrl());
 	}
 
 	@Test
-	public void testGetFriendUrlByUserName() throws Exception{
+	public void testGetFriendUrlByUserName() throws Exception {
 		final String expected = projectHome + "friend/jaescke";
 		assertEquals(expected, ug.getFriendUrlByUserName("jaescke"));
 	}
 
 	@Test
-	public void testGetFriendUrlByUserNameAndTagName() throws Exception{
+	public void testGetFriendUrlByUserNameAndTagName() throws Exception {
 		final String expected = projectHome + "friend/jaescke/kde";
 		assertEquals(expected, ug.getFriendUrlByUserNameAndTagName("jaescke", "kde"));
 	}
-	
-	@Test
-		public void testGetCommunityPublicationUrlByInterHash() throws Exception{
-			final GoldStandardPublication gst = ModelUtils.generatePost(GoldStandardPublication.class).getResource();
-			final String expected = projectHome + "bibtex/" + gst.getInterHash();
-			assertEquals(expected, ug.getCommunityPublicationUrlByInterHash(gst.getInterHash()));
-		}
-	
-	@Test
-		public void testGetCommunityPublicationUrlByInterHashAndUsername() throws Exception{
-			final Post<GoldStandardPublication> post = ModelUtils.generatePost(GoldStandardPublication.class);
-			final BibTex gst = post.getResource();
-			final String userName = post.getUser().getName();
-			
-			String expected = projectHome + "bibtex/" + gst.getInterHash() + "/" +
-							  userName;
-			assertEquals(expected, ug.getCommunityPublicationUrlByInterHashUsernameAndSysUrl(gst.getInterHash(), userName, projectHome));
-		}
 
 	@Test
-	public void testGetGroupUrlByGroupName() throws Exception{
+	public void testGetGroupUrlByGroupName() throws Exception {
 		final String expected = projectHome + "group/kde";
 		assertEquals(expected, ug.getGroupUrlByGroupName("kde"));
 	}
 
 	@Test
-	public void testGetGroupUrlByGroupNameAndTagName() throws Exception{
+	public void testGetGroupUrlByGroupNameAndTagName() throws Exception {
 		final String expected = projectHome + "group/kde/kde";
 		assertEquals(expected, ug.getGroupUrlByGroupNameAndTagName("kde", "kde"));
 	}
 
 	@Test
-	public void testGetLoginUrl() throws Exception{
+	public void testGetLoginUrl() throws Exception {
 		final String expected = projectHome + "login";
 		assertEquals(expected, ug.getLoginUrl());
 	}
 
 	@Test
-	public void testGetMyBibTexUrl() throws Exception{
+	public void testGetMyBibTexUrl() throws Exception {
 		final String expected = projectHome + "myBibTex";
 		assertEquals(expected, ug.getMyBibTexUrl());
 	}
 
 	@Test
-	public void testGetMyDocumentsUrl() throws Exception{
+	public void testGetMyDocumentsUrl() throws Exception {
 		final String expected = projectHome + "myDocuments";
 		assertEquals(expected, ug.getMyDocumentsUrl());
 	}
 
 	@Test
-	public void testGetMyDuplicatesUrl() throws Exception{
+	public void testGetMyDuplicatesUrl() throws Exception {
 		final String expected = projectHome + "myDuplicates";
 		assertEquals(expected, ug.getMyDuplicatesUrl());
 	}
 
 	@Test
-	public void testGetMyHomeUrl() throws Exception{
+	public void testGetMyHomeUrl() throws Exception {
 		final String expected = projectHome + "myHome";
 		assertEquals(expected, ug.getMyHomeUrl());
 	}
 
 	@Test
-	public void testGetMyRelationsUrl() throws Exception{
+	public void testGetMyRelationsUrl() throws Exception {
 		final String expected = projectHome + "myRelations";
 		assertEquals(expected, ug.getMyRelationsUrl());
 	}
 
 	@Test
-	public void testGetMySearchUrl() throws Exception{
+	public void testGetMySearchUrl() throws Exception {
 		final String expected = projectHome + "mySearch";
 		assertEquals(expected, ug.getMySearchUrl());
 	}
@@ -238,18 +218,18 @@ public class URLGeneratorTest {
 	}
 
 	@Test
-	public void testGetProjectHome() throws Exception{
+	public void testGetProjectHome() throws Exception {
 		assertEquals(projectHome, ug.getProjectHome());
 	}
 
 	@Test
-	public void testGetPublicationsAsBibtexUrl() throws Exception{
+	public void testGetPublicationsAsBibtexUrl() throws Exception {
 		final String expected = projectHome + "bib";
 		assertEquals(expected, ug.getPublicationsAsBibtexUrl());
 	}
 
 	@Test
-	public void testGetPublicationsAsBibtexUrlByUserName() throws Exception{
+	public void testGetPublicationsAsBibtexUrlByUserName() throws Exception {
 		final String expected = projectHome + "bib/user/jaescke";
 		assertEquals(expected, ug.getPublicationsAsBibtexUrlByUserName("jaescke"));
 	}
@@ -261,26 +241,26 @@ public class URLGeneratorTest {
 	}
 
 	@Test
-	public void testGetPublicationUrlByBibTexKey() throws Exception{
+	public void testGetPublicationUrlByBibTexKey() throws Exception {
 		final String expected = projectHome + "bibtexkey/testBibtexKey/jaescke";
-		assertEquals(expected, ug.getPublicationUrlByBibTexKeyAndUserName("testBibtexKey", "jaescke"));		
+		assertEquals(expected, ug.getPublicationUrlByBibTexKeyAndUserName("testBibtexKey", "jaescke"));
 	}
 
 	@Test
-	public void testGetPublicationUrlByBibTexKeyAndUserName() throws Exception{
+	public void testGetPublicationUrlByBibTexKeyAndUserName() throws Exception {
 		final String expected = projectHome + "bibtexkey/testBibtexKey";
 		assertEquals(expected, ug.getPublicationUrlByBibTexKey("testBibtexKey"));
 	}
 
 	@Test
-	public void testGetPublicationUrlByInterHash() throws Exception{
+	public void testGetPublicationUrlByInterHash() throws Exception {
 		final BibTex bt = ModelUtils.generatePost(BibTex.class).getResource();
 		final String expected = projectHome + "bibtex/1" + bt.getInterHash();
 		assertEquals(expected, ug.getPublicationUrlByInterHash(bt.getInterHash()));
 	}
 	
 	@Test
-	public void testGetPublicationUrlByInterHashAndUsername() throws Exception{
+	public void testGetPublicationUrlByInterHashAndUsername() throws Exception {
 		final Post<BibTex> post = ModelUtils.generatePost(BibTex.class);
 		final BibTex bt = post.getResource();
 		final String userName = post.getUser().getName();
@@ -291,14 +271,14 @@ public class URLGeneratorTest {
 	}
 
 	@Test
-	public void testGetPublicationUrlByIntraHash() throws Exception{
+	public void testGetPublicationUrlByIntraHash() throws Exception {
 		final BibTex bt = ModelUtils.generatePost(BibTex.class).getResource();
 		final String expected = projectHome + "bibtex/2" + bt.getIntraHash();
 		assertEquals(expected, ug.getPublicationUrlByIntraHash(bt.getIntraHash()));
 	}
 
 	@Test
-	public void testGetPublicationUrlByIntraHashAndUsername() throws Exception{
+	public void testGetPublicationUrlByIntraHashAndUsername() throws Exception {
 		final Post<BibTex> post = ModelUtils.generatePost(BibTex.class);
 		final BibTex bt = post.getResource();
 		final String userName = post.getUser().getName();
@@ -309,30 +289,30 @@ public class URLGeneratorTest {
 	}
 
 	@Test
-	public void testGetRelevantForUrlByGroupName() throws Exception{
+	public void testGetRelevantForUrlByGroupName() throws Exception {
 		String expected = projectHome + "relevantfor/group/kde";
 		assertEquals(expected, ug.getRelevantForUrlByGroupName("kde"));
 	}
 
 	@Test
-	public void testGetSearchUrl() throws Exception{
+	public void testGetSearchUrl() throws Exception {
 		String expected = projectHome + "search/testSearch";
 		assertEquals(expected, ug.getSearchUrl("testSearch"));
 	}
 
 	@Test
-	public void testGetTagUrlByTagName() throws Exception{
+	public void testGetTagUrlByTagName() throws Exception {
 		String expected = projectHome + "tag/kde";
 		assertEquals(expected, ug.getTagUrlByTagName("kde"));
 	}
 
 	@Test
-	public void testGetUrl() throws Exception{
+	public void testGetUrl() throws Exception {
 		//TODO
 	}
 
 	@Test
-	public void testGetUserPictureUrlByUsername() throws Exception{
+	public void testGetUserPictureUrlByUsername() throws Exception {
 		String expected = projectHome + "picture/user/jaeschke";
 		assertEquals(expected, ug.getUserPictureUrlByUsername("jaeschke"));
 	}
@@ -343,61 +323,61 @@ public class URLGeneratorTest {
 	}
 
 	@Test
-	public void testGetUserUrlByUserName() throws Exception{
+	public void testGetUserUrlByUserName() throws Exception {
 		String expected = projectHome + "user/jaeschke";
 		assertEquals(expected, ug.getUserUrlByUserName("jaeschke"));
 	}
 
 	@Test
-	public void testGetUserUrlByUserNameAndTagName() throws Exception{
+	public void testGetUserUrlByUserNameAndTagName() throws Exception {
 		String expected = projectHome + "user/jaeschke/kde";
 		assertEquals(expected, ug.getUserUrlByUserNameAndTagName("jaeschke", "kde"));
 	}
 
 	@Test
-	public void testGetViewableFriendsUrl() throws Exception{
+	public void testGetViewableFriendsUrl() throws Exception {
 		String expected = projectHome + "viewable/friends";
 		assertEquals(expected, ug.getViewableFriendsUrl());
 	}
 
 	@Test
-	public void testGetViewableFriendsUrlByTagName() throws Exception{
+	public void testGetViewableFriendsUrlByTagName() throws Exception {
 		String expected = projectHome + "viewable/friends/kde";
 		assertEquals(expected, ug.getViewableFriendsUrlByTagName("kde"));
 	}
 
 	@Test
-	public void testGetViewablePrivateUrl() throws Exception{
+	public void testGetViewablePrivateUrl() throws Exception {
 		String expected = projectHome + "viewable/private";
 		assertEquals(expected, ug.getViewablePrivateUrl());
 	}
 
 	@Test
-	public void testGetViewablePrivateUrlByTagName() throws Exception{
+	public void testGetViewablePrivateUrlByTagName() throws Exception {
 		String expected = projectHome + "viewable/private/kde";
 		assertEquals(expected, ug.getViewablePrivateUrlByTagName("kde"));
 	}
 
 	@Test
-	public void testGetViewablePublicUrl() throws Exception{
+	public void testGetViewablePublicUrl() throws Exception {
 		String expected = projectHome + "viewable/public";
 		assertEquals(expected, ug.getViewablePublicUrl());
 	}
 
 	@Test
-	public void testGetViewablePublicUrlByTagName() throws Exception{
+	public void testGetViewablePublicUrlByTagName() throws Exception {
 		String expected = projectHome + "viewable/public/kde";
 		assertEquals(expected, ug.getViewablePublicUrlByTagName("kde"));
 	}
 
 	@Test
-	public void testGetViewableUrlByGroupName() throws Exception{
+	public void testGetViewableUrlByGroupName() throws Exception {
 		String expected = projectHome + "viewable/kde";
 		assertEquals(expected, ug.getViewableUrlByGroupName("kde"));
 	}
 
 	@Test
-	public void testGetViewableUrlByGroupNameAndTagName() throws Exception{
+	public void testGetViewableUrlByGroupNameAndTagName() throws Exception {
 		String expected = projectHome + "viewable/kde/aTag";
 		assertEquals(expected, ug.getViewableUrlByGroupNameAndTagName("kde", "aTag"));
 	}
@@ -405,12 +385,12 @@ public class URLGeneratorTest {
 	@Test
 	public void testMatch() {
 		assertTrue(ug.matchesPage(projectHome + "inbox", URLGenerator.Page.INBOX));
-		assertTrue(ug.matchesPage(projectHome + "clipboard", URLGenerator.Page.BASKET));
-		assertTrue(ug.matchesPage(projectHome + "clipboard?start=0", URLGenerator.Page.BASKET));
+		assertTrue(ug.matchesPage(projectHome + "clipboard", URLGenerator.Page.CLIPBOARD));
+		assertTrue(ug.matchesPage(projectHome + "clipboard?start=0", URLGenerator.Page.CLIPBOARD));
 		
 		assertFalse(ug.matchesPage(projectHome + "clipboard", URLGenerator.Page.INBOX));
-		assertFalse(ug.matchesPage(projectHome + "foo/clipboard", URLGenerator.Page.BASKET));
-		assertFalse(ug.matchesPage("/clipboard", URLGenerator.Page.BASKET));
+		assertFalse(ug.matchesPage(projectHome + "foo/clipboard", URLGenerator.Page.CLIPBOARD));
+		assertFalse(ug.matchesPage("/clipboard", URLGenerator.Page.CLIPBOARD));
 	}
 
 	@Test
@@ -423,16 +403,16 @@ public class URLGeneratorTest {
 	
 	@Test
 	public void testPrefix() throws Exception {
-		URLGenerator urlg = new URLGenerator(projectHome);
+		URLGenerator urlg = new URLGeneratorFactory().createURLGeneratorForPrefix(projectHome, "export");
 		String expected = projectHome + "export/user/jaeschke";
 		
-		assertEquals(expected, urlg.prefix("export/").getUserUrlByUserName("jaeschke"));
+		assertEquals(expected, urlg.getUserUrlByUserName("jaeschke"));
 	}
 	
 	@Test
 	public void testGetGroupSettingsUrlByGroupName() {
 		String expected = projectHome + "settings/group/franzosengruppe";
-		assertEquals(expected, ug.getGroupSettingsUrlByGroupName("franzosengruppe"));
+		assertEquals(expected, ug.getGroupSettingsUrlByGroupName("franzosengruppe", null));
 	}
 
 	@Test

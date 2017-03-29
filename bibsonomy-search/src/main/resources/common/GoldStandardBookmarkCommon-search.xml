@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SearchGoldStandardBookmarkCommon">
+	<resultMap id="goldStandardBookmark" class="goldStandardBookmark" extends="BookmarkCommon.bookmark">
+		<!-- to get a GoldStandardBookmark object instead of a normal bookmark -->
+	</resultMap>
+	
+	<resultMap id="searchGoldStandardBookmarkPost" class="searchPost" extends="GoldStandardPublicationCommon.posts">
+		<result property="groups"      resultMap="Common.group" />
+		<result property="resource"    resultMap="SearchGoldStandardBookmarkCommon.goldStandardBookmark" />
+		<!-- this is intended misuse - it would be better to call lastTasId lastResoucePostId or so -->
+		<result property="lastTasId"   column="content_id" />
+	</resultMap>
+	
+	<sql id="allGoldStandardBookmarkAttributesNoChangeDate">
+		b.content_id, b.title, b.url AS book_url, b.content_type, b.approved, b.simhash1 AS interHash, b.simhash2 AS intraHash, b.user_name, b.description, b.date
+	</sql>
+</sqlMap>

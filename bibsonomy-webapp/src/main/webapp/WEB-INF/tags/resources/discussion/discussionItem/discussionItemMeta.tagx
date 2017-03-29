@@ -1,39 +1,48 @@
 <jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
 	
 	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="true" />
-	
-	
-	<span class="date" itemprop="datePublished">
-		<fmt:message key="post.resource.comment.on"/><c:out value=" "/><fmt:formatDate type="date" timeStyle="medium" dateStyle="medium" value="${discussionItem.date}"/>
-	</span>
-	<c:if test="${not empty discussionItem.changeDate}">
-		<span class="changeDate">
-			<fmt:message key="post.resource.comment.updatedOn" />
-			<c:out value=" "/><fmt:formatDate type="date" timeStyle="medium" dateStyle="medium" value="${discussionItem.changeDate}"/>
+	<fmt:timeZone value="${command.context.loginUser.settings.timeZone}">
+		<fmt:formatDate type="date" dateStyle="medium" value="${discussionItem.date}" var="createDate" />
+		<fmt:formatDate type="time" timeStyle="short" value="${discussionItem.date}" var="createTime" />
+		<span class="date" title="${createDate}, ${createTime}">
+			<mtl:formatTimeDiff startDate="${discussionItem.date}"/>
+			<meta itemprop="datePublished" content="${mtl:formatDateISO8601(discussionItem.date)}" />
 		</span>
-	</c:if>
+	
+		<c:if test="${not empty discussionItem.changeDate}">
+			<fmt:formatDate type="date" dateStyle="medium" value="${discussionItem.changeDate}" var="changeDate" />
+			<fmt:formatDate type="time" timeStyle="short" value="${discussionItem.changeDate}" var="changeTime" />
+			<c:out value=" "/>
+			<span class="changeDate" title="${changeDate}, ${changeTime}">
+				(<fmt:message key="post.resource.comment.updatedOn" />
+				<mtl:formatTimeDiff startDate="${discussionItem.changeDate}"/>)
+			</span>
+		</c:if>
+	</fmt:timeZone>
 	<span class="groups">
 		<c:forEach var="group" items="${discussionItem.groups}" varStatus="status">
 			<c:if test="${not empty group.name and group.name ne 'public'}">
 				<c:if test="${status.first}">
 					<fmt:message key="post.resource.comment.groups" />
-					<c:out value=" " />
+					<c:out value=" "/>
 				</c:if>
 				<c:if test="${not status.first}">
 					<c:out value=", "/>
 				</c:if>
 				<c:choose>
 					<c:when test="${group.name eq 'friends'}">
-						<fmt:message key="post.groups.friends" /> <!-- TODO: look for message key -->
+						<fmt:message key="post.groups.friends" />
 					</c:when>
 					<c:when test="${group.name eq 'private'}">
-						<fmt:message key="post.groups.private" /> <!-- TODO: look for message key -->
+						<fontawsome:icon icon="lock" fixedWidth="${true}"/> <fmt:message key="post.groups.private" />
 					</c:when>
 					<c:otherwise>
-						<a href="${relativeUrlGenerator.getGroupUrlByGroupName(fn:escapeXml(group.name))}"><c:out value="${group.name}" /></a>
+						<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><fontawsome:icon icon="users" fixedWidth="${true}"/> <c:out value="${group.name}" /></a>
 					</c:otherwise>
 				</c:choose>
 			</c:if>	

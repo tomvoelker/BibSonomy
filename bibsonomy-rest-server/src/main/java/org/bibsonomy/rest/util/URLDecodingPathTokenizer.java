@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,9 +26,11 @@
  */
 package org.bibsonomy.rest.util;
 
+import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.util.UrlUtils;
 
 
@@ -73,8 +75,11 @@ public class URLDecodingPathTokenizer implements Iterator<String> {
 		if (!hasNext()) {
 			throw new NoSuchElementException();
 		}
-		// FIXME: safeURIDecode is not the correct method (decodes + => ' ')
-		return UrlUtils.safeURIDecode(this.tokens[++this.pos]);
+		try {
+			return UrlUtils.decodePathSegment(this.tokens[++this.pos]);
+		} catch (final URISyntaxException e) {
+			throw new InternServerException(e);
+		}
 	}
 
 	/* (non-Javadoc)

@@ -5,7 +5,6 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 	xmlns:swrctags="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
-	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:owl=" http://www.w3.org/2002/07/owl#"
 	xmlns:swrc="http://swrc.ontoware.org/ontology#">
@@ -14,13 +13,12 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	
 	<c:set var="swrc" value="http://swrc.ontoware.org/ontology#"/>
-	
-	<spring:eval var="intraHashId" expression="T(org.bibsonomy.common.enums.HashID).INTRA_HASH.id" />
-	<rdf:Description rdf:about="${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, post.user.name)}">
-		<!-- TODO: use url generator -->
-		<owl:sameAs rdf:resource="${relativeUrlGenerator.getProjectHome()}uri/bibtex/${intraHashId}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"/>
-		<rdf:type rdf:resource="${swrc}${mtl:getSWRCEntryType(post.resource.entrytype)}"/>
-		<swrctags:swrcAttributes post="${post}"/>
+
+	<rdf:Description rdf:about="${absoluteUrlGenerator.getPublicationUrlByPost(post)}">
+		<c:set var="urlGeneratorUri" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'uri')}" />
+		<owl:sameAs rdf:resource="${urlGeneratorUri.getPublicationUrlByPost(post)}" />
+		<rdf:type rdf:resource="${swrc}${mtl:getSWRCEntryType(post.resource.entrytype)}" />
+		<swrctags:swrcAttributes post="${post}" />
 	</rdf:Description>
 
 </jsp:root>

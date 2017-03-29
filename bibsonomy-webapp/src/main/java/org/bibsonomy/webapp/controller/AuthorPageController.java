@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -98,17 +98,14 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		sysTags.add(sysAuthor);
 		
 		//sets the search type
-		SearchType searchType = SearchType.LOCAL; 
-		if(command.getScope()!=null && command.getScope()!=SearchType.LOCAL){
-			searchType = SearchType.FEDERATED;
-		}
+		final SearchType searchType = command.getScope();
 		
 		// handle case when only tags are requested
 		this.handleTagsOnly(command, groupingEntity, null, null, requTags, null, 1000, null);
 		
 		int totalNumPosts = 0;
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, searchType, null, null, command.getStartDate(), command.getEndDate(), listCommand.getEntriesPerPage());
 			
@@ -120,7 +117,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		if ("html".equals(format)) {
 			// only fetch tags if they were not already fetched by handleTagsOnly
 			if (command.getTagstype() == null) {
-				this.setTags(command, BibTex.class, groupingEntity, null, null, sysTags, null, 1000, null, searchType);
+				this.setTags(command, BibTex.class, groupingEntity, null, null, null, sysTags, null, 1000, null, searchType);
 			}
 			this.endTiming();
 			if (hasTags) {

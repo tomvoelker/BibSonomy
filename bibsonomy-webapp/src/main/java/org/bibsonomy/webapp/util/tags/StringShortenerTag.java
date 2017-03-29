@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -33,6 +33,7 @@ import org.springframework.web.servlet.tags.RequestContextAwareTag;
  * 
  * @author sbo <sbo@cs.uni-kassel.de>
  */
+@Deprecated // use tagx for that, no need for a java class
 public class StringShortenerTag extends RequestContextAwareTag {
 
 	/**

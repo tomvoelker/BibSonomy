@@ -1,7 +1,7 @@
 /**
  * BibSonomy-MARC-Parser - Marc Parser for BibSonomy
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -47,7 +47,7 @@ import org.bibsonomy.util.ValidationUtils;
 public class AuthorExtractor extends AbstractParticipantExtractor {
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		final List<PersonName> authors = new ArrayList<PersonName>();
 		
 		//in case of conference typed in 013H/0X as k we use 110, 111, 710 for organization

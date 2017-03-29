@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -100,7 +100,7 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 
 		log.debug("try to get sync services for user");
 		final String loggedinUserName = loginUser.getName();
-		final List<SyncService> userServices = logic.getSyncService(loggedinUserName, null, true);
+		final List<SyncService> userServices = logic.getSyncServiceSettings(loggedinUserName, null, true);
 		
 		/*
 		 * get all sync data from remote sync service
@@ -125,7 +125,7 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 		/*
 		 * get all sync clients with the lastest sync data
 		 */
-		command.setSyncClients(this.logic.getSyncService(loggedinUserName, null, false));
+		command.setSyncClients(this.logic.getSyncServiceSettings(loggedinUserName, null, false));
 
 		return Views.SYNC;
 	}

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -90,8 +90,8 @@ public class PicaToBibtexConverterTest {
 		final String xml = TestUtils.readEntryFromFile(PATH_TO_FILES + fileName + ".xml");
 		final String bib = TestUtils.readEntryFromFile(PATH_TO_FILES + fileName + ".bib");
 		
-		final PicaToBibtexConverter pica = new PicaToBibtexConverter(xml, "xml", url);
+		final PicaToBibtexConverter pica = new PicaToBibtexConverter("xml", url);
 		
-		assertEquals(bib.trim(), pica.getBibResult().trim());
+		assertEquals(bib.trim(), pica.toBibtex(xml).trim());
 	}
 }

@@ -4,8 +4,14 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
+	<jsp:directive.attribute name="noComma" type="java.lang.Boolean" required="false"/>
 	
 	<c:if test="${not empty publication.publisher}">
-		<em><c:out value="${mtl:cleanBibtex(publication.publisher)}" /><c:out value=", "/></em>
+		<em>
+			<span itemprop="publisher"><c:out value="${mtl:cleanBibtex(publication.publisher)}" /></span>
+			<c:if test="${empty noComma or not noComma}">
+				<c:out value=", "/>
+			</c:if>
+		</em>
 	</c:if>
 </jsp:root>

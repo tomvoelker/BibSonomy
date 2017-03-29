@@ -10,7 +10,7 @@
 			<bib:author publication="${publication}"/>
 			<bib:journal publication="${publication}"/><c:out value=" "/>
 			<bib:volumeNumberPages publication="${publication}"/><c:out value=" "/>
-			<bib:year publication="${publication}" braces="true"/>
+			<bib:date publication="${publication}" braces="true"/>
 			<bib:note publication="${publication}"/>
 			<bib:address publication="${publication}"/>
 			<bib:booktitle publication="${publication}"/>

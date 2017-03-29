@@ -6,6 +6,7 @@
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:swrc="http://swrc.ontoware.org/ontology#"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
@@ -14,10 +15,13 @@
 	<bib:author publication="${post.resource}" useAbsoluteURL="${true}"/>
 
 	<!-- year -->
-	<bib:year publication="${post.resource}" braces="true"/>
+	<bib:date publication="${post.resource}" braces="true"/>
 	
 	<!-- title -->
-	<a href="${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, fn:escapeXml(post.user.name))}"><i><c:out value="${mtl:cleanBibtex(post.resource.title)}"/>.</i></a>
+	<!-- TODO: use url generator -->
+	<spring:eval var="intraHashId" expression="T(org.bibsonomy.common.enums.HashID).INTRA_HASH.id" />
+	<!-- TODO: use url generator -->
+	<a href="${properties['project.home']}bibtex/${intraHashId}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><i><c:out value="${mtl:cleanBibtex(post.resource.title)}"/>.</i></a>
 
 	<!-- inbook / incollection data -->
 	<c:choose>

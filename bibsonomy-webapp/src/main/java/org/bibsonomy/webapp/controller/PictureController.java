@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -155,7 +155,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	 * user.
 	 * 
 	 * @param requestedUser
-	 * @param loginUserName
+	 * @param loginUser
 	 * @return true if and only if the user logged in may see the picture of the
 	 *         user requested
 	 */

@@ -4,6 +4,7 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
@@ -16,108 +17,97 @@
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableSort" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="additionalSorting" fragment="true"/>
 	
 	<!--+
 		+ heading, variables
 		+ -->
 	<c:if test="${resourceType eq 'bibtex'}">
-		<fmt:message key="bibtex.actions.heading"/>
 		<c:set var="isPublication" value="${true}"/>
 	</c:if>
 	<c:if test="${resourceType eq 'bookmark'}">
-		<fmt:message key="bookmark.actions.heading"/>
 		<c:set var="isBookmark" value="${true}"/>
 	</c:if>
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 	
 	<!--+ 
-		+ export (RSS, BibTeX, XML, more...) 
-		+-->
-	<div class="listOptionHeading"><fmt:message key="navi.export"/>:</div>
-	<ul>
-		<li>
-			<rc:export requPathAndQuery="${requPathAndQuery}" isPublication="${isPublication}" isBookmark="${isBookmark}"/>
-		</li>
-	</ul>
-	
-	<!--+ 
-		+ placeholder for extended bibtex export options 
-		+-->
-	<c:if test="${isPublication}">
-		<div id="bibtexListExportOptions">${mtl:ch('nbsp')}</div>
-	</c:if>	
-	
-	<!--+ 
-		+ sort options
-		+-->
-	<c:if test="${not disableSort}">
-		<div class="listOptionHeading"><fmt:message key="post.meta.sort"/>:</div>
-		<ul>
-			<li>
-				<rc:sortCriterion requPathAndQuery="${requPathAndQuery}" sortPage="${sortPage}"/>
-			</li>
-			<li>
-				<rc:sortOrder requPathAndQuery="${requPathAndQuery}" sortPageOrder="${sortPageOrder}"/>	
-			</li>
-			<c:if test="${isPublication}">
-				<li>
-					<a href="/help_en/Sorting%2Bpublications"><fmt:message key="post.meta.advanced"/>...</a>
-				</li>
-			</c:if>
-		</ul>
-	</c:if>
-	
-	<!--+ 
-		+ basket actions (pick, unpick, clear basket) only for publications, and logged-in users
-		+-->
-	<c:if test="${command.context.userLoggedIn and isPublication}">
-		<div class="listOptionHeading"><fmt:message key="navi.basket"/>:</div>
-		<ul>	
-			<li>
-				<rc:clipboard isClipboard="${isClipboard}" />
-			</li>
-		</ul>
-	</c:if>
-	
-	<!--+
-		+ inbox actions 
-		+-->
-	<c:if test="${command.context.userLoggedIn and showInboxActions}">
-		<div class="listOptionHeading"><fmt:message key="navi.inbox"/>:</div>
-		<ul>
-			<li>
-				<rc:inbox />
-			</li>
-		</ul>
-	</c:if>
-	
-	<!--+ 
 		+ other options (batch edit, show/hide lists, entries per page)
 		+-->
-	<div class="listOptionHeading"><fmt:message key="post.meta.others"/>:</div>
-	<ul>
-		<!-- edit -->
-		<c:if test="${command.context.userLoggedIn}">
-			<li>
-				<rc:batchEdit isPublication="${isPublication}" isBookmark="${isBookmark}" requPathAndQuery="${requPathAndQuery}"/>
-			</li>
+	<c:if test="${command.context.userLoggedIn}">
+		<div class="btn-group">
+			<rc:batchEdit isPublication="${isPublication}" isBookmark="${isBookmark}" requPathAndQuery="${requPathAndQuery}" iconOnly="${true}"/>
+		</div>
+		
+		<!--+ 
+		+ clipboard actions (pick, unpick, clear clipboard) only for publications, and logged-in users
+		+-->
+		<c:if test="${isPublication}">
+			<div class="btn-group">
+				<bsform:button size="xsmall" style="link" icon="folder-open" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.clipboard.title" />
+				<ul class="dropdown-menu">
+					<rc:clipboard isClipboard="${isClipboard}" />
+				</ul>
+			</div>
 		</c:if>
-		<!-- show / hide resource types -->
-		<c:if test="${not disableResourcetypeSelection}">
-			<li>
+	</c:if>
+	
+	<div class="btn-group">
+		<bsform:button size="xsmall" style="link" icon="filter" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.filter.title" />
+		<ul class="dropdown-menu">
+			<!-- show / hide resource types -->
+			<c:if test="${not disableResourcetypeSelection}">
 				<rc:resourcetype requPathAndQuery="${requPathAndQuery}" showBookmark="${showBookmark}" showPublication="${showPublication}" isBookmark="${isBookmark}" isPublication="${isPublication}"/>
-			</li>
-		</c:if>	
-		<!--  entries per page -->
-		<c:if test="${not disableListNavigation}">
-			<li>		
+			</c:if>
+			<!--  entries per page -->
+			<c:if test="${not disableListNavigation}">
 				<c:if test="${isBookmark}">
 					<rc:itemcount entriesPerPage="${command.bookmark.entriesPerPage}" entryType="${command.bookmark.resourcetype}" titleKey="bookmarks" requPathAndQuery="${requPathAndQuery}"/>
 				</c:if>
 				<c:if test="${isPublication}">
 					<rc:itemcount entriesPerPage="${command.bibtex.entriesPerPage}" entryType="${command.bibtex.resourcetype}" titleKey="publications" requPathAndQuery="${requPathAndQuery}"/>
 				</c:if>
-			</li>
-		</c:if>
-	</ul>
+			</c:if>
+		</ul>
+	</div>
+	
+	<!--+ 
+		+ sort options
+		+-->
+	<c:if test="${not disableSort}">
+		<div class="btn-group">
+			<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
+			<ul class="dropdown-menu">
+				<rc:sortCriterion requPathAndQuery="${requPathAndQuery}" sortPage="${sortPage}" additionalSorting="${additionalSorting}"/>
+				<li class="divider"><!-- keep me --></li>
+				<rc:sortOrder requPathAndQuery="${requPathAndQuery}" sortPageOrder="${sortPageOrder}"/>
+				<c:if test="${isPublication}">
+					<li class="divider"><!-- keep me --></li>
+					<fmt:message var="helpLink" key="post.meta.helplink"/>
+					<li><a href="${helpLink}"><fmt:message key="post.meta.advanced"/>...</a></li>
+				</c:if>
+			</ul>
+		</div>
+	</c:if>
+	<!--+ 
+		+ export (RSS, BibTeX, XML, more...) 
+		+-->
+	<div class="btn-group">
+		<bsform:button size="xsmall" style="link" icon="share-square-o" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.export.title" />
+		<ul class="dropdown-menu">
+			<rc:export requPathAndQuery="${requPathAndQuery}" isPublication="${isPublication}" isBookmark="${isBookmark}"/>
+		</ul>
+	</div>
+	
+	<!--+
+		+ inbox actions 
+		+-->
+	<c:if test="${command.context.userLoggedIn and showInboxActions}">
+		<li class="divider"><!--  --></li>
+		<li>
+			<span>
+				<h5><span class="fa fa-inbox"><!--  --></span>&amp;nbsp;<fmt:message key="navi.inbox"/></h5>
+				<rc:inbox />
+			</span>
+		</li>
+	</c:if>
 </jsp:root>

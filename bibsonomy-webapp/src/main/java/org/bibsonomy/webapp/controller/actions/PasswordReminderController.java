@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -34,8 +34,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-import net.tanesha.recaptcha.ReCaptcha;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.AuthMethod;
@@ -51,6 +49,7 @@ import org.bibsonomy.webapp.command.actions.PasswordReminderCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
@@ -61,7 +60,6 @@ import org.bibsonomy.webapp.view.Views;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
 /**
@@ -86,7 +84,9 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	
 	@Override
 	public View workOn(final PasswordReminderCommand command) {
-		if (command.getContext().isUserLoggedIn()) {
+		final RequestWrapperContext context = command.getContext();
+		
+		if (context.isUserLoggedIn()) {
 			throw new AccessDeniedException("only not loggedin users can request a reminder password");
 		}
 		/*
@@ -120,7 +120,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		 * If the user name is null, we get an exception on getUserDetails.
 		 * Hence, we send the user back to the form.
 		 */
-		if (errors.hasErrors()) {
+		if (errors.hasErrors() || command.getContext().isFirstCall()) {
 			/*
 			 * Generate HTML to show captcha.
 			 */
@@ -162,6 +162,18 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		 * Hence, we send the user back to the form.
 		 */
 		if (errors.hasErrors()) {
+			/*
+			 * Generate HTML to show captcha.
+			 */
+			command.setCaptchaHTML(captcha.createCaptchaHtml(locale));
+			return Views.PASSWORD_REMINDER;
+		}
+		
+		/*
+		 * check the ckey
+		 */
+		if (!context.isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
 			/*
 			 * Generate HTML to show captcha.
 			 */
@@ -210,7 +222,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		 * check if user acknowledged the deletion of his OpenID access
 		 */
 		if (present(existingUser.getOpenID())){
-			if(!command.isAcknowledgeOpenIDDeletion()){
+			if (!command.isAcknowledgeOpenIDDeletion()) {
 				errors.rejectValue("acknowledgeOpenIDDeletion", "error.field.value.acknowledge");
 			}
 			if (errors.hasErrors()) {
@@ -219,7 +231,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 			}
 			this.adminLogic.updateUser(user, UserUpdateOperation.DELETE_OPENID);
 		}
-			
+		
 		/*
 		 * create the random pw and set it to the user object
 		 */
@@ -280,21 +292,15 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	 */
 	@Required
 	public void setAdminLogic(final LogicInterface adminLogic) {
-		Assert.notNull(adminLogic, "The provided logic interface must not be null.");
 		this.adminLogic = adminLogic;
-		/*
-		 * Check, if logic has admin access.
-		 */
-		Assert.isTrue(Role.ADMIN.equals(this.adminLogic.getAuthenticatedUser().getRole()), "The provided logic interface must have admin access.");
 	}
-
 
 	/**
 	 * Creates the random string
 	 * 
 	 * @return String
 	 */
-	private String getRandomString() {
+	private static String getRandomString() {
 		final Random rand = new Random();
 		final byte[] bytes = new byte[8];
 		rand.nextBytes(bytes);
@@ -344,5 +350,4 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	public void setAuthConfig(final List<AuthMethod> authConfig) {
 		this.authConfig = authConfig;
 	}
-	
 }

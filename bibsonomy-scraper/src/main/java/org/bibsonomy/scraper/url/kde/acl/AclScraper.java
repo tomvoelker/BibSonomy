@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -80,11 +80,10 @@ public class AclScraper extends GenericBibTeXURLScraper {
 	 * @see org.bibsonomy.scraper.generic.SimpleGenericURLScraper#getBibTeXURL(java.net.URL)
 	 */
 	@Override
-	public String getDownloadURL(URL url) throws ScrapingException {
-		String downloadUrl = url.toString();
+	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
+		final String downloadUrl = url.toString();
 		// replace .pdf with .bib
-		downloadUrl = downloadUrl.substring(0, downloadUrl.length()-4) + ".bib";
-		return downloadUrl;
+		return downloadUrl.substring(0, downloadUrl.length() - 4) + ".bib";
 	}
 
 	@Override

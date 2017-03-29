@@ -16,72 +16,40 @@
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
-	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
+	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 	
-	<layout:layout 
-		loginUser="${command.context.loginUser}" 
-		pageTitle="${pageTitle}" 
+	<layout:layout loginUser="${command.context.loginUser}"  pageTitle="${pageTitle}" 
 		heading="${heading}" 
 		requestedUser="${command.requestedUser}" 
 		infobox="${infobox}" 
 		sidebar="${sidebar}" 
 		requPath="${requPath}" 
 		activeTab="${activeTab}"
-		minimizedContentWidth="${minimizedContentWidth}">
+		breadcrumbs="${breadcrumbs}">
 		
 		<jsp:attribute name="headerExt"/>
-
-		<!-- FIXME: layout assumes that always both entrytypes are displayed; adapt to ?resourceType=XY -->
-
-		<jsp:attribute name="headerContainer">
-			<div id="bookmarksheader" class="standard">
-				<h2 class="header standard"><fmt:message key="bookmarks" /></h2>
-			</div>
-			
-			<div id="publicationsheader" class="standard">
-				<h2 class="header standard"><fmt:message key="publications" /></h2>
-			</div>
-		</jsp:attribute>
-
+		
 		<jsp:attribute name="content">
-				<c:choose>
-					<c:when test="${fn:length(command.listsBookmark) > fn:length(command.listsBibTeX)}">
-						<c:set var="max">${command.listsBookmark}</c:set>
-					</c:when>
-					<c:otherwise>
-						<c:set var="max">${command.listsBibTeX}</c:set>
-					</c:otherwise>
-				</c:choose>
-					<c:forEach var="bibtex" items="${max}" varStatus="status">
-						<c:choose>
-							<c:when test="${not empty command.listsBookmark[status.index]}">
-								<c:set var="extTitle">${command.listsBookmarkDescription[status.index]}<c:out value=" "/><fmt:message key="days"/></c:set>
-								<resources:bookmarks listView="${command.listsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}" disableListNavigation="${disableListNavigation}" requPath="${requPath}" listIndex="${status.index}" extTitle="${extTitle}" widthClassName="standard"/>
-
-<!--									<resources:simplebookmarks listView="${command.listsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}">-->
-<!--											<jsp:attribute name="extTitle">-->
-<!--												<h2 class="listh">(${command.listsBookmarkDescription[status.index]}<c:out value=" "/><fmt:message key="days"/>)</h2>-->
-<!--											</jsp:attribute>-->
-<!--									</resources:simplebookmarks>-->
-							</c:when>
-							<c:otherwise><div class="bookbox"/></c:otherwise>
-						</c:choose>
-						<c:choose>
-							<c:when test="${not empty command.listsBibTeX[status.index]}">
-
-								<c:set var="extTitle">${command.listsBibTeXDescription[status.index]}<c:out value=" "/><fmt:message key="days"/></c:set>
-								<resources:bibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}" disableListNavigation="${disableListNavigation}" requPath="${requPath}" listIndex="${status.index}" extTitle="${extTitle}" widthClassName="standard"/>
-
-
-<!--									<resources:simplebibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}">-->
-<!--											<jsp:attribute name="extTitle">-->
-<!--												<h2 class="listh">(${command.listsBibTeXDescription[status.index]}<c:out value=" "/><fmt:message key="days"/>)</h2>-->
-<!--											</jsp:attribute>-->
-<!--									</resources:simplebibtexs>-->
-							</c:when>
-							<c:otherwise><div class="bookbox"/></c:otherwise>
-						</c:choose>
-				</c:forEach>
+			<div class="row">
+				<c:forEach var="index" begin="0" end="${fn:length(command.listsBibTeXDescription) - 1}">
+					<div class="col-md-12">
+						<h2>
+							<fmt:message key="within.last.days">
+								<fmt:param value="${command.listsBibTeXDescription[index]}" />
+							</fmt:message>
+						</h2>
+					</div>
+				<div class="col-md-6 bookmark-list">
+					<h3 class="list-headline"><fmt:message key="bookmarks" />${mtl:ch('nbsp')}</h3>
+						<resources:simplebookmarks listView="${command.listsBookmark[index]}" loginUserName="${command.context.loginUser.name}" disablePagination="${true}" />
+				</div>
+				<div class="col-md-6 publication-list">
+					<h3 class="list-headline"><fmt:message key="publications" />${mtl:ch('nbsp')}</h3>
+						<resources:simplebibtexs listView="${command.listsBibTeX[index]}" loginUserName="${command.context.loginUser.name}" disablePagination="${true}" />
+					</div>
+					</c:forEach>
+				</div>
 		</jsp:attribute>
+
 	</layout:layout>
 </jsp:root>

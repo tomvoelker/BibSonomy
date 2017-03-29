@@ -1,0 +1,58 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<!--+ 
+	 	|
+	 	| If the login user looks at a page of the requested user, we show him
+	 	| "social" information, e.g., if the two users are friends or if they
+	 	| are in the same group, if the user follows the other user, and so on.
+	 	| If so, we provide further links, if not, we allow them to "get together".
+	 	|
+	 	| TODO: 
+	 	| - integrate "common groups"
+	 	|
+	 	+-->
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="true" />
+	
+	<c:set var="username"><user:username username="${user}" noLink="${true}"/></c:set>
+	<c:set var="outLink" value=""/>
+	<c:set var="outTitleKey" value=""/>
+	<c:if test="${not empty user.homepage}">
+		<c:set var="outLink" value="${fn:escapeXml(user.homepage)}"/>
+		<c:set var="outTitleKey" value="${outTitleKey}"/>
+	</c:if>
+	<div class="user-card">
+		<div class="card-header">
+			<user:thumbnail user="${user}" noname="${true}" circle="${true}" />
+			<c:if test="${not empty user.realname}">
+				<h4>
+					<c:out value="${user.realname}" />
+					<c:if test="${not empty user.homepage}">
+						<small>
+							<a href="${fn:escapeXml(user.homepage)}" rel="nofollow">
+								<fontawesome:icon icon="external-link" />
+							</a>
+						</small>
+					</c:if>
+				</h4>
+			</c:if>
+			
+			<p class="text-muted"><user:username noLink="${true}" user="${user}" /></p>
+		</div>
+		<c:if test="${command.context.userLoggedIn}">
+			<user:userSocializerButtons user="${user}" command="${command}" />
+		</c:if>
+		<c:if test="${not command.context.userLoggedIn}">
+			<p class="small-font"><fmt:message key="friends.addfriend.login" /></p>
+			<a class="btn btn-success btn-xs" href="${relativeUrlGenerator.getLoginUrl()}"><fmt:message key="navi.login" /></a>
+		</c:if>
+	</div>
+</jsp:root>

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -70,6 +70,9 @@ import org.bibsonomy.webapp.view.Views;
  *
  * TODO: should we add /uri/ to the excludePatterns list?
  * 
+ * FIXME: added layoutinfo to the exclude pattern, because the urlrewrite sets the format: results in json,json
+ * iff accept header is set to application/json
+ * 
  * @author rja
  */
 public class ContentNegotiationFilter implements Filter {
@@ -79,7 +82,7 @@ public class ContentNegotiationFilter implements Filter {
 	/**
 	 * overwritten by init parameter "excludePatterns"
 	 */
-	private Pattern excludePattern = Pattern.compile("^/(api|resources|ajax)/.*");
+	private Pattern excludePattern = Pattern.compile("^/(api|resources|ajax|layoutinfo)/.*");
 	
 	/**
 	 * Mapping of MIME types to the supported export formats. 
@@ -145,8 +148,9 @@ public class ContentNegotiationFilter implements Filter {
 				// no known format selected - continue
 			}
 		}
+		final String formatParameter = httpRequest.getParameter("format");
 		try {
-			Views.getViewByFormat(httpRequest.getParameter("format"));
+			Views.getViewByFormat(formatParameter);
 			chain.doFilter(request, response);
 			log.debug("skipping " + ContentNegotiationFilter.class.getName() + " for " + requestURI  + " (cause: format selected by URL parameter)");
 			return;

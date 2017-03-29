@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -52,26 +52,25 @@ import org.w3c.dom.NodeList;
  * @author Christian Kramer
  */
 public class AandAScraper extends AbstractUrlScraper implements ReferencesScraper{
-
+	
 	private static final String SITE_NAME = "Astronomy and Astrophysics";
 	private static final String SITE_URL = "http://www.aanda.org/";
 	private static final String INFO = "Scraper for references from " + href(SITE_URL, SITE_NAME)+".";
 	
 	private static final Pattern hostPattern = Pattern.compile(".*" + "aanda.org");
-	private static final String downloadUrl = SITE_URL + "index.php?option=com_makeref&task=output&type=bibtex&doi=";
-	
+	private static final String downloadUrl = SITE_URL + "component/makeref/?task=output&type=bibtex&doi=";
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(hostPattern, AbstractUrlScraper.EMPTY_PATTERN));
 	
-	private static final Pattern pat_references = Pattern.compile("(?s)<ul style=\"list-style-type:\" class=\"references\">(.*)<div class=\"pr_annees\"></div>");
+	private static final Pattern pat_references = Pattern.compile("(?s)<ul class=\"references\">(.*)</div>");
 	private static final Pattern pat_references_1 = Pattern.compile("(?s)<HR><b>References(.*)</UL>");
-	private static final Pattern pat_link_ref = Pattern.compile("<a href=\"(.*)\">References</a></li>");
+	private static final Pattern pat_link_ref = Pattern.compile("href=\"(.*?)\"");
 	
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 		
 		try {
-			// need to filter the DOI out of the context, because the DOI is a common but not constant finding in the URL
+			// need to filter the DOI out of the context, because the DOI is a common but not constant finding in the URL		
 			final String doi = extractDOI(XmlUtils.getDOM(sc.getPageContent()));
 
 			// if the doi is present
@@ -87,7 +86,6 @@ public class AandAScraper extends AbstractUrlScraper implements ReferencesScrape
 					sc.setBibtexResult(scForBibtexScraper.getBibtexResult());
 					return true;
 				}
-				
 			}
 		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
@@ -101,21 +99,26 @@ public class AandAScraper extends AbstractUrlScraper implements ReferencesScrape
 	 * Structure is as follows:
 	 * 
 	 *  <tr>
-	 *	   <td class="gen">DOI</td>
-	 *	   <td></td>
-	 *	   <td><a href="...">http://dx.doi.org/10.1051/0004-6361/201014294</a></td>
+	 *		<td class="gen">DOI</td>
+	 *	    <td></td>
+	 *	    <td><a href="...">http://dx.doi.org/10.1051/0004-6361/201014294</a></td>
 	 *	</tr>
 	 * 
+	 *  <tr>
+	 *		<th>DOI</th>
+	 *		<td></td>
+	 *		<td><a href="...">http://dx.doi.org/10.1051/0004-6361/201014294</a></td>
+	 *	</tr>
 	 * @param document
 	 * @return
 	 */
 	private static String extractDOI(final Document document){
-		final NodeList tdS = document.getElementsByTagName("td");
+		final NodeList tdS = document.getElementsByTagName("th");
 		for (int i = 0; i < tdS.getLength(); i++) {
 			final Node node = tdS.item(i);
 			if (node.hasChildNodes()){
 				if ("DOI".equals(node.getFirstChild().getNodeValue())) {
-					return node.getParentNode().getLastChild().getFirstChild().getFirstChild().getNodeValue().replaceFirst("http:\\/\\/dx\\.doi\\.org\\/", "");
+					return node.getParentNode().getLastChild().getFirstChild().getFirstChild().getNodeValue().replaceFirst("https?:\\/\\/(dx\\.)?doi\\.org\\/", "");
 				}
 			}
 		}
@@ -151,7 +154,7 @@ public class AandAScraper extends AbstractUrlScraper implements ReferencesScrape
 		try{
 			final Matcher m = pat_link_ref.matcher(WebUtils.getContentAsString(scrapingContext.getUrl().toString()));
 			if (m.find()) {
-				String url = "http://" + scrapingContext.getUrl().getHost().toString() + m.group(1);
+				String url = m.group(1).replace("/abs/", "/ref/");
 				Matcher m2 = pat_references.matcher(WebUtils.getContentAsString(url));
 				if (m2.find()) {
 					references = m2.group(1);

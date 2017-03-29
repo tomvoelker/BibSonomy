@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -32,6 +32,7 @@ import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.webapp.command.GroupSettingsPageCommand;
@@ -40,6 +41,8 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.view.Views;
+import org.bibsonomy.wiki.CVWikiModel;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.access.AccessDeniedException;
 
 /**
@@ -49,7 +52,9 @@ import org.springframework.security.access.AccessDeniedException;
  */
 public class GroupSettingsPageController implements MinimalisticController<GroupSettingsPageCommand> {
 
-	private LogicInterface logic;
+	protected LogicInterface logic;
+	
+	private CVWikiModel wikiRenderer;
 
 	@Override
 	public GroupSettingsPageCommand instantiateCommand() {
@@ -69,7 +74,7 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 		
 		final User loginUser = command.getContext().getLoginUser();
 		command.setLoggedinUser(loginUser);
-		final Group group = this.logic.getGroupDetails(requestedGroup);
+		final Group group = this.logic.getGroupDetails(requestedGroup, false);
 		if (!present(group)) {
 			throw new AccessDeniedException("You are not a member of this group.");
 		}
@@ -96,14 +101,18 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 				command.setDescription(group.getDescription());
 				command.setPrivlevel(group.getPrivlevel().getPrivlevel());
 				command.setSharedDocuments(group.isSharedDocuments() ? 1 : 0);
+				command.setAllowJoin(group.isAllowJoin());
+				command.setDescription(group.getDescription());
 			}
 			command.setUser(groupUser);
 			
+			// initiate wiki
+			this.initiateGroupCV(groupUser, group, command);
+			
 			command.addTab(GroupSettingsPageCommand.GROUP_SETTINGS, "navi.groupsettings");
 			command.addTab(GroupSettingsPageCommand.MEMBER_LIST_IDX, "settings.group.memberList");
-			
-			// TODO: adapt cv wiki handling
-			// command.addTab(CV_IDX, "navi.cvedit");
+			command.addTab(GroupSettingsPageCommand.CV_IDX, "navi.cvedit");
+			command.addTab(GroupSettingsPageCommand.DELETE_GROUP, "settings.group.disband");
 			
 			if (!selectedByUser) {
 				command.setSelTab(GroupSettingsPageCommand.GROUP_SETTINGS);
@@ -122,10 +131,44 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 		return Views.GROUPSETTINGSPAGE;
 	}
 
+	
+	/**
+	 * Initiates the group cv page
+	 * 
+	 * @param reqUser
+	 * @param command
+	 */
+	private void initiateGroupCV(final User groupUser, final Group group, final GroupSettingsPageCommand command) {
+		final String userName = groupUser.getName();
+
+		final Wiki wiki = this.logic.getWiki(userName, null);
+		final String wikiText;
+
+		if (present(wiki)) {
+			wikiText = wiki.getWikiText();
+		} else {
+			wikiText = "";
+		}
+		
+		this.wikiRenderer.setRequestedGroup(group);
+		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
+		command.setWikiText(wikiText);
+	}
+	
 	/**
 	 * @param logic the logic to set
 	 */
 	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
+	
+	/**
+	 * @param wikiRenderer
+	 *            the wikiRenderer to set
+	 */
+	@Required
+	public void setWikiRenderer(final CVWikiModel wikiRenderer) {
+		this.wikiRenderer = wikiRenderer;
+	}
+	
 }

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -74,7 +74,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
     }
 
     /**
-     * tests {@link GoldStandardPublicationDatabaseManager#createPost(Post, org.bibsonomy.database.common.DBSession)}
+     * tests {@link GoldStandardPublicationDatabaseManager#createPost(Post, User, org.bibsonomy.database.common.DBSession)}
      */
     @Test
     public void testCreatePost() {
@@ -92,7 +92,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 
         // create post
         final Post<GoldStandardPublication> post = this.generateGoldPublication();
-        assertTrue(goldPubManager.createPost(post, this.dbSession));
+        assertTrue(goldPubManager.createPost(post, null, this.dbSession));
 
         final String interhash = post.getResource().getInterHash();
         assertNotNull(goldPubManager.getPostDetails("", interhash, "", VISIBLE_GROUPS, this.dbSession).getResource());
@@ -102,7 +102,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
     }
 
     /**
-     * tests {@link GoldStandardPublicationDatabaseManager#createPost(Post, org.bibsonomy.database.common.DBSession)}
+     * tests {@link GoldStandardPublicationDatabaseManager#createPost(Post, User, org.bibsonomy.database.common.DBSession)}
      */
     @Test
     public void updatePost() {
@@ -111,7 +111,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 
         // create post
         final Post<GoldStandardPublication> post = this.generateGoldPublication();
-        goldPubManager.createPost(post, this.dbSession);
+        goldPubManager.createPost(post, null, this.dbSession);
 
         // test listeners
         assertTrue(this.pluginMock.isOnGoldStandardCreate());
@@ -128,7 +128,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
         goldStandard.setYear(newYear);
         goldStandard.recalculateHashes();
 
-        goldPubManager.updatePost(post, interhash, null, this.dbSession, loginUser);
+        goldPubManager.updatePost(post, interhash, loginUser, null, this.dbSession);
 
         // test listeners
         assertFalse(this.pluginMock.isOnGoldStandardCreate());
@@ -153,7 +153,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 
         // create post
         final Post<GoldStandardPublication> post = this.generateGoldPublication();
-        goldPubManager.createPost(post, this.dbSession);
+        goldPubManager.createPost(post, null, this.dbSession);
 
         // test listeners
         assertTrue(this.pluginMock.isOnGoldStandardCreate());
@@ -170,7 +170,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
         goldStandard.setSchool(newSchool);
         goldStandard.recalculateHashes();
 
-        goldPubManager.updatePost(post, interhash, null, this.dbSession, loginUser);
+        goldPubManager.updatePost(post, interhash, loginUser, null, this.dbSession);
 
         // test listeners
         assertFalse(this.pluginMock.isOnGoldStandardCreate());
@@ -204,7 +204,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
     @Test(expected = DatabaseException.class)
     public void testCreateDuplicate() {
         final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", VISIBLE_GROUPS, this.dbSession);
-        goldPubManager.createPost(post, this.dbSession);
+        goldPubManager.createPost(post, null, this.dbSession);
     }
 
     /**
@@ -213,7 +213,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
     @Test(expected = DatabaseException.class)
     public void testUpdateUnkownPost() {
         final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
-        goldPubManager.updatePost(post, WRONG_INTERHASH, null, this.dbSession, loginUser);
+        goldPubManager.updatePost(post, WRONG_INTERHASH, loginUser, null, this.dbSession);
     }
 
     /**
@@ -224,7 +224,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
         final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", VISIBLE_GROUPS, this.dbSession);
         post.getResource().recalculateHashes();
         System.out.println(post.getResource().getInterHash());
-        goldPubManager.updatePost(post, INTERHASH_GOLD_2, null, this.dbSession, loginUser);
+        goldPubManager.updatePost(post, INTERHASH_GOLD_2, loginUser, null, this.dbSession);
     }
 
     /**
@@ -259,7 +259,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
         final String oldYear = standard.getYear();
         standard.setYear("2010");
         standard.recalculateHashes();
-        goldPubManager.updatePost(post, INTERHASH_GOLD_1, null, this.dbSession, loginUser);
+        goldPubManager.updatePost(post, INTERHASH_GOLD_1, loginUser, null, this.dbSession);
 
         assertTrue(this.pluginMock.isOnGoldStandardUpdate());
 
@@ -270,7 +270,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
         final GoldStandardPublication old = afterUpdate.getResource();
         old.setYear(oldYear);
         old.recalculateHashes();
-        goldPubManager.updatePost(afterUpdate, newInterHash, null, this.dbSession, loginUser);
+        goldPubManager.updatePost(afterUpdate, newInterHash, loginUser, null, this.dbSession);
 
     }
 
@@ -279,7 +279,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
         assertFalse(this.pluginMock.isOnGoldStandardDelete());
 
         // delete post
-        goldPubManager.deletePost("", interhash, this.dbSession);
+        goldPubManager.deletePost("", interhash, null, this.dbSession);
         assertNull(goldPubManager.getPostDetails("", interhash, "", null, this.dbSession));
 
         assertTrue(this.pluginMock.isOnGoldStandardDelete());

@@ -1,0 +1,25 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
+	
+	<jsp:directive.attribute name="person" type="org.bibsonomy.model.Person" required="true"/>
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="text" type="String" required="true"/>
+	<jsp:directive.attribute name="operation" type="org.bibsonomy.common.enums.PersonUpdateOperation" required="true" description="Defines the desired update operation"/>
+	
+	<c:set var="loginUserName" value="${loginUser.name}"/>
+
+	<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+		<button type="button" data-operation="${operation}" data-person-id="${command.person.personId}" class="btn btn-success btn-xs personProfileUpdate ${systemReadOnly ? 'disabled' : ''">${text}</button>
+	</c:if>
+ 
+</jsp:root>

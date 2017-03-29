@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -36,7 +36,7 @@ import org.bibsonomy.model.User;
 
 /**
  * Used to retrieve all different kind of stuff from the database.
- * 
+ *
  * @author Christian Schenk
  * @author Anton Wilhelm
  */
@@ -50,29 +50,29 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	public static GeneralDatabaseManager getInstance() {
 		return singleton;
 	}
-	
+
 	private GeneralDatabaseManager() {
 		// noop
 	}
 
 	/**
-	 * Checks whether <code>userA</code> is friend of <code>userB</code>, i.e., <strong>if 
+	 * Checks whether <code>userA</code> is friend of <code>userB</code>, i.e., <strong>if
 	 * <code>userA</code> is in <code>userB</code>'s list of friends</strong>.
 	 * <br/>
 	 * <ul>
-	 * <li>If one of the user names is empty the result will be <code>false</code>.</li> 
+	 * <li>If one of the user names is empty the result will be <code>false</code>.</li>
 	 * <li>In case the user names are equal <code>true</code> will be returned, i.e. every user is his own
 	 * friend.</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param userA
 	 *            the user who might be a friend of <code>userB</code>.
 	 * @param userB
 	 *            the user whose friendship to <code>userA</code> should be checked.
 	 * @param session
 	 *            a db session
-	 *            
-	 * @return <code>true</code> if <code>userA</code> is in <code>userB</code>'s list of friends, 
+	 *
+	 * @return <code>true</code> if <code>userA</code> is in <code>userB</code>'s list of friends,
 	 *         <code>false</code> otherwise
 	 */
 	public boolean isFriendOf(final String userA, final String userB, final DBSession session) {
@@ -107,37 +107,39 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Checks whether a user, given by userName, is a spammer. If userName is
 	 * set to null the default behaviour is to return false, i.e. no spammer.
-	 * 
+	 *
 	 * @param userName check the user with this name
 	 * @param session a db session
 	 * @return true if the user is a spammer, false otherwise
 	 */
 	public Boolean isSpammer(final String userName, final DBSession session) {
-		if (!present(userName)) return false;
+		if (!present(userName)) {
+			return false;
+		}
 		return this.queryForObject("isSpammer", userName, Boolean.class, session);
 	}
 
 	/**
 	 * Gets the next database-ID for inserting an entity with the type specified
 	 * by the idsType argument. Updates the ID generator.
-	 * 
+	 *
 	 * @param idsType type of the id to be created
 	 * @param session a db session
 	 * @return the next database-ID
 	 */
 	public Integer getNewId(final ConstantID idsType, final DBSession session) {
 		//this.updateIds(idsType, session);
-		Integer rVal = (Integer) this.insert("getNewId", idsType.getId(), session);
-		if ((rVal == null) || (rVal == -1)) {
+		final Integer rVal = (Integer) this.insert("getNewId", idsType.getId(), session);
+		if (rVal == null || rVal == -1) {
 			return null;
 		}
 		return rVal;
 	}
-	
+
 	/**
 	 * Gets the last database-ID used for inserting an entity with the type specified
 	 * by the idsType argument. Does not Update the ID generator.
-	 * 
+	 *
 	 * @param idsType type of the id to be created
 	 * @param session a db session
 	 * @return the last database-ID

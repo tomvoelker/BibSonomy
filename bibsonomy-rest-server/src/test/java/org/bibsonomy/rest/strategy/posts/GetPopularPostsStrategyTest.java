@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -55,7 +55,7 @@ public class GetPopularPostsStrategyTest extends AbstractContextTest {
 
 		// just test length, because the detail rendering output is tested by
 		// the renderer test
-		assertEquals(11254, baos.toString().length());
+		assertEquals(122, baos.toString().length());
 		assertEquals("text/xml", c.getContentType("firefox"));
 		assertEquals("bibsonomy/posts+XML", c.getContentType(RESTConfig.API_USER_AGENT));
 	}

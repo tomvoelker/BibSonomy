@@ -1,7 +1,7 @@
 /**
- * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ * BibSonomy - A blue social bookmark and publication sharing system.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -36,7 +36,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.store.LockObtainFailedException;
-import org.bibsonomy.es.ESClient;
 import org.bibsonomy.es.IndexUpdaterState;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.param.LucenePost;
@@ -65,11 +64,6 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Call
 
 	/** database logic */
 	protected LuceneDBInterface<R> dbLogic;
-
-	/**
-	 * the elasticsearch client
-	 */
-	protected ESClient esClient;
 
 	/**
 	 * the elasticsearch index name

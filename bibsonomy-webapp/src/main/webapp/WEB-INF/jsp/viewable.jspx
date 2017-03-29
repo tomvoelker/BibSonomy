@@ -9,30 +9,40 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav" 
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
+	<layout:resourceLayout  pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.viewable" formAction="${relativeUrlGenerator.getViewableUrlByGroupName(command.requestedGroup)}" formInputName="tag">
 				<jsp:attribute name="pathPart">
-					<li>
-						:: <a href="${relativeUrlGenerator.getViewableUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
-					</li>
+					<a href="${relativeUrlGenerator.getViewableUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
 				</jsp:attribute>
 			</parts:search>
 		</jsp:attribute>
 		
-		<jsp:attribute name="sidebar">
-			<ul>		
-				<rc:members group="${command.group}"/>
-				<li>
-					<span class="sidebar_h"><fmt:message key="tags"/></span>
-					<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-				</li>
-			</ul>
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" />
+					<nav:viewableCrumb requestedGroup="${command.requestedGroup}" active="${true}" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
 		</jsp:attribute>
+		
+		<jsp:attribute name="sidebar">
+			<c:set var="group" value="${command.group}" />
+			<c:if test="${mtl:isRegularGroup(group)}">
+				<sidebar:groupDetailsItem group="${group}"/>
+				<sidebar:groupMembersItem group="${group}"/>
+			</c:if>
+			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+		</jsp:attribute>
+		
+		
 	</layout:resourceLayout>
 
 </jsp:root>

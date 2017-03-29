@@ -17,6 +17,7 @@
 	<typeAlias alias="wiki"               type="org.bibsonomy.model.Wiki" />
 	<typeAlias alias="user"               type="org.bibsonomy.model.User" />
 	<typeAlias alias="userSettings"       type="org.bibsonomy.model.UserSettings" />
+	<typeAlias alias="layoutSettings"     type="org.bibsonomy.model.user.settings.LayoutSettings" />
 	<typeAlias alias="group"              type="org.bibsonomy.model.Group" />
 	<typeAlias alias="groupMembership"    type="org.bibsonomy.model.GroupMembership" />
 	<typeAlias alias="publicationReportingSettings" type="org.bibsonomy.model.GroupPublicationReportingSettings" />
@@ -70,14 +71,14 @@
 	<typeAlias alias="adminParam"         type="org.bibsonomy.database.params.AdminParam" />
 	<typeAlias alias="statisticsParam"    type="org.bibsonomy.database.params.StatisticsParam" />	
 	<typeAlias alias="tagSetParam"    	  type="org.bibsonomy.database.params.TagSetParam" />
-	<typeAlias alias="basketParam"    	  type="org.bibsonomy.database.params.BasketParam" />	
+	<typeAlias alias="clipboardParam"    	type="org.bibsonomy.database.params.ClipboardParam" />	
 	<typeAlias alias="inboxParam"			type="org.bibsonomy.database.params.InboxParam" />
 	<typeAlias alias="loggingParam"			type="org.bibsonomy.database.params.LoggingParam" />
 	<typeAlias alias="metaDataPostParam"	type="org.bibsonomy.database.params.metadata.PostParam" />
 	<typeAlias alias="wikiParam"			type="org.bibsonomy.database.params.WikiParam" />
 	
 	<typeAlias alias="discussionItemParam"	type="org.bibsonomy.database.params.discussion.DiscussionItemParam" />
-	<typeAlias alias="commentParam"		  	type="org.bibsonomy.database.params.discussion.CommentParam" />
+	<typeAlias alias="commentParam"			type="org.bibsonomy.database.params.discussion.CommentParam" />
 	<typeAlias alias="reviewParam"			type="org.bibsonomy.database.params.discussion.ReviewParam" />
 	
 	<!-- Java types  -->
@@ -97,5 +98,4 @@
 	<typeAlias alias="GroupLevelPermission"	type="org.bibsonomy.common.enums.GroupLevelPermission" />
 	
 	<typeAlias alias="LayoutSettings"    type="org.bibsonomy.model.user.settings.LayoutSettings" />
-	
 </sqlMap>

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,7 +31,6 @@ import java.util.Locale;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.UserUpdateOperation;
-import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.PostLogicInterface;
@@ -40,7 +39,7 @@ import org.bibsonomy.webapp.controller.SettingsPageController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 /**
@@ -90,18 +89,17 @@ public class UpdateUserSettingsController extends SettingsPageController {
 			 * changes the layout of tag and post for a user
 			 */
 			updateLayoutTagPost(command, user);
-		} else if ("switchLayout".equals(action)) {
-			// TODO: (bootstrap) remove complete if statement
-			user.getSettings().getLayoutSettings().setViewLayout(command.getUser().getSettings().getLayoutSettings().getViewLayout());
-			this.logic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
-			return new ExtendedRedirectView("/");
 		} else {
 			errors.reject("error.invalid_parameter");
 		}
 	
-		// success: go back where you've come from
-		// TODO: inform the user about the success!
-		return super.workOn(command);
+		final ExtendedRedirectViewWithAttributes redirectView = new ExtendedRedirectViewWithAttributes(this.urlGenerator.getSettingsUrlWithSelectedTab(SettingsViewCommand.SETTINGS_IDX));
+		if (this.errors.hasErrors()) {
+			redirectView.addAttribute(ExtendedRedirectViewWithAttributes.ERRORS_KEY, this.errors);
+		} else {
+			redirectView.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "settings.user.settings.update.success");
+		}
+		return redirectView;
 	}
 	
 	private void updateLogging(final UserSettings commandSettings, final User user) {
@@ -136,12 +134,10 @@ public class UpdateUserSettingsController extends SettingsPageController {
 		userSettings.setDefaultLanguage(commandSettings.getDefaultLanguage());
 		userSettings.setListItemcount(commandSettings.getListItemcount());
 		userSettings.setTagboxTooltip(commandSettings.getTagboxTooltip());
+		userSettings.setFavouriteLayouts(commandSettings.getFavouriteLayouts());
 		userSettings.setShowBookmark(commandSettings.isShowBookmark());
 		userSettings.setShowBibtex(commandSettings.isShowBibtex());
-		
 		userSettings.getLayoutSettings().setSimpleInterface(commandSettings.getLayoutSettings().isSimpleInterface());
-		userSettings.getLayoutSettings().setViewLayout(commandSettings.getLayoutSettings().getViewLayout());
-		
 		userSettings.setIsMaxCount(commandSettings.getIsMaxCount());
 		if (userSettings.getIsMaxCount()) {
 			userSettings.setTagboxMaxCount(command.getChangeTo());
