@@ -39,7 +39,7 @@ function deleteUrl(self, url, hash, ckey) {
 
 /**
  * Function to post the given url which is defined in form: f_addURL
- * (bibtexdetails.tagx)
+ * (publicationdetails.tagx)
  */
 $(function(){
     $(".postUrl").click(function(e) {

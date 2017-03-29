@@ -11,7 +11,7 @@
 	  <!-- goldstandard bookmarks -->
 	  {  
          "type" : "GoldStandardBookmark",
-         "id"   : "${relativeUrlGenerator.getBookmarkUrl(post.resource, null)}",
+         "id"   : "${absoluteUrlGenerator.getBookmarkUrl(post.resource)}",
          <json:abstractBookmark post="${post}" />
       }
 </jsp:root>

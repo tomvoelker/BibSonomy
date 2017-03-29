@@ -495,7 +495,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * 'sys:network:bibsonomy-friends'
 	 *
 	 * @param user
-	 * @param tags
+	 * @param tagIndex
 	 * @param userRelationTags
 	 * @param limit
 	 * @param offset
@@ -658,7 +658,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 	/**
 	 * get list of posts from resource searcher
-	 * @param resourceType
 	 * @param userName
 	 * @param requestedUserName
 	 * @param requestedGroupName
@@ -714,10 +713,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 		final P param = this.createParam(loginUserName, null, limit, offset);
 		param.setRequestedGroupName(requestedGroupName); // only set to avoid
-		// the JOIN with the
-		// group table and
-		// directly show the
-		// group name
+		// the JOIN with the group table and directly show the group name
 		param.setGroupId(groupId);
 		param.setSimHash(simHash);
 		param.addAllToSystemTags(systemTags);
@@ -737,7 +733,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param tagIndex
 	 * @param groupId - the id of the group for which the posts shall be
 	 *        viewable
-	 * @param filter
+	 * @param filters
 	 * @param limit
 	 * @param offset
 	 * @param systemTags
@@ -752,10 +748,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 		final P param = this.createParam(loginUserName, loginUserName, limit, offset);
 		param.setRequestedGroupName(requestedGroupName); // only set to avoid
-		// the JOIN with the
-		// group table and
-		// directly show the
-		// group name
+		// the JOIN with the group table and directly show the group name
 		param.setGroupId(groupId);
 		param.setTagIndex(tagIndex);
 		param.addAllToSystemTags(systemTags);
@@ -782,10 +775,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @return list of posts
 	 */
 	public List<Post<R>> getPostsForGroup(final int groupId, final List<Integer> visibleGroupIDs, final SearchType searchType,final String loginUserName, final HashID simHash, final PostAccess postAccess, final Set<Filter> filters, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		if(searchType==SearchType.FEDERATED){
-			//TODO
-		}
-
 		return this.getPostsForGroup(groupId, visibleGroupIDs, loginUserName, simHash, postAccess, filters, limit, offset, systemTags, session);
 	}
 
@@ -1459,6 +1448,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 */
 	protected void createdPost(final Post<R> post, final DBSession session) {
+		// noop
 	}
 
 	/*
@@ -1614,7 +1604,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			if (present(operation)) {
 				this.workOnOperation(post, oldPost, loginUser, operation, session);
 			} else {
-				this.performUpdateAll(post, oldPost, null, session);
+				this.performUpdateAll(post, oldPost, loginUser, session);
 			}
 			/*
 			 * systemTags perform after Update
@@ -1660,10 +1650,17 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 	protected void checkPost(final Post<R> post, final DBSession session) {
 		final R resource = post.getResource();
-		final ErrorMessage fieldLengthError = this.validator.validateFieldLength(resource, session);
-		if (present(fieldLengthError)) {
-			session.addError(PostUtils.getKeyForPost(post), fieldLengthError);
+		if (present(resource)) {
+			final ErrorMessage fieldLengthError = this.validator.validateFieldLength(resource, session);
+			if (present(fieldLengthError)) {
+				session.addError(PostUtils.getKeyForPost(post), fieldLengthError);
+			}
 		}
+		/*
+		 * we have to validate the post before checking for duplicates because the validator is
+		 * currently modifying the post
+		 */
+		this.validateModel(post, session);
 	}
 
 	private void performUpdateAll(final Post<R> post, final Post<R> oldPost, final User loggedinUser, final DBSession session) {
@@ -1824,8 +1821,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 */
 	private void insertPost(final Post<R> post, final DBSession session) {
-		boolean errors = this.validateModel(post, session);
-		if (errors) {
+		if (session.hasErrorsForKey(PostUtils.getKeyForPost(post))) {
 			// one or more errors occurred in this method
 			// => we don't want to go deeper into the process with these kinds
 			// of errors
@@ -1845,20 +1841,24 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	private boolean validateModel(final Post<R> post, final DBSession session) {
 		final List<ErrorMessage> validationErrors = this.modelValidator.validatePost(post);
-		
-		final String errorKey;
-		final R resource = post.getResource();
-		if (present(resource) && present(post.getUser())) {
-			errorKey = PostUtils.getKeyForPost(post);
-		} else {
-			errorKey = "unknown";
-		}
-		
+
+		final String errorKey = this.getErrorKeyForPost(post);
 		for (final ErrorMessage errorMessage : validationErrors) {
 			session.addError(errorKey, errorMessage);
 		}
 		
 		return present(validationErrors);
+	}
+
+	private static String getErrorKeyForPost(final Post<? extends Resource> post) {
+		final String errorKey;
+		final Resource resource = post.getResource();
+		if (present(resource) && present(post.getUser())) {
+			errorKey = PostUtils.getKeyForPost(post);
+		} else {
+			errorKey = "unknown";
+		}
+		return errorKey;
 	}
 
 	/**

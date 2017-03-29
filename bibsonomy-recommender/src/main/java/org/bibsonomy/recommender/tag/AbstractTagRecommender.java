@@ -51,7 +51,7 @@ public abstract class AbstractTagRecommender implements Recommender<Post<? exten
 	
 	/**
 	 * The maximal number of tags the recommender shall return on a call to
-	 * {@link #getRecommendation(RecommendationEntity)}.
+	 * {@link #getRecommendation(Post)}.
 	 */
 	protected int numberOfTagsToRecommend = Recommender.DEFAULT_NUMBER_OF_RESULTS_TO_RECOMMEND;
 	
@@ -68,7 +68,7 @@ public abstract class AbstractTagRecommender implements Recommender<Post<? exten
 	/**
 	 * Returns user's five overall most popular tags
 	 * 
-	 * @see recommender.core.Recommender#getRecommendation(recommender.core.interfaces.model.RecommendationEntity)
+	 * @see recommender.core.Recommender#getRecommendation(Object)
 	 */
 	@Override
 	public SortedSet<RecommendedTag> getRecommendation(final Post<? extends Resource> entity) {
@@ -85,7 +85,7 @@ public abstract class AbstractTagRecommender implements Recommender<Post<? exten
 		return this.numberOfTagsToRecommend;
 	}
 
-	/** Set the (maximal) number of tags this recommender shall return. The default is {@value #DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND}.
+	/** Set the (maximal) number of tags this recommender shall return. The default is {@value Recommender#DEFAULT_NUMBER_OF_RESULTS_TO_RECOMMEND}.
 	 * 
 	 * @param numberOfTagsToRecommend
 	 */

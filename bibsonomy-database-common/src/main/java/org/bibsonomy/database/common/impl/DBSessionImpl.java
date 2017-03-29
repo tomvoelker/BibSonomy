@@ -390,6 +390,11 @@ public class DBSessionImpl implements DBSession {
 	}
 
 	@Override
+	public boolean hasErrorsForKey(final String key) {
+		return this.errorMessages.containsKey(key);
+	}
+
+	@Override
 	protected void finalize() throws Throwable {
 		// Try to take care of other peoples mistakes. It may take a while
 		// before this is called, but it's better than nothing.

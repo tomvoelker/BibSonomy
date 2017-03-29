@@ -26,26 +26,20 @@
  */
 package org.bibsonomy.scraper.url.kde.ieee;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -75,7 +69,8 @@ public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
 	private static final String CONST_PAGES      = "On page(s): ";
 	private static final String CONST_BOOKTITLE	 = "This paper appears in: ";
 
-	private static final Pattern pattern = Pattern.compile("arnumber=([^&]*)");
+	private static final Pattern pattern = Pattern.compile("/document/([^&]*)/");
+	private static final Pattern pattern1 = Pattern.compile("arnumber=([^&]*)");
 	private static final Pattern pattern2 = Pattern.compile("chklist=([^%]*)");
 
 	
@@ -83,69 +78,39 @@ public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
 	
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		// FIXME: this should go into the path pattern!
-		if (sc.getUrl().toString().indexOf("punumber") == -1) {
-			sc.setScraper(this);
+		sc.setScraper(this);
 
-			String id = null;
-			Matcher matcher = pattern.matcher(sc.getUrl().toString());
-			if (matcher.find()) {
-				id = matcher.group(1);
-			}
-			matcher = pattern2.matcher(sc.getUrl().toString());
-			if (id == null && matcher.find()) {
-				id = matcher.group(1);
-			}
-			
-			if (id != null) {
-				String downUrl = SITE_URL + "xpl/downloadCitations";
-				String bibtex = null;
-				
-				//using own client because I do not want to configure any client to allow circular redirects
-				HttpClient client = WebUtils.getHttpClient();
-				client.getParams().setBooleanParameter(HttpClientParams.ALLOW_CIRCULAR_REDIRECTS, true);
-				
-				try {
-					// better get the page first
-					WebUtils.getContentAsString(client, sc.getUrl().toExternalForm());
-					
-					// create a post method
-					PostMethod method = new PostMethod(downUrl);
-					method.addParameter("citations-format", "citation-abstract");
-					method.addParameter("fromPage", "");
-					method.addParameter("download-format", "download-bibtex");
-					method.addParameter("recordIds", id);
+		String id = null;
+		Matcher matcher = pattern.matcher(sc.getUrl().toString());
+		if (matcher.find()) {
+			id = matcher.group(1);
+		}
+		matcher = pattern1.matcher(sc.getUrl().toString());
+		if (id == null && matcher.find()) {
+			id = matcher.group(1);
+		}
+		matcher = pattern2.matcher(sc.getUrl().toString());
+		if (id == null && matcher.find()) {
+			id = matcher.group(1);
+		}
 
-					//now get bibtex
-					bibtex = WebUtils.getPostContentAsString(client, method);
-				} catch (MalformedURLException ex) {
-					throw new InternalFailureException(ex);
-				} catch (IOException ex) {
-					throw new InternalFailureException(ex);
-				}
+		if (id != null) {
+			String bibtex = IEEEXploreStandardsScraper.getBibTeX(sc, id);
 
-				if (bibtex != null) {
-					// clean up
-					bibtex = bibtex.replace("<br>", "");
-					
-					// append url
-					bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
-					
-					// add downloaded bibtex to result 
-					sc.setBibtexResult(bibtex);
-					return true;
-
-				}
-				
-				log.debug("IEEEXploreJournalProceedingsScraper: direct bibtex download failed. Use JTidy to get bibliographic data.");
-				sc.setBibtexResult(ieeeJournalProceedingsScrape(sc));
+			if (bibtex != null) {
+				// add downloaded bibtex to result
+				sc.setBibtexResult(bibtex);
 				return true;
+
 			}
-			log.debug("IEEEXploreJournalProceedingsScraper use JTidy to get Bibtex from " + sc.getUrl().toString());
+
+			log.debug("IEEEXploreJournalProceedingsScraper: direct bibtex download failed. Use JTidy to get bibliographic data.");
 			sc.setBibtexResult(ieeeJournalProceedingsScrape(sc));
 			return true;
 		}
-		return false;
+		log.debug("IEEEXploreJournalProceedingsScraper use JTidy to get Bibtex from " + sc.getUrl().toString());
+		sc.setBibtexResult(ieeeJournalProceedingsScrape(sc));
+		return true;
 	}
 	
 	@Override

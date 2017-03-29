@@ -42,12 +42,14 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
+import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.search.es.help.HelpUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.help.HelpSearch;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.webapp.command.help.HelpPageCommand;
+import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -57,13 +59,14 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.markdown.Parser;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.Errors;
 
 /**
  * The controller for the help pages.
  *
  * @author Johannes Blum
  */
-public class HelpPageController implements MinimalisticController<HelpPageCommand>, RequestAware, ResponseAware {
+public class HelpPageController implements MinimalisticController<HelpPageCommand>, RequestAware, ResponseAware, ErrorAware {
 	/** the help home page */
 	private static final String HELP_HOME = "Main";
 	
@@ -74,7 +77,9 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	private static final String DEFAULT_PROJECT_THEME = "default";
 	
 	private static final Pattern REDIRECT_PATTERN = Pattern.compile("<!--\\s*redirect\\s*:(.*)\\s*-->");
-	
+
+	private Errors errors;
+
 	private HelpSearch search;
 	
 	private String helpPath;
@@ -147,9 +152,14 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		
 		final String requestedSearch = command.getSearch();
 		if (present(requestedSearch)) {
-			command.setSearchResults(this.search.search(language, requestedSearch));
-			this.renderSidebar(command, language, parser);
-			return Views.HELP_SEARCH;
+			try {
+				command.setSearchResults(this.search.search(language, requestedSearch));
+				this.renderSidebar(command, language, parser);
+				return Views.HELP_SEARCH;
+			} catch (final InvalidSearchRequestException e) {
+				this.errors.reject("search.invalid.query", "The entered search query is not valid.");
+				return Views.ERROR;
+			}
 		}
 		
 		/* help page request */
@@ -166,7 +176,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		
 		// parse content
 		final String markdownFile = this.getMarkdownLocation(language, helpPage);
-		try (final BufferedReader inputReader = new BufferedReader(new InputStreamReader(new FileInputStream(markdownFile), "UTF-8"))) {
+		try (final BufferedReader inputReader = new BufferedReader(new InputStreamReader(new FileInputStream(markdownFile), StringUtils.CHARSET_UTF_8))) {
 			final String text = StringUtils.getStringFromReader(inputReader);
 			
 			final Matcher matcher = REDIRECT_PATTERN.matcher(text);
@@ -195,7 +205,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		// parse sidebar
 		try {
 			final String sidebarLocation = this.getMarkdownLocation(language, HelpUtils.HELP_SIDEBAR_NAME);
-			try (final BufferedReader inputReader = new BufferedReader(new InputStreamReader(new FileInputStream(sidebarLocation), "UTF-8"))) {
+			try (final BufferedReader inputReader = new BufferedReader(new InputStreamReader(new FileInputStream(sidebarLocation), StringUtils.CHARSET_UTF_8))) {
 				final String text = StringUtils.getStringFromReader(inputReader);
 				command.setSidebar(parser.parseText(text));
 			}
@@ -226,7 +236,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		final String filename = this.getMarkdownLocation(language, pageName);
 		
 		try (final InputStream stream = new FileInputStream(new File(filename))) {
-			final BufferedReader buf = new BufferedReader(new InputStreamReader(stream));
+			final BufferedReader buf = new BufferedReader(new InputStreamReader(stream, StringUtils.CHARSET_UTF_8));
 			
 			/*
 			 * Try to find a line of form "<!-- language: localized page name -->"
@@ -306,4 +316,13 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		this.search = search;
 	}
 
+	@Override
+	public Errors getErrors() {
+		return this.errors;
+	}
+
+	@Override
+	public void setErrors(final Errors errors) {
+		this.errors = errors;
+	}
 }

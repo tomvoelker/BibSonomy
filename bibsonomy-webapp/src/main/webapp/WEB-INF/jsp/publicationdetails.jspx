@@ -150,7 +150,7 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
-			<resource:bibtexdetailsclean post="${post}" referer="${command.referer}" />
+			<resource:publicationdetailsclean post="${post}" referer="${command.referer}" />
 		</jsp:attribute>
 		
 		<jsp:attribute name="customPageOptions">

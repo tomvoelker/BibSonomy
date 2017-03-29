@@ -256,6 +256,14 @@ public class URLGenerator {
 	}
 
 	/**
+	 * @param bookmark
+	 * @return the bookmark url
+	 */
+	public String getBookmarkUrl(final Bookmark bookmark) {
+		return this.getBookmarkUrl(bookmark, (Post<? extends Resource>) null);
+	}
+
+	/**
 	 * Constructs a URL for the given resource and user. If no user is given,
 	 * the URL points to all posts for that resource.
 	 * 

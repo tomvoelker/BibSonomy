@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.nature;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -33,49 +34,45 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-
 /**
- * Scraper URL tests #45 for NatureScraper
+ * Scraper URL tests for NatureScraper
  * @author tst
  */
 @Category(RemoteTest.class)
 public class NatureScraperTest {
-
-	/**
-	 * starts URL test with id url_45
-	 
-	@Test
-	public void urlTest1Run(){
-		UnitTestRunner.runSingleTest("url_45");
-	}
-	 */
 	
 	/**
 	 * starts URL test with id url_231
 	 */
 	@Test
-	public void urlTest2Run(){
-		UnitTestRunner.runSingleTest("url_231");
+	public void urlTest2Run() {
+		final String url = "http://www.nature.com/ncomms/journal/v3/n10/full/ncomms2132.html";
+		final String resultFile = "NatureScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, NatureScraper.class, resultFile);
 	}
 	/**
 	 * starts URL test with id url_280
 	 */
 	@Test
-	public void urlTest3Run(){
-		UnitTestRunner.runSingleTest("url_280");
+	public void urlTest3Run() {
+		final String url = "http://www.nature.com/news/online-collaboration-scientists-and-the-social-network-1.15711";
+		final String resultFile = "NatureScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, NatureScraper.class, resultFile);
 	}
 	/**
 	 * starts URL test with id url_282
 	 */
 	@Test
-	public void urlTest4Run(){
-		UnitTestRunner.runSingleTest("url_282");
+	public void urlTest4Run() {
+		final String url = "http://www.nature.com/news/images-of-the-month-october-2014-1.16228";
+		final String resultFile = "w.bib";
+		assertScraperResult(url, null, NatureScraper.class, resultFile);
 	}
+
 	/**
 	 * @throws Exception
 	 */

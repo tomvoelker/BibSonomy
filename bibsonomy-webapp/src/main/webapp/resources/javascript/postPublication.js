@@ -13,7 +13,7 @@ $(function() {
 			$.scrollTo($('#publication-search'));
 		}
 	});
-	
+
 	// init title autocomplete
 	var searchInput = $('#publication-search input');
 	if (searchInput.length > 0) {
@@ -79,7 +79,13 @@ $(function() {
 		if ($('#personIndex').length > 0) {
 			showManualForm('');
 		} else {
-			searchInput.focus();
+			var anchor = window.location.hash.substr(1);
+			if (anchor.length > 0) {
+				$('button[data-target=' + anchor + ']').click();
+				$.scrollTo($('publication-functions'));
+			} else {
+				searchInput.focus();
+			}
 		}
 	}
 	
@@ -89,6 +95,8 @@ $(function() {
 	$('#delimiter').change(function(){
 		$('#whitespace').attr('disabled', $(this).val() == " ");
 	});
+
+
 });
 
 function showManualForm(titleText) {
