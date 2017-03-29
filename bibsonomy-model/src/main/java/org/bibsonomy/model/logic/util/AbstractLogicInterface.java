@@ -43,6 +43,7 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
@@ -112,6 +113,15 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public void createOrUpdatePerson(Person person) {
+		this.doDefaultAction();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#updatePerson(org.bibsonomy.model.Person, org.bibsonomy.common.enums.PersonUpdateOperation)
+	 */
+	@Override
+	public void updatePerson(Person person, PersonUpdateOperation operation) {
 		this.doDefaultAction();
 	}
 

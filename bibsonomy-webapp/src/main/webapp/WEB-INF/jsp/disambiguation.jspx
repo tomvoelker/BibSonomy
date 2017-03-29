@@ -15,6 +15,8 @@
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
 	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
@@ -22,16 +24,23 @@
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
 	xmlns:bsold="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-	xmlns:form="http://www.springframework.org/tags/form"> 
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex">	 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
+	
+	<c:set var="title" value="${mtl:cleanBibtex(command.personName)}" />
 	<c:set var="post" value="${command.bibtex.list[0]}" />
 	<c:set var="publication" value="${post.resource}" />
-	
+	<c:set var="excapedRequestPath" value="${fn:escapeXml(requPath)}" />
+			
 	<fmt:message key="navi.person" var="PersonPageTitle" />
 	<fmt:message key="disambiguation.addPersonButton" var="textAddPersonButton"/>
-	<fmt:message key="disambiguation.header" var="textHeader"/>
+	<fmt:message key="disambiguation.header" var="textHeader">
+		<fmt:param value="${title}" />
+	</fmt:message>
 	<fmt:message key="disambiguation.modalLinkPersonClose" var="textModalLinkPersonClose"/>
 	<fmt:message key="disambiguation.modalLinkPersonHeader" var="textModalLinkPersonHeader"/>
 	<fmt:message key="disambiguation.modalLinkPersonContent" var="textModalLinkPersonContent"/>
@@ -39,9 +48,10 @@
 	<fmt:message key="disambiguation.modalNewPersonHeader" var="textModalnewPersonHeader"/>
 	<fmt:message key="disambiguation.modalNewPersonContent" var="textModalNewPersonContent"/>
 	<fmt:message key="disambiguation.modalSearchPersonHeader" var="textModalSerachPersonHeader"/>
-	
-	
-	
+	<fmt:message key="disambiguation.info" var="genealogyInfo">
+		<fmt:param value="${properties['project.name']}" />
+		<fmt:param value="${title}" />
+	</fmt:message>
 	<fmt:message key="disambiguation.linkPersonButton" var="textLinkPersonButton"/>
 	<fmt:message key="disambiguation.otherPersonButton" var="textOtherPersonButton"/>
 	<fmt:message key="disambiguation.personsPanelHeader" var="textPersonsPanelHeader"/>
@@ -51,14 +61,11 @@
 	<fmt:message key="disambiguation.close" var="textClose"/>
 	<fmt:message key="disambiguation.linkJustShowPerson" var="textJustShowPerson"/>
 	
-	<c:set var="title" value="${mtl:cleanBibtex(command.personName)}" />
-	
 	<layout:paneLayout pageTitle="${title}" 
 		headerLogoClass="publications" 
 		command="${command}" 
 		requestedUser="${command.requestedUser}" 
-		requPath="${requPath}"
-		showPageOptions="${true}">
+		requPath="${requPath}">
 
 		<jsp:attribute name="headerExt">
 			<script type='text/javascript' src='/resources/javascript/disambiguation/linkPerson.js'><!-- keep me --></script>
@@ -76,9 +83,6 @@
 		
 		<jsp:attribute name="heading">
 		</jsp:attribute>
-		
-		<jsp:attribute name="sidebar">
-		</jsp:attribute>
 
 		<jsp:attribute name="content">
 			<fmt:message key="disambiguation.otherPerson" var="textOtherPerson"/>
@@ -86,102 +90,128 @@
 			<fmt:message key="disambiguation.otherPerson.modal.selectPersonButton" var="textSelectPersonButton"/>
 			<fmt:message key="disambiguation.otherPerson.modal.abortButton" var="textAbortButton"/>
 			<fmt:message key="disambiguation.otherPerson.modal.search.placeholder" var="textPersonSearchPlaceholder"/>
-			
 			<fmt:message key="disambiguation.noInfo" var="textNoFurtherInfo"/>
 			
 			<div class="page-header">
-				<h2><c:out value="${title}"/></h2>
+				<h2><c:out value="${textHeader}"/></h2>
 			</div>
 		
 			<c:if test="${not empty command.post}">
-				<h2><fmt:message key="disambiguation.fromPost"/></h2>
-						<div class="title">
-							<pub:title post="${command.post}">
-								<jsp:attribute name="bibActionButtons">
-									<div class="pull-right">
-										<actionbuttons:actions post="${command.post }" resourceType="bibtex" loginUserName="${command.context.loginUser.name}" />
-									</div>
-								</jsp:attribute>
-							</pub:title>
-						</div>
+				<fmt:message key="disambiguation.fromPost"/>
+				<div class="title">
+					<pub:title post="${command.post}" showUserPicture="${false}">
+						<jsp:attribute name="bibActionButtons">
+							<div class="pull-right">
+								<actionbuttons:actions post="${command.post }" resourceType="bibtex" loginUserName="${command.context.loginUser.name}" />
+							</div>
+						</jsp:attribute>
+					</pub:title>
+				</div>
 			</c:if>
 			
-			<div class="clearfix">&#160;</div>
-			
+			<c:set var="collapseID" value="0"/>
 			<div class="clearfix">
-				<c:if test="${not empty command.context.loginUser.name}">
-					<h2><fmt:message key="disambiguation.pleaseChooseMsg"><fmt:param value="${mtl:cleanBibtex(command.personName)}"/></fmt:message></h2>
-					<p><fmt:message key="disambiguation.listExplanation"/></p>
-						<c:choose>
-							<c:when test="${fn:length(command.personSuggestions) gt 0}">
-								<div class="list-group">
-									<c:forEach var='rel' items="${command.personSuggestions}">
-										<div class="list-group-item">
-											<c:choose>
-												<c:when test="${not empty command.context.loginUser.name}">
-													<c:set var="dataToggle" value="modal"/>
-													<c:set var="href" value="#linkPerson"/>
-													<c:set var="dataTarget" value="#linkPerson"/>
-												</c:when>
-												<c:otherwise>
-													<c:set var="dataToggle" value=""/>
-													<c:set var="href" value="${absoluteUrlGenerator.getPersonUrl(rel.person.personId)}"/>
-													<c:set var="dataTarget" value=""/>
-												</c:otherwise>
-											</c:choose>
-											<a class='btnLinkPerson' data-toggle="${dataToggle}" data-target="${dataTarget}" href="${href}" data-person-url="${absoluteUrlGenerator.getPersonUrl(rel.person.personId)}" data-person-id="${fn:escapeXml(rel.person.personId)}" >
-												${command.personRoleRenderer.getExtendedPersonName(rel, request.locale, true)}
-											</a>
-										</div>
-									</c:forEach>
-									<c:if test="${not empty command.context.loginUser.name}">
-										<div class="list-group-item">
-											<a class='btnLinkPerson' data-toggle="modal" data-target="#otherPerson" href="#otherPerson"><span class="authorName">${textOtherPerson}</span></a>
+			 	<h2><fmt:message key="disambiguation.pleaseChooseMsg" /></h2>
+				<p><fmt:message key="disambiguation.listExplanation"/></p>
+				<c:choose>
+					<c:when test="${fn:length(command.suggestedPersonPosts) gt 0}">
+						<div class="list-group">
+							<c:forEach var='rel' items="${command.suggestedPersonPosts}">								
+								<div class="list-group-item">
+									<c:choose>
+										<c:when test="${not empty command.context.loginUser.name}">
+											<c:set var="dataToggle" value="modal"/>
+											<c:set var="href" value="#linkPerson"/>
+											<c:set var="dataTarget" value="#linkPerson"/>
+										</c:when>
+										<c:otherwise>
+											<c:set var="dataToggle" value=""/>
+											<c:set var="href" value="${absoluteUrlGenerator.getPersonUrl(rel.key.person.personId)}"/>
+											<c:set var="dataTarget" value=""/>
+										</c:otherwise>
+									</c:choose>
+									
+									<!-- button link to assign the derived post to an existing person -->
+									<a class='btnLinkPerson' data-toggle="${dataToggle}" data-target="${dataTarget}" href="${href}" data-person-url="${absoluteUrlGenerator.getPersonUrl(rel.key.person.personId)}" data-person-id="${fn:escapeXml(rel.key.person.personId)}" >
+										${command.personRoleRenderer.getExtendedPersonName(rel.key, request.locale, true)}
+									</a>
+									<!-- show some publications of the person if there are any to show -->
+									<c:set var="collapseID" value="${collapseID + 1}"/>
+									<c:if test="${fn:length(rel.value) gt 0}">											
+										<a class="btn btn-default btn-xs" style="float: right;" aria-expanded="false" data-toggle="collapse" href="#collapse_${collapseID}">
+         										<span class="fa fa-expand"></span>
+       									</a>        									
+       									<div id="collapse_${collapseID}" class="collapse collapsingOverflow simplePub">													
+											<c:forEach var="posts" items="${rel.value}">
+												<per:simplePub post="${posts}" />
+											</c:forEach>
 										</div>
 									</c:if>
 								</div>
-							</c:when>
-							<c:otherwise>
-								<bsold:alert style="info">
-									<jsp:attribute name="alertBody">
-										<div>
-											<fmt:message key="disambiguation.notFound">
-												<fmt:param value="${command.personName}" />
-											</fmt:message>
-										</div>
-									</jsp:attribute>
-								</bsold:alert>
-								<bs:linkButton style="primary" href="#otherPerson" size="defaultSize" dataToggle="modal" dataTarget="#otherPerson">
-									<jsp:attribute name="content">
-										<span class="authorName">
-											<fmt:message key="disambiguation.newPerson">
-												<fmt:param value="${command.personName}" />
-											</fmt:message>
-										</span>
-									</jsp:attribute>
-								</bs:linkButton>
-							</c:otherwise>
-						</c:choose>
-					</c:if>
+							</c:forEach>
+							<!-- if user is logged in, enable to create a new person for the derived post -->
+							<c:if test="${not empty command.context.loginUser.name}">
+								<div class="list-group-item">
+									<a class='btnLinkPerson' data-toggle="modal" data-target="#otherPerson" href="#otherPerson"><span class="authorName">${textOtherPerson}</span></a>
+								</div>
+							</c:if>
+						</div>
+					</c:when>
+					<c:otherwise>
+						<bsold:alert style="info">
+							<jsp:attribute name="alertBody">
+								<div>
+									<fmt:message key="disambiguation.notFound">
+										<fmt:param value="${title}" />
+									</fmt:message>
+								</div>
+							</jsp:attribute>
+						</bsold:alert>
+						<bs:linkButton style="primary" href="#otherPerson" size="defaultSize" dataToggle="modal" dataTarget="#otherPerson">
+							<jsp:attribute name="content">
+								<span class="authorName">
+									<fmt:message key="disambiguation.newPerson">
+										<fmt:param value="${title}" />
+									</fmt:message>
+								</span>
+							</jsp:attribute>
+						</bs:linkButton>
+					</c:otherwise>
+				</c:choose>
+					
+				<!-- show more publications of authors with the same name if there are any -->			
+				<div class="clearfix">&#160;</div>
+				<h2><fmt:message key="disambiguation.otherPub" /></h2>
+				<div id="otherAuthorPublications" class="simplePub">
+					<c:forEach var="post" items="${command.suggestedPosts}">
+						<per:simplePub post="${post}" />
+					</c:forEach>					
 				</div>
+			</div>
 		</jsp:attribute>
-	
+
+		<jsp:attribute name="sidebar">
+			<sidebar:sidebarItem textKey="disambiguation.title">
+				<jsp:attribute name="content">
+					<c:out value="${genealogyInfo}"></c:out>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
+		</jsp:attribute>
 	</layout:paneLayout>
 	
+	<!-- create new person for this publication -->
 	<fmt:message var="otherPersonModalTitle" key="disambiguation.otherPerson.modal.title"/>
 	<bsold:modal modalTitle="${otherPersonModalTitle}" id="otherPerson">
 		<jsp:attribute name="modalBody">
-			<p>
-				<fmt:message key="disambiguation.otherPerson.modal.msg"><fmt:param value="${command.personName}"/></fmt:message>
-			</p>
+			<p><fmt:message key="disambiguation.otherPerson.modal.msg"><fmt:param value="${title}"/></fmt:message></p>
+
 			<ul class="nav nav-tabs">
 				<li class="active"><a href="#newPerson" data-toggle="tab"><fmt:message key="disambiguation.otherPerson.modal.tab.newPerson"/></a></li>
 				<li><a href="#existingPerson" data-toggle="tab"><fmt:message key="disambiguation.otherPerson.modal.tab.linkPerson"/></a></li>
 			</ul>
-			<div id="otherPersonTabs" class="tab-content">
 			
-				<div class="tab-pane active" id="newPerson">
-					
+			<div id="otherPersonTabs" class="tab-content">
+				<div class="tab-pane active" id="newPerson">					
 					<form:form action="${absoluteUrlGenerator.getDisambiguationUrl(command.requestedHash, command.requestedRole, command.requestedIndex)}" id="form_newPerson" method="POST" cssClass="form-horizontal">
 						<fieldset>
 							<input type="hidden" name="requestedAction"   value="newPerson" />
@@ -219,16 +249,13 @@
 						</fieldset>
 					</form:form>
 				</div>
-				
 			</div>
 		</jsp:attribute>
+		
 		<jsp:attribute name="modalFooter">
 		</jsp:attribute>
+		
 	</bsold:modal>
-	
-	
-	
-	
 	
 	<fmt:message var="otherPersonModalTitle" key="disambiguation.link.modal.title"/>
 	<bsold:modal modalTitle="${otherPersonModalTitle}" id="linkPerson">
@@ -236,13 +263,11 @@
 			<p><fmt:message key="disambiguation.link.modal.msg"/></p>
 		</jsp:attribute>
 		<jsp:attribute name="modalFooter">
-		
 			<div class="form-group">
 				<div class="col-sm-8 col-md-4 col-lg-4">
 					<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="disambiguation.link.modal.abortButton"/></button>&#160;
 				</div>
 				<div class="col-sm-4 col-md-8 col-lg-8">
-
 					<form:form action="${absoluteUrlGenerator.getDisambiguationUrl(command.requestedHash, command.requestedRole, command.requestedIndex)}" id="formLinkPerson" method="POST" cssClass="">
 						<input type="hidden" name="requestedAction"   value="linkPerson" />
 						<input type="hidden" name="requestedPersonId" value="" id="fieldLinkPersonId" />

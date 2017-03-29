@@ -142,7 +142,7 @@
 								<c:when test="${groupHasMembers}">
 									<fmt:message var="deluser" key="settings.group.delUser.button"/>
 									<fmt:message var="deluserTitle" key="settings.group.delUser.button.title"/>
-									<table class="table table-striped">
+									<table class="table table-striped" data-toggle="table">
 										<thead>
 											<tr>
 												<th class="col-md-3" data-field="name" data-sortable="true"><fmt:message key="navi.username" /></th>
