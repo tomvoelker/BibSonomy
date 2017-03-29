@@ -17,9 +17,21 @@
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 
-	<div class="col-md-12">		
-		<span class="ptitle"><bib:title post="${post}" /></span>
-		<span class="personPdesc pdesc"><bib:desc post="${post}" publication="${post.resource}"/></span><br/>
+	<div class="simplePubEntry" 
+		data-year="${mtl:getDate('', '', post.resource.year, locale)}" 
+		data-author="${post.resource.author}" 
+		data-title="${mtl:cleanBibtex(post.resource.title)}">
+		
+		<div class="simplePubFirstLine">		
+			<span class="simplePubTitle"><bib:title post="${post}" />
+				<span class="simplePubYear"><bib:year publication="${post.resource}" braces="true" /></span>
+			</span>
+		</div>
+		
+		
+		<div class="clearflat"><!-- KEEP ME --></div>
+		<span class="simplePubAuthor"><bib:author publication="${post.resource}" post="${post}" /></span>
+		<span class="simplePubPublisher"><bib:publisher publication="${post.resource}" noComma="true" /></span>
 	</div>
-
+	
 </jsp:root>

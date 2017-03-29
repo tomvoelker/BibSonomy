@@ -1,4 +1,70 @@
+function replaceFaClass(div) {
+    sortOrdering = $(div).data('ordering');
+    
+    if (sortOrdering == 'ASC') {
+    	
+    	if ($('span', div).hasClass('fa-sort-alpha-asc')) {
+    		$('span', div).removeClass('fa-sort-alpha-asc');
+    		$('span', div).addClass('fa-sort-alpha-desc');
+    	}
+    	
+    	else if ($('span', div).hasClass('fa-sort-numeric-asc')) {
+    		$('span', div).removeClass('fa-sort-numeric-asc');
+    		$('span', div).addClass('fa-sort-numeric-desc');
+    	}
+    	
+    } else {
+    	
+    	if ($('span', div).hasClass('fa-sort-alpha-desc')) {
+    		$('span', div).removeClass('fa-sort-alpha-desc');
+    		$('span', div).addClass('fa-sort-alpha-asc');
+    	}
+    	
+    	else if ($('span', div).hasClass('fa-sort-numeric-desc')) {
+    		$('span', div).removeClass('fa-sort-numeric-desc');
+    		$('span', div).addClass('fa-sort-numeric-asc');
+    	}
+    }
+    
+	
+
+}
+
 $(document).ready(function() {
+	
+	$('.pubSort').click(function() {
+	    sortBy = $(this).data('sort');
+	    sortOrdering = $(this).data('ordering');
+	    sourceDiv = "#"+$(this).data('div');
+	    
+	    var $divs = $(sourceDiv+" div.simplePubEntry");
+	    
+	    var opOrder = $divs.sort(function (a, b) {
+	    	if (sortOrdering == 'ASC') {	    		
+	    		return $(a).data(sortBy) > $(b).data(sortBy);
+	    	} else {
+	    		return $(a).data(sortBy) < $(b).data(sortBy);
+	    	}
+	    });
+	    
+	    if (sortOrdering == 'ASC') {
+	    	$(this).data('ordering', 'DESC');
+	    } else {
+	    	$(this).data('ordering', 'ASC');
+	    }
+	    
+	    $('.pubSort').each(function() {
+	    	$(this).css('color', '#ccc');
+	    });
+	    
+	    $(this).css('color', '#333');
+	    
+	    replaceFaClass(this);
+	     
+	    $(sourceDiv).html(opOrder)
+
+	});
+	
 	
 	// toggle view/hide all available roles
 	$(".personPageShowAdditionalRoleFields").click(function() {

@@ -22,7 +22,8 @@
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
-	xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"> 
+	xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
@@ -92,15 +93,11 @@
 
 			<script type='text/javascript' src='/resources/javascript/person/roles.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/titleAutocomplete.js'><!-- keep me --></script>
-			
+
 			<script type='text/javascript' src='/resources/javascript/person/personPage.js'><!-- keep me --></script>
 			
-			<script type="text/javascript" src="${resdir}/javascript/bs/bootstrap-table.js"><!-- keep me --></script>
-			<link rel="stylesheet" type="text/css" href="${resdir}/css/bootstrap-table.css" />
-			<script type="text/javascript" src="${resdir}/javascript/bs/bootstrap-table-locale-all.js"><!-- keep me --></script>
-			
-			
 			<link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
+
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading"></jsp:attribute>
@@ -489,45 +486,61 @@
 				</div>
 			</div>
 			
+			
 			<!-- Other publications -->
 			<c:if test="${fn:length(command.otherPubs) gt 0}">
-				<h3 class="list-headline"><fmt:message key="person.show.otherPub" /></h3>
-				<div id="otherPublications" class="personPageTable table-responsive">
-					<table class="table table-striped personOtherPublicationTable" data-toggle="table">
-						<thead>
-							<tr>
-								<th data-field="title" data-sortable="true"><fmt:message key="post.resource.title" /></th>
-								<th data-field="author" data-sortable="true"><fmt:message key="post.resource.author" /></th>
-								<th data-field="year" data-sortable="true"><fmt:message key="post.resource.year" /></th>
-							</tr>
-						</thead>
-						<c:forEach var="post" items="${command.otherPubs}">
-							<per:simplePubViewTable post="${post}" />
-						</c:forEach>
-					</table>
-				</div>		
+			<div style="clear: both;">
+				<h3 class="list-headline">
+					<fmt:message key="person.show.otherPub" />
+					
+					<div class="pull-right btn-group dropdown-align-right all-resources-menu">
+						<div class="btn-group">
+							<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
+							<ul class="dropdown-menu">
+								<li class="dropdown-header"><fmt:message key="post.meta.sort.criterion" /></li>
+								<li class="enabled"><span data-div="otherPublications" data-sort="year" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="clock-o" spaceAfter="5" /><fmt:message key="post.resource.year"/></span></li>
+								<li><span data-div="otherPublications" data-sort="title" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.title"/></span></li>
+								<li><span data-div="otherPublications" data-sort="author" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.author"/></span></li>
+							</ul>
+						</div>
+					</div>
+				</h3>
+				
+				<div id="otherPublications">
+					<c:forEach var="post" items="${command.otherPubs}">
+						<per:simplePubView post="${post}" />
+					</c:forEach>
+				</div>
+				
+			</div>
 			</c:if>
-			
+
 			
 			<!-- Other publications of similar authors -->
 			<c:if test="${fn:length(command.similarAuthorPubs) gt 0}">
-				<h3 class="list-headline"><fmt:message key="person.show.otherPubOfSimilarAuthor" /></h3>
-				<div id="otherPublicationsOfSimialrAuthor" class="personPageTable table-responsive">
+			<div style="clear: both;">
+				<h3 class="list-headline">
+					<fmt:message key="person.show.otherPubOfSimilarAuthor" />
 					
-					<table class="table table-striped personOtherPublicationOfSimialrAuthorTable" data-toggle="table">
-						<thead>
-							<tr>
-								<th data-field="title" data-sortable="true"><fmt:message key="post.resource.title" /></th>
-								<th data-field="author" data-sortable="true"><fmt:message key="post.resource.author" /></th>
-								<th data-field="year" data-sortable="true"><fmt:message key="post.resource.year" /></th>
-							</tr>
-						</thead>
-						<c:forEach var="post" items="${command.similarAuthorPubs}">
-							<per:simplePubViewTable post="${post}" />
-						</c:forEach>
-					</table>
-					
+					<div class="pull-right btn-group dropdown-align-right all-resources-menu">
+						<div class="btn-group">
+							<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
+							<ul class="dropdown-menu">
+								<li class="dropdown-header"><fmt:message key="post.meta.sort.criterion" /></li>
+								<li class="enabled"><span data-div="otherPublicationsOfSimialrAuthor" data-sort="year" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="clock-o" spaceAfter="5" /><fmt:message key="post.resource.year"/></span></li>
+								<li><span data-div="otherPublicationsOfSimialrAuthor" data-sort="title" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.title"/></span></li>
+								<li><span data-div="otherPublicationsOfSimialrAuthor" data-sort="author" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.author"/></span></li>
+							</ul>
+						</div>
+					</div>
+				</h3>
+				
+				<div id="otherPublicationsOfSimialrAuthor">
+					<c:forEach var="post" items="${command.similarAuthorPubs}">
+						<per:simplePubView post="${post}" />
+					</c:forEach>
 				</div>
+			</div>
 			</c:if>
 
 					
