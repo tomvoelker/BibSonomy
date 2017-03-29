@@ -204,7 +204,11 @@ public final class RestServlet extends HttpServlet {
 
 	@Override
 	public void doHead(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-		this.validateAuthorization(request);
+		try {
+			this.validateAuthorization(request);
+		} catch (final AuthenticationException e) {
+			this.handleAuthenticationException(request, response, e);
+		}
 	}
 
 	/**
@@ -277,9 +281,7 @@ public final class RestServlet extends HttpServlet {
 
 			cachingStream.writeTo(response.getOutputStream());
 		} catch (final AuthenticationException e) {
-			log.info(e.getMessage());
-			response.setHeader("WWW-Authenticate", "Basic realm=\"" + this.additionalInfos.get(PROJECT_NAME_KEY) + "WebService\"");
-			this.sendError(request, response, HttpURLConnection.HTTP_UNAUTHORIZED, e.getMessage());
+			this.handleAuthenticationException(request, response, e);
 		} catch (final InternServerException e) {
 			log.error(e.getMessage());
 			this.sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
@@ -318,6 +320,12 @@ public final class RestServlet extends HttpServlet {
 			// well, lets fetch each and every error...
 			this.sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 		}
+	}
+
+	private void handleAuthenticationException(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException {
+		log.info(e.getMessage());
+		response.setHeader("WWW-Authenticate", "Basic realm=\"" + this.additionalInfos.get(PROJECT_NAME_KEY) + "WebService\"");
+		this.sendError(request, response, HttpURLConnection.HTTP_UNAUTHORIZED, e.getMessage());
 	}
 
 	protected static String getMainContentType(final HttpServletRequest request) {

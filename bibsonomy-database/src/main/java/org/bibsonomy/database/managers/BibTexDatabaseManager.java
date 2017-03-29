@@ -467,7 +467,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		final List<Document> documents = post.getResource().getDocuments();
 		if (present(documents)) {
 			for (final Document document : documents) {
-				if (document.isTemp()) {
+				if (document.isTemp() &&
+						!this.docDb.checkForExistingDocuments(post.getUser().getName(), post.getResource().getIntraHash(), document.getFileName(), session)) {
 					try {
 						final String fileName = document.getFileHash();
 						log.debug("adding temp file " + fileName);

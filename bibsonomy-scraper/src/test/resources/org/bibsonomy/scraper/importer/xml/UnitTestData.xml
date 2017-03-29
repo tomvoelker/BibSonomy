@@ -189,12 +189,6 @@
 		<Enabled>true</Enabled>
 		<AdditionalInfo>This file has dos formatted line endings</AdditionalInfo>
 	</URLTest>
-	<URLTest id="url_40">
-		<TestDescription>Scraping test for IEEE computer society scraper</TestDescription>
-		<URL>http://www.computer.org/csdl/proceedings/dexa/2006/2641/00/26410603-abs.html</URL>
-		<BibFile>IEEEComputerSocietyScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_54">
 		<TestDescription>D-Lib scraping test (html page)</TestDescription>
 		<URL>http://www.dlib.org/dlib/january08/smith/01smith.html</URL>
@@ -640,12 +634,6 @@
 		<BibFile>EricScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.eric.EricScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_137">
-		<TestDescription>Scraping test for IEEE computer society scraper (new url schema)</TestDescription>
-		<URL>http://www.computer.org/csdl/proceedings/dexa/2006/2641/00/26410603-reference.bib</URL>
-		<BibFile>IEEEComputerSocietyScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_139">
 		<TestDescription>Test for scientificcommons.org</TestDescription>
 		<URL>http://en.scientificcommons.org/39659008</URL>
@@ -820,18 +808,6 @@
 		<BibFile>JournalogyScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.journalogy.JournalogyScraper</Scraper>
 		<Enabled>true</Enabled>
-	</URLTest>
-		<URLTest id="url_207">
-		<TestDescription>scraping test for Google Books</TestDescription>
-		<URL>http://books.google.com/books?id=OhstAAAAYAAJ&amp;source=gbs_slider_gbs_user_shelves_1040_homepage</URL>
-		<BibFile>GoogleBooksScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.googlebooks.GoogleBooksScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_208">
-		<TestDescription>scraping test for Google Books</TestDescription>
-		<URL>http://books.google.com/books?id=zZ3CAAAACAAJ&amp;dq=deutscher+dokumentartag+1991&amp;hl=en&amp;ei=g1m6Tr71KObY4QT4v_SWCA&amp;sa=X&amp;oi=book_result&amp;ct=result&amp;resnum=1&amp;ved=0CCwQ6AEwAA</URL>
-		<BibFile>GoogleBooksScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.googlebooks.GoogleBooksScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_211">
 		<TestDescription>URL test for http://jap.physiology.org/</TestDescription>
@@ -1201,12 +1177,6 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.akademiai.AkademiaiScraper</Scraper>
 		<!-- 404 -->
 		<Enabled>false</Enabled>
-	</URLTest>
-	<URLTest id="url_283">
-		<TestDescription>Scraping test for IEEE computer society scraper PDF</TestDescription>
-		<URL>http://www.computer.org/csdl/mags/co/2001/02/r2026.pdf</URL>
-		<BibFile>IEEEComputerSocietyScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_285">
 		<TestDescription>scraping test for journal page from nowpublishers.com</TestDescription>

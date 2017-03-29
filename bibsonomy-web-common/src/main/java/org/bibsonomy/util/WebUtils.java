@@ -321,8 +321,7 @@ public class WebUtils {
 	public static String getContentAsString(final URL inputURL) throws IOException {
 		return getContentAsString(inputURL, null);
 	}
-	
-	
+
 	/**
 	 * Reads from a URL and writes the content into a string.
 	 * 

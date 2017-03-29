@@ -29,11 +29,34 @@
 		<property name="config" ref="authConfig" />
 		<property name="authFilterMap">
 			<map key-type="org.bibsonomy.common.enums.AuthMethod">
-				<entry key="INTERNAL"><list><ref bean="internalUsernamePasswordFilter" /></list></entry>
-				<entry key="LDAP"><list><ref bean="ldapUsernamePasswordFilter" /></list></entry>
-				<entry key="SAML"><list><ref bean="samlHttpsPretedingFilter"/><ref bean="samlFilter" /><ref bean="samlLoginFilter" /><ref bean="samlAutoLoginFilter"/></list></entry>
-				<entry key="OPENID"><list><ref bean="openidFilter" /></list></entry>
-				<entry key="HTTPBASIC"><list><ref bean="httpBasicAuthenticationFilter" /></list></entry>
+				<entry key="INTERNAL">
+					<list>
+						<ref bean="internalUsernamePasswordFilter" />
+					</list>
+				</entry>
+				<entry key="LDAP">
+					<list>
+						<ref bean="ldapUsernamePasswordFilter" />
+					</list>
+				</entry>
+				<entry key="SAML">
+					<list>
+						<ref bean="samlHttpsPretedingFilter"/>
+						<ref bean="samlFilter" />
+						<ref bean="samlLoginFilter" />
+						<ref bean="samlAutoLoginFilter"/>
+					</list>
+				</entry>
+				<entry key="OPENID">
+					<list>
+						<ref bean="openidFilter" />
+					</list>
+				</entry>
+				<entry key="HTTPBASIC">
+					<list>
+						<ref bean="httpBasicAuthenticationFilter" />
+					</list>
+				</entry>
 			</map>
 		</property>
 		<property name="authRememberMeFilterMap">

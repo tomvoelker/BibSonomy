@@ -155,7 +155,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	 * user.
 	 * 
 	 * @param requestedUser
-	 * @param loginUserName
+	 * @param loginUser
 	 * @return true if and only if the user logged in may see the picture of the
 	 *         user requested
 	 */

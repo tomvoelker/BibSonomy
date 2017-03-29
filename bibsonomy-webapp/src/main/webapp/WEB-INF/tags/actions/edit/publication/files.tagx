@@ -38,7 +38,15 @@
 									<!-- link to document -->
 									<a class="document-filename edit-added-files" href="/documents/${command.post.resource.intraHash}/${mtl:encodePathSegment(command.post.user.name)}/${mtl:encodePathSegment(document.fileName)}"><c:out value="${document.fileName}"/></a>
 									<!-- link for delete document -->
-									<bs:linkButton onclick="return deleteFunction(this);" additionalClass="delete-document" href="/ajax/documents?intraHash=${command.intraHashToUpdate}&amp;fileName=${document.fileName}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete" size="xsmall" style="defaultStyle" icon="times" />
+									<c:url var="deleteDocumentUrl" value="/ajax/documents">
+										<c:param name="ownerName" value="${command.post.user.name}" />
+										<c:param name="intraHash" value="${command.intraHashToUpdate}"/>
+										<c:param name="fileName" value="${document.fileName}" />
+										<c:param name="ckey" value="${ckey}" />
+										<c:param name="temp" value="false" />
+										<c:param name="action" value="delete" />
+									</c:url>
+									<bs:linkButton onclick="return deleteFunction(this);" additionalClass="delete-document" href="${deleteDocumentUrl}" size="xsmall" style="defaultStyle" icon="times" />
 								</li>
 							</c:forEach>
 						</ul>
