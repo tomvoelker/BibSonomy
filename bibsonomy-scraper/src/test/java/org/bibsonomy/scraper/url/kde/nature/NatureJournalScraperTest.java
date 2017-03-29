@@ -24,30 +24,39 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.phcogres;
+package org.bibsonomy.scraper.url.kde.nature;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.bibsonomy.scraper.url.kde.biorxiv.BioRxivScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * @author hagen
+ * Scraper URL tests for NatureJournalScraper
  *
+ * @author Johannes
  */
 @Category(RemoteTest.class)
-public class PharmacognosyResearchScraperTest {
-	
+public class NatureJournalScraperTest {
+
 	/**
-	 * starts URL test with id url_251
+	 * 
 	 */
 	@Test
-	public void urlTestRun(){
-		final String url = "http://www.phcogres.com/article.asp?issn=0974-8490;year=2009;volume=1;issue=4;spage=172;epage=174;aulast=Shuge;t=6";
-		final String resultFile = "PharmacognosyResearchScraperUnitURLTest1.bib";
-		assertScraperResult(url, null, PharmacognosyResearchScraper.class, resultFile);
+	public void urlTest1Run(){
+		final String url = "http://www.nature.com/nrn/journal/v18/n1/full/nrn.2016.150.html";
+		final String resultFile = "NatureJournalScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, NatureJournalScraper.class, resultFile);
+	}
+	
+	/**
+	 * 
+	 */
+	@Test
+	public void urlTest2Run(){
+		final String url = "http://www.nature.com/onc/journal/v34/n38/full/onc2014416a.html";
+		final String resultFile = "NatureJournalScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, NatureJournalScraper.class, resultFile);
 	}
 }

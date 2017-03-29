@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.inspire;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -49,7 +50,9 @@ public class InspireScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_196");
+		final String url = "http://inspirehep.net/record/920296";
+		final String resultFile = "InspireScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, InspireScraper.class, resultFile);
 	}
 	@Test
 	public void testReferences() throws Exception{

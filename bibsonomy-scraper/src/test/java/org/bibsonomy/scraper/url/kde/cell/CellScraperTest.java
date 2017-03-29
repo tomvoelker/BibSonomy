@@ -26,8 +26,11 @@
  */
 package org.bibsonomy.scraper.url.kde.cell;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.url.kde.biorxiv.BioRxivScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -43,7 +46,10 @@ public class CellScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_144");
+		final String url = "http://www.cell.com/cell/abstract/S0092-8674(09)00271-2";
+		final String resultFile = "CellScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, CellScraper.class, resultFile);
+		
 	}
 
 	/**
@@ -51,7 +57,9 @@ public class CellScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_145");
+		final String url = "http://www.cell.com/biophysj/abstract/S0006-3495(09)00310-5";
+		final String resultFile = "CellScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, CellScraper.class, resultFile);
 	}
 
 }
