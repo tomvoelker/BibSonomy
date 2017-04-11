@@ -100,7 +100,7 @@
 				<fmt:message key="disambiguation.fromPost"/>
 				<div class="title">
 					<pub:title post="${command.post}" showUserPicture="${false}">
-						<jsp:attribute name="bibActionButtons">
+						<jsp:attribute name="pubActionButtons">
 							<div class="pull-right">
 								<actionbuttons:actions post="${command.post }" resourceType="bibtex" loginUserName="${command.context.loginUser.name}" />
 							</div>
