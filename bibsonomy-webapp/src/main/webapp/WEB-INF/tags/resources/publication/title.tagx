@@ -10,8 +10,7 @@
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	
-	<!-- TODO: (bootstrap) rename to pubActionButttons -->
-	<jsp:directive.attribute name="bibActionButtons" fragment="true" required="false"/>
+	<jsp:directive.attribute name="pubActionButtons" fragment="true" required="false"/>
 	<jsp:directive.attribute name="showUserPicture" type="java.lang.Boolean" required="false" />
 	
 	<c:set var="pubTitle" value="${mtl:cleanBibtex(post.resource.title)}" />
