@@ -28,16 +28,12 @@ package org.bibsonomy.scraper.url.kde.ieee;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.Scraper;
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.bibsonomy.scraper.junit.RemoteTestAssert;
-import org.bibsonomy.scraper.url.kde.bibsonomy.BibSonomyScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #40 for IEEEComputerSocietyScraper
+ * Scraper URL tests for IEEEComputerSocietyScraper
  * @author tst
  *
  */
@@ -48,8 +44,7 @@ public class IEEEComputerSocietyScraperTest {
 	 * starts URL test with id url_40
 	 */
 	@Test
-	public void url1TestRun(){
-//		UnitTestRunner.runSingleTest("url_40");
+	public void url1TestRun() {
 		final String url = "http://www.computer.org/csdl/proceedings/dexa/2006/2641/00/26410603-abs.html";
 		final String resultFile = "IEEEComputerSocietyScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, IEEEComputerSocietyScraper.class, resultFile);
@@ -59,8 +54,7 @@ public class IEEEComputerSocietyScraperTest {
 	 * starts URL test with id url_137
 	 */
 	@Test
-	public void url2TestRun(){
-//		UnitTestRunner.runSingleTest("url_137");
+	public void url2TestRun() {
 		final String url = "http://www.computer.org/csdl/proceedings/dexa/2006/2641/00/26410603-reference.bib";
 		final String resultFile = "IEEEComputerSocietyScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, IEEEComputerSocietyScraper.class, resultFile);
@@ -70,8 +64,7 @@ public class IEEEComputerSocietyScraperTest {
 	 * starts URL test with id url_283
 	 */
 	@Test
-	public void url3TestRun(){
-//		UnitTestRunner.runSingleTest("url_283");
+	public void url3TestRun() {
 		final String url = "http://www.computer.org/csdl/mags/co/2001/02/r2026.pdf";
 		final String resultFile = "IEEEComputerSocietyScraperUnitURLTest3.bib";
 		assertScraperResult(url, null, IEEEComputerSocietyScraper.class, resultFile);

@@ -32,6 +32,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
+import org.bibsonomy.common.exceptions.UserNotFoundException;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -66,7 +67,7 @@ public class WikiCvPageController extends ResourceListController implements Mini
 
 		// prevent showing cv pages of deleted and not existing users and groups
 		if (!present(requestedUserWithDetails.getName())) {
-			throw new ObjectNotFoundException(requestedUser);
+			throw new UserNotFoundException(requestedUser);
 		}
 
 		// check if the requested type is a group and then, if the requested

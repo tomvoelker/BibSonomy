@@ -61,18 +61,21 @@ public class SuccessHandler extends SavedRequestAwareAuthenticationSuccessHandle
 			final User user = adapter.getUser();
 			
 			/* 
-			 * add spammer cookie
+			 * add spammer and user cookie
 			 */
 			final CookieLogic logic = new CookieLogic();
 			logic.setResponseLogic(new ResponseLogic(response));
 			logic.addSpammerCookie(user.isSpammer());
-			// we need to create a session before the parent method redirects to
-			// the authentication success url. This prevents
-			// "IllegalStateException: Cannot create a session after the response has been committed"
-			// which would otherwise be trigered by the
-			// UsernameSecurityContextRepository called from Spring's
-			// SecurityContextPersistenceFilter after the redirect has already
-			// been sent on the same request.
+			logic.addUserCookie(user);
+
+			/*
+			 * we need to create a session before the parent method redirects to
+			 * the authentication success url. This prevents
+			 * "IllegalStateException: Cannot create a session after the response has been committed"
+			 * which would otherwise be triggered by the
+			 * UsernameSecurityContextRepository called from Spring's
+			 * SecurityContextPersistenceFilter after the redirect has already been sent on the same request.
+			 */
 			request.getSession();
 		}
 		

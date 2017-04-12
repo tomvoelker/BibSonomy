@@ -48,8 +48,8 @@ import recommender.core.util.RecommendationResultComparator;
 
 /**
  * This recommender realizes a mix of Collaborative Filtering and Content-Based recommender approaches.
- * At first the items of the similar users are collected. Then those are compared to the items of the requesting user using the cosine
- * similarity over an inverted index data structure using the tf-idf weighting measurement.
+ * At first the items of the similar users are collected. Then those are compared to the items of the requesting
+ * user using the cosine similarity over an inverted index data structure using the tf-idf weighting measurement.
  * 
  * The score of the recommendations is equal to the computed cosine similarity.
  * 
@@ -123,7 +123,7 @@ public class ContentBasedItemRecommender<R extends Resource> extends AbstractIte
 		
 		// calculate similarity of each item to all items of the requesting user
 		for (final Post<R> toCheck : userItems) {
-			double similarity = calculateSimilarity(toCheck, requestingUserItems, requestingUserTitles, invertedIndex, idfs, saveDocuments);
+			final double similarity = calculateSimilarity(toCheck, requestingUserItems, requestingUserTitles, invertedIndex, idfs, saveDocuments);
 			
 			if (similarity != 0) {
 				RecommendedPost<R> recItem = new RecommendedPost<R>();
@@ -165,12 +165,12 @@ public class ContentBasedItemRecommender<R extends Resource> extends AbstractIte
 		final Map<String, Double> idfs = new HashMap<String, Double>();
 		// compute idf weights and add those to the final index
 		final int size = invertedIndex.keySet().size() + 1; // TODO: + 1?
-		for (String key : invertedIndex.keySet()) {
+		for (final String key : invertedIndex.keySet()) {
 			idfs.put(key, Double.valueOf(Math.log(size / (double) invertedIndex.get(key).size())));
 		}
 		
 		// compute vector length for each vector
-		for (String key : invertedIndex.keySet()) {
+		for (final String key : invertedIndex.keySet()) {
 			for (IndexEntry<? extends Resource> entry : invertedIndex.get(key)) {
 				entry.getDoc().setLength(entry.getDoc().getLength() + Math.pow(entry.getTf() * idfs.get(key).doubleValue(), 2));
 			}
@@ -183,13 +183,11 @@ public class ContentBasedItemRecommender<R extends Resource> extends AbstractIte
 	 * computes the inverted index over the corpus of all given documents
 	 * 
 	 * @param requestingUserItems the items of the requesting user
-	 * @param useritems the items of the similar users
-	 * @param invertedIndex the inverted index 
-	 * @param idfs a map which maps tokens to idfs
+	 * @param userItems the items of the similar users
 	 * @param saveDocuments  a list of documents with their lengths
 	 * @return the inverted index
 	 */
-	public Map<String, List<IndexEntry<? extends Resource>>> calculateInvertedIndex(final List<Post<?>> requestingUserItems, final List<Post<R>> useritems, final Map<String, Document<? extends Resource>> saveDocuments) {
+	public Map<String, List<IndexEntry<? extends Resource>>> calculateInvertedIndex(final List<Post<?>> requestingUserItems, final List<Post<R>> userItems, final Map<String, Document<? extends Resource>> saveDocuments) {
 		final Map<String, List<IndexEntry<? extends Resource>>> invertedIndex = new HashMap<String, List<IndexEntry<? extends Resource>>>();
 		
 		for (final Post<? extends Resource> item : requestingUserItems) {
@@ -206,7 +204,7 @@ public class ContentBasedItemRecommender<R extends Resource> extends AbstractIte
 			}
 		}
 		
-		for (final Post<? extends Resource> item : useritems) {
+		for (final Post<? extends Resource> item : userItems) {
 			final Document<? extends Resource> doc = createDoc(item);
 			saveDocuments.put(String.valueOf(doc.getItem().getContentId()), doc); // TODO: remove valueOf
 			final Map<String, IndexEntry<? extends Resource>> documentEntries = calculateIndexEntries(doc);
@@ -280,7 +278,6 @@ public class ContentBasedItemRecommender<R extends Resource> extends AbstractIte
 	 * @param invertedIndex 
 	 * @param idfs a map which maps tokens to their idfs
 	 * @param saveDocuments a list of documents with their lengths
-	 * @param requestingUserItems the list of items belonging to the requesting user
 	 * 
 	 * @return a similarity value -> the bigger the better
 	 */
@@ -341,21 +338,21 @@ public class ContentBasedItemRecommender<R extends Resource> extends AbstractIte
 			}
 		}
 		
-		//prevent division by zero if no item containing a token was found
-		if (similarities.keySet().size() == 0) {
+		// prevent division by zero if no item containing a token was found
+		if (similarities.size() == 0) {
 			return 0.0;
 		}
 		
 		final double toCheckLength = saveDocuments.get(String.valueOf(toCheck.getContentId())).getLength();
-		for (Integer item : similarities.keySet()) {
+		for (final Integer item : similarities.keySet()) {
 			similarities.put(item, similarities.get(item)/(saveDocuments.get(String.valueOf(item)).getLength()*toCheckLength));
 		}
 		
-		for (Integer key : similarities.keySet()) {
+		for (final Integer key : similarities.keySet()) {
 			similarity += similarities.get(key);
 		}
 		
-		similarity /= similarities.keySet().size();
+		similarity /= similarities.size();
 		
 		return similarity;
 	}

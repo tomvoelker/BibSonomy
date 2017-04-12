@@ -58,14 +58,13 @@ public class BioRxivScraper extends GenericBibTeXURLScraper{
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		try {
-			//using url gives a FileNotFoundException, url.toString() doesn't
+			// using url gives a FileNotFoundException, url.toString() doesn't
 			final String content = WebUtils.getContentAsString(url.toString(), cookies);
 			final Matcher m = BIBTEX_PATTERN.matcher(content);
 			if (m.find()) {
 				return SITE_URL + m.group(1);
 			}
 		} catch (final IOException e) {
-			e.printStackTrace();
 			throw new ScrapingException(e);
 		}
 		return null;
