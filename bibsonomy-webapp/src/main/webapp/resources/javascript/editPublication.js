@@ -21,23 +21,26 @@ var fields = ["booktitle","journal","volume","number","pages","publisher","addre
 		"howpublished","institution","organization",
 		"school","series","crossref","misc"];
 
-var inproceedingsField = ["publisher","booktitle","volume","number","series","pages","address","month","organization","misc.DOI","note"];
+var inproceedingsField = ["publisher","booktitle","volume","number","series","pages","address","month","organization","misc.language","misc.DOI","misc.ISBN","misc.ISSN","misc.eventdate","misc.eventtitle","misc.venue","note"];
 
 var requiredForType = {
-        "article":["journal","volume","number","pages","month","misc.DOI","note"],
-        "book":["publisher","volume","number","series","address","edition","month","misc.DOI","note"],
-        "booklet":["howpublished","address","month","misc.DOI","note"],
+        "article":["journal","volume","number","pages","month","misc.language","misc.DOI","misc.ISBN","misc.ISSN","note"],
+        "book":["publisher","volume","number","series","address","edition","month","misc.language","misc.DOI","misc.ISBN","note"],
+        "booklet":["howpublished","address","month","misc.language","misc.DOI","misc.ISBN","note"],
         "conference":inproceedingsField,
-        "inbook":["chapter","pages","publisher","volume","number","series","type","address","edition","month","misc.DOI","note"],
-        "incollection":["publisher","booktitle","volume","number","series","type","chapter","pages","address","edition","month","misc.DOI","note"],
+        "inbook":["chapter","pages","publisher","volume","number","series","type","address","edition","month","misc.language","misc.DOI","misc.ISBN","note"],
+        "incollection":["publisher","booktitle","volume","number","series","type","chapter","pages","address","edition","month","misc.language","misc.DOI","misc.ISBN","note"],
         "inproceedings":inproceedingsField,
-        "manual":["organization","address","edition","month","misc.DOI","note"],
-        "masterthesis":["school","type","address","month","misc.DOI","note"],
-        "misc":["howpublished","month","misc.DOI","note"],
-        "phdthesis":["school","address","type","month","misc.DOI","note"],
-        "proceedings":["publisher","volume","number","series","address","month","misc.DOI","organization","note"],
-        "techreport":["institution","number","type","address","month","misc.DOI","note"],
-        "unpublished":["misc.DOI","note"]
+        "manual":["organization","address","edition","month","misc.language","misc.DOI","misc.ISBN","note"],
+        "masterthesis":["school","type","address","month","misc.language","misc.DOI","misc.ISBN","note"],
+        "misc":["howpublished","month","misc.language","misc.DOI","note"],
+        "phdthesis":["school","address","type","month","misc.language","misc.DOI","misc.ISBN","note"],
+        "proceedings":["publisher","volume","number","series","address","month","misc.language","misc.DOI","misc.ISBN","misc.eventdate","misc.eventtitle","misc.venue","organization","note"],
+        "techreport":["institution","number","type","address","month","misc.language","misc.DOI","note"],
+        "unpublished":["misc.language", "misc.DOI","misc.ISBN", "misc.ISSN","misc.eventdate","misc.eventtitle","misc.venue","note"],
+		"periodical":["misc.language", "misc.DOI", "misc.ISSN","note"],
+		"presentation":["misc.language","misc.eventdate","misc.eventtitle","misc.venue","note"],
+		"electronic":["misc.language","misc.DOI","note"]
 }
 
 /* update view when user selects another type of publication in list */

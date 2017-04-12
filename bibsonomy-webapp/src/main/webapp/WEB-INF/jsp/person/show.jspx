@@ -75,6 +75,8 @@
 	<fmt:message key="person.show.thatsMeButton" var="textThatsMeButton" />
 	<fmt:message key="person.show.thatsMeLabel" var="textThatsMeLabel" />
 	
+	<fmt:message key="person.show.TooltipLockedForm" var="formLockedTooltip" />
+	
 	<c:set var="title" value="${mtl:cleanBibtex(command.person.mainName.firstName)} ${mtl:cleanBibtex(command.person.mainName.lastName)}" />
 	
 	<layout:paneLayout pageTitle="${title}" 
@@ -224,7 +226,7 @@
 												<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
 											</c:when>
 											<c:otherwise>
-												TODO INFO SIGN + TEXT
+												<span data-toggle="tooltip" title="${formLockedTooltip}" class="personPageLockedForm fa fa-info-circle"><!--  --></span>
 											</c:otherwise>
 										</c:choose>
 
@@ -251,10 +253,16 @@
 								
 								<div class="col-md-8">
 									<div class="personPageFormPlaceholder">
-										<!-- Only visible if te loginUser claimed this person -->
-										<c:if test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
-											<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
-										</c:if>
+										<c:choose>
+											<!-- Only visible if the loginUser claimed this person -->
+											<c:when test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
+												<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
+											</c:when>
+											<c:otherwise>
+												<span data-toggle="tooltip" title="${formLockedTooltip}" class="personPageLockedForm fa fa-info-circle"><!--  --></span>
+											</c:otherwise>
+										</c:choose>
+
 										<span class="personPageFormFieldContent" id="personPageFormHomepageValue">${command.person.homepage}</span> 
 									</div>
 									

@@ -32,7 +32,7 @@
 
 		<div class="media-body" id="titletext">
 			<h1 class="media-heading" id="pubtitle">
-				<jsp:invoke fragment="bibActionButtons" />
+				<jsp:invoke fragment="pubActionButtons" />
 				<span itemprop="name"><c:out value="${pubTitle}" /></span>
 			</h1>
 
