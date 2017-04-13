@@ -75,6 +75,7 @@
 	<fmt:message key="person.show.thatsMeButton" var="textThatsMeButton" />
 	<fmt:message key="person.show.thatsMeLabel" var="textThatsMeLabel" />
 	
+	<fmt:message key="person.show.thatsNotMeButton" var="textThatsNotMeButton" />
 	<fmt:message key="person.show.TooltipLockedForm" var="formLockedTooltip" />
 	
 	<c:set var="title" value="${mtl:cleanBibtex(command.person.mainName.firstName)} ${mtl:cleanBibtex(command.person.mainName.lastName)}" />
@@ -143,6 +144,14 @@
 			<form method='post' name='personForm' id="personForm" action="" class='form-horizontal'>
 				<input type="hidden" name="ckey" value="${ckey}"/>
 				<input type="hidden" name="personId" value="${command.person.personId}"/>
+				<c:choose>
+					<c:when test='${not empty command.person.user and not empty command.context.loginUser.name and command.person.user eq command.context.loginUser.name}'>
+						<input type="hidden" id="formThatsMe" name="formThatsMe" value="true"/>
+					</c:when>
+					<c:otherwise>
+						<input type="hidden" id="formThatsMe" name="formThatsMe" value="false"/>
+					</c:otherwise>
+				</c:choose>
 
 				<div class="page-header">
 					
@@ -153,7 +162,9 @@
 					<div class="form-group">
 						<h1>
 							<div class="personPageFormPlaceholder">
-								<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
+								<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+									<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
+								</c:if>
 								<span class="personPageFormFieldContent" id="personPageFormAcademicDegreeValue">${command.person.academicDegree}</span>
 							</div>
 							<div class="personPageFormField">
@@ -194,16 +205,18 @@
 							
 							<!-- College -->						
 							<div class='form-group'>
-								<label class="control-label col-md-4 col-smallpadding" for='formCollege'>College</label>
+								<label class="control-label col-md-4 col-smallpadding" for='ege'>College</label>
 								
 								<div class="col-md-8">
 									<div class="personPageFormPlaceholder">
-										<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
-										<span class="personPageFormFieldContent" id="personPageFormCollegeValue">${command.person.college}</span> 
+										<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+											<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
+										</c:if>
+										<span class="personPageFormFieldContent" id="personPageegeValue">${command.person.college}</span> 
 									</div>
 									
 									<div class="personPageFormField col-md-8">
-										<input class='form-control' type="text" name='person.college' id="formCollege" value="${command.person.college}"/>
+										<input class='form-control' type="text" name='person.college' id="ege" value="${command.person.college}"/>
 									</div>
 									
 									<!-- TODO: REMOVE INLINE CSS -->
@@ -216,7 +229,7 @@
 							<!-- FIXME TODO THE FOLLOWING FIELDS CAN ONLY BE EDITED IF THE EDITOR IS THE OWNER OF THE PAGE -->
 							<!-- Email -->						
 							<div class='form-group'>
-								<label class="control-label col-md-4 col-smallpadding" for='formCollege'>Email</label>
+								<label class="control-label col-md-4 col-smallpadding" for='ege'>Email</label>
 								
 								<div class="col-md-8">
 									<div class="personPageFormPlaceholder">
@@ -236,7 +249,7 @@
 									<!-- Only visible if te loginUser claimed this person -->
 									<c:if test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
 										<div class="personPageFormField col-md-8">
-											<input class='form-control' type="text" name='person.email' id="formEmail" value="${command.person.college}"/>
+											<input class='form-control' type="text" name='person.email' id="formEmail" value="${command.person.email}"/>
 										</div>
 										
 										<!-- TODO: REMOVE INLINE CSS -->
@@ -249,7 +262,7 @@
 							
 							<!-- Homepage -->						
 							<div class='form-group'>
-								<label class="control-label col-md-4 col-smallpadding" for='formCollege'>Homepage</label>
+								<label class="control-label col-md-4 col-smallpadding" for='ege'>Homepage</label>
 								
 								<div class="col-md-8">
 									<div class="personPageFormPlaceholder">
@@ -298,62 +311,7 @@
 						<!-- ????????????????????????????????????????????????????????????????????????????????????????????? -->	
 						<!-- ????????????????????????????????????????????????????????????????????????????????????????????? -->	
 						
-						
-						
-						<!-- It's me -->
-						<!-- 
-						<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-							<div class='form-group'>
-								<label class="control-label col-md-4" for='thatsMe'>${textThatsMeLabel}</label>
-									<div class="col-md-6">
-										<div class="checkbox"><label>
-											<c:choose>
-												<c:when test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
-													<input type="checkbox" name='formThatsMe' id='formThatsMe' checked="checked" /> ${textThatsMeButton}
-												</c:when>
-												<c:when test='${not empty command.person.user}'>
-													<a href="${absoluteUrlGenerator.getUserUrlByUserName(command.person.user)}"><c:out value="${command.person.user}"/></a>
-												</c:when>
-												<c:otherwise>
-													<input type="checkbox" name='formThatsMe' id='formThatsMe' /> ${textThatsMeButton}
-												</c:otherwise>
-											</c:choose>
-										</label>
-									</div>
-								</div>
-							</div>
-						</c:if>
-						 -->
-							
-						<!-- 
-						<div class="row">
-							<div class='col-md-4'>&#160;</div>
-							<div class="col-md-6">
-							 -->
-								<!-- 
-								<c:choose>
-									<c:when test='${command.person.user eq null}'>
-										${textThatsMeButton}
-										<c:set var="displayLinkButton" value='display:none'/>
-										<c:set var="displayUnlinkButton" value='' />
-									</c:when>
-									<c:otherwise>
-										<c:set var="displayLinkButton" value=''/>
-										<c:set var="displayUnlinkButton" value='display:none' />
-									</c:otherwise>
-								</c:choose>
-								<button style='${displayLinkButton}' type='button' id='btnLink' class='btn btn-default' data-toggle="modal" data-target="#linkPerson">${textThatsMeButton}</button>
-								<button style='${displayUnlinkButton}' type='button' id='btnUnlink' class='btn btn-default' data-toggle="modal" data-target="#unlinkPerson">${textThatsNotMeButton}</button>
-								-->
-								<!--  
-								<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-									<button id='btnSaveSubmit' data-person-id="${command.person.personId}" type='button' class="btn btn-primary pull-right ${systemReadOnly ? 'disabled' : '' }">${textSaveButton}</button>
-								</c:if>
-							</div>
-						</div>
-						-->
-						
-						
+			
 					</div>
 					<div class="col-md-6">
 						
@@ -388,21 +346,6 @@
 										</c:otherwise>
 									</c:choose>
 									
-										
-									<!-- 
-									<div class='checkbox' id='personName_${name.personNameChangeId}'>
-											<label><input type='radio' name='formSelectedName' value='${name.personNameChangeId}' checked='checked' /> ${name.firstName} ${name.lastName}</label>&#160;
-											</div>
-										<c:otherwise>
-											<div class='checkbox' id='personName_${name.personNameChangeId}'><label><input type='radio' name='formSelectedName' value='${name.personNameChangeId}' /> ${name.firstName} ${name.lastName}</label>&#160;
-												<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-													<span data-person-name-id='${name.personNameChangeId}' data-firstName='${name.firstName}' data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_${name.personNameChangeId}' class='removeName fa fa-remove'></span>
-												</c:if>
-											</div>
-										</c:otherwise>
-									</c:choose>
-									-->
-									
 									<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
 										<bsform:button size="xsmall" value="${textAddAlternateNameButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addName" />
 									</c:if>
@@ -418,7 +361,9 @@
 							
 							<div class="col-md-6">
 								<div class="personPageFormPlaceholder">
-									<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
+									<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+										<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
+									</c:if>
 									<span class="personPageFormFieldContent" id="personPageFormOrcidValue">${command.person.orcid}</span> 
 								</div>
 								<div class="personPageFormField col-md-8">

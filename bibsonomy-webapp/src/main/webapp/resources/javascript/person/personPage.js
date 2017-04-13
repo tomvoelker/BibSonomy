@@ -100,6 +100,8 @@ $(document).ready(function() {
 	$(".personProfileUpdate").on("click", function() {
 		parent = $(this).parents('.form-group');
 		
+		thatsMe = $("#formThatsMe").val();
+		
 		// save the form values to update the preview
 		orcid =  $("#formOrcid").val();
 		academicDegree = $("#formAcademicDegree").val();
@@ -114,6 +116,8 @@ $(document).ready(function() {
 		form_data.push({name: "formAction", value: "update"});
 		form_data.push({name: "updateOperation", value: $(this).attr("data-operation")});
 		form_data.push({name: "formPersonId", value: $(this).attr("data-person-id")});
+		form_data.push({name: "formThatsMe", value: thatsMe});
+		
 		
 		$.post("/person", form_data).done(function(data) {
 			// error handling
@@ -126,6 +130,7 @@ $(document).ready(function() {
 				$("#personPageFormAcademicDegreeValue").text(academicDegree);
 				$("#personPageFormOrcidValue").text(orcid);
 				$("#personPageFormCollegeValue").text(college);
+				$("#personPageFormEmailValue").text(email);
 				$("#personPageFormHomepageValue").text(homepage);
 				
 				// TODO put success text somewhere??
