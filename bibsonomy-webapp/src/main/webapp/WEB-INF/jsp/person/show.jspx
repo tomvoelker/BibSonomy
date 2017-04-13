@@ -129,7 +129,7 @@
 								<span class="personPageFormFieldContent" id="personPageFormAcademicDegreeValue">${command.person.academicDegree}</span>
 							</div>
 							<div class="personPageFormField">
-								<input class='form-control' type="text" name='person.academicDegree' id='formAcademicDegree' placeholder="Dr" autocomplete="off" value="${command.person.academicDegree}" />
+								<input class='form-control' type="text" name='person.academicDegree' id='formAcademicDegree' placeholder="Dr." autocomplete="off" value="${command.person.academicDegree}" />
 							</div>
 							
 							<!-- TODO: REMOVE INLINE CSS -->
@@ -165,18 +165,18 @@
 							
 							<!-- College -->						
 							<div class='form-group'>
-								<label class="control-label col-md-4 col-smallpadding" for='ege'>College</label>
+								<label class="control-label col-md-4 col-smallpadding" for='formCollege'><fmt:message key="person.show.college" /></label>
 								
 								<div class="col-md-8">
 									<div class="personPageFormPlaceholder">
 										<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
 											<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
 										</c:if>
-										<span class="personPageFormFieldContent" id="personPageegeValue">${command.person.college}</span> 
+										<span class="personPageFormFieldContent" id="personPageFormCollegeValue">${command.person.college}</span> 
 									</div>
 									
 									<div class="personPageFormField col-md-8">
-										<input class='form-control' type="text" name='person.college' id="ege" value="${command.person.college}"/>
+										<input class='form-control' type="text" name='person.college' id="formCollege" value="${command.person.college}"/>
 									</div>
 									
 									<!-- TODO: REMOVE INLINE CSS -->
@@ -188,7 +188,7 @@
 							
 							<!-- Email -->						
 							<div class='form-group'>
-								<label class="control-label col-md-4 col-smallpadding" for='ege'>Email</label>
+								<label class="control-label col-md-4 col-smallpadding" for='formEmail'><fmt:message key="person.show.email" /></label>
 								
 								<div class="col-md-8">
 									<div class="personPageFormPlaceholder">
@@ -210,7 +210,8 @@
 									<!-- Only visible if te loginUser claimed this person -->
 									<c:if test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
 										<div class="personPageFormField col-md-8">
-											<input class='form-control' type="text" name='person.email' id="formEmail" value="${command.person.email}"/>
+											<fmt:message key="person.show.email.placeholder" var="textEmailPlaceholder" />
+											<input class='form-control' type="text" name='person.email' id="formEmail" placeholder="${textEmailPlaceholder}" value="${command.person.email}"/>
 										</div>
 										
 										<!-- TODO: REMOVE INLINE CSS -->
@@ -223,7 +224,7 @@
 							
 							<!-- Homepage -->						
 							<div class='form-group'>
-								<label class="control-label col-md-4 col-smallpadding" for='ege'>Homepage</label>
+								<label class="control-label col-md-4 col-smallpadding" for='formHomepage'><fmt:message key="person.show.homepage" /></label>
 								
 								<div class="col-md-8">
 									<div class="personPageFormPlaceholder">
@@ -242,8 +243,9 @@
 									
 									<!-- Only visible if te loginUser claimed this person -->
 									<c:if test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
-										<div class="personPageFormField col-md-8">
-											<input class='form-control' type="text" name='person.homepage' id="formHomepage" placeholder="TODO College" value="${command.person.homepage}"/>
+										<div class="personPageFormField col-md-8">										
+											<fmt:message key="person.show.homepage.placeholder" var="textHomepagePlaceholder" />
+											<input class='form-control' type="text" name='person.homepage' id="formHomepage" placeholder="${textHomepagePlaceholder}" value="${command.person.homepage}"/>
 										</div>
 										
 										<!-- TODO: REMOVE INLINE CSS -->
