@@ -123,7 +123,7 @@
 					<div class="form-group">
 						<h1>
 							<div class="personPageFormPlaceholder">
-								<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+								<c:if test="${empty command.person.user or (not empty command.person.user and (command.person.user eq command.context.loginUser.name)) and not command.context.loginUser.spammer}">
 									<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
 								</c:if>
 								<span class="personPageFormFieldContent" id="personPageFormAcademicDegreeValue">${command.person.academicDegree}</span>
@@ -169,7 +169,7 @@
 								
 								<div class="col-md-8">
 									<div class="personPageFormPlaceholder">
-										<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+										<c:if test="${empty command.person.user or (not empty command.person.user and (command.person.user eq command.context.loginUser.name)) and not command.context.loginUser.spammer}">
 											<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
 										</c:if>
 										<span class="personPageFormFieldContent" id="personPageFormCollegeValue">${command.person.college}</span> 
@@ -306,7 +306,7 @@
 							
 							<div class="col-md-6">
 								<div class="personPageFormPlaceholder">
-									<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+									<c:if test="${empty command.person.user or (not empty command.person.user and (command.person.user eq command.context.loginUser.name)) and not command.context.loginUser.spammer}">
 										<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
 									</c:if>
 									<span class="personPageFormFieldContent" id="personPageFormOrcidValue">${command.person.orcid}</span> 

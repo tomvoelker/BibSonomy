@@ -318,7 +318,7 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setPerson(person);
 		
 		// ???
-		command.getPerson().setUser(command.isFormThatsMe() ? AuthenticationUtils.getUser().getName() : null);
+		//command.getPerson().setUser(command.isFormThatsMe() ? AuthenticationUtils.getUser().getName() : null);
 				
 		try {	
 			if (operation != null) {
