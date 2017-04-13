@@ -175,9 +175,9 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void updatePerson(Person person, DBSession session) {
 		session.beginTransaction();
 		try {
-			this.plugins.onPersonUpdate(person.getPersonId(), session);
 			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("updatePerson", person, session);
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -192,9 +192,9 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void updateOrcid(Person person, DBSession session) {
 		session.beginTransaction();
 		try {
-			this.plugins.onPersonUpdate(person.getPersonId(), session);
 			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("updateOrcid", person, session);
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -209,9 +209,9 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void updateAcademicDegree(Person person, DBSession session) {
 		session.beginTransaction();
 		try {
-			this.plugins.onPersonUpdate(person.getPersonId(), session);
 			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("updateAcademicDegree", person, session);
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -226,9 +226,9 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void updateCollege(Person person, DBSession session) {
 		session.beginTransaction();
 		try {
-			this.plugins.onPersonUpdate(person.getPersonId(), session);
 			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("updateCollege", person, session);
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -243,9 +243,9 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void updateEmail(Person person, DBSession session) {
 		session.beginTransaction();
 		try {
-			this.plugins.onPersonUpdate(person.getPersonId(), session);
 			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("updateEmail", person, session);
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -260,9 +260,9 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void updateHomepage(Person person, DBSession session) {
 		session.beginTransaction();
 		try {
-			this.plugins.onPersonUpdate(person.getPersonId(), session);
 			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("updateHomepage", person, session);
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -301,8 +301,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			rel.setPersonRelChangeId(personRelChangeId);
 			rel.setChangedBy(loginUser);
 			rel.setChangedAt(new Date());
-			this.plugins.onPubPersonDelete(rel, databaseSession);
 			this.delete("removeResourceRelation", Integer.valueOf(personRelChangeId), databaseSession);
+			this.plugins.onPubPersonDelete(rel, databaseSession);
 			databaseSession.commitTransaction();
 		} finally {
 			databaseSession.endTransaction();
@@ -320,8 +320,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			person.setPersonNameChangeId(personNameChangeId);
 			person.setChangedAt(new Date());
 			person.setChangedBy(loginUser);
-			this.plugins.onPersonNameDelete(person, databaseSession);
 			this.delete("removePersonName", Integer.valueOf(personNameChangeId), databaseSession);
+			this.plugins.onPersonNameDelete(person, databaseSession);
 			databaseSession.commitTransaction();
 		} finally {
 			databaseSession.endTransaction();
@@ -339,8 +339,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void unlinkUser(String username, DBSession session) {
 		session.beginTransaction();
 		try {
-			this.plugins.onPersonUpdateByUserName(username, session);
 			this.update("unlinkUser", username, session);
+			this.plugins.onPersonUpdateByUserName(username, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -436,9 +436,9 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void updatePersonName(PersonName newNameWithOldId, DBSession session) {
 		session.beginTransaction();
 		try {
-			this.plugins.onPersonNameUpdate(newNameWithOldId.getPersonNameChangeId(), session);
 			this.delete("removePersonName", newNameWithOldId.getPersonNameChangeId(), session);
 			this.createPersonName(newNameWithOldId, session);
+			this.plugins.onPersonNameUpdate(newNameWithOldId.getPersonNameChangeId(), session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
