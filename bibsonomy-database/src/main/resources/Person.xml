@@ -112,7 +112,7 @@
 	</select>
 	
 	<update id='unlinkUser' parameterClass="java.lang.String">
-		UPDATE person set user_name = null WHERE user_name = #username#
+		UPDATE person set user_name = null, email = null, homepage = null WHERE user_name = #username#
 	</update>
 	
 	<statement id="getPosts" resultMap="BibTexCommon.bibtexPost">
