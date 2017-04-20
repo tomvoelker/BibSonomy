@@ -1,37 +1,37 @@
+/**
+ * Simple helper function that replaces the font awesome sort icons
+ * according to the acutal sort order
+ * @param 	div		the div where the icon is located
+ * @returns
+ */
 function replaceFaClass(div) {
     sortOrdering = $(div).data('ordering');
     
     if (sortOrdering == 'ASC') {
-    	
     	if ($('span', div).hasClass('fa-sort-alpha-asc')) {
     		$('span', div).removeClass('fa-sort-alpha-asc');
     		$('span', div).addClass('fa-sort-alpha-desc');
     	}
-    	
     	else if ($('span', div).hasClass('fa-sort-numeric-asc')) {
     		$('span', div).removeClass('fa-sort-numeric-asc');
     		$('span', div).addClass('fa-sort-numeric-desc');
     	}
-    	
     } else {
-    	
     	if ($('span', div).hasClass('fa-sort-alpha-desc')) {
     		$('span', div).removeClass('fa-sort-alpha-desc');
     		$('span', div).addClass('fa-sort-alpha-asc');
     	}
-    	
     	else if ($('span', div).hasClass('fa-sort-numeric-desc')) {
     		$('span', div).removeClass('fa-sort-numeric-desc');
     		$('span', div).addClass('fa-sort-numeric-asc');
     	}
     }
-    
-	
-
 }
+
 
 $(document).ready(function() {
 	
+	// handles the sorting for the publication lists
 	$('.pubSort').click(function() {
 	    sortBy = $(this).data('sort');
 	    sortOrdering = $(this).data('ordering');
@@ -65,6 +65,8 @@ $(document).ready(function() {
 
 	});
 	
+	// orcid formatter
+	$("#formOrcid").mask("9999-9999-9999-9999");
 	
 	// toggle view/hide all available roles
 	$(".personPageShowAdditionalRoleFields").click(function() {

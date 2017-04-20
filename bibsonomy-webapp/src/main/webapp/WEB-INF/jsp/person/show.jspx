@@ -58,6 +58,8 @@
 			<script type='text/javascript' src='/resources/javascript/person/roles.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/titleAutocomplete.js'><!-- keep me --></script>
 
+			<script type='text/javascript' src='/resources/jquery/plugins/jquery.maskedinput.js'><!-- keep me --></script>
+
 			<script type='text/javascript' src='/resources/javascript/person/personPage.js'><!-- keep me --></script>
 			
 			<link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
@@ -211,7 +213,7 @@
 									<c:if test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
 										<div class="personPageFormField col-md-8">
 											<fmt:message key="person.show.email.placeholder" var="textEmailPlaceholder" />
-											<input class='form-control' type="text" name='person.email' id="formEmail" placeholder="${textEmailPlaceholder}" value="${command.person.email}"/>
+											<input class='form-control' type="email" name='person.email' id="formEmail" placeholder="${textEmailPlaceholder}" value="${command.person.email}"/>
 										</div>
 										
 										<!-- TODO: REMOVE INLINE CSS -->
@@ -309,10 +311,10 @@
 									<c:if test="${empty command.person.user or (not empty command.person.user and (command.person.user eq command.context.loginUser.name)) and not command.context.loginUser.spammer}">
 										<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
 									</c:if>
-									<span class="personPageFormFieldContent" id="personPageFormOrcidValue">${command.person.orcid}</span> 
+									<span class="personPageFormFieldContent" id="personPageFormOrcidValue">${mtl:beatifyOrcid(command.person.orcid)}</span> 
 								</div>
 								<div class="personPageFormField col-md-8">
-									<input class='form-control' type="text" name='person.orcid' id='formOrcid' placeholder="${textOrcidId}" value="${command.person.orcid}"/>
+									<input class='form-control' type="text" name='person.orcid' id='formOrcid' placeholder="${textOrcidId}" value="${mtl:beatifyOrcid(command.person.orcid)}"/>
 								</div>
 								
 								<!-- TODO: REMOVE INLINE CSS -->

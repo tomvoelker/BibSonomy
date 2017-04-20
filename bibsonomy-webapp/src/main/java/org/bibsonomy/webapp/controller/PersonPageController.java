@@ -298,10 +298,9 @@ public class PersonPageController extends SingleResourceListController implement
 		PersonUpdateOperation operation = command.getUpdateOperation();
 		JSONObject jsonResponse = new JSONObject();
 		
-		
 		// set all attributes that might be updated
 		person.setAcademicDegree(command.getPerson().getAcademicDegree());
-		person.setOrcid(command.getPerson().getOrcid());
+		person.setOrcid(command.getPerson().getOrcid().replaceAll("-", ""));
 		person.setCollege(command.getPerson().getCollege());
 		
 		// TODO only allow updates if the editor "is" this person
