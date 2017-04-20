@@ -48,21 +48,21 @@ function changeView(showAll) {
 	var requiredFields = requiredForType[document.getElementById('post.resource.entrytype').value];
 	var message = getString('post.resource.fields.detailed.show.all');
 	var noRequiredFields = (requiredFields === undefined); 
-	var collpase = document.getElementById('collapse');
+	var collapse = $('#collapse');
 	
 	if (showAll || noRequiredFields) {
 		requiredFields = fields;
 		if (noRequiredFields) {
-			$(collapse).parent().addClass("hidden");
+			collapse.parent().addClass("hidden");
 		} else {
 			message = getString('post.resource.fields.detailed.show.required');
-			$(collapse).parent().removeClass("hidden");
+			collapse.parent().removeClass("hidden");
 		}
 	} else {
-		$(collapse).parent().removeClass("hidden");
+		collapse.parent().removeClass("hidden");
 	}
 	
-	collapse.firstChild.nodeValue = message;
+	collapse.text(message);
 	
 	for (var i = 0; i < fields.length; i++) {
 		var bibtexField = fields[i];
@@ -80,7 +80,7 @@ function changeView(showAll) {
 	if (showAll || in_array(requiredFields, "misc")) {
 		$(MISC_EXPERT_SELECTOR).show();
 		$(MISC_ADD_CONTAINER_SELECTOR).show();
-		$("#miscDiv").show();
+		$("#extraFieldsWrap").show();
 	} else {
 		var hasMiscField = false;
 		$.each(requiredFields, function(index, item){
@@ -107,15 +107,19 @@ function changeView(showAll) {
 				$(this).remove();
 			}
 		});
-		
-		$(MISC_ADD_CONTAINER_SELECTOR).hide();
-		
-		if (!hasMiscField && !$("#post\\.resource\\.misc").val()){
-			$("#miscDiv").hide();
-		}
 
-		$(MISC_EXPERT_SELECTOR).hide();
+		if (!miscFieldHasError()) {
+			// don't show misc field gui, only show the required misc fields
+			$(MISC_EXPERT_SELECTOR).hide();
+			$(MISC_ADD_CONTAINER_SELECTOR).hide();
+			$('#extraFieldsWrap').hide();
+		}
 	}
+}
+
+function miscFieldHasError() {
+	var miscField = $("#post\\.resource\\.misc");
+	return miscField.closest('.form-group').hasClass('has-error');
 }
 
 /* checks if element is member of given array */
@@ -222,32 +226,6 @@ function activateAffixEntry (el) {
 			$(g).removeClass("active");
 	});
 }
-
-$(function() {
-	$("#post\\.resource\\.entrytype").change(function(e) {
-		changeView($("#collapse").data("showAll"));	
-	});
-	
-	$("#collapse").click(function(e){
-		toggleView();
-	});
-	// load only, when extended fields are available                                                                                              
-	//if (document.getElementById("post.resource.publisher")) toggleView();
-	toggleView();
-	
-	var hash = $("#post\\.resource\\.interHash").val();
-	if(hash == -1 || hash == undefined)
-		return;
-	$.ajax({
-		url: '/json/bibtex/1' + hash + "?items=100",
-		dataType: "jsonp",
-		success: function (data) {
-		if(data.items != undefined) 
-			buildGoodPostSuggestion(data);
-		}
-	});
-});
-
 
 /**
  * provide each input field with suggestions from multiple post values passed as json data 
@@ -423,6 +401,7 @@ $(document).ready(function() {
 	var add_button = $("#add_field_button"); // add button ID
 	var misc = $("#post\\.resource\\.misc");
 	var miscFieldValues = [];
+	var miscError = miscFieldHasError();
 	
 	/*
 	 * functions
@@ -431,11 +410,13 @@ $(document).ready(function() {
 		// check if there are any extraInputs, if not, adds "misc" as labeltext
 		var title = getString('post.resource.misc.tooltipRemove');
 		if ($('.extraInputs').length > 0) {
-			$(wrapper).append('<div class="extraInputs form-group"><label class="col-sm-3 control-label"></label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button title="' + title + '" class="btn btn-default pull-right remove_field" type="button">-</form:button></div></div>');
+			$(wrapper).append('<div class="extraInputs form-group' + (miscError ? ' has-error' : '') + '"><label class="col-sm-3 control-label"></label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button title="' + title + '" class="btn btn-default pull-right remove_field" type="button">-</form:button></div></div>');
 		} else {
-			$(wrapper).append('<div class="extraInputs form-group"><label class="col-sm-3 control-label">' + getString('post.resource.misc') +'</label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button title="' + title + '" class="btn btn-default pull-right remove_field" type="button">-</form:button></div></div>');
+			$(wrapper).append('<div class="extraInputs form-group' + (miscError ? ' has-error' : '') + '"><label class="col-sm-3 control-label">' + getString('post.resource.misc') +'</label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button title="' + title + '" class="btn btn-default pull-right remove_field" type="button">-</form:button></div></div>');
 		}
 	};
+
+	// FIXME: show error message if misc field has errors
 	
 	function transferMiscFieldValuesToOldField(){
 		var fieldString = [];
@@ -450,20 +431,21 @@ $(document).ready(function() {
 	function transferDataFromOldToNew() {
 		// gets the data from misc
 		var miscVal = $(misc).val();
-		var pairs = miscVal.split(",");
+		var pairs = miscVal.split(/,\s*\n/);
 		var values = [];
 		
 		//split the pairs and delete the characters not needed then save data 
 		$.each(pairs, function(index, item){
 			item = item.trim();
 			var itemValues = item.split(/\s*=\s*{/);
-			if (itemValues.length === 2){ //should have 2 values
-				if (itemValues[0].substr(0, 2) === "  "){ //formatting
-					itemValues[0] = itemValues[0].substr(2, itemValues[0].length);
+			if (itemValues.length === 2){ // should have 2 values
+				itemValues[0] = itemValues[0].trim();
+				itemValues[1] = itemValues[1].trim();
+
+				if (itemValues[1].endsWith("}")) { // formatting
+					itemValues[1] = itemValues[1].substr(0, itemValues[1].length - 1);
 				}
-				if (itemValues[1].charAt(itemValues[1].length-1) === "}"){ //formatting
-					itemValues[1] = itemValues[1].substr(0, itemValues[1].length-1);
-				}
+
 				// show an empty input instead of "undefined"
 				for (var i = 0; i < itemValues.length; i++){
 					if (itemValues[i] === "undefined"){
@@ -576,15 +558,15 @@ $(document).ready(function() {
 	 * after loading
 	 */
 	addStandardFields();
-	//transfer Data after loading, so the values of the potentially filled old view are shown
+	// transfer Data after loading, so the values of the potentially filled old view are shown
 	transferDataFromOldToNew();
-	//hides old view
+	// hides old view
 	$(misc).parent("div").parent("div").addClass("hidden");
 	
 	//on add input button click
 	$(add_button).click(function(e) {
-		e.preventDefault();
 		addInputs();
+		return false;
 	});
 
 	// user click on remove button
@@ -600,15 +582,15 @@ $(document).ready(function() {
 		refreshOldView();
 	});
 	
-	//reloads standard fields for new entry type
+	// reloads standard fields for new entry type
 	$("#post\\.resource\\.entrytype").change(function(e) {
 		addStandardFields();
 	});
 	
-	//transfer field values of new design to array
+	// transfer field values of new design to array
 	$("#allFieldsWrap").focusout(refreshOldView);
 	
-	//change view to old or new
+	// change view to old or new
 	$("#expertView").change(function() {
 		if (this.checked){
 			// old/expert view
@@ -619,7 +601,7 @@ $(document).ready(function() {
 			$("#standardFieldsWrap :input[type=text]").each(function(){
 				$(this).val("");
 			});
-		}else{
+		} else {
 			// new/normal view
 			transferDataFromOldToNew();
 			
@@ -627,5 +609,29 @@ $(document).ready(function() {
 			showNewMiscView();
 		}
 	});
-	
+
+	/*
+	 * toggle between all fields and required fields
+	 */
+	$("#post\\.resource\\.entrytype").change(function(e) {
+		changeView($("#collapse").data("showAll"));
+	});
+
+	$("#collapse").click(function(e){
+		toggleView();
+	});
+
+	toggleView();
+
+	var hash = $("#post\\.resource\\.interHash").val();
+	if(hash == -1 || hash == undefined)
+		return;
+	$.ajax({
+		url: '/json/bibtex/1' + hash + "?items=100",
+		dataType: "jsonp",
+		success: function (data) {
+			if(data.items != undefined)
+				buildGoodPostSuggestion(data);
+		}
+	});
 });
