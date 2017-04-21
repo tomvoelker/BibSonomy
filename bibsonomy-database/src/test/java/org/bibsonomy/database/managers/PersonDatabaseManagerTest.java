@@ -60,12 +60,12 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	/**
 	 * Initializes the test environment for this class
+	 * NOTE: we have to use @Before because we need the DB session to access the database
 	 */
 	@Before
 	public void init() {
 		if (!initialized) {			
 			this.testPerson = new Person();
-			
 			this.testPerson.setMainName(new PersonName("Max", "Mustermann"));
 			PERSON_DATABASE_MANAGER.createPerson(this.testPerson, this.dbSession);
 		}
@@ -158,9 +158,6 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		PERSON_DATABASE_MANAGER.updateHomepage(this.testPerson, this.dbSession);
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById(this.testPerson.getPersonId(), this.dbSession);
 		assertEquals(person.getHomepage(), homepage);
-	}
-	
-	
-	
+	}	
 	
 }
