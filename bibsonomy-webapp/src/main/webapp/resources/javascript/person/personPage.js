@@ -66,7 +66,11 @@ $(document).ready(function() {
 	});
 	
 	// orcid formatter
-	$("#formOrcid").mask("9999-9999-9999-9999");
+	$("#formOrcid").mask("9999-9999-9999-9999", {
+		completed: function() {
+			$(this).parent().parent().find(".personProfileUpdate").removeClass("disabled");
+		}
+	});
 	
 	// toggle view/hide all available roles
 	$(".personPageShowAdditionalRoleFields").click(function() {
@@ -100,6 +104,12 @@ $(document).ready(function() {
 	
 	// sends the update request	
 	$(".personProfileUpdate").on("click", function() {
+		
+		// reject update if button is disabled
+		if ($(this).hasClass("disabled")) {
+			return;
+		}
+		
 		parent = $(this).parents('.form-group');
 		
 		thatsMe = $("#formThatsMe").val();
