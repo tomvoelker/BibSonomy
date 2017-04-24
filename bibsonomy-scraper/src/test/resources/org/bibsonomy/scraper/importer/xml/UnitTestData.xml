@@ -130,19 +130,6 @@
 		<BibFile>NasaAdsScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.nasaads.NasaAdsScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_24">
-		<TestDescription>URL scraping test with a publication page from prola</TestDescription>
-		<URL>http://pra.aps.org/abstract/PRA/v1/i1/p1_1</URL>
-		<BibFile>ProlaScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.prola.ProlaScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_25">
-		<TestDescription>URL scraping test with a bibtex page from prola</TestDescription>
-		<URL>http://pra.aps.org/export/PRA/v1/i1/p1_1?type=bibtex</URL>
-		<BibFile>ProlaScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.prola.ProlaScraper</Scraper>
-		<Enabled>true</Enabled>
-	</URLTest>
 	<URLTest id="url_26">
 		<TestDescription>URL scraping test with publication from pubmedcentral</TestDescription>
 		<URL>http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1770189/?tool=pmcentrez&amp;rendertype=abstract</URL>
@@ -730,23 +717,11 @@
 		<BibFile>AipScitationScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aip.AipScitationScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_175">
-		<TestDescription>URL scraping test with a publication page from prola</TestDescription>
-		<URL>http://prb.aps.org/abstract/PRB/v47/i1/p558_1</URL>
-		<BibFile>ProlaScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.prola.ProlaScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_176">
 		<TestDescription>PubMed new URL pattern</TestDescription>
 		<URL>http://ukpmc.ac.uk/abstract/MED/19426458</URL>
 		<BibFile>PubMedScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_177">
-		<TestDescription>PROLA test formerly failed</TestDescription>
-		<URL>http://prola.aps.org/abstract/PR/v149/i2/p674_1</URL>
-		<BibFile>ProlaScraperUnitURLTest4.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.prola.ProlaScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_178">
 		<TestDescription>Scraping for Karger wesite</TestDescription>
@@ -1061,12 +1036,6 @@
 		<URL>https://www.jstage.jst.go.jp/article/dsj/9/0/9_CRIS4/_article</URL>
 		<BibFile>JStageScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.jstage.JStageScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_271">
-		<TestDescription>ProlaScraper</TestDescription>
-		<URL>http://journals.aps.org/pre/abstract/10.1103/PhysRevE.64.016131</URL>
-		<BibFile>ProlaScraperUnitURLTest5.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.prola.ProlaScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_273">
 		<TestDescription>Morgan Claypool Scraper</TestDescription>
