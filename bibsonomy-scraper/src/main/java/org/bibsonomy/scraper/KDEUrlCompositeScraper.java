@@ -135,6 +135,7 @@ import org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper;
 import org.bibsonomy.scraper.url.kde.pubmedcentral.PubMedCentralScraper;
 import org.bibsonomy.scraper.url.kde.rsc.RSCScraper;
 import org.bibsonomy.scraper.url.kde.rsoc.RSOCScraper;
+import org.bibsonomy.scraper.url.kde.rspb.RSPBScraper;
 import org.bibsonomy.scraper.url.kde.sage.SageJournalScraper;
 import org.bibsonomy.scraper.url.kde.scielo.SCIELOScraper;
 import org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper;
@@ -169,6 +170,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 	 * Public constructor adding the active scrapers.
 	 */
 	public KDEUrlCompositeScraper() {
+		addScraper(new RSPBScraper());
 		addScraper(new BioRxivScraper());
 		addScraper(new OpacScraper());
 		addScraper(new IEEEXploreScraper());
