@@ -231,18 +231,6 @@
 		<BibFile>BioMedCentralScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.biomed.BioMedCentralScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_63">
-		<TestDescription>ACS Publications Url 1</TestDescription>
-		<URL>http://pubs.acs.org/doi/abs/10.1021/ci049894n</URL>
-		<BibFile>ACSScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.acs.ACSScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_64">
-		<TestDescription>ACS Publications Url 2</TestDescription>
-		<URL>http://pubs.acs.org/action/downloadCitation?doi=10.1021%2Fci049894n&amp;include=abs&amp;format=bibtex</URL>
-		<BibFile>ACSScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.acs.ACSScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_65">
 		<TestDescription>Opac Scraper and PicaToBibtex</TestDescription>
 		<URL>http://opac.bibliothek.uni-kassel.de/DB=1/XML=1.0/CHARSET=UTF-8/PRS=PP/PPN?PPN=191787183</URL>
@@ -1055,12 +1043,6 @@
 		<URL>http://www.phcogres.com/article.asp?issn=0974-8490;year=2009;volume=1;issue=4;spage=172;epage=174;aulast=Shuge;t=6</URL>
 		<BibFile>DCScraperTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_262">
-		<TestDescription>ACS Publications Url 3</TestDescription>
-		<URL>http://pubs.acs.org/doi/pdf/10.1021/nn103618d</URL>
-		<BibFile>ACSScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.acs.ACSScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_263">
 		<TestDescription>FirstMondayScraper Test</TestDescription>
