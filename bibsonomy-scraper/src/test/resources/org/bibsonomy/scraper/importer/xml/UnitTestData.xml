@@ -1032,18 +1032,6 @@
 		<BibFile>AsmScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.asm.AsmScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_260">
-		<TestDescription>DublinCoreScraper Test 1</TestDescription>
-		<URL>http://www.repo.uni-hannover.de/handle/123456789/287</URL>
-		<BibFile>DCScraperTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_261">
-		<TestDescription>DublinCoreScraper Test 2</TestDescription>
-		<URL>http://www.phcogres.com/article.asp?issn=0974-8490;year=2009;volume=1;issue=4;spage=172;epage=174;aulast=Shuge;t=6</URL>
-		<BibFile>DCScraperTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_263">
 		<TestDescription>FirstMondayScraper Test</TestDescription>
 		<URL>http://journals.uic.edu/ojs/index.php/fm/article/view/2874 </URL>
@@ -1073,18 +1061,6 @@
 		<URL>https://www.jstage.jst.go.jp/article/dsj/9/0/9_CRIS4/_article</URL>
 		<BibFile>JStageScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.jstage.JStageScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_269">
-		<TestDescription>DublinCoreScraper Test</TestDescription>
-		<URL>http://www.tara.tcd.ie/handle/2262/13178?mode=full&amp;submit_simple=Show+full+item+record</URL>
-		<BibFile>DCScraperTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_270">
-		<TestDescription>DublinCoreScraper Test</TestDescription>
-		<URL>http://www.scirp.org/journal/PaperInformation.aspx?PaperID=37807</URL>
-		<BibFile>DCScraperTest4.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_271">
 		<TestDescription>ProlaScraper</TestDescription>
@@ -1207,12 +1183,6 @@
 		<URL>http://iopscience.iop.org/article/10.1088/1742-5468/2008/10/P10008/meta</URL>
 		<BibFile>IOPScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.iop.IOPScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_298">
-		<TestDescription>DublinCoreScraper Test 5</TestDescription>
-		<URL>http://www.uel.br/revistas/uel/index.php/informacao/article/view/19996</URL>
-		<BibFile>DCScraperTest5.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_299">
 		<TestDescription>test for pages with coins</TestDescription>
