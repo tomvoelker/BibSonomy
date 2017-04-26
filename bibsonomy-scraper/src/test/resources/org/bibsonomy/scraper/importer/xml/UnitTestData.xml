@@ -541,12 +541,6 @@
 		<BibFile>BibliographyScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.BibliographyScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_125">
-		<TestDescription>Test for WormbaseScraper</TestDescription>
-		<URL>http://www.wormbase.org/db/misc/paper?name=WBPaper00005873;class=Paper</URL>
-		<BibFile>WormbaseScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.wormbase.WormbaseScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_126">
 		<TestDescription>URL scraping test with arxiv publications</TestDescription>
 		<URL>http://arxiv.org/abs/cond-mat/0508028</URL>
