@@ -892,12 +892,6 @@
 		<BibFile>ApsScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aps.ApsScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_256">
-		<TestDescription>Hindawi Scraper test</TestDescription>
-		<URL>http://www.hindawi.com/journals/ijcb/2010/507821/cta/</URL>
-		<BibFile>HindawiScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.hindawi.HindawiScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_257">
 		<TestDescription>ContentNegotiationDOI Scraper Test 1</TestDescription>
 		<URL>http://dx.doi.org/10.1108/07378831211213265</URL>
