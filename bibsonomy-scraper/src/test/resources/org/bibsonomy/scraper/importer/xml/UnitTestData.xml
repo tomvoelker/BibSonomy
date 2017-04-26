@@ -357,18 +357,6 @@
 			available -->
 		<Enabled>false</Enabled>
 	</URLTest>
-	<URLTest id="url_88">
-		<TestDescription>Liebert Url test 1</TestDescription>
-		<URL>http://www.liebertonline.com/doi/abs/10.1089/152308604773934350</URL>
-		<BibFile>LiebertScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.liebert.LiebertScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_89">
-		<TestDescription>Liebert Url test 2</TestDescription>
-		<URL>http://www.liebertonline.com/action/showCitFormats?doi=10.1089%2F152308604773934350</URL>
-		<BibFile>LiebertScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.liebert.LiebertScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_90">
 		<TestDescription>Nber Url test</TestDescription>
 		<URL>http://www.nber.org/papers/w14015</URL>
@@ -939,12 +927,6 @@
 		<URL>http://pubs.rsc.org/en/Content/ArticleLanding/2013/LC/C2LC41166K?utm_source=feedburner&amp;utm_medium=feed&amp;utm_campaign=Feed%3A+rss%2FLC+%28RSC+-+Lab+Chip+latest+articles%29&amp;utm_content=Google+Reader</URL>
 		<BibFile>RSCScraperUnitTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.rsc.RSCScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_248">
-		<TestDescription>Liebert Url test 1</TestDescription>
-		<URL>http://online.liebertpub.com/doi/abs/10.1089/teb.2007.0150</URL>
-		<BibFile>LiebertScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.liebert.LiebertScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_249">
 		<TestDescription>BMJ OPEN Test</TestDescription>
