@@ -754,12 +754,6 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.journalogy.JournalogyScraper</Scraper>
 		<Enabled>true</Enabled>
 	</URLTest>
-	<URLTest id="url_211">
-		<TestDescription>URL test for http://jap.physiology.org/</TestDescription>
-		<URL>http://jap.physiology.org/content/110/4/1003.short</URL>
-		<BibFile>JAPScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.jap.JAPScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_215">
 		<TestDescription>URL test for http://www.nejm.org/</TestDescription>
 		<URL>http://www.nejm.org/doi/full/10.1056/NEJMra1100109</URL>
