@@ -194,18 +194,6 @@
 		<BibFile>WorldCatScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_61">
-		<TestDescription>BioMed Central Url 1</TestDescription>
-		<URL>http://www.biomedcentral.com/1471-2326/6/7</URL>
-		<BibFile>BioMedCentralScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.biomed.BioMedCentralScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_62">
-		<TestDescription>BioMed Central Url 2</TestDescription>
-		<URL>http://www.biomedcentral.com/1471-2326/6/7/citation</URL>
-		<BibFile>BioMedCentralScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.biomed.BioMedCentralScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_65">
 		<TestDescription>Opac Scraper and PicaToBibtex</TestDescription>
 		<URL>http://opac.bibliothek.uni-kassel.de/DB=1/XML=1.0/CHARSET=UTF-8/PRS=PP/PPN?PPN=191787183</URL>
@@ -1206,12 +1194,6 @@
 		<URL>http://circ.ahajournals.org/content/114/Suppl_18/II_864.2.abstract?sid=550d5036-8de5-4fbf-94c3-55c1df42f58f</URL>
 		<BibFile>AhaJournalsScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ahajournals.AhaJournalsScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_343">
-		<TestDescription>scrapign for BiomedCentra URL 3</TestDescription>
-		<URL>http://jbiomedsem.biomedcentral.com/articles/10.1186/2041-1480-1-S1-S6</URL>
-		<BibFile>BioMedCentralScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.biomed.BioMedCentralScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_344">
 		<TestDescription>URL scraping test for the aha journals scraper</TestDescription>
