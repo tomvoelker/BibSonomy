@@ -133,6 +133,14 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 		this.doDefaultAction();
 		return null;
 	}
+	
+	/**
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonByUser(String)
+	 */
+	public Person getPersonByUser(String userName) {
+		this.doDefaultAction();
+		return null;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(java.lang.Integer)

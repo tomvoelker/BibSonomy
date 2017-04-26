@@ -3569,6 +3569,22 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
+	
+	/**
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonByUser(String)
+	 */
+	public Person getPersonByUser(final String userName) {
+		final DBSession session = this.openSession();
+		
+		try {
+			if (present(userName)) {				
+				return this.personDBManager.getPersonByUser(userName, session);
+			}
+			return null;
+		} finally {
+			session.close();
+		}
+	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(int)
