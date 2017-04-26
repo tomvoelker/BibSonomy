@@ -136,12 +136,6 @@
 		<BibFile>PubMedCentralScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.pubmedcentral.PubMedCentralScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_27">
-		<TestDescription>URL scraping test with publication from pubmed</TestDescription>
-		<URL>http://www.ncbi.nlm.nih.gov/sites/entrez?Db=pubmed&amp;Cmd=ShowDetailView&amp;TermToSearch=17623893&amp;ordinalpos=1&amp;itool=EntrezSystem2.PEntrez.Pubmed.Pubmed_ResultsPanel.Pubmed_RVDocSum</URL>
-		<BibFile>PubMedScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_29">
 		<TestDescription>URL scraping test with publication from slac spires</TestDescription>
 		<URL>http://inspirehep.net/search?p=find+r+desy-thesis-2007-018</URL>
@@ -161,12 +155,6 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
 		<Enabled>false</Enabled>
 		<AdditionalInfo>URL does not work any longer</AdditionalInfo>
-	</URLTest>
-	<URLTest id="url_35">
-		<TestDescription>URL (with eutils host) scraping test with publication from pubmed</TestDescription>
-		<URL>http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=PubMed&amp;id=17623893&amp;mode=medline</URL>
-		<BibFile>PubMedScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_36">
 		<TestDescription>URL scraping test with books from ieeexplore</TestDescription>
@@ -356,12 +344,6 @@
 		<URL>http://www.nber.org/papers/w14015</URL>
 		<BibFile>NberScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.nber.NberScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_91">
-		<TestDescription>PubMed new URL pattern</TestDescription>
-		<URL>http://www.ncbi.nlm.nih.gov/pubmed/18506939?ordinalpos=2&amp;itool=EntrezSystem2.PEntrez.Pubmed.Pubmed_ResultsPanel.Pubmed_RVDocSum</URL>
-		<BibFile>PubMedScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_94">
 		<TestDescription>PsyContent Scraper url test 1</TestDescription>
@@ -687,12 +669,6 @@
 		<BibFile>AipScitationScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aip.AipScitationScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_176">
-		<TestDescription>PubMed new URL pattern</TestDescription>
-		<URL>http://ukpmc.ac.uk/abstract/MED/19426458</URL>
-		<BibFile>PubMedScraperUnitURLTest4.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_178">
 		<TestDescription>Scraping for Karger wesite</TestDescription>
 		<URL>http://www.karger.com/Article/FullText/210432</URL>
@@ -891,12 +867,6 @@
 		<URL>http://psycnet.apa.org/index.cfm?fa=buy.optionToBuy&amp;id=1996-02773-003</URL>
 		<BibFile>APAScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.apa.APAScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_246">
-		<TestDescription>PubMed new URL pattern</TestDescription>
-		<URL>http://europepmc.org/abstract/MED/19426458</URL>
-		<BibFile>PubMedScraperUnitURLTest5.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_247">
 		<TestDescription>RSC Scraper test</TestDescription>
