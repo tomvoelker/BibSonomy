@@ -892,19 +892,6 @@
 		<BibFile>ApsScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aps.ApsScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_257">
-		<TestDescription>ContentNegotiationDOI Scraper Test 1</TestDescription>
-		<URL>http://dx.doi.org/10.1108/07378831211213265</URL>
-		<BibFile>ContentNegotiationDOIScraper1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.id.kde.doi.ContentNegotiationDOIScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_258">
-		<TestDescription>ContentNegotiationDOI Scraper Test 2</TestDescription>
-		<URL>http://www.example.com/</URL>
-		<BibFile>ContentNegotiationDOIScraper1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.id.kde.doi.ContentNegotiationDOIScraper</Scraper>
-		<Selection>DOI:    10.1108/07378831211213265</Selection>
-	</URLTest>
 	<URLTest id="url_259">
 		<TestDescription>asm Scraper Test</TestDescription>
 		<URL>http://aem.asm.org/content/61/10/3567</URL>
