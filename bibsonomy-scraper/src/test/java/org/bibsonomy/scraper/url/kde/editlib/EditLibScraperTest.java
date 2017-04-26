@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.editlib;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,7 +45,9 @@ public class EditLibScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_70");
+		final String url = "http://www.editlib.org/index.cfm?fuseaction=Reader.ViewAbstract&paper_id=12795";
+		final String resultFile = "EditLibScraperUnitURLTest.bib";
+		assertScraperResult(url, null, EditLibScraper.class, resultFile);
 	}
 	
 	/**
@@ -51,6 +55,8 @@ public class EditLibScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_71");
+		final String url = "http://www.editlib.org/index.cfm?fuseaction=Reader.ChooseCitationFormat&paper_id=12795";
+		final String resultFile = "EditLibScraperUnitURLTest.bib";
+		assertScraperResult(url, null, EditLibScraper.class, resultFile);
 	}
 }

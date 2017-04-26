@@ -237,12 +237,6 @@
 		<BibFile>BMJScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.bmj.BMJScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_70">
-		<TestDescription>EditLib Journals Url 1</TestDescription>
-		<URL>http://www.editlib.org/index.cfm?fuseaction=Reader.ViewAbstract&amp;paper_id=12795</URL>
-		<BibFile>EditLibScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.editlib.EditLibScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_71">
 		<TestDescription>Edit Journals Url 1</TestDescription>
 		<URL>http://www.editlib.org/index.cfm?fuseaction=Reader.ChooseCitationFormat&amp;paper_id=12795</URL>
