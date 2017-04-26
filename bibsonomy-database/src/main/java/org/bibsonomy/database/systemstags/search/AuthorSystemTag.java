@@ -50,9 +50,10 @@ public class AuthorSystemTag extends AbstractSearchSystemTagImpl {
 	}
 
 	@Override
-	public void handleParam(final GenericParam param) {
+	public boolean handleParam(final GenericParam param) {
 		param.setAuthor(this.getArgument());
 		log.debug("set search to " + this.getArgument() + " after matching for author system tag");
+		return true;
 	}
 
 	@Override
