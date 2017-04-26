@@ -369,12 +369,6 @@
 		<BibFile>PubMedScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_93">
-		<TestDescription>OSA Scraper url test</TestDescription>
-		<URL>https://www.osapublishing.org/josaa/abstract.cfm?uri=josaa-25-5-1084</URL>
-		<BibFile>OSAScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.osa.OSAScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_94">
 		<TestDescription>PsyContent Scraper url test 1</TestDescription>
 		<URL>http://psycontent.metapress.com/content/wlr0r32161j4j150/?p=077ed4c087c541f8a7a3d80dc02f4290&amp;pi=0</URL>
