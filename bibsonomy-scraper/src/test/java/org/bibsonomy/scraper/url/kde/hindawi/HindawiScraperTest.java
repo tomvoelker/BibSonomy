@@ -47,7 +47,7 @@ public class HindawiScraperTest {
 	 */
 	@Test
 	public void urlTestRun() {
-		final String url = "http://www.hindawi.com/journals/ijcb/2010/507821/cta/";
+		final String url = "https://www.hindawi.com/journals/ijcb/2010/507821/cta/";
 		final String resultFile = "HindawiScraperUnitURLTest.bib";
 		assertScraperResult(url, null, HindawiScraper.class, resultFile);
 	}
