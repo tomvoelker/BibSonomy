@@ -481,10 +481,7 @@ public class BibtexUtilsTest {
 		bib.setPrivnote("This is private!");
 
 		final String originalMisc = "doi = {my doi}, isbn = {999-12345-123-x}, vgwort = {12}";
-		final String cleanedMisc  = 
-			"  isbn = {999-12345-123-x},\n" +
-			"  vgwort = {12},\n" +
-			"  doi = {my doi}";
+		
 		bib.setMisc(originalMisc);
 		
 		/*
@@ -511,7 +508,11 @@ public class BibtexUtilsTest {
 		 * have been added (keywords, description). We must ensure, that they're
 		 * removed again such that we have the original misc fields!
 		 */		
-		assertEquals(cleanedMisc, bib.getMisc());
+		assertTrue(bib.getMisc().contains("vgwort = {12}"));
+		assertTrue(bib.getMisc().contains("isbn = {999-12345-123-x}"));
+		assertTrue(bib.getMisc().contains("doi = {my doi}"));
+		String miscAsArray[] = bib.getMisc().split(",");
+		assertEquals(3, miscAsArray.length);
 	}
 	
 	/**

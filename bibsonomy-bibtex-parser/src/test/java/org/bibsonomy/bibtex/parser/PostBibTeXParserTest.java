@@ -27,6 +27,7 @@
 package org.bibsonomy.bibtex.parser;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -160,7 +161,7 @@ public class PostBibTeXParserTest {
 		 */
 		parser.updateWithParsedBibTeX(post);
 
-		CommonModelUtils.assertPropertyEquality(bib, post.getResource(), 5, null, "author", "authorList");
+		CommonModelUtils.assertPropertyEquality(bib, post.getResource(), 5, null, "author", "misc");
 	}
 
 	private Post<BibTex> getExamplePost(final BibTex bib) {
@@ -182,18 +183,16 @@ public class PostBibTeXParserTest {
 
 		final Post<BibTex> parsedCopy = parser.getParsedCopy(post, true);
 
-		CommonModelUtils.assertPropertyEquality(post, parsedCopy, 5, null, "resource.author", "resource.authorList");
-
 		/*
 		 * The misc field is parsed and then serialized back again also in
 		 * the original post! Thus, we here manually check if no additional
 		 * fields were added.
 		 */
-		assertEquals(
-				"  isbn = {999-12345-123-x},\n" +
-				"  vgwort = {12},\n" + 
-				"  doi = {my doi}", 
-				parsedCopy.getResource().getMisc());
+		assertTrue(parsedCopy.getResource().getMisc().contains("vgwort = {12}"));
+		assertTrue(parsedCopy.getResource().getMisc().contains("isbn = {999-12345-123-x}"));
+		assertTrue(parsedCopy.getResource().getMisc().contains("doi = {my doi}"));
+		String miscAsArray[] = parsedCopy.getResource().getMisc().split(",");
+		assertEquals(3, miscAsArray.length);
 	}
 
 	/**
