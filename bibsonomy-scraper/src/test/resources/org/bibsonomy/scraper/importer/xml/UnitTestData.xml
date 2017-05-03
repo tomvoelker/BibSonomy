@@ -832,12 +832,6 @@
 		<BibFile>MendeleyScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.mendeley.MendeleyScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_254">
-		<TestDescription>JCB Scraper test</TestDescription>
-		<URL>http://jcb.rupress.org/content/184/4/481.full#sec-4</URL>
-		<BibFile>JCBScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.jcb.JCBScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_255">
 		<TestDescription>Aps Scraper test</TestDescription>
 		<URL>http://physrev.physiology.org/content/91/4/1281.short</URL>
