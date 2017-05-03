@@ -796,23 +796,11 @@
 		<BibFile>OpenUniversityScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.openuniversity.OpenUniversityScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_237">
-		<TestDescription>URL scraping test with publication from AAAI</TestDescription>
-		<URL>http://www.aaai.org/ocs/index.php/ICWSM/ICWSM11/paper/view/3856</URL>
-		<BibFile>AAAIScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.aaai.AAAIScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_239">
 		<TestDescription>URL scraping test with book from springerlink</TestDescription>
 		<URL>http://link.springer.com/book/10.1007/978-0-387-85820-3/page/1</URL>
 		<BibFile>SpringerLinkScraperUnitURLTest9.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_240">
-		<TestDescription>URL scraping test with publication from AAAI</TestDescription>
-		<URL>http://www.aaai.org/ojs/index.php/aimagazine/article/view/2376</URL>
-		<BibFile>AAAIScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.aaai.AAAIScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_242">
 		<TestDescription>test for Sage Journals CDP Scraper</TestDescription>
@@ -1001,12 +989,6 @@
 		<URL>http://cshperspectives.cshlp.org/content/3/3/a004994.full</URL>
 		<BibFile>CSHLPScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_296">
-		<TestDescription>URL scraping test with publication from AAAI</TestDescription>
-		<URL>http://www.aaai.org/ocs/index.php/IAAI/IAAI14/paper/view/8607</URL>
-		<BibFile>AAAIScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.aaai.AAAIScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_297">
 		<TestDescription>URL scraping test for the IOP scraper</TestDescription>
