@@ -56,12 +56,6 @@
 		<BibFile>AipScitationScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aip.AipScitationScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_10">
-		<TestDescription>URL scraping test with arxiv publications</TestDescription>
-		<URL>http://arxiv.org/abs/0706.3639</URL>
-		<BibFile>ArxivScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_11">
 		<TestDescription>URL scraping test with citebase publications</TestDescription>
 		<URL>http://www.citebase.org/abstract?id=oai%3AarXiv.org%3Acs%2F0602042</URL>
@@ -499,18 +493,6 @@
 		<BibFile>BibliographyScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.BibliographyScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_126">
-		<TestDescription>URL scraping test with arxiv publications</TestDescription>
-		<URL>http://arxiv.org/abs/cond-mat/0508028</URL>
-		<BibFile>ArxivScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_129">
-		<TestDescription>URL scraping test with arxiv publications</TestDescription>
-		<URL>http://arxiv.org/abs/0810.1951</URL>
-		<BibFile>ArxivScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_130">
 		<TestDescription>test for pages with coins</TestDescription>
 		<URL>http://www.westmidlandbirdclub.com/bibliography/NBotWM.htm</URL>
@@ -529,12 +511,6 @@
 		<BibFile>CiteulikeScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.citeulike.CiteulikeScraper</Scraper>
 		<Enabled>false</Enabled>
-	</URLTest>
-	<URLTest id="url_133">
-		<TestDescription>URL scraping test with arxiv publications</TestDescription>
-		<URL>http://arxiv.org/abs/0805.2045</URL>
-		<BibFile>ArxivScraperUnitURLTest4.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_135">
 		<TestDescription>informaworld url test</TestDescription>
