@@ -27,6 +27,7 @@
 package org.bibsonomy.model;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -595,7 +596,7 @@ public class BibTex extends Resource {
 	 */
 	public void addMiscField(final String miscKey, final String value) {
 		if (this.miscFields == null) {
-			this.miscFields = new HashMap<String, String>();
+			this.miscFields = new LinkedHashMap<String, String>();
 		}
 		this.miscFields.put(miscKey, value);
 	}

@@ -27,7 +27,6 @@
 package org.bibsonomy.bibtex.parser;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -161,7 +160,7 @@ public class PostBibTeXParserTest {
 		 */
 		parser.updateWithParsedBibTeX(post);
 
-		CommonModelUtils.assertPropertyEquality(bib, post.getResource(), 5, null, "author", "misc");
+		CommonModelUtils.assertPropertyEquality(bib, post.getResource(), 5, null, "author", "authorList");
 	}
 
 	private Post<BibTex> getExamplePost(final BibTex bib) {
@@ -188,11 +187,11 @@ public class PostBibTeXParserTest {
 		 * the original post! Thus, we here manually check if no additional
 		 * fields were added.
 		 */
-		assertTrue(parsedCopy.getResource().getMisc().contains("vgwort = {12}"));
-		assertTrue(parsedCopy.getResource().getMisc().contains("isbn = {999-12345-123-x}"));
-		assertTrue(parsedCopy.getResource().getMisc().contains("doi = {my doi}"));
-		String miscAsArray[] = parsedCopy.getResource().getMisc().split(",");
-		assertEquals(3, miscAsArray.length);
+		assertEquals(
+					"  vgwort = {12},\n" +
+					"  isbn = {999-12345-123-x},\n" + 
+					"  doi = {my doi}", 
+					parsedCopy.getResource().getMisc());
 	}
 
 	/**
@@ -224,7 +223,7 @@ public class PostBibTeXParserTest {
 		bib.setAbstract("This is a nice abstract.");
 		bib.setPrivnote("This is private!");
 
-		bib.setMisc("  isbn = {999-12345-123-x},\n  vgwort = {12},\n  doi = {my doi}");
+		bib.setMisc("  vgwort = {12},\n  isbn = {999-12345-123-x},\n  doi = {my doi}");
 		return bib;
 	}
 }

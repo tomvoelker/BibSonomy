@@ -112,11 +112,8 @@ public abstract class AbstractJabrefLayoutTest {
 		renderedLayout = prepareTest(renderedLayout, this.layoutName);
 		resultLayout = prepareTest(resultLayout, this.layoutName);
 		
-		if(!this.layoutTest.toString().equals("/home/jo/workspace/bibsonomy/bibsonomy-layout/target/test-classes/jabref-layout-tests/publist-type-en/publist-type-en#habilitation.layoutResult")){
-			assertEquals("layout: " + this.layoutName + ", testfile: " + this.layoutTest + ", entrytype: " + printedEntryType, resultLayout, renderedLayout);
-
-			
-		}
+		assertEquals("layout: " + this.layoutName + ", testfile: " + this.layoutTest + ", entrytype: " + printedEntryType, resultLayout, renderedLayout);
+		
 	}
 	
 	private static String prepareTest(String renderedLayout, final String layoutName) {
