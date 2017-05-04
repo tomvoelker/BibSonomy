@@ -32,9 +32,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,6 +46,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.services.filesystem.CslFileLogic;
 import org.bibsonomy.util.StringUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -60,6 +64,7 @@ import net.sf.json.JSONObject;
  */
 public class CSLFilesManager {
 	private static final Log log = LogFactory.getLog(CSLFilesManager.class);
+	private static LogicInterface logic;
 	
 	private static final String BASE_PATH = "classpath:/org/citationstyles/";
 	private static final String BASE_PATH_STYLES = BASE_PATH + "styles/";
@@ -226,11 +231,39 @@ public class CSLFilesManager {
 		return cslFiles.get(userLayoutName);
 	}
 	
+	/** Loads all uploaded csl layouts from DB.
+	 * 
+	 * @param user
+	 * @return list of all documents
+	 */
+	public List<org.bibsonomy.model.Document> getUploadedLayouts(final String user) {
+		//how to acces logic??
+		final List<org.bibsonomy.model.Document> documents = logic.getDocuments(user);
+		List<org.bibsonomy.model.Document> cslLayouts = new ArrayList<org.bibsonomy.model.Document>();
+		if(documents == null || documents.isEmpty()){
+			return cslLayouts;
+		}
+		
+		for (org.bibsonomy.model.Document document : documents){
+			if(document.getFileName().endsWith(CslFileLogic.LAYOUT_FILE_EXTENSION)){
+				cslLayouts.add(document);
+			}
+		}
+		return cslLayouts;
+	}
+	
 	/**
 	 * @param config the config to set
 	 */
 	public void setConfig(CslConfig config) {
 		this.config = config;
+	}
+
+	/**
+	 * @param logic the logic to set
+	 */
+	public static void setLogic(LogicInterface logic) {
+		CSLFilesManager.logic = logic;
 	}
 
 	/** Unloads the custom layout of the user.
@@ -240,4 +273,5 @@ public class CSLFilesManager {
 	public void unloadUserLayout(final String userName) {
 		cslFiles.remove(CslLayoutUtils.userLayoutName(userName));
 	}
+	
 }

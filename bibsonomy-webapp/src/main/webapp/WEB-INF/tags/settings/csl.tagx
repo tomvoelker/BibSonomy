@@ -36,26 +36,30 @@
 						</div>
 					</div>
 					
-		      		<!-- item.layout -->
+		      		<!-- layout.csl -->
 					<div class="form-group">
 						
 						<label for="csl-file-item" class="col-sm-3 control-label">
 							<fmt:message key="settings.csl.item"/>
 						</label>
-
+						
 						<div class="col-sm-9">
-				      		<c:choose>
-			        			<c:when test="${empty command.cslName}">
-			        				<c:set var="actionCSL" value="create"/>
-			        				<input id="csl-file-item" name="fileItem" type="file" class="fsInput fsSmall"/>
-			        			</c:when>
-			        			<c:otherwise>
-			        				<c:out value="${command.cslName} "/>
-	    		    				<a class="action" href="/import/csl?hash=${command.cslHash}&amp;action=delete&amp;ckey=${mtl:encodePathSegment(ckey)}">delete</a>
-	        					</c:otherwise>
-			      			</c:choose>
-							<p class="help-block"><fmt:message key="settings.csl.item.help"/></p>
+							<ul class="list-group" id="cslLayoutsList">
+								<c:forEach var="layout" items="${command.cslFiles}" varStatus="counter">
+									<li class="list-group-item cslLayoutsListItem clearfix">
+										<c:out value="${layout.fileName}" /> <!-- TODO: use css -->
+										<a class="btn btn-danger btn-xs pull-right delete-Style" href="/import/csl?hash=${layout.fileHash}&amp;action=delete&amp;ckey=${mtl:encodePathSegment(ckey)}">
+											<fmt:message key="delete" />
+										</a>
+									</li>
+								</c:forEach>
+							</ul>
 						</div>
+					</div>
+					<div class="col-sm-9">
+				      	<c:set var="actionCSL" value="create"/>
+				      	<input id="csl-file-item" name="fileItem" type="file" class="fsInput fsSmall"/>	
+						<p class="help-block"><fmt:message key="settings.csl.item.help"/></p>
 					</div>
 					<div class="form-group">						
 						<input name="action" type="hidden" value="${actionCSL}"/> 

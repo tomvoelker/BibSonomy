@@ -32,16 +32,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.model.Document;
-import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.filesystem.CslFileLogic;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.util.StringUtils;
@@ -55,37 +51,15 @@ import org.xml.sax.SAXException;
  */
 public class CslLayoutUtils {
 	private static final Log log = LogFactory.getLog(CslLayoutUtils.class);
-	private static LogicInterface logic;
+	
 	
 	/** Builds the hash for the custom layout files of the user.
 	 * 
 	 * @param user
 	 * @return hash for custom file of user
 	 */
-	public static String userLayoutHash(final String user) {
-		return StringUtils.getMD5Hash("user." + user.toLowerCase() + "." + CslFileLogic.LAYOUT_FILE_EXTENSION).toLowerCase();
-	}
-	
-	/** Loads all uploaded csl layouts from DB.
-	 * 
-	 * @param user
-	 * @param logic // undo! how to access?? static!
-	 * @return list of all documents
-	 */
-	public static List<Document> getUploadedLayouts(final String user, LogicInterface logic) {
-		//how to acces logic??
-		final List<Document> documents = logic.getDocuments(user);
-		List<Document> cslLayouts = new ArrayList<Document>();
-		if(documents == null || documents.isEmpty()){
-			return cslLayouts;
-		}
-		
-		for (Document document : documents){
-			if(document.getFileName().endsWith(CslFileLogic.LAYOUT_FILE_EXTENSION)){
-				cslLayouts.add(document);
-			}
-		}
-		return cslLayouts;
+	public static String userLayoutHash(final String user, final String fileName) {
+		return StringUtils.getMD5Hash("user." + user.toLowerCase() + "." + fileName + "." + CslFileLogic.LAYOUT_FILE_EXTENSION).toLowerCase();
 	}
 	
 	/**
@@ -182,7 +156,7 @@ public class CslLayoutUtils {
 		cslLayout.setUserLayout(true);
 		cslLayout.setPublicLayout(false);
 
-		final String hashedName = CslLayoutUtils.userLayoutHash(userName);
+		final String hashedName = CslLayoutUtils.userLayoutHash(userName, cslLayout.getName());
 		final File file = new File(FileUtil.getFileDirAsFile(config.getUserLayoutFilePath(), hashedName), hashedName);
 
 		log.debug("trying to load custom user layout for user " + userName + " from file " + file);

@@ -68,7 +68,7 @@ public class CslImportValidator implements Validator<SettingsViewCommand> {
 		}
 		if (!this.fileLogic.validCSLLayoutFile(new ServerUploadedFile(file))) {
 			final String field = "file" + fieldSuffix;
-			errors.rejectValue(field, "settings.jabRef.error.fileextension", new Object[] { StringUtils.implodeStringCollection(this.fileLogic.allowedCSLFileExtensions(), ", ") }, "Only the specified extensions allowed");
+			errors.rejectValue(field, "settings.csl.error.fileextension", new Object[] { StringUtils.implodeStringCollection(this.fileLogic.allowedCSLFileExtensions(), ", ") }, "Only the specified extensions allowed");
 		}
 	}
 	

@@ -63,7 +63,7 @@ public class ServerCSLFileLogic extends AbstractServerFileLogic implements CslFi
 		final String filename = file.getFileName();
 //		this.checkFile(this.extensionChecker, filename);
 		
-		final String hashedName = CslLayoutUtils.userLayoutHash(username);
+		final String hashedName = CslLayoutUtils.userLayoutHash(username, FilenameUtils.getName(filename));
 		final Document document = new Document();
 		document.setFileName(FilenameUtils.getName(filename));
 		document.setMd5hash(HashUtils.getMD5Hash(file.getBytes()));
