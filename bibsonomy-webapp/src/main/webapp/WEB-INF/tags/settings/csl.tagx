@@ -45,10 +45,10 @@
 						<!-- list of all custom csl layout files -->
 						<div class="col-sm-9">
 							<ul class="list-group" id="cslLayoutsList">
-								<c:forEach var="layout" items="${command.cslFiles}" varStatus="counter">
+								<c:forEach var="style" items="${command.cslFiles}" varStatus="counter">
 									<li class="list-group-item cslLayoutsListItem clearfix">
-										<c:out value="${layout.fileName}" /> <!-- TODO: use css -->
-										<a class="btn btn-danger btn-xs pull-right delete-Style" href="/import/csl?hash=${layout.fileHash}&amp;action=delete&amp;ckey=${mtl:encodePathSegment(ckey)}">
+										<c:out value="${style.displayName}" /> <!-- TODO: use css -->
+										<a class="btn btn-danger btn-xs pull-right delete-Style" href="/import/csl?hash=${style.fileHash}&amp;action=delete&amp;ckey=${mtl:encodePathSegment(ckey)}">
 											<fmt:message key="delete" />
 										</a>
 									</li>

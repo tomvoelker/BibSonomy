@@ -56,6 +56,7 @@ public class CslLayoutUtils {
 	/** Builds the hash for the custom layout files of the user.
 	 * 
 	 * @param user
+	 * @param fileName 
 	 * @return hash for custom file of user
 	 */
 	public static String userLayoutHash(final String user, final String fileName) {
@@ -63,13 +64,14 @@ public class CslLayoutUtils {
 	}
 	
 	/**
-	 * Builds the name of a custom user layout, for the map and elsewhere. Typically "custom_" + userName.
+	 * Builds the name of a custom user layout, for the map and elsewhere. Typically "custom_" + userName + "_" + fileName.
 	 * 
 	 * @param userName
+	 * @param fileName 
 	 * @return the name of a custom layout
 	 */
-	public static String userLayoutName(final String userName) {
-		return LayoutRenderer.CUSTOM_LAYOUT + "_" + userName;
+	public static String userLayoutName(final String userName, final String fileName) {
+		return LayoutRenderer.CUSTOM_LAYOUT + "_" + userName + "_" + fileName;
 	}
 	
 	/** Loads a resource using the classloader.
@@ -145,19 +147,21 @@ public class CslLayoutUtils {
 	 * @return The loaded layout, or <code>null</code> if it could not be found.
 	 * @throws Exception 
 	 */
-	public static CSLStyle loadUserLayout(String userName, CslConfig config) throws Exception {
+	public static CSLStyle loadUserLayout(final String userName, final String fileName, CslConfig config) throws Exception {
 		/*
 		 * initialize a new user layout
 		 */
-		final CSLStyle cslLayout = new CSLStyle(CslLayoutUtils.userLayoutName(userName));
+		final CSLStyle cslLayout = new CSLStyle(CslLayoutUtils.userLayoutName(userName, fileName));
 		cslLayout.addDescription("en", "Custom layout of user " + userName);
-		cslLayout.setDisplayName("custom");
+		cslLayout.setDisplayName(fileName.replace("." + CslFileLogic.LAYOUT_FILE_EXTENSION, ""));
 		cslLayout.setMimeType("text/html"); // FIXME: this should be adaptable by the user ...
 		cslLayout.setUserLayout(true);
 		cslLayout.setPublicLayout(false);
 
-		final String hashedName = CslLayoutUtils.userLayoutHash(userName, cslLayout.getName());
+		final String hashedName = CslLayoutUtils.userLayoutHash(userName, cslLayout.getDisplayName() + ".csl");
 		final File file = new File(FileUtil.getFileDirAsFile(config.getUserLayoutFilePath(), hashedName), hashedName);
+		
+		cslLayout.setFileHash(hashedName);
 
 		log.debug("trying to load custom user layout for user " + userName + " from file " + file);
 		if (file.exists()) {
@@ -166,12 +170,14 @@ public class CslLayoutUtils {
 			final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StringUtils.CHARSET_UTF_8));
 			try {
 				//TODO
-				// cslLayout.addSubLayout(layoutHelper.getLayoutFromText(GLOBALS_FORMATTER_PACKAGE));
+				String content = "";
+				String tmp;
+				while ((tmp = reader.readLine()) != null) {
+				    content += tmp;
+				}
+				cslLayout.setContent(content);
 				} catch (final Exception e) {
-					/*
-					 * unfortunately, layoutHelper.getLayoutFromText throws a generic Exception, 
-					 * so we catch it here
-					 */
+					
 					throw new IOException ("Could not load layout: ", e);
 				} finally {
 					reader.close();

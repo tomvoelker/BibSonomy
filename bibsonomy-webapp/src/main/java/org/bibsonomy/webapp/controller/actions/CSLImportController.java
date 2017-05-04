@@ -101,7 +101,7 @@ public class CSLImportController extends SettingsPageController {
 				/*
 				 * delete layout object from exporter
 				 */
-				this.cslFilesManager.unloadUserLayout(userName);
+				this.cslFilesManager.unloadUserLayout(userName, document.getFileName());
 			} else {
 				errors.reject("error.document_not_found");
 			}

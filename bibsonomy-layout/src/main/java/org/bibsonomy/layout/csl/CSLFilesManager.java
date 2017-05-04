@@ -74,7 +74,10 @@ public class CSLFilesManager {
 
 	/**mapping from id to CSLStyle which contains the id itself, a display name and the content of the file */
 	private Map<String, CSLStyle> cslFiles = new HashMap<>();
-
+	
+	/**custom user layouts */
+	private Map<String, List<CSLStyle>> cslCustomFiles = new HashMap<>();
+	
 	private Map<String, String> cslLocaleFiles = new HashMap<>();
 		
 	/**
@@ -201,17 +204,19 @@ public class CSLFilesManager {
 	 * is returned instead of throwing an exception. This allows for missing parts (i.e., 
 	 * no begin.layout).
 	 */
-	protected CSLStyle getUserLayout(final String userName) {
+	public List<CSLStyle> getUserLayouts(final String userName) {
+		cslCustomFiles.put(userName, new ArrayList<CSLStyle>());
+		for(org.bibsonomy.model.Document document : getUploadedLayouts(userName)){
 		/*
 		 * check if custom filter exists
 		 */
-		final String userLayoutName = CslLayoutUtils.userLayoutName(userName);
-		if (present(userName) && !cslFiles.containsKey(userLayoutName)) {
+		final String userLayoutName = CslLayoutUtils.userLayoutName(userName, document.getFileName());
+		if (present(userName)) {
 			/*
 			 * custom filter of current user is not loaded yet -> check if a filter exists at all
 			 */
 			try {
-				CSLStyle layout = CslLayoutUtils.loadUserLayout(userName, this.config);
+				CSLStyle layout = CslLayoutUtils.loadUserLayout(userName, document.getFileName(), this.config);
 				
 				/*
 				 * we add the layout only to the map, if it is complete, i.e., it contains an item layout
@@ -221,14 +226,14 @@ public class CSLFilesManager {
 					 * add user layout to map
 					 */
 					log.debug("user layout exists - loading it");
-					cslFiles.put(layout.getName(), layout);
+					cslCustomFiles.get(userName).add(layout);
 				}
 			} catch (final Exception e) {
 				log.info("Error loading custom filter for user " + userName, e);
 			}
 		}
-		
-		return cslFiles.get(userLayoutName);
+		}
+		return cslCustomFiles.get(userName);
 	}
 	
 	/** Loads all uploaded csl layouts from DB.
@@ -280,8 +285,12 @@ public class CSLFilesManager {
 	 * 
 	 * @param userName
 	 */
-	public void unloadUserLayout(final String userName) {
-		cslFiles.remove(CslLayoutUtils.userLayoutName(userName));
+	public void unloadUserLayout(final String userName, final String fileName) {
+		for(CSLStyle style : cslCustomFiles.get(userName)){
+			if(style.getId() == CslLayoutUtils.userLayoutName(userName, fileName)){
+				cslCustomFiles.get(userName).remove(style);
+			}
+		}
 	}
 	
 }

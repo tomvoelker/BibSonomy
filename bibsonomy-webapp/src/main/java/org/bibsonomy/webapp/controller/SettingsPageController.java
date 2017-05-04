@@ -39,6 +39,7 @@ import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.layout.csl.CSLFilesManager;
+import org.bibsonomy.layout.csl.CSLStyle;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
@@ -201,15 +202,17 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	private void checkInstalledCSLLayout(final SettingsViewCommand command) {
 		final String loggedInUserName = command.getContext().getLoginUser().getName();
 		
+		//URGENT
+		//FIX ME
 		//XXX: don't do dis
 		cslFilesManager.setLogic(logic);
 		
 		/*
 		* load all uploaded csl files
 		*/
-		List<Document> documents = cslFilesManager.getUploadedLayouts(loggedInUserName);
+		List<CSLStyle> styles = cslFilesManager.getUserLayouts(loggedInUserName);
 		
-		command.setCslFiles(documents);
+		command.setCslFiles(styles);
 	}
 	
 

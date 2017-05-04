@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupUpdateOperation;
-import org.bibsonomy.model.Document;
+import org.bibsonomy.layout.csl.CSLStyle;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SyncService;
@@ -235,7 +235,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/**
 	 * list of all csl layout files of the user
 	 */
-	private List<Document> cslFiles = null;
+	private List<CSLStyle> cslFiles = null;
 	
 
 	/**
@@ -967,7 +967,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/**
 	 * @return the cslFiles
 	 */
-	public List<Document> getCslFiles() {
+	public List<CSLStyle> getCslFiles() {
 		return this.cslFiles;
 	}
 
@@ -975,7 +975,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/**
 	 * @param cslFiles the cslFiles to set
 	 */
-	public void setCslFiles(List<Document> cslFiles) {
+	public void setCslFiles(List<CSLStyle> cslFiles) {
 		this.cslFiles = cslFiles;
 	}
 }
