@@ -13,6 +13,6 @@
 	</bean>
 	<bean id="CSLFilesManager" class="org.bibsonomy.layout.csl.CSLFilesManager" init-method="init">
 		<property name="config" ref="CSLConfig"/>
-		<property name="logic" ref="logic" />
+		<!-- <property name="logic" ref="logic" /> -->
 	</bean>
 </beans>

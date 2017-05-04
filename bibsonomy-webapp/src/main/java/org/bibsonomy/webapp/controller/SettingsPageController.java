@@ -200,8 +200,12 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 */
 	private void checkInstalledCSLLayout(final SettingsViewCommand command) {
 		final String loggedInUserName = command.getContext().getLoginUser().getName();
+		
+		//XXX: don't do dis
+		cslFilesManager.setLogic(logic);
+		
 		/*
-		* check whether the user has the csl layout
+		* load all uploaded csl files
 		*/
 		List<Document> documents = cslFilesManager.getUploadedLayouts(loggedInUserName);
 		

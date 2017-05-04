@@ -237,13 +237,23 @@ public class CSLFilesManager {
 	 * @return list of all documents
 	 */
 	public List<org.bibsonomy.model.Document> getUploadedLayouts(final String user) {
-		//how to acces logic??
+		//loading from DB
+		
+		/**
+		 * all styles from DB. So JabRef too
+		 */
 		final List<org.bibsonomy.model.Document> documents = logic.getDocuments(user);
+		
+		/**
+		 * only csl files will be in this list
+		 */
 		List<org.bibsonomy.model.Document> cslLayouts = new ArrayList<org.bibsonomy.model.Document>();
+		
 		if(documents == null || documents.isEmpty()){
 			return cslLayouts;
 		}
 		
+		//filtering for correct file extension
 		for (org.bibsonomy.model.Document document : documents){
 			if(document.getFileName().endsWith(CslFileLogic.LAYOUT_FILE_EXTENSION)){
 				cslLayouts.add(document);
@@ -262,7 +272,7 @@ public class CSLFilesManager {
 	/**
 	 * @param logic the logic to set
 	 */
-	public static void setLogic(LogicInterface logic) {
+	public void setLogic(LogicInterface logic) {
 		CSLFilesManager.logic = logic;
 	}
 

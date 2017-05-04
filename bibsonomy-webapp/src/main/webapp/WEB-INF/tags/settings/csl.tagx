@@ -42,7 +42,7 @@
 						<label for="csl-file-item" class="col-sm-3 control-label">
 							<fmt:message key="settings.csl.item"/>
 						</label>
-						
+						<!-- list of all custom csl layout files -->
 						<div class="col-sm-9">
 							<ul class="list-group" id="cslLayoutsList">
 								<c:forEach var="layout" items="${command.cslFiles}" varStatus="counter">
@@ -56,11 +56,13 @@
 							</ul>
 						</div>
 					</div>
+					<!-- upload new custom csl file -->
 					<div class="col-sm-9">
 				      	<c:set var="actionCSL" value="create"/>
 				      	<input id="csl-file-item" name="fileItem" type="file" class="fsInput fsSmall"/>	
 						<p class="help-block"><fmt:message key="settings.csl.item.help"/></p>
 					</div>
+					<!-- confirm -->
 					<div class="form-group">						
 						<input name="action" type="hidden" value="${actionCSL}"/> 
 						<input name="importType" type="hidden" value="csl"/>

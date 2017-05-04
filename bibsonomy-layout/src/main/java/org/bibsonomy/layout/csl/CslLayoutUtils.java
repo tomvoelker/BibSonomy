@@ -123,7 +123,7 @@ public class CslLayoutUtils {
 			String fileContent = sb.toString();
 			String displayName = "";
 			String id;
-			//TODO quite a bit hackyy
+			//TODO quite a bit hacky
 			try {
 				displayName = CSLFilesManager.extractTitle(fileContent).trim();
 			} catch (SAXException | ParserConfigurationException e1) {
@@ -142,7 +142,7 @@ public class CslLayoutUtils {
 	/**
 	 * @param userName
 	 * @param config
-	 * @return 
+	 * @return The loaded layout, or <code>null</code> if it could not be found.
 	 * @throws Exception 
 	 */
 	public static CSLStyle loadUserLayout(String userName, CslConfig config) throws Exception {
