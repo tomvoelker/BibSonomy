@@ -67,6 +67,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading"></jsp:attribute>
+		
 		<jsp:attribute name="sidebar">
 			<!-- Links to the user who claimed this page or buttons to claim it/realease it -->
 			<h4><fmt:message key="person.sidebar.linkedUserTitle" /></h4>
@@ -91,8 +92,6 @@
 				</c:otherwise>
 			</c:choose>
 		</jsp:attribute>
-
-
 
 		<jsp:attribute name="content">
 			<errors:logicExceptions exceptions="${command.logicExceptions}" />
@@ -240,14 +239,14 @@
 											</c:otherwise>
 										</c:choose>
 
-										<span class="personPageFormFieldContent" id="personPageFormHomepageValue">${command.person.homepage}</span> 
+										<a class="personPageFormFieldContent" id="personPageFormHomepageValue" rel="external nofollow" href="${fn:escapeXml(command.person.homepage)}" itemprop="url"><c:out value="${command.person.homepage}"/></a>									
 									</div>
 									
 									<!-- Only visible if te loginUser claimed this person -->
 									<c:if test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
 										<div class="personPageFormField col-md-8">										
 											<fmt:message key="person.show.homepage.placeholder" var="textHomepagePlaceholder" />
-											<input class='form-control' type="text" name='person.homepage' id="formHomepage" placeholder="${textHomepagePlaceholder}" value="${command.person.homepage}"/>
+											<input class='form-control' type="url" name='person.homepage' id="formHomepage" placeholder="${textHomepagePlaceholder}" value="${command.person.homepage}"/>
 										</div>
 										
 										<!-- TODO: REMOVE INLINE CSS -->
