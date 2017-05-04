@@ -176,6 +176,25 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		// get the requested document
 		return this.getDocumentForLayout(docParam, session);
 	}
+	
+	/**
+	 * This method gets documents object with the given name and hash.
+	 * 
+	 * @param docParam
+	 * @param session
+	 * @return document
+	 */
+	public List<Document> getLayoutDocuments(final String userName, final DBSession session) {
+		// create the docParam object
+		final DocumentParam docParam = new DocumentParam();
+
+		// fill the docParam object
+		docParam.setUserName(userName);
+		docParam.setContentId(0);
+
+		// get the requested documents
+		return this.queryForList("getLayoutDocuments", docParam, Document.class, session);
+	}
 
 	/**
 	 * This method gets documents object with the given name and hash.

@@ -401,7 +401,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	public Document getDocument(final String userName, final String fileHash);
 	
 	/**
-	 * Get a (layout) document file for a non post connected document
+	 * Get a list of layout document files for a given user
 	 * @param userName
 	 * @return document
 	 */

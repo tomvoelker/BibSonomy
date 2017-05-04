@@ -32,19 +32,21 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.Document;
+import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.filesystem.CslFileLogic;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.FileUtil;
 import org.xml.sax.SAXException;
-
-import net.sf.jabref.export.layout.LayoutHelper;
 
 /**
  * TODO: add documentation to this class
@@ -53,6 +55,7 @@ import net.sf.jabref.export.layout.LayoutHelper;
  */
 public class CslLayoutUtils {
 	private static final Log log = LogFactory.getLog(CslLayoutUtils.class);
+	private static LogicInterface logic;
 	
 	/** Builds the hash for the custom layout files of the user.
 	 * 
@@ -61,6 +64,28 @@ public class CslLayoutUtils {
 	 */
 	public static String userLayoutHash(final String user) {
 		return StringUtils.getMD5Hash("user." + user.toLowerCase() + "." + CslFileLogic.LAYOUT_FILE_EXTENSION).toLowerCase();
+	}
+	
+	/** Loads all uploaded csl layouts from DB.
+	 * 
+	 * @param user
+	 * @param logic // undo! how to access?? static!
+	 * @return list of all documents
+	 */
+	public static List<Document> getUploadedLayouts(final String user, LogicInterface logic) {
+		//how to acces logic??
+		final List<Document> documents = logic.getDocuments(user);
+		List<Document> cslLayouts = new ArrayList<Document>();
+		if(documents == null || documents.isEmpty()){
+			return cslLayouts;
+		}
+		
+		for (Document document : documents){
+			if(document.getFileName().endsWith(CslFileLogic.LAYOUT_FILE_EXTENSION)){
+				cslLayouts.add(document);
+			}
+		}
+		return cslLayouts;
 	}
 	
 	/**

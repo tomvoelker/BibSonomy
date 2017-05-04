@@ -2099,8 +2099,18 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<Document> getDocuments(String userName) {
-		// TODO Auto-generated method stub
-		return null;
+		this.ensureLoggedIn();
+
+		final String lowerCaseUserName = userName.toLowerCase();
+		this.permissionDBManager.ensureWriteAccess(this.loginUser, lowerCaseUserName);
+
+		final DBSession session = this.openSession();
+
+		try {
+			return this.docDBManager.getLayoutDocuments(lowerCaseUserName, session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/* (non-Javadoc)

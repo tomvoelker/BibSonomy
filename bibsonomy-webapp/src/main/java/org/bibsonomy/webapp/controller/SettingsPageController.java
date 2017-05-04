@@ -201,20 +201,13 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	private void checkInstalledCSLLayout(final SettingsViewCommand command) {
 		final String loggedInUserName = command.getContext().getLoginUser().getName();
 		/*
-		 * set csl layouts of the users
-		 */
-		final String fileHash = CslLayoutUtils.userLayoutHash(loggedInUserName);
-		/*
 		* check whether the user has the csl layout
 		*/
-		final Document document = this.logic.getDocument(loggedInUserName, fileHash);
-		/*
-		* if a document was found set the corresponding hash and name of
-		* the file
-		*/
-		if (present(document)) {
-			command.setCslHash(fileHash);
-			command.setCslName(document.getFileName());
+		List<Document> documents = CslLayoutUtils.getUploadedLayouts(loggedInUserName, logic);
+		
+		if (!documents.isEmpty()) {
+			command.setCslHash(documents.get(0).getFileHash());
+			command.setCslName(documents.get(0).getFileName());
 		}
 	}
 	
