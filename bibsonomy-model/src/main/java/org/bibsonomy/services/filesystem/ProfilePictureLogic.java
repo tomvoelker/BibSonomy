@@ -58,7 +58,6 @@ public interface ProfilePictureLogic {
 	public void deleteProfilePictureForUser(final String username);
 	
 	/**
-	 * @param loggedinUser the name of the loggedin user
 	 * @param username
 	 * @return the profile picture
 	 */

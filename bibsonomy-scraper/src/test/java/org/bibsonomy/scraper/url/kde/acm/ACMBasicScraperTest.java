@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.acm;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -55,7 +56,9 @@ public class ACMBasicScraperTest {
 	 */
 	@Test
 	public void urlTestRun1(){
-		UnitTestRunner.runSingleTest("url_1");
+		final String url = "http://portal.acm.org/citation.cfm?id=1015428&amp;coll=Portal&amp;dl=ACM&amp;CFID=22531872&amp;CFTOKEN=18437036";
+		final String resultFile = "ACMBasicScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, ACMBasicScraper.class, resultFile);
 	}
 
 	/**
@@ -63,7 +66,9 @@ public class ACMBasicScraperTest {
 	 */
 	@Test
 	public void urlTestRun2(){
-		UnitTestRunner.runSingleTest("url_134");
+		final String url = "http://portal.acm.org/citation.cfm?id=333115.333119&amp;coll=GUIDE&amp;dl=GUIDE&amp;CFID=11052258&amp;CFTOKEN=84161555";
+		final String resultFile = "ACMBasicScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, ACMBasicScraper.class, resultFile);
 	}
 	
 	/**
@@ -71,7 +76,9 @@ public class ACMBasicScraperTest {
 	 */
 	@Test
 	public void urlTestRun3(){
-		UnitTestRunner.runSingleTest("url_153");
+		final String url = "http://portal.acm.org/citation.cfm?id=1105676";
+		final String resultFile = "ACMBasicScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, ACMBasicScraper.class, resultFile);
 	}
 	
 	/**
@@ -79,7 +86,9 @@ public class ACMBasicScraperTest {
 	 */
 	@Test
 	public void urlTestRun4(){
-		UnitTestRunner.runSingleTest("url_155");
+		final String url = "http://portal.acm.org/citation.cfm?id=553876";
+		final String resultFile = "ACMBasicScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, ACMBasicScraper.class, resultFile);
 	}
 	
 	/**
@@ -87,27 +96,25 @@ public class ACMBasicScraperTest {
 	 */
 	@Test
 	public void urlTestRun5(){
-		UnitTestRunner.runSingleTest("url_184");
+		final String url = "http://portal.acm.org/beta/citation.cfm?id=359859";
+		final String resultFile = "ACMBasicScraperUnitURLTest5.bib";
+		assertScraperResult(url, null, ACMBasicScraper.class, resultFile);
 	}
 	
 	@Test
 	public void urlTestRun6(){
-		UnitTestRunner.runSingleTest("url_186");
+		final String url = "http://portal.acm.org/citation.cfm?id=1082036.1082037&amp;coll=Portal&amp;dl=GUIDE&amp;CFID=88775871&amp;CFTOKEN=40392553#";
+		final String resultFile = "ACMBasicScraperUnitURLTest6.bib";
+		assertScraperResult(url, null, ACMBasicScraper.class, resultFile);
 	}
 	/**
 	 * 
 	 */
 	@Test
 	public void urlTestRun7(){
-		UnitTestRunner.runSingleTest("url_199");
-	}
-	
-	/**
-	 * ACM Queue
-	 */
-	@Test
-	public void urlTestRun8(){
-		UnitTestRunner.runSingleTest("url_286");
+		final String url = "http://dl.acm.org/citation.cfm?id=1571977";
+		final String resultFile = "ACMBasicScraperUnitURLTest7.bib";
+		assertScraperResult(url, null, ACMBasicScraper.class, resultFile);
 	}
 	
 	/**
@@ -115,7 +122,9 @@ public class ACMBasicScraperTest {
 	 */
 	@Test
 	public void urlTestRun9(){
-		UnitTestRunner.runSingleTest("url_289");
+		final String url = "http://cacm.acm.org/magazines/2015/8/189841-understanding-the-us-domestic-computer-science-phd-pipeline/fulltext";
+		final String resultFile = "ACMBasicScraperUnitURLTest9.bib";
+		assertScraperResult(url, null, ACMBasicScraper.class, resultFile);
 	}
 	
 	@Test

@@ -27,6 +27,7 @@
 package org.bibsonomy.model;
 
 import java.io.Serializable;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -67,6 +68,14 @@ public class Person implements Serializable {
 	private String dnbPersonId;
 	/** the gender */
 	private Gender gender;
+	
+	
+	
+	private String college;
+	private String email;
+	// FIXME use URL instead of string
+	private String homepage;
+	
 	
 	/**
 	 * 
@@ -270,6 +279,7 @@ public class Person implements Serializable {
 		this.postCounter = postCounter;
 	}
 
+
 	public int getPersonChangeId() {
 		return this.personChangeId;
 	}
@@ -292,6 +302,48 @@ public class Person implements Serializable {
 
 	public void setGender(Gender gender) {
 		this.gender = gender;
+	}
+
+	/**
+	 * @return the college
+	 */
+	public String getCollege() {
+		return this.college;
+	}
+
+	/**
+	 * @param college the college to set
+	 */
+	public void setCollege(String college) {
+		this.college = college;
+	}
+
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return this.email;
+	}
+
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	/**
+	 * @return the homepage
+	 */
+	public String getHomepage() {
+		return this.homepage;
+	}
+
+	/**
+	 * @param homepage the homepage to set
+	 */
+	public void setHomepage(String homepage) {
+		this.homepage = homepage;
 	}
 
 }

@@ -92,10 +92,18 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}
 	}
 	
+	/**
+	 * Generates a unique person ID (used for speaking URL)
+	 * Concatinates the name and a counter variable
+	 * @param person
+	 * @param session
+	 * @return
+	 */
 	private String generatePersonId(final Person person, final DBSession session) {
 		int counter = 1;
 		final String newPersonId = PersonUtils.generatePersonIdBase(person);
 		String tempPersonId = newPersonId;
+		// increment id until we find the first that is not used (for the current name)
 		do {
 			final Person tempPerson = this.getPersonById(tempPersonId, session);
 			if (tempPerson != null) {
@@ -113,6 +121,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	}
 	
 	/**
+	 * Returns a Person identified by it's linked username or
+	 * null if the given User has not claimed a Person so far
 	 * @param user
 	 * @param session 
 	 * @return Person
@@ -121,8 +131,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		return (Person) this.queryForObject("getPersonByUser", user, session);
 	}
 
-
 	/**
+	 * Returns a Person identified by it's unique ID
 	 * @param id
 	 * @param session
 	 * @return Person
@@ -131,8 +141,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		return (Person) this.queryForObject("getPersonById", id, session);
 	}
 
-
 	/**
+	 * Returns a Person identified by it's unique DNB ID
 	 * @param dnbid
 	 * @param session
 	 * @return Person
@@ -142,6 +152,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * Creates a new name and adds it to the specified Person
 	 * @param mainName
 	 * @param session
 	 */
@@ -156,8 +167,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}
 	}
 
-
 	/**
+	 * Updates all fields of a given Person
 	 * @param person
 	 * @param session
 	 */
@@ -172,7 +183,92 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			session.endTransaction();
 		}
 	}
-
+	
+	/**
+	 * Update the OrcID of a Person
+	 * @param person
+	 * @param session
+	 */
+	public void updateOrcid(Person person, DBSession session) {
+		session.beginTransaction();
+		try {
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
+			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			this.insert("updateOrcid", person, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
+	/**
+	 * Update the academic degree of a Person
+	 * @param person
+	 * @param session
+	 */
+	public void updateAcademicDegree(Person person, DBSession session) {
+		session.beginTransaction();
+		try {
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
+			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			this.insert("updateAcademicDegree", person, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
+	/**
+	 * Update the College of a Person
+	 * @param person
+	 * @param session
+	 */
+	public void updateCollege(Person person, DBSession session) {
+		session.beginTransaction();
+		try {
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
+			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			this.insert("updateCollege", person, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
+	/**
+	 * Update the Email of a Person
+	 * @param person
+	 * @param session
+	 */
+	public void updateEmail(Person person, DBSession session) {
+		session.beginTransaction();
+		try {
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
+			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			this.insert("updateEmail", person, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
+	/**
+	 * Update the Homepage of a Person
+	 * @param person
+	 * @param session
+	 */
+	public void updateHomepage(Person person, DBSession session) {
+		session.beginTransaction();
+		try {
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
+			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			this.insert("updateHomepage", person, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
 	/**
 	 * @param resourcePersonRelation
 	 * @param session 
@@ -212,7 +308,6 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			databaseSession.endTransaction();
 		}
 	}
-
 
 	/**
 	 * @param personNameChangeId

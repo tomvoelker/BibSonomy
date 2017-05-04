@@ -54,11 +54,8 @@ public class MostPopularByResourceTagRecommender extends AbstractTagRecommender 
 	
 	@Override
 	protected void addRecommendedTagsInternal(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> entity) {
-		/*
-		 * recalculate the hashes
-		 */
-		entity.getResource().recalculateHashes();
-		
+		this.preparePost(entity);
+
 		final String hash = entity.getResource().getInterHash(); // TODO: use intrahash?
 		if (present(hash)) {
 			/*
@@ -83,7 +80,14 @@ public class MostPopularByResourceTagRecommender extends AbstractTagRecommender 
 			log.debug("Could not get recommendations, because no intraHash was given.");
 		}
 	}
-	
+
+	protected void preparePost(Post<? extends Resource> entity) {
+		/*
+		 * recalculate the hashes
+		 */
+		entity.getResource().recalculateHashes();
+	}
+
 	@Override
 	public String getInfo() {
 		return "Most Popular Tags By Resource Recommender";

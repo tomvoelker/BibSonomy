@@ -60,14 +60,17 @@ public class ContentBasedItemRecommenderTest {
 				return new Bookmark();
 			}
 		};
-		ContentBasedItemRecommender<Bookmark> reco = new ContentBasedItemRecommender<Bookmark>();
+
+		final ContentBasedItemRecommender<Bookmark> reco = new ContentBasedItemRecommender<Bookmark>();
 		reco.setDbAccess(dbAccess);
 		reco.setNumberOfItemsToRecommend(RECOMMENDATIONS_TO_CALCULATE);
 		reco.setMaxItemsToEvaluate(4);
+
 		final RecommendationUser user = new RecommendationUser();
 		user.setUserName(DUMMY_CF_USER_NAME);
-		SortedSet<RecommendedPost<Bookmark>> recommendations = reco.getRecommendation(user);
-		
+
+		final SortedSet<RecommendedPost<Bookmark>> recommendations = reco.getRecommendation(user);
+
 		// should be one less, because already known items are not recommended
 		assertEquals(RECOMMENDATIONS_TO_CALCULATE, recommendations.size());
 		

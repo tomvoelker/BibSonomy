@@ -26,11 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.nature;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,25 +35,22 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.WebUtils;
 
 /**
- * Scraper for publication from nature.com
- * @author tst
+ * Scraper for Nature
+ *
+ * @author Johannes
  */
-public class NatureScraper extends AbstractUrlScraper implements ReferencesScraper {
-	private static final Log log = LogFactory.getLog(NatureScraper.class);
+public class NatureNewsScraper extends AbstractUrlScraper{
+	private static final Log log = LogFactory.getLog(NatureNewsScraper.class);
 
 	private static final String SITE_URL = "http://www.nature.com/";
 	private static final String SITE_NAME = "Nature";
@@ -65,16 +58,8 @@ public class NatureScraper extends AbstractUrlScraper implements ReferencesScrap
 	private static final String HOST = "nature.com";
 	private static final String INFO = "Scraper for publications from " + href(SITE_URL, SITE_NAME)+".";
 
-	/** pattern for links */
-	private static final Pattern linkPattern = Pattern.compile("<a\\b[^<]*</a>");
-
-	/** pattern for href field */
-	private static final Pattern hrefPattern = Pattern.compile("href=\"[^\"]*\"");
-
-	/** name from download link */
-	private static final String CITATION_DOWNLOAD_LINK_NAME = ">Export citation<";
-	private static final String CITATION_DOWNLOAD_LINK_NAME2 = ">Citation<";
-
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), Pattern.compile("/news/.*")));
+	
 	private static final Pattern author = Pattern.compile("<meta name=\"citation_authors\" content=\"(.*?)\"/>");
 	private static final Pattern journal = Pattern.compile("<meta name=\"citation_journal_title\" content=\"(.*?)\"/>");
 	private static final Pattern doi = Pattern.compile("<meta name=\"citation_doi\" content=\"doi:(.*?)\"/>");
@@ -84,73 +69,38 @@ public class NatureScraper extends AbstractUrlScraper implements ReferencesScrap
 	private static final Pattern volume = Pattern.compile("<meta name=\"citation_volume\" content=\"(.*?)\"/>");
 	private static final Pattern number = Pattern.compile("<meta name=\"citation_issue\" content=\"(.*?)\"/>");
 
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
-	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("(?s)Abstract.*\\s+<p>(.*)</p>\\s+<div class=\"article-keywords inline-list cleared\">");
-	private static final Pattern REFERENCES_PATTERN = Pattern.compile("href=\"?(\\S*)\"?[^>]*>Download references");
 	
 	
-	private final RisToBibtexConverter ris = new RisToBibtexConverter();
-	
-	/** get INFO */
-	@Override
-	public String getInfo() {
-		return INFO;
-	}
-
-	/**
-	 * Gets the page content of a publication page. It can't be commonly applied since it violates
-	 * RFC 2616.
-	 * 
-	 * @param url The url to the publication page
-	 * @return the publication page as a String
-	 * @throws IOException
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.UrlScraper#getSupportedSiteName()
 	 */
-	private static String getPageContent(URL url) throws IOException {
-		HttpURLConnection con = null;
-		InputStream in = null;
-		try {
-			con = (HttpURLConnection) url.openConnection();
-			con.connect();
-			// sometimes the page is behind an gzip stream. this will be indicated by response code 401.
-			if (con.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
-				in = new GZIPInputStream(con.getErrorStream());
-			} else {
-				in = con.getInputStream();
-			}
-			return WebUtils.inputStreamToStringBuilder(in, WebUtils.extractCharset(con.getContentType())).toString();
-		} finally {
-			if (con != null) con.disconnect();
-			try {
-				if (in != null) in.close();
-			} catch (IOException ex) {}
-		}
-	}
-
-	@Override
-	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return patterns;
-	}
-
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.UrlScraper#getSupportedSiteURL()
+	 */
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
 
-	private static String abstractParser(URL url){
-		try {
-			final Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url));
-			if (m.find()) {
-				return m.group(1);
-			}
-		} catch(IOException e){
-			log.error("error while getting abstract for " + url, e);
-		}
-		return null;
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.Scraper#getInfo()
+	 */
+	@Override
+	public String getInfo() {
+		return INFO;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.AbstractUrlScraper#getUrlPatterns()
+	 */
+	@Override
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
+		return patterns;
 	}
 
 	/* (non-Javadoc)
@@ -159,40 +109,14 @@ public class NatureScraper extends AbstractUrlScraper implements ReferencesScrap
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		try {
-			final String bibtexUrl = findBibtexUrl(sc.getUrl());
-			if (present(bibtexUrl)) {
-				sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(ris.toBibtex(WebUtils.getContentAsString(bibtexUrl)),"abstract",abstractParser(sc.getUrl())));
-			} else {
-				sc.setBibtexResult(constructBibtexFromHtmlMeta(sc));	
-			}
+			sc.setBibtexResult(constructBibtexFromHtmlMeta(sc));
 			sc.setScraper(this);
-			return true;
-		} catch (final IOException e) {
+		} catch (IOException e) {
 			throw new ScrapingException(e);
-		} catch (final ParseException pe) {
-			throw new ScrapingException(pe);
+		} catch (ParseException e) {
+			throw new ScrapingException(e);
 		}
-	}
-
-	private String findBibtexUrl(final URL url) throws IOException {
-		// get publication page
-		final String publicationPage = getPageContent(url);
-		// extract download citation link
-		final Matcher linkMatcher = linkPattern.matcher(publicationPage);
-		while (linkMatcher.find()) {
-			final String link = linkMatcher.group();
-			// check if link is download link
-			if (link.contains(CITATION_DOWNLOAD_LINK_NAME) || link.contains(CITATION_DOWNLOAD_LINK_NAME2)) {
-				// get href attribute
-				final Matcher hrefMatcher = hrefPattern.matcher(link);
-				if (hrefMatcher.find()) {
-					final String href = hrefMatcher.group();
-					// download citation (as RIS)
-					return  "http://" + url.getHost() + "/" + href.substring(6, href.length() - 1);
-				} 
-			}
-		}
-		return null;
+		return true;
 	}
 
 	private String constructBibtexFromHtmlMeta(final ScrapingContext sc) throws IOException, ParseException {
@@ -259,22 +183,5 @@ public class NatureScraper extends AbstractUrlScraper implements ReferencesScrap
 		bibtex.append("}");
 
 		return bibtex.toString();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
-	 */
-	@Override
-	public boolean scrapeReferences(ScrapingContext sc) throws ScrapingException {
-		try {
-			final Matcher m = REFERENCES_PATTERN.matcher(WebUtils.getContentAsString(sc.getUrl()));
-			if(m.find()) {
-				sc.setReferences(WebUtils.getContentAsString(SITE_URL + m.group(1)).trim());
-				return true;
-			}
-		} catch (IOException e) {
-			log.error("References are not available for " + sc.getUrl(), e);
-		}
-		return false;
 	}
 }

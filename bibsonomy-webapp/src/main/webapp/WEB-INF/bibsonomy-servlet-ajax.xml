@@ -65,6 +65,7 @@
 						<property name="controllerBeanName"	value="documentsController" />
 						<property name="allowedFields">
 							<list>
+								<value>ownerName</value>
 								<value>intraHash</value>
 								<value>fileName</value>
 								<value>newFileName</value>

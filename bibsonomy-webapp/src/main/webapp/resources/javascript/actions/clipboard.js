@@ -1,47 +1,73 @@
 var TITLE_MAX_LENGTH = 60;
 
 $(function() {
-	$('a.publ-export').click(function(e) {
-		if (e.metaKey || e.ctrlKey) {
-			return true;
-		}
-		var targetElement = $('#exportModalCitation');
-		targetElement.html(getString("bibtex.citation_format.loading"));
-		var exportModal = $('#exportModal');
-		exportModal.modal('show');
-		
-		var postListItem = $(this).closest('li.post');
-		var linkToPublication;
-		var titleContainer;
-		if (postListItem.length > 0) {
-			titleContainer = postListItem.find('.ptitle');
-			var link = titleContainer.find('a');
-			linkToPublication = link.attr('href');
-		} else {
-			titleContainer = $('h1.publication-title > span');
-			linkToPublication = $('h1.publication-title').data('url');
-		}
-		
-		
-		var publicationTitle = titleContainer.text();
-		if (publicationTitle !== undefined && publicationTitle.length > TITLE_MAX_LENGTH) {
-			publicationTitle = publicationTitle.substring(0, TITLE_MAX_LENGTH - 3) + "…";
-		}
-		
-		$('#exportModalLabel').text(publicationTitle);
-		
-		$(this).closest('div.btn-group').removeClass('open');
-		
-		loadExportLayout($(this), targetElement, linkToPublication);
-		
-		return false;
-	});
+	$('a.publ-export')
+			.click(
+					function(e) {
+						if (e.metaKey || e.ctrlKey) {
+							return true;
+						}
+						var targetElement = $('#exportModalCitation');
+						targetElement
+								.html(getString("bibtex.citation_format.loading"));
+						var exportModal = $('#exportModal');
+						exportModal.modal('show');
+
+						var postListItem = $(this).closest('li.post');
+						var linkToPublication;
+						var titleContainer;
+						if (postListItem.length > 0) {
+							titleContainer = postListItem.find('.ptitle');
+							var link = titleContainer.find('a');
+							linkToPublication = link.attr('href');
+						} else {
+							titleContainer = $('h1.publication-title > span');
+							linkToPublication = $('h1.publication-title').data(
+									'url');
+						}
+
+						var publicationTitle = titleContainer.text();
+						if (publicationTitle !== undefined
+								&& publicationTitle.length > TITLE_MAX_LENGTH) {
+							publicationTitle = publicationTitle.substring(0,
+									TITLE_MAX_LENGTH - 3)
+									+ "…";
+						}
+
+						$('#exportModalLabel').text(publicationTitle);
+
+						$(this).closest('div.btn-group').removeClass('open');
+
+						loadExportLayout($(this), targetElement,
+								linkToPublication);
+
+						return false;
+					});
 	
-	var copyButton = $('#copyToLocalClipboard');
+	initNewClipboard('#copyToLocalClipboard', '#exportModalCitation');
+	initNewClipboard('.copyToLocalClipboard_citationBox', '#citation-styles .active');
+	
+	// hiding / showing "copy to clipboard" button
+	$(".citation-box .nav li a").each(function(index, link) {
+		if ($(link).attr('id') == "citation-box-citation-all-button") {
+			$(link).click(function() {
+				$("#copyToLocalClipboard_citationBoxButton").hide();
+			});
+		} else {
+			$(link).click(function() {
+				$("#copyToLocalClipboard_citationBoxButton").show();
+			});
+		}
+	});
+});
+
+
+function initNewClipboard(copyButtonString, citationStringContainer){
+	var copyButton = $(copyButtonString);
 	if (copyButton.length > 0) {
 		var clipboard = new Clipboard(copyButton.get(0), {
-			target: function(trigger) {
-				var citationContainer = $('#exportModalCitation');
+			target : function(trigger) {
+				var citationContainer = $(citationStringContainer);
 				var targetElement = citationContainer;
 				var pre = citationContainer.find('pre');
 				if (pre.length > 0) {
@@ -50,59 +76,27 @@ $(function() {
 				return targetElement.get(0);
 			}
 		});
-		
-		
+
 		copyButton.mouseleave(function() {
 			copyButton.tooltip('destroy');
 		});
-		
+
 		clipboard.on('success', function(e) {
 			copyButton.tooltip({
-				placement: 'bottom',
-				title: getString('export.copyToLocalClipboard.success')
+				placement : 'bottom',
+				title : getString('export.copyToLocalClipboard.success')
 			}).tooltip('show');
 		});
-		
+
 		clipboard.on('error', function(e) {
 			copyButton.tooltip({
-				placement: 'bottom',
-				title: getString('export.copyToLocalClipboard.error')
+				placement : 'bottom',
+				title : getString('export.copyToLocalClipboard.error')
 			}).tooltip('show');
 		});
 	}
-	
-	$('.copyToLocalClipboard_citationBox').click(function(e) {
-		var copyButton = $(this);
-		if (copyButton.length > 0) {
-			var clipboard = new Clipboard(copyButton.get(0), {
-				target: function(trigger) {
-					var citationContainer = $("#citation-styles .active");
-					var targetElement = citationContainer.first();
-					return targetElement.get(0);
-				}
-			});
-			
-			
-			copyButton.mouseleave(function() {
-				copyButton.tooltip('destroy');
-			});
-			
-			clipboard.on('success', function(e) {
-				copyButton.tooltip({
-					placement: 'bottom',
-					title: getString('export.copyToLocalClipboard.success')
-				}).tooltip('show');
-			});
-			
-			clipboard.on('error', function(e) {
-				copyButton.tooltip({
-					placement: 'bottom',
-					title: getString('export.copyToLocalClipboard.error')
-				}).tooltip('show');
-			});
-		}
-	});
-});
+}
+
 
 function pickAll() {
 	return pickUnpickAll(false);
@@ -129,15 +123,16 @@ function pickUnpickAll(unpick) {
 		var hash = $(this).data("intrahash");
 		var user = $(this).data("user");
 		var id = hash + "/" + user;
-		
+
 		allPosts += id + " ";
 	});
-	
+
 	if (unpick && !confirmDeleteByUser("clipboardpost")) {
 		return false;
 	}
-	
-	var param = 'action=' + (unpick ? 'unpick' : 'pick') + '&hash=' + escape(allPosts);
+
+	var param = 'action=' + (unpick ? 'unpick' : 'pick') + '&hash='
+			+ escape(allPosts);
 	updateClipboard(null, param);
 	return false;
 }
@@ -153,13 +148,13 @@ function pickUnpickPublication(element) {
 	 * pick/unpick publication
 	 */
 	var params = unescapeAmp($(element).attr("href")).replace(/^.*?\?/, "");
-	
+
 	// ask before deleting the pick
 	var isUnpick = params.search(/action=unpick/) != -1;
 	if (isUnpick && !confirmDeleteByUser("clipboardpost")) {
 		return false;
 	}
-	
+
 	return updateClipboard(element, params);
 }
 
@@ -172,14 +167,14 @@ function pickUnpickPublication(element) {
 function updateClipboard(element, param) {
 	var isUnpick = param.search(/action=unpick/) != -1;
 	$.ajax({
-		type: 'POST',
-		url: "/ajax/pickUnpickPost?ckey=" + ckey,
+		type : 'POST',
+		url : "/ajax/pickUnpickPost?ckey=" + ckey,
 		data : param,
 		dataType : "text",
-		success: function(data) {
+		success : function(data) {
 			/*
-			 * special case for the /clipboard page
-			 * remove the post from the resource list and update the post count
+			 * special case for the /clipboard page remove the post from the
+			 * resource list and update the post count
 			 */
 			if (location.pathname.startsWith("/clipboard") && isUnpick) {
 				var post = $(element).parents('li.post');
@@ -190,7 +185,7 @@ function updateClipboard(element, param) {
 				var postCount = parseInt(postCountBadge.text());
 				postCountBadge.text(postCount - 1);
 			}
-			
+
 			/*
 			 * update the number of clipboard items
 			 */
@@ -205,7 +200,8 @@ function updateClipboard(element, param) {
 }
 
 /*
- * update the counter at the navigation bar to reflect the amount of picked publications and unread messages
+ * update the counter at the navigation bar to reflect the amount of picked
+ * publications and unread messages
  */
 function updateCounter() {
 	var clipboardNum = $(".clipboard-counter:first");
@@ -217,7 +213,7 @@ function updateCounter() {
 		if (clipboardCount == 0) {
 			clipboardNum.hide();
 		}
-		
+
 		totalCount += clipboardCount;
 		totalCount += inboxNum.length == 0 ? 0 : parseInt(inboxNum.text());
 		counter.show().text(totalCount);
@@ -228,19 +224,23 @@ function updateCounter() {
 }
 
 // TODO: maybe wrong place ?
-function reportUser(a, userName){
+function reportUser(a, userName) {
 	$.ajax({
-		type: 'POST',
-		url: $(a).attr("href")+ "?ckey=" + ckey,
-		data: 'requestedUserName=' + userName + '&userRelation=SPAMMER&action=addRelation',
-		dataType: 'text',
-		success: function(data) {
-			$('a.report-spammer-link ').each(function(index, link) {
-				if ($(link).data('username') == userName) {
-					$(link).parent().append($("<span class=\"ilitem\"></span>").text(getString("user.reported")));
-					$(link).remove();
-				}
-			});
+		type : 'POST',
+		url : $(a).attr("href") + "?ckey=" + ckey,
+		data : 'requestedUserName=' + userName
+				+ '&userRelation=SPAMMER&action=addRelation',
+		dataType : 'text',
+		success : function(data) {
+			$('a.report-spammer-link ').each(
+					function(index, link) {
+						if ($(link).data('username') == userName) {
+							$(link).parent().append(
+									$("<span class=\"ilitem\"></span>").text(
+											getString("user.reported")));
+							$(link).remove();
+						}
+					});
 		}
 	});
 	return false;
