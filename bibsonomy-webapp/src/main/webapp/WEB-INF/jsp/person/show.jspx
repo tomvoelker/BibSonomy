@@ -239,7 +239,16 @@
 											</c:otherwise>
 										</c:choose>
 
-										<a class="personPageFormFieldContent" id="personPageFormHomepageValue" rel="external nofollow" href="${fn:escapeXml(command.person.homepage)}" itemprop="url"><c:out value="${command.person.homepage}"/></a>									
+
+										<c:choose>
+											<c:when test='${not empty command.person.homepage}'>
+												<a class="personPageFormFieldContent" id="personPageFormHomepageValue" rel="external nofollow" href="${fn:escapeXml(command.person.homepage)}" itemprop="url"><c:out value="${command.person.homepage}"/></a>									
+											</c:when>
+											<c:otherwise>
+												<span class="personPageFormFieldContent" id="personPageFormHomepageValue"><c:out value=" " /></span> 
+											</c:otherwise>
+										</c:choose>
+
 									</div>
 									
 									<!-- Only visible if te loginUser claimed this person -->
