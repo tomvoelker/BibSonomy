@@ -2093,6 +2093,15 @@ public class DBLogic implements LogicInterface {
 		}
 		return null;
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getDocuments(java.lang.String)
+	 */
+	@Override
+	public List<Document> getDocuments(String userName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getDocumentStatistics(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, org.bibsonomy.common.enums.FilterEntity, java.util.Set, java.util.Date, java.util.Date)

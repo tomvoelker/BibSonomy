@@ -630,6 +630,15 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getDocuments(java.lang.String)
+	 */
+	@Override
+	public List<Document> getDocuments(String userName) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getDocumentStatistics(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.Set, java.util.Date, java.util.Date)
 	 */
 	@Override

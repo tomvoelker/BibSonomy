@@ -205,7 +205,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		 */
 		final String fileHash = CslLayoutUtils.userLayoutHash(loggedInUserName);
 		/*
-		* check whether the user has the jabref layout (begin, end or item)
+		* check whether the user has the csl layout
 		*/
 		final Document document = this.logic.getDocument(loggedInUserName, fileHash);
 		/*

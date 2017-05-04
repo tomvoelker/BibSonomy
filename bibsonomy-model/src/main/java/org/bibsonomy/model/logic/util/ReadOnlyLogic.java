@@ -519,7 +519,14 @@ public class ReadOnlyLogic implements LogicInterface {
 	public Document getDocument(String userName, String resourceHash, String fileName) {
 		return this.logicinterface.getDocument(userName, resourceHash, fileName);
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getDocuments(java.lang.String)
+	 */
+	@Override
+	public List<Document> getDocuments(String userName) {
+		return this.logicinterface.getDocuments(userName);
+	}
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getDocumentStatistics(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.Set, java.util.Date, java.util.Date)
 	 */
