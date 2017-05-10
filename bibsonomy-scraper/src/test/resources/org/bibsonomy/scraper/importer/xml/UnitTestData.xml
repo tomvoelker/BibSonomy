@@ -158,12 +158,6 @@
 		<BibFile>DLibScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.dlib.DLibScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_58">
-		<TestDescription>springer.com url test</TestDescription>
-		<URL>http://www.springer.com/computer/database+management+&amp;+information+retrieval/book/978-0-387-95433-2</URL>
-		<BibFile>SpringerScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_59">
 		<TestDescription>Test for worldcat publication page</TestDescription>
 		<URL>http://www.worldcat.org/oclc/37212333</URL>
@@ -753,12 +747,6 @@
 		<URL>http://oro.open.ac.uk/19554/</URL>
 		<BibFile>OpenUniversityScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.openuniversity.OpenUniversityScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_239">
-		<TestDescription>URL scraping test with book from springerlink</TestDescription>
-		<URL>http://link.springer.com/book/10.1007/978-0-387-85820-3/page/1</URL>
-		<BibFile>SpringerLinkScraperUnitURLTest9.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_242">
 		<TestDescription>test for Sage Journals CDP Scraper</TestDescription>
