@@ -421,12 +421,6 @@
 		<BibFile>CiteseerxScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.citeseer.CiteseerxScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_113">
-		<TestDescription>URL test for muse.jhu.edu with normal URL pattern</TestDescription>
-		<URL>http://muse.jhu.edu/journals/social_science_history/v029/29.4mcnay.html</URL>
-		<BibFile>ProjectmuseScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.muse.ProjectmuseScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_114">
 		<TestDescription>URL test for muse.jhu.edu with missing login pattern</TestDescription>
 		<URL>http://muse.jhu.edu/login?uri=/journals/demography/v042/42.4johnson.html</URL>
