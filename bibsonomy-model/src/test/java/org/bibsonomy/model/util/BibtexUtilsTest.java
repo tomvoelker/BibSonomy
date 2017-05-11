@@ -482,9 +482,10 @@ public class BibtexUtilsTest {
 
 		final String originalMisc = "doi = {my doi}, isbn = {999-12345-123-x}, vgwort = {12}";
 		final String cleanedMisc  = 
-			"  isbn = {999-12345-123-x},\n" +
-			"  vgwort = {12},\n" +
-			"  doi = {my doi}";
+							"  vgwort = {12},\n" +
+							"  isbn = {999-12345-123-x},\n" +
+							"  doi = {my doi}";
+		
 		bib.setMisc(originalMisc);
 		
 		/*
@@ -510,7 +511,7 @@ public class BibtexUtilsTest {
 		 * The fields are parsed and then serialized. Inbetween, some fields
 		 * have been added (keywords, description). We must ensure, that they're
 		 * removed again such that we have the original misc fields!
-		 */		
+		 */
 		assertEquals(cleanedMisc, bib.getMisc());
 	}
 	

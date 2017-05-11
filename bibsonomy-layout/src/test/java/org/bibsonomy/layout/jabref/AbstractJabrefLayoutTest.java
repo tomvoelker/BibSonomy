@@ -102,14 +102,18 @@ public abstract class AbstractJabrefLayoutTest {
 		final AbstractJabRefLayout layout = RENDERER.getLayout(this.layoutName, "foo");
 		String renderedLayout = RENDERER.renderLayout(layout, testCasePost, false).toString();
 		String resultLayout = TestUtils.readEntryFromFile(this.layoutTest).trim();
-
+		
+		
+		
 		// format JUnit output
 		final String printedEntryType = this.entryType.equals("") ? "NA" : this.entryType;
 		
 		// prepare Layouts - Remove varying lines etc.
 		renderedLayout = prepareTest(renderedLayout, this.layoutName);
 		resultLayout = prepareTest(resultLayout, this.layoutName);
+		
 		assertEquals("layout: " + this.layoutName + ", testfile: " + this.layoutTest + ", entrytype: " + printedEntryType, resultLayout, renderedLayout);
+		
 	}
 	
 	private static String prepareTest(String renderedLayout, final String layoutName) {
