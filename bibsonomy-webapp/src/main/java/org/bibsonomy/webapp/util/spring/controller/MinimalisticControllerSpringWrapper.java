@@ -389,12 +389,12 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 
 						view = new ExtendedRedirectView(newRequestUriBuilder.toString(), true);
 					}
-				}
-
-				// don't render a 404 on the homepage and only on html pages
-				if (!"".equals(realRequestPath) && isHtml) {
+				} else {
+					// don't render a 404 on the homepage and only on html pages
+					if (!"".equals(realRequestPath) && isHtml) {
 					// no resources found, render 404 for search engines (soft-404 warning)
-					response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+						response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+					}
 				}
 			}
 		}
