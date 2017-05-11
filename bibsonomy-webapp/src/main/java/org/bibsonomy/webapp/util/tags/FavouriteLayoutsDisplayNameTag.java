@@ -85,8 +85,8 @@ public class FavouriteLayoutsDisplayNameTag extends RequestContextAwareTag {
 		case CSL:
 			return getCslDisplayName(name);
 		case CUSTOM:
-			if (name.toLowerCase().endsWith(".csl")){
-				return getCslDisplayName(name);
+			if (favouriteLayout.getStyle().toLowerCase().endsWith(".csl")){
+				return getCslDisplayNameByStyle(favouriteLayout.getStyle());
 			}
 		default:
 			break;
@@ -104,6 +104,18 @@ public class FavouriteLayoutsDisplayNameTag extends RequestContextAwareTag {
 			return "Style has been deleted."; // TODO: i18n
 		}
 		return style.getDisplayName();
+	}
+	
+	/**
+	 * @param displayName
+	 * @return
+	 */
+	private String getCslDisplayNameByStyle(final String style) {
+		final CSLStyle CSLstyle = this.getCslFileManager().getStyleByName(style);
+		if (CSLstyle == null){
+			return "Style has been deleted."; // TODO: i18n
+		}
+		return CSLstyle.getDisplayName();
 	}
 
 	/**

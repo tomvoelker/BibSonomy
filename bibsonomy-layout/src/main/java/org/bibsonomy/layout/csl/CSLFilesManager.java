@@ -181,12 +181,34 @@ public class CSLFilesManager {
 	 */
 	public CSLStyle getStyleByName(final String cslName) {
 		CSLStyle tmp = this.cslFiles.get(cslName);
-		if (tmp == null && cslName.toLowerCase().startsWith("custom")){
+		if (tmp == null && cslName.toLowerCase().startsWith("custom") && cslName.toLowerCase().endsWith(".csl")){
 			//username extrahieren
 			//layoutname laden.
 			String cut = cslName.substring(0, cslName.length()-4);
-			String userName = cut.substring(0, cut.indexOf('_'));
-			String layoutName = 
+			String userName = cut.substring(cut.indexOf('_') + 1);
+			String layoutName = userName.substring(userName.indexOf('_') + 1);
+			userName = userName.substring(0, userName.indexOf('_'));
+			
+			//because correct upper and lowercase is lost when written to DB.
+			if(!cslCustomFiles.containsKey(userName)){
+				if(cslCustomFiles.containsKey(userName.toLowerCase())){
+					//a shot in the dark
+					userName = userName.toLowerCase();
+				} else {
+					//no? => bruteforce :(
+					for(String key: cslCustomFiles.keySet()){
+						if(key.equalsIgnoreCase(userName)){
+							userName = key;
+						}
+					}
+				}
+			}
+			for(CSLStyle style : cslCustomFiles.get(userName)){
+				if (style.getName().equalsIgnoreCase(cslName)){
+					tmp = style;
+					break;
+				}
+			}
 		}
 		return tmp;
 	}
