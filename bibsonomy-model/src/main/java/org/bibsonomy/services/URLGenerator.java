@@ -873,6 +873,11 @@ public class URLGenerator {
 					return "/endnote" + publicationUrl;
 				}
 				//$FALL-THROUGH$
+			case CUSTOM:
+				if(favl.getStyle().endsWith(".CSL")){
+					return "/csl-layout/" + style.toUpperCase() + publicationUrl;
+				}
+				//$FALL-THROUGH$
 			default:
 				throw new UnsupportedFormatException(source + "/" + style);
 			}
