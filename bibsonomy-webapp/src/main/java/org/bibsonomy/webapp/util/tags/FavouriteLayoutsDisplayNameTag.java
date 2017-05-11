@@ -84,6 +84,10 @@ public class FavouriteLayoutsDisplayNameTag extends RequestContextAwareTag {
 			return getJabRefDisplayName(name);
 		case CSL:
 			return getCslDisplayName(name);
+		case CUSTOM:
+			if (name.toLowerCase().endsWith(".csl")){
+				return getCslDisplayName(name);
+			}
 		default:
 			break;
 		}

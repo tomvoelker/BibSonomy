@@ -180,7 +180,15 @@ public class CSLFilesManager {
 	 * @return the csl style
 	 */
 	public CSLStyle getStyleByName(final String cslName) {
-		return this.cslFiles.get(cslName);
+		CSLStyle tmp = this.cslFiles.get(cslName);
+		if (tmp == null && cslName.toLowerCase().startsWith("custom")){
+			//username extrahieren
+			//layoutname laden.
+			String cut = cslName.substring(0, cslName.length()-4);
+			String userName = cut.substring(0, cut.indexOf('_'));
+			String layoutName = 
+		}
+		return tmp;
 	}
 	
 	/**
@@ -210,7 +218,6 @@ public class CSLFilesManager {
 		/*
 		 * check if custom filter exists
 		 */
-		final String userLayoutName = CslLayoutUtils.userLayoutName(userName, document.getFileName());
 		if (present(userName)) {
 			/*
 			 * custom filter of current user is not loaded yet -> check if a filter exists at all

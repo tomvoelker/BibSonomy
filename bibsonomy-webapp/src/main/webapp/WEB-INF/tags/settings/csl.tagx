@@ -60,7 +60,7 @@
         											<button type="button" class="close" data-dismiss="modal"></button>
         											<h4 class="modal-title"><fmt:message key="settings.csl.fileContent"/></h4>
       											</div>
-     		 									<div class="modal-body">
+     		 									<div class="modal-body well well-sm">
         											<p><c:out value="${style.content}" /></p>
       											</div>
       											<div class="modal-footer">

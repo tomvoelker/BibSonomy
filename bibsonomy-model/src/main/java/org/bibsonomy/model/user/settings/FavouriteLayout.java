@@ -61,6 +61,10 @@ public class FavouriteLayout {
 			displayName = SimpleExportLayout.BIBTEX.getDisplayName();
 		} else if (SimpleExportLayout.ENDNOTE.getDisplayName().equalsIgnoreCase(style)) {
 			displayName = SimpleExportLayout.ENDNOTE.getDisplayName();
+		} else if (FavouriteLayoutSource.CUSTOM.equals(source)) {
+			if(style.toLowerCase().endsWith(".csl")){
+				displayName = style.substring(style.indexOf('_', style.indexOf('_')+1)+1, style.toLowerCase().indexOf(".csl")).trim();
+			}
 		}
 	}
 	
