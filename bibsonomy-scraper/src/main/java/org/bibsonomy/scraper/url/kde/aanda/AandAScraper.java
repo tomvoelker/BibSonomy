@@ -118,7 +118,7 @@ public class AandAScraper extends AbstractUrlScraper implements ReferencesScrape
 			final Node node = tdS.item(i);
 			if (node.hasChildNodes()){
 				if ("DOI".equals(node.getFirstChild().getNodeValue())) {
-					return node.getParentNode().getLastChild().getFirstChild().getFirstChild().getNodeValue().replaceFirst("http:\\/\\/dx\\.doi\\.org\\/", "");
+					return node.getParentNode().getLastChild().getFirstChild().getFirstChild().getNodeValue().replaceFirst("https?:\\/\\/(dx\\.)?doi\\.org\\/", "");
 				}
 			}
 		}

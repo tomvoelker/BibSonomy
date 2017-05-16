@@ -28,23 +28,28 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
 import org.bibsonomy.webapp.command.DisambiguationPageCommand;
+import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -79,6 +84,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 		}
 		
 		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, command.getRequestedHash(), null, null, null, null, null, null, 0, 100);
+		
 		if (!present(posts)) {
 			throw new ObjectNotFoundException(command.getRequestedHash());
 		}
@@ -121,8 +127,76 @@ public class DisambiguationPageController extends SingleResourceListController i
 		command.setPersonName(requestedName);
 		
 		String name = requestedName.toString();
+		
 		PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
-		command.setPersonSuggestions(query.doIt());
+		List<ResourcePersonRelation> suggestedPersons = query.doIt();		
+			
+		/*
+		 * FIXME: use author-parameter in getPosts method
+		 * @see bibsonomy.database.managers.PostDatabaseManager.#getPostsByResourceSearch()
+		 * 
+		 * get at least 50 publications from authors with same name
+		 */	
+		final List<Post<BibTex>> pubAuthorSearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, name, SearchType.LOCAL, null , Order.ALPH, null, null, 0, 50);
+
+		List<Post<BibTex>> pubsWithSameAuthorName = new ArrayList<>(pubAuthorSearch);
+		for (final Post<BibTex> post : pubAuthorSearch) {
+			// remove post from search if the author has not exactly the same sur- and last-name
+			if (!post.getResource().getAuthor().contains(requestedName)) {
+				pubsWithSameAuthorName.remove(post);
+			}
+		}
+
+		List<Post<?>> postsOfSuggestedPersons = new ArrayList<>();
+		HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts = new HashMap<>();
+
+		// get all persons with same name
+		for (final ResourcePersonRelation suggestedPerson : suggestedPersons) {
+			// discard theses from authors with a different name
+			if (!suggestedPerson.getPerson().getMainName().toString().equals(name))
+				continue;
+			
+			List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(suggestedPerson.getPerson().getPersonId()).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
+			List<Post<?>> personPosts = new ArrayList<>();
+
+			for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
+				// escape thesis of person
+				final boolean isThesis = resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis");
+				if (isThesis)
+					continue;
+
+				// get pub from the known person
+				if (resourcePersonRelation.getRelationType().equals(PersonResourceRelationType.AUTHOR)) {
+					personPosts.add(resourcePersonRelation.getPost());
+					postsOfSuggestedPersons.add(resourcePersonRelation.getPost());
+				}
+			}
+			suggestedPersonPosts.put(suggestedPerson, personPosts);
+		}
+
+		// update the post-list from the search result
+		// FIXME: this should be redone once the author-parameter is used
+		List<Post<BibTex>> noPersonRelPubList = new ArrayList<>(pubsWithSameAuthorName);
+		for (final Post<BibTex> post : pubsWithSameAuthorName) {
+			final String currentPostInterHash = post.getResource().getInterHash();
+
+			// remove the derivated post from the list
+			if (currentPostInterHash.equals(command.getPost().getResource().getInterHash())) {
+				noPersonRelPubList.remove(post);
+				continue;
+			}
+
+			// remove post if it's already related to a person
+			for (final Post<?> personPost : postsOfSuggestedPersons) {
+				if (currentPostInterHash.equals(personPost.getResource().getInterHash())) {
+					noPersonRelPubList.remove(post);
+					break;
+				}
+			}
+		}
+		
+		command.setSuggestedPersonPosts(suggestedPersonPosts);		
+		command.setSuggestedPosts(noPersonRelPubList);
 		
 		return Views.DISAMBIGUATION;
 	}
@@ -218,5 +292,3 @@ public class DisambiguationPageController extends SingleResourceListController i
 		this.personRoleRenderer = personRoleRenderer;
 	}
 }
-
-

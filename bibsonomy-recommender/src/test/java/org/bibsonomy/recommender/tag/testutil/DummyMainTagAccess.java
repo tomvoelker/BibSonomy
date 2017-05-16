@@ -86,7 +86,7 @@ public class DummyMainTagAccess implements RecommenderMainTagAccess {
 	 * @see org.bibsonomy.recommender.tag.service.RecommenderMainTagAccess#getTagsOfPreviousPostsForUser(java.lang.Class, java.lang.String, int)
 	 */
 	@Override
-	public List<Pair<String, Integer>> getTagsOfPreviousPostsForUser(String username, int numberOfPreviousPosts) {
+	public List<Pair<String, Integer>> getTagsOfPreviousPostsForUser(String username, int numberOfPreviousPosts, int numberOfTags) {
 		// TODO Auto-generated method stub
 		return null;
 	}

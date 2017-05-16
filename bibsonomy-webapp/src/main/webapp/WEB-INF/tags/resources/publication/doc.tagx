@@ -14,9 +14,16 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" description="The publication post which documents should be showed."/>	
 	<c:set var="publication" value="${post.resource}"/>
 	<c:set var="isOwnEntry" value="${post.user.name eq command.context.loginUser.name}"/>
-	
+	<c:set var="isEditableByUser" value="${false}" />
+	<c:forEach var="group" items="${command.context.loginUser.groups}">
+		<c:if test="${group.name eq post.user.name and group.getGroupMembershipForUser(command.context.loginUser.name).groupRole eq 'ADMINISTRATOR'}">
+			<c:set var="isEditableByUser" value="${true}" />
+		</c:if>
+	</c:forEach>
+
 	<div id="add-document">
 		<c:url var="addDocumentLink" value="/ajax/documents">
+			<c:param name="ownerName" value="${post.user.name}" />
 			<c:param name="temp" value="false" />
 			<c:param name="ckey" value="${command.context.ckey}" />
 			<c:param name="intraHash" value="${post.resource.intraHash}" />
@@ -75,8 +82,9 @@
 				</div>
 				<div class="col-xs-5 text-right">
 					<div class="btn-group" role="group">
-						<c:if test="${isOwnEntry}">
+						<c:if test="${isOwnEntry or isEditableByUser}">
 							<c:url var="deleteUrl" value="/ajax/documents">
+								<c:param name="ownerName" value="${post.user.name}" />
 								<c:param name="intraHash" value="${post.resource.intraHash}" />
 								<c:param name="fileName" value="${document.fileName}" />
 								<c:param name="ckey" value="${ckey}" />
@@ -91,7 +99,7 @@
 								<fontawesome:icon icon="times" />
 							</a>
 						</c:if>
-						<a class="btn btn-xs btn-default ${isOwnEntry ? 'btn-stripped' : ''}" href="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameAndFileName(post.resource.intraHash, post.user.name, document.fileName)}" title="Download ${downloadTitle}">
+						<a class="btn btn-xs btn-default ${isOwnEntry or isEditableByUser ? 'btn-stripped' : ''}" href="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameAndFileName(post.resource.intraHash, post.user.name, document.fileName)}" title="Download ${downloadTitle}">
 							<fontawesome:icon icon="download" />
 						</a>
 						<c:if test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
@@ -103,9 +111,15 @@
 				</div>
 			</div>
 		</c:forEach>
-		<c:if test="${isOwnEntry}">
+		<c:if test="${isOwnEntry or isEditableByUser}">
 			<div class="add-document">
-				<bs:linkButton href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}" size="small" textKey="bibtex.actions.additionalFiles" additionalClass="addDocument" style="defaultStyle" icon="file-o" block="${true}" />
+				<c:url var="addDocumentLink" value="/ajax/documents">
+					<c:param name="ownerName" value="${post.user.name}" />
+					<c:param name="ckey" value="${command.context.ckey}" />
+					<c:param name="temp" value="false" />
+					<c:param name="intraHash" value="${post.resource.intraHash}" />
+				</c:url>
+				<bs:linkButton href="${addDocumentLink}" size="small" textKey="bibtex.actions.additionalFiles" additionalClass="addDocument" style="defaultStyle" icon="file-o" block="${true}" />
 			</div>
 		</c:if>
 		
@@ -120,6 +134,7 @@
 						<form class="form-horizontal" role="form" method="POST" action="/ajax/documents">
 							<div class="form-group">
 								<div class="col-sm-12">
+									<input type="hidden" name="ownerName" value="${post.user.name}" />
 									<input type="hidden" name="ckey" value="${command.context.ckey}" />
 									<input type="hidden" name="intraHash" value="${post.resource.intraHash}" />
 									<input type="hidden" name="temp" value="false" />

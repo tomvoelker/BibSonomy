@@ -48,6 +48,9 @@
 		FROM tas t
 			JOIN <include refid="content-id-join"/>
 		USING(content_id)
+		GROUP BY tag_lower
+		ORDER BY second DESC
+		LIMIT #numberOfTags#
 	</select>
 	
 	<!-- +

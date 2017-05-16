@@ -1,0 +1,266 @@
+@border-dropdown: 1px solid @border-color;
+
+#person-scroll-menu {
+	.tt-menu {
+		max-height: 250px;
+		overflow-y: auto;
+		cursor: pointer;
+	}
+	
+	.tt-suggestion:nth-child(2n+1) {
+		background-color: @gray-lighter;
+		border-top: @border-dropdown;
+		border-bottom: @border-dropdown;
+	}
+	
+	.tt-suggestion:hover {
+		background-color: @main-color-light;
+	}
+	
+	.response {
+		text-align: center;
+  		margin: 0 20px 5px 20px;
+  		padding: 3px 0;
+  		border-bottom: 1px solid #ccc;
+	}
+	
+	.tooltip-inner {    
+    	width: 300px;
+    	background-color: @main-color;
+	}	
+}	
+
+.simplePub {
+	border-top: @border-dropdown;
+	div:nth-child(even) {
+		background-color: @gray-lighter;
+		border-top: @border-dropdown;
+		border-bottom: @border-dropdown;
+	}
+}
+
+#personPageAjaxError {
+	display:none;
+}
+
+.page-header .form-group {
+	margin: 0;
+}
+
+.page-header .form-group input {
+	width: auto;
+	display: inline;
+}
+
+.page-header .form-group .personPageEnableForm {
+	font-size: 14px;
+}
+
+
+.page-header .form-group .twitter-typeahead {
+	display: inline !important;
+}				
+
+.person-search input.typeahead {
+	with: 90%;
+	margin-left: auto;
+	margin-right: auto;
+}
+		
+			
+.personPageFormPlaceholder {
+	display: inline-block;
+	padding: 7px 0 0 0;
+}
+
+h1 .personPageFormPlaceholder {
+	display: inline-block;
+	padding: 0;
+}
+
+.personPageFormField { 
+	display: none; 
+	padding: 0; 
+	margin: 0;
+}
+
+.personPageEnableForm {
+	padding: 0 5px 0 0;
+	cursor: pointer;
+}
+
+.personPageLockedForm {	
+	padding: 0 5px 0 0;
+	cursor: pointer;
+}
+
+.collapsingOverflow {
+	overflow: hidden;	
+}
+
+table.personOtherPublicationTable {
+	table-layout: fixed;
+}
+
+table.personOtherPublicationTable tr:nth-child(even) {
+	background: #eee;
+}
+
+table.personOtherPublicationTable tr:nth-child(odd) {
+	background: #fff;
+}
+
+
+table.personOtherPublicationTable th:first-child {
+	width: 50%;
+}
+
+table.personOtherPublicationTable th:nth-child(2) {
+	width: 40%;
+}
+
+
+table.personOtherPublicationTable th:last-child {
+	width: 10%;
+}
+
+table.personOtherPublicationTable > tbody > tr >th {
+	border-bottom: 2px solid #ddd;
+	border-top: none;
+}
+
+table.personOtherPublicationTable td {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	line-height: 19px;
+	height: 19px;
+	white-space: nowrap;
+}
+
+img.person-image {
+	max-width: 128px;
+	max-height: 128px;
+}
+
+#personInfo {
+	margin-bottom: 15px;
+}
+
+#thesisBlock {}
+
+.personThesisEntry {}
+
+.personPdesc {
+	height: 14px;
+	line-height: 14px;
+	margin: 0;
+	padding: 0;
+}
+
+.pub-person-tab-content .personThesisSeperator:last-of-type {
+	display: none;
+}
+
+.personThesisSeperator {
+	margin: 10px 0 10px 0;
+	border-bottom: 1px solid lightgrey;
+}
+
+#personPageAlternativeNameList .removeName {
+	color: darkred;
+	cursor: pointer;
+}
+
+.personPageVcardLeft {
+	padding: 0;
+	margin: 0;
+}
+
+.personPageVcardLeft > img {
+	margin: 0 !important;
+}
+
+.personPageAdditionalRoleFields {
+	display: none;
+}
+
+a.personPageShowAdditionalRoleFields {
+	position: absolute;
+	right: 5px;
+	top: -13px;
+}
+
+.personPageAlternativeName {
+	cursor: pointer;
+}
+
+.personPageAlternativeName:hover {
+	text-decoration: underline;
+}
+
+
+
+.simplePubEntry:nth-child(2n)  {
+	background-color: #f9f9f9;
+}
+
+.simplePubEntry {
+	padding: 0 0 4px 0;
+	border-bottom: 1px solid #eee;
+}
+
+.simplePubFirstLine {
+	width: 100%;
+}
+
+.simplePubTitle {
+	font-weight: bold;
+	display: inline-block;
+	position: relative;
+}
+
+.simplePubTitle a {
+	display: inline-block;
+	padding: 0 56px 0 0;
+}
+
+.simplePubYear {
+	float: left;
+	width: 50px;
+	display: inline-block;
+	padding: 0;
+	position: absolute;
+	top: 0;
+	right: 0;
+	font-weight: normal;
+}
+
+.simplePubYear a {
+	padding: 0;
+}
+
+.simplePubAuthor {
+	font-size: 13px;
+}
+
+.simplePubPublisher {
+	font-size: 13px;
+}
+
+
+.clearflat {
+	clear: both;
+	padding: 0;
+	margin: 0;
+	height: 0px;
+}
+
+.pubSort {
+	cursor: pointer;
+	color: inherit;
+}
+
+.pubSort:hover {
+	color: #333;
+}
+

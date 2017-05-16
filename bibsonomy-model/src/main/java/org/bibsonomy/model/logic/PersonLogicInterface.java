@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.model.logic;
 
+import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -82,5 +83,13 @@ public interface PersonLogicInterface {
 	 */
 	public ResourcePersonRelationQueryBuilder getResourceRelations();
 
+	
+	/**
+	 * Updates the given person
+	 * @param person		the person to update
+	 * @param operation		the desired update operation
+	 */
+	public void updatePerson(final Person person, final PersonUpdateOperation operation);
+	
 
 }

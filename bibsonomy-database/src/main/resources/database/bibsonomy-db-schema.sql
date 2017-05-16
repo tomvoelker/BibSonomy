@@ -1708,6 +1708,9 @@ CREATE TABLE `person` (
   `user_name` varchar(30) DEFAULT NULL,
   `post_ctr` int(11) DEFAULT NULL,
   `orcid` char(16) DEFAULT NULL,
+  `college` VARCHAR(200) NULL,
+  `email` VARCHAR(200) NULL,
+  `homepage` VARCHAR(255) default '',
   `dnb_person_id` char(18) DEFAULT NULL,
   `gender` char(1) DEFAULT NULL,
   `log_changed_at` datetime DEFAULT NULL,
@@ -1717,7 +1720,7 @@ CREATE TABLE `person` (
 
 CREATE TABLE `log_person` (
   `person_change_id` int(10) unsigned NOT NULL unique COMMENT 'sequential number shared among all person tables. Ensures the order of changes and helps updating separate search indexes like elasticsearch.',
-  `id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `person_id` varchar(64) NOT NULL,
   `academic_degree` varchar(64) DEFAULT NULL,
   `user_name` varchar(30) DEFAULT NULL,

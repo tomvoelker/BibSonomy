@@ -332,12 +332,13 @@
 						<property name="allowedFields">
 							<list>
 								<value>requestedPersonId</value>
-								<value>requestedPersonName</value>
-								<value>requestedAction</value>
-								<value>requestedHash</value>
-								<value>requestedUser</value>
-								<value>requestedRole</value>
-								<value>requestedIndex</value>
+								
+								<!-- <value>requestedAction</value>  -->
+								<!-- <value>requestedHash</value>  -->
+								<!--  <value>requestedUser</value> -->
+								<!-- <value>requestedRole</value> -->
+								<!-- <value>requestedIndex</value>  -->
+								
 								<value>formAction</value>
 								<value>formPersonRoles</value>
 								<value>formPersonRole</value>
@@ -345,18 +346,38 @@
 								<value>formInterHash</value>
 								<value>formIntraHash</value>
 								<value>formResourceHash</value>
-								<value>formUser</value>
+								<!-- <value>formUser</value> -->
 								<value>formThatsMe</value>
-								<value>formOrcid</value>
+								<!-- <value>formOrcid</value> -->
 								<value>formPersonNameId</value>
 								<value>formFirstName</value>
 								<value>formMiddleName</value>
 								<value>formLastName</value>
 								<value>formSelectedName</value>
-								<value>formAcademicDegree</value>
-								<value>formThesisId</value>
+								<!-- <value>formAcademicDegree</value>
+								<value>formCollege</value>
+								<value>formEmail</value>
+								<value>formHomepage</value>-->
+								<!-- <value>formThesisId</value>  -->
 								<value>formResourcePersonRelationId</value>
+								
 								<value>formPersonIndex</value>
+								<value>resourcePersonRelation.personIndex</value>
+								
+								<value>updateOperation</value>
+								
+								
+								<value>person.personId</value>
+								<value>person.orcid</value>
+								<value>person.academicDegree</value>
+								<value>person.college</value>
+								<value>person.email</value>
+								<value>person.homepage</value>
+								
+								<value>newName.firstName</value>
+								<value>newName.lastName</value>
+								
+																
 							</list>
 						</property>
 					</bean>

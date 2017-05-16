@@ -196,6 +196,13 @@
 			<post>bibsonomy-discuss@cs.uni-kassel.de</post>
 			<archive>https://mail.cs.uni-kassel.de/pipermail/bibsonomy-discuss</archive>
 		</mailingList>
+		<mailingList>
+			<name>Api-Discuss: for users and developers of the BibSonomy-API.</name>
+			<subscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/api-discuss</subscribe>
+			<unsubscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/api-discuss</unsubscribe>
+			<post>api-discuss@cs.uni-kassel.de</post>
+			<archive>https://mail.cs.uni-kassel.de/pipermail/api-discuss</archive>
+		</mailingList>
 	</mailingLists>
 	<repositories>
 		<repository>
