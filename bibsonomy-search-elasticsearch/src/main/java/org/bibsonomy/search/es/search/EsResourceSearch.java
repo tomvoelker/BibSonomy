@@ -756,7 +756,8 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		// --------------------------------------------------------------------
 		// the resulting main query
 		if (present(searchTerms)) {
-			final QueryBuilder queryBuilder = QueryBuilders.queryStringQuery(searchTerms).defaultOperator(org.elasticsearch.index.query.QueryStringQueryBuilder.Operator.AND);
+			final QueryBuilder queryBuilder = QueryBuilders.queryStringQuery(searchTerms)
+					.minimumShouldMatch("2<75%");
 			
 			if (present(userName)) {
 				// private field
