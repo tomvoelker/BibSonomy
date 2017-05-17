@@ -36,13 +36,17 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
+import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
+import org.springframework.web.util.HtmlUtils;
 
 /**
  * Scraper for muse.jhu.edu
@@ -57,28 +61,15 @@ public class ProjectmuseScraper extends AbstractUrlScraper implements References
 
 	private static final String HOST = "muse.jhu.edu";
 
-	private static final String PREFIX_DOWNLOAD_URL = "http://muse.jhu.edu/metadata/sgml/journals/";
-
-	private static final Pattern PATTERN_JOURNAL_ID = Pattern.compile("/journals/(.*)");
-	/*
-	 * regex pattern (sgml)
-	 */
-	private static final Pattern PATTERN_URL = Pattern.compile("<url>(.*)</url>");
-	private static final Pattern PATTERN_JOURNAL = Pattern.compile("<journal>(.*)</journal>");
-	private static final Pattern PATTERN_ISSN = Pattern.compile("<issn>(.*)</issn>");
-	private static final Pattern PATTERN_VOLUME = Pattern.compile("<volume>(.*)</volume>");
-	private static final Pattern PATTERN_ISSUE = Pattern.compile("<issue>(.*)</issue>");
-	private static final Pattern PATTERN_YEAR = Pattern.compile("<year>(.*)</year>");
-	private static final Pattern PATTERN_FPAGES = Pattern.compile("<fpage>(.*)</fpage>");
-	private static final Pattern PATTERN_LPAGES = Pattern.compile("<lpage>(.*)</lpage>");
-	private static final Pattern PATTERN_TITLE = Pattern.compile("<doctitle>(.*)</doctitle>");
-	private static final Pattern PATTERN_AUTHOR = Pattern.compile("<docauthor>(.*)</docauthor>");
-	private static final Pattern PATTERN_SURNAME = Pattern.compile("<surname>(.*)</surname>");
-	private static final Pattern PATTERN_FNAME = Pattern.compile("<fname>(.*)</fname>");
-	private static final Pattern PATTERN_ABSTRACT = Pattern.compile("<abstract>\\s*<p>([^<]*)</p>\\s*</abstract>");
-	private static final Pattern references_pattern = Pattern.compile("(?s)<h3 class=\"references\">(.*)</div>");
+	private static final Pattern references_pattern = Pattern.compile("<meta name=\"citation_reference\" content=\"(.*?)\">");
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
+	
+	private static final Pattern ENDNOTE_PATTERN = Pattern.compile("<h2>Endnote<\\/h2>\\s*<p>(.*?)<\\/p>", Pattern.DOTALL); 
+	private static final Pattern ID_PATTERN = Pattern.compile("([^/]+$)");
+	private static final Pattern TYPE_PATTERN = Pattern.compile(SITE_URL + "(.*)/.*");
+	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<meta name=\"citation_abstract\" content=\"<p>(.*?)<\\/p>\">", Pattern.DOTALL);
+	
 	
 	@Override
 	public String getInfo() {
@@ -88,109 +79,43 @@ public class ProjectmuseScraper extends AbstractUrlScraper implements References
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
 		sc.setScraper(this);
-
-		/*
-		 * get article ID from URL
-		 */
-		final String journalID = getRegexResult(PATTERN_JOURNAL_ID, sc.getUrl().toString());
-
 		try {
-			final String sgml = WebUtils.getContentAsString(new URL(PREFIX_DOWNLOAD_URL + journalID));
+			Matcher idMatcher = ID_PATTERN.matcher(sc.getUrl().toString());
+			if (idMatcher.find()) {
+				String id = idMatcher.group(1);
+				
+				Matcher typeMatcher = TYPE_PATTERN.matcher(sc.getUrl().toString());
+				if (typeMatcher.find()) {
+					String type = typeMatcher.group(1);
 
-			final StringBuilder bibKey = new StringBuilder();
-			final StringBuilder authors = new StringBuilder();
-
-			/*
-			 * author may be occur more then one time ...
-			 */
-			final Matcher matcher = PATTERN_AUTHOR.matcher(sgml);
-			while (matcher.find()) {
-				final String author = matcher.group(1);
-				final String surname = getRegexResult(PATTERN_SURNAME, author); 
-				final String fname = getRegexResult(PATTERN_FNAME, author);
-
-				// append authors
-				if (authors.length() > 0) {
-					authors.append(" and ");
-				} else {
-					// first author
-					bibKey.append(surname.toLowerCase());
-				}
-				authors.append(surname).append(", ").append(fname);
-			}
-
-			// get year
-			final String year = getRegexResult(PATTERN_YEAR, sgml);
-			// add year to bibtex key
-			if (ValidationUtils.present(year)) {
-				bibKey.append(year);
-			}
-			
-			
-			/*
-			 * build BibTeX
-			 */
-			final StringBuilder bibtex = new StringBuilder("@inproceedings{");
-
-			// add BibTeX key
-			if (ValidationUtils.present(bibKey))
-				bibtex.append(bibKey).append(",\n");
-			else
-				bibtex.append("noKey,\n");
-			
-			appendValue(bibtex, "title", getRegexResult(PATTERN_TITLE, sgml));
-			appendValue(bibtex, "url", getRegexResult(PATTERN_URL, sgml));
-			appendValue(bibtex, "journal", getRegexResult(PATTERN_JOURNAL, sgml));
-			appendValue(bibtex, "issn", getRegexResult(PATTERN_ISSN, sgml));
-			appendValue(bibtex, "volume", getRegexResult(PATTERN_VOLUME, sgml));
-			appendValue(bibtex, "number", getRegexResult(PATTERN_ISSUE, sgml));
-			appendValue(bibtex, "author", authors);
-			appendValue(bibtex, "year", year);
-			appendValue(bibtex, "pages", getPages(sgml));
-			appendValue(bibtex, "abstract", getRegexResult(PATTERN_ABSTRACT, sgml));
-
-			// close entry
-			bibtex.append("}\n");
-
-			sc.setBibtexResult(bibtex.toString());
-			return true;
-
-		} catch (IOException ex) {
-			throw new InternalFailureException(ex);
+					String content = WebUtils.getContentAsString(SITE_URL + "view_citations?type=" + type + "&id=" + id);
+					Matcher m = ENDNOTE_PATTERN.matcher(content);
+					if (m.find()) {
+						//Projectmuse says Endnote, but it's actually ris
+						String bibtex = new RisToBibtexConverter().toBibtex(m.group(1));
+						
+						//add abstract		
+						bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "abstract", abstractParser(sc.getUrl()));
+						
+						sc.setBibtexResult(bibtex);
+						return true;
+					} 
+				} 
+			} 		
+		} catch (IOException e) {
+			throw new ScrapingException(e);
 		}
-
+		return false;
 	}
 
-	private String getPages(final String sgml) {
-		final String fpages = getRegexResult(PATTERN_FPAGES, sgml);
-		final String lpages = getRegexResult(PATTERN_LPAGES, sgml);
-		String pages = null;
-		if (fpages != null && lpages == null)
-			pages = fpages;
-		else if (fpages == null && lpages != null)
-			pages = lpages;
-		else if (fpages != null && lpages != null)
-			pages = fpages + "--" + lpages;
-		return pages;
-	}
-	
-	private void appendValue(final StringBuilder bibtex, final String key, final CharSequence value) {
-		if (ValidationUtils.present(value)) {
-			bibtex.append("  ").append(key).append(" = {").append(value).append("},\n");
-		}
-	}
-	
-
-	/**
-	 * execute regex and return matching result
-	 * @param regex Regular Expression
-	 * @param content target of regex
-	 * @return matching result, null if no matching
-	 */
-	private static String getRegexResult(final Pattern regex, final String content){
-		final Matcher matcher = regex.matcher(content);
-		if (matcher.find()) {
-			return matcher.group(1);
+	private static String abstractParser(URL url){
+		try{
+			Matcher m = ABSTRACT_PATTERN.matcher(HtmlUtils.htmlUnescape(WebUtils.getContentAsString(url)));
+			if(m.find()) {
+				return m.group(1).trim();
+			}
+		} catch (final IOException e) {
+			log.error("error while getting abstract " + url, e);
 		}
 		return null;
 	}
@@ -217,8 +142,13 @@ public class ProjectmuseScraper extends AbstractUrlScraper implements References
 	public boolean scrapeReferences(ScrapingContext scrapingContext)throws ScrapingException {
 		try {
 			final Matcher m = references_pattern.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
-			if (m.find()) {
-				scrapingContext.setReferences(m.group(1));
+			
+			StringBuffer matches = new StringBuffer();
+			while (m.find()) {
+				matches.append(m.group() + "\n");
+			}
+			if (matches.length() != 0) {
+				scrapingContext.setReferences(matches.toString());
 				return true;
 			}
 		} catch (final Exception e) {

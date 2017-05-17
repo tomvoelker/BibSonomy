@@ -27,7 +27,7 @@
 	
 	<sql id="content-id-join">
 		(SELECT p.content_id FROM (
-			SELECT content_id FROM bibtex
+			SELECT content_id, date FROM bibtex
 			WHERE user_name = #userName#
 			<isNotNull prepend="AND" property="startDate" >
 				date > #startDate#
@@ -35,8 +35,8 @@
 			<isNotNull prepend="AND" property="endDate" >
 				date &lt; #endDate#
 			</isNotNull>
-				UNION
-			SELECT content_id FROM bookmark
+			UNION
+			SELECT content_id, date FROM bookmark
 			WHERE user_name = #userName#
 			<isNotNull prepend="AND" property="startDate" >
 				date > #startDate#
@@ -45,6 +45,6 @@
 				date &lt; #endDate#
 			</isNotNull>
 			) AS p
-			ORDER BY content_id DESC LIMIT #range#) AS r
+			ORDER BY date, content_id DESC LIMIT #range#) AS r
 	</sql>
 </sqlMap>

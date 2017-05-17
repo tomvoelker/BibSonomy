@@ -298,6 +298,9 @@ public class ScrapingServlet extends HttpServlet {
 	 */
 	private static Post<? extends Resource> convertBibTeXToPost(final String bibtexString) throws ParseException, IOException {
 		final Post<? extends Resource> post = new PostBibTeXParser().parseBibTeXPost(bibtexString);
+		if (!present(post)) {
+			return null;
+		}
 		post.getResource().recalculateHashes();
 		post.setUser(XML_DUMMY_USER);
 		final Set<Tag> tags = post.getTags();

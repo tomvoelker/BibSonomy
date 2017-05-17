@@ -1,0 +1,71 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="showAuthor" type="java.lang.Boolean" required="false" />
+	
+	<c:if test="${empty showAuthor}">
+		<c:set var="showAuthor" value="${true}" />
+	</c:if>
+	
+	<tr>
+		<td><bib:title post="${post}" /></td>
+		<c:if test="${showAuthor eq true}">
+			<td><bib:author publication="${post.resource}" post="${post}"/></td>
+		</c:if>
+		<td><bib:year publication="${post.resource}" braces="false"/></td>
+	</tr>
+
+
+	<!-- 
+	<div class='row ${post.resource.interHash}_${post.resource.intraHash}'>
+		<div style='border-right:1px solid lightgrey' class='col-md-6 publication-list'>
+			<div class="title">
+				<rc:post post="${post}" otherPostsUrlPrefix="/bibtex/" loginUserName="${loginUserName}" resourceType="publication">
+					<jsp:attribute name="title">    <bib:title post="${post}"/>    </jsp:attribute>
+					<jsp:attribute name="actions">  <actionbuttons:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}" resourceType="bibtex"/></jsp:attribute>
+					<jsp:attribute name="desc">     <bib:desc post="${post}" publication="${post.resource}"/></jsp:attribute>
+					<jsp:attribute name="documents"><bib:documents post="${post}"/></jsp:attribute>
+				</rc:post>
+			</div>
+		</div>
+		<div class='col-md-6'>
+			<ul>
+				<c:forEach var="role" items="${availableRoles}">
+					<fmt:message key="person.show.${role.relatorCode}" var="textRole" />
+					<fmt:message key="person.show.${role.relatorCode}Tooltip" var="textRoleTooltip" />
+					<li class='${role}'><span class='fa fa-question-circle explainRole' data-toggle="tooltip" data-placement="left" title="${textRoleTooltip}" data-role='${role}'>&#160;</span>${textRole}: 
+						<c:forEach var="relation" items="${post.resourcePersonRelations}">
+							<c:if test="${relation.relationType eq role}">
+								<span class='resourcePersonRelation_${relation.personRelChangeId}'>
+									<a href="${absoluteUrlGenerator.getPersonUrl(relation.person.personId)}"><c:out value="${relation.person.mainName.firstName} "/> <c:out value="${relation.person.mainName.lastName}"/></a><c:out value=" " />
+									<c:if test="${not empty loginUserName and not loginUser.spammer}">
+											<span data-toggle='modal' data-target="#deleteRole" data-resourcePersonRelation-id='${relation.personRelChangeId}' style='color:darkred;cursor:pointer' href="#deleteRole" class='deleteRole'><button class="btn btn-default btn-xs ${systemReadOnly ? 'disabled' : '' }"><fontawsome:icon icon="times" /></button></span>
+									</c:if>
+								</span>
+							</c:if>
+						</c:forEach>
+						<c:if test="${not empty loginUserName and not loginUser.spammer}">
+								<span data-toggle='modal' data-target="#addRole" data-relation-pubowner="${post.user.name}" data-resourceTitle="${post.resource.title}" data-relation-simhash1="${post.resource.interHash}" data-relation-simhash2='${post.resource.intraHash}' data-person-role="${role}" href="#addRole" class='addRole'><button class="btn btn-default btn-xs  ${systemReadOnly ? 'disabled' : '' }" ><fontawsome:icon icon="plus" /></button></span>
+						</c:if> 
+					</li>
+				</c:forEach>
+			</ul>
+		</div>
+	</div>
+	 -->
+</jsp:root>

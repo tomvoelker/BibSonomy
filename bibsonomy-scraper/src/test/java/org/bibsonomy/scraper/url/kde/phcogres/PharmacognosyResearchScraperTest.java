@@ -26,8 +26,11 @@
  */
 package org.bibsonomy.scraper.url.kde.phcogres;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.url.kde.biorxiv.BioRxivScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -43,6 +46,8 @@ public class PharmacognosyResearchScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		UnitTestRunner.runSingleTest("url_251");
+		final String url = "http://www.phcogres.com/article.asp?issn=0974-8490;year=2009;volume=1;issue=4;spage=172;epage=174;aulast=Shuge;t=6";
+		final String resultFile = "PharmacognosyResearchScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, PharmacognosyResearchScraper.class, resultFile);
 	}
 }

@@ -112,12 +112,13 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 	 * @see org.bibsonomy.recommender.tag.service.RecommenderMainTagAccess#getTagsOfPreviousPostsForUser(java.lang.String, int)
 	 */
 	@Override
-	public List<Pair<String, Integer>> getTagsOfPreviousPostsForUser(final String username, int numberOfPreviousPosts) {
+	public List<Pair<String, Integer>> getTagsOfPreviousPostsForUser(final String username, int numberOfPreviousPosts, int numberOfTags) {
 		final DBSession mainSession = this.openMainSession();
 		try {
 			final GetTagForResourceParam param = new GetTagForResourceParam();
 			param.setUserName(username);
 			param.setRange(numberOfPreviousPosts);
+			param.setNumberOfTags(numberOfTags);
 			this.modifyParamForPreviousPostsForUser(param);
 			return (List<Pair<String, Integer>>) this.queryForList("getTagsOfPreviousPostsForUser", param, mainSession);
 		} finally {

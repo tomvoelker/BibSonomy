@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.jcb;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -42,6 +44,8 @@ public class JCBScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_254");
+		final String url = "http://jcb.rupress.org/content/184/4/481.full#sec-4";
+		final String resultFile = "JCBScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, JCBScraper.class, resultFile);
 	}
 }

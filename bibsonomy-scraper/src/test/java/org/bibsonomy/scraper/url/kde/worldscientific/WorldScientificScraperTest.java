@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.worldscientific;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -49,7 +50,9 @@ public class WorldScientificScraperTest {
 	 */
 	@Test
 	public void urlTestRun1(){
-		UnitTestRunner.runSingleTest("url_279");
+		final String url = "http://www.worldscientific.com/doi/abs/10.1142/S0219622006002271";
+		final String resultFile = "WorldScientificScraperUnitURLTest.bib";
+		assertScraperResult(url, null, WorldScientificScraper.class, resultFile);
 	}
 	
 	@Test
@@ -63,7 +66,7 @@ public class WorldScientificScraperTest {
 		assertNotNull(cby);
 		assertTrue(cby.length() > 100);  
 		
-		assertEquals("<a class=\"entryAuthor search-link\" href=\"/author/Tagiew%2C+Rustam\"><span class=".trim(), cby.substring(0, 79).trim());
+		assertEquals("<a class=\"entryAuthor search-link\" href=\"/author/Fang%2C+Zhiyuan\"><span class=\"".trim(), cby.substring(0, 79).trim());
 		
 		assertTrue(cby.contains("XIANYONG FANG"));
 	}

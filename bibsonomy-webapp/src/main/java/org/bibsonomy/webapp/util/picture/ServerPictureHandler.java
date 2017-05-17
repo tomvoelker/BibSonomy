@@ -49,9 +49,9 @@ public class ServerPictureHandler implements PictureHandler {
 	public View getProfilePictureView (final User requestedUser, final PictureCommand command) {
 		final UploadedFile profilePicture = requestedUser.getProfilePicture();
 		
-		command.setPathToFile( profilePicture.getAbsolutePath() );
-		command.setContentType( FileUtil.getContentType(profilePicture.getFileName()) );
-		command.setFilename( requestedUser.getName() + ProfilePictureLogic.FILE_EXTENSION );
+		command.setPathToFile(profilePicture.getAbsolutePath());
+		command.setContentType(FileUtil.getContentType(profilePicture.getFileName()));
+		command.setFilename(requestedUser.getName() + ProfilePictureLogic.FILE_EXTENSION);
 		
 		return Views.DOWNLOAD_FILE;
 	}
