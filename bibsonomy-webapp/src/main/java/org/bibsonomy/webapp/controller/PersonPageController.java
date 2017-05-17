@@ -588,8 +588,13 @@ public class PersonPageController extends SingleResourceListController implement
 
 		List<Post<BibTex>> pubsWithSameAuthorName = new ArrayList<>(pubAuthorSearch);
 		for (final Post<BibTex> post : pubAuthorSearch) {
-			// remove post from search if the author has not exactly the same sur- and last-name
-			if (!post.getResource().getAuthor().contains(requestedName)) {
+			try {
+				// remove post from search if the author has not exactly the same sur- and last-name
+				if (!post.getResource().getAuthor().contains(requestedName)) {
+					pubsWithSameAuthorName.remove(post);
+				}
+			} catch (Exception ex) {
+				// remove the post
 				pubsWithSameAuthorName.remove(post);
 			}
 		}
