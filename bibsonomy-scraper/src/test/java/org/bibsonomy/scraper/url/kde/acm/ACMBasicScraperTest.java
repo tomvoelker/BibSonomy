@@ -122,7 +122,7 @@ public class ACMBasicScraperTest {
 	 */
 	@Test
 	public void urlTestRun9(){
-		final String url = "http://cacm.acm.org/magazines/2015/8/189841-understanding-the-us-domestic-computer-science-phd-pipeline/fulltext";
+		final String url = "https://cacm.acm.org/magazines/2015/8/189841-understanding-the-us-domestic-computer-science-phd-pipeline/fulltext";
 		final String resultFile = "ACMBasicScraperUnitURLTest9.bib";
 		assertScraperResult(url, null, ACMBasicScraper.class, resultFile);
 	}

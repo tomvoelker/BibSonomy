@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.jap;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -49,7 +50,9 @@ public class JAPScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_211");
+		final String url = "http://jap.physiology.org/content/110/4/1003.short";
+		final String resultFile = "JAPScraperUnitURLTest.bib";
+		assertScraperResult(url, null, JAPScraper.class, resultFile);
 	}
 	
 	@Test

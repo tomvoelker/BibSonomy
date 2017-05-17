@@ -40,19 +40,19 @@ import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericRISURLScraper;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * @author hagen
  */
-public class JAPScraper extends GenericRISURLScraper implements ReferencesScraper{
+public class JAPScraper extends GenericBibTeXURLScraper implements ReferencesScraper{
 	private static final Log log = LogFactory.getLog(JAPScraper.class);
 	private static final String SITE_NAME = "Journal of Applied Physiology";
 	private static final String SITE_URL = "http://jap.physiology.org/";
 	private static final String INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
-	private static final Pattern RIS_URL = Pattern.compile("<li class=\"ris\"><a href=\"(.+?)\".*?>RIS</a></li>");
+	private static final Pattern BIBTEX_URL = Pattern.compile("<a href=\"(.+?)\".*?>BibTeX</a></li>");
 	
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "jap.physiology.org"), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final Pattern REFERENCES_PATTERN = Pattern.compile("(?s)<h2>REFERENCES</h2>(.*)<span class=\"highwire-journal-article-marker-end\"></span>");
@@ -83,12 +83,14 @@ public class JAPScraper extends GenericRISURLScraper implements ReferencesScrape
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		try {
-			final Matcher m = RIS_URL.matcher(WebUtils.getContentAsString(url.toString()));
+			// using url gives a FileNotFoundException, url.toString() doesn't
+			final String content = WebUtils.getContentAsString(url.toString(), cookies);
+			final Matcher m = BIBTEX_URL.matcher(content);
 			if (m.find()) {
-				return "http://" + url.getHost().toString() + m.group(1);
+				return SITE_URL + m.group(1);
 			}
-		} catch (IOException e) {
-			log.error("Download link not found", e);
+		} catch (final IOException e) {
+			throw new ScrapingException(e);
 		}
 		return null;
 	}

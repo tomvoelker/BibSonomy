@@ -32,7 +32,6 @@ import static org.junit.Assert.assertTrue;
 import org.bibsonomy.scraper.ReachabilityTestRunner;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
