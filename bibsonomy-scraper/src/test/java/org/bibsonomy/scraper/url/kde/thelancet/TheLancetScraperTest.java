@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.thelancet;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -42,6 +44,8 @@ public class TheLancetScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		UnitTestRunner.runSingleTest("url_278");
+		final String url = "http://www.thelancet.com/journals/lancet/article/PIIS0140-6736%2814%2960931-4/abstract";
+		final String resultFile = "TheLancetScraperUnitURLTest.bib";
+		assertScraperResult(url, null, TheLancetScraper.class, resultFile);
 	}
 }

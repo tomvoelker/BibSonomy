@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.id.kde.doi;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import java.io.IOException;
 
 import org.bibsonomy.scraper.UnitTestRunner;
@@ -47,7 +49,9 @@ public class ContentNegotiationDOIScraperTest {
 	 */
 	@Test
 	public void testCNDOIScraper1() throws ScrapingException, IOException {
-		UnitTestRunner.runSingleTest("url_257");
+		final String url = "http://dx.doi.org/10.1108/07378831211213265";
+		final String resultFile = "ContentNegotiationDOIScraper1.bib";
+		assertScraperResult(url, null, ContentNegotiationDOIScraper.class, resultFile);
 	}
 
 	/**
@@ -57,6 +61,9 @@ public class ContentNegotiationDOIScraperTest {
 	 */
 	@Test
 	public void testCNDOIScraper2() throws ScrapingException, IOException {
-		UnitTestRunner.runSingleTest("url_258");
+		final String url = "http://www.example.com";
+		final String resultFile = "ContentNegotiationDOIScraper1.bib";
+		final String selection = "DOI:    10.1108/07378831211213265";
+		assertScraperResult(url, selection, ContentNegotiationDOIScraper.class, resultFile);
 	}
 }

@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.jstage;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -48,14 +49,18 @@ public class JStageScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_267");
+		final String url = "https://www.jstage.jst.go.jp/article/dsj/9/0/9_CRIS4/_article";
+		final String resultFile = "JStageScraperUnitURLTest.bib";
+		assertScraperResult(url, null, JStageScraper.class, resultFile);
 	}
 	/**
 	 * starts URL test with id url_276
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_276");
+		final String url = "https://www.jstage.jst.go.jp/article/abas/13/2/13_67/_article";
+		final String resultFile = "JStageScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, JStageScraper.class, resultFile);
 	}
 	@Test
 	public void testReferences() throws Exception{
