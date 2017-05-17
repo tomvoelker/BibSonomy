@@ -30,6 +30,7 @@ import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
 /**
  * Scraper URL tests #63 & #64 for DBLPScraper
@@ -44,7 +45,9 @@ public class ACSScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_63");
+		final String url = "http://pubs.acs.org/doi/abs/10.1021/ci049894n";
+		final String resultFile = "ACSScraperUnitURLTest.bib";
+		assertScraperResult(url, null, ACSScraper.class, resultFile);
 	}
 	
 	/**
@@ -52,14 +55,18 @@ public class ACSScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_64");
+		final String url = "http://pubs.acs.org/action/downloadCitation?doi=10.1021%2Fci049894n&amp;include=abs&amp;format=bibtex";
+		final String resultFile = "ACSScraperUnitURLTest.bib";
+		assertScraperResult(url, null, ACSScraper.class, resultFile);
 	}
 	/**
 	 * starts URL test with id url_262
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_262");
+		final String url = "http://pubs.acs.org/doi/pdf/10.1021/nn103618d";
+		final String resultFile = "ACSScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, ACSScraper.class, resultFile);
 	}
 	
 }

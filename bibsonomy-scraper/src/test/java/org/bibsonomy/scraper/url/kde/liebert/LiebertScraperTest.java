@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.liebert;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -50,7 +51,9 @@ public class LiebertScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_88");
+		final String url = "http://www.liebertonline.com/doi/abs/10.1089/152308604773934350";
+		final String resultFile = "LiebertScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, LiebertScraper.class, resultFile);
 	}
 	
 	/**
@@ -58,7 +61,9 @@ public class LiebertScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_89");
+		final String url = "http://www.liebertonline.com/action/showCitFormats?doi=10.1089%2F152308604773934350";
+		final String resultFile = "LiebertScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, LiebertScraper.class, resultFile);
 	}
 	
 	/**
@@ -66,7 +71,9 @@ public class LiebertScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_248");
+		final String url = "http://online.liebertpub.com/doi/abs/10.1089/teb.2007.0150";
+		final String resultFile = "LiebertScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, LiebertScraper.class, resultFile);
 	}
 	/**
 	 * @throws Exception
@@ -86,7 +93,7 @@ public class LiebertScraperTest {
 		
 		assertTrue(cby.length() > 100);
 		
-		assertEquals("<div class=\"citedByEntry\"><div class=\"art_title\">Injectable LiNc-BuO loaded microspheres as in".trim(), cby.substring(0, 95).trim());
+		assertEquals("<div class=\"citedByEntry\"><div class=\"art_title\">Effect of amifostine, a radiation-protecting d".trim(), cby.substring(0, 95).trim());
 		
 		assertTrue(cby.contains("Benoît Driesschaert")); //Injectable LiNc-BuO loaded microspheres as in
 	}

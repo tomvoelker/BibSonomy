@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.aaai;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -42,7 +44,9 @@ public class AAAIScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_237");
+		final String url = "https://www.aaai.org/ocs/index.php/ICWSM/ICWSM11/paper/view/3856";
+		final String resultFile = "AAAIScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, AAAIScraper.class, resultFile);
 	}
 	
 	/**
@@ -50,7 +54,9 @@ public class AAAIScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_240");
+		final String url = "https://www.aaai.org/ojs/index.php/aimagazine/article/view/2376";
+		final String resultFile = "AAAIScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, AAAIScraper.class, resultFile);
 	}
 	
 	/**
@@ -58,6 +64,8 @@ public class AAAIScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_296");
+		final String url = "https://www.aaai.org/ocs/index.php/IAAI/IAAI14/paper/view/8607";
+		final String resultFile = "AAAIScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, AAAIScraper.class, resultFile);
 	}
 }

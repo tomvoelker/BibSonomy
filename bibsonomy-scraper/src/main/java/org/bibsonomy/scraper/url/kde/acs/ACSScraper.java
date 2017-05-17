@@ -118,6 +118,13 @@ public class ACSScraper extends AbstractUrlScraper {
 			if(m.find()) {
 				bibResult = bibResult.replaceAll(URL_PATTERN_FOR_URL.toString(), "URL = {" + m.group(1) + "}");
 			}
+			bibResult = bibResult.trim();
+			bibResult = bibResult.replaceAll("    ", "");
+			bibResult = bibResult.replaceAll("\n\n", "\n");
+			bibResult = bibResult.replaceAll("\\{ *\n", "{");
+			bibResult = bibResult.replaceAll("\n\\}(?!$)", "}");
+			bibResult = bibResult.replaceAll("\n,", ",");
+			
 			sc.setBibtexResult(bibResult);
 			return true;
 		}

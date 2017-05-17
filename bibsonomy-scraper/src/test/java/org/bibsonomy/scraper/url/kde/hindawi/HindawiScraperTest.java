@@ -25,6 +25,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.bibsonomy.scraper.url.kde.hindawi;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -46,7 +47,9 @@ public class HindawiScraperTest {
 	 */
 	@Test
 	public void urlTestRun() {
-		UnitTestRunner.runSingleTest("url_256");
+		final String url = "https://www.hindawi.com/journals/ijcb/2010/507821/cta/";
+		final String resultFile = "HindawiScraperUnitURLTest.bib";
+		assertScraperResult(url, null, HindawiScraper.class, resultFile);
 	}
 	/**
 	 * @throws Exception
