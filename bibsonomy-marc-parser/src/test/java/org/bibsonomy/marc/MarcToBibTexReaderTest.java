@@ -64,8 +64,8 @@ public class MarcToBibTexReaderTest extends AbstractDataDownloadingTestCase {
 		}
 	}
 
-	public void printIt(BibTex b) {
-		b.syncMiscFields();
+	public void printIt(final BibTex b) {
+		b.resetMiscFieldMap();
 		/*System.out.println("############## new bibtex ######################");
 		System.out.println("BibtexKey:\t" 	+ b.getBibtexKey());
 		System.out.println("Misc:\t\t" 		+ b.getMisc());

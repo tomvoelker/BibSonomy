@@ -50,7 +50,7 @@
 					<c:set var="inputClass" value="" />
 				</c:if>
 				<div class="col-sm-${colspan}">
-					<input class="form-control ${inputClass}" type="text" placeholder="OpenID" name="openID" id="openID" noHelp="true" />
+					<input class="form-control ${inputClass}" type="text" placeholder="OpenID" name="openID" id="openID" />
 				</div>
 			</div>
 			

@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.jcb;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
-import org.bibsonomy.util.UrlUtils;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * @author hagen
@@ -52,7 +53,7 @@ public class JCBScraper extends GenericBibTeXURLScraper {
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile("jcb.rupress.org"), Pattern.compile("content")));
 	}
 	
-	private static final Pattern ID_PATTERN = Pattern.compile("(/\\d++){3}");
+	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<a.*href=\"([^\"]+)\".*>BibTeX</a>");
 
 	@Override
 	public String getSupportedSiteName() {
@@ -71,13 +72,17 @@ public class JCBScraper extends GenericBibTeXURLScraper {
 
 	@Override
 	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
-		final Matcher m = ID_PATTERN.matcher(url.toExternalForm());
-		if (!m.find()) {
-			return null;
+		try {
+			// using url gives a FileNotFoundException, url.toString() doesn't
+			final String content = WebUtils.getContentAsString(url.toString(), cookies);
+			final Matcher m = BIBTEX_PATTERN.matcher(content);
+			if (m.find()) {
+				return SITE_URL + m.group(1);
+			}
+		} catch (final IOException e) {
+			throw new ScrapingException(e);
 		}
-		
-		final String result = UrlUtils.safeURIEncode(m.group().replaceFirst("/", ";"));
-		return "http://jcb.rupress.org/citmgr?type=bibtex&gca=jcb" + result;
+		return null;
 	}
 
 	@Override

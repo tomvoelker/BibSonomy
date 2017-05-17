@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.jci;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -49,7 +50,9 @@ public class JCIScraperTest {
 	 */
 	@Test
 	public void urlTestRun() {
-		UnitTestRunner.runSingleTest("url_220");
+		final String url = "http://www.jci.org/articles/view/19670";
+		final String resultFile = "JCIScraperUnitTest.bib";
+		assertScraperResult(url, null, JCIScraper.class, resultFile);
 	}
 	@Test
 	public void testReferences() throws Exception {

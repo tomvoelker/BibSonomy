@@ -26,70 +26,37 @@
  */
 package org.bibsonomy.scraper.url.kde.nature;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import java.net.URL;
-
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-
 /**
- * Scraper URL tests #45 for NatureScraper
- * @author tst
+ * Scraper URL tests for NatureJournalScraper
+ *
+ * @author Johannes
  */
 @Category(RemoteTest.class)
-public class NatureScraperTest {
+public class NatureJournalScraperTest {
 
 	/**
-	 * starts URL test with id url_45
-	 
+	 * 
+	 */
 	@Test
 	public void urlTest1Run(){
-		UnitTestRunner.runSingleTest("url_45");
+		final String url = "http://www.nature.com/nrn/journal/v18/n1/full/nrn.2016.150.html";
+		final String resultFile = "NatureJournalScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, NatureJournalScraper.class, resultFile);
 	}
-	 */
 	
 	/**
-	 * starts URL test with id url_231
+	 * 
 	 */
 	@Test
 	public void urlTest2Run(){
-		UnitTestRunner.runSingleTest("url_231");
+		final String url = "http://www.nature.com/onc/journal/v34/n38/full/onc2014416a.html";
+		final String resultFile = "NatureJournalScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, NatureJournalScraper.class, resultFile);
 	}
-	/**
-	 * starts URL test with id url_280
-	 */
-	@Test
-	public void urlTest3Run(){
-		UnitTestRunner.runSingleTest("url_280");
-	}
-	/**
-	 * starts URL test with id url_282
-	 */
-	@Test
-	public void urlTest4Run(){
-		UnitTestRunner.runSingleTest("url_282");
-	}
-	/**
-	 * @throws Exception
-	 */
-	@Test
-	public void testReferences() throws Exception{
-		final ScrapingContext sc = new ScrapingContext(new URL("http://www.nature.com/ncomms/2014/141215/ncomms6341/full/ncomms6341.html"));
-		NatureScraper ns = new NatureScraper();
-		assertTrue(ns.scrape(sc));
-		assertTrue(ns.scrapeReferences(sc));
-		
-		final String reference = sc.getReferences();
-		assertNotNull(reference);
-		assertTrue(reference.length() > 100);
-		assertEquals("TY  - JOUR\nAU  - de Boer, P. A.".trim(), reference.substring(0, 31).trim());
-		assertTrue(reference.contains("Crossley, R. E."));
-	}	
 }

@@ -57,6 +57,7 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
@@ -3365,8 +3366,84 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+	/**
+	 * Updates the given person
+	 * @param person		person object containing the new values
+	 * @param operation		the desired update operation
+	 */
+	public void updatePerson(final Person person, final PersonUpdateOperation operation) {
+		this.ensureLoggedInAndNoSpammer();
+		
+		if (!present(person.getPersonId())) {
+			throw new ValidationException("Invalid person ID given.");
+		}
+
+		final DBSession session = this.openSession();
+			
+		try {
+			
+			// is the person claimed?
+			if (person.getUser() != null) {
+				if (!person.getUser().equals(this.loginUser.getName())) {
+					throw new AccessDeniedException();
+				}
+				if (present(person.getPersonId())) {
+					final Person personOld = this.personDBManager.getPersonById(person.getPersonId(), session);
+					if (personOld == null) {
+						throw new NoSuchElementException("person " + person.getPersonId());
+					}
+					if (personOld.getUser() != null && !personOld.getUser().equals(this.loginUser.getName())) {
+						throw new AccessDeniedException();
+					}
+				}
+			}
+			
+			// check for email, homepage - can yonly be edited if the editr claimed the person
+			if (operation.equals(PersonUpdateOperation.UPDATE_EMAIL) || operation.equals(PersonUpdateOperation.UPDATE_HOMEPAGE)) {
+				if (person.getUser() == null) {
+					throw new AccessDeniedException();
+				}
+			}
+			
+			person.setChangeDate(new Date());
+			person.setChangedBy(this.loginUser.getName());
+
+			switch (operation) {
+				case UPDATE_ORCID: 
+					this.personDBManager.updateOrcid(person, session);
+					break;
+				case UPDATE_ACADEMIC_DEGREE:
+					this.personDBManager.updateAcademicDegree(person, session);
+					break;
+				case UPDATE_NAMES:
+					this.updatePersonNames(person, session);
+					break;
+				case UPDATE_COLLEGE:
+					this.personDBManager.updateCollege(person, session);
+					break;
+				case UPDATE_EMAIL:
+					this.personDBManager.updateEmail(person, session);
+					break;
+				case UPDATE_HOMEPAGE:
+					this.personDBManager.updateHomepage(person, session);
+					break;
+				case UPDATE_ALL:
+					this.personDBManager.updatePerson(person, session);
+					this.updatePersonNames(person, session);
+					break;
+				default:
+					throw new UnsupportedOperationException("The requested method is not yet implemented.");
+			}
+			
+		} finally {
+			session.close();
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
+	 * 
+	 * FIXME TODO integrate into maincreateOrUpdatePerson 
 	 */
 	@Override
 	public void createOrUpdatePerson(final Person person) {
@@ -3488,6 +3565,22 @@ public class DBLogic implements LogicInterface {
 			} else {
 				throw new UnsupportedOperationException("person cannot be found by it type " + idType);
 			}
+		} finally {
+			session.close();
+		}
+	}
+	
+	/**
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonByUser(String)
+	 */
+	public Person getPersonByUser(final String userName) {
+		final DBSession session = this.openSession();
+		
+		try {
+			if (present(userName)) {				
+				return this.personDBManager.getPersonByUser(userName, session);
+			}
+			return null;
 		} finally {
 			session.close();
 		}

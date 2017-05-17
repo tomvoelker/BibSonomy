@@ -63,6 +63,7 @@ public final class GoldStandardPublicationDatabaseManager extends GoldStandardDa
 
 		if (present(post)) {
 			/*
+			 * TODO: this should be done by iBatis
 			 * before the resource leaves the logic parse the misc field
 			 */
 			try {

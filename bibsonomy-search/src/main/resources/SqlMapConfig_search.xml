@@ -7,6 +7,10 @@
 
 	<typeHandler javaType="personNameList"              callback="org.bibsonomy.database.common.typehandler.PersonNameTypeHandlerCallback" />
 	<typeHandler javaType="personResourceRelationType"  callback="org.bibsonomy.database.common.typehandler.PersonResourceRelationTypeHandlerCallback" />	
+	
+	<typeHandler javaType="url" callback="org.bibsonomy.database.common.typehandler.UrlTypeHandlerCallback" />	
+	
+	
 
 	<!-- queries to include -->
 	<sqlMap resource="common/DiscussionCommon.xml" />

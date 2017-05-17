@@ -34,6 +34,7 @@ import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
@@ -105,6 +106,11 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 * list with friends of the current login user
 	 */
 	private List<User> userFriends;
+	
+	/**
+	 * The person that has been claimed by the user
+	 */
+	private Person claimedPerson;
 		
 	private String importType;
 	
@@ -892,5 +898,19 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setFileEnd(CommonsMultipartFile fileEnd) {
 		this.fileEnd = fileEnd;
+	}
+
+	/**
+	 * @return the claimedPerson
+	 */
+	public Person getClaimedPerson() {
+		return this.claimedPerson;
+	}
+
+	/**
+	 * @param claimedPerson the claimedPerson to set
+	 */
+	public void setClaimedPerson(Person claimedPerson) {
+		this.claimedPerson = claimedPerson;
 	}
 }

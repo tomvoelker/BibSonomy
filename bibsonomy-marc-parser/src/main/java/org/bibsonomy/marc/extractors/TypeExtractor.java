@@ -108,7 +108,7 @@ public class TypeExtractor implements AttributeExtractor {
 	}
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 
 		if (!(src instanceof ExtendedMarcWithPicaRecord)) {
 			target.setEntrytype("misc");

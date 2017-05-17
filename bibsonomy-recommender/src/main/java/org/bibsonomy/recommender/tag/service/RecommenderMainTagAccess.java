@@ -60,7 +60,6 @@ public interface RecommenderMainTagAccess {
 	 * @param entity
 	 * @param hash
 	 * @param range
-	 * @param resourceType
 	 * @return The most popular tags of the given resource.
 	 */
 	public List<Pair<String, Integer>> getMostPopularTagsForRecommendationEntity(final Post<? extends Resource> entity, String hash, final int range);
@@ -68,9 +67,10 @@ public interface RecommenderMainTagAccess {
 	/**
 	 * @param username
 	 * @param numberOfPreviousPosts
+	 * @param numberOfTags
 	 * @return the tags used by the user for previous posts
 	 */
-	public List<Pair<String, Integer>> getTagsOfPreviousPostsForUser(String username, int numberOfPreviousPosts);
+	public List<Pair<String, Integer>> getTagsOfPreviousPostsForUser(String username, int numberOfPreviousPosts, int numberOfTags);
 	
 	/**
 	 * This method should return the count of different tags a user ever used

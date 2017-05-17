@@ -44,6 +44,7 @@ public abstract class DummyMainItemAccess<R extends Resource> implements Recomme
 	public static String[] CF_DUMMY_USERNAMES = {"cfusera", "cfuserb"};
 	public static String[][] CF_DUMMY_USER_ITEMS = {{"recommender systems", "collaborative filtering"},
 													{"evaluation trees", "grass green"}};
+
 	private static final Random random = new Random();
 	static {
 		random.setSeed(12313234);

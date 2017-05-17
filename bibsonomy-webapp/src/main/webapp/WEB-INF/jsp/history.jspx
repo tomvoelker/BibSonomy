@@ -97,6 +97,7 @@
 						<fmt:message key="history.restoreBtn.enabled" var="restoreBtnEnabledMsg" />
 						<fmt:message key="goldStandard.approved.title" var="approved"/>
 						<fmt:message key="goldStandard.approved.revision.title" var="approved_revision"/>
+						<fmt:message key="history.backToPost" var="backToPostBtnMsg" />
 						
 						<!--+
 							| complete Post
@@ -134,7 +135,7 @@
 											<input type="hidden" name="intraHashToUpdate" value="${newestPost.resource.intraHash}"/>
 											<div class="title" itemtype="${itemType}" itemscope="itemscope">
 												<pub:title post="${newestPost}">
-													<jsp:attribute name="bibActionButtons">
+													<jsp:attribute name="pubActionButtons">
 														<div class="pull-right">
 															<buttons:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}" resourceType="bibtex"/>
 														</div>
@@ -178,8 +179,13 @@
 								</c:otherwise>
 							</c:choose>
 						</div>
-
-						<div style="border-top: 1px #cbcbcb solid; clear:left">
+						
+						<a id="backToPostBtn" class="${buttonClasses} visible" 
+									title="${backToPostBtnMsg}">
+									<fmt:message key="history.backToPost"/>
+						</a>
+						
+						<div id="historyBorder">
 							<span> </span>
 						</div> <!-- border -->
 

@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.pubmedcentral;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -44,6 +46,8 @@ public class PubMedCentralScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		UnitTestRunner.runSingleTest("url_26");
+		final String url = "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1770189/?tool=pmcentrez&rendertype=abstract";
+		final String resultFile = "PubMedCentralScraperUnitURLTest.bib";
+		assertScraperResult(url, null, PubMedCentralScraper.class, resultFile);
 	}
 }
