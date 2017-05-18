@@ -3385,10 +3385,6 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	
-	
-	
-	
 	/**
 	 * Updates the given person
 	 * @param person		person object containing the new values
@@ -3404,6 +3400,7 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 			
 		try {
+			
 			// is the person claimed?
 			if (person.getUser() != null) {
 				if (!person.getUser().equals(this.loginUser.getName())) {
@@ -3417,6 +3414,13 @@ public class DBLogic implements LogicInterface {
 					if (personOld.getUser() != null && !personOld.getUser().equals(this.loginUser.getName())) {
 						throw new AccessDeniedException();
 					}
+				}
+			}
+			
+			// check for email, homepage - can yonly be edited if the editr claimed the person
+			if (operation.equals(PersonUpdateOperation.UPDATE_EMAIL) || operation.equals(PersonUpdateOperation.UPDATE_HOMEPAGE)) {
+				if (person.getUser() == null) {
+					throw new AccessDeniedException();
 				}
 			}
 			
@@ -3454,14 +3458,6 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
@@ -3588,6 +3584,22 @@ public class DBLogic implements LogicInterface {
 			} else {
 				throw new UnsupportedOperationException("person cannot be found by it type " + idType);
 			}
+		} finally {
+			session.close();
+		}
+	}
+	
+	/**
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonByUser(String)
+	 */
+	public Person getPersonByUser(final String userName) {
+		final DBSession session = this.openSession();
+		
+		try {
+			if (present(userName)) {				
+				return this.personDBManager.getPersonByUser(userName, session);
+			}
+			return null;
 		} finally {
 			session.close();
 		}

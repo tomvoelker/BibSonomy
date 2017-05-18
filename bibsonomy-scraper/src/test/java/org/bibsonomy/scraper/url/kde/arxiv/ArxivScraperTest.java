@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.arxiv;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -44,7 +46,9 @@ public class ArxivScraperTest {
 	 */
 	@Test
 	public void urlTestRun1(){
-		UnitTestRunner.runSingleTest("url_10");
+		final String url = "http://arxiv.org/abs/0706.3639";
+		final String resultFile = "ArxivScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, ArxivScraper.class, resultFile);
 	}
 	
 	/**
@@ -52,7 +56,9 @@ public class ArxivScraperTest {
 	 */
 	@Test
 	public void urlTestRun2(){
-		UnitTestRunner.runSingleTest("url_126");
+		final String url = "http://arxiv.org/abs/cond-mat/0508028";
+		final String resultFile = "ArxivScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, ArxivScraper.class, resultFile);
 	}
 	
 	/**
@@ -60,7 +66,9 @@ public class ArxivScraperTest {
 	 */
 	@Test
 	public void urlTestRun3(){
-		UnitTestRunner.runSingleTest("url_129");
+		final String url = "http://arxiv.org/abs/0810.1951";
+		final String resultFile = "ArxivScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, ArxivScraper.class, resultFile);
 	}
 	
 	/**
@@ -68,14 +76,8 @@ public class ArxivScraperTest {
 	 */
 	@Test
 	public void urlTestRun4(){
-		UnitTestRunner.runSingleTest("url_133");
-	}
-	
-	/**
-	 * starts URL test with id url_339
-	 */
-	@Test
-	public void urlTestRun5() {
-		UnitTestRunner.runSingleTest("url_339");
+		final String url = "http://arxiv.org/abs/0805.2045";
+		final String resultFile = "ArxivScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, ArxivScraper.class, resultFile);
 	}
 }

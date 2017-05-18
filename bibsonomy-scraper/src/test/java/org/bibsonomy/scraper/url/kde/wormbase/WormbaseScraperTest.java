@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.wormbase;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,7 +45,9 @@ public class WormbaseScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_125");
+		final String url = "http://www.wormbase.org/db/misc/paper?name=WBPaper00005873;class=Paper";
+		final String resultFile = "WormbaseScraperUnitURLTest.bib";
+		assertScraperResult(url, null, WormbaseScraper.class, resultFile);
 	}
 	
 }

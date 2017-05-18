@@ -140,9 +140,14 @@ public class DisambiguationPageController extends SingleResourceListController i
 		final List<Post<BibTex>> pubAuthorSearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, name, SearchType.LOCAL, null , Order.ALPH, null, null, 0, 50);
 
 		List<Post<BibTex>> pubsWithSameAuthorName = new ArrayList<>(pubAuthorSearch);
-		for (final Post<BibTex> post : pubAuthorSearch) {
-			// remove post from search if the author has not exactly the same sur- and last-name
-			if (!post.getResource().getAuthor().contains(requestedName)) {
+		for (final Post<BibTex> post : pubAuthorSearch) {			
+			try {
+				// remove post from search if the author has not exactly the same sur- and last-name
+				if (!post.getResource().getAuthor().contains(requestedName)) {
+					pubsWithSameAuthorName.remove(post);
+				}
+			} catch (Exception ex) {
+				// remove the post
 				pubsWithSameAuthorName.remove(post);
 			}
 		}

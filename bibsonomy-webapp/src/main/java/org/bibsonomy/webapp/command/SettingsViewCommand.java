@@ -27,13 +27,14 @@
 package org.bibsonomy.webapp.command;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupUpdateOperation;
-import org.bibsonomy.layout.csl.CSLStyle;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
@@ -106,6 +107,11 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 * list with friends of the current login user
 	 */
 	private List<User> userFriends;
+	
+	/**
+	 * The person that has been claimed by the user
+	 */
+	private Person claimedPerson;
 		
 	private String importType;
 	
@@ -977,5 +983,18 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setCslFiles(List<CSLStyle> cslFiles) {
 		this.cslFiles = cslFiles;
+	}
+	/**
+	 * @return the claimedPerson
+	 */
+	public Person getClaimedPerson() {
+		return this.claimedPerson;
+	}
+
+	/**
+	 * @param claimedPerson the claimedPerson to set
+	 */
+	public void setClaimedPerson(Person claimedPerson) {
+		this.claimedPerson = claimedPerson;
 	}
 }

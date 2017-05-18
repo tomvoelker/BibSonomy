@@ -813,6 +813,13 @@ public class ReadOnlyLogic implements LogicInterface {
 		return this.logicinterface.getPersonById(idType, id);
 	}
 	
+	/**
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonByUser(String)
+	 */
+	public Person getPersonByUser(String userName) {
+		return this.logicinterface.getPersonByUser(userName);
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
 	 */

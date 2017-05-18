@@ -74,8 +74,10 @@ public class HTMLMetaDataDublinCoreToBibtexConverter extends AbstractDublinCoreT
 				addOrAppendField(TITLE_KEY, value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "creator")) {
 				addOrAppendField(AUTHOR_KEY, value, lang, data);
-			} else if (StringUtils.containsIgnoreCase(key, "identifier")) {
+			} else if (StringUtils.equalsIgnoreCase(key, "identifier")) {
 				addOrAppendField(ID_KEY, value, lang, data);
+			} else if (StringUtils.containsIgnoreCase(key, "identifier.doi")){
+				addOrAppendField("doi", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "description")||StringUtils.containsIgnoreCase(key, "abstract")) {
 				addOrAppendField("abstract", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "date")) {
@@ -93,6 +95,16 @@ public class HTMLMetaDataDublinCoreToBibtexConverter extends AbstractDublinCoreT
 				addOrAppendField("conference", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "organization")) {
 				addOrAppendField("organization", value, lang, data);
+			} else if (StringUtils.equalsIgnoreCase(key, "source")){
+				addOrAppendField("source", value, lang, data);
+			} else if (StringUtils.containsIgnoreCase(key, "source.issn")){
+				addOrAppendField("issn", value, lang, data);
+			} else if (StringUtils.containsIgnoreCase(key, "source.issue")){
+				addOrAppendField("issue", value, lang, data);
+			} else if (StringUtils.containsIgnoreCase(key, "source.uri")){
+				addOrAppendField("uri", value, lang, data);
+			} else if (StringUtils.containsIgnoreCase(key, "source.volume")){
+				addOrAppendField("volume", value, lang, data);
 			}
 		}
 		return data;

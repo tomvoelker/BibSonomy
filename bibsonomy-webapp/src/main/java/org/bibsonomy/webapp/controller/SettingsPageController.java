@@ -122,7 +122,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		final String loggedInUserName = loginUser.getName();
 		command.setUserFriends(this.logic.getUserRelationship(loggedInUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
 		command.setFriendsOfUser(this.logic.getUserRelationship(loggedInUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
-
+		command.setClaimedPerson(this.logic.getPersonByUser(loggedInUserName));
+		
 		/*
 		 * show sync tab only for non-spammers
 		 */

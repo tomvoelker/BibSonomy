@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.spires;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -51,7 +52,9 @@ public class SpiresScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		UnitTestRunner.runSingleTest("url_29");
+		final String url = "http://inspirehep.net/search?p=find+r+desy-thesis-2007-018";
+		final String resultFile = "SpiresScraperUnitURLTest.bib";
+		assertScraperResult(url, null, SpiresScraper.class, resultFile);
 	}
 	@Test
 	public void testCitedby() throws Exception {

@@ -15,11 +15,22 @@
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:directive.attribute name="text" type="String" required="true"/>
 	<jsp:directive.attribute name="operation" type="org.bibsonomy.common.enums.PersonUpdateOperation" required="true" description="Defines the desired update operation"/>
+	<jsp:directive.attribute name="disabled" type="java.lang.Boolean" required="false" />
 	
 	<c:set var="loginUserName" value="${loginUser.name}"/>
 
+	<c:choose>
+	<c:when test="${empty disabled or not disabled}">
+		<c:set var="disableButton" value="" />
+	</c:when>
+	<c:otherwise>
+		<c:set var="disableButton" value="disabled" />
+	</c:otherwise>
+	</c:choose>
+	
+
 	<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-		<button type="button" data-operation="${operation}" data-person-id="${command.person.personId}" class="btn btn-success btn-xs personProfileUpdate ${systemReadOnly ? 'disabled' : ''">${text}</button>
+		<button type="button" data-operation="${operation}" data-person-id="${command.person.personId}" class="btn btn-success btn-xs personProfileUpdate ${disableButton} ${systemReadOnly ? 'disabled' : ''">${text}</button>
 	</c:if>
  
 </jsp:root>

@@ -154,7 +154,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 								log.error("error while inviting user '" + username + "' to group '" + groupToUpdate + "'", ex);
 								// if a user can't be added to a group, this
 								// exception is thrown
-								this.errors.rejectValue("username", "settings.group.error.inviteUserToGroupFailed", new Object[] { username, groupToUpdate },
+								this.errors.rejectValue("username", "settings.group.error.inviteUserToGroupFailed", new Object[] { username, groupToUpdate.getName() },
 										"The User {0} couldn't be invited to the Group {1}.");
 							}
 						} else {
