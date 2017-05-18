@@ -27,12 +27,12 @@
 package org.bibsonomy.webapp.command;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupUpdateOperation;
+import org.bibsonomy.layout.csl.CSLStyle;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;

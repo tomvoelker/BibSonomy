@@ -29,6 +29,7 @@ package org.bibsonomy.webapp.controller;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -201,18 +202,14 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 * @param command
 	 */
 	private void checkInstalledCSLLayout(final SettingsViewCommand command) {
-		final String loggedInUserName = command.getContext().getLoginUser().getName();
-		
-		//URGENT
-		//FIX ME
-		//XXX: don't do dis
-		cslFilesManager.setLogic(logic);
-		
+		final String loggedInUserName = command.getContext().getLoginUser().getName();		
 		/*
 		* load all uploaded csl files
 		*/
 		List<CSLStyle> styles = cslFilesManager.getUserLayouts(loggedInUserName);
-		
+		if(styles == null){
+			styles = new ArrayList<CSLStyle>();
+		}
 		command.setCslFiles(styles);
 	}
 	

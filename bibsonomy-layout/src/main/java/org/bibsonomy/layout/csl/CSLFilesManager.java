@@ -65,31 +65,36 @@ import net.sf.json.JSONObject;
 public class CSLFilesManager {
 	private static final Log log = LogFactory.getLog(CSLFilesManager.class);
 	private static LogicInterface logic;
-	
+
 	private static final String BASE_PATH = "classpath:/org/citationstyles/";
 	private static final String BASE_PATH_STYLES = BASE_PATH + "styles/";
 	private static final String BASE_PATH_LOCALES = BASE_PATH + "locales/";
-	
+
 	private CslConfig config;
 
-	/**mapping from id to CSLStyle which contains the id itself, a display name and the content of the file */
-	private Map<String, CSLStyle> cslFiles = new HashMap<>();
-	
-	/**custom user layouts */
-	private Map<String, List<CSLStyle>> cslCustomFiles = new HashMap<>();
-	
-	private Map<String, String> cslLocaleFiles = new HashMap<>();
-		
 	/**
-	 * init this manager
-	 * reads all csl files from classpath: /org/citationstyles/styles/
+	 * mapping from id to CSLStyle which contains the id itself, a display name
+	 * and the content of the file
+	 */
+	private Map<String, CSLStyle> cslFiles = new HashMap<>();
+
+	/** custom user layouts */
+	private Map<String, List<CSLStyle>> cslCustomFiles = new HashMap<>();
+
+	private Map<String, String> cslLocaleFiles = new HashMap<>();
+
+	/**
+	 * init this manager reads all csl files from classpath:
+	 * /org/citationstyles/styles/
 	 */
 	private void init() {
-		final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(CSLFilesManager.class.getClassLoader());
+		final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(
+				CSLFilesManager.class.getClassLoader());
 
 		try {
 			final Resource aliasesResource = resolver.getResource(BASE_PATH_STYLES + "renamed-styles.json");
-			final BufferedReader jsonReader = new BufferedReader(new InputStreamReader(aliasesResource.getInputStream(), StringUtils.DEFAULT_CHARSET));
+			final BufferedReader jsonReader = new BufferedReader(
+					new InputStreamReader(aliasesResource.getInputStream(), StringUtils.DEFAULT_CHARSET));
 			final StringBuilder jsonBuilder = new StringBuilder();
 			while (jsonReader.ready()) {
 				jsonBuilder.append(jsonReader.readLine());
@@ -97,32 +102,35 @@ public class CSLFilesManager {
 			final Map<String, Set<String>> aliases = new HashMap<>();
 			// "inverting" hashmap
 			final JSONObject aliasesObj = JSONObject.fromObject(jsonBuilder.toString());
-			for (final Object keyObj : aliasesObj.keySet() ){
+			for (final Object keyObj : aliasesObj.keySet()) {
 				final String key = (String) keyObj;
 				final String value = (String) aliasesObj.get(key);
-				
+
 				if (!aliases.containsKey(value)) {
 					aliases.put(value, new HashSet<String>());
 				}
 				aliases.get(value).add(key);
 			}
 			final Resource[] resources = resolver.getResources(BASE_PATH_STYLES + "*.csl");
-			
+
 			for (final Resource resource : resources) {
-				try (final BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), StringUtils.DEFAULT_CHARSET))) {
+				try (final BufferedReader reader = new BufferedReader(
+						new InputStreamReader(resource.getInputStream(), StringUtils.DEFAULT_CHARSET))) {
 					final StringBuilder builder = new StringBuilder();
 					while (reader.ready()) {
 						builder.append(reader.readLine() + "\n");
 					}
-					
+
 					try {
 						final String cslStyleSource = builder.toString().trim();
 						final String fileName = resource.getFilename();
 						final String layoutName = fileName.toLowerCase().replace(".csl", "");
-						this.cslFiles.put(layoutName, new CSLStyle(fileName, extractTitle(cslStyleSource), cslStyleSource));
-						if (aliases.containsKey(layoutName)){
-							for (final String alias : aliases.get(layoutName)){
-								this.cslFiles.put(alias, new CSLStyle(fileName, extractTitle(cslStyleSource), cslStyleSource, layoutName));
+						this.cslFiles.put(layoutName,
+								new CSLStyle(fileName, extractTitle(cslStyleSource), cslStyleSource));
+						if (aliases.containsKey(layoutName)) {
+							for (final String alias : aliases.get(layoutName)) {
+								this.cslFiles.put(alias, new CSLStyle(fileName, extractTitle(cslStyleSource),
+										cslStyleSource, layoutName));
 							}
 						}
 					} catch (final ParserConfigurationException | SAXException | IOException e) {
@@ -130,7 +138,7 @@ public class CSLFilesManager {
 					}
 				}
 			}
-			
+
 			this.cslLocaleFiles = loadLanguageFiles(resolver);
 		} catch (final IOException e) {
 			log.error("error while loading csl files", e);
@@ -138,11 +146,12 @@ public class CSLFilesManager {
 	}
 
 	/**
-	 * @param resolver 
+	 * @param resolver
 	 * @return
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	private static Map<String, String> loadLanguageFiles(PathMatchingResourcePatternResolver resolver) throws IOException {
+	private static Map<String, String> loadLanguageFiles(PathMatchingResourcePatternResolver resolver)
+			throws IOException {
 		final Map<String, String> locales = new HashMap<>();
 		final Resource[] resources = resolver.getResources(BASE_PATH_LOCALES + "locales-*.xml");
 		for (final Resource resource : resources) {
@@ -151,7 +160,7 @@ public class CSLFilesManager {
 				while (reader.ready()) {
 					builder.append(reader.readLine() + "\n");
 				}
-				
+
 				final String cslLocaleSource = builder.toString().trim();
 				final String locale = resource.getFilename().replaceAll("locales-", "").replaceAll(".xml", "");
 				locales.put(locale, cslLocaleSource);
@@ -163,56 +172,60 @@ public class CSLFilesManager {
 	/**
 	 * @param cslStyleSource
 	 * @return
-	 * @throws IOException 
-	 * @throws SAXException 
-	 * @throws ParserConfigurationException 
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
 	 */
-	static String extractTitle(final String cslStyleSource) throws SAXException, IOException, ParserConfigurationException {
+	static String extractTitle(final String cslStyleSource)
+			throws SAXException, IOException, ParserConfigurationException {
 		final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		final DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 		final Document document = documentBuilder.parse(new InputSource(new StringReader(cslStyleSource)));
-		
+
 		return document.getElementsByTagName("title").item(0).getTextContent().trim();
 	}
-	
+
 	/**
 	 * @param cslName
 	 * @return the csl style
 	 */
 	public CSLStyle getStyleByName(final String cslName) {
 		CSLStyle tmp = this.cslFiles.get(cslName);
-		if (tmp == null && cslName.toLowerCase().startsWith("custom") && cslName.toLowerCase().endsWith(".csl")){
-			//username extrahieren
-			//layoutname laden.
-			String cut = cslName.substring(0, cslName.length()-4);
+		if (tmp == null && cslName.toLowerCase().startsWith("custom") && cslName.toLowerCase().endsWith(".csl")) {
+			// username extrahieren
+			// layoutname laden.
+			String cut = cslName.substring(0, cslName.length() - 4);
 			String userName = cut.substring(cut.indexOf('_') + 1);
 			String layoutName = userName.substring(userName.indexOf('_') + 1);
 			userName = userName.substring(0, userName.indexOf('_'));
-			
-			//because correct upper and lowercase is lost when written to DB.
-			if(!cslCustomFiles.containsKey(userName)){
-				if(cslCustomFiles.containsKey(userName.toLowerCase())){
-					//a shot in the dark
+
+			// because correct upper and lowercase is lost when written to DB.
+			if (!cslCustomFiles.containsKey(userName)) {
+				if (cslCustomFiles.containsKey(userName.toLowerCase())) {
+					// a shot in the dark
 					userName = userName.toLowerCase();
 				} else {
-					//no? => bruteforce :(
-					for(String key: cslCustomFiles.keySet()){
-						if(key.equalsIgnoreCase(userName)){
+					// no? => bruteforce :(
+					for (String key : cslCustomFiles.keySet()) {
+						if (key.equalsIgnoreCase(userName)) {
 							userName = key;
 						}
 					}
 				}
 			}
-			for(CSLStyle style : cslCustomFiles.get(userName)){
-				if (style.getName().equalsIgnoreCase(cslName)){
-					tmp = style;
-					break;
+			if (cslCustomFiles.get(userName) != null) {
+
+				for (CSLStyle style : cslCustomFiles.get(userName)) {
+					if (style.getName().equalsIgnoreCase(cslName)) {
+						tmp = style;
+						break;
+					}
 				}
 			}
 		}
 		return tmp;
 	}
-	
+
 	/**
 	 * @param locale
 	 * @return the locale file content
@@ -227,99 +240,104 @@ public class CSLFilesManager {
 	public Map<String, CSLStyle> getCslFiles() {
 		return Collections.unmodifiableMap(this.cslFiles);
 	}
-	
+
 	/**
 	 * @param userName
-	 * @return the layout for the given user. If no layout could be found, <code>null</code>
-	 * is returned instead of throwing an exception. This allows for missing parts (i.e., 
-	 * no begin.layout).
+	 * @return the layout for the given user. If no layout could be found,
+	 *         <code>null</code> is returned instead of throwing an exception.
 	 */
 	public List<CSLStyle> getUserLayouts(final String userName) {
 		cslCustomFiles.put(userName, new ArrayList<CSLStyle>());
-		for(org.bibsonomy.model.Document document : getUploadedLayouts(userName)){
-		/*
-		 * check if custom filter exists
-		 */
-		if (present(userName)) {
+		for (org.bibsonomy.model.Document document : getUploadedLayouts(userName)) {
 			/*
-			 * custom filter of current user is not loaded yet -> check if a filter exists at all
+			 * check if custom filter exists
 			 */
-			try {
-				CSLStyle layout = CslLayoutUtils.loadUserLayout(userName, document.getFileName(), this.config);
-				
+			if (present(userName)) {
 				/*
-				 * we add the layout only to the map, if it is complete, i.e., it contains an item layout
+				 * custom filter of current user is not loaded yet -> check if a
+				 * filter exists at all
 				 */
-				if (layout != null) {
+				try {
+					CSLStyle layout = CslLayoutUtils.loadUserLayout(userName, document.getFileName(), this.config);
+
 					/*
-					 * add user layout to map
+					 * we add the layout only to the map, if it is complete,
+					 * i.e., it contains an item layout
 					 */
-					log.debug("user layout exists - loading it");
-					cslCustomFiles.get(userName).add(layout);
+					if (layout != null) {
+						/*
+						 * add user layout to map
+						 */
+						log.debug("user layout exists - loading it");
+						cslCustomFiles.get(userName).add(layout);
+					}
+				} catch (final Exception e) {
+					log.info("Error loading custom filter for user " + userName, e);
 				}
-			} catch (final Exception e) {
-				log.info("Error loading custom filter for user " + userName, e);
 			}
-		}
 		}
 		return cslCustomFiles.get(userName);
 	}
-	
-	/** Loads all uploaded csl layouts from DB.
+
+	/**
+	 * Loads all uploaded csl layouts from DB.
 	 * 
 	 * @param user
 	 * @return list of all documents
 	 */
 	public List<org.bibsonomy.model.Document> getUploadedLayouts(final String user) {
-		//loading from DB
-		
+		// loading from DB
+
 		/**
 		 * all styles from DB. So JabRef too
 		 */
 		final List<org.bibsonomy.model.Document> documents = logic.getDocuments(user);
-		
+
 		/**
 		 * only csl files will be in this list
 		 */
 		List<org.bibsonomy.model.Document> cslLayouts = new ArrayList<org.bibsonomy.model.Document>();
-		
-		if(documents == null || documents.isEmpty()){
+
+		if (documents == null || documents.isEmpty()) {
 			return cslLayouts;
 		}
-		
-		//filtering for correct file extension
-		for (org.bibsonomy.model.Document document : documents){
-			if(document.getFileName().endsWith(CslFileLogic.LAYOUT_FILE_EXTENSION)){
+
+		// filtering for correct file extension
+		for (org.bibsonomy.model.Document document : documents) {
+			if (document.getFileName().endsWith(CslFileLogic.LAYOUT_FILE_EXTENSION)) {
 				cslLayouts.add(document);
 			}
 		}
 		return cslLayouts;
 	}
-	
+
 	/**
-	 * @param config the config to set
+	 * @param config
+	 *            the config to set
 	 */
 	public void setConfig(CslConfig config) {
 		this.config = config;
 	}
 
 	/**
-	 * @param logic the logic to set
+	 * @param logic
+	 *            the logic to set
 	 */
 	public void setLogic(LogicInterface logic) {
 		CSLFilesManager.logic = logic;
 	}
 
-	/** Unloads the custom layout of the user.
+	/**
+	 * Unloads the custom layout of the user.
 	 * 
 	 * @param userName
 	 */
 	public void unloadUserLayout(final String userName, final String fileName) {
-		for(CSLStyle style : cslCustomFiles.get(userName)){
-			if(style.getId() == CslLayoutUtils.userLayoutName(userName, fileName)){
+		for (CSLStyle style : cslCustomFiles.get(userName)) {
+			if (style.getId() == CslLayoutUtils.userLayoutName(userName, fileName)) {
 				cslCustomFiles.get(userName).remove(style);
 			}
 		}
 	}
-	
+
 }

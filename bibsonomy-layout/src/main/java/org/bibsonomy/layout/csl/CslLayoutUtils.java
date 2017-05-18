@@ -51,64 +51,74 @@ import org.xml.sax.SAXException;
  */
 public class CslLayoutUtils {
 	private static final Log log = LogFactory.getLog(CslLayoutUtils.class);
-	
-	
-	/** Builds the hash for the custom layout files of the user.
+
+	/**
+	 * Builds the hash for the custom layout files of the user.
 	 * 
 	 * @param user
-	 * @param fileName 
+	 * @param fileName
 	 * @return hash for custom file of user
 	 */
 	public static String userLayoutHash(final String user, final String fileName) {
-		return StringUtils.getMD5Hash("user." + user.toLowerCase() + "." + fileName + "." + CslFileLogic.LAYOUT_FILE_EXTENSION).toLowerCase();
+		return StringUtils
+				.getMD5Hash("user." + user.toLowerCase() + "." + fileName + "." + CslFileLogic.LAYOUT_FILE_EXTENSION)
+				.toLowerCase();
 	}
-	
+
 	/**
-	 * Builds the name of a custom user layout, for the map and elsewhere. Typically "custom_" + userName + "_" + fileName.
+	 * Builds the name of a custom user layout, for the map and elsewhere.
+	 * Typically "custom_" + userName + "_" + fileName.
 	 * 
 	 * @param userName
-	 * @param fileName 
+	 * @param fileName
 	 * @return the name of a custom layout
 	 */
 	public static String userLayoutName(final String userName, final String fileName) {
 		return LayoutRenderer.CUSTOM_LAYOUT + "_" + userName + "_" + fileName;
 	}
-	
-	/** Loads a resource using the classloader.
+
+	/**
+	 * Loads a resource using the classloader.
 	 * 
 	 * @param location
 	 * @return
 	 */
 	public static InputStream getResourceAsStream(final String location) {
 		final InputStream resourceAsStream = CSLFilesManager.class.getClassLoader().getResourceAsStream(location);
-		if (resourceAsStream != null) 
+		if (resourceAsStream != null)
 			return resourceAsStream;
 		return CSLFilesManager.class.getResourceAsStream(location);
 	}
-	
-	/** Constructs the name of a layout file.
+
+	/**
+	 * Constructs the name of a layout file.
 	 * 
 	 * @param layout
 	 * @param part
-	 * @return 
+	 * @return
 	 */
 	protected static String getLayoutFileName(final String layout) {
 		return layout + "." + CslFileLogic.LAYOUT_FILE_EXTENSION;
 	}
-	
-	/** Create string for directories. If no given, the string is empty.
+
+	/**
+	 * Create string for directories. If no given, the string is empty.
+	 * 
 	 * @param directory
 	 * @return
 	 */
 	private static String getDirectory(final String directory) {
-		if (directory == null) return "";
+		if (directory == null)
+			return "";
 		return directory + "/";
 	}
-	
+
 	/**
 	 * Loads a layout from the given location.
 	 * 
-	 * @param fileLocation - the location of the file, such that it can be found by the used class loader.
+	 * @param fileLocation
+	 *            - the location of the file, such that it can be found by the
+	 *            used class loader.
 	 * @return The loaded layout, or <code>null</code> if it could not be found.
 	 * @throws IOException
 	 */
@@ -125,14 +135,17 @@ public class CslLayoutUtils {
 			String fileContent = sb.toString();
 			String displayName = "";
 			String id;
-			//TODO quite a bit hacky
+			// TODO quite a bit hacky
 			try {
 				displayName = CSLFilesManager.extractTitle(fileContent).trim();
 			} catch (SAXException | ParserConfigurationException e1) {
-				log.error("Failed to extract a display name in a user custom layout. XML-tag 'title' is missing or in the wrong place. File causing problems: " + fileLocation, e1);
+				log.error(
+						"Failed to extract a display name in a user custom layout. XML-tag 'title' is missing or in the wrong place. File causing problems: "
+								+ fileLocation,
+						e1);
 				displayName = "User uploaded custom layout";
 			}
-			if(displayName == null || displayName.trim().isEmpty()){
+			if (displayName == null || displayName.trim().isEmpty()) {
 				displayName = "User uploaded custom layout";
 			}
 			id = displayName.replaceAll(" ", "");
@@ -140,49 +153,66 @@ public class CslLayoutUtils {
 		}
 		return cslLayout;
 	}
-	
+
 	/**
 	 * @param userName
 	 * @param config
 	 * @return The loaded layout, or <code>null</code> if it could not be found.
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public static CSLStyle loadUserLayout(final String userName, final String fileName, CslConfig config) throws Exception {
+	public static CSLStyle loadUserLayout(final String userName, final String fileName, CslConfig config)
+			throws Exception {
 		/*
 		 * initialize a new user layout
 		 */
 		final CSLStyle cslLayout = new CSLStyle(CslLayoutUtils.userLayoutName(userName, fileName));
 		cslLayout.addDescription("en", "Custom layout of user " + userName);
 		cslLayout.setDisplayName(fileName.replace("." + CslFileLogic.LAYOUT_FILE_EXTENSION, ""));
-		cslLayout.setMimeType("text/html"); // FIXME: this should be adaptable by the user ...
+		cslLayout.setMimeType("text/html"); // FIXME: this should be adaptable
+											// by the user ...
 		cslLayout.setUserLayout(true);
 		cslLayout.setPublicLayout(false);
 
 		final String hashedName = CslLayoutUtils.userLayoutHash(userName, cslLayout.getDisplayName() + ".csl");
 		final File file = new File(FileUtil.getFileDirAsFile(config.getUserLayoutFilePath(), hashedName), hashedName);
-		
+
 		cslLayout.setFileHash(hashedName);
 
 		log.debug("trying to load custom user layout for user " + userName + " from file " + file);
 		if (file.exists()) {
 			log.debug("custom layout found!");
-			
-			final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StringUtils.CHARSET_UTF_8));
+
+			final BufferedReader reader = new BufferedReader(
+					new InputStreamReader(new FileInputStream(file), StringUtils.CHARSET_UTF_8));
 			try {
-				//TODO
+				// TODO
 				String content = "";
 				String tmp;
 				while ((tmp = reader.readLine()) != null) {
-				    content += tmp;
+					content += tmp;
 				}
 				cslLayout.setContent(content);
-				} catch (final Exception e) {
-					
-					throw new IOException ("Could not load layout: ", e);
-				} finally {
-					reader.close();
-				}
-			}		
+			} catch (final Exception e) {
+
+				throw new IOException("Could not load layout: ", e);
+			} finally {
+				reader.close();
+			}
+			String displayName = null;
+			try {
+				displayName = CSLFilesManager.extractTitle(cslLayout.getContent()).trim();
+			} catch (SAXException | ParserConfigurationException e1) {
+				log.error(
+						"Failed to extract a display name in a user custom layout. XML-tag 'title' is missing or in the wrong place. File causing problems: "
+								+ cslLayout.getName(), e1);
+			}
+			if (displayName == null || displayName.trim().isEmpty()) {
+				cslLayout.setDisplayName(fileName.replace("." + CslFileLogic.LAYOUT_FILE_EXTENSION, ""));
+			} else {
+				cslLayout.setDisplayName(displayName);
+			}
+		}
+
 		return cslLayout;
 	}
 }
