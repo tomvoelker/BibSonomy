@@ -30,7 +30,7 @@
 	
 
 	<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-		<button type="button" data-operation="${operation}" data-person-id="${command.person.personId}" class="btn btn-success btn-xs personProfileUpdate ${disableButton} ${systemReadOnly ? 'disabled' : ''">${text}</button>
+		<button type="button" data-operation="${operation}" data-person-id="${command.person.personId}" class="btn btn-success btn-xs personProfileUpdate ${disableButton} ${systemReadOnly ? 'disabled' : ''}">${text}</button>
 	</c:if>
  
 </jsp:root>
