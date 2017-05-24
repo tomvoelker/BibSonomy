@@ -44,18 +44,6 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
 		<Enabled>true</Enabled>
 	</URLTest>
-	<URLTest id="url_8">
-		<TestDescription>URL test for scraping a bibtex page from scitation.aip.org</TestDescription>
-		<URL>http://scitation.aip.org/content/aip/journal/jcp/136/3/10.1063/1.3680558</URL>
-		<BibFile>AipScitationScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.aip.AipScitationScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_9">
-		<TestDescription>URL test for scraping a publication page from citation.aip.org</TestDescription>
-		<URL>http://scitation.aip.org/content/aip/journal/jcp/139/12/10.1063/1.4820139</URL>
-		<BibFile>AipScitationScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.aip.AipScitationScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_11">
 		<TestDescription>URL scraping test with citebase publications</TestDescription>
 		<URL>http://www.citebase.org/abstract?id=oai%3AarXiv.org%3Acs%2F0602042</URL>
@@ -590,12 +578,6 @@
 		<URL>http://www.ingentaconnect.com/content/mcb/026/2007/00000026/00000004/art00005</URL>
 		<BibFile>IngentaconnectScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_174">
-		<TestDescription>URL test for scraping a bibtex page from scitation.aip.org</TestDescription>
-		<URL>http://scitation.aip.org/content/asa/journal/jasa/42/5/10.1121/1.2144160</URL>
-		<BibFile>AipScitationScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.aip.AipScitationScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_178">
 		<TestDescription>Scraping for Karger wesite</TestDescription>
