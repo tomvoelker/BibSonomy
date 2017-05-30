@@ -330,8 +330,8 @@ public class ContentBasedItemRecommender<R extends Resource> extends AbstractIte
 				final double idf = idfs.get(token).doubleValue();
 				final Double calcSim = Double.valueOf((entry.getTf() * idf) * (value * idf));
 				
-				if (similarities.containsKey(entry.getDoc().getItem().getContentId()) && !entry.getDoc().getItem().getContentId().equals(toCheck.getContentId())) {
-					similarities.put(entry.getDoc().getItem().getContentId(), calcSim);
+				if (similarities.containsKey(entry.getDoc().getItem().getContentId()) && !entry.getDoc().getItem().getContentId().equals(toCheck.getContentId())) {	
+					similarities.put(entry.getDoc().getItem().getContentId(), calcSim + similarities.get(entry.getDoc().getItem().getContentId()));
 				} else if (!similarities.containsKey(entry.getDoc().getItem().getContentId()) && !entry.getDoc().getItem().getContentId().equals(toCheck.getContentId())) {
 					similarities.put(entry.getDoc().getItem().getContentId(), calcSim);
 				}
@@ -345,7 +345,7 @@ public class ContentBasedItemRecommender<R extends Resource> extends AbstractIte
 		
 		final double toCheckLength = saveDocuments.get(String.valueOf(toCheck.getContentId())).getLength();
 		for (final Integer item : similarities.keySet()) {
-			similarities.put(item, similarities.get(item)/(saveDocuments.get(String.valueOf(item)).getLength()*toCheckLength));
+			similarities.put(item, similarities.get(item)/saveDocuments.get(String.valueOf(item)).getLength()*toCheckLength);
 		}
 		
 		for (final Integer key : similarities.keySet()) {
