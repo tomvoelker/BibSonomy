@@ -195,9 +195,9 @@ public class CSLFilesManager {
 			// username extrahieren
 			// layoutname laden.
 			String cut = cslName.substring(0, cslName.length() - 4);
-			String userName = cut.substring(cut.indexOf('_') + 1);
-			String layoutName = userName.substring(userName.indexOf('_') + 1);
-			userName = userName.substring(0, userName.indexOf('_'));
+			String userName = cut.substring(cut.indexOf(' ') + 1);
+			String layoutName = userName.substring(userName.indexOf(' ') + 1);
+			userName = userName.substring(0, userName.indexOf(' '));
 
 			// because correct upper and lowercase is lost when written to DB.
 			if (!cslCustomFiles.containsKey(userName)) {

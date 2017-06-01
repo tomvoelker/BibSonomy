@@ -88,6 +88,7 @@ public class FavouriteLayoutsDisplayNameTag extends RequestContextAwareTag {
 			if (favouriteLayout.getStyle().toLowerCase().endsWith(".csl")){
 				return getCslDisplayNameByStyle(favouriteLayout.getStyle());
 			}
+			//$FALL-THROUGH$
 		default:
 			break;
 		}

@@ -875,7 +875,7 @@ public class URLGenerator {
 				//$FALL-THROUGH$
 			case CUSTOM:
 				if(favl.getStyle().endsWith(".CSL")){
-					return "/csl-layout/" + style.toUpperCase() + publicationUrl;
+					return "/csl-layout/" + style + publicationUrl;
 				}
 				//$FALL-THROUGH$
 			default:

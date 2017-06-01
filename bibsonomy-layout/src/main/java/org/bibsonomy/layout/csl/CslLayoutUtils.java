@@ -67,14 +67,14 @@ public class CslLayoutUtils {
 
 	/**
 	 * Builds the name of a custom user layout, for the map and elsewhere.
-	 * Typically "custom_" + userName + "_" + fileName.
+	 * Typically "custom " + userName + " " + fileName.
 	 * 
 	 * @param userName
 	 * @param fileName
 	 * @return the name of a custom layout
 	 */
 	public static String userLayoutName(final String userName, final String fileName) {
-		return LayoutRenderer.CUSTOM_LAYOUT + "_" + userName + "_" + fileName;
+		return LayoutRenderer.CUSTOM_LAYOUT + " " + userName + " " + fileName.replace(" ", "_");
 	}
 
 	/**
