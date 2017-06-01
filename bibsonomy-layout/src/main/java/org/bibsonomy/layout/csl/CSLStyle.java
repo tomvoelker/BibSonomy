@@ -62,7 +62,6 @@ public class CSLStyle extends org.bibsonomy.model.Layout {
 		this.setAliasedTo(aliasedTo);
 	}
 
-	//TODO eigtl nur vorrübergehend.. vielleicht
 	/**
 	 * @param id 
 	 */
