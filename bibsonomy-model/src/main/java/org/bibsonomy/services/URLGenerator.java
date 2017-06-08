@@ -28,8 +28,10 @@ package org.bibsonomy.services;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SearchType;
@@ -875,7 +877,14 @@ public class URLGenerator {
 				//$FALL-THROUGH$
 			case CUSTOM:
 				if(favl.getStyle().endsWith(".CSL")){
-					return "/csl-layout/" + style + publicationUrl;
+					try {
+						return "/csl-layout/" + URLEncoder.encode(style, "UTF-8") + publicationUrl;
+					} catch (UnsupportedEncodingException e) {
+						//TODO
+						//XXX
+						//Dont do dis
+						return "/csl-layout/" + style + publicationUrl;
+					}
 				}
 				//$FALL-THROUGH$
 			default:

@@ -61,11 +61,12 @@ public class ServerCSLFileLogic extends AbstractServerFileLogic implements CslFi
 	@Override
 	public Document writeCSLLayout(final String username, final UploadedFile file) throws Exception{
 		final String filename = file.getFileName();
-//		this.checkFile(this.extensionChecker, filename);
-		
-		final String hashedName = CslLayoutUtils.userLayoutHash(username, FilenameUtils.getName(filename));
+		this.checkFile(this.extensionChecker, filename);
+		// "encoding" spaces
+		String encodedName = FilenameUtils.getName(filename).replace(' ', '_');
+		final String hashedName = CslLayoutUtils.userLayoutHash(username, encodedName);
 		final Document document = new Document();
-		document.setFileName(FilenameUtils.getName(filename));
+		document.setFileName(encodedName);
 		document.setMd5hash(HashUtils.getMD5Hash(file.getBytes()));
 		document.setFileHash(hashedName);
 		document.setUserName(username);

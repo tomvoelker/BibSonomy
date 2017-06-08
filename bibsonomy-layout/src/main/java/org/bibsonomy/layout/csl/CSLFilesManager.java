@@ -32,6 +32,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -194,31 +196,52 @@ public class CSLFilesManager {
 		if (tmp == null && cslName.toLowerCase().startsWith("custom") && cslName.toLowerCase().endsWith(".csl")) {
 			// username extrahieren
 			// layoutname laden.
+			
+			//remove ".csl"
 			String cut = cslName.substring(0, cslName.length() - 4);
-			String userName = cut.substring(cut.indexOf(' ') + 1);
-			String layoutName = userName.substring(userName.indexOf(' ') + 1);
-			userName = userName.substring(0, userName.indexOf(' '));
-
+			String userName = cut.substring(cut.indexOf('+') + 1);
+			String layoutName = userName.substring(userName.indexOf('+') + 1);
+			userName = userName.substring(0, userName.indexOf('+'));
+			String foundUserName = null;
 			// because correct upper and lowercase is lost when written to DB.
 			if (!cslCustomFiles.containsKey(userName)) {
 				if (cslCustomFiles.containsKey(userName.toLowerCase())) {
 					// a shot in the dark
 					userName = userName.toLowerCase();
+				} else if (cslCustomFiles.containsKey(userName.toUpperCase())) {
+					// another one
+					userName = userName.toUpperCase();
 				} else {
 					// no? => bruteforce :(
 					for (String key : cslCustomFiles.keySet()) {
 						if (key.equalsIgnoreCase(userName)) {
-							userName = key;
+							foundUserName = key;
+							break;
 						}
+						
 					}
+					//this should be quicker
+					//project is not J1.8 compliant :(
+					//cslCustomFiles.keySet().parallelStream().filter(s -> s.equalsIgnoreCase(userName)).findAny().ifPresent(s -> foundUserName = s);
 				}
+			}
+			
+			if(present(foundUserName)){
+				log.debug("found " + foundUserName + " for input name " + userName);
 			}
 			if (cslCustomFiles.get(userName) != null) {
 
 				for (CSLStyle style : cslCustomFiles.get(userName)) {
-					if (style.getName().equalsIgnoreCase(cslName)) {
-						tmp = style;
-						break;
+					try {
+						if (URLEncoder.encode(style.getName(), "UTF-8").equalsIgnoreCase(cslName)) {
+							tmp = style;
+							break;
+						}
+					} catch (UnsupportedEncodingException e) {
+						if (style.getName().equalsIgnoreCase(cslName)) {
+							tmp = style;
+							break;
+						}
 					}
 				}
 			}
@@ -285,7 +308,7 @@ public class CSLFilesManager {
 	 * @param user
 	 * @return list of all documents
 	 */
-	public List<org.bibsonomy.model.Document> getUploadedLayouts(final String user) {
+	private List<org.bibsonomy.model.Document> getUploadedLayouts(final String user) {
 		// loading from DB
 
 		/**
@@ -297,8 +320,7 @@ public class CSLFilesManager {
 		 * only csl files will be in this list
 		 */
 		List<org.bibsonomy.model.Document> cslLayouts = new ArrayList<org.bibsonomy.model.Document>();
-
-		if (documents == null || documents.isEmpty()) {
+		if (!present(documents)) {
 			return cslLayouts;
 		}
 
