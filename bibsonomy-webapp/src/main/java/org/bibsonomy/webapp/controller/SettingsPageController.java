@@ -206,7 +206,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		/*
 		* load all uploaded csl files
 		*/
-		this.cslFilesManager.setLogic(this.logic);
+//		this.cslFilesManager.setLogic(this.logic);
 		List<CSLStyle> styles = cslFilesManager.getUserLayouts(loggedInUserName);
 		if(styles == null){
 			styles = new ArrayList<CSLStyle>();
