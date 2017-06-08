@@ -1209,15 +1209,27 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.cyberleninka.CyberleninkaScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_369">
-		<TestDescription>Scraping for Karger wesite</TestDescription>
+		<TestDescription>Scraping for Karger</TestDescription>
 		<URL>http://www.karger.com/Article/Abstract/210432</URL>
 		<BibFile>KargerScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karger.KargerScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_370">
-		<TestDescription>Scraping for Karger wesite</TestDescription>
+		<TestDescription>Scraping for Karger</TestDescription>
 		<URL>http://www.karger.com/Article/PDF/210432</URL>
 		<BibFile>KargerScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karger.KargerScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_371">
+		<TestDescription>Scraping for Oxford Academic</TestDescription>
+		<URL>https://academic.oup.com/rev/article/22/3/157/1521720</URL>
+		<BibFile>OxfordUniversityPressUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.oup.OxfordUniversityPressScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_372">
+		<TestDescription>Scraping for Oxford Academic</TestDescription>
+		<URL>https://academic.oup.com/rev/article/22/3/157/1521720/A-study-of-global-and-local-visibility-as-web</URL>
+		<BibFile>OxfordUniversityPressUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.oup.OxfordUniversityPressScraper</Scraper>
 	</URLTest>
 </test:Tests>
