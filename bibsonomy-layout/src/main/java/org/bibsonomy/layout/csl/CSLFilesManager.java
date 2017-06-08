@@ -192,45 +192,24 @@ public class CSLFilesManager {
 	 * @return the csl style
 	 */
 	public CSLStyle getStyleByName(final String cslName) {
+		//layout is default layout?
 		CSLStyle tmp = this.cslFiles.get(cslName);
-		if (tmp == null && cslName.toLowerCase().startsWith("custom") && cslName.toLowerCase().endsWith(".csl")) {
-			// username extrahieren
+		if (!present(tmp) && cslName.toLowerCase().startsWith("custom") && cslName.toLowerCase().endsWith(".csl")) {
+			//
+			// extract username
 			// layoutname laden.
 			
 			//remove ".csl"
 			String cut = cslName.substring(0, cslName.length() - 4);
-			String userName = cut.substring(cut.indexOf('+') + 1);
+			String userName = cut.substring(cut.indexOf('+') + 1).toLowerCase();
 			String layoutName = userName.substring(userName.indexOf('+') + 1);
 			userName = userName.substring(0, userName.indexOf('+'));
-			String foundUserName = null;
-			// because correct upper and lowercase is lost when written to DB.
-			if (!cslCustomFiles.containsKey(userName)) {
-				if (cslCustomFiles.containsKey(userName.toLowerCase())) {
-					// a shot in the dark
-					userName = userName.toLowerCase();
-				} else if (cslCustomFiles.containsKey(userName.toUpperCase())) {
-					// another one
-					userName = userName.toUpperCase();
-				} else {
-					// no? => bruteforce :(
-					for (String key : cslCustomFiles.keySet()) {
-						if (key.equalsIgnoreCase(userName)) {
-							foundUserName = key;
-							break;
-						}
-						
-					}
-					//this should be quicker
-					//project is not J1.8 compliant :(
-					//cslCustomFiles.keySet().parallelStream().filter(s -> s.equalsIgnoreCase(userName)).findAny().ifPresent(s -> foundUserName = s);
-				}
+			if(!present(cslCustomFiles.getOrDefault(userName, null))){
+				// refreshing map
+				getUserLayouts(userName);
 			}
 			
-			if(present(foundUserName)){
-				log.debug("found " + foundUserName + " for input name " + userName);
-			}
-			if (cslCustomFiles.get(userName) != null) {
-
+			if (cslCustomFiles.containsKey(userName)) {
 				for (CSLStyle style : cslCustomFiles.get(userName)) {
 					try {
 						if (URLEncoder.encode(style.getName(), "UTF-8").equalsIgnoreCase(cslName)) {
