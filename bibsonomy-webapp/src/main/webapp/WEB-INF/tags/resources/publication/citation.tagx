@@ -3,6 +3,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form">
 	
@@ -46,24 +47,26 @@
 					</c:if>
 				</c:if>
 				<!-- source and style always uppercase! -->
-				<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
+				<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL') || (citation.source=='CUSTOM')}">
 					<li>
 						<c:set var="exportUrl" value="${relativeUrlGenerator.getPostExportUrl(post, citation)}?formatEmbedded=true&amp;items=1" />
-						<a class="favouriteLayoutDisplayName" data-source="${citation.source}" data-style="${citation.style}" data-toggle="tab" href="#citation_${citation.style}" data-formatUrl="${exportUrl}">
+						<!-- setting source for citeproc, which checks whether datasource == CSL -->
+						<c:choose>
+							<c:when test="${citation.source=='CUSTOM'}">
+								<c:set var="setSource" value="CSL" />
+							</c:when>
+							<c:otherwise>
+								<c:set var="setSource" value="${citation.source}" />
+							</c:otherwise>
+						</c:choose>
+						<!-- encoding ID jquery friendly, because CUSTOM files have format "CUSTOM_USERNAME_LAYOUTNAME.CSL" which jquery strongly dislikes -->
+						<a class="favouriteLayoutDisplayName" data-source="${setSource}" data-style="${citation.style}" data-toggle="tab" href="#citation_${fn:replace(fn:replace(citation.style, '.CSL', ''), ' ', '-')}" data-formatUrl="${exportUrl}">
 							<c:set var="name"><mtl:favouriteLayoutDisplayName favouriteLayout="${citation}"/></c:set>
 							<c:out value="${mtl:shorten(name, 25)}" />
 						</a>
 					</li>
 				</c:if>
-				<c:if test="${citation.source=='CUSTOM'}">
-					<li>
-						<c:set var="exportUrl" value="${relativeUrlGenerator.getPostExportUrl(post, citation)}?formatEmbedded=true&amp;items=1" />
-						<a class="favouriteLayoutDisplayName" data-source="${citation.source}" data-style="${citation.style}" data-toggle="tab" href="#citation_${citation.style}" data-formatUrl="${exportUrl}">
-							<c:set var="name"><mtl:favouriteLayoutDisplayName favouriteLayout="${citation}"/></c:set>
-							<c:out value="${mtl:shorten(name, 25)}" />
-						</a>
-					</li>
-				</c:if>
+				
 			</c:forEach>
 			<li>
 				<c:choose>
@@ -100,8 +103,8 @@
 					</c:if>
 				</c:if>
 				<!-- source and style always uppercase! -->
-				<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
-					<div class="tab-pane" id="citation_${citation.style}">
+				<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL') || (citation.source=='CUSTOM')}">
+					<div class="tab-pane" id="citation_${fn:replace(fn:replace(citation.style, '.CSL', ''), ' ', '-')}">
 						<!-- keep me -->
 					</div>
 				</c:if>

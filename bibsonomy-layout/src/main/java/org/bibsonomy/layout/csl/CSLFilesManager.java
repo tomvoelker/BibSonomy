@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -186,13 +187,12 @@ public class CSLFilesManager {
 
 		return document.getElementsByTagName("title").item(0).getTextContent().trim();
 	}
-
 	/**
 	 * @param cslName
 	 * @return the csl style
 	 */
 	public CSLStyle getStyleByName(final String cslName) {
-		//layout is default layout?
+		//layout is default layout
 		CSLStyle tmp = this.cslFiles.get(cslName);
 		if (!present(tmp) && cslName.toLowerCase().startsWith("custom") && cslName.toLowerCase().endsWith(".csl")) {
 			//
@@ -200,10 +200,16 @@ public class CSLFilesManager {
 			// layoutname laden.
 			
 			//remove ".csl"
-			String cut = cslName.substring(0, cslName.length() - 4);
-			String userName = cut.substring(cut.indexOf('+') + 1).toLowerCase();
-			String layoutName = userName.substring(userName.indexOf('+') + 1);
-			userName = userName.substring(0, userName.indexOf('+'));
+			String cut = cslName.substring(0, cslName.length() - 4).toLowerCase();
+			try {
+				cut = URLDecoder.decode(cut, "UTF-8");
+			} catch (UnsupportedEncodingException e1) {
+				// TODO Auto-generated catch block
+				log.error("TODO", e1);
+			}
+			String userName = cut.substring(cut.indexOf(' ') + 1).toLowerCase();
+			String layoutName = userName.substring(userName.indexOf(' ') + 1);
+			userName = userName.substring(0, userName.indexOf(' '));
 			if(!present(cslCustomFiles.getOrDefault(userName, null))){
 				// refreshing map
 				getUserLayouts(userName);
@@ -211,6 +217,10 @@ public class CSLFilesManager {
 			
 			if (cslCustomFiles.containsKey(userName)) {
 				for (CSLStyle style : cslCustomFiles.get(userName)) {
+					if (style.getName().equalsIgnoreCase(cslName)) {
+						tmp = style;
+						break;
+					}
 					try {
 						if (URLEncoder.encode(style.getName(), "UTF-8").equalsIgnoreCase(cslName)) {
 							tmp = style;

@@ -31,7 +31,6 @@
 			<li>
 				<a class="firstTab" href="#citation_plain"><fmt:message key="bibtex.citation_format.plain" /></a>
 			</li>
-			
 			<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
         		<c:if test="${citation.source=='SIMPLE'}">
         			<c:if test="${citation.style=='BibTeX'}">
@@ -41,9 +40,9 @@
         				<li><a href="#citation_Endnote">Endnote</a></li>
         			</c:if>
         		</c:if>
-        		<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
+        		<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL') || (citation.source=='CSUTOM'}">
         			<li>
-        				<a data-formatUrl="${relativeUrlGenerator.getCitationUrlbyIntraHashUserName(citation, post.resource.intraHash, post.user.name)}?formatEmbedded=true" href="#citation_${citation.style}">
+        				<a data-formatUrl="${relativeUrlGenerator.getCitationUrlbyIntraHashUserName(citation, post.resource.intraHash, post.user.name)}?formatEmbedded=true" href="citation_${citation.style}">
         					<c:set var="name"><mtl:favouriteLayoutDisplayName favouriteLayout="${citation}"/>
 							</c:set>
 							${mtl:shorten(name, 25)}

@@ -880,9 +880,6 @@ public class URLGenerator {
 					try {
 						return "/csl-layout/" + URLEncoder.encode(style, "UTF-8") + publicationUrl;
 					} catch (UnsupportedEncodingException e) {
-						//TODO
-						//XXX
-						//Dont do dis
 						return "/csl-layout/" + style + publicationUrl;
 					}
 				}
