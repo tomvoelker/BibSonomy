@@ -2,22 +2,32 @@
 
 ## What is it?
 
-The BibSonomy Scrapers allow to extract bibliographic metadata from web
-pages into BibTeX format.
+The BibSonomy scrapers facilitate the extraction of bibliographic
+metadata from web pages. The receive as input a URL or a short piece
+of text and try to find the metadata of the publication described at
+the URL or within the text snippet. The output is provided as a
+[BibTeX entry](https://en.wikipedia.org/wiki/BibTeX) which can be
+parsed using the [BibTeX parser](../bibsonomy-bibtex-parser).
 
 The module is part of the [BibSonomy](http://www.bibsonomy.org) social
 bookmarking system and is maintained by the
 [Knowledge & Data Engineering Group](http://www.kde.cs.uni-kassel.de/)
-at the University of Kassel, Germany,
-the [Data Mining and Information Retrieval Group](http://www.is.informatik.uni-wuerzburg.de/en/dmir/)
-at the University of Würzburg, Germany, and
-the [L3S Research Center](http://www.l3s.de/)
-at Leibniz University Hannover, Germany.
+at the University of Kassel, Germany, the
+[Data Mining and Information Retrieval Group](http://www.is.informatik.uni-wuerzburg.de/en/dmir/)
+at the University of Würzburg, Germany, and the
+[L3S Research Center](http://www.l3s.de/) at Leibniz University
+Hannover, Germany.
 
 ## Documentation
 
-The documentation available as of the date of this release is included in
-the form of JavaDoc annotations in the source code.
+The
+[BibSonomy wiki page](https://bitbucket.org/bibsonomy/bibsonomy/wiki/development/modules/scraper/Scraper)
+provides a good overview on the structure and functionality of the
+scrapers. More documentation is included in the form of JavaDoc
+annotations in the source code. A
+[list of active scrapers](https://www.bibsonomy.org/scraperinfo) is
+provided in BibSonomy. The scrapers can also be tested using
+BibSonomy's [scraping service](http://scraper.bibsonomy.org/).
 
 
 ## Release Notes
