@@ -30,6 +30,7 @@ import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -42,6 +43,7 @@ public class DeGruyterScraperTest {
 	/**
 	 * starts URL test with id url_268
 	 */
+	@Ignore //there is no test with this url
 	@Test
 	public void urlTest1Run(){
 		UnitTestRunner.runSingleTest("url_268");
