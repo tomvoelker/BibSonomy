@@ -33,6 +33,8 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -51,7 +53,8 @@ import org.bibsonomy.util.id.DOIUtils;
  * @author tst
  */
 public class DOIScraper implements Scraper {
-
+	private static final Log log = LogFactory.getLog(DOIScraper.class);
+	
 	private static final String SITE_NAME = "DOIScraper";
 	private static final String INFO 	= "Scraper which follows redirects from " + AbstractUrlScraper.href(DOIUtils.DX_DOI_ORG_URL, DOIUtils.DX_DOI_ORG) + 
 											" and passes the resulting URLs to the following scrapers. Additionally checks, if the given selection" +
@@ -98,7 +101,7 @@ public class DOIScraper implements Scraper {
 			 * remove text selection
 			 */
 			scrapingContext.setSelectedText(null);
-		} else if (DOIUtils.isSupportedSelection(selection)) {
+		} else {
 			/*
 			 * selection contains a DOI -> extract it
 			 */
@@ -129,7 +132,12 @@ public class DOIScraper implements Scraper {
 	
 	@Override
 	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
-		return DOIUtils.isDOIURL(scrapingContext.getUrl()) || DOIUtils.isSupportedSelection(scrapingContext.getSelectedText());
+		try {
+			return DOIUtils.isDOIURL(scrapingContext.getUrl()) || DOIUtils.isSupportedSelection(scrapingContext.getSelectedText()) || DOIUtils.isDOIURL(new URL(scrapingContext.getSelectedText()));
+		} catch (MalformedURLException e) {
+			log.info("selected text is not a url", e);
+		}
+		return false;
 	}
 	
 	@Override
