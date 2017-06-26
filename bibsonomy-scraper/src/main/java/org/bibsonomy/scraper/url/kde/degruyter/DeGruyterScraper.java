@@ -97,7 +97,7 @@ public class DeGruyterScraper extends AbstractUrlScraper {
 		final URL url = new URL(stURL);
 		final String path = "http://" + url.getHost().toString() +  url.getPath().toString().replace("/", "$002f").replace("$002fview$002f", "/dg/cite/$002f") + "?nojs=true";
 		
-		final URL postURL = new URL("http://" + url.getHost().toString() + "/dg/cite.form");
+		final URL postURL = new URL("https://" + url.getHost().toString() + "/dg/cite.form");
 		
 		final String html = WebUtils.getContentAsString(path);
 		
