@@ -45,11 +45,11 @@ import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 public class JamaNetScraper extends GenericBibTeXURLScraper {
 	
 	private static final String SITE_NAME = "The Journal of American Medical Association";
-	private static final String HOST = "jama.jamanetwork.com";
+	private static final String HOST = "jamanetwork.com";
 	private static final String SITE_URL = "http://" + HOST + "/";
 	private static final String INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
-	private static final String DOWNLOAD_URL = SITE_URL + "downloadCitation.aspx?format=bibtex&articleid=";
+	private static final String DOWNLOAD_URL = "http://jamanetwork.com/journals/jama/downloadcitation/";
 	private static final Pattern ID_PATERN_FROM_URL = Pattern.compile(".+?articleid=(.+)$");
 	static {
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
@@ -60,12 +60,9 @@ public class JamaNetScraper extends GenericBibTeXURLScraper {
 	 */
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
-		final Matcher m = ID_PATERN_FROM_URL.matcher(url.toString());
-		if (m.find()) {
-			final String id = m.group(1);
-			return DOWNLOAD_URL + id;
-		}
-		return null;
+		String urlString = url.toString();
+		final String id = urlString.substring(urlString.lastIndexOf("/") +1);
+		return DOWNLOAD_URL + id + "?format=bibtex";
 	}
 	
 	/* (non-Javadoc)

@@ -1111,12 +1111,6 @@
 		<BibFile>ThiemeConnectScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.thiemeconnect.ThiemeConnectScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_358">
-		<TestDescription>URL scraping test for the jama network website</TestDescription>
-		<URL>http://jama.jamanetwork.com/article.aspx?articleid=2469891</URL>
-		<BibFile>JamaNetworkScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.jamanet.JamaNetScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_359">
 		<TestDescription>URL scraping test for the projecteuclid website</TestDescription>
 		<URL>http://projecteuclid.org/euclid.aoms/1177704711</URL>
