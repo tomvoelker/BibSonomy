@@ -191,12 +191,6 @@
 		<Enabled>false</Enabled>
 		<AdditionalInfo>This entry has been removed</AdditionalInfo>
 	</URLTest>
-	<URLTest id="url_73">
-		<TestDescription>Cambridge Journals Url Test</TestDescription>
-		<URL>http://journals.cambridge.org/action/displayAbstract?fromPage=online&amp;aid=1805072&amp;fulltextType=RA&amp;fileId=S0008938908000022</URL>
-		<BibFile>CambridgeScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.cambridge.CambridgeScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_74">
 		<TestDescription>URL test for event page from usenix.org with current layout</TestDescription>
 		<URL>http://www.usenix.org/events/lisa2001/tech/apthorpe.html</URL>
@@ -366,12 +360,6 @@
 		<URL>http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2575.2007.00275.x/abstract</URL>
 		<BibFile>WileyIntersienceScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_110">
-		<TestDescription>Cambridge Journals Url Test</TestDescription>
-		<URL>http://journals.cambridge.org/action/displayAbstract?fromPage=online&amp;aid=402142#</URL>
-		<BibFile>CambridgeScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.cambridge.CambridgeScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_111">
 		<TestDescription>URL test for metapress.com</TestDescription>
