@@ -325,12 +325,6 @@
 		<BibFile>EricScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.eric.EricScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_100">
-		<TestDescription>iwaponline Scraper url test</TestDescription>
-		<URL>http://www.iwaponline.com/jwh/001/jwh0010101.htm</URL>
-		<BibFile>IWAPonlineScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.iwap.IWAPonlineScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_101">
 		<TestDescription>jmlr Scraper url test (old paper)</TestDescription>
 		<URL>http://jmlr.csail.mit.edu/papers/v4/petridis03a.html</URL>
