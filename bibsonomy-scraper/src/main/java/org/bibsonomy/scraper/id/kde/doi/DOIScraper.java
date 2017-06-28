@@ -101,29 +101,34 @@ public class DOIScraper implements Scraper {
 			 * remove text selection
 			 */
 			scrapingContext.setSelectedText(null);
-		} else {
-			/*
-			 * selection contains a DOI -> extract it
-			 */
-			final String doi = DOIUtils.extractDOI(selection);
-			//save the initial DOI URL for possible use in {@link ContentNegotiationDOIScraper}
+		} else
 			try {
-				scrapingContext.setDoiURL(DOIUtils.getURL(doi));
-			} catch (MalformedURLException ex) {
-				//scrape with other scrapers (without use of {@link ContentNegotiationDOIScraper}
-				scrapingContext.setDoiURL(null);
+				if (DOIUtils.isSupportedSelection(selection) || DOIUtils.isDOIURL(new URL(scrapingContext.getSelectedText()))){
+					/*
+					 * selection contains a DOI -> extract it
+					 */
+					final String doi = DOIUtils.extractDOI(selection);
+					//save the initial DOI URL for possible use in {@link ContentNegotiationDOIScraper}
+					try {
+						scrapingContext.setDoiURL(DOIUtils.getURL(doi));
+					} catch (MalformedURLException ex) {
+						//scrape with other scrapers (without use of {@link ContentNegotiationDOIScraper}
+						scrapingContext.setDoiURL(null);
+					}
+					
+					final URL redirectUrl = DOIUtils.getUrlForDoi(doi);
+					if (present(redirectUrl)) {
+						scrapingContext.setUrl(redirectUrl);
+					}
+					
+					/*
+					 * remove text selection
+					 */
+					scrapingContext.setSelectedText(null);
+				}
+			} catch (MalformedURLException e) {
+				log.info("selected text is not a url", e);
 			}
-			
-			final URL redirectUrl = DOIUtils.getUrlForDoi(doi);
-			if (present(redirectUrl)) {
-				scrapingContext.setUrl(redirectUrl);
-			}
-			
-			/*
-			 * remove text selection
-			 */
-			scrapingContext.setSelectedText(null);
-		}
 		/*
 		 * always return false, such that the "real" scrapers can do their work
 		 */
