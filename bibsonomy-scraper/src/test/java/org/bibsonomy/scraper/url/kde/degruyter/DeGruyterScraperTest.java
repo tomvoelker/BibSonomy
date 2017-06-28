@@ -40,14 +40,6 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class DeGruyterScraperTest {
-	/**
-	 * starts URL test with id url_268
-	 */
-	@Ignore //there is no test with this url
-	@Test
-	public void urlTest1Run(){
-		UnitTestRunner.runSingleTest("url_268");
-	}
 	
 	@Test
 	public void urlTest2() {
