@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- NOTE: this file is deprecated. Do not add new tests here, use the assertScraperResult
+     method found in org.bibsonomy.scraper.junit.RemoteTestAssert -->
 <test:Tests xmlns:test="http://www.example.org/UnitTestDataSchema"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.example.org/UnitTestDataSchema UnitTestDataSchema.xsd ">
@@ -1219,11 +1221,5 @@
 		<URL>http://www.karger.com/Article/PDF/210432</URL>
 		<BibFile>KargerScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karger.KargerScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_371">
-		<TestDescription>Scraping for Springer Link</TestDescription>
-		<URL>https://link.springer.com/article/10.1007/s11192-014-1292-9/fulltext.html</URL>
-		<BibFile>SpringerLinkScraperUnitURLTest9.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 	</URLTest>
 </test:Tests>
