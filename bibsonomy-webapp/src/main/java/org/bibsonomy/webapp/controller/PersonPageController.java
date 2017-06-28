@@ -105,6 +105,7 @@ public class PersonPageController extends SingleResourceListController implement
 				case "search": return this.searchAction(command);
 				case "searchAuthor": return this.searchAuthorAction(command);
 				case "searchPub": return this.searchPubAction(command);
+				case "searchPubAuthor": return this.searchPubAuthorAction(command);
 				default: return indexAction();
 			}
 		} else if (present(command.getRequestedPersonId())) {
@@ -125,31 +126,58 @@ public class PersonPageController extends SingleResourceListController implement
 		return showAction(command);
 	}
 
+	
+	/** 
+	 * This is a helper function that adds to an JSONarray from a list of resource-person-relations.
+	 * @param command
+	 * @return
+	 */
+	private void buildupAuthorResponseArray(final List<ResourcePersonRelation> suggestions,JSONArray array) {
+			for (ResourcePersonRelation rel : suggestions) {
+				JSONObject jsonPersonName = new JSONObject();
+				jsonPersonName.put("interhash", rel.getPost().getResource().getInterHash());
+				jsonPersonName.put("personIndex", rel.getPersonIndex());
+				//jsonPersonName.put("personNameId", personName.getPersonChangeId());
+				final BibTex pub = rel.getPost().getResource();
+				final List<PersonName> authors = pub.getAuthor();
+				jsonPersonName.put("personName", BibTexUtils.cleanBibTex(authors.get(rel.getPersonIndex()).toString()));
+				jsonPersonName.put("extendedPublicationName", this.personRoleRenderer.getExtendedPublicationName(pub, this.requestLogic.getLocale(), false));
+				array.add(jsonPersonName);
+			}
+	}
+	
+	/** 
+	 * This is a helper function adds to an JSONarray Publications form a sugesstions list.  
+	 * @param command
+	 * @return
+	 */	
+	private void buildupPubResponseArray(final List<Post<BibTex>> suggestions, JSONArray array) {
+		
+		for (Post<BibTex> pub : suggestions) {
+			JSONObject jsonPersonName = new JSONObject();
+			jsonPersonName.put("interhash", pub.getResource().getInterHash());
+			jsonPersonName.put("extendedPublicationName", this.personRoleRenderer.getExtendedPublicationName(pub.getResource(), this.requestLogic.getLocale(), false));
+			array.add(jsonPersonName);
+		}
+	}
+	
 	/**
 	 * @param command
 	 * @return
 	 */
 	private View searchAuthorAction(PersonPageCommand command) { 
 		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName()).withEntityPersons(true).withNonEntityPersons(true).withRelationType(PersonResourceRelationType.AUTHOR).preferUnlinked(true).doIt();
-		
 		JSONArray array = new JSONArray();
-		for (ResourcePersonRelation rel : suggestions) {
-			JSONObject jsonPersonName = new JSONObject();
-			jsonPersonName.put("interhash", rel.getPost().getResource().getInterHash());
-			jsonPersonName.put("personIndex", rel.getPersonIndex());
-			//jsonPersonName.put("personNameId", personName.getPersonChangeId());
-			final BibTex pub = rel.getPost().getResource();
-			final List<PersonName> authors = pub.getAuthor();
-			jsonPersonName.put("personName", BibTexUtils.cleanBibTex(authors.get(rel.getPersonIndex()).toString()));
-			jsonPersonName.put("extendedPublicationName", this.personRoleRenderer.getExtendedPublicationName(pub, this.requestLogic.getLocale(), false));
-			
-			array.add(jsonPersonName);
-		}
+		buildupAuthorResponseArray(suggestions,array);
 		command.setResponseString(array.toJSONString());
 		
 		return Views.AJAX_JSON;
 	}
 	
+	/**
+	 * @param command
+	 * @return
+	 */
 	private View searchPubAction(PersonPageCommand command) { 
 		final List<Post<BibTex>> suggestions = this.logic.getPublicationSuggestion(command.getFormSelectedName());
 		
@@ -163,6 +191,25 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setResponseString(array.toJSONString());
 		
 		return Views.AJAX_JSON;
+	}
+
+	/**
+	 * Combined publication and author search action. This search is in particular necessary 
+	 * when someone want's to find unrelated (no role associated to authors) documents.  
+	 * @param command
+	 * @return
+	 */
+	private View searchPubAuthorAction(PersonPageCommand command) { 
+		final List<ResourcePersonRelation> suggestionsPerson = this.logic.getPersonSuggestion(command.getFormSelectedName()).withEntityPersons(true).withNonEntityPersons(true).withRelationType(PersonResourceRelationType.AUTHOR).preferUnlinked(true).doIt();
+		final List<Post<BibTex>> suggestionsPub = this.logic.getPublicationSuggestion(command.getFormSelectedName());
+		
+		JSONArray array = new JSONArray();
+		buildupAuthorResponseArray(suggestionsPerson, array); // Person(with publication) oriented search return 
+		buildupPubResponseArray(suggestionsPub, array);  // Publications(not associated to Persons) oriented search return
+		command.setResponseString(array.toJSONString());
+		
+		return Views.AJAX_JSON;
+		
 	}
 
 	/**
@@ -298,10 +345,9 @@ public class PersonPageController extends SingleResourceListController implement
 		PersonUpdateOperation operation = command.getUpdateOperation();
 		JSONObject jsonResponse = new JSONObject();
 		
-		
 		// set all attributes that might be updated
 		person.setAcademicDegree(command.getPerson().getAcademicDegree());
-		person.setOrcid(command.getPerson().getOrcid());
+		person.setOrcid(command.getPerson().getOrcid().replaceAll("-", ""));
 		person.setCollege(command.getPerson().getCollege());
 		
 		// TODO only allow updates if the editor "is" this person
@@ -318,7 +364,7 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setPerson(person);
 		
 		// ???
-		command.getPerson().setUser(command.isFormThatsMe() ? AuthenticationUtils.getUser().getName() : null);
+		//command.getPerson().setUser(command.isFormThatsMe() ? AuthenticationUtils.getUser().getName() : null);
 				
 		try {	
 			if (operation != null) {
@@ -542,8 +588,13 @@ public class PersonPageController extends SingleResourceListController implement
 
 		List<Post<BibTex>> pubsWithSameAuthorName = new ArrayList<>(pubAuthorSearch);
 		for (final Post<BibTex> post : pubAuthorSearch) {
-			// remove post from search if the author has not exactly the same sur- and last-name
-			if (!post.getResource().getAuthor().contains(requestedName)) {
+			try {
+				// remove post from search if the author has not exactly the same sur- and last-name
+				if (!post.getResource().getAuthor().contains(requestedName)) {
+					pubsWithSameAuthorName.remove(post);
+				}
+			} catch (Exception ex) {
+				// remove the post
 				pubsWithSameAuthorName.remove(post);
 			}
 		}

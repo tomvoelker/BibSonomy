@@ -30,6 +30,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collections;
 
 import org.bibsonomy.model.BibTex;
@@ -39,6 +41,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.testutil.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -60,12 +63,12 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	/**
 	 * Initializes the test environment for this class
+	 * NOTE: we have to use @Before because we need the DB session to access the database
 	 */
 	@Before
 	public void init() {
 		if (!initialized) {			
 			this.testPerson = new Person();
-			
 			this.testPerson.setMainName(new PersonName("Max", "Mustermann"));
 			PERSON_DATABASE_MANAGER.createPerson(this.testPerson, this.dbSession);
 		}
@@ -150,17 +153,15 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	/**
 	 * tests {@link PersonDatabaseManager#updateHomepage(Person, org.bibsonomy.database.common.DBSession)}
+	 * @throws MalformedURLException 
 	 */
 	@Test
-	public void testUpdateHomepage() {
-		final String homepage = "http://www.bibsonomy.org";
+	public void testUpdateHomepage(){
+		final URL homepage = TestUtils.createURL("http://www.bibsonomy.org");
 		this.testPerson.setHomepage(homepage);
 		PERSON_DATABASE_MANAGER.updateHomepage(this.testPerson, this.dbSession);
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById(this.testPerson.getPersonId(), this.dbSession);
 		assertEquals(person.getHomepage(), homepage);
-	}
-	
-	
-	
+	}	
 	
 }

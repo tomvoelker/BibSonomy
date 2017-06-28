@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.biomed;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -44,7 +46,9 @@ public class BioMedCentralScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_61");
+		final String url = "http://www.biomedcentral.com/1471-2326/6/7";
+		final String resultFile = "BioMedCentralScraperUnitURLTest.bib";
+		assertScraperResult(url, null, BioMedCentralScraper.class, resultFile);
 	}
 	
 	/**
@@ -52,7 +56,9 @@ public class BioMedCentralScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_62");
+		final String url = "http://www.biomedcentral.com/1471-2326/6/7/citation";
+		final String resultFile = "BioMedCentralScraperUnitURLTest.bib";
+		assertScraperResult(url, null, BioMedCentralScraper.class, resultFile);
 	}
 	
 	/**
@@ -60,6 +66,8 @@ public class BioMedCentralScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_343");
+		final String url = "http://jbiomedsem.biomedcentral.com/articles/10.1186/2041-1480-1-S1-S6";
+		final String resultFile = "BioMedCentralScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, BioMedCentralScraper.class, resultFile);
 	}
 }
