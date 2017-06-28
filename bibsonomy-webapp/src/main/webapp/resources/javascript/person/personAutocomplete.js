@@ -9,7 +9,7 @@ function setupPersonSearch(inputFieldSelector, buttonSelector) {
 }
 
 function setupBibtexAuthorSearchForForm(inputFieldSelector, formSelector) {
-	setupPersonAutocomplete(inputFieldSelector, "searchAuthor", 'extendedPublicationName', function(data) {
+	setupPersonAutocomplete(inputFieldSelector, "searchPubAuthor", 'extendedPublicationName', function(data) {
 		$(formSelector + " input[name='formInterHash']").val(data.interhash);
 		$(formSelector + " input[name='resourcePersonRelation.personIndex']").val(data.personIndex);
 		// already set in form:

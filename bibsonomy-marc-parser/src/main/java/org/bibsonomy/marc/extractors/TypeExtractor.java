@@ -42,11 +42,10 @@ import org.marc4j.marc.Leader;
 /**
  * @author mve
  */
-
 public class TypeExtractor implements AttributeExtractor {
-	private static final HashMap<String, String> map = getMap();
+	private static final Map<String, String> map = getMap();
 
-	private static HashMap<String, String> getMap() {
+	private static Map<String, String> getMap() {
 		HashMap<String, String> typeMap = new HashMap<String, String>();
 		typeMap.put("amxxx", "book");
 		typeMap.put("amco", "dvd");
@@ -109,29 +108,27 @@ public class TypeExtractor implements AttributeExtractor {
 
 	@Override
 	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
-
 		if (!(src instanceof ExtendedMarcWithPicaRecord)) {
 			target.setEntrytype("misc");
 			return;
-			// throws IllegalArgumentException
-			// throw new
-			// IllegalArgumentException("record should be provided along with Pica record");
 		}
-		ExtendedMarcWithPicaRecord record = (ExtendedMarcWithPicaRecord) src;
-		// format ist is detected by infos in Leader and kat 007
-		Leader leader = src.getRecord().getLeader();
+
+		final ExtendedMarcWithPicaRecord record = (ExtendedMarcWithPicaRecord) src;
+		// format ist is detected by info in Leader and kat 007
+		final Leader leader = src.getRecord().getLeader();
 		List<ControlField> fields = null;
 		try {
 			fields = src.getControlFields("007");
 		} catch (IllegalArgumentException e) {
+			// ignore
 		}
 		
-		List<String> phys = new ArrayList<String>();
+		final List<String> phys = new ArrayList<String>();
 		String type = "misc";
 
 		if (ValidationUtils.present(fields)) {
 			for (ControlField field : fields) {
-				String data = field.getData();
+				final String data = field.getData();
 				if (ValidationUtils.present(data)) {
 					if (data.charAt(0) == 'c') {
 						// cd or dvd
@@ -160,25 +157,22 @@ public class TypeExtractor implements AttributeExtractor {
 		// For some formats this is not enough and we need additional infos
 
 		// preliminary solution for detection of series
-		String s = record.getFirstPicaFieldValue("002@", "$0", "");
-		//detect conference logs
-		String conf = record.getFirstPicaFieldValue("013H", "$0", "");
+		final String s = record.getFirstPicaFieldValue("002@", "$0", "");
+		// detect conference logs
+		final String conf = record.getFirstPicaFieldValue("013H", "$0", "");
 		
 		if ("u".equals(conf.trim())) {
 			type = "phdthesis";
 		} else if (s.indexOf("c") == 1 || s.indexOf("d") == 1) {
 			type = "series";
-		} else
-		// preliminary solution for articles
-		if (s.indexOf("o") == 1) {
+		} else if (s.indexOf("o") == 1) {
+			// preliminary solution for articles
 			type = "article";
-		} else
-		// preliminary solution for retro
-		if (s.indexOf("r") == 1) {
+		} else if (s.indexOf("r") == 1) {
+			// preliminary solution for retro
 			type = "retro";
-		} else 
-		//get proceedings
-		if (conf != null && conf.indexOf("k") == 0){
+		} else if (conf != null && conf.indexOf("k") == 0){
+			//get proceedings
 			type = "conference";
 		} else {
 			// return formats accourding to format array in the beginning
@@ -194,29 +188,30 @@ public class TypeExtractor implements AttributeExtractor {
 		// there is no format defined for the combination of art level and phys
 		// for debugging
 		target.setEntrytype(toBibtexType(type));
-		
+
+		// TODO: why is getMVBook disabled?
 		//set type to mvbook for book series
 		//getMVBook(target, record);
 	}
 
 	private String toBibtexType(String type) {
-		String bibtexType = map2bibtex.get(type);
+		final String bibtexType = map2bibtex.get(type);
 		if (bibtexType == null) {
 			return "misc";
 		}
 		return bibtexType;
 	}
-	
+
 	/**
 	 * set the entrytype to mvbook if it's an anthology
-	 * 
+	 *
 	 * @param target
 	 * @param src
 	 */
 	private void getMVBook(BibTex target, ExtendedMarcWithPicaRecord src) {
 		String mvType = src.getFirstPicaFieldValue("002@", "$0");
 		if ( mvType != null ) {
-			if ((mvType.charAt(1) == 'c') || (mvType.charAt(1) == 'd')) { 
+			if ((mvType.charAt(1) == 'c') || (mvType.charAt(1) == 'd')) {
 				if (target.getEntrytype().equals("book")) {
 					target.setEntrytype("mvbook");
 				} else {

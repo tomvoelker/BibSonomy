@@ -104,7 +104,7 @@ public class WikiCvPageController extends ResourceListController implements Mini
 	 * Handles the cv page request
 	 * @param command
 	 * @param requestedUser
-	 * @param reqGroup
+	 * @param requestedGroup
 	 *
 	 * @return The cv-page view
 	 */

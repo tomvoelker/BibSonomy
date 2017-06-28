@@ -52,7 +52,6 @@ public class ServerProfilePictureLogic implements ProfilePictureLogic {
 	private final ExtensionChecker extensionChecker = new ListExtensionChecker(PICTURE_EXTENSIONS);
 	
 	private PictureScaler pictureScaler;
-	private LogicInterface adminLogic; // TODO: remove?
 	
 	/**
 	 * default constructor
@@ -84,10 +83,10 @@ public class ServerProfilePictureLogic implements ProfilePictureLogic {
 	public File getProfilePictureForUser(String username) {
 		File file = getProfilePicture(username);
 		
-		if (file == null || !file.exists())
+		if (file == null || !file.exists()) {
 			return this.getDefaultFile();
-		
-		//else:
+		}
+
 		file.setReadOnly(); // never modify files outside the logic!
 		return file;
 	}
@@ -154,13 +153,6 @@ public class ServerProfilePictureLogic implements ProfilePictureLogic {
 	 */
 	public void setPictureScaler(PictureScaler pictureScaler) {
 		this.pictureScaler = pictureScaler;
-	}
-
-	/**
-	 * @param adminLogic the adminLogic to set
-	 */
-	public void setAdminLogic(LogicInterface adminLogic) {
-		this.adminLogic = adminLogic;
 	}
 
 	/**

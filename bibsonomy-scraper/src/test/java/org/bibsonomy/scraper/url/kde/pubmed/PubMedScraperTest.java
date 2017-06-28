@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.pubmed;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -44,7 +46,9 @@ public class PubMedScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_27");
+		final String url = "http://www.ncbi.nlm.nih.gov/sites/entrez?Db=pubmed&Cmd=ShowDetailView&TermToSearch=17623893&ordinalpos=1&itool=EntrezSystem2.PEntrez.Pubmed.Pubmed_ResultsPanel.Pubmed_RVDocSum";
+		final String resultFile = "PubMedScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, PubMedScraper.class, resultFile);
 	}
 	
 	/**
@@ -52,7 +56,9 @@ public class PubMedScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_35");
+		final String url = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=PubMed&id=17623893&mode=medline";
+		final String resultFile = "PubMedScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, PubMedScraper.class, resultFile);
 	}
 
 	/**
@@ -60,7 +66,9 @@ public class PubMedScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_91");
+		final String url = "http://www.ncbi.nlm.nih.gov/pubmed/18506939?ordinalpos=2&itool=EntrezSystem2.PEntrez.Pubmed.Pubmed_ResultsPanel.Pubmed_RVDocSum";
+		final String resultFile = "PubMedScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, PubMedScraper.class, resultFile);
 	}
 	
 	/**
@@ -68,14 +76,18 @@ public class PubMedScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		UnitTestRunner.runSingleTest("url_176");
+		final String url = "http://ukpmc.ac.uk/abstract/MED/19426458";
+		final String resultFile = "PubMedScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, PubMedScraper.class, resultFile);
 	}
 	/**
 	 * starts URL test with id url_246
 	 */
 	@Test
 	public void url5TestRun(){
-		UnitTestRunner.runSingleTest("url_246");
+		final String url = "http://europepmc.org/abstract/MED/19426458";
+		final String resultFile = "PubMedScraperUnitURLTest5.bib";
+		assertScraperResult(url, null, PubMedScraper.class, resultFile);
 	}
 
 }
