@@ -682,12 +682,6 @@
 		<BibFile>AnnualreviewsScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.annualreviews.AnnualreviewsScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_230">
-		<TestDescription>test for pages with emeraldinsight</TestDescription>
-		<URL>http://www.emeraldinsight.com/doi/abs/10.1108/S1876-0562%282004%290000004009</URL>
-		<BibFile>APHAScraperUnitURLTest4.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.apha.APHAScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_232">
 		<TestDescription>Test for JNeurosciScraper</TestDescription>
 		<URL>http://www.jneurosci.org/content/32/42/14465.short?rss=1</URL>
@@ -846,23 +840,11 @@
 		<BibFile>GenomeBiologyScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.genome.GenomeBiologyScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_288">
-		<TestDescription>scraping test for journal page from ajph.aphapublications.org/</TestDescription>
-		<URL>http://ajph.aphapublications.org/doi/abs/10.2105/AJPH.2009.160184</URL>
-		<BibFile>APHAScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.apha.APHAScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_290">
 		<TestDescription>scraping test for Copac Scraper</TestDescription>
 		<URL>http://copac.jisc.ac.uk/search?title=Measures%20and%20aggregation%3A%20formal%20aspects%20and%20applications%20to%20clustering%20and%20decision.&amp;rn=1</URL>
 		<BibFile>CopacScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.copac.CopacScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_291">
-		<TestDescription>scraping test for journal page from ajph.aphapublications.org/</TestDescription>
-		<URL>http://ajph.aphapublications.org/doi/abs/10.2105/AJPH.2009.181958</URL>
-		<BibFile>APHAScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.apha.APHAScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_292">
 		<TestDescription>scraping test for cshperspectives.cshlp.org host using CSHLP Scraper</TestDescription>
@@ -971,12 +953,6 @@
 		<URL>http://www.jimmunol.org/content/183/11/7569.full.pdf+html</URL>
 		<BibFile>CSHLPScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_312">
-		<TestDescription>scraping test for journal page from nrcresearchpress.com/ using APHAScraper</TestDescription>
-		<URL>http://www.nrcresearchpress.com/doi/abs/10.1139/o59-099</URL>
-		<BibFile>APHAScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.apha.APHAScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_313">
 		<TestDescription>URL scraping test for the cinii cat inist</TestDescription>
