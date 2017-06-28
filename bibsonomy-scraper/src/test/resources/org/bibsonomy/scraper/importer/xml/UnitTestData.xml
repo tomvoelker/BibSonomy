@@ -561,12 +561,6 @@
 		<BibFile>IngentaconnectScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_178">
-		<TestDescription>Scraping for Karger wesite</TestDescription>
-		<URL>http://www.karger.com/Article/FullText/210432</URL>
-		<BibFile>KargerScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.karger.KargerScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_189">
 		<TestDescription>URL scraping test with a citation page from intersience wiley</TestDescription>
 		<URL>http://onlinelibrary.wiley.com/doi/10.1002/1521-4095(200011)12:22%3C1655::AID-ADMA1655%3E3.0.CO;2-2/abstract</URL>
@@ -1135,17 +1129,5 @@
 		<URL>http://cyberleninka.ru/article/n/analiz-dannyh-slozhnyh-obektov-s-pomoschyu-modifitsirovannogo-algoritma-klasterizatsii</URL>
 		<BibFile>CyberleninkaScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.cyberleninka.CyberleninkaScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_369">
-		<TestDescription>Scraping for Karger wesite</TestDescription>
-		<URL>http://www.karger.com/Article/Abstract/210432</URL>
-		<BibFile>KargerScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.karger.KargerScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_370">
-		<TestDescription>Scraping for Karger wesite</TestDescription>
-		<URL>http://www.karger.com/Article/PDF/210432</URL>
-		<BibFile>KargerScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.karger.KargerScraper</Scraper>
 	</URLTest>
 </test:Tests>

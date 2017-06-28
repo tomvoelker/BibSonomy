@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.karger;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -42,7 +44,9 @@ public class KargerScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_178");
+		final String url = "http://www.karger.com/Article/FullText/210432";
+		final String resultFile = "KargerScraperUnitURLTest.bib";
+		assertScraperResult(url, null, KargerScraper.class, resultFile);
 	}
 	
 	/**
@@ -50,7 +54,9 @@ public class KargerScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_369");
+		final String url = "http://www.karger.com/Article/Abstract/210432";
+		final String resultFile = "KargerScraperUnitURLTest.bib";
+		assertScraperResult(url, null, KargerScraper.class, resultFile);
 	}
 	
 	/**
@@ -58,6 +64,8 @@ public class KargerScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_370");
+		final String url = "http://www.karger.com/Article/PDF/210432";
+		final String resultFile = "KargerScraperUnitURLTest.bib";
+		assertScraperResult(url, null, KargerScraper.class, resultFile);
 	}
 }
