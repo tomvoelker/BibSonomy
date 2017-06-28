@@ -45,6 +45,7 @@ public interface SearchSystemTag extends SystemTag {
 	/**
 	 * Sets or changes fields in a param according to the systemTags function
 	 * @param param
+	 * @return <code>true</code> iff the system tag modified the param
 	 */
 	public boolean handleParam(GenericParam param);
 
