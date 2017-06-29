@@ -195,9 +195,9 @@ public class CSLFilesManager {
 		//layout is default layout
 		CSLStyle tmp = this.cslFiles.get(cslName);
 		if (!present(tmp) && cslName.toLowerCase().startsWith("custom") && cslName.toLowerCase().endsWith(".csl")) {
-			//
+
 			// extract username
-			// layoutname laden.
+			// load layoutname
 			
 			//remove ".csl"
 			String cut = cslName.substring(0, cslName.length() - 4).toLowerCase();
