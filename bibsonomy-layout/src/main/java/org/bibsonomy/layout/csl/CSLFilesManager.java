@@ -208,8 +208,9 @@ public class CSLFilesManager {
 				log.error("TODO", e1);
 			}
 			String userName = cut.substring(cut.indexOf(' ') + 1).toLowerCase();
-			String layoutName = userName.substring(userName.indexOf(' ') + 1);
+			final String layoutName = userName.substring(userName.indexOf(' ') + 1); // FIXME: used
 			userName = userName.substring(0, userName.indexOf(' '));
+			// FIXME: we do not support java 8; please replace call to java 8 api
 			if(!present(cslCustomFiles.getOrDefault(userName, null))){
 				// refreshing map
 				getUserLayouts(userName);
@@ -344,8 +345,8 @@ public class CSLFilesManager {
 	 * @param userName
 	 */
 	public void unloadUserLayout(final String userName, final String fileName) {
-		for (CSLStyle style : cslCustomFiles.get(userName)) {
-			if (style.getId() == CslLayoutUtils.userLayoutName(userName, fileName)) {
+		for (final CSLStyle style : cslCustomFiles.get(userName)) {
+			if (style.getId().equals(CslLayoutUtils.userLayoutName(userName, fileName))) {
 				cslCustomFiles.get(userName).remove(style);
 			}
 		}

@@ -44,6 +44,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
+ * FIXME: Duplicate Code
  * TODO: add documentation to this class
  *
  * @author jp
@@ -54,8 +55,7 @@ public class CSLImportController extends SettingsPageController {
 	private static final String DELETE = "delete";
 
 	private static final String CREATE = "create";
-	
-	private CSLFilesManager cslFilesManager;
+
 	private CslImportValidator validator;
 	private FileLogic fileLogic;
 	
@@ -142,7 +142,6 @@ public class CSLImportController extends SettingsPageController {
 	 * 
 	 * @param loginUser
 	 * @param fileItem
-	 * @param layoutPart
 	 */
 	private void writeLayoutPart(final User loginUser, final MultipartFile fileItem) {
 		if (fileItem != null && fileItem.getSize() > 0) {
@@ -167,12 +166,5 @@ public class CSLImportController extends SettingsPageController {
 	 */
 	public void setValidator(CslImportValidator validator) {
 		this.validator = validator;
-	}
-
-	/**
-	 * @param cslFileManager the cslFilesManager to set
-	 */
-	public void setCslFilesManager(CSLFilesManager cslFilesManager) {
-		this.cslFilesManager = cslFilesManager;
 	}
 }
