@@ -206,8 +206,20 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		/*
 		* load all uploaded csl files
 		*/
-//		this.cslFilesManager.setLogic(this.logic);
-		List<CSLStyle> styles = cslFilesManager.getUserLayouts(loggedInUserName);
+		
+		//XXX
+		//deprecated
+		//REMOVE
+		//TODO
+		//DESPERATE
+		
+		CSLFilesManager bla1 = cslFilesManager;
+		CSLFilesManager bla2 = this.cslFilesManager;
+		CSLFilesManager bla3 = getCslFilesManager();
+		CSLFilesManager bla4 = this.getCslFilesManager();
+		
+		List<CSLStyle> styles = this.cslFilesManager.getUserLayouts(loggedInUserName);
+		
 		if(styles == null){
 			styles = new ArrayList<CSLStyle>();
 		}
@@ -429,6 +441,10 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 * @param cslFilesManager the cslFilesManager to set
 	 */
 	public void setCslFilesManager(CSLFilesManager cslFilesManager) {
-		this.cslFilesManager = cslFilesManager;
+		this.cslFilesManager = cslFilesManager;		
+	}
+	
+	private CSLFilesManager getCslFilesManager(){
+		return this.cslFilesManager;
 	}
 }
