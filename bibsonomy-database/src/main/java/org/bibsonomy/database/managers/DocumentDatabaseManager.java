@@ -52,6 +52,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	private static final DocumentDatabaseManager singleton = new DocumentDatabaseManager();
 	
 	private final DatabasePluginRegistry plugins;
+	private UserDatabaseManager userDatabaseManager;
 	
 	/**
 	 * @return DocumentDatabaseManager
@@ -62,6 +63,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 
 	private DocumentDatabaseManager() {
 		this.plugins = DatabasePluginRegistry.getInstance();
+		
 	}
 
 	/**
@@ -351,5 +353,12 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		param.setFilters(filters);
 		final Integer result = this.queryForObject("getLayoutDocumentCount", param, Integer.class, session);
 		return saveConvertToint(result);
+	}
+	
+	/**
+	 * @param userDatabaseManager
+	 */
+	public void setUserDatabaseManager(UserDatabaseManager userDatabaseManager){
+		this.userDatabaseManager = userDatabaseManager;
 	}
 }

@@ -226,6 +226,10 @@
 		<property name="chain" ref="discussionChain" />
 	</bean>
 	
+	<bean id="documentDatabaseManager" class="org.bibsonomy.database.managers.DocumentDatabaseManager" factory-method="getInstance">
+		<property name="userDatabaseManager" ref="userDatabaseManager" />
+	</bean>
+	
 	<bean id="userDatabaseManager" class="org.bibsonomy.database.managers.UserDatabaseManager" factory-method="getInstance">
 		<property name="chain" ref="userChain" />
 		<property name="validator" ref="databaseValidator" />
