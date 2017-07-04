@@ -1209,13 +1209,13 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.cyberleninka.CyberleninkaScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_369">
-		<TestDescription>Scraping for Karger wesite</TestDescription>
+		<TestDescription>Scraping for Karger</TestDescription>
 		<URL>http://www.karger.com/Article/Abstract/210432</URL>
 		<BibFile>KargerScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karger.KargerScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_370">
-		<TestDescription>Scraping for Karger wesite</TestDescription>
+		<TestDescription>Scraping for Karger</TestDescription>
 		<URL>http://www.karger.com/Article/PDF/210432</URL>
 		<BibFile>KargerScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karger.KargerScraper</Scraper>
