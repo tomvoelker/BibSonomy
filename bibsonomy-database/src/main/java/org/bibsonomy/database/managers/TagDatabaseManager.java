@@ -655,7 +655,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return the tag's details, null else
 	 */
 	public Tag getTagDetails(final User user, final String tagName, final DBSession session) {
-		final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, null, user.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, null, null, user);
+		final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, Resource.class, null, user.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, null, null, user);
 
 		param.setLimit(10000);
 		param.setOffset(0);
@@ -774,7 +774,12 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * @param param
+	 * @param contentType
+	 * @param loginUserName
+	 * @param groupId
+	 * @param order
+	 * @param limit
+	 * @param offset
 	 * @param session
 	 * @return list of tags
 	 */
