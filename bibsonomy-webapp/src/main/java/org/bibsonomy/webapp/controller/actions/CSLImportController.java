@@ -28,7 +28,6 @@ package org.bibsonomy.webapp.controller.actions;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.layout.csl.CSLFilesManager;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.User;
 import org.bibsonomy.services.filesystem.FileLogic;
