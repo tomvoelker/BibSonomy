@@ -124,11 +124,12 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		
 		this.insert("insertDoc", docParam, session);
 		
+		return; 
 		//updating favourite layouts
 		User user = this.userDatabaseManager.getUserDetails(userName, session);
 		UserSettings userSettings = user.getSettings();
-								//???
-		if (false & contentId == 12){
+						//???
+		if (contentId == 12){
 			//more or less
 			userSettings.getFavouriteLayouts().add(new FavouriteLayout(FavouriteLayoutSource.CUSTOM, fileName));
 			this.userDatabaseManager.updateUserSettingsForUser(user, session);
@@ -293,6 +294,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		// finally delete the document
 		deleteDocumentForPost(docParam, session);
 		
+		return;
 		//updating favourite layouts
 		User user = this.userDatabaseManager.getUserDetails(document.getUserName(), session);
 		UserSettings userSettings = user.getSettings();
