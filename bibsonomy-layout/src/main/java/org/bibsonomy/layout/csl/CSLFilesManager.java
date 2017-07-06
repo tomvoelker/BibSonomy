@@ -208,6 +208,7 @@ public class CSLFilesManager {
 				log.error("TODO", e1);
 			}
 			String userName = cut.substring(cut.indexOf(' ') + 1).toLowerCase();
+			//TODO when feature final and still unused: remove
 			 // final String layoutName = userName.substring(userName.indexOf(' ') + 1); // FIXME: used
 			userName = userName.substring(0, userName.indexOf(' '));
 			if(!present(cslCustomFiles.get(userName))){
