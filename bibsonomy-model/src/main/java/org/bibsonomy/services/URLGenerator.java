@@ -1527,7 +1527,6 @@ public class URLGenerator {
 	}
 
 	/**
-	 * @param personName
 	 * @param authorIndex 
 	 * @param resourceHash
 	 * @param role
@@ -1559,7 +1558,27 @@ public class URLGenerator {
 	 */
 	public String getHelpPage(final String helpPage, final String language) {
 		final UrlBuilder builder = new UrlBuilder(this.projectHome + "help" + "_" + language);
-		builder.addPathElement(helpPage);
+
+		final String helpPath;
+		// handle anchor
+		if (helpPage.contains("#")) {
+			final String[] pathAnchor = helpPage.split("#");
+			builder.setAnchor(pathAnchor[1]);
+			helpPath = pathAnchor[0];
+		} else {
+			helpPath = helpPage;
+		}
+
+		// check if help page is in a subdir
+		if (helpPath.contains("/")) {
+			final String[] path = helpPath.split("/");
+			for (String pathElement : path) {
+				builder.addPathElement(pathElement);
+			}
+		} else {
+			builder.addPathElement(helpPath);
+		}
+
 		return this.getUrl(builder.asString());
 	}
 }

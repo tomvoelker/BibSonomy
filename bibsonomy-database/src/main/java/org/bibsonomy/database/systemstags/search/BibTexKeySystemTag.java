@@ -50,9 +50,10 @@ public class BibTexKeySystemTag extends AbstractSearchSystemTagImpl {
 	}
 
 	@Override
-	public void handleParam(final GenericParam param) {
+	public boolean handleParam(final GenericParam param) {
 		param.setBibtexKey(this.getArgument());
 		log.debug("set bibtex key to " + this.getArgument() + " after matching for bibtexkey system tag");
+		return true;
 	}
 
 	@Override

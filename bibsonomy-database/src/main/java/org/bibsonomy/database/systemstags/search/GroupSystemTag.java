@@ -51,10 +51,11 @@ public class GroupSystemTag extends AbstractSearchSystemTagImpl {
 	}
 
 	@Override
-	public void handleParam(final GenericParam param) {
+	public boolean handleParam(final GenericParam param) {
 		param.setGrouping(GroupingEntity.GROUP);
 		param.setRequestedGroupName(this.getArgument());
 		log.debug("set grouping to 'group' and requestedGroupName to " + this.getArgument() + " after matching for group system tag");
+		return true;
 	}
 
 	@Override

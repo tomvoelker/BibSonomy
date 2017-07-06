@@ -43,6 +43,7 @@ public class UrlBuilder {
 	private final String baseUrl;
 	private Map<String, String> parameters;
 	private final List<String> pathElements = new ArrayList<String>(4);
+	private String anchor;
 	
 	/**
 	 * @param baseUrl
@@ -142,6 +143,11 @@ public class UrlBuilder {
 			 */
 			return url.substring(0, url.length() - 1);
 		}
+
+		// handle link anchor
+		if (present(this.anchor)) {
+			url.append("#").append(this.anchor);
+		}
 		
 		return url.toString();
 	}
@@ -149,5 +155,12 @@ public class UrlBuilder {
 	@Override
 	public String toString() {
 		return asString();
+	}
+
+	/**
+	 * @param anchor the anchor to set
+	 */
+	public void setAnchor(String anchor) {
+		this.anchor = anchor;
 	}
 }

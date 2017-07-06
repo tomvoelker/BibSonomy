@@ -47,6 +47,7 @@ import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.SearchSystemTag;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
@@ -97,21 +98,21 @@ public class LogicInterfaceHelper {
 	 * 
 	 * @param <T> the type of param object to be build
 	 * @param type the type of param object to be build
+	 * @param resourceType the type of the resource
 	 * @param grouping as specified for {@link PostLogicInterface#getPosts}
-	 * @param groupingName as specified for {@link PostLogicInterface#getPosts} 
-	 * @param tags as specified for {@link PostLogicInterface#getPosts} 
+	 * @param groupingName as specified for {@link PostLogicInterface#getPosts}
+	 * @param tags as specified for {@link PostLogicInterface#getPosts}
 	 * @param hash as specified for {@link PostLogicInterface#getPosts}
 	 * @param order as specified for {@link PostLogicInterface#getPosts}
-	 * @param start as specified for {@link PostLogicInterface#getPosts} 
+	 * @param start as specified for {@link PostLogicInterface#getPosts}
 	 * @param end as specified for {@link PostLogicInterface#getPosts}
 	 * @param startDate as specified for {@link PostLogicInterface#getPosts}
 	 * @param endDate as specified for {@link PostLogicInterface#getPosts}
-	 * @param search as specified for {@link PostLogicInterface#getPosts} 
+	 * @param search as specified for {@link PostLogicInterface#getPosts}
 	 * @param filters as specified for {@link PostLogicInterface#getPosts}
-	 * @param loginUser logged in user as specified for {@link PostLogicInterface#getPosts}
-	 * @return the fresh param object 
+	 * @param loginUser logged in user as specified for {@link PostLogicInterface#getPosts}         @return the fresh param object
 	 */
-	public static <T extends GenericParam> T buildParam(final Class<T> type, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, final Date startDate, final Date endDate, final String search, final Set<Filter> filters, final User loginUser) {
+	public static <T extends GenericParam> T buildParam(final Class<T> type, Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, final Date startDate, final Date endDate, final String search, final Set<Filter> filters, final User loginUser) {
 		/*
 		 * delegate to simpler method
 		 */
@@ -169,9 +170,11 @@ public class LogicInterfaceHelper {
 
 		// set the groups the logged-in user may see 
 		//  - every user may see public posts - this one is added in the constructor of DBLogic
-		//  - groups the logged-in user is explicitely member of
+		//  - groups the logged-in user is explicitly member of
 		param.addGroupsAndGroupnames(UserUtils.getListOfGroups(loginUser));
-		//  - private / friends groups are set later on 
+
+		// NOTE:
+		//  - private / friends groups are set later on
 		//    (@see org.bibsonomy.database.util.DatabaseUtils.prepareGetPostForUser)
 
 		if (present(tags)) {
@@ -185,7 +188,11 @@ public class LogicInterfaceHelper {
 					 */
 					final SearchSystemTag searchTag = SystemTagsUtil.createSearchSystemTag(tag);
 					if (present(searchTag)) {
+						// call the search system tag to modify the param
 						searchTag.handleParam(param);
+						if (searchTag.allowsResource(resourceType)) {
+							param.addToSystemTags(searchTag);
+						}
 						continue;
 					}
 
