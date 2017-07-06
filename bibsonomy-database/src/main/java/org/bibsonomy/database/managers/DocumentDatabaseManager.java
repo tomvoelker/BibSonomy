@@ -39,6 +39,10 @@ import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.Document;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.UserSettings;
+import org.bibsonomy.model.enums.FavouriteLayoutSource;
+import org.bibsonomy.model.user.settings.FavouriteLayout;
 
 /**
  * @author Christian Kramer
@@ -119,6 +123,17 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		docParam.setMd5hash(md5hash);
 		
 		this.insert("insertDoc", docParam, session);
+		
+		//updating favourite layouts
+		User user = this.userDatabaseManager.getUserDetails(userName, session);
+		UserSettings userSettings = user.getSettings();
+								//???
+		if (false & contentId == 12){
+			//more or less
+			userSettings.getFavouriteLayouts().add(new FavouriteLayout(FavouriteLayoutSource.CUSTOM, fileName));
+			this.userDatabaseManager.updateUserSettingsForUser(user, session);
+		}
+		
 	}
 
 	/**
@@ -275,9 +290,25 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		// create a DocumentParam object
 		final DocumentParam docParam = documentToParam(document);
 		docParam.setContentId(contentId);
-		
 		// finally delete the document
 		deleteDocumentForPost(docParam, session);
+		
+		//updating favourite layouts
+		User user = this.userDatabaseManager.getUserDetails(document.getUserName(), session);
+		UserSettings userSettings = user.getSettings();
+		FavouriteLayout foundLayout = null;
+		for (FavouriteLayout layout : userSettings.getFavouriteLayouts()){
+			if (layout.getSource() == FavouriteLayoutSource.CUSTOM){
+				if (layout.getStyle() == document.getFileName()){
+					foundLayout = layout;
+					break;
+				}
+			}
+		}
+		if(foundLayout != null){
+			userSettings.getFavouriteLayouts().remove(foundLayout);
+			this.userDatabaseManager.updateUserSettingsForUser(user, session);
+		}
 	}
 	
 	/**
