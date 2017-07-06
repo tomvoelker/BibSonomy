@@ -210,8 +210,7 @@ public class CSLFilesManager {
 			String userName = cut.substring(cut.indexOf(' ') + 1).toLowerCase();
 			final String layoutName = userName.substring(userName.indexOf(' ') + 1); // FIXME: used
 			userName = userName.substring(0, userName.indexOf(' '));
-			// FIXME: we do not support java 8; please replace call to java 8 api
-			if(!present(cslCustomFiles.getOrDefault(userName, null))){
+			if(!present(cslCustomFiles.get(userName))){
 				// refreshing map
 				getUserLayouts(userName);
 			}
