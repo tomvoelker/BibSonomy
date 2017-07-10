@@ -105,6 +105,8 @@ public class HTMLMetaDataDublinCoreToBibtexConverter extends AbstractDublinCoreT
 				addOrAppendFieldIfNewValue("uri", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "source.volume")){
 				addOrAppendFieldIfNewValue("volume", value, lang, data);
+			} else if (StringUtils.containsIgnoreCase(key, "pageNumber")) {
+				addOrAppendFieldIfNewValue("pages", value, lang, data);
 			}
 		}
 		return data;
