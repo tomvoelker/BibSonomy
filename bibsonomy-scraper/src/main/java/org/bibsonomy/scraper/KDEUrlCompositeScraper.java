@@ -159,6 +159,7 @@ import org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper;
 import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
 import org.bibsonomy.scraper.url.kde.worldscientific.WorldScientificScraper;
 import org.bibsonomy.scraper.url.kde.wormbase.WormbaseScraper;
+import org.bibsonomy.scraper.url.kde.zenodo.ZenodoScraper;
 
 /**
  * Contains all active UrlScrapers.
@@ -325,6 +326,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new ElsevierScraper());
 		addScraper(new CyberleninkaScraper());
 		addScraper(new OxfordUniversityPressScraper());
+		addScraper(new ZenodoScraper());
 		//addScraper(new AkademiaiScraper()); error = 404
 	}
 
