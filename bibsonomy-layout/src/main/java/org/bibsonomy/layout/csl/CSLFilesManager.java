@@ -343,13 +343,17 @@ public class CSLFilesManager {
 	 * Unloads the custom layout of the user.
 	 * 
 	 * @param userName
+	 * @param fileName 
 	 */
 	public void unloadUserLayout(final String userName, final String fileName) {
+		CSLStyle foundLayout = null;
 		for (final CSLStyle style : cslCustomFiles.get(userName)) {
 			if (style.getId().equals(CslLayoutUtils.userLayoutName(userName, fileName))) {
-				cslCustomFiles.get(userName).remove(style);
+				foundLayout = style;
+				break;
 			}
 		}
+		cslCustomFiles.get(userName).remove(foundLayout);
 	}
 
 }
