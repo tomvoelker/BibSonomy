@@ -47,7 +47,11 @@ import org.bibsonomy.util.WebUtils;
  * @author dzo
  */
 public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper {
-	
+
+    // FIXME: why is this part of this class? Should be moved to the scraper which needs this
+    private static final Pattern URL_PATTERN_FOR_URL = Pattern.compile("URL = \\{ \n\\s+(.*)\n\\s+\n\\}");
+
+
 	/**
 	 * @param url
 	 * @param cookies
@@ -56,7 +60,8 @@ public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper
 	 * @throws IOException
 	 */
 	protected abstract String getDownloadURL(final URL url, String cookies) throws ScrapingException, IOException;
-	
+
+    
 	@Override
 	protected final boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
@@ -72,7 +77,7 @@ public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper
 			
 			final String downloadURL = this.getDownloadURL(url, cookies);
 			if (downloadURL == null) {
-				throw new ScrapingFailureException("can't get download url for " + url);
+				throw new ScrapingFailureException("can't get download URL for " + url);
 			}
 			
 			final String downloadResult = WebUtils.getContentAsString(downloadURL, cookies);
@@ -83,11 +88,9 @@ public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper
 			 * clean the bibtex for better format
 			 */
 			if (present(bibtex)) {
-				// FIXME: cache pattern, use \s+ instead of whitespace
-				final Pattern URL_PATTERN_FOR_URL = Pattern.compile("URL = \\{ \n        (.*)\n    \n\\}");
-				Matcher m = URL_PATTERN_FOR_URL.matcher(bibtex);
-				if(m.find()) {
-					bibtex = bibtex.replaceAll(URL_PATTERN_FOR_URL.toString(), "URL = {" + m.group(1) + "}");
+				final Matcher m = URL_PATTERN_FOR_URL.matcher(bibtex);
+				if (m.find()) {
+					bibtex = bibtex.replaceAll(URL_PATTERN_FOR_URL.toString(), "url = {" + m.group(1) + "}");
 				}
 				bibtex = postProcessScrapingResult(scrapingContext, bibtex);
 				scrapingContext.setBibtexResult(bibtex);
