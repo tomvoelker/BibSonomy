@@ -268,8 +268,31 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		docParam.setFileHash(fileHash);
 		docParam.setUserName(userName);
 		docParam.setContentId(contentId);
+		
+		Document document = getDocument(userName, fileHash, session);
+		String styleName = document.getFileName();
+		
 		// finally delete the document
 		deleteDocumentLayout(docParam, session);
+		
+		//updating favourite layouts
+		User user = this.userDatabaseManager.getUserDetails(userName, session);
+		UserSettings userSettings = user.getSettings();
+		FavouriteLayout foundLayout = null;
+		for (FavouriteLayout layout : userSettings.getFavouriteLayouts()){
+			if (layout.getSource() == FavouriteLayoutSource.CUSTOM){
+				String fileNameFromLayout = layout.getStyle().substring(layout.getStyle().lastIndexOf(' ')).trim();
+				if (fileNameFromLayout.equalsIgnoreCase(styleName)){
+					foundLayout = layout;
+					break;
+				}
+			}
+		}
+		if(foundLayout != null){
+			userSettings.getFavouriteLayouts().remove(foundLayout);
+			this.userDatabaseManager.updateUserSettingsForUser(user, session);
+		}
+		
 	}
 
 	private void deleteDocumentForPost(final DocumentParam docParam, final DBSession session) {
@@ -291,23 +314,6 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		docParam.setContentId(contentId);
 		// finally delete the document
 		deleteDocumentForPost(docParam, session);
-		
-		//updating favourite layouts
-		User user = this.userDatabaseManager.getUserDetails(document.getUserName(), session);
-		UserSettings userSettings = user.getSettings();
-		FavouriteLayout foundLayout = null;
-		for (FavouriteLayout layout : userSettings.getFavouriteLayouts()){
-			if (layout.getSource() == FavouriteLayoutSource.CUSTOM){
-				if (layout.getStyle() == document.getFileName()){
-					foundLayout = layout;
-					break;
-				}
-			}
-		}
-		if(foundLayout != null){
-			userSettings.getFavouriteLayouts().remove(foundLayout);
-			this.userDatabaseManager.updateUserSettingsForUser(user, session);
-		}
 	}
 	
 	/**
