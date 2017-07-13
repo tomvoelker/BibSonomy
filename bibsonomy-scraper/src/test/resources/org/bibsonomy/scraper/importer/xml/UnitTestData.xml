@@ -706,18 +706,6 @@
 		<BibFile>RSCScraperUnitTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.rsc.RSCScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_249">
-		<TestDescription>BMJ OPEN Test</TestDescription>
-		<URL>http://bmjopen.bmj.com/content/3/1/e002072.short?g=w_open_current_tab</URL>
-		<BibFile>BMJOpenScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.bmj.BMJOpenScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_250">
-		<TestDescription>BMJ OPEN Test</TestDescription>
-		<URL>http://bmjopen.bmj.com/citmgr?gca=bmjopen;3/1/e002072</URL>
-		<BibFile>BMJOpenScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.bmj.BMJOpenScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_252">
 		<TestDescription>Econstor Scraper test</TestDescription>
 		<URL>http://www.econstor.eu/handle/10419/64547</URL>
