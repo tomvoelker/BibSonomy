@@ -307,12 +307,6 @@
 		<!-- 404 -->
 		<Enabled>false</Enabled>
 	</URLTest>
-	<URLTest id="url_96">
-		<TestDescription>RSOC Scraper url test</TestDescription>
-		<URL>http://rsta.royalsocietypublishing.org/content/357/1750/133.abstract?sid=9d8827ba-af22-4f85-92b4-d65da59cf197</URL>
-		<BibFile>RSOCScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.rsoc.RSOCScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_99">
 		<TestDescription>eric Scraper url test</TestDescription>
 		<URL>http://www.eric.ed.gov/ERICWebPortal/Home.portal?_nfpb=true&amp;ERICExtSearch_SearchValue_0=star&amp;searchtype=keyword&amp;ERICExtSearch_SearchType_0=kw&amp;_pageLabel=RecordDetails&amp;objectId=0900019b802f2e44&amp;accno=EJ786532&amp;_nfls=false</URL>
@@ -516,12 +510,6 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.webofknowledge.WebOfKnowledgeScraper</Scraper>
 		<Enabled>false</Enabled>
 		<AdditionalInfo>Important: To run the test, insert an url with fresh SID. Otherwise the test will fail</AdditionalInfo>
-	</URLTest>
-	<URLTest id="url_152">
-		<TestDescription>RSOC Scraper url test, alternate host</TestDescription>
-		<URL>http://rspb.royalsocietypublishing.org/content/267/1440/205.abstract?sid=93bbdbe3-dc3a-41e1-bd8d-b6c5af6ac3d8</URL>
-		<BibFile>RSOCScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.rsoc.RSOCScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_154">
 		<TestDescription>CasesJournal url test</TestDescription>
