@@ -792,12 +792,6 @@
 		<BibFile>NowPublishersScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_287">
-		<TestDescription>scraping test for journal page from genomebiology.com</TestDescription>
-		<URL>http://www.genomebiology.com/2014/15/7/424</URL>
-		<BibFile>GenomeBiologyScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.genome.GenomeBiologyScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_290">
 		<TestDescription>scraping test for Copac Scraper</TestDescription>
 		<URL>http://copac.jisc.ac.uk/search?title=Measures%20and%20aggregation%3A%20formal%20aspects%20and%20applications%20to%20clustering%20and%20decision.&amp;rn=1</URL>
