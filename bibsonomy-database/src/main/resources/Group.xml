@@ -99,7 +99,7 @@
 	</select>
 
 	<select id="getNewGroupId" resultClass="int">
-		SELECT MAX(g.id) + 1 AS id FROM
+		SELECT IFNULL(MAX(g.id) + 1, 0) AS id FROM
 			(SELECT MAX(`group`) AS id FROM groupids 
 			UNION 
 			SELECT MAX(`group`) AS id FROM pending_groupids) AS g
