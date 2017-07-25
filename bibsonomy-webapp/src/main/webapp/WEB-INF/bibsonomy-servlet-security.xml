@@ -509,8 +509,8 @@
 	<!-- AD Login -->
 	<!-- configure the provider using the properties "auth.ad.domain" and "auth.ad.url"  -->
 	<bean id="adAuthenticationProvider" class="org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider">
-    	<constructor-arg value="${auth.ad.domain}" />
-    	<constructor-arg value="${auth.ad.url}" />
+		<constructor-arg value="${auth.ad.domain}" />
+		<constructor-arg value="${auth.ad.url}" />
 	</bean>
 	
 </beans>
