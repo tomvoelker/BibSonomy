@@ -206,8 +206,7 @@
 		<property name="targetUrlParameter" ref="targetUrlParameter" />
 		<property name="loginFormUrl" ref="loginUrl" />
 	</bean>
-	
-	
+
 	
 	<bean class="org.bibsonomy.webapp.util.spring.security.exceptionmapper.AdLdapUsernameNotFoundExceptionMapper" name="AdLdapExceptionMapper">
 		<property name="redirectUrl" value="/registerLDAP?step=2"/>
@@ -216,8 +215,6 @@
 	<bean class="org.bibsonomy.webapp.util.spring.security.exceptionmapper.LdapUsernameNotFoundExceptionMapper" name="ldapExceptionMapper">
 		<property name="redirectUrl" value="/registerLDAP?step=2"/>
 	</bean>
-	
-	
 	
 	<bean id="failureHandler" class="org.bibsonomy.webapp.util.spring.security.handler.FailureHandler" scope="singleton">
 		<property name="grube" ref="teergrube" />
