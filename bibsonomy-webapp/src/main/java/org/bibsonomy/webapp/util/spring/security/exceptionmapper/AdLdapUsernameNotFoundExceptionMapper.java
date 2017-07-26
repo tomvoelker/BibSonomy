@@ -35,8 +35,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
  * @author rja
+ * NOTE: This class only exists to get Active Directory LDAP to work
  */
-public class LdapUsernameNotFoundExceptionMapper extends UsernameNotFoundExceptionMapper {
+public class AdLdapUsernameNotFoundExceptionMapper extends UsernameNotFoundExceptionMapper {
 
 	@Override
 	public boolean supports(final UsernameNotFoundException e) {
@@ -49,7 +50,7 @@ public class LdapUsernameNotFoundExceptionMapper extends UsernameNotFoundExcepti
 		if (e instanceof LdapUsernameNotFoundException) {
 			final DirContextOperations ctx = ((LdapUsernameNotFoundException) e).getDirContextOperations();
 
-			//e.getAuthentication().getPrincipal()
+			
 			
 			/*
 			 * copy user attributes
@@ -58,7 +59,7 @@ public class LdapUsernameNotFoundExceptionMapper extends UsernameNotFoundExcepti
 			user.setEmail(ctx.getStringAttribute("mail"));
 			user.getSettings().setDefaultLanguage(ctx.getStringAttribute("preferredlanguage"));
 			user.setPlace(ctx.getStringAttribute("l")); // location
-			user.setLdapId(ctx.getStringAttribute("uid"));
+			user.setLdapId((String)e.getAuthentication().getPrincipal());
 			user.setToClassify(0);
 
 			/*
