@@ -433,10 +433,13 @@
 		<property name="rememberMeServices" ref="ldapRememberMeServices" />
 	</bean>
 	
+	<!-- configure the used authenticator using the property "auth.ldap.authenticator" -->
+	<alias name="${auth.ldap.authenticationProvider}" alias="custLdapAuthProvider"/>
+	
 	<bean id="ldapAuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
 		<property name="providers">
 			<list>
-				<ref bean="ldapAuthProvider" /> 
+				<ref bean="custLdapAuthProvider" /> 
 			</list>
 		</property>
 		<!-- we need the password for the rememeber me cookie (the coookie is encrypted) -->
