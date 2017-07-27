@@ -3,17 +3,7 @@
 	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
-	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
-	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
-	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"	
-	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -28,7 +18,8 @@
 			<mtl:styleSheet path="/resources/css/csl.css" />
 		</head>
 		<body>
-			<div id="csl-container" data-url="/csl/${fn:escapeXml(requPath)}" data-style="${command.layout}">
+			<c:set var="requPathAndQuery" value="${requPath}${requQueryString}" />
+			<div id="csl-container" data-url="/csl/${fn:escapeXml(requPathAndQuery)}" data-style="${command.layout}">
 				<!-- rendered by javascript / each div has unique ID-->
 			</div>
 		</body>
