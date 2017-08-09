@@ -52,7 +52,7 @@ import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.util.BasicUtils;
 
 /**
- * TODO: add documentation to this class
+ * generates a new index based on the database contents
  *
  * @author dzo
  * @param <R> 
@@ -60,7 +60,7 @@ import org.bibsonomy.util.BasicUtils;
 public class ElasticsearchIndexGenerator<R extends Resource> {
 	private static final Log log = LogFactory.getLog(ElasticsearchIndexGenerator.class);
 	
-	
+	// the index that should be generated
 	private final ElasticsearchIndex<R> index;
 	
 	private final SearchDBInterface<R> inputLogic;
@@ -198,7 +198,7 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 	}
 
 	/**
-	 * 
+	 * this methods creates the new index
 	 */
 	private void createNewIndex() {
 		this.client.waitForReadyState();
@@ -209,7 +209,6 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 		if (indexExists) {
 			throw new IllegalStateException("index '" + indexName + "' already exists while generating an index");
 		}
-		
 		
 		final Mapping<String> mapping = this.tools.getMappingBuilder().getMapping();
 		log.info("index not existing - generating a new one ('" + indexName + "')");
@@ -223,7 +222,7 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 	}
 	
 	/**
-	 * 
+	 * methods removes the index state generating and adds the index state alias standby to the generated index
 	 */
 	private void indexCreated() {
 		this.client.deleteAlias(this.index.getIndexName(), ElasticsearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.tools.getSystemURI(), SearchIndexState.GENERATING));
