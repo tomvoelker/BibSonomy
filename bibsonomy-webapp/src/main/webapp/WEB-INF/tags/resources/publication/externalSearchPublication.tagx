@@ -22,8 +22,8 @@
 		</c:url>
 		
 		<c:url var="microsoftAcademicUrl"
-			value="http://academic.research.microsoft.com/Search">
-			<c:param name="query" value="${externalQueryString}" />
+			value="http://bing.com/search">
+			<c:param name="q" value="${externalQueryString}" />
 		</c:url>
 		
 		<c:url var="worldCatUrl" value="http://www.worldcat.org/search">
@@ -67,7 +67,7 @@
 					<li class="divider"><!-- keep me --></li>
 				</c:if>
 				<li><a href="${googleScholarPostUrl}">Google Scholar</a></li>
-				<li><a href="${microsoftAcademicUrl}">Microsoft Academic Search</a></li>
+				<li><a href="${microsoftAcademicUrl}">Microsoft Bing</a></li>
 				<li><a href="${worldCatUrl}">WorldCat</a></li>
 				<li><a href="${baseSearchUrl}">BASE</a></li>
 			</ul>
