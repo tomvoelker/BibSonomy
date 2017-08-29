@@ -67,7 +67,6 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 
 	private DocumentDatabaseManager() {
 		this.plugins = DatabasePluginRegistry.getInstance();
-		
 	}
 
 	/**
@@ -125,10 +124,10 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		this.insert("insertDoc", docParam, session);
 		
 		//updating favourite layouts
+		//adding the new document as a chosen favourite layout
 		User user = this.userDatabaseManager.getUserDetails(userName, session);
 		UserSettings userSettings = user.getSettings();
 		if (contentId == 0){
-			//more or less
 			userSettings.getFavouriteLayouts().add(new FavouriteLayout(FavouriteLayoutSource.CUSTOM, "CUSTOM " + userName + " " + fileName));
 			this.userDatabaseManager.updateUserSettingsForUser(user, session);
 		}
@@ -209,6 +208,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		docParam.setContentId(0);
 
 		// get the requested documents
+		// returns all layout documents
 		return this.queryForList("getLayoutDocuments", docParam, Document.class, session);
 	}
 
@@ -276,6 +276,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		deleteDocumentLayout(docParam, session);
 		
 		//updating favourite layouts
+		//document is no longer available, so no favourite layout
 		User user = this.userDatabaseManager.getUserDetails(userName, session);
 		UserSettings userSettings = user.getSettings();
 		FavouriteLayout foundLayout = null;

@@ -204,18 +204,16 @@ public class CSLFilesManager {
 			try {
 				cut = URLDecoder.decode(cut, "UTF-8");
 			} catch (UnsupportedEncodingException e1) {
-				// TODO Auto-generated catch block
-				log.error("TODO", e1);
+				log.error("no UTF-8 string", e1);
 			}
+			//parse username from cslName-string
 			String userName = cut.substring(cut.indexOf(' ') + 1).toLowerCase();
-			//TODO when feature final and still unused: remove
-			 // final String layoutName = userName.substring(userName.indexOf(' ') + 1); // FIXME: used
 			userName = userName.substring(0, userName.indexOf(' '));
 			if(!present(cslCustomFiles.get(userName))){
 				// refreshing map
 				getUserLayouts(userName);
 			}
-			
+			//search layout owned by the parsed username
 			if (cslCustomFiles.containsKey(userName)) {
 				for (CSLStyle style : cslCustomFiles.get(userName)) {
 					if (style.getName().equalsIgnoreCase(cslName)) {

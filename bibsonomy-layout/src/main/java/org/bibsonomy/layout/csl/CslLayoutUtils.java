@@ -135,7 +135,7 @@ public class CslLayoutUtils {
 			String fileContent = sb.toString();
 			String displayName = "";
 			String id;
-			// TODO quite a bit hacky
+
 			try {
 				displayName = CSLFilesManager.extractTitle(fileContent).trim();
 			} catch (SAXException | ParserConfigurationException e1) {
@@ -150,6 +150,7 @@ public class CslLayoutUtils {
 			}
 			id = displayName.replaceAll(" ", "");
 			cslLayout = new CSLStyle(id, displayName, fileContent);
+			resourceAsStream.close();
 		}
 		return cslLayout;
 	}
@@ -184,8 +185,8 @@ public class CslLayoutUtils {
 
 			final BufferedReader reader = new BufferedReader(
 					new InputStreamReader(new FileInputStream(file), StringUtils.CHARSET_UTF_8));
+			//read file and save content to cslLayout
 			try {
-				// TODO
 				String content = "";
 				String tmp;
 				while ((tmp = reader.readLine()) != null) {
@@ -198,6 +199,7 @@ public class CslLayoutUtils {
 			} finally {
 				reader.close();
 			}
+			// parse / set displayName
 			String displayName = null;
 			try {
 				displayName = CSLFilesManager.extractTitle(cslLayout.getContent()).trim();

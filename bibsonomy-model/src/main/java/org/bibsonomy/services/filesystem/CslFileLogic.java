@@ -32,8 +32,6 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.util.file.UploadedFile;
 
 /**
- * TODO: add documentation to this class
- *
  * @author jp
  */
 public interface CslFileLogic {

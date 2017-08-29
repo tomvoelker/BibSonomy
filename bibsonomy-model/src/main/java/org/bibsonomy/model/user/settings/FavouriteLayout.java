@@ -52,6 +52,7 @@ public class FavouriteLayout {
 	 * @param style
 	 * 
 	 * creates a new favourite layout with source as source, STYLE as style and a display Name
+	 * displayName is gernerated either by file or style
 	 */
 	public FavouriteLayout(FavouriteLayoutSource source, String style) {
 		this.source = source;
@@ -77,8 +78,7 @@ public class FavouriteLayout {
 	}
 	
 	/**
-	 * ATTENTION
-	 * @return the displayName. Works only for "SIMPLE" source. Nothing else!!
+	 * @return the displayName
 	 */
 	public String getDisplayName() {
 		return this.displayName;

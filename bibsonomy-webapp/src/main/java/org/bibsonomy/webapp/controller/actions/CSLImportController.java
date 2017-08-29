@@ -43,9 +43,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * FIXME: Duplicate Code
- * TODO: add documentation to this class
- *
+ * controller for storing and deleting csl layout files
+ * - /import/csl
  * @author jp
  */
 public class CSLImportController extends SettingsPageController {

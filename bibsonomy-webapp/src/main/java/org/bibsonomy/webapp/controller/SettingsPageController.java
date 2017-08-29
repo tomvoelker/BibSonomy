@@ -198,7 +198,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	
 	/**
 	 * checks whether the user has already uploaded csl layout definitions
-	 * 
+	 * and if so loads it into the command
 	 * @param command
 	 */
 	private void checkInstalledCSLLayout(final SettingsViewCommand command) {
