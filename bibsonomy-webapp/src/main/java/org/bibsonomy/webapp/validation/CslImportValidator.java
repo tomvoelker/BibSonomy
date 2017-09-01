@@ -30,7 +30,6 @@ import org.bibsonomy.services.filesystem.CslFileLogic;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.ServerUploadedFile;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
-import org.bibsonomy.webapp.command.actions.CSLImportCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;

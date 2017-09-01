@@ -30,16 +30,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.User;
-import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.file.ServerUploadedFile;
-import org.bibsonomy.webapp.command.SettingsViewCommand;
-import org.bibsonomy.webapp.command.actions.CSLImportCommand;
-import org.bibsonomy.webapp.controller.SettingsPageController;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
-import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.validation.CslImportValidator;
-import org.bibsonomy.webapp.view.Views;
-import org.springframework.security.access.AccessDeniedException;
+import org.bibsonomy.webapp.command.actions.ExportFormatImportCommand;
+
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -47,101 +40,22 @@ import org.springframework.web.multipart.MultipartFile;
  * - /import/csl
  * @author jp
  */
-public class CSLImportController extends SettingsPageController {
-	private static final Log log = LogFactory.getLog(ImportBookmarksController.class);	
-	
-	private static final String DELETE = "delete";
+public class CSLImportController extends AbstractExportFormatImportController {
+	private static final Log log = LogFactory.getLog(CSLImportController.class);
 
-	private static final String CREATE = "create";
-
-	private CslImportValidator validator;
-	private FileLogic fileLogic;
-	
 	@Override
-	public View workOn(final SettingsViewCommand command) {
-		final CSLImportCommand CSLImpCom = (CSLImportCommand) command;
-		final RequestWrapperContext context = CSLImpCom.getContext();
-		
-		/*
-		 * only users which are logged in might post -> send them to
-		 * login page
-		 */
-		if (!context.isUserLoggedIn()) {
-			throw new AccessDeniedException("please log in");
-		}
-
-		final User loginUser = context.getLoginUser();
+	protected void onExportFormatDelete(String userName, String hash, Document document) {
+		this.fileLogic.deleteCSLLayout(hash);
 
 		/*
-		 * check credentials to fight CSRF attacks 
+		 * delete layout object from exporter
 		 */
-		if (!context.isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
-			return Views.SETTINGSPAGE;
-		}
-		/*
-		 * delete a layout
-		 */
-		if (DELETE.equals(command.getAction())) {
-			final String hash = CSLImpCom.getHash();
-			final String userName = loginUser.getName();
-			
-			log.debug("attempting to delete layout " + hash + " for user " + userName);
-			
-			final Document document = this.logic.getDocument(userName, hash);
-
-			if (document != null) {
-				log.debug("deleting layout " + document.getFileName() + " for user " + userName);
-				
-				this.logic.deleteDocument(document, null);
-				this.fileLogic.deleteCSLLayout(hash);
-				
-				/*
-				 * delete layout object from exporter
-				 */
-				this.cslFilesManager.unloadUserLayout(userName, document.getFileName());
-			} else {
-				errors.reject("error.document_not_found");
-			}
-
-		} else if (CREATE.equals(command.getAction())) {
-			this.validator.validate(command, errors);
-			if (!this.errors.hasErrors()) {
-				log.debug("creating layouts for user " + loginUser.getName());
-				/*
-				 * .item LAYOUT
-				 */
-				writeLayoutPart(loginUser, CSLImpCom.getFileItem());
-			}
-		}
-		
-		/*
-		 * Show SettingsView-ImportTab(7)
-		 */
-		command.setSelTab(Integer.valueOf(7));
-		return super.workOn(command);
+		this.cslFilesManager.unloadUserLayout(userName, document.getFileName());
 	}
-	
+
 	@Override
-	public SettingsViewCommand instantiateCommand() {
-		return new CSLImportCommand();
-	}
-	
-	/**
-	 * @param fileLogic the fileLogic to set
-	 */
-	public void setFileLogic(FileLogic fileLogic) {
-		this.fileLogic = fileLogic;
-	}
-	
-	/**
-	 * Writes the file of the specified layout part to disk and into the 
-	 * database.
-	 * 
-	 * @param loginUser
-	 * @param fileItem
-	 */
-	private void writeLayoutPart(final User loginUser, final MultipartFile fileItem) {
+	protected void writeExportFiles(User loginUser, ExportFormatImportCommand command) {
+		final MultipartFile fileItem = command.getFileItem();
 		if (fileItem != null && fileItem.getSize() > 0) {
 			log.debug("writing layout part with file " + fileItem.getOriginalFilename());
 			try {
@@ -157,12 +71,5 @@ public class CSLImportController extends SettingsPageController {
 				errors.reject("settings.csl.error.import", new Object[]{ex.getMessage()}, null);
 			}
 		}
-	}
-	
-	/**
-	 * @param validator the validator to set
-	 */
-	public void setValidator(CslImportValidator validator) {
-		this.validator = validator;
 	}
 }

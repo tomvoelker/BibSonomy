@@ -32,18 +32,9 @@ import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.User;
-import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.file.ServerUploadedFile;
-import org.bibsonomy.webapp.command.SettingsViewCommand;
-import org.bibsonomy.webapp.command.actions.JabRefImportCommand;
-import org.bibsonomy.webapp.controller.SettingsPageController;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
-import org.bibsonomy.webapp.util.ValidationAwareController;
-import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.validation.JabRefImportValidator;
-import org.bibsonomy.webapp.view.Views;
+import org.bibsonomy.webapp.command.actions.ExportFormatImportCommand;
 import org.springframework.beans.factory.annotation.Required;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -52,15 +43,8 @@ import org.springframework.web.multipart.MultipartFile;
  * 
  * @author cvo
  */
-public class JabRefImportController extends SettingsPageController implements ValidationAwareController<SettingsViewCommand> {
+public class JabRefImportController extends AbstractExportFormatImportController {
 	private static final Log log = LogFactory.getLog(ImportBookmarksController.class);
-	
-	private static final String DELETE = "delete";
-
-	private static final String CREATE = "create";
-	
-	private JabRefImportValidator validator;
-	private FileLogic fileLogic;
 
 	/**
 	 * An instance of the (new!) layout renderer. We need it here to unload
@@ -68,94 +52,33 @@ public class JabRefImportController extends SettingsPageController implements Va
 	 */
 	private JabrefLayoutRenderer jabrefLayoutRenderer;
 
+
 	@Override
-	public View workOn(final SettingsViewCommand command) {
-		final JabRefImportCommand jabImpCommand = (JabRefImportCommand) command;
-		final RequestWrapperContext context = jabImpCommand.getContext();
+	protected void onExportFormatDelete(String userName, String hash, Document document) {
+		this.fileLogic.deleteJabRefLayout(hash);
 
 		/*
-		 * only users which are logged in might post -> send them to
-		 * login page
+		 * delete layout object from exporter
 		 */
-		if (!context.isUserLoggedIn()) {
-			throw new AccessDeniedException("please log in");
-		}
+		this.jabrefLayoutRenderer.unloadUserLayout(userName);
+	}
 
-		final User loginUser = context.getLoginUser();
 
-		/*
-		 * check credentials to fight CSRF attacks 
-		 */
-		if (!context.isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
-			return Views.SETTINGSPAGE;
-		}
-
-		/*
-		 * delete a layout
-		 */
-		if (DELETE.equals(command.getAction())) {
-			final String hash = jabImpCommand.getHash();
-			final String userName = loginUser.getName();
-			
-			log.debug("attempting to delete layout " + hash + " for user " + userName);
-			
-			final Document document = this.logic.getDocument(userName, hash);
-
-			if (document != null) {
-				log.debug("deleting layout " + document.getFileName() + " for user " + userName);
-				
-				this.logic.deleteDocument(document, null);
-				this.fileLogic.deleteJabRefLayout(hash);
-				
-				/*
-				 * delete layout object from exporter
-				 */
-				this.jabrefLayoutRenderer.unloadUserLayout(userName);
-			} else {
-				errors.reject("error.document_not_found");
-			}
-
-		} else if (CREATE.equals(command.getAction())) {
-			this.validator.validate(command, errors);
-			if (!this.errors.hasErrors()) {
-				log.debug("creating layouts for user " + loginUser.getName());
+	@Override
+	protected void writeExportFiles(User loginUser, ExportFormatImportCommand command) {
+		log.debug("creating layouts for user " + loginUser.getName());
 				/*
 				 * .beginLAYOUT
 				 */
-				writeLayoutPart(loginUser, jabImpCommand.getFileBegin(), LayoutPart.BEGIN);
+		this.writeLayoutPart(loginUser, command.getFileBegin(), LayoutPart.BEGIN);
 				/*
 				 * .item LAYOUT
 				 */
-				writeLayoutPart(loginUser, jabImpCommand.getFileItem(), LayoutPart.ITEM);
+		this.writeLayoutPart(loginUser, command.getFileItem(), LayoutPart.ITEM);
 				/*
 				 * .end LAYOUT
 				 */
-				writeLayoutPart(loginUser, jabImpCommand.getFileEnd(), LayoutPart.END);
-			}
-		}
-		
-		/*
-		 * Show SettingsView-ImportTab(2)
-		 */
-		command.setSelTab(Integer.valueOf(2));
-		return super.workOn(command);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.webapp.util.ValidationAwareController#getValidator()
-	 */
-	@Override
-	public JabRefImportValidator getValidator() {
-		return this.validator;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.webapp.util.ValidationAwareController#isValidationRequired(org.bibsonomy.webapp.command.ContextCommand)
-	 */
-	@Override
-	public boolean isValidationRequired(final SettingsViewCommand command) {
-		return false;
+		writeLayoutPart(loginUser, command.getFileEnd(), LayoutPart.END);
 	}
 	
 	/**
@@ -184,31 +107,12 @@ public class JabRefImportController extends SettingsPageController implements Va
 		}
 	}
 
-	@Override
-	public SettingsViewCommand instantiateCommand() {
-		return new JabRefImportCommand();
-	}
-	
-	/**
-	 * @param fileLogic the fileLogic to set
-	 */
-	public void setFileLogic(FileLogic fileLogic) {
-		this.fileLogic = fileLogic;
-	}
-	
+
 	/**
 	 * @param jabrefLayoutRenderer the jabrefLayoutRenderer to set
 	 */
 	@Required
 	public void setJabrefLayoutRenderer(JabrefLayoutRenderer jabrefLayoutRenderer) {
 		this.jabrefLayoutRenderer = jabrefLayoutRenderer;
-	}
-	
-	
-	/**
-	 * @param validator the validator to set
-	 */
-	public void setValidator(JabRefImportValidator validator) {
-		this.validator = validator;
 	}
 }
