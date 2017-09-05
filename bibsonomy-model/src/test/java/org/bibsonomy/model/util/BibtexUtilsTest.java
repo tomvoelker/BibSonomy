@@ -51,20 +51,20 @@ import org.junit.Test;
 
 /**
  * Testcase for the BibtexUtils class
- * 
+ *
  * @author Dominik Benz
  */
 public class BibtexUtilsTest {
 
 	private static final String FIELD_VALUE = "http://www.slac.stanford.edu/spires/find/hep?key=6368328";
 	private static final String FIELD_NAME  = "url";
-	private final static String bibtexStart = "@Article{Okumura:2005qr,\n" +  
-	"author    = \"Okumura, Ken-ichi\",\n" + 
+	private final static String bibtexStart = "@Article{Okumura:2005qr,\n" +
+	"author    = \"Okumura, Ken-ichi\",\n" +
 	"title     = \"{Sparticle spectrum and EWSB of mixed modulus-anomaly\n" +
 	"             mediation in fluxed string compactification models}\",\n" +
-	"year      = \"2005\",\n" + 
+	"year      = \"2005\",\n" +
 	"eprint    = \"hep-ph/0509225\",\n" +
-	"archivePrefix = \"arXiv\",\n" + 
+	"archivePrefix = \"arXiv\",\n" +
 	"SLACcitation  = \"%%CITATION = HEP-PH/0509225;%%\"\n";
 
 	private final static String bibtex = bibtexStart + "}";
@@ -101,7 +101,7 @@ public class BibtexUtilsTest {
 
 	/**
 	 * tests generation of bibtex string
-	 * @throws PersonListParserException 
+	 * @throws PersonListParserException
 	 */
 	@Test
 	public void toBibtexString() throws PersonListParserException {
@@ -115,16 +115,16 @@ public class BibtexUtilsTest {
 		bib.setVolume("3");
 		bib.setAbstract("This is a nice abstract.");
 
-		final String expectedBibtex = 
-			"@inproceedings{KIE,\n" +			
+		final String expectedBibtex =
+			"@inproceedings{KIE,\n" +
 			"  abstract = {This is a nice abstract.},\n" +
 			"  author = {Hans Dampf and Peter Silie},\n" +
 			"  journal = {Journal of the most wonderful articles on earth},\n" +
-			"  title = {The most wonderfult title on earth},\n" +			
+			"  title = {The most wonderfult title on earth},\n" +
 			"  volume = 3,\n" +
-			"  year = 2525\n" + 
+			"  year = 2525\n" +
 			"}";
-		
+
 		assertEquals(expectedBibtex, BibTexUtils.toBibtexString(bib, BibTexUtils.SERIALIZE_BIBTEX_OPTION_FIRST_LAST));
 
 		// add some misc fields
@@ -132,26 +132,26 @@ public class BibtexUtilsTest {
 		bib.addMiscField("extraKey2", "extraVal2");
 		bib.setAbstract(null);
 
-		final String expectedBibtex2 = 
+		final String expectedBibtex2 =
 			"@inproceedings{KIE,\n" +
 			"  author = {Hans Dampf and Peter Silie},\n" +
-			"  extrakey = {extraVal},\n" + 
+			"  extrakey = {extraVal},\n" +
 			"  extrakey2 = {extraVal2},\n" +
 			"  journal = {Journal of the most wonderful articles on earth},\n" +
 			"  title = {The most wonderfult title on earth},\n" +
 			"  volume = 3,\n" +
-			"  year = 2525\n" + 
+			"  year = 2525\n" +
 			"}";
-		
-		assertEquals(expectedBibtex2, BibTexUtils.toBibtexString(bib, BibTexUtils.SERIALIZE_BIBTEX_OPTION_FIRST_LAST));		
+
+		assertEquals(expectedBibtex2, BibTexUtils.toBibtexString(bib, BibTexUtils.SERIALIZE_BIBTEX_OPTION_FIRST_LAST));
 	}
 
 	/**
 	 * Prior to 2009-08-03, {@link BibTexUtils#MISC_FIELD_PATTERN} did not match
 	 * on misc fields, which contained a line break. Thus, fields containing a
 	 * line break got lost. Adding {@link Pattern#DOTALL} solved that problem.
-	 * This test documents the solution 
-	 * 
+	 * This test documents the solution
+	 *
 	 * @throws Exception
 	 */
 	@Test
@@ -162,13 +162,13 @@ public class BibtexUtilsTest {
 		bib.setPrivnote("");
 		bib.setNote("Tome I");
 		bib.setMisc(
-				"q6 = {It needs.\n" + 
-				"To trials.\n" + 
-				"Health rises.}, q7 = {Payment costs.}, q3b = {Establishment followed.}, q1e = {This \n" + 
-				"Cost-effectiveness paper.}, q9 = {Payment costs.}, q1a = {Participation health. \n" + 
-				"Maintenance age. \n" + 
-				"Studies programs.}, q3a = {Reminder 2004). \n" + 
-				"Preventive 2007). \n" + 
+				"q6 = {It needs.\n" +
+				"To trials.\n" +
+				"Health rises.}, q7 = {Payment costs.}, q3b = {Establishment followed.}, q1e = {This \n" +
+				"Cost-effectiveness paper.}, q9 = {Payment costs.}, q1a = {Participation health. \n" +
+				"Maintenance age. \n" +
+				"Studies programs.}, q3a = {Reminder 2004). \n" +
+				"Preventive 2007). \n" +
 		"For not.}");
 		bib.setEntrytype("book");
 		bib.setEditor(PersonNameUtils.discoverPersonNames("John Libbey Eurotext"));
@@ -176,31 +176,31 @@ public class BibtexUtilsTest {
 		bib.setBibtexKey("Selmes2004");
 		bib.setAbstract("Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.");
 		bib.setAuthor(PersonNameUtils.discoverPersonNames("Jacques Selmès and Christian Derouesné"));
-		
-		final String expected = 
-			"@book{Selmes2004,\n" + 
+
+		final String expected =
+			"@book{Selmes2004,\n" +
 			"  abstract = {Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.},\n" +
 			"  author = {Jacques Selmès and Christian Derouesné},\n" +
 			"  edition = {John Libbey Eurotext},\n" +
 			"  editor = {John Libbey Eurotext},\n" +
 			"  note = {Tome I},\n" +
-			"  title = {La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer},\n" +	
-			"  year = 2004,\n" +	
-			"  q6 = {It needs.\n" + 
-			"To trials.\n" + 
-			"Health rises.}, q7 = {Payment costs.}, q3b = {Establishment followed.}, q1e = {This \n" + 
-			"Cost-effectiveness paper.}, q9 = {Payment costs.}, q1a = {Participation health. \n" + 
-			"Maintenance age. \n" + 
-			"Studies programs.}, q3a = {Reminder 2004). \n" + 
-			"Preventive 2007). \n" + 
-			"For not.}\n" + 						
+			"  title = {La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer},\n" +
+			"  year = 2004,\n" +
+			"  q6 = {It needs.\n" +
+			"To trials.\n" +
+			"Health rises.}, q7 = {Payment costs.}, q3b = {Establishment followed.}, q1e = {This \n" +
+			"Cost-effectiveness paper.}, q9 = {Payment costs.}, q1a = {Participation health. \n" +
+			"Maintenance age. \n" +
+			"Studies programs.}, q3a = {Reminder 2004). \n" +
+			"Preventive 2007). \n" +
+			"For not.}\n" +
 			"}";
 		assertEquals(expected, BibTexUtils.toBibtexString(bib, BibTexUtils.SERIALIZE_BIBTEX_OPTION_FIRST_LAST | BibTexUtils.SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD));
 	}
 
 	/**
-	 * same test as {@link #testToBibtexString()} but with "Last, First" name order 
-	 * 
+	 * same test as {@link #testToBibtexString()} but with "Last, First" name order
+	 *
 	 * @throws Exception
 	 */
 	@Test
@@ -211,13 +211,13 @@ public class BibtexUtilsTest {
 		bib.setPrivnote("");
 		bib.setNote("Tome I");
 		bib.setMisc(
-				"q6 = {It needs.\n" + 
-				"To trials.\n" + 
-				"Health rises.}, q7 = {Payment costs.}, q3b = {Establishment followed.}, q1e = {This \n" + 
-				"Cost-effectiveness paper.}, q9 = {Payment costs.}, q1a = {Participation health. \n" + 
-				"Maintenance age. \n" + 
-				"Studies programs.}, q3a = {Reminder 2004). \n" + 
-				"Preventive 2007). \n" + 
+				"q6 = {It needs.\n" +
+				"To trials.\n" +
+				"Health rises.}, q7 = {Payment costs.}, q3b = {Establishment followed.}, q1e = {This \n" +
+				"Cost-effectiveness paper.}, q9 = {Payment costs.}, q1a = {Participation health. \n" +
+				"Maintenance age. \n" +
+				"Studies programs.}, q3a = {Reminder 2004). \n" +
+				"Preventive 2007). \n" +
 		"For not.}");
 		bib.setEntrytype("book");
 		bib.setEditor(PersonNameUtils.discoverPersonNames("John Libbey Eurotext"));
@@ -225,32 +225,32 @@ public class BibtexUtilsTest {
 		bib.setBibtexKey("Selmes2004");
 		bib.setAbstract("Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.");
 		bib.setAuthor(PersonNameUtils.discoverPersonNames("Jacques Selmès and Christian Derouesné"));
-		
-		final String expected = 
-			"@book{Selmes2004,\n" + 
+
+		final String expected =
+			"@book{Selmes2004,\n" +
 			"  abstract = {Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.},\n" +
 			"  author = {Selmès, Jacques and Derouesné, Christian},\n" +
 			"  edition = {John Libbey Eurotext},\n" +
 			"  editor = {Eurotext, John Libbey},\n" +
 			"  note = {Tome I},\n" +
-			"  title = {La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer},\n" +	
+			"  title = {La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer},\n" +
 			"  year = 2004,\n" +
-			"  q6 = {It needs.\n" + 
-			"To trials.\n" + 
-			"Health rises.}, q7 = {Payment costs.}, q3b = {Establishment followed.}, q1e = {This \n" + 
-			"Cost-effectiveness paper.}, q9 = {Payment costs.}, q1a = {Participation health. \n" + 
-			"Maintenance age. \n" + 
-			"Studies programs.}, q3a = {Reminder 2004). \n" + 
-			"Preventive 2007). \n" + 
-			"For not.}\n" + 						
+			"  q6 = {It needs.\n" +
+			"To trials.\n" +
+			"Health rises.}, q7 = {Payment costs.}, q3b = {Establishment followed.}, q1e = {This \n" +
+			"Cost-effectiveness paper.}, q9 = {Payment costs.}, q1a = {Participation health. \n" +
+			"Maintenance age. \n" +
+			"Studies programs.}, q3a = {Reminder 2004). \n" +
+			"Preventive 2007). \n" +
+			"For not.}\n" +
 			"}";
 		assertEquals(expected, BibTexUtils.toBibtexString(bib, BibTexUtils.SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD));
 	}
-	
+
 
 	/**
 	 * tests generateBibtexKey
-	 * @throws PersonListParserException 
+	 * @throws PersonListParserException
 	 */
 	@Test
 	public void generateBibtexKey() throws PersonListParserException {
@@ -279,6 +279,9 @@ public class BibtexUtilsTest {
 		assertEquals("Müller", BibTexUtils.cleanBibTex("M\"uller"));
 		assertEquals("Santé", BibTexUtils.cleanBibTex("Sant{\\'e}"));
 		assertEquals("http://bla.fasel", BibTexUtils.cleanBibTex("\\url{http://bla.fasel}"));
+		assertEquals("Foo, F.-B", BibTexUtils.cleanBibTex("Foo, {\\relax F.-B}"));
+		assertEquals("Foo, F.-B", BibTexUtils.cleanBibTex("Foo, \\emph{F.-B}"));
+		assertEquals("Foo, F.-B", BibTexUtils.cleanBibTex("Foo, {\\em F.-B}"));
 	}
 
 	/**
@@ -294,7 +297,7 @@ public class BibtexUtilsTest {
 
 	/**
 	 * tests sortBibTexList
-	 * @throws PersonListParserException 
+	 * @throws PersonListParserException
 	 */
 	@Test
 	public void sortBibTexList() throws PersonListParserException {
@@ -322,7 +325,7 @@ public class BibtexUtilsTest {
 		assertEquals(PersonNameUtils.discoverPersonNames("A. Test"), posts1.get(1).getResource().getAuthor());
 		/*
 		 * second test: sort by year
-		 */		
+		 */
 		// post3
 		final Post<BibTex> post3 = new Post<BibTex>();
 		final BibTex p3 = new BibTex();
@@ -344,7 +347,7 @@ public class BibtexUtilsTest {
 		p6.setYear("2011");
 		post6.setResource(p6);
 		// post list
-		final List<Post<BibTex>> posts2 = new ArrayList<Post<BibTex>>();		
+		final List<Post<BibTex>> posts2 = new ArrayList<Post<BibTex>>();
 		posts2.add(post3);
 		posts2.add(post4);
 		posts2.add(post5);
@@ -363,15 +366,15 @@ public class BibtexUtilsTest {
 		assertEquals("2011", posts2.get(0).getResource().getYear());
 		assertEquals("2011", posts2.get(1).getResource().getYear());
 		assertEquals("2011 (to appear)", posts2.get(2).getResource().getYear());
-		assertEquals("2012", posts2.get(3).getResource().getYear());		
+		assertEquals("2012", posts2.get(3).getResource().getYear());
 	}
-	
-	
+
+
 	/**
 	 * tests BibtexUtils.mergeDuplicates
 	 */
 	@Test
-	public void testMergeDuplicates() {		
+	public void testMergeDuplicates() {
 		/*
 		 * create post 1
 		 */
@@ -395,7 +398,7 @@ public class BibtexUtilsTest {
 		/*
 		 * create list
 		 */
-		final List<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();		
+		final List<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
 		posts.add(post1);
 		posts.add(post2);
 		/*
@@ -457,7 +460,7 @@ public class BibtexUtilsTest {
 		bib.serializeMiscFields();
 		bib.clearMiscFields();
 		bib.parseMiscField();
-		
+
 		assertEquals(2, bib.getMiscFields().values().size());
 		assertEquals("value1", bib.getMiscField("key1"));
 		assertEquals("value2", bib.getMiscField("key2"));
@@ -465,7 +468,7 @@ public class BibtexUtilsTest {
 
 	/**
 	 * Tests that toBibtexString() does not add misc fields to the post.
-	 * @throws PersonListParserException 
+	 * @throws PersonListParserException
 	 */
 	@Test
 	public void toBibtexString2() throws PersonListParserException {
@@ -481,12 +484,12 @@ public class BibtexUtilsTest {
 		bib.setPrivnote("This is private!");
 
 		final String originalMisc = "doi = {my doi}, isbn = {999-12345-123-x}, vgwort = {12}";
-		final String cleanedMisc  = 
+		final String cleanedMisc  =
 			"  isbn = {999-12345-123-x},\n" +
 			"  vgwort = {12},\n" +
 			"  doi = {my doi}";
 		bib.setMisc(originalMisc);
-		
+
 		/*
 		 * parse and re-write the misc string
 		 */
@@ -503,17 +506,17 @@ public class BibtexUtilsTest {
 		/*
 		 * Create a bibtex string - the method adds and removes some
 		 * misc fields! Nevertheless, we should have the same misc fields
-		 * afterwards. 
+		 * afterwards.
 		 */
 		BibTexUtils.toBibtexString(post, BibTexUtils.SERIALIZE_BIBTEX_OPTION_FIRST_LAST);
 		/*
 		 * The fields are parsed and then serialized. Inbetween, some fields
 		 * have been added (keywords, description). We must ensure, that they're
 		 * removed again such that we have the original misc fields!
-		 */		
+		 */
 		assertEquals(cleanedMisc, bib.getMisc());
 	}
-	
+
 	/**
 	 * tests {@link BibTexUtils#getMonthAsNumber(String)}
 	 * @throws Exception
@@ -542,7 +545,7 @@ public class BibtexUtilsTest {
 		assertEquals("10", BibTexUtils.getMonthAsNumber("october"));
 		assertEquals("11", BibTexUtils.getMonthAsNumber("november"));
 		assertEquals("12", BibTexUtils.getMonthAsNumber("DeCeMbeR"));
-		
+
 	}
 
 	/**
@@ -553,11 +556,11 @@ public class BibtexUtilsTest {
 		final SortedMap<String, String> testMap = new TreeMap<String, String>();
 		testMap.put("testKey1", "test value 2324234");
 		testMap.put("testKey2", "test 2");
-		
+
 		assertEquals(	"  testkey1 = {test value 2324234},\n" +
 						"  testkey2 = {test 2}", BibTexUtils.serializeMapToBibTeX(testMap));
 	}
-	
+
 	@Test
 	public void testDummyAuthors() {
 		final Post<BibTex> post = EndnoteUtilsTest.createPost();
@@ -568,7 +571,7 @@ public class BibtexUtilsTest {
 		Assert.assertTrue(withDummies, withDummies.contains("noauthor"));
 		Assert.assertTrue(withDummies, withDummies.contains("noeditor"));
 		Assert.assertTrue(withDummies, withDummies.contains("noyear"));
-		
+
 		final String withoutDummies = BibTexUtils.toBibtexString(post.getResource(), BibTexUtils.getFlags(false, false, false, true));
 		Assert.assertFalse(withoutDummies, withoutDummies.contains("noauthor"));
 		Assert.assertFalse(withoutDummies, withoutDummies.contains("noeditor"));
@@ -580,44 +583,44 @@ public class BibtexUtilsTest {
 		rVal.add(new PersonName(fname, lname));
 		return rVal;
 	}
-	
+
 	/**
 	 * tests for {@link BibTexUtils#extractFirstPage(BibTex)}
 	 */
 	@Test
 	public void testExtractFirstPage() {
 		assertNull(BibTexUtils.extractFirstPage(null));
-		
+
 		assertEquals("", BibTexUtils.extractFirstPage(""));
-		
+
 		assertEquals("12", BibTexUtils.extractFirstPage("12"));
-		
+
 		assertEquals("12123", BibTexUtils.extractFirstPage("  12123"));
-		
+
 		assertEquals("21", BibTexUtils.extractFirstPage("21-34"));
-		
+
 		assertEquals("234", BibTexUtils.extractFirstPage("234 -- 340"));
-		
+
 		assertEquals("12123", BibTexUtils.extractFirstPage("  12123-  232434"));
 	}
-	
+
 	/**
 	 * tests for {@link BibTexUtils#extractLastPage(BibTex)}
 	 */
 	@Test
 	public void testExtractLastPage() {
 		assertNull(BibTexUtils.extractLastPage(null));
-		
+
 		assertEquals("", BibTexUtils.extractLastPage(""));
-		
+
 		assertEquals("12", BibTexUtils.extractLastPage("12"));
-		
+
 		assertEquals("12123", BibTexUtils.extractLastPage("  12123"));
-		
+
 		assertEquals("34", BibTexUtils.extractLastPage("21-34"));
-		
+
 		assertEquals("340", BibTexUtils.extractLastPage("234 -- 340"));
-		
+
 		assertEquals("232434", BibTexUtils.extractLastPage("  12123-  232434"));
 	}
 }
