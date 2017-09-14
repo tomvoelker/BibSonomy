@@ -66,16 +66,16 @@ import org.bibsonomy.util.tex.TexDecode;
 
 /**
  * Some BibTex utility functions.
- * 
+ *
  * @author Dominik Benz
  */
 public class BibTexUtils {
 	private static final Log log = LogFactory.getLog(BibTexUtils.class);
-	
+
 	private static final String GET_METHOD_PREFIX = "get";
-	
+
 	/**
-	 * Enable the output of the plain misc field when serializing 
+	 * Enable the output of the plain misc field when serializing
 	 * publications into BibTeX entries.
 	 */
 	public static final int SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD = 0x01;
@@ -85,17 +85,17 @@ public class BibTexUtils {
 	 */
 	public static final int SERIALIZE_BIBTEX_OPTION_FIRST_LAST = 0x02;
 	/**
-	 * Enable the output of generated BibTeX keys instead of the 
+	 * Enable the output of generated BibTeX keys instead of the
 	 * keys from the database.
 	 */
 	public static final int SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS = 0x04;
 	/** Enable skipping required bibtex fields containing only dummy values (ie. noauthor / nodate). This gives incomplete but semantically correct bibtex data. */
 	public static final int SERIALIZE_BIBTEX_OPTION_SKIP_DUMMY_VALUE_FIELDS = 0x08;
-	
+
 
 	/**
-	 * This field from the post is added to the BibTeX string (in addition to 
-	 * all fields from the resource) 
+	 * This field from the post is added to the BibTeX string (in addition to
+	 * all fields from the resource)
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_BIBURL = "biburl";
 
@@ -106,50 +106,50 @@ public class BibTexUtils {
 	 * Needed mainly when exporting via JabRef filters.
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_BIBRECORD = "bibrecord";
-	
+
 	/**
 	 * Format string according to the ISO 8601 standard
 	 */
 	public static final String ISO_8601_FORMAT_STRING = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-	
+
 	/**
-	 * This field from the post is added to the BibTeX string (in addition to 
-	 * all fields from the resource) 
+	 * This field from the post is added to the BibTeX string (in addition to
+	 * all fields from the resource)
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_DESCRIPTION = "description";
 
 	/**
-	 * This field from the post is added to the BibTeX string (in addition to 
+	 * This field from the post is added to the BibTeX string (in addition to
 	 * all fields from the resource). It is needed by the DBLP update to allow
 	 * setting of the post date.
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_DATE = "date";
 
 	/**
-	 * This field from the post is added to the BibTeX string (in addition to 
+	 * This field from the post is added to the BibTeX string (in addition to
 	 * all fields from the resource). It represents the "date" field of the post.
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_ADDED_AT = "added-at";
 	/**
-	 * This field from the post is added to the BibTeX string (in addition to 
-	 * all fields from the resource). It represents the "changeDate" of the post. 
+	 * This field from the post is added to the BibTeX string (in addition to
+	 * all fields from the resource). It represents the "changeDate" of the post.
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_TIMESTAMP = "timestamp";
 
 	/**
-	 * This field from the post is added to the BibTeX string (in addition to 
+	 * This field from the post is added to the BibTeX string (in addition to
 	 * all fields from the resource)
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_KEYWORDS = "keywords";
 
 	/**
-	 * This field from the post is added to the BibTeX string (in addition to 
+	 * This field from the post is added to the BibTeX string (in addition to
 	 * all fields from the resource)
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_PRIVNOTE = "privnote";
 
 	/**
-	 * This fields from the post are added to the BibTeX string (in addition to 
+	 * This fields from the post are added to the BibTeX string (in addition to
 	 * all fields from the resource)
 	 */
 	public static final String[] ADDITIONAL_MISC_FIELDS = new String[] {
@@ -160,53 +160,53 @@ public class BibTexUtils {
 		ADDITIONAL_MISC_FIELD_ADDED_AT,
 		ADDITIONAL_MISC_FIELD_TIMESTAMP
 	};
-	
+
 	/** default opening bracket */
 	public static final char DEFAULT_OPENING_BRACKET = '{';
-	
+
 	/** default closing bracket */
 	public static final char DEFAULT_CLOSING_BRACKET = '}';
-	
+
 	/** value separator used to separate key/value pairs; i.e. key=val SEP key2=val2*/
 	public static final char KEYVALUE_SEPARATOR = ',';
-	
+
 	private static final String KEYVALUE_SEPARATOR_STRING = String.valueOf(KEYVALUE_SEPARATOR);
-	
+
 	/** assignment operator to assign keys to values; i.e. key OP val, ...*/
 	public static final char ASSIGNMENT_OPERATOR = '=';
-	
+
 	/**
-	 * Indentation used for key/value pairs when converted to a BibTeX string. 
+	 * Indentation used for key/value pairs when converted to a BibTeX string.
 	 */
 	private static final String DEFAULT_INTENDATION = "  ";
-	
+
 	private static final String BIBTEX_MONTH_FIELD = "month";
 
 	private static final String BIBTEX_EDITOR_FIELD = "editor";
 
 	private static final String BIBTEX_AUTHOR_FIELD = "author";
-	
+
 	/** prefix for tags indicating post owners when duplicates=merge */
 	private static final String MERGED_PREFIX = "merged:";
-	
+
 	/** PHD thesis */
 	public static final String PHD_THESIS = "phdthesis";
-	
+
 	/** any thesis */
 	public static final String THESIS = "thesis";
-	
+
 	/** unpublished work */
 	public static final String UNPUBLISHED = "unpublished";
-	
+
 	/** tech repost */
 	public static final String TECH_REPORT = "techreport";
-	
+
 	/** standard */
 	public static final String STANDARD = "standard";
-	
+
 	/** proceedings */
 	public static final String PROCEEDINGS = "proceedings";
-	
+
 	/** presentation */
 	public static final String PRESENTATION = "presentation";
 
@@ -248,13 +248,13 @@ public class BibTexUtils {
 
 	/** article */
 	public static final String ARTICLE = "article";
-	
+
 	/**
-	 * To remove the preprint entry type remove all occurrences of this string and the corresponding types 
+	 * To remove the preprint entry type remove all occurrences of this string and the corresponding types
 	 * in swrcEntryTypes and risEntryTypes in class Functions in webapp module.
 	 */
 	public static final String PREPRINT = "preprint";
-	
+
 	/**
 	 * the common entrytypes of a BibTeX
 	 */
@@ -280,7 +280,7 @@ public class BibTexUtils {
 			"entrytype",       // added at beginning of entry
 			"misc",            // contains several fields; handled separately
 			"month",           // handled separately
-			"openurl", 
+			"openurl",
 			"simhash0", // not added
 			"simhash1", // not added
 			"simhash2", // not added
@@ -288,8 +288,8 @@ public class BibTexUtils {
 	));
 
 	/**
-	 * Some BibTeX styles translate month abbreviations into (language specific) 
-	 * month names. If we find such a month abbreviation, we should not put 
+	 * Some BibTeX styles translate month abbreviations into (language specific)
+	 * month names. If we find such a month abbreviation, we should not put
 	 * braces around the string.
 	 */
 	private static final Map<String, Integer> BIBTEX_MONTHS = new HashMap<String, Integer>();
@@ -301,8 +301,8 @@ public class BibTexUtils {
 			BIBTEX_MONTHS.put(months[i], i + 1);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Builds a string from a given bibtex object which can be used to build an OpenURL
 	 * see http://www.exlibrisgroup.com/sfx_openurl.htm
@@ -337,7 +337,7 @@ public class BibTexUtils {
 		} else {
 			auinit1 = null;
 		}
-		
+
 		/*
 		 * The doi maybe in the misc fields. To be on the safe side we catch the
 		 * InvalidModelException (the misc field maybe invalid)
@@ -358,7 +358,7 @@ public class BibTexUtils {
 		} catch (final InvalidModelException e) {
 			// ignore invalid misc fields
 		}
-		
+
 		// append year (due to inconsistent database not always given!)
 		if (present(bib.getYear())) {
 			openurl.append("date=" + bib.getYear().trim());
@@ -412,13 +412,13 @@ public class BibTexUtils {
 
 
 	/**
- 	 * Returns a BibTeX string representation of the given publication. By default, 
+ 	 * Returns a BibTeX string representation of the given publication. By default,
 	 * the contained misc fields are parsed before the BibTeX string is generated,
-	 * the authors and editors are in "Last, First" form, and the BibTeX key is 
-	 * untouched. 
-	 * 
+	 * the authors and editors are in "Last, First" form, and the BibTeX key is
+	 * untouched.
+	 *
 	 * @param bib
-	 * @return The BibTeX-serialized publication with the default person name 
+	 * @return The BibTeX-serialized publication with the default person name
 	 * order ({@link PersonNameUtils#DEFAULT_LAST_FIRST_NAMES}.
 	 */
 	public static String toBibtexString(final BibTex bib) {
@@ -428,13 +428,13 @@ public class BibTexUtils {
 
 	/**
 	 * XXX: we don't use java.beans because the package is missing in Android SDK
-	 * 
+	 *
 	 * return a bibtex string representation of the given bibtex object
-	 * 
+	 *
 	 * @param bib - a bibtex object
-	 * @param flags - flags to change the serialization behavior. A bit mask 
+	 * @param flags - flags to change the serialization behavior. A bit mask
 	 * that may include {@link #SERIALIZE_BIBTEX_OPTION_FIRST_LAST}, {@link #SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS}, {@link #SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD}.
-	 * @return String bibtexString 
+	 * @return String bibtexString
 	 */
 	public static String toBibtexString(final BibTex bib, final int flags) {
 		if (hasFlag(flags, SERIALIZE_BIBTEX_OPTION_SKIP_DUMMY_VALUE_FIELDS)) {
@@ -447,7 +447,7 @@ public class BibTexUtils {
 		}
 		return toBibtexStringInternal(bib, flags);
 	}
-	
+
 	private static String toBibtexStringInternal(final BibTex bib, final int flags) {
 		/*
 		 * get all values to generate the BibTeX first to sort all entries
@@ -455,7 +455,7 @@ public class BibTexUtils {
 		 */
 		final SortedMap<String, String> values = new TreeMap<String, String>();
 		final boolean lastFirstNames = !hasFlag(flags, SERIALIZE_BIBTEX_OPTION_FIRST_LAST);
-		
+
 		final Method[] methods = BibTex.class.getMethods();
 		for (final Method method : methods) {
 			if (method.getParameterTypes().length == 0 && String.class.equals(method.getReturnType()) && method.getName().startsWith(GET_METHOD_PREFIX)) {
@@ -463,7 +463,7 @@ public class BibTexUtils {
 					final String key = method.getName().replaceFirst(GET_METHOD_PREFIX, "").toLowerCase();
 					if (!EXCLUDE_FIELDS.contains(key)) {
 						String value = (String) method.invoke(bib, (Object[]) null);
-					
+
 						if (present(value)) {
 							if (!NUMERIC_PATTERN.matcher(value).matches()) {
 								value = addBibTeXBrackets(value);
@@ -476,18 +476,18 @@ public class BibTexUtils {
 				}
 			}
 		}
-		
+
 		/*
 		 * append author and editor
 		 */
 		if (present(bib.getAuthor())) {
 			values.put(BIBTEX_AUTHOR_FIELD, addBibTeXBrackets(PersonNameUtils.serializePersonNames(bib.getAuthor(), lastFirstNames)));
 		}
-		
+
 		if (present(bib.getEditor())) {
 			values.put(BIBTEX_EDITOR_FIELD, addBibTeXBrackets(PersonNameUtils.serializePersonNames(bib.getEditor(), lastFirstNames)));
 		}
-		
+
 		/*
 		 * process miscFields map, if present
 		 */
@@ -500,7 +500,7 @@ public class BibTexUtils {
 					// ignore
 				}
 			}
-			
+
 			for (final Entry<String, String> miscField : bib.getMiscFields().entrySet()) {
 				values.put(miscField.getKey().toLowerCase(), addBibTeXBrackets(miscField.getValue()));
 			}
@@ -514,12 +514,12 @@ public class BibTexUtils {
 			// we don't add {}, this is done by getMonth(), if necessary
 			values.put(BIBTEX_MONTH_FIELD, getMonth(month));
 		}
-		
+
 		/*
 		 * start with entrytype and key
 		 */
 		final String bibtexKey = hasFlag(flags, SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS) ? generateBibtexKey(bib): bib.getBibtexKey();
-		
+
 		final StringBuilder buffer = new StringBuilder("@").append(bib.getEntrytype()).append(DEFAULT_OPENING_BRACKET).append(bibtexKey).append(KEYVALUE_SEPARATOR).append("\n");
 
 		for (final Entry<String, String> entry : values.entrySet()) {
@@ -527,14 +527,14 @@ public class BibTexUtils {
 			.append(" ").append(ASSIGNMENT_OPERATOR).append(" ")
 			.append(entry.getValue()).append(KEYVALUE_SEPARATOR).append("\n");
 		}
-		
+
 		/*
 		 * include plain misc fields if desired
 		 */
 		if (hasFlag(flags, SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD) && present(bib.getMisc())) {
 			buffer.append(DEFAULT_INTENDATION).append(bib.getMisc()).append(KEYVALUE_SEPARATOR).append("\n");
 		}
-		
+
 		/*
 		 * remove last comma
 		 */
@@ -544,7 +544,7 @@ public class BibTexUtils {
 		return buffer.toString();
 	}
 
-	
+
 	/**
 	 * @param value
 	 * @return
@@ -555,11 +555,11 @@ public class BibTexUtils {
 
 
 	/**
-	 * Some BibTeX styles translate month abbreviations into (language specific) 
-	 * month names. If we find such a month abbreviation, we should not put 
+	 * Some BibTeX styles translate month abbreviations into (language specific)
+	 * month names. If we find such a month abbreviation, we should not put
 	 * braces around the string. This method returns the correct string - with
 	 * braces, if it's not an abbreviation, without otherwise.
-	 * 
+	 *
 	 * @param month
 	 * @return The correctly 'quoted' month.
 	 */
@@ -570,17 +570,17 @@ public class BibTexUtils {
 
 
 	/**
-	 * Tries to extract the month number from the given string. The following 
+	 * Tries to extract the month number from the given string. The following
 	 * input formats are supported:
 	 * <ul>
 	 * <li>long English month name: January, february, MARCH, ...</li>
 	 * <li>abbreviated English month name: Jan, feb, MAR, ...</li>
 	 * <li>month as number: 01, 2, 3, ...</li>
-	 * </ul> 
+	 * </ul>
 	 * <strong>Note:</strong> if an unreadable month is given, the untouched
-	 * string is returned. 
-	 * 
-	 * 
+	 * string is returned.
+	 *
+	 *
 	 * @param month
 	 * @return The month represented as number in the range 1, ..., 12
 	 */
@@ -599,33 +599,33 @@ public class BibTexUtils {
 	}
 
 	/**
-	 * Creates a bibtex string with some bibsonomy-specific information using 
+	 * Creates a bibtex string with some bibsonomy-specific information using
 	 * {@link #toBibtexString(Post, int)}.
-	 * 
+	 *
 	 * <ul>
 	 * 		<li>tags in <code>keywords</code> field</li>
 	 * 		<li>URL to bibtex details page in <code>biburl</code> field</li>
 	 * 		<li>description in the <code>description</code> field</li>
 	 * </ul>
-	 * 
+	 *
 	 * @see #toBibtexString(BibTex, int)
-	 * 
+	 *
 	 * @param post - a publication post
-	 * @param flags - flags to change the serialization behavior. A bit mask 
+	 * @param flags - flags to change the serialization behavior. A bit mask
 	 * that may include {@link #SERIALIZE_BIBTEX_OPTION_FIRST_LAST}, {@link #SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS}, {@link #SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD}.
-	 * @param urlGenerator - to generate a proper URL pointing to the post. 
-	 * 
+	 * @param urlGenerator - to generate a proper URL pointing to the post.
+	 *
 	 * @return A string representation of the posts in BibTeX format.
 	 */
 	public static String toBibtexString(final Post<BibTex> post, final int flags, final URLGenerator urlGenerator) {
 		urlGenerator.setBibtexMiscUrls(post);
 		return toBibtexString(post, flags);
 	}
-	
+
 	/**
-	 * Same as {@link #toBibtexString(Post, int, URLGenerator)} but with the 
+	 * Same as {@link #toBibtexString(Post, int, URLGenerator)} but with the
 	 * default flags (=0)
-	 * 
+	 *
 	 * @param post
 	 * @param urlGenerator
 	 * @return A string representation of the posts in BibTeX format.
@@ -636,11 +636,11 @@ public class BibTexUtils {
 
 
 	/**
-	 * Return a BibTeX representation of the given post. By default, 
+	 * Return a BibTeX representation of the given post. By default,
 	 * the contained misc fields are parsed before the BibTeX string is generated,
-	 * the authors and editors are in "Last, First" form, and the BibTeX key is 
-	 * untouched. 
-	 * 
+	 * the authors and editors are in "Last, First" form, and the BibTeX key is
+	 * untouched.
+	 *
 	 * @param post - a post
 	 * @return - a bibtex string representation of this post.
 	 */
@@ -649,34 +649,34 @@ public class BibTexUtils {
 	}
 
 	/**
-	 * Creates a BibTeX string containing more than only the fields in the 
+	 * Creates a BibTeX string containing more than only the fields in the
 	 * BibTeX object:
-	 * 
+	 *
 	 * <ul>
 	 * 		<li>tags in the <code>keywords</code> field</li>
 	 *      <li>description in the <code>description</code> field</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param post - a BibTeX post.
-	 * @param flags - flags to change the serialization behavior. A bit mask 
+	 * @param flags - flags to change the serialization behavior. A bit mask
 	 * that may include {@link #SERIALIZE_BIBTEX_OPTION_FIRST_LAST}, {@link #SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS}, {@link #SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD}.
-	 * 
+	 *
 	 * @return A string representation of the post in BibTeX format.
 	 */
 	public static String toBibtexString(final Post<BibTex> post, final int flags) {
-		final BibTex bib = post.getResource();	
+		final BibTex bib = post.getResource();
 		/*
 		 * add additional fields.
-		 *  
-		 * ATTENTION: if you add fields here, you have to add them also 
+		 *
+		 * ATTENTION: if you add fields here, you have to add them also
 		 * (in SimpleBibTeXParser.updateWithParsedBibTeX!)
-		 * in ADDITIONAL_MISC_FIELDS. Thus when someone enters a bibtex field with the 
+		 * in ADDITIONAL_MISC_FIELDS. Thus when someone enters a bibtex field with the
 		 * name of your added field, it will not be stored in the misc section.
 		 */
-		
-		//ISO date + time for "added-at" and "timestamp" field  
+
+		//ISO date + time for "added-at" and "timestamp" field
 		DateFormat fmt = new SimpleDateFormat(ISO_8601_FORMAT_STRING);
-		
+
 		bib.addMiscField(ADDITIONAL_MISC_FIELD_KEYWORDS, TagUtils.toTagString(post.getTags(), " "));
 		if (present(post.getDescription())) {
 			bib.addMiscField(ADDITIONAL_MISC_FIELD_DESCRIPTION, post.getDescription());
@@ -693,7 +693,7 @@ public class BibTexUtils {
 	/**
 	 * @see #generateBibtexKey(List, List, String, String)
 	 * @param bib
-	 * 
+	 *
 	 * @return The generated BibTeX key.
 	 */
 	public static String generateBibtexKey(final BibTex bib) {
@@ -702,9 +702,9 @@ public class BibTexUtils {
 	}
 
 	/**
-	 * Generates a BibTeX key for the given strings. Please use {@link #generateBibtexKey(List, List, String, String)}, 
-	 * if authors and editors are available as list.  
-	 * 
+	 * Generates a BibTeX key for the given strings. Please use {@link #generateBibtexKey(List, List, String, String)},
+	 * if authors and editors are available as list.
+	 *
 	 * @param authors
 	 * @param editors
 	 * @param year
@@ -714,11 +714,11 @@ public class BibTexUtils {
 	public static String generateBibtexKey(final String authors, final String editors, final String year, final String title) {
 		return generateBibtexKey(PersonNameUtils.discoverPersonNamesIgnoreExceptions(authors), PersonNameUtils.discoverPersonNamesIgnoreExceptions(editors), year, title);
 	}
-	
+
 	/**
 	 * Generates a bibtex key of the form "first persons lastname from authors
 	 * or editors" or "noauthororeditor" concatenated with year.
-	 * 
+	 *
 	 * @param authors
 	 *            some string representation of the list of authors with their
 	 *            first- and lastnames
@@ -748,7 +748,7 @@ public class BibTexUtils {
 		}
 		buffer.append(first);
 
-		/* the year */ 
+		/* the year */
 		if (year != null) {
 			buffer.append(year.trim());
 		}
@@ -765,7 +765,7 @@ public class BibTexUtils {
 
 	/**
 	 * Relevant = longer than four characters (= 0-9a-z)
-	 * 
+	 *
 	 * @param title
 	 * @return
 	 */
@@ -784,7 +784,7 @@ public class BibTexUtils {
 
 	/**
 	 * Cleans up a string containing LaTeX markup
-	 * 
+	 *
 	 * @param bibtex a bibtex string
 	 * @return the cleaned bibtex string
 	 */
@@ -792,12 +792,14 @@ public class BibTexUtils {
 		if (!present(bibtex)) return "";
 
 		// replace markup
-		bibtex = bibtex.replaceAll("\\\\[a-z]+\\{([^\\}]+)\\}", "$1");  // \\markup{marked_up_text}		
+		bibtex = bibtex.replaceAll("\\\\[a-z]+\\{([^\\}]+)\\}", "$1");  // \\markup{marked_up_text}
+		bibtex = bibtex.replaceAll("\\\\[a-z]+ ", "");                   // \\relax, \\em, etc.
+		// FIXME: How to handle whitespace around marco correctly?
 
 		// decode Latex macros into unicode characters
 		return TexDecode.decode(bibtex).trim();
 	}
-	
+
 	/**
 	 * @param text text to be checked
 	 * @return true iff the text contains bibtex markup
@@ -808,7 +810,7 @@ public class BibTexUtils {
 		}
 		return !text.equals(cleanBibTex(text));
 	}
-	
+
 	/**
 	 * @param text text to be escaped
 	 * @param escapeForPersonName if and should be replaced by {and} (as required for author names)
@@ -830,7 +832,7 @@ public class BibTexUtils {
 	/**
 	 * Tries to find a year (four connected digits) in a string and returns them as int.
 	 * If it fails, returns Integer.MAX_VALUE.
-	 * 
+	 *
 	 * @param year
 	 * @return an integer representation of the year, or Integer.MAX_VALUE if it fails
 	 */
@@ -854,7 +856,7 @@ public class BibTexUtils {
 
 	/**
 	 * Sort a list of bibtex posts (and eventually remove duplicates).
-	 * 
+	 *
 	 * @param bibtexList
 	 * @param sortKeys
 	 * @param sortOrders
@@ -867,7 +869,7 @@ public class BibTexUtils {
 
 	/**
 	 * Sorts a list of bibtex posts and removes duplicates.
-	 * 
+	 *
 	 * @param bibtexList
 	 */
 	public static void removeDuplicates(final List<Post<BibTex>> bibtexList) {
@@ -877,12 +879,12 @@ public class BibTexUtils {
 		bibtexList.clear();
 		bibtexList.addAll(temp);
 	}
-	
-	
+
+
 	/**
 	 * Merge duplicates within a list of publication posts. Returns a list of publications
-	 * with unique interhashes; tags of duplicates (according to the interhash) are aggregated. 
-	 * 
+	 * with unique interhashes; tags of duplicates (according to the interhash) are aggregated.
+	 *
 	 * @param publicationList
 	 */
 	public static void mergeDuplicates(final List<Post<BibTex>> publicationList) {
@@ -903,14 +905,14 @@ public class BibTexUtils {
 		publicationList.clear();
 		publicationList.addAll(hashToPost.values());
  	}
-	
-	/** Adds the field <code>fieldName</code> to the BibTeX entry, if the entry 
+
+	/** Adds the field <code>fieldName</code> to the BibTeX entry, if the entry
 	 * does not already contain it.
-	 * 
+	 *
 	 * @param bibtex - the BibTeX entry
 	 * @param fieldName - the name of the field
 	 * @param fieldValue - the value of the field
-	 * 
+	 *
 	 * @return The new BibTeX entry.
 	 */
 	public static String addFieldIfNotContained(final String bibtex, final String fieldName, final String fieldValue) {
@@ -921,25 +923,25 @@ public class BibTexUtils {
 		return buf.toString();
 	}
 
-	/** Adds the field <code>fieldName</code> to the BibTeX entry, if the entry 
+	/** Adds the field <code>fieldName</code> to the BibTeX entry, if the entry
 	 * does not already contain it.
-	 * 
+	 *
 	 * @param bibtex - the BibTeX entry
 	 * @param fieldName - the name of the field
 	 * @param fieldValue - the value of the field
-	 * 
+	 *
 	 */
 	public static void addFieldIfNotContained(final StringBuffer bibtex, final String fieldName, final String fieldValue) {
 		if (bibtex == null) return;
 		/*
-		 * it seems, we can do regex stuff only on strings ... so we have 
+		 * it seems, we can do regex stuff only on strings ... so we have
 		 * to convert the buffer into a string :-(
 		 */
 		final String bibtexString = bibtex.toString();
 		/*
 		 * The only way safe to find out if the entry already contains
-		 * the field is to parse it. This is expensive, thus we only 
-		 * do simple heuristics, which is of course, error prone! 
+		 * the field is to parse it. This is expensive, thus we only
+		 * do simple heuristics, which is of course, error prone!
 		 */
 		if (!bibtexString.matches("(?s).*" + fieldName + "\\s*=\\s*.*")) {
 			/*
@@ -950,8 +952,8 @@ public class BibTexUtils {
 	}
 
 	/** Adds the given field at the end of the given BibTeX entry by placing
-	 * it before the last brace. 
-	 * 
+	 * it before the last brace.
+	 *
 	 * @param bibtex - the BibTeX entry
 	 * @param fieldName - the name of the field
 	 * @param fieldValue - the value of the field
@@ -980,14 +982,14 @@ public class BibTexUtils {
 	}
 
 	/**
-	 * Converts the key = value pairs contained in the 
+	 * Converts the key = value pairs contained in the
 	 * miscFields map of a {@link BibTex} object into a serialized representation
-	 * in the misc-Field. It appends 
-	 * 
+	 * in the misc-Field. It appends
+	 *
 	 *  key1 = {value1}, key2 = {value2}, ...
-	 *  
+	 *
 	 * for all defined miscFields to the return string.
-	 * 
+	 *
 	 * @param valueMap - a map containing key/value pairs
 	 * @return - a string representation of the given object.
 	 */
@@ -996,7 +998,7 @@ public class BibTexUtils {
 		// loop over misc fields, if any
 		if (present(valueMap)) {
 			final Iterator<String> it = valueMap.keySet().iterator();
-			while (it.hasNext()) {				
+			while (it.hasNext()) {
 				final String currKey = it.next();
 				miscFieldsSerialized.append(DEFAULT_INTENDATION + currKey.toLowerCase() + " " + ASSIGNMENT_OPERATOR + " " + DEFAULT_OPENING_BRACKET + valueMap.get(currKey) + DEFAULT_CLOSING_BRACKET);
 				if (it.hasNext()) {
@@ -1012,7 +1014,7 @@ public class BibTexUtils {
 
 	/**
 	 * Parse a given misc field string into a hashmap containing key/value pairs.
-	 * 
+	 *
 	 * @param miscFieldString - the misc field string
 	 * @return a hashmap containg the parsed key/value pairs.
 	 * @throws InvalidModelException e.g. iff the number of opening brackets != number of closing brackets
@@ -1024,7 +1026,7 @@ public class BibTexUtils {
 
 	/**
 	 * Generates the flags for {@link #toBibtexString(BibTex, int)}.
-	 * 
+	 *
 	 * @param plainMiscField - Should the plain misc field be used or should it be parsed and cleaned?
 	 * @param firstLastNames - Order of names should be First, Last?
 	 * @param generatedBibtexKeys - Should the BibTeX key be generated or should the original be taken?
@@ -1043,7 +1045,7 @@ public class BibTexUtils {
 
 	/**
 	 * Indicates whether a particular flag is set or not.
-	 * 
+	 *
 	 * @param flags
 	 *            - the flags where we look if testFlag is set
 	 * @param testFlag
@@ -1052,10 +1054,10 @@ public class BibTexUtils {
 	private static boolean hasFlag(final int flags, final int testFlag) {
 		return (flags & testFlag) != 0;
 	}
-	
+
 	/**
 	 * Temporarily and safely replaces/removes dummy field values in the given {@link BibTex} object, runs the given {@link Runnable} and finally tidies up
-	 * 
+	 *
 	 * @param bib given {@link BibTex}
 	 * @param replace whether to replace (true) or skip (false) fields with dummy values
 	 * @param r {@link Callable} o run with replaced value
@@ -1086,7 +1088,7 @@ public class BibTexUtils {
 	/**
 	 * Temporaryly modifies dummy attributes in bibtex posts (like "noauthor" or "nodate")
 	 * in a try...finally block and calls the given {@link Callable} object inside.
-	 * 
+	 *
 	 * @param bibs posts to be temporarily modified
 	 * @param replace whether to replace with non-empty values
 	 * @param r callable to be run with replaced dummy values
@@ -1096,7 +1098,7 @@ public class BibTexUtils {
 		final List<String> years = new ArrayList<String>();
 		final List<List<PersonName>> authors = new ArrayList<List<PersonName>>();
 		final List<List<PersonName>> editors = new ArrayList<List<PersonName>>();
-		
+
 		for (Post<BibTex> pb : bibs) {
 			final BibTex b = pb.getResource();
 			years.add(b.getYear());
@@ -1128,7 +1130,7 @@ public class BibTexUtils {
 			}
 		}
 	}
-	
+
 	private static List<PersonName> createNoDummyPersonList(List<PersonName> persons, String dummyValue, boolean replace) {
 		if (persons == null) {
 			return persons;
@@ -1145,10 +1147,10 @@ public class BibTexUtils {
 		}
 		return rVal;
 	}
-	
+
 	/**
 	 * extracts the first page of the publication
-	 * 
+	 *
 	 * @param pagesString
 	 * @return the first page of the publication
 	 */
@@ -1156,18 +1158,18 @@ public class BibTexUtils {
 		if (!present(pagesString)) {
 			return pagesString;
 		}
-		
+
 		final Matcher matcher = PAGE_PATTERN.matcher(pagesString);
 		if (matcher.find()) {
 			return matcher.group(1);
 		}
-		
+
 		return "";
 	}
-	
+
 	/**
 	 * extracts the last page of the publication
-	 * 
+	 *
 	 * @param pagesString
 	 * @return the last page of the publication
 	 */
@@ -1175,18 +1177,18 @@ public class BibTexUtils {
 		if (!present(pagesString)) {
 			return pagesString;
 		}
-		
+
 		final Matcher matcher = PAGE_PATTERN.matcher(pagesString);
-		
+
 		if (matcher.find()) {
 			final String firstMatch = matcher.group(1);
 			if (matcher.find()) {
 				return matcher.group(1);
 			}
-			
+
 			return firstMatch;
 		}
-		
+
 		return "";
 	}
 }
