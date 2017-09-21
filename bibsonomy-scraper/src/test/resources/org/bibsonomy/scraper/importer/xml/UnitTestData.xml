@@ -766,12 +766,6 @@
 		<BibFile>MorganClaypoolScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.morganclaypool.MorganClaypoolScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_277">
-		<TestDescription>Oxford Journal Scraper</TestDescription>
-		<URL>http://comjnl.oxfordjournals.org/content/55/1/82.abstract</URL>
-		<BibFile>OxfordJournalsScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.oxfordjournals.OxfordJournalsScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_281">
 		<TestDescription>test for Akademiai</TestDescription>
 		<URL>http://www.akademiai.com/content/y5t2lbg5nn3hxa0y/</URL>

@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.oxfordjournals;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -36,12 +37,12 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class OxfordJournalsScraperTest {
-	/**
-	 * starts URL test with id url_277
-	 */
+		
 	@Test
-	public void urlTestRun(){
-		UnitTestRunner.runSingleTest("url_277");
+	public void url1Test1Run(){		
+		final String url = "https://academic.oup.com/comjnl/article-abstract/55/1/82/511672/Orange4WS-Environment-for-Service-Oriented-Data";
+		final String resultFile = "OxfordJournalsScraperUnitURLTest.bib";
+		assertScraperResult(url, null, OxfordJournalsScraper.class, resultFile);
 	}
 	
 }
