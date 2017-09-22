@@ -217,9 +217,11 @@ public class CSLFilesManager {
 	 *         <code>null</code> is returned instead of throwing an exception.
 	 */
 	public synchronized List<CSLStyle> loadUserLayouts(final String userName) {
-		if (this.cslCustomFiles.containsKey(userName)) {
-			return this.cslCustomFiles.get(userName);
-		}
+		// TODO: jan: please add a register method that invalides the "cache"
+		// and readd these three lines
+		// if (this.cslCustomFiles.containsKey(userName)) {
+		// 	return this.cslCustomFiles.get(userName);
+		// }
 
 		final List<CSLStyle> cslLayoutFiles = new LinkedList<>();
 		this.cslCustomFiles.put(userName, cslLayoutFiles);

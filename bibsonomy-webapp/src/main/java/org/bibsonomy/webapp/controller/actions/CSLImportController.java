@@ -44,7 +44,7 @@ public class CSLImportController extends AbstractExportFormatImportController {
 	private static final Log log = LogFactory.getLog(CSLImportController.class);
 
 	@Override
-	protected void onExportFormatDelete(String userName, String hash, Document document) {
+	protected void onExportFormatDelete(final String userName, final String hash, final Document document) {
 		this.fileLogic.deleteCSLLayout(hash);
 
 		/*
@@ -54,7 +54,7 @@ public class CSLImportController extends AbstractExportFormatImportController {
 	}
 
 	@Override
-	protected void writeExportFiles(User loginUser, ExportFormatImportCommand command) {
+	protected void writeExportFiles(final User loginUser, final ExportFormatImportCommand command) {
 		final MultipartFile fileItem = command.getFileItem();
 		if (fileItem != null && fileItem.getSize() > 0) {
 			log.debug("writing layout part with file " + fileItem.getOriginalFilename());
