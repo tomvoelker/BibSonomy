@@ -53,6 +53,7 @@ import org.bibsonomy.model.enums.SimpleExportLayout;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.user.settings.FavouriteLayout;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.services.export.CSLUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlBuilder;
 import org.bibsonomy.util.UrlUtils;
@@ -864,7 +865,8 @@ public class URLGenerator {
 			final String publicationUrl = this.getPublicationUrl(publication, user);
 			switch (source) {
 			case CSL:
-				return "/csl-layout/" + style.toUpperCase() + publicationUrl;
+				final String normedStyle = CSLUtils.normStyle(style);
+				return "/csl-layout/" + normedStyle.toUpperCase() + publicationUrl;
 			case JABREF:
 				return "/layout/" + style.toLowerCase() + publicationUrl;
 			case SIMPLE:
@@ -873,15 +875,6 @@ public class URLGenerator {
 				}
 				if (SimpleExportLayout.ENDNOTE.toString().equals(style)) {
 					return "/endnote" + publicationUrl;
-				}
-				//$FALL-THROUGH$
-			case CUSTOM:
-				if(favl.getStyle().endsWith(".CSL")){
-					try {
-						return "/csl-layout/" + URLEncoder.encode(style, "UTF-8") + publicationUrl;
-					} catch (UnsupportedEncodingException e) {
-						return "/csl-layout/" + style + publicationUrl;
-					}
 				}
 				//$FALL-THROUGH$
 			default:

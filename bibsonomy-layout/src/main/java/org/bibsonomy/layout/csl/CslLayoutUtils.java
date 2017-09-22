@@ -38,11 +38,15 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.services.export.CSLUtils;
 import org.bibsonomy.services.filesystem.CslFileLogic;
 import org.bibsonomy.services.renderer.LayoutRenderer;
+import org.bibsonomy.util.IOUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.FileUtil;
 import org.xml.sax.SAXException;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * TODO: add documentation to this class
@@ -60,9 +64,7 @@ public class CslLayoutUtils {
 	 * @return hash for custom file of user
 	 */
 	public static String userLayoutHash(final String user, final String fileName) {
-		return StringUtils
-				.getMD5Hash("user." + user.toLowerCase() + "." + fileName + "." + CslFileLogic.LAYOUT_FILE_EXTENSION)
-				.toLowerCase();
+		return StringUtils.getMD5Hash("user." + user.toLowerCase() + "." + fileName + "." + CslFileLogic.LAYOUT_FILE_EXTENSION).toLowerCase();
 	}
 
 	/**
@@ -75,84 +77,6 @@ public class CslLayoutUtils {
 	 */
 	public static String userLayoutName(final String userName, final String fileName) {
 		return LayoutRenderer.CUSTOM_LAYOUT + " " + userName + " " + fileName.replace(" ", "_");
-	}
-
-	/**
-	 * Loads a resource using the classloader.
-	 * 
-	 * @param location
-	 * @return
-	 */
-	public static InputStream getResourceAsStream(final String location) {
-		final InputStream resourceAsStream = CSLFilesManager.class.getClassLoader().getResourceAsStream(location);
-		if (resourceAsStream != null)
-			return resourceAsStream;
-		return CSLFilesManager.class.getResourceAsStream(location);
-	}
-
-	/**
-	 * Constructs the name of a layout file.
-	 * 
-	 * @param layout
-	 * @param part
-	 * @return
-	 */
-	protected static String getLayoutFileName(final String layout) {
-		return layout + "." + CslFileLogic.LAYOUT_FILE_EXTENSION;
-	}
-
-	/**
-	 * Create string for directories. If no given, the string is empty.
-	 * 
-	 * @param directory
-	 * @return
-	 */
-	private static String getDirectory(final String directory) {
-		if (directory == null)
-			return "";
-		return directory + "/";
-	}
-
-	/**
-	 * Loads a layout from the given location.
-	 * 
-	 * @param fileLocation
-	 *            - the location of the file, such that it can be found by the
-	 *            used class loader.
-	 * @return The loaded layout, or <code>null</code> if it could not be found.
-	 * @throws IOException
-	 */
-	private static CSLStyle loadLayout(final String fileLocation) throws IOException {
-		final InputStream resourceAsStream = CslLayoutUtils.getResourceAsStream(fileLocation);
-		CSLStyle cslLayout = null;
-		if (resourceAsStream != null) {
-			Scanner sc = new Scanner(resourceAsStream);
-			StringBuilder sb = new StringBuilder();
-			if (sc.hasNext()) {
-				sb.append(sc.next());
-			}
-			sc.close();
-			String fileContent = sb.toString();
-			String displayName = "";
-			String id;
-
-			try {
-				displayName = CSLFilesManager.extractTitle(fileContent).trim();
-			} catch (SAXException | ParserConfigurationException e1) {
-				log.error(
-						"Failed to extract a display name in a user custom layout. XML-tag 'title' is missing or in the wrong place. File causing problems: "
-								+ fileLocation,
-						e1);
-				displayName = "User uploaded custom layout";
-			}
-			if (displayName == null || displayName.trim().isEmpty()) {
-				displayName = "User uploaded custom layout";
-			}
-			id = displayName.replaceAll(" ", "");
-			cslLayout = new CSLStyle(id, displayName, fileContent);
-			resourceAsStream.close();
-		}
-		return cslLayout;
 	}
 
 	/**
@@ -180,38 +104,25 @@ public class CslLayoutUtils {
 		cslLayout.setFileHash(hashedName);
 
 		log.debug("trying to load custom user layout for user " + userName + " from file " + file);
+
 		if (file.exists()) {
 			log.debug("custom layout found!");
 
-			final BufferedReader reader = new BufferedReader(
-					new InputStreamReader(new FileInputStream(file), StringUtils.CHARSET_UTF_8));
-			//read file and save content to cslLayout
-			try {
-				String content = "";
-				String tmp;
-				while ((tmp = reader.readLine()) != null) {
-					content += tmp;
-				}
-				cslLayout.setContent(content);
-			} catch (final Exception e) {
+			final String content = IOUtils.readInputStreamToString(new FileInputStream(file));
+			cslLayout.setContent(content);
 
-				throw new IOException("Could not load layout: ", e);
-			} finally {
-				reader.close();
-			}
 			// parse / set displayName
-			String displayName = null;
 			try {
-				displayName = CSLFilesManager.extractTitle(cslLayout.getContent()).trim();
+				final String displayName = CSLUtils.extractTitle(cslLayout.getContent()).trim();
+				cslLayout.setDisplayName(displayName);
 			} catch (SAXException | ParserConfigurationException e1) {
 				log.error(
 						"Failed to extract a display name in a user custom layout. XML-tag 'title' is missing or in the wrong place. File causing problems: "
 								+ cslLayout.getName(), e1);
 			}
-			if (displayName == null || displayName.trim().isEmpty()) {
-				cslLayout.setDisplayName(fileName.replace("." + CslFileLogic.LAYOUT_FILE_EXTENSION, ""));
-			} else {
-				cslLayout.setDisplayName(displayName);
+
+			if (!present(cslLayout.getDisplayName())) {
+				cslLayout.setDisplayName(CSLUtils.normStyle(fileName));
 			}
 		}
 

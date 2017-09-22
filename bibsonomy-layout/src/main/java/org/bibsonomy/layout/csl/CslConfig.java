@@ -32,9 +32,9 @@ package org.bibsonomy.layout.csl;
  * @author jp
  */
 public class CslConfig {
-	/** Configured by the setter: the path where the user layout files are. */
-	private String userLayoutFilePath;	
 
+	/** the path where the user layout files are. */
+	private String userLayoutFilePath;
 
 	/**
 	 * @return the userLayoutFilePath

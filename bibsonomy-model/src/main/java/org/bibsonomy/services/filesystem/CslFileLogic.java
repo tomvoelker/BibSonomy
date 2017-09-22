@@ -61,7 +61,7 @@ public interface CslFileLogic {
 	 * @return <code>true</code> iff the file is valid (currently only checks the
 	 * file extension)
 	 */
-	public boolean validCSLLayoutFile(final UploadedFile file);
+	public boolean isValidCSLLayoutFile(final UploadedFile file);
 	
 	/**
 	 * @return a set of all allowed file extensions for jabref layout files

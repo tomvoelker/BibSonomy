@@ -44,7 +44,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.tags.RequestContextAwareTag;
 
 /**
- * 
+ * a name tag for extracting the favourite layout display names
  * @author dzo
  */
 public class FavouriteLayoutsDisplayNameTag extends RequestContextAwareTag {
@@ -84,11 +84,6 @@ public class FavouriteLayoutsDisplayNameTag extends RequestContextAwareTag {
 			return getJabRefDisplayName(name);
 		case CSL:
 			return getCslDisplayName(name);
-		case CUSTOM:
-			if (favouriteLayout.getStyle().toLowerCase().endsWith(".csl")){
-				return getCslDisplayNameByStyle(favouriteLayout.getStyle());
-			}
-			//$FALL-THROUGH$
 		default:
 			break;
 		}
@@ -101,22 +96,16 @@ public class FavouriteLayoutsDisplayNameTag extends RequestContextAwareTag {
 	 */
 	private String getCslDisplayName(final String displayName) {
 		final CSLStyle style = this.getCslFileManager().getStyleByName(displayName);
-		if (style == null){
+		if (style == null) {
 			return "Style has been deleted."; // TODO: i18n
 		}
 		return style.getDisplayName();
 	}
-	
-	/**
-	 * @param displayName
-	 * @return
-	 */
-	private String getCslDisplayNameByStyle(final String style) {
-		final CSLStyle CSLstyle = this.getCslFileManager().getStyleByName(style);
-		if (CSLstyle == null){
-			return "Style has been deleted."; // TODO: i18n
-		}
-		return CSLstyle.getDisplayName();
+
+	private String getCslCustomDisplayName(String displayName) {
+		final String[] parts = displayName.split(" ");
+
+		return parts[parts.length  - 1];
 	}
 
 	/**

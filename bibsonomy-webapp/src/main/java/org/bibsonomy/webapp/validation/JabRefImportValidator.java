@@ -62,8 +62,9 @@ public class JabRefImportValidator implements Validator<SettingsViewCommand> {
 	}
 
 	/**
-	 * @param fileBegin
-	 * @param errors 
+	 * @param file
+	 * @param errors
+	 * @param fieldSuffix
 	 */
 	private void checkFileName(CommonsMultipartFile file, Errors errors, final String fieldSuffix) {
 		if (file == null || file.getSize() == 0) {

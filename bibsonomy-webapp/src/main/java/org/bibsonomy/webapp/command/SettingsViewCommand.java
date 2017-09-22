@@ -953,23 +953,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.cslHash = cslHash;
 	}
 
-
-	/**
-	 * @return the cslFile
-	 */
-	public CommonsMultipartFile getCslFile() {
-		return this.cslFile;
-	}
-
-
-	/**
-	 * @param cslFile the cslFile to set
-	 */
-	public void setCslFile(CommonsMultipartFile cslFile) {
-		this.cslFile = cslFile;
-	}
-
-
 	/**
 	 * @return the cslFiles
 	 */
