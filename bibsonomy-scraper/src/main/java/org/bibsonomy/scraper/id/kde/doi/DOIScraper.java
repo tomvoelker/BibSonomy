@@ -103,7 +103,7 @@ public class DOIScraper implements Scraper {
 			scrapingContext.setSelectedText(null);
 		} else
 			try {
-				if (DOIUtils.isSupportedSelection(selection) || DOIUtils.isDOIURL(new URL(scrapingContext.getSelectedText()))){
+				if (selectionContainsDOI(selection)){
 					/*
 					 * selection contains a DOI -> extract it
 					 */
@@ -134,11 +134,22 @@ public class DOIScraper implements Scraper {
 		 */
 		return false;
 	}
+
+	/**
+	 * @param scrapingContext
+	 * @param selection
+	 * @return
+	 * @throws MalformedURLException
+	 */
+	private static boolean selectionContainsDOI(final String selection)
+			throws MalformedURLException {
+		return DOIUtils.isSupportedSelection(selection) || DOIUtils.isDOIURL(new URL(selection));
+	}
 	
 	@Override
 	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
 		try {
-			return DOIUtils.isDOIURL(scrapingContext.getUrl()) || DOIUtils.isSupportedSelection(scrapingContext.getSelectedText()) || DOIUtils.isDOIURL(new URL(scrapingContext.getSelectedText()));
+			return DOIUtils.isDOIURL(scrapingContext.getUrl()) || selectionContainsDOI(scrapingContext.getSelectedText());
 		} catch (MalformedURLException e) {
 			log.info("selected text is not a url", e);
 		}
