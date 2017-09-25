@@ -116,11 +116,10 @@ public class YearSystemTag extends AbstractSearchSystemTagImpl {
 	}
 
 	@Override
-	public void handleParam(final GenericParam param) {
+	public boolean handleParam(final GenericParam param) {
 		if (param instanceof BibTexParam ) {
-			param.addToSystemTags(this);
-
 			/*
+			 * FIXME: this should not be done here
 			 * extract first-, last- and year from the argument
 			 */
 			if (SINGLE_YEAR.matcher(this.getArgument()).matches()) {
@@ -141,9 +140,9 @@ public class YearSystemTag extends AbstractSearchSystemTagImpl {
 				log.debug("Set firstyear to " + this.firstYear + "after matching year system tag");
 			}
 		}
-		/*
-		 * for Bookmarks do nothing
-		 */
+
+		// for bookmarks do nothing
+		return false;
 	}
 
 	@Override

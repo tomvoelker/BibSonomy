@@ -69,9 +69,10 @@ public class UserRelationSystemTag extends AbstractSystemTagImpl implements Sear
 	}
 
 	@Override
-	public void handleParam(final GenericParam param) {
+	public boolean handleParam(final GenericParam param) {
 		final String tagName = SystemTagsUtil.buildSystemTagString(this.getName(), this.getArgument());
 		param.addRelationTag(tagName);
+		return true;
 	}
 
 }

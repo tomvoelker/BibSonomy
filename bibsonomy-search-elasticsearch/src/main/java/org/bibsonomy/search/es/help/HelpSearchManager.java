@@ -51,6 +51,7 @@ import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.util.Mapping;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.help.HelpParser;
 import org.bibsonomy.services.help.HelpParserFactory;
 import org.bibsonomy.services.help.HelpSearch;
@@ -139,6 +140,8 @@ public class HelpSearchManager implements HelpSearch {
 	private String projectName;
 	private String projectTheme;
 	private String projectHome;
+
+	private URLGenerator urlGenerator;
 	
 	private ESClient client;
 	
@@ -187,11 +190,11 @@ public class HelpSearchManager implements HelpSearch {
 				
 				final Map<String, Map<String, Object>> jsonDocuments = new HashMap<>();
 				for (final File file : files) {
-					final HelpParser parser = this.factory.createParser(HelpUtils.buildReplacementMap(this.projectName, this.projectTheme, this.projectHome));
+					final HelpParser parser = this.factory.createParser(HelpUtils.buildReplacementMap(this.projectName, this.projectTheme, this.projectHome), this.urlGenerator);
 					final String fileName = file.getName().replaceAll(HelpUtils.FILE_SUFFIX, "");
 					try (final BufferedReader helpPage = new BufferedReader(new InputStreamReader(new FileInputStream(file), StringUtils.DEFAULT_CHARSET))) {
 						final String markdown = StringUtils.getStringFromReader(helpPage);
-						final String content = parser.parseText(markdown);
+						final String content = parser.parseText(markdown, language);
 						final Map<String, Object> doc = new HashMap<>();
 						doc.put(HEADER_FIELD, fileName);
 						doc.put(CONTENT_FIELD, content);
@@ -323,6 +326,13 @@ public class HelpSearchManager implements HelpSearch {
 	 */
 	public void setProjectHome(String projectHome) {
 		this.projectHome = projectHome;
+	}
+
+	/**
+	 * @param urlGenerator the urlGenerator to set
+	 */
+	public void setUrlGenerator(final URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
 	}
 
 	/**

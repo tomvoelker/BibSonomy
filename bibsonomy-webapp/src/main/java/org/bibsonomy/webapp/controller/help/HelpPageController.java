@@ -35,6 +35,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -148,7 +151,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		
 		final Map<String, String> replacements = HelpUtils.buildReplacementMap(this.projectName, theme, this.projectHome);
 		// instantiate a new parser
-		final Parser parser = new Parser(replacements);
+		final Parser parser = new Parser(replacements, this.urlGenerator);
 		
 		final String requestedSearch = command.getSearch();
 		if (present(requestedSearch)) {
@@ -162,7 +165,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 			}
 		}
 		
-		/* help page request */
+		// help page request
 		final String helpPage = command.getHelpPage();
 		if (!present(helpPage)) {
 			return new ExtendedRedirectView(this.urlGenerator.getHelpPage(HELP_HOME, language), true);
@@ -184,8 +187,11 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 				final String redirectPage = matcher.group(1).trim();
 				return new ExtendedRedirectView(this.urlGenerator.getHelpPage(redirectPage, requestLanguage), true);
 			}
-			
-			command.setContent(parser.parseText(text));
+
+			command.setContent(parser.parseText(text, language));
+
+			// build the title
+			command.setHelpPageTitle(buildTitleFromFile(helpPage));
 		} catch (final IOException e) {
 			this.responseLogic.setHttpStatus(HttpServletResponse.SC_NOT_FOUND);
 			command.setPageNotFound(true);
@@ -194,6 +200,27 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		this.renderSidebar(command, language, parser);
 		
 		return Views.HELP;
+	}
+
+	private static String buildTitleFromFile(String helpPage) {
+		if (helpPage.contains("/")) {
+			// title is the folder names in reverse order
+			final List<String> pathElements = Arrays.asList(helpPage.split("/"));
+
+			final StringBuilder titleBuilder = new StringBuilder();
+
+			final ListIterator<String> listIterator = pathElements.listIterator(pathElements.size()); // start at the end
+			while (listIterator.hasPrevious()) {
+				titleBuilder.append(listIterator.previous());
+
+				if (listIterator.hasPrevious()) {
+					titleBuilder.append(" | ");
+				}
+			}
+			return titleBuilder.toString();
+		}
+
+		return helpPage;
 	}
 
 	/**
@@ -207,7 +234,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 			final String sidebarLocation = this.getMarkdownLocation(language, HelpUtils.HELP_SIDEBAR_NAME);
 			try (final BufferedReader inputReader = new BufferedReader(new InputStreamReader(new FileInputStream(sidebarLocation), StringUtils.CHARSET_UTF_8))) {
 				final String text = StringUtils.getStringFromReader(inputReader);
-				command.setSidebar(parser.parseText(text));
+				command.setSidebar(parser.parseText(text, language));
 			}
 		} catch (final IOException e) {
 			command.setSidebar("Error: sidebar for language " + language + " not found.");

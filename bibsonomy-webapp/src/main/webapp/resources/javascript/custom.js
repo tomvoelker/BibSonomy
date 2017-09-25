@@ -244,18 +244,7 @@ $(function() {
 		globalSuccess.slideUp(500);
 	});
 
-	var sidebarAdjustments = function sidebarAdjusts() {
-		if ($('#sidebar').prev().hasClass('content')) {
-
-			var contentContainer = $('#sidebar').prev();
-			var contentHeight = contentContainer.height();
-			var sidebarHeight = $('#sidebar').height();
-
-			if (contentHeight > sidebarHeight && $('#sidebar').is(':visible')) {
-				$('#sidebar').css('height', contentHeight + 20);
-			}
-		}
-	};
+	var sidebarAdjustments = sidebarAdjusts;
 
 	sidebarAdjustments();
 
@@ -338,6 +327,20 @@ $(document).ready(function() {
 		});
 	});
 });
+
+function sidebarAdjusts() {
+	if ($('#sidebar').prev().hasClass('content')) {
+
+		var contentContainer = $('#sidebar').prev();
+		var contentHeight = contentContainer.height();
+		var sidebarHeight = $('#sidebar').height();
+
+		if (contentHeight > sidebarHeight && $('#sidebar').is(':visible')) {
+			$('#sidebar').css('height', contentHeight + 20);
+		}
+	}
+}
+
 
 function viewForTag(tag, label) {
 	var item = $('<span class="label label-tag"></span>');

@@ -14,6 +14,11 @@
 		<result property="changedBy"        column="log_changed_by"      javaType="java.lang.String" />
 		<result property="changeDate"       column="log_changed_at"      javaType="java.util.Date" />
 		<result property="user"             column="user_name"           javaType="java.lang.String" />
+		
+		<result property="college"          column="college"           	 javaType="java.lang.String" />
+		<result property="homepage"         column="homepage"     		 javaType="url" />
+		<result property="email"            column="email"           	 javaType="java.lang.String" />
+		
 	</resultMap>
 	
 	<resultMap id='lazyLoadingPerson' class='org.bibsonomy.model.Person' extends="abstractPerson">
@@ -70,11 +75,11 @@
 	</resultMap>
 	
 	<sql id="commonPersonColumns">
-		person.person_change_id as p_person_change_id, person.person_id, person.academic_degree, person.orcid, person.post_ctr, person.log_changed_by, person.log_changed_at, person.user_name, person.dnb_person_id, gender
+		person.person_change_id as p_person_change_id, person.person_id, person.academic_degree, person.orcid, person.post_ctr, person.log_changed_by, person.log_changed_at, person.user_name, person.dnb_person_id, gender, person.college, person.email, person.homepage
 	</sql>
 	
 	<sql id="commonPersonColumnsPlain">
-		person.person_change_id, person.person_id, person.academic_degree, person.orcid, person.post_ctr, person.log_changed_by, person.log_changed_at, person.user_name, person.dnb_person_id, gender
+		person.person_change_id, person.person_id, person.academic_degree, person.orcid, person.post_ctr, person.log_changed_by, person.log_changed_at, person.user_name, person.dnb_person_id, gender, person.college, person.email, person.homepage
 	</sql>
 	
 	<sql id='commonPersonNameColumns'>
@@ -86,7 +91,7 @@
 	</sql>
 	
 	<sql id="insertPersonAttributes">
-		#personChangeId#, #personId#, #academicDegree#, #orcid#, #postCounter#, #changedBy#, #changeDate#, #user#, #dnbPersonId#, #gender#
+		#personChangeId#, #personId#, #academicDegree#, #orcid#, #postCounter#, #changedBy#, #changeDate#, #user#, #dnbPersonId#, #gender#, #college#, #email#, #homepage#
 	</sql>
 	
 	<sql id="commonResourcePersonRelationAttributes">

@@ -43,6 +43,7 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
@@ -780,6 +781,15 @@ public class ReadOnlyLogic implements LogicInterface {
 		throwReadOnlyException();
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#updatePerson(org.bibsonomy.model.Person, org.bibsonomy.common.enums.PersonUpdateOperation)
+	 */
+	@Override
+	public void updatePerson(Person person, PersonUpdateOperation operation) {
+		throwReadOnlyException();
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createPersonName(org.bibsonomy.model.PersonName)
 	 */
@@ -794,6 +804,13 @@ public class ReadOnlyLogic implements LogicInterface {
 	@Override
 	public Person getPersonById(PersonIdType idType, String id) {
 		return this.logicinterface.getPersonById(idType, id);
+	}
+	
+	/**
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonByUser(String)
+	 */
+	public Person getPersonByUser(String userName) {
+		return this.logicinterface.getPersonByUser(userName);
 	}
 	
 	/* (non-Javadoc)

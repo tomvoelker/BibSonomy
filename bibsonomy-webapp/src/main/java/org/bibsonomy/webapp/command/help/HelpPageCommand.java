@@ -42,6 +42,9 @@ public class HelpPageCommand extends DownloadFileCommand {
 
 	/** The requested help page. */
 	private String helpPage;
+
+	/** the help page title */
+	private String helpPageTitle;
 	
 	/** The main content of the help page. */
 	private String content;
@@ -75,7 +78,21 @@ public class HelpPageCommand extends DownloadFileCommand {
 	public void setHelpPage(String helpPage) {
 		this.helpPage = helpPage;
 	}
-	
+
+	/**
+	 * @return the helpPageTitle
+	 */
+	public String getHelpPageTitle() {
+		return helpPageTitle;
+	}
+
+	/**
+	 * @param helpPageTitle the helpPageTitle to set
+	 */
+	public void setHelpPageTitle(String helpPageTitle) {
+		this.helpPageTitle = helpPageTitle;
+	}
+
 	/**
 	 * @return the content of the requested helpPage
 	 */

@@ -287,6 +287,64 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 
 		try {
 			view = controller.workOn(command);
+
+			/*
+			 * some search engines complain about soft 404
+			 * here we check if the controller returned any resources
+			 * and if not, set the response to 404
+			 */
+			if (command instanceof SimpleResourceViewCommand) {
+				final SimpleResourceViewCommand simpleResourceViewCommand = (SimpleResourceViewCommand) command;
+				final int totalCount = safeSize(simpleResourceViewCommand.getBibtex()) + safeSize(simpleResourceViewCommand.getBookmark()) + safeSize(simpleResourceViewCommand.getGoldStandardBookmarks()) + safeSize(simpleResourceViewCommand.getGoldStandardPublications());
+
+				if (totalCount == 0) {
+					final String format = simpleResourceViewCommand.getFormat();
+					final boolean isHtml = Views.FORMAT_STRING_HTML.equals(format);
+					/*
+					 * here we check if the requested tags contain a + to handle
+					 * our old wrong url form encoding in the url path
+					 */
+					if (command instanceof TagResourceViewCommand) {
+						final TagResourceViewCommand tagResourceViewCommand = (TagResourceViewCommand) command;
+
+						if (tagResourceViewCommand.getRequestedTags().contains("+")) {
+							final List<String> pathElements = Arrays.asList(realRequestPath.split(PATH_SEPERATOR));
+							final StringBuilder newRequestUriBuilder = new StringBuilder(PATH_SEPERATOR);
+
+							if (!isHtml) {
+								newRequestUriBuilder.append(format + "/");
+								if (Views.FORMAT_STRING_LAYOUT.equals(format)) {
+									newRequestUriBuilder.append(simpleResourceViewCommand.getLayout() + PATH_SEPERATOR);
+								}
+							}
+
+							final Iterator<String> pathIterator = pathElements.iterator();
+							while (pathIterator.hasNext()) {
+								final String path = pathIterator.next();
+								if (pathIterator.hasNext()) {
+									newRequestUriBuilder.append(path);
+									newRequestUriBuilder.append(PATH_SEPERATOR);
+								} else {
+									// simple heuristic: the last path element is the path element containing the requested tags
+									newRequestUriBuilder.append(path.replaceAll("\\+", "%20"));
+								}
+							}
+
+							// append query
+							if (present(query)) {
+								newRequestUriBuilder.append(PATH_QUERY_SEPERATOR).append(query);
+							}
+
+							view = new ExtendedRedirectView(newRequestUriBuilder.toString(), true);
+						}
+					}
+					// don't render a 404 on the homepage and only on html pages
+					if (!"".equals(realRequestPath) && isHtml) {
+						// no resources found, render 404
+						response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+					}
+				}
+			}
 		} catch (final MalformedURLSchemeException malformed) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			errors.reject("error.http.notFound", malformed.getMessage());
@@ -344,60 +402,6 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 
 		final Map<String, Object> model = new HashMap<String, Object>();
 		model.put(this.getCommandName(), command);
-
-		if (command instanceof SimpleResourceViewCommand) {
-			final SimpleResourceViewCommand simpleResourceViewCommand = (SimpleResourceViewCommand) command;
-			final int totalCount = safeSize(simpleResourceViewCommand.getBibtex()) + safeSize(simpleResourceViewCommand.getBookmark()) + safeSize(simpleResourceViewCommand.getGoldStandardBookmarks()) + safeSize(simpleResourceViewCommand.getGoldStandardPublications());
-
-			if (totalCount == 0) {
-				final String format = simpleResourceViewCommand.getFormat();
-				final boolean isHtml = Views.FORMAT_STRING_HTML.equals(format);
-				/*
-				 * here we check if the requested tags contain a + to handle
-				 * our old wrong url form encoding in the url path
-				 */
-				if (command instanceof TagResourceViewCommand) {
-					final TagResourceViewCommand tagResourceViewCommand = (TagResourceViewCommand) command;
-
-					if (tagResourceViewCommand.getRequestedTags().contains("+")) {
-						final List<String> pathElements = Arrays.asList(realRequestPath.split(PATH_SEPERATOR));
-						final StringBuilder newRequestUriBuilder = new StringBuilder(PATH_SEPERATOR);
-
-						if (!isHtml) {
-							newRequestUriBuilder.append(format + "/");
-							if (Views.FORMAT_STRING_LAYOUT.equals(format)) {
-								newRequestUriBuilder.append(simpleResourceViewCommand.getLayout() + PATH_SEPERATOR);
-							}
-						}
-
-						final Iterator<String> pathIterator = pathElements.iterator();
-						while (pathIterator.hasNext()) {
-							final String path = pathIterator.next();
-							if (pathIterator.hasNext()) {
-								newRequestUriBuilder.append(path);
-								newRequestUriBuilder.append(PATH_SEPERATOR);
-							} else {
-								// simple heuristic: the last path element is the path element containing the requested tags
-								newRequestUriBuilder.append(path.replaceAll("\\+", "%20"));
-							}
-						}
-
-						// append query
-						if (present(query)) {
-							newRequestUriBuilder.append(PATH_QUERY_SEPERATOR).append(query);
-						}
-
-						view = new ExtendedRedirectView(newRequestUriBuilder.toString(), true);
-					}
-				}
-
-				// don't render a 404 on the homepage and only on html pages
-				if (!"".equals(realRequestPath) && isHtml) {
-					// no resources found, render 404 for search engines (soft-404 warning)
-					response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-				}
-			}
-		}
 
 		/*
 		 * put errors into model

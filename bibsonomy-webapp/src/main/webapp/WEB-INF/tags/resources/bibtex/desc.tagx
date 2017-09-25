@@ -24,7 +24,7 @@
 				<bib:journal publication="${publication}"/><c:out value=" "/>
 				<bib:volumeNumberPages publication="${publication}"/><c:out value=" "/>
 			</span>
-			<bib:year publication="${publication}" braces="true"/>
+			<bib:date publication="${publication}" braces="true"/>
 			<bib:note publication="${publication}"/>
 		</c:when>
 		
@@ -37,7 +37,7 @@
 			<bib:publisher publication="${publication}"/>
 			<bib:address publication="${publication}"/>
 			<bib:edition publication="${publication}"/>
-			<bib:year publication="${publication}" braces="true"/>
+			<bib:date publication="${publication}" braces="true"/>
 			<bib:note publication="${publication}"/>
 		</c:when>
 		
@@ -54,7 +54,7 @@
 			<span itemprop="isPartOf" itemscope="itemscope" itemtype="http://schema.org/Book">
 				<bib:edition publication="${publication}"/>
 			</span>
-			<bib:year publication="${publication}" braces="true"/>
+			<bib:date publication="${publication}" braces="true"/>
 			<bib:note publication="${publication}"/>
 		</c:when>
 		
@@ -66,7 +66,7 @@
 			</c:if>
 			<bib:howpublished publication="${publication}"/>
 			<bib:address publication="${publication}"/>
-			<bib:year publication="${publication}" braces="true"/>
+			<bib:date publication="${publication}" braces="true"/>
 			<bib:note publication="${publication}"/>
 		</c:when>
 		
@@ -86,7 +86,7 @@
 				<bib:edition publication="${publication}"/>
 			</span>
 			<bib:note publication="${publication}"/>
-			<bib:year publication="${publication}" braces="true"/>
+			<bib:date publication="${publication}" braces="true"/>
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'inproceedings'}">
@@ -102,7 +102,7 @@
 			<bib:address publication="${publication}"/>
 			<bib:organization publication="${publication}"/>
 			<bib:publisher publication="${publication}"/>
-			<bib:year publication="${publication}" braces="true"/>
+			<bib:date publication="${publication}" braces="true"/>
 			<bib:note publication="${publication}"/>
 		</c:when>
 		
@@ -116,7 +116,7 @@
 			<span itemprop="isPartOf" itemscope="itemscope" itemtype="http://schema.org/Book">
 				<bib:edition publication="${publication}"/>
 			</span>
-			<bib:year publication="${publication}" braces="true"/>
+			<bib:date publication="${publication}" braces="true"/>
 			<bib:note publication="${publication}"/>
 		</c:when>
 	
@@ -129,7 +129,7 @@
 			<bib:school publication="${publication}"/>
 			<bib:address publication="${publication}"/>
 			<bib:type publication="${publication}"/>
-			<bib:year publication="${publication}" braces="true"/>
+			<bib:date publication="${publication}" braces="true"/>
 			<bib:note publication="${publication}"/>
 		</c:when>
 		
@@ -142,7 +142,7 @@
 			<bib:address publication="${publication}"/>
 			<bib:organization publication="${publication}"/>
 			<bib:publisher publication="${publication}"/>
-			<bib:year publication="${publication}" braces="true"/>
+			<bib:date publication="${publication}" braces="true"/>
 			<bib:note publication="${publication}"/>
 		</c:when>
 		
@@ -155,7 +155,7 @@
 			<bib:volume publication="${publication}"/>
 			<bib:institution publication="${publication}"/>
 			<bib:address publication="${publication}"/>
-			<bib:year publication="${publication}" braces="true"/>
+			<bib:date publication="${publication}" braces="true"/>
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'unpublished'}">
@@ -163,7 +163,7 @@
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
-			<bib:year publication="${publication}" braces="true"/>
+			<bib:date publication="${publication}" braces="true"/>
 			<bib:note publication="${publication}"/>
 		</c:when>
 		
@@ -174,7 +174,7 @@
 				<br />
 			</c:if>
 			<bib:howpublished publication="${publication}"/>
-			<bib:year publication="${publication}" braces="true"/>
+			<bib:date publication="${publication}" braces="true"/>
 			<bib:note publication="${publication}"/>
 		</c:otherwise>
 	

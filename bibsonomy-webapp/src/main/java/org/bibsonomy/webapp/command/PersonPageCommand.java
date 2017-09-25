@@ -26,13 +26,18 @@
  */
 package org.bibsonomy.webapp.command;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
 
@@ -41,30 +46,27 @@ import org.bibsonomy.model.logic.exception.LogicException;
  */
 public class PersonPageCommand extends BaseCommand {
 
+	/** Used during the generation of new names */
+	private PersonName newName;
+	
+	/** describes the relation between a person and a resource */
+	private ResourcePersonRelation resourcePersonRelation;
+	
+	/** personId of the person requested */
 	private String requestedPersonId;
-	private String requestedAction;
-
+	
 	private String formSelectedName;
-	@Deprecated // TODO: bind person directly
-	private String formAcademicDegree;
-	@Deprecated // TODO: bind person directly
-	private String formFirstName;
-	@Deprecated // TODO: bind person directly
-	private String formMiddleName;
-	@Deprecated // TODO: bind person directly
-	private String formLastName;
+
+	
 	@Deprecated // TODO: bind person directly
 	private String formResourceHash;
 	@Deprecated // TODO: bind person directly
 	private String formPersonId;
 	@Deprecated // TODO: bind person directly
 	private PersonResourceRelationType formPersonRole;
-	@Deprecated // TODO: bind person directly
-	private String formOrcid;
-	@Deprecated // TODO: bind person directly
+
+	@Deprecated // TODO: bind person dier rectly
 	private String formThesisId;
-	@Deprecated // TODO: bind person directly
-	private String formUser;
 	@Deprecated // TODO: bind person directly
 	private String formPersonNameId;
 	@Deprecated // TODO: bind person directly
@@ -82,6 +84,7 @@ public class PersonPageCommand extends BaseCommand {
 	@Deprecated // TODO: bind person directly
 	private int formPersonIndex = -1;
 	
+	
 	private String formAction;
 	
 	private Person person;
@@ -97,31 +100,36 @@ public class PersonPageCommand extends BaseCommand {
 	private String responseString;
 	private List<Post<?>> otherPubs;
 	private List<Post<?>> otherAdvisedPubs;
+	
+	private List<Post<BibTex>> similarAuthorPubs;
+	
 	private String okHintKey;
 	
 	@Deprecated // FIXME: remove use errors handling build into spring
 	private final Collection<LogicException> logicExceptions = new ArrayList<>();
-	private String requestedUser;
+
+	private PersonUpdateOperation updateOperation;
 	
+	/**
+	 * @return the updateOperation
+	 */
+	public PersonUpdateOperation getUpdateOperation() {
+		return this.updateOperation;
+	}
+
+	/**
+	 * @param updateOperation the updateOperation to set
+	 */
+	public void setUpdateOperation(PersonUpdateOperation updateOperation) {
+		this.updateOperation = updateOperation;
+	}
+
 	/**
 	 * @return the logicExceptions
 	 */
 	@Deprecated
 	public Collection<LogicException> getLogicExceptions() {
 		return this.logicExceptions;
-	}
-	
-	/**
-	 * @return name of the user whose resources are requested
-	 */
-	public String getRequestedUser() {
-		return this.requestedUser;
-	}
-	/**
-	 * @param requestedUser name of the user whose resources are requested
-	 */
-	public void setRequestedUser(final String requestedUser) {
-		this.requestedUser = requestedUser;
 	}
 	
 	/**
@@ -153,66 +161,10 @@ public class PersonPageCommand extends BaseCommand {
 	}
 	
 	/**
-	 * @return the formGraduation
-	 */
-	public String getFormAcademicDegree() {
-		return this.formAcademicDegree;
-	}
-
-	/**
-	 * @param formAcademicDegree the formAcademicDegree to set
-	 */
-	public void setFormAcademicDegree(String formAcademicDegree) {
-		this.formAcademicDegree = formAcademicDegree;
-	}
-	
-	/**
-	 * @return the formFirstName
-	 */
-	public String getFormFirstName() {
-		return this.formFirstName;
-	}
-
-	/**
-	 * @param formFirstName the formFirstName to set
-	 */
-	public void setFormFirstName(String formFirstName) {
-		this.formFirstName = formFirstName;
-	}
-
-	/**
-	 * @return the formLastName
-	 */
-	public String getFormLastName() {
-		return this.formLastName;
-	}
-
-	/**
-	 * @param formLastName the formLastName to set
-	 */
-	public void setFormLastName(String formLastName) {
-		this.formLastName = formLastName;
-	}
-
-	/**
 	 * @return String
 	 */
 	public String getRequestedPersonId() {
 		return this.requestedPersonId;
-	}
-
-	/**
-	 * @return the requestedAction
-	 */
-	public String getRequestedAction() {
-		return this.requestedAction;
-	}
-
-	/**
-	 * @param requestedAction the requestedAction to set
-	 */
-	public void setRequestedAction(String requestedAction) {
-		this.requestedAction = requestedAction;
 	}
 	
 	/**
@@ -248,20 +200,6 @@ public class PersonPageCommand extends BaseCommand {
 	 */
 	public void setPost(Post<? extends Resource> post) {
 		this.post = post;
-	}
-
-	/**
-	 * @return the formMiddleName
-	 */
-	public String getFormMiddleName() {
-		return this.formMiddleName;
-	}
-
-	/**
-	 * @param formMiddleName the formMiddleName to set
-	 */
-	public void setFormMiddleName(String formMiddleName) {
-		this.formMiddleName = formMiddleName;
 	}
 
 	/**
@@ -377,22 +315,6 @@ public class PersonPageCommand extends BaseCommand {
 	}
 
 	/**
-	 * @return the formUser
-	 */
-	@Deprecated // TODO: bind person directly
-	public String getFormUser() {
-		return this.formUser;
-	}
-
-	/**
-	 * @param formUser the formUser to set
-	 */
-	@Deprecated // TODO: bind person directly
-	public void setFormUser(String formUser) {
-		this.formUser = formUser;
-	}
-
-	/**
 	 * @param formResourceHash the formResourceHash to set
 	 */
 	@Deprecated // TODO: bind person directly
@@ -414,22 +336,6 @@ public class PersonPageCommand extends BaseCommand {
 	@Deprecated // TODO: bind person directly
 	public void setFormPersonNameId(String personNameId2) {
 		this.formPersonNameId = personNameId2;
-	}
-
-	/**
-	 * @return the formOrcid
-	 */
-	@Deprecated // TODO: bind person directly
-	public String getFormOrcid() {
-		return this.formOrcid;
-	}
-
-	/**
-	 * @param formOrcid the formOrcid to set
-	 */
-	@Deprecated // TODO: bind person directly
-	public void setFormOrcid(String formOrcid) {
-		this.formOrcid = formOrcid;
 	}
 
 	/**
@@ -585,5 +491,47 @@ public class PersonPageCommand extends BaseCommand {
 	public String getOkHintKey() {
 		return this.okHintKey;
 	}
-	
+
+	/**
+	 * @return the newName
+	 */
+	public PersonName getNewName() {
+		return this.newName;
+	}
+
+	/**
+	 * @param newName the newName to set
+	 */
+	public void setNewName(PersonName newName) {
+		this.newName = newName;
+	}
+
+	/**
+	 * @return the resourcePersonRelation
+	 */
+	public ResourcePersonRelation getResourcePersonRelation() {
+		return this.resourcePersonRelation;
+	}
+
+	/**
+	 * @param resourcePersonRelation the resourcePersonRelation to set
+	 */
+	public void setResourcePersonRelation(ResourcePersonRelation resourcePersonRelation) {
+		this.resourcePersonRelation = resourcePersonRelation;
+	}
+
+	/**
+	 * @return the similarAuthorPubs
+	 */
+	public List<Post<BibTex>> getSimilarAuthorPubs() {
+		return this.similarAuthorPubs;
+	}
+
+	/**
+	 * @param similarAuthorPubs the similarAuthorPubs to set
+	 */
+	public void setSimilarAuthorPubs(List<Post<BibTex>> similarAuthorPubs) {
+		this.similarAuthorPubs = similarAuthorPubs;
+	}
+
 }

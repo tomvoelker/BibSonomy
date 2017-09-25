@@ -51,10 +51,11 @@ public class UserSystemTag extends AbstractSearchSystemTagImpl {
 	}
 
 	@Override
-	public void handleParam(final GenericParam param) {
+	public boolean handleParam(final GenericParam param) {
 		param.setGrouping(GroupingEntity.USER);
 		param.setRequestedUserName(this.getArgument());
 		log.debug("set grouping to 'user' and requestedUserName to " + this.getArgument() + " after matching for user system tag");
+		return true;
 	}
 
 	@Override

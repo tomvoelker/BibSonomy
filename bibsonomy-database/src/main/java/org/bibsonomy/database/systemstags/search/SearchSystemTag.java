@@ -44,9 +44,10 @@ public interface SearchSystemTag extends SystemTag {
 
 	/**
 	 * Sets or changes fields in a param according to the systemTags function
-	 * @param param 
+	 * @param param
+	 * @return <code>true</code> iff the system tag modified the param
 	 */
-	public void handleParam(GenericParam param);
+	public boolean handleParam(GenericParam param);
 
 	/**
 	 * Indicates whether resources of type resourceType can be fetched using this Systemtag
