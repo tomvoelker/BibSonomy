@@ -26,7 +26,10 @@
  */
 package org.bibsonomy.scraper.converter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,7 +59,7 @@ public class HTMLMetaDataDublinCoreToBibtexConverter extends AbstractDublinCoreT
 	protected Map<String, String> extractData(final String pageContent) {
 		final Matcher matcher = EXTRACTION_PATTERN.matcher(pageContent);
 
-		Map<String, String> data = new HashMap<String, String>();
+		Map<String, List<String>> data = new HashMap<String, List<String>>();
 
 		String key = "";
 		String value = "";
@@ -69,82 +72,82 @@ public class HTMLMetaDataDublinCoreToBibtexConverter extends AbstractDublinCoreT
 			lang = matcher.group(1);
 
 			if (key.equalsIgnoreCase("Type")) {
-				addOrAppendFieldIfNewValue(TYPE_KEY, value, lang, data);
+				addValueToDataIfNotContained(TYPE_KEY, value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, TITLE_KEY)) {
-				addOrAppendFieldIfNewValue(TITLE_KEY, value, lang, data);
+				addValueToDataIfNotContained(TITLE_KEY, value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "creator")) {
-				addOrAppendFieldIfNewValue(AUTHOR_KEY, value, lang, data);
+				addValueToDataIfNotContained(AUTHOR_KEY, value, lang, data);
 			} else if (StringUtils.equalsIgnoreCase(key, "identifier")) {
-				addOrAppendFieldIfNewValue(ID_KEY, value, lang, data);
+				addValueToDataIfNotContained(ID_KEY, value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "identifier.doi")){
-				addOrAppendFieldIfNewValue("doi", value, lang, data);
+				addValueToDataIfNotContained("doi", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "description")||StringUtils.containsIgnoreCase(key, "abstract")) {
-				addOrAppendFieldIfNewValue("abstract", value, lang, data);
+				addValueToDataIfNotContained("abstract", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "date")) {
-				data.put("year", extractYear(value));
+				addValueToDataIfNotContained("year", extractYear(value), lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "Contributor.CorporateName")) {
-				data.put("school", value);
-				data.put("institution", value);
+				addValueToDataIfNotContained("school", value, lang, data);
+				addValueToDataIfNotContained("institution", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "contributor")) {
-				addOrAppendFieldIfNewValue("editor", value, lang, data);
+				addValueToDataIfNotContained("editor", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "publisher")) {
-				addOrAppendFieldIfNewValue("publisher", value, lang, data);
+				addValueToDataIfNotContained("publisher", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "journal")) {
-				addOrAppendFieldIfNewValue("journal", value, lang, data);
+				addValueToDataIfNotContained("journal", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "conference")) {
-				addOrAppendFieldIfNewValue("conference", value, lang, data);
+				addValueToDataIfNotContained("conference", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "organization")) {
-				addOrAppendFieldIfNewValue("organization", value, lang, data);
+				addValueToDataIfNotContained("organization", value, lang, data);
 			} else if (StringUtils.equalsIgnoreCase(key, "source")){
-				addOrAppendFieldIfNewValue("source", value, lang, data);
+				addValueToDataIfNotContained("source", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "source.issn")){
-				addOrAppendFieldIfNewValue("issn", value, lang, data);
+				addValueToDataIfNotContained("issn", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "source.issue")){
-				addOrAppendFieldIfNewValue("issue", value, lang, data);
+				addValueToDataIfNotContained("issue", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "source.uri")){
-				addOrAppendFieldIfNewValue("uri", value, lang, data);
+				addValueToDataIfNotContained("uri", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "source.volume")){
-				addOrAppendFieldIfNewValue("volume", value, lang, data);
+				addValueToDataIfNotContained("volume", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "pageNumber")) {
-				addOrAppendFieldIfNewValue("pages", value, lang, data);
+				addValueToDataIfNotContained("pages", value, lang, data);
 			}
 		}
-		return data;
+		
+		return convertMap(data);
+	}
+
+	/**
+	 * converts all the values in each list to a single concatenated value
+	 * @param data is a Map<String, List<String>>
+	 * @return a Map<String, String>
+	 */
+	private static Map<String, String> convertMap(Map<String, List<String>> data) {
+		Map<String, String> r = new HashMap<String, String>();
+		
+		for (String k : data.keySet()){
+			for (String v : data.get(k)){
+				addOrAppendField(k, v, null, r);
+			}
+		}
+		
+		return r;
 	}
 	
-	private static void addOrAppendFieldIfNewValue(final String key, final String value, final String language,  final Map<String, String> data) {
-		String valueInData = data.get(key);
+	private static void addValueToDataIfNotContained(final String key, final String value, final String language,  final Map<String, List<String>> data) {
+		List<String> valueInData = data.get(key);
 		
 		if (valueInData == null) {
-			addOrAppendField(key, value, language, data);
+			List<String> l = new ArrayList<String>();
+			l.add(value);
+			data.put(key, l);
 		} else {
-			if (value.trim().equals(valueInData.trim())) {
-				return;
-			}
-			
-			String[] valueSplitted;
-			
-			if(key.equals(AUTHOR_KEY)|| key.equals("editor")){
-				valueSplitted = valueInData.split("and");
-			} else {
-				valueSplitted = valueInData.split(",");
-			}
-			
-			/*
-			 * checking for every part of value in data if it equals the value
-			 * if true there is no need to save it again
-			 */
-			boolean valueContained = false;
-			for (String s : valueSplitted) {
-				if (s.trim().equals(value.trim())) {
-					valueContained = true;
-					break;
+			for (String s: valueInData) {
+				if (value.trim().equals(s.trim())){
+					return;
 				}
 			}
 			
-			if (!valueContained) {
-				addOrAppendField(key, value, language, data);
-			}
+			valueInData.add(value);
 		}
 	}
 }
