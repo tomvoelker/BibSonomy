@@ -518,19 +518,6 @@
 		<BibFile>WorldCatScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_164">
-		<TestDescription>Test for SSRN publication page</TestDescription>
-		<URL>http://papers.ssrn.com/sol3/papers.cfm?abstract_id=519044#</URL>
-		<BibFile>SSRNScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.ssrn.SSRNScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_165">
-		<TestDescription>Test for SSRN publication page</TestDescription>
-		<URL>http://papers.ssrn.com/sol3/papers.cfm?abstract_id=900005</URL>
-		<BibFile>SSRNScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.ssrn.SSRNScraper</Scraper>
-		<Enabled>true</Enabled>
-	</URLTest>
 	<URLTest id="url_169">
 		<TestDescription>Scraping test for publications from ingentaconnect.com</TestDescription>
 		<URL>http://www.ingentaconnect.com/content/mcb/026/2007/00000026/00000004/art00005</URL>
