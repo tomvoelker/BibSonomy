@@ -26,11 +26,10 @@
  */
 package org.bibsonomy.scraper.converter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,7 +58,7 @@ public class HTMLMetaDataDublinCoreToBibtexConverter extends AbstractDublinCoreT
 	protected Map<String, String> extractData(final String pageContent) {
 		final Matcher matcher = EXTRACTION_PATTERN.matcher(pageContent);
 
-		Map<String, List<String>> data = new HashMap<String, List<String>>();
+		Map<String, Set<String>> data = new HashMap<String, Set<String>>();
 
 		String key = "";
 		String value = "";
@@ -121,7 +120,7 @@ public class HTMLMetaDataDublinCoreToBibtexConverter extends AbstractDublinCoreT
 	 * @param data is a Map<String, List<String>>
 	 * @return a Map<String, String>
 	 */
-	private static Map<String, String> convertMap(Map<String, List<String>> data) {
+	private static Map<String, String> convertMap(Map<String, Set<String>> data) {
 		Map<String, String> r = new HashMap<String, String>();
 		
 		for (String k : data.keySet()){
@@ -133,21 +132,15 @@ public class HTMLMetaDataDublinCoreToBibtexConverter extends AbstractDublinCoreT
 		return r;
 	}
 	
-	private static void addValueToDataIfNotContained(final String key, final String value, final String language,  final Map<String, List<String>> data) {
-		List<String> valueInData = data.get(key);
+	private static void addValueToDataIfNotContained(final String key, final String value, final String language,  final Map<String, Set<String>> data) {
+		Set<String> valueInData = data.get(key);
 		
-		if (valueInData == null) {
-			List<String> l = new ArrayList<String>();
-			l.add(value);
-			data.put(key, l);
-		} else {
-			for (String s: valueInData) {
-				if (value.trim().equals(s.trim())){
-					return;
-				}
-			}
-			
-			valueInData.add(value);
+		if (valueInData == null) {				
+			Set<String> s = new HashSet<String>();
+			s.add(value);
+			data.put(key, s);
+		} else if (!valueInData.contains(value)){			
+			valueInData.add(value.trim());
 		}
 	}
 }
