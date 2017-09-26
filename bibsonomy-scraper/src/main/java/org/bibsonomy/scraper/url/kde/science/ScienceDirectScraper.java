@@ -5,7 +5,7 @@
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
- *                               University of WÃ¼rzburg, Germany
+ *                               University of Würzburg, Germany
  *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
@@ -88,10 +88,5 @@ public class ScienceDirectScraper extends GenericBibTeXURLScraper {
 			return SITE_URL + "/sdfe/arp/cite?pii=" + id +"&format=text%2Fx-bibtex&withabstract=true";
 		}
 		return null;
-	}
-
-	@Override
-	protected boolean retrieveCookiesFromSite() {
-	    return false;
 	}
 }
