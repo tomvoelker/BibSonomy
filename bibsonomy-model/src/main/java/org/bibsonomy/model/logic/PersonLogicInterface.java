@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.model.logic;
 
+import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -60,6 +61,13 @@ public interface PersonLogicInterface {
 	public Person getPersonById(PersonIdType idType, String id);
 	
 	/**
+	 * Returns the Person claimed by a given UserName
+	 * @param userName	the name of the user
+	 * @return	a Person object in case the user has claimed a person, null otherwise
+	 */
+	public Person getPersonByUser(String userName);
+	
+	/**
 	 * FIXME: remove database id TODO_PERSONS
 	 * removes a person name from a specific person
 	 * @param personNameId
@@ -82,5 +90,13 @@ public interface PersonLogicInterface {
 	 */
 	public ResourcePersonRelationQueryBuilder getResourceRelations();
 
+	
+	/**
+	 * Updates the given person
+	 * @param person		the person to update
+	 * @param operation		the desired update operation
+	 */
+	public void updatePerson(final Person person, final PersonUpdateOperation operation);
+	
 
 }

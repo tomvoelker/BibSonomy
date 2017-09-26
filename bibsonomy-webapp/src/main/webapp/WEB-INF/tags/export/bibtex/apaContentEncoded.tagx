@@ -15,7 +15,7 @@
 	<bib:author publication="${post.resource}" useAbsoluteURL="${true}"/>
 
 	<!-- year -->
-	<bib:year publication="${post.resource}" braces="true"/>
+	<bib:date publication="${post.resource}" braces="true"/>
 	
 	<!-- title -->
 	<!-- TODO: use url generator -->

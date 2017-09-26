@@ -177,7 +177,7 @@ public class SimpleBibTeXParser {
 		return this.parseInternal(bibtex, false);
 	}
 
-	private List<BibTex> parseInternal (final String bibtex, final boolean firstEntryOnly) throws ParseException, IOException {
+	private List<BibTex> parseInternal(final String bibtex, final boolean firstEntryOnly) throws ParseException, IOException {
 		return parseInternal(new BufferedReader(new StringReader(bibtex)), firstEntryOnly);
 	}
 	
@@ -212,8 +212,6 @@ public class SimpleBibTeXParser {
 		 * expand all macros, crossrefs and author/editor field
 		 */
 		expandMacrosCrossRefsPersonLists(bibtexFile);
-
-
 
 		/* ****************************************************************
 		 * iterate over all entries and put them in BibTex objects

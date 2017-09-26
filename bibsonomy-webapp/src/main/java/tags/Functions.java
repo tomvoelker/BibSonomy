@@ -1060,5 +1060,17 @@ public class Functions {
 		}
 		return false;
 	}
+	
+	/**
+	 * Returns a formatted orcid
+	 * @param orcid
+	 * @return
+	 */
+	public static String beatifyOrcid(String orcid) {
+		if (orcid.length() == 16) {
+			return orcid.substring(0, 4) + "-" + orcid.substring(4, 8) + "-" + orcid.substring(8, 12) + "-" + orcid.substring(12, 16);
+		}
+		return orcid;
+	}
 
 }

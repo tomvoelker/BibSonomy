@@ -432,4 +432,16 @@ public class URLGeneratorTest {
 		assertEquals(projectHome + "history/url/hash" , ug.getHistoryUrlForPost(post2));
 	}
 
+	/**
+	 * tests {@link URLGenerator#getHelpPage(String, String)}
+	 */
+	@Test
+	public void testGetHelpPage() {
+		assertEquals(projectHome + "help_de/%C3%84nderungen", ug.getHelpPage("Änderungen", "de"));
+		assertEquals(projectHome + "help_en/Main", ug.getHelpPage("Main", "en"));
+		assertEquals(projectHome + "help_de/Integration/Wordpress", ug.getHelpPage("Integration/Wordpress", "de"));
+		assertEquals(projectHome + "help_en/Login#OpenId", ug.getHelpPage("Login#OpenId", "en"));
+		assertEquals(projectHome + "help_en/Login#OpenId", ug.getHelpPage("Login#OpenId", "en"));
+	}
+
 }

@@ -50,21 +50,11 @@ public class HebisIdExtractor implements AttributeExtractor{
 				ppn = "r" + ppn;
 			}
 		}
-//		This is the number of pages, but for citations we need the pages of e.g. an article in some journal
-//		if (!ValidationUtils.present(pages)) {
-//			pages = src.getFirstFieldValue("300", 'a');
-//		}
 
 		if (ValidationUtils.present(ppn)) {
-			// FIXME: ppn can't be null here (present checks for null)
-			if (ppn != null) {
-				target.addMiscField("uniqueid", "HEB" + ppn.trim());
-			} else {
-				target.addMiscField("uniqueid","HEB" + ppn);
-			}
+			target.addMiscField("uniqueid", "HEB" + ppn.trim());
 			target.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS);
 		}
-		// + 31A $h (pages) (bei pages extractor)
 	}
 
 }

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- NOTE: this file is deprecated. Do not add new tests here, use the assertScraperResult
+     method found in org.bibsonomy.scraper.junit.RemoteTestAssert -->
 <test:Tests xmlns:test="http://www.example.org/UnitTestDataSchema"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.example.org/UnitTestDataSchema UnitTestDataSchema.xsd ">
