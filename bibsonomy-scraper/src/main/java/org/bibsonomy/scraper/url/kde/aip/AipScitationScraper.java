@@ -39,7 +39,7 @@ import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 
@@ -52,18 +52,17 @@ import org.bibsonomy.util.WebUtils;
  * @author tst
  *
  */
-public class AipScitationScraper extends GenericBibTeXURLScraper {
+public class AipScitationScraper extends GenericRISURLScraper{
 	private static final Log log = LogFactory.getLog(AipScitationScraper.class);
 	
 	private static final String SITE_NAME = "AIP Scitation";
-	private static final String SITE_URL = "http://scitation.aip.org/";
+	private static final String SITE_URL = "http://aip.scitation.org/";
 	private static final String INFO = "Extracts publications from " + href(SITE_URL, SITE_NAME) + ". Publications can be entered as a selected BibTeX snippet or by posting the page of the reference.";
-	private static final Pattern hostPattern = Pattern.compile(".*" + "aip.org");
+	private static final Pattern hostPattern = Pattern.compile(".*" + "scitation.org");
 	private static final Pattern pathPattern = AbstractUrlScraper.EMPTY_PATTERN;
-	private static final String BIBTEX_PATH = "/cite/bibtex";
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(hostPattern, pathPattern));
-	private static final Pattern abstractPattern = Pattern.compile("<meta name=\"citation_abstract\" content=\"(.*)\"\\s*/>");
-	private static final Pattern firstPagePattern = Pattern.compile("<meta name=\"citation_firstpage\" content=\"(.*)\" />");
+	private static final Pattern abstractPattern = Pattern.compile("<meta name=\"dc.Description\" content=\"(.*?)\"\\s*/>");
+	private static final Pattern doiPattern = Pattern.compile("/([^/]*/[^/]*)$");
 	
 	@Override
 	public String getInfo() {
@@ -87,19 +86,7 @@ public class AipScitationScraper extends GenericBibTeXURLScraper {
 	
 	private static String abstractParser(URL url){
 		try{
-			Matcher m = abstractPattern.matcher(WebUtils.getContentAsString(url));
-			if (m.find()) {
-				return m.group(1);
-			}
-		} catch (final Exception e) {
-			log.error("error while getting abstract for " + url, e);
-		}
-		return null;
-	}
-	
-	private static String firstPageParser(URL url){
-		try{
-			Matcher m = firstPagePattern.matcher(WebUtils.getContentAsString(url));
+			Matcher m = abstractPattern.matcher(WebUtils.getContentAsString(url.toString()));
 			if (m.find()) {
 				return m.group(1);
 			}
@@ -111,7 +98,13 @@ public class AipScitationScraper extends GenericBibTeXURLScraper {
 	
 	@Override
 	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
-		return "http://" + url.getHost().toString() + url.getPath().toString() + BIBTEX_PATH;
+		Matcher m = doiPattern.matcher(url.toString());
+		
+		if (m.find()) {
+			String doi = m.group(1);
+			return "http://" + url.getHost() + "/action/downloadCitation?format=ris&doi=" + doi;
+		}
+		return null;
 	}
 	
 	/* (non-Javadoc)
@@ -121,8 +114,6 @@ public class AipScitationScraper extends GenericBibTeXURLScraper {
 	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
 		// add an abstract
 		String bibtex = BibTexUtils.addFieldIfNotContained(result, "abstract", abstractParser(sc.getUrl()));
-		// fix the eid
-		bibtex = bibtex.replace("eid = ,", "eid = " + firstPageParser(sc.getUrl()) + ",");
-		return bibtex.replaceAll(";jsessionid.*\"$?", "\"");
+		return bibtex;
 	}
 }

@@ -5,7 +5,7 @@
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
- *                               University of WÃ¼rzburg, Germany
+ *                               University of Würzburg, Germany
  *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
@@ -75,19 +75,18 @@ public class ScienceDirectScraper extends GenericBibTeXURLScraper {
 		return SITE_URL;
 	}
 
+	/* 
+	 * for the input  http://www.sciencedirect.com/science/article/pii/S0960148117301556
+	 * create the URL http://www.sciencedirect.com/sdfe/arp/cite?pii=S0960148117301556&format=text%2Fx-bibtex&withabstract=true
+	 */
 	@Override
 	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		final String path = url.getPath();
 		if (present(path)) {
 			final String[] pathParts = path.split("/");
 			final String id = pathParts[pathParts.length - 1];
-			return SITE_URL + "/sdfe/export/" +  id + "/format?export-format=BIBTEX";
+			return SITE_URL + "/sdfe/arp/cite?pii=" + id +"&format=text%2Fx-bibtex&withabstract=true";
 		}
 		return null;
-	}
-
-	@Override
-	protected boolean retrieveCookiesFromSite() {
-		return true;
 	}
 }
