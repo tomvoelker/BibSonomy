@@ -147,7 +147,7 @@ public class SSRNScraper extends AbstractUrlScraper {
 			Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url));
 			if(m.find()) {
 				String r = m.group(1);
-				if (r.substring(r.length()-3, r.length()).equals("<P>")) {
+				if (r.endsWith("<P>")) {
 					return r.substring(0, r.length()-3).trim();
 				}
 				return r.trim();
