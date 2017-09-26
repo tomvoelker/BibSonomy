@@ -34,21 +34,32 @@ import org.bibsonomy.search.es.index.ResourceConverter;
 import org.bibsonomy.search.es.index.ResourceMappingBuilder;
 
 /**
- * TODO: add documentation to this class
+ * this is a container for
+ * - the resource class of the index
+ * - the {@link ResourceConverter} to use for converting the resource
+ * - the uri of the system
+ * - the {@link ResourceMappingBuilder} to use for building the search index mapping
  *
  * @author dzo
  * @param <R> 
  */
 public class ElasticsearchIndexTools<R extends Resource> {
+
+	/** the resource class of the index */
 	private final Class<R> resourceType;
-	
+
+	/** the converter to use for converting the resource */
 	private final ResourceConverter<R> converter;
-	
+
+	/** the uri of the system */
 	private final URI systemURI;
-	
+
+	/** the mapping builder to use for building the search index mapping */
 	private final ResourceMappingBuilder<R> mappingBuilder;
 
 	/**
+	 * default constructor
+	 *
 	 * @param resourceType
 	 * @param converter
 	 * @param systemURI
