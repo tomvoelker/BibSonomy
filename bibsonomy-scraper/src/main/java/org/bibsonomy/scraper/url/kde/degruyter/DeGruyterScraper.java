@@ -67,9 +67,8 @@ public class DeGruyterScraper extends AbstractUrlScraper {
 		
 		try {
 			final String inRIS = getCitationInRIS(url.toString());
-			final String newRIS = addHTTP(inRIS);
 			final RisToBibtexConverter con = new RisToBibtexConverter();
-			final String bibtex = con.toBibtex(newRIS);
+			final String bibtex = con.toBibtex(inRIS);
 			
 			if (present(bibtex)) {
 				scrapingContext.setBibtexResult(bibtex);
@@ -82,44 +81,12 @@ public class DeGruyterScraper extends AbstractUrlScraper {
 		}
 	}
 	
-	private static String addHTTP(String ris) {
-		final String regex = "UR  - (.*)";
-		Pattern DOI_PATTERN_FROM_URL = Pattern.compile(regex);
-		final Matcher m = DOI_PATTERN_FROM_URL.matcher(ris);
-		if (m.find()) {
-			String newURL = "http:" + m.group(1);
-			ris = ris.replaceAll(regex, "UR  - " + newURL);
-		}
-		return ris;
-	}
-	
 	private static String getCitationInRIS(final String stURL) throws IOException {
 		final URL url = new URL(stURL);
-		final String path = "http://" + url.getHost().toString() +  url.getPath().toString().replace("/", "$002f").replace("$002fview$002f", "/dg/cite/$002f") + "?nojs=true";
+		final String path = "http://" + url.getHost().toString() +  url.getPath().toString().replace("/", "$002f").replace("$002fview$002f", "/dg/cite:exportcitation/ris?t:ac=$002f");
 		
-		final URL postURL = new URL("https://" + url.getHost().toString() + "/dg/cite.form");
-		
-		final String html = WebUtils.getContentAsString(path);
-		
-		final Matcher m_tac = TAC.matcher(html);
-		String tac = "";
-		if (m_tac.find()) 
-			tac = m_tac.group(1);
-		
-		final Matcher m_formdata = TFORMDATA.matcher(html);
-		String formdata = "";
-		if(m_formdata.find())
-			formdata = m_formdata.group(1);
-
-		final PostMethod post = new PostMethod(postURL.toExternalForm());
-		post.addParameters(new NameValuePair[] {
-				new NameValuePair("t:ac", StringEscapeUtils.unescapeHtml(tac)),
-				new NameValuePair("t:formdata", StringEscapeUtils.unescapeHtml(formdata)),
-				new NameValuePair("previewFormat","apa"),
-				new NameValuePair("submit", "Export"),
-		});
-		
-		return WebUtils.getPostContentAsString(WebUtils.getHttpClient(), post);
+		String contentAsString = WebUtils.getContentAsString(path);
+		return contentAsString;
 	}
 	
 	@Override
