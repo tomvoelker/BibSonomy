@@ -168,7 +168,9 @@ public class HelpSearchManager implements HelpSearch {
 				
 				@Override
 				public boolean accept(File pathname) {
-					return pathname.isDirectory() && !pathname.isHidden();
+					
+					//folder "code-samples" should not be included
+					return pathname.isDirectory() && !pathname.isHidden() && !pathname.getName().equals("code-samples");
 				}
 			});
 			
