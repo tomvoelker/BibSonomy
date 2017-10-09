@@ -44,7 +44,6 @@ public class CommunityPublicationConverter extends PublicationConverter {
 
 	/**
 	 * @param systemURI
-	 * @param fileContentExtractorService
 	 */
 	public CommunityPublicationConverter(URI systemURI) {
 		super(systemURI, null);
