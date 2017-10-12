@@ -530,10 +530,12 @@ public class BibTexUtils {
 		}
 		
 		/*
-		 * include plain misc fields if desired
+		 * The following is @deprecated. Only a log warning will be triggered. 
+		 * include plain misc fields if desired 
 		 */
 		if (hasFlag(flags, SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD) && present(bib.getMisc())) {
-			buffer.append(DEFAULT_INTENDATION).append(bib.getMisc()).append(KEYVALUE_SEPARATOR).append("\n");
+			//buffer.append(DEFAULT_INTENDATION).append(bib.getMisc()).append(KEYVALUE_SEPARATOR).append("\n");
+			log.error("'SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD' was triggered.");
 		}
 		
 		/*
@@ -665,7 +667,7 @@ public class BibTexUtils {
 	 * @return A string representation of the post in BibTeX format.
 	 */
 	public static String toBibtexString(final Post<BibTex> post, final int flags) {
-		final BibTex bib = post.getResource();	
+		final BibTex bib = post.getResource().clone(); // We want to use a clone since modifying the original has side effects
 		/*
 		 * add additional fields.
 		 *  
@@ -1006,7 +1008,13 @@ public class BibTexUtils {
 			}
 
 		}
-		// write serialized misc fields into misc field
+		/* write serialized misc fields into misc field string
+		 * But, return null if string would be of length 0
+		 */
+		
+		if (miscFieldsSerialized.length() == 0) {
+			return null;
+		}
 		return miscFieldsSerialized.toString();
 	}
 

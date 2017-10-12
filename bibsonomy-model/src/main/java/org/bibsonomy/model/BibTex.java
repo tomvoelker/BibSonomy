@@ -26,6 +26,14 @@
  */
 package org.bibsonomy.model;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,11 +53,14 @@ import org.bibsonomy.model.util.SimHash;
  *
  * @author Christian Schenk
  * @author jensi
+ * @author tom 
  */
-public class BibTex extends Resource {
+public class BibTex extends Resource implements Serializable {
 	/** for persistence (Serializable) */
 	private static final long serialVersionUID = -8528225443908615779L;
-
+	
+	/** Logging used for problems cloning objects **/
+	private static final Log log = LogFactory.getLog(BibTex.class);
 	/**
 	 * Use this key to reference a citation, e.g. \cite{hotho2006information}.
 	 * TODO: rename to something like citationKey ?
@@ -374,9 +385,13 @@ public class BibTex extends Resource {
 	 */
 	public void setMisc(final String misc) {
 		this.misc = misc;
-		this.miscFieldParsed = false;// sync is broken 
-		this.parseMiscField();       // sync restored 
-	}
+		this.miscFieldParsed = false;// sync is broken
+		try {
+			this.parseMiscField();       // sync will be restored
+		} catch (Exception e)  {
+			this.misc = null;
+		}	
+	}	
 
 	/**
 	 * @return month
@@ -703,13 +718,15 @@ public class BibTex extends Resource {
 	}
 
 	/**
-	 * Parses the 'misc'-field and stores the obtained key/valued pairs
+	 * Parses the 'misc'-field string and stores the obtained key/valued pairs
 	 * in the internal miscFields map.
 	 * @throws InvalidModelException
 	 */
 	public void parseMiscField() throws InvalidModelException {
-		this.miscFields = BibTexUtils.parseMiscFieldString(this.getMisc());
-		this.miscFieldParsed = true;
+		if (this.misc != null && this.misc.length() > 0) { // in case there is really something to do (content in misc string)
+				this.miscFields = BibTexUtils.parseMiscFieldString(this.misc);
+			}
+	    this.miscFieldParsed = true;
 	}
 
 	/**
@@ -833,6 +850,27 @@ public class BibTex extends Resource {
 			publicationNames = null;
 		}
 		return publicationNames;
+	}
+	
+	/**
+	 * 	clone an BibTex object 
+	 */
+
+	public BibTex clone(){
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(this);
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			return (BibTex) ois.readObject();
+		} catch (IOException e) {
+			log.error("IO Problem cloning an object:");
+				return null;
+		} catch (ClassNotFoundException e) {
+			log.error("ClassNotFroundException during cloning an object:");
+				return null;
+		}
 	}
 
 }

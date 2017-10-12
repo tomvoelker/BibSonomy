@@ -103,12 +103,14 @@ public class PublicationValidatorTest {
 		assertEquals(1, errors.getFieldErrorCount("tags"));
 		/*
 		 * broken misc field: errors!
+		 * since setting a malformed string leads to nullifying the misc entry, this test should not be necessary anymore.
+		 * REMOVE by BibSonomy 4.0.0  
 		 */
-		bib.setMisc("foo = {bar");
-		errors = validate(command);
-		assertEquals(0, errors.getGlobalErrorCount());
-		assertEquals(2, errors.getErrorCount());
-		assertEquals(1, errors.getFieldErrorCount("post.resource.misc"));
+//		bib.setMisc("foo = {bar");  
+//		errors = validate(command);
+//		assertEquals(0, errors.getGlobalErrorCount());
+//		assertEquals(2, errors.getErrorCount());
+//		assertEquals(1, errors.getFieldErrorCount("post.resource.misc"));
 	}
 
 	@Test
