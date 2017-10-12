@@ -124,7 +124,7 @@ public class HelpSearchManager implements HelpSearch {
 								.field("type", "custom")
 								.field("char_filter", Arrays.asList("html_strip"))
 								.field("tokenizer", "standard")
-								.field("filter", Arrays.asList("lowercase", "snowball"))
+								.field("filter", Arrays.asList("lowercase", "standard"))
 							.endObject()
 						.endObject()
 					.endObject().string();

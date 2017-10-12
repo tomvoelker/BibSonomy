@@ -5,7 +5,7 @@
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
- *                               University of WÃ¼rzburg, Germany
+ *                               University of Würzburg, Germany
  *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
@@ -782,7 +782,8 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		}
 
 		if (present(titleSearchTerms)) {
-			final QueryBuilder titleSearchQuery = QueryBuilders.simpleQueryStringQuery(titleSearchTerms).field(Fields.Resource.TITLE).defaultOperator(SimpleQueryStringBuilder.Operator.AND);
+			// we have search terms for title autocompletion, build a phrase prefix query for the title search terms
+			final QueryBuilder titleSearchQuery = QueryBuilders.matchPhrasePrefixQuery(Fields.Resource.TITLE, titleSearchTerms);
 			mainQueryBuilder.must(titleSearchQuery);
 		}
 		
