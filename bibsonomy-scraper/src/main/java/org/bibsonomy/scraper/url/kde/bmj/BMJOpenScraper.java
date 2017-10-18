@@ -38,22 +38,23 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.generic.CitationManagerScraper;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * @author hagen
  */
-public class BMJOpenScraper extends CitationManagerScraper {
+public class BMJOpenScraper extends GenericBibTeXURLScraper {
 
 	private static final String BMJOPEN_BMJ_COM_HOST = "bmjopen.bmj.com";
 	private static final String SITE_NAME = "BMJ Open";
 	private static final String SITE_URL = "http://" + BMJOPEN_BMJ_COM_HOST + "/";
 	private static final String INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
-	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\"([^\"]++)\"[^>]*+>Download to citation manager</a>");
-	private static final Pattern CITATION_MANAGER_PATTERN = Pattern.compile("href=\"(citmgr\\?type=bibtex[^\"]++)\"");
+	private static final Pattern NID_PATTERN = Pattern.compile("\"nid\":\"(.+?)\"");
 	
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new ArrayList<Pair<Pattern,Pattern>>();
 	
@@ -77,69 +78,26 @@ public class BMJOpenScraper extends CitationManagerScraper {
 	}
 
 	@Override
-	public Pattern getDownloadLinkPattern() {
-		return DOWNLOAD_LINK_PATTERN;
-	}
-
-	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;
 	}
-	
-	// TODO: merge with some code of PharmacognosyResearchScraper
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL, java.lang.String)
+	 */
 	@Override
-	protected String buildDownloadLink(URL url, String content) throws ScrapingFailureException {
-		
-		// get the "download to citation manager" page
-		String downloadPage;
-		
-		//if the page requested to scrape is the citmgr page, nothing else is to do
-		if (url.toExternalForm().contains("citmgr")) {
-			downloadPage = content;
-		}
-		
-		//otherwise try to find the citmgr page via a link on the requested page
-		else {
-
-			// get link to "download to citation manager" page
-			final Matcher downloadLinkMatcher = getDownloadLinkPattern().matcher(content);
-			
-			//throw exception if download link "download to citation manager" not found
-			if(!downloadLinkMatcher.find())
-				throw new ScrapingFailureException("Download link is not available");
-			
-			//build the url to "download to citation manager" page
-			try {
-				url = new URL(url, downloadLinkMatcher.group(1));
-			} catch (MalformedURLException ex) {
-				throw new ScrapingFailureException(ex);
-			}
-
-			//get the citmgr page
-			try {
-				downloadPage = WebUtils.getContentAsString(url);
-			} catch (IOException ex) {
-				throw new ScrapingFailureException(ex);
-			}
-			
-			//is the citmgr page present?
-			if (!present(downloadPage)) throw new ScrapingFailureException("couldn't get download page");
-			
-		}
-		
-		//get download link for BibTeX
-		Matcher m2 = CITATION_MANAGER_PATTERN.matcher(downloadPage);
-		
-		//throw exception if download link to BibTeX not found
-		if (!m2.find())
-			throw new ScrapingFailureException("Download link for BibTeX is not available");
-		
-		//build download link for BibTeX
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		try {
-			return new URL(url, m2.group(1).replace("&amp;", "&")).toExternalForm();
-		} catch (MalformedURLException ex) {
-			throw new ScrapingFailureException(ex);
+			// using url gives a FileNotFoundException, url.toString() doesn't
+			final String content = WebUtils.getContentAsString(url.toString(), cookies);
+			final Matcher m = NID_PATTERN.matcher(content);
+			if (m.find()) {
+				return SITE_URL + "highwire/citation/" + m.group(1) + "/bibtext";
+			}
+		} catch (final IOException e) {
+			throw new ScrapingException(e);
 		}
+		return null;
 	}
 
 }

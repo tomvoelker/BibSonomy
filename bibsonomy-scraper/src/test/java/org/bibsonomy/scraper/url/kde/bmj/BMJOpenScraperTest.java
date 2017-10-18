@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.bmj;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,13 +45,17 @@ public class BMJOpenScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_249");
+		final String url = "http://bmjopen.bmj.com/content/3/1/e002072.short?g=w_open_current_tab";
+		final String resultFile = "BMJOpenScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, BMJOpenScraper.class, resultFile);
 	}
 	/**
 	 * starts URL test with id url_250
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_250");
+		final String url = "http://bmjopen.bmj.com/content/7/4/e012851";
+		final String resultFile = "BMJOpenScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, BMJOpenScraper.class, resultFile);
 	}
 }

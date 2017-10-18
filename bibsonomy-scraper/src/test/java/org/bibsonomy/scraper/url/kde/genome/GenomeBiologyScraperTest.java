@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.genome;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -44,6 +46,15 @@ public class GenomeBiologyScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_287");
+		final String url = "https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0424-0#Bib1";
+		final String resultFile = "GenomeBiologyScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, GenomeBiologyScraper.class, resultFile);
+	}
+	
+	@Test
+	public void url2TestRun(){
+		final String url = "https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0424-0";
+		final String resultFile = "GenomeBiologyScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, GenomeBiologyScraper.class, resultFile);
 	}
 }
