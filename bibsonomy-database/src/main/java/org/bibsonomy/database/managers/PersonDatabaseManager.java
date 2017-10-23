@@ -38,6 +38,7 @@ import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.model.Match;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -443,6 +444,10 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		} finally {
 			session.endTransaction();
 		}
+	}
+	
+	public List<Match> getSimilarPersons(String mode, DBSession session){
+		return this.queryForList("getSimilarPersons", mode, Match.class, session);
 	}
 
 }

@@ -126,6 +126,7 @@ import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.ImportResource;
+import org.bibsonomy.model.Match;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -3713,4 +3714,24 @@ public class DBLogic implements LogicInterface {
 			}
 		};
 	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonMergeSuggestion(java.lang.String)
+	 */
+	@Override
+	public List<Match> getPersonMergeSuggestion(String userName, String mode) {
+		final DBSession session = this.openSession();
+		try {
+			final User user = this.userDBManager.getUserDetails(userName, session);
+
+			if (this.permissionDBManager.isAdmin(user)){
+				return this.personDBManager.getSimilarPersons(mode, session);
+			}
+		} finally {
+			session.close();
+		}
+		return null;
+	}
+	
+	
 }

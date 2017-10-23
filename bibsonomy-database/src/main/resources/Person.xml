@@ -98,7 +98,7 @@
 	</delete>
 	
 	<delete id="removePersonName" parameterClass="java.lang.Integer">
-		DELETE FROM person_name WHERE person_change_id = #personNameId#
+		DELETE FROM person_name WHERE person_change_id = #personNameId#columnPrefix="co_"
 	</delete>
 	
 	<select id='getResourcePersonRelationByResourcePersonRelation' resultMap="PersonCommon.lazyLoadingResourcePersonRelation" parameterClass='org.bibsonomy.model.ResourcePersonRelation'>
@@ -183,6 +183,11 @@
 			WHERE pub_person.person_id  = #personId# 
 			AND pub_person.relator_code = "Maut"
 			LIMIT 0,1
+	</statement>
+	
+	<statement id="getSimilarPersonMatches" parameterClass="java.lang.String" resultMap="PersonCommon.similarPersonMatch">
+		SELECT <include refid="commonSimilarPersonsMatchWithResource" /> FROM similar_persons 
+		WHERE mode = #mode#
 	</statement>
 	
 </sqlMap>
