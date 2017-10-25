@@ -10,11 +10,8 @@ import java.io.Serializable;
  * @author jhi
  */
 public class Match implements Serializable{
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8092157149576677477L;
+	
+	private static final long serialVersionUID = 1117046550975490684L;
 
 	private int matchID;
 	private String person1ID;

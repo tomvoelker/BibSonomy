@@ -737,3 +737,11 @@ INSERT INTO `person_name` VALUES
 
 INSERT INTO `pub_person` VALUES
 (3,'0b539e248a02e3edcfe591c64346c7a0','d63038ea59383b94bb52fc4a9b76d1f5','Maut',0,'h.muller',0,'2015-07-06 14:19:55','testuserP',0);
+
+insert into similar_persons (match_id, person1_id, person2_id, mode, item1_id, item2_id) values (0, "johirth.0", "johirth.1", "test", "01234567891011121314151617181920", "01234567891011121314151617181921");
+insert into similar_persons (match_id, person1_id, person2_id, mode, item1_id, item2_id) values (1, "w.test.924", "w.test.465", "auth", "0c000000d00000f00cef0c00f000e00a", "0d0b00c0000a000f00a00ad00ff000fc");
+insert into similar_persons (match_id, person1_id, person2_id, mode, item1_id, item2_id) values (2, "w.test.886", "w.test.417", "auth", "0ffa0a0ad000a00cbccf000adb0fdde0", "0e0a00c000000f00d0d000b00eefe00b");
+insert into similar_persons (match_id, person1_id, person2_id, mode, item1_id, item2_id) values (3, "w.test.971", "w.test.526", "auth", "0c0000cdc00000b000cbe0fe0ab0acd0", "00dc000febca00a0f0f00ce0de000000");
+insert into similar_persons (match_id, person1_id, person2_id, mode, item1_id, item2_id) values (4, "w.test.991", "w.test.550", "titl", "0a00d00000fc00000a0000a0000f0ad0", "eb0000af0a0c00b0b0ac0e0a0a00d0c0");
+insert into similar_persons (match_id, person1_id, person2_id, mode, item1_id, item2_id) values (5, "w.test.543", "w.test.986", "titl", "000fd00efa0d0000f00eff0f7e000000", "000dbac0d00b0000b000dc0a00cb00b0");
+insert into similar_persons (match_id, person1_id, person2_id, mode, item1_id, item2_id) values (6, "w.test.394", "w.test.867", "titl", "cf00adb00000000a0d00000e000e0000", "00f000000b00b00be00ca000de0c000f");

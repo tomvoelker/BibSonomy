@@ -31,8 +31,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Match;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -160,7 +162,11 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(person.getHomepage(), homepage);
 	}
 	
-	
-	
+	@Test
+	public void testSimilarPerson(){
+		List<Match> result = PERSON_DATABASE_MANAGER.getSimilarPersons("test", this.dbSession);
+		
+		System.out.println(result.size());
+	}
 	
 }

@@ -185,9 +185,15 @@
 			LIMIT 0,1
 	</statement>
 	
-	<statement id="getSimilarPersonMatches" parameterClass="java.lang.String" resultMap="PersonCommon.similarPersonMatch">
-		SELECT <include refid="commonSimilarPersonsMatchWithResource" /> FROM similar_persons 
+	<select id="getSimilarPersons" parameterClass="java.lang.String" resultMap="PersonCommon.similarPersonMatch">
+		SELECT match_id, person1_id, person2_id, mode, item1_id, item2_id, sim, denied FROM similar_persons
 		WHERE mode = #mode#
-	</statement>
+		LIMIT 10
+	</select>
+	
+	<select id="getSimilarPersonsFor" parameterClass="java.lang.String" resultMap="PersonCommon.similarPersonMatch">
+		SELECT match_id, person1_id, person2_id, mode, item1_id, item2_id, sim, denied FROM similar_persons
+		WHERE person1_id = #personid# or person2_id = #personid#
+	</select>
 	
 </sqlMap>

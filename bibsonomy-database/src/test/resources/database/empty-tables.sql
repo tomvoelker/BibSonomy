@@ -66,6 +66,7 @@ DELETE FROM `pendingUser`;
 DELETE FROM `ranking_queue`;
 DELETE FROM `rankings`;
 DELETE FROM `scraperMetaData`;
+DELETE FROM `similar_persons`;
 DELETE FROM `spammer_tags`;
 DELETE FROM `tags`;
 DELETE FROM `tagtag`;

@@ -449,5 +449,9 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public List<Match> getSimilarPersons(String mode, DBSession session){
 		return this.queryForList("getSimilarPersons", mode, Match.class, session);
 	}
+	
+	public List<Match> getSimilarPersonsFor(String personid, DBSession session){
+		return this.queryForList("getSimilarPersonsFor", personid, Match.class, session);
+	}
 
 }
