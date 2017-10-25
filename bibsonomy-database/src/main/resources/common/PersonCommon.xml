@@ -74,16 +74,16 @@
 		<result property='post'            resultMap="GoldStandardPublicationCommon.goldStandardPost" />
 	</resultMap>
 	
-	<resultMap id='similarPersonMatch' class='org.bibsonomy.model.Match'>
-		<id property='matchID' column='match_id'/>
-		<result property='sim' column='sim'/>
-		<result property='denied' column='denied'/>
-		<result property='mode' column='mode'/>
-		<result property='person1ID' column='person1_id'/>
-		<result property='person2ID' column='person2_id'/>
-		<result property='item1ID' column='item1_id'/>
-		<result property='item2ID' column='item2_id'/>
-	</resultMap>
+<!-- 	<resultMap id='similarPersonMatch' class='org.bibsonomy.model.Match'> -->
+<!-- 		<id property='matchID' column='match_id'/> -->
+<!-- 		<result property='sim' column='sim'/> -->
+<!-- 		<result property='denied' column='denied'/> -->
+<!-- 		<result property='mode' column='mode'/> -->
+<!-- 		<result property='person1ID' column='person1_id'/> -->
+<!-- 		<result property='person2ID' column='person2_id'/> -->
+<!-- 		<result property='item1ID' column='item1_id'/> -->
+<!-- 		<result property='item2ID' column='item2_id'/> -->
+<!-- 	</resultMap> -->
 	
 	<sql id="commonPersonColumns">
 		person.person_change_id as p_person_change_id, person.person_id, person.academic_degree, person.orcid, person.post_ctr, person.log_changed_by, person.log_changed_at, person.user_name, person.dnb_person_id, gender, person.college, person.email, person.homepage

@@ -1155,4 +1155,13 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 			// ok
 		}		
 	}
+	
+	@Test
+	public void testSimilarPerson(){
+		final User user = new User(TEST_USER_2);
+		final DBLogic logic = new DBLogic(user, dbSessionFactory, null);
+		
+		System.out.println(logic.getPersonMergeSuggestion(this.TEST_REQUEST_USER_NAME, "auth"));
+		
+	}
 }
