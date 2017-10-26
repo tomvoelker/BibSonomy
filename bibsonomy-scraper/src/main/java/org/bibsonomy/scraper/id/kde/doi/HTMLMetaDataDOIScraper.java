@@ -24,7 +24,7 @@ public class HTMLMetaDataDOIScraper extends HTMLMetaDataDublinCoreToBibtexConver
 
 	private static final String INFO = "The HTMLMetaDataDOIScraper gets a doi from the webpage, if no URL scraper matched the previously redirected page.";
 
-	private static final Pattern DOIPATTERN_GOOGLESCHOLAR = Pattern.compile("<meta\\s+name=\"citation_doi\"\\s+content=\"(.*?)\"");
+	private static final Pattern DOIPATTERN_HIGHWIRE_PRESS_TAGS = Pattern.compile("<meta\\s+name=\"citation_doi\"\\s+content=\"(.*?)\"");
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.Scraper#scrape(org.bibsonomy.scraper.ScrapingContext)
@@ -36,10 +36,14 @@ public class HTMLMetaDataDOIScraper extends HTMLMetaDataDublinCoreToBibtexConver
 		 */
 		String doi = getDoiFromMetaData(scrapingContext.getUrl());
 		if (doi == null) {
-			doi = getDoiFromURL(scrapingContext.getUrl());
+			doi = DOIUtils.getDoiFromURL(scrapingContext.getUrl());
 		}
 		if (doi == null) {
-			doi = getDoiFromWebPage(scrapingContext.getUrl());
+			try {
+				doi = DOIUtils.getDoiFromWebPage(scrapingContext.getUrl());
+			} catch (IOException e) {
+				throw new ScrapingException(e);
+			}
 		}
 		
 		if(present(doi)) {
@@ -50,33 +54,18 @@ public class HTMLMetaDataDOIScraper extends HTMLMetaDataDublinCoreToBibtexConver
 		return false;
 	}
 	
-	protected static String getDoiFromWebPage(URL url) throws ScrapingException {
-		try {
-			String content = WebUtils.getContentAsString(url.toString());
-			String doi = DOIUtils.extractDOI(content);
-			if (present(doi)) {
-				return doi;
-			}
-		} catch (IOException e) {
-			throw new ScrapingException(e);
-		}
-		return null;
-	}
-	
-	protected static String getDoiFromURL(URL url) throws ScrapingException {
-		String doi = DOIUtils.extractDOI(url.toString());
-		if (present(doi)) {
-			return cleanDoiFromURL(doi);			
-		}
-		return null;
-	}
-
+	/**
+	 * checks if any doi can be found in DublinCore- or HighwirePressTags-Metadata and returns the doi if found
+	 * @param url
+	 * @return
+	 * @throws ScrapingException
+	 */
 	protected String getDoiFromMetaData(URL url) throws ScrapingException{
 		try {
 			String content = WebUtils.getContentAsString(url.toString());
 
-			//try to get doi from google scholar 
-			Matcher m = DOIPATTERN_GOOGLESCHOLAR.matcher(content);
+			//try to get doi from Highwire Press tags
+			Matcher m = DOIPATTERN_HIGHWIRE_PRESS_TAGS.matcher(content);
 			if (m.find()) {
 				return m.group(1);
 			}
@@ -90,22 +79,6 @@ public class HTMLMetaDataDOIScraper extends HTMLMetaDataDublinCoreToBibtexConver
 			throw new ScrapingException(e);
 		}
 		return null;
-	}
-	
-	/**
-	 * a doi extracted from a url may have additional characters at the end ("#" for page navigation or "?" as query string)
-	 * delete these characters
-	 * @param doi
-	 * @return
-	 */
-	private static String cleanDoiFromURL(String doi) {
-		if (doi.contains("?")) {
-			return doi.split("?")[0];
-		}
-		if (doi.contains("#")) {
-			return doi.split("#")[0];
-		}
-		return doi;
 	}
 	
 	/* (non-Javadoc)

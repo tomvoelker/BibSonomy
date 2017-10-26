@@ -31,6 +31,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Random;
@@ -286,5 +287,22 @@ public class DOIUtilsTest {
 	@Ignore
 	public void getUrlForDoiTest(){
 		assertEquals("http://www.springerlink.com/link.asp?id=w425794t7433", DOIUtils.getUrlForDoi("10.1007/11922162").toString());
+	}
+	
+	@Test
+	public void testGetDoiFromURL() throws MalformedURLException {
+		URL testURL;
+		testURL = new URL(
+				"http://journals.sagepub.com/doi/abs/10.1177/0165551512438353#articleCitationDownloadContainer");
+		String doi = DOIUtils.getDoiFromURL(testURL);
+		assertEquals("10.1177/0165551512438353", doi);
+	}
+	
+	@Test
+	public void testWebPage() throws IOException {
+		URL testURL;
+		testURL = new URL("https://link.springer.com/book/10.1007/978-3-319-60492-3#about");
+		String doi = DOIUtils.getDoiFromWebPage(testURL);
+		assertEquals("10.1007/978-3-319-60492-3", doi);
 	}
 }

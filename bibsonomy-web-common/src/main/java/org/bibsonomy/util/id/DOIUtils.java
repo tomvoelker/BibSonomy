@@ -26,6 +26,9 @@
  */
 package org.bibsonomy.util.id;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.regex.Matcher;
@@ -225,6 +228,52 @@ public class DOIUtils {
 			s = s.replace(target, replace);
 		}
 		return s;
+	}
+
+
+	/**
+	 * checks if there is a doi at any place of a website and returns the doi if found
+	 * @param url
+	 * @return the found doi
+	 * @throws IOException
+	 */
+	public static String getDoiFromWebPage(URL url) throws IOException{
+		String content = WebUtils.getContentAsString(url.toString());
+		String doi = extractDOI(content);
+		if (present(doi)) {
+			return doi;
+		}
+		return null;
+	}
+
+
+	/**
+	 * checks if a URL contains a doi and returns the doi if found
+	 * @param url
+	 * @return the found doi
+	 */
+	public static String getDoiFromURL(URL url)  {
+		String doi = extractDOI(url.toString());
+		if (present(doi)) {
+			return cleanDoiFromURL(doi);			
+		}
+		return null;
+	}
+
+	/**
+	 * a doi extracted from a url may have additional characters at the end ("#" for page navigation or "?" as query string)
+	 * delete these characters
+	 * @param doi
+	 * @return a clean doi
+	 */
+	public static String cleanDoiFromURL(String doi) {
+		if (doi.contains("?")) {
+			return doi.split("?")[0];
+		}
+		if (doi.contains("#")) {
+			return doi.split("#")[0];
+		}
+		return doi;
 	}
  
 }
