@@ -167,7 +167,7 @@ INSERT INTO `gold_standard` (`content_id`, `title`, `url`, `description`, `date`
 (1025, 'Universität Kassel', 'http://www.uni-kassel.de', 'Nordhessen', '2011-01-01 00:00:00', 'testuser1', '20592a292e53843965c1bb42bfd51876', 1);
 
 -- 
--- Data for table `gold_standard_relations`
+-- Data for insert into similar_persons (match_id, person1_id, person2_id, mode, item1_id, item2_id) values (0, "johirth.0", "johirth.1", "test", "01234567891011121314151617181920", "01234567891011121314151617181921");table `gold_standard_relations`
 -- 
 INSERT INTO `gold_standard_relations` (`publication`, `reference`, `user_name`, `date`, `relation_kind`) VALUES
 ('097248439469d8f5a1e7fad6b02cbfcd', 'ac6aa3ccb181e61801cefbc1401d409a', 'testuser1', '2008-03-20 16:24:55', '0'),
@@ -204,7 +204,7 @@ INSERT INTO `collector` (`user_name`, `content_id`, `date`) VALUES
 ('testuser2', 14, '2008-06-18 14:33:22');
 
 
--- 
+-- insert into similar_persons (match_id, person1_id, person2_id, mode, item1_id, item2_id) values (0, "johirth.0", "johirth.1", "test", "01234567891011121314151617181920", "01234567891011121314151617181921");
 -- Data for table `document`
 -- 
 INSERT INTO `document` VALUES 
@@ -738,10 +738,43 @@ INSERT INTO `person_name` VALUES
 INSERT INTO `pub_person` VALUES
 (3,'0b539e248a02e3edcfe591c64346c7a0','d63038ea59383b94bb52fc4a9b76d1f5','Maut',0,'h.muller',0,'2015-07-06 14:19:55','testuserP',0);
 
-insert into similar_persons (match_id, person1_id, person2_id, mode, item1_id, item2_id) values (0, "johirth.0", "johirth.1", "test", "01234567891011121314151617181920", "01234567891011121314151617181921");
-insert into similar_persons (match_id, person1_id, person2_id, mode, item1_id, item2_id) values (1, "w.test.924", "w.test.465", "auth", "0c000000d00000f00cef0c00f000e00a", "0d0b00c0000a000f00a00ad00ff000fc");
-insert into similar_persons (match_id, person1_id, person2_id, mode, item1_id, item2_id) values (2, "w.test.886", "w.test.417", "auth", "0ffa0a0ad000a00cbccf000adb0fdde0", "0e0a00c000000f00d0d000b00eefe00b");
-insert into similar_persons (match_id, person1_id, person2_id, mode, item1_id, item2_id) values (3, "w.test.971", "w.test.526", "auth", "0c0000cdc00000b000cbe0fe0ab0acd0", "00dc000febca00a0f0f00ce0de000000");
-insert into similar_persons (match_id, person1_id, person2_id, mode, item1_id, item2_id) values (4, "w.test.991", "w.test.550", "titl", "0a00d00000fc00000a0000a0000f0ad0", "eb0000af0a0c00b0b0ac0e0a0a00d0c0");
-insert into similar_persons (match_id, person1_id, person2_id, mode, item1_id, item2_id) values (5, "w.test.543", "w.test.986", "titl", "000fd00efa0d0000f00eff0f7e000000", "000dbac0d00b0000b000dc0a00cb00b0");
-insert into similar_persons (match_id, person1_id, person2_id, mode, item1_id, item2_id) values (6, "w.test.394", "w.test.867", "titl", "cf00adb00000000a0d00000e000e0000", "00f000000b00b00be00ca000de0c000f");
+
+INSERT INTO `person` (person_change_id, person_id) VALUES (20, 'w.test.1');
+INSERT INTO `person` (person_change_id, person_id) VALUES (21, 'w.test.2');
+INSERT INTO `person` (person_change_id, person_id) VALUES (22, 'w.test.3');
+
+INSERT INTO `pub_person` (person_change_id, simhash1, person_id, person_index) VALUES (23, '0c000000d00000f00cef0c00f000e00a', 'w.test.1', 0);
+INSERT INTO `pub_person` (person_change_id, simhash1, person_id, person_index) VALUES (24, '0c0000cdc00000b000cbe0fe0ab0acd0', 'w.test.1', 0);
+INSERT INTO `pub_person` (person_change_id, simhash1, person_id, person_index) VALUES (25, '0a00d00000fc00000a0000a0000f0ad0', 'w.test.1', 0);
+INSERT INTO `pub_person` (person_change_id, simhash1, person_id, person_index) VALUES (26, '0d0b00c0000a000f00a00ad00ff612fc', 'w.test.2', 0);
+INSERT INTO `pub_person` (person_change_id, simhash1, person_id, person_index) VALUES (27, '0ffa0a0ad000a00cbccf000adb0fdde0', 'w.test.2', 0);
+INSERT INTO `pub_person` (person_change_id, simhash1, person_id, person_index) VALUES (28, 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'w.test.2', 0);
+INSERT INTO `pub_person` (person_change_id, simhash1, person_id, person_index) VALUES (29, '0e0a00c000000f00d0d000b00eefe00b', 'w.test.3', 0);
+INSERT INTO `pub_person` (person_change_id, simhash1, person_id, person_index) VALUES (30, '00dc000febca00a0f0f00ce0de000000', 'w.test.3', 0);
+
+INSERT INTO `person_name` (person_change_id, first_name, last_name, person_id) VALUES (31, 'Willi', 'Test', 'w.test.1');
+INSERT INTO `person_name` (person_change_id, first_name, last_name, person_id) VALUES (32, 'Willi', 'Test', 'w.test.2');
+INSERT INTO `person_name` (person_change_id, first_name, last_name, person_id) VALUES (33, 'Willi', 'Test', 'w.test.3');
+
+INSERT INTO `person_match` (match_id, person1_id, person2_id, denied) VALUES (1, "w.test.1", "w.test.2", 0);
+INSERT INTO `person_match` (match_id, person1_id, person2_id, denied) VALUES (2, "w.test.2", "w.test.3", 0);
+INSERT INTO `person_match` (match_id, person1_id, person2_id, denied) VALUES (3, "w.test.1", "w.test.3", 0);
+
+INSERT INTO `match_reason` (match_id, mode, item1_id, item2_id) VALUES (1, "auth", "0c000000d00000f00cef0c00f000e00a", "0d0b00c0000a000f00a00ad00ff612fc");
+INSERT INTO `match_reason` (match_id, mode, item1_id, item2_id) VALUES (2, "auth", "0ffa0a0ad000a00cbccf000adb0fdde0", "0e0a00c000000f00d0d000b00eefe00b");
+INSERT INTO `match_reason` (match_id, mode, item1_id, item2_id) VALUES (3, "auth", "0c0000cdc00000b000cbe0fe0ab0acd0", "00dc000febca00a0f0f00ce0de000000");
+INSERT INTO `match_reason` (match_id, mode, item1_id, item2_id) VALUES (1, "titl", "0a00d00000fc00000a0000a0000f0ad0", "eb0000af0a0c00b0b0ac0e0a0a00d0c0");
+
+INSERT INTO `bibtex` (content_id, simhash0, simhash1, simhash2, simhash3, author, title) VALUES (34, '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', 'Willi Test and Maria Mueller', 'title1');
+INSERT INTO `bibtex` (content_id, simhash0, simhash1, simhash2, simhash3, author, title) VALUES (35, '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', 'Willi Test and Johann Hilfe', 'title2');
+INSERT INTO `bibtex` (content_id, simhash0, simhash1, simhash2, simhash3, author, title) VALUES (36, '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', 'Willi Test', 'same');
+INSERT INTO `bibtex` (content_id, simhash0, simhash1, simhash2, simhash3, author, title) VALUES (37, '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', 'Willi Test and Mario Mueller', 'title4');
+INSERT INTO `bibtex` (content_id, simhash0, simhash1, simhash2, simhash3, author, title) VALUES (38, '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', 'Willi Test and Ted Hansen', 'title5');
+INSERT INTO `bibtex` (content_id, simhash0, simhash1, simhash2, simhash3, author, title) VALUES (39, 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'Willi Test', 'same');
+INSERT INTO `bibtex` (content_id, simhash0, simhash1, simhash2, simhash3, author, title) VALUES (40, '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', 'Willi Test and Ted Hansen', 'title7');
+INSERT INTO `bibtex` (content_id, simhash0, simhash1, simhash2, simhash3, author, title) VALUES (41, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Willi Test and Johann Hilfe', 'title8');
+
+
+
+
+

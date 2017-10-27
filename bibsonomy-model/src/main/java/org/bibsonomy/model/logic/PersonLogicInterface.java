@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.PersonUpdateOperation;
-import org.bibsonomy.model.Match;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -95,10 +94,4 @@ public interface PersonLogicInterface {
 	 */
 	public void updatePerson(final Person person, final PersonUpdateOperation operation);
 	
-	/**
-	 * returns a list of pairs of persons which could be merged
-	 * @param userName
-	 * @return
-	 */
-	public List<Match> getPersonMergeSuggestion(String userName, String mode);
 }

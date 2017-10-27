@@ -9,18 +9,15 @@ import java.io.Serializable;
  *
  * @author jhi
  */
-public class Match implements Serializable{
+public class MatchReason implements Serializable{
 	
 	private static final long serialVersionUID = 1117046550975490684L;
 
 	private int matchID;
-	private String person1ID;
-	private String person2ID;
 	private String item1ID;
 	private String item2ID;
 	private String mode; // "auth" for matched via common co_authors on some pubs, "titl" for same title of a pub, or "sim" for similar via tags
-	private float sim;
-	private boolean denied; // that already denied merges will not be shown again
+
 	/**
 	 * @return the matchID
 	 */
@@ -32,30 +29,6 @@ public class Match implements Serializable{
 	 */
 	public void setMatchID(int matchID) {
 		this.matchID = matchID;
-	}
-	/**
-	 * @return the person1ID
-	 */
-	public String getPerson1ID() {
-		return this.person1ID;
-	}
-	/**
-	 * @param person1id the person1ID to set
-	 */
-	public void setPerson1ID(String person1id) {
-		person1ID = person1id;
-	}
-	/**
-	 * @return the person2ID
-	 */
-	public String getPerson2ID() {
-		return this.person2ID;
-	}
-	/**
-	 * @param person2id the person2ID to set
-	 */
-	public void setPerson2ID(String person2id) {
-		person2ID = person2id;
 	}
 	/**
 	 * @return the item1ID
@@ -92,29 +65,5 @@ public class Match implements Serializable{
 	 */
 	public void setMode(String mode) {
 		this.mode = mode;
-	}
-	/**
-	 * @return the sim
-	 */
-	public float getSim() {
-		return this.sim;
-	}
-	/**
-	 * @param sim the sim to set
-	 */
-	public void setSim(float sim) {
-		this.sim = sim;
-	}
-	/**
-	 * @return the denied
-	 */
-	public boolean isDenied() {
-		return this.denied;
-	}
-	/**
-	 * @param denied the denied to set
-	 */
-	public void setDenied(boolean denied) {
-		this.denied = denied;
 	}
 }

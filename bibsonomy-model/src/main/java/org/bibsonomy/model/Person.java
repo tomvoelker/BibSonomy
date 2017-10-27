@@ -346,4 +346,20 @@ public class Person implements Serializable {
 		this.homepage = homepage;
 	}
 
+	/**
+	 * returns true if specific attributes are equal or at least null for one person
+	 * @param person
+	 * @return
+	 */
+	public boolean equalsTo(Person person) {
+		return (this.academicDegree.equals(person.getAcademicDegree()) || this.academicDegree == null || person.getAcademicDegree() == null)&&
+				(this.college.equals(person.getCollege()) || this.college == null ||person.getCollege() == null)&&
+				(this.dnbPersonId.equals(person.getDnbPersonId()) || this.dnbPersonId == null ||person.getDnbPersonId() == null)&&
+				(this.gender.equals(person.getGender()) || this.gender == null ||person.getGender() == null)&&
+				(this.email.equals(person.getGender()) || this.email == null ||person.getGender() == null)&&
+				(this.homepage.equals(person.getHomepage()) || this.homepage == null ||person.getHomepage() == null)&&
+				(this.orcid.equals(person.orcid) || this.orcid == null ||person.orcid == null);
+		
+	}
+
 }

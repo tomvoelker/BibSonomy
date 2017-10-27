@@ -185,15 +185,72 @@
 			LIMIT 0,1
 	</statement>
 	
-	<select id="getSimilarPersons" parameterClass="java.lang.String" resultMap="PersonCommon.similarPersonMatch">
-		SELECT match_id, person1_id, person2_id, mode, item1_id, item2_id, sim, denied FROM similar_persons
-		WHERE mode = #mode#
-		LIMIT 10
+	<select id="getMatches" resultMap="PersonCommon.personMatch">
+		SELECT match_id, person1_id, person2_id, state from person_match 
+		where state = 0
 	</select>
 	
-	<select id="getSimilarPersonsFor" parameterClass="java.lang.String" resultMap="PersonCommon.similarPersonMatch">
-		SELECT match_id, person1_id, person2_id, mode, item1_id, item2_id, sim, denied FROM similar_persons
-		WHERE person1_id = #personid# or person2_id = #personid#
+	<select id="getMatchesFor" parameterClass="java.lang.String" resultMap="PersonCommon.personMatch">
+		SELECT match_id, person1_id, person2_id, state from person_match 
+		where (person1_id = #personid# or person2_id = #personid#) state = 0
 	</select>
+	
+	<select id="getMatchesForMatchId" parameterClass="java.lang.String" resultMap="PersonCommon.matchReason">
+		SELECT match_id, mode, item1_id, item2_id from match_reason 
+		where match_id = #matchid#
+	</select>
+	
+	<statement id="denieMatchByID" parameterClass="int">
+		UPDATE person_match SET state = 1 where match_id = #matchid#
+	</statement>
+	
+	<delete id="removeMatchReasons" parameterClass="int">
+		delete from match_reason where match_id = #matchid#
+	</delete>
+	
+	<update id="acceptMerge" parameterClass="int">
+		UPDATE person_match SET state = 2 where match_id = #matchid#
+	</update>
+	
+	<update id="updateResourcePersonRelation" parameterClass="org.bibsonomy.model.ResourcePersonRelation">
+		UPDATE pub_person 
+		SET person_change_id = LAST_INSERT_ID(), log_changed_at = #changedAt#, log_changed_by = #changedBy#, person_id = #person.personId#
+		WHERE person_change_id = #personRelChangeId#
+	</update>
+	
+	<update id="updatePersonMatchAfterMerge" parameterClass="org.bibsonomy.model.PersonMatch">
+		UPDATE person_match
+		SET person1_id = IF(person1_id = #person2ID#, #person1ID#, person1_id),
+			person2_id = IF(person2_id = #person2ID#, #person1ID#, person2_id)
+		WHERE match_id != matchID
+	</update>
+	
+	<select id="getHabilForPerson" parameterClass="java.lang.String" resultMap="BibTexCommon.bibtex_common_without_privnote">
+		select b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+		 b.institution, b.journal, b.bkey as key, b.month, b.note, b.number, b.organization,
+		 b.pages, b.publisher, b.school, b.series, b.type, b.volume, b.day, b.url, b.bibtexKey,
+		 b.misc, b.bibtexAbstract as abstract, b.author, b.editor, b.year, b.entrytype  
+		from bibtex b, pub_person p 
+		where p.person_id='g.stumme.1' and p.relator_code = 'Maut' 
+			and b.simhash1=p.simhash1 and b.entrytype='phdthesis' 
+			and b.type ='habilitation' group by b.simhash1
+	</select>
+	
+	<select id="getPHDForPerson" parameterClass="java.lang.String" resultMap="BibTexCommon.bibtex_common_without_privnote">
+		select b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+		 b.institution, b.journal, b.bkey as key, b.month, b.note, b.number, b.organization,
+		 b.pages, b.publisher, b.school, b.series, b.type, b.volume, b.day, b.url, b.bibtexKey,
+		 b.misc, b.bibtexAbstract as abstract, b.author, b.editor, b.year, b.entrytype  
+		from bibtex b, pub_person p 
+		where p.person_id='g.stumme.1' and p.relator_code = 'Maut' 
+			and b.simhash1=p.simhash1 and b.entrytype='phdthesis' 
+			and (b.type is NULL or b.type !='habilitation') group by b.simhash1
+	</select>
+	
+	<select id='getMainName' resultMap='PersonCommon.personName' parameterClass='String'>
+		SELECT <include refid='commonPersonNameColumns'/> FROM person_name 
+			WHERE person_name.person_id = #personId# and is_main = 1
+	</select>
+	
 	
 </sqlMap>

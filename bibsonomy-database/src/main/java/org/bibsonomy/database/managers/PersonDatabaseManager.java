@@ -27,7 +27,9 @@
 package org.bibsonomy.database.managers;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.common.exceptions.DuplicateEntryException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
@@ -38,8 +40,8 @@ import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
-import org.bibsonomy.model.Match;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -446,12 +448,130 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}
 	}
 	
-	public List<Match> getSimilarPersons(String mode, DBSession session){
-		return this.queryForList("getSimilarPersons", mode, Match.class, session);
+	public List<PersonMatch> getMatches(DBSession session) {
+		return this.queryForList("getMatches", null, PersonMatch.class, session);
 	}
 	
-	public List<Match> getSimilarPersonsFor(String personid, DBSession session){
-		return this.queryForList("getSimilarPersonsFor", personid, Match.class, session);
+	public List<PersonMatch> getMatchesFor(String personid, DBSession session) {
+		return this.queryForList("getMatchesFor", personid, PersonMatch.class, session);
+	}
+	
+	/**
+	 * checks if a merge can be performed
+	 * 
+	 * @param match
+	 * @return
+	 */
+	private boolean mergeable(PersonMatch match, DBSession session){
+		//check if a phd/habil conflict raises 
+		BibTex habil1 = this.queryForObject("getHabilForPerson", match.getPerson1ID(), BibTex.class, session);
+		BibTex habil2 = this.queryForObject("getHabilForPerson", match.getPerson2ID(), BibTex.class, session);
+		if(habil1 != null && habil2 != null && habil1.getSimHash1()!= habil2.getSimHash1()){
+			return false;
+		}
+		BibTex phd1 = this.queryForObject("getPHDForPerson", match.getPerson1ID(), BibTex.class, session);
+		BibTex phd2 = this.queryForObject("getPHDForPerson", match.getPerson2ID(), BibTex.class, session);
+		if(phd1.getSimHash1() == phd2.getSimHash1()){
+			
+		}
+		if(phd1 != null && phd2 != null && phd1.getSimHash1() != phd2.getSimHash1()) {
+			return false;
+		}
+		
+
+		//two different main names		
+		PersonName person1MainName = this.queryForObject("getMainName", match.getPerson1ID(), PersonName.class, session);
+		PersonName person2MainName = this.queryForObject("getMainName", match.getPerson2ID(), PersonName.class, session);
+		
+		if(person1MainName.getFirstName() != person2MainName.getFirstName() || person1MainName.getLastName() != person2MainName.getLastName()) {
+			return false;
+		}
+		
+		//person with different attributes
+		Person person1 = this.queryForObject("getPersonById", match.getPerson1ID(), Person.class, session);
+		Person person2 = this.queryForObject("getPersonById", match.getPerson2ID(), Person.class, session);
+		if(!person1.equalsTo(person2)) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Person pubs will be merged and the old relation will be logged
+	 * 
+	 * @param loginUser
+	 * @param match
+	 * @param session
+	 */
+	private void mergeAllPubs(PersonMatch match, String loginUser, DBSession session){
+		List<ResourcePersonRelation> allRelations = this.queryForList("getResourcePersonRelationsByPersonId", match.getPerson2ID(), ResourcePersonRelation.class, session);
+		for(ResourcePersonRelation relation : allRelations){
+			//generate new person_change_id and log the old relation
+			this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
+			this.insert("logPubPersonUpdates", relation.getPersonRelChangeId(), session);
+			//set change information and add new relation
+			relation.setChangedBy(loginUser);
+			relation.setChangedAt(new Date());
+			this.update("updateResourcePersonRelation", relation, session);
+		}
+	}
+	
+	/**
+	 * Person aliases will be merged
+	 * 
+	 * @param loginUser
+	 * @param match
+	 * @param session
+	 */
+	private void mergePersonAliases(String loginUser, PersonMatch match, DBSession session){
+		List<PersonName> person1Names = this.queryForList("getNames", match.getPerson1ID(), PersonName.class, session);
+		List<PersonName> person2Names = this.queryForList("getNames", match.getPerson2ID(), PersonName.class, session);
+		for(PersonName name2 : person2Names){
+			//check if person1 already has the name alias
+			boolean contains = false;
+			for(PersonName name1 : person1Names){
+				if(name2.getFirstName().equals(name1.getFirstName()) && name2.getLastName().equals(name1.getLastName())){
+					contains = true;
+				}
+			}
+			//add new alias, if person1 does not have it
+			if(!contains){
+				int newId = this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
+				name2.setPersonNameChangeId(newId);
+				name2.setPersonId(match.getPerson1ID());
+				name2.setChangedAt(new Date());
+				name2.setChangedBy(loginUser);
+			}
+		}
+	}
+	
+	
+	/**
+	 * This method will merge two persons, if there are no conflicts
+	 * The person resource relation will be changed
+	 * Name aliases will be added
+	 * 
+	 * @param match
+	 * @param loginUser
+	 * @param session
+	 * 
+	 * @return true if the merge was successful
+	 */
+	public boolean mergeSimilarPersons(PersonMatch match, String loginUser, DBSession session) {
+		if(mergeable(match, session)){
+			mergeAllPubs(match, loginUser, session);
+			mergePersonAliases(loginUser, match, session);
+			this.update("acceptMerge", match.getMatchID(), session);
+			this.update("updatePersonMatchAfterMerge", match, session);
+			this.delete("removeMatchReasons", match.getMatchID(), session);
+			
+			return true;
+		}
+		return false;
 	}
 
+	public void denieMatchById(String matchID, DBSession session) {
+		this.delete("denieMatchByID", matchID, session);
+	}
 }
