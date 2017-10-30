@@ -26,7 +26,7 @@
  */
 package org.bibsonomy.database.systemstags.executable;
 
-import javax.print.attribute.standard.PresentationDirection;
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
@@ -43,7 +43,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.PostUtils;
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * This system tag creates a link to its post in the inbox of a specified user (the receiver)
