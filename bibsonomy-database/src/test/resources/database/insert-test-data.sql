@@ -739,30 +739,33 @@ INSERT INTO `pub_person` VALUES
 (3,'0b539e248a02e3edcfe591c64346c7a0','d63038ea59383b94bb52fc4a9b76d1f5','Maut',0,'h.muller',0,'2015-07-06 14:19:55','testuserP',0);
 
 
-INSERT INTO `person` (person_change_id, person_id) VALUES (20, 'w.test.1');
-INSERT INTO `person` (person_change_id, person_id) VALUES (21, 'w.test.2');
-INSERT INTO `person` (person_change_id, person_id) VALUES (22, 'w.test.3');
+INSERT INTO `person` (person_change_id, person_id, homepage, post_ctr) VALUES (20, 'w.test.1', "hisPage", 0);
+INSERT INTO `person` (person_change_id, person_id, homepage, post_ctr) VALUES (21, 'w.test.2', null, 0);
+INSERT INTO `person` (person_change_id, person_id, homepage, post_ctr) VALUES (22, 'w.test.3', null, 0);
+INSERT INTO `person` (person_change_id, person_id, homepage, post_ctr) VALUES (23, 'w.test.4', "myPage", 0);
 
-INSERT INTO `pub_person` (person_change_id, simhash1, person_id, person_index) VALUES (23, '0c000000d00000f00cef0c00f000e00a', 'w.test.1', 0);
-INSERT INTO `pub_person` (person_change_id, simhash1, person_id, person_index) VALUES (24, '0c0000cdc00000b000cbe0fe0ab0acd0', 'w.test.1', 0);
-INSERT INTO `pub_person` (person_change_id, simhash1, person_id, person_index) VALUES (25, '0a00d00000fc00000a0000a0000f0ad0', 'w.test.1', 0);
-INSERT INTO `pub_person` (person_change_id, simhash1, person_id, person_index) VALUES (26, '0d0b00c0000a000f00a00ad00ff612fc', 'w.test.2', 0);
-INSERT INTO `pub_person` (person_change_id, simhash1, person_id, person_index) VALUES (27, '0ffa0a0ad000a00cbccf000adb0fdde0', 'w.test.2', 0);
-INSERT INTO `pub_person` (person_change_id, simhash1, person_id, person_index) VALUES (28, 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'w.test.2', 0);
-INSERT INTO `pub_person` (person_change_id, simhash1, person_id, person_index) VALUES (29, '0e0a00c000000f00d0d000b00eefe00b', 'w.test.3', 0);
-INSERT INTO `pub_person` (person_change_id, simhash1, person_id, person_index) VALUES (30, '00dc000febca00a0f0f00ce0de000000', 'w.test.3', 0);
+INSERT INTO `pub_person` VALUES (23, '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP', 0);
+INSERT INTO `pub_person` VALUES (24, '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP', 0);
+INSERT INTO `pub_person` VALUES (25, '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP', 0);
+INSERT INTO `pub_person` VALUES (26, '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP', 0);
+INSERT INTO `pub_person` VALUES (27, '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP', 0);
+INSERT INTO `pub_person` VALUES (28, 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP', 0);
+INSERT INTO `pub_person` VALUES (29, '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', 'Maut', 0, 'w.test.3', 0,'2015-07-06 14:19:55','testuserP', 0);
+INSERT INTO `pub_person` VALUES (30, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Maut', 0, 'w.test.3', 0,'2015-07-06 14:19:55','testuserP', 0);
 
-INSERT INTO `person_name` (person_change_id, first_name, last_name, person_id) VALUES (31, 'Willi', 'Test', 'w.test.1');
-INSERT INTO `person_name` (person_change_id, first_name, last_name, person_id) VALUES (32, 'Willi', 'Test', 'w.test.2');
-INSERT INTO `person_name` (person_change_id, first_name, last_name, person_id) VALUES (33, 'Willi', 'Test', 'w.test.3');
+INSERT INTO `person_name` (person_change_id, first_name, last_name, person_id, is_main) VALUES (31, 'Willi', 'Test', 'w.test.1', 1);
+INSERT INTO `person_name` (person_change_id, first_name, last_name, person_id, is_main) VALUES (32, 'Willi', 'Test', 'w.test.2', 1);
+INSERT INTO `person_name` (person_change_id, first_name, last_name, person_id, is_main) VALUES (33, 'Willi', 'Test', 'w.test.3', 1);
+INSERT INTO `person_name` (person_change_id, first_name, last_name, person_id, is_main) VALUES (34, 'Willi', 'Test', 'w.test.4', 1);
 
-INSERT INTO `person_match` (match_id, person1_id, person2_id, denied) VALUES (1, "w.test.1", "w.test.2", 0);
-INSERT INTO `person_match` (match_id, person1_id, person2_id, denied) VALUES (2, "w.test.2", "w.test.3", 0);
-INSERT INTO `person_match` (match_id, person1_id, person2_id, denied) VALUES (3, "w.test.1", "w.test.3", 0);
+INSERT INTO `person_match` (match_id, person1_id, person2_id, state) VALUES (1, "w.test.1", "w.test.2", 0);
+INSERT INTO `person_match` (match_id, person1_id, person2_id, state) VALUES (2, "w.test.1", "w.test.3", 0);
+INSERT INTO `person_match` (match_id, person1_id, person2_id, state) VALUES (3, "w.test.2", "w.test.3", 0);
+INSERT INTO `person_match` (match_id, person1_id, person2_id, state) VALUES (4, "w.test.1", "w.test.4", 0);
 
 INSERT INTO `match_reason` (match_id, mode, item1_id, item2_id) VALUES (1, "auth", "0c000000d00000f00cef0c00f000e00a", "0d0b00c0000a000f00a00ad00ff612fc");
-INSERT INTO `match_reason` (match_id, mode, item1_id, item2_id) VALUES (2, "auth", "0ffa0a0ad000a00cbccf000adb0fdde0", "0e0a00c000000f00d0d000b00eefe00b");
-INSERT INTO `match_reason` (match_id, mode, item1_id, item2_id) VALUES (3, "auth", "0c0000cdc00000b000cbe0fe0ab0acd0", "00dc000febca00a0f0f00ce0de000000");
+INSERT INTO `match_reason` (match_id, mode, item1_id, item2_id) VALUES (3, "auth", "0ffa0a0ad000a00cbccf000adb0fdde0", "0e0a00c000000f00d0d000b00eefe00b");
+INSERT INTO `match_reason` (match_id, mode, item1_id, item2_id) VALUES (2, "auth", "0c0000cdc00000b000cbe0fe0ab0acd0", "00dc000febca00a0f0f00ce0de000000");
 INSERT INTO `match_reason` (match_id, mode, item1_id, item2_id) VALUES (1, "titl", "0a00d00000fc00000a0000a0000f0ad0", "eb0000af0a0c00b0b0ac0e0a0a00d0c0");
 
 INSERT INTO `bibtex` (content_id, simhash0, simhash1, simhash2, simhash3, author, title) VALUES (34, '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', 'Willi Test and Maria Mueller', 'title1');

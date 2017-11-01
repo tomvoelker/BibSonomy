@@ -190,12 +190,17 @@
 		where state = 0
 	</select>
 	
+	<select id="getMatchbyID" parameterClass="int" resultMap="PersonCommon.personMatch">
+		SELECT match_id, person1_id, person2_id, state from person_match 
+		where match_id = #matchID#
+	</select>
+	
 	<select id="getMatchesFor" parameterClass="java.lang.String" resultMap="PersonCommon.personMatch">
 		SELECT match_id, person1_id, person2_id, state from person_match 
 		where (person1_id = #personid# or person2_id = #personid#) state = 0
 	</select>
 	
-	<select id="getMatchesForMatchId" parameterClass="java.lang.String" resultMap="PersonCommon.matchReason">
+	<select id="getMatchReasonsForMatchId" parameterClass="int" resultMap="PersonCommon.matchReason">
 		SELECT match_id, mode, item1_id, item2_id from match_reason 
 		where match_id = #matchid#
 	</select>
@@ -206,6 +211,10 @@
 	
 	<delete id="removeMatchReasons" parameterClass="int">
 		delete from match_reason where match_id = #matchid#
+	</delete>
+	
+	<delete id="removePersonMatch" parameterClass="int">
+		delete from person_match where match_id = #matchid#
 	</delete>
 	
 	<update id="acceptMerge" parameterClass="int">
@@ -222,14 +231,15 @@
 		UPDATE person_match
 		SET person1_id = IF(person1_id = #person2ID#, #person1ID#, person1_id),
 			person2_id = IF(person2_id = #person2ID#, #person1ID#, person2_id)
-		WHERE match_id != matchID
+		WHERE match_id != #matchID# and state != 2
 	</update>
 	
 	<select id="getHabilForPerson" parameterClass="java.lang.String" resultMap="BibTexCommon.bibtex_common_without_privnote">
 		select b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
-		 b.institution, b.journal, b.bkey as key, b.month, b.note, b.number, b.organization,
+		 b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization,
 		 b.pages, b.publisher, b.school, b.series, b.type, b.volume, b.day, b.url, b.bibtexKey,
-		 b.misc, b.bibtexAbstract as abstract, b.author, b.editor, b.year, b.entrytype  
+		 b.misc, b.bibtexAbstract as abstract, b.author, b.editor, b.year, b.entrytype,
+		 b.simhash1 as interhash, b.simhash2 as intrahash
 		from bibtex b, pub_person p 
 		where p.person_id='g.stumme.1' and p.relator_code = 'Maut' 
 			and b.simhash1=p.simhash1 and b.entrytype='phdthesis' 
@@ -238,9 +248,10 @@
 	
 	<select id="getPHDForPerson" parameterClass="java.lang.String" resultMap="BibTexCommon.bibtex_common_without_privnote">
 		select b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
-		 b.institution, b.journal, b.bkey as key, b.month, b.note, b.number, b.organization,
+		 b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization,
 		 b.pages, b.publisher, b.school, b.series, b.type, b.volume, b.day, b.url, b.bibtexKey,
-		 b.misc, b.bibtexAbstract as abstract, b.author, b.editor, b.year, b.entrytype  
+		 b.misc, b.bibtexAbstract as abstract, b.author, b.editor, b.year, b.entrytype,
+		 b.simhash1 as interhash, b.simhash2 as intrahash  
 		from bibtex b, pub_person p 
 		where p.person_id='g.stumme.1' and p.relator_code = 'Maut' 
 			and b.simhash1=p.simhash1 and b.entrytype='phdthesis' 
@@ -249,7 +260,7 @@
 	
 	<select id='getMainName' resultMap='PersonCommon.personName' parameterClass='String'>
 		SELECT <include refid='commonPersonNameColumns'/> FROM person_name 
-			WHERE person_name.person_id = #personId# and is_main = 1
+			WHERE person_id = #personId# and is_main = 1
 	</select>
 	
 	

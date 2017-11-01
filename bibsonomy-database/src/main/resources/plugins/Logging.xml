@@ -204,9 +204,9 @@
 		FROM pub_person WHERE person_change_id = #personRelChangeId#
 	</insert>
 	
-	<insert id="logPubPersonUpdates" parameterClass>
-		INSERT INTO log_pub_person (person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by, deleted, old_change_id)
-		SELECT #personChangeId# as person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, changedAt, changedBy, deleted, (SELECT LAST_INSERT_ID() as new_change_id)
+	<insert id="logPubPersonUpdates" parameterClass="int">
+		INSERT INTO log_pub_person (person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by, deleted, new_change_id)
+		SELECT #personChangeId# as person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by, deleted, (SELECT LAST_INSERT_ID() as new_change_id)
 		FROM pub_person WHERE person_change_id = #personChangeId#
 	</insert>
 	

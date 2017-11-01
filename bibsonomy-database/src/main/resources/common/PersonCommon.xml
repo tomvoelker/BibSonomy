@@ -76,7 +76,7 @@
 	
 	<resultMap id='personMatch' class='org.bibsonomy.model.PersonMatch'>
 		<result property='matchID' column='match_id'/>
-		<result property='state' column='denied'/>
+		<result property='state' column='state'/>
 		<result property='person1ID' column='person1_id'/>
 		<result property='person2ID' column='person2_id'/>
 	</resultMap>

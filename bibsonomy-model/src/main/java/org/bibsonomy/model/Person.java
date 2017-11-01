@@ -352,14 +352,14 @@ public class Person implements Serializable {
 	 * @return
 	 */
 	public boolean equalsTo(Person person) {
-		return (this.academicDegree.equals(person.getAcademicDegree()) || this.academicDegree == null || person.getAcademicDegree() == null)&&
-				(this.college.equals(person.getCollege()) || this.college == null ||person.getCollege() == null)&&
-				(this.dnbPersonId.equals(person.getDnbPersonId()) || this.dnbPersonId == null ||person.getDnbPersonId() == null)&&
-				(this.gender.equals(person.getGender()) || this.gender == null ||person.getGender() == null)&&
-				(this.email.equals(person.getGender()) || this.email == null ||person.getGender() == null)&&
-				(this.homepage.equals(person.getHomepage()) || this.homepage == null ||person.getHomepage() == null)&&
-				(this.orcid.equals(person.orcid) || this.orcid == null ||person.orcid == null);
-		
-	}
+		return (this.academicDegree == null || person.getAcademicDegree() == null || this.academicDegree.equals(person.getAcademicDegree()))&&
+			(this.college == null || person.getCollege() == null || this.college.equals(person.getCollege()) )&&
+			(this.dnbPersonId == null || person.getDnbPersonId() == null || this.dnbPersonId.equals(person.getDnbPersonId()))&&
+			(this.gender == null || person.getGender() == null || this.gender.equals(person.getGender()))&&
+			(this.email == null || person.getGender() == null || this.email.equals(person.getGender()))&&
+			(this.homepage == null || person.getHomepage() == null || this.homepage.equals(person.getHomepage()))&&
+			(this.orcid == null || person.orcid == null || this.orcid.equals(person.orcid));
+
+  }
 
 }

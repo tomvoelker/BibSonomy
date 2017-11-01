@@ -27,6 +27,7 @@
 package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
@@ -35,6 +36,7 @@ import java.util.List;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -124,7 +126,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById(this.testPerson.getPersonId(), this.dbSession);
 		assertEquals(person.getOrcid(), orcid);
 	}
-	
+
 	/**
 	 * tests {@link PersonDatabaseManager#updateCollege(Person, org.bibsonomy.database.common.DBSession)}
 	 */
@@ -163,6 +165,19 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	@Test
 	public void testSimilarPerson(){
+		List<PersonMatch> matches = this.PERSON_DATABASE_MANAGER.getMatches(this.dbSession);
+		int open_matches = matches.size();
+		assertTrue(open_matches > 0);
+		for(PersonMatch match: matches) {
+			this.PERSON_DATABASE_MANAGER.mergeSimilarPersons(this.PERSON_DATABASE_MANAGER.getMatch(match.getMatchID(), this.dbSession), loginUser.getName(), this.dbSession);
+		}
+		List<PersonMatch> newMatches = this.PERSON_DATABASE_MANAGER.getMatches(this.dbSession);
+		//some matches should be resolved
+		assertTrue(open_matches > newMatches.size());
+		//match is removed, because the person_match relation is transitive
+		assertNull(this.PERSON_DATABASE_MANAGER.getMatch(3, this.dbSession));
+		//match denied
+		assertEquals(1, this.PERSON_DATABASE_MANAGER.getMatch(4, this.dbSession).getState());
 	}
 	
 }

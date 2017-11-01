@@ -54,13 +54,13 @@ public class PersonMatch implements Serializable {
 	/**
 	 * @return the deleted
 	 */
-	public int getDeleted() {
+	public int getState() {
 		return this.state;
 	}
 	/**
 	 * @param deleted the deleted to set
 	 */
-	public void setDeleted(int deleted) {
-		this.state = deleted;
+	public void setState(int state) {
+		this.state = state;
 	}
 }
