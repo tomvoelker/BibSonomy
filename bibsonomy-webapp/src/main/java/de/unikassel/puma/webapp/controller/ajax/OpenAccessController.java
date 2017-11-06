@@ -61,6 +61,8 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 
 	private SherpaRomeoInterface sherpaLogic;
 	
+	private int maxQuerySize;
+	
 	@Override
 	public OpenAccessCommand instantiateCommand() {
 		return new OpenAccessCommand();
@@ -79,7 +81,7 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 		if (present(action)) {
 			if (GET_SENT_REPOSITORIES.equals(action)) {
 				// TODO: adapt limit to get all posts
-				final List<Post<BibTex>> posts = logic.getPosts(BibTex.class, GroupingEntity.USER, command.getContext().getLoginUser().getName(), null, command.getInterhash(), null, SearchType.LOCAL, Sets.<Filter>asSet(FilterEntity.POSTS_WITH_REPOSITORY), null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
+				final List<Post<BibTex>> posts = logic.getPosts(BibTex.class, GroupingEntity.USER, command.getContext().getLoginUser().getName(), null, command.getInterhash(), null, SearchType.LOCAL, Sets.<Filter>asSet(FilterEntity.POSTS_WITH_REPOSITORY), null, null, null, 0, this.maxQuerySize);
 
 				// TODO: implement this
 				/*
@@ -121,6 +123,20 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 		}
 		
 		return Views.AJAX_JSON;
+	}
+
+	/**
+	 * @return the maxQuerySize
+	 */
+	public int getMaxQuerySize() {
+		return this.maxQuerySize;
+	}
+
+	/**
+	 * @param maxQuerySize the maxQuerySize to set
+	 */
+	public void setMaxQuerySize(int maxQuerySize) {
+		this.maxQuerySize = maxQuerySize;
 	}
 
 }

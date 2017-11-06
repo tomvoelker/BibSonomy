@@ -97,12 +97,15 @@ public class PublicationListTag extends SharedTag {
 		defaultOrder.put(ORDER_AUTHOR, ORDER_ASC);
 		defaultOrder.put(ORDER_TITLE, ORDER_ASC);
 	}
-
+	
+	private int maxQuerySize;
+	
 	/**
 	 * sets the tag name
 	 */
-	public PublicationListTag() {
+	public PublicationListTag(int maxQuerySize) {
 		super(TAG_NAME);
+		this.maxQuerySize = maxQuerySize;
 	}
 
 	@Override
@@ -116,6 +119,9 @@ public class PublicationListTag extends SharedTag {
 		final StringBuilder renderedHTML = new StringBuilder();
 		final Map<String, String> tagAttributes = this.getAttributes();
 		String tags;
+		
+		
+		
 		if (!tagAttributes.containsKey(TAGS)) {
 			tags = "myown"; // TODO: should be MyOwnSystemTag.NAME but adding
 							// dependency to database module only for accessing
@@ -154,7 +160,7 @@ public class PublicationListTag extends SharedTag {
 		 * FIXME: We want these working in a different way. We want the
 		 * publication's year, not the BibSonomy year of the posting.
 		 */
-		List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, this.getGroupingEntity(), requestedName, Arrays.asList(tags.split(" ")), null, null,SearchType.LOCAL, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
+		List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, this.getGroupingEntity(), requestedName, Arrays.asList(tags.split(" ")), null, null,SearchType.LOCAL, null, null, null, null, 0, this.maxQuerySize);
 		BibTexUtils.removeDuplicates(posts);
 
 		/*

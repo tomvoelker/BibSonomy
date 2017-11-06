@@ -90,14 +90,16 @@ public class CVWikiModel extends AbstractWikiModel {
 		register(new NameTag());
 		register(new ImageTag());
 		register(new RegDateTag());
-		register(new BookmarkListTag());
-		register(new PublicationListTag());
+		register(new BookmarkListTag(CVWikiModel.maxQuerySize));
+		register(new PublicationListTag(CVWikiModel.maxQuerySize));
 	}
 
 	private static void register(final AbstractTag tag) {
 		Configuration.DEFAULT_CONFIGURATION.addTokenTag(tag.getName(), tag);
 	}
 
+	private static int maxQuerySize;
+	
 	private User requestedUser;
 	private Group requestedGroup;
 	private LogicInterface logic;
@@ -248,6 +250,20 @@ public class CVWikiModel extends AbstractWikiModel {
 	 */
 	public void setUrlGenerator(final URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
+	}
+
+	/**
+	 * @return the maxQuerySize
+	 */
+	public static int getMaxQuerySize() {
+		return CVWikiModel.maxQuerySize;
+	}
+
+	/**
+	 * @param maxQuerySize the maxQuerySize to set
+	 */
+	public static void setMaxQuerySize(int maxQuerySize) {
+		CVWikiModel.maxQuerySize = maxQuerySize;
 	}
 
 }

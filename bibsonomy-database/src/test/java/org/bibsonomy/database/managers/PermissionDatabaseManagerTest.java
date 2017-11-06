@@ -91,7 +91,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// OK 
 		final User admin = new User();
 		admin.setRole(Role.ADMIN);
-		for (int i = PostLogicInterface.MAX_QUERY_SIZE + 1; i < 10000; i++) {
+		for (int i = permissionDb.getMaxQuerySize() + 1; i < 10000; i++) {
 			try {
 				permissionDb.checkStartEnd(admin, GroupingEntity.ALL, 0, i, "test");
 			} catch (final AccessDeniedException ignore) {
@@ -100,7 +100,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 		
 		// OK
-		for (int i = 0; i < PostLogicInterface.MAX_RECENT_POSTS; i+= PostLogicInterface.MAX_QUERY_SIZE) {
+		for (int i = 0; i < PostLogicInterface.MAX_RECENT_POSTS; i+= permissionDb.getMaxQuerySize()) {
 			try {
 				permissionDb.checkStartEnd(notLoggedInUser, GroupingEntity.ALL, i, i + 1, "test");
 			} catch (final AccessDeniedException ignore) {
@@ -109,9 +109,9 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 		
 		// not ok
-		for (int i = PostLogicInterface.MAX_RECENT_POSTS; i < PostLogicInterface.MAX_RECENT_POSTS * 2; i+= PostLogicInterface.MAX_QUERY_SIZE) {
+		for (int i = PostLogicInterface.MAX_RECENT_POSTS; i < PostLogicInterface.MAX_RECENT_POSTS * 2; i+= permissionDb.getMaxQuerySize()) {
 			try {
-				permissionDb.checkStartEnd(notLoggedInUser, GroupingEntity.ALL, i, i + PostLogicInterface.MAX_QUERY_SIZE / 2, "test");
+				permissionDb.checkStartEnd(notLoggedInUser, GroupingEntity.ALL, i, i + permissionDb.getMaxQuerySize() / 2, "test");
 				fail("expected exception");
 			} catch (final AccessDeniedException ignore) {
 				// ignored
@@ -120,9 +120,9 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		// but ok for admin
 		
-		for (int i = PostLogicInterface.MAX_RECENT_POSTS; i < PostLogicInterface.MAX_RECENT_POSTS * 2; i+= PostLogicInterface.MAX_QUERY_SIZE) {
+		for (int i = PostLogicInterface.MAX_RECENT_POSTS; i < PostLogicInterface.MAX_RECENT_POSTS * 2; i+= permissionDb.getMaxQuerySize()) {
 			try {
-				permissionDb.checkStartEnd(admin, GroupingEntity.ALL, i, i + PostLogicInterface.MAX_QUERY_SIZE / 2, "test");
+				permissionDb.checkStartEnd(admin, GroupingEntity.ALL, i, i + permissionDb.getMaxQuerySize() / 2, "test");
 			} catch (final AccessDeniedException ignore) {
 				fail("no exception expected");
 			}

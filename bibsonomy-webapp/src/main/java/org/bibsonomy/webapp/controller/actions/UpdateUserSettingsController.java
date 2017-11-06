@@ -48,6 +48,8 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 public class UpdateUserSettingsController extends SettingsPageController {
 	private static final Log log = LogFactory.getLog(UpdateUserSettingsController.class);
 
+	private int maxQuerySize;
+	
 	@Override
 	public View workOn(final SettingsViewCommand command) {		
 		final RequestWrapperContext context = command.getContext();
@@ -124,8 +126,8 @@ public class UpdateUserSettingsController extends SettingsPageController {
 			return;
 		}
 		
-		if (commandSettings.getListItemcount() > PostLogicInterface.MAX_QUERY_SIZE) {
-			errors.rejectValue("user.settings.listItemcount", "error.settings.list_item_count.size", new String[]{Integer.toString(PostLogicInterface.MAX_QUERY_SIZE)}, "");
+		if (commandSettings.getListItemcount() > this.maxQuerySize) {
+			errors.rejectValue("user.settings.listItemcount", "error.settings.list_item_count.size", new String[]{Integer.toString(this.maxQuerySize)}, "");
 			return;
 		}
 		
@@ -161,6 +163,20 @@ public class UpdateUserSettingsController extends SettingsPageController {
 		 * we would need the request + response which we don't have. 
 		 */
 		requestLogic.setSessionAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, new Locale(userSettings.getDefaultLanguage()));
+	}
+
+	/**
+	 * @return the maxQuerySize
+	 */
+	public int getMaxQuerySize() {
+		return this.maxQuerySize;
+	}
+
+	/**
+	 * @param maxQuerySize the maxQuerySize to set
+	 */
+	public void setMaxQuerySize(int maxQuerySize) {
+		this.maxQuerySize = maxQuerySize;
 	}
 
 }
