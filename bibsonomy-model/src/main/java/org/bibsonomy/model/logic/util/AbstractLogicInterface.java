@@ -908,4 +908,12 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	protected void doDefaultAction() {
 		// noop
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getPersonMatches(java.lang.String)
+	 */
+	@Override
+	public List<Person> getPersonMatches(String personID) {
+		return null;
+	}
 }

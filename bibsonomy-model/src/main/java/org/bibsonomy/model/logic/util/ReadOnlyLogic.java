@@ -885,4 +885,12 @@ public class ReadOnlyLogic implements LogicInterface {
 		}
 		return new ReadOnlyLogic(logicAccess);
 	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getPersonMatches(java.lang.String)
+	 */
+	@Override
+	public List<Person> getPersonMatches(String personID) {
+		return this.logicinterface.getPersonMatches(personID);
+	}
 }

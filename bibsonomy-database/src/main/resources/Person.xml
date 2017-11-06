@@ -197,7 +197,7 @@
 	
 	<select id="getMatchesFor" parameterClass="java.lang.String" resultMap="PersonCommon.personMatch">
 		SELECT match_id, person1_id, person2_id, state from person_match 
-		where (person1_id = #personid# or person2_id = #personid#) state = 0
+		where (person1_id = #personid# or person2_id = #personid#)
 	</select>
 	
 	<select id="getMatchReasonsForMatchId" parameterClass="int" resultMap="PersonCommon.matchReason">

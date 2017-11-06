@@ -103,6 +103,8 @@ public class PersonPageCommand extends BaseCommand {
 	
 	private List<Post<BibTex>> similarAuthorPubs;
 	
+	private List<Person> personMatchList;
+	
 	private String okHintKey;
 	
 	@Deprecated // FIXME: remove use errors handling build into spring
@@ -532,6 +534,20 @@ public class PersonPageCommand extends BaseCommand {
 	 */
 	public void setSimilarAuthorPubs(List<Post<BibTex>> similarAuthorPubs) {
 		this.similarAuthorPubs = similarAuthorPubs;
+	}
+
+	/**
+	 * @return the personMatchList
+	 */
+	public List<Person> getPersonMatchList() {
+		return this.personMatchList;
+	}
+
+	/**
+	 * @param personMatchList the personMatchList to set
+	 */
+	public void setPersonMatchList(List<Person> personMatchList) {
+		this.personMatchList = personMatchList;
 	}
 
 }

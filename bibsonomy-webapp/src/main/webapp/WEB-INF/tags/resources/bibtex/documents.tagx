@@ -38,7 +38,7 @@
 			<c:if test="${not empty post.user.name}">
 				<c:set var="bibUrlTemplate" value="${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, post.user.name)}"/>
 				<c:if test="${isRemotePost}">
-					<c:set var="bibUrlTemplate" value="${relativeUrlGenerator.getPublicationUrlByIntraHashUsernameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}"/>					
+					<c:set var="bibUrlTemplate" value="${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, post.user.name)}"/>					
 				</c:if>
 			</c:if>
 		

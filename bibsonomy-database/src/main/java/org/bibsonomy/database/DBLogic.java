@@ -3714,4 +3714,14 @@ public class DBLogic implements LogicInterface {
 			}
 		};
 	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getPersonMatches(java.lang.String)
+	 */
+	@Override
+	public List<Person> getPersonMatches(String personID) {
+		final DBSession session = this.openSession();
+		return this.personDBManager.getMatchesFor(session, personID);
+	}
 }

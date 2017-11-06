@@ -492,7 +492,7 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setOtherPubs(otherAuthorPosts);
 		command.setAdvisedThesis(advisorPosts);
 		command.setOtherAdvisedPubs(otherAdvisorPosts);
-		
+		command.setPersonMatchList(this.logic.getPersonMatches(person.getPersonId()));
 		
 		final List<Post<BibTex>> similarAuthorPubs = this.getPublicationsOfSimilarAuthor(person);
 		

@@ -44,6 +44,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
@@ -508,8 +509,10 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	private void mergeAllPubs(PersonMatch match, String loginUser, DBSession session){
-		List<ResourcePersonRelation> allRelations = this.queryForList("getResourcePersonRelationsByPersonId", match.getPerson2ID(), ResourcePersonRelation.class, session);
-		for(ResourcePersonRelation relation : allRelations){
+		//List<ResourcePersonRelation> allRelationsPerson1 = this.queryForList("getResourcePersonRelationsByPersonId", match.getPerson1ID(), ResourcePersonRelation.class, session);
+		List<ResourcePersonRelation> allRelationsPerson2 = this.queryForList("getResourcePersonRelationsByPersonId", match.getPerson2ID(), ResourcePersonRelation.class, session);
+		
+		for(ResourcePersonRelation relation : allRelationsPerson2){
 			//generate new person_change_id and log the old relation
 			this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
 			this.insert("logPubPersonUpdates", relation.getPersonRelChangeId(), session);
@@ -520,7 +523,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			this.update("updateResourcePersonRelation", relation, session);
 		}
 	}
-	
+
 	/**
 	 * Person aliases will be merged
 	 * 
@@ -564,10 +567,19 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 */
 	public boolean mergeSimilarPersons(PersonMatch match, String loginUser, DBSession session) {
 		orderMatch(match);
+		//merge two persons, if there is no conflict
 		if(mergeable(match, session)){
+			//redirect resourcePersonRelation to person1 and log the changes
+			//Note that persons can have multiple related posts with same simhash and that they are will be grouped by their simhash1
 			mergeAllPubs(match, loginUser, session);
+			//add new further alias 
 			mergePersonAliases(loginUser, match, session);
+			
+			//TODO merge person attributes
+			
+			//sets match state to 2
 			this.update("acceptMerge", match.getMatchID(), session);
+			//Substitutes person2's id with person1's for all unresolved matches
 			this.update("updatePersonMatchAfterMerge", match, session);
 			this.delete("removeMatchReasons", match.getMatchID(), session);
 			
@@ -606,15 +618,25 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}
 	}
 
+	/**
+	 *sets state for the match to 1
+	 *
+	 * @param matchID
+	 * @param session
+	 */
 	public void denieMatchById(int matchID, DBSession session) {
 		this.delete("denieMatchByID", matchID, session);
 	}
 
 	/**
 	 * @param dbSession
-	 * @return
+	 * @return match with matchID
 	 */
 	public PersonMatch getMatch(int matchID, DBSession dbSession) {
 		return this.queryForObject("getMatchbyID", matchID, PersonMatch.class, dbSession);
+	}
+	
+	public List<Person> getMatchesFor(DBSession session, String personID) {
+		return this.queryForList("getMatchesFor", personID, Person.class,session);
 	}
 }
