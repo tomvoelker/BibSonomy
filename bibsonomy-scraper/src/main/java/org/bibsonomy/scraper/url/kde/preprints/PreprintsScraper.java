@@ -24,7 +24,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.oxfordjournals;
+package org.bibsonomy.scraper.url.kde.preprints;
 
 import java.io.IOException;
 import java.net.URL;
@@ -36,31 +36,31 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.CitationManagerScraper;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
- * scraper for Oxford Journals
+ * scraper for Preprints
+ * checks for a doi and sets it as selectedText
+ * then ContentNegotiationDOIScraper gets the bibtex
  *
- * @author Haile
+ * @author Johannes
  */
-public class OxfordJournalsScraper extends GenericBibTeXURLScraper {
-	private static final Log log = LogFactory.getLog(OxfordJournalsScraper.class);
-	private static final String SITE_NAME = "Oxford Journals";
-	private static final String SITE_URL = "https://www.academic.oup.com/";
-	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
+public class PreprintsScraper extends AbstractUrlScraper{
+	Log log = LogFactory.getLog(PreprintsScraper.class);
+	
+	private static final String SITE_NAME = "Preprints";
+	private static final String SITE_HOST = "preprints.org";
+	private static final String SITE_URL = "https://" + SITE_HOST;
+	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME);
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(
-			Pattern.compile(".*" + "academic.oup.com"), 
+			Pattern.compile(".*" + SITE_HOST), 
 			EMPTY_PATTERN
 			));
-
-	private static String downloadlink_prefix = "https://academic.oup.com/comjnl/downloadcitation/";
-	private static String downloadlink_suffix = "?format=bibtex";
-	private static Pattern abstractPattern = Pattern.compile("<section class=\"abstract\"><p>(.*?)</p></section>");
+	
+	private static final Pattern DOI_PATTERN = Pattern.compile("<meta name=\"citation_doi\" content=\"(.*?)\">");
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.UrlScraper#getSupportedSiteName()
@@ -95,38 +95,28 @@ public class OxfordJournalsScraper extends GenericBibTeXURLScraper {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL, java.lang.String)
+	 * @see org.bibsonomy.scraper.AbstractUrlScraper#scrapeInternal(org.bibsonomy.scraper.ScrapingContext)
 	 */
 	@Override
-	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
-		String[] a = url.toExternalForm().split("/");
-		String id = a[a.length-2];
-		System.out.println(downloadlink_prefix + id + downloadlink_suffix);
-		return downloadlink_prefix + id + downloadlink_suffix;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
-	 */
-	@Override
-	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
-		//add abstract
-		
+	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
 		try {
+			/*
+			 * find doi and set selectedText so ContentNegotiationDOIScraper can do its work
+			 */
 			String content = WebUtils.getContentAsString(scrapingContext.getUrl());
-			Matcher m = abstractPattern.matcher(content);
-			
+			final Matcher m = DOI_PATTERN.matcher(content);
 			if (m.find()) {
-				final String abs = m.group(1);
-				bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "abstract", abs);
+				String doi = m.group(1);
+				scrapingContext.setSelectedText(doi);
 			}
-			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			log.error("TODO", e);
+			throw new ScrapingException(e);
 		}
 		
-		return bibtex;
+		/*
+		 * always return false, such that ContentNegotiationDOIScraper gets a chance
+		 */
+		return false;
 	}
 
 }

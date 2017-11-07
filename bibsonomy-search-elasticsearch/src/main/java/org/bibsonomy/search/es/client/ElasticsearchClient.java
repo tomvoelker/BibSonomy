@@ -77,7 +77,7 @@ import org.elasticsearch.search.SearchHit;
 import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
 
 /**
- * TODO: add documentation to this class
+ * the default implementation of the {@link ESClient}
  *
  * @author jensi
  */
@@ -149,6 +149,11 @@ public class ElasticsearchClient implements ESClient {
 	
 	@Override
 	public boolean insertNewDocuments(String indexName, String type, Map<String, Map<String, Object>> jsonDocuments) {
+		if (jsonDocuments.isEmpty()) {
+			log.info("no documents present; nothing to insert");
+			return true;
+		}
+
 		final BulkRequestBuilder bulk = this.client.prepareBulk();
 		
 		for (Entry<String, Map<String, Object>> entryDocument : jsonDocuments.entrySet()) {
@@ -207,13 +212,13 @@ public class ElasticsearchClient implements ESClient {
 		final IndicesAliasesRequestBuilder aliasesBuilder = this.client.admin().indices().prepareAliases();
 		
 		if (present(aliasesToAdd)) {
-			for (Pair<String, String> aliasToAdd : aliasesToAdd) {
+			for (final Pair<String, String> aliasToAdd : aliasesToAdd) {
 				aliasesBuilder.addAlias(aliasToAdd.getFirst(), aliasToAdd.getSecond());
 			}
 		}
 		
 		if (present(aliasesToRemove)) {
-			for (Pair<String, String> aliasToRemove : aliasesToRemove) {
+			for (final Pair<String, String> aliasToRemove : aliasesToRemove) {
 				aliasesBuilder.removeAlias(aliasToRemove.getFirst(), aliasToRemove.getSecond());
 			}
 		}

@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.apha;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -42,7 +44,9 @@ public class APHAScraperTest {
 	 */
 	@Test
 	public void url1TestRun() {
-		UnitTestRunner.runSingleTest("url_288");
+		final String url = "http://ajph.aphapublications.org/doi/abs/10.2105/AJPH.2009.160184";
+		final String resultFile = "APHAScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, APHAScraper.class, resultFile);
 	}
 
 	/**
@@ -50,7 +54,9 @@ public class APHAScraperTest {
 	 */
 	@Test
 	public void url2TestRun() {
-		UnitTestRunner.runSingleTest("url_291");
+		final String url = "http://ajph.aphapublications.org/doi/abs/10.2105/AJPH.2009.181958";
+		final String resultFile = "APHAScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, APHAScraper.class, resultFile);
 	}
 
 	/**
@@ -59,7 +65,9 @@ public class APHAScraperTest {
 	 */
 	@Test
 	public void url3TestRun() {
-		UnitTestRunner.runSingleTest("url_312");
+		final String url = "http://www.nrcresearchpress.com/doi/abs/10.1139/o59-099";
+		final String resultFile = "APHAScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, APHAScraper.class, resultFile);
 	}
 
 	/**
@@ -68,6 +76,8 @@ public class APHAScraperTest {
 	 */
 	@Test
 	public void url4TestRun() {
-		UnitTestRunner.runSingleTest("url_230");
+		final String url = "http://www.emeraldinsight.com/doi/abs/10.1108/S1876-0562%282004%290000004009";
+		final String resultFile = "APHAScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, APHAScraper.class, resultFile);
 	}
 }

@@ -300,7 +300,6 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	}
 	
 	/**
-	 * @param jsonDocument
 	 * @param documents
 	 * @return the converted documents
 	 */

@@ -124,7 +124,7 @@ public class HelpSearchManager implements HelpSearch {
 								.field("type", "custom")
 								.field("char_filter", Arrays.asList("html_strip"))
 								.field("tokenizer", "standard")
-								.field("filter", Arrays.asList("lowercase", "snowball"))
+								.field("filter", Arrays.asList("lowercase", "standard"))
 							.endObject()
 						.endObject()
 					.endObject().string();
@@ -168,7 +168,9 @@ public class HelpSearchManager implements HelpSearch {
 				
 				@Override
 				public boolean accept(File pathname) {
-					return pathname.isDirectory() && !pathname.isHidden();
+					
+					//folder "code-samples" should not be included
+					return pathname.isDirectory() && !pathname.isHidden() && !pathname.getName().equals("code-samples");
 				}
 			});
 			

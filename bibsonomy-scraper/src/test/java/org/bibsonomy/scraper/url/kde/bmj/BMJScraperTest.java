@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.bmj;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -33,7 +34,6 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -49,7 +49,9 @@ public class BMJScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_68");
+		final String url = "http://www.bmj.com/content/336/7655/1221";
+		final String resultFile = "BMJScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, BMJScraper.class, resultFile);
 	}
 	
 	/**
@@ -57,7 +59,9 @@ public class BMJScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_69");
+		final String url = "http://www.bmj.com/content/336/7655/1221.abstract";
+		final String resultFile = "BMJScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, BMJScraper.class, resultFile);
 	}
 	@Test
 	public void testReferences() throws Exception{

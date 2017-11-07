@@ -43,7 +43,7 @@ import org.bibsonomy.util.WebUtils;
  * @author wbi
  */
 public class RSOCScraper extends GenericBibTeXURLScraper {
-	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<a href=\"(.*?)\" .* title=\"Citation tools\">");
+	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<a.*href=\"([^\"]+)\".*>BibTeX</a>");
 	private static final String SITE_NAME = "Royal Society Publishing";
 	private static final String SITE_URL = "http://royalsocietypublishing.org/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
@@ -78,11 +78,13 @@ public class RSOCScraper extends GenericBibTeXURLScraper {
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		try {
-			final Matcher m = BIBTEX_PATTERN.matcher(WebUtils.getContentAsString(url));
-			if(m.find()) {
-				return "http://" + url.getHost().toString() + m.group(1).replace("download", "bibtex");
+			// using url gives a FileNotFoundException, url.toString() doesn't
+			final String content = WebUtils.getContentAsString(url.toString(), cookies);
+			final Matcher m = BIBTEX_PATTERN.matcher(content);
+			if (m.find()) {
+				return "http://" + url.getHost() + m.group(1);
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new ScrapingException(e);
 		}
 		return null;

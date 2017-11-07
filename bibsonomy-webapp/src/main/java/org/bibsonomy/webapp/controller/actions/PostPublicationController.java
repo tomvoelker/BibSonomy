@@ -56,7 +56,6 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.PersonIdType;
@@ -77,9 +76,9 @@ import org.bibsonomy.webapp.validation.PublicationValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.ValidationUtils;
 
-import com.itextpdf.text.pdf.PdfReader;
-
 import bibtex.parser.ParseException;
+
+import com.itextpdf.text.pdf.PdfReader;
 
 /**
  *
@@ -98,7 +97,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 	/**
 	 * Extracts the line number from the parser error messages.
 	 */
-	private static final Pattern lineNumberPattern = Pattern.compile("([0-9]+)");
+	private static final Pattern LINE_NUMBER_PATTERN = Pattern.compile("([0-9]+)");
 
 	private PublicationImporter publicationImporter;
 	private FileLogic fileLogic;
@@ -163,17 +162,24 @@ public class PostPublicationController extends AbstractEditPublicationController
 		final boolean hasSelection = present(selection);
 		final boolean hasFile = present(command.getFile());
 		/*
-		 * check for valid ckey
+		 * The ckey must be provided when a file is uploaded or a selection is 
+		 * provided, as then data might be automatically stored (and potentially
+		 * posts deleted). 
+		 * 
+		 * There's one exception: if a selection is supplied and the posts shall
+		 * be edited before import, then we ignore the ckey. This enables provision
+		 * of BibTeX snippets with more than one entry from external URLs. 
+		 * (see issue #2797)   
 		 */
-		if ((hasFile || hasSelection) && !context.isValidCkey()) {
+		if ((hasFile || hasSelection) && !context.isValidCkey() && !(hasSelection && command.isEditBeforeImport())) {
 			this.errors.reject("error.field.valid.ckey");
 			return Views.ERROR;
 		}
 
+		// FIXME: please document what is done here and possibly refactor this into a method with a meaningful name.
 		if (command.getPerson() != null) {
 			if (present(command.getPerson().getPersonId())) {
-				final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPersonId());
-				command.setPerson(person);
+				command.setPerson(this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPersonId()));
 			}
 		}
 
@@ -193,36 +199,18 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * The user has entered text into the snippet selection - we use that
 			 */
 			log.debug("user has filled selection");
-			
 			/*
 			 * check whether every line is a URL
 			 * AND can be interpreted by the scraper
 			 */
-			final String[] selectionInLines = selection.split("\n");
-			final StringBuilder urlSnippet = new StringBuilder();
-			snippet = urlSnippet.toString();
-			boolean hasURL = false;
-			for (final String possibleURL : selectionInLines) {
-				if (present(possibleURL)) {
-					final ScrapingContext scrapingContext = this.buildScrapingContext(possibleURL, null, true);
-					if (!present(scrapingContext)) {
-						break;
-					}
-					hasURL = true;
-					final boolean success = this.scrape(scrapingContext);
-					if (success) {
-						urlSnippet.append(scrapingContext.getBibtexResult());
-						urlSnippet.append("\n");
-					}
-				}
-			}
+			final String urlSnippet = scrapeUrlsInSelection(selection);
 			/*
 			 * if not handle the field as a snippet
 			 */
-			if (!hasURL) {
-				snippet = this.publicationImporter.handleSelection(selection);
+			if (present(urlSnippet)) {
+				snippet = urlSnippet;
 			} else {
-				snippet = urlSnippet.toString().trim();
+				snippet = this.publicationImporter.handleSelection(selection);
 			}
 		} else if (hasFile) {
 			/*
@@ -238,6 +226,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * user send empty snippet or "nonexisting" file
 			 * FIXME: that second case should result in some error and hint for the user
 			 */
+			// FIXME: please document what is done here (and why)
 			if (command.getPerson() != null) {
 				final PersonName mainName = command.getPerson().getMainName();
 				if (mainName != null) {
@@ -250,47 +239,12 @@ public class PostPublicationController extends AbstractEditPublicationController
 			return this.view;
 		}
 
-		// document file uploaded
+		/*
+		 * User has uploaded a (PDF) file -> attempt to find a post which represents it.
+		 */
 		final List<String> fileNames = command.getFileName();
 		if (present(fileNames)) {
-			final String firstFileName = fileNames.get(0).substring(0, 32); // FIXME: this is a hack
-			final File tempFile = this.fileLogic.getTempFile(firstFileName);
-			PdfReader reader = null;
-			try {
-				final FileInputStream inputStream = new FileInputStream(tempFile);
-				reader = new PdfReader(inputStream);
-				final HashMap<String, String> metaInfo = reader.getInfo();
-				final String title = StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(metaInfo.get("Title"));
-				boolean foundPublication = false;
-				if (present(title)) {
-					final List<String> tags = new LinkedList<>();
-					for (final String titleToken : title.split(" ")) {
-						if (present(titleToken)) {
-							tags.add("sys:title:" + titleToken);
-						}
-					}
-					final List<Post<BibTex>> publicationPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, null, SearchType.LOCAL, null, null, null, null, 0, 5);
-					final Post<BibTex> bestMatch = getBestMatch(publicationPosts);
-					if (present(bestMatch)) {
-						foundPublication = true;
-						command.setPost(bestMatch);
-					}
-				}
-				
-				if (!foundPublication) {
-					this.getWarnings().reject("post_publication.file.noinfo");
-				}
-				
-				reader.close();
-				inputStream.close();
-			} catch (final Exception e) {
-				log.error("error file reading content from document file", e);
-			} finally {
-				if (reader != null) {
-					reader.close();
-				}
-			}
-			
+			handlePdfUpload(command, fileNames);
 			return super.workOn(command);
 		}
 
@@ -487,6 +441,78 @@ public class PostPublicationController extends AbstractEditPublicationController
 	}
 
 	/**
+	 * Attempts to find a post which matches (?) the uploaded (PDF) file.
+	 * 
+	 * FIXME: needs to be documented
+	 * 
+	 * @param command
+	 * @param fileNames
+	 */
+	private void handlePdfUpload(final PostPublicationCommand command, final List<String> fileNames) {
+		final String firstFileName = fileNames.get(0).substring(0, 32); // FIXME: this is a hack
+		final File tempFile = this.fileLogic.getTempFile(firstFileName);
+		PdfReader reader = null;
+		try {
+			final FileInputStream inputStream = new FileInputStream(tempFile);
+			reader = new PdfReader(inputStream);
+			final HashMap<String, String> metaInfo = reader.getInfo();
+			final String title = StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(metaInfo.get("Title"));
+			boolean foundPublication = false;
+			if (present(title)) {
+				final List<String> tags = new LinkedList<>();
+				for (final String titleToken : title.split(" ")) {
+					if (present(titleToken)) {
+						tags.add("sys:title:" + titleToken);
+					}
+				}
+				final List<Post<BibTex>> publicationPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, null, SearchType.LOCAL, null, null, null, null, 0, 5);
+				final Post<BibTex> bestMatch = getBestMatch(publicationPosts);
+				if (present(bestMatch)) {
+					foundPublication = true;
+					command.setPost(bestMatch);
+				}
+			}
+			
+			if (!foundPublication) {
+				this.getWarnings().reject("post_publication.file.noinfo");
+			}
+			
+			reader.close();
+			inputStream.close();
+		} catch (final Exception e) {
+			log.error("error file reading content from document file", e);
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
+		}
+	}
+
+	/**
+	 * Check whether the selection contains (only) URLs and attempt to scrape
+	 * them. If successful, returns resulting BibTeX.
+	 * 
+	 * @param selection - the text selected/entered by the user
+	 * @return scraped BibTeX
+	 */
+	private String scrapeUrlsInSelection(final String selection) {
+		final StringBuilder urlSnippet = new StringBuilder();
+		for (final String possibleURL : selection.split("\n")) {
+			if (present(possibleURL)) {
+				final ScrapingContext scrapingContext = this.buildScrapingContext(possibleURL, null, true);
+				if (!present(scrapingContext)) {
+					break;
+				}
+				if (this.scrape(scrapingContext)) {
+					urlSnippet.append(scrapingContext.getBibtexResult());
+					urlSnippet.append("\n");
+				}
+			}
+		}
+		return urlSnippet.toString().trim();
+	}
+
+	/**
 	 * @param publicationPosts
 	 * @return 
 	 */
@@ -571,7 +597,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		final StringBuilder buf = new StringBuilder();
 		boolean lineFound = false;
 		for (final ParseException parseException : parseExceptions) {
-			final Matcher m = lineNumberPattern.matcher(parseException.getMessage());
+			final Matcher m = LINE_NUMBER_PATTERN.matcher(parseException.getMessage());
 			if (m.find()) {
 				/*
 				 * if we have already found a broken line, append ", "

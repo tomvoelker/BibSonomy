@@ -782,7 +782,8 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		}
 
 		if (present(titleSearchTerms)) {
-			final QueryBuilder titleSearchQuery = QueryBuilders.simpleQueryStringQuery(titleSearchTerms).field(Fields.Resource.TITLE).defaultOperator(SimpleQueryStringBuilder.Operator.AND);
+			// we have search terms for title autocompletion, build a phrase prefix query for the title search terms
+			final QueryBuilder titleSearchQuery = QueryBuilders.matchPhrasePrefixQuery(Fields.Resource.TITLE, titleSearchTerms);
 			mainQueryBuilder.must(titleSearchQuery);
 		}
 		
