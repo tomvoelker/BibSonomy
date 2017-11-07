@@ -175,7 +175,7 @@ public class CSLFilesManager {
 		return globalStyle;
 	}
 
-	private CSLStyle loadUserLayout(final String cslName) {
+	private synchronized CSLStyle loadUserLayout(final String cslName) {
 		/*
 		 * cslName is in format "CUSTOM USER_NAME STYLE"
 		 */
@@ -184,6 +184,9 @@ public class CSLFilesManager {
 
 		// extract username
 		final String userName = parts[1].toLowerCase();
+		
+		//invalidate cache
+		this.cslCustomFiles.remove(userName);
 
 		// search layout owned by the parsed username
 		for (final CSLStyle style : this.loadUserLayouts(userName)) {
@@ -217,11 +220,9 @@ public class CSLFilesManager {
 	 *         <code>null</code> is returned instead of throwing an exception.
 	 */
 	public synchronized List<CSLStyle> loadUserLayouts(final String userName) {
-		// TODO: jan: please add a register method that invalides the "cache"
-		// and readd these three lines
-		// if (this.cslCustomFiles.containsKey(userName)) {
-		// 	return this.cslCustomFiles.get(userName);
-		// }
+		if (this.cslCustomFiles.containsKey(userName)) {
+			return this.cslCustomFiles.get(userName);
+		}
 
 		final List<CSLStyle> cslLayoutFiles = new LinkedList<>();
 		this.cslCustomFiles.put(userName, cslLayoutFiles);
@@ -284,12 +285,17 @@ public class CSLFilesManager {
 
 	/**
 	 * Unloads the custom layout of the user.
-	 * should be tread-safe
+	 * should be thread-safe
 	 *
 	 * @param userName
 	 * @param fileName
 	 */
 	public synchronized void unloadUserLayout(final String userName, final String fileName) {
+		
+		//alternatively?
+		//this.cslCustomFiles.remove(userName);
+		//cache invalidation?
+		
 		CSLStyle foundLayout = null;
 		for (final CSLStyle style : cslCustomFiles.get(userName)) {
 			if (style.getId().equals(CslLayoutUtils.userLayoutName(userName, fileName))) {
