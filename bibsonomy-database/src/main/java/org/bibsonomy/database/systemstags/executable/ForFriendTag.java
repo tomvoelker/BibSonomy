@@ -201,8 +201,15 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 	/**
 	 * @param bibliographyUser the bibliographyUser to set
 	 */
-	public static void setBibliographyUser(String bibliographyUser) {
+	public void setBibliographyUser(String bibliographyUser) {
 		ForFriendTag.bibliographyUser = bibliographyUser;
+	}
+
+	/**
+	 * @return the bibliographyUser
+	 */
+	public String getBibliographyUser() {
+		return ForFriendTag.bibliographyUser;
 	}
 
 }
