@@ -127,6 +127,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -3720,7 +3721,7 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getPersonMatches(java.lang.String)
 	 */
 	@Override
-	public List<Person> getPersonMatches(String personID) {
+	public List<PersonMatch> getPersonMatches(String personID) {
 		final DBSession session = this.openSession();
 		return this.personDBManager.getMatchesFor(session, personID);
 	}

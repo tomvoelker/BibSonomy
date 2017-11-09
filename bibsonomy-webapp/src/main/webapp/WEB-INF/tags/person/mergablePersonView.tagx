@@ -1,0 +1,51 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:per="urn:jsptagdir:/WEB-INF/tags/resources/person"
+	xmlns:tagper="urn:jsptagdir:/WEB-INF/tags/person"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
+	
+	<jsp:directive.attribute name="personMatch" type="org.bibsonomy.model.PersonMatch" required="true"/>
+	<jsp:directive.attribute name="currentPerson" type="org.bibsonomy.model.Person" required="true"/>
+	
+	<div class="simpleMatchEntry">
+		<c:set var="matchedPersonIndex" value="${(currentPerson.personId == personMatch.person1.personId) ? 2 : 1}"/>
+		<c:set var="matchedPerson" value="${(matchedPersonIndex == 1) ? personMatch.person1 : personMatch.person2}" />
+		<c:set var="personUrlTemplate">${relativeUrlGenerator.getPersonUrl(matchedPerson.personId)}</c:set>
+		
+		<div class="simpleMatchFirstLine">
+			<span class="simpleMatchTitle">	
+	 			<a href="${personUrlTemplate}" title="${matchedPerson.mainName}"><span itemprop="name"><c:out value="${matchedPerson.mainName}"/></span></a> 
+				<button type="button" class="btn btn-info btn-xs" data-toggle="collapse" data-target="#info_${personMatch.matchID}">&#8505;</button>
+			</span>
+			<div class="btn-group pull-right">
+					<button type="button" class="btn btn-success btn-xs" title="accept merge"> &#10004;</button>
+					<button type="button" class="btn btn-danger btn-xs" title="denie merge"> &#10006;</button>
+			</div>
+			<div id="info_${personMatch.matchID}" class="panel-collapse collapse">
+				<c:forEach var="reason" items="${personMatch.reasons}">
+					<c:set var="post" value="${(matchedPersonIndex == 1) ? reason.item1 : reason.item2}"/>
+					<div class="subSimplePubEntry">
+						<tagper:simplePub post="${post}"/>
+					</div>
+				</c:forEach>
+			</div>
+		</div>
+		
+		
+		<div class="clearflat"><!-- KEEP ME--></div>
+	</div>
+	
+</jsp:root>

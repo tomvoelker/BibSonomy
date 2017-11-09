@@ -77,22 +77,16 @@
 	<resultMap id='personMatch' class='org.bibsonomy.model.PersonMatch'>
 		<result property='matchID' column='match_id'/>
 		<result property='state' column='state'/>
-		<result property='person1ID' column='person1_id'/>
-		<result property='person2ID' column='person2_id'/>
+		<result property="person1"          column="person1_id"       javaType='org.bibsonomy.model.Person'       select='getPersonById'/>
+		<result property="person2"          column="person2_id"       javaType='org.bibsonomy.model.Person'       select='getPersonById'/>
+		<result property="reasons"			column="match_id"		  javaType='org.bibsonomy.model.MatchReason'  select='getMatchReasonsForMatchId' />
 	</resultMap>
 	
 	<resultMap id='matchReason' class='org.bibsonomy.model.MatchReason'>
 		<result property='matchID' column='match_id'/>
 		<result property='mode' column='mode'/>
-		<result property='item1ID' column='item1_id'/>
-		<result property='item2ID' column='item2_id'/>
-	</resultMap>
-	
-	<resultMap id='personMatch' class='org.bibsonomy.model.PersonMatch'>
-		<result property='matchID' column='match_id'/>
-		<result property='person1ID' column='person1_id'/>
-		<result property='person2ID' column='person2_id'/>
-		<result property='state' column='state' />
+		<result property='item1'            column='item1_id'        javaType='bibtex'                           select='getPost'/>
+		<result property='item2'            column='item2_id'        javaType='bibtex'                           select='getPost'/>
 	</resultMap>
 	
 	<sql id="commonPersonColumns">

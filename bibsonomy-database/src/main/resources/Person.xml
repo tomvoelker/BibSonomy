@@ -131,6 +131,22 @@
 		GROUP BY interHash ORDER BY date DESC
 	</statement>
 	
+	<statement id="getPost" parameterClass="java.lang.String" resultMap="BibTexCommon.bibtexPost">
+		SELECT b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
+		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
+		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, 
+		IF("hansii" = b.user_name, b.privnote, NULL) AS privnote , b.scraperid, t1.change_date, b.simhash1 AS interHash, b.simhash2 AS intraHash, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsDummyRows" />
+		FROM tas t1, bibhash h, bibtex b
+		WHERE b.content_id = t1.content_id
+		AND (
+			(b.simhash1 = h.hash
+			AND h.type=1
+			AND b.simhash1 = #item_id#)
+		)
+		GROUP BY interHash ORDER BY b.date DESC
+	</statement>
+	
 	<select id="getBibTexRelationsForPerson" resultMap="PersonCommon.preFilledResourcePersonRelation" parameterClass="bibtexParam">
 		SELECT <include refid ="bibtexAttributes2"/>, t.change_date, t.tag_name, g.*, b2.count, <include refid="reviewRatingsDummyRows" />, <include refid="commonResourcePersonRelationColumns2" />
 		FROM
@@ -213,6 +229,14 @@
 		delete from match_reason where match_id = #matchid#
 	</delete>
 	
+	<delete id="removeReflexivMatcheReasons">
+		delete from match_reason where match_id=ANY(select match_id from person_match where person1_id = person2_id)
+	</delete>
+	
+	<delete id="removeReflexivPersonMatches">
+		delete from person_match where person1_id = person2_id
+	</delete>
+	
 	<delete id="removePersonMatch" parameterClass="int">
 		delete from person_match where match_id = #matchid#
 	</delete>
@@ -229,8 +253,8 @@
 	
 	<update id="updatePersonMatchAfterMerge" parameterClass="org.bibsonomy.model.PersonMatch">
 		UPDATE person_match
-		SET person1_id = IF(person1_id = #person2ID#, #person1ID#, person1_id),
-			person2_id = IF(person2_id = #person2ID#, #person1ID#, person2_id)
+		SET person1_id = IF(person1_id = #person2.personId#, #person1.personId#, person1_id),
+			person2_id = IF(person2_id = #person2.personId#, #person1.personId#, person2_id)
 		WHERE match_id != #matchID# and state != 2
 	</update>
 	

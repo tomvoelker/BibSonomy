@@ -35,10 +35,12 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.MatchReason;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
@@ -169,7 +171,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		int open_matches = matches.size();
 		assertTrue(open_matches > 0);
 		for(PersonMatch match: matches) {
-			this.PERSON_DATABASE_MANAGER.mergeSimilarPersons(this.PERSON_DATABASE_MANAGER.getMatch(match.getMatchID(), this.dbSession), loginUser.getName(), this.dbSession);
+			this.PERSON_DATABASE_MANAGER.mergeSimilarPersons(match, loginUser.getName(), this.dbSession);
 		}
 		List<PersonMatch> newMatches = this.PERSON_DATABASE_MANAGER.getMatches(this.dbSession);
 		//some matches should be resolved

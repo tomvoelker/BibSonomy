@@ -557,21 +557,11 @@
 			<div style="clear: both;">
 				<h3 class="list-headline">
 					<fmt:message key="person.show.similarPersonMatchList" />
-					
-					<div class="pull-right btn-group dropdown-align-right all-resources-menu">
-						<div class="btn-group">
-							<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
-							<ul class="dropdown-menu">
-								<li class="dropdown-header"><fmt:message key="post.meta.sort.criterion" /></li>
-								<li class="enabled"><span data-div="personMatchesList" data-sort="personId" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="clock-o" spaceAfter="5" /><fmt:message key="person.personId"/></span></li>
-							</ul>
-						</div>
-					</div>
 				</h3>
 				
 				<div id="personMatchesEntries">
-					<c:forEach var="person" items="${command.personMatchList}">
-						<!-- <per:simplePubView person="${person}" /> -->
+					<c:forEach var="personMatch" items="${command.personMatchList}">
+						<per:mergablePersonView personMatch="${personMatch}" currentPerson="${command.person}"/>
 					</c:forEach>
 				</div>
 			</div>

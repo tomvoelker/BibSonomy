@@ -4,7 +4,8 @@
 <sqlMapConfig>
 
 	<!-- define query timeout (works only with mysql-connector-java 5.0.5+) -->	
-	<settings defaultStatementTimeout="30" />
+	<settings defaultStatementTimeout="30" cacheModelsEnabled="true"
+    enhancementEnabled="true" lazyLoadingEnabled="false"/>
 
 	<!-- Type Aliases -->
 	<sqlMap resource="common/TypeAliases.xml" />
