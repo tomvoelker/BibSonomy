@@ -255,14 +255,14 @@ public class CVWikiModel extends AbstractWikiModel {
 	/**
 	 * @return the maxQuerySize
 	 */
-	public static int getMaxQuerySize() {
+	public int getMaxQuerySize() {
 		return CVWikiModel.maxQuerySize;
 	}
 
 	/**
 	 * @param maxQuerySize the maxQuerySize to set
 	 */
-	public static void setMaxQuerySize(int maxQuerySize) {
+	public void setMaxQuerySize(int maxQuerySize) {
 		CVWikiModel.maxQuerySize = maxQuerySize;
 	}
 

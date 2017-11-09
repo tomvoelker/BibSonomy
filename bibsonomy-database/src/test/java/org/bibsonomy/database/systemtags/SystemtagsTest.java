@@ -683,7 +683,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		// hash-selection?
 		final List<Post<T>> groupPosts = logic.getPosts(
 				(Class<T>)post.getResource().getClass(), groupingEntity, groupName, tags,
-				post.getResource().getIntraHash(), "", SearchType.LOCAL,null, null, null, null, 0, SystemtagsTest.getMaxQuerySize());
+				post.getResource().getIntraHash(), "", SearchType.LOCAL,null, null, null, null, 0, SystemtagsTest.maxQuerySize);
 		return groupPosts;
 	}
 
@@ -720,7 +720,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 	/**
 	 * @return the maxQuerySize
 	 */
-	public static int getMaxQuerySize() {
+	public int getMaxQuerySize() {
 		return SystemtagsTest.maxQuerySize;
 	}
 
@@ -728,7 +728,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 	/**
 	 * @param maxQuerySize the maxQuerySize to set
 	 */
-	public static void setMaxQuerySize(int maxQuerySize) {
+	public void setMaxQuerySize(int maxQuerySize) {
 		SystemtagsTest.maxQuerySize = maxQuerySize;
 	}
 
