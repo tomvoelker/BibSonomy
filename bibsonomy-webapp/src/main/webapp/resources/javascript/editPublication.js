@@ -382,6 +382,14 @@ function applyKeyDownHandler(element) {
 	.bind("keydown",function(e) {keyHandler(e);});
 }
 
+// adds the send:<username> tag when clicking the save and send to button
+function sendToBibliography(username) {
+	$("#inpf_tags").val(function(index, val) {
+		return val + " send:" + username;
+	});
+	// this is called onclick of every submit button, so we call it here as well
+	clear_tags();
+}
 
 /*  
  * change appearance of misc and transfer data
