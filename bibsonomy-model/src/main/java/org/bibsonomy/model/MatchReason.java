@@ -14,8 +14,8 @@ public class MatchReason implements Serializable{
 	private static final long serialVersionUID = 1117046550975490684L;
 
 	private int matchID;
-	private String item1ID;
-	private String item2ID;
+	private Post item1;
+	private Post item2;
 	private String mode; // "auth" for matched via common co_authors on some pubs, "titl" for same title of a pub, or "sim" for similar via tags
 
 	/**
@@ -31,28 +31,28 @@ public class MatchReason implements Serializable{
 		this.matchID = matchID;
 	}
 	/**
-	 * @return the item1ID
+	 * @return the item1
 	 */
-	public String getItem1ID() {
-		return this.item1ID;
+	public Post getItem1() {
+		return this.item1;
 	}
 	/**
-	 * @param item1id the item1ID to set
+	 * @param item the item1 to set
 	 */
-	public void setItem1ID(String item1id) {
-		item1ID = item1id;
+	public void setItem1(Post item) {
+		this.item1 = item;
 	}
 	/**
-	 * @return the item2ID
+	 * @return the item2
 	 */
-	public String getItem2ID() {
-		return this.item2ID;
+	public Post getItem2() {
+		return this.item2;
 	}
 	/**
-	 * @param item2id the item2ID to set
+	 * @param item the item2 to set
 	 */
-	public void setItem2ID(String item2id) {
-		item2ID = item2id;
+	public void setItem2(Post item) {
+		this.item2 = item;
 	}
 	/**
 	 * @return the mode

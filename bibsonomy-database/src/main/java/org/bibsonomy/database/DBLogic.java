@@ -128,6 +128,7 @@ import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
+import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -3724,5 +3725,14 @@ public class DBLogic implements LogicInterface {
 	public List<PersonMatch> getPersonMatches(String personID) {
 		final DBSession session = this.openSession();
 		return this.personDBManager.getMatchesFor(session, personID);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getMergeConflicts(org.bibsonomy.model.PersonMatch)
+	 */
+	@Override
+	public Map<Integer, List<PersonMergeFieldConflict>> getMergeConflicts(List<PersonMatch> matches) {
+		return this.personDBManager.getMergeConflicts(matches);
 	}
 }

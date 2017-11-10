@@ -62,6 +62,8 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
+import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -890,7 +892,15 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getPersonMatches(java.lang.String)
 	 */
 	@Override
-	public List<Person> getPersonMatches(String personID) {
+	public List<PersonMatch> getPersonMatches(String personID) {
 		return this.logicinterface.getPersonMatches(personID);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getMergeConflicts(org.bibsonomy.model.PersonMatch)
+	 */
+	@Override
+	public Map<Integer, List<PersonMergeFieldConflict>> getMergeConflicts(List<PersonMatch> matches) {
+		return this.logicinterface.getMergeConflicts(matches);
 	}
 }

@@ -44,6 +44,7 @@ import org.bibsonomy.model.enums.Gender;
 public class Person implements Serializable {
 
 	private static final long serialVersionUID = 4578956154246424767L;
+	public static final String[] fieldsWithResolvableMergeConflicts = {"mainName", "academicDegree", "orcid", "gender", "dnbPersonId", "college", "email", "homepage"};
 	
 	private int personChangeId;
 	/** null means new non-persistent object */
@@ -358,7 +359,8 @@ public class Person implements Serializable {
 			(this.gender == null || person.getGender() == null || this.gender.equals(person.getGender()))&&
 			(this.email == null || person.getGender() == null || this.email.equals(person.getGender()))&&
 			(this.homepage == null || person.getHomepage() == null || this.homepage.equals(person.getHomepage()))&&
-			(this.orcid == null || person.orcid == null || this.orcid.equals(person.orcid));
+			(this.orcid == null || person.orcid == null || this.orcid.equals(person.orcid)&&
+			(this.user == null || person.user == null));
 
   }
 

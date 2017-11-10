@@ -1,6 +1,7 @@
 package org.bibsonomy.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * A PersonMatch object contains the id's of two persons which might be equal and a flag if they are equal
@@ -11,10 +12,12 @@ public class PersonMatch implements Serializable {
 	
 	private static final long serialVersionUID = -470932185819510145L;
 	
-	private String person1ID;
-	private String person2ID;
+	private Person person1;
+	private Person person2;
 	private int state; //0 open, 1 denied, 2 already merged
 	private int matchID;
+	private List<MatchReason> reasons;
+	
 	/**
 	 * @return the matchID
 	 */
@@ -28,28 +31,28 @@ public class PersonMatch implements Serializable {
 		this.matchID = matchID;
 	}
 	/**
-	 * @return the person1ID
+	 * @return the person1
 	 */
-	public String getPerson1ID() {
-		return this.person1ID;
+	public Person getPerson1() {
+		return this.person1;
 	}
 	/**
-	 * @param person1id the person1ID to set
+	 * @param person1 the person1 to set
 	 */
-	public void setPerson1ID(String person1id) {
-		person1ID = person1id;
+	public void setPerson1(Person person1) {
+		this.person1 = person1;
 	}
 	/**
-	 * @return the person2ID
+	 * @return the person2
 	 */
-	public String getPerson2ID() {
-		return this.person2ID;
+	public Person getPerson2() {
+		return this.person2;
 	}
 	/**
-	 * @param person2id the person2ID to set
+	 * @param person2 the person2 to set
 	 */
-	public void setPerson2ID(String person2id) {
-		person2ID = person2id;
+	public void setPerson2(Person person2) {
+		this.person2 = person2;
 	}
 	/**
 	 * @return the deleted
@@ -58,9 +61,21 @@ public class PersonMatch implements Serializable {
 		return this.state;
 	}
 	/**
-	 * @param deleted the deleted to set
+	 * @param state the state to set
 	 */
 	public void setState(int state) {
 		this.state = state;
+	}
+	/**
+	 * @return the reasons
+	 */
+	public List<MatchReason> getReasons() {
+		return this.reasons;
+	}
+	/**
+	 * @param reasons the reasons to set
+	 */
+	public void setReasons(List<MatchReason> reasons) {
+		this.reasons = reasons;
 	}
 }

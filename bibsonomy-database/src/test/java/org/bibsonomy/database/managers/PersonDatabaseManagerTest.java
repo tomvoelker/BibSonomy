@@ -33,11 +33,13 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.MatchReason;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
+import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -169,6 +171,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void testSimilarPerson(){
 		List<PersonMatch> matches = this.PERSON_DATABASE_MANAGER.getMatches(this.dbSession);
 		int open_matches = matches.size();
+		Map<Integer, List<PersonMergeFieldConflict>> mergeConflicts = this.PERSON_DATABASE_MANAGER.getMergeConflicts(matches);
 		assertTrue(open_matches > 0);
 		for(PersonMatch match: matches) {
 			this.PERSON_DATABASE_MANAGER.mergeSimilarPersons(match, loginUser.getName(), this.dbSession);

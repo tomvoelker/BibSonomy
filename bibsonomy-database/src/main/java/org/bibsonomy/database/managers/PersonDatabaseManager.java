@@ -26,8 +26,13 @@
  */
 package org.bibsonomy.database.managers;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -42,11 +47,12 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
+import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.util.PersonUtils;
@@ -614,5 +620,46 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 */
 	public List<PersonMatch> getMatchesFor(DBSession session, String personID) {
 		return this.queryForList("getMatchesFor", personID, PersonMatch.class,session);
+	}
+	
+	public Map<Integer, List<PersonMergeFieldConflict>> getMergeConflicts(List<PersonMatch> matches){
+		Map<Integer, List<PersonMergeFieldConflict>> map = new HashMap<Integer, List<PersonMergeFieldConflict>>();
+		for(PersonMatch match : matches){
+			List<PersonMergeFieldConflict> conflictFields = new LinkedList<PersonMergeFieldConflict>();
+			try {
+				for (String fieldName : Person.fieldsWithResolvableMergeConflicts) {
+					Object person1Value = new PropertyDescriptor(fieldName, Person.class).getReadMethod()
+							.invoke(match.getPerson1());
+					Object person2Value = new PropertyDescriptor(fieldName, Person.class).getReadMethod()
+							.invoke(match.getPerson2());
+					if (person1Value != null && person2Value != null) {
+						if (person1Value.getClass().equals(String.class)) {
+							if (!((String) person1Value).equals((String) person2Value)) {
+								conflictFields.add(new PersonMergeFieldConflict(fieldName, (String)person1Value, (String)person2Value));
+							}
+						} else if (person1Value.getClass().equals(PersonName.class)) {
+							String person1Name = ((PersonName) person1Value).getLastName() + ", " +((PersonName) person1Value).getFirstName();
+							String person2Name = ((PersonName) person2Value).getLastName() + ", " +((PersonName) person2Value).getFirstName();
+							if (!person1Name.equals(person2Name)) {
+								conflictFields.add(new PersonMergeFieldConflict(fieldName, person1Name, person2Name));
+							}
+						} else if (person1Value.getClass().equals(Gender.class)) {
+							if (!((Gender) person1Value).equals((Enum) person2Value)) {
+								conflictFields.add(new PersonMergeFieldConflict(fieldName, ((Gender) person1Value).name(), ((Gender) person2Value).name()));
+							}
+						} else {
+							System.err.println(
+									"Missing " + person1Value.getClass() + " class case for merge conflict detection");
+						}
+					}
+				}
+			} catch (SecurityException | IllegalArgumentException | IllegalAccessException | InvocationTargetException
+					| IntrospectionException e) {
+				// TODO Auto-generated catch block
+				System.err.println(e);
+			}
+			map.put(new Integer(match.getMatchID()), conflictFields);
+		}
+		return map;
 	}
 }

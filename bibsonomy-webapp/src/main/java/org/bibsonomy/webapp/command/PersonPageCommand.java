@@ -30,10 +30,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
+import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -103,7 +106,9 @@ public class PersonPageCommand extends BaseCommand {
 	
 	private List<Post<BibTex>> similarAuthorPubs;
 	
-	private List<Person> personMatchList;
+	private List<PersonMatch> personMatchList;
+	
+	private Map<Integer, List<PersonMergeFieldConflict>> mergeConflicts;
 	
 	private String okHintKey;
 	
@@ -539,15 +544,29 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @return the personMatchList
 	 */
-	public List<Person> getPersonMatchList() {
+	public List<PersonMatch> getPersonMatchList() {
 		return this.personMatchList;
 	}
 
 	/**
 	 * @param personMatchList the personMatchList to set
 	 */
-	public void setPersonMatchList(List<Person> personMatchList) {
+	public void setPersonMatchList(List<PersonMatch> personMatchList) {
 		this.personMatchList = personMatchList;
+	}
+
+	/**
+	 * @return the mergeConflicts
+	 */
+	public Map<Integer, List<PersonMergeFieldConflict>> getMergeConflicts() {
+		return this.mergeConflicts;
+	}
+
+	/**
+	 * @param mergeConflicts the mergeConflicts to set
+	 */
+	public void setMergeConflicts(Map<Integer, List<PersonMergeFieldConflict>> mergeConflicts) {
+		this.mergeConflicts = mergeConflicts;
 	}
 
 }

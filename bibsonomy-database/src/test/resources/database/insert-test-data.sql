@@ -739,8 +739,8 @@ INSERT INTO `pub_person` VALUES
 (3,'0b539e248a02e3edcfe591c64346c7a0','d63038ea59383b94bb52fc4a9b76d1f5','Maut',0,'h.muller',0,'2015-07-06 14:19:55','testuserP',0);
 
 
-INSERT INTO `person` (person_change_id, person_id, homepage, post_ctr) VALUES (20, 'w.test.1', "hisPage", 0),
-(21, 'w.test.2', null, 0), (22, 'w.test.3', null, 0), (23, 'w.test.4', "myPage", 0);
+INSERT INTO `person` (person_change_id, person_id, homepage, post_ctr, gender) VALUES (20, 'w.test.1', "hisPage", 0, "m"),
+(21, 'w.test.2', null, 0, "m"), (22, 'w.test.3', null, 0, "m"), (23, 'w.test.4', "myPage", 0, "F");
 
 INSERT INTO `pub_person` VALUES (23, '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP', 0),
 (24, '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP', 0),
