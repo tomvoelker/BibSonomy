@@ -55,7 +55,7 @@ import org.bibsonomy.model.util.SimHash;
  * @author jensi
  * @author tom 
  */
-public class BibTex extends Resource implements Serializable {
+public class BibTex extends Resource {
 	/** for persistence (Serializable) */
 	private static final long serialVersionUID = -8528225443908615779L;
 	
