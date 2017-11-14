@@ -3724,6 +3724,9 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public List<PersonMatch> getPersonMatches(String personID) {
 		final DBSession session = this.openSession();
+		if (present(this.loginUser.getName())){
+			return this.personDBManager.getMatchesForFilterWithUserName(session, personID, this.loginUser.getName());
+		}
 		return this.personDBManager.getMatchesFor(session, personID);
 	}
 
@@ -3734,5 +3737,16 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public Map<Integer, List<PersonMergeFieldConflict>> getMergeConflicts(List<PersonMatch> matches) {
 		return this.personDBManager.getMergeConflicts(matches);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#denieMerge(org.bibsonomy.model.PersonMatch)
+	 */
+	@Override
+	public void denieMerge(PersonMatch match) {
+		final DBSession session = this.openSession();
+		if (present(this.loginUser.getName())) {
+			this.personDBManager.denieMatch(match, session, this.loginUser.getName());
+		}
 	}
 }

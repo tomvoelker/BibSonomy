@@ -561,7 +561,7 @@
 				
 				<div id="personMatchesEntries">
 					<c:forEach var="personMatch" items="${command.personMatchList}">
-						<per:mergablePersonView personMatch="${personMatch}" currentPerson="${command.person}"/>
+ 						<per:mergablePersonView personMatch="${personMatch}" currentPerson="${command.person}" conflicts="${command.mergeConflicts}"/>
 					</c:forEach>
 				</div>
 			</div>

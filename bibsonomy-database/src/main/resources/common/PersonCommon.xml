@@ -80,6 +80,7 @@
 		<result property="person1"          column="person1_id"       javaType='org.bibsonomy.model.Person'       select='getPersonById'/>
 		<result property="person2"          column="person2_id"       javaType='org.bibsonomy.model.Person'       select='getPersonById'/>
 		<result property="reasons"			column="match_id"		  javaType='org.bibsonomy.model.MatchReason'  select='getMatchReasonsForMatchId' />
+		<result property="userDenies"		column="match_id"		  javaType='java.lang.String'				  select='getDeniesForMatch' />
 	</resultMap>
 	
 	<resultMap id='matchReason' class='org.bibsonomy.model.MatchReason'>

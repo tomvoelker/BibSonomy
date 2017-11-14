@@ -41,6 +41,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.params.DenieMatchParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
@@ -590,8 +591,6 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			
 			return true;
 		}
-		
-		denieMatchById(match.getMatchID(), session);
 		return false;
 	}
 
@@ -601,8 +600,14 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @param matchID
 	 * @param session
 	 */
-	public void denieMatchById(int matchID, DBSession session) {
-		this.delete("denieMatchByID", matchID, session);
+	public void denieMatch(PersonMatch match, DBSession session, String userName) {
+		if(!match.getUserDenies().contains(userName)) {
+			DenieMatchParam param = new DenieMatchParam(match.getMatchID(), userName);
+			if (match.getUserDenies().size() == PersonMatch.denieThreshold-1) {
+				this.delete("denieMatchByID", param, session);
+			} 
+			this.delete("denieMatchByIDForUser", param, session);
+		}
 	}
 
 	/**
@@ -622,6 +627,29 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		return this.queryForList("getMatchesFor", personID, PersonMatch.class,session);
 	}
 	
+	/**
+	 * filters the matches such that matches the user denied wont be displayed
+	 * @param session
+	 * @param personID
+	 * @return
+	 */
+	public List<PersonMatch> getMatchesForFilterWithUserName(DBSession session, String personID, String userName) {
+		List<PersonMatch> matches = this.getMatchesFor(session, personID);
+		List<PersonMatch> toRemove = new LinkedList<PersonMatch>();
+		for (PersonMatch match : matches) {
+			if(match.getUserDenies().contains(userName)) {
+				toRemove.add(match);
+			}
+		}
+		matches.removeAll(toRemove);
+		return matches;
+	}
+	
+	/**
+	 * returns a map that contains for each match in matches a list
+	 * @param matches
+	 * @return
+	 */
 	public Map<Integer, List<PersonMergeFieldConflict>> getMergeConflicts(List<PersonMatch> matches){
 		Map<Integer, List<PersonMergeFieldConflict>> map = new HashMap<Integer, List<PersonMergeFieldConflict>>();
 		for(PersonMatch match : matches){

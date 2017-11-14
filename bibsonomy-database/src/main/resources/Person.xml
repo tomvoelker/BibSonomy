@@ -221,9 +221,13 @@
 		where match_id = #matchid#
 	</select>
 	
-	<statement id="denieMatchByID" parameterClass="int">
-		UPDATE person_match SET state = 1 where match_id = #matchid#
+	<statement id="denieMatchByID" parameterClass="org.bibsonomy.database.params.DenieMatchParam">
+		UPDATE person_match SET state = 1 where match_id = #matchId#
 	</statement>
+	
+	<statement id="denieMatchByIDForUser" parameterClass="org.bibsonomy.database.params.DenieMatchParam">
+		INSERT INTO user_denied_match VALUES (#matchId#, #userName#)
+	</statement>//TODO
 	
 	<delete id="removeMatchReasons" parameterClass="int">
 		delete from match_reason where match_id = #matchid#
@@ -287,5 +291,9 @@
 			WHERE person_id = #personId# and is_main = 1
 	</select>
 	
+	<select id='getDeniesForMatch' parameterClass='String'>
+		SELECT user_name FROM user_denied_match
+			WHERE match_id = #matchId#
+	</select>
 	
 </sqlMap>
