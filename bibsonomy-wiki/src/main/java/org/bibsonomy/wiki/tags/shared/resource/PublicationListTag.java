@@ -101,7 +101,8 @@ public class PublicationListTag extends SharedTag {
 	private int maxQuerySize;
 	
 	/**
-	 * sets the tag name
+	 * sets the tag
+	 * @param maxQuerySize
 	 */
 	public PublicationListTag(int maxQuerySize) {
 		super(TAG_NAME);

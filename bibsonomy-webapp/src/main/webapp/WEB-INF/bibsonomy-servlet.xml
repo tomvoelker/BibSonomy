@@ -136,11 +136,11 @@
 	<!-- provides access to the wikiRenderer -->
 	<bean id="wikiRenderer" class="org.bibsonomy.wiki.CVWikiModel" scope="request">
 		<constructor-arg value="#{requestLogic.locale}" />
+		<constructor-arg value="${database.maxQuerySize}" />
 		<property name="logic" ref="logic"/>
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer" />
 		<property name="messageSource" ref="messageSource"/>
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
-		<property name="maxQuerySize" value="${database.maxQuerySize}" />
 	</bean>
 	
 	<!-- 

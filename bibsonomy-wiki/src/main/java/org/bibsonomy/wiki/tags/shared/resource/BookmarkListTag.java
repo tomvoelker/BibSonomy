@@ -60,6 +60,7 @@ public class BookmarkListTag extends SharedTag {
 	
 	/**
 	 * sets the tag
+	 * @param maxQuerySize
 	 */
 	public BookmarkListTag(int maxQuerySize) {
 		super(TAG_NAME);
