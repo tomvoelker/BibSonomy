@@ -348,13 +348,6 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 	protected abstract Class<G> getGoldStandardClass();
 
 	/**
-	 * @return the maxQuerySize
-	 */
-	public int getMaxQuerySize() {
-		return this.maxQuerySize;
-	}
-
-	/**
 	 * @param maxQuerySize the maxQuerySize to set
 	 */
 	public void setMaxQuerySize(int maxQuerySize) {

@@ -716,15 +716,6 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		assertEquals(GroupingEntity.USER, param.getGrouping());
 	}
 
-
-	/**
-	 * @return the maxQuerySize
-	 */
-	public int getMaxQuerySize() {
-		return SystemtagsTest.maxQuerySize;
-	}
-
-
 	/**
 	 * @param maxQuerySize the maxQuerySize to set
 	 */

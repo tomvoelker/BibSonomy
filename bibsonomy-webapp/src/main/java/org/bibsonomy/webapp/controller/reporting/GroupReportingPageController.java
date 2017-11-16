@@ -201,14 +201,7 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 		final int lastVal = map.get(key);
 		map.put(key, lastVal + 1);
 	}
-
-	/**
-	 * @return the maxQuerySize
-	 */
-	public int getMaxQuerySize() {
-		return this.maxQuerySize;
-	}
-
+	
 	/**
 	 * @param maxQuerySize the maxQuerySize to set
 	 */
