@@ -757,11 +757,16 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	
 	public List<PersonMatch> getPersonMatches(String personID);
 	
+	public PersonMatch getPersonMatch(int matchID);
+	
 	/**
 	 * Returns a List of persons fieldNames that are in conflict but could be resolved
 	 * @param matches
 	 * @return 
 	 */
-	public Map<Integer, List<PersonMergeFieldConflict>> getMergeConflicts(List<PersonMatch> matches);
+	public Map<Integer, PersonMergeFieldConflict[]> getMergeConflicts(List<PersonMatch> matches);
+	
+	public void denieMerge(PersonMatch match);
 
+	public void acceptMerge(PersonMatch match);
 }

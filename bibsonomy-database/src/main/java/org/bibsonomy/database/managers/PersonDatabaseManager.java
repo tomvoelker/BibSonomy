@@ -58,6 +58,7 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.services.searcher.PersonSearch;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * database manger for handling {@link Person} related actions
@@ -573,6 +574,13 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public boolean mergeSimilarPersons(PersonMatch match, String loginUser, DBSession session) {
 		//merge two persons, if there is no conflict
 		if(mergeable(match, session)){
+			if(ValidationUtils.present(match.getPerson1().getUser()) && !match.getPerson1().getUser().equals(loginUser)) {
+				//TODO send merge suggestion to user inbox
+				return true;
+			} else if (ValidationUtils.present(match.getPerson2().getUser()) && !match.getPerson2().getUser().equals(loginUser)) {
+				//TODO send merge suggestion to user inbox
+				return true;
+			}
 			//redirect resourcePersonRelation to person1 and log the changes
 			//Note that persons can have multiple related posts with same simhash and that they are will be grouped by their simhash1
 			mergeAllPubs(match, loginUser, session);
@@ -650,8 +658,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @param matches
 	 * @return
 	 */
-	public Map<Integer, List<PersonMergeFieldConflict>> getMergeConflicts(List<PersonMatch> matches){
-		Map<Integer, List<PersonMergeFieldConflict>> map = new HashMap<Integer, List<PersonMergeFieldConflict>>();
+	public Map<Integer, PersonMergeFieldConflict[]> getMergeConflicts(List<PersonMatch> matches){
+		Map<Integer, PersonMergeFieldConflict[]> map = new HashMap<Integer, PersonMergeFieldConflict[]>();
 		for(PersonMatch match : matches){
 			List<PersonMergeFieldConflict> conflictFields = new LinkedList<PersonMergeFieldConflict>();
 			try {
@@ -686,7 +694,9 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 				// TODO Auto-generated catch block
 				System.err.println(e);
 			}
-			map.put(new Integer(match.getMatchID()), conflictFields);
+			PersonMergeFieldConflict[] p = new PersonMergeFieldConflict[conflictFields.size()];
+			conflictFields.toArray(p);
+			map.put(new Integer(match.getMatchID()), p);
 		}
 		return map;
 	}

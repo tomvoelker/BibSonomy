@@ -87,6 +87,9 @@ public class PersonPageCommand extends BaseCommand {
 	@Deprecated // TODO: bind person directly
 	private int formPersonIndex = -1;
 	
+	private int formMatchId;
+	private String formResponseString;
+	
 	
 	private String formAction;
 	
@@ -108,7 +111,7 @@ public class PersonPageCommand extends BaseCommand {
 	
 	private List<PersonMatch> personMatchList;
 	
-	private Map<Integer, List<PersonMergeFieldConflict>> mergeConflicts;
+	private Map<Integer, PersonMergeFieldConflict[]> mergeConflicts;
 	
 	private String okHintKey;
 	
@@ -558,15 +561,43 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @return the mergeConflicts
 	 */
-	public Map<Integer, List<PersonMergeFieldConflict>> getMergeConflicts() {
+	public Map<Integer, PersonMergeFieldConflict[]> getMergeConflicts() {
 		return this.mergeConflicts;
 	}
 
 	/**
 	 * @param mergeConflicts the mergeConflicts to set
 	 */
-	public void setMergeConflicts(Map<Integer, List<PersonMergeFieldConflict>> mergeConflicts) {
+	public void setMergeConflicts(Map<Integer, PersonMergeFieldConflict[]> mergeConflicts) {
 		this.mergeConflicts = mergeConflicts;
+	}
+
+	/**
+	 * @return the formMatchId
+	 */
+	public int getFormMatchId() {
+		return this.formMatchId;
+	}
+
+	/**
+	 * @param formMatchId the formMatchId to set
+	 */
+	public void setFormMatchId(int formMatchId) {
+		this.formMatchId = formMatchId;
+	}
+
+	/**
+	 * @return the formResponseString
+	 */
+	public String getFormResponseString() {
+		return this.formResponseString;
+	}
+
+	/**
+	 * @param formResponseString the formResponseString to set
+	 */
+	public void setFormResponseString(String formResponseString) {
+		this.formResponseString = formResponseString;
 	}
 
 }

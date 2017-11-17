@@ -227,7 +227,7 @@
 	
 	<statement id="denieMatchByIDForUser" parameterClass="org.bibsonomy.database.params.DenieMatchParam">
 		INSERT INTO user_denied_match VALUES (#matchId#, #userName#)
-	</statement>//TODO
+	</statement>
 	
 	<delete id="removeMatchReasons" parameterClass="int">
 		delete from match_reason where match_id = #matchid#

@@ -11,12 +11,14 @@ import java.util.List;
 public class PersonMatch implements Serializable {
 	
 	private static final long serialVersionUID = -470932185819510145L;
+	public static final int denieThreshold = 5;
 	
 	private Person person1;
 	private Person person2;
 	private int state; //0 open, 1 denied, 2 already merged
 	private int matchID;
 	private List<MatchReason> reasons;
+	private List<String> userDenies;
 	
 	/**
 	 * @return the matchID
@@ -77,5 +79,17 @@ public class PersonMatch implements Serializable {
 	 */
 	public void setReasons(List<MatchReason> reasons) {
 		this.reasons = reasons;
+	}
+	/**
+	 * @return the userDenies
+	 */
+	public List<String> getUserDenies() {
+		return this.userDenies;
+	}
+	/**
+	 * @param userDenies the userDenies to set
+	 */
+	public void setUserDenies(List<String> userDenies) {
+		this.userDenies = userDenies;
 	}
 }

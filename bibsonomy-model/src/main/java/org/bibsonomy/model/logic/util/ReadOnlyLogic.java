@@ -900,7 +900,25 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getMergeConflicts(org.bibsonomy.model.PersonMatch)
 	 */
 	@Override
-	public Map<Integer, List<PersonMergeFieldConflict>> getMergeConflicts(List<PersonMatch> matches) {
+	public Map<Integer, PersonMergeFieldConflict[]> getMergeConflicts(List<PersonMatch> matches) {
 		return this.logicinterface.getMergeConflicts(matches);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#denieMerge(org.bibsonomy.model.PersonMatch)
+	 */
+	@Override
+	public void denieMerge(PersonMatch match) {
+
+	}
+	
+	@Override
+	public void acceptMerge(PersonMatch match) {
+
+	}
+	
+	@Override
+	public PersonMatch getPersonMatch(int matchID) {
+		return null;
 	}
 }

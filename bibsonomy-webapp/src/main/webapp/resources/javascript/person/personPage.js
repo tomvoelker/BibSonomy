@@ -25,12 +25,116 @@ function replaceFaClass(div) {
     		$('span', div).addClass('fa-sort-numeric-asc');
     	}
     }
-    
-	
-
 }
 
 $(document).ready(function() {
+	$('.mergeConflictButton').click(function() {
+		var array = $('#conflictInputForm').serializeArray();
+		var form_data = {
+				formMatchId: $(this).attr('match-id'),
+				formAction: 'conflictMerge',
+				formResponseString: JSON.stringify(array)
+		};
+		$.post("/person", form_data).done(function(data){
+			$("#match_" + form_data.formMatchId).slideUp(500, function(){
+				$(this).remove();
+			});
+		});
+		
+	});
+	
+	$('.mergeButton').click(function() {
+		var form_data = {
+				formAction: "merge",
+				formMatchId: $(this).attr("match-id"),
+				updateOperation: $(this).attr("data-operation")
+		};
+		
+		$.post("/person", form_data).done(function(data){
+			$("#match_" + form_data.formMatchId).slideUp(500, function(){
+				$(this).remove();
+			});
+		});
+	});
+	
+	$('.conflictMergeButton').click(function() {
+		$('#conflictModalAccept')[0].setAttribute("match-id", $(this).attr("match-id"));
+		$('#conflictModalAccept').prop("disabled",true);
+		$('#conflictModalDenie')[0].setAttribute("match-id", $(this).attr("match-id"));
+		var body = $('#conflictModalDiaBody');
+		form_data = {
+				formAction: "getConflict",
+				formMatchId: $(this).attr("match-id")
+		}
+		
+		$.post("/person", form_data).done(function(data){
+			var body = document.createElement("form");
+			$(body).addClass("form-inline");
+			$(body)[0].setAttribute("id", "conflictInputForm")
+			$(body)[0].setAttribute("method", "post")
+			
+			for (conflict in data) {
+				var group = document.createElement("div");
+				$(group).addClass("input-group");
+				$(group)[0].setAttribute("style", "padding-top: 6px")
+				var span = document.createElement("span");
+			    $(span).addClass("input-group-addon");
+			    var textnode = document.createTextNode(data[conflict].field);
+			    span.appendChild(textnode);
+			    group.appendChild(span);
+			    
+			    
+			    var input = document.createElement("input");
+			    $(input).addClass("form-control conflictInput");
+			    $(input)[0].setAttribute("type", "text");
+			    $(input)[0].setAttribute("id", "text");
+			    $(input)[0].setAttribute("name", data[conflict].field);
+			    $(input)[0].setAttribute("placeholder", "( " + data[conflict].person1Value + " | " + data[conflict].person2Value + " )");
+			    if (data[conflict].field == 'gender') {
+			    	$(input)[0].setAttribute("pattern", "(m|F)");
+			    	$(input)[0].setAttribute("title", "Gender must be 'm' or 'F'");
+			    } else if (data[conflict].field == 'mainName') {
+			    	$(input)[0].setAttribute("title", "Lastname, Fistname");
+			    	$(input)[0].setAttribute("pattern", "(.+)(,)(.+)");
+			    } else {
+			    	$(input)[0].setAttribute("pattern", ".+");
+			    }
+			    
+			    input.addEventListener('keyup', function() {
+			    	var notSatisfiedInputs = $.grep($('#conflictInputForm').serializeArray(), function(input){
+			    		var fieldName = $(input).attr('name');
+			    		var reg;
+			    		switch(fieldName){
+			    			case 'gender':
+			    				reg = new RegExp('(m|F)');
+			    				break;
+			    			case 'mainName':
+			    				reg = new RegExp('(.+)(,)(.+)');
+			    				break;
+			    			default:
+			    				reg = new RegExp('.+');
+			    		}
+
+			    		return ($(input).attr('value').length==0 || !reg.test($(input).attr('value')));
+			    	});
+			    	if (notSatisfiedInputs.length == 0 && $('#conflictInputForm').serializeArray().length >0) {
+
+			    		$('#conflictModalAccept').prop("disabled",false);
+			    	} else {
+			    		$('#conflictModalAccept').prop("disabled",true);
+			    	}
+			    });
+			    
+			    group.appendChild(input);
+			    body.appendChild(group);
+			}
+			$("#conflictModalDiaBody").html(body);
+		});
+	});
+	
+	$('#moreMatchReasonsToggler').click(function() {
+		$(this).text($(this).text() == 'less' ? 'more' : 'less'); 
+	}); 
 	
 	$('.pubSort').click(function() {
 	    sortBy = $(this).data('sort');

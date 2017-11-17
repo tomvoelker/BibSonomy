@@ -1,5 +1,4 @@
-<jsp:root version="2.0"
-	xmlns="http://www.w3.org/1999/xhtml"
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
@@ -16,52 +15,77 @@
 	xmlns:tagper="urn:jsptagdir:/WEB-INF/tags/person"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
 	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
-	
-	<jsp:directive.attribute name="personMatch" type="org.bibsonomy.model.PersonMatch" required="true"/>
-	<jsp:directive.attribute name="currentPerson" type="org.bibsonomy.model.Person" required="true"/>
-	<jsp:directive.attribute name="conflicts" type="java.util.Map" required="true"/>
-	
-	<div class="simpleMatchEntry">
-		<c:set var="matchedPersonIndex" value="${(currentPerson.personId == personMatch.person1.personId) ? 2 : 1}"/>
-		<c:set var="matchedPerson" value="${(matchedPersonIndex == 1) ? personMatch.person1 : personMatch.person2}" />
+
+	<jsp:directive.attribute name="personMatch"
+		type="org.bibsonomy.model.PersonMatch" required="true" />
+	<jsp:directive.attribute name="currentPerson"
+		type="org.bibsonomy.model.Person" required="true" />
+	<jsp:directive.attribute name="conflicts" type="java.util.Map"
+		required="true" />
+
+	<div class="simpleMatchEntry" id="match_${personMatch.matchID}">
+		<c:set var="matchedPersonIndex"
+			value="${(currentPerson.personId == personMatch.person1.personId) ? 2 : 1}" />
+		<c:set var="matchedPerson"
+			value="${(matchedPersonIndex == 1) ? personMatch.person1 : personMatch.person2}" />
 		<c:set var="personUrlTemplate">${relativeUrlGenerator.getPersonUrl(matchedPerson.personId)}</c:set>
-		
+
 		<div class="simpleMatchFirstLine">
-			<span class="simpleMatchTitle">	
-	 			<a href="${personUrlTemplate}" title="${matchedPerson.mainName}"><span itemprop="name"><c:out value="${matchedPerson.mainName}"/></span></a> 
+			<span class="simpleMatchTitle"> <a href="${personUrlTemplate}"
+				title="${matchedPerson.mainName}"><span itemprop="name"><c:out
+							value="${matchedPerson.mainName}" /></span></a>
 			</span>
 			<div class="btn-group pull-right">
 				<c:choose>
-					<c:when test="${fn:length(conflicts.get(personMatch.matchID)) gt 0}">
-						<button type="button" class="btn btn-warning btn-xs" title="accept merge and resolve conflicts">(&#10004;)</button>
+					<c:when
+						test="${fn:length(conflicts.get(personMatch.matchID)) gt 0}">
+						<button type="button"
+							class="btn btn-warning btn-xs conflictMergeButton"
+							match-id="${personMatch.matchID}" conflicts="${conflicts.get(personMatch.matchID)}"
+							title="accept merge and resolve conflicts" data-toggle='modal'
+							data-target='#conflictModal'>(&#10004;)</button>
 					</c:when>
 					<c:otherwise>
-						<button type="button" class="btn btn-success btn-xs" title="accept merge"> &#10004;</button>
+						<button type="button" class="btn btn-success btn-xs mergeButton"
+							data-operation="MERGE_ACCEPT" match-id="${personMatch.matchID}"
+							title="accept merge">&#10004;</button>
 					</c:otherwise>
 				</c:choose>
-					<button type="button" class="btn btn-danger btn-xs" title="denie merge"> &#10006;</button>
+				<button type="button" class="btn btn-danger btn-xs mergeButton"
+					data-operation="MERGE_DENIED" match-id="${personMatch.matchID}"
+					title="denie merge">&#10006;</button>
 			</div>
-			<c:set var="firstPost" value="${(matchedPersonIndex == 1) ? personMatch.reasons.getFirst().item1 : personMatch.reasons.get(0).item2}"/>
-			<div class="firstSubSimplePubEntry" id="${firstPost.resource.interHash}">
-				<span class="ptitle"><bib:title post="${firstPost}" /></span>
-				<span class="personPdesc pdesc"><bib:desc post="${firstPost}" publication="${firstPost.resource}"/></span><br/>
+			<c:set var="firstPost"
+				value="${(matchedPersonIndex == 1) ? personMatch.reasons.getFirst().item1 : personMatch.reasons.get(0).item2}" />
+			<div class="firstSubSimplePubEntry"
+				id="${firstPost.resource.interHash}">
+				<span class="ptitle"><bib:title post="${firstPost}" /></span> <span
+					class="personPdesc pdesc"><bib:desc post="${firstPost}"
+						publication="${firstPost.resource}" /></span><br />
 			</div>
 			<div id="info_${personMatch.matchID}" class="panel-collapse collapse">
 				<c:forEach var="reason" items="${personMatch.reasons}">
-					<c:set var="post" value="${(matchedPersonIndex == 1) ? reason.item1 : reason.item2}"/>
+					<c:set var="post"
+						value="${(matchedPersonIndex == 1) ? reason.item1 : reason.item2}" />
 					<c:if test="${personMatch.reasons.get(0) != reason}">
 						<div class="subSimplePubEntry" id="${post.resource.interHash}">
-							<span class="ptitle"><bib:title post="${post}" /></span>
-							<span class="personPdesc pdesc"><bib:desc post="${post}" publication="${post.resource}"/></span><br/> 
+							<span class="ptitle"><bib:title post="${post}" /></span> <span
+								class="personPdesc pdesc"><bib:desc post="${post}"
+									publication="${post.resource}" /></span><br />
 						</div>
 					</c:if>
 				</c:forEach>
 			</div>
-			<button type="button" class="btn btn-xs" data-toggle="collapse" data-target="#info_${personMatch.matchID}" title="Reasons for this match" value="more" onclick="$(this).text($(this).text() == 'less' ? 'more' : 'less'); ">more</button>		
+			<button type="button" id="moreMatchReasonsToggler"
+				class="btn btn-info btn-xs" style="" data-toggle="collapse"
+				data-target="#info_${personMatch.matchID}"
+				title="Reasons for this match" value="more">more</button>
 		</div>
-		
-		
-		<div class="clearflat"><!-- KEEP ME--></div>
+
+
+		<div class="clearflat">
+			<!-- KEEP ME-->
+		</div>
 	</div>
-	
+
 </jsp:root>

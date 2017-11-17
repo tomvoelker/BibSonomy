@@ -41,12 +41,14 @@ import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.MatchReason;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
@@ -66,6 +68,7 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.json.JSONException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -96,6 +99,8 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		if (present(formAction)) {
 			switch(formAction) {
+				case "conflictMerge": return this.conflictMerge(command);
+				case "getConflict": return this.getConflicts(command);
 				case "update": return this.updateAction(command);
 				case "addName": return this.addNameAction(command);
 				case "deleteName": return this.deleteNameAction(command);
@@ -109,6 +114,7 @@ public class PersonPageController extends SingleResourceListController implement
 				case "search": return this.searchAction(command);
 				case "searchAuthor": return this.searchAuthorAction(command);
 				case "searchPub": return this.searchPubAction(command);
+				case "merge": return this.mergeAction(command);
 				default: return indexAction();
 			}
 		} else if (present(command.getRequestedPersonId())) {
@@ -118,6 +124,45 @@ public class PersonPageController extends SingleResourceListController implement
 		// the following statement cannot be reached, and seems useless anyway, since in this case no formAction was present and not PersonId. 
 		// Remove when sure. 
 		return indexAction();
+	}
+
+	/**
+	 * @param command
+	 * @return
+	 */
+	private View conflictMerge(PersonPageCommand command) {
+		org.json.JSONObject obj;
+		try {
+			obj = new org.json.JSONObject(command.getFormResponseString());
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			System.err.println(e);
+		}
+		JSONObject jsonResponse = new JSONObject();
+		jsonResponse.put("status", true);
+		command.setResponseString(jsonResponse.toString());
+		
+		return Views.AJAX_JSON;
+	}
+
+	/**
+	 * @param command
+	 * @return
+	 */
+	private View getConflicts(PersonPageCommand command) {
+		List<PersonMatch> list = new LinkedList<PersonMatch>();
+		list.add(this.logic.getPersonMatch(command.getFormMatchId()));
+		
+		JSONArray array = new JSONArray();
+		for (PersonMergeFieldConflict conflict : this.logic.getMergeConflicts(list).get(command.getFormMatchId())){
+			JSONObject jsonConflict = new JSONObject();
+			jsonConflict.put("field", conflict.getFieldName());
+			jsonConflict.put("person1Value", conflict.getPerson1Value());
+			jsonConflict.put("person2Value", conflict.getPerson2Value());
+			array.add(jsonConflict);
+		}
+		command.setResponseString(array.toJSONString());
+		return Views.AJAX_JSON;
 	}
 
 	/**
@@ -286,6 +331,26 @@ public class PersonPageController extends SingleResourceListController implement
 		return Views.AJAX_TEXT;
 	}
 
+	/*
+	 * performs the merge action for the selected match
+	 */
+	private View mergeAction(PersonPageCommand command) {
+		int id = command.getFormMatchId();
+		JSONObject jsonResponse = new JSONObject();
+
+		PersonMatch match = this.logic.getPersonMatch(id);
+		if (command.getUpdateOperation() == PersonUpdateOperation.MERGE_ACCEPT) {
+			//this.logic.acceptMerge(match);
+			int x=1;
+		} else if(command.getUpdateOperation() == PersonUpdateOperation.MERGE_DENIED) {
+			//this.logic.denieMerge(match);
+			int x=1;
+		}
+		jsonResponse.put("status", true);
+		command.setResponseString(jsonResponse.toString());
+		return Views.AJAX_JSON;
+	}
+	
 	/**
 	 * Action called when a user updates preferences of a person
 	 * @param command
@@ -497,6 +562,23 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setAdvisedThesis(advisorPosts);
 		command.setOtherAdvisedPubs(otherAdvisorPosts);
 		command.setPersonMatchList(this.logic.getPersonMatches(person.getPersonId()));
+		
+		//remove duplicate entries
+		for (PersonMatch match : command.getPersonMatchList()) {
+			int index =(command.getPerson().getPersonId().equals(match.getPerson1().getPersonId())) ? 2 : 1;			
+			List<String> knownHashes = new LinkedList<String>();
+			List<MatchReason> duplicates = new LinkedList<MatchReason>();
+			for (MatchReason reason : match.getReasons()) {
+				Post matchedPersonPost = (index==1) ? reason.getItem1() : reason.getItem2();
+				if (knownHashes.contains(matchedPersonPost.getResource().getInterHash())){
+					duplicates.add(reason);
+				} else {
+					knownHashes.add(matchedPersonPost.getResource().getInterHash());
+				}
+			}
+			match.getReasons().removeAll(duplicates);
+		}
+		
 		command.setMergeConflicts(this.logic.getMergeConflicts(command.getPersonMatchList()));
 		
 		final List<Post<BibTex>> similarAuthorPubs = this.getPublicationsOfSimilarAuthor(person);
@@ -548,7 +630,8 @@ public class PersonPageController extends SingleResourceListController implement
 		List<Post<BibTex>> pubsWithSameAuthorName = new ArrayList<>(pubAuthorSearch);
 		for (final Post<BibTex> post : pubAuthorSearch) {
 			// remove post from search if the author has not exactly the same sur- and last-name
-			if (!post.getResource().getAuthor().contains(requestedName)) {
+			if (!present(post.getResource().getAuthor()) 
+					|| !post.getResource().getAuthor().contains(requestedName)) {
 				pubsWithSameAuthorName.remove(post);
 			}
 		}
