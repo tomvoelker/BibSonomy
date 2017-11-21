@@ -56,7 +56,7 @@
 					title="denie merge">&#10006;</button>
 			</div>
 			<c:set var="firstPost"
-				value="${(matchedPersonIndex == 1) ? personMatch.reasons.getFirst().item1 : personMatch.reasons.get(0).item2}" />
+				value="${(matchedPersonIndex == 1) ? personMatch.reasons.get(0).item1 : personMatch.reasons.get(0).item2}" />
 			<div class="firstSubSimplePubEntry"
 				id="${firstPost.resource.interHash}">
 				<span class="ptitle"><bib:title post="${firstPost}" /></span> <span
@@ -76,10 +76,12 @@
 					</c:if>
 				</c:forEach>
 			</div>
-			<button type="button" id="moreMatchReasonsToggler"
-				class="btn btn-info btn-xs" style="" data-toggle="collapse"
-				data-target="#info_${personMatch.matchID}"
-				title="Reasons for this match" value="more">more</button>
+			<c:if test="${fn:length(personMatch.reasons) gt 1}">
+				<button type="button" id="moreMatchReasonsToggler"
+					class="btn btn-info btn-xs" style="" data-toggle="collapse"
+					data-target="#info_${personMatch.matchID}"
+					title="Reasons for this match" value="more">more</button>
+			</c:if>
 		</div>
 
 

@@ -3763,4 +3763,16 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		return personDBManager.getMatch(matchID, session);
 	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#conflictMerge(int, org.json.JSONArray)
+	 */
+	@Override
+	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
+		final DBSession session = this.openSession();
+		if (present(this.loginUser.getName())) {
+			return this.personDBManager.conflictMerge(session, formMatchId, map, this.loginUser.getName());
+		}
+		return false;
+	}
 }

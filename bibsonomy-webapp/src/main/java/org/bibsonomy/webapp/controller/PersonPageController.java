@@ -131,15 +131,28 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View conflictMerge(PersonPageCommand command) {
-		org.json.JSONObject obj;
 		try {
-			obj = new org.json.JSONObject(command.getFormResponseString());
+			String responseString = "{\"response\":" + command.getFormResponseString() + "}";
+			org.json.JSONObject obj = new org.json.JSONObject(responseString);
+			org.json.JSONArray jsonArray = obj.getJSONArray("response");
+			PersonMatch match = this.logic.getPersonMatch(command.getFormMatchId());
+			Map<String, String> map = new HashMap<String, String>();
+			for (int i = 0; i < jsonArray.length(); i++) {
+			    org.json.JSONObject explrObject = jsonArray.getJSONObject(i);
+			    map.put(explrObject.getString("name"), explrObject.getString("value"));
+			}
+			JSONObject jsonResponse = new JSONObject();
+			jsonResponse.put("status", this.logic.conflictMerge(command.getFormMatchId(), map));
+			command.setResponseString(jsonResponse.toString());
+			
+			return Views.AJAX_JSON;
+			
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			System.err.println(e);
 		}
 		JSONObject jsonResponse = new JSONObject();
-		jsonResponse.put("status", true);
+		jsonResponse.put("status", false);
 		command.setResponseString(jsonResponse.toString());
 		
 		return Views.AJAX_JSON;
@@ -154,7 +167,7 @@ public class PersonPageController extends SingleResourceListController implement
 		list.add(this.logic.getPersonMatch(command.getFormMatchId()));
 		
 		JSONArray array = new JSONArray();
-		for (PersonMergeFieldConflict conflict : this.logic.getMergeConflicts(list).get(command.getFormMatchId())){
+		for (PersonMergeFieldConflict conflict : (PersonMergeFieldConflict[])this.logic.getMergeConflicts(list).get(command.getFormMatchId())){
 			JSONObject jsonConflict = new JSONObject();
 			jsonConflict.put("field", conflict.getFieldName());
 			jsonConflict.put("person1Value", conflict.getPerson1Value());
@@ -340,11 +353,9 @@ public class PersonPageController extends SingleResourceListController implement
 
 		PersonMatch match = this.logic.getPersonMatch(id);
 		if (command.getUpdateOperation() == PersonUpdateOperation.MERGE_ACCEPT) {
-			//this.logic.acceptMerge(match);
-			int x=1;
+			this.logic.acceptMerge(match);
 		} else if(command.getUpdateOperation() == PersonUpdateOperation.MERGE_DENIED) {
-			//this.logic.denieMerge(match);
-			int x=1;
+			this.logic.denieMerge(match);
 		}
 		jsonResponse.put("status", true);
 		command.setResponseString(jsonResponse.toString());

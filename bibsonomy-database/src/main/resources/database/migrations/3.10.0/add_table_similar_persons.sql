@@ -2,7 +2,6 @@ CREATE TABLE `person_match`(
   `match_id` int(10) unsigned NOT NULL unique,
   `person1_id` varchar(64) NOT NULL,
   `person2_id` varchar(64) NOT NULL,
-  `denieCtr` tinyint(4) NOT NULL DEFAULT 0,
   `state` tinyint(4) NOT NULL DEFAULT 0 COMMENT 'set to 1 if merge is state, 2 if they are merged',
    PRIMARY KEY  (`match_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

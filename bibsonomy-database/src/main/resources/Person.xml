@@ -69,7 +69,10 @@
 			WHERE person.person_id = #personId#
 	</update>
 	
-	
+	<update id='updatePersonOnAll' parameterClass='org.bibsonomy.model.Person'>
+		UPDATE person SET person_change_id = #personChangeId#, college = #college#, email = #email#, homepage = #homepage#, gender = #gender#, dnb_person_id  = #dnbPersonId#, academic_degree = #academicDegree#, orcid = #orcid#, post_ctr = #postCounter#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
+			WHERE person.person_id = #personId#
+	</update>
 	
 	<update id='updateCollege' parameterClass='org.bibsonomy.model.Person'>
 		UPDATE person SET person_change_id = #personChangeId#, college = #college#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
@@ -98,7 +101,7 @@
 	</delete>
 	
 	<delete id="removePersonName" parameterClass="java.lang.Integer">
-		DELETE FROM person_name WHERE person_change_id = #personNameId#columnPrefix="co_"
+		DELETE FROM person_name WHERE person_change_id = #personNameId#
 	</delete>
 	
 	<select id='getResourcePersonRelationByResourcePersonRelation' resultMap="PersonCommon.lazyLoadingResourcePersonRelation" parameterClass='org.bibsonomy.model.ResourcePersonRelation'>
@@ -213,7 +216,8 @@
 	
 	<select id="getMatchesFor" parameterClass="java.lang.String" resultMap="PersonCommon.personMatch">
 		SELECT match_id, person1_id, person2_id, state from person_match 
-		where (person1_id = #personid# or person2_id = #personid#)
+		where (person1_id = #personid# or person2_id = #personid#) 
+		AND state = 0
 	</select>
 	
 	<select id="getMatchReasonsForMatchId" parameterClass="int" resultMap="PersonCommon.matchReason">
@@ -262,29 +266,51 @@
 		WHERE match_id != #matchID# and state != 2
 	</update>
 	
-	<select id="getHabilForPerson" parameterClass="java.lang.String" resultMap="BibTexCommon.bibtex_common_without_privnote">
-		select b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
-		 b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization,
-		 b.pages, b.publisher, b.school, b.series, b.type, b.volume, b.day, b.url, b.bibtexKey,
-		 b.misc, b.bibtexAbstract as abstract, b.author, b.editor, b.year, b.entrytype,
-		 b.simhash1 as interhash, b.simhash2 as intrahash
-		from bibtex b, pub_person p 
-		where p.person_id='g.stumme.1' and p.relator_code = 'Maut' 
-			and b.simhash1=p.simhash1 and b.entrytype='phdthesis' 
-			and b.type ='habilitation' group by b.simhash1
-	</select>
+	<update id="redirectUserDenies" parameterClass="org.bibsonomy.database.params.DenieMatchParam">
+		UPDATE user_denied_match SET match_id=#newMatchId# WHERE match_id=#matchId#
+	</update>
 	
-	<select id="getPHDForPerson" parameterClass="java.lang.String" resultMap="BibTexCommon.bibtex_common_without_privnote">
-		select b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
-		 b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization,
-		 b.pages, b.publisher, b.school, b.series, b.type, b.volume, b.day, b.url, b.bibtexKey,
-		 b.misc, b.bibtexAbstract as abstract, b.author, b.editor, b.year, b.entrytype,
-		 b.simhash1 as interhash, b.simhash2 as intrahash  
-		from bibtex b, pub_person p 
-		where p.person_id='g.stumme.1' and p.relator_code = 'Maut' 
-			and b.simhash1=p.simhash1 and b.entrytype='phdthesis' 
-			and (b.type is NULL or b.type !='habilitation') group by b.simhash1
-	</select>
+	<statement id="getSimilarMatchesForMatch" parameterClass="org.bibsonomy.model.PersonMatch" resultMap="PersonCommon.personMatch">
+		SELECT * FROM person_match 
+		WHERE (person1_id = #person1.personId# AND person2_id = #person2.personId#) 
+		OR (person1_id = #person2.personId# AND person2_id = #person1.personId#)
+	</statement>
+	
+	<statement id="getHabilForPerson" parameterClass="java.lang.String" resultMap="BibTexCommon.bibtexPost">
+		SELECT b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
+		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
+		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, 
+		IF("hansii" = b.user_name, b.privnote, NULL) AS privnote , b.scraperid, t1.change_date, b.simhash1 AS interHash, b.simhash2 AS intraHash, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsDummyRows" />
+		FROM tas t1, bibhash h, bibtex b, pub_person p
+		WHERE b.content_id = t1.content_id
+		AND (
+			(b.simhash1 = h.hash
+			AND h.type=1)
+		)
+		AND p.person_id=#personId# AND p.relator_code = 'Maut'
+		and b.simhash1=p.simhash1 and b.entrytype='phdthesis' 
+		and b.type ='habilitation'
+		GROUP BY interHash ORDER BY b.date DESC
+	</statement>
+	
+	<statement id="getPHDForPerson" parameterClass="java.lang.String" resultMap="BibTexCommon.bibtexPost">
+		SELECT b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
+		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
+		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, 
+		IF("hansii" = b.user_name, b.privnote, NULL) AS privnote , b.scraperid, t1.change_date, b.simhash1 AS interHash, b.simhash2 AS intraHash, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsDummyRows" />
+		FROM tas t1, bibhash h, bibtex b, pub_person p
+		WHERE b.content_id = t1.content_id
+		AND (
+			(b.simhash1 = h.hash
+			AND h.type=1)
+		)
+		AND p.person_id=#personId# AND p.relator_code = 'Maut'
+		and b.simhash1=p.simhash1 and b.entrytype='phdthesis' 
+		and (b.type is NULL or b.type !='habilitation')
+		GROUP BY interHash ORDER BY b.date DESC
+	</statement>
 	
 	<select id='getMainName' resultMap='PersonCommon.personName' parameterClass='String'>
 		SELECT <include refid='commonPersonNameColumns'/> FROM person_name 

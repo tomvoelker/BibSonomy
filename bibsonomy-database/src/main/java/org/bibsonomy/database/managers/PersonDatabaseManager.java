@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bibsonomy.common.exceptions.DuplicateEntryException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
@@ -190,6 +191,23 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			this.plugins.onPersonUpdate(person.getPersonId(), session);
 			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("updatePerson", person, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
+	/**
+	 * Updates all fields of a given Person
+	 * @param person
+	 * @param session
+	 */
+	public void updatePersonOnAll(Person person, DBSession session) {
+		session.beginTransaction();
+		try {
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
+			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			this.insert("updatePersonOnAll", person, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -471,8 +489,13 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @param match
 	 * @return
 	 */
-	private boolean mergeable(PersonMatch match, DBSession session){
+	private boolean mergeable(PersonMatch match, DBSession session, String loginUser){
 		//check if a phd/habil conflict raises 	
+		
+		if (!this.testMergeOnClaims(match, loginUser)) {
+			return false;
+		}
+		
 		if(match.getPerson1().getPersonId().equals(match.getPerson2().getPersonId())){
 			this.delete("removeMatchReasons", match.getMatchID(), session);
 			this.delete("removePersonMatch", match.getMatchID(), session);
@@ -573,21 +596,17 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 */
 	public boolean mergeSimilarPersons(PersonMatch match, String loginUser, DBSession session) {
 		//merge two persons, if there is no conflict
-		if(mergeable(match, session)){
-			if(ValidationUtils.present(match.getPerson1().getUser()) && !match.getPerson1().getUser().equals(loginUser)) {
-				//TODO send merge suggestion to user inbox
-				return true;
-			} else if (ValidationUtils.present(match.getPerson2().getUser()) && !match.getPerson2().getUser().equals(loginUser)) {
-				//TODO send merge suggestion to user inbox
-				return true;
-			}
+		if(mergeable(match, session, loginUser) && testMergeOnClaims(match, loginUser)){
 			//redirect resourcePersonRelation to person1 and log the changes
 			//Note that persons can have multiple related posts with same simhash and that they are will be grouped by their simhash1
 			mergeAllPubs(match, loginUser, session);
 			//add new further alias 
 			mergePersonAliases(loginUser, match, session);
 			
-			//TODO merge person attributes
+			boolean edit = this.combinePersonsAttributes(match.getPerson1(), match.getPerson2());
+			if (edit) {
+				this.updatePersonOnAll(match.getPerson1(), session);
+			}
 			
 			//sets match state to 2
 			this.update("acceptMerge", match.getMatchID(), session);
@@ -596,10 +615,70 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			this.delete("removeReflexivMatcheReasons", match.getMatchID(), session);
 			this.delete("removeReflexivPersonMatches", match.getMatchID(), session);
 			this.delete("removeMatchReasons", match.getMatchID(), session);
+			this.mergeMerges(match.getPerson1().getPersonId(), session, loginUser);
 			
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * duplicate matches can occur after a merge and they need to be combined
+	 * @param personId
+	 * @param session
+	 */
+	private void mergeMerges(String personId, DBSession session, String userName) {
+		List<PersonMatch> matches = this.getMatchesFor(session, personId);
+		List<PersonMatch> dupes = new LinkedList<PersonMatch>();
+		//get all dupes
+		for (int i = 0; i < matches.size()-1; i++) {
+			for (int j = i+1; j<matches.size(); j++) {
+				if (matches.get(i).compareTo(matches.get(j)) == 0) {
+					dupes.add(matches.get(i));
+				}
+			}
+		}
+		//merge duplicate matches
+		for (PersonMatch dupe : dupes) {
+			List<PersonMatch> toMerge = this.queryForList("getSimilarMatchesForMatch", dupe, PersonMatch.class, session);
+			PersonMatch combinedMerge = toMerge.get(0);
+			for (int i = 1; i < toMerge.size(); i++) {
+				this.update("redirectUserDenies", new DenieMatchParam(toMerge.get(i).getMatchID(), combinedMerge.getMatchID()), session);
+				combinedMerge.getUserDenies().addAll(toMerge.get(i).getUserDenies());
+				this.delete("removePersonMatch", toMerge.get(i).getMatchID(), session);
+			}
+			if (combinedMerge.getUserDenies().size() >= PersonMatch.denieThreshold) {
+				this.delete("denieMatchByID", new DenieMatchParam(combinedMerge.getMatchID(), userName), session);
+			}
+		}
+	}
+
+	/**
+	 * updates null attributes of person1
+	 * 
+	 * @param person1
+	 * @param person2
+	 * @return true if an attributes was updated
+	 */
+	private boolean combinePersonsAttributes(Person person1, Person person2) {
+		// TODO Auto-generated method stub
+		boolean edit = false;
+		try {
+		for (String fieldName : Person.fieldsWithResolvableMergeConflicts) {
+			PropertyDescriptor desc = new PropertyDescriptor(fieldName, Person.class);
+			Object person1Value = desc.getReadMethod().invoke(person1);
+			Object person2Value = desc.getReadMethod().invoke(person2);
+			if (person1Value == null && person2Value != null) {
+				edit = true;
+				desc.getWriteMethod().invoke(person1, person2Value);
+			}
+		}
+		} catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException | IntrospectionException e ) {
+			System.err.println(e);
+			return false;
+		}
+		return edit;
+		
 	}
 
 	/**
@@ -664,10 +743,9 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			List<PersonMergeFieldConflict> conflictFields = new LinkedList<PersonMergeFieldConflict>();
 			try {
 				for (String fieldName : Person.fieldsWithResolvableMergeConflicts) {
-					Object person1Value = new PropertyDescriptor(fieldName, Person.class).getReadMethod()
-							.invoke(match.getPerson1());
-					Object person2Value = new PropertyDescriptor(fieldName, Person.class).getReadMethod()
-							.invoke(match.getPerson2());
+					PropertyDescriptor desc = new PropertyDescriptor(fieldName, Person.class);
+					Object person1Value = desc.getReadMethod().invoke(match.getPerson1());
+					Object person2Value = desc.getReadMethod().invoke(match.getPerson2());
 					if (person1Value != null && person2Value != null) {
 						if (person1Value.getClass().equals(String.class)) {
 							if (!((String) person1Value).equals((String) person2Value)) {
@@ -680,7 +758,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 								conflictFields.add(new PersonMergeFieldConflict(fieldName, person1Name, person2Name));
 							}
 						} else if (person1Value.getClass().equals(Gender.class)) {
-							if (!((Gender) person1Value).equals((Enum) person2Value)) {
+							if (!((Gender) person1Value).equals((Gender) person2Value)) {
 								conflictFields.add(new PersonMergeFieldConflict(fieldName, ((Gender) person1Value).name(), ((Gender) person2Value).name()));
 							}
 						} else {
@@ -699,5 +777,126 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			map.put(new Integer(match.getMatchID()), p);
 		}
 		return map;
+	}
+
+	/**
+	 * @param session
+	 * @param formMatchId
+	 * @param map
+	 * @return
+	 */
+	public Boolean conflictMerge(DBSession session, int formMatchId, Map<String, String> map, String loginUser) {
+		PersonMatch match = this.getMatch(formMatchId, session);
+		if (!this.testMergeOnClaims(match, loginUser) || !onlyValidFields(map.keySet())) {
+			return false;
+		}
+		try {
+			Person person = match.getPerson1();
+			for (String fieldName : map.keySet()) {
+				
+				//PersonNames are at a separate table
+				if(fieldName.equals("mainName") && !person.getMainName().equals(map.get(fieldName))) {
+					this.updateMainName(person, map.get(fieldName), session, loginUser);
+				}else if (fieldName.equals("gender")) {
+					new PropertyDescriptor(fieldName, Person.class).getWriteMethod().invoke(person, Gender.valueOf(map.get(fieldName)));
+				} else {
+					new PropertyDescriptor(fieldName, Person.class).getWriteMethod().invoke(person, map.get(fieldName));
+				}
+			}
+			this.updatePersonOnAll(person, session);
+			this.mergeSimilarPersons(match, loginUser, session);
+		} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			System.err.println(e);
+			return false;
+		}
+
+		return true;
+	}
+	
+	/**
+	 * 
+	 * @param fields
+	 * @return true if only valid fieldNames are in fields
+	 */
+	private Boolean onlyValidFields(Set<String> fields) {
+		fieldLoop:
+		for (String string : fields) {
+			for (String validField : Person.fieldsWithResolvableMergeConflicts) {
+				if (string.equals(validField)) {
+					continue fieldLoop;
+				}
+			}
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * set new mainName to for person
+	 * @param person
+	 * @param newName
+	 * @param session
+	 */
+	private Boolean updateMainName(Person person, String newName, DBSession session, String loginUser) {
+		PersonName mainName = null;
+		for (PersonName personName : person.getNames()) {
+			if(personName.isMain()) {
+				mainName = personName;
+				mainName.setMain(false);
+				this.updatePersonName(mainName, session);
+			}
+		}
+		if (mainName == null) {
+			System.err.println("Person to merge has no referenced mainName");
+			return false;
+		}
+		//the name is inserted "lastName, firstName"
+		String[] nameParts = newName.split(", ", 2);
+		if (nameParts.length == 1){
+			//invalid input
+			return false;
+		}
+		
+		//check if name already exists as alias
+		for (PersonName personName : person.getNames()) {
+			String name = personName.toString();
+			if(name.equals(newName)) {
+				personName.setMain(true);
+				personName.setChangedBy(loginUser);
+				personName.setChangedAt(new Date());
+				this.updatePersonName(personName, session);
+				return true;
+			}
+		}
+		PersonName newMainName = new PersonName(nameParts[1], nameParts[0]);
+		newMainName.setChangedBy(loginUser);
+		newMainName.setChangedAt(new Date());
+		newMainName.setMain(true);
+		newMainName.setPersonId(person.getPersonId());
+		newMainName.setPerson(person);
+		this.createPersonName(newMainName, session);
+		return true;
+	}
+
+	/**
+	 * tests if the merge can be performed without conflicts on claimed users
+	 * 
+	 * @param match
+	 * @param loginUser
+	 */
+	private Boolean testMergeOnClaims(PersonMatch match, String loginUser) {
+		Boolean p1Claim = ValidationUtils.present(match.getPerson1().getUser());
+		Boolean p2Claim = ValidationUtils.present(match.getPerson2().getUser());
+		if (p1Claim && p2Claim) {
+			return false;
+		} else if (!p1Claim && !p2Claim) {
+			return true;
+		} else if (p1Claim) {
+			//TODO notify user1 that their is a merge
+			return match.getPerson1().getUser().equals(loginUser);
+		} else {
+			//TODO notify user2 that their is a merge
+			return match.getPerson2().getUser().equals(loginUser);
+		}
 	}
 }
