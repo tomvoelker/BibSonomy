@@ -70,7 +70,7 @@
 		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
 	</bean>
 	
-	<bean id="oAuthDataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" parent="basicDataSource">
+	<bean id="oAuthDataSource" class="${database.datasource.class}" parent="basicDataSource">
 		<property name="driverClassName" value="${database.opensocial.driverClassName}" />
 		<property name="url" value="${database.opensocial.url}" />
 		<property name="username" value="${database.opensocial.username}" />
