@@ -517,10 +517,6 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		//two different main names		
 		PersonName person1MainName = match.getPerson1().getMainName();
 		PersonName person2MainName = match.getPerson2().getMainName();
-		
-		if(!person1MainName.getFirstName().equals(person2MainName.getFirstName()) || !person1MainName.getLastName().equals(person2MainName.getLastName())) {
-			return false;
-		}
 
 		//person with different attributes
 		if(!match.getPerson1().equalsTo(match.getPerson2())) {
@@ -607,7 +603,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			if (edit) {
 				this.updatePersonOnAll(match.getPerson1(), session);
 			}
-			
+			this.mergePersonAttributes(match, session);
 			//sets match state to 2
 			this.update("acceptMerge", match.getMatchID(), session);
 			//Substitutes person2's id with person1's for all unresolved matches
@@ -620,6 +616,40 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * merges person attributes that only one of the person has
+	 * @param match
+	 * @param session
+	 */
+	private void mergePersonAttributes(PersonMatch match, DBSession session) {
+		try {
+			boolean updated1 = false;
+			boolean updated2 = false;
+			for (String fieldName : Person.fieldsWithResolvableMergeConflicts) {
+				PropertyDescriptor desc = new PropertyDescriptor(fieldName, Person.class);
+				Object person1Value = desc.getReadMethod().invoke(match.getPerson1());
+				Object person2Value = desc.getReadMethod().invoke(match.getPerson2());
+				if (person1Value == null && person2Value != null ){
+					desc.getWriteMethod().invoke(match.getPerson1(), person2Value);
+					updated1 = true;
+				} else if(person2Value == null && person1Value != null){ 
+					desc.getWriteMethod().invoke(match.getPerson2(), person1Value);
+					updated2 = true;
+				}
+			}
+			//write changes
+			if (updated1){
+				this.updatePerson(match.getPerson1(), session);
+			}
+			if(updated2) {
+				this.updatePerson(match.getPerson2(), session);
+			}
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| IntrospectionException e) {
+			System.err.println(e);
+		}
 	}
 
 	/**
@@ -647,6 +677,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 				combinedMerge.getUserDenies().addAll(toMerge.get(i).getUserDenies());
 				this.delete("removePersonMatch", toMerge.get(i).getMatchID(), session);
 			}
+			//get userDenies without dupes
+			combinedMerge.setUserDenies(this.queryForList("getDeniesForMatch", combinedMerge.getMatchID(), String.class, session));
 			if (combinedMerge.getUserDenies().size() >= PersonMatch.denieThreshold) {
 				this.delete("denieMatchByID", new DenieMatchParam(combinedMerge.getMatchID(), userName), session);
 			}
@@ -738,8 +770,11 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @return
 	 */
 	public Map<Integer, PersonMergeFieldConflict[]> getMergeConflicts(List<PersonMatch> matches){
+		//A map with a list of conflicts for every match of a person
+		//If a match does not have any conflict it has an entry with an empty list
 		Map<Integer, PersonMergeFieldConflict[]> map = new HashMap<Integer, PersonMergeFieldConflict[]>();
 		for(PersonMatch match : matches){
+			//the list of all fields that are holding a conflict
 			List<PersonMergeFieldConflict> conflictFields = new LinkedList<PersonMergeFieldConflict>();
 			try {
 				for (String fieldName : Person.fieldsWithResolvableMergeConflicts) {
@@ -747,6 +782,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 					Object person1Value = desc.getReadMethod().invoke(match.getPerson1());
 					Object person2Value = desc.getReadMethod().invoke(match.getPerson2());
 					if (person1Value != null && person2Value != null) {
+						//test if the values are different and add them to the list
 						if (person1Value.getClass().equals(String.class)) {
 							if (!((String) person1Value).equals((String) person2Value)) {
 								conflictFields.add(new PersonMergeFieldConflict(fieldName, (String)person1Value, (String)person2Value));
@@ -769,7 +805,6 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 				}
 			} catch (SecurityException | IllegalArgumentException | IllegalAccessException | InvocationTargetException
 					| IntrospectionException e) {
-				// TODO Auto-generated catch block
 				System.err.println(e);
 			}
 			PersonMergeFieldConflict[] p = new PersonMergeFieldConflict[conflictFields.size()];
@@ -780,6 +815,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * performs a merge and resolves its conflicts
+	 * 
 	 * @param session
 	 * @param formMatchId
 	 * @param map
@@ -791,19 +828,26 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			return false;
 		}
 		try {
-			Person person = match.getPerson1();
+			Person person1 = match.getPerson1();
+			Person person2 = match.getPerson2();
 			for (String fieldName : map.keySet()) {
 				
 				//PersonNames are at a separate table
-				if(fieldName.equals("mainName") && !person.getMainName().equals(map.get(fieldName))) {
-					this.updateMainName(person, map.get(fieldName), session, loginUser);
+				if(fieldName.equals("mainName")) {
+					this.updateMainName(person1, map.get(fieldName), session, loginUser);
+					this.updateMainName(person2, map.get(fieldName), session, loginUser);
 				}else if (fieldName.equals("gender")) {
-					new PropertyDescriptor(fieldName, Person.class).getWriteMethod().invoke(person, Gender.valueOf(map.get(fieldName)));
+					//genders is an enum
+					new PropertyDescriptor(fieldName, Person.class).getWriteMethod().invoke(person1, Gender.valueOf(map.get(fieldName)));
+					new PropertyDescriptor(fieldName, Person.class).getWriteMethod().invoke(person2, Gender.valueOf(map.get(fieldName)));
 				} else {
-					new PropertyDescriptor(fieldName, Person.class).getWriteMethod().invoke(person, map.get(fieldName));
+					new PropertyDescriptor(fieldName, Person.class).getWriteMethod().invoke(person1, map.get(fieldName));
+					new PropertyDescriptor(fieldName, Person.class).getWriteMethod().invoke(person2, map.get(fieldName));
 				}
 			}
-			this.updatePersonOnAll(person, session);
+			//add changes to both so they can be compared with mergable()
+			this.updatePersonOnAll(person1, session);
+			this.updatePersonOnAll(person2, session);
 			this.mergeSimilarPersons(match, loginUser, session);
 		} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			System.err.println(e);
@@ -838,6 +882,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	private Boolean updateMainName(Person person, String newName, DBSession session, String loginUser) {
+		//old mainName
 		PersonName mainName = null;
 		for (PersonName personName : person.getNames()) {
 			if(personName.isMain()) {
@@ -868,6 +913,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 				return true;
 			}
 		}
+		//new PersonName needs to be added
 		PersonName newMainName = new PersonName(nameParts[1], nameParts[0]);
 		newMainName.setChangedBy(loginUser);
 		newMainName.setChangedAt(new Date());

@@ -317,9 +317,10 @@
 			WHERE person_id = #personId# and is_main = 1
 	</select>
 	
-	<select id='getDeniesForMatch' parameterClass='String'>
-		SELECT user_name FROM user_denied_match
-			WHERE match_id = #matchId#
+	<select id='getDeniesForMatch' parameterClass='int'>
+		SELECT user_name FROM user_denied_match 
+		WHERE match_id = #matchId# 
+		GROUP by user_name
 	</select>
 	
 </sqlMap>

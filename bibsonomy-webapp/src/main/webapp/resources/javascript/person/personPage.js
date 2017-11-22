@@ -69,7 +69,7 @@ $(document).ready(function() {
 		
 		$.post("/person", form_data).done(function(data){
 			var body = document.createElement("form");
-			$(body).addClass("form-inline");
+			$(body).addClass("form-group");
 			$(body)[0].setAttribute("id", "conflictInputForm")
 			$(body)[0].setAttribute("method", "post")
 			
