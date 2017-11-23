@@ -71,7 +71,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void checkStartEnd() {
 		// ok
 		final User notLoggedInUser = new User();
-		for (int i = 0; i <= 1000; i++) {
+		for (int i = 0; i <= permissionDb.getMaxQuerySize(); i++) {
 			try {
 				permissionDb.checkStartEnd(notLoggedInUser, GroupingEntity.ALL, 0, i, "test");
 			} catch (final AccessDeniedException ignore) {
@@ -79,7 +79,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			}
 		}
 		// not ok
-		for (int i = 1001; i < 10000; i++) {
+		for (int i = permissionDb.getMaxQuerySize()+1; i < permissionDb.getMaxQuerySize()+1000; i++) {
 			try {
 				permissionDb.checkStartEnd(notLoggedInUser, GroupingEntity.ALL, 0, i, "test");
 				fail("expected exception");
@@ -91,7 +91,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// OK 
 		final User admin = new User();
 		admin.setRole(Role.ADMIN);
-		for (int i = permissionDb.getMaxQuerySize() + 1; i < 10000; i++) {
+		for (int i = permissionDb.getMaxQuerySize() + 1; i < permissionDb.getMaxQuerySize()+1000; i++) {
 			try {
 				permissionDb.checkStartEnd(admin, GroupingEntity.ALL, 0, i, "test");
 			} catch (final AccessDeniedException ignore) {
