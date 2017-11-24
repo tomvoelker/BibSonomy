@@ -383,13 +383,15 @@ public class BibTex extends Resource {
 	 *  
 	 * @param misc
 	 */
-	public void setMisc(final String misc) {
+	public void setMisc(final String misc) throws InvalidModelException {
+		String oldmisc = this.misc; // save old misc in case this goes wrong
 		this.misc = misc;
 		this.miscFieldParsed = false;// sync is broken
 		try {
 			this.parseMiscField();       // sync will be restored
 		} catch (Exception e)  {
-			this.misc = null;
+			this.misc = oldmisc;  // in case our sync went wrong
+			throw new InvalidModelException("Misc string " + misc + " could not be set."); 
 		}	
 	}	
 

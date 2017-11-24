@@ -38,12 +38,15 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.controller.actions.EditPublicationController;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.MapBindingResult;
 import org.springframework.validation.ValidationUtils;
@@ -71,7 +74,8 @@ public class PublicationValidatorTest {
 	"	     keywords = {context fca iccs_example olap triadic trias_example},\n" +
 	"        ee = {http://springerlink.metapress.com/openurl.asp?genre=article{\\&}issn=0302-9743{\\&}volume=3403{\\&}spage=315}, isbn = {3-540-24525-1}}\n";
 
-
+	@Rule 
+	public ExpectedException thrown = ExpectedException.none();
 	@Test
 	public void testValidateResourceErrorsBibTex() {
 		final EditPostCommand<BibTex> command = newCommand();
@@ -102,15 +106,11 @@ public class PublicationValidatorTest {
 		assertEquals(1, errors.getErrorCount());
 		assertEquals(1, errors.getFieldErrorCount("tags"));
 		/*
-		 * broken misc field: errors!
-		 * since setting a malformed string leads to nullifying the misc entry, this test should not be necessary anymore.
-		 * REMOVE by BibSonomy 4.0.0  
+		 * try setting some broken misc field: errors!
 		 */
-//		bib.setMisc("foo = {bar");  
-//		errors = validate(command);
-//		assertEquals(0, errors.getGlobalErrorCount());
-//		assertEquals(2, errors.getErrorCount());
-//		assertEquals(1, errors.getFieldErrorCount("post.resource.misc"));
+		bib.setMisc("some={things}"); // Some correct string into misc
+		thrown.expect( InvalidModelException.class );
+		bib.setMisc("foo = {bar");  // invalid misc string
 	}
 
 	@Test
