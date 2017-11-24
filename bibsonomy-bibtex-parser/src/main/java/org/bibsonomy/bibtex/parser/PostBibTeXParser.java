@@ -312,7 +312,8 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		 * parseBibTeXPost must ensure to add all fields which 
 		 * BibTexUtils.toBibtexString(post) puts into the string. 
 		 */
-		return this.parseBibTeXPost(BibTexUtils.toBibtexString(post, BibTexUtils.SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD));
+		//return this.parseBibTeXPost(BibTexUtils.toBibtexString(post, BibTexUtils.SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD));
+		return this.parseBibTeXPost(BibTexUtils.toBibtexString(post));
 	}
 
 	@Override
