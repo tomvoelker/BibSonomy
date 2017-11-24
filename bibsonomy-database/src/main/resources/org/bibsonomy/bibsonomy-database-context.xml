@@ -233,6 +233,10 @@
 		<property name="usersDefaultToClassify" value="${user.defaultToClassify}" />
 	</bean>
 	
+	<bean id="permissionDatabaseManager" class="org.bibsonomy.database.managers.PermissionDatabaseManager" factory-method="getInstance">
+		<property name="maxQuerySize" value="${database.maxQuerySize}" />
+	</bean>
+	
 	<bean id="groupDatabaseManager" class="org.bibsonomy.database.managers.GroupDatabaseManager" factory-method="getInstance">
 		<property name="userDb" ref="userDatabaseManager" />
 	</bean>

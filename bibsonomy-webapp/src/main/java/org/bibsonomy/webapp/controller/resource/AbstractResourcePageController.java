@@ -63,6 +63,8 @@ import org.bibsonomy.webapp.view.Views;
 public abstract class AbstractResourcePageController<R extends Resource, G extends R> extends SingleResourceListControllerWithTags implements MinimalisticController<ResourcePageCommand<R>> {
 	private static final int TAG_LIMIT = 1000;
 
+	private int maxQuerySize;
+	
 	@Override
 	public ResourcePageCommand<R> instantiateCommand() {
 		return new ResourcePageCommand<R>();
@@ -278,7 +280,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			 */
 			final RequestWrapperContext context = command.getContext();
 			final User loggedinUser = context.getLoginUser();
-			final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, SearchType.LOCAL, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
+			final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, SearchType.LOCAL, null, null, null, null, 0, this.maxQuerySize);
 			for (final Post<R> post : allPosts) {
 				final User user = post.getUser();
 				if (user.equals(loggedinUser)) {
@@ -344,5 +346,12 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 	protected abstract Class<R> getResourceClass();
 	
 	protected abstract Class<G> getGoldStandardClass();
+
+	/**
+	 * @param maxQuerySize the maxQuerySize to set
+	 */
+	public void setMaxQuerySize(int maxQuerySize) {
+		this.maxQuerySize = maxQuerySize;
+	}
 	
 }

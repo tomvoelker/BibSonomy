@@ -97,6 +97,8 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 	private static BookmarkDatabaseManager bookmarkDb;
 	private static BibTexDatabaseManager bibTexDb;
 
+	private static int maxQuerySize;
+	
 	/**
 	 * inits managers
 	 */
@@ -681,7 +683,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		// hash-selection?
 		final List<Post<T>> groupPosts = logic.getPosts(
 				(Class<T>)post.getResource().getClass(), groupingEntity, groupName, tags,
-				post.getResource().getIntraHash(), "", SearchType.LOCAL,null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
+				post.getResource().getIntraHash(), "", SearchType.LOCAL,null, null, null, null, 0, SystemtagsTest.maxQuerySize);
 		return groupPosts;
 	}
 
@@ -712,6 +714,13 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		final String systemtag = "sys:date:12:03:3";
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemtag }), "", null, 0, 50, null, null, null, null, new User("testuser"));
 		assertEquals(GroupingEntity.USER, param.getGrouping());
+	}
+
+	/**
+	 * @param maxQuerySize the maxQuerySize to set
+	 */
+	public void setMaxQuerySize(int maxQuerySize) {
+		SystemtagsTest.maxQuerySize = maxQuerySize;
 	}
 
 

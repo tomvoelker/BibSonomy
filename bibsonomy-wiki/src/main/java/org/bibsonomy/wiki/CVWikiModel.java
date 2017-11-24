@@ -70,34 +70,40 @@ import info.bliki.wiki.tags.util.TagStack;
  */
 public class CVWikiModel extends AbstractWikiModel {
 
-	static {
-		/* About-Me Tags */
-		register(new LocationTag());
-		register(new BirthdayTag());
-		register(new InstitutionTag());
-		register(new InterestsTag());
-		register(new HobbyTag());
-		register(new ProfessionTag());
-		register(new TagcloudTag());
-
-		/* Group Tags */
-		register(new MembersTag());
-		register(new GroupImageTag());
-		register(new GroupDescriptionTag());
-
-		/* Shared Tags */
-		register(new HomepageTag());
-		register(new NameTag());
-		register(new ImageTag());
-		register(new RegDateTag());
-		register(new BookmarkListTag());
-		register(new PublicationListTag());
-	}
-
 	private static void register(final AbstractTag tag) {
 		Configuration.DEFAULT_CONFIGURATION.addTokenTag(tag.getName(), tag);
 	}
+	
+	private static Configuration createConfiguration(int maxQuerySize) {
+		if (!configCreated) {
+			/* About-Me Tags */
+			register(new LocationTag());
+			register(new BirthdayTag());
+			register(new InstitutionTag());
+			register(new InterestsTag());
+			register(new HobbyTag());
+			register(new ProfessionTag());
+			register(new TagcloudTag());
 
+			/* Group Tags */
+			register(new MembersTag());
+			register(new GroupImageTag());
+			register(new GroupDescriptionTag());
+
+			/* Shared Tags */
+			register(new HomepageTag());
+			register(new NameTag());
+			register(new ImageTag());
+			register(new RegDateTag());
+			register(new BookmarkListTag(maxQuerySize));
+			register(new PublicationListTag(maxQuerySize));
+			configCreated = true;
+		}
+		return Configuration.DEFAULT_CONFIGURATION;
+	}
+
+	private static boolean configCreated = false;;
+	
 	private User requestedUser;
 	private Group requestedGroup;
 	private LogicInterface logic;
@@ -109,9 +115,10 @@ public class CVWikiModel extends AbstractWikiModel {
 	/**
 	 * Default Constructor
 	 * @param locale
+	 * @param maxQuerySize		maxQuerySize property
 	 */
-	public CVWikiModel(final Locale locale) {
-		super(Configuration.DEFAULT_CONFIGURATION, locale, null, null);
+	public CVWikiModel(final Locale locale, final int maxQuerySize) {
+		super(createConfiguration(maxQuerySize), locale, null, null);
 	}
 
 	/**
