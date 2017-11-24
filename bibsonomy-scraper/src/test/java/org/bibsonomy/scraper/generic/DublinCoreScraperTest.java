@@ -79,4 +79,11 @@ public class DublinCoreScraperTest {
 		assertScraperResult(url, null, DublinCoreScraper.class, resultFile);	
 	}
 	
+	@Test
+	public void testDCScraper7() {
+		final String url = "http://www.vtei.cz/2017/06/aktualni-stav-problematiky-ochrannych-pasem-vodnich-zdroju/";
+		final String resultFile = "DCScraperTest7.bib";
+		assertScraperResult(url, null, DublinCoreScraper.class, resultFile);	
+	}
+	
 }

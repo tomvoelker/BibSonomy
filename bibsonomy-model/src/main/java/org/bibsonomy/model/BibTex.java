@@ -603,10 +603,12 @@ public class BibTex extends Resource {
 	 * @return String
 	 */
 	public String getMiscField(final String miscKey) {
-		if (this.miscFields == null || !this.miscFields.containsKey(miscKey)) return null;
 		if(!this.miscFieldParsed){
-			this.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS); // by default map wins 
+			this.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS); // by default map wins
+			log.debug("Miscfield out of sync while getMiscField: This should not be possible!");
 		}
+		if (!this.miscFields.containsKey(miscKey)) return null;
+		
 		return this.miscFields.get(miscKey);
 	}
 
@@ -616,9 +618,6 @@ public class BibTex extends Resource {
 	 * @param value
 	 */
 	public void addMiscField(final String miscKey, final String value) {
-//		if (this.miscFields == null) {
-//			this.miscFields = new HashMap<String, String>();
-//		}
 		this.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS); // map allocate implied and sync
 		this.miscFields.put(miscKey, value);  
 		this.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS); // sync restored
@@ -865,10 +864,10 @@ public class BibTex extends Resource {
 			ObjectInputStream ois = new ObjectInputStream(bais);
 			return (BibTex) ois.readObject();
 		} catch (IOException e) {
-			log.error("IO Problem cloning an object:");
+			log.error("IO Problem cloning an object: in BibTeX ");
 				return null;
 		} catch (ClassNotFoundException e) {
-			log.error("ClassNotFroundException during cloning an object:");
+			log.error("ClassNotFroundException during cloning an object: in BibTex");
 				return null;
 		}
 	}

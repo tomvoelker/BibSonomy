@@ -27,7 +27,9 @@
 package org.bibsonomy.scraper.converter;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,7 +58,7 @@ public class HTMLMetaDataDublinCoreToBibtexConverter extends AbstractDublinCoreT
 	protected Map<String, String> extractData(final String pageContent) {
 		final Matcher matcher = EXTRACTION_PATTERN.matcher(pageContent);
 
-		Map<String, String> data = new HashMap<String, String>();
+		Map<String, Set<String>> data = new HashMap<String, Set<String>>();
 
 		String key = "";
 		String value = "";
@@ -69,44 +71,76 @@ public class HTMLMetaDataDublinCoreToBibtexConverter extends AbstractDublinCoreT
 			lang = matcher.group(1);
 
 			if (key.equalsIgnoreCase("Type")) {
-				addOrAppendField(TYPE_KEY, value, lang, data);
+				addValueToDataIfNotContained(TYPE_KEY, value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, TITLE_KEY)) {
-				addOrAppendField(TITLE_KEY, value, lang, data);
+				addValueToDataIfNotContained(TITLE_KEY, value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "creator")) {
-				addOrAppendField(AUTHOR_KEY, value, lang, data);
+				addValueToDataIfNotContained(AUTHOR_KEY, value, lang, data);
 			} else if (StringUtils.equalsIgnoreCase(key, "identifier")) {
-				addOrAppendField(ID_KEY, value, lang, data);
+				addValueToDataIfNotContained(ID_KEY, value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "identifier.doi")){
-				addOrAppendField("doi", value, lang, data);
+				addValueToDataIfNotContained("doi", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "description")||StringUtils.containsIgnoreCase(key, "abstract")) {
-				addOrAppendField("abstract", value, lang, data);
+				addValueToDataIfNotContained("abstract", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "date")) {
-				data.put("year", extractYear(value));
+				addValueToDataIfNotContained("year", extractYear(value), lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "Contributor.CorporateName")) {
-				data.put("school", value);
-				data.put("institution", value);
+				addValueToDataIfNotContained("school", value, lang, data);
+				addValueToDataIfNotContained("institution", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "contributor")) {
-				addOrAppendField("editor", value, lang, data);
+				addValueToDataIfNotContained("editor", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "publisher")) {
-				addOrAppendField("publisher", value, lang, data);
+				addValueToDataIfNotContained("publisher", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "journal")) {
-				addOrAppendField("journal", value, lang, data);
+				addValueToDataIfNotContained("journal", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "conference")) {
-				addOrAppendField("conference", value, lang, data);
+				addValueToDataIfNotContained("conference", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "organization")) {
-				addOrAppendField("organization", value, lang, data);
+				addValueToDataIfNotContained("organization", value, lang, data);
 			} else if (StringUtils.equalsIgnoreCase(key, "source")){
-				addOrAppendField("source", value, lang, data);
+				addValueToDataIfNotContained("source", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "source.issn")){
-				addOrAppendField("issn", value, lang, data);
+				addValueToDataIfNotContained("issn", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "source.issue")){
-				addOrAppendField("issue", value, lang, data);
+				addValueToDataIfNotContained("issue", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "source.uri")){
-				addOrAppendField("uri", value, lang, data);
+				addValueToDataIfNotContained("uri", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "source.volume")){
-				addOrAppendField("volume", value, lang, data);
+				addValueToDataIfNotContained("volume", value, lang, data);
+			} else if (StringUtils.containsIgnoreCase(key, "pageNumber")) {
+				addValueToDataIfNotContained("pages", value, lang, data);
 			}
 		}
-		return data;
+		
+		return convertMap(data);
+	}
+
+	/**
+	 * converts all the values in each list to a single concatenated value
+	 * @param data is a Map<String, List<String>>
+	 * @return a Map<String, String>
+	 */
+	private static Map<String, String> convertMap(Map<String, Set<String>> data) {
+		Map<String, String> r = new HashMap<String, String>();
+		
+		for (String k : data.keySet()){
+			for (String v : data.get(k)){
+				addOrAppendField(k, v, null, r);
+			}
+		}
+		
+		return r;
+	}
+	
+	private static void addValueToDataIfNotContained(final String key, final String value, final String language,  final Map<String, Set<String>> data) {
+		Set<String> valueInData = data.get(key);
+		
+		if (valueInData == null) {				
+			Set<String> s = new HashSet<String>();
+			s.add(value);
+			data.put(key, s);
+		} else if (!valueInData.contains(value)){			
+			valueInData.add(value.trim());
+		}
 	}
 }

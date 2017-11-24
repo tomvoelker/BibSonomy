@@ -68,4 +68,18 @@ public class JStorScraperTest {
 		final String resultFile = "JStorScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, JStorScraper.class, resultFile);
 	}
+	
+	@Test
+	public void urlTest4Run() {
+		final String url = "http://www.jstor.org/stable/20015480";
+		final String resultFile = "JStorScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, JStorScraper.class, resultFile);
+	}
+	
+	@Test
+	public void urlTest5Run() {
+		final String url = "http://www.jstor.org/stable/484241?Search=yes&amp;resultItemClick=true&amp;searchText=au:&amp;searchText=%22J.%20DAVID%20LEWIS-WILLIAMS%22&amp;searchUri=%2Faction%2FdoBasicSearch%3Ffc%3Doff%26amp%3Bacc%3Don%26amp%3Brefreqid%3Dsearch%253Ac4417d0187ddda184a6990d9e38445b2%26amp%3Bhp%3D25%26amp%3Bsi%3D1%26amp%3Bwc%3Don%26amp%3Bso%3Drel%26amp%3BQuery%3Dau%253A%2522J.%2BDAVID%2BLEWIS-WILLIAMS%2522&amp;refreqid=search%3A48cf3ae154625639c1f74173c920c2b1&amp;seq=2#page_scan_tab_contents,can&#039;t";
+		final String resultFile = "JStorScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, JStorScraper.class, resultFile);
+	}
 }
