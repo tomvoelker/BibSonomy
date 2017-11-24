@@ -603,12 +603,10 @@ public class BibTex extends Resource {
 	 * @return String
 	 */
 	public String getMiscField(final String miscKey) {
+		if (this.miscFields == null || !this.miscFields.containsKey(miscKey)) return null;
 		if(!this.miscFieldParsed){
-			this.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS); // by default map wins
-			log.debug("Miscfield out of sync while getMiscField: This should not be possible!");
+			this.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS); // by default map wins 
 		}
-		if (!this.miscFields.containsKey(miscKey)) return null;
-		
 		return this.miscFields.get(miscKey);
 	}
 
