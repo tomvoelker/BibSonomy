@@ -795,8 +795,9 @@ public class BibTexUtils {
 		if (!present(bibtex)) return "";
 
 		// replace markup
-		bibtex = bibtex.replaceAll("\\\\[a-z]+\\{([^\\}]+)\\}", "$1");  // \\markup{marked_up_text}		
-
+		bibtex = bibtex.replaceAll("\\\\[a-z]+\\{([^\\}]+)\\}", "$1");  // \\markup{marked_up_text}
+		bibtex = bibtex.replaceAll("\\\\[a-z]+ ", "");                   // \\relax, \\em, etc.
+		// FIXME: How to handle whitespace around marco correctly?
 		// decode Latex macros into unicode characters
 		return TexDecode.decode(bibtex).trim();
 	}
