@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.model.extra;
 
+import java.io.Serializable;
 import java.net.URL;
 import java.util.Date;
 
@@ -34,8 +35,12 @@ import java.util.Date;
  * 
  * @author Christian Schenk
  */
-public class BibTexExtra {
+public class BibTexExtra implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4004329258093393977L;
 	private URL url;
 	private String text;
 	private Date date;
