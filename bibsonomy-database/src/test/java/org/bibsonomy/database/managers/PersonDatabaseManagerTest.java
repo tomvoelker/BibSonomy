@@ -182,10 +182,16 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				//conflcit for merge remains
 				assertTrue(!this.PERSON_DATABASE_MANAGER.mergeSimilarPersons(match, loginUser.getName(), this.dbSession));
 				Map<String, String> map = new HashMap<String, String>();
+				String newPage = "";
 				for(PersonMergeFieldConflict conflict : mergeConflicts.get(4)) {
-					map.put(conflict.getFieldName(), conflict.getPerson1Value());
+					map.put(conflict.getFieldName(), conflict.getPerson2Value());
+					if (conflict.getFieldName().equals("homepage")) {
+						newPage = conflict.getPerson2Value();
+					}
 				}
 				assertTrue(this.PERSON_DATABASE_MANAGER.conflictMerge(this.dbSession, match.getMatchID(), map, loginUser.getName()));
+				Person updatedPerson = this.PERSON_DATABASE_MANAGER.getPersonById(match.getPerson1().getPersonId(), this.dbSession);
+				assertTrue(updatedPerson.getHomepage().equals(newPage));
 			} else if (match.getMatchID() == 1) {
 				assertTrue(this.PERSON_DATABASE_MANAGER.mergeSimilarPersons(match, loginUser.getName(), this.dbSession));
 			}
