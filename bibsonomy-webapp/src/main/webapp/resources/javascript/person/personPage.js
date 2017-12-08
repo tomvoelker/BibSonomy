@@ -97,7 +97,7 @@ $(document).ready(function() {
 			    	$(input)[0].setAttribute("title", "Gender must be 'm' or 'F'");
 			    } else if (data[conflict].field == 'mainName') {
 			    	$(input)[0].setAttribute("title", "Lastname, Fistname");
-			    	$(input)[0].setAttribute("pattern", "(.+)(,)(.+)");
+			    	$(input)[0].setAttribute("pattern", "(.+)(, )(.+)");
 			    } else {
 			    	$(input)[0].setAttribute("pattern", ".+");
 			    }

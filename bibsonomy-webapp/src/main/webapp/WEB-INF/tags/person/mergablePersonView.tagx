@@ -23,6 +23,11 @@
 	<jsp:directive.attribute name="conflicts" type="java.util.Map"
 		required="true" />
 
+	<fmt:message key="person.merge.conflictmerge" var="textConflictMerge" />
+	<fmt:message key="person.merge.merge" var="textMerge" />
+	<fmt:message key="person.merge.denie" var="textDenie" />
+	<fmt:message key="person.merge.reasons" var="textReasons" />
+
 	<div class="simpleMatchEntry" id="match_${personMatch.matchID}">
 		<c:set var="matchedPersonIndex"
 			value="${(currentPerson.personId == personMatch.person1.personId) ? 2 : 1}" />
@@ -42,18 +47,18 @@
 						<button type="button"
 							class="btn btn-warning btn-xs conflictMergeButton"
 							match-id="${personMatch.matchID}" conflicts="${conflicts.get(personMatch.matchID)}"
-							title="accept merge and resolve conflicts" data-toggle='modal'
+							title="${textConflictMerge}" data-toggle='modal'
 							data-target='#conflictModal'>(&#10004;)</button>
 					</c:when>
 					<c:otherwise>
 						<button type="button" class="btn btn-success btn-xs mergeButton"
 							data-operation="MERGE_ACCEPT" match-id="${personMatch.matchID}"
-							title="accept merge">&#10004;</button>
+							title="${textMerge}">&#10004;</button>
 					</c:otherwise>
 				</c:choose>
 				<button type="button" class="btn btn-danger btn-xs mergeButton"
 					data-operation="MERGE_DENIED" match-id="${personMatch.matchID}"
-					title="denie merge">&#10006;</button>
+					title="${textDenie}">&#10006;</button>
 			</div>
 			<c:set var="firstPost"
 				value="${(matchedPersonIndex == 1) ? personMatch.reasons.get(0).item1 : personMatch.reasons.get(0).item2}" />
@@ -80,7 +85,7 @@
 				<button type="button" id="moreMatchReasonsToggler"
 					class="btn btn-info btn-xs" style="" data-toggle="collapse"
 					data-target="#info_${personMatch.matchID}"
-					title="Reasons for this match" value="more">more</button>
+					title="${textReasons}" value="more">more</button>
 			</c:if>
 		</div>
 
