@@ -325,8 +325,13 @@
 	<insert id="addOtherDNBID" parameterClass="org.bibsonomy.database.params.DNBAliasParam">
 		INSERT INTO other_dnb_ids VALUES (#dnbId#, #otherDnbId#)
 	</insert>
+	
 	<update id="updateTransitivDNBID" parameterClass="org.bibsonomy.database.params.DNBAliasParam">
 		UPDATE other_dnb_ids SET dnb_person_id=#dnbId# where dnb_person_id=#otherDnbId#
 	</update>
 	
+	<select id="getPersonForward" resultClass='java.lang.String' parameterClass='java.lang.String'>
+		SELECT person1_id FROM person_match 
+		WHERE person2_id = #personId# AND state = 2
+	</select>
 </sqlMap>

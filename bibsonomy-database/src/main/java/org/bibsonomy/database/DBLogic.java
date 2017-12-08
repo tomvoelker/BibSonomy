@@ -3775,4 +3775,13 @@ public class DBLogic implements LogicInterface {
 		}
 		return false;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getForwardId(java.lang.String)
+	 */
+	@Override
+	public String getForwardId(String personId) {
+		final DBSession session = this.openSession();
+		return this.personDBManager.getForwardId(personId, session);
+	}
 }

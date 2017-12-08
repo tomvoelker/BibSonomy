@@ -950,4 +950,13 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			return match.getPerson2().getUser().equals(loginUser);
 		}
 	}
+
+	/**
+	 * @param personId
+	 * @param session
+	 * @return
+	 */
+	public String getForwardId(String personId, DBSession session) {
+		return this.queryForObject("getPersonForward",personId, String.class, session);
+	}
 }
