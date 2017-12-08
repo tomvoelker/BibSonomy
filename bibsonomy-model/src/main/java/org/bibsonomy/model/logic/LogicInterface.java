@@ -769,4 +769,11 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	public void denieMerge(PersonMatch match);
 
 	public void acceptMerge(PersonMatch match);
+
+	/**
+	 * @param formMatchId
+	 * @param array
+	 * @return
+	 */
+	public Boolean conflictMerge(int formMatchId, Map<String, String> map);
 }

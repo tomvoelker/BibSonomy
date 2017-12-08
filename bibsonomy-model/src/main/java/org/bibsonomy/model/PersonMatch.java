@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author jhi
  */
-public class PersonMatch implements Serializable {
+public class PersonMatch implements Serializable, Comparable<PersonMatch> {
 	
 	private static final long serialVersionUID = -470932185819510145L;
 	public static final int denieThreshold = 5;
@@ -91,5 +91,17 @@ public class PersonMatch implements Serializable {
 	 */
 	public void setUserDenies(List<String> userDenies) {
 		this.userDenies = userDenies;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(PersonMatch match) {
+		if ((this.person1.getPersonId().equals(match.getPerson1().getPersonId()) && this.person2.getPersonId().equals(match.getPerson2().getPersonId()))
+				|| (this.person1.getPersonId().equals(match.getPerson2().getPersonId()) && this.person2.getPersonId().equals(match.getPerson1().getPersonId()))) {
+			return 0;
+		}
+		return -1;
 	}
 }

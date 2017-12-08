@@ -36,9 +36,11 @@ $(document).ready(function() {
 				formResponseString: JSON.stringify(array)
 		};
 		$.post("/person", form_data).done(function(data){
-			$("#match_" + form_data.formMatchId).slideUp(500, function(){
-				$(this).remove();
-			});
+			if (data.status) {
+				$("#match_" + form_data.formMatchId).slideUp(500, function(){
+					$(this).remove();
+				});
+			}
 		});
 		
 	});

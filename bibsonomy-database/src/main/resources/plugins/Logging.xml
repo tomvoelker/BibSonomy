@@ -181,8 +181,8 @@
 	</insert>
 	
 	<insert id="logPersonName" parameterClass="Integer">
-		INSERT INTO log_person_name (person_change_id, first_name, last_name, person_id, is_main, log_changed_at, log_changed_by, deleted)
-		SELECT person_change_id, first_name, last_name, person_id, is_main, log_changed_at, log_changed_by, 0 as deleted
+		INSERT INTO log_person_name (person_change_id, first_name, last_name, person_id, is_main, log_changed_at, log_changed_by)
+		SELECT person_change_id, first_name, last_name, person_id, is_main, log_changed_at, log_changed_by
 		FROM person_name WHERE person_change_id = #personChangeId#
 	</insert>
 	

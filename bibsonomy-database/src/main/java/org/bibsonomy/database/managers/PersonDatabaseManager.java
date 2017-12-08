@@ -42,6 +42,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.params.DNBAliasParam;
 import org.bibsonomy.database.params.DenieMatchParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
@@ -637,6 +638,10 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 				} else if(person2Value == null && person1Value != null){ 
 					desc.getWriteMethod().invoke(match.getPerson2(), person1Value);
 					updated2 = true;
+				}
+				if (fieldName.equals("dnbPersonId") && person1Value != null && person2Value != null) {
+					this.insert("addOtherDNBID", new DNBAliasParam((String)person1Value, (String)person2Value), session);
+					this.update("updateTransitivDNBID", new DNBAliasParam((String)person1Value, (String)person2Value), session);
 				}
 			}
 			//write changes

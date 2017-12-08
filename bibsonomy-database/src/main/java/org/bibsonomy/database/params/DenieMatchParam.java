@@ -35,7 +35,7 @@ public class DenieMatchParam {
 	 */
 	public DenieMatchParam(int matchID, String userName) {
 		this.userName=userName;
-		this.matchId=matchId;
+		this.matchId = matchID;
 	}
 	/**
 	 * @return the matchId

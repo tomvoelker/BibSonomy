@@ -1818,6 +1818,11 @@ CREATE TABLE `user_denied_match`(
   `user_name` varchar(30) NOT NULL
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `other_dnb_ids`(
+  `dnb_person_id` char(18) NOT NULL,
+  `other_dnb_person_id` char(18) NOT NULL
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

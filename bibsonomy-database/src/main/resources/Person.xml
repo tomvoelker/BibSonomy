@@ -317,10 +317,16 @@
 			WHERE person_id = #personId# and is_main = 1
 	</select>
 	
-	<select id='getDeniesForMatch' parameterClass='int'>
-		SELECT user_name FROM user_denied_match 
-		WHERE match_id = #matchId# 
-		GROUP by user_name
+	<select id='getDeniesForMatch' resultClass='java.lang.String' parameterClass='int'>
+		SELECT user_name FROM user_denied_match
+		WHERE match_id = #matchid#
 	</select>
+	
+	<insert id="addOtherDNBID" parameterClass="org.bibsonomy.database.params.DNBAliasParam">
+		INSERT INTO other_dnb_ids VALUES (#dnbId#, #otherDnbId#)
+	</insert>
+	<update id="updateTransitivDNBID" parameterClass="org.bibsonomy.database.params.DNBAliasParam">
+		UPDATE other_dnb_ids SET dnb_person_id=#dnbId# where dnb_person_id=#otherDnbId#
+	</update>
 	
 </sqlMap>

@@ -921,4 +921,13 @@ public class ReadOnlyLogic implements LogicInterface {
 	public PersonMatch getPersonMatch(int matchID) {
 		return null;
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#conflictMerge(int, org.json.JSONArray)
+	 */
+	@Override
+	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

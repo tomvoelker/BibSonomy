@@ -749,13 +749,13 @@ INSERT INTO `pub_person` VALUES (23, '0c000000d00000f00cef0c00f000e00a', '0c0000
 (27, '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP', 0),
 (28, 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP', 0),
 (29, '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', 'Maut', 0, 'w.test.3', 0,'2015-07-06 14:19:55','testuserP', 0),
-(30, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Maut', 0, 'w.test.3', 0,'2015-07-06 14:19:55','testuserP', 0);
+(30, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Maut', 0, 'w.test.4', 0,'2015-07-06 14:19:55','testuserP', 0);
 
 INSERT INTO `person_name` (person_change_id, first_name, last_name, person_id, is_main) VALUES (31, 'Willi', 'Test', 'w.test.1', 1),
-(32, 'Willi', 'Test', 'w.test.2', 1), (33, 'Willi', 'Test', 'w.test.3', 1), (34, 'Willi', 'Test', 'w.test.4', 1);
+(32, 'Willi', 'Test', 'w.test.2', 1), (33, 'Willi', 'Test', 'w.test.3', 1), (34, 'Will', 'Test', 'w.test.4', 1);
 
-INSERT INTO `person_match` (match_id, person1_id, person2_id, denieCtr, state) VALUES (1, "w.test.1", "w.test.2", 0, 0),
-(2, "w.test.1", "w.test.3", 0, 0), (3, "w.test.2", "w.test.3", 0, 0), (4, "w.test.1", "w.test.4", 0, 0);
+INSERT INTO `person_match` (match_id, person1_id, person2_id, state) VALUES (1, "w.test.1", "w.test.2", 0),
+(2, "w.test.1", "w.test.3", 0), (3, "w.test.2", "w.test.3", 0), (4, "w.test.1", "w.test.4", 0);
 
 INSERT INTO `match_reason` (match_id, mode, item1_id, item2_id) VALUES (1, "auth", "0c000000d00000f00cef0c00f000e00a", "0d0b00c0000a000f00a00ad00ff612fc"),
 (3, "auth", "0ffa0a0ad000a00cbccf000adb0fdde0", "0e0a00c000000f00d0d000b00eefe00b"),
