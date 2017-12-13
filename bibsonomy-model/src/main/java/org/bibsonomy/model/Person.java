@@ -354,13 +354,12 @@ public class Person implements Serializable {
 	 */
 	public boolean equalsTo(Person person) {
 		return (this.academicDegree == null || person.getAcademicDegree() == null || this.academicDegree.equals(person.getAcademicDegree()))&&
-			(this.college == null || person.getCollege() == null || this.college.equals(person.getCollege()) )&&
+			(this.college == null || person.getCollege() == null || this.college.equals(person.getCollege()))&&
 			(this.gender == null || person.getGender() == null || this.gender.equals(person.getGender()))&&
-			(this.email == null || person.getGender() == null || this.email.equals(person.getGender()))&&
+			(this.email == null || person.getEmail() == null || this.email.equals(person.getEmail()))&&
 			(this.homepage == null || person.getHomepage() == null || this.homepage.equals(person.getHomepage()))&&
-			(this.orcid == null || person.orcid == null || this.orcid.equals(person.orcid)&&
-			(this.user == null || person.user == null));
-
+			(this.orcid == null || person.orcid == null || this.orcid.equals(person.orcid))&&
+			(this.user == null || person.user == null);
   }
 
 }

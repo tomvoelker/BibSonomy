@@ -220,11 +220,6 @@
 		AND state = 0
 	</select>
 	
-	<select id="getMatchReasonsForMatchId" parameterClass="int" resultMap="PersonCommon.matchReason">
-		SELECT match_id, mode, item1_id, item2_id from match_reason 
-		where match_id = #matchid#
-	</select>
-	
 	<statement id="denieMatchByID" parameterClass="org.bibsonomy.database.params.DenieMatchParam">
 		UPDATE person_match SET state = 1 where match_id = #matchId#
 	</statement>
@@ -232,14 +227,6 @@
 	<statement id="denieMatchByIDForUser" parameterClass="org.bibsonomy.database.params.DenieMatchParam">
 		INSERT INTO user_denied_match VALUES (#matchId#, #userName#)
 	</statement>
-	
-	<delete id="removeMatchReasons" parameterClass="int">
-		delete from match_reason where match_id = #matchid#
-	</delete>
-	
-	<delete id="removeReflexivMatcheReasons">
-		delete from match_reason where match_id=ANY(select match_id from person_match where person1_id = person2_id)
-	</delete>
 	
 	<delete id="removeReflexivPersonMatches">
 		delete from person_match where person1_id = person2_id
@@ -309,6 +296,19 @@
 		AND p.person_id=#personId# AND p.relator_code = 'Maut'
 		and b.simhash1=p.simhash1 and b.entrytype='phdthesis' 
 		and (b.type is NULL or b.type !='habilitation')
+		GROUP BY interHash ORDER BY b.date DESC
+	</statement>
+	
+	<statement id="getPostsForPerson" parameterClass="java.lang.String" resultMap="BibTexCommon.bibtexPost">
+		SELECT b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
+		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
+		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, 
+		IF("hansii" = b.user_name, b.privnote, NULL) AS privnote , b.scraperid, t1.change_date, b.simhash1 AS interHash, b.simhash2 AS intraHash, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsDummyRows" />
+		FROM tas t1, bibhash h, bibtex b, pub_person p
+		WHERE b.content_id = t1.content_id
+		AND b.simhash1 = h.hash	AND h.type=1 AND p.person_id=#personId# AND p.relator_code = 'Maut'
+		AND b.simhash1=p.simhash1 
 		GROUP BY interHash ORDER BY b.date DESC
 	</statement>
 	

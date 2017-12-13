@@ -40,6 +40,7 @@ $(document).ready(function() {
 				$("#match_" + form_data.formMatchId).slideUp(500, function(){
 					$(this).remove();
 				});
+				location.reload(); 
 			}
 		});
 		
@@ -53,9 +54,12 @@ $(document).ready(function() {
 		};
 		
 		$.post("/person", form_data).done(function(data){
-			$("#match_" + form_data.formMatchId).slideUp(500, function(){
-				$(this).remove();
-			});
+			if (data.status) {
+				$("#match_" + form_data.formMatchId).slideUp(500, function(){
+					$(this).remove();
+				});
+				location.reload();
+			}
 		});
 	});
 	

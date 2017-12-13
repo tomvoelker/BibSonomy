@@ -933,8 +933,8 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 	
 	@Override
-	public void acceptMerge(PersonMatch match) {
-		this.doDefaultAction();
+	public boolean acceptMerge(PersonMatch match) {
+		return false;
 	}
 	
 	@Override
@@ -948,6 +948,15 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getForwardId(java.lang.String)
+	 */
+	@Override
+	public String getForwardId(String personId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -60,32 +60,32 @@
 					data-operation="MERGE_DENIED" match-id="${personMatch.matchID}"
 					title="${textDenie}">&#10006;</button>
 			</div>
-			<c:set var="firstPost"
-				value="${(matchedPersonIndex == 1) ? personMatch.reasons.get(0).item1 : personMatch.reasons.get(0).item2}" />
-			<div class="firstSubSimplePubEntry"
-				id="${firstPost.resource.interHash}">
-				<span class="ptitle"><bib:title post="${firstPost}" /></span> <span
-					class="personPdesc pdesc"><bib:desc post="${firstPost}"
-						publication="${firstPost.resource}" /></span><br />
-			</div>
-			<div id="info_${personMatch.matchID}" class="panel-collapse collapse">
-				<c:forEach var="reason" items="${personMatch.reasons}">
-					<c:set var="post"
-						value="${(matchedPersonIndex == 1) ? reason.item1 : reason.item2}" />
-					<c:if test="${personMatch.reasons.get(0) != reason}">
-						<div class="subSimplePubEntry" id="${post.resource.interHash}">
-							<span class="ptitle"><bib:title post="${post}" /></span> <span
-								class="personPdesc pdesc"><bib:desc post="${post}"
-									publication="${post.resource}" /></span><br />
-						</div>
-					</c:if>
-				</c:forEach>
-			</div>
-			<c:if test="${fn:length(personMatch.reasons) gt 1}">
-				<button type="button" id="moreMatchReasonsToggler"
-					class="btn btn-info btn-xs" style="" data-toggle="collapse"
-					data-target="#info_${personMatch.matchID}"
-					title="${textReasons}" value="more">more</button>
+			<c:set var="matchPersonPosts"
+				value="${(matchedPersonIndex == 1) ? personMatch.person1Posts : personMatch.person2Posts}" />
+			<c:if test="${fn:length(matchPersonPosts) gt 0}">
+					<div class="firstSubSimplePubEntry"
+					id="${matchPersonPosts.get(0).resource.interHash}">
+					<span class="ptitle"><bib:title post="${matchPersonPosts.get(0)}" /></span> <span
+						class="personPdesc pdesc"><bib:desc post="${matchPersonPosts.get(0)}"
+						publication="${matchPersonPosts.get(0).resource}" /></span><br />
+				</div>
+				<div id="info_${personMatch.matchID}" class="panel-collapse collapse">
+					<c:forEach var="personPost" items="${matchPersonPosts}">
+						<c:if test="${matchPersonPosts.get(0) != personPost}">
+							<div class="subSimplePubEntry" id="${personPost.resource.interHash}">
+								<span class="ptitle"><bib:title post="${personPost}" /></span> <span
+									class="personPdesc pdesc"><bib:desc post="${personPost}"
+										publication="${personPost.resource}" /></span><br />
+							</div>
+						</c:if>
+					</c:forEach>
+				</div>
+				<c:if test="${fn:length(matchPersonPosts) gt 1}">
+					<button type="button" id="moreMatchReasonsToggler"
+						class="btn btn-info btn-xs" style="" data-toggle="collapse"
+						data-target="#info_${personMatch.matchID}"
+						title="${textReasons}" value="more">more</button>
+				</c:if>
 			</c:if>
 		</div>
 

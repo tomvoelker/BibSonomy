@@ -498,20 +498,19 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}
 		
 		if(match.getPerson1().getPersonId().equals(match.getPerson2().getPersonId())){
-			this.delete("removeMatchReasons", match.getMatchID(), session);
 			this.delete("removePersonMatch", match.getMatchID(), session);
 			return false;
 		}
 		
-		BibTex habil1 = this.queryForObject("getHabilForPerson", match.getPerson1().getPersonId(), BibTex.class, session);
-		BibTex habil2 = this.queryForObject("getHabilForPerson", match.getPerson2().getPersonId(), BibTex.class, session);
-		if(habil1 != null && habil2 != null && habil1.getSimHash1()!= habil2.getSimHash1()){
+		Post habil1 = this.queryForObject("getHabilForPerson", match.getPerson1().getPersonId(), Post.class, session);
+		Post habil2 = this.queryForObject("getHabilForPerson", match.getPerson2().getPersonId(), Post.class, session);
+		if(habil1 != null && habil2 != null && habil1.getResource().getInterHash() != habil2.getResource().getInterHash()){
 			return false;
 		}
-		BibTex phd1 = this.queryForObject("getPHDForPerson", match.getPerson1().getPersonId(), BibTex.class, session);
-		BibTex phd2 = this.queryForObject("getPHDForPerson", match.getPerson2().getPersonId(), BibTex.class, session);
+		Post phd1 = this.queryForObject("getPHDForPerson", match.getPerson1().getPersonId(), Post.class, session);
+		Post phd2 = this.queryForObject("getPHDForPerson", match.getPerson2().getPersonId(), Post.class, session);
 		
-		if(phd1 != null && phd2 != null && phd1.getSimHash1() != phd2.getSimHash1()) {
+		if(phd1 != null && phd2 != null && phd1.getResource().getInterHash() != phd2.getResource().getInterHash()) {
 			return false;
 		}
 		
@@ -519,6 +518,10 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		PersonName person1MainName = match.getPerson1().getMainName();
 		PersonName person2MainName = match.getPerson2().getMainName();
 
+		if(!person1MainName.equals(person2MainName)){
+			return false;
+		}
+		
 		//person with different attributes
 		if(!match.getPerson1().equalsTo(match.getPerson2())) {
 			return false;
@@ -594,29 +597,40 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public boolean mergeSimilarPersons(PersonMatch match, String loginUser, DBSession session) {
 		//merge two persons, if there is no conflict
 		if(mergeable(match, session, loginUser) && testMergeOnClaims(match, loginUser)){
-			//redirect resourcePersonRelation to person1 and log the changes
-			//Note that persons can have multiple related posts with same simhash and that they are will be grouped by their simhash1
-			mergeAllPubs(match, loginUser, session);
-			//add new further alias 
-			mergePersonAliases(loginUser, match, session);
-			
-			boolean edit = this.combinePersonsAttributes(match.getPerson1(), match.getPerson2());
-			if (edit) {
-				this.updatePersonOnAll(match.getPerson1(), session);
-			}
-			this.mergePersonAttributes(match, session);
-			//sets match state to 2
-			this.update("acceptMerge", match.getMatchID(), session);
-			//Substitutes person2's id with person1's for all unresolved matches
-			this.update("updatePersonMatchAfterMerge", match, session);
-			this.delete("removeReflexivMatcheReasons", match.getMatchID(), session);
-			this.delete("removeReflexivPersonMatches", match.getMatchID(), session);
-			this.delete("removeMatchReasons", match.getMatchID(), session);
-			this.mergeMerges(match.getPerson1().getPersonId(), session, loginUser);
+			performMerge(match, loginUser, session);
 			
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * This method will merge two persons, if there are no conflicts
+	 * The person resource relation will be changed
+	 * Name aliases will be added
+	 * 
+	 * @param match
+	 * @param loginUser
+	 * @param session
+	 */
+	private void performMerge(PersonMatch match, String loginUser, DBSession session) {
+		//redirect resourcePersonRelation to person1 and log the changes
+		//Note that persons can have multiple related posts with same simhash and that they are will be grouped by their simhash1
+		mergeAllPubs(match, loginUser, session);
+		//add new further alias 
+		mergePersonAliases(loginUser, match, session);
+		
+		boolean edit = this.combinePersonsAttributes(match.getPerson1(), match.getPerson2());
+		if (edit) {
+			this.updatePersonOnAll(match.getPerson1(), session);
+		}
+		this.mergePersonAttributes(match, session);
+		//sets match state to 2
+		this.update("acceptMerge", match.getMatchID(), session);
+		//Substitutes person2's id with person1's for all unresolved matches
+		this.update("updatePersonMatchAfterMerge", match, session);
+		this.delete("removeReflexivPersonMatches", match.getMatchID(), session);
+		this.mergeMerges(match.getPerson1().getPersonId(), session, loginUser);
 	}
 
 	/**
@@ -850,10 +864,12 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 					new PropertyDescriptor(fieldName, Person.class).getWriteMethod().invoke(person2, map.get(fieldName));
 				}
 			}
-			//add changes to both so they can be compared with mergable()
+			// add changes to both so they can be compared with mergable()
+
 			this.updatePersonOnAll(person1, session);
 			this.updatePersonOnAll(person2, session);
-			this.mergeSimilarPersons(match, loginUser, session);
+			this.performMerge(match, loginUser, session);
+			
 		} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			System.err.println(e);
 			return false;

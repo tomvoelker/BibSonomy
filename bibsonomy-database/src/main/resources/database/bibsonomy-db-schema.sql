@@ -1806,13 +1806,6 @@ CREATE TABLE `person_match`(
    PRIMARY KEY  (`match_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `match_reason`(
-  `match_id` int(10) unsigned NOT NULL,
-  `mode` varchar(4) NOT NULL,
-  `item1_id` char(32) DEFAULT NULL COMMENT '(interHash)',
-  `item2_id` char(32) DEFAULT NULL COMMENT '(interHash)'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 CREATE TABLE `user_denied_match`(
   `match_id` int(10) unsigned NOT NULL,
   `user_name` varchar(30) NOT NULL

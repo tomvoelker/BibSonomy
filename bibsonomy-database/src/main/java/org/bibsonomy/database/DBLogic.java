@@ -3751,11 +3751,12 @@ public class DBLogic implements LogicInterface {
 	}
 	
 	@Override
-	public void acceptMerge(PersonMatch match) {
+	public boolean acceptMerge(PersonMatch match) {
 		final DBSession session = this.openSession();
 		if (present(this.loginUser.getName())) {
-			this.personDBManager.mergeSimilarPersons(match, this.loginUser.getName(), session);
+			return this.personDBManager.mergeSimilarPersons(match, this.loginUser.getName(), session);
 		}
+		return false;
 	}
 	
 	@Override

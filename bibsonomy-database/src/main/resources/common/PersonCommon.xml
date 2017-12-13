@@ -79,15 +79,9 @@
 		<result property='state' column='state'/>
 		<result property="person1"          column="person1_id"       javaType='org.bibsonomy.model.Person'       select='getPersonById'/>
 		<result property="person2"          column="person2_id"       javaType='org.bibsonomy.model.Person'       select='getPersonById'/>
-		<result property="reasons"			column="match_id"		  javaType='org.bibsonomy.model.MatchReason'  select='getMatchReasonsForMatchId' />
 		<result property="userDenies"		column="match_id"		  javaType='java.lang.String'				  select='getDeniesForMatch' />
-	</resultMap>
-	
-	<resultMap id='matchReason' class='org.bibsonomy.model.MatchReason'>
-		<result property='matchID' column='match_id'/>
-		<result property='mode' column='mode'/>
-		<result property='item1'            column='item1_id'        javaType='bibtex'                           select='getPost'/>
-		<result property='item2'            column='item2_id'        javaType='bibtex'                           select='getPost'/>
+		<result property="person1Posts"		column="person1_id"		  javaType='org.bibsonomy.model.Post'		  select='getPostsForPerson' />
+		<result property="person2Posts"		column="person2_id"		  javaType='org.bibsonomy.model.Post'		  select='getPostsForPerson' />
 	</resultMap>
 	
 	<sql id="commonPersonColumns">

@@ -17,8 +17,9 @@ public class PersonMatch implements Serializable, Comparable<PersonMatch> {
 	private Person person2;
 	private int state; //0 open, 1 denied, 2 already merged
 	private int matchID;
-	private List<MatchReason> reasons;
 	private List<String> userDenies;
+	private List<Post> person1Posts;
+	private List<Post> person2Posts;
 	
 	/**
 	 * @return the matchID
@@ -69,18 +70,6 @@ public class PersonMatch implements Serializable, Comparable<PersonMatch> {
 		this.state = state;
 	}
 	/**
-	 * @return the reasons
-	 */
-	public List<MatchReason> getReasons() {
-		return this.reasons;
-	}
-	/**
-	 * @param reasons the reasons to set
-	 */
-	public void setReasons(List<MatchReason> reasons) {
-		this.reasons = reasons;
-	}
-	/**
 	 * @return the userDenies
 	 */
 	public List<String> getUserDenies() {
@@ -103,5 +92,29 @@ public class PersonMatch implements Serializable, Comparable<PersonMatch> {
 			return 0;
 		}
 		return -1;
+	}
+	/**
+	 * @return the person1Posts
+	 */
+	public List<Post> getPerson1Posts() {
+		return this.person1Posts;
+	}
+	/**
+	 * @param person1Posts the person1Posts to set
+	 */
+	public void setPerson1Posts(List<Post> person1Posts) {
+		this.person1Posts = person1Posts;
+	}
+	/**
+	 * @return the person2Posts
+	 */
+	public List<Post> getPerson2Posts() {
+		return this.person2Posts;
+	}
+	/**
+	 * @param person2Posts the person2Posts to set
+	 */
+	public void setPerson2Posts(List<Post> person2Posts) {
+		this.person2Posts = person2Posts;
 	}
 }

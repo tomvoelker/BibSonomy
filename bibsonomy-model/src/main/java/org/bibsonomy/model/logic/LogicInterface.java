@@ -768,7 +768,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	
 	public void denieMerge(PersonMatch match);
 
-	public void acceptMerge(PersonMatch match);
+	public boolean acceptMerge(PersonMatch match);
 
 	/**
 	 * @param formMatchId
@@ -776,4 +776,11 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @return
 	 */
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map);
+	
+	/**
+	 * 
+	 * @param personId
+	 * @return returns the updated personId, if the person was merged to an other person
+	 */
+	public String getForwardId(String personId);
 }
