@@ -55,6 +55,7 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.update.UpdateRequestBuilder;
+import org.elasticsearch.index.engine.DocumentMissingException;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 
@@ -98,9 +99,13 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 		for (final Post<P> postDocUpdate : postsForDocUpdate) {
 			final List<Map<String, String>> documents = this.getPublicationConverter().convertDocuments(postDocUpdate.getResource().getDocuments());
 			final String id = ElasticsearchUtils.createElasticSearchId(postDocUpdate.getContentId().intValue());
-			final UpdateRequestBuilder update = this.client.prepareUpdate(indexName, this.tools.getResourceTypeAsString(), id);
-			update.setDoc(Collections.singletonMap(Publication.DOCUMENTS, documents))
-			.setRefresh(true).execute().actionGet();
+			try {
+				final UpdateRequestBuilder update = this.client.prepareUpdate(indexName, this.tools.getResourceTypeAsString(), id);
+				update.setDoc(Collections.singletonMap(Publication.DOCUMENTS, documents))
+						.setRefresh(true).execute().actionGet();
+			} catch (final DocumentMissingException e) {
+				log.error("could not update post with " + id, e);
+			}
 		}
 		
 		final LRUMap updatedInterhashes = new LRUMap(UPDATED_INTERHASHES_CACHE_SIZE);
@@ -109,10 +114,10 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 	}
 	
 	/**
-	 * @param indexName 
+	 * @param indexName
+	 * @param oldState
 	 * @param targetState
 	 * @param updatedInterhashes
-	 * @param indexUpdaters
 	 */
 	private void applyPersonChangesToIndex(String indexName, SearchIndexSyncState oldState, SearchIndexSyncState targetState, LRUMap updatedInterhashes) {
 		for (long minPersonChangeId = oldState.getLastPersonChangeId() + 1; minPersonChangeId < targetState.getLastPersonChangeId(); minPersonChangeId = Math.min(targetState.getLastPersonChangeId(), minPersonChangeId + SQL_BLOCKSIZE)) {
@@ -181,10 +186,14 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 		return (PublicationConverter) converter;
 	}
 	
-	private void updatePostDocument(final String indexName, final Map<String, Object> jsonDocument, String indexIdStr) {
-		this.client.prepareUpdate(indexName, this.tools.getResourceTypeAsString(), indexIdStr)
-			.setDoc(jsonDocument)
-			.setRefresh(true).execute().actionGet();
+	private void updatePostDocument(final String indexName, final Map<String, Object> jsonDocument, final String indexIdStr) {
+		try {
+			this.client.prepareUpdate(indexName, this.tools.getResourceTypeAsString(), indexIdStr)
+					.setDoc(jsonDocument)
+					.setRefresh(true).execute().actionGet();
+		} catch (final DocumentMissingException e) {
+			log.error("could not update documents of post " + indexIdStr);
+		}
 	}
 
 	private void applyChangesInPubPersonRelationsToIndex(final String indexName, SearchIndexSyncState oldState, SearchIndexSyncState targetState, final LRUMap updatedInterhashes) {
