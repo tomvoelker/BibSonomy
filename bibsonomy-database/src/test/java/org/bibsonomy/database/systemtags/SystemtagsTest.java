@@ -694,7 +694,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 	@Ignore
 	public void testAttribute() {
 		final String groupingTag = "sys:grouping";
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { groupingTag }), "", null, 0, 50, null, null, null, null, new User("testuser"));
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, BibTex.class,  GroupingEntity.USER, "testuser", Arrays.asList(new String[] { groupingTag }), "", null, 0, 50, null, null, null, null, new User("testuser"));
 		assertEquals(GroupingEntity.USER, param.getGrouping());
 	}
 
@@ -702,7 +702,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 	@Ignore
 	public void testFormat() {
 		final String systemtag = "sys:date:12:03:1983";
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemtag }), "", null, 0, 50, null, null, null, null, new User("testuser"));
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, BibTex.class,  GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemtag }), "", null, 0, 50, null, null, null, null, new User("testuser"));
 		assertEquals(GroupingEntity.FRIEND, param.getGrouping());
 	}
 
@@ -710,7 +710,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 	@Ignore
 	public void testFormatFalse() {
 		final String systemtag = "sys:date:12:03:3";
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemtag }), "", null, 0, 50, null, null, null, null, new User("testuser"));
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, BibTex.class,  GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemtag }), "", null, 0, 50, null, null, null, null, new User("testuser"));
 		assertEquals(GroupingEntity.USER, param.getGrouping());
 	}
 
