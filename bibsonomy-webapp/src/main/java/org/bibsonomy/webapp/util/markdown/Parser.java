@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.search.es.help.HelpUtils;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.help.HelpParser;
 import org.pegdown.Extensions;
 import org.pegdown.PegDownProcessor;
@@ -49,36 +50,40 @@ public class Parser implements HelpParser {
 	protected static final int PROCESSOR_CONFIG = Extensions.TABLES | Extensions.EXTANCHORLINKS;
 	
 	/** A map which maps a variable to the value it should be replaced with */
-	private Map<String, String> replacements;
-	private LinkRenderer linkRenderer;
+	private final Map<String, String> replacements;
+	private final URLGenerator urlGenerator;
 
 	/**
 	 * @param replacements the map for the replacement of the variables
+	 * @param urlGenerator the url generator
 	 */
-	public Parser(Map<String, String> replacements) {
+	public Parser(Map<String, String> replacements, URLGenerator urlGenerator) {
 		super();
 		this.replacements = replacements;
-		this.linkRenderer = new LinkRenderer(this.replacements.get(HelpUtils.PROJECT_HOME));
+		this.urlGenerator = urlGenerator;
 	}
 
 	/**
 	 * Parses the given file and renders it as HTML
 	 * 
-	 * @param content the text 
+	 * @param text the text
+	 * @param language
 	 * @return The resulting HTML
 	 * @throws IOException
 	 */
 	@Override
-	public String parseText(final String text) throws IOException {
-		// Instantiate Markdown Parser
+	public String parseText(final String text, String language) throws IOException {
+		// instantiate Markdown Parser
 		final PegDownPlugins plugins = new PegDownPlugins.Builder().withPlugin(Plugin.class).build();
 		final PegDownProcessor proc = new PegDownProcessor(PROCESSOR_CONFIG, plugins);
 
-		// Parse and serialize content
+		// parse and serialize content
 		final RootNode ast = proc.parseMarkdown(text.toCharArray());
 		final List<ToHtmlSerializerPlugin> serializePlugins = Arrays.asList((ToHtmlSerializerPlugin) (new Serializer(this.replacements)));
-		
-		final ToHtmlSerializer serializer = new ToHtmlSerializer(this.linkRenderer, serializePlugins);
+
+		final LinkRenderer linkRenderer = new LinkRenderer(this.replacements.get(HelpUtils.PROJECT_HOME), this.urlGenerator, language);
+
+		final ToHtmlSerializer serializer = new ToHtmlSerializer(linkRenderer, serializePlugins);
 		
 		return serializer.toHtml(ast);
 	}

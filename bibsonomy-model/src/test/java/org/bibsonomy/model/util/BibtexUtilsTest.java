@@ -184,16 +184,30 @@ public class BibtexUtilsTest {
 			"  edition = {John Libbey Eurotext},\n" +
 			"  editor = {John Libbey Eurotext},\n" +
 			"  note = {Tome I},\n" +
-			"  title = {La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer},\n" +	
-			"  year = 2004,\n" +	
-			"  q6 = {It needs.\n" + 
-			"To trials.\n" + 
-			"Health rises.}, q7 = {Payment costs.}, q3b = {Establishment followed.}, q1e = {This \n" + 
-			"Cost-effectiveness paper.}, q9 = {Payment costs.}, q1a = {Participation health. \n" + 
+			"  q1a = {Participation health. \n" +  
 			"Maintenance age. \n" + 
-			"Studies programs.}, q3a = {Reminder 2004). \n" + 
+			"Studies programs.},\n" +
+			"  q1e = {This \n" + 
+			"Cost-effectiveness paper.},\n" +
+			"  q3a = {Reminder 2004). \n" + 
 			"Preventive 2007). \n" + 
-			"For not.}\n" + 						
+			"For not.},\n" +
+			"  q3b = {Establishment followed.},\n" +
+			"  q6 = {It needs.\n" +
+			"To trials.\n" +
+			"Health rises.},\n" +
+			"  q7 = {Payment costs.},\n" +
+			"  q9 = {Payment costs.},\n" +
+			"  title = {La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer},\n" +	
+			"  year = 2004\n" +	
+//			"    q6 = {It needs.\n" + 
+//			"To trials.\n" + 
+//			"Health rises.}, q7 = {Payment costs.}, q3b = {Establishment followed.}, q1e = {This \n" + 
+//			"Cost-effectiveness paper.}, q9 = {Payment costs.}, q1a = {Participation health. \n" + 
+//			"Maintenance age. \n" + 
+//			"Studies programs.}, q3a = {Reminder 2004). \n" + 
+//			"Preventive 2007). \n" + 
+//			"For not.}\n" + 						
 			"}";
 		assertEquals(expected, BibTexUtils.toBibtexString(bib, BibTexUtils.SERIALIZE_BIBTEX_OPTION_FIRST_LAST | BibTexUtils.SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD));
 	}
@@ -233,16 +247,30 @@ public class BibtexUtilsTest {
 			"  edition = {John Libbey Eurotext},\n" +
 			"  editor = {Eurotext, John Libbey},\n" +
 			"  note = {Tome I},\n" +
-			"  title = {La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer},\n" +	
-			"  year = 2004,\n" +
+			"  q1a = {Participation health. \n" + 
+			"Maintenance age. \n" + 
+			"Studies programs.},\n" +
+			"  q1e = {This \n" + 
+			"Cost-effectiveness paper.},\n" +
+			"  q3a = {Reminder 2004). \n" +
+			"Preventive 2007). \n" + 
+			"For not.},\n" +
+			"  q3b = {Establishment followed.},\n" +
 			"  q6 = {It needs.\n" + 
 			"To trials.\n" + 
-			"Health rises.}, q7 = {Payment costs.}, q3b = {Establishment followed.}, q1e = {This \n" + 
-			"Cost-effectiveness paper.}, q9 = {Payment costs.}, q1a = {Participation health. \n" + 
-			"Maintenance age. \n" + 
-			"Studies programs.}, q3a = {Reminder 2004). \n" + 
-			"Preventive 2007). \n" + 
-			"For not.}\n" + 						
+			"Health rises.},\n" +
+			"  q7 = {Payment costs.},\n" +
+			"  q9 = {Payment costs.},\n" +
+			"  title = {La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer},\n" +	
+			"  year = 2004\n" +
+//			"  q6 = {It needs.\n" + 
+//			"To trials.\n" + 
+//			"Health rises.}, q7 = {Payment costs.}, q3b = {Establishment followed.}, q1e = {This \n" + 
+//			"Cost-effectiveness paper.}, q9 = {Payment costs.}, q1a = {Participation health. \n" + 
+//			"Maintenance age. \n" + 
+//			"Studies programs.}, q3a = {Reminder 2004). \n" + 
+//			"Preventive 2007). \n" + 
+//			"For not.}\n" + 						
 			"}";
 		assertEquals(expected, BibTexUtils.toBibtexString(bib, BibTexUtils.SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD));
 	}
@@ -442,7 +470,7 @@ public class BibtexUtilsTest {
 	public void serializeMiscFields() {
 		final BibTex bib = new BibTex();
 		bib.serializeMiscFields();
-		assertEquals("", bib.getMisc());
+		assertEquals(null, bib.getMisc()); // so far nothing in misc map, so there is nothing in misc string
 		// add misc field, check if it is correctly serialized
 		bib.addMiscField("key1", "value1");
 		bib.serializeMiscFields();
@@ -465,7 +493,7 @@ public class BibtexUtilsTest {
 
 	/**
 	 * Tests that toBibtexString() does not add misc fields to the post.
-	 * @throws PersonListParserException 
+	 * @throws PersonListParserException  
 	 */
 	@Test
 	public void toBibtexString2() throws PersonListParserException {
@@ -481,10 +509,11 @@ public class BibtexUtilsTest {
 		bib.setPrivnote("This is private!");
 
 		final String originalMisc = "doi = {my doi}, isbn = {999-12345-123-x}, vgwort = {12}";
-		final String cleanedMisc  = 
-			"  isbn = {999-12345-123-x},\n" +
-			"  vgwort = {12},\n" +
-			"  doi = {my doi}";
+		final String cleanedMisc  =
+				"  doi = {my doi},\n" +
+				"  isbn = {999-12345-123-x},\n" +
+				"  vgwort = {12}";
+
 		bib.setMisc(originalMisc);
 		
 		/*
@@ -499,7 +528,7 @@ public class BibtexUtilsTest {
 		post.addTag("bar");
 		post.addTag("blubb");
 		post.addTag("babba");
-
+	
 		/*
 		 * Create a bibtex string - the method adds and removes some
 		 * misc fields! Nevertheless, we should have the same misc fields
@@ -510,7 +539,7 @@ public class BibtexUtilsTest {
 		 * The fields are parsed and then serialized. Inbetween, some fields
 		 * have been added (keywords, description). We must ensure, that they're
 		 * removed again such that we have the original misc fields!
-		 */		
+		 */
 		assertEquals(cleanedMisc, bib.getMisc());
 	}
 	
