@@ -50,7 +50,7 @@ public class DaysSystemTag extends AbstractSearchSystemTagImpl {
 	}
 
 	@Override
-	public void handleParam(final GenericParam param) {
+	public boolean handleParam(final GenericParam param) {
 		/*
 		 * FIXME: Why do we clear the TagIndex for?
 		 */
@@ -60,6 +60,7 @@ public class DaysSystemTag extends AbstractSearchSystemTagImpl {
 		 */
 		param.setDays(Integer.parseInt(this.getArgument()));
 		log.debug("set days to " + this.getArgument() + " after matching for days system tag");
+		return true;
 	}
 
 	@Override

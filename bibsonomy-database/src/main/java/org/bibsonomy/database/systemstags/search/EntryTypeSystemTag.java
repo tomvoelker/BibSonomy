@@ -50,9 +50,8 @@ public class EntryTypeSystemTag extends AbstractSearchSystemTagImpl {
 	}
 
 	@Override
-	public void handleParam(final GenericParam param) {
-		param.addToSystemTags(this);
-		log.debug("Set entry type to '" + this.getArgument() +"' after matching entrytype system tag");
+	public boolean handleParam(final GenericParam param) {
+		return false;
 	}
 
 	@Override

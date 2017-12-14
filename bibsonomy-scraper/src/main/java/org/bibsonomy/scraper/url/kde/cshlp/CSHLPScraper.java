@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.cshlp;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +36,7 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * This scraper supports download links from the following hosts
@@ -65,6 +67,7 @@ public class CSHLPScraper extends GenericBibTeXURLScraper {
 	}
 	
 	private static final Pattern PATTERN_FROM_URL = Pattern.compile(CONTENT_SUBPATH + "(.+?)\\.");
+	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<a.*href=\"([^\"]+)\".*>BibTeX</a>");
 	
 	private static final String DOWNLOAD_URL_CSHLP_HOST = getDownloadURLForHost(CSHLP_HOST, "cshperspect");
 	private static final String DOWNLOAD_URL_JBC_HOST = getDownloadURLForHost(JBC_HOST, "jbc");
@@ -89,13 +92,27 @@ public class CSHLPScraper extends GenericBibTeXURLScraper {
 				return DOWNLOAD_URL_JBC_HOST + id;
 			}
 			
-			if (url.getHost().contains(CANCERRES_AACJOURNALS_HOST)) {
-				return DOWNLOAD_URL_CANCERRES_AACJOURNALS_HOST + id;
+			return getDownloadURLForHost(url,  cookies);
+		}
+		return null;
+	}
+	
+	private String getDownloadURLForHost(URL url, String cookies) throws ScrapingException{
+		try {
+			// using url gives a FileNotFoundException, url.toString() doesn't
+			final String content = WebUtils.getContentAsString(url.toString(), cookies);
+			final Matcher m = BIBTEX_PATTERN.matcher(content);
+			if (m.find()) {
+				if (url.getHost().contains(CANCERRES_AACJOURNALS_HOST)) {
+					return HTTP + CANCERRES_AACJOURNALS_HOST + m.group(1);					
+				}
+				
+				if (url.getHost().contains(JIMMUNOL_HOST)) {
+					return HTTP + JIMMUNOL_HOST + m.group(1);					
+				}
 			}
-			
-			if (url.getHost().contains(JIMMUNOL_HOST)){
-				return DOWNLOAD_URL_JIMMUNOL_HOST + id;
-			}
+		} catch (final IOException e) {
+			throw new ScrapingException(e);
 		}
 		return null;
 	}

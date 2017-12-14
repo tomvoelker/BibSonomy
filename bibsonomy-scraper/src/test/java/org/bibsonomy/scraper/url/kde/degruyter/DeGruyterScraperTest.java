@@ -30,6 +30,7 @@ import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -39,12 +40,10 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class DeGruyterScraperTest {
-	/**
-	 * starts URL test with id url_268
-	 */
+	
 	@Test
-	public void urlTest1Run(){
-		UnitTestRunner.runSingleTest("url_268");
+	public void urlTest1() {
+		assertScraperResult("https://www.degruyter.com/view/product/429811?rskey=eDUde3&result=1", null, DeGruyterScraper.class, "degruyter/DeGruyterScraperUnitURLTest3.bib");
 	}
 	
 	@Test

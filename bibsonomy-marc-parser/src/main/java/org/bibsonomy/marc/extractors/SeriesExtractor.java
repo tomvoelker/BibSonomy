@@ -39,14 +39,13 @@ import org.bibsonomy.model.BibTex;
 public class SeriesExtractor implements AttributeExtractor {
 
 	@Override
-	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
-		
+	public void extractAndSetAttribute(final BibTex target, final ExtendedMarcRecord src) {
 		/*
 		 * first try to get series value from marc record
 		 */
 		String series = src.getFirstFieldValue("490", 'a');
 		
-		if(series != null) {
+		if (series != null) {
 			target.setSeries(Normalizer.normalize(series, Normalizer.Form.NFC));
 			return;
 		}
@@ -54,12 +53,12 @@ public class SeriesExtractor implements AttributeExtractor {
 		/*
 		 * get the series out of the pica data
 		 */
-		if(src instanceof ExtendedMarcWithPicaRecord) {
-			ExtendedMarcWithPicaRecord picaSrc = (ExtendedMarcWithPicaRecord) src;
+		if (src instanceof ExtendedMarcWithPicaRecord) {
+			final ExtendedMarcWithPicaRecord picaSrc = (ExtendedMarcWithPicaRecord) src;
 			
 			series = picaSrc.getFirstPicaFieldValue("036E", "$a");
 			
-			if(series == null) {
+			if (series == null) {
 				series = picaSrc.getFirstPicaFieldValue("036G", "$a");
 			}
 			if (series != null) {

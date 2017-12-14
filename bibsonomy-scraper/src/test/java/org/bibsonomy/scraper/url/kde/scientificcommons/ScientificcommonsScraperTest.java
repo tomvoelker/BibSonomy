@@ -45,13 +45,4 @@ public class ScientificcommonsScraperTest {
 	public void url1TestRun(){
 		UnitTestRunner.runSingleTest("url_139");
 	}
-	
-	/**
-	 * starts URL test with id url_140
-	 */
-	@Test
-	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_140");
-	}
-
 }

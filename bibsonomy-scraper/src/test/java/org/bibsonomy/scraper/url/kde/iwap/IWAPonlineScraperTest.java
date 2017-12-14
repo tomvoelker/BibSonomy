@@ -26,8 +26,11 @@
  */
 package org.bibsonomy.scraper.url.kde.iwap;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.url.kde.biorxiv.BioRxivScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -43,7 +46,9 @@ public class IWAPonlineScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_100");
+		final String url = "http://jwh.iwaponline.com/content/1/3/101";
+		final String resultFile = "IWAPonlineScraperUnitURLTest.bib";
+		assertScraperResult(url, null, IWAPonlineScraper.class, resultFile);
 	}
 	
 }

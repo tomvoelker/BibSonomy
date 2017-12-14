@@ -55,6 +55,13 @@ public class MDPIScraperTest {
 		assertScraperResult(url, null, MDPIScraper.class, resultFile);
 	}
 	
+	@Test
+	public void url2TestRun(){
+		final String url = "http://www.mdpi.com/2220-9964/6/9/272";
+		final String resultFile = "MDPIScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, MDPIScraper.class, resultFile);
+	}
+	
 	/**
 	 * @throws Exception
 	 */

@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.cshlp;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -46,7 +48,9 @@ public class CSHLPScraperTest {
 	 */
 	@Test
 	public void url1TestRun() {
-		UnitTestRunner.runSingleTest("url_292");
+		final String url = "http://cshperspectives.cshlp.org/content/3/3/a004994.short";
+		final String resultFile = "CSHLPScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, CSHLPScraper.class, resultFile);
 	}
 
 	/**
@@ -54,7 +58,9 @@ public class CSHLPScraperTest {
 	 */
 	@Test
 	public void url2TestRun() {
-		UnitTestRunner.runSingleTest("url_293");
+		final String url = "http://cshperspectives.cshlp.org/content/3/3/a004994.abstract";
+		final String resultFile = "CSHLPScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, CSHLPScraper.class, resultFile);
 	}
 	
 	/**
@@ -62,7 +68,9 @@ public class CSHLPScraperTest {
 	 */
 	@Test
 	public void url3TestRun() {
-		UnitTestRunner.runSingleTest("url_294");
+		final String url = "http://cshperspectives.cshlp.org/content/3/3/a004994.full.pdf+html";
+		final String resultFile = "CSHLPScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, CSHLPScraper.class, resultFile);
 	}
 	
 	/**
@@ -70,7 +78,9 @@ public class CSHLPScraperTest {
 	 */
 	@Test
 	public void url4TestRun() {
-		UnitTestRunner.runSingleTest("url_295");
+		final String url = "http://cshperspectives.cshlp.org/content/3/3/a004994.full";
+		final String resultFile = "CSHLPScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, CSHLPScraper.class, resultFile);
 	}
 	
 	/**
@@ -78,7 +88,9 @@ public class CSHLPScraperTest {
 	 */
 	@Test
 	public void url5TestRun() {
-		UnitTestRunner.runSingleTest("url_300");
+		final String url = "http://www.jbc.org/content/288/10/6904.abstract";
+		final String resultFile = "CSHLPScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, CSHLPScraper.class, resultFile);
 	}
 	
 	/**
@@ -86,7 +98,9 @@ public class CSHLPScraperTest {
 	 */
 	@Test
 	public void url6TestRun() {
-		UnitTestRunner.runSingleTest("url_301");
+		final String url = "http://www.jbc.org/content/288/10/6904.short";
+		final String resultFile = "CSHLPScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, CSHLPScraper.class, resultFile);
 	}
 	
 	/**
@@ -94,7 +108,9 @@ public class CSHLPScraperTest {
 	 */
 	@Test
 	public void url7TestRun() {
-		UnitTestRunner.runSingleTest("url_302");
+		final String url = "http://www.jbc.org/content/288/10/6904.full";
+		final String resultFile = "CSHLPScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, CSHLPScraper.class, resultFile);
 	}
 	
 	/**
@@ -102,7 +118,9 @@ public class CSHLPScraperTest {
 	 */
 	@Test
 	public void url8TestRun() {
-		UnitTestRunner.runSingleTest("url_303");
+		final String url = "http://www.jbc.org/content/288/10/6904.full.pdf+html";
+		final String resultFile = "CSHLPScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, CSHLPScraper.class, resultFile);
 	}
 	
 	/**
@@ -110,7 +128,9 @@ public class CSHLPScraperTest {
 	 */
 	@Test
 	public void url9TestRun() {
-		UnitTestRunner.runSingleTest("url_304");
+		final String url = "http://cancerres.aacrjournals.org/content/65/13/5628.abstract";
+		final String resultFile = "CSHLPScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, CSHLPScraper.class, resultFile);
 	}
 	
 	/**
@@ -118,7 +138,9 @@ public class CSHLPScraperTest {
 	 */
 	@Test
 	public void url10TestRun() {
-		UnitTestRunner.runSingleTest("url_305");
+		final String url = "http://cancerres.aacrjournals.org/content/65/13/5628.short";
+		final String resultFile = "CSHLPScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, CSHLPScraper.class, resultFile);
 	}
 	
 	/**
@@ -126,7 +148,9 @@ public class CSHLPScraperTest {
 	 */
 	@Test
 	public void url11TestRun() {
-		UnitTestRunner.runSingleTest("url_306");
+		final String url = "http://cancerres.aacrjournals.org/content/65/13/5628.full";
+		final String resultFile = "CSHLPScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, CSHLPScraper.class, resultFile);
 	}
 	
 	/**
@@ -134,7 +158,9 @@ public class CSHLPScraperTest {
 	 */
 	@Test
 	public void url12TestRun() {
-		UnitTestRunner.runSingleTest("url_307");
+		final String url = "http://cancerres.aacrjournals.org/content/65/13/5628.full.pdf+html";
+		final String resultFile = "CSHLPScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, CSHLPScraper.class, resultFile);
 	}
 	
 	/**
@@ -142,7 +168,9 @@ public class CSHLPScraperTest {
 	 */
 	@Test
 	public void url13TestRun() {
-		UnitTestRunner.runSingleTest("url_308");
+		final String url = "http://www.jimmunol.org/content/183/11/7569.abstract";
+		final String resultFile = "CSHLPScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, CSHLPScraper.class, resultFile);
 	}
 	
 	/**
@@ -150,7 +178,9 @@ public class CSHLPScraperTest {
 	 */
 	@Test
 	public void url14TestRun() {
-		UnitTestRunner.runSingleTest("url_309");
+		final String url = "http://www.jimmunol.org/content/183/11/7569.short";
+		final String resultFile = "CSHLPScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, CSHLPScraper.class, resultFile);
 	}
 	
 	/**
@@ -158,7 +188,9 @@ public class CSHLPScraperTest {
 	 */
 	@Test
 	public void url15TestRun() {
-		UnitTestRunner.runSingleTest("url_310");
+		final String url = "http://www.jimmunol.org/content/183/11/7569.full";
+		final String resultFile = "CSHLPScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, CSHLPScraper.class, resultFile);
 	}
 	
 	/**
@@ -166,6 +198,8 @@ public class CSHLPScraperTest {
 	 */
 	@Test
 	public void url16TestRun() {
-		UnitTestRunner.runSingleTest("url_311");
+		final String url = "http://www.jimmunol.org/content/183/11/7569.full.pdf+html";
+		final String resultFile = "CSHLPScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, CSHLPScraper.class, resultFile);
 	}
 }

@@ -39,7 +39,7 @@
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
-		<version>3.8.5</version>
+		<version>3.9.0-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>

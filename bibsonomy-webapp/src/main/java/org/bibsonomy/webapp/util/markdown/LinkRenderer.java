@@ -27,7 +27,11 @@
 package org.bibsonomy.webapp.util.markdown;
 
 import org.bibsonomy.search.es.help.HelpUtils;
+import org.bibsonomy.services.URLGenerator;
 import org.pegdown.ast.ExpLinkNode;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * replace the link variable with our replacement
@@ -36,14 +40,19 @@ import org.pegdown.ast.ExpLinkNode;
  */
 public class LinkRenderer extends org.pegdown.LinkRenderer {
 	
-	private String projectHome;
+	private final String projectHome;
+	private final URLGenerator urlGenerator;
+	private final String language;
 	
 	/**
 	 * @param projectHome
+	 * @param urlGenerator
+	 * @param language
 	 */
-	public LinkRenderer(String projectHome) {
-		super();
+	public LinkRenderer(final String projectHome, final URLGenerator urlGenerator, final String language) {
 		this.projectHome = projectHome;
+		this.urlGenerator = urlGenerator;
+		this.language = language;
 	}
 	
 	/* (non-Javadoc)
@@ -51,7 +60,17 @@ public class LinkRenderer extends org.pegdown.LinkRenderer {
 	 */
 	@Override
 	public Rendering render(ExpLinkNode node, String text) {
-		final String url = node.url.replace("${" + HelpUtils.PROJECT_HOME + "}", this.projectHome);
+		String url = node.url.replace("${" + HelpUtils.PROJECT_HOME + "}", this.projectHome);
+
+		try {
+			final URI uri = new URI(url);
+			if (!uri.isAbsolute()) {
+				url = this.urlGenerator.getHelpPage(url, this.language);
+			}
+		} catch (final URISyntaxException e) {
+			// ignore
+		}
+
 		final Rendering rendering = new Rendering(url, text);
 		return rendering;
 	}

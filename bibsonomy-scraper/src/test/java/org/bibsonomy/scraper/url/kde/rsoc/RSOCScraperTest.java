@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.rsoc;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,7 +45,9 @@ public class RSOCScraperTest {
 	 */
 	@Test
 	public void urlTest1Run(){
-		UnitTestRunner.runSingleTest("url_96");
+		final String url = "http://rsta.royalsocietypublishing.org/content/357/1750/133.abstract?sid=9d8827ba-af22-4f85-92b4-d65da59cf197";
+		final String resultFile = "RSOCScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, RSOCScraper.class, resultFile);
 	}
 	
 	/**
@@ -51,7 +55,9 @@ public class RSOCScraperTest {
 	 */
 	@Test
 	public void urlTest2Run(){
-		UnitTestRunner.runSingleTest("url_152");
+		final String url = "http://rspb.royalsocietypublishing.org/content/267/1440/205.abstract?sid=93bbdbe3-dc3a-41e1-bd8d-b6c5af6ac3d8";
+		final String resultFile = "RSOCScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, RSOCScraper.class, resultFile);
 	}
 	
 }
