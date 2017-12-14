@@ -38,7 +38,6 @@ import java.util.Map;
 
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.MatchReason;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonMergeFieldConflict;

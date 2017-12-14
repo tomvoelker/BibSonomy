@@ -757,11 +757,6 @@ INSERT INTO `person_name` (person_change_id, first_name, last_name, person_id, i
 INSERT INTO `person_match` (match_id, person1_id, person2_id, state) VALUES (1, "w.test.1", "w.test.2", 0),
 (2, "w.test.1", "w.test.3", 0), (3, "w.test.2", "w.test.3", 0), (4, "w.test.1", "w.test.4", 0);
 
-INSERT INTO `match_reason` (match_id, mode, item1_id, item2_id) VALUES (1, "auth", "0c000000d00000f00cef0c00f000e00a", "0d0b00c0000a000f00a00ad00ff612fc"),
-(3, "auth", "0ffa0a0ad000a00cbccf000adb0fdde0", "0e0a00c000000f00d0d000b00eefe00b"),
-(2, "auth", "0c0000cdc00000b000cbe0fe0ab0acd0", "00dc000febca00a0f0f00ce0de000000"),
-(1, "titl", "0a00d00000fc00000a0000a0000f0ad0", "eb0000af0a0c00b0b0ac0e0a0a00d0c0");
-
 INSERT INTO `bibtex` (content_id, simhash0, simhash1, simhash2, simhash3, author, title) VALUES (34, '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', 'Willi Test and Maria Mueller', 'title1'),
 (35, '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', 'Willi Test and Johann Hilfe', 'title2'),
 (36, '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', 'Willi Test', 'same'),

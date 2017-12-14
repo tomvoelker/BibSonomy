@@ -41,7 +41,6 @@ import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.MatchReason;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonMergeFieldConflict;
@@ -352,12 +351,13 @@ public class PersonPageController extends SingleResourceListController implement
 		JSONObject jsonResponse = new JSONObject();
 
 		PersonMatch match = this.logic.getPersonMatch(id);
+		boolean result = true;
 		if (command.getUpdateOperation() == PersonUpdateOperation.MERGE_ACCEPT) {
-			this.logic.acceptMerge(match);
+			result = this.logic.acceptMerge(match);
 		} else if(command.getUpdateOperation() == PersonUpdateOperation.MERGE_DENIED) {
 			this.logic.denieMerge(match);
 		}
-		jsonResponse.put("status", true);
+		jsonResponse.put("status", result);
 		command.setResponseString(jsonResponse.toString());
 		return Views.AJAX_JSON;
 	}
@@ -527,7 +527,10 @@ public class PersonPageController extends SingleResourceListController implement
 		for (PersonResourceRelationType prr : PersonResourceRelationType.values()) {
 			command.getAvailableRoles().add(prr);
 		}
-		
+		String forwardId = this.logic.getForwardId(command.getRequestedPersonId());
+		if (present(forwardId)) {
+			command.setRequestedPersonId(forwardId);
+		}
 		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getRequestedPersonId());
 		
 		if (!present(person)) {
@@ -573,23 +576,6 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setAdvisedThesis(advisorPosts);
 		command.setOtherAdvisedPubs(otherAdvisorPosts);
 		command.setPersonMatchList(this.logic.getPersonMatches(person.getPersonId()));
-		
-		//remove duplicate entries
-		for (PersonMatch match : command.getPersonMatchList()) {
-			int index =(command.getPerson().getPersonId().equals(match.getPerson1().getPersonId())) ? 2 : 1;			
-			List<String> knownHashes = new LinkedList<String>();
-			List<MatchReason> duplicates = new LinkedList<MatchReason>();
-			for (MatchReason reason : match.getReasons()) {
-				Post matchedPersonPost = (index==1) ? reason.getItem1() : reason.getItem2();
-				if (knownHashes.contains(matchedPersonPost.getResource().getInterHash())){
-					duplicates.add(reason);
-				} else {
-					knownHashes.add(matchedPersonPost.getResource().getInterHash());
-				}
-			}
-			match.getReasons().removeAll(duplicates);
-		}
-		
 		command.setMergeConflicts(this.logic.getMergeConflicts(command.getPersonMatchList()));
 		
 		final List<Post<BibTex>> similarAuthorPubs = this.getPublicationsOfSimilarAuthor(person);
