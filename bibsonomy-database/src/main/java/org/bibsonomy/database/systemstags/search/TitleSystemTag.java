@@ -54,8 +54,8 @@ public class TitleSystemTag extends AbstractSearchSystemTagImpl {
 	}
 
 	@Override
-	public void handleParam(final GenericParam param) {
-		if(!present(param.getTitle()) ) {
+	public boolean handleParam(final GenericParam param) {
+		if (!present(param.getTitle())) {
 			param.setTitle(this.getArgument());
 		} else {
 			// we append the new title part
@@ -63,6 +63,7 @@ public class TitleSystemTag extends AbstractSearchSystemTagImpl {
 		}
 		param.setGrouping(GroupingEntity.ALL);
 		log.debug("set title to " + param.getTitle() + " after matching for title system tag");
+		return true;
 	}
 	
 	@Override

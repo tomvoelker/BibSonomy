@@ -86,7 +86,7 @@ public final class ESConstants {
 									.field("type", "custom")
 									.field("char_filter", Arrays.asList(BIBTEX_MAPPING, BRACKETS_CHAR_FILTER_NAME, CURLY_BRACKETS_CHAR_FILTER_NAME))
 									.field("tokenizer", "standard")
-									.field("filter", Arrays.asList(ASCII_FOLDING_PRESERVE_TOKEN_FILTER_NAME, "lowercase", "snowball"))
+									.field("filter", Arrays.asList(ASCII_FOLDING_PRESERVE_TOKEN_FILTER_NAME, "lowercase", "standard"))
 								.endObject()
 							.endObject()
 						.endObject()
@@ -113,13 +113,11 @@ public final class ESConstants {
 	/** current full names (including titles) of the associated authors, editors, supervisors, etc */
 	public static final String PERSON_ENTITY_NAMES_FIELD_NAME = "personEntityNames";
 	
-	/**
-	 * prefix for temporary index
-	 */
+	/** prefix for temporary index */
 	public static final String TEMP_INDEX_PREFIX = "TempIndex";
 	
 	/** the max number of docs per bulk insert */
-	public static final int BULK_INSERT_SIZE = 5000;
+	public static final int BULK_INSERT_SIZE = 1000;
 
 	/** contains all field information */
 	public static final class Fields {
@@ -250,8 +248,8 @@ public final class ESConstants {
 	}
 
 	/**
-	 * @param key
-	 * @return
+	 * @param string
+	 * @return the escaped string for the mapping
 	 */
 	private static String escape(final String string) {
 		return string.replaceAll("\\\\", "\\\\\\\\");

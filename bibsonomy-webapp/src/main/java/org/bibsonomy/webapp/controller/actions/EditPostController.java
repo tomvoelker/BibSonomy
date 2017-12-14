@@ -849,8 +849,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		return this.finalRedirect(command, post, loginUserName);
 	}
 
-	// FIXME: Check if loginUserName is valid here and we rather would like to
-	// have the postOwner instead!
 	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, final String postOwnerName) {
 		if (present(command.getSaveAndRate())) {
 			final String ratingUrl = this.urlGenerator.getCommunityRatingUrl(post);

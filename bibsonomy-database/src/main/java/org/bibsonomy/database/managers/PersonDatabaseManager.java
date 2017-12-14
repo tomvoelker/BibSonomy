@@ -141,7 +141,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 
 	/**
 	 * Returns a Person identified by it's unique DNB ID
-	 * @param dnbid
+	 * @param dnbId
 	 * @param session
 	 * @return Person
 	 */
@@ -151,7 +151,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 
 	/**
 	 * Creates a new name and adds it to the specified Person
-	 * @param mainName
+	 * @param name
 	 * @param session
 	 */
 	public void createPersonName(PersonName name, DBSession session) {
@@ -346,7 +346,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * @param hash
+	 * @param interhash
 	 * @param authorIndex
 	 * @param role 
 	 * @param session
@@ -374,7 +374,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 
 
 	/**
-	 * @param person
+	 * @param personId
 	 * @param loginUser 
 	 * @param publicationType 
 	 * @param session
@@ -383,7 +383,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(
 			String personId, User loginUser, Class<? extends BibTex> publicationType, DBSession session) {
 		
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, null, null, null, null, null, 0, Integer.MAX_VALUE, null, null, null, null, loginUser);
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, BibTex.class, null, null, null, null, null, 0, Integer.MAX_VALUE, null, null, null, null, loginUser);
 		final ResourcePersonRelation personRelation = new ResourcePersonRelation();
 		personRelation.setPerson(new Person());
 		personRelation.getPerson().setPersonId(personId);
@@ -402,19 +402,15 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @return
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelationsWithPersonsByInterhash(String interhash, DBSession session) {
-		return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsWithPersonsByInterhash", interhash, ResourcePersonRelation.class, session);
+		return this.queryForList("getResourcePersonRelationsWithPersonsByInterhash", interhash, ResourcePersonRelation.class, session);
 	}
 
 	/**
-	 * @param queryString
+	 * @param options
 	 * @return
 	 */
 	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options) {
 		return this.personSearch.getPersonSuggestion(options);
-	}
-
-	public void setPersonSearch(PersonSearch personSearch) {
-		this.personSearch = personSearch;
 	}
 
 	/**
@@ -427,8 +423,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * @param personNameChangeId
-	 * @param newName
+	 * @param newNameWithOldId
 	 * @param session
 	 */
 	public void updatePersonName(PersonName newNameWithOldId, DBSession session) {
@@ -443,4 +438,10 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}
 	}
 
+	/**
+	 * @param personSearch the personSearch to set
+	 */
+	public void setPersonSearch(PersonSearch personSearch) {
+		this.personSearch = personSearch;
+	}
 }

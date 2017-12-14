@@ -136,6 +136,10 @@ public class MDPIScraper extends AbstractUrlScraper implements CitedbyScraper{
 
 			String bibtex =  WebUtils.getPostContentAsString(WebUtils.getHttpClient(), post);
 			if (present(bibtex)) {
+				/*
+				 * "ARTICLE NUMBER" won't pass the parser but is actually just the page of the article
+				 */
+				bibtex = bibtex.replaceAll("ARTICLE NUMBER", "PAGES");
 				scrapingContext.setBibtexResult(BibTexUtils.addFieldIfNotContained(bibtex, "abstract", abstractParser(pageContent)));
 				return true;
 			}

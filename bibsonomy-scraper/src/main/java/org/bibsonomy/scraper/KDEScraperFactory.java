@@ -31,10 +31,12 @@ import org.bibsonomy.scraper.generic.BibtexScraper;
 import org.bibsonomy.scraper.generic.CoinsScraper;
 import org.bibsonomy.scraper.generic.DublinCoreScraper;
 import org.bibsonomy.scraper.generic.EprintScraper;
+import org.bibsonomy.scraper.generic.HighwirePressScraper;
 import org.bibsonomy.scraper.generic.HighwireScraper;
 import org.bibsonomy.scraper.generic.UnAPIScraper;
 import org.bibsonomy.scraper.id.kde.doi.ContentNegotiationDOIScraper;
 import org.bibsonomy.scraper.id.kde.doi.DOIScraper;
+import org.bibsonomy.scraper.id.kde.doi.HTMLMetaDataDOIScraper;
 import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
 import org.bibsonomy.scraper.snippet.SnippetScraper;
 
@@ -75,6 +77,9 @@ public class KDEScraperFactory {
 		
 		scraper.addScraper(new KDEUrlCompositeScraper());
 		
+		//this scraper searches for a doi so ContentNegotiationDOIScraper has a better chance to getting bibtex
+		scraper.addScraper(new HTMLMetaDataDOIScraper());
+		
 		//this scraper resolves DOI pages which could not be scraped by the URLScrapers
 		scraper.addScraper(new ContentNegotiationDOIScraper());
 		
@@ -98,6 +103,9 @@ public class KDEScraperFactory {
 		
 		//scraper for Dublin Core metadata
 		scraper.addScraper(new DublinCoreScraper());
+		
+		//scraper for Highwire Press tags metadata
+		scraper.addScraper(new HighwirePressScraper());
 		
 		return scraper;
 	}

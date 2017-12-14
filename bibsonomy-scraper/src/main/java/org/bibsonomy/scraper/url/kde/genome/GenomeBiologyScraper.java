@@ -34,61 +34,22 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.util.id.DOIUtils;
 
 /**
  * @author Mohammed Abed
  */
-public class GenomeBiologyScraper extends AbstractUrlScraper {
+public class GenomeBiologyScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_NAME = "Genome Biology";
 	private static final String GENOMEBIOLOGY_HOST_NAME = "http://www.genomebiology.com";
 	private static final String SITE_URL = GENOMEBIOLOGY_HOST_NAME + "/";
 	private static final String info = "This Scraper parse a publication from " + href(SITE_URL, SITE_NAME) + ".";
-	private static final String GENOMEBIOLOGY_HOST = "genomebiology.com";
-
-	private static final String GENOMEBIOLOGY_BIBTEX_PATH = "citation";
-	private static final String GENOMEBIOLOGY_BIBTEX_PARAMS = "format=bibtex&include=cit&direct=on&action=submit";
+	private static final String GENOMEBIOLOGY_HOST = "genomebiology.biomedcentral.com";
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + GENOMEBIOLOGY_HOST), AbstractUrlScraper.EMPTY_PATTERN));
-
-	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
-		final String url = sc.getUrl().toString();
-		final String bibtexDownloadUrl = appendIfNotPresent(url, GENOMEBIOLOGY_BIBTEX_PATH);
-
-		try {
-			final String bibResult = WebUtils.getPostContentAsString(new URL(bibtexDownloadUrl), GENOMEBIOLOGY_BIBTEX_PARAMS);
-			if (bibResult != null) {
-				sc.setBibtexResult(bibResult);
-				return true;
-			}
-		} catch (final IOException ex) {
-			throw new ScrapingFailureException(ex);
-		}
-		return false;
-	}
-
-	/**
-	 * @param url
-	 * @param gnomebiologyBibtexPath
-	 * @return
-	 */
-	private static String appendIfNotPresent(String url, final String subPath) {
-		// norm url
-		if (!url.endsWith("/")) {
-			url += "/";
-		}
-		// check for existing subPath
-		if (!url.endsWith(subPath + "/")) {
-			return url + subPath;
-		}
-		return url;
-	}
 
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
@@ -108,5 +69,21 @@ public class GenomeBiologyScraper extends AbstractUrlScraper {
 	@Override
 	public String getInfo() {
 		return info;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL, java.lang.String)
+	 */
+	@Override
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
+		final String downloadURL = "http://citation-needed.springer.com/v2/references/";
+		final String params = "?format=bibtex&flavour=citation";
+		
+		String doi = DOIUtils.extractDOI(url.toString());
+		if (doi.contains("#")) {
+			doi = doi.substring(0, doi.indexOf("#"));
+		}
+		
+		return downloadURL + doi + params;
 	}
 }

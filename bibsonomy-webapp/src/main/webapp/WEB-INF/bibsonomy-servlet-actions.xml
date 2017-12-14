@@ -1253,7 +1253,6 @@
 			</bean>
 		</property>
 		<property name="tempFileLogic" ref="tempFileLogic" />
-		<property name="adminLogic" ref="adminLogic" />
 	</bean>
 	
 	<bean id="jabRefFileLogic" class="org.bibsonomy.webapp.util.file.jabref.ServerJabRefFileLogic">

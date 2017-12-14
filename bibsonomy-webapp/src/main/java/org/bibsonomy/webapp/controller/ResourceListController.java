@@ -516,7 +516,6 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	/**
 	 * @param userSettings the loginUsers userSettings
 	 */
-//	@Required
 	public void setUserSettings(final UserSettings userSettings) {
 		this.userSettings = userSettings;
 	}

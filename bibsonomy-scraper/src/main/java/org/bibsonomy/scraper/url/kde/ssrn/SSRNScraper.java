@@ -57,7 +57,7 @@ public class SSRNScraper extends AbstractUrlScraper {
 	private static final Log log = LogFactory.getLog(SSRNScraper.class);
 	
 	private static final String SITE_NAME	   = "SSRN";
-	private static final String SSRN_HOST_NAME = "http://papers.ssrn.com";
+	private static final String SSRN_HOST_NAME = "https://papers.ssrn.com";
 	private static final String SITE_URL	   = SSRN_HOST_NAME+"/";
 	private static final String INFO		   = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME) +
 	"and extracts the adequate BibTeX entry.";
@@ -70,7 +70,7 @@ public class SSRNScraper extends AbstractUrlScraper {
 	private static final String EDITOR_PATTERN	= "editor\\s*=\\s*[{]+(.+)[}]+";
 	private static final String TITLE_PATTERN	= "title\\s*=\\s*[{]+(.+)[}]+";
 	private static final String YEAR_PATTERN	= "year\\s*=\\s*[{]+(.+)[}]+";
-	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div id=\"abstract\">(.*)</div>");
+	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<h3>Abstract</h3>\\s*<p>(.*?)</p>");
 	
 	private static final String HOST = "ssrn.com";
 	
@@ -146,7 +146,11 @@ public class SSRNScraper extends AbstractUrlScraper {
 		try{
 			Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url));
 			if(m.find()) {
-				return m.group(1);
+				String r = m.group(1);
+				if (r.endsWith("<P>")) {
+					return r.substring(0, r.length()-3).trim();
+				}
+				return r.trim();
 			}
 		} catch(Exception e) {
 			log.error("error while getting abstract for " + url, e);
