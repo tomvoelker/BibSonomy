@@ -3718,8 +3718,10 @@ public class DBLogic implements LogicInterface {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getPersonMatches(java.lang.String)
+	/**
+	 * 
+	 * @param personID
+	 * @return a list of all matches for a person
 	 */
 	@Override
 	public List<PersonMatch> getPersonMatches(String personID) {
@@ -3730,26 +3732,25 @@ public class DBLogic implements LogicInterface {
 		return this.personDBManager.getMatchesFor(session, personID);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getMergeConflicts(org.bibsonomy.model.PersonMatch)
+	/**
+	 * increases the deny counter of a match and denies it after a threshold is reached
+	 * 
+	 * @param match
+	 * @return
 	 */
 	@Override
-	public Map<Integer, PersonMergeFieldConflict[]> getMergeConflicts(List<PersonMatch> matches) {
-		return this.personDBManager.getMergeConflicts(matches);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#denieMerge(org.bibsonomy.model.PersonMatch)
-	 */
-	@Override
-	public void denieMerge(PersonMatch match) {
+	public void denyMerge(PersonMatch match) {
 		final DBSession session = this.openSession();
 		if (present(this.loginUser.getName())) {
 			this.personDBManager.denieMatch(match, session, this.loginUser.getName());
 		}
 	}
 	
+	/**
+	 * performs a merge that has no conflicts
+	 * @param match
+	 * @return
+	 */
 	@Override
 	public boolean acceptMerge(PersonMatch match) {
 		final DBSession session = this.openSession();
@@ -3759,14 +3760,22 @@ public class DBLogic implements LogicInterface {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param matchID
+	 * @return the match with given matchID
+	 */
 	@Override
 	public PersonMatch getPersonMatch(int matchID) {
 		final DBSession session = this.openSession();
 		return personDBManager.getMatch(matchID, session);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#conflictMerge(int, org.json.JSONArray)
+	/**
+	 * resolves conflicts and performs a merge
+	 * @param formMatchId of the match to merge
+	 * @param map of conflict fields with new values
+	 * @return
 	 */
 	@Override
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
@@ -3777,8 +3786,9 @@ public class DBLogic implements LogicInterface {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getForwardId(java.lang.String)
+	/**
+	 * @param personId
+	 * @return returns the updated personId, if the person was merged to an other person
 	 */
 	@Override
 	public String getForwardId(String personId) {
