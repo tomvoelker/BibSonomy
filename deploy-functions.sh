@@ -53,7 +53,7 @@ WARPATTERN=target/bibsonomy-webapp-*.war
 TOMCAT_VERSION=7
 
 # email addresses
-EMAILWEBMASTER=tom.hanika@cs.uni-kassel.de
+EMAILWEBMASTER=webmaster@bibsonomy.org
 # the one which really gets the mail; pick one of the above
 RECIPIENT=${EMAILWEBMASTER}
 # comma separated: further recipients
@@ -66,7 +66,7 @@ declare -A archivable
 archivable[gandalf]=true
 
 declare -A unnoticed
-unnoticed[gromit]=true
+unnoticed[thewhite]=true
 
 DEFAULT_WEBAPP=bibsonomy-webapp
 
