@@ -30,27 +30,27 @@ public class HTMLMetaDataDOIScraper extends HTMLMetaDataDublinCoreToBibtexConver
 	 * @see org.bibsonomy.scraper.Scraper#scrape(org.bibsonomy.scraper.ScrapingContext)
 	 */
 	@Override
-	public boolean scrape(ScrapingContext scrapingContext) throws ScrapingException {	
-		/*
-		 * 
-		 */
+	public boolean scrape(ScrapingContext scrapingContext) throws ScrapingException {
 		String doi = getDoiFromMetaData(scrapingContext.getUrl());
 		if (doi == null) {
 			doi = DOIUtils.getDoiFromURL(scrapingContext.getUrl());
 		}
+
+		// FIXME: extractDOI is called which does not work for large text
+		/*
 		if (doi == null) {
 			try {
 				doi = DOIUtils.getDoiFromWebPage(scrapingContext.getUrl());
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				throw new ScrapingException(e);
 			}
-		}
+		}*/
 		
-		if(present(doi)) {
+		if (present(doi)) {
 			scrapingContext.setSelectedText(doi);
 		}
 		
-		//always return false as this scraper doesn't actually get the bibtex, only sets the doi
+		// always return false as this scraper doesn't actually get the bibtex, only sets the doi
 		return false;
 	}
 	
