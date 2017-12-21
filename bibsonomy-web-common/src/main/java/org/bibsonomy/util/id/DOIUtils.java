@@ -145,6 +145,8 @@ public class DOIUtils {
 
 	/**
 	 * Extracts a DOI from the given string.
+	 * Do not use this method for large text!
+	 * FIXME: add a check for the string length
 	 * 
 	 * @param string
 	 * @return The extracted DOI.
