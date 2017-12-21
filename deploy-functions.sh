@@ -53,11 +53,11 @@ WARPATTERN=target/bibsonomy-webapp-*.war
 TOMCAT_VERSION=7
 
 # email addresses
-EMAILWEBMASTER=webmaster@bibsonomy.org
+EMAILWEBMASTER=tom.hanika@cs.uni-kassel.de
 # the one which really gets the mail; pick one of the above
 RECIPIENT=${EMAILWEBMASTER}
 # comma separated: further recipients
-CCRECIPIENTS=stefani@cs.uni-kassel.de
+CCRECIPIENTS=
 
 # today's date (used to timestamp WAR file)
 TODAY=`date +"%Y-%m-%dT%H:%M:%S"`
