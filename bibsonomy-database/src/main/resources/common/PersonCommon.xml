@@ -79,7 +79,7 @@
 		<result property='state' column='state'/>
 		<result property="person1"          column="person1_id"       javaType='org.bibsonomy.model.Person'       select='getPersonById'/>
 		<result property="person2"          column="person2_id"       javaType='org.bibsonomy.model.Person'       select='getPersonById'/>
-		<result property="userDenies"		column="match_id"		  javaType='java.lang.String'				  select='getDeniesForMatch' />
+		<result property="userDenys"		column="match_id"		  javaType='java.lang.String'				  select='getDenysForMatch' />
 		<result property="person1Posts"		column="person1_id"		  javaType='org.bibsonomy.model.Post'		  select='getPostsForPerson' />
 		<result property="person2Posts"		column="person2_id"		  javaType='org.bibsonomy.model.Post'		  select='getPostsForPerson' />
 	</resultMap>

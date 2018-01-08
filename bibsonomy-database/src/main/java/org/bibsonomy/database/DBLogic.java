@@ -3733,7 +3733,7 @@ public class DBLogic implements LogicInterface {
 	}
 
 	/**
-	 * increases the deny counter of a match and denies it after a threshold is reached
+	 * increases the deny counter of a match and denys it after a threshold is reached
 	 * 
 	 * @param match
 	 * @return
@@ -3742,7 +3742,7 @@ public class DBLogic implements LogicInterface {
 	public void denyMerge(PersonMatch match) {
 		final DBSession session = this.openSession();
 		if (present(this.loginUser.getName())) {
-			this.personDBManager.denieMatch(match, session, this.loginUser.getName());
+			this.personDBManager.denyMatch(match, session, this.loginUser.getName());
 		}
 	}
 	

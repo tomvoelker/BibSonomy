@@ -43,7 +43,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.DNBAliasParam;
-import org.bibsonomy.database.params.DenieMatchParam;
+import org.bibsonomy.database.params.DenyMatchParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
@@ -204,15 +204,10 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void updatePersonOnAll(Person person, DBSession session) {
-		session.beginTransaction();
-		try {
-			this.plugins.onPersonUpdate(person.getPersonId(), session);
-			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
-			this.insert("updatePersonOnAll", person, session);
-			session.commitTransaction();
-		} finally {
-			session.endTransaction();
-		}
+		this.plugins.onPersonUpdate(person.getPersonId(), session);
+		person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+		this.insert("updatePersonOnAll", person, session);
+		session.commitTransaction();
 	}
 	
 	/**
@@ -495,7 +490,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * checks if a match can be merged
+	 * checks if a two persons can be merged on different attributes and their phd/habil
 	 * 
 	 * @param match
 	 * @return true if no field is different
@@ -599,9 +594,13 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public boolean mergeSimilarPersons(PersonMatch match, String loginUser, DBSession session) {
 		//merge two persons, if there is no conflict
 		if(mergeable(match, session, loginUser) && testMergeOnClaims(match, loginUser)){
-			performMerge(match, loginUser, session);
-			
-			return true;
+			session.beginTransaction();
+			try {
+				performMerge(match, loginUser, session);
+			} finally {
+				session.endTransaction();
+				return true;
+			}
 		}
 		return false;
 	}
@@ -700,26 +699,26 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}
 		//merge duplicate matches
 		for (PersonMatch dupe : dupes) {
-			//get the same matches to redirect denies
+			//get the same matches to redirect denys
 			List<PersonMatch> toMerge = this.queryForList("getSimilarMatchesForMatch", dupe, PersonMatch.class, session);
 			PersonMatch combinedMerge = toMerge.get(0);
 			// only other matches will be removed
 			for (int i = 1; i < toMerge.size(); i++) {
-				this.update("redirectUserDenies", new DenieMatchParam(toMerge.get(i).getMatchID(), combinedMerge.getMatchID()), session);
-				combinedMerge.getUserDenies().addAll(toMerge.get(i).getUserDenies());
+				this.update("redirectUserDenys", new DenyMatchParam(toMerge.get(i).getMatchID(), combinedMerge.getMatchID()), session);
+				combinedMerge.getUserDenys().addAll(toMerge.get(i).getUserDenys());
 				this.delete("removePersonMatch", toMerge.get(i).getMatchID(), session);
 			}
-			//get userDenies without duplicates
-			combinedMerge.setUserDenies(this.queryForList("getDeniesForMatch", combinedMerge.getMatchID(), String.class, session));
-			if (combinedMerge.getUserDenies().size() >= PersonMatch.denieThreshold) {
+			//get userDenys without duplicates
+			combinedMerge.setUserDenys(this.queryForList("getDenysForMatch", combinedMerge.getMatchID(), String.class, session));
+			if (combinedMerge.getUserDenys().size() >= PersonMatch.denyThreshold) {
 				//deny merge for all if the total user deny count is bigger than the deny threshold
-				this.delete("denieMatchByID", new DenieMatchParam(combinedMerge.getMatchID(), userName), session);
+				this.delete("denyMatchByID", new DenyMatchParam(combinedMerge.getMatchID(), userName), session);
 			}
 		}
 	}
 
 	/**
-	 * updates all attributes for person1 for a non conflict merge 
+	 * updates all attributes for person1 for a non conflict merge
 	 * 
 	 * @param person1
 	 * @param person2
@@ -729,41 +728,40 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	private boolean combinePersonsAttributes(Person person1, Person person2) {
 		boolean edit = false;
 		try {
-		for (String fieldName : Person.fieldsWithResolvableMergeConflicts) {
-			PropertyDescriptor desc = new PropertyDescriptor(fieldName, Person.class);
-			Object person1Value = desc.getReadMethod().invoke(person1);
-			Object person2Value = desc.getReadMethod().invoke(person2);
-			//get infos only person 2 has
-			if (person1Value == null && person2Value != null) {
-				edit = true;
-				desc.getWriteMethod().invoke(person1, person2Value);
+			for (String fieldName : Person.fieldsWithResolvableMergeConflicts) {
+				PropertyDescriptor desc = new PropertyDescriptor(fieldName, Person.class);
+				Object person1Value = desc.getReadMethod().invoke(person1);
+				Object person2Value = desc.getReadMethod().invoke(person2);
+				// get infos only person 2 has
+				if (person1Value == null && person2Value != null) {
+					edit = true;
+					desc.getWriteMethod().invoke(person1, person2Value);
+				}
 			}
-		}
-		} catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException | IntrospectionException e ) {
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| IntrospectionException e) {
 			System.err.print(e);
 		}
 		return edit;
-		
-		
 		
 	}
 
 	/**
 	 * add user to the deny list of a match 
-	 * denies a match for all if a threshold is reached
+	 * denys a match for all if a threshold is reached
 	 *
 	 * @param matchID
 	 * @param session
 	 */
-	public void denieMatch(PersonMatch match, DBSession session, String userName) {
-		if(!match.getUserDenies().contains(userName)) {
-			DenieMatchParam param = new DenieMatchParam(match.getMatchID(), userName);
-			if (match.getUserDenies().size() == PersonMatch.denieThreshold-1) {
+	public void denyMatch(PersonMatch match, DBSession session, String userName) {
+		if(!match.getUserDenys().contains(userName)) {
+			DenyMatchParam param = new DenyMatchParam(match.getMatchID(), userName);
+			if (match.getUserDenys().size() == PersonMatch.denyThreshold-1) {
 				//deny match for all 
-				this.delete("denieMatchByID", param, session);
+				this.delete("denyMatchByID", param, session);
 			} 
 			//deny match for user
-			this.delete("denieMatchByIDForUser", param, session);
+			this.delete("denyMatchByIDForUser", param, session);
 		}
 	}
 
@@ -793,7 +791,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 */
 	public List<PersonMatch> getMatchesForFilterWithUserName(DBSession session, String personID, String userName) {
 		List<PersonMatch> matches = this.getMatchesFor(session, personID);
-		matches.removeIf(match -> match.getUserDenies().contains(userName));
+		matches.removeIf(match -> match.getUserDenys().contains(userName));
 		
 		return matches;
 	}
@@ -833,10 +831,14 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 				}
 			}
 			// add changes to both so they can be compared with mergable()
-			this.updatePersonOnAll(person1, session);
-			this.updatePersonOnAll(person2, session);
-			this.performMerge(match, loginUser, session);
-			
+			session.beginTransaction();
+			try {
+				this.updatePersonOnAll(person1, session);
+				this.updatePersonOnAll(person2, session);
+				this.performMerge(match, loginUser, session);
+			} finally {
+				session.endTransaction();
+			}
 		} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			System.err.println(e);
 		}

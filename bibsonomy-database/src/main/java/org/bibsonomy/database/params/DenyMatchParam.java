@@ -5,7 +5,7 @@ package org.bibsonomy.database.params;
  *
  * @author jhi
  */
-public class DenieMatchParam {
+public class DenyMatchParam {
 	private String userName;
 	private int matchId;
 	private int newMatchId;
@@ -25,7 +25,7 @@ public class DenieMatchParam {
 	 * @param matchID2
 	 * @param userName2
 	 */
-	public DenieMatchParam(int matchID, int newMatchId) {
+	public DenyMatchParam(int matchID, int newMatchId) {
 		this.matchId=matchId;
 		this.newMatchId=newMatchId;
 	}
@@ -33,7 +33,7 @@ public class DenieMatchParam {
 	 * @param matchID2
 	 * @param userName2
 	 */
-	public DenieMatchParam(int matchID, String userName) {
+	public DenyMatchParam(int matchID, String userName) {
 		this.userName=userName;
 		this.matchId = matchID;
 	}

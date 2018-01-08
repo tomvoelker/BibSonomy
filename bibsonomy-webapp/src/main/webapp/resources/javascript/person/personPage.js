@@ -66,7 +66,7 @@ $(document).ready(function() {
 	$('.conflictMergeButton').click(function() {
 		$('#conflictModalAccept')[0].setAttribute("match-id", $(this).attr("match-id"));
 		$('#conflictModalAccept').prop("disabled",true);
-		$('#conflictModalDenie')[0].setAttribute("match-id", $(this).attr("match-id"));
+		$('#conflictModalDeny')[0].setAttribute("match-id", $(this).attr("match-id"));
 		var body = $('#conflictModalDiaBody');
 		form_data = {
 				formAction: "getConflict",

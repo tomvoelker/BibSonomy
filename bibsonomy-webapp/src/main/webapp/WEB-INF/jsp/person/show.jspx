@@ -917,6 +917,7 @@
 	
 	<!-- The Modal -->
 	<div id="conflictModal" class="modal fade" role="dialog" tabindex="-1">
+		<fmt:message key="person.show.modal.addSupervisedThesis.header" var="denyMsg" />
 		<div class="modal-dialog">
 			<!-- Modal content -->
 			<div class="modal-content">
@@ -934,9 +935,9 @@
 						<button id="conflictModalAccept" type="button" class="btn btn-success btn-sm mergeConflictButton"
 							data-operation="MERGE_ACCEPT" 
 							title="accept merge" data-dismiss="modal">&#10004;</button>
-						<button id="conflictModalDenie" type="button" class="btn btn-danger btn-sm mergeButton"
+						<button id="conflictModalDeny" type="button" class="btn btn-danger btn-sm mergeButton"
 							data-operation="MERGE_DENIED" 
-							title="denie merge" data-dismiss="modal">&#10006;</button>
+							title="${denyMsg}" data-dismiss="modal">&#10006;</button>
 					</div>
 					
 				</div>

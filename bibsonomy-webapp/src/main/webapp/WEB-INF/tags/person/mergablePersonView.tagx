@@ -25,7 +25,7 @@
 
 	<fmt:message key="person.merge.conflictmerge" var="textConflictMerge" />
 	<fmt:message key="person.merge.merge" var="textMerge" />
-	<fmt:message key="person.merge.denie" var="textDenie" />
+	<fmt:message key="person.merge.deny" var="textDeny" />
 	<fmt:message key="person.merge.reasons" var="textReasons" />
 
 	<div class="simpleMatchEntry" id="match_${personMatch.matchID}">
@@ -58,7 +58,7 @@
 				</c:choose>
 				<button type="button" class="btn btn-danger btn-xs mergeButton"
 					data-operation="MERGE_DENIED" match-id="${personMatch.matchID}"
-					title="${textDenie}">&#10006;</button>
+					title="${textDeny}">&#10006;</button>
 			</div>
 			<c:set var="matchPersonPosts"
 				value="${(matchedPersonIndex == 1) ? personMatch.person1Posts : personMatch.person2Posts}" />
