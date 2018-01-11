@@ -21,14 +21,16 @@
 
 		<div class="form-group">
 			<div class="col-sm-offset-3 col-sm-9">
-				<fmt:message key="settings.csl.explain" />
+				<fmt:message key="settings.csl.explain">
+					<fmt:param><c:out value="${properties['project.name']}"/></fmt:param>		
+				</fmt:message>
 			</div>
 		</div>
 
 		<!-- display already uploaded csl formats -->
 		<div class="row">
 			<div class="col-sm-3 ">
-				<fmt:message key="settings.csl.item"/>
+				<!-- <fmt:message key="settings.csl.item"/> -->
 			</div>
 			<!-- list of all custom csl layout files -->
 			<div class="col-sm-9">
@@ -49,13 +51,13 @@
 									<div class="modal-content">
 										<div class="modal-header">
 											<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&amp;times;</span><span class="sr-only">Close</span></button>
-											<h4 class="modal-title"><fmt:message key="settings.csl.fileContent"/></h4>
+											<h4 class="modal-title"><fmt:message key="settings.csl.filecontent"/></h4>
 										</div>
 										<div class="modal-body">
 											<pre class="export"><c:out value="${style.content}" /></pre>
 										</div>
 										<div class="modal-footer">
-											<button type="button" class="btn btn-default" data-dismiss="modal">close</button>
+											<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="close" /></button>
 										</div>
 									</div>
 								</div>
