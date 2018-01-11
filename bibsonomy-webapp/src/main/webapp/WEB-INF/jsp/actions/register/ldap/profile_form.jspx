@@ -62,9 +62,9 @@
 								<div class="dissError"><form:errors path="registerUser.gender" /></div>
 							</div>
 							
-							<bsform:input path="registerUser.place" labelKey="user.place" required="${true}" inputColSpan="8" labelColSpan="4" noHelp="${true}" />
+							<bsform:input path="registerUser.place" labelKey="user.place" required="${false}" inputColSpan="8" labelColSpan="4" noHelp="${true}" />
 							
-							<bsform:input path="registerUser.homepage" labelKey="user.settings.homepage" required="${true}" inputColSpan="8" labelColSpan="4" noHelp="${true}" />
+							<bsform:input path="registerUser.homepage" labelKey="user.settings.homepage" required="${false}" inputColSpan="8" labelColSpan="4" noHelp="${true}" />
 						</jsp:attribute>
 					</bsform:fieldset>
 

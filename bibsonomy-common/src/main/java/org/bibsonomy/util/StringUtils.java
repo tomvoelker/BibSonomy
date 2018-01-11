@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -372,7 +373,7 @@ public class StringUtils {
 	 */
 	public static Map<String, String> parseBracketedKeyValuePairs(String input, char assignmentOperator, char pairDelimiter, char bracketOpen, char bracketClose) throws InvalidModelException {
 		// check input, init hashmap
-		final Map<String, String> keyValPairs = new HashMap<String, String>();
+		final Map<String, String> keyValPairs = new LinkedHashMap<String, String>();
 		if (!present(input)) {
 			return keyValPairs;
 		}
