@@ -57,7 +57,6 @@ EMAILWEBMASTER=webmaster@bibsonomy.org
 # the one which really gets the mail; pick one of the above
 RECIPIENT=${EMAILWEBMASTER}
 # comma separated: further recipients
-CCRECIPIENTS=
 
 # today's date (used to timestamp WAR file)
 TODAY=`date +"%Y-%m-%dT%H:%M:%S"`
@@ -114,7 +113,7 @@ sendMail() {
     server=$1
     if [ ! -z ${unnoticed[$server]} ] && [ ${unnoticed[$server]} = true ]; then return; fi
     echo -e "\nSending report mail ..."
-    ${MAIL} -s "[BibSonomy-Deploy] make ${server}" -a ${TMPLOG} -c ${CCRECIPIENTS} ${RECIPIENT} < ${BODY_MAIL}
+    ${MAIL} -s "[BibSonomy-Deploy] make ${server}" -a ${TMPLOG} ${RECIPIENT} < ${BODY_MAIL}
     echo "Done."
 }
 
