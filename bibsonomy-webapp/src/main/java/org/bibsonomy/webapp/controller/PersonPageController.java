@@ -126,13 +126,13 @@ public class PersonPageController extends SingleResourceListController implement
 		return showAction(command);
 	}
 
-	
 	/** 
 	 * This is a helper function that adds to an JSONarray from a list of resource-person-relations.
-	 * @param command
+	 * @param suggestions
+	 * @param array
 	 * @return
 	 */
-	private void buildupAuthorResponseArray(final List<ResourcePersonRelation> suggestions,JSONArray array) {
+	private void buildupAuthorResponseArray(final List<ResourcePersonRelation> suggestions, JSONArray array) {
 			for (ResourcePersonRelation rel : suggestions) {
 				JSONObject jsonPersonName = new JSONObject();
 				jsonPersonName.put("interhash", rel.getPost().getResource().getInterHash());
@@ -148,12 +148,12 @@ public class PersonPageController extends SingleResourceListController implement
 	
 	/** 
 	 * This is a helper function adds to an JSONarray Publications form a sugesstions list.  
-	 * @param command
+	 * @param suggestions
+	 * @param array
 	 * @return
 	 */	
 	private void buildupPubResponseArray(final List<Post<BibTex>> suggestions, JSONArray array) {
-		
-		for (Post<BibTex> pub : suggestions) {
+		for (final Post<BibTex> pub : suggestions) {
 			JSONObject jsonPersonName = new JSONObject();
 			jsonPersonName.put("interhash", pub.getResource().getInterHash());
 			jsonPersonName.put("extendedPublicationName", this.personRoleRenderer.getExtendedPublicationName(pub.getResource(), this.requestLogic.getLocale(), false));
@@ -182,7 +182,7 @@ public class PersonPageController extends SingleResourceListController implement
 		final List<Post<BibTex>> suggestions = this.logic.getPublicationSuggestion(command.getFormSelectedName());
 		
 		JSONArray array = new JSONArray();
-		for (Post<BibTex> pub : suggestions) {
+		for (final Post<BibTex> pub : suggestions) {
 			JSONObject jsonPersonName = new JSONObject();
 			jsonPersonName.put("interhash", pub.getResource().getInterHash());
 			jsonPersonName.put("extendedPublicationName", this.personRoleRenderer.getExtendedPublicationName(pub.getResource(), this.requestLogic.getLocale(), false));

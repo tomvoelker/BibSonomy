@@ -46,6 +46,7 @@ import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
 import org.bibsonomy.webapp.command.DisambiguationPageCommand;
@@ -58,6 +59,9 @@ import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
 /**
+ * TODO: Document controller
+ * FIXME: rename controller
+ *
  * @author Christian Pfeiffer, Tom Hanika
  */
 public class DisambiguationPageController extends SingleResourceListController implements MinimalisticController<DisambiguationPageCommand> {
@@ -115,7 +119,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 		final BibTex res = command.getPost().getResource();
 		List<PersonName> persons = res.getPersonNamesByRole(requestedRole);
 		// MacGyver-fix, in case there are multiple similar simhash1 caused by author == editor  
-		if (persons == null ){
+		if (persons == null ) {
 			persons = getPersonsByFallBack(res, requestedRole);
 		}
 		
@@ -126,7 +130,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 		final PersonName requestedName = persons.get(requestedIndex);
 		command.setPersonName(requestedName);
 		
-		String name = requestedName.toString();
+		final String name = BibTexUtils.cleanBibTex(requestedName.toString());
 		
 		PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
 		List<ResourcePersonRelation> suggestedPersons = query.doIt();		
