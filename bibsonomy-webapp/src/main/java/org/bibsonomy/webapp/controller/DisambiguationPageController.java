@@ -31,6 +31,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
@@ -50,7 +52,6 @@ import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
 import org.bibsonomy.webapp.command.DisambiguationPageCommand;
-import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -129,8 +130,9 @@ public class DisambiguationPageController extends SingleResourceListController i
 		
 		final PersonName requestedName = persons.get(requestedIndex);
 		command.setPersonName(requestedName);
-		
-		final String name = BibTexUtils.cleanBibTex(requestedName.toString());
+
+		// FIXME: move escape to es module
+		final String name = QueryParser.escape(BibTexUtils.cleanBibTex(requestedName.toString()));
 		
 		PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
 		List<ResourcePersonRelation> suggestedPersons = query.doIt();		
