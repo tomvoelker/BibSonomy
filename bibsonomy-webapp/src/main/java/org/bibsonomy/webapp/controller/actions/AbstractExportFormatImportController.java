@@ -38,6 +38,7 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
 
@@ -113,11 +114,9 @@ public abstract class AbstractExportFormatImportController extends SettingsPageC
 			}
 		}
 
-		/*
-		 * show csl setting view
-		 */
-		command.setSelTab(Integer.valueOf(SettingsViewCommand.CSL_IDX));
-		return super.workOn(command);
+		final ExtendedRedirectViewWithAttributes extendedRedirectViewWithAttributes = new ExtendedRedirectViewWithAttributes("/settings?selTab=" + String.valueOf(SettingsViewCommand.LAYOUT_IDX));
+		extendedRedirectViewWithAttributes.addAttribute(ExtendedRedirectViewWithAttributes.ERRORS_KEY, this.errors);
+		return extendedRedirectViewWithAttributes;
 	}
 
 	/**

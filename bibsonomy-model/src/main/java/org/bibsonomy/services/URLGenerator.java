@@ -1292,10 +1292,9 @@ public class URLGenerator {
 	}
 	
 	/**
-	 * Constructs the URL for the report as spammer url
-	 * 
-	 * @param userName
-	 * @return The URL for the user's page for the system
+	 * Constructs the URL for the user relation ajax controller
+	 *
+	 * @return the url to the user relation ajax controller
 	 */
 	public String getUserRelationEditUrl() {
 		String url = this.projectHome + "ajax/"+ USER_RELATION;

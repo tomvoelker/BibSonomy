@@ -175,6 +175,11 @@ public class CSLFilesManager {
 		return globalStyle;
 	}
 
+	/**
+	 *
+	 * @param cslName the layout to load
+	 * @return the loaded user layout
+	 */
 	private synchronized CSLStyle loadUserLayout(final String cslName) {
 		/*
 		 * cslName is in format "CUSTOM USER_NAME STYLE"
@@ -185,12 +190,12 @@ public class CSLFilesManager {
 		// extract username
 		final String userName = parts[1].toLowerCase();
 		
-		//invalidate cache
+		// invalidate cache
 		this.cslCustomFiles.remove(userName);
 
 		// search layout owned by the parsed username
 		for (final CSLStyle style : this.loadUserLayouts(userName)) {
-			if (FilenameUtils.getBaseName(style.getName()).equalsIgnoreCase(cslName)) {
+			if (FilenameUtils.getBaseName(style.getName()).equalsIgnoreCase(cut)) {
 				return style;
 			}
 		}
@@ -212,6 +217,15 @@ public class CSLFilesManager {
 	 */
 	public Map<String, CSLStyle> getCslFiles() {
 		return Collections.unmodifiableMap(this.cslFiles);
+	}
+
+	/**
+	 * reloads the user layouts for the user
+	 * @param userName
+	 */
+	public synchronized void reloadLayoutsForUser(final String userName) {
+		this.cslCustomFiles.remove(userName);
+		this.loadUserLayouts(userName);
 	}
 
 	/**

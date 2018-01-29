@@ -54,10 +54,8 @@
 			<settings:profile command="${command}"/>
 			
 			<settings:settings command="${command}"/>
-			
-			<settings:jabRef command="${command}"/>
-			
-			<settings:csl command="${command}"/>
+
+			<settings:layouts command="${command}" />
 			
 			<settings:cv command="${command}"/>
 			

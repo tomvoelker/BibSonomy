@@ -140,7 +140,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		 */
 		command.setPendingRequestedgroups(this.logic.getGroups(true, loginUser.getName(), 0, Integer.MAX_VALUE));
 		
-		if (!present(selectedTab) || selectedTab.intValue() < SettingsViewCommand.MY_PROFILE_IDX || selectedTab.intValue() > SettingsViewCommand.CSL_IDX) {
+		if (!present(selectedTab) || selectedTab.intValue() < SettingsViewCommand.MY_PROFILE_IDX || selectedTab.intValue() > SettingsViewCommand.OAUTH_IDX) {
 			this.errors.reject("error.settings.tab");
 		} else {
 			this.checkInstalledJabrefLayout(command);

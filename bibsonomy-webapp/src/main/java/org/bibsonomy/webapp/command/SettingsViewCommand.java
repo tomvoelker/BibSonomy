@@ -51,12 +51,11 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/** Indexes of defined tabs */
 	public final static int MY_PROFILE_IDX = 0;
 	public final static int SETTINGS_IDX = 1;
-	public final static int JABREF_IDX = 2;
+	public final static int LAYOUT_IDX = 2;
 	public final static int GROUP_IDX = 3;
 	public final static int SYNC_IDX = 4;
 	public final static int CV_IDX = 5;
 	public final static int OAUTH_IDX = 6;
-	public final static int CSL_IDX = 7;
 	
 	private static final String TAB_URL = "/settings";
 	
@@ -250,8 +249,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public SettingsViewCommand() {
 		this.addTab(MY_PROFILE_IDX, "navi.myprofile");
 		this.addTab(SETTINGS_IDX, "navi.settings");
-		this.addTab(JABREF_IDX, "settings.jabRef.layoutfile");
-		this.addTab(CSL_IDX, "settings.csl.layoutfile");
+		this.addTab(LAYOUT_IDX, "settings.layoutfiles");
 		this.addTab(CV_IDX, "navi.cvedit");
 		this.addTab(OAUTH_IDX, "navi.oauth.consumers");
 		this.addTab(GROUP_IDX, "navi.groups");
@@ -259,7 +257,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.setSelTab(MY_PROFILE_IDX);
 		this.setTabURL(TAB_URL);
 	}
-	
 
 	/**
 	 * shows the sync tab for admins

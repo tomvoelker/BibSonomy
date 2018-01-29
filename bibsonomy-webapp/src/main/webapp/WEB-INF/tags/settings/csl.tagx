@@ -9,92 +9,92 @@
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form">
 	
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
-	
-	<div id="selTab7" class="tab-pane ${(command.selTab eq 7) ? 'active' : ''}">
+
+
+	<fieldset>
+		<legend>
+			<fmt:message key="settings.csl.layoutfile" />
+		</legend>
 
 		<!-- csl layout file -->
 		<!-- handle layout file -->
 		<c:set var="userName" value="${command.context.loginUser.name}" />
-
 		<!-- "csl layout file"-title -->
 		<!-- new -->
 
-		<div class="form-group">
-			<div class="col-sm-offset-3 col-sm-9">
-				<fmt:message key="settings.csl.explain"/>
+		<div class="row">
+			<div class="col-sm-12">
+				<p><fmt:message key="settings.csl.explain"/></p>
 			</div>
 		</div>
+	</fieldset>
 
-		<!-- display already uploaded csl formats -->
-		<div class="row">
-			<div class="col-sm-3 ">
-				<!-- <fmt:message key="settings.csl.item"/> -->
-			</div>
-			<!-- list of all custom csl layout files -->
-			<div class="col-sm-9">
-				<ul class="list-group" id="cslLayoutsList">
-					<c:forEach var="style" items="${command.cslFiles}" varStatus="counter">
-						<li class="list-group-item cslLayoutsListItem clearfix">
-							<c:out value="${style.displayName}" /> <!-- TODO: use css -->
+	<!-- display already uploaded csl formats -->
+	<div class="row">
+		<!-- list of all custom csl layout files -->
+		<div class="col-sm-10 col-sm-offset-1">
+			<ul class="list-group" id="cslLayoutsList">
+				<c:forEach var="style" items="${command.cslFiles}" varStatus="counter">
+					<li class="list-group-item cslLayoutsListItem clearfix">
+						<c:out value="${style.displayName}" /> <!-- TODO: use css -->
 
-							<div class="btn-group pull-right">
-								<a type="button" class="btn btn-default btn-xs " data-toggle="modal" data-target="#${style.fileHash}Modal"><fmt:message key="show"></fmt:message></a>
-								<a class="btn btn-danger btn-xs delete-Style" href="/import/csl?hash=${style.fileHash}&amp;action=delete&amp;ckey=${mtl:encodePathSegment(ckey)}"><fmt:message key="delete" /></a>
-							</div>
-							<!-- Modal -->
-							<div id="${style.fileHash}Modal" class="modal modal-lg fade" role="dialog">
-								<div class="modal-dialog">
+						<div class="btn-group pull-right">
+							<a type="button" class="btn btn-default btn-xs " data-toggle="modal" data-target="#${style.fileHash}Modal"><fmt:message key="show"></fmt:message></a>
+							<a class="btn btn-danger btn-xs delete-Style" href="/import/csl?hash=${style.fileHash}&amp;action=delete&amp;ckey=${mtl:encodePathSegment(ckey)}"><fmt:message key="delete" /></a>
+						</div>
+						<!-- Modal -->
+						<div id="${style.fileHash}Modal" class="modal modal-lg fade" role="dialog">
+							<div class="modal-dialog">
 
-									<!-- Modal content-->
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&amp;times;</span><span class="sr-only">Close</span></button>
-											<h4 class="modal-title"><fmt:message key="settings.csl.filecontent"/></h4>
-										</div>
-										<div class="modal-body">
-											<pre class="export"><c:out value="${style.content}" /></pre>
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="close" /></button>
-										</div>
+								<!-- Modal content-->
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&amp;times;</span><span class="sr-only">Close</span></button>
+										<h4 class="modal-title"><fmt:message key="settings.csl.filecontent"/></h4>
+									</div>
+									<div class="modal-body">
+										<pre class="export"><c:out value="${style.content}" /></pre>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="close" /></button>
 									</div>
 								</div>
-
 							</div>
-						</li>
-					</c:forEach>
-				</ul>
-			</div>
+
+						</div>
+					</li>
+				</c:forEach>
+			</ul>
 		</div>
-
-		<!-- upload form for a new csl layout file -->
-		<form:form cssClass="form-horizontal" id="settingImportForm" action="/import/csl?ckey=${ckey}" method="post" enctype="multipart/form-data">
-			<fieldset>
-				<c:set var="formErrors"><form:errors path="fileItem" /></c:set>
-
-				<!-- upload input for new custom csl file -->
-				<div class="form-group${not empty formErrors ? ' has-error' : ''}">
-					<label class="col-sm-3 control-label" for="${fn:escapeXml(id)}">
-						<fmt:message key="settings.csl.layoutfile" />
-					</label>
-
-
-					<div class="col-sm-9">
-						<input id="csl-file-item" name="fileItem" type="file" />
-						<p class="help-block"><fmt:message key="settings.csl.item.help"/></p>
-						<bsform:errors path="fileItem" />
-					</div>
-				</div>
-
-				<!-- confirm -->
-				<div class="form-group">
-					<input name="action" type="hidden" value="create" />
-					<fmt:message var="cslButton" key="settings.csl.button"/>
-					<div class="col-sm-offset-3 col-sm-9">
-						<bsform:button type="submit" style="primary" size="defaultSize" value="${cslButton}" />
-					</div>
-				</div>
-			</fieldset>
-		</form:form>
 	</div>
+
+	<!-- upload form for a new csl layout file -->
+	<form:form cssClass="form-horizontal" id="settingImportCSLForm" action="/import/csl?ckey=${ckey}" method="post" enctype="multipart/form-data">
+		<fieldset>
+			<c:set var="formErrors"><form:errors path="fileItem" /></c:set>
+
+			<!-- upload input for new custom csl file -->
+			<div class="form-group${not empty formErrors ? ' has-error' : ''}">
+				<label class="col-sm-3 control-label" for="${fn:escapeXml(id)}">
+					<fmt:message key="settings.csl.layoutfile" />
+				</label>
+
+
+				<div class="col-sm-9">
+					<input id="csl-file-item" name="fileItem" type="file" />
+					<p class="help-block"><fmt:message key="settings.csl.item.help"/></p>
+					<bsform:errors path="fileItem" />
+				</div>
+			</div>
+
+			<!-- confirm -->
+			<div class="form-group">
+				<input name="action" type="hidden" value="create" />
+				<fmt:message var="cslButton" key="settings.csl.button"/>
+				<div class="col-sm-offset-3 col-sm-9">
+					<bsform:button type="submit" style="primary" size="defaultSize" value="${cslButton}" />
+				</div>
+			</div>
+		</fieldset>
+	</form:form>
 </jsp:root>

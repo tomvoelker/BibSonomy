@@ -67,6 +67,7 @@ public class CSLImportController extends AbstractExportFormatImportController {
 				 * store document in database
 				 */
 				this.logic.createDocument(uploadedFile, null);
+				this.cslFilesManager.reloadLayoutsForUser(loginUser.getName());
 			} catch (final Exception ex) {
 				errors.reject("settings.csl.error.import", new Object[]{ex.getMessage()}, null);
 			}
