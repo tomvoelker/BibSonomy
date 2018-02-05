@@ -772,7 +772,7 @@
 	</bean>
 	
 	<!--  #################### controller #################### -->
-	<bean id="AbstractResourcePageController" class="org.bibsonomy.webapp.controller.resource.AbstractResourcePageController" abstract="true">
+	<bean id="abstractResourcePageController" class="org.bibsonomy.webapp.controller.resource.AbstractResourcePageController" abstract="true" parent="multiResourceListControllerWithTags">
 		<property name="maxQuerySize" value="${database.maxQuerySize}" />
 	</bean>
 	
@@ -972,7 +972,7 @@
 		<property name="supportedResources" ref="allResources"/>
 	</bean>
 	
-	<bean id="publicationPageController" class="org.bibsonomy.webapp.controller.resource.PublicationPageController" scope="request" parent="multiResourceListControllerWithTags">
+	<bean id="publicationPageController" class="org.bibsonomy.webapp.controller.resource.PublicationPageController" scope="request" parent="abstractResourcePageController">
 		<property name="supportedResources">
 			<set>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
@@ -1019,7 +1019,7 @@
 		</property>
 	</bean>
 	 
-	<bean id="bookmarkPageController" class="org.bibsonomy.webapp.controller.resource.BookmarkPageController" scope="request" parent="multiResourceListController">
+	<bean id="bookmarkPageController" class="org.bibsonomy.webapp.controller.resource.BookmarkPageController" scope="request" parent="abstractResourcePageController">
 		<property name="supportedResources">
 			<set>
 				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
