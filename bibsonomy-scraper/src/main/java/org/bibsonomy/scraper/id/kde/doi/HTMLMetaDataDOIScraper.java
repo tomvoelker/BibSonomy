@@ -131,5 +131,21 @@ public class HTMLMetaDataDOIScraper extends HTMLMetaDataDublinCoreToBibtexConver
 		//no need to search for a doi if doiURL is set or a doi is selected 
 		return scrapingContext.getDoiURL() == null && !DOIUtils.isSupportedSelection((scrapingContext.getSelectedText()));
 	}
+	
+	
+	// Somehow these dummies are necessary
+	/**
+	 * @return site name
+	 */
+	public String getSupportedSiteName(){
+		return null;
+	}
+
+	/**
+	 * @return site url
+	 */
+	public String getSupportedSiteURL(){
+		return null;
+	}
 
 }
