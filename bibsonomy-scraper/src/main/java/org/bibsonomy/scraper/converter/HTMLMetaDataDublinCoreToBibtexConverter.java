@@ -131,15 +131,16 @@ public class HTMLMetaDataDublinCoreToBibtexConverter extends AbstractDublinCoreT
 		
 		return r;
 	}
-	
-	private static void addValueToDataIfNotContained(final String key, final String value, final String language,  final Map<String, Set<String>> data) {
+
+	// TODO: move to utils class
+	protected static void addValueToDataIfNotContained(final String key, final String value, final String language, final Map<String, Set<String>> data) {
 		Set<String> valueInData = data.get(key);
-		
-		if (valueInData == null) {				
+
+		if (valueInData == null) {
 			Set<String> s = new HashSet<String>();
 			s.add(value);
 			data.put(key, s);
-		} else if (!valueInData.contains(value)){			
+		} else if (!valueInData.contains(value)){
 			valueInData.add(value.trim());
 		}
 	}
