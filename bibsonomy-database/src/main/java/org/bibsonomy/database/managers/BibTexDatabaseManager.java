@@ -368,9 +368,9 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		 * and the queries should be adapted
 		 *
 		 * here we disable the resourced moved feature for spammers
+		 * but we allow the spam owner to get the resource moved information
 		 * reason: the spam post is not visible for other users, but the logged posts are visible to all
 		 * this leads to a A -> A redirect if the spammer changed publication A to B and back to A
-		 * but we allow the spam owner to get the resource moved information
 		 */
 		if (!userName.equals(authUser)) {
 			final User postUser = this.userDb.getUserDetails(userName, session);
