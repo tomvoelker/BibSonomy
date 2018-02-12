@@ -33,7 +33,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>3.8.9</version>
+		<version>3.8.10</version>
 	</parent>
 	<licenses>
 		<license>
