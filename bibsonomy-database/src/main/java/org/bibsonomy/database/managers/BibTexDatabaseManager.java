@@ -372,7 +372,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		 * reason: the spam post is not visible for other users, but the logged posts are visible to all
 		 * this leads to a A -> A redirect if the spammer changed publication A to B and back to A
 		 */
-		if (!userName.equals(authUser)) {
+		if (present(userName) && !userName.equals(authUser)) {
 			final User postUser = this.userDb.getUserDetails(userName, session);
 
 			if (postUser.isSpammer()) {
