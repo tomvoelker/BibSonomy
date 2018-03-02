@@ -35,9 +35,6 @@
 		<version>3.9.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>bibsonomy-search-elasticsearch</artifactId>
-	<properties>
-		<es.version>2.0.0</es.version>
-	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
@@ -94,4 +91,7 @@
 	</dependencies>
 	<name>BibSonomy Search Elasticsearch</name>
 	<description>Elasticsearch full text search module.</description>
+	<properties>
+		<es.version>2.3.0</es.version>
+	</properties>
 </project>

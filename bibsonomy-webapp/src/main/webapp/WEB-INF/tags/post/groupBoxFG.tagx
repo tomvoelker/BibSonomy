@@ -1,0 +1,111 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user">
+
+	<!-- 
+        Shows form fields to choose group(s) the post should be viewable for.
+        Consists of three radio buttons: public, private, other
+        and a select box which contains the group "friends" plus other possible groups.     
+    
+     -->
+    <jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
+	<jsp:directive.attribute name="friends" type="java.util.List" required="true"/>
+	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false"/>
+	
+	<c:if test="${empty labelColSpan}">
+		<c:set var="labelColSpan" value="2" />
+	</c:if>
+	<c:set var="formErrors"><form:errors path="groups" /></c:set>
+	<div class="form-group ${not empty formErrors ? 'has-error' : ''}">
+		<label class="col-sm-${labelColSpan} control-label" for="${fn:escapeXml(id)}">
+			<fmt:message key="post.resource.groupsandfriends.send" />
+		</label>
+		
+		<div class="col-sm-${12 - labelColSpan}">
+			<div class="row">
+				<div class="col-sm-4">
+					<c:if test="${not empty friends}">
+						<div class="radio">
+							<label>
+								<form:radiobutton cssClass="radio-viewable-group" path="abstractGrouping" value="friends" tabindex="2" id="post.friends" /> <fmt:message key="post.groups.friends"/>
+							</label>
+						</div>
+					</c:if>
+					<c:if test="${not empty groups}">
+						<div class="radio">
+							<label>
+								<form:radiobutton cssClass="radio-viewable-group" path="abstractGrouping" value="groups" tabindex="2" id="post.groups" /> <fmt:message key="group"/>
+							</label>
+						</div>
+					</c:if>
+				</div>
+				<div class="col-sm-8">
+					<c:if test="${not empty groups}">
+						<select name="post.groups.form" id="post.groups.form" class="form-control">
+							<c:forEach items="${groups}" var="group">
+								<option value="${group.name}">${group.name}</option>
+							</c:forEach>
+						</select>
+					</c:if>
+					<c:if test="${not empty friends}">
+						<select name="post.friends.form" id="post.friends.form" class="form-control">
+							<c:forEach items="${friends}" var="user">
+								<option value="${user.name}">${user.name}</option>
+							</c:forEach>
+						</select>
+					</c:if>
+					<c:if test="${(empty friends) and (empty groups)}">
+						<div id="noFriendsAndGroups">There are no friends or groups</div>
+					</c:if>
+				</div>
+			</div>
+			<c:if test="${not empty formErrors}">
+				<p class="help-block">${formErrors}</p>
+			</c:if>
+		</div>
+	</div>
+			<script type="text/javascript">
+			<![CDATA[
+				/* this script controls the visibility of the group select field. if the 'other' radio button is checked or hovered show the select field, otherwise hide it
+				*/
+		
+				$(document).ready(function() {
+			var checkedgroups = document.getElementById("post.groups");
+			var checkedfriends = document.getElementById("post.friends");
+			var groupsform = document.getElementById("post.groups.form");
+			var friendsform = document.getElementById("post.friends.form");
+			function choose_radio_button() {
+				if ($(checkedfriends).is(":checked") == true) {
+					$(friendsform).show();
+					$(groupsform).hide();
+				} else if ($(checkedgroups).is(":checked") == true) {
+					$(friendsform).hide();
+					$(groupsform).show();
+				}
+			}
+			function check_radio_button() {
+				$(checkedfriends).click(function() {
+					choose_radio_button();
+				});
+				$(checkedgroups).click(function() {
+					choose_radio_button();
+				});
+			}		
+			
+			$(groupsform).hide();
+			$(friendsform).show();
+			$(checkedfriends).prop('checked', true);
+			check_radio_button();
+		});
+		  
+		]]>
+	</script>
+</jsp:root>
