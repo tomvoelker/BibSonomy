@@ -90,10 +90,17 @@
 			var friendsform = document.getElementById("post.friends.form");
 			var friends=[];
 			var groups=[];
+			var tags="";
 			function choose_radio_button() {
 				$("#friendsOrGroups").empty();
+				tags=$("#inpf_tags").val();
+				for (i = 0; i < friends.length; i++) {
+					tags=tags.replace(" send:"+friends[i],"");
+				}
+				$("#inpf_tags").val(tags);
 				friends=[];
 				groups=[];
+				tags="";
 				if ($(checkedfriends).is(":checked") == true) {
 					$(friendsform).show();
 					$(friendsform).prop("selectedIndex", -1);
@@ -129,6 +136,9 @@
 				if (found == false) {
 					$("#friendsOrGroups").append("<li tabindex=1>"+selected+"</li>");
 					friends.push(selected);
+					tags=$("#inpf_tags").val()+" ";
+					tags=tags+"send:"+selected;
+					$("#inpf_tags").val(tags);
 				}
 			});
 			$(groupsform).change(function() {
