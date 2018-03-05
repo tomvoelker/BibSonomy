@@ -19,6 +19,7 @@
     <jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
 	<jsp:directive.attribute name="friends" type="java.util.List" required="true"/>
 	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false"/>
+	<jsp:directive.attribute name="chosenPersonsOrGroups" type="java.util.Set" required="false"/>
 	
 	<c:if test="${empty labelColSpan}">
 		<c:set var="labelColSpan" value="2" />
@@ -66,6 +67,11 @@
 						<div id="noFriendsAndGroups">There are no friends or groups</div>
 					</c:if>
 				</div>
+				<div id="friendsOrGroupsLabels">
+					<ul id="friendsOrGroups" class="recommended list-inline">
+						<!-- This comment is needed, otherwise this will result in a self-closing element -->
+					</ul>
+				</div>
 			</div>
 			<c:if test="${not empty formErrors}">
 				<p class="help-block">${formErrors}</p>
@@ -82,13 +88,20 @@
 			var checkedfriends = document.getElementById("post.friends");
 			var groupsform = document.getElementById("post.groups.form");
 			var friendsform = document.getElementById("post.friends.form");
+			var friends=[];
+			var groups=[];
 			function choose_radio_button() {
+				$("#friendsOrGroups").empty();
+				friends=[];
+				groups=[];
 				if ($(checkedfriends).is(":checked") == true) {
 					$(friendsform).show();
+					$(friendsform).prop("selectedIndex", -1);
 					$(groupsform).hide();
 				} else if ($(checkedgroups).is(":checked") == true) {
 					$(friendsform).hide();
 					$(groupsform).show();
+					$(groupsform).prop("selectedIndex", -1);
 				}
 			}
 			function check_radio_button() {
@@ -102,8 +115,37 @@
 			
 			$(groupsform).hide();
 			$(friendsform).show();
-			$(checkedfriends).prop('checked', true);
+			$(checkedfriends).prop("checked", true);
+			$(friendsform).prop("selectedIndex", -1);
 			check_radio_button();
+			$(friendsform).change(function() {
+				var selected=$(friendsform).val();
+				var found=false;
+				for (i = 0; i < friends.length; i++) {
+					if(friends[i] == selected) {
+						found=true;
+					}
+				}
+				if (found == false) {
+					$("#friendsOrGroups").append("<li tabindex=1>"+selected+"</li>");
+					friends.push(selected);
+				}
+			});
+			$(groupsform).change(function() {
+				var selected=$(groupsform).val();
+				var found=false;
+				for (i = 0; i < groups.length; i++) {
+					if(groups[i] == selected) {
+						found=true;
+					}
+				}
+				if (found == false) {
+					$("#friendsOrGroups").append("<li tabindex=1>"+selected+"</li>");
+					groups.push(selected);
+				}
+				
+			});
+			
 		});
 		  
 		]]>
