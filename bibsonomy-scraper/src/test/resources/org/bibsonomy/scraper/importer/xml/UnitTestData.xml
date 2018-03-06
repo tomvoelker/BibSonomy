@@ -67,14 +67,6 @@
 		<BibFile>IEEEXploreStandardsScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreStandardsScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_15">
-		<TestDescription>Scraping test for publications from ingentaconnect.com</TestDescription>
-		<URL>http://www.ingentaconnect.com/search/article?title=articlerank&amp;title_type=tka&amp;year_from=1998&amp;year_to=2009&amp;database=1&amp;pageSize=20&amp;index=1</URL>
-		<BibFile>IngentaconnectScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper</Scraper>
-		<!-- Search Error -->
-		<Enabled>false</Enabled>
-	</URLTest>
 	<URLTest id="url_16">
 		<TestDescription>URL scraping test for the IOP scraper</TestDescription>
 		<URL>http://iopscience.iop.org/article/10.1088/1742-5468/2008/10/P10008</URL>
@@ -519,12 +511,6 @@
 		<URL>http://www.worldcat.org/oclc/163641505</URL>
 		<BibFile>WorldCatScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_169">
-		<TestDescription>Scraping test for publications from ingentaconnect.com</TestDescription>
-		<URL>http://www.ingentaconnect.com/content/mcb/026/2007/00000026/00000004/art00005</URL>
-		<BibFile>IngentaconnectScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_189">
 		<TestDescription>URL scraping test with a citation page from intersience wiley</TestDescription>
