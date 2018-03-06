@@ -57,7 +57,7 @@ EMAILWEBMASTER=webmaster@bibsonomy.org
 # the one which really gets the mail; pick one of the above
 RECIPIENT=${EMAILWEBMASTER}
 # comma separated: further recipients
-CCRECIPIENTS=sbo@cs.uni-kassel.de,stefani@cs.uni-kassel.de
+CCRECIPIENTS=stefani@cs.uni-kassel.de
 
 # today's date (used to timestamp WAR file)
 TODAY=`date +"%Y-%m-%dT%H:%M:%S"`

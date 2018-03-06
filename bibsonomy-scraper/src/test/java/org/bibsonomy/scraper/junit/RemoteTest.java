@@ -28,7 +28,9 @@ package org.bibsonomy.scraper.junit;
 
 /**
  * Marker interface for JUnit. Tests of this category test the scrapers against
- * the remote system and should therefore not be run on each build.
+ * the remote system and should therefore not be run on each build. Activate the
+ * tests by appending "-P allTests" to the Maven command line or add the 
+ * profile "allTests" in the Eclipse Run Config.
  * 
  * @author rja
  */

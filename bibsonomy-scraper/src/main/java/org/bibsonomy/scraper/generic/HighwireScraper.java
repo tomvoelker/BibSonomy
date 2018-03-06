@@ -38,6 +38,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -47,10 +48,19 @@ public class HighwireScraper implements Scraper {
 	private static final String SITE_NAME = "Highwire Scraper Collection";
 	private static final String SITE_URL = "http://highwire.stanford.edu/lists/allsites.dtl";
 	private static final String INFO 	= "This scraper parses a publication page from one of these <a href=\"http://highwire.stanford.edu/lists/allsites.dtl\">journals hosted by Highwire Press</a>  " +
-											"and extracts the adequate BibTeX entry.";
+			"and extracts the adequate BibTeX entry.";
 
-	//Pattern p = Pattern.compile("/cgi/citmgr\\?(gca=\\w+;\\d+/\\d+/[\\w+]*\\d+[&]*)+");
-	private static final Pattern urlPattern = Pattern.compile("/cgi/citmgr\\?gca=[\\w+;/&=.-]+");
+	// e.g., /citmgr?gca=horttech%3B28%2F1%2F10"
+	private static final Pattern URL_PATTERN_1 = Pattern.compile("/citmgr\\?gca=[^\"\']+");
+	// e.g., /highwire/citation/14615/bibtext
+	private static final Pattern URL_PATTERN_2 = Pattern.compile("/highwire/citation/\\d+/bibtext");
+	// e.g., /paleobiol/downloadcitation/520315?format=bibtex"
+	private static final Pattern URL_PATTERN_3 = Pattern.compile("/\\w+/downloadcitation/\\d+\\?format=bibtex");
+	
+	// patterns to identify and clean up bibtex keys (remove white space)
+	private static final Pattern BIBTEX_KEY_PATTERN = Pattern.compile("@\\w+\\{.+,");
+	private static final Pattern WHITE_SPACE_PATTERN = Pattern.compile("\\s");
+
 	
 	@Override
 	public boolean scrape(final ScrapingContext sc) throws ScrapingException {
@@ -69,52 +79,29 @@ public class HighwireScraper implements Scraper {
 			} catch (final ScrapingException e) {
 				return false;
 			}
-			
-			final Matcher m = urlPattern.matcher(pageContent);
-			
+
 			try {
-				//-- if its available extract the needed parts and form the final bibtex export url
-				if (m.find()){
+				// extract URL path from HTML content
+				final String urlPath = getUrlPath(pageContent);
+				if (ValidationUtils.present(urlPath)) {
 					sc.setScraper(this);
-					
-					//-- to export the bibtex we need to replace ? through ?type=bibtex
-					final String exportUrl = m.group(0).replaceFirst("\\?","?type=bibtex&");
 
 					//-- form the host url and put them together 
-					final String newUrl = "http://" + sc.getUrl().getHost() + exportUrl;
+					final String newUrl = "http://" + sc.getUrl().getHost() + urlPath;
 
 					//-- get the bibtex export and throw new ScrapingException if the url is broken
-					String bibtexresult = WebUtils.getContentAsString(new URL(newUrl));
+					String bibtex = WebUtils.getContentAsString(new URL(newUrl));
 
-					/*
-					 * Need to fix the bibtexkey. Its necessary to replace
-					 * ALL whitespace through underscores otherwise the import 
-					 * will crash.
-					 */
-					//-- create the pattern to finde the bibtexkey
-					final Pattern pa1 = Pattern.compile("@\\w+\\{.+,");
-					final Matcher ma1 = pa1.matcher(bibtexresult);
-
-					//-- for every match ...
-					while(ma1.find()){
-						final String bibtexpart = ma1.group(0);
-						final Pattern pat = Pattern.compile("\\s");
-						final Matcher mat = pat.matcher(bibtexpart);
-						// ... check if whitespaces are existing and replace 
-						// them through underscore
-						if (mat.find()){
-							final String preparedbibtexkey = mat.replaceAll("_");
-							bibtexresult = bibtexresult.replaceFirst(Pattern.quote(bibtexpart), preparedbibtexkey);
-						}
-					}
+					// fix the BibTeX key FIXME: check if necessary
+					bibtex = fixBibTeXKey(bibtex);
 
 
 					//-- bibtex string may not be empty
-					if ((bibtexresult != null) && !"".equals(bibtexresult)) {
-						sc.setBibtexResult(bibtexresult);
+					if (ValidationUtils.present(bibtex)) {
+						sc.setBibtexResult(bibtex);
 						return true;
 					}
-					
+
 					throw new ScrapingFailureException("getting bibtex failed");
 				}
 
@@ -126,6 +113,34 @@ public class HighwireScraper implements Scraper {
 		return false;
 	}
 
+	/**
+	 * Tries to find URL paths to BibTeX export in page content.
+	 * 
+	 * @param pageContent
+	 * @return
+	 */
+	private static String getUrlPath(final String pageContent) {
+		// try first pattern, e.g., /citmgr?gca=horttech%3B28%2F1%2F10"
+		final Matcher m1 = URL_PATTERN_1.matcher(pageContent);
+		if (m1.find()){
+			//-- to export the bibtex we need to replace ? through ?type=bibtex
+			return m1.group(0).replaceFirst("\\?","?type=bibtex&");
+		} 
+		// try next pattern, e.g., /highwire/citation/14615/bibtext
+		final Matcher m2 = URL_PATTERN_2.matcher(pageContent);
+		if (m2.find()) {
+			return m2.group(0);
+		}
+		// e.g., /paleobiol/downloadcitation/520315?format=bibtex"
+		final Matcher m3 = URL_PATTERN_3.matcher(pageContent);
+		if (m3.find()) {
+			return m3.group(0);
+		}
+		return null;
+	}
+
+
+
 	@Override
 	public Collection<Scraper> getScraper() {
 		return Collections.<Scraper>singletonList(this);
@@ -133,36 +148,33 @@ public class HighwireScraper implements Scraper {
 
 	@Override
 	public boolean supportsScrapingContext(final ScrapingContext sc) {
-		if (sc.getUrl() != null) {
-			String pageContent;
+		if (ValidationUtils.present(sc.getUrl())) {
 			try {
-				pageContent = sc.getPageContent();
+				return 
+						URL_PATTERN_1.matcher(sc.getPageContent()).find() || 
+						URL_PATTERN_2.matcher(sc.getPageContent()).find() ||
+						URL_PATTERN_3.matcher(sc.getPageContent()).find();
 			} catch (final ScrapingException e) {
+				e.printStackTrace();
 				return false;
-			}
-			
-			final Matcher m = urlPattern.matcher(pageContent);
-			
-			if (m.find()) {
-				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	@Override
 	public String getInfo() {
 		return INFO;
 	}
-	
+
 	/**
 	 * @return site name
 	 */
 	public String getSupportedSiteName(){
 		return SITE_NAME;
 	}
-	
-	
+
+
 	/**
 	 * @return site url
 	 */
@@ -170,4 +182,27 @@ public class HighwireScraper implements Scraper {
 		return SITE_URL;
 	}
 
+	/**
+	 * Need to fix the bibtexkey. Its necessary to replace
+	 * ALL whitespace through underscores otherwise the import 
+	 * will crash.
+	 * FIXME: method looks complicated, can it be simplified?
+	 */
+	private static String fixBibTeXKey(final String bibtex) {
+		//-- create the pattern to find the bibtexkey
+		final Matcher ma1 = BIBTEX_KEY_PATTERN.matcher(bibtex);
+
+		//-- for every match ...
+		while(ma1.find()){
+			final String bibtexpart = ma1.group(0);
+			final Matcher mat = WHITE_SPACE_PATTERN.matcher(bibtexpart);
+			// ... check if whitespaces are existing and replace 
+			// them through underscore
+			if (mat.find()){
+				final String preparedbibtexkey = mat.replaceAll("_");
+				return bibtex.replaceFirst(Pattern.quote(bibtexpart), preparedbibtexkey);
+			}
+		}
+		return bibtex;
+	}
 }

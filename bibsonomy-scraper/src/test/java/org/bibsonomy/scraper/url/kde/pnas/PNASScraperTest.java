@@ -34,16 +34,22 @@ import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
+import org.bibsonomy.scraper.generic.HighwireScraper;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
  * Scraper URL test #190 #191 for PNASScraper
  * 
+ * PNAS now scraped by {@link HighwireScraper}
+ * 
  * @author clemens
  */
 @Category(RemoteTest.class)
+@Deprecated
+@Ignore
 public class PNASScraperTest {
 
 	/**

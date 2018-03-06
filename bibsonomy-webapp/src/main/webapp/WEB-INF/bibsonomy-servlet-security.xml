@@ -206,15 +206,24 @@
 		<property name="targetUrlParameter" ref="targetUrlParameter" />
 		<property name="loginFormUrl" ref="loginUrl" />
 	</bean>
+
+	
+	<bean class="org.bibsonomy.webapp.util.spring.security.exceptionmapper.AdLdapUsernameNotFoundExceptionMapper" name="AdLdapExceptionMapper">
+		<property name="redirectUrl" value="/registerLDAP?step=2"/>
+	</bean>
+	
+	<bean class="org.bibsonomy.webapp.util.spring.security.exceptionmapper.LdapUsernameNotFoundExceptionMapper" name="ldapExceptionMapper">
+		<property name="redirectUrl" value="/registerLDAP?step=2"/>
+	</bean>
 	
 	<bean id="failureHandler" class="org.bibsonomy.webapp.util.spring.security.handler.FailureHandler" scope="singleton">
 		<property name="grube" ref="teergrube" />
 		<property name="defaultFailureUrl" ref="loginUrl" />
 		<property name="usernameNotFoundExceptionMapper">
 			<set>
-				<bean class="org.bibsonomy.webapp.util.spring.security.exceptionmapper.LdapUsernameNotFoundExceptionMapper">
-					<property name="redirectUrl" value="/registerLDAP?step=2"/>
-				</bean>
+			
+				<ref bean="#{ {'${auth.ldap.authenticationProvider}' eq 'adAuthenticationProvider'} ? 'AdLdapExceptionMapper' : 'ldapExceptionMapper'}" />
+
 				<bean class="org.bibsonomy.webapp.util.spring.security.exceptionmapper.SamlUsernameNotFoundExceptionMapper">
 					<property name="redirectUrl" value="/registerSaml?step=2"/>
 					<property name="attributeExtractor" ref="samlAttributeExtractor" />
@@ -433,10 +442,13 @@
 		<property name="rememberMeServices" ref="ldapRememberMeServices" />
 	</bean>
 	
+	<!-- configure the used authenticator using the property "auth.ldap.authenticator" -->
+	<alias name="${auth.ldap.authenticationProvider}" alias="custLdapAuthProvider"/>
+	
 	<bean id="ldapAuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
 		<property name="providers">
 			<list>
-				<ref bean="ldapAuthProvider" /> 
+				<ref bean="custLdapAuthProvider" /> 
 			</list>
 		</property>
 		<!-- we need the password for the rememeber me cookie (the coookie is encrypted) -->
@@ -505,4 +517,13 @@
 		<property name="userDetailsService" ref="databaseUserService" />
 		<property name="adminLogic" ref="adminLogic" />
 	</bean>
+	
+	<!-- AD Login -->
+	<!-- configure the provider using the properties "auth.ad.domain" and "auth.ad.url"  -->
+	<bean id="adAuthenticationProvider" class="org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider">
+		<constructor-arg value="${auth.ad.domain}" />
+		<constructor-arg value="${auth.ad.url}" />
+		<property name="userDetailsContextMapper" ref="ldapUserDetailsMapper" />
+	</bean>
+	
 </beans>

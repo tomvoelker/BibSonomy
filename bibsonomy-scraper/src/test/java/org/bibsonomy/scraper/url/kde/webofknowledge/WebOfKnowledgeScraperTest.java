@@ -28,16 +28,20 @@ package org.bibsonomy.scraper.url.kde.webofknowledge;
 
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
  * Scraper URL test for http://apps.webofknowledge.com
  * 
+ * site does no longer exist
+ * 
  * @author lha
  */
-
 @Category(RemoteTest.class)
+@Deprecated
+@Ignore
 public class WebOfKnowledgeScraperTest {
 
 	/**
@@ -50,7 +54,10 @@ public class WebOfKnowledgeScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
+		final String url = "http://apps.webofknowledge.com/full_record.do?product=UA&search_mode=GeneralSearch&qid=1&SID=T1oiG1PgP2L42IlFLI4&page=1&doc=8";
 		UnitTestRunner.runSingleTest("url_151");
 	}
+	
+	
 	
 }
