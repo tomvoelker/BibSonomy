@@ -231,6 +231,10 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new OSAScraper());
 		addScraper(new PsyContentScraper());
 		addScraper(new RSOCScraper());
+		/*
+		 * rja, 2018-03-06: now handled by HighwireScraper
+		 */
+		//addScraper(new PNASScraper());
 		addScraper(new ScienceMagScraper());
 		addScraper(new JStorScraper());
 		addScraper(new EricScraper());
@@ -261,8 +265,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		//addScraper(new ScientificcommonsScraper());
 		addScraper(new CellScraper());
 		/*
-		 * the scraper and the related information in the xml file are disabled because the version of the website 
-		 * is session-based and hence, the scraping does not work.
+		 * rja, 2018-03-06, page does no longer exist
 		 */
 		//addScraper(new WebOfKnowledgeScraper());
 		addScraper(new CasesJournalScraper());
