@@ -268,9 +268,15 @@ public class WebUtils {
 	 * @return String which holds the page content.
 	 * @throws IOException 
 	 * 
-	 * @Deprecated
+	 * 
 	 */
 	public static String getContentAsString(final URL inputURL, final String cookie) throws IOException {
+		return getContentAsString(inputURL.toString(), cookie, null, null);
+	}
+	
+	@Deprecated
+	public static String getContentAsStringOld(final URL inputURL, final String cookie) throws IOException {
+		
 		try {
 			final HttpURLConnection urlConn = createConnnection(inputURL);
 			urlConn.setAllowUserInteraction(false);

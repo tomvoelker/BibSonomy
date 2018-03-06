@@ -110,4 +110,18 @@ public class WebUtilsTest {
 		assertTrue(s.length() < 1024 * 1024);
 	}
 	
+	@Test
+	public void testGetContentAsString2() throws Exception {
+		/*
+		 * Just check, if we get some output from BibSonomy.
+		 */
+		final String s = WebUtils.getContentAsString("http://www.bibsonomy.org/tag/web?items=1000", null);
+		assertTrue(s.length() > 0);
+		/*
+		 * We have a 1MB limit ... 
+		 */
+		assertTrue(s.length() < 1024 * 1024);
+	}
+	
+	
 }
