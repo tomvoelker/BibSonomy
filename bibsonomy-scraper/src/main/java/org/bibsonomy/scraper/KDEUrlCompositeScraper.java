@@ -217,7 +217,10 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new AnthroSourceScraper());
 		addScraper(new BMJScraper());
 		addScraper(new EditLibScraper());
-		addScraper(new InformaWorldScraper());
+		/*
+		 * rja, 2018-03-06, acquired by Taylor and Francis?!
+		 */
+		//addScraper(new InformaWorldScraper());
 		addScraper(new CambridgeScraper());
 		/*
 		 * the scraper and the related information in the xml file are disabled because the website 
