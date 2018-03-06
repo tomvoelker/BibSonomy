@@ -27,14 +27,7 @@
 package org.bibsonomy.scraper.url.kde.liebert;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-import java.net.URL;
-
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -75,26 +68,5 @@ public class LiebertScraperTest {
 		final String resultFile = "LiebertScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, LiebertScraper.class, resultFile);
 	}
-	/**
-	 * @throws Exception
-	 */
-	@Test
-	public void testCitedby() throws Exception {
-		final ScrapingContext sc = new ScrapingContext(new URL("http://www.liebertonline.com/doi/abs/10.1089/152308604773934350"));
-		
-		LiebertScraper ls = new LiebertScraper();
-		assertTrue(ls.scrape(sc));
-		
-		assertTrue(ls.scrapeCitedby(sc));
-		
-		final String cby = sc.getCitedBy();
-		
-		assertNotNull(cby);
-		
-		assertTrue(cby.length() > 100);
-		
-		assertEquals("<div class=\"citedByEntry\"><div class=\"art_title\">Effect of amifostine, a radiation-protecting d".trim(), cby.substring(0, 95).trim());
-		
-		assertTrue(cby.contains("Benoît Driesschaert")); //Injectable LiNc-BuO loaded microspheres as in
-	}
+
 }

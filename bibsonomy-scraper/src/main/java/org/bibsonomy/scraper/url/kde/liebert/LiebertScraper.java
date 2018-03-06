@@ -26,12 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.liebert;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,46 +38,49 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.CitedbyScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
  */
-public class LiebertScraper extends AbstractUrlScraper implements CitedbyScraper {
+public class LiebertScraper extends AbstractUrlScraper {
 	private static final Log log = LogFactory.getLog(LiebertScraper.class);
-	
+
 	private static final String SITE_NAME = "Liebert Online";
 	private static final String LIEBERT_HOST_NAME  = "http://www.liebertonline.com";
 	private static final String SITE_URL  = LIEBERT_HOST_NAME+"/";
 	private static final String info = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
-	private static final String LIEBERT_HOST  = "liebertonline.com";
-	private static final String LIEBERT_HOST_NEW  = "online.liebertpub.com";
-	private static final String LIEBERT_ABSTRACT_PATH = "/doi/abs/";
-	private static final String LIEBERT_BIBTEX_PATH = "/action/showCitFormats";
-	private static final String LIEBERT_BIBTEX_PATH_AND_QUERY = "/action/showCitFormats?doi=";
+	private static final String LIEBERT_HOST1  = "liebertonline.com";
+	private static final String LIEBERT_HOST2  = "online.liebertpub.com";
 	private static final String LIEBERT_BIBTEX_DOWNLOAD_PATH = "/action/downloadCitation";
 	private static final String LIEBERT_BIBTEX_PARAMS = "?downloadFileName=bibsonomy&include=cit&format=bibtex&direct=on&doi=";
-	private static final Pattern abstract_pattern = Pattern.compile("<div class=\"abstractSection\">(.*)\\s+</div>");
-	private static final Pattern citedby_pattern = Pattern.compile("(?m)<div class=\"citedByEntry\">.*");
-	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
-	
+
+	// to extract the abstract from the HTML
+	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div class=\"abstractSection.*?\">\\s*<p.*?>(.+?)</p>");
+
+	// e.g., http://www.liebertonline.com/doi/abs/10.1089/152308604773934350
+	private static final Pattern PATH_ABSTRACT_PATTERN = Pattern.compile("/doi/abs/(.+?)(\\?.+)?$");
+	// e.g., http://www.liebertonline.com/action/showCitFormats?doi=10.1089%2F152308604773934350
+	private static final Pattern PATH_CIT_PATTERN = Pattern.compile("/action/showCitFormats");
+	private static final Pattern PAQU_CIT_PATTERN = Pattern.compile("/action/showCitFormats\\?doi=(.+?)(&.+)?$");
+
+	private static final Pattern HOST_PATTERN1 = Pattern.compile(".*?" + LIEBERT_HOST1);
+	private static final Pattern HOST_PATTERN2 = Pattern.compile(".*?" + LIEBERT_HOST2);
+
+	private static final List<Pair<Pattern,Pattern>> PATTERNS = new LinkedList<Pair<Pattern,Pattern>>();
 	static {
-		final Pattern hostPattern = Pattern.compile(".*" + LIEBERT_HOST);
-		Pattern abstractPathPattern = Pattern.compile(LIEBERT_ABSTRACT_PATH + ".*");
-		patterns.add(new Pair<Pattern, Pattern>(hostPattern, abstractPathPattern));
-		Pattern bibtexPathPattern = Pattern.compile(LIEBERT_BIBTEX_PATH + ".*");
-		patterns.add(new Pair<Pattern, Pattern>(hostPattern, bibtexPathPattern));
-		Pattern hostPatternNew = Pattern.compile(".*?" + LIEBERT_HOST_NEW);
-		patterns.add(new Pair<Pattern, Pattern>(hostPatternNew, abstractPathPattern));
-		patterns.add(new Pair<Pattern, Pattern>(hostPatternNew, bibtexPathPattern));
+		PATTERNS.add(new Pair<Pattern, Pattern>(HOST_PATTERN1, PATH_ABSTRACT_PATTERN));
+		PATTERNS.add(new Pair<Pattern, Pattern>(HOST_PATTERN1, PATH_CIT_PATTERN));
+		PATTERNS.add(new Pair<Pattern, Pattern>(HOST_PATTERN2, PATH_ABSTRACT_PATTERN));
+		PATTERNS.add(new Pair<Pattern, Pattern>(HOST_PATTERN2, PATH_CIT_PATTERN));
 	}
-	
+
 	@Override
 	public String getInfo() {
 		return info;
@@ -92,151 +90,64 @@ public class LiebertScraper extends AbstractUrlScraper implements CitedbyScraper
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
-		String url = sc.getUrl().toString();
+		final URL url = sc.getUrl();
+		// extract id (DOI) from URL
+		final String id = getId(url.toString());
 
-		String id = null;
-		URL userURL = null;
-
-		if(url.contains(LIEBERT_ABSTRACT_PATH)) {
-			userURL = sc.getUrl();
-			int idStart = url.indexOf(LIEBERT_ABSTRACT_PATH) + LIEBERT_ABSTRACT_PATH.length();
-			int idEnd = 0;
-
-			if(url.contains("?prevSearch=")) {
-				idEnd = url.indexOf("?prevSeach=");
-			} else {
-				idEnd = url.length();
-			}
-
-			id = url.substring(idStart, idEnd);
-
-		}
-
-		if(url.contains(LIEBERT_BIBTEX_PATH_AND_QUERY)) {
-
-			int idStart = url.indexOf("?doi=") + 5;
-			int idEnd = url.length();
-
-			id = url.substring(idStart, idEnd);
-
+		if (ValidationUtils.present(id)) {
 			try {
-				userURL = new URL(LIEBERT_HOST_NAME + LIEBERT_ABSTRACT_PATH + id);
-			} catch (MalformedURLException ex) {
+				final URL citURL = new URL(LIEBERT_HOST_NAME + LIEBERT_BIBTEX_DOWNLOAD_PATH + LIEBERT_BIBTEX_PARAMS + id.replaceAll("/", "%2F"));
+				// we need cookies for this publisher ...
+				final String cookies = WebUtils.getCookies(url);
+				final String bibResult = WebUtils.getContentAsString(citURL, cookies);
+
+				if (ValidationUtils.present(bibResult)) {
+					try {
+						sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(bibResult, "abstract", getAbstract(url, cookies)));
+					} catch (IOException e) {
+						log.error("error while scraping " + url, e);
+					}
+					return true;
+				}
+
+			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
 			}
-		}
 
-		id = id.replaceAll("/", "%2F");
-
-		String bibResult = null;
-
-		try {
-			URL citURL = new URL(LIEBERT_HOST_NAME + LIEBERT_BIBTEX_DOWNLOAD_PATH + LIEBERT_BIBTEX_PARAMS + id);
-			bibResult = getContent(citURL, getCookies(userURL));
-
-		} catch (IOException ex) {
-			throw new InternalFailureException(ex);
-		}
-
-		if(bibResult != null) {
-			try {
-				sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(bibResult,"abstract",abstractParser(sc.getUrl())));
-			} catch (IOException e) {
-				log.error("error while scraping " + sc.getUrl(), e);
-			}
-			return true;
 		}
 		throw new ScrapingFailureException("getting bibtex failed");
 	}
 
-	/** FIXME: refactor
-	 * @param queryURL
-	 * @param cookie
+	/**
+	 * Attempts to extract the id (DOI) from the URL.
+	 * 
+	 * @param url
 	 * @return
-	 * @throws IOException
 	 */
-	private String getContent(URL queryURL, String cookie) throws IOException {
-		/*
-		 * get BibTex-File from ACS
-		 */
-		HttpURLConnection urlConn = (HttpURLConnection) queryURL.openConnection();
-		urlConn.setAllowUserInteraction(false);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(false);
-		urlConn.setUseCaches(false);
-		/*
-		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
-		 * pages require it to download content.
-		 */
-		urlConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
-
-		//insert cookie
-		urlConn.setRequestProperty("Cookie", cookie);
-
-		urlConn.connect();
-
-		StringWriter out = new StringWriter();
-		InputStream in = new BufferedInputStream(urlConn.getInputStream());
-		int b;
-		while ((b = in.read()) >= 0) {
-			out.write(b);
+	private static String getId(final String url) {
+		final Matcher m1 = PATH_ABSTRACT_PATTERN.matcher(url);
+		if (m1.find()) {
+			return m1.group(1);
 		}
-		urlConn.disconnect();
-
-		return out.toString();
-	}
-
-	/** FIXME: refactor
-	 * @param queryURL
-	 * @return
-	 * @throws IOException
-	 */
-	private String getCookies(URL queryURL) throws IOException {
-		HttpURLConnection urlConn = null;
-
-		urlConn = (HttpURLConnection) queryURL.openConnection();
-
-		urlConn.setAllowUserInteraction(false);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(false);
-		urlConn.setUseCaches(false);
-
-		/*
-		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
-		 * pages require it to download content.
-		 */
-		urlConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
-
-		urlConn.connect();
-		/*
-		 * extract cookie from connection
-		 */
-		List<String> cookies = urlConn.getHeaderFields().get("Set-Cookie");
-
-		StringBuffer cookieString = new StringBuffer();
-
-		for (final String cookie : cookies) {
-			cookieString.append(cookie.substring(0, cookie.indexOf(";") + 1) + " ");
+		final Matcher m2 = PAQU_CIT_PATTERN.matcher(url);
+		if (m2.find()) {
+			return m2.group(1);
 		}
-
-		// This is neccessary, otherwise we don't get the Bibtex file.
-		cookieString.append("I2KBRCK=1");
-
-		urlConn.disconnect();
-
-		return cookieString.toString();
-	}
-	
-	private static String abstractParser(URL url) throws IOException{
-		Matcher m = abstract_pattern.matcher(WebUtils.getContentAsString(url, WebUtils.getCookies(url)));
-		if(m.find())
-			return m.group(1);
 		return null;
 	}
-	
+
+	private static String getAbstract(final URL url, final String cookies) throws IOException{
+		final String contentAsString = WebUtils.getContentAsString(url, cookies);
+		final Matcher m = ABSTRACT_PATTERN.matcher(contentAsString);
+		if (m.find()) {
+			return m.group(1).trim();
+		}
+		return null;
+	}
+
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return patterns;
+		return PATTERNS;
 	}
 
 	@Override
@@ -249,19 +160,4 @@ public class LiebertScraper extends AbstractUrlScraper implements CitedbyScraper
 		return SITE_URL;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.CitedbyScraper#scrapeCitedby(org.bibsonomy.scraper.ScrapingContext)
-	 */
-	@Override
-	public boolean scrapeCitedby(ScrapingContext scrapingContext) throws ScrapingException {
-		try{
-			Matcher m = citedby_pattern.matcher(WebUtils.getContentAsString(scrapingContext.getUrl(), WebUtils.getCookies(scrapingContext.getUrl())));
-			if(m.find())
-					scrapingContext.setCitedBy(m.group());
-			return true;
-		} catch(IOException e) {
-			log.error("error while scraping citedby for " + scrapingContext.getUrl(), e);
-		}
-		return false;
-	}
 }
