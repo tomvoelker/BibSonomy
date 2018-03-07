@@ -32,9 +32,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -132,92 +129,7 @@ public class WebUtils {
 		return client;
 	}
 
-	/**
-	 * Do a POST request to the given URL with the given content. Assume the charset of the result to be charset.
-	 * 
-	 * @param url
-	 * @param postContent
-	 * @param charset - the assumed charset of the result. If <code>null</code>, the charset from the response header is used.
-	 * @param cookie - the Cookie to be attached to the request. If <code>null</code>, the Cookie header is not set.
-	 * @return The content of the result page.
-	 * 
-	 * @throws IOException
-	 * 
-	 * @Deprecated
-	 */
-	@Deprecated
-	public static String getPostContentAsString(final URL url, final String postContent, final String charset, final String cookie) throws IOException {
-		final HttpURLConnection urlConn = createConnnection(url);
-		urlConn.setAllowUserInteraction(false);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(true);
-		urlConn.setRequestMethod("POST");
-		urlConn.setRequestProperty(CONTENT_TYPE_HEADER_NAME, "application/x-www-form-urlencoded");
 
-		if (cookie != null) {
-			urlConn.setRequestProperty(COOKIE_HEADER_NAME, cookie);
-		}
-
-
-		writeStringToStream(postContent, urlConn.getOutputStream());
-
-		// connect
-		urlConn.connect();
-
-		/*
-		 * extract character encoding from header
-		 */
-		final String activeCharset;
-		if (charset == null) {
-			activeCharset = getCharset(urlConn);
-		} else {
-			activeCharset = charset;
-		}
-
-		/*
-		 * FIXME: check content type header to ensure that we only read textual 
-		 * content (and not a PDF, radio stream or DVD image ...)
-		 */
-
-		// write into string writer
-		final StringBuilder out = inputStreamToStringBuilder(urlConn.getInputStream(), activeCharset);
-
-		// disconnect
-		urlConn.disconnect();
-
-		return out.toString();
-	}
-
-
-	/**
-	 * Do a POST request to the given URL with the given content. Assume the charset of the result to be charset.
-	 * 
-	 * @param url
-	 * @param postContent
-	 * @param charset - the assumed charset of the result. If <code>null</code>, the charset from the response header is used.
-	 * @return The content of the result page.
-	 * 
-	 * @throws IOException
-	 * 
-	 * @Deprecated
-	 */
-	public static String getPostContentAsString(final URL url, final String postContent, final String charset) throws IOException {
-		return getPostContentAsString(url, postContent, charset, null);
-	}
-	/**
-	 * Do a POST request to the given URL with the given content.
-	 * 
-	 * @param url
-	 * @param postContent
-	 * @return The content of the result page.
-	 * 
-	 * @throws IOException
-	 * 
-	 * @Deprecated
-	 */
-	public static String getPostContentAsString(final URL url, final String postContent) throws IOException {
-		return getPostContentAsString(url, postContent, null, null);
-	}
 	/**
 	 * Convenience method for receiving page content for the given {@link PostMethod}. It calls
 	 * {@link WebUtils#getContentAsString(HttpClient, HttpMethod)} and returns on status code 200 HTTP OK.
@@ -414,7 +326,7 @@ public class WebUtils {
 	 * Convenience method for getting the page content by passing the {@link HttpMethod} executed by the exisitng client.
 	 * It calls {@link WebUtils#getContentAsString(HttpClient, HttpMethod)}
 	 * @param method
-	 * @return
+	 * @return content of the response
 	 * @throws HttpException
 	 * @throws IOException
 	 */
@@ -574,16 +486,6 @@ public class WebUtils {
 		return result.toString();
 	}
 
-
-	/** Extracts the charset ID of a web page as returned by the server.
-	 * 
-	 * @param urlConn
-	 * @return
-	 */
-	private static String getCharset(final HttpURLConnection urlConn) {
-		return extractCharset(urlConn.getContentType());
-	}
-
 	/**
 	 * Extracts the charset from the given string. The string should resemble
 	 * the content type header of an HTTP request. Valid examples are:
@@ -668,18 +570,4 @@ public class WebUtils {
 		return sb;
 	}
 
-	/** Writes the given string to the stream.
-	 * 
-	 * @param s
-	 * @param outputStream
-	 * @throws IOException
-	 */
-	private static void writeStringToStream(final String s, final OutputStream outputStream) throws IOException {
-		final StringReader reader = new StringReader(s);
-		int b;
-		while ((b = reader.read()) >= 0) {
-			outputStream.write(b);
-		}
-		outputStream.flush();
-	}
 }
