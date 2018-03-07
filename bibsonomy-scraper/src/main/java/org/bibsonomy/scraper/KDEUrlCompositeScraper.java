@@ -316,7 +316,10 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new ScientificScraper());
 		addScraper(new CopacScraper());
 		addScraper(new CiniiScraper());
-		addScraper(new AhaJournalsScraper());
+		/*
+		 * rja, 2018-03-07, now handled by HighwireScraper
+		 */
+		//addScraper(new AhaJournalsScraper());
 		addScraper(new KargerScraper());
 		addScraper(new FRONTIERSINScraper());
 		addScraper(new SpieDigitalLibraryScraper());

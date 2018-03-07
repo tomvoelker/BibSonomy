@@ -21,7 +21,7 @@ public class HighwireScraperTest {
 	public void testScrape1() {
 		assertScraperResult("http://www.pnas.org/content/115/4/E639", null, HighwireScraper.class, "HighwireScraperTest1.bib");
 	}
-	
+
 	/**
 	 * Test method for {@link org.bibsonomy.scraper.generic.HighwireScraper#scrape(org.bibsonomy.scraper.ScrapingContext)}.
 	 */
@@ -37,7 +37,7 @@ public class HighwireScraperTest {
 	public void testScrape3() {
 		assertScraperResult("http://eel.ecsdl.org/content/4/1/A4.abstract", null, HighwireScraper.class, "HighwireScraperTest3.bib");
 	}
-	
+
 	/**
 	 * Test method for {@link org.bibsonomy.scraper.generic.HighwireScraper#scrape(org.bibsonomy.scraper.ScrapingContext)}.
 	 */
@@ -45,7 +45,7 @@ public class HighwireScraperTest {
 	public void testScrape4() {
 		assertScraperResult("http://horttech.ashspublications.org/content/28/1/10.abstract", null, HighwireScraper.class, "HighwireScraperTest4.bib");
 	}
-	
+
 	/**
 	 * Test method for {@link org.bibsonomy.scraper.generic.HighwireScraper#scrape(org.bibsonomy.scraper.ScrapingContext)}.
 	 */
@@ -53,4 +53,12 @@ public class HighwireScraperTest {
 	public void testScrape5() {
 		assertScraperResult("https://pubs.geoscienceworld.org/paleobiol/article-abstract/43/4/620/520315/sexual-dimorphism-and-sexual-selection-in", null, HighwireScraper.class, "HighwireScraperTest5.bib");
 	}
+
+	/**
+	 * Test method for {@link org.bibsonomy.scraper.generic.HighwireScraper#scrape(org.bibsonomy.scraper.ScrapingContext)}.
+	 */
+	@Test
+	public void testScrape6() {
+		assertScraperResult("http://circ.ahajournals.org/content/early/2015/11/08/CIRCULATIONAHA.115.019768.abstract", null, HighwireScraper.class, "AhaJournalsScraperUnitURLTest1.bib");
+	} 
 }

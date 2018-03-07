@@ -40,6 +40,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -50,6 +51,10 @@ import org.bibsonomy.util.WebUtils;
  * @author Mohammed Abed
  */
 public class APHAScraper extends AbstractUrlScraper {
+	/**
+	 * 
+	 */
+	private static final String ACTION_DOWNLOAD_CITATION = "/action/downloadCitation";
 	private static final String SITE_NAME = "American Journal of PUBLIC HEALTH";
 	private static final String SITE_URL = "http://ajph.aphapublications.org/";
 	private static final String info = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
@@ -58,80 +63,41 @@ public class APHAScraper extends AbstractUrlScraper {
 	private static final String AJPH_HOST = "ajph.aphapublications.org";
 	private static final String NRCRESEACHPRESS_HOST = "nrcresearchpress.com";
 	private static final String EMERALDINSIGHT_HOST = "emeraldinsight.com";
-	private static final String HTTP = "http://";
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
+	private static final Pattern DOI_PATTERN = Pattern.compile("/doi/abs");
+
 	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ AJPH_HOST), Pattern.compile("/doi/abs")));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ NRCRESEACHPRESS_HOST), Pattern.compile("/doi/abs")));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ EMERALDINSIGHT_HOST), Pattern.compile("/doi/abs")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ AJPH_HOST), DOI_PATTERN));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ NRCRESEACHPRESS_HOST), DOI_PATTERN));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ EMERALDINSIGHT_HOST), DOI_PATTERN));
 	}
-	
-	private static final List<Pattern> DOWNLOAD_URL = new LinkedList<Pattern>();
-	static {
-		DOWNLOAD_URL.add(Pattern.compile(HTTP + AJPH_HOST + "/action/downloadCitation"));
-		DOWNLOAD_URL.add(Pattern.compile(HTTP + NRCRESEACHPRESS_HOST + "/action/downloadCitation"));
-		DOWNLOAD_URL.add(Pattern.compile(HTTP + EMERALDINSIGHT_HOST + "/action/downloadCitation"));
-	}
+
 	private final RisToBibtexConverter ris = new RisToBibtexConverter();
 
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-		
+
 		try {
-			final String cookie = WebUtils.getCookies(sc.getUrl());
-			String doi = null;
 			final Matcher m = DOI_PATTERN_FROM_URL.matcher(sc.getUrl().toString());
 			if (m.find()) {
-				doi = "doi=" + m.group(1);
-			}
-			
-			if (doi != null && cookie != null) {
-				String resultAsString = null;
-				try {
-					/*
-					 * the expected resultAsString is a RIS File: because this host support only RIS format
-					 */
-					if (sc.getUrl().toString().contains(AJPH_HOST)) {
-						resultAsString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(0).toString()), doi);
-					}
-					/*
-					 * the expected resultAsString is a BibTex File
-					 */
-					else if (sc.getUrl().toString().contains(NRCRESEACHPRESS_HOST)) {
-						resultAsString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(1).toString()), doi + "&format=bibtex");
-						if (resultAsString != null) {
-							sc.setBibtexResult(resultAsString);
-							return true;
-						}
-					}
-					/*
-					 * the expected resultAsString is a BibTex File
-					 */
-					else {
-						resultAsString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(2).toString()), doi + "&format=bibtex");
-						if (resultAsString != null) {
-							sc.setBibtexResult(resultAsString);
-							return true;
-						}
-					}
-				} catch (MalformedURLException ex) {
-					throw new ScrapingFailureException("URL to scrape does not exist. It may be malformed.");
-				}
+				final String doi = m.group(1);
+				final String cookie = WebUtils.getLongCookies(sc.getUrl());
+				if (ValidationUtils.present(cookie)) {
+					final String host = sc.getUrl().getHost();
+					final String postData = "doi=" + doi + "&format=bibtex&include=abs";
+					final String bibtex = WebUtils.getContentAsString("http://" + host + ACTION_DOWNLOAD_CITATION, cookie, postData, null);
 
-				/*
-				 * if the host was from ajph.aphapublications.org, then we must convert the resultAsString to BibTex format
-				 */
-				final String bibResult = this.ris.toBibtex(resultAsString);
-				if (bibResult != null) {
-					sc.setBibtexResult(bibResult);
-					return true;
+					if (ValidationUtils.present(bibtex)) {
+						sc.setBibtexResult(bibtex);
+						return true;
+					}
 				}
 			}
 		} catch (final IOException ex) {
 			throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe APHA or NRC Researchpress is down.");
 		}
-		
+
 		return false;
 	}
 

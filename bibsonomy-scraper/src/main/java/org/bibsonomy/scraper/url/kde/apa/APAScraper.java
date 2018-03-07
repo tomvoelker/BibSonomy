@@ -140,7 +140,7 @@ public class APAScraper extends AbstractUrlScraper {
 		String ris = null;
 		for (int i = 0; i < 2; i++) {
 			try {
-				ris = WebUtils.getContentAsString(client, risURL);
+				ris = WebUtils.getContentAsString(client, risURL, null);
 			} catch (final IOException ex) {
 				throw new ScrapingException(ex);
 			}
