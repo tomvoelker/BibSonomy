@@ -243,7 +243,15 @@
 												<bsform:button type="submit" id="save-send-post-button" size="defaultSize" value="${saveAndSendTo}" name="saveAndSendTo" style="primary" onclick="sendToBibliography('${properties['bibliography.bibliographyUser']}');" tabindex="2"/>
 											</div>
 										</c:if>
-																
+										<c:if test="${not empty groups}">
+											<fmt:message key="save.and.send_to" var="saveAndSendTo">
+												<fmt:param value="${groups}"/>
+											</fmt:message>
+									
+											<div class="btn-group">
+												<bsform:button type="submit" id="save-send-post-button" size="defaultSize" value="${saveAndSendTo}" name="saveAndSendTo" style="primary" onclick="sendGroupToBibliography('${groups}');" tabindex="2"/>
+											</div>
+										</c:if>			
 									</div>
 								</div>
 							</div>

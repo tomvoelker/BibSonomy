@@ -125,7 +125,12 @@
       		</c:if>
      	 </c:forEach>
       </mtl:exists>
-
+		<!-- groups -->
+		<mtl:exists path="command.list">
+	     	 <c:if test="${isCommaNecessary and not empty command.list}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
+		    <!-- groups -->
+		    <json:groups groups="${command.list}" />
+		</mtl:exists>
 	  <!-- friends -->
       <mtl:exists path="command.userFriends">
       	<!-- comma, if friends exist and (tags exist or resources are present) -->

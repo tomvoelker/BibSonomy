@@ -52,7 +52,18 @@ public class GroupsPageController extends SingleResourceListController implement
 		 */
 		command.setList(logic.getGroups(false, null, 0, Integer.MAX_VALUE));
 		
-		return Views.GROUPSPAGE;
+		//return Views.GROUPSPAGE;
+		final String format = command.getFormat();
+		
+		// html format - retrieve tags and return HTML view
+		if ("html".equals(format)) {
+			this.endTiming();
+			return Views.GROUPSPAGE;
+		}
+				
+		this.endTiming();
+		// export - return the appropriate view
+		return Views.getViewByFormat(format);
 	}
 
 	/**

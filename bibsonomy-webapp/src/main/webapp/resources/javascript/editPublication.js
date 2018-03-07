@@ -16,6 +16,9 @@ var tagRecoOptions = {
 	}; 
 
 var getFriends = null;
+
+var getGroups = null;
+
 var fields = ["booktitle","journal","volume","number","pages","publisher","address",
 		"month","day","edition","chapter","key","type","annote","note",
 		"howpublished","institution","organization",
@@ -386,6 +389,15 @@ function applyKeyDownHandler(element) {
 function sendToBibliography(username) {
 	$("#inpf_tags").val(function(index, val) {
 		return val + " send:" + username;
+	});
+	// this is called onclick of every submit button, so we call it here as well
+	clear_tags();
+}
+
+//adds the send:<groupname> tag when clicking the save and send to button
+function sendGroupToBibliography(groupname) {
+	$("#inpf_tags").val(function(index, val) {
+		return val + " for:" + groupname;
 	});
 	// this is called onclick of every submit button, so we call it here as well
 	clear_tags();
