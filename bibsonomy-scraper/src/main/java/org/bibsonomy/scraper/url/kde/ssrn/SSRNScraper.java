@@ -81,8 +81,9 @@ public class SSRNScraper extends AbstractUrlScraper {
 	}
 
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
-		final String id = getId(sc.getUrl().toString());
+	protected boolean scrapeInternal(final ScrapingContext sc)throws ScrapingException {
+		final URL url = sc.getUrl();
+		final String id = getId(url.toString());
 
 		if (ValidationUtils.present(id)) {
 			final String downloadLink = SSRN_BASE_URL + SSRN_BIBTEX_PATH + SSRN_BIBTEX_PARAMS + id;
@@ -90,9 +91,9 @@ public class SSRNScraper extends AbstractUrlScraper {
 
 
 			try {
-				cookies = getCookies(sc.getUrl());
+				cookies = getCookies(url);
 			} catch (IOException ex) {
-				throw new InternalFailureException("Could not store cookies from " + sc.getUrl());
+				throw new InternalFailureException("Could not store cookies from " + url);
 			}
 
 			
@@ -114,7 +115,7 @@ public class SSRNScraper extends AbstractUrlScraper {
 				}
 				
 				if (ValidationUtils.present(bibtex)) {
-					sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(bibtex, "abstract", getAbstract(sc.getUrl())));
+					sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(bibtex, "abstract", getAbstract(url)));
 					sc.setScraper(this);
 					return true;
 				}
@@ -178,13 +179,15 @@ public class SSRNScraper extends AbstractUrlScraper {
 	}
 
 	private static String getCookies(URL queryURL) throws IOException {
-		final StringBuffer cookieString = new StringBuffer(WebUtils.getCookies(queryURL));
+		final StringBuilder cookieString = new StringBuilder(WebUtils.getLongCookies(queryURL));
 
 		cookieString.append(" ; CFCLIENT_SSRN=loginexpire%3D%7Bts%20%272009%2D12%2D12%2012%3A35%3A00%27%7D%23blnlogedin%3D1401777%23;domain=hq.ssrn.com;path=/; ");
 		//login: wbi@cs.uni-kassel.de
 		cookieString.append("SSRN_LOGIN=092026079048019002070010027035037114047052089011063088001026083003082103106066127064089084103; ");
 		cookieString.append("SSRN_PW=002008020074048016097064090009116110016084070087029069024; ");
 
+		System.out.println(cookieString);
+		
 		return cookieString.toString();
 	}
 
