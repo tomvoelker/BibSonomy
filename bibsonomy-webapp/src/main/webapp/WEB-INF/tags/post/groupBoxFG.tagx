@@ -20,7 +20,7 @@
 	<jsp:directive.attribute name="friends" type="java.util.List" required="true"/>
 	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false"/>
 	<jsp:directive.attribute name="chosenPersonsOrGroups" type="java.util.Set" required="false"/>
-	
+	<c:set var="message"><fmt:message key="clickToRemove"/></c:set>
 	<c:if test="${empty labelColSpan}">
 		<c:set var="labelColSpan" value="2" />
 	</c:if>
@@ -91,16 +91,9 @@
 			var friends=[];
 			var groups=[];
 			var tags="";
+			$('[data-toggle="popover"]').popover(); 
 			function choose_radio_button() {
-				$("#friendsOrGroups").empty();
-				tags=$("#inpf_tags").val();
-				for (i = 0; i < friends.length; i++) {
-					tags=tags.replace(" send:"+friends[i],"");
-				}
-				$("#inpf_tags").val(tags);
-				friends=[];
-				groups=[];
-				tags="";
+				
 				if ($(checkedfriends).is(":checked") == true) {
 					$(friendsform).show();
 					$(friendsform).prop("selectedIndex", -1);
@@ -134,11 +127,19 @@
 					}
 				}
 				if (found == false) {
-					$("#friendsOrGroups").append("<li tabindex=1>"+selected+"</li>");
 					friends.push(selected);
+					var number=friends.indexOf(selected);
+					$("#friendsOrGroups").append("<li tabindex=1 value=\""+number+"\" class=\"delete-friend\" id=\"delete-friend-"+number+"\"><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
 					tags=$("#inpf_tags").val()+" ";
 					tags=tags+"send:"+selected;
 					$("#inpf_tags").val(tags);
+					$("li.delete-friend").click(function() {
+						var number=$(this).val();
+						$("#delete-friend-"+number+"").remove();
+						tags=tags.replace(" send:"+friends[number],"");
+						$("#inpf_tags").val(tags);
+						friends.splice(number,1);
+					});
 				}
 			});
 			$(groupsform).change(function() {
@@ -150,11 +151,24 @@
 					}
 				}
 				if (found == false) {
-					$("#friendsOrGroups").append("<li tabindex=1>"+selected+"</li>");
 					groups.push(selected);
+					var number=groups.indexOf(selected);
+					$("#friendsOrGroups").append("<li tabindex=1 value=\""+number+"\" class=\"delete-group\" id=\"delete-group-"+number+"\"><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
+					tags=$("#inpf_tags").val()+" ";
+					tags=tags+"for:"+selected;
+					$("#inpf_tags").val(tags);
+					$("li.delete-group").click(function() {
+						var number=$(this).val();
+						$("#delete-group-"+number+"").remove();
+						tags=tags.replace(" for:"+groups[number],"");
+						$("#inpf_tags").val(tags);
+						groups.splice(number,1);
+					});
 				}
 				
 			});
+			
+			
 			
 		});
 		  
