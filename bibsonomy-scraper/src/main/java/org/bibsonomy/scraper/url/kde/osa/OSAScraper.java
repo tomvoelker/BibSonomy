@@ -49,6 +49,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.UrlUtils;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -80,96 +81,68 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
-		String id = null;
-
-		final Matcher inputMatcher = inputPattern.matcher(sc.getPageContent());
-
-		while(inputMatcher.find()) {
-			String input = inputMatcher.group();
-			if(input.contains("name=\"articles\"")) {
-				Matcher valueMatcher = valuePattern.matcher(input);
-
-				if(valueMatcher.find()) {
-					String value = valueMatcher.group();
-					id = value.substring(7,value.length()-1);
-					break;
-				}
-			}
-		}
+		final String id = getId(sc.getPageContent());
 		
-		String bibResult = null;
+		final String bibResult;
 		try {
-			URL citUrl = new URL(HTTP + OSA_HOST + OSA_BIBTEX_DOWNLOAD_PATH);
-			String cookie = null;
+			final String cookie;
 			try {
-				cookie = WebUtils.getCookies(sc.getUrl());
+				cookie = WebUtils.getLongCookies(sc.getUrl());
 			} catch (final IOException ex) {
 				throw new InternalFailureException("An unexpected IO error has occurred. No Cookie has been generated.");
 			}
-			bibResult = getContent(citUrl, cookie, id, "export_bibtex");
+			bibResult = WebUtils.getContentAsString(HTTP + OSA_HOST + OSA_BIBTEX_DOWNLOAD_PATH, cookie, getPostContent(id, "export_bibtex"), null);
 		} catch (MalformedURLException ex) {
 			throw new InternalFailureException(ex);
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
 
-		if(bibResult != null) {
+		if (ValidationUtils.present(bibResult)) {
 			sc.setBibtexResult(bibResult);
 			return true;
 		}
 		throw new ScrapingFailureException("getting bibtex failed");
 	}
 
-	/** FIXME: refactor
-	 * @param queryURL
-	 * @param cookie
+	/**
+	 * Extract id from page content.
+	 * 
+	 * @param pageContent
+	 * @return
+	 */
+	private static String getId(final String pageContent) {
+		final Matcher inputMatcher = inputPattern.matcher(pageContent);
+
+		while (inputMatcher.find()) {
+			final String input = inputMatcher.group();
+			if (input.contains("name=\"articles\"")) {
+				final Matcher valueMatcher = valuePattern.matcher(input);
+
+				if(valueMatcher.find()) {
+					final String value = valueMatcher.group();
+					return value.substring(7,value.length()-1);
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * @param id
 	 * @param actions
 	 * @return
-	 * @throws IOException
 	 */
-	private static String getContent(URL queryURL, String cookie, String id, String actions) throws IOException {
-		/*
-		 * get BibTex-File from ACS
-		 */
-		final HttpURLConnection urlConn = WebUtils.createConnnection(queryURL);
-		urlConn.setAllowUserInteraction(false);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(true);
-		urlConn.setUseCaches(false);
-		urlConn.setRequestMethod("POST");
-		urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-
-		//insert cookie
-		urlConn.setRequestProperty("Set-Cookie", cookie);
-
-		StringBuffer sbContent = new StringBuffer();
+	private static String getPostContent(String id, String actions) {
+		final StringBuilder sbContent = new StringBuilder();
 
 		sbContent.append("articles=");
 		sbContent.append(UrlUtils.safeURIEncode(id) + "&");
 		sbContent.append("ArticleAction=");
 		sbContent.append(UrlUtils.safeURIEncode(actions));
-		
-		urlConn.setRequestProperty("Content-Length", String.valueOf(sbContent.length()));
-				
-		DataOutputStream stream = new DataOutputStream(urlConn.getOutputStream());
-
-		stream.writeBytes(sbContent.toString());
-		stream.flush();
-		stream.close();
-
-		urlConn.connect();
-
-		StringWriter out = new StringWriter();
-		InputStream in = new BufferedInputStream(urlConn.getInputStream());
-		int b;
-		while ((b = in.read()) >= 0) {
-			out.write(b);
-		}
-		urlConn.disconnect();
-
-		return out.toString();
+		return sbContent.toString();
 	}
+
 
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
