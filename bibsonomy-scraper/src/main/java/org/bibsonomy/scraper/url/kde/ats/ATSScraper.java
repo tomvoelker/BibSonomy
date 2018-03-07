@@ -62,13 +62,7 @@ public class ATSScraper extends GenericRISURLScraper implements CitedbyScraper{
 	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div class=\"abstractSection abstractInFull\"><p.*?>(.*?)</p></div>");	
 	private static final Pattern CITEDBY = Pattern.compile("<div class=\"citedByEntry\">(.*)</div></div>");
 	
-	private static String extractId(final String url) {
-		final Matcher matcher = ID_PATTERN.matcher(url);
-		if (matcher.find()) {
-			return matcher.group(ID_GROUP);
-		}
-		return null;
-	}
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
@@ -91,11 +85,10 @@ public class ATSScraper extends GenericRISURLScraper implements CitedbyScraper{
 
 	private static String abstractParser(URL url){
 		try {			
-			final String cookie = WebUtils.getCookies(url);
+			final String cookie = WebUtils.getLongCookies(url);
 			final Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url.toString(),cookie));
 			if (m.find()) {
-				Document temp = XmlUtils.getDOM(m.group(1));			
-				return XmlUtils.getText(temp);
+				return XmlUtils.getText(XmlUtils.getDOM(m.group(1)));
 			}
 		} catch (Exception e) {
 			log.error("error while getting abstract " + url, e);
@@ -116,8 +109,14 @@ public class ATSScraper extends GenericRISURLScraper implements CitedbyScraper{
 	 */
 	@Override
 	protected String getDownloadURL(URL url, String cookies) {
-		final String id = extractId(url.toString());
-		return BIBTEX_URL + id;
+		return BIBTEX_URL + extractId(url.toString());
+	}
+	private static String extractId(final String url) {
+		final Matcher matcher = ID_PATTERN.matcher(url);
+		if (matcher.find()) {
+			return matcher.group(ID_GROUP);
+		}
+		return null;
 	}
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.CitedbyScraper#scrapeCitedby(org.bibsonomy.scraper.ScrapingContext)
