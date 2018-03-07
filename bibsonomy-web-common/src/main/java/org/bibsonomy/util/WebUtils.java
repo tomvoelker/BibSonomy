@@ -68,10 +68,10 @@ public class WebUtils {
 
 	/** maximal number of redirects to follow in {@link #getRedirectUrl(URL)} */
 	private static final int MAX_REDIRECT_COUNT = 10;
-	
+
 	/** the connection timeout */
 	private static final int CONNECTION_TIMEOUT = 5 * 1000;
-	
+
 	/** the read timeout */
 	private static final int READ_TIMEOUT = 5 * 1000;
 
@@ -108,7 +108,7 @@ public class WebUtils {
 	}
 	private static final HttpClient CLIENT = getHttpClient();
 
-	
+
 	/**
 	 * This method returns an instance of the HttpClient and should only be used
 	 * if the other methods that deliver direct results can not be used. Each 
@@ -131,7 +131,7 @@ public class WebUtils {
 		params.setIntParameter(HttpClientParams.MAX_REDIRECTS, MAX_REDIRECT_COUNT);
 		return client;
 	}
-	
+
 	/**
 	 * Do a POST request to the given URL with the given content. Assume the charset of the result to be charset.
 	 * 
@@ -157,7 +157,7 @@ public class WebUtils {
 			urlConn.setRequestProperty(COOKIE_HEADER_NAME, cookie);
 		}
 
-		
+
 		writeStringToStream(postContent, urlConn.getOutputStream());
 
 		// connect
@@ -177,7 +177,7 @@ public class WebUtils {
 		 * FIXME: check content type header to ensure that we only read textual 
 		 * content (and not a PDF, radio stream or DVD image ...)
 		 */
-		
+
 		// write into string writer
 		final StringBuilder out = inputStreamToStringBuilder(urlConn.getInputStream(), activeCharset);
 
@@ -187,7 +187,7 @@ public class WebUtils {
 		return out.toString();
 	}
 
-	
+
 	/**
 	 * Do a POST request to the given URL with the given content. Assume the charset of the result to be charset.
 	 * 
@@ -203,7 +203,7 @@ public class WebUtils {
 	public static String getPostContentAsString(final URL url, final String postContent, final String charset) throws IOException {
 		return getPostContentAsString(url, postContent, charset, null);
 	}
-	
+
 	/**
 	 * Do a POST request to the given URL with the given content and cookie. Assume the charset of the result to be charset.
 	 * 
@@ -273,16 +273,16 @@ public class WebUtils {
 	public static String getContentAsString(final URL inputURL, final String cookie) throws IOException {
 		return getContentAsString(inputURL.toString(), cookie, null, null);
 	}
-	
+
 	@Deprecated
 	public static String getContentAsStringOld(final URL inputURL, final String cookie) throws IOException {
-		
+
 		try {
 			final HttpURLConnection urlConn = createConnnection(inputURL);
 			urlConn.setAllowUserInteraction(false);
 			urlConn.setDoInput(true);
 			urlConn.setDoOutput(false);
-			
+
 			if (cookie != null) {
 				urlConn.setRequestProperty(COOKIE_HEADER_NAME, cookie);
 			}
@@ -297,7 +297,7 @@ public class WebUtils {
 			 * FIXME: check content type header to ensure that we only read textual 
 			 * content (and not a PDF, radio stream or DVD image ...)
 			 */
-			
+
 			/*
 			 * write content into string buffer
 			 */
@@ -314,7 +314,7 @@ public class WebUtils {
 			throw ioe;
 		}
 	}
-	
+
 	/**
 	 * Reads from a URL and writes the content into a string.
 	 * 
@@ -345,26 +345,32 @@ public class WebUtils {
 			/*
 			 * visit URL to get cookies if needed
 			 */
-			CLIENT.executeMethod(new GetMethod(visitBefore));
+			final GetMethod get = new GetMethod(visitBefore);
+			try {
+				CLIENT.executeMethod(get);
+			} finally {
+				// required, see http://hc.apache.org/httpclient-3.x/threading.html
+				get.releaseConnection();
+			}
 		}
-		
+
 		final HttpMethod method;
 		if (present(postData)) {
 			/*
 			 * do a POST request
 			 */
 			final List<NameValuePair> data = new ArrayList<NameValuePair>();
-			
+
 			for (final String s : postData.split(AMP_SIGN)) {
 				final String[] p = s.split(EQUAL_SIGN);
-				
+
 				if (p.length != 2) {
 					continue;
 				}
-				
+
 				data.add(new NameValuePair(p[0], p[1]));
 			}
-			
+
 			method = new PostMethod(url);
 			((PostMethod)method).setRequestBody(data.toArray(new NameValuePair[data.size()]));
 		} else {
@@ -374,44 +380,47 @@ public class WebUtils {
 			method = new GetMethod(url);
 			method.setFollowRedirects(true);
 		}
-		
+
 		/*
 		 * set cookie
 		 */
 		if (present(cookie)) {
 			method.addRequestHeader(COOKIE_HEADER_NAME, cookie);
 		}
-		
-		/*
-		 * do request
-		 */
-		final int status = CLIENT.executeMethod(method);
-		if (status != HttpStatus.SC_OK) {
-			throw new IOException(url + " returns: " + status);
+		try {
+			/*
+			 * do request
+			 */
+			final int status = CLIENT.executeMethod(method);
+			if (status != HttpStatus.SC_OK) {
+				throw new IOException(url + " returns: " + status);
+			}
+
+			/*
+			 * FIXME: check content type header to ensure that we only read textual 
+			 * content (and not a PDF, radio stream or DVD image ...)
+			 */
+
+
+			/*
+			 * collect response
+			 */
+			final String charset = extractCharset(method.getResponseHeader(CONTENT_TYPE_HEADER_NAME).getValue()); 
+			final StringBuilder content = inputStreamToStringBuilder(method.getResponseBodyAsStream(), charset);
+
+			final String string = content.toString();
+			if (string.length() > 0) {
+				return string;
+			}
+		} finally {
+			// required, see http://hc.apache.org/httpclient-3.x/threading.html
+			method.releaseConnection();
 		}
 
-		/*
-		 * FIXME: check content type header to ensure that we only read textual 
-		 * content (and not a PDF, radio stream or DVD image ...)
-		 */
-
-		
-		/*
-		 * collect response
-		 */
-		final String charset = extractCharset(method.getResponseHeader(CONTENT_TYPE_HEADER_NAME).getValue()); 
-		final StringBuilder content = inputStreamToStringBuilder(method.getResponseBodyAsStream(), charset);
-		method.releaseConnection();
-		
-		final String string = content.toString();
-		if (string.length() > 0) {
-			return string;
-		}
-		
 		return null;
 
 	}
-	
+
 	/**
 	 * Reads from a URL and writes the content into a string.
 	 * 
@@ -422,7 +431,7 @@ public class WebUtils {
 	public static String getContentAsString(final String url) throws IOException {
 		return getContentAsString(url, null, null, null);
 	}
-	
+
 	/**
 	 * Reads from a URL and writes the content into a string.
 	 * 
@@ -444,7 +453,7 @@ public class WebUtils {
 	 * @throws IOException 
 	 * @throws HttpException 
 	 */
-	public static String getContentAsString(HttpClient client, HttpMethod method) throws HttpException, IOException {
+	public static String getContentAsString(final HttpClient client, final HttpMethod method) throws HttpException, IOException {
 		try {
 			switch (client.executeMethod(method)) {
 			case HttpStatus.SC_OK:
@@ -454,6 +463,7 @@ public class WebUtils {
 				return null;
 			}
 		} finally {
+			// required, see http://hc.apache.org/httpclient-3.x/threading.html
 			method.releaseConnection();
 		}
 	}
@@ -496,7 +506,7 @@ public class WebUtils {
 	public static String getContentAsString(HttpClient client, String uri) throws HttpException, IOException {
 		return getContentAsString(client, new GetMethod(uri));
 	}
-	
+
 	/**
 	 * Shortcut for {@link #getRedirectUrl(URL, List)}.
 	 * 
@@ -524,17 +534,18 @@ public class WebUtils {
 			}
 		}
 		final HttpClient client = getHttpClient();
-		
+
 		try {
 			client.executeMethod(method);
 		} catch (IOException e) {
 			// ignore
 		} finally {
+			// required, see http://hc.apache.org/httpclient-3.x/threading.html
 			method.releaseConnection();
 		}
-		
+
 		if (method.getStatusCode() != HttpStatus.SC_OK) return null;
-		
+
 		try {
 			return new URL(method.getURI().getURI());
 		} catch (URIException | MalformedURLException e) {
@@ -542,7 +553,7 @@ public class WebUtils {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns the cookies returned by the server on accessing the URL. 
 	 * The format of the returned cookies is as
@@ -551,6 +562,7 @@ public class WebUtils {
 	 * @return The cookies as string, build by {@link #buildCookieString(List)}.
 	 * @throws IOException
 	 */
+	@Deprecated
 	public static String getCookies(final URL url) throws IOException {
 		final HttpURLConnection urlConn = createConnnection(url);
 		urlConn.setAllowUserInteraction(false);
@@ -561,10 +573,10 @@ public class WebUtils {
 
 		final List<String> cookies = urlConn.getHeaderFields().get("Set-Cookie");
 		urlConn.disconnect();
-		
+
 		return buildCookieString(cookies);
 	}
-	
+
 	/**
 	 * 
 	 * @param url
@@ -572,12 +584,18 @@ public class WebUtils {
 	 * @throws IOException
 	 */
 	public static String getLongCookies(final URL url) throws IOException {
+		final GetMethod get = new GetMethod(url.toString());
 		final List<String> cookies = new ArrayList<String>();
-		final GetMethod getMethod = new GetMethod(url.toString());
-		CLIENT.executeMethod(getMethod);
-		final Header[] responseHeaders = getMethod.getResponseHeaders("Set-Cookie");
-		for (int i = 0; i < responseHeaders.length; i++) {
-			cookies.add(responseHeaders[i].getValue().toString());
+		try {
+			CLIENT.executeMethod(get);
+
+			final Header[] responseHeaders = get.getResponseHeaders("Set-Cookie");
+			for (int i = 0; i < responseHeaders.length; i++) {
+				cookies.add(responseHeaders[i].getValue().toString());
+			}
+		} finally {
+			// required, see http://hc.apache.org/httpclient-3.x/threading.html
+			get.releaseConnection();
 		}
 		return buildCookieString(cookies);
 	}
@@ -586,14 +604,15 @@ public class WebUtils {
 	 * @return the proper configured http connection for the url
 	 * @throws IOException
 	 */
+	@Deprecated
 	public static HttpURLConnection createConnnection(URL url) throws IOException {
 		final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
-		
+
 		// set the timeouts
 		urlConn.setReadTimeout(READ_TIMEOUT);
 		urlConn.setConnectTimeout(CONNECTION_TIMEOUT);
 		urlConn.setUseCaches(false);
-		
+
 		/*
 		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
 		 * pages require it to download content.
@@ -670,7 +689,7 @@ public class WebUtils {
 				/*
 				 * reomove the "" from the charSet if it is contained
 				 */
-				
+
 				if (charSet.startsWith("\"")) {
 					charSet = charSet.replaceAll("\"", "");
 				}
@@ -711,7 +730,7 @@ public class WebUtils {
 			sb.append(line).append(NEWLINE);
 		}
 		buf.close();
-		
+
 		return sb;
 	}
 
