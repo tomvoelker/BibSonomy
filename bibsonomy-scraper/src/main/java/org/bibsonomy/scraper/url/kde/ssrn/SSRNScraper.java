@@ -51,7 +51,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
 /**
- * Scraping Logger for access on http://www.ssrn.com/
+ * Scraper for http://www.ssrn.com/
  * @author tst
  */
 public class SSRNScraper extends AbstractUrlScraper {
@@ -95,12 +95,14 @@ public class SSRNScraper extends AbstractUrlScraper {
 				throw new InternalFailureException("Could not store cookies from " + sc.getUrl());
 			}
 
-			String bibtex  = null;
+			
 			try {
 				final String content = WebUtils.getContentAsString(new URL(downloadLink), cookies);
 				final Document doc = XmlUtils.getDOM(content);
 				final NodeList list = doc.getElementsByTagName("input");
 
+				String bibtex  = null;
+				
 				for (int i = 0; i < list.getLength(); i++) {
 					final NamedNodeMap attributes = list.item(i).getAttributes();
 
@@ -110,18 +112,19 @@ public class SSRNScraper extends AbstractUrlScraper {
 						bibtex = bibtex.replaceFirst(" ", bibtexKey + ",\n ");
 					}
 				}
-
+				
+				if (ValidationUtils.present(bibtex)) {
+					sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(bibtex, "abstract", getAbstract(sc.getUrl())));
+					sc.setScraper(this);
+					return true;
+				}
 			} catch (MalformedURLException ex) {
 				throw new InternalFailureException("The url "+ downloadLink + " is not valid");
 			} catch (IOException ex) {
 				throw new ScrapingFailureException("BibTex download failed. Result is null!");
 			}
 
-			if (ValidationUtils.present(bibtex)) {
-				sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(bibtex, "abstract", getAbstract(sc.getUrl())));
-				sc.setScraper(this);
-				return true;
-			}
+
 		} else {
 			throw new ScrapingFailureException("ID for donwload link is missing.");
 		}
@@ -154,8 +157,8 @@ public class SSRNScraper extends AbstractUrlScraper {
 				}
 				return abs.trim();
 			}
-		} catch(Exception e) {
-			log.error("error while getting abstract for " + url, e);
+		} catch(final Exception e) {
+			log.warn("error while getting abstract for " + url, e);
 		}
 		return null;
 	}
