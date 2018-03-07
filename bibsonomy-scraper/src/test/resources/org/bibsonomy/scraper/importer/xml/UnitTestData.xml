@@ -750,12 +750,6 @@
 		<BibFile>CoinsScraperUnitURLTest5.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_313">
-		<TestDescription>URL scraping test for the cinii cat inist</TestDescription>
-		<URL>http://cat.inist.fr/?aModele=afficheN&amp;cpsidt=3620772</URL>
-		<BibFile>CatInistScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.catinist.CatinistScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_331">
 		<TestDescription>Url test for GoogleScholarScraper (Firefox plugin support)</TestDescription>
 		<URL>https://scholar.google.com/citations?view_op=view_citation&amp;hl=en&amp;user=1t5awvEAAAAJ&amp;citation_for_view=1t5awvEAAAAJ:UeHWp8X0CEIC</URL>
@@ -863,12 +857,6 @@
 		<URL>http://www.journals.uchicago.edu/doi/full/10.1086/685557</URL>
 		<BibFile>UChicagoScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.uchicago.UChicagoScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_354">
-		<TestDescription>URL scraping test for the cinii cat inist</TestDescription>
-		<URL>http://cat.inist.fr/?aModele=exportN&amp;cpsidt=3620772</URL>
-		<BibFile>CatInistScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.catinist.CatinistScraper</Scraper>
 	</URLTest>
 	<!-- TODO: where is the scraper?
 	<URLTest id="url_355">
