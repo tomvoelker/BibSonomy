@@ -58,10 +58,8 @@ public class IEEEXploreBookScraperTest {
 	@Test
 	public void urlTestRun1(){
 		final String url = "http://ieeexplore.ieee.org/xpl/bkabstractplus.jsp?bkn=5263132";
-		final String selection = null;
-		final Class<? extends Scraper> scraperClass = org.bibsonomy.scraper.url.kde.ieee.IEEEXploreBookScraper.class;
 		final String resultFile = "IEEEXploreBookScraperUnitURLTest.bib";
-		RemoteTestAssert.assertScraperResult(url, selection, scraperClass, resultFile);
+		RemoteTestAssert.assertScraperResult(url, null, IEEEXploreBookScraper.class, resultFile);
 	}
 	
 	/**
@@ -70,10 +68,8 @@ public class IEEEXploreBookScraperTest {
 	@Test
 	public void urlTestRun2(){		
 		final String url = "http://ieeexplore.ieee.org/search/freesrchabstract.jsp?arnumber=5286085&isnumber=5284878&punumber=5284806&k2dockey=5286085@ieecnfs&query=%28limpens+freddy%3Cin%3Eau%29&pos=0&access=no";
-		final String selection = null;
-		final Class<? extends Scraper> scraperClass = org.bibsonomy.scraper.url.kde.ieee.IEEEXploreBookScraper.class;
 		final String resultFile = "IEEEXploreBookScraperUnitURLTest1.bib";
-		RemoteTestAssert.assertScraperResult(url, selection, scraperClass, resultFile);
+		RemoteTestAssert.assertScraperResult(url, null, IEEEXploreBookScraper.class, resultFile);
 	}
 	
 	/**
@@ -82,10 +78,8 @@ public class IEEEXploreBookScraperTest {
 	@Test
 	public void urlTestRun3(){
 		final String url = "http://ieeexplore.ieee.org/search/srchabstract.jsp?arnumber=4383076&isnumber=4407525&punumber=10376&k2dockey=4383076@ieeejrns&query=%28%28hotho%29%3Cin%3Eau+%29&pos=0&access=n0";
-		final String selection = null;
-		final Class<? extends Scraper> scraperClass = org.bibsonomy.scraper.url.kde.ieee.IEEEXploreBookScraper.class;
 		final String resultFile = "IEEEXploreBookScraperUnitURLTest2.bib";
-		RemoteTestAssert.assertScraperResult(url, selection, scraperClass, resultFile);
+		RemoteTestAssert.assertScraperResult(url, null, IEEEXploreBookScraper.class, resultFile);
 	}
 	
 	//TODO currently not working, throws NullPointerException

@@ -48,6 +48,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Attr;
@@ -94,7 +95,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 
-	
+
 	static {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile(IEEE_BOOK_PATH + ".*")));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile(IEEE_SEARCH_PATH + ".*")));
@@ -103,66 +104,71 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 	@Override
 	public boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
+		final String url = sc.getUrl().toExternalForm();
 
+		/*
+		 * For some reason we need to get the page first, otherwise we get a strange result.
+		 * As we might need the page content later on to extract the ISBN, we store it here.
+		 */
+		// using own client because I do not want to configure any client to allow circular redirects
+		final HttpClient client = WebUtils.getHttpClient();
+		client.getParams().setBooleanParameter(HttpClientParams.ALLOW_CIRCULAR_REDIRECTS, true);
+		// better get the page first
+		final String pageContent;
+		try {
+			pageContent = WebUtils.getContentAsString(client, url);
+		} catch (IOException ex) {
+			throw new InternalFailureException(ex);
+		}
+		
 		String bibtex = null;
-		String recordIds = ExtractID(sc);
+		final String recordId = extractID(url);
 
-		if (recordIds != null) {
-
-			//create a post method
-			PostMethod method = new PostMethod(EXPORT_ARNUM_URL);
-			method.addParameter("citations-format", "citation-abstract");
-			method.addParameter("fromPage", "");
-			method.addParameter("download-format", "download-bibtex");
-			method.addParameter("recordIds", recordIds);
-
-			//using own client because I do not want to configure any client to allow circular redirects
-			HttpClient client = WebUtils.getHttpClient();
-			client.getParams().setBooleanParameter(HttpClientParams.ALLOW_CIRCULAR_REDIRECTS, true);
-
+		if (ValidationUtils.present(recordId)) {
 			try {
-				//better get the page first
-				WebUtils.getContentAsString(client, sc.getUrl().toExternalForm());
+				// create a post method
+				final PostMethod method = new PostMethod(EXPORT_ARNUM_URL);
+				method.addParameter("citations-format", "citation-abstract");
+				method.addParameter("fromPage", "");
+				method.addParameter("download-format", "download-bibtex");
+				method.addParameter("recordIds", recordId);
 
 				bibtex = WebUtils.getPostContentAsString(client, method);
 			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
 			}
+			if (present(bibtex)) {
+				// clean up
+				bibtex = bibtex.replace("<br>", "");
+
+				// append url
+				bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", url);
+
+				// add downloaded bibtex to result 
+				sc.setBibtexResult(bibtex);
+				return true;
+			} 
 		}
-		if (present(bibtex)) {
-			// clean up
-			bibtex = bibtex.replace("<br>", "");
 
-			// append url
-			bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
-
-			// add downloaded bibtex to result 
-			sc.setBibtexResult(bibtex);
-			return true;
-
-		} else {
-
-			//let's try to scrape it by isbn
-			try {
-				Matcher isbnMatcher = PAGE_PATTERN_ISBN.matcher(sc.getPageContent());
-				if (isbnMatcher.find()) {
-					String isbn = isbnMatcher.group(1);
-					bibtex = WorldCatScraper.getBibtexByISBNAndReplaceURL(isbn, sc.getUrl().toExternalForm());
-					if (present(bibtex)) {
-						sc.setBibtexResult(bibtex);
-						return true;
-					}
+		// let's try to scrape it by isbn
+		try {
+			final Matcher isbnMatcher = PAGE_PATTERN_ISBN.matcher(pageContent);
+			if (isbnMatcher.find()) {
+				final String isbn = isbnMatcher.group(1);
+				bibtex = WorldCatScraper.getBibtexByISBNAndReplaceURL(isbn, url);
+				if (present(bibtex)) {
+					sc.setBibtexResult(bibtex);
+					return true;
 				}
-			} catch (IOException ex) {
-				throw new ScrapingException(ex);
 			}
-
-
-			log.debug("IEEEXploreBookScraper use JTidy to get Bibtex from " + sc.getUrl().toString());
-			sc.setBibtexResult(ieeeBookScrape(sc));
-			return true;
-
+		} catch (IOException ex) {
+			throw new ScrapingException(ex);
 		}
+
+
+		log.debug("IEEEXploreBookScraper use JTidy to get Bibtex from " + url);
+		sc.setBibtexResult(ieeeBookScrape(sc));
+		return true;
 	}
 
 	/**
@@ -172,23 +178,24 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 	 * @return bibtex
 	 * @throws ScrapingException
 	 */
-	private String ExtractID(ScrapingContext sc){
-		String recordIds = null;
-		Matcher matcher = URL_PATTERN_BKN.matcher(sc.getUrl().toString());
+	private static String extractID(final String url){
+		final Matcher m1 = URL_PATTERN_BKN.matcher(url);
+		if (m1.find()){
+			return m1.group(1);
+		} 
 
-		if (matcher.find()){
-			recordIds = matcher.group(1);
-		} else {
-
-			matcher = URL_PATTERN_ARNUMBER.matcher(sc.getUrl().toString());
-
-			if (matcher.find()){
-				recordIds = matcher.group(1);
-			}
-
+		final Matcher m2 = URL_PATTERN_ARNUMBER.matcher(url);
+		if (m2.find()){
+			return m2.group(1);
 		}
-		return recordIds;
+
+		return null;
 	}
+	/**
+	 * @param sc
+	 * @return
+	 * @throws ScrapingException
+	 */
 	public String ieeeBookScrape (ScrapingContext sc) throws ScrapingException {
 		try{
 			//-- init all NodeLists and Node
@@ -367,7 +374,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 			/*
 			 * get authors
 			 */
-			if (authors == null || authors.equals("")) {
+			if (!ValidationUtils.present(authors)) {
 				ident1 = "<font color=990000><b>";
 				ident2 = "<br>";
 				int _startIndex = sc.getPageContent().indexOf(ident1) + ident1.length();
@@ -434,7 +441,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 	@Override
 	public boolean scrapeCitedby(ScrapingContext scrapingContext) throws ScrapingException {
 		String citedBy = "";
-		String ids = ExtractID(scrapingContext);
+		String ids = extractID(scrapingContext.getUrl().toExternalForm());
 		try {
 			String url = "http://ieeexplore.ieee.org/rest/document/" + ids + "/citations";
 			citedBy = WebUtils.getContentAsString(url);
@@ -443,7 +450,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 				scrapingContext.setCitedBy(citedBy);
 				return true;
 			}
-			
+
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
@@ -455,12 +462,11 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 	 */
 	@Override
 	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
-		final String ids = ExtractID(scrapingContext);
+		final String ids = extractID(scrapingContext.getUrl().toExternalForm());
 		try {
-			Matcher m = REFERENCE_PATTERN.matcher(WebUtils.getContentAsString(REFERENCE_ARNUM_URL + ids, WebUtils.getCookies(scrapingContext.getUrl())));
+			final Matcher m = REFERENCE_PATTERN.matcher(WebUtils.getContentAsString(REFERENCE_ARNUM_URL + ids, WebUtils.getCookies(scrapingContext.getUrl())));
 			if (m.find()) {
-				final String reference = m.group(1);
-				scrapingContext.setReferences(reference);
+				scrapingContext.setReferences(m.group(1));
 				return true;
 			}
 		} catch (IOException ex) {
