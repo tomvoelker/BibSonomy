@@ -102,8 +102,7 @@ public class ACSScraper extends AbstractUrlScraper {
 			}
 			
 			if (doi != null){
-				final String cookie = WebUtils.getCookies(citationURL);
-				bibResult = WebUtils.getPostContentAsString(cookie, new URL(ACS_HOST_NAME + ACS_BIBTEX_PATH + ACS_BIBTEX_PARAMS + doi), doi);
+				bibResult = WebUtils.getContentAsString(ACS_HOST_NAME + ACS_BIBTEX_PATH + ACS_BIBTEX_PARAMS + doi);
 			}
 			
 		} catch (IOException ex) {
