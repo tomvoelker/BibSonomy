@@ -28,7 +28,6 @@ package org.bibsonomy.scraper.url.kde.iop;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -39,7 +38,7 @@ import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
 
@@ -73,45 +72,43 @@ public class IOPScraper extends AbstractUrlScraper {
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 		final Matcher publicationIdMatcher = PUBLICATION_ID_PATTERN.matcher(sc.getUrl().toString());
-		String pubId = "";
 		if (publicationIdMatcher.find()) {
-			pubId = publicationIdMatcher.group(1);
-		}
-		// TODO: handle publ id not found
-	
-		final String postArgs = "articleId=" + pubId +
-						  "&exportFormat=iopexport_bib" + 
-						  "&exportType=abs" +
-						  "&navsubmit=Export+abstract";
-		try {
-			final String bibtex = WebUtils.getPostContentAsString(new URL("http://" + NEW_IOP_HOST + "/export"), postArgs, StringUtils.CHARSET_UTF_8);
-			if (bibtex != null) {
-				sc.setBibtexResult(bibtex.trim());
-				return true;
+			final String pubId = publicationIdMatcher.group(1);
+
+			final String postArgs = "articleId=" + pubId +
+					"&exportFormat=iopexport_bib" + 
+					"&exportType=abs" +
+					"&navsubmit=Export+abstract";
+			try {
+				final String bibtex = WebUtils.getContentAsString("http://" + NEW_IOP_HOST + "/export", null, postArgs, null);
+				if (ValidationUtils.present(bibtex)) {
+					sc.setBibtexResult(bibtex.trim());
+					return true;
+				}
+			} catch (MalformedURLException ex) {
+				throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
+			} catch (IOException ex) {
+				throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe IOP is down.");
 			}
-		} catch (MalformedURLException ex) {
-			throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
-		} catch (IOException ex) {
-			throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe IOP is down.");
 		}
 		return false;
 	}
-	
+
 	@Override
 	public String getInfo(){
 		return INFO;
 	}
-	
+
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
-	
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
-	
+
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;

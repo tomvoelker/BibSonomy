@@ -720,18 +720,6 @@
 		<!-- 404 -->
 		<Enabled>false</Enabled>
 	</URLTest>
-	<URLTest id="url_285">
-		<TestDescription>scraping test for journal page from nowpublishers.com</TestDescription>
-		<URL>http://www.nowpublishers.com/article/Details/INR-043</URL>
-		<BibFile>NowPublishersScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_286">
-		<TestDescription>scraping test for journal page from nowpublishers.com</TestDescription>
-		<URL>http://www.nowpublishers.com/article/Details/INR-012</URL>
-		<BibFile>NowPublishersScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_290">
 		<TestDescription>scraping test for Copac Scraper</TestDescription>
 		<URL>http://copac.jisc.ac.uk/search?title=Measures%20and%20aggregation%3A%20formal%20aspects%20and%20applications%20to%20clustering%20and%20decision.&amp;rn=1</URL>
