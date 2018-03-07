@@ -204,24 +204,6 @@ public class WebUtils {
 	public static String getPostContentAsString(final URL url, final String postContent, final String charset) throws IOException {
 		return getPostContentAsString(url, postContent, charset, null);
 	}
-
-	/**
-	 * Do a POST request to the given URL with the given content and cookie. Assume the charset of the result to be charset.
-	 * 
-	 * @param url
-	 * @param postContent
-	 * @param cookie
-	 * @return The content of the result page.
-	 * 
-	 * @throws IOException
-	 * 
-	 * @Deprecated
-	 */
-	@Deprecated
-	public static String getPostContentAsString(final String cookie, final URL url, final String postContent) throws IOException {
-		return getPostContentAsString(url, postContent, null, cookie);
-	}
-
 	/**
 	 * Do a POST request to the given URL with the given content.
 	 * 

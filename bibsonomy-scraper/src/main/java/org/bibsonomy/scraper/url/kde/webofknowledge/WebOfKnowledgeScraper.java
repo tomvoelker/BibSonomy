@@ -149,14 +149,14 @@ public class WebOfKnowledgeScraper extends AbstractUrlScraper {
 			}
 			
 			// call post request to reach the download page
-			final String content = WebUtils.getPostContentAsString(cookie,  new URL(BASE_URL_1), createPostParamString(recordID, sid, qid, selectedIds));
+			final String content = WebUtils.getContentAsString(BASE_URL_1, cookie, createPostParamString(recordID, sid, qid, selectedIds), null);
 			
 			//get the qid for the bibtex download from the download page (it's not the same qid as on the publications page extracted above!)
 			final Matcher downloadQidMatcher = downloadQidPattern.matcher(content);
 			String bibtex = null;
 			if(downloadQidMatcher.find()) {
 				//get the bibtex by a new post request using the extracted downloadQID
-				bibtex = WebUtils.getPostContentAsString(cookie,  new URL(BASE_URL_2), getDownloadPostString(downloadQidMatcher.group(1), sid));
+				bibtex = WebUtils.getContentAsString(BASE_URL_2, cookie, getDownloadPostString(downloadQidMatcher.group(1), sid), null);
 			} else {
 				throw new ScrapingFailureException("Bibtex not found");
 			}

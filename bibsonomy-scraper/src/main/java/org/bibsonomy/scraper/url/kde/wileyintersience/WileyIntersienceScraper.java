@@ -86,7 +86,7 @@ public class WileyIntersienceScraper extends AbstractUrlScraper {
 
 			try {
 				final String cookies = WebUtils.getCookies(sc.getUrl());
-				final String bibtex = WebUtils.getPostContentAsString(cookies, new URL(url), postContent);
+				final String bibtex = WebUtils.getContentAsString(url, cookies, postContent, null);
 				sc.setBibtexResult(bibtex);
 				return true;
 			}catch (MalformedURLException e) {
