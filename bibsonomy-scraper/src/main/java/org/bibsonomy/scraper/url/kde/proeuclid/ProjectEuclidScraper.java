@@ -27,8 +27,6 @@
 package org.bibsonomy.scraper.url.kde.proeuclid;
 
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -38,33 +36,34 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.ExamplePrototype;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
- * @author Mohammed Abed
+ * @author rja
  */
-public class ProjectEuclidScraper extends AbstractUrlScraper {
+public class ProjectEuclidScraper extends AbstractUrlScraper implements ExamplePrototype {
 
 	private static final String SITE_NAME = "Astronomy and Astrophysics";
-	private static final String SITE_URL = "http://projecteuclid.org";
+	private static final String SITE_HOST = "projecteuclid.org";
+	private static final String SITE_URL = "https://" + SITE_HOST + "/";
 	private static final String INFO = "Scraper for references from " + href(SITE_URL, SITE_NAME)+".";
-	private static final String HOST = "projecteuclid.org";
-	private static final String HTTP = "http://";
-	private static final String DOWNLOAD_URL = HTTP + HOST + "/export_citations";
-	private static final Pattern pattern = Pattern.compile(HOST + "/" + "(.*)$");
+	private static final String DOWNLOAD_URL = SITE_URL + "export_citations";
+	private static final Pattern ID_PATTERN = Pattern.compile("/(.+)$");
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
 	static {
-		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ HOST), AbstractUrlScraper.EMPTY_PATTERN));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 	
 	@Override
 	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
-		final Matcher m = pattern.matcher(scrapingContext.getUrl().toString());
+		final Matcher m = ID_PATTERN.matcher(scrapingContext.getUrl().getPath());
 		if (m.find()) {
 			try {
-				final String postContent = URLEncoder.encode(m.group(1),"UTF-8");
-				final String bibtexResult = WebUtils.getPostContentAsString(new URL(DOWNLOAD_URL), "&format=bibtex&delivery=browser&address=&h=" + postContent);
-				scrapingContext.setBibtexResult(bibtexResult);
+				final String id = UrlUtils.safeURIEncode(m.group(1));
+				final String postContent = "h=" + id + "&format=bibtex";
+				scrapingContext.setBibtexResult(WebUtils.getContentAsString(DOWNLOAD_URL, null, postContent, null));
 			} catch (IOException e) {
 				throw new ScrapingException(e);
 			}
