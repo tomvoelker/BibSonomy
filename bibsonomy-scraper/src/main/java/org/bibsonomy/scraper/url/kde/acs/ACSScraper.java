@@ -91,19 +91,18 @@ public class ACSScraper extends AbstractUrlScraper {
 		try {
 			// get doi from url
 			String doi = null;
-			Matcher matcherPath = PATTERN_GETTING_DOI_PATH.matcher(citationURL.toString());
+			final Matcher matcherPath = PATTERN_GETTING_DOI_PATH.matcher(citationURL.toString());
 			if (matcherPath.find()) {
 				doi = matcherPath.group(2);
 			} else{
-				Matcher matcherQuery = PATTERN_GETTING_DOI_QUERY.matcher(citationURL.toString());
+				final Matcher matcherQuery = PATTERN_GETTING_DOI_QUERY.matcher(citationURL.toString());
 				if (matcherQuery.find()) {
 					doi = matcherQuery.group(1);
 				}
 			}
 			
 			if (doi != null){
-				final String cookie = WebUtils.getCookies(citationURL);
-				bibResult = WebUtils.getPostContentAsString(cookie, new URL(ACS_HOST_NAME + ACS_BIBTEX_PATH + ACS_BIBTEX_PARAMS + doi), doi);
+				bibResult = WebUtils.getContentAsString(ACS_HOST_NAME + ACS_BIBTEX_PATH + ACS_BIBTEX_PARAMS + doi);
 			}
 			
 		} catch (IOException ex) {

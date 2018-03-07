@@ -87,7 +87,7 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 		try {
 			final String cookie;
 			try {
-				cookie = WebUtils.getLongCookies(sc.getUrl());
+				cookie = WebUtils.getCookies(sc.getUrl());
 			} catch (final IOException ex) {
 				throw new InternalFailureException("An unexpected IO error has occurred. No Cookie has been generated.");
 			}

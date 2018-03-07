@@ -28,7 +28,6 @@ package org.bibsonomy.scraper.url.kde.bioone;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -67,12 +66,12 @@ public class BioOneScraper extends AbstractUrlScraper {
 		try {
 			final Matcher m = DOI_PATTERN_FROM_URL.matcher(scrapingContext.getUrl().toString());
 			if (m.find()) {
-				final String doi = "doi=" + m.group(1);
+				final String doi = m.group(1);
 
-				final String cookie = WebUtils.getLongCookies(scrapingContext.getUrl());
+				final String cookie = WebUtils.getCookies(scrapingContext.getUrl());
 				if (ValidationUtils.present(cookie)) {
 					try {
-						final String ris = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL), doi);
+						final String ris = WebUtils.getContentAsString(DOWNLOAD_URL, cookie, "doi=" + doi, null);
 						final String bib = RIS2BIB.toBibtex(ris);
 						if (ValidationUtils.present(bib)) {
 							scrapingContext.setBibtexResult(bib);

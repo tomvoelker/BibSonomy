@@ -29,12 +29,14 @@ package org.bibsonomy.scraper.url.kde.ieee;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.logging.Log;
@@ -461,10 +463,16 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
 	 */
 	@Override
-	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
+	public boolean scrapeReferences(final ScrapingContext scrapingContext) throws ScrapingException {
 		final String ids = extractID(scrapingContext.getUrl().toExternalForm());
 		try {
-			final Matcher m = REFERENCE_PATTERN.matcher(WebUtils.getContentAsString(REFERENCE_ARNUM_URL + ids, WebUtils.getCookies(scrapingContext.getUrl())));
+			// using own client because I do not want to configure any client to allow circular redirects
+			final HttpClient client = WebUtils.getHttpClient();
+			client.getParams().setBooleanParameter(HttpClientParams.ALLOW_CIRCULAR_REDIRECTS, true);
+			
+			final String cookies = WebUtils.getCookies(client, scrapingContext.getUrl());
+			final String pageContent = WebUtils.getContentAsString(client, new URI(REFERENCE_ARNUM_URL + ids, true), cookies);
+			final Matcher m = REFERENCE_PATTERN.matcher(pageContent);
 			if (m.find()) {
 				scrapingContext.setReferences(m.group(1));
 				return true;

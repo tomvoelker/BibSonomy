@@ -85,7 +85,7 @@ public class ATSScraper extends GenericRISURLScraper implements CitedbyScraper{
 
 	private static String abstractParser(URL url){
 		try {			
-			final String cookie = WebUtils.getLongCookies(url);
+			final String cookie = WebUtils.getCookies(url);
 			final Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url.toString(),cookie));
 			if (m.find()) {
 				return XmlUtils.getText(XmlUtils.getDOM(m.group(1)));

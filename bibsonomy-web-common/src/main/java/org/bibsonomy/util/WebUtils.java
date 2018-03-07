@@ -145,6 +145,7 @@ public class WebUtils {
 	 * 
 	 * @Deprecated
 	 */
+	@Deprecated
 	public static String getPostContentAsString(final URL url, final String postContent, final String charset, final String cookie) throws IOException {
 		final HttpURLConnection urlConn = createConnnection(url);
 		urlConn.setAllowUserInteraction(false);
@@ -216,6 +217,7 @@ public class WebUtils {
 	 * 
 	 * @Deprecated
 	 */
+	@Deprecated
 	public static String getPostContentAsString(final String cookie, final URL url, final String postContent) throws IOException {
 		return getPostContentAsString(url, postContent, null, cookie);
 	}
@@ -246,16 +248,16 @@ public class WebUtils {
 	 * @throws HttpException
 	 * @throws IOException
 	 */
-	public static String getPostContentAsString(HttpClient client, PostMethod method) throws HttpException, IOException {
+	public static String getPostContentAsString(final HttpClient client, final PostMethod method) throws HttpException, IOException {
 		final String postContent = getContentAsString(client, method);
 		//if the postContent successfully received, return
 		if (present(postContent)) return postContent;
 		//check if status is 303 See Other
 		if (method.getStatusCode() == HttpStatus.SC_SEE_OTHER) {
-			Header location = method.getResponseHeader("Location");
+			final Header location = method.getResponseHeader("Location");
 			if (present(location) && present(location.getValue())) {
-				HttpURL uri = new HttpURL(new HttpURL(method.getURI().getURI()), location.getValue());
-				return getContentAsString(client, uri);
+				final HttpURL uri = new HttpURL(new HttpURL(method.getURI().getURI()), location.getValue());
+				return getContentAsString(client, uri, null);
 			}
 		}
 		return null;
@@ -272,47 +274,6 @@ public class WebUtils {
 	 */
 	public static String getContentAsString(final URL inputURL, final String cookie) throws IOException {
 		return getContentAsString(inputURL.toString(), cookie, null, null);
-	}
-
-	@Deprecated
-	public static String getContentAsStringOld(final URL inputURL, final String cookie) throws IOException {
-
-		try {
-			final HttpURLConnection urlConn = createConnnection(inputURL);
-			urlConn.setAllowUserInteraction(false);
-			urlConn.setDoInput(true);
-			urlConn.setDoOutput(false);
-
-			if (cookie != null) {
-				urlConn.setRequestProperty(COOKIE_HEADER_NAME, cookie);
-			}
-			urlConn.connect();
-
-			/*
-			 * extract character encoding from header
-			 */
-			final String charSet = getCharset(urlConn);
-
-			/*
-			 * FIXME: check content type header to ensure that we only read textual 
-			 * content (and not a PDF, radio stream or DVD image ...)
-			 */
-
-			/*
-			 * write content into string buffer
-			 */
-			final StringBuilder out = inputStreamToStringBuilder(urlConn.getInputStream(), charSet);
-
-			urlConn.disconnect();
-
-			return out.toString();
-		} catch (final ConnectException cex) {
-			log.debug("Could not get content for URL " + inputURL.toString() + " : " + cex.getMessage());
-			throw new IOException(cex);
-		} catch (final IOException ioe) {
-			log.debug("Could not get content for URL " + inputURL.toString() + " : " + ioe.getMessage());
-			throw ioe;
-		}
 	}
 
 	/**
@@ -484,13 +445,17 @@ public class WebUtils {
 	 * 
 	 * @param client The client to execute.
 	 * @param uri The URI to be requested.
+	 * @param cookie The cookies (not set, if null)
 	 * @return The response body as String if and only if the HTTP status code is 200 HTTP OK.
 	 * @throws HttpException
 	 * @throws IOException
 	 */
-	public static String getContentAsString(HttpClient client, URI uri) throws HttpException, IOException {
+	public static String getContentAsString(final HttpClient client, final URI uri, final String cookie) throws HttpException, IOException {
 		final HttpMethod method = new GetMethod();
 		method.setURI(uri);
+		if (present(cookie)) {
+			method.addRequestHeader(COOKIE_HEADER_NAME, cookie);
+		}
 		return getContentAsString(client, method);
 	}
 	/**
@@ -553,41 +518,28 @@ public class WebUtils {
 		}
 		return null;
 	}
-
-	/**
-	 * Returns the cookies returned by the server on accessing the URL. 
-	 * The format of the returned cookies is as
-	 * 
-	 * @param url
-	 * @return The cookies as string, build by {@link #buildCookieString(List)}.
-	 * @throws IOException
-	 */
-	@Deprecated
-	public static String getCookies(final URL url) throws IOException {
-		final HttpURLConnection urlConn = createConnnection(url);
-		urlConn.setAllowUserInteraction(false);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(false);
-
-		urlConn.connect();
-
-		final List<String> cookies = urlConn.getHeaderFields().get("Set-Cookie");
-		urlConn.disconnect();
-
-		return buildCookieString(cookies);
-	}
-
+	
 	/**
 	 * 
 	 * @param url
 	 * @return the cookies
 	 * @throws IOException
 	 */
-	public static String getLongCookies(final URL url) throws IOException {
+	public static String getCookies(final URL url) throws IOException {
+		return getCookies(CLIENT, url);
+	}
+	/**
+	 * 
+	 * @param client 
+	 * @param url
+	 * @return the cookies
+	 * @throws IOException
+	 */
+	public static String getCookies(final HttpClient client, final URL url) throws IOException {
 		final GetMethod get = new GetMethod(url.toString());
 		final List<String> cookies = new ArrayList<String>();
 		try {
-			CLIENT.executeMethod(get);
+			client.executeMethod(get);
 
 			final Header[] responseHeaders = get.getResponseHeaders("Set-Cookie");
 			for (int i = 0; i < responseHeaders.length; i++) {

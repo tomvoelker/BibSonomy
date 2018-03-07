@@ -41,6 +41,8 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
 
+import bibtex.parser.BibtexParser;
+
 /**
  * FIXME: use GenericBibtexScraper
  * @author Mohammed Abed
@@ -82,6 +84,25 @@ public class AappublicationsScraper extends GenericBibTeXURLScraper{
 		return PATTERNS;
 	}
 
+	
+	/**
+	 * The BibTeX returned contains an id with space, e.g., "@article {de St Mauricee1186" which
+	 * need to be fixed in order to be accepted by {@link BibtexParser}.
+	 * 
+	 * @param bibtex
+	 * @return
+	 */
+	protected static String fixSpaceInId(final String bibtex) {
+		int index = bibtex.indexOf("\n");
+		String first_part = bibtex.substring(0, index);
+		first_part = first_part.replaceAll(" ", "");
+		String rest = bibtex.substring(index, bibtex.length());
+		String bibtex_cleaned = first_part + rest;
+		System.out.println(bibtex_cleaned);
+		return bibtex_cleaned;
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL, java.lang.String)
 	 */
@@ -105,6 +126,7 @@ public class AappublicationsScraper extends GenericBibTeXURLScraper{
 	 */
 	@Override
 	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		bibtex = fixSpaceInId(bibtex);
 		return bibtex;
 	}
 }

@@ -48,7 +48,7 @@ public class APHAScraperTest {
 		final String resultFile = "APHAScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, APHAScraper.class, resultFile);
 	}
-
+	
 	/**
 	 * starts URL test with id url_291 for the host ajph.aphapublications.org/
 	 */

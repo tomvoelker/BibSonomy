@@ -45,6 +45,7 @@ import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -64,11 +65,15 @@ public class PubMedScraper extends AbstractUrlScraper {
 	private static final String EUROPE_PUBMED_CENTRAL_HOST = "europepmc.org";
 
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
-	
+
 	private static Pattern RISLINKPATTERN = Pattern.compile("href=\"((\\.\\./)*+.*?\\?wicket:interface=.*?:export:exportlink::ILinkListener::)");
 	private static Pattern PMIDQUERYPATTERN = Pattern.compile("\\d+");
 	private static Pattern PMIDPATTERN = Pattern.compile("PMID\\:\\D*(\\d+)");
-	
+
+	private static final Pattern PATTERN_PMID = Pattern.compile("meta name=\"citation_pmid\" content=\"(\\d+)\"");
+	private static final Pattern PATTERN_URL = Pattern.compile("url = \".*\"");
+	private static final Pattern PATTERN_URL1 = Pattern.compile("(?im)^.+db=PubMed.+$");
+
 	static {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + PUBMED_EUTIL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
@@ -76,85 +81,85 @@ public class PubMedScraper extends AbstractUrlScraper {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + EUROPE_PUBMED_CENTRAL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 
+	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
+
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc)
-			throws ScrapingException {
-		String bibtexresult = null;
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-	
+
 		// save the original URL
-		String _origUrl = sc.getUrl().toString();
+		final String url = sc.getUrl().toString();
 
+		String pubmedId = null;
+		String bibtex = null;
 		try {
-			if (_origUrl.matches("(?im)^.+db=PubMed.+$")) {
-				
-				Matcher ma = PMIDQUERYPATTERN.matcher(sc.getUrl().getQuery());
-
-				// if the PMID is existent then get the bibtex from hubmed
+			final Matcher mu = PATTERN_URL1.matcher(url);
+			if (mu.find()) {
+				final Matcher ma = PMIDQUERYPATTERN.matcher(sc.getUrl().getQuery());
+				// if the PMID is existent then extract it
 				if (ma.find()) {
-					String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids="
-							+ ma.group();
-					bibtexresult = WebUtils.getContentAsString(new URL(newUrl));
+					pubmedId = ma.group();
 				}
 
 				// try to scrape with new URL-Pattern
 				// avoid crashes
 			} else {
-				HttpClient client = WebUtils.getHttpClient();
-				
+				final HttpClient client = WebUtils.getHttpClient();
+
 				// try to find link for RIS export
-				GetMethod method = new GetMethod(sc.getUrl().toExternalForm());
-				String pageContent = WebUtils.getContentAsString(client, method);
-				
-				Matcher risLinkMatcher = RISLINKPATTERN.matcher(pageContent);
+				final GetMethod method = new GetMethod(sc.getUrl().toExternalForm());
+				final String pageContent = WebUtils.getContentAsString(client, method);
+
+				final Matcher risLinkMatcher = RISLINKPATTERN.matcher(pageContent);
 				if (risLinkMatcher.find()) {
-					HttpURL risURL = new HttpURL(new HttpURL(method.getURI().getURI()), risLinkMatcher.group(1));
-					RisToBibtexConverter c = new RisToBibtexConverter();
-					String ris = WebUtils.getContentAsString(client, risURL);
-					bibtexresult = c.toBibtex(ris);
+					final HttpURL risURL = new HttpURL(new HttpURL(method.getURI().getURI()), risLinkMatcher.group(1));
+					bibtex = RIS2BIB.toBibtex(WebUtils.getContentAsString(client, risURL, null));
 				} else {
-					
-					Matcher ma = PMIDPATTERN.matcher(pageContent);
-	
+
+					final Matcher ma = PMIDPATTERN.matcher(pageContent);
+
 					// if the PMID is existent then get the bibtex from hubmed
 					if (ma.find()) {
-						String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids="
-								+ ma.group(1);
-						bibtexresult = WebUtils.getContentAsString(new URL(newUrl));
+						pubmedId = ma.group(1);
 					} else {
-		
-						Pattern pa1 = Pattern.compile("meta name=\"citation_pmid\" content=\"(\\d+)\"");
-						Matcher ma1 = pa1.matcher(pageContent);
-		
+						final Matcher ma1 = PATTERN_PMID.matcher(pageContent);
 						if (ma1.find()) {
-							String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids=" + ma1.group(1);
-							bibtexresult = WebUtils.getContentAsString(new URL(newUrl));
+							pubmedId = ma1.group(1);
 						}
 					}
 				}
 			}
-			
-
-			// replace the humbed url through the original URL
-			Pattern pa = Pattern.compile("url = \".*\"");
-			Matcher ma = pa.matcher(bibtexresult);
-
-			if (ma.find()) {
-				// escape dollar signs 
-				bibtexresult = ma.replaceFirst("url = \"" + _origUrl.replace("$", "\\$") + "\"");
+			/*
+			 * FIXME: this results in a 
+			 * Exception in thread "main" java.net.SocketTimeoutException: Read timed out
+			 * 
+			 * However, during debugging it sometimes works ... seems to be a timing issue
+			 * (or a server fooling us).
+			 */
+			if (ValidationUtils.present(pubmedId)) {
+				bibtex = WebUtils.getContentAsString(new URL("http://www.hubmed.org/export/bibtex.cgi?uids=" + pubmedId));	
 			}
 
-			// -- bibtex string may not be empty
-			if (present(bibtexresult)) {
-				sc.setBibtexResult(bibtexresult);
+
+
+			if (present(bibtex)) {
+				// replace the broken URL through the original URL
+				final Matcher ma = PATTERN_URL.matcher(bibtex);
+				if (ma.find()) {
+					// escape dollar signs 
+					bibtex = ma.replaceFirst("url = \"" + url.replace("$", "\\$") + "\"");
+				}
+
+				sc.setBibtexResult(bibtex);
 				return true;
-			} else
-				throw new ScrapingFailureException("getting bibtex failed");
+			} 
+			throw new ScrapingFailureException("getting bibtex failed");
 
 		} catch (IOException e) {
 			throw new InternalFailureException(e);
 		}
 	}
+
 
 	public String getInfo() {
 		return info;

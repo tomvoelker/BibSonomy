@@ -179,7 +179,7 @@ public class SSRNScraper extends AbstractUrlScraper {
 	}
 
 	private static String getCookies(URL queryURL) throws IOException {
-		final StringBuilder cookieString = new StringBuilder(WebUtils.getLongCookies(queryURL));
+		final StringBuilder cookieString = new StringBuilder(WebUtils.getCookies(queryURL));
 
 		cookieString.append(" ; CFCLIENT_SSRN=loginexpire%3D%7Bts%20%272009%2D12%2D12%2012%3A35%3A00%27%7D%23blnlogedin%3D1401777%23;domain=hq.ssrn.com;path=/; ");
 		//login: wbi@cs.uni-kassel.de

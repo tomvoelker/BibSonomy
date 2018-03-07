@@ -82,7 +82,7 @@ public class APHAScraper extends AbstractUrlScraper {
 			final Matcher m = DOI_PATTERN_FROM_URL.matcher(sc.getUrl().toString());
 			if (m.find()) {
 				final String doi = m.group(1);
-				final String cookie = WebUtils.getLongCookies(sc.getUrl());
+				final String cookie = WebUtils.getCookies(sc.getUrl());
 				if (ValidationUtils.present(cookie)) {
 					final String host = sc.getUrl().getHost();
 					final String postData = "doi=" + doi + "&format=bibtex&include=abs";
