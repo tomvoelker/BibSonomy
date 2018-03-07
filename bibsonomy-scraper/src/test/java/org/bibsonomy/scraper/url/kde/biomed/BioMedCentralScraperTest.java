@@ -28,13 +28,12 @@ package org.bibsonomy.scraper.url.kde.biomed;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #58 & #59 for DBLPScraper
+ * Scraper URL tests 
  * @author wbi
  *
  */
@@ -42,21 +41,12 @@ import org.junit.experimental.categories.Category;
 public class BioMedCentralScraperTest {
 	
 	/**
-	 * starts URL test with id url_61
-	 */
-	@Test
-	public void url1TestRun(){
-		final String url = "http://www.biomedcentral.com/1471-2326/6/7";
-		final String resultFile = "BioMedCentralScraperUnitURLTest.bib";
-		assertScraperResult(url, null, BioMedCentralScraper.class, resultFile);
-	}
-	
-	/**
 	 * starts URL test with id url_62
 	 */
 	@Test
 	public void url2TestRun(){
-		final String url = "http://www.biomedcentral.com/1471-2326/6/7/citation";
+		final String url = "https://bmchematol.biomedcentral.com/articles/10.1186/1471-2326-6-7";
+		// http://citation-needed.springer.com/v2/references/10.1186/1471-2326-6-7?format=bibtex&flavour=citation
 		final String resultFile = "BioMedCentralScraperUnitURLTest.bib";
 		assertScraperResult(url, null, BioMedCentralScraper.class, resultFile);
 	}
@@ -66,6 +56,7 @@ public class BioMedCentralScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
+		// http://citation-needed.springer.com/v2/references/10.1186/2041-1480-1-S1-S6?format=bibtex&flavour=citation
 		final String url = "http://jbiomedsem.biomedcentral.com/articles/10.1186/2041-1480-1-S1-S6";
 		final String resultFile = "BioMedCentralScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, BioMedCentralScraper.class, resultFile);
