@@ -40,20 +40,21 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * @author Mohammed Abed
  */
 public class BioOneScraper extends AbstractUrlScraper {
-	
+
 	private static final String SITE_NAME = "Bio One Research Evolved";
 	private static final String SITE_URL = "http://www.bioone.org/";
 	private static final String INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
 	private static final String BIOONE_HOST = "bioone.org";
 	private static final String DOWNLOAD_URL = "http://www.bioone.org/action/downloadCitation";
-	private static final RisToBibtexConverter ris = new RisToBibtexConverter();
+	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
 	private static final Pattern DOI_PATTERN_FROM_URL = Pattern.compile("/abs/(.+?)$");
 	static {
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ BIOONE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
@@ -62,27 +63,24 @@ public class BioOneScraper extends AbstractUrlScraper {
 	@Override
 	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
-		
+
 		try {
-			final String cookie = WebUtils.getCookies(scrapingContext.getUrl());
-			String doi = null;
 			final Matcher m = DOI_PATTERN_FROM_URL.matcher(scrapingContext.getUrl().toString());
 			if (m.find()) {
-				doi = "doi=" + m.group(1);
-			}
-			
-			if (doi != null && cookie != null) {
-				String resultAsString = null;
-				try {
-					resultAsString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL), doi);
-				} catch (MalformedURLException ex) {
-					throw new ScrapingFailureException("URL to scrape does not exist. It may be malformed.");
-				}
+				final String doi = "doi=" + m.group(1);
 
-				final String bibResult = ris.toBibtex(resultAsString);
-				if (bibResult != null) {
-					scrapingContext.setBibtexResult(bibResult);
-					return true;
+				final String cookie = WebUtils.getLongCookies(scrapingContext.getUrl());
+				if (ValidationUtils.present(cookie)) {
+					try {
+						final String ris = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL), doi);
+						final String bib = RIS2BIB.toBibtex(ris);
+						if (ValidationUtils.present(bib)) {
+							scrapingContext.setBibtexResult(bib);
+							return true;
+						}
+					} catch (MalformedURLException ex) {
+						throw new ScrapingFailureException("URL to scrape does not exist. It may be malformed.");
+					}
 				}
 			}
 		} catch (final IOException ex) {
@@ -90,7 +88,7 @@ public class BioOneScraper extends AbstractUrlScraper {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
