@@ -87,54 +87,28 @@
 			var checkedfriends = document.getElementById("post.friends");
 			var groupsform = document.getElementById("post.groups.form");
 			var friendsform = document.getElementById("post.friends.form");
+			
 			var friends=[];
 			var groups=[];
-			var tags=$("#inpf_tags").val();
-			$("#friendsOrGroups").empty();
-			var ref = /send[:]([a-z])+/g;
-			friends=tags.match(ref);
 			
-			var reg = /for[:]([a-z])+/g;
-			groups=tags.match(reg);
-			var selected;
-			var deletefriendsenable=false;
-			var deletegroupsenable=false;
-			if (friends != null) {
-				for (i = 0; i < friends.length; i++) {
-					friends[i]=(friends[i]).replace("send:","");
-					selected=friends[i];
-					$("#friendsOrGroups").append("<li tabindex=1 value=\""+i+"\" class=\"delete-friend\" id=\"delete-friend-"+i+"\"><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
-					$("li.delete-friend").click(function() {
-						var number=$(this).val();
-						$("#delete-friend-"+number+"").remove();
-						tags=tags.replace(" send:"+friends[number],"");
-						$("#inpf_tags").val(tags);
-						friends[number]=(friends[number]).replace(friends[number],"");
-					});
-				} 
-			} else {
-				deletefriendsenable=true;
-				friends=[];
-			}
-			if (groups != null) {
-				for (i = 0; i < groups.length; i++) {
-					groups[i]=(groups[i]).replace("for:","");
-					selected=groups[i];
-					$("#friendsOrGroups").append("<li tabindex=1 value=\""+i+"\" class=\"delete-group\" id=\"delete-group-"+i+"\"><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
-					$("li.delete-group").click(function() {
-						var number=$(this).val();
-						$("#delete-group-"+number+"").remove();
-						tags=tags.replace(" for:"+groups[number],"");
-						$("#inpf_tags").val(tags);
-						groups[number]=(groups[number]).replace(groups[number],"");
-					});
-				}
-			} else {
-				deletegroupsenable=true;
-				groups=[];
+			var addfriendsdelete=false;
+			var addgroupsdelete=false;
+			
+			$(groupsform).hide();
+			$(friendsform).show();
+			$(checkedfriends).prop("checked", true);
+			$(friendsform).prop("selectedIndex", -1);
+			
+						
+			function check_radio_button() {
+				$(checkedfriends).click(function() {
+					choose_radio_button();
+				});
+				$(checkedgroups).click(function() {
+					choose_radio_button();
+				});
 			}
 			
-			$('[data-toggle="popover"]').popover(); 
 			function choose_radio_button() {
 				
 				if ($(checkedfriends).is(":checked") == true) {
@@ -147,75 +121,108 @@
 					$(groupsform).prop("selectedIndex", -1);
 				}
 			}
-			function check_radio_button() {
-				$(checkedfriends).click(function() {
-					choose_radio_button();
-				});
-				$(checkedgroups).click(function() {
-					choose_radio_button();
-				});
-			}		
 			
-			$(groupsform).hide();
-			$(friendsform).show();
-			$(checkedfriends).prop("checked", true);
-			$(friendsform).prop("selectedIndex", -1);
 			check_radio_button();
-			$(friendsform).change(function() {
-				var selected=$(friendsform).val();
-				var found=false;
-				for (i = 0; i < friends.length; i++) {
-					if(friends[i] == selected) {
-						found=true;
+			
+			function dropdowns() {
+				$(friendsform).change(function() {
+					var selected=$(friendsform).val();
+					var found=false;
+					for (i = 0; i < friends.length; i++) {
+						if(friends[i] == selected) {
+							found=true;
+						}
 					}
-				}
-				if (found == false) {
-					friends.push(selected);
-					var number=friends.indexOf(selected);
-					$("#friendsOrGroups").append("<li tabindex=1 value=\""+number+"\" class=\"delete-friend\" id=\"delete-friend-"+number+"\"><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
-					tags=$("#inpf_tags").val()+" ";
-					tags=tags+"send:"+selected;
-					$("#inpf_tags").val(tags);
-					if (deletefriendsenable == true) {
-						$("li.delete-friend").click(function() {
-							var number=$(this).val();
-							$("#delete-friend-"+number+"").remove();
-							tags=tags.replace(" send:"+friends[number],"");
-							$("#inpf_tags").val(tags);
-							friends[number]=(friends[number]).replace(friends[number],"");
-						});
+					if (found == false) {
+						friends.push(selected);
+						var number=friends.indexOf(selected);
+						$("#friendsOrGroups").append("<li tabindex=1 value=\""+number+"\" class=\"delete-friend\" id=\"delete-friend-"+number+"\"><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
+						tags=$("#inpf_tags").val()+" ";
+						tags=tags+"send:"+selected;
+						$("#inpf_tags").val(tags);
+						if (addfriendsdelete == false) {
+							$("li.delete-friend").click(function() {
+								var number=$(this).val();
+								$("#delete-friend-"+number+"").remove();
+								tags=tags.replace(" send:"+friends[number],"");
+								//console.log(tags);
+								$("#inpf_tags").val(tags);
+								friends[number]="";
+							});
+						}
+						
+						
 					}
-				}
-			});
-			$(groupsform).change(function() {
-				var selected=$(groupsform).val();
-				var found=false;
-				for (i = 0; i < groups.length; i++) {
-					if(groups[i] == selected) {
-						found=true;
+				});
+				$(groupsform).change(function() {
+					var selected=$(groupsform).val();
+					var found=false;
+					for (i = 0; i < groups.length; i++) {
+						if(groups[i] == selected) {
+							found=true;
+						}
 					}
-				}
-				if (found == false) {
-					groups.push(selected);
-					var number=groups.indexOf(selected);
-					$("#friendsOrGroups").append("<li tabindex=1 value=\""+number+"\" class=\"delete-group\" id=\"delete-group-"+number+"\"><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
-					tags=$("#inpf_tags").val()+" ";
-					tags=tags+"for:"+selected;
-					$("#inpf_tags").val(tags);
-					if (deletegroupsenable == true) {
-						$("li.delete-group").click(function() {
-							var number=$(this).val();
-							$("#delete-group-"+number+"").remove();
-							tags=tags.replace(" for:"+groups[number],"");
-							$("#inpf_tags").val(tags);
-							groups[number]=(groups[number]).replace(groups[number],"");
-						});
+					if (found == false) {
+						groups.push(selected);
+						var number=groups.indexOf(selected);
+						$("#friendsOrGroups").append("<li tabindex=1 value=\""+number+"\" class=\"delete-group\" id=\"delete-group-"+number+"\"><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
+						tags=$("#inpf_tags").val()+" ";
+						tags=tags+"for:"+selected;
+						$("#inpf_tags").val(tags);
+						if (addgroupsdelete == false) {
+							$("li.delete-group").click(function() {
+								var number=$(this).val();
+								$("#delete-group-"+number+"").remove();
+								tags=tags.replace(" for:"+groups[number],"");
+								//console.log(tags);
+								$("#inpf_tags").val(tags);
+								groups[number]="";
+							});
+						}
+						
+						
 					}
-				}
+					
+				});
+			}
+			
+			
+			
+			
+			if (add_labels_friends() != null) {
+				tags=$("#inpf_tags").val();
 				
-			});
+				$("li.delete-friend").click(function() {
+					var number=$(this).val();
+					//console.log($("#delete-friend-"+number+"").text());
+					tags=tags.replace(" send:"+$("#delete-friend-"+number+"").text(),"");
+					$("#delete-friend-"+number+"").remove();
+					
+					$("#inpf_tags").val(tags);
+					friends[number]="";
+					addfriendsdelete=true;
+				});
+			} else {
+				addfriendsdelete=false;
+			}
 			
+			if (add_labels_groups() != null) {
+				tags=$("#inpf_tags").val();
+				
+				$("li.delete-group").click(function() {
+					var number=$(this).val();
+					//console.log($("#delete-group-"+number+"").text());
+					tags=tags.replace(" for:"+$("#delete-group-"+number+"").text(),"");
+					$("#delete-group-"+number+"").remove();
+					$("#inpf_tags").val(tags);
+					groups[number]="";
+					addgroupsdelete=true;
+				});
+			} else {
+				addgroupsdelete=false;
+			}
 			
+			dropdowns();
 			
 		});
 		  

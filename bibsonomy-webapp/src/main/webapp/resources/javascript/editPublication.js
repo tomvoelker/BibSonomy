@@ -403,6 +403,54 @@ function sendGroupToBibliography(groupname) {
 	clear_tags();
 }
 
+function add_labels_friends() {
+	var friends=[];
+	
+	var tags=$("#inpf_tags").val();
+	
+	var ref = /send[:]([a-z])+/g;
+	friends=tags.match(ref);
+	var selected;
+	
+	var deletefriendsenable=false;
+	if (friends != null) {
+		for (i = 0; i < friends.length; i++) {
+			friends[i]=(friends[i]).replace("send:","");
+			selected=friends[i];
+			$("#friendsOrGroups").append("<li tabindex=1 value=\""+i+"\" class=\"delete-friend\" id=\"delete-friend-"+i+"\"><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
+		} 
+		$('[data-toggle="popover"]').popover(); 
+		return friends;	
+	} else {
+		return null;
+	}
+	
+}
+
+function add_labels_groups() {
+	var groups=[];
+	
+	var tags=$("#inpf_tags").val();
+	
+	var reg = /for[:]([a-z])+/g;
+	groups=tags.match(reg);
+	var selected;
+	
+	var deletegroupsenable=false;
+	if (groups != null) {
+		for (i = 0; i < groups.length; i++) {
+			groups[i]=(groups[i]).replace("for:","");
+			selected=groups[i];
+			$("#friendsOrGroups").append("<li tabindex=1 value=\""+i+"\" class=\"delete-group\" id=\"delete-group-"+i+"\"><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
+		}
+		$('[data-toggle="popover"]').popover();
+		return groups;
+	} else {
+		return null;
+	}
+	
+}
+
 /*  
  * change appearance of misc and transfer data
  */
