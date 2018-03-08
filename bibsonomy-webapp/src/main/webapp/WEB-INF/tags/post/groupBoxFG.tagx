@@ -24,8 +24,7 @@
 	<c:if test="${empty labelColSpan}">
 		<c:set var="labelColSpan" value="2" />
 	</c:if>
-	<c:set var="formErrors"><form:errors path="groups" /></c:set>
-	<div class="form-group ${not empty formErrors ? 'has-error' : ''}">
+	<div class="form-group">
 		<label class="col-sm-${labelColSpan} control-label" for="${fn:escapeXml(id)}">
 			<fmt:message key="post.resource.groupsandfriends.send" />
 		</label>
@@ -43,7 +42,7 @@
 					<c:if test="${not empty groups}">
 						<div class="radio">
 							<label>
-								<form:radiobutton cssClass="radio-viewable-group" path="abstractGrouping" value="groups" tabindex="2" id="post.groups" /> <fmt:message key="group"/>
+								<form:radiobutton cssClass="radio-viewable-group" path="abstractGrouping" value="groups" tabindex="2" id="post.groups" /> <fmt:message key="groups"/>
 							</label>
 						</div>
 					</c:if>
@@ -90,7 +89,51 @@
 			var friendsform = document.getElementById("post.friends.form");
 			var friends=[];
 			var groups=[];
-			var tags="";
+			var tags=$("#inpf_tags").val();
+			$("#friendsOrGroups").empty();
+			var ref = /send[:]([a-z])+/g;
+			friends=tags.match(ref);
+			
+			var reg = /for[:]([a-z])+/g;
+			groups=tags.match(reg);
+			var selected;
+			var deletefriendsenable=false;
+			var deletegroupsenable=false;
+			if (friends != null) {
+				for (i = 0; i < friends.length; i++) {
+					friends[i]=(friends[i]).replace("send:","");
+					selected=friends[i];
+					$("#friendsOrGroups").append("<li tabindex=1 value=\""+i+"\" class=\"delete-friend\" id=\"delete-friend-"+i+"\"><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
+					$("li.delete-friend").click(function() {
+						var number=$(this).val();
+						$("#delete-friend-"+number+"").remove();
+						tags=tags.replace(" send:"+friends[number],"");
+						$("#inpf_tags").val(tags);
+						friends[number]=(friends[number]).replace(friends[number],"");
+					});
+				} 
+			} else {
+				deletefriendsenable=true;
+				friends=[];
+			}
+			if (groups != null) {
+				for (i = 0; i < groups.length; i++) {
+					groups[i]=(groups[i]).replace("for:","");
+					selected=groups[i];
+					$("#friendsOrGroups").append("<li tabindex=1 value=\""+i+"\" class=\"delete-group\" id=\"delete-group-"+i+"\"><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
+					$("li.delete-group").click(function() {
+						var number=$(this).val();
+						$("#delete-group-"+number+"").remove();
+						tags=tags.replace(" for:"+groups[number],"");
+						$("#inpf_tags").val(tags);
+						groups[number]=(groups[number]).replace(groups[number],"");
+					});
+				}
+			} else {
+				deletegroupsenable=true;
+				groups=[];
+			}
+			
 			$('[data-toggle="popover"]').popover(); 
 			function choose_radio_button() {
 				
@@ -133,13 +176,15 @@
 					tags=$("#inpf_tags").val()+" ";
 					tags=tags+"send:"+selected;
 					$("#inpf_tags").val(tags);
-					$("li.delete-friend").click(function() {
-						var number=$(this).val();
-						$("#delete-friend-"+number+"").remove();
-						tags=tags.replace(" send:"+friends[number],"");
-						$("#inpf_tags").val(tags);
-						friends.splice(number,1);
-					});
+					if (deletefriendsenable == true) {
+						$("li.delete-friend").click(function() {
+							var number=$(this).val();
+							$("#delete-friend-"+number+"").remove();
+							tags=tags.replace(" send:"+friends[number],"");
+							$("#inpf_tags").val(tags);
+							friends[number]=(friends[number]).replace(friends[number],"");
+						});
+					}
 				}
 			});
 			$(groupsform).change(function() {
@@ -157,13 +202,15 @@
 					tags=$("#inpf_tags").val()+" ";
 					tags=tags+"for:"+selected;
 					$("#inpf_tags").val(tags);
-					$("li.delete-group").click(function() {
-						var number=$(this).val();
-						$("#delete-group-"+number+"").remove();
-						tags=tags.replace(" for:"+groups[number],"");
-						$("#inpf_tags").val(tags);
-						groups.splice(number,1);
-					});
+					if (deletegroupsenable == true) {
+						$("li.delete-group").click(function() {
+							var number=$(this).val();
+							$("#delete-group-"+number+"").remove();
+							tags=tags.replace(" for:"+groups[number],"");
+							$("#inpf_tags").val(tags);
+							groups[number]=(groups[number]).replace(groups[number],"");
+						});
+					}
 				}
 				
 			});
