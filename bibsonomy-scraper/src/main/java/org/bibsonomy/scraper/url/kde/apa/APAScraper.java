@@ -64,6 +64,10 @@ public class APAScraper extends AbstractUrlScraper {
 	
 	private static final Pattern UIDS_PAGE_PATTERN = Pattern.compile("<input[^>]*?id=\"srhLstUIDs\"[^>]*?value=\"([^\"]++)");
 
+	
+	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
+
+	
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
@@ -151,8 +155,9 @@ public class APAScraper extends AbstractUrlScraper {
 		if (!present(ris)) {
 			throw new ScrapingException("Could not download citation");
 		}
-		final RisToBibtexConverter converter = new RisToBibtexConverter();
-		final String bibtex = converter.toBibtex(ris);
+		System.out.println(ris);
+		final String bibtex = RIS2BIB.toBibtex(ris);
+		System.out.println(bibtex);
 		if (!present(bibtex)) {
 			throw new ScrapingException("Something went wrong while converting RIS to BibTeX");
 		}

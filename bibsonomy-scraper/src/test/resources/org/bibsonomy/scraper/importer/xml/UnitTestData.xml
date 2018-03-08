@@ -634,18 +634,6 @@
 		<BibFile>BiologistsScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.biologists.BiologistsScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_244">
-		<TestDescription>Test for APAScraper</TestDescription>
-		<URL>http://psycnet.apa.org/journals/bul/119/2/254/</URL>
-		<BibFile>APAScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.apa.APAScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_245">
-		<TestDescription>Test for APAScraper</TestDescription>
-		<URL>http://psycnet.apa.org/index.cfm?fa=buy.optionToBuy&amp;id=1996-02773-003</URL>
-		<BibFile>APAScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.apa.APAScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_247">
 		<TestDescription>RSC Scraper test</TestDescription>
 		<URL>http://pubs.rsc.org/en/Content/ArticleLanding/2013/LC/C2LC41166K?utm_source=feedburner&amp;utm_medium=feed&amp;utm_campaign=Feed%3A+rss%2FLC+%28RSC+-+Lab+Chip+latest+articles%29&amp;utm_content=Google+Reader</URL>
