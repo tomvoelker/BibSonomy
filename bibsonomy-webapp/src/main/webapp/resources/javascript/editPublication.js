@@ -19,12 +19,6 @@ var getFriends = null;
 
 var getGroups = null;
 
-var addfriendsdelete=false;
-var addgroupsdelete=false;
-
-var friends=[];
-var groups=[];
-
 var fields = ["booktitle","journal","volume","number","pages","publisher","address",
 		"month","day","edition","chapter","key","type","annote","note",
 		"howpublished","institution","organization",
@@ -409,56 +403,6 @@ function sendGroupToBibliography(groupname) {
 	clear_tags();
 }
 
-function add_labels_friends() {
-	friends=[];
-	
-	var tags=$("#inpf_tags").val();
-	
-	var ref = /send[:]([a-z])+/g;
-	friends=tags.match(ref);
-	var selected;
-	
-	var deletefriendsenable=false;
-	if (friends != null) {
-		for (i = 0; i < friends.length; i++) {
-			friends[i]=(friends[i]).replace("send:","");
-			selected=friends[i];
-			$("#friendsOrGroups").append("<li tabindex=1 value=\""+i+"\" class=\"delete-friend\" id=\"delete-friend-"+i+"\"><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
-		} 
-		$('[data-toggle="popover"]').popover(); 
-		return true;	
-	} else {
-		friends=[];
-		return false;
-	}
-	
-}
-
-function add_labels_groups() {
-	groups=[];
-	
-	var tags=$("#inpf_tags").val();
-	
-	var reg = /for[:]([a-z])+/g;
-	groups=tags.match(reg);
-	var selected;
-	
-	var deletegroupsenable=false;
-	if (groups != null) {
-		for (i = 0; i < groups.length; i++) {
-			groups[i]=(groups[i]).replace("for:","");
-			selected=groups[i];
-			$("#friendsOrGroups").append("<li tabindex=1 value=\""+i+"\" class=\"delete-group\" id=\"delete-group-"+i+"\"><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
-		}
-		$('[data-toggle="popover"]').popover();
-		return true;
-	} else {
-		groups=[];
-		return false;
-	}
-	
-}
-
 /*  
  * change appearance of misc and transfer data
  */
@@ -478,12 +422,6 @@ $(document).ready(function() {
 	var misc = $("#post\\.resource\\.misc");
 	var miscFieldValues = [];
 	var miscError = miscFieldHasError();
-	
-	addfriendsdelete=false;
-	addgroupsdelete=false;
-	
-	friends=[];
-	groups=[];
 	
 	/*
 	 * functions
