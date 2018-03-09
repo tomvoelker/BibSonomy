@@ -88,11 +88,11 @@
 			var groupsform = document.getElementById("post.groups.form");
 			var friendsform = document.getElementById("post.friends.form");
 			
-			var friends=[];
-			var groups=[];
+			friends=[];
+			groups=[];
 			
-			var addfriendsdelete=false;
-			var addgroupsdelete=false;
+			addfriendsdelete=false;
+			addgroupsdelete=false;
 			
 			$(groupsform).hide();
 			$(friendsform).show();
@@ -186,44 +186,54 @@
 				});
 			}
 			
-			
-			
-			
-			if (add_labels_friends() != null) {
-				tags=$("#inpf_tags").val();
-				
-				$("li.delete-friend").click(function() {
-					var number=$(this).val();
-					//console.log($("#delete-friend-"+number+"").text());
-					tags=tags.replace(" send:"+$("#delete-friend-"+number+"").text(),"");
-					$("#delete-friend-"+number+"").remove();
+			function add_labels() {
+				if (add_labels_friends() == true) {
+					tags=$("#inpf_tags").val();
 					
-					$("#inpf_tags").val(tags);
-					friends[number]="";
-					addfriendsdelete=true;
-				});
-			} else {
-				addfriendsdelete=false;
+					$("li.delete-friend").click(function() {
+						var number=$(this).val();
+						//console.log($("#delete-friend-"+number+"").text());
+						tags=tags.replace(" send:"+$("#delete-friend-"+number+"").text(),"");
+						$("#delete-friend-"+number+"").remove();
+						
+						$("#inpf_tags").val(tags);
+						friends[number]="";
+						addfriendsdelete=true;
+					});
+				} else {
+					addfriendsdelete=false;
+				}
+				
+				if (add_labels_groups() == true) {
+					tags=$("#inpf_tags").val();
+					
+					$("li.delete-group").click(function() {
+						var number=$(this).val();
+						//console.log($("#delete-group-"+number+"").text());
+						tags=tags.replace(" for:"+$("#delete-group-"+number+"").text(),"");
+						$("#delete-group-"+number+"").remove();
+						$("#inpf_tags").val(tags);
+						groups[number]="";
+						addgroupsdelete=true;
+					});
+				} else {
+					addgroupsdelete=false;
+				}
 			}
 			
-			if (add_labels_groups() != null) {
-				tags=$("#inpf_tags").val();
-				
-				$("li.delete-group").click(function() {
-					var number=$(this).val();
-					//console.log($("#delete-group-"+number+"").text());
-					tags=tags.replace(" for:"+$("#delete-group-"+number+"").text(),"");
-					$("#delete-group-"+number+"").remove();
-					$("#inpf_tags").val(tags);
-					groups[number]="";
-					addgroupsdelete=true;
-				});
-			} else {
-				addgroupsdelete=false;
-			}
+			add_labels();
+			
 			
 			dropdowns();
 			
+			function print_labels() {
+				$("#inpf_tags").keyup(function() {
+					$("#friendsOrGroups").empty();
+					add_labels();
+				});
+			}
+			
+			print_labels();
 		});
 		  
 		]]>

@@ -19,6 +19,12 @@ var getFriends = null;
 
 var getGroups = null;
 
+var addfriendsdelete=false;
+var addgroupsdelete=false;
+
+var friends=[];
+var groups=[];
+
 var fields = ["booktitle","journal","volume","number","pages","publisher","address",
 		"month","day","edition","chapter","key","type","annote","note",
 		"howpublished","institution","organization",
@@ -404,7 +410,7 @@ function sendGroupToBibliography(groupname) {
 }
 
 function add_labels_friends() {
-	var friends=[];
+	friends=[];
 	
 	var tags=$("#inpf_tags").val();
 	
@@ -420,15 +426,16 @@ function add_labels_friends() {
 			$("#friendsOrGroups").append("<li tabindex=1 value=\""+i+"\" class=\"delete-friend\" id=\"delete-friend-"+i+"\"><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
 		} 
 		$('[data-toggle="popover"]').popover(); 
-		return friends;	
+		return true;	
 	} else {
-		return null;
+		friends=[];
+		return false;
 	}
 	
 }
 
 function add_labels_groups() {
-	var groups=[];
+	groups=[];
 	
 	var tags=$("#inpf_tags").val();
 	
@@ -444,9 +451,10 @@ function add_labels_groups() {
 			$("#friendsOrGroups").append("<li tabindex=1 value=\""+i+"\" class=\"delete-group\" id=\"delete-group-"+i+"\"><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
 		}
 		$('[data-toggle="popover"]').popover();
-		return groups;
+		return true;
 	} else {
-		return null;
+		groups=[];
+		return false;
 	}
 	
 }
@@ -470,6 +478,12 @@ $(document).ready(function() {
 	var misc = $("#post\\.resource\\.misc");
 	var miscFieldValues = [];
 	var miscError = miscFieldHasError();
+	
+	addfriendsdelete=false;
+	addgroupsdelete=false;
+	
+	friends=[];
+	groups=[];
 	
 	/*
 	 * functions
