@@ -43,10 +43,6 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
-import org.bibsonomy.util.XmlUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /** Scraper for the SLAC National Accelerator Laboratory
  * @author rja
@@ -60,70 +56,78 @@ public class SpiresScraper extends AbstractUrlScraper implements ReferencesScrap
 	private static final String info = "Gets publications from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
-	private static Pattern BRIEFBIBTEX_PATTERN = Pattern.compile("<a href=\"?(/spires/find/hep/www\\?.*?\\&FORMAT=WWWBRIEFBIBTEX)\"?>");
-	private static Pattern BIBTEX_PATTERN = Pattern.compile("<a href=\"(.*?)\".*?>BibTeX</a>");
-	
-	private static Pattern REFERENCES_URL_PATTERN = Pattern.compile("<a href=\"(.*)\">References</a>");
-	private static Pattern REFERENCES_PATTERN = Pattern.compile("(?s)<table>(.*)</table>");
-	private static Pattern CITEDBY_PATTERN = Pattern.compile("(?s)<table>(.*)</table>");
-	
+	private static final Pattern BRIEFBIBTEX_PATTERN = Pattern.compile("<a href=\"?(/spires/find/hep/www\\?.*?\\&FORMAT=WWWBRIEFBIBTEX)\"?>");
+	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<a href=\"(.*?)\".*?>BibTeX</a>");
+	private static final Pattern BIBTEX_DIV_PATTERN = Pattern.compile("<div class=\"pagebodystripemiddle\"><pre>(.+)</pre>", Pattern.DOTALL);
+
+	private static final Pattern REFERENCES_URL_PATTERN = Pattern.compile("<a href=\"(.*)\">References</a>");
+	private static final Pattern REFERENCES_PATTERN = Pattern.compile("(?s)<table>(.*)</table>");
+	private static final Pattern CITEDBY_PATTERN = Pattern.compile("(?s)<table>(.*)</table>");
+
 	static {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "slac.stanford.edu"), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "www-library.desy.de"), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "inspirehep.net"), AbstractUrlScraper.EMPTY_PATTERN));
 	}
-	
-	
+
+
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-			sc.setScraper(this);
-			
-			try {
-				final URL url = sc.getUrl();
-				
-				URL bibtexUrl = url;
-				if (!url.getQuery().contains(FORMAT_WWWBRIEFBIBTEX)) { 
-					//we are looking for some pattern in the source of the page
-					Matcher m = BRIEFBIBTEX_PATTERN.matcher(sc.getPageContent());
-					//if we do not find, we maybe find a link :-)
-					if (!m.find()) {
-						Matcher m2 = BIBTEX_PATTERN.matcher(sc.getPageContent());
-						if (!m2.find()) throw new ScrapingFailureException("no download link found");
-						bibtexUrl = new URL(bibtexUrl, m2.group(1));
-					} else {
-						bibtexUrl = new URL(url.getProtocol() + "://" + url.getHost() + m.group(1));
-					}
-				}
-				
-				final Document temp = XmlUtils.getDOM(bibtexUrl);
-				
-				//extract the bibtex snippet which is embedded in pre tags
-				String bibtex = null;
-				final NodeList nl = temp.getElementsByTagName("pre"); //get the pre tags (normally one)
-				for (int i = 0; i < nl.getLength(); i++) {
-					Node currNode = nl.item(i);
-					if (currNode.hasChildNodes()){
-						bibtex = currNode.getChildNodes().item(0).getNodeValue();	
-					}
-				}	
-				
-				/*
-				 * add URL
-				 */
-				bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", url.toString());
-				
-				//-- bibtex string may not be empty
-				if (bibtex != null && ! "".equals(bibtex)) {
-					sc.setBibtexResult(bibtex);
-					return true;
-				}else
-					throw new ScrapingFailureException("getting bibtex failed");
+		sc.setScraper(this);
 
-				
-			} catch (IOException e) {
-				throw new InternalFailureException(e);
+		try {
+			final URL url = sc.getUrl();
+
+			URL bibtexUrl = url;
+			if (!url.getQuery().contains(FORMAT_WWWBRIEFBIBTEX)) { 
+				//we are looking for some pattern in the source of the page
+				final Matcher m = BRIEFBIBTEX_PATTERN.matcher(sc.getPageContent());
+				//if we do not find, we maybe find a link :-)
+				if (!m.find()) {
+					final Matcher m2 = BIBTEX_PATTERN.matcher(sc.getPageContent());
+					if (!m2.find()) throw new ScrapingFailureException("no download link found");
+					bibtexUrl = new URL(bibtexUrl, m2.group(1));
+				} else {
+					bibtexUrl = new URL(url.getProtocol() + "://" + url.getHost() + m.group(1));
+				}
 			}
+
+			String bibtex = getBibTeX(bibtexUrl);	
+
+			/*
+			 * add URL
+			 */
+			bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", url.toString());
+
+			//-- bibtex string may not be empty
+			if (bibtex != null && ! "".equals(bibtex)) {
+				sc.setBibtexResult(bibtex);
+				return true;
+			}
+			throw new ScrapingFailureException("getting bibtex failed");
+
+
+		} catch (IOException e) {
+			throw new InternalFailureException(e);
+		}
 	}
+
+
+	/**
+	 * Retrieves HTML and extracts BibTeX
+	 * @param bibtexUrl
+	 * @return
+	 * @throws IOException
+	 */
+	private static String getBibTeX(final URL bibtexUrl) throws IOException {
+		final String html = WebUtils.getContentAsString(bibtexUrl.toExternalForm());
+		final Matcher m = BIBTEX_DIV_PATTERN.matcher(html);
+		if (m.find()) {
+			return m.group(1);
+		}
+		return null;
+	}
+
 	private static String getReferenceURL(ScrapingContext sc) throws IOException{
 		Matcher m = REFERENCES_URL_PATTERN.matcher(WebUtils.getContentAsString(sc.getUrl()));
 		if(m.find())
@@ -135,7 +139,7 @@ public class SpiresScraper extends AbstractUrlScraper implements ReferencesScrap
 	public String getInfo() {
 		return info;
 	}
-	
+
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
@@ -162,14 +166,14 @@ public class SpiresScraper extends AbstractUrlScraper implements ReferencesScrap
 			Matcher m = CITEDBY_PATTERN.matcher(WebUtils.getContentAsString(url));
 			if(m.find())
 				citedby = m.group(1);
-			
+
 			if(citedby != null){
 				scrapingContext.setCitedBy(citedby);
 				return true;
 			}
-				
+
 		} catch (IOException e) {
-			
+
 			throw new InternalFailureException(e);
 		}
 		return false;
@@ -190,7 +194,7 @@ public class SpiresScraper extends AbstractUrlScraper implements ReferencesScrap
 				scrapingContext.setReferences(references);
 				return true;
 			}
-			
+
 		}catch(IOException e){
 			throw new InternalFailureException(e);
 		}
