@@ -73,8 +73,7 @@ public class JCBScraper extends GenericBibTeXURLScraper {
 	@Override
 	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		try {
-			// using url gives a FileNotFoundException, url.toString() doesn't
-			final String content = WebUtils.getContentAsString(url.toString(), cookies);
+			final String content = WebUtils.getContentAsString(url, cookies);
 			final Matcher m = BIBTEX_PATTERN.matcher(content);
 			if (m.find()) {
 				return SITE_URL + m.group(1);

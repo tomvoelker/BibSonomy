@@ -90,23 +90,24 @@ public class IEEEComputerSocietyScraper extends GenericBibTeXURLScraper {
 	 */
 	@Override
 	protected String getDownloadURL(final URL url, String cookies) throws ScrapingException {		
-		String urlString= url.toString();
-		if (urlString.endsWith(".pdf")) {
-			urlString = urlString.replaceAll(".pdf", "-reference.bib");
+		final String urlAsString = url.toString();
+		final String queryUrl;
+		if (urlAsString.endsWith(".pdf")) {
+			queryUrl = urlAsString.replaceAll(".pdf", "-reference.bib");
 		} else {
-			urlString = urlString.replaceAll("-.*", "-reference.bib");
+			queryUrl = urlAsString.replaceAll("-.*", "-reference.bib");
 		}
 		
 		try {
-			urlString = WebUtils.getContentAsString(urlString, cookies);
+			final String content = WebUtils.getContentAsString(queryUrl, cookies);
+			final Matcher m = REPLACE_PATTERN.matcher(content);
+			if (m.find()) {
+				return m.group(1);
+			}
 		} catch (IOException e) {
 			throw new ScrapingException(e);
 		}
 		
-		final Matcher m = REPLACE_PATTERN.matcher(urlString);
-		if (m.find()){
-			return m.group(1);
-		}
 		return null;	
 	}
 	

@@ -159,15 +159,15 @@ public class WebUtils {
 	/**
 	 * Reads from a URL and writes the content into a string.
 	 * 
-	 * @param inputURL the URL of the content.
+	 * @param url the URL of the content.
 	 * @param cookie a cookie which should be included in the header of the request send to the server
 	 * @return String which holds the page content.
 	 * @throws IOException 
 	 * 
 	 * 
 	 */
-	public static String getContentAsString(final URL inputURL, final String cookie) throws IOException {
-		return getContentAsString(inputURL.toString(), cookie, null, null);
+	public static String getContentAsString(final URL url, final String cookie) throws IOException {
+		return getContentAsString(url.toString(), cookie, null, null);
 	}
 
 	/**
@@ -322,17 +322,7 @@ public class WebUtils {
 			method.releaseConnection();
 		}
 	}
-	/**
-	 * Convenience method for getting the page content by passing the {@link HttpMethod} executed by the exisitng client.
-	 * It calls {@link WebUtils#getContentAsString(HttpClient, HttpMethod)}
-	 * @param method
-	 * @return content of the response
-	 * @throws HttpException
-	 * @throws IOException
-	 */
-	public static String getContentAsString(HttpMethod method) throws HttpException, IOException {
-		return getContentAsString(CLIENT, method);
-	}
+
 	/**
 	 * Convenience method for getting the page content by passing the {@link HttpClient} and the
 	 * {@link URI}. It calls {@link WebUtils#getContentAsString(HttpClient, HttpMethod)}.
@@ -385,7 +375,7 @@ public class WebUtils {
 	 * @param headers Additional headers to be added to the request
 	 * @return - The redirect URL if received HTTP Status Code 200, null otherwise.
 	 */
-	public static URL getRedirectUrl(final URL url, final List<Header> headers) {
+	protected static URL getRedirectUrl(final URL url, final List<Header> headers) {
 		final HttpMethod method = new GetMethod(url.toExternalForm());
 		if (present(headers)) {
 			for (final Header header : headers) {
