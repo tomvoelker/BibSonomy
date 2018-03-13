@@ -54,14 +54,11 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * @author rja
  */
 public class WebUtils {
-	private static final Log log = LogFactory.getLog(WebUtils.class);
 
 	/** maximal number of redirects to follow in {@link #getRedirectUrl(URL)} */
 	private static final int MAX_REDIRECT_COUNT = 10;
