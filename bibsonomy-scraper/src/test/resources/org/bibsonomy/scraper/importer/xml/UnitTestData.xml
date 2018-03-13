@@ -247,22 +247,6 @@
 		<BibFile>NberScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.nber.NberScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_94">
-		<TestDescription>PsyContent Scraper url test 1</TestDescription>
-		<URL>http://psycontent.metapress.com/content/wlr0r32161j4j150/?p=077ed4c087c541f8a7a3d80dc02f4290&amp;pi=0</URL>
-		<BibFile>PsyContentScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.psycontent.PsyContentScraper</Scraper>
-		<!-- 404 -->
-		<Enabled>false</Enabled>
-	</URLTest>
-	<URLTest id="url_95">
-		<TestDescription>PsyContent Scraper url test 2</TestDescription>
-		<URL>http://psycontent.metapress.com/content/q8224w5531843g47/?p=f138d31a46fb4998ac311bbed983ee05&amp;pi=0</URL>
-		<BibFile>PsyContentScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.psycontent.PsyContentScraper</Scraper>
-		<!-- 404 -->
-		<Enabled>false</Enabled>
-	</URLTest>
 	<URLTest id="url_99">
 		<TestDescription>eric Scraper url test</TestDescription>
 		<URL>http://www.eric.ed.gov/ERICWebPortal/Home.portal?_nfpb=true&amp;ERICExtSearch_SearchValue_0=star&amp;searchtype=keyword&amp;ERICExtSearch_SearchType_0=kw&amp;_pageLabel=RecordDetails&amp;objectId=0900019b802f2e44&amp;accno=EJ786532&amp;_nfls=false</URL>

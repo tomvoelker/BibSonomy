@@ -50,7 +50,6 @@ import org.bibsonomy.scraper.url.kde.biologists.BiologistsScraper;
 import org.bibsonomy.scraper.url.kde.biomed.BioMedCentralScraper;
 import org.bibsonomy.scraper.url.kde.bioone.BioOneScraper;
 import org.bibsonomy.scraper.url.kde.biorxiv.BioRxivScraper;
-import org.bibsonomy.scraper.url.kde.blackwell.BlackwellSynergyScraper;
 import org.bibsonomy.scraper.url.kde.bmj.BMJOpenScraper;
 import org.bibsonomy.scraper.url.kde.bmj.BMJScraper;
 import org.bibsonomy.scraper.url.kde.cambridge.CambridgeScraper;
@@ -129,7 +128,6 @@ import org.bibsonomy.scraper.url.kde.pion.PionScraper;
 import org.bibsonomy.scraper.url.kde.plos.PlosScraper;
 import org.bibsonomy.scraper.url.kde.proeuclid.ProjectEuclidScraper;
 import org.bibsonomy.scraper.url.kde.prola.ProlaScraper;
-import org.bibsonomy.scraper.url.kde.psycontent.PsyContentScraper;
 import org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper;
 import org.bibsonomy.scraper.url.kde.pubmedcentral.PubMedCentralScraper;
 import org.bibsonomy.scraper.url.kde.rsc.RSCScraper;
@@ -230,7 +228,10 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new UsenixScraper());
 		addScraper(new IucrScraper());
 		addScraper(new OSAScraper());
-		addScraper(new PsyContentScraper());
+		/*
+		 * rja, 2018-03-13: URLs no longer work
+		 */
+		//addScraper(new PsyContentScraper());
 		addScraper(new RSOCScraper());
 		/*
 		 * rja, 2018-03-06: now handled by HighwireScraper
