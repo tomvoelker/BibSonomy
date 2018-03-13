@@ -94,20 +94,6 @@
 		<BibFile>MathSciNetScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.mathscinet.MathSciNetScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_33">
-		<TestDescription>URL scraping test with a citation page from intersience wiley</TestDescription>
-		<URL>http://onlinelibrary.wiley.com/doi/10.1002/jemt.10338/abstract</URL>
-		<BibFile>WileyIntersienceScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_34">
-		<TestDescription>URL scraping test with a citation download page from intersience wiley</TestDescription>
-		<URL>http://www3.interscience.wiley.com/tools/citex?clienttype=1&amp;subtype=1&amp;mode=1&amp;version=1&amp;id=104530788&amp;redirect=/cgi-bin/abstract/104530788/ABSTRACT</URL>
-		<BibFile>WileyIntersienceScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
-		<Enabled>false</Enabled>
-		<AdditionalInfo>URL does not work any longer</AdditionalInfo>
-	</URLTest>
 	<URLTest id="url_36">
 		<TestDescription>URL scraping test with books from ieeexplore</TestDescription>
 		<URL>http://ieeexplore.ieee.org/xpl/bkabstractplus.jsp?bkn=5263132</URL>
@@ -289,12 +275,6 @@
 		<BibFile>AclScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acl.AclScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_109">
-		<TestDescription>URL scraping test with a abstract page (alternate URL pattern) from wiley</TestDescription>
-		<URL>http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2575.2007.00275.x/abstract</URL>
-		<BibFile>WileyIntersienceScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_111">
 		<TestDescription>URL test for metapress.com</TestDescription>
 		<URL>http://www.metapress.com/content/718t4p3m1380140t/</URL>
@@ -398,12 +378,6 @@
 		<!-- Scientificcommons is down, reason why is unnknown -->
 		<Enabled>false</Enabled>
 	</URLTest>
-	<URLTest id="url_146">
-		<TestDescription>URL scraping test with a citation page from intersience wiley</TestDescription>
-		<URL>http://onlinelibrary.wiley.com/book/10.1029/AR071</URL>
-		<BibFile>WileyIntersienceScraperUnitURLTest5.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_147">
 		<TestDescription>eprint url test</TestDescription>
 		<URL>http://orca.cf.ac.uk/5213/</URL>
@@ -454,14 +428,6 @@
 		<URL>http://www.worldcat.org/oclc/163641505</URL>
 		<BibFile>WorldCatScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_189">
-		<TestDescription>URL scraping test with a citation page from intersience wiley</TestDescription>
-		<URL>http://onlinelibrary.wiley.com/doi/10.1002/1521-4095(200011)12:22%3C1655::AID-ADMA1655%3E3.0.CO;2-2/abstract</URL>
-		<BibFile>WileyIntersienceScraperUnitURLTest4.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
-		<Enabled>true</Enabled>
-		<AdditionalInfo>Sometimes scraping won't work. Dunno why</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_190">
 		<TestDescription>test for PNASScraper</TestDescription>

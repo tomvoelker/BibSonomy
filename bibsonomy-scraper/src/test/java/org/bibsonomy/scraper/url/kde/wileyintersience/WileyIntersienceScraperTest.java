@@ -26,8 +26,10 @@
  */
 package org.bibsonomy.scraper.url.kde.wileyintersience;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -44,15 +46,9 @@ public class WileyIntersienceScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_33");
-	}
-
-	/**
-	 * starts URL test with id url_34
-	 */
-	@Test
-	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_34");
+		final String url = "http://onlinelibrary.wiley.com/doi/10.1002/jemt.10338/abstract";
+		final String resultFile = "WileyIntersienceScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, WileyIntersienceScraper.class, resultFile);
 	}
 
 	/**
@@ -60,22 +56,28 @@ public class WileyIntersienceScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_109");
+		final String url = "http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2575.2007.00275.x/abstract";
+		final String resultFile = "WileyIntersienceScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, WileyIntersienceScraper.class, resultFile);
 	}
-	
 	/**
 	 * starts URL test with id url_189
 	 */
 	@Test
 	public void url4TestRun(){
-		UnitTestRunner.runSingleTest("url_189");
-	}	
-	
+		final String url = "http://onlinelibrary.wiley.com/doi/10.1002/1521-4095(200011)12:22%3C1655::AID-ADMA1655%3E3.0.CO;2-2/abstract";
+		final String resultFile = "WileyIntersienceScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, WileyIntersienceScraper.class, resultFile);
+	}
 	/**
 	 * starts URL test with id url_189
+	 * Scraping books is currently not supported, as we can not find the BibTeX for the book, only for individual chapters.
 	 */
 	@Test
+	@Ignore
 	public void url5TestRun(){
-		UnitTestRunner.runSingleTest("url_146");
-	}	
+		final String url = "http://onlinelibrary.wiley.com/book/10.1029/AR071";
+		final String resultFile = "WileyIntersienceScraperUnitURLTest5.bib";
+		assertScraperResult(url, null, WileyIntersienceScraper.class, resultFile);
+	}
 }

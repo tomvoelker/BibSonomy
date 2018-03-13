@@ -28,7 +28,6 @@ package org.bibsonomy.scraper.url.kde.wileyintersience;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -37,7 +36,6 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.UrlUtils;
@@ -57,9 +55,9 @@ public class WileyIntersienceScraper extends AbstractUrlScraper {
 	private static final Pattern DOI_PATTERN = Pattern.compile("/doi/(.+)/.*");
 
 
-	private static final List<Pair<Pattern,Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), DOI_PATTERN)); 
+	private static final List<Pair<Pattern,Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), DOI_PATTERN)); 
 
-		
+
 	/**
 	 * Scraper for onlinelibrary.wiley.com
 	 * 
@@ -81,44 +79,39 @@ public class WileyIntersienceScraper extends AbstractUrlScraper {
 			 * build something like 
 			 * doi=10.1002%252F1521-4095%28200011%2912%253A22%253C1655%253A%253AAID-ADMA1655%253E3.0.CO%253B2-2&fileFormat=BIBTEX&hasAbstract=CITATION_AND_ABSTRACT
 			 */
-			final String postContent = "doi=" + UrlUtils.safeURIEncode(doi) + "&fileFormat=BIBTEX&hasAbstract=CITATION_AND_ABSTRACT";
-			final String url = SITE_URL + "documentcitationdownloadformsubmit";
-
+			final String url = "http://onlinelibrary.wiley.com/enhanced/getCitation/doi/" + doi;
+			final String postContent = "citation-type=bibtex&doi=" + UrlUtils.safeURIEncode(doi) + "&download-citation-abstract=" + UrlUtils.safeURIDecode("Citation & Abstract");
 			try {
 				final String cookies = WebUtils.getCookies(sc.getUrl());
 				final String bibtex = WebUtils.getContentAsString(url, cookies, postContent, null);
 				sc.setBibtexResult(bibtex);
 				return true;
-			}catch (MalformedURLException e) {
+			} catch (MalformedURLException e) {
 				throw new InternalFailureException(e);
-			}catch (IOException ioe){
+			} catch (IOException ioe){
 				throw new InternalFailureException(ioe);
 			}
 		}
 		return false;
 	}
 
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return patterns;
+		return PATTERNS;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
-	}
-
-	private boolean containsMandatoryEndnoteInformation(String endnote)
-	{
-		return 	endnote.contains("AU:") &&
-		endnote.contains("TI:") &&
-		endnote.contains("YR:");
 	}
 }
