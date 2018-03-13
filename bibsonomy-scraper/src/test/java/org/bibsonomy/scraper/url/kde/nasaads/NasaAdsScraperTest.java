@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.nasaads;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -44,7 +45,9 @@ public class NasaAdsScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_22");
+		final String url = "http://adsabs.harvard.edu/abs/1992AJ....104..340L";
+		final String resultFile = "NasaAdsScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, NasaAdsScraper.class, resultFile);
 	}
 
 	/**
@@ -52,7 +55,9 @@ public class NasaAdsScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_23");
+		final String url = "http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=1992AJ....104..340L&data_type=BIBTEX&db_key=AST&nocookieset=1";
+		final String resultFile = "NasaAdsScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, NasaAdsScraper.class, resultFile);
 	}
 	
 }

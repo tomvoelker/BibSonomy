@@ -53,6 +53,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * 
  * @author tst
  */
+@Deprecated
 public class BlackwellSynergyScraper extends AbstractUrlScraper {
 	
 	private static final String SITE_NAME = "Blackwell Synergy";

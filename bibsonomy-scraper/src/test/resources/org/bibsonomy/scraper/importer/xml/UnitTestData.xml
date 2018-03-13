@@ -94,18 +94,6 @@
 		<BibFile>MathSciNetScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.mathscinet.MathSciNetScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_22">
-		<TestDescription>URL test for publication pages from NASA ADS</TestDescription>
-		<URL>http://adsabs.harvard.edu/abs/1992AJ....104..340L</URL>
-		<BibFile>NasaAdsScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.nasaads.NasaAdsScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_23">
-		<TestDescription>URL test for bibtex pages from NASA ADS</TestDescription>
-		<URL>http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=1992AJ....104..340L&amp;data_type=BIBTEX&amp;db_key=AST&amp;nocookieset=1</URL>
-		<BibFile>NasaAdsScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.nasaads.NasaAdsScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_33">
 		<TestDescription>URL scraping test with a citation page from intersience wiley</TestDescription>
 		<URL>http://onlinelibrary.wiley.com/doi/10.1002/jemt.10338/abstract</URL>

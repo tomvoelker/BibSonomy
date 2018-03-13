@@ -203,7 +203,10 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new NatureArticleScraper());
 		addScraper(new NatureJournalScraper());
 		addScraper(new NatureNewsScraper());
-		addScraper(new BlackwellSynergyScraper());
+		/*
+		 * rja, 2018-08-06, was disabled long ago, URL does no longer exist
+		 */
+		//addScraper(new BlackwellSynergyScraper());
 		addScraper(new DBLPScraper());
 		addScraper(new BioMedCentralScraper());
 		addScraper(new WorldCatScraper());
