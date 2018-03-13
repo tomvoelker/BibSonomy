@@ -56,8 +56,8 @@ public class ACSScraper extends AbstractUrlScraper {
 	private static final String ACS_BIBTEX_PATH = "/action/downloadCitation";
 	private static final String ACS_BIBTEX_PARAMS = "?include=abs&format=bibtex&doi=";
 
-	private static Pattern PATTERN_GETTING_DOI_PATH = Pattern.compile(DOI_PATH + "([^\\?]*)");
-	private static Pattern PATTERN_GETTING_DOI_QUERY = Pattern.compile("doi=([^\\&]*)");
+	private static final Pattern PATTERN_GETTING_DOI_PATH = Pattern.compile(DOI_PATH + "([^\\?]*)");
+	private static final Pattern PATTERN_GETTING_DOI_QUERY = Pattern.compile("doi=([^\\&]*)");
 	
 	private static final Pattern pathPatternAbstract = Pattern.compile(ACS_PATH + ".*");
 	private static final Pattern pathPatternBibtex = Pattern.compile(ACS_BIBTEX_PATH + ".*");
