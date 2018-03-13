@@ -109,16 +109,16 @@ public class PsyContentScraper extends AbstractUrlScraper implements ReferencesS
 				if(bibtex != null) {
 					sc.setBibtexResult(bibtex);
 					return true;
-				} else {
-					throw new ScrapingFailureException("Conversion from Ris to bibtex failed");
-				}
-			} else {
-				throw new ScrapingFailureException("Ris download failed. Result is null!");
-			}
-		} else {
-			// missing id
-			throw new PageNotSupportedException("ID for donwload link is missing.");
+				} 
+				throw new ScrapingFailureException("Conversion from Ris to bibtex failed");
+
+			} 
+			throw new ScrapingFailureException("Ris download failed. Result is null!");
+
 		}
+		// missing id
+		throw new PageNotSupportedException("ID for donwload link is missing.");
+
 	}
 
 	/** FIXME: refactor
@@ -127,7 +127,7 @@ public class PsyContentScraper extends AbstractUrlScraper implements ReferencesS
 	 * @return
 	 * @throws IOException
 	 */
-	private String getContent(URL queryURL, String cookie) throws IOException {
+	private static String getContent(URL queryURL, String cookie) throws IOException {
 
 		HttpURLConnection urlConn = (HttpURLConnection) queryURL.openConnection();
 		urlConn.setAllowUserInteraction(false);
@@ -161,7 +161,7 @@ public class PsyContentScraper extends AbstractUrlScraper implements ReferencesS
 	 * @return
 	 * @throws IOException
 	 */
-	private String getCookies(URL queryURL) throws IOException {
+	private static String getCookies(URL queryURL) throws IOException {
 		HttpURLConnection urlConn = null;
 
 		urlConn = (HttpURLConnection) queryURL.openConnection();
