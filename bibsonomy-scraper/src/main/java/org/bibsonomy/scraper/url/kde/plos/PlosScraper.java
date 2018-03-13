@@ -161,7 +161,7 @@ public class PlosScraper extends GenericBibTeXURLScraper implements ReferencesSc
 	@Override
 	public boolean scrapeReferences(ScrapingContext sc) throws ScrapingException {
 		try{
-			Matcher m = REFERENCES.matcher(WebUtils.getContentAsString(sc.getUrl().toString()));
+			Matcher m = REFERENCES.matcher(WebUtils.getContentAsString(sc.getUrl()));
 			if(m.find()){
 				sc.setReferences(m.group(1));
 				return true;

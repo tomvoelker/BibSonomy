@@ -101,7 +101,7 @@ public class JAPScraper extends GenericBibTeXURLScraper implements ReferencesScr
 	@Override
 	public boolean scrapeReferences(ScrapingContext sc) throws ScrapingException {
 		try {
-			final Matcher m = REFERENCES_PATTERN.matcher(WebUtils.getContentAsString(sc.getUrl().toString()));
+			final Matcher m = REFERENCES_PATTERN.matcher(WebUtils.getContentAsString(sc.getUrl()));
 			if (m.find()) {
 				sc.setReferences(m.group(1));
 				return true;

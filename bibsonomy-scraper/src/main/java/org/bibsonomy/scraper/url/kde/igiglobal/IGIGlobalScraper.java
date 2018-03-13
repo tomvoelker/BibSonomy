@@ -61,16 +61,15 @@ public class IGIGlobalScraper extends AbstractUrlScraper {
 	private static final Pattern VIEWSTATE = Pattern.compile("<input type=\"hidden\" name=\"__VIEWSTATE\" id=\"__VIEWSTATE\" value=\"(.*?)\" />");
 	
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "igi-global.com"), AbstractUrlScraper.EMPTY_PATTERN));
-	
+
+	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
+
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
-		final URL url = scrapingContext.getUrl();
-		
 		try {
-			final String inRIS = getCitationInRIS(url.toString());
-			final RisToBibtexConverter con = new RisToBibtexConverter();
-			final String bibtex = con.toBibtex(inRIS);
+			final String inRIS = getCitationInRIS(scrapingContext.getUrl());
+			final String bibtex = RIS2BIB.toBibtex(inRIS);
 			
 			if (present(bibtex)) {
 				scrapingContext.setBibtexResult(bibtex);
@@ -82,30 +81,30 @@ public class IGIGlobalScraper extends AbstractUrlScraper {
 			throw new InternalFailureException(e);
 		}
 	}
-	private String getCitationInRIS(final String url) throws Exception {
+	private static String getCitationInRIS(final URL url) throws Exception {
 		final String html = WebUtils.getContentAsString(url);
 		
-		Matcher m_eventvalidation = EVENTVALIDATION.matcher(html);
+		final Matcher m_eventvalidation = EVENTVALIDATION.matcher(html);
 		String eventvalidation = "";
 		if(m_eventvalidation.find())
 			eventvalidation = m_eventvalidation.group(1);
 		
-		Matcher m_eventtarget = EVENTTARGET.matcher(html);
+		final Matcher m_eventtarget = EVENTTARGET.matcher(html);
 		String eventtarget = "";
 		if(m_eventtarget.find())
 			eventtarget = m_eventtarget.group(1);
 	
-		Matcher m_eventargument = EVENTARGUMENT.matcher(html);
+		final Matcher m_eventargument = EVENTARGUMENT.matcher(html);
 		String eventargument = "";
 		if (m_eventargument.find())
 			eventargument = m_eventargument.group(1);
 		
-		Matcher m_viewstate = VIEWSTATE.matcher(html);
+		final Matcher m_viewstate = VIEWSTATE.matcher(html);
 		String viewstate = "";
 		if(m_viewstate.find())
 			viewstate = m_viewstate.group(1);
 
-		final PostMethod post = new PostMethod(url);
+		final PostMethod post = new PostMethod(url.toExternalForm());
 		post.addParameters(new NameValuePair[] {
 				new NameValuePair("ctl00$ctl00$ucBookstoreSearchTop$txtSearch", "Search title, author, ISBN..."),
 				new NameValuePair("ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.x", "30"),

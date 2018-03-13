@@ -124,7 +124,7 @@ public class InspireScraper extends AbstractUrlScraper implements ReferencesScra
 	}
 
 	private static String getBibTeX(final URL bibtexUrl) throws IOException {
-		final String html = WebUtils.getContentAsString(bibtexUrl.toExternalForm());
+		final String html = WebUtils.getContentAsString(bibtexUrl);
 		final Matcher m = BIBTEX_DIV_PATTERN.matcher(html);
 		if (m.find()) {
 			return m.group(1);

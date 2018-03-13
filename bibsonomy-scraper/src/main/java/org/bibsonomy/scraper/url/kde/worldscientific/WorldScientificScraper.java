@@ -94,10 +94,9 @@ public class WorldScientificScraper extends GenericBibTeXURLScraper implements C
 	}
 
 	private static String abstractParser(URL url) {
-		String st_url = url.toString().replaceAll("ref|pdf|pdfonly", "abs");
-		Matcher m;
+		final String st_url = url.toString().replaceAll("ref|pdf|pdfonly", "abs");
 		try {
-			m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(st_url));
+			final Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(st_url));
 			if (m.find()) {
 				return m.group(1);
 			}
@@ -114,14 +113,10 @@ public class WorldScientificScraper extends GenericBibTeXURLScraper implements C
 	@Override
 	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
 		try {
-			String references = null;
-			String st_url = scrapingContext.getUrl().toString().replaceAll("abs|pdf|pdfonly", "ref");
-			Matcher m = REFERENCES_PATTERN.matcher(WebUtils.getContentAsString(st_url));
+			final String st_url = scrapingContext.getUrl().toString().replaceAll("abs|pdf|pdfonly", "ref");
+			final Matcher m = REFERENCES_PATTERN.matcher(WebUtils.getContentAsString(st_url));
 			if (m.find()) {
-				references = m.group(1);
-			}
-			if (references != null) {
-				scrapingContext.setReferences(references);
+				scrapingContext.setReferences(m.group(1));
 				return true;
 			}
 		} catch (IOException e) {
@@ -136,14 +131,10 @@ public class WorldScientificScraper extends GenericBibTeXURLScraper implements C
 	@Override
 	public boolean scrapeCitedby(ScrapingContext scrapingContext) throws ScrapingException {
 		try {
-			String citedby = null;
-			String st_url = scrapingContext.getUrl().toString().replaceAll("ref|pdf|pdfonly", "abs");
-			Matcher m = CITEDBY_PATTERN.matcher(WebUtils.getContentAsString(st_url));
+			final String st_url = scrapingContext.getUrl().toString().replaceAll("ref|pdf|pdfonly", "abs");
+			final Matcher m = CITEDBY_PATTERN.matcher(WebUtils.getContentAsString(st_url));
 			if (m.find()) {
-				citedby = m.group(1);
-			}
-			if (citedby != null) {
-				scrapingContext.setCitedBy(citedby);
+				scrapingContext.setCitedBy(m.group(1));
 				return true;
 			}
 		} catch (IOException e) {

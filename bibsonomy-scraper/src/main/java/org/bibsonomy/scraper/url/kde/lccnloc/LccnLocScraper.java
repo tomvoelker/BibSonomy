@@ -52,7 +52,7 @@ public class LccnLocScraper extends AbstractUrlScraper {
 	private static final String LCCN_HOST = "lccn.loc.gov";
 	private static final String CATALOG_HOST = "catalog.loc.gov";
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
-	private static final XMLDublinCoreToBibtexConverter converter = new XMLDublinCoreToBibtexConverter();
+	private static final XMLDublinCoreToBibtexConverter RIS2BIB = new XMLDublinCoreToBibtexConverter();
 	private static final Pattern p = Pattern.compile("id=\"permalink\" href=\"(.*)\">");
 	static {
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + LCCN_HOST), AbstractUrlScraper.EMPTY_PATTERN));
@@ -70,8 +70,8 @@ public class LccnLocScraper extends AbstractUrlScraper {
 				final String pageContent = WebUtils.getContentAsString(scrapingContext.getUrl());
 				Matcher m = p.matcher(pageContent);
 				if(m.find()) {
-					final String xml = WebUtils.getContentAsString(new URL(m.group(1).toString()) + "/dc");
-					String bibtexResult = converter.toBibtex(xml);
+					final String xml = WebUtils.getContentAsString(new URL(m.group(1) + "/dc"));
+					String bibtexResult = RIS2BIB.toBibtex(xml);
 					bibtexResult = BibTexUtils.addFieldIfNotContained(bibtexResult, "site-url", m.group(1).toString());
 					scrapingContext.setBibtexResult(bibtexResult);
 					return true;
@@ -82,7 +82,7 @@ public class LccnLocScraper extends AbstractUrlScraper {
 			 */
 			else if (scrapingContext.getUrl().toString().endsWith("/dc")) {
 				final String xml = WebUtils.getContentAsString(scrapingContext.getUrl());
-				String bibtexResult = converter.toBibtex(xml);
+				String bibtexResult = RIS2BIB.toBibtex(xml);
 				bibtexResult = BibTexUtils.addFieldIfNotContained(bibtexResult, "site-url", scrapingContext.getUrl().toString().replaceFirst("/dc", ""));
 				scrapingContext.setBibtexResult(bibtexResult);
 				return true;
@@ -92,7 +92,7 @@ public class LccnLocScraper extends AbstractUrlScraper {
 			 */
 			else if (!scrapingContext.getUrl().toString().endsWith("/dc")){
 				final String xml = WebUtils.getContentAsString(new URL(scrapingContext.getUrl().toString() + "/dc"));
-				String bibtexResult = converter.toBibtex(xml);
+				String bibtexResult = RIS2BIB.toBibtex(xml);
 				bibtexResult = BibTexUtils.addFieldIfNotContained(bibtexResult, "site-url", scrapingContext.getUrl().toString());
 				scrapingContext.setBibtexResult(bibtexResult);
 				return true;

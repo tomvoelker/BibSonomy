@@ -152,7 +152,7 @@ public class AandAScraper extends AbstractUrlScraper implements ReferencesScrape
 	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
 		String references = null;
 		try{
-			final Matcher m = pat_link_ref.matcher(WebUtils.getContentAsString(scrapingContext.getUrl().toString()));
+			final Matcher m = pat_link_ref.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
 			if (m.find()) {
 				String url = m.group(1).replace("/abs/", "/ref/");
 				Matcher m2 = pat_references.matcher(WebUtils.getContentAsString(url));

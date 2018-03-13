@@ -29,7 +29,6 @@ package org.bibsonomy.scraper.url.kde.ieee;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -85,13 +84,11 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 
 	private static final String EXPORT_ARNUM_URL = "http://ieeexplore.ieee.org/xpl/downloadCitations";
 	private static final String REFERENCE_ARNUM_URL = "http://ieeexplore.ieee.org/xpl/dwnldReferences?arnumber=";
-	private static final String CITEDBY_ARNUM_URL = "http://ieeexplore.ieee.org/xpl/abstractCitations.jsp?arnumber=";
 
 	private static final Pattern URL_PATTERN_BKN      = Pattern.compile("bkn=([^&]*)");
 	private static final Pattern URL_PATTERN_ARNUMBER = Pattern.compile("arnumber=([^&]*)");
 
 	private static final Pattern PAGE_PATTERN_ISBN = Pattern.compile("ISBN[^>]++>\\s++([\\dx]++)");
-	private static final Pattern CITEDBY_PATTERN = Pattern.compile("(?s)<ol id=\".*\" class=\"docs\">(.*)</ol>");
 	private static final Pattern REFERENCE_PATTERN = Pattern.compile("(?s)<body>(.*)</body>");
 
 
@@ -245,7 +242,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 				}
 			} */
 
-			if (title == null || title.equals("")) {
+			if (!ValidationUtils.present(title)) {
 				ident1 = "<title>";
 				ident2 = "</title>";
 				if (sc.getPageContent().contains(ident1) && sc.getPageContent().contains(ident2)) {
@@ -442,13 +439,12 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 	 */
 	@Override
 	public boolean scrapeCitedby(ScrapingContext scrapingContext) throws ScrapingException {
-		String citedBy = "";
-		String ids = extractID(scrapingContext.getUrl().toExternalForm());
+		final String id = extractID(scrapingContext.getUrl().toExternalForm());
 		try {
-			String url = "http://ieeexplore.ieee.org/rest/document/" + ids + "/citations";
-			citedBy = WebUtils.getContentAsString(url);
+			final String url = "http://ieeexplore.ieee.org/rest/document/" + id + "/citations";
+			final String citedBy = WebUtils.getContentAsString(url);
 
-			if (citedBy != ""){
+			if (ValidationUtils.present(citedBy)){
 				scrapingContext.setCitedBy(citedBy);
 				return true;
 			}

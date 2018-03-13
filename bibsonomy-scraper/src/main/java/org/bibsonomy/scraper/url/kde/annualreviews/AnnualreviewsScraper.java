@@ -39,6 +39,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -75,42 +76,28 @@ public class AnnualreviewsScraper extends AbstractUrlScraper {
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-
-		String doi = null;
-		String bibtex = null;
+		final String bibtex;
 
 		// get doi from path
 		Matcher doiMatcher = doiPattern.matcher(sc.getUrl().getPath());
 		if (doiMatcher.find()) {
-			doi = doiMatcher.group(1);
-		}
-
-		// check if doi is in path
-		if (doi != null) {
-			bibtex = download(doi, sc);
+			bibtex = download(doiMatcher.group(1));
 		} else {
-
 			// get doi from query
 
 			doiMatcher = doiPatternQuery.matcher(sc.getUrl().getQuery());
 			if (doiMatcher.find()) {
-				doi = doiMatcher.group(1);
-			}
-
-			if (doi != null) {
-				bibtex = download(doi, sc);
+				bibtex = download(doiMatcher.group(1));
 			} else {
-				throw new PageNotSupportedException("This page arjournals.annualreviews.org is not supported.");
+				throw new PageNotSupportedException("This page from arjournals.annualreviews.org is not supported.");
 			}
 		}
 
-		if (bibtex != null) {
+		if (ValidationUtils.present(bibtex)) {
 			sc.setBibtexResult(bibtex);
 			return true;
-		} else {
-			throw new ScrapingFailureException("Bibtex download failed. Can't scrape any bibtex.");
-		}
-
+		} 
+		throw new ScrapingFailureException("Bibtex download failed. Can't scrape any bibtex.");
 	}
 
 	/**
@@ -120,17 +107,13 @@ public class AnnualreviewsScraper extends AbstractUrlScraper {
 	 * @return reference as bibtex
 	 * @throws ScrapingException
 	 */
-	private String download(final String doi, final ScrapingContext sc) throws ScrapingException {
-		String bibtex = null;
+	private static String download(final String doi) throws ScrapingException {
 		final String downloadUrl = "http://" + HOST + DOWNLOAD_PATH_AND_QUERY + doi;
-
 		try {
-			bibtex = WebUtils.getContentAsString(downloadUrl);
+			return WebUtils.getContentAsString(downloadUrl);
 		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
 		}
-
-		return bibtex;
 	}
 
 	@Override

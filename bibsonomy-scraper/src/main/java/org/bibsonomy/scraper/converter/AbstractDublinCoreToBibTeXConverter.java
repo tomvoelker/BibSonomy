@@ -28,6 +28,7 @@ package org.bibsonomy.scraper.converter;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,6 +37,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.id.ISBNUtils;
 
 /**
@@ -93,6 +95,7 @@ public abstract class AbstractDublinCoreToBibTeXConverter implements BibtexConve
 	 * 
 	 * @param key the key to set for the map
 	 * @param value the value to set for the key in the map
+	 * @param language 
 	 * @param data the map itself
 	 */
 	protected static void addOrAppendField(final String key, final String value, final String language,  final Map<String, String> data) {
@@ -233,5 +236,25 @@ public abstract class AbstractDublinCoreToBibTeXConverter implements BibtexConve
 	 * @return the map to parse
 	 */
 	protected abstract Map<String, String> extractData(String dublinCore);
+
+	/**
+	 * @param url
+	 * @return <pre>null</pre>
+	 * @throws ScrapingException
+	 */
+	protected static String getDoiFromWebPage(URL url) throws ScrapingException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param url
+	 * @return <pre>null</pre>
+	 * @throws ScrapingException
+	 */
+	protected static String getDoiFromURL(URL url) throws ScrapingException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

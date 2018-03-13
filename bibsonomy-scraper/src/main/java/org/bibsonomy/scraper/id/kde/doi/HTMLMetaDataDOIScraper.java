@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.id.kde.doi;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
@@ -33,11 +35,11 @@ import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.HTMLMetaDataDublinCoreToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.id.DOIUtils;
 
@@ -78,8 +80,8 @@ public class HTMLMetaDataDOIScraper extends HTMLMetaDataDublinCoreToBibtexConver
 	
 	protected static String getDoiFromWebPage(URL url) throws ScrapingException {
 		try {
-			String content = WebUtils.getContentAsString(url.toString());
-			String doi = DOIUtils.extractDOI(content);
+			final String content = WebUtils.getContentAsString(url);
+			final String doi = DOIUtils.extractDOI(content);
 			if (present(doi)) {
 				return doi;
 			}
@@ -90,26 +92,31 @@ public class HTMLMetaDataDOIScraper extends HTMLMetaDataDublinCoreToBibtexConver
 	}
 	
 	protected static String getDoiFromURL(URL url) throws ScrapingException {
-		String doi = DOIUtils.extractDOI(url.toString());
+		final String doi = DOIUtils.extractDOI(url.toString());
 		if (present(doi)) {
 			return cleanDoiFromURL(doi);			
 		}
 		return null;
 	}
 
+	/**
+	 * @param url
+	 * @return
+	 * @throws ScrapingException
+	 */
 	protected String getDoiFromMetaData(URL url) throws ScrapingException{
 		try {
-			String content = WebUtils.getContentAsString(url.toString());
+			final String content = WebUtils.getContentAsString(url);
 
 			//try to get doi from google scholar 
-			Matcher m = DOIPATTERN_GOOGLESCHOLAR.matcher(content);
+			final Matcher m = DOIPATTERN_GOOGLESCHOLAR.matcher(content);
 			if (m.find()) {
 				return m.group(1);
 			}
 			
 			//try to get doi from dublin core
-			String doi = extractData(content).get("doi");
-			if (doi != null) {
+			final String doi = extractData(content).get("doi");
+			if (ValidationUtils.present(doi)) {
 				return doi;
 			}	
 		} catch (IOException e) {

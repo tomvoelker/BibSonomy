@@ -58,7 +58,7 @@ public class ScienceMagScraper extends GenericBibTeXURLScraper {
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		try {
-			final String content = WebUtils.getContentAsString(url.toString());
+			final String content = WebUtils.getContentAsString(url);
 			final Matcher m = BIBTEX_PATTERN.matcher(content);
 			if (m.find()) {
 				return "http://science." + SITE_HOST + m.group(1);

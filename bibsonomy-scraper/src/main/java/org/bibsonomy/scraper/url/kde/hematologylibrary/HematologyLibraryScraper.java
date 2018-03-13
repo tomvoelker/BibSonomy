@@ -85,7 +85,7 @@ public class HematologyLibraryScraper extends CitationManagerScraper implements 
 	@Override
 	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
 		try {
-			final Matcher m = REFERENCES_PATTERN.matcher(WebUtils.getContentAsString(scrapingContext.getUrl().toString()));
+			final Matcher m = REFERENCES_PATTERN.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
 			if (m.find()) {
 				scrapingContext.setReferences( m.group(1));
 				return true;

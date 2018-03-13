@@ -124,8 +124,8 @@ public class ATSScraper extends GenericRISURLScraper implements CitedbyScraper{
 	@Override
 	public boolean scrapeCitedby(ScrapingContext sc) throws ScrapingException {
 		try{
-			final Matcher m = CITEDBY.matcher(WebUtils.getContentAsString(sc.getUrl().toString()));
-			if(m.find()) {
+			final Matcher m = CITEDBY.matcher(WebUtils.getContentAsString(sc.getUrl()));
+			if (m.find()) {
 				sc.setCitedBy(m.group(1));
 				return true;
 			}			

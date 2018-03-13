@@ -86,7 +86,7 @@ public class AipScitationScraper extends GenericRISURLScraper{
 	
 	private static String abstractParser(URL url){
 		try{
-			Matcher m = abstractPattern.matcher(WebUtils.getContentAsString(url.toString()));
+			Matcher m = abstractPattern.matcher(WebUtils.getContentAsString(url));
 			if (m.find()) {
 				return m.group(1);
 			}

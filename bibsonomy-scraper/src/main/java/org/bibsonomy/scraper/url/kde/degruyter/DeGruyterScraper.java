@@ -26,69 +26,33 @@
  */
 package org.bibsonomy.scraper.url.kde.degruyter;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.RisToBibtexConverter;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 
 /**
  * @author Haile
  */
-public class DeGruyterScraper extends AbstractUrlScraper {
+public class DeGruyterScraper extends GenericRISURLScraper {
 	private static final String SITE_NAME = "De Gruyter";
 	private static final String SITE_URL = "http://www.degruyter.com/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	
-	private static final Pattern TAC = Pattern.compile("<input value=\"(.*)\" name=\"t:ac\" type=\"hidden\"/>");
-	private static final Pattern TFORMDATA = Pattern.compile("<input value=\"(H.*=)\" name=\"t:formdata\" type=\"hidden\"/>");
-	
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "degruyter.com"), AbstractUrlScraper.EMPTY_PATTERN));
-	
+
 	@Override
-	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
-		scrapingContext.setScraper(this);
-		final URL url = scrapingContext.getUrl();
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
+		return "http://" + url.getHost() +  url.getPath().replace("/", "$002f").replace("$002fview$002f", "/dg/cite:exportcitation/ris?t:ac=$002f");
 		
-		try {
-			final String inRIS = getCitationInRIS(url.toString());
-			final RisToBibtexConverter con = new RisToBibtexConverter();
-			final String bibtex = con.toBibtex(inRIS);
-			
-			if (present(bibtex)) {
-				scrapingContext.setBibtexResult(bibtex);
-				return true;
-			}
-			
-			throw new ScrapingFailureException("getting bibtex failed");
-		} catch (final IOException e) {
-			throw new InternalFailureException(e);
-		}
 	}
-	
-	private static String getCitationInRIS(final String stURL) throws IOException {
-		final URL url = new URL(stURL);
-		final String path = "http://" + url.getHost().toString() +  url.getPath().toString().replace("/", "$002f").replace("$002fview$002f", "/dg/cite:exportcitation/ris?t:ac=$002f");
-		
-		String contentAsString = WebUtils.getContentAsString(path);
-		return contentAsString;
-	}
-	
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
@@ -108,4 +72,6 @@ public class DeGruyterScraper extends AbstractUrlScraper {
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;
 	}
+
+
 }

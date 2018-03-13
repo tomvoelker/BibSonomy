@@ -75,7 +75,7 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 		
 		try {
 			// test if url is valid
-			WebUtils.getContentAsString(sc.getUrl().toString());
+			WebUtils.getContentAsString(sc.getUrl());
 		} catch (IOException e) {
 			// if not, try to solve the known citeseerx problem
 			String url = sc.getUrl().toString();

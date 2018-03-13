@@ -65,7 +65,7 @@ public class MendeleyScraper extends AbstractUrlScraper{
 		scrapingContext.setScraper(this);
 		final URL url = scrapingContext.getUrl();
 		try {
-			final String bibTex = WebUtils.getContentAsString(url.toString());
+			final String bibTex = WebUtils.getContentAsString(url);
 			final Matcher match = BIBTEX_PATTERN.matcher(bibTex);
 			if (!match.find()) {
 				this.log.error("can't parse publication");
