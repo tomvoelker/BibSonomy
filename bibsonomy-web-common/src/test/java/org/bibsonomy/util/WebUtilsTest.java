@@ -43,16 +43,25 @@ import org.junit.Test;
  */
 public class WebUtilsTest {
 	
+	/**
+	 * 
+	 */
 	@Test
 	public void testExtractCharset1() {
 		assertEquals(StringUtils.CHARSET_UTF_8, WebUtils.extractCharset("text/html; charset=utf-8; qs=1"));
 	}
 
+	/**
+	 * 
+	 */
 	@Test
 	public void testExtractCharset2() {
 		assertEquals("ISO-8859-1", WebUtils.extractCharset("text/html; charset=ISO-8859-1"));
 	}
 
+	/**
+	 * 
+	 */
 	@Test
 	public void testExtractCharset3() {
 		assertEquals("LATIN1", WebUtils.extractCharset("text/html; charset=latin1; qs=1"));
@@ -79,24 +88,36 @@ public class WebUtilsTest {
 		assertEquals("http://journals.cambridge.org/action/displayAbstract?fromPage=online&aid=5123720", WebUtils.getRedirectUrl(new URL("http://dx.doi.org/10.1017/S0952523808080978")).toString());
 	}
 	
+	/**
+	 * 
+	 */
 	@Test
 	public void testBuildCookieString() {
 		final List<String> cookies = new LinkedList<String>();
 		assertEquals("", WebUtils.buildCookieString(cookies));
 	}
 
+	/**
+	 * 
+	 */
 	@Test
 	public void testBuildCookieString1() {
 		final List<String> cookies = Arrays.asList("Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811; Path=/");
 		assertEquals("Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811; Path=/", WebUtils.buildCookieString(cookies));
 	}
 
+	/**
+	 * 
+	 */
 	@Test
 	public void testBuildCookieString3() {
 		final List<String> cookies = Arrays.asList("Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811", "Path=/");
 		assertEquals("Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811;Path=/", WebUtils.buildCookieString(cookies));
 	}
 	
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void testGetContentAsString1() throws Exception {
 		/*
@@ -110,6 +131,9 @@ public class WebUtilsTest {
 		assertTrue(s.length() < 1024 * 1024);
 	}
 	
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void testGetContentAsString2() throws Exception {
 		/*
