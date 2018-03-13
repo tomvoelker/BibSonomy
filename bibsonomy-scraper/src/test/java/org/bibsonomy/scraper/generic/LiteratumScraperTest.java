@@ -24,20 +24,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.liebert;
+package org.bibsonomy.scraper.generic;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #88 & #89 for LiebertScraper
+ * Scraper tests for sites running the online publishing software Atypon Literatum.
+ * 
  * @author wbi
  */
 @Category(RemoteTest.class)
-public class LiebertScraperTest {
+public class LiteratumScraperTest {
 	
 	/**
 	 * starts URL test with id url_88
@@ -46,7 +48,7 @@ public class LiebertScraperTest {
 	public void url1TestRun(){
 		final String url = "http://www.liebertonline.com/doi/abs/10.1089/152308604773934350";
 		final String resultFile = "LiebertScraperUnitURLTest1.bib";
-		assertScraperResult(url, null, LiebertScraper.class, resultFile);
+		assertScraperResult(url, null, LiteratumScraper.class, resultFile);
 	}
 	
 	/**
@@ -56,7 +58,7 @@ public class LiebertScraperTest {
 	public void url2TestRun(){
 		final String url = "http://www.liebertonline.com/action/showCitFormats?doi=10.1089%2F152308604773934350";
 		final String resultFile = "LiebertScraperUnitURLTest3.bib";
-		assertScraperResult(url, null, LiebertScraper.class, resultFile);
+		assertScraperResult(url, null, LiteratumScraper.class, resultFile);
 	}
 	
 	/**
@@ -66,7 +68,15 @@ public class LiebertScraperTest {
 	public void url3TestRun(){
 		final String url = "http://online.liebertpub.com/doi/abs/10.1089/teb.2007.0150";
 		final String resultFile = "LiebertScraperUnitURLTest2.bib";
-		assertScraperResult(url, null, LiebertScraper.class, resultFile);
+		assertScraperResult(url, null, LiteratumScraper.class, resultFile);
 	}
-
+	/**
+	 * new URL
+	 */
+	@Test
+	public void url4TestRun(){
+		final String url = "https://econtent.hogrefe.com/doi/abs/10.1027/1864-9335/a000179";
+		final String resultFile = "LiteratumScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, LiteratumScraper.class, resultFile);
+	}
 }

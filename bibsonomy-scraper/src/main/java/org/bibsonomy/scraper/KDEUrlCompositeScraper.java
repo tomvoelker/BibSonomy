@@ -102,7 +102,6 @@ import org.bibsonomy.scraper.url.kde.karlsruhe.BibliographyScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.UBKAScraper;
 import org.bibsonomy.scraper.url.kde.lccnloc.LccnLocScraper;
 import org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper;
-import org.bibsonomy.scraper.url.kde.liebert.LiebertScraper;
 import org.bibsonomy.scraper.url.kde.mathscinet.MathSciNetScraper;
 import org.bibsonomy.scraper.url.kde.mdpi.MDPIScraper;
 import org.bibsonomy.scraper.url.kde.mendeley.MendeleyScraper;
@@ -223,7 +222,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		 * http://www.isrl.uiuc.edu/ is not longer available
 		 */
 		//addScraper(new LangevScraper());
-		addScraper(new LiebertScraper());
 		addScraper(new NberScraper());
 		addScraper(new UsenixScraper());
 		addScraper(new IucrScraper());

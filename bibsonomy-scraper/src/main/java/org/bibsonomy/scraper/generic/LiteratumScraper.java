@@ -24,20 +24,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.liebert;
+package org.bibsonomy.scraper.generic;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -46,60 +48,66 @@ import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
+ * Scraper for sites running the online publishing software Atypon Literatum.
+ * 
+ * TODO: check whether this scraper should be moved to the generic package and not 
+ * be a subclass from {@link AbstractUrlScraper} - although that wo
+ * 
  * @author wbi
  */
-public class LiebertScraper extends AbstractUrlScraper {
-	private static final Log log = LogFactory.getLog(LiebertScraper.class);
+public class LiteratumScraper implements Scraper {
 
-	private static final String SITE_NAME = "Liebert Online";
-	private static final String LIEBERT_HOST_NAME  = "http://www.liebertonline.com";
-	private static final String SITE_URL  = LIEBERT_HOST_NAME+"/";
-	private static final String info = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
+	private static final Log log = LogFactory.getLog(LiteratumScraper.class);
 
-	private static final String LIEBERT_HOST1  = "liebertonline.com";
-	private static final String LIEBERT_HOST2  = "online.liebertpub.com";
-	private static final String LIEBERT_BIBTEX_DOWNLOAD_PATH = "/action/downloadCitation";
-	private static final String LIEBERT_BIBTEX_PARAMS = "?downloadFileName=bibsonomy&include=cit&format=bibtex&direct=on&doi=";
+	private static final String INFO = "This scraper parses publications from the following sites: ";
+
+	private static final String BIBTEX_DOWNLOAD_PATH = "/action/downloadCitation";
+	private static final String BIBTEX_PARAMS = "?downloadFileName=f&include=cit&format=bibtex&direct=on&doi=";
 
 	// to extract the abstract from the HTML
 	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div class=\"abstractSection.*?\">\\s*<p.*?>(.+?)</p>");
 
 	// e.g., http://www.liebertonline.com/doi/abs/10.1089/152308604773934350
+	private static final String PATH_DOI_ABS = "/doi/abs/";
 	private static final Pattern PATH_ABSTRACT_PATTERN = Pattern.compile("/doi/abs/(.+?)(\\?.+)?$");
 	// e.g., http://www.liebertonline.com/action/showCitFormats?doi=10.1089%2F152308604773934350
-	private static final Pattern PATH_CIT_PATTERN = Pattern.compile("/action/showCitFormats");
-	private static final Pattern PAQU_CIT_PATTERN = Pattern.compile("/action/showCitFormats\\?doi=(.+?)(&.+)?$");
+	private static final String PATH_ACTION_SHOW_CIT_FORMATS = "/action/showCitFormats";
+	private static final Pattern QUERY_DOI_PATTERN = Pattern.compile("doi=(.+?)(&.+)?$");
 
-	private static final Pattern HOST_PATTERN1 = Pattern.compile(".*?" + LIEBERT_HOST1);
-	private static final Pattern HOST_PATTERN2 = Pattern.compile(".*?" + LIEBERT_HOST2);
 
-	private static final List<Pair<Pattern,Pattern>> PATTERNS = new LinkedList<Pair<Pattern,Pattern>>();
+	private static final Set<String> HOST_NAMES = new HashSet<String>();
 	static {
-		PATTERNS.add(new Pair<Pattern, Pattern>(HOST_PATTERN1, PATH_ABSTRACT_PATTERN));
-		PATTERNS.add(new Pair<Pattern, Pattern>(HOST_PATTERN1, PATH_CIT_PATTERN));
-		PATTERNS.add(new Pair<Pattern, Pattern>(HOST_PATTERN2, PATH_ABSTRACT_PATTERN));
-		PATTERNS.add(new Pair<Pattern, Pattern>(HOST_PATTERN2, PATH_CIT_PATTERN));
+		HOST_NAMES.add("www.liebertonline.com");
+		HOST_NAMES.add("online.liebertpub.com");
+		HOST_NAMES.add("econtent.hogrefe.com");
 	}
+	private static final String HOST_NAMES_INFO = String.join(", ", HOST_NAMES);
 
+	
 	@Override
 	public String getInfo() {
-		return info;
+		return INFO + HOST_NAMES_INFO;
 	}
 
-	@Override
+	/**
+	 * 
+	 * @param sc
+	 * @return the scraped BibTeX
+	 * @throws ScrapingException
+	 */
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
 		final URL url = sc.getUrl();
 		// extract id (DOI) from URL
-		final String id = getId(url.toString());
+		final String id = getId(url);
 
 		if (ValidationUtils.present(id)) {
 			try {
-				final URL citURL = new URL(LIEBERT_HOST_NAME + LIEBERT_BIBTEX_DOWNLOAD_PATH + LIEBERT_BIBTEX_PARAMS + id.replaceAll("/", "%2F"));
+				final URL citUrl = new URL(url.getProtocol() + "://" + url.getHost() + BIBTEX_DOWNLOAD_PATH + BIBTEX_PARAMS + id.replaceAll("/", "%2F"));
 				// we need cookies for this publisher ...
 				final String cookies = WebUtils.getCookies(url);
-				final String bibResult = WebUtils.getContentAsString(citURL, cookies);
+				final String bibResult = WebUtils.getContentAsString(citUrl, cookies);
 
 				if (ValidationUtils.present(bibResult)) {
 					try {
@@ -115,7 +123,7 @@ public class LiebertScraper extends AbstractUrlScraper {
 			}
 
 		}
-		throw new ScrapingFailureException("getting bibtex failed");
+		throw new ScrapingFailureException("getting BibTeX failed (could not extract id)");
 	}
 
 	/**
@@ -124,19 +132,19 @@ public class LiebertScraper extends AbstractUrlScraper {
 	 * @param url
 	 * @return
 	 */
-	private static String getId(final String url) {
-		final Matcher m1 = PATH_ABSTRACT_PATTERN.matcher(url);
+	private static String getId(final URL url) {
+		final Matcher m1 = PATH_ABSTRACT_PATTERN.matcher(url.getPath());
 		if (m1.find()) {
 			return m1.group(1);
 		}
-		final Matcher m2 = PAQU_CIT_PATTERN.matcher(url);
+		final Matcher m2 = QUERY_DOI_PATTERN.matcher(url.getQuery());
 		if (m2.find()) {
 			return m2.group(1);
 		}
 		return null;
 	}
 
-	private static String getAbstract(final URL url, final String cookies) throws IOException{
+	private static String getAbstract(final URL url, final String cookies) throws IOException {
 		final String contentAsString = WebUtils.getContentAsString(url, cookies);
 		final Matcher m = ABSTRACT_PATTERN.matcher(contentAsString);
 		if (m.find()) {
@@ -145,19 +153,35 @@ public class LiebertScraper extends AbstractUrlScraper {
 		return null;
 	}
 
+
 	@Override
-	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return PATTERNS;
+	public boolean scrape(ScrapingContext sc) throws ScrapingException {
+		if (ValidationUtils.present(sc) && this.supportsScrapingContext(sc)) {
+			return this.scrapeInternal(sc);
+		}
+		return false;
 	}
 
 	@Override
-	public String getSupportedSiteName() {
-		return SITE_NAME;
+	public Collection<Scraper> getScraper() {
+		return Collections.<Scraper>singletonList(this);
 	}
 
 	@Override
-	public String getSupportedSiteURL() {
-		return SITE_URL;
+	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
+		return supportsUrl(scrapingContext.getUrl());
 	}
-
+	
+	/**
+	 * @param url
+	 * @return whether the URL is supported
+	 */
+	protected boolean supportsUrl(final URL url) {
+		if (ValidationUtils.present(url)) {
+			if (HOST_NAMES.contains(url.getHost())) {
+				return url.getPath().startsWith(PATH_DOI_ABS) || url.getPath().startsWith(PATH_ACTION_SHOW_CIT_FORMATS);
+			}
+		}
+		return false;
+	}
 }

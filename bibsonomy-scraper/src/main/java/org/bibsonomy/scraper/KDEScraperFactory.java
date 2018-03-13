@@ -32,6 +32,7 @@ import org.bibsonomy.scraper.generic.CoinsScraper;
 import org.bibsonomy.scraper.generic.DublinCoreScraper;
 import org.bibsonomy.scraper.generic.EprintScraper;
 import org.bibsonomy.scraper.generic.HighwireScraper;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 import org.bibsonomy.scraper.generic.UnAPIScraper;
 import org.bibsonomy.scraper.id.kde.doi.ContentNegotiationDOIScraper;
 import org.bibsonomy.scraper.id.kde.doi.DOIScraper;
@@ -86,6 +87,9 @@ public class KDEScraperFactory {
 		
 		// this scraper always crawls the content and thus accepts ALL URLs!
 		scraper.addScraper(new UnAPIScraper());
+		
+		// handles several sites
+		scraper.addScraper(new LiteratumScraper());
 		
 		//temporary solution to avoid manifold content download 
 		scraper.addScraper(new HighwireScraper());
