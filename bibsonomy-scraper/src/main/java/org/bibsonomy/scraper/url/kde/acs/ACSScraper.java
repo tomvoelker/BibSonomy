@@ -26,11 +26,12 @@
  */
 package org.bibsonomy.scraper.url.kde.acs;
 
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.generic.LiteratumScraper;
 
 /**
@@ -42,16 +43,8 @@ public class ACSScraper extends LiteratumScraper {
 	private static final String SITE_HOST = "pubs.acs.org";
 	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
 	private static final String SITE_INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME) + ".";
-
-	private static final Pattern PATH_PATTERN_ABSTRACT = Pattern.compile("/doi/(abs|pdf|full|pdfplus)/.*");
-	private static final Pattern PATH_PATTERN_BIBTEX   = Pattern.compile("/action/downloadCitation.*");
 	
-	private static final List<Pair<Pattern,Pattern>> PATTERNS = new LinkedList<Pair<Pattern,Pattern>>();
-	static {
-		final Pattern hostPattern = Pattern.compile(".*" + SITE_HOST);
-		PATTERNS.add(new Pair<Pattern, Pattern>(hostPattern, PATH_PATTERN_BIBTEX));
-		PATTERNS.add(new Pair<Pattern, Pattern>(hostPattern, PATH_PATTERN_ABSTRACT));
-	}
+	private static final List<Pair<Pattern,Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	@Override
 	public String getInfo() {
