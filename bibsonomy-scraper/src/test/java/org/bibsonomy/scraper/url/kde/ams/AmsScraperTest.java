@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.ams;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -33,7 +34,6 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -50,16 +50,11 @@ public class AmsScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_121");
+		final String url = "http://journals.ametsoc.org/doi/abs/10.1175/2008BAMS2375.1";
+		final String resultFile = "AmsScraperUnitURLTest.bib";
+		assertScraperResult(url, null, AmsScraper.class, resultFile);
 	}
 
-	/**
-	 * starts URL test with id url_122
-	 */
-	@Test
-	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_122");
-	}
 
 	@Test
 	public void testCitedby() throws Exception {

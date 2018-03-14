@@ -24,39 +24,46 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.ats;
+package org.bibsonomy.scraper.url.kde.emerald;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.CitedbyScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.LiteratumScraper;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.util.UrlUtils;
 
 /**
- * @author clemens
+ * This scraper supports download links from emeraldinsight.com
+ * 
+ * FIXME: currently does not work, as the server sends a 302 redirect response for the 
+ * POST request and the HttpClient does not support following redirects for POST requests.
+ * Needs to be handled by manually implementing the request handling using the HttpClient
+ * directly 
+ * 
+ * @author Mohammed Abed
  */
-public class ATSScraper extends LiteratumScraper implements CitedbyScraper {
-
-	private static final Log log = LogFactory.getLog(ATSScraper.class);
-	
-	private static final String SITE_NAME = "American Thoracic Society Journals";
-	private static final String SITE_HOST = "atsjournals.org";	
+public class EmeraldScraper extends LiteratumScraper {
+	private static final String SITE_NAME = "Emerald Publishing";
+	private static final String SITE_HOST = "emeraldinsight.com";
 	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
-	private static final String SITE_INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
-	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST),AbstractUrlScraper.EMPTY_PATTERN));
-	private static final Pattern CITEDBY = Pattern.compile("<div class=\"citedByEntry\">(.*)</div></div>");
-	
+	private static final String SITE_INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
+
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	@Override
+	protected String getPostContent(String doi) {
+		// include=abs&format=bibtex&direct=on&doi=
+		return "format=bibtex&include=abs&doi=" + UrlUtils.safeURIEncode(doi);
+	}
+	
+	@Override
+	protected boolean requiresCookie() {
+		return true;
+	}
+		@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
@@ -73,21 +80,7 @@ public class ATSScraper extends LiteratumScraper implements CitedbyScraper {
 
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return URL_PATTERNS;
+		return PATTERNS;
 	}
 
-	@Override
-	public boolean scrapeCitedby(ScrapingContext sc) throws ScrapingException {
-		try{
-			final Matcher m = CITEDBY.matcher(WebUtils.getContentAsString(sc.getUrl()));
-			if (m.find()) {
-				sc.setCitedBy(m.group(1));
-				return true;
-			}			
-		} catch (Exception e) {
-			log.error("error while getting cited by " + sc.getUrl().toString(), e);
-		}
-		return false;
-	}
 }
-

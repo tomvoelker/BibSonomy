@@ -28,7 +28,6 @@ package org.bibsonomy.scraper.url.kde.apha;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -59,25 +58,5 @@ public class APHAScraperTest {
 		assertScraperResult(url, null, APHAScraper.class, resultFile);
 	}
 
-	/**
-	 * starts URL test with id url_312 for the host
-	 * http://www.nrcresearchpress.com/
-	 */
-	@Test
-	public void url3TestRun() {
-		final String url = "http://www.nrcresearchpress.com/doi/abs/10.1139/o59-099";
-		final String resultFile = "APHAScraperUnitURLTest3.bib";
-		assertScraperResult(url, null, APHAScraper.class, resultFile);
-	}
 
-	/**
-	 * starts URL test with id url_230 for the host
-	 * http://www.emeraldinsight.com/
-	 */
-	@Test
-	public void url4TestRun() {
-		final String url = "http://www.emeraldinsight.com/doi/abs/10.1108/S1876-0562%282004%290000004009";
-		final String resultFile = "APHAScraperUnitURLTest4.bib";
-		assertScraperResult(url, null, APHAScraper.class, resultFile);
-	}
 }

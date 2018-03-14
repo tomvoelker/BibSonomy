@@ -26,80 +26,26 @@
  */
 package org.bibsonomy.scraper.url.kde.apha;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.RisToBibtexConverter;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.ValidationUtils;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 
 /**
- * This scraper supports download links from the following hosts
- * 1. ajph.aphapublications.org
- * 2. nrcresearchpress.com
- * 3. emeraldinsight.com
+ * This scraper supports download links from ajph.aphapublications.org
+ *
  * @author Mohammed Abed
  */
-public class APHAScraper extends AbstractUrlScraper {
-	/**
-	 * 
-	 */
-	private static final String ACTION_DOWNLOAD_CITATION = "/action/downloadCitation";
+public class APHAScraper extends LiteratumScraper {
 	private static final String SITE_NAME = "American Journal of PUBLIC HEALTH";
-	private static final String SITE_URL = "http://ajph.aphapublications.org/";
-	private static final String info = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
+	private static final String SITE_HOST = "ajph.aphapublications.org";
+	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 
-	private static final Pattern DOI_PATTERN_FROM_URL = Pattern.compile("/abs/(.+?)$");
-	private static final String AJPH_HOST = "ajph.aphapublications.org";
-	private static final String NRCRESEACHPRESS_HOST = "nrcresearchpress.com";
-	private static final String EMERALDINSIGHT_HOST = "emeraldinsight.com";
-	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
-	private static final Pattern DOI_PATTERN = Pattern.compile("/doi/abs");
-
-	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ AJPH_HOST), DOI_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ NRCRESEACHPRESS_HOST), DOI_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ EMERALDINSIGHT_HOST), DOI_PATTERN));
-	}
-
-	private final RisToBibtexConverter ris = new RisToBibtexConverter();
-
-	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
-
-		try {
-			final Matcher m = DOI_PATTERN_FROM_URL.matcher(sc.getUrl().toString());
-			if (m.find()) {
-				final String doi = m.group(1);
-				final String cookie = WebUtils.getCookies(sc.getUrl());
-				if (ValidationUtils.present(cookie)) {
-					final String host = sc.getUrl().getHost();
-					final String postData = "doi=" + doi + "&format=bibtex&include=abs";
-					final String bibtex = WebUtils.getContentAsString("http://" + host + ACTION_DOWNLOAD_CITATION, cookie, postData, null);
-
-					if (ValidationUtils.present(bibtex)) {
-						sc.setBibtexResult(bibtex);
-						return true;
-					}
-				}
-			}
-		} catch (final IOException ex) {
-			throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe APHA or NRC Researchpress is down.");
-		}
-
-		return false;
-	}
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	@Override
 	public String getSupportedSiteName() {
@@ -113,11 +59,11 @@ public class APHAScraper extends AbstractUrlScraper {
 
 	@Override
 	public String getInfo() {
-		return info;
+		return SITE_INFO;
 	}
 
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return patterns;
+		return PATTERNS;
 	}
 }

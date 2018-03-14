@@ -24,37 +24,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.ats;
+package org.bibsonomy.scraper.url.kde.hogrefe;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.CitedbyScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.LiteratumScraper;
-import org.bibsonomy.util.WebUtils;
 
 /**
- * @author clemens
+ * Scraper for hogrefe.com
+ * @author rja
  */
-public class ATSScraper extends LiteratumScraper implements CitedbyScraper {
+public class HogrefeScraper extends LiteratumScraper {
 
-	private static final Log log = LogFactory.getLog(ATSScraper.class);
-	
-	private static final String SITE_NAME = "American Thoracic Society Journals";
-	private static final String SITE_HOST = "atsjournals.org";	
+	private static final String SITE_NAME = "Hogrefe";
+	private static final String SITE_HOST = "econtent.hogrefe.com";
 	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
-	private static final String SITE_INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
-	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST),AbstractUrlScraper.EMPTY_PATTERN));
-	private static final Pattern CITEDBY = Pattern.compile("<div class=\"citedByEntry\">(.*)</div></div>");
+	private static final String SITE_INFO = "This scraper parses publications from " + href(SITE_URL, SITE_NAME) + ".";
+
+	private static final String PATH_DOI_ABS = "/doi/abs/";
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(
+			Pattern.compile(".*" + SITE_HOST), 
+			Pattern.compile(PATH_DOI_ABS + ".*")
+			));
+
+	@Override
+	public String getInfo() {
+		return SITE_INFO;
+	}
 	
+	@Override
+	protected boolean requiresCookie() {
+		return true;
+	}
 
 	@Override
 	public String getSupportedSiteName() {
@@ -67,27 +71,7 @@ public class ATSScraper extends LiteratumScraper implements CitedbyScraper {
 	}
 
 	@Override
-	public String getInfo() {
-		return SITE_INFO;
-	}
-
-	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return URL_PATTERNS;
-	}
-
-	@Override
-	public boolean scrapeCitedby(ScrapingContext sc) throws ScrapingException {
-		try{
-			final Matcher m = CITEDBY.matcher(WebUtils.getContentAsString(sc.getUrl()));
-			if (m.find()) {
-				sc.setCitedBy(m.group(1));
-				return true;
-			}			
-		} catch (Exception e) {
-			log.error("error while getting cited by " + sc.getUrl().toString(), e);
-		}
-		return false;
+		return PATTERNS;
 	}
 }
-

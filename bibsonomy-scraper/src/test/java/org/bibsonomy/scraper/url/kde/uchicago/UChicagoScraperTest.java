@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.uchicago;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,7 +43,9 @@ public class UChicagoScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_352");
+		final String url = "http://www.journals.uchicago.edu/doi/abs/10.1086/685556";
+		final String resultFile = "UChicagoScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, UChicagoScraper.class, resultFile);
 	}
 	
 	/**
@@ -50,6 +53,8 @@ public class UChicagoScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_353");
+		final String url = "http://www.journals.uchicago.edu/doi/full/10.1086/685557";
+		final String resultFile = "UChicagoScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, UChicagoScraper.class, resultFile);
 	}
 }

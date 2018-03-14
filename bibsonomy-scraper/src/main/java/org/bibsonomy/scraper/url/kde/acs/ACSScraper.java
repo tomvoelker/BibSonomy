@@ -26,123 +26,50 @@
  */
 package org.bibsonomy.scraper.url.kde.acs;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 
 /**
  * @author wbi
  */
-public class ACSScraper extends AbstractUrlScraper {
+public class ACSScraper extends LiteratumScraper {
 
 	private static final String SITE_NAME = "ACS";
-	private static final String SITE_URL = "http://www.acs.org/";
-	private static final String info = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
+	private static final String SITE_HOST = "pubs.acs.org";
+	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME) + ".";
 
-	private static final String ACS_HOST_NAME  = "http://pubs.acs.org";
-	private static final String DOI_PATH = "doi/(abs|pdf|full|pdfplus)/";
-	private static final String ACS_PATH = "/" + DOI_PATH;
-	private static final String ACS_BIBTEX_PATH = "/action/downloadCitation";
-	private static final String ACS_BIBTEX_PARAMS = "?include=abs&format=bibtex&doi=";
-
-	private static final Pattern PATTERN_GETTING_DOI_PATH = Pattern.compile(DOI_PATH + "([^\\?]*)");
-	private static final Pattern PATTERN_GETTING_DOI_QUERY = Pattern.compile("doi=([^\\&]*)");
+	private static final Pattern PATH_PATTERN_ABSTRACT = Pattern.compile("/doi/(abs|pdf|full|pdfplus)/.*");
+	private static final Pattern PATH_PATTERN_BIBTEX   = Pattern.compile("/action/downloadCitation.*");
 	
-	private static final Pattern pathPatternAbstract = Pattern.compile(ACS_PATH + ".*");
-	private static final Pattern pathPatternBibtex = Pattern.compile(ACS_BIBTEX_PATH + ".*");
-	
-	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
-	private static final Pattern URL_PATTERN_FOR_URL = Pattern.compile("URL = \\{ \n        (.*)\n    \n\\}");
-	
+	private static final List<Pair<Pattern,Pattern>> PATTERNS = new LinkedList<Pair<Pattern,Pattern>>();
 	static {
-		final Pattern hostPattern = Pattern.compile(".*" + "pubs.acs.org");
-		patterns.add(new Pair<Pattern, Pattern>(hostPattern, pathPatternBibtex));
-		patterns.add(new Pair<Pattern, Pattern>(hostPattern, pathPatternAbstract));
+		final Pattern hostPattern = Pattern.compile(".*" + SITE_HOST);
+		PATTERNS.add(new Pair<Pattern, Pattern>(hostPattern, PATH_PATTERN_BIBTEX));
+		PATTERNS.add(new Pair<Pattern, Pattern>(hostPattern, PATH_PATTERN_ABSTRACT));
 	}
 
 	@Override
 	public String getInfo() {
-		return info;
-	}
-
-	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
-		final URL citationURL = sc.getUrl();
-
-		String bibResult = null;
-
-		/*
-		 * http://pubs.acs.org/action/downloadCitation?doi=10.1021%2Fci049894n&include=abs&format=bibtex
-		 * 
-		 * Cookie: JSESSIONID=yyCNJ10bJFpTNTysSn2nNzxq1HdTRYky5ZK1gqJn19vhMvy3FkQv!-1004683069; SERVER=172.25.11.116:16092; pubs=OVWPXNS172.25.1.54CKKLW; appsrv=OVWPXNS172.23.10.162CKMLK; I2KBRCK=1; I2KBRCK=1; REQUESTIP=172.25.0.60
-		 */
-		try {
-			// get doi from url
-			String doi = null;
-			final Matcher matcherPath = PATTERN_GETTING_DOI_PATH.matcher(citationURL.toString());
-			if (matcherPath.find()) {
-				doi = matcherPath.group(2);
-			} else{
-				final Matcher matcherQuery = PATTERN_GETTING_DOI_QUERY.matcher(citationURL.toString());
-				if (matcherQuery.find()) {
-					doi = matcherQuery.group(1);
-				}
-			}
-			
-			if (doi != null){
-				bibResult = WebUtils.getContentAsString(ACS_HOST_NAME + ACS_BIBTEX_PATH + ACS_BIBTEX_PARAMS + doi);
-			}
-			
-		} catch (IOException ex) {
-			throw new InternalFailureException(ex);
-		}
-
-		/*
-		 * clean the bibtex for better format
-		 */
-		if (bibResult != null) {
-			Matcher m = URL_PATTERN_FOR_URL.matcher(bibResult);
-			if(m.find()) {
-				bibResult = bibResult.replaceAll(URL_PATTERN_FOR_URL.toString(), "URL = {" + m.group(1) + "}");
-			}
-			bibResult = bibResult.trim();
-			bibResult = bibResult.replaceAll("    ", "");
-			bibResult = bibResult.replaceAll("\n\n", "\n");
-			bibResult = bibResult.replaceAll("\\{ *\n", "{");
-			bibResult = bibResult.replaceAll("\n\\}(?!$)", "}");
-			bibResult = bibResult.replaceAll("\n,", ",");
-			
-			sc.setBibtexResult(bibResult);
-			return true;
-		}
-		throw new ScrapingFailureException("getting bibtex failed");
+		return SITE_INFO;
 	}
 
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return patterns;
+		return PATTERNS;
 	}
 
-	
 	@Override
 	public String getSupportedSiteName() {
-		return SITE_URL;
+		return SITE_NAME;
 	}
 
 	@Override
 	public String getSupportedSiteURL() {
-		return ACS_HOST_NAME;
+		return SITE_URL;
 	}
 }

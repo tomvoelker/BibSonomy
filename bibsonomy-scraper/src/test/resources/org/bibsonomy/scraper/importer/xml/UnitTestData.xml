@@ -257,18 +257,6 @@
 		<BibFile>JMLRScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.jmlr.JMLRScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_106">
-		<TestDescription>URL test for AnnualreviewsScraper</TestDescription>
-		<URL>http://www.annualreviews.org/doi/abs/10.1146/annurev.bioeng.6.040803.140250</URL>
-		<BibFile>AnnualreviewsScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.annualreviews.AnnualreviewsScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_107">
-		<TestDescription>URL test for AnnualreviewsScraper</TestDescription>
-		<URL>http://www.annualreviews.org/action/showCitFormats?doi=10.1146/annurev.bioeng.6.040803.140250</URL>
-		<BibFile>AnnualreviewsScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.annualreviews.AnnualreviewsScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_108">
 		<TestDescription>URL test for AclScraper</TestDescription>
 		<URL>http://www.aclweb.org/anthology-new/W/W04/W04-1806.pdf</URL>
@@ -326,18 +314,6 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper</Scraper>
 		<!-- getting 404 -->
 		<Enabled>false</Enabled>
-	</URLTest>
-	<URLTest id="url_121">
-		<TestDescription>Scraper test for citation page from ams.allenpress.com</TestDescription>
-		<URL>http://journals.ametsoc.org/doi/abs/10.1175/2008BAMS2375.1</URL>
-		<BibFile>AmsScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.ams.AmsScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_122">
-		<TestDescription>Scraper test for citation page from ams.allenpress.com</TestDescription>
-		<URL>http://journals.ametsoc.org/doi/abs/10.1175/2008BAMS2375.1</URL>
-		<BibFile>AmsScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.ams.AmsScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_124">
 		<TestDescription>Test for liinwww.ira.uka.de/bibliography</TestDescription>
@@ -464,12 +440,6 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.journalogy.JournalogyScraper</Scraper>
 		<Enabled>true</Enabled>
 	</URLTest>
-	<URLTest id="url_215">
-		<TestDescription>URL test for http://www.nejm.org/</TestDescription>
-		<URL>http://www.nejm.org/doi/full/10.1056/NEJMra1100109</URL>
-		<BibFile>NEJMScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.nejm.NEJMScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_216">
 		<TestDescription>Scraper for bibtex extraction from sourcecode</TestDescription>
 		<URL>http://www.bibsonomy.org/bibtex/29691ce71c1ad7bafafa63e301c4df140/maxirichter</URL>
@@ -529,12 +499,6 @@
 		<URL>http://www.fasebj.org/content/15/14/2565.abstract</URL>
 		<BibFile>FASEBJournalScraperUnitTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.faseb.FASEBJournalScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_228">
-		<TestDescription>URL test for AnnualreviewsScraper</TestDescription>
-		<URL>http://www.annualreviews.org/doi/full/10.1146/annurev-bioeng-071811-150124</URL>
-		<BibFile>AnnualreviewsScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.annualreviews.AnnualreviewsScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_232">
 		<TestDescription>Test for JNeurosciScraper</TestDescription>
@@ -625,18 +589,6 @@
 		<URL>http://www.dlib.org/dlib/may08/monnich/05monnich.html</URL>
 		<BibFile>DLibScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.dlib.DLibScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_273">
-		<TestDescription>Morgan Claypool Scraper</TestDescription>
-		<URL>http://www.morganclaypool.com/doi/abs/10.2200/S00334ED1V01Y201102WBE001</URL>
-		<BibFile>MorganClaypoolScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.morganclaypool.MorganClaypoolScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_274">
-		<TestDescription>Morgan Claypool Scraper</TestDescription>
-		<URL>http://www.morganclaypool.com/action/showCitFormats?doi=10.2200%2FS00334ED1V01Y201102WBE001</URL>
-		<BibFile>MorganClaypoolScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.morganclaypool.MorganClaypoolScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_281">
 		<TestDescription>test for Akademiai</TestDescription>
@@ -753,24 +705,6 @@
 		<URL>http://remotesensing.spiedigitallibrary.org/article.aspx?articleid=2099648</URL>
 		<BibFile>SpieDigitalLibraryScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.spiedigitallibrary.SpieDigitalLibraryScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_351">
-		<TestDescription>test for bio one website</TestDescription>
-		<URL>http://www.bioone.org/doi/abs/10.2113/gspalynol.32.1.1</URL>
-		<BibFile>BioOneScraperScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.bioone.BioOneScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_352">
-		<TestDescription>test for UChicago Journals website</TestDescription>
-		<URL>http://www.journals.uchicago.edu/doi/abs/10.1086/685556</URL>
-		<BibFile>UChicagoScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.uchicago.UChicagoScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_353">
-		<TestDescription>test for UChicago Journals website</TestDescription>
-		<URL>http://www.journals.uchicago.edu/doi/full/10.1086/685557</URL>
-		<BibFile>UChicagoScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.uchicago.UChicagoScraper</Scraper>
 	</URLTest>
 	<!-- TODO: where is the scraper?
 	<URLTest id="url_355">

@@ -33,7 +33,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #63 & #64 for DBLPScraper
+ * Scraper URL tests
  * @author wbi
  *
  */

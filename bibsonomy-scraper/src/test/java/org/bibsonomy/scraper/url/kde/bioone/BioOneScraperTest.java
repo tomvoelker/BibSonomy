@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.bioone;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -41,6 +42,8 @@ public class BioOneScraperTest {
 	 */
 	@Test
 	public void url1TestRun() {
-		UnitTestRunner.runSingleTest("url_351");
+		final String url = "http://www.bioone.org/doi/abs/10.2113/gspalynol.32.1.1";
+		final String resultFile = "BioOneScraperScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, BioOneScraper.class, resultFile);
 	}
 }

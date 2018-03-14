@@ -28,10 +28,6 @@ package org.bibsonomy.scraper.generic;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,55 +35,37 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for sites running the online publishing software Atypon Literatum.
  * 
- * TODO: check whether this scraper should be moved to the generic package and not 
- * be a subclass from {@link AbstractUrlScraper} - although that wo
- * 
- * @author wbi
+ * @author rja
  */
-public class LiteratumScraper implements Scraper {
+public abstract class LiteratumScraper extends AbstractUrlScraper {
 
 	private static final Log log = LogFactory.getLog(LiteratumScraper.class);
 
-	private static final String INFO = "This scraper parses publications from the following sites: ";
-
 	private static final String BIBTEX_DOWNLOAD_PATH = "/action/downloadCitation";
-	private static final String BIBTEX_PARAMS = "?downloadFileName=f&include=cit&format=bibtex&direct=on&doi=";
+	private static final String BIBTEX_PARAMS = "?include=abs&format=bibtex&direct=on&doi=";
+	// private static final String BIBTEX_PARAMS = "?downloadFileName=f&include=cit&format=bibtex&direct=on&doi=";
 
+	// to extract the DOI from the URL
+	private static final Pattern PATH_ABSTRACT_PATTERN = Pattern.compile("/doi/(abs|full|pdf|pdfplus)/(.+?)(\\?.+)?$");
+	private static final int PATH_ABSTRACT_PATTERN_DOI_GROUP = 2;
+	// to extract the DOI from the query
+	private static final Pattern QUERY_DOI_PATTERN = Pattern.compile("doi=(.+?)(&.+)?$");
+	private static final int QUERY_DOI_PATTERN_DOI_GROUP = 1;
 	// to extract the abstract from the HTML
 	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div class=\"abstractSection.*?\">\\s*<p.*?>(.+?)</p>");
+	private static final int ABSTRACT_PATTERN_ABSTRACT_GROUP = 1;
 
-	// e.g., http://www.liebertonline.com/doi/abs/10.1089/152308604773934350
-	private static final String PATH_DOI_ABS = "/doi/abs/";
-	private static final Pattern PATH_ABSTRACT_PATTERN = Pattern.compile("/doi/abs/(.+?)(\\?.+)?$");
-	// e.g., http://www.liebertonline.com/action/showCitFormats?doi=10.1089%2F152308604773934350
-	private static final String PATH_ACTION_SHOW_CIT_FORMATS = "/action/showCitFormats";
-	private static final Pattern QUERY_DOI_PATTERN = Pattern.compile("doi=(.+?)(&.+)?$");
-
-
-	private static final Set<String> HOST_NAMES = new HashSet<String>();
-	static {
-		HOST_NAMES.add("www.liebertonline.com");
-		HOST_NAMES.add("online.liebertpub.com");
-		HOST_NAMES.add("econtent.hogrefe.com");
-	}
-	private static final String HOST_NAMES_INFO = String.join(", ", HOST_NAMES);
-
-	
-	@Override
-	public String getInfo() {
-		return INFO + HOST_NAMES_INFO;
-	}
 
 	/**
 	 * 
@@ -95,26 +73,24 @@ public class LiteratumScraper implements Scraper {
 	 * @return the scraped BibTeX
 	 * @throws ScrapingException
 	 */
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
 		final URL url = sc.getUrl();
-		// extract id (DOI) from URL
-		final String id = getId(url);
+		final String doi = getDOI(url);
 
-		if (ValidationUtils.present(id)) {
+		if (ValidationUtils.present(doi)) {
 			try {
-				final URL citUrl = new URL(url.getProtocol() + "://" + url.getHost() + BIBTEX_DOWNLOAD_PATH + BIBTEX_PARAMS + id.replaceAll("/", "%2F"));
-				// we need cookies for this publisher ...
-				final String cookies = WebUtils.getCookies(url);
-				final String bibResult = WebUtils.getContentAsString(citUrl, cookies);
+				final String citUrl = url.getProtocol() + "://" + url.getHost() + BIBTEX_DOWNLOAD_PATH + BIBTEX_PARAMS + UrlUtils.safeURIEncode(doi);
+				final String cookies = getCookies(url);
+				final String bibtex = WebUtils.getContentAsString(citUrl, cookies, getPostContent(doi), null);
 
-				if (ValidationUtils.present(bibResult)) {
-					try {
-						sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(bibResult, "abstract", getAbstract(url, cookies)));
-					} catch (IOException e) {
-						log.error("error while scraping " + url, e);
-					}
+				if (ValidationUtils.present(bibtex)) {
+					// download and add abstract, if necessary
+					final String bibtexWithAbstract = addAbstract(bibtex, url, cookies);
+					// postprocess BibTeX
+					sc.setBibtexResult(postProcessBibtex(sc, bibtexWithAbstract));
 					return true;
 				}
 
@@ -127,61 +103,105 @@ public class LiteratumScraper implements Scraper {
 	}
 
 	/**
+	 * @param bibtex
+	 * @param url
+	 * @param cookies
+	 * @return the bibtex with the abstract added
+	 */
+	protected String addAbstract(final String bibtex, final URL url, final String cookies) {
+		if (downloadAbstract()) {
+			try {
+				return BibTexUtils.addFieldIfNotContained(bibtex, "abstract", getAbstract(url, cookies));
+			} catch (IOException e) {
+				log.warn("error while scraping the abstract for " + url, e);
+			}
+		}
+		return bibtex;
+	}
+
+	/**
+	 * @param url
+	 * @return
+	 * @throws IOException
+	 */
+	private String getCookies(final URL url) throws IOException {
+		// do we need cookies for this publisher?
+		if (requiresCookie()) {
+			return WebUtils.getCookies(url);
+		} 
+		return null;
+	}
+
+	/**
+	 * Override this method if a cookie must be retrieved before downloading BibTeX
+	 * @param url
+	 * @return <code>true</code> if cookie shall be downloaded
+	 */
+	protected boolean requiresCookie() {
+		return false;
+	}
+
+	/**
+	 * If the abstract is not contained in the BibTeX, this method should return <code>true</code>
+	 * such that it is downloaded separately.
+	 * 
+	 * @return <code>false</code>
+	 */
+	protected boolean downloadAbstract() {
+		return false;
+	}
+
+	/**
+	 * Override this if a HTTP POST request shall be made
+	 * @param doi
+	 * @return the string representing the content of the POST request's body
+	 */
+	protected String getPostContent(String doi) {
+		return null;
+	}
+
+	/**
 	 * Attempts to extract the id (DOI) from the URL.
 	 * 
 	 * @param url
 	 * @return
 	 */
-	private static String getId(final URL url) {
+	private static String getDOI(final URL url) {
 		final Matcher m1 = PATH_ABSTRACT_PATTERN.matcher(url.getPath());
 		if (m1.find()) {
-			return m1.group(1);
+			return m1.group(PATH_ABSTRACT_PATTERN_DOI_GROUP);
 		}
 		final Matcher m2 = QUERY_DOI_PATTERN.matcher(url.getQuery());
 		if (m2.find()) {
-			return m2.group(1);
+			return UrlUtils.safeURIDecode(m2.group(QUERY_DOI_PATTERN_DOI_GROUP));
 		}
 		return null;
 	}
 
-	private static String getAbstract(final URL url, final String cookies) throws IOException {
+	/**
+	 * @param url
+	 * @param cookies
+	 * @return the abstract
+	 * @throws IOException
+	 */
+	protected static String getAbstract(final URL url, final String cookies) throws IOException {
 		final String contentAsString = WebUtils.getContentAsString(url, cookies);
 		final Matcher m = ABSTRACT_PATTERN.matcher(contentAsString);
 		if (m.find()) {
-			return m.group(1).trim();
+			return m.group(ABSTRACT_PATTERN_ABSTRACT_GROUP).trim();
 		}
 		return null;
 	}
 
-
-	@Override
-	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if (ValidationUtils.present(sc) && this.supportsScrapingContext(sc)) {
-			return this.scrapeInternal(sc);
-		}
-		return false;
-	}
-
-	@Override
-	public Collection<Scraper> getScraper() {
-		return Collections.<Scraper>singletonList(this);
-	}
-
-	@Override
-	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
-		return supportsUrl(scrapingContext.getUrl());
-	}
-	
 	/**
-	 * @param url
-	 * @return whether the URL is supported
+	 * Override this method in case the scraped BibTeX needs to be "polished".
+	 * 
+	 * @param scrapingContext
+	 * @param bibtex
+	 * @return the postprocessed bibtex
 	 */
-	protected boolean supportsUrl(final URL url) {
-		if (ValidationUtils.present(url)) {
-			if (HOST_NAMES.contains(url.getHost())) {
-				return url.getPath().startsWith(PATH_DOI_ABS) || url.getPath().startsWith(PATH_ACTION_SHOW_CIT_FORMATS);
-			}
-		}
-		return false;
+	protected String postProcessBibtex(ScrapingContext scrapingContext, String bibtex) {
+		return bibtex;
 	}
+
 }

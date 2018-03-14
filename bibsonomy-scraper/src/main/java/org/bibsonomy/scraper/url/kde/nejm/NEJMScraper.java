@@ -26,36 +26,29 @@
  */
 package org.bibsonomy.scraper.url.kde.nejm;
 
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 
 /**
  * @author clemens
  */
-public class NEJMScraper extends GenericBibTeXURLScraper {
+public class NEJMScraper extends LiteratumScraper {
 
 	private static final String SITE_NAME = "The New England Journal of Medicine";
-	private static final String SITE_URL = "http://www.nejm.org";
-	private static final String INFO = "For references from the "+href(SITE_URL, SITE_NAME)+".";
-	
-	private static final String FORMAT_BIBTEX = "&format=bibtex";
-	
-	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "nejm.org"), AbstractUrlScraper.EMPTY_PATTERN));
-	
-	private static final Pattern pattern = Pattern.compile("doi/[^/]*/([^/]*/[^/#\\?]*)");
+	private static final String SITE_HOST = "nejm.org";
+	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_INFO = "For references from the " + href(SITE_URL, SITE_NAME) + ".";
+	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 
 	@Override
 	public String getInfo() {
-		return INFO;
+		return SITE_INFO;
 	}
 	
 	@Override
@@ -72,17 +65,4 @@ public class NEJMScraper extends GenericBibTeXURLScraper {
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
-
-	@Override
-	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
-		final Matcher matcher = pattern.matcher(url.toString());
-		if (matcher.find()) {
-			final String doi = matcher.group(1).replace("%2F", "/");
-			final String downloadUrl = SITE_URL+"/action/downloadCitation?doi=" + doi + "&include=cit";
-			return downloadUrl + FORMAT_BIBTEX;			
-		}
-		return null;
-	}
-
-
 }

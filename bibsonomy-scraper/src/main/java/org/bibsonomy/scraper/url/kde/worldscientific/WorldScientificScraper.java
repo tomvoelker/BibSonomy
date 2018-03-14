@@ -27,7 +27,6 @@
 package org.bibsonomy.scraper.url.kde.worldscientific;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -36,80 +35,57 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.CitedbyScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.scraper.generic.ExamplePrototype;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * @author Haile
  */
-public class WorldScientificScraper extends GenericBibTeXURLScraper implements CitedbyScraper, ReferencesScraper {
+public class WorldScientificScraper extends LiteratumScraper implements CitedbyScraper, ReferencesScraper, ExamplePrototype {
 
 	private static final Log log = LogFactory.getLog(WorldScientificScraper.class);
 
 	private static final String SITE_NAME = "World Scientific";
-	private static final String SITE_URL = "http://www.worldscientific.com/";
-	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME);
-	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<>(Pattern.compile(".*" + "worldscientific.com"), AbstractUrlScraper.EMPTY_PATTERN));
-	private static final Pattern ID_PATTERN = Pattern.compile("\\d+.*");
+	private static final String SITE_HOST = "worldscientific.com";
+	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME);
+	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<>(Pattern.compile(".*" + SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+
 	private static final Pattern REFERENCES_PATTERN = Pattern.compile("(?s)<b>References:</b><ul>(.*)</ul>");
 	private static final Pattern CITEDBY_PATTERN = Pattern.compile("(?s)<div class=\"citedByEntry\">(.*)<!-- /fulltext content --></div>");
-	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div class=\"abstractSection\">(.*)</div><!-- /abstract content -->");
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.UrlScraper#getSupportedSiteName()
-	 */
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.UrlScraper#getSupportedSiteURL()
-	 */
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.Scraper#getInfo()
-	 */
 	@Override
 	public String getInfo() {
-		return INFO;
+		return SITE_INFO;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.AbstractUrlScraper#getUrlPatterns()
-	 */
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;
 	}
-
-	private static String abstractParser(URL url) {
-		final String st_url = url.toString().replaceAll("ref|pdf|pdfonly", "abs");
-		try {
-			final Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(st_url));
-			if (m.find()) {
-				return m.group(1);
-			}
-		} catch (IOException e) {
-			log.error("error while scraping abstract" + url, e);
-		}
-
-		return null;
+	@Override
+	protected String postProcessBibtex(ScrapingContext sc, String bibtex) {
+		// removed XML remains (found in journal title of test case)
+		return bibtex.replace("&amp;", "\\&");
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
-	 */
+
 	@Override
 	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
 		try {
@@ -125,9 +101,6 @@ public class WorldScientificScraper extends GenericBibTeXURLScraper implements C
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.CitedbyScraper#scrapeCitedby(org.bibsonomy.scraper.ScrapingContext)
-	 */
 	@Override
 	public boolean scrapeCitedby(ScrapingContext scrapingContext) throws ScrapingException {
 		try {
@@ -143,28 +116,4 @@ public class WorldScientificScraper extends GenericBibTeXURLScraper implements C
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
-	 */
-	@Override
-	protected String getDownloadURL(URL url, String cookies) throws ScrapingException {
-		String id = null;
-		String bibtex_url = "http://" + url.getHost() + "/action/downloadCitation?format=bibtex&doi=";
-
-		Matcher m = ID_PATTERN.matcher(url.toString());
-		if (m.find()) {
-			id = m.group();
-		}
-
-		if (id == null) {
-			return null;
-		}
-
-		return bibtex_url + id;
-	}
-
-	@Override
-	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
-		return BibTexUtils.addFieldIfNotContained(bibtex, "abstract", abstractParser(scrapingContext.getUrl()));
-	}
 }

@@ -24,9 +24,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.bioone;
+package org.bibsonomy.scraper.url.kde.liebert;
 
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -35,15 +35,44 @@ import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.generic.LiteratumScraper;
 
 /**
- * @author Mohammed Abed
+ * Scraper for sites running the online publishing software Atypon Literatum.
+ * 
+ * TODO: check whether this scraper should be moved to the generic package and not 
+ * be a subclass from {@link AbstractUrlScraper} - although that wo
+ * 
+ * @author rja
  */
-public class BioOneScraper extends LiteratumScraper {
+public class LiebertScraper extends LiteratumScraper {
 
-	private static final String SITE_NAME = "Bio One Research Evolved";
-	private static final String SITE_HOST = "bioone.org";
+	private static final String SITE_NAME = "Liebert Online";
+	private static final String SITE_HOST = "www.liebertonline.com";
+	private static final String SITE_HOST2 = "online.liebertpub.com";
+
 	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
-	private static final String SITE_INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final String SITE_INFO = "This scraper parses publications from " + href(SITE_URL, SITE_NAME) + ".";
+
+	// e.g., http://www.liebertonline.com/doi/abs/10.1089/152308604773934350
+	private static final String PATH_DOI_ABS = "/doi/abs/";
+	// e.g., http://www.liebertonline.com/action/showCitFormats?doi=10.1089%2F152308604773934350
+	private static final String PATH_SHOWCITFORMATS = "/action/showCitFormats";
+
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern,Pattern>>();
+	static {
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST),  Pattern.compile(PATH_DOI_ABS + ".*")));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST2), Pattern.compile(PATH_DOI_ABS + ".*")));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST),  Pattern.compile(PATH_SHOWCITFORMATS + ".*")));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST2), Pattern.compile(PATH_SHOWCITFORMATS + ".*")));
+	}
+
+	@Override
+	protected boolean requiresCookie() {
+		return true;
+	}
+
+	@Override
+	public String getInfo() {
+		return SITE_INFO;
+	}
 
 	@Override
 	public String getSupportedSiteName() {
@@ -53,11 +82,6 @@ public class BioOneScraper extends LiteratumScraper {
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
-	}
-
-	@Override
-	public String getInfo() {
-		return SITE_INFO;
 	}
 
 	@Override

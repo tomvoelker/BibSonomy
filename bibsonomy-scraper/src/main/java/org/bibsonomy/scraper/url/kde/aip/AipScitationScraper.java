@@ -26,52 +26,38 @@
  */
 package org.bibsonomy.scraper.url.kde.aip;
 
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericRISURLScraper;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 
 
 /**
  * Scraper for scitation.aip.org
- * It supports following urls:
- * - http://scitation.aip.org/vsearch/servlet/VerityServlet?
- * - http://scitation.aip.org/getabs/servlet/GetCitation?
- * - http://jcp.aip.orgs
+ * 
  * @author tst
  *
  */
-public class AipScitationScraper extends GenericRISURLScraper{
-	private static final Log log = LogFactory.getLog(AipScitationScraper.class);
-	
+public class AipScitationScraper extends LiteratumScraper {
 	private static final String SITE_NAME = "AIP Scitation";
-	private static final String SITE_URL = "http://aip.scitation.org/";
-	private static final String INFO = "Extracts publications from " + href(SITE_URL, SITE_NAME) + ". Publications can be entered as a selected BibTeX snippet or by posting the page of the reference.";
-	private static final Pattern hostPattern = Pattern.compile(".*" + "scitation.org");
+	private static final String SITE_HOST = "aip.scitation.org";
+	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_INFO = "Extracts publications from " + href(SITE_URL, SITE_NAME) + ".";
+	private static final Pattern hostPattern = Pattern.compile(".*" + SITE_HOST);
 	private static final Pattern pathPattern = AbstractUrlScraper.EMPTY_PATTERN;
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(hostPattern, pathPattern));
-	private static final Pattern abstractPattern = Pattern.compile("<meta name=\"dc.Description\" content=\"(.*?)\"\\s*/>");
-	private static final Pattern doiPattern = Pattern.compile("/([^/]*/[^/]*)$");
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(hostPattern, pathPattern));
 	
 	@Override
 	public String getInfo() {
-		return INFO;
+		return SITE_INFO;
 	}
 	
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return patterns;
+		return PATTERNS;
 	}
 	
 	@Override
@@ -82,38 +68,5 @@ public class AipScitationScraper extends GenericRISURLScraper{
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
-	}
-	
-	private static String abstractParser(URL url){
-		try{
-			Matcher m = abstractPattern.matcher(WebUtils.getContentAsString(url));
-			if (m.find()) {
-				return m.group(1);
-			}
-		} catch (final Exception e) {
-			log.error("error while getting abstract for " + url, e);
-		}
-		return null;
-	}
-	
-	@Override
-	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
-		Matcher m = doiPattern.matcher(url.toString());
-		
-		if (m.find()) {
-			String doi = m.group(1);
-			return "http://" + url.getHost() + "/action/downloadCitation?format=ris&doi=" + doi;
-		}
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
-	 */
-	@Override
-	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
-		// add an abstract
-		String bibtex = BibTexUtils.addFieldIfNotContained(result, "abstract", abstractParser(sc.getUrl()));
-		return bibtex;
 	}
 }
