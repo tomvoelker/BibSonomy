@@ -29,17 +29,18 @@ package org.bibsonomy.scraper.url.kde.ieee;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig.Builder;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -109,30 +110,40 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 		 * For some reason we need to get the page first, otherwise we get a strange result.
 		 * As we might need the page content later on to extract the ISBN, we store it here.
 		 */
-		// using own client because I do not want to configure any client to allow circular redirects
-		final HttpClient client = WebUtils.getHttpClient();
-		client.getParams().setBooleanParameter(HttpClientParams.ALLOW_CIRCULAR_REDIRECTS, true);
+
+		// We have to proof the visit of several locations
+		final Builder defaultRequestConfig = WebUtils.getDefaultRequestConfig();
+		//we have to allow circular redirects to avoid an exception when we get temporary redirected to the login page
+		defaultRequestConfig.setCircularRedirectsAllowed(true);
+		final HttpClient client = WebUtils.getHttpClient(defaultRequestConfig.build());
+		// infinite redirect loops already prevented in WebUtils.getHttpClient()
 		// better get the page first
 		final String pageContent;
 		try {
 			pageContent = WebUtils.getContentAsString(client, url);
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
+		} catch (HttpException ex) {
+			throw new InternalFailureException(ex);
 		}
-		
+
 		String bibtex = null;
 		final String recordId = extractID(url);
 
 		if (ValidationUtils.present(recordId)) {
 			try {
 				// create a post method
-				final PostMethod method = new PostMethod(EXPORT_ARNUM_URL);
-				method.addParameter("citations-format", "citation-abstract");
-				method.addParameter("fromPage", "");
-				method.addParameter("download-format", "download-bibtex");
-				method.addParameter("recordIds", recordId);
-
-				bibtex = WebUtils.getPostContentAsString(client, method);
+//				final HttpPost method = new HttpPost(EXPORT_ARNUM_URL);
+				// FIXME: this is how it should be done
+//				final List<NameValuePair> params = new ArrayList<NameValuePair>();
+//				params.add(new BasicNameValuePair("citations-format", "citation-abstract"));
+//				params.add(new BasicNameValuePair("fromPage", ""));
+//				params.add(new BasicNameValuePair("download-format", "download-bibtex"));
+//				params.add(new BasicNameValuePair("recordIds", recordId));
+//				method.setEntity(new UrlEncodedFormEntity(params));
+				final String postContent = "citations-format=citation-abstract&fromPage=&download-format=download-bibtex&recordIds=" + recordId;
+				
+				bibtex = WebUtils.getContentAsString(client, EXPORT_ARNUM_URL, null, postContent, null);
 			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
 			}
@@ -293,7 +304,6 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 			 *  In every standard page the css-class "bodyCopyBlackLargeSpaced"
 			 *  indicates the collection of all informations.
 			 * */
-			pres = null;
 			pres = doc.getElementsByTagName("p"); //get all <p>-Tags
 			for (int i=0; i<pres.getLength(); i++){
 				currNode = pres.item(i);
@@ -390,8 +400,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 			}
 
 			//-- kill special chars and add the year to bibtexkey
-			if ((isbn == null || !isbn.equals(""))
-					&& (year == null || !year.equals(""))) {
+			if (ValidationUtils.present(isbn) && ValidationUtils.present(year)) {
 				bibtexkey = isbn.replaceAll("-", "");
 				bibtexkey = bibtexkey.replaceAll("[^0-9A-Za-z]", "") + ":" + year;
 			}
@@ -463,17 +472,24 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 		final String ids = extractID(scrapingContext.getUrl().toExternalForm());
 		try {
 			// using own client because I do not want to configure any client to allow circular redirects
-			final HttpClient client = WebUtils.getHttpClient();
-			client.getParams().setBooleanParameter(HttpClientParams.ALLOW_CIRCULAR_REDIRECTS, true);
-			
+			final Builder defaultRequestConfig = WebUtils.getDefaultRequestConfig();
+			//we have to allow circular redirects to avoid an exception when we get temporary redirected to the login page
+			defaultRequestConfig.setCircularRedirectsAllowed(true);
+			final HttpClient client = WebUtils.getHttpClient(defaultRequestConfig.build());
+			// infinite redirect loops already prevented in WebUtils.getHttpClient()
 			final String cookies = WebUtils.getCookies(client, scrapingContext.getUrl());
-			final String pageContent = WebUtils.getContentAsString(client, new URI(REFERENCE_ARNUM_URL + ids, true), cookies);
+
+			final String pageContent = WebUtils.getContentAsString(client, new URI(REFERENCE_ARNUM_URL + ids), cookies);
 			final Matcher m = REFERENCE_PATTERN.matcher(pageContent);
 			if (m.find()) {
 				scrapingContext.setReferences(m.group(1));
 				return true;
 			}
 		} catch (IOException ex) {
+			throw new InternalFailureException(ex);
+		} catch (HttpException ex) {
+			throw new InternalFailureException(ex);
+		} catch (URISyntaxException ex) {
 			throw new InternalFailureException(ex);
 		}
 		return false;

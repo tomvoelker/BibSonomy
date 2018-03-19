@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.igiglobal;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -41,6 +42,8 @@ public class IGIGlobalScraperTest {
 	 */
 	@Test
 	public void urlTestRun() {
-		UnitTestRunner.runSingleTest("url_265");
+		final String url = "http://www.igi-global.com/article/linked-data-story-far/37496";
+		final String resultFile = "IGIGlobalScraperUnitURLTest.bib";
+		assertScraperResult(url, null, IGIGlobalScraper.class, resultFile);
 	}
 }

@@ -37,10 +37,9 @@ import java.net.URL;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import junit.framework.Assert;
 
 /**
  * Scraper URL tests #1 #134 #153 for ACMBasicSCraper  

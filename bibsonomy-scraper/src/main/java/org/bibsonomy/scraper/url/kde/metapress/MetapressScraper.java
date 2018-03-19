@@ -33,7 +33,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.HttpClient;
+import org.apache.http.HttpException;
+import org.apache.http.client.HttpClient;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -109,6 +110,8 @@ public class MetapressScraper extends AbstractUrlScraper {
 			} catch (MalformedURLException ex) {
 				throw new InternalFailureException(ex);
 			} catch (IOException ex) {
+				throw new InternalFailureException(ex);
+			} catch (HttpException ex) {
 				throw new InternalFailureException(ex);
 			}
 		}

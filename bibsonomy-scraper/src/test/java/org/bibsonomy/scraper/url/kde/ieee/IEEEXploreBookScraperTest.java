@@ -32,9 +32,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
 
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.bibsonomy.scraper.junit.RemoteTestAssert;
 import org.junit.Ignore;

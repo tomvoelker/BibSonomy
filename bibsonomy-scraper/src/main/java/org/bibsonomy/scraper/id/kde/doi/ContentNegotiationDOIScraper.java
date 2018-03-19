@@ -34,9 +34,8 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.http.HttpException;
+import org.apache.http.client.methods.HttpGet;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -124,8 +123,8 @@ public class ContentNegotiationDOIScraper implements Scraper {
 	 */
 	private static String getBibTexByCN(final URL url) throws InternalFailureException{
 		// create request with content negotiation
-		final HttpMethod getBibTexMethod = new GetMethod(url.toExternalForm());
-		getBibTexMethod.addRequestHeader("Accept", "application/x-bibtex");
+		final HttpGet getBibTexMethod = new HttpGet(url.toExternalForm());
+		getBibTexMethod.addHeader("Accept", "application/x-bibtex");
 			
 		// send request to dx.doi.org and receive resulting bibtex
 		try {
@@ -143,7 +142,7 @@ public class ContentNegotiationDOIScraper implements Scraper {
 			}
 			
 			return content;
-		} catch (final HttpException ex) {
+		} catch (HttpException ex) {
 			throw new InternalFailureException(ex);
 		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);

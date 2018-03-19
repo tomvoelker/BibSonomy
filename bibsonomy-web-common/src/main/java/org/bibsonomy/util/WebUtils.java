@@ -33,27 +33,30 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.HttpURL;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.cookie.CookiePolicy;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpClientParams;
-import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.Header;
+import org.apache.http.HttpException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.config.RequestConfig.Builder;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.message.BasicNameValuePair;
+import org.springframework.http.HttpMethod;
 
 /**
  * @author rja
@@ -93,15 +96,47 @@ public class WebUtils {
 	 * according to http://hc.apache.org/httpclient-3.x/threading.html
 	 * HttpClient is thread safe and we can use one instance for several requests.
 	 */
-	private static final MultiThreadedHttpConnectionManager CONNECTION_MANAGER = new MultiThreadedHttpConnectionManager();
-	static {
-		final HttpConnectionManagerParams params = new HttpConnectionManagerParams();
-		params.setConnectionTimeout(CONNECTION_TIMEOUT);
-		params.setSoTimeout(READ_TIMEOUT);
-		CONNECTION_MANAGER.setParams(params);
-	}
+	private static final PoolingHttpClientConnectionManager CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();
 	private static final HttpClient CLIENT = getHttpClient();
+	
+	/**
+	 * default config for http client 
+	 */
+	private static final RequestConfig DEFAULT_REQUEST_CONFIG = RequestConfig.custom()
+		.setConnectTimeout(CONNECTION_TIMEOUT)
+		.setSocketTimeout(READ_TIMEOUT)
+		.setConnectionRequestTimeout(READ_TIMEOUT)
+		.setMaxRedirects(MAX_REDIRECT_COUNT)
+		.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
 
+	/**
+	 * @return the default request config used for instances of http client
+	 */
+	public static Builder getDefaultRequestConfig() {
+		return RequestConfig.copy(DEFAULT_REQUEST_CONFIG);
+	}
+	/**
+	 * This method returns an instance of the HttpClient and should only be used
+	 * if the other methods that deliver direct results can not be used. Each 
+	 * call to this method should be documented with an explanation why it is 
+	 * necessary.
+	 * @param defaultRequestConfig 
+	 * 
+	 * @return the configured {@link HttpClient}
+	 */
+	public static HttpClient getHttpClient(final RequestConfig defaultRequestConfig) {
+		/*
+		 * configure client
+		 */
+		final HttpClientBuilder builder = HttpClientBuilder.create();
+		builder.setDefaultRequestConfig(defaultRequestConfig);
+		builder.setConnectionManager(CONNECTION_MANAGER);
+		builder.setUserAgent(USER_AGENT_PROPERTY_VALUE);
+		builder.setRedirectStrategy(new LaxRedirectStrategy()); // to enable following redirects for POST requests
+
+		// build client
+		return builder.build();
+	}
 
 	/**
 	 * This method returns an instance of the HttpClient and should only be used
@@ -112,18 +147,7 @@ public class WebUtils {
 	 * @return the configured {@link HttpClient}
 	 */
 	public static HttpClient getHttpClient() {
-		final HttpClient client = new HttpClient(CONNECTION_MANAGER);
-		final HttpClientParams params = client.getParams();
-		/*
-		 * configure client
-		 */
-		params.setParameter(HttpMethodParams.USER_AGENT, USER_AGENT_PROPERTY_VALUE);
-		params.setParameter(HttpClientParams.SO_TIMEOUT, Integer.valueOf(READ_TIMEOUT));
-		params.setConnectionManagerTimeout(READ_TIMEOUT);
-		params.setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
-		params.setBooleanParameter(HttpMethodParams.SINGLE_COOKIE_HEADER, true);
-		params.setIntParameter(HttpClientParams.MAX_REDIRECTS, MAX_REDIRECT_COUNT);
-		return client;
+		return getHttpClient(DEFAULT_REQUEST_CONFIG);
 	}
 
 
@@ -139,20 +163,20 @@ public class WebUtils {
 	 * @throws HttpException
 	 * @throws IOException
 	 */
-	public static String getPostContentAsString(final HttpClient client, final PostMethod method) throws HttpException, IOException {
-		final String postContent = getContentAsString(client, method);
-		//if the postContent successfully received, return
-		if (present(postContent)) return postContent;
-		//check if status is 303 See Other
-		if (method.getStatusCode() == HttpStatus.SC_SEE_OTHER) {
-			final Header location = method.getResponseHeader("Location");
-			if (present(location) && present(location.getValue())) {
-				final HttpURL uri = new HttpURL(new HttpURL(method.getURI().getURI()), location.getValue());
-				return getContentAsString(client, uri, null);
-			}
-		}
-		return null;
-	}
+	//	public static String getPostContentAsString(final HttpClient client, final HttpPost method) throws HttpException, IOException {
+	//		final String postContent = getContentAsString(client, method);
+	//		//if the postContent successfully received, return
+	//		if (present(postContent)) return postContent;
+	//		// check if status is 303 See Other
+	//		if (method.getStatusCode() == HttpStatus.SC_SEE_OTHER) {
+	//			final Header location = method.getResponseHeader("Location");
+	//			if (present(location) && present(location.getValue())) {
+	//				final HttpURL uri = new HttpURL(new HttpURL(method.getURI().getURI()), location.getValue());
+	//				return getContentAsString(client, uri, null);
+	//			}
+	//		}
+	//		return null;
+	//	}
 	/**
 	 * Reads from a URL and writes the content into a string.
 	 * 
@@ -193,25 +217,46 @@ public class WebUtils {
 	 * @throws IOException
 	 */
 	public static String getContentAsString(final String url, final String cookie, final String postData, final String visitBefore) throws IOException {
+		return getContentAsString(CLIENT, url, cookie, postData, visitBefore);
+	}
+	
+	/**
+	 * Reads from a URL and writes the content into a string.
+	 * @param client 
+	 * 
+	 * @param url
+	 * @param cookie
+	 * @param postData 
+	 * @param visitBefore
+	 * 
+	 * @return String which holds the page content.
+	 * 
+	 * @throws IOException
+	 */
+	public static String getContentAsString(final HttpClient client, final String url, final String cookie, final String postData, final String visitBefore) throws IOException {
 		if (present(visitBefore)) {
 			/*
 			 * visit URL to get cookies if needed
 			 */
-			final GetMethod get = new GetMethod(visitBefore);
+			final HttpGet get = new HttpGet(visitBefore);
 			try {
-				CLIENT.executeMethod(get);
+				client.execute(get);
 			} finally {
 				// required, see http://hc.apache.org/httpclient-3.x/threading.html
 				get.releaseConnection();
 			}
 		}
 
-		final HttpMethod method;
+		final HttpRequestBase method;
 		if (present(postData)) {
 			/*
 			 * do a POST request
 			 */
-			final List<NameValuePair> data = new ArrayList<NameValuePair>();
+			method = new HttpPost(url);
+			/*
+			 * prepare parameters
+			 */
+			final List<NameValuePair> params = new ArrayList<NameValuePair>();
 
 			for (final String s : postData.split(AMP_SIGN)) {
 				final String[] p = s.split(EQUAL_SIGN);
@@ -220,30 +265,29 @@ public class WebUtils {
 					continue;
 				}
 
-				data.add(new NameValuePair(p[0], p[1]));
+				params.add(new BasicNameValuePair(p[0], p[1]));
 			}
 
-			method = new PostMethod(url);
-			((PostMethod)method).setRequestBody(data.toArray(new NameValuePair[data.size()]));
+			((HttpPost)method).setEntity(new UrlEncodedFormEntity(params));
 		} else {
 			/*
 			 * do a GET request
 			 */
-			method = new GetMethod(url);
-			method.setFollowRedirects(true);
+			method = new HttpGet(url);
 		}
 
 		/*
 		 * set cookie
 		 */
 		if (present(cookie)) {
-			method.addRequestHeader(COOKIE_HEADER_NAME, cookie);
+			method.addHeader(COOKIE_HEADER_NAME, cookie);
 		}
 		try {
 			/*
 			 * do request
 			 */
-			final int status = CLIENT.executeMethod(method);
+			final HttpResponse response = client.execute(method);
+			final int status = response.getStatusLine().getStatusCode();
 			if (status != HttpStatus.SC_OK) {
 				throw new IOException(url + " returns: " + status);
 			}
@@ -257,8 +301,8 @@ public class WebUtils {
 			/*
 			 * collect response
 			 */
-			final String charset = extractCharset(method.getResponseHeader(CONTENT_TYPE_HEADER_NAME).getValue()); 
-			final StringBuilder content = inputStreamToStringBuilder(method.getResponseBodyAsStream(), charset);
+			final String charset = extractCharset(response.getFirstHeader(CONTENT_TYPE_HEADER_NAME).getValue()); 
+			final StringBuilder content = inputStreamToStringBuilder(response.getEntity().getContent(), charset);
 
 			final String string = content.toString();
 			if (string.length() > 0) {
@@ -305,12 +349,13 @@ public class WebUtils {
 	 * @throws IOException 
 	 * @throws HttpException 
 	 */
-	public static String getContentAsString(final HttpClient client, final HttpMethod method) throws HttpException, IOException {
+	public static String getContentAsString(final HttpClient client, final HttpGet method) throws HttpException, IOException {
 		try {
-			switch (client.executeMethod(method)) {
+			final HttpResponse response = client.execute(method);
+			switch (response.getStatusLine().getStatusCode()) {
 			case HttpStatus.SC_OK:
-				final String charset = extractCharset(method.getResponseHeader(CONTENT_TYPE_HEADER_NAME).getValue());
-				return inputStreamToStringBuilder(method.getResponseBodyAsStream(), charset).toString();
+				final String charset = extractCharset(response.getFirstHeader(CONTENT_TYPE_HEADER_NAME).getValue());
+				return inputStreamToStringBuilder(response.getEntity().getContent(), charset).toString();
 			default:
 				return null;
 			}
@@ -332,10 +377,9 @@ public class WebUtils {
 	 * @throws IOException
 	 */
 	public static String getContentAsString(final HttpClient client, final URI uri, final String cookie) throws HttpException, IOException {
-		final HttpMethod method = new GetMethod();
-		method.setURI(uri);
+		final HttpGet method = new HttpGet(uri);
 		if (present(cookie)) {
-			method.addRequestHeader(COOKIE_HEADER_NAME, cookie);
+			method.addHeader(COOKIE_HEADER_NAME, cookie);
 		}
 		return getContentAsString(client, method);
 	}
@@ -350,7 +394,7 @@ public class WebUtils {
 	 * @throws IOException
 	 */
 	public static String getContentAsString(HttpClient client, String uri) throws HttpException, IOException {
-		return getContentAsString(client, new GetMethod(uri));
+		return getContentAsString(client, new HttpGet(uri));
 	}
 
 	/**
@@ -373,16 +417,25 @@ public class WebUtils {
 	 * @return - The redirect URL if received HTTP Status Code 200, null otherwise.
 	 */
 	protected static URL getRedirectUrl(final URL url, final List<Header> headers) {
-		final HttpMethod method = new GetMethod(url.toExternalForm());
+		final HttpGet method = new HttpGet(url.toExternalForm());
 		if (present(headers)) {
 			for (final Header header : headers) {
-				method.addRequestHeader(header);
+				method.addHeader(header);
 			}
 		}
 		final HttpClient client = getHttpClient();
 
 		try {
-			client.executeMethod(method);
+			final HttpClientContext context = HttpClientContext.create();
+			final HttpResponse response = client.execute(method, context);
+			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+
+				// get final redirect URL, cf. https://stackoverflow.com/questions/1456987/
+				final List<URI> locations = context.getRedirectLocations();
+				if (locations != null) {
+					return locations.get(locations.size() - 1).toURL();
+				}
+			}
 		} catch (IOException e) {
 			// ignore
 		} finally {
@@ -390,16 +443,9 @@ public class WebUtils {
 			method.releaseConnection();
 		}
 
-		if (method.getStatusCode() != HttpStatus.SC_OK) return null;
-
-		try {
-			return new URL(method.getURI().getURI());
-		} catch (URIException | MalformedURLException e) {
-			// ignore, just return null
-		}
 		return null;
 	}
-	
+
 	/**
 	 * 
 	 * @param url
@@ -417,12 +463,12 @@ public class WebUtils {
 	 * @throws IOException
 	 */
 	public static String getCookies(final HttpClient client, final URL url) throws IOException {
-		final GetMethod get = new GetMethod(url.toString());
+		final HttpGet get = new HttpGet(url.toString());
 		final List<String> cookies = new ArrayList<String>();
 		try {
-			client.executeMethod(get);
+			final HttpResponse response = client.execute(get);
 
-			final Header[] responseHeaders = get.getResponseHeaders("Set-Cookie");
+			final Header[] responseHeaders = response.getHeaders("Set-Cookie");
 			for (int i = 0; i < responseHeaders.length; i++) {
 				cookies.add(responseHeaders[i].getValue().toString());
 			}
@@ -481,9 +527,12 @@ public class WebUtils {
 	 * <li>
 	 * </ul>
 	 *
+	 * FIXME: is this also required for HttpClient 4.x?
+	 * 
 	 * @param contentType
 	 * @return - The charset.
 	 */
+	@Deprecated
 	public static String extractCharset(final String contentType) {
 		/*
 		 * this typically looks like that:

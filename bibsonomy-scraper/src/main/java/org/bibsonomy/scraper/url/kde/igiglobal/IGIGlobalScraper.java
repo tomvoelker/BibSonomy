@@ -34,8 +34,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -43,6 +41,7 @@ import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -104,19 +103,28 @@ public class IGIGlobalScraper extends AbstractUrlScraper {
 		if(m_viewstate.find())
 			viewstate = m_viewstate.group(1);
 
-		final PostMethod post = new PostMethod(url.toExternalForm());
-		post.addParameters(new NameValuePair[] {
-				new NameValuePair("ctl00$ctl00$ucBookstoreSearchTop$txtSearch", "Search title, author, ISBN..."),
-				new NameValuePair("ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.x", "30"),
-				new NameValuePair("ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.y", "7"),
-				new NameValuePair("ctl00$ctl00$cphMain$cphSidebarRightTop$ucInfoSciOnDemandSidebar$txtSearchPhrase", "Full text search term(s)"),
-				new NameValuePair("__EVENTVALIDATION", eventvalidation),
-				new NameValuePair("__EVENTTARGET", eventtarget),
-				new NameValuePair("__EVENTARGUMENT", eventargument),
-				new NameValuePair("__VIEWSTATE", viewstate)
-		});
+		// FIXME: this is how it should be done ...
+//		final PostMethod post = new PostMethod(url.toExternalForm());
+//		post.addParameters(new NameValuePair[] {
+//				new NameValuePair("ctl00$ctl00$ucBookstoreSearchTop$txtSearch", "Search title, author, ISBN..."),
+//				new NameValuePair("ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.x", "30"),
+//				new NameValuePair("ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.y", "7"),
+//				new NameValuePair("ctl00$ctl00$cphMain$cphSidebarRightTop$ucInfoSciOnDemandSidebar$txtSearchPhrase", "Full text search term(s)"),
+//				new NameValuePair("__EVENTVALIDATION", eventvalidation),
+//				new NameValuePair("__EVENTTARGET", eventtarget),
+//				new NameValuePair("__EVENTARGUMENT", eventargument),
+//				new NameValuePair("__VIEWSTATE", viewstate)
+//		});
 
-		return WebUtils.getPostContentAsString(WebUtils.getHttpClient(), post);
+		final String postData = "ctl00$ctl00$ucBookstoreSearchTop$txtSearch=" + UrlUtils.safeURIEncode("Search title, author, ISBN...") + "&"
+				+ "ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.x=30&"
+				+ "ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.y=7&"
+				+ "ctl00$ctl00$cphMain$cphSidebarRightTop$ucInfoSciOnDemandSidebar$txtSearchPhrase=" + UrlUtils.safeURIEncode("Full text search term(s)") + "&"
+				+ "__EVENTVALIDATION=" + UrlUtils.safeURIEncode(eventvalidation) + "&"
+				+ "__EVENTTARGET=" + UrlUtils.safeURIEncode(eventtarget) + "&"
+				+ "__EVENTARGUMENT=" + UrlUtils.safeURIEncode(eventargument) + "&"
+				+ "__VIEWSTATE=" + UrlUtils.safeURIEncode(viewstate);
+		return WebUtils.getContentAsString(url.toExternalForm(), null, postData, null);
 	}
 	
 	@Override

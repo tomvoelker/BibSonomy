@@ -35,9 +35,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpException;
+import org.apache.http.client.HttpClient;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -215,8 +216,9 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 	 * @return extracted bibtex entries
 	 * @throws MalformedURLException
 	 * @throws IOException
+	 * @throws HttpException 
 	 */
-	private static StringBuffer extractBibtexEntries(HttpClient client, final String siteUrl, final String path) throws MalformedURLException, IOException{
+	private static StringBuffer extractBibtexEntries(HttpClient client, final String siteUrl, final String path) throws MalformedURLException, IOException, HttpException{
 		final StringBuffer bibtexEntries = new StringBuffer();
 		
 		//get content for siteUrl

@@ -2,13 +2,16 @@ package org.bibsonomy.scraper.url.kde.liebert;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
+import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * TODO: add documentation to this class
  *
  * @author rja
  */
+@Category(RemoteTest.class)
 public class LiebertScraperTest {
 
 	/**

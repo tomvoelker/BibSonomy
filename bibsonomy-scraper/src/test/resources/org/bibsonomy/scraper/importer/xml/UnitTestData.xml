@@ -578,12 +578,6 @@
 		<BibFile>HematologyLibraryScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.hematologylibrary.HematologyLibraryScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_265">
-		<TestDescription>IGIGlobalScraper Test</TestDescription>
-		<URL>http://www.igi-global.com/article/linked-data-story-far/37496</URL>
-		<BibFile>IGIGlobalScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.igiglobal.IGIGlobalScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_266">
 		<TestDescription>DLibScraper Test</TestDescription>
 		<URL>http://www.dlib.org/dlib/may08/monnich/05monnich.html</URL>
