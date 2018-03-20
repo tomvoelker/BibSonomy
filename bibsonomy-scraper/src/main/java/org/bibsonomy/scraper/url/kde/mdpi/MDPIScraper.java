@@ -29,6 +29,7 @@ package org.bibsonomy.scraper.url.kde.mdpi;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -36,13 +37,14 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.CitedbyScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -122,8 +124,12 @@ public class MDPIScraper extends AbstractUrlScraper implements CitedbyScraper{
 			final Matcher m = BIBTEX_PATTERN.matcher(pageContent);
 			if (m.find()) {
 				final String id = m.group(1);
-				// FIXME: avoid building POST data manually
-				final String postData = "articles_ids[]=" + UrlUtils.safeURIEncode(id) + "&export_format_top=bibtex&export_submit_top";
+				final List<NameValuePair> postData = new ArrayList<NameValuePair>(4);
+
+				postData.add(new BasicNameValuePair("articles_ids[]=", id));
+				postData.add(new BasicNameValuePair("export_format_top", "bibtex"));
+				postData.add(new BasicNameValuePair("export_submit_top", ""));
+
 
 				final String bibtex =  WebUtils.getContentAsString(SITE_URL + "export", null, postData, null);
 				if (present(bibtex)) {

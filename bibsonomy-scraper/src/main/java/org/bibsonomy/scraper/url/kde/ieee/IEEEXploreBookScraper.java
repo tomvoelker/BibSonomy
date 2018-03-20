@@ -31,6 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -39,8 +40,10 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpException;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig.Builder;
+import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -132,18 +135,13 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 
 		if (ValidationUtils.present(recordId)) {
 			try {
-				// create a post method
-//				final HttpPost method = new HttpPost(EXPORT_ARNUM_URL);
-				// FIXME: this is how it should be done
-//				final List<NameValuePair> params = new ArrayList<NameValuePair>();
-//				params.add(new BasicNameValuePair("citations-format", "citation-abstract"));
-//				params.add(new BasicNameValuePair("fromPage", ""));
-//				params.add(new BasicNameValuePair("download-format", "download-bibtex"));
-//				params.add(new BasicNameValuePair("recordIds", recordId));
-//				method.setEntity(new UrlEncodedFormEntity(params));
-				final String postContent = "citations-format=citation-abstract&fromPage=&download-format=download-bibtex&recordIds=" + recordId;
+				final List<NameValuePair> postData = new ArrayList<NameValuePair>(4);
+				postData.add(new BasicNameValuePair("citations-format", "citation-abstract"));
+				postData.add(new BasicNameValuePair("fromPage", ""));
+				postData.add(new BasicNameValuePair("download-format", "download-bibtex"));
+				postData.add(new BasicNameValuePair("recordIds", recordId));
 				
-				bibtex = WebUtils.getContentAsString(client, EXPORT_ARNUM_URL, null, postContent, null);
+				bibtex = WebUtils.getContentAsString(client, EXPORT_ARNUM_URL, null, postData, null);
 			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
 			}
@@ -203,7 +201,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 	}
 	/**
 	 * @param sc
-	 * @return
+	 * @return the resulting BibTeX
 	 * @throws ScrapingException
 	 */
 	public String ieeeBookScrape (ScrapingContext sc) throws ScrapingException {

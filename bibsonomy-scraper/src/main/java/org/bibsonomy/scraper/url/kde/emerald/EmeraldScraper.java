@@ -26,14 +26,16 @@
  */
 package org.bibsonomy.scraper.url.kde.emerald;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.generic.LiteratumScraper;
-import org.bibsonomy.util.UrlUtils;
 
 /**
  * This scraper supports download links from emeraldinsight.com
@@ -54,9 +56,13 @@ public class EmeraldScraper extends LiteratumScraper {
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	@Override
-	protected String getPostContent(String doi) {
-		// include=abs&format=bibtex&direct=on&doi=
-		return "format=bibtex&include=abs&doi=" + UrlUtils.safeURIEncode(doi);
+	protected List<NameValuePair> getPostContent(String doi) {
+		final ArrayList<NameValuePair> postData = new ArrayList<NameValuePair>(3);
+		postData.add(new BasicNameValuePair("include", "abs"));
+		postData.add(new BasicNameValuePair("format", "bibtex"));
+		postData.add(new BasicNameValuePair("direct", "on"));
+		postData.add(new BasicNameValuePair("doi", doi));
+		return postData;
 	}
 	
 	@Override

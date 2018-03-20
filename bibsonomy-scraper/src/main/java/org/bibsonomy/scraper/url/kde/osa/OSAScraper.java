@@ -28,6 +28,7 @@ package org.bibsonomy.scraper.url.kde.osa;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -35,6 +36,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
@@ -42,7 +45,6 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
@@ -85,7 +87,11 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 			} catch (final IOException ex) {
 				throw new InternalFailureException("An unexpected IO error has occurred. No Cookie has been generated.");
 			}
-			bibResult = WebUtils.getContentAsString(HTTP + OSA_HOST + OSA_BIBTEX_DOWNLOAD_PATH, cookie, getPostContent(id, "export_bibtex"), null);
+			final List<NameValuePair> postData = new ArrayList<NameValuePair>(2);
+			postData.add(new BasicNameValuePair("articles", id));
+			postData.add(new BasicNameValuePair("ArticleAction", "export_bibtex"));
+			
+			bibResult = WebUtils.getContentAsString(HTTP + OSA_HOST + OSA_BIBTEX_DOWNLOAD_PATH, cookie, postData, null);
 		} catch (MalformedURLException ex) {
 			throw new InternalFailureException(ex);
 		} catch (IOException ex) {
@@ -121,22 +127,6 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 		}
 		return null;
 	}
-
-	/**
-	 * @param id
-	 * @param actions
-	 * @return
-	 */
-	private static String getPostContent(String id, String actions) {
-		final StringBuilder sbContent = new StringBuilder();
-
-		sbContent.append("articles=");
-		sbContent.append(UrlUtils.safeURIEncode(id) + "&");
-		sbContent.append("ArticleAction=");
-		sbContent.append(UrlUtils.safeURIEncode(actions));
-		return sbContent.toString();
-	}
-
 
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {

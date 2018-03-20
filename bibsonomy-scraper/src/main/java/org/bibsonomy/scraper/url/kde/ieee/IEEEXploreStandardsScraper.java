@@ -28,21 +28,23 @@ package org.bibsonomy.scraper.url.kde.ieee;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.http.HttpException;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig.Builder;
+import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
@@ -90,7 +92,7 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 	/**
 	 * @param sc
 	 * @param id
-	 * @return
+	 * @return the resulting BibTeX
 	 * @throws InternalFailureException
 	 */
 	protected static String getBibTeX(final ScrapingContext sc, final String id) throws InternalFailureException {
@@ -104,15 +106,14 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 			final String url = sc.getUrl().toExternalForm();
 			WebUtils.getContentAsString(client, url);
 
-			// FIXME: this is how it should be done ...
+			// FIXME: this is copief from IEEEXploreBookScraper -> merge both scrapers?
 			//create a post method
 			//			final PostMethod method = new PostMethod(DOWNLOAD_URL);
-			//			method.addParameter("citations-format", "citation-abstract");
-			//			method.addParameter("fromPage", "");
-			//			method.addParameter("download-format", "download-bibtex");
-			//			method.addParameter("recordIds", id);
-
-			final String postData = "citations-format=citation-abstract&download-format=download-bibtex&recordIds=" + UrlUtils.safeURIEncode(id);
+			final List<NameValuePair> postData = new ArrayList<NameValuePair>(4);
+			postData.add(new BasicNameValuePair("citations-format", "citation-abstract"));
+			postData.add(new BasicNameValuePair("fromPage", ""));
+			postData.add(new BasicNameValuePair("download-format", "download-bibtex"));
+			postData.add(new BasicNameValuePair("recordIds", id));
 
 			// now get bibtex
 			String bibtex = WebUtils.getContentAsString(client, DOWNLOAD_URL, null, postData, null);

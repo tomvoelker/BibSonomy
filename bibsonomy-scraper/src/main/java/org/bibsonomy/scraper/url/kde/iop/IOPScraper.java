@@ -28,11 +28,14 @@ package org.bibsonomy.scraper.url.kde.iop;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -75,12 +78,14 @@ public class IOPScraper extends AbstractUrlScraper {
 		if (publicationIdMatcher.find()) {
 			final String pubId = publicationIdMatcher.group(1);
 
-			final String postArgs = "articleId=" + pubId +
-					"&exportFormat=iopexport_bib" + 
-					"&exportType=abs" +
-					"&navsubmit=Export+abstract";
+			final List<NameValuePair> postData = new ArrayList<NameValuePair>(4);
+			
+			postData.add(new BasicNameValuePair("articleId", pubId));
+			postData.add(new BasicNameValuePair("exportFormat", "iopexport_bib"));
+			postData.add(new BasicNameValuePair("exportType", "abs"));
+			postData.add(new BasicNameValuePair("navsubmit", "Export+abstract"));
 			try {
-				final String bibtex = WebUtils.getContentAsString("http://" + NEW_IOP_HOST + "/export", null, postArgs, null);
+				final String bibtex = WebUtils.getContentAsString("http://" + NEW_IOP_HOST + "/export", null, postData, null);
 				if (ValidationUtils.present(bibtex)) {
 					sc.setBibtexResult(bibtex.trim());
 					return true;

@@ -28,11 +28,13 @@ package org.bibsonomy.scraper.generic;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.NameValuePair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -156,7 +158,7 @@ public abstract class LiteratumScraper extends AbstractUrlScraper {
 	 * @param doi
 	 * @return the string representing the content of the POST request's body
 	 */
-	protected String getPostContent(String doi) {
+	protected List<NameValuePair> getPostContent(final String doi) {
 		return null;
 	}
 

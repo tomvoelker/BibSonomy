@@ -29,11 +29,14 @@ package org.bibsonomy.scraper.url.kde.igiglobal;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -41,7 +44,6 @@ import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -49,16 +51,16 @@ import org.bibsonomy.util.WebUtils;
  *
  */
 public class IGIGlobalScraper extends AbstractUrlScraper {
-	
+
 	private static final String SITE_NAME = "IGI Global";
 	private static final String SITE_URL = "http://www.igi-global.com";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
-	
+
 	private static final Pattern EVENTVALIDATION = Pattern.compile("<input type=\"hidden\" name=\"__EVENTVALIDATION\" id=\"__EVENTVALIDATION\" value=\"(.*?)\" />");
 	private static final Pattern EVENTTARGET = Pattern.compile("<input type=\"hidden\" name=\"__EVENTTARGET\" id=\"__EVENTTARGET\" value=\"(.*?)\" />");
 	private static final Pattern EVENTARGUMENT = Pattern.compile("<input type=\"hidden\" name=\"__EVENTARGUMENT\" id=\"__EVENTARGUMENT\" value=\"(.*?)\" />");
 	private static final Pattern VIEWSTATE = Pattern.compile("<input type=\"hidden\" name=\"__VIEWSTATE\" id=\"__VIEWSTATE\" value=\"(.*?)\" />");
-	
+
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "igi-global.com"), AbstractUrlScraper.EMPTY_PATTERN));
 
 	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
@@ -69,12 +71,12 @@ public class IGIGlobalScraper extends AbstractUrlScraper {
 		try {
 			final String inRIS = getCitationInRIS(scrapingContext.getUrl());
 			final String bibtex = RIS2BIB.toBibtex(inRIS);
-			
+
 			if (present(bibtex)) {
 				scrapingContext.setBibtexResult(bibtex);
 				return true;
 			}
-			
+
 			throw new ScrapingFailureException("getting bibtex failed");
 		} catch (final Exception e) {
 			throw new InternalFailureException(e);
@@ -82,51 +84,41 @@ public class IGIGlobalScraper extends AbstractUrlScraper {
 	}
 	private static String getCitationInRIS(final URL url) throws Exception {
 		final String html = WebUtils.getContentAsString(url);
-		
+
 		final Matcher m_eventvalidation = EVENTVALIDATION.matcher(html);
 		String eventvalidation = "";
 		if(m_eventvalidation.find())
 			eventvalidation = m_eventvalidation.group(1);
-		
+
 		final Matcher m_eventtarget = EVENTTARGET.matcher(html);
 		String eventtarget = "";
 		if(m_eventtarget.find())
 			eventtarget = m_eventtarget.group(1);
-	
+
 		final Matcher m_eventargument = EVENTARGUMENT.matcher(html);
 		String eventargument = "";
 		if (m_eventargument.find())
 			eventargument = m_eventargument.group(1);
-		
+
 		final Matcher m_viewstate = VIEWSTATE.matcher(html);
 		String viewstate = "";
 		if(m_viewstate.find())
 			viewstate = m_viewstate.group(1);
 
-		// FIXME: this is how it should be done ...
-//		final PostMethod post = new PostMethod(url.toExternalForm());
-//		post.addParameters(new NameValuePair[] {
-//				new NameValuePair("ctl00$ctl00$ucBookstoreSearchTop$txtSearch", "Search title, author, ISBN..."),
-//				new NameValuePair("ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.x", "30"),
-//				new NameValuePair("ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.y", "7"),
-//				new NameValuePair("ctl00$ctl00$cphMain$cphSidebarRightTop$ucInfoSciOnDemandSidebar$txtSearchPhrase", "Full text search term(s)"),
-//				new NameValuePair("__EVENTVALIDATION", eventvalidation),
-//				new NameValuePair("__EVENTTARGET", eventtarget),
-//				new NameValuePair("__EVENTARGUMENT", eventargument),
-//				new NameValuePair("__VIEWSTATE", viewstate)
-//		});
+		final List<NameValuePair> postData = new ArrayList<NameValuePair>(8);
+		
+		postData.add(new BasicNameValuePair("ctl00$ctl00$ucBookstoreSearchTop$txtSearch", "Search title, author, ISBN..."));
+		postData.add(new BasicNameValuePair("ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.x", "30"));
+		postData.add(new BasicNameValuePair("ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.y", "7"));
+		postData.add(new BasicNameValuePair("ctl00$ctl00$cphMain$cphSidebarRightTop$ucInfoSciOnDemandSidebar$txtSearchPhrase", "Full text search term(s)"));
+		postData.add(new BasicNameValuePair("__EVENTVALIDATION", eventvalidation));
+		postData.add(new BasicNameValuePair("__EVENTTARGET", eventtarget));
+		postData.add(new BasicNameValuePair("__EVENTARGUMENT", eventargument));
+		postData.add(new BasicNameValuePair("__VIEWSTATE", viewstate));
 
-		final String postData = "ctl00$ctl00$ucBookstoreSearchTop$txtSearch=" + UrlUtils.safeURIEncode("Search title, author, ISBN...") + "&"
-				+ "ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.x=30&"
-				+ "ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.y=7&"
-				+ "ctl00$ctl00$cphMain$cphSidebarRightTop$ucInfoSciOnDemandSidebar$txtSearchPhrase=" + UrlUtils.safeURIEncode("Full text search term(s)") + "&"
-				+ "__EVENTVALIDATION=" + UrlUtils.safeURIEncode(eventvalidation) + "&"
-				+ "__EVENTTARGET=" + UrlUtils.safeURIEncode(eventtarget) + "&"
-				+ "__EVENTARGUMENT=" + UrlUtils.safeURIEncode(eventargument) + "&"
-				+ "__VIEWSTATE=" + UrlUtils.safeURIEncode(viewstate);
 		return WebUtils.getContentAsString(url.toExternalForm(), null, postData, null);
 	}
-	
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;

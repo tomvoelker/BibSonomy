@@ -28,17 +28,19 @@ package org.bibsonomy.scraper.url.kde.wileyintersience;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 
 
@@ -80,10 +82,15 @@ public class WileyIntersienceScraper extends AbstractUrlScraper {
 			 * doi=10.1002%252F1521-4095%28200011%2912%253A22%253C1655%253A%253AAID-ADMA1655%253E3.0.CO%253B2-2&fileFormat=BIBTEX&hasAbstract=CITATION_AND_ABSTRACT
 			 */
 			final String url = "http://onlinelibrary.wiley.com/enhanced/getCitation/doi/" + doi;
-			final String postContent = "citation-type=bibtex&doi=" + UrlUtils.safeURIEncode(doi) + "&download-citation-abstract=" + UrlUtils.safeURIDecode("Citation & Abstract");
+			
+			final List<NameValuePair> postData = new ArrayList<NameValuePair>(3);
+			postData.add(new BasicNameValuePair("citation-type", "bibtex"));
+			postData.add(new BasicNameValuePair("doi", doi));
+			postData.add(new BasicNameValuePair("download-citation-abstract", "Citation & Abstract"));
+
 			try {
 				final String cookies = WebUtils.getCookies(sc.getUrl());
-				final String bibtex = WebUtils.getContentAsString(url, cookies, postContent, null);
+				final String bibtex = WebUtils.getContentAsString(url, cookies, postData, null);
 				sc.setBibtexResult(bibtex);
 				return true;
 			} catch (MalformedURLException e) {

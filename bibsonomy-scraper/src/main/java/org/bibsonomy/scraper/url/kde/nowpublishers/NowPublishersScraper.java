@@ -30,11 +30,14 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -71,10 +74,12 @@ public class NowPublishersScraper extends AbstractUrlScraper {
 		}
 		
 		final String id = m.group(1);
-		final String postArgs = "id=" + id + "&format=BIB";
+		final List<NameValuePair> postData = new ArrayList<NameValuePair>(2);
+		postData.add(new BasicNameValuePair("id", id));
+		postData.add(new BasicNameValuePair("format", "BIB"));
 		
 		try {
-			final String bibtex = WebUtils.getContentAsString(DOWNLOAD_URL, null, postArgs, null);
+			final String bibtex = WebUtils.getContentAsString(DOWNLOAD_URL, null, postData, null);
 			if (present(bibtex)) {
 				sc.setBibtexResult(bibtex.trim());
 				return true;

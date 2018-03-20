@@ -27,11 +27,14 @@
 package org.bibsonomy.scraper.url.kde.proeuclid;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -62,8 +65,11 @@ public class ProjectEuclidScraper extends AbstractUrlScraper implements ExampleP
 		if (m.find()) {
 			try {
 				final String id = UrlUtils.safeURIEncode(m.group(1));
-				final String postContent = "h=" + id + "&format=bibtex";
-				scrapingContext.setBibtexResult(WebUtils.getContentAsString(DOWNLOAD_URL, null, postContent, null));
+				
+				final List<NameValuePair> postData = new ArrayList<NameValuePair>(2);
+				postData.add(new BasicNameValuePair("h", id));
+				postData.add(new BasicNameValuePair("format", "bibtex"));
+				scrapingContext.setBibtexResult(WebUtils.getContentAsString(DOWNLOAD_URL, null, postData, null));
 			} catch (IOException e) {
 				throw new ScrapingException(e);
 			}
