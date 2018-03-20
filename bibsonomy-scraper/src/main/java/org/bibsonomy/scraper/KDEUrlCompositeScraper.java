@@ -53,7 +53,6 @@ import org.bibsonomy.scraper.url.kde.biorxiv.BioRxivScraper;
 import org.bibsonomy.scraper.url.kde.bmj.BMJOpenScraper;
 import org.bibsonomy.scraper.url.kde.bmj.BMJScraper;
 import org.bibsonomy.scraper.url.kde.cambridge.CambridgeScraper;
-import org.bibsonomy.scraper.url.kde.casesjournal.CasesJournalScraper;
 import org.bibsonomy.scraper.url.kde.catinist.CatinistScraper;
 import org.bibsonomy.scraper.url.kde.cell.CellScraper;
 import org.bibsonomy.scraper.url.kde.cinii.CiniiScraper;
@@ -287,7 +286,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		 * rja, 2018-03-06, page does no longer exist
 		 */
 		//addScraper(new WebOfKnowledgeScraper());
-		addScraper(new CasesJournalScraper());
 		addScraper(new ElsevierhealthScraper());
 		addScraper(new AandAScraper());
 		addScraper(new JournalogyScraper());

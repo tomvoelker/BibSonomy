@@ -61,4 +61,13 @@ public class BioMedCentralScraperTest {
 		final String resultFile = "BioMedCentralScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, BioMedCentralScraper.class, resultFile);
 	}
+	/**
+	 * starts URL test for Cases Journal
+	 */
+	@Test
+	public void url4TestRun(){
+		final String url = "https://casesjournal.biomedcentral.com/articles/10.1186/1757-1626-2-164";
+		final String resultFile = "BioMedCentralScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, BioMedCentralScraper.class, resultFile);
+	}
 }
