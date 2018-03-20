@@ -55,7 +55,6 @@ import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.message.BasicNameValuePair;
 import org.springframework.http.HttpMethod;
 
 /**
@@ -76,8 +75,6 @@ public class WebUtils {
 	private static final String USER_AGENT_PROPERTY_VALUE = "BibSonomy/2.0.32 (Linux x86_64; en) Gecko/20120714 Iceweasel/3.5.16 (like Firefox/3.5.16)";
 
 	private static final String CHARSET = "charset=";
-	private static final String EQUAL_SIGN = "=";
-	private static final String AMP_SIGN = "&";
 	private static final String NEWLINE = "\n";
 	private static final String SEMICOLON = ";";
 	private static final String USER_AGENT_HEADER_NAME = "User-Agent";
@@ -216,7 +213,7 @@ public class WebUtils {
 	 * 
 	 * @throws IOException
 	 */
-	public static String getContentAsString(final String url, final String cookie, final String postData, final String visitBefore) throws IOException {
+	public static String getContentAsString(final String url, final String cookie, final List<NameValuePair> postData, final String visitBefore) throws IOException {
 		return getContentAsString(CLIENT, url, cookie, postData, visitBefore);
 	}
 	
@@ -233,7 +230,7 @@ public class WebUtils {
 	 * 
 	 * @throws IOException
 	 */
-	public static String getContentAsString(final HttpClient client, final String url, final String cookie, final String postData, final String visitBefore) throws IOException {
+	public static String getContentAsString(final HttpClient client, final String url, final String cookie, final List<NameValuePair> postData, final String visitBefore) throws IOException {
 		if (present(visitBefore)) {
 			/*
 			 * visit URL to get cookies if needed
@@ -254,21 +251,9 @@ public class WebUtils {
 			 */
 			method = new HttpPost(url);
 			/*
-			 * prepare parameters
+			 * add parameters
 			 */
-			final List<NameValuePair> params = new ArrayList<NameValuePair>();
-
-			for (final String s : postData.split(AMP_SIGN)) {
-				final String[] p = s.split(EQUAL_SIGN);
-
-				if (p.length != 2) {
-					continue;
-				}
-
-				params.add(new BasicNameValuePair(p[0], p[1]));
-			}
-
-			((HttpPost)method).setEntity(new UrlEncodedFormEntity(params));
+			((HttpPost)method).setEntity(new UrlEncodedFormEntity(postData));
 		} else {
 			/*
 			 * do a GET request
@@ -301,7 +286,7 @@ public class WebUtils {
 			/*
 			 * collect response
 			 */
-			final String charset = extractCharset(response.getFirstHeader(CONTENT_TYPE_HEADER_NAME).getValue()); 
+			final String charset = extractCharset(response.getFirstHeader(CONTENT_TYPE_HEADER_NAME).getValue());
 			final StringBuilder content = inputStreamToStringBuilder(response.getEntity().getContent(), charset);
 
 			final String string = content.toString();
@@ -527,7 +512,7 @@ public class WebUtils {
 	 * <li>
 	 * </ul>
 	 *
-	 * FIXME: is this also required for HttpClient 4.x?
+	 * FIXME: is this also required for HttpClient 4.x? Preferrably, a method from http commons should be used for that.
 	 * 
 	 * @param contentType
 	 * @return - The charset.
