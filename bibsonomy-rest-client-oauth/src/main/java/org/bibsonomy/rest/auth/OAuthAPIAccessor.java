@@ -39,6 +39,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.httpclient.HttpMethod;
+import org.bibsonomy.rest.client.RestLogicFactory;
+import org.bibsonomy.rest.client.util.RestClientUtils;
+import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.rest.renderer.RenderingFormat;
+
 import net.oauth.OAuth;
 import net.oauth.OAuthAccessor;
 import net.oauth.OAuthConsumer;
@@ -49,12 +55,6 @@ import net.oauth.ParameterStyle;
 import net.oauth.client.OAuthClient;
 import net.oauth.client.httpclient3.HttpClient3;
 import net.oauth.http.HttpMessageDecoder;
-
-import org.apache.commons.httpclient.HttpMethod;
-import org.bibsonomy.rest.client.RestLogicFactory;
-import org.bibsonomy.rest.client.util.RestClientUtils;
-import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.rest.renderer.RenderingFormat;
 
 /**
  * TODO: add integration test
