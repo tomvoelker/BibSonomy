@@ -107,7 +107,6 @@ import org.bibsonomy.scraper.url.kde.liebert.LiebertScraper;
 import org.bibsonomy.scraper.url.kde.mathscinet.MathSciNetScraper;
 import org.bibsonomy.scraper.url.kde.mdpi.MDPIScraper;
 import org.bibsonomy.scraper.url.kde.mendeley.MendeleyScraper;
-import org.bibsonomy.scraper.url.kde.metapress.MetapressScraper;
 import org.bibsonomy.scraper.url.kde.morganclaypool.MorganClaypoolScraper;
 import org.bibsonomy.scraper.url.kde.muse.ProjectmuseScraper;
 import org.bibsonomy.scraper.url.kde.nasaads.NasaAdsScraper;
@@ -265,7 +264,8 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new ProjectmuseScraper());
 		addScraper(new SSRNScraper());
 		addScraper(new ScopusScraper());
-		addScraper(new MetapressScraper());
+		// 2018-03-21, rja: site does no longer host content?!
+		//addScraper(new MetapressScraper());
 		addScraper(new CiteseerxScraper());
 		addScraper(new OpenrepositoryScraper());
 		addScraper(new PionScraper());

@@ -29,8 +29,6 @@ package org.bibsonomy.scraper.url.kde.ieee;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,7 +37,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpException;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig.Builder;
@@ -123,10 +120,8 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 		// better get the page first
 		final String pageContent;
 		try {
-			pageContent = WebUtils.getContentAsString(client, url);
+			pageContent = WebUtils.getContentAsString(client, url, null, null, null);
 		} catch (IOException ex) {
-			throw new InternalFailureException(ex);
-		} catch (HttpException ex) {
 			throw new InternalFailureException(ex);
 		}
 
@@ -477,17 +472,13 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 			// infinite redirect loops already prevented in WebUtils.getHttpClient()
 			final String cookies = WebUtils.getCookies(client, scrapingContext.getUrl());
 
-			final String pageContent = WebUtils.getContentAsString(client, new URI(REFERENCE_ARNUM_URL + ids), cookies);
+			final String pageContent = WebUtils.getContentAsString(client, REFERENCE_ARNUM_URL + ids, cookies, null, null);
 			final Matcher m = REFERENCE_PATTERN.matcher(pageContent);
 			if (m.find()) {
 				scrapingContext.setReferences(m.group(1));
 				return true;
 			}
 		} catch (IOException ex) {
-			throw new InternalFailureException(ex);
-		} catch (HttpException ex) {
-			throw new InternalFailureException(ex);
-		} catch (URISyntaxException ex) {
 			throw new InternalFailureException(ex);
 		}
 		return false;

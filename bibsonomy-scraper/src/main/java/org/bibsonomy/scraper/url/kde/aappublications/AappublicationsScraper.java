@@ -28,13 +28,12 @@ package org.bibsonomy.scraper.url.kde.aappublications;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -50,20 +49,12 @@ import bibtex.parser.BibtexParser;
 public class AappublicationsScraper extends GenericBibTeXURLScraper{
 
 	private static final String SITE_NAME = "Pediatrics official journal of the american academy of pediatrics";
-	private static final String SITE_URL = "http://pediatrics.aappublications.org";
-	private static final String INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
-	private static final String HOST = "pediatrics.aappublications.org";
-	private static final String HTTP = "http://";
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
-	private static Pattern pattern = Pattern.compile("<li class=\"bibtext first\"><a href=\"(.*)\">BibTeX</a></li>");
-	private static final String regex = "@.*?(.*),";
-	private static final Pattern pattern2 = Pattern.compile(regex);
+	private static final String SITE_HOST = "pediatrics.aappublications.org";
+	private static final String SITE_URL  = "http://" + SITE_HOST;
+	private static final String SITE_INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<a.*href=\"([^\"]+)\".*>BibTeX</a>");
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
-	static {
-		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
-	}
-	
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
@@ -76,7 +67,7 @@ public class AappublicationsScraper extends GenericBibTeXURLScraper{
 
 	@Override
 	public String getInfo() {
-		return INFO;
+		return SITE_INFO;
 	}
 
 	@Override
@@ -93,13 +84,8 @@ public class AappublicationsScraper extends GenericBibTeXURLScraper{
 	 * @return
 	 */
 	protected static String fixSpaceInId(final String bibtex) {
-		int index = bibtex.indexOf("\n");
-		String first_part = bibtex.substring(0, index);
-		first_part = first_part.replaceAll(" ", "");
-		String rest = bibtex.substring(index, bibtex.length());
-		String bibtex_cleaned = first_part + rest;
-		System.out.println(bibtex_cleaned);
-		return bibtex_cleaned;
+		final int index = bibtex.indexOf("\n");
+		return bibtex.substring(0, index).replaceAll(" ", "") + bibtex.substring(index);
 	}
 	
 	
@@ -126,7 +112,6 @@ public class AappublicationsScraper extends GenericBibTeXURLScraper{
 	 */
 	@Override
 	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
-		bibtex = fixSpaceInId(bibtex);
-		return bibtex;
+		return fixSpaceInId(bibtex);
 	}
 }

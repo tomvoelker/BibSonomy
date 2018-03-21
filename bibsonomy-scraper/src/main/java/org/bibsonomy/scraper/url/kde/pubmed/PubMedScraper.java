@@ -29,16 +29,13 @@ package org.bibsonomy.scraper.url.kde.pubmed;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.HttpException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -89,7 +86,7 @@ public class PubMedScraper extends AbstractUrlScraper {
 		sc.setScraper(this);
 
 		// save the original URL
-		final String url = sc.getUrl().toString();
+		final String url = sc.getUrl().toExternalForm();
 
 		String pubmedId = null;
 		String bibtex = null;
@@ -108,13 +105,12 @@ public class PubMedScraper extends AbstractUrlScraper {
 				final HttpClient client = WebUtils.getHttpClient();
 
 				// try to find link for RIS export
-				final HttpGet method = new HttpGet(sc.getUrl().toExternalForm());
-				final String pageContent = WebUtils.getContentAsString(client, method);
+				final String pageContent = WebUtils.getContentAsString(client, url, null, null, null);
 
 				final Matcher risLinkMatcher = RISLINKPATTERN.matcher(pageContent);
 				if (risLinkMatcher.find()) {
-					final URL risUrl = new URL(sc.getUrl().toExternalForm() + "/" + risLinkMatcher.group(1));
-					bibtex = RIS2BIB.toBibtex(WebUtils.getContentAsString(client, risUrl.toURI(), null));
+					final String risUrl = url + "/" + risLinkMatcher.group(1);
+					bibtex = RIS2BIB.toBibtex(WebUtils.getContentAsString(client, risUrl, null, null, null));
 				} else {
 
 					final Matcher ma = PMIDPATTERN.matcher(pageContent);
@@ -157,10 +153,6 @@ public class PubMedScraper extends AbstractUrlScraper {
 			throw new ScrapingFailureException("getting bibtex failed");
 
 		} catch (IOException e) {
-			throw new InternalFailureException(e);
-		} catch (HttpException e) {
-			throw new InternalFailureException(e);
-		} catch (URISyntaxException e) {
 			throw new InternalFailureException(e);
 		}
 	}

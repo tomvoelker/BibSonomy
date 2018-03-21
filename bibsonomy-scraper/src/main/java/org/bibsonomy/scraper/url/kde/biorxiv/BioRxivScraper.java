@@ -43,7 +43,7 @@ import org.bibsonomy.util.WebUtils;
  *
  * @author Johannes
  */
-public class BioRxivScraper extends GenericBibTeXURLScraper{
+public class BioRxivScraper extends GenericBibTeXURLScraper {
 	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<a.*href=\"([^\"]+)\".*>BibTeX</a>");
 	private static final String SITE_NAME = "bioRxiv";
 	private static final String SITE_HOST = "biorxiv.org";

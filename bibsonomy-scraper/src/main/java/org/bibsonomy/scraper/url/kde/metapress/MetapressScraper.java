@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.HttpException;
 import org.apache.http.client.HttpClient;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -43,12 +42,17 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for RIS citations from Metapress.com
  * @author tst
+ * 
+ * 2018-03-21, rja: site does no longer host content?!.
+ * 
  */
+@Deprecated
 public class MetapressScraper extends AbstractUrlScraper {
 
 	private static final String SITE_URL = "http://metapress.com/";
@@ -64,7 +68,8 @@ public class MetapressScraper extends AbstractUrlScraper {
 	private static final Pattern patternHref = Pattern.compile("content/([^/]*)/");
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
-	
+	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
+
 	@Override
 	public String getInfo() {
 		return INFO;
@@ -76,26 +81,22 @@ public class MetapressScraper extends AbstractUrlScraper {
 
 		final Matcher matcherHref = patternHref.matcher(sc.getUrl().toString());
 		if (matcherHref.find()) {
-			String url = PREFIX_DOWNLOAD_URL + matcherHref.group(1) + SUFFIX_DOWNLOAD_URL;
-
-			String ris = null;
-			
-			/*
-			 * some kind of exclusive cookie management so rather get an own client
-			 */
-			HttpClient client = WebUtils.getHttpClient();
 			
 			try {
+				final String url = PREFIX_DOWNLOAD_URL + matcherHref.group(1) + SUFFIX_DOWNLOAD_URL;
+
+				/*
+				 * some kind of exclusive cookie management so rather get an own client
+				 */
+				final HttpClient client = WebUtils.getHttpClient();
 				
 				/*
 				 * we just have to get it twice, maybe they don't like robots.
 				 */
-				WebUtils.getContentAsString(client, url);
-				ris = WebUtils.getContentAsString(client, url);
+				final String ris = WebUtils.getContentAsString(client, url, null, null, url);
 				
-				if (ris != null) {
-					RisToBibtexConverter converter = new RisToBibtexConverter();
-					String bibtex = converter.toBibtex(ris);
+				if (ValidationUtils.present(ris)) {
+					String bibtex = RIS2BIB.toBibtex(ris);
 
 					//replace /r with /n
 					bibtex = bibtex.replace("\r", "\n");
@@ -110,8 +111,6 @@ public class MetapressScraper extends AbstractUrlScraper {
 			} catch (MalformedURLException ex) {
 				throw new InternalFailureException(ex);
 			} catch (IOException ex) {
-				throw new InternalFailureException(ex);
-			} catch (HttpException ex) {
 				throw new InternalFailureException(ex);
 			}
 		}

@@ -30,6 +30,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -152,7 +153,7 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 			 */
 			final StringBuffer bibtexEntries = extractBibtexEntries(client, SITE_URL, "exportformats.cfm?expformat=bibtex&id=" + id);
 
-			final String abstrct = WebUtils.getContentAsString(client, SITE_URL + "/tab_abstract.cfm?usebody=tabbody&id=" + id);
+			final String abstrct = WebUtils.getContentAsString(client, SITE_URL + "/tab_abstract.cfm?usebody=tabbody&id=" + id, null, null, null);
 			if (present(abstrct)) {
 				/*
 				 * extract abstract from HTML
@@ -217,12 +218,13 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 * @throws HttpException 
+	 * @throws URISyntaxException 
 	 */
-	private static StringBuffer extractBibtexEntries(HttpClient client, final String siteUrl, final String path) throws MalformedURLException, IOException, HttpException{
+	private static StringBuffer extractBibtexEntries(HttpClient client, final String siteUrl, final String path) throws MalformedURLException, IOException, HttpException, URISyntaxException{
 		final StringBuffer bibtexEntries = new StringBuffer();
 		
 		//get content for siteUrl
-		final String siteContent = WebUtils.getContentAsString(client, siteUrl + path);
+		final String siteContent = WebUtils.getContentAsString(client, siteUrl + path, null, null, null);
 
 		// create a DOM with each
 		final Document doc = XmlUtils.getDOM(siteContent);
@@ -280,16 +282,16 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 	private static boolean scrapeMetaData(ScrapingContext scrapingContext, final String kind) {
 		final HttpClient client = WebUtils.getHttpClient();
 		final String id = scrapingContext.getTmpMetadata().getId();
-		final String url = ACM_BASE_TAB_URL + kind +  ".cfm?id=" + id;
 		try{
-			final String reference = WebUtils.getContentAsString(client, url);
-			if(present(reference)){
+			final String uri = ACM_BASE_TAB_URL + kind +  ".cfm?id=" + id;
+			final String reference = WebUtils.getContentAsString(client, uri, null, null, null);
+			if (present(reference)) {
 				scrapingContext.setReferences(reference);
 				scrapingContext.setCitedBy(reference);
 				return true;
 			}
 		} catch(Exception e) {
-			log.error("error while scraping references by for " + scrapingContext.getUrl(), e);
+			log.warn("error while scraping references by for " + scrapingContext.getUrl(), e);
 		}
 		return false;
 	}

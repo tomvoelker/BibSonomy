@@ -99,7 +99,7 @@ public class IEEEComputerSocietyScraper extends GenericBibTeXURLScraper {
 		}
 		
 		try {
-			final String content = WebUtils.getContentAsString(queryUrl, cookies);
+			final String content = WebUtils.getContentAsString(new URL(queryUrl), cookies);
 			final Matcher m = REPLACE_PATTERN.matcher(content);
 			if (m.find()) {
 				return m.group(1);

@@ -149,31 +149,29 @@ public class WebUtils {
 
 
 	/**
-	 * Convenience method for receiving page content for the given {@link PostMethod}. It calls
-	 * {@link WebUtils#getContentAsString(HttpClient, HttpMethod)} and returns on status code 200 HTTP OK.
-	 * On status code 303 See Other it calls {@link WebUtils#getContentAsString(HttpClient, String)} on the
-	 * received "Location"-parameter.
+	 * Reads from a URL and writes the content into a string.
 	 * 
-	 * @param client The client to execute.
-	 * @param method The {@link PostMethod} to be executed.
-	 * @return The content of the result page.
-	 * @throws HttpException
+	 * @param url
+	 * @return String which holds the page content.
 	 * @throws IOException
 	 */
-	//	public static String getPostContentAsString(final HttpClient client, final HttpPost method) throws HttpException, IOException {
-	//		final String postContent = getContentAsString(client, method);
-	//		//if the postContent successfully received, return
-	//		if (present(postContent)) return postContent;
-	//		// check if status is 303 See Other
-	//		if (method.getStatusCode() == HttpStatus.SC_SEE_OTHER) {
-	//			final Header location = method.getResponseHeader("Location");
-	//			if (present(location) && present(location.getValue())) {
-	//				final HttpURL uri = new HttpURL(new HttpURL(method.getURI().getURI()), location.getValue());
-	//				return getContentAsString(client, uri, null);
-	//			}
-	//		}
-	//		return null;
-	//	}
+	public static String getContentAsString(final String url) throws IOException {
+		return getContentAsString(url, null, null, null);
+	}
+	
+	/**
+	 * Reads from a URL and writes the content into a string.
+	 * 
+	 * @param url the URL of the content.
+	 * @return String which holds the page content.
+	 * @throws IOException
+	 * 
+	 * @Deprecated
+	 */
+	public static String getContentAsString(final URL url) throws IOException {
+		return getContentAsString(url, null);
+	}
+	
 	/**
 	 * Reads from a URL and writes the content into a string.
 	 * 
@@ -186,19 +184,6 @@ public class WebUtils {
 	 */
 	public static String getContentAsString(final URL url, final String cookie) throws IOException {
 		return getContentAsString(url.toString(), cookie, null, null);
-	}
-
-	/**
-	 * Reads from a URL and writes the content into a string.
-	 * 
-	 * @param inputURL the URL of the content.
-	 * @return String which holds the page content.
-	 * @throws IOException
-	 * 
-	 * @Deprecated
-	 */
-	public static String getContentAsString(final URL inputURL) throws IOException {
-		return getContentAsString(inputURL, null);
 	}
 
 	/**
@@ -303,28 +288,6 @@ public class WebUtils {
 	}
 
 	/**
-	 * Reads from a URL and writes the content into a string.
-	 * 
-	 * @param url
-	 * @return String which holds the page content.
-	 * @throws IOException
-	 */
-	public static String getContentAsString(final String url) throws IOException {
-		return getContentAsString(url, null, null, null);
-	}
-
-	/**
-	 * Reads from a URL and writes the content into a string.
-	 * 
-	 * @param url
-	 * @param cookie 
-	 * @return String which holds the page content.
-	 * @throws IOException
-	 */
-	public static String getContentAsString(final String url, final String cookie) throws IOException {
-		return getContentAsString(url, cookie, null, null);
-	}
-	/**
 	 * Convenience method for getting the page content by passing the {@link HttpClient} and the
 	 * {@link HttpMethod}. If the HTTP status code is other than 200 HTTP OK null will be returned.
 	 * 
@@ -348,38 +311,6 @@ public class WebUtils {
 			// required, see http://hc.apache.org/httpclient-3.x/threading.html
 			method.releaseConnection();
 		}
-	}
-
-	/**
-	 * Convenience method for getting the page content by passing the {@link HttpClient} and the
-	 * {@link URI}. It calls {@link WebUtils#getContentAsString(HttpClient, HttpMethod)}.
-	 * 
-	 * @param client The client to execute.
-	 * @param uri The URI to be requested.
-	 * @param cookie The cookies (not set, if null)
-	 * @return The response body as String if and only if the HTTP status code is 200 HTTP OK.
-	 * @throws HttpException
-	 * @throws IOException
-	 */
-	public static String getContentAsString(final HttpClient client, final URI uri, final String cookie) throws HttpException, IOException {
-		final HttpGet method = new HttpGet(uri);
-		if (present(cookie)) {
-			method.addHeader(COOKIE_HEADER_NAME, cookie);
-		}
-		return getContentAsString(client, method);
-	}
-	/**
-	 * Convenience method for getting the page content by passing the {@link HttpClient} and the
-	 * URI as String. It calls {@link WebUtils#getContentAsString(HttpClient, HttpMethod)}.
-	 * 
-	 * @param client The client to execute.
-	 * @param uri The URI to be requested as String.
-	 * @return The response body as String if and only if the HTTP status code is 200 HTTP OK.
-	 * @throws HttpException
-	 * @throws IOException
-	 */
-	public static String getContentAsString(HttpClient client, String uri) throws HttpException, IOException {
-		return getContentAsString(client, new HttpGet(uri));
 	}
 
 	/**
@@ -491,7 +422,7 @@ public class WebUtils {
 	 * @param cookies - a list of key/value pairs
 	 * @return The cookies folded into a string.
 	 */
-	public static String buildCookieString(final List<String> cookies) {
+	protected static String buildCookieString(final List<String> cookies) {
 		final StringBuffer result = new StringBuffer();
 
 		if (cookies != null) {
@@ -567,7 +498,7 @@ public class WebUtils {
 	 * @return stringbuilder with the contents of the inputstream
 	 * @throws IOException
 	 */
-	public static StringBuilder inputStreamToStringBuilder(final InputStream inputStream, final String charset) throws IOException {
+	protected static StringBuilder inputStreamToStringBuilder(final InputStream inputStream, final String charset) throws IOException {
 		final InputStreamReader in;
 		/*
 		 * set charset

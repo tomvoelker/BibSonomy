@@ -29,14 +29,11 @@ package org.bibsonomy.scraper.url.kde.apa;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.HttpException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig.Builder;
 import org.bibsonomy.common.Pair;
@@ -106,7 +103,8 @@ public class APAScraper extends AbstractUrlScraper {
 		String lstUIDs = null;
 
 		//While buy action, the id is contained in the URL requested to scrape
-		Matcher m = BUY_OPTION_LOCATION_PATTERN.matcher(scrapingContext.getUrl().toExternalForm());
+		final String url = scrapingContext.getUrl().toExternalForm();
+		Matcher m = BUY_OPTION_LOCATION_PATTERN.matcher(url);
 		if (m.find()) {
 
 			//Pattern matches requested URL
@@ -117,9 +115,7 @@ public class APAScraper extends AbstractUrlScraper {
 			//If scraping request is not during buy action, the id is contained in the page requested to scrape
 			String page;
 			try {
-				page = WebUtils.getContentAsString(client, scrapingContext.getUrl().toExternalForm());
-			} catch (final HttpException ex) {
-				throw new ScrapingException(ex);
+				page = WebUtils.getContentAsString(client, url, null, null, null);
 			} catch (IOException ex) {
 				throw new ScrapingException(ex);
 			}
@@ -139,18 +135,14 @@ public class APAScraper extends AbstractUrlScraper {
 			if (!present(lstUIDs)) throw new ScrapingException("could not find lstUIDs");
 
 			// Build link to RIS download
-			final URL risURL = new URL("http://psycnet.apa.org/index.cfm?fa=search.export&id=&lstUids=" + lstUIDs);
+			final String risURL = "http://psycnet.apa.org/index.cfm?fa=search.export&id=&lstUids=" + lstUIDs;
 
 			// download RIS exactly two times, because the first request will finally be redirected to a login page
 			for (int i = 0; i < 2; i++) {
-				ris = WebUtils.getContentAsString(client, risURL.toURI(), null);
+				ris = WebUtils.getContentAsString(client, risURL, null, null, null);
 				if (ris.contains("Provider: American Psychological Association")) break;
 			}
 		} catch (final IOException ex) {
-			throw new ScrapingException(ex);
-		} catch (HttpException ex) {
-			throw new ScrapingException(ex);
-		} catch (URISyntaxException ex) {
 			throw new ScrapingException(ex);
 		}
 

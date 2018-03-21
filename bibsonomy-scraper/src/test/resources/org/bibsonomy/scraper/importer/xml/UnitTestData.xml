@@ -263,12 +263,6 @@
 		<BibFile>AclScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acl.AclScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_111">
-		<TestDescription>URL test for metapress.com</TestDescription>
-		<URL>http://www.metapress.com/content/718t4p3m1380140t/</URL>
-		<BibFile>MetapressScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.metapress.MetapressScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_112">
 		<TestDescription>URL test for citeseerx</TestDescription>
 		<URL>http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.14.7185</URL>

@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.HttpException;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig.Builder;
@@ -104,7 +103,7 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 		try {
 			// better get the page first
 			final String url = sc.getUrl().toExternalForm();
-			WebUtils.getContentAsString(client, url);
+			WebUtils.getContentAsString(client, url, null, null, null);
 
 			// FIXME: this is copief from IEEEXploreBookScraper -> merge both scrapers?
 			//create a post method
@@ -131,8 +130,6 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 		} catch (MalformedURLException ex) {
 			throw new InternalFailureException(ex);
 		} catch (IOException ex) {
-			throw new InternalFailureException(ex);
-		} catch (HttpException ex) {
 			throw new InternalFailureException(ex);
 		}
 	}

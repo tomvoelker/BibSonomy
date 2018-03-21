@@ -80,7 +80,7 @@ public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper
 				throw new ScrapingFailureException("can't get download URL for " + url);
 			}
 			
-			final String downloadResult = WebUtils.getContentAsString(downloadURL, cookies);
+			final String downloadResult = WebUtils.getContentAsString(new URL(downloadURL), cookies);
 			
 			String bibtex = this.convert(downloadResult);
 			

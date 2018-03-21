@@ -39,10 +39,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -60,47 +56,36 @@ public class UsenixScraper extends AbstractUrlScraper {
 	private static final Log log = LogFactory.getLog(UsenixScraper.class);
 
 	private static final String SITE_NAME = "USENIX";
-	private static final String SITE_URL = "http://usenix.org/";
-	private static final String INFO = "Scraper for papers from events which are postetd on " + href(SITE_URL, SITE_NAME)+".";
-
-	private static final String HOST = "usenix.org";
+	private static final String SITE_HOST = "usenix.org";
+	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_INFO = "Scraper for papers from events which are postetd on " + href(SITE_URL, SITE_NAME) + ".";
 
 	private static final String PATH_1 = "/events/";
 	private static final String PATH_2 = "/publications/library/proceedings/.*\\.html";
 
-	private static final String PATTERN_YEAR_EVENTS = "/events/.*(\\d{2})/";
-
-	private static final String PATTERN_YEAR_PROCEEDING = "/publications/library/proceedings/\\D*(\\d{2})/";
-
-	private static final String PATTERN_KEY_EVENTS = "/events/([^/]*)/";
-
-	private static final String PATTERN_KEY_PROCEEDING = "/publications/library/proceedings/([^/]*)/";
-
-	private static final String CURRENT_PATTERN_GET_TITLE = "<h2>(.*)</h2>";
-
-	private static final String CURRENT_PATTERN_GET_AUTHOR = "</h2>(.*)<h3>";
-
-	private static final String CURRENT_WITH_BORDER_PATTERN_GET_AUTHOR = "</h2>(.*)<h4>";
-
-	private static final String OLD_PATTERN_GET_AUTHOR = "<PRE>\\s*(.*)";
-
-	private static final String CURRENT_PATTERN_GET_EVENT = "sans-serif\"><b>([^<]*)</b></font>";
-
-	private static final String OLD_PATTERN_GET_EVENT = "<title>(.*)</title>";
-
-	private static final String CURRENT_PATTERN_GET_PAGES = "<b>Pp.(.*)</b>";
+	private static final Pattern PATTERN_YEAR_EVENTS = Pattern.compile("/events/.*(\\d{2})/");
+	private static final Pattern PATTERN_YEAR_PROCEEDING = Pattern.compile("/publications/library/proceedings/\\D*(\\d{2})/");
+	private static final Pattern PATTERN_KEY_EVENTS = Pattern.compile("/events/([^/]*)/");
+	private static final Pattern PATTERN_KEY_PROCEEDING = Pattern.compile("/publications/library/proceedings/([^/]*)/");
+	private static final Pattern CURRENT_PATTERN_GET_TITLE = Pattern.compile("<h2>(.*)</h2>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+	private static final Pattern CURRENT_PATTERN_GET_AUTHOR = Pattern.compile("</h2>(.*)<h3>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+	private static final Pattern CURRENT_PATTERN_GET_EVENT = Pattern.compile("sans-serif\"><b>([^<]*)</b></font>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+	private static final Pattern CURRENT_PATTERN_GET_PAGES = Pattern.compile("<b>Pp.(.*)</b>", Pattern.CASE_INSENSITIVE);
+	private static final Pattern CURRENT_WITH_BORDER_PATTERN_GET_AUTHOR = Pattern.compile("</h2>(.*)<h4>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+	private static final Pattern OLD_PATTERN_GET_AUTHOR = Pattern.compile("<PRE>\\s*(.*)", Pattern.CASE_INSENSITIVE);
+	private static final Pattern OLD_PATTERN_GET_EVENT = Pattern.compile("<title>(.*)</title>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>(); 
 	private static final Pattern PATTERN_ABSTRACT = Pattern.compile("(?i)(?s)<H\\d>Abstract</H\\d>(.*)\\s+(<LI>View|View|Download) the full text");
 	static {
-		final Pattern hostPattern = Pattern.compile(".*" + HOST);
+		final Pattern hostPattern = Pattern.compile(".*" + SITE_HOST);
 		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(PATH_1 + ".*")));
 		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(PATH_2)));
 	}
 
 	@Override
 	public String getInfo() {
-		return INFO;
+		return SITE_INFO;
 	}
 
 	@Override
@@ -127,17 +112,9 @@ public class UsenixScraper extends AbstractUrlScraper {
 			 * http://www.usenix.org/events/evt07/tech/full_papers/sandler/sandler_html/
 			 */
 
-			String content = null;
+			final String content;
 			try {
-				/*
-				 * Force the content type to be the null value
-				 */
-				final HttpClient client = WebUtils.getHttpClient();
-				final HttpGet getmethod = new HttpGet(sc.getUrl().toExternalForm());
-				final HttpResponse response = client.execute(getmethod);
-				if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-					content = WebUtils.inputStreamToStringBuilder(response.getEntity().getContent(), null).toString();
-				}
+				content = WebUtils.getContentAsString(sc.getUrl());
 			} catch (IOException ex) {
 				throw new ScrapingException(ex);
 			}
@@ -151,42 +128,36 @@ public class UsenixScraper extends AbstractUrlScraper {
 			// get year and key (event page)
 			if(path.startsWith("/events/")){
 				// get year
-				Pattern yearPattern = Pattern.compile(PATTERN_YEAR_EVENTS);
-				Matcher yearMatcher = yearPattern.matcher(path);
+				final Matcher yearMatcher = PATTERN_YEAR_EVENTS.matcher(path);
 				if(yearMatcher.find())
 					year = expandYear(yearMatcher.group(1));
 
 				//get key
-				Pattern keyPattern = Pattern.compile(PATTERN_KEY_EVENTS);
-				Matcher keyMatcher = keyPattern.matcher(path);
+				final Matcher keyMatcher = PATTERN_KEY_EVENTS.matcher(path);
 				if(keyMatcher.find())
 					key = keyMatcher.group(1);
 
 				// get year and key (proceeding page)
 			}else if(path.startsWith("/publications/library/proceedings/")){
 				// get year
-				Pattern yearPattern = Pattern.compile(PATTERN_YEAR_PROCEEDING);
-				Matcher yearMatcher = yearPattern.matcher(path);
+				final Matcher yearMatcher = PATTERN_YEAR_PROCEEDING.matcher(path);
 				if(yearMatcher.find())
 					year = expandYear(yearMatcher.group(1));
 
 				//get key
-				Pattern keyPattern = Pattern.compile(PATTERN_KEY_PROCEEDING);
-				Matcher keyMatcher = keyPattern.matcher(path);
+				final Matcher keyMatcher = PATTERN_KEY_PROCEEDING.matcher(path);
 				if(keyMatcher.find())
 					key = keyMatcher.group(1);
 
 			}
 
 			// get title
-			Pattern titlePattern = Pattern.compile(CURRENT_PATTERN_GET_TITLE, Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
-			Matcher titleMatcher = titlePattern.matcher(content);
+			final Matcher titleMatcher = CURRENT_PATTERN_GET_TITLE.matcher(content);
 			if(titleMatcher.find())
 				title = cleanup(titleMatcher.group(1), false);
 
 			// get author
-			Pattern authorPattern = Pattern.compile(CURRENT_PATTERN_GET_AUTHOR, Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
-			Matcher authorMatcher = authorPattern.matcher(content);
+			final Matcher authorMatcher = CURRENT_PATTERN_GET_AUTHOR.matcher(content);
 			if(authorMatcher.find())
 				author = cleanup(authorMatcher.group(1), true);
 			else{
@@ -194,10 +165,9 @@ public class UsenixScraper extends AbstractUrlScraper {
 				 * matching for different layout
 				 * example: http://usenix.org/publications/library/proceedings/ec96/geer.html
 				 */
-				authorPattern = Pattern.compile(CURRENT_WITH_BORDER_PATTERN_GET_AUTHOR, Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
-				authorMatcher = authorPattern.matcher(content);
-				if(authorMatcher.find()){
-					author = cleanup(authorMatcher.group(1), true);
+				final Matcher author2Matcher = CURRENT_WITH_BORDER_PATTERN_GET_AUTHOR.matcher(content);
+				if(author2Matcher.find()){
+					author = cleanup(author2Matcher.group(1), true);
 					author = author.replace("<HR>", "");
 					author = author.replace("<hr>", "");
 					author = author.replace("<P>", "");
@@ -205,10 +175,9 @@ public class UsenixScraper extends AbstractUrlScraper {
 
 					// because of this: http://usenix.org/publications/library/proceedings/mob95/raja.html
 					if(author.contains("<PRE>")){
-						authorPattern = Pattern.compile(OLD_PATTERN_GET_AUTHOR, Pattern.CASE_INSENSITIVE);
-						authorMatcher = authorPattern.matcher(content);
-						if(authorMatcher.find()){
-							author = cleanup(authorMatcher.group(1), true);
+						final Matcher author3Matcher = OLD_PATTERN_GET_AUTHOR.matcher(content);
+						if(author3Matcher.find()){
+							author = cleanup(author3Matcher.group(1), true);
 							author = author.replaceAll("\\s{2,}", " and ");
 						}
 					}
@@ -229,24 +198,22 @@ public class UsenixScraper extends AbstractUrlScraper {
 			}
 
 			// get event
-			Pattern eventPattern = Pattern.compile(CURRENT_PATTERN_GET_EVENT, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-			Matcher eventMatcher = eventPattern.matcher(content);
+			final Matcher eventMatcher = CURRENT_PATTERN_GET_EVENT.matcher(content);
 			if(eventMatcher.find()){
 				event = cleanup(eventMatcher.group(1), false);
 				event = event.replace("\n", "");
 			}else{
 				// old layout example: http://usenix.org/publications/library/proceedings/mob95/raja.html
-				eventPattern = Pattern.compile(OLD_PATTERN_GET_EVENT, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-				eventMatcher = eventPattern.matcher(content);
-				if(eventMatcher.find()){
-					event = cleanup(eventMatcher.group(1), false);
+				final Matcher event2Matcher = OLD_PATTERN_GET_EVENT.matcher(content);
+				if(event2Matcher.find()){
+					event = cleanup(event2Matcher.group(1), false);
 					event = event.replace("\n", "");
 				}
 			}
 
 			// get pages
-			Pattern pagesPattern = Pattern.compile(CURRENT_PATTERN_GET_PAGES, Pattern.CASE_INSENSITIVE);
-			Matcher pagesMatcher = pagesPattern.matcher(content);
+
+			final Matcher pagesMatcher = CURRENT_PATTERN_GET_PAGES.matcher(content);
 			if(pagesMatcher.find())
 				pages = cleanup("Pp." + pagesMatcher.group(1), false);
 
@@ -255,25 +222,25 @@ public class UsenixScraper extends AbstractUrlScraper {
 			 * String abstract = null;
 			 */
 
-			StringBuffer resultBibtex = new StringBuffer();
+			final StringBuilder result = new StringBuilder();
 
-			if(key != null)
-				resultBibtex.append("@inproceedings{" + key + ",\n");
+			if (key != null)
+				result.append("@inproceedings{" + key + ",\n");
 			else
-				resultBibtex.append("@inproceedings{usenix,\n");
+				result.append("@inproceedings{usenix,\n");
 
 			if(author != null)
-				resultBibtex.append("\tauthor = {" + author + "},\n");
+				result.append("\tauthor = {" + author + "},\n");
 			if(title != null)
-				resultBibtex.append("\ttitle = {" + title + "},\n");
+				result.append("\ttitle = {" + title + "},\n");
 			if(year != null)
-				resultBibtex.append("\tyear = {" + year + "},\n");
+				result.append("\tyear = {" + year + "},\n");
 			if(event != null)
-				resultBibtex.append("\tseries = {" + event + "},\n");
+				result.append("\tseries = {" + event + "},\n");
 			if(pages != null)
-				resultBibtex.append("\tpages = {" + pages + "},\n");
+				result.append("\tpages = {" + pages + "},\n");
 
-			String bibResult = resultBibtex.toString();
+			String bibResult = result.toString();
 			bibResult = bibResult.substring(0, bibResult.length()-2) + "\n}\n";
 
 			// append url
@@ -290,7 +257,7 @@ public class UsenixScraper extends AbstractUrlScraper {
 
 	private static String abstractParser(URL url){
 		try {
-			Matcher m = PATTERN_ABSTRACT.matcher(WebUtils.getContentAsString(url));
+			final Matcher m = PATTERN_ABSTRACT.matcher(WebUtils.getContentAsString(url));
 			if (m.find()) {
 				return m.group(1);
 			}
