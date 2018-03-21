@@ -84,9 +84,14 @@ public abstract class LiteratumScraper extends AbstractUrlScraper {
 
 		if (ValidationUtils.present(doi)) {
 			try {
-				final String citUrl = url.getProtocol() + "://" + url.getHost() + BIBTEX_DOWNLOAD_PATH + BIBTEX_PARAMS + UrlUtils.safeURIEncode(doi);
+				
+				final List<NameValuePair> postContent = getPostContent(doi);
+				final StringBuilder citUrl = new StringBuilder(url.getProtocol() + "://" + url.getHost() + BIBTEX_DOWNLOAD_PATH);
+				if (!ValidationUtils.present(postContent)) {
+					citUrl.append(BIBTEX_PARAMS + UrlUtils.safeURIEncode(doi));	
+				}
 				final String cookies = getCookies(url);
-				final String bibtex = WebUtils.getContentAsString(citUrl, cookies, getPostContent(doi), null);
+				final String bibtex = WebUtils.getContentAsString(citUrl.toString(), cookies, postContent, null);
 
 				if (ValidationUtils.present(bibtex)) {
 					// download and add abstract, if necessary
@@ -171,7 +176,7 @@ public abstract class LiteratumScraper extends AbstractUrlScraper {
 	private static String getDOI(final URL url) {
 		final Matcher m1 = PATH_ABSTRACT_PATTERN.matcher(url.getPath());
 		if (m1.find()) {
-			return m1.group(PATH_ABSTRACT_PATTERN_DOI_GROUP);
+			return UrlUtils.safeURIDecode(m1.group(PATH_ABSTRACT_PATTERN_DOI_GROUP));
 		}
 		final Matcher m2 = QUERY_DOI_PATTERN.matcher(url.getQuery());
 		if (m2.find()) {
