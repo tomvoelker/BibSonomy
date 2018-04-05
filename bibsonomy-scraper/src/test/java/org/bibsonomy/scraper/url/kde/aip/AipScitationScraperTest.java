@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.aip;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -44,7 +46,9 @@ public class AipScitationScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_8");
+		final String url = "http://aip.scitation.org/doi/abs/10.1063/1.3680558";
+		final String resultFile = "AipScitationScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, AipScitationScraper.class, resultFile);
 	}
 
 	/**
@@ -52,7 +56,9 @@ public class AipScitationScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_9");
+		final String url = "http://aip.scitation.org/doi/full/10.1063/1.4820139";
+		final String resultFile = "AipScitationScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, AipScitationScraper.class, resultFile);
 	}
 	
 	/**
@@ -60,7 +66,9 @@ public class AipScitationScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_174");
+		final String url = "http://asa.scitation.org/doi/abs/10.1121/1.2144160";
+		final String resultFile = "AipScitationScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, AipScitationScraper.class, resultFile);
 	}
 
 }

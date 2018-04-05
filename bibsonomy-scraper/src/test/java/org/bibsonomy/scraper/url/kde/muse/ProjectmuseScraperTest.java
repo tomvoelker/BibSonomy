@@ -51,7 +51,7 @@ public class ProjectmuseScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_113");
+		assertScraperResult("http://muse.jhu.edu/article/190669", null, ProjectmuseScraper.class, "ProjectmuseScraperUnitURLTest1.bib");
 	}
 
 	/**
@@ -61,6 +61,12 @@ public class ProjectmuseScraperTest {
 	public void url2TestRun(){
 		assertScraperResult("http://muse.jhu.edu/article/190166", null, ProjectmuseScraper.class, "ProjectmuseScraperUnitURLTest2.bib");
 	}
+	
+	@Test
+	public void url3TestRun(){
+		assertScraperResult("http://muse.jhu.edu/book/104", null, ProjectmuseScraper.class, "ProjectmuseScraperUnitURLTest3.bib");
+	}
+	
 	/**
 	 * @throws Exception
 	 */
@@ -73,8 +79,8 @@ public class ProjectmuseScraperTest {
 		final String reference = sc.getReferences();
 		assertNotNull(reference);
 		assertTrue(reference.length() > 100);
-		assertEquals("<!--_references-->\nReferences\n<!--_/references-->\n</h3>\n\n<p class=\"noIndent\">".trim(), reference.substring(0, 79).trim());
-		assertTrue(reference.contains("Amin, S."));
+		assertEquals("<meta name=\"citation_reference\" content=\"citation_author=S. Amin; citation_auth".trim(), reference.substring(0, 79).trim());
+		assertTrue(reference.contains("S. Amin"));
 	}
 
 }

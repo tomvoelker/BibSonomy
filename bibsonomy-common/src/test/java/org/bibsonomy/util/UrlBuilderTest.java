@@ -88,6 +88,14 @@ public class UrlBuilderTest {
 		spaceBuilder.addPathElement("test + test");
 		assertEquals("/test%20%2B%20test", spaceBuilder.asString());
 	}
+
+	@Test
+	public void testAnchor() {
+		final UrlBuilder anchorBuilder = new UrlBuilder("");
+		anchorBuilder.addPathElement("test");
+		anchorBuilder.setAnchor("test");
+		assertEquals("/test#test", anchorBuilder.asString());
+	}
 	
 	private static Map<String, String> getQueryMap(String query) {
 		if (!present(query)) {

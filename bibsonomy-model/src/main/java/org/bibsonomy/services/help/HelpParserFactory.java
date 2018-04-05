@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.services.help;
 
+import org.bibsonomy.services.URLGenerator;
+
 import java.util.Map;
 
 /**
@@ -38,7 +40,8 @@ public interface HelpParserFactory {
 	/**
 	 * 
 	 * @param replacements
+	 * @param urlGenerator
 	 * @return the {@link HelpParser}
 	 */
-	public HelpParser createParser(Map<String, String> replacements);
+	public HelpParser createParser(Map<String, String> replacements, URLGenerator urlGenerator);
 }

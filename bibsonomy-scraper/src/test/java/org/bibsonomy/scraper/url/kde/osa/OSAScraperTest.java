@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.osa;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -51,7 +52,9 @@ public class OSAScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		UnitTestRunner.runSingleTest("url_93");
+		final String url = "https://www.osapublishing.org/josaa/abstract.cfm?uri=josaa-25-5-1084";
+		final String resultFile = "OSAScraperUnitURLTest.bib";
+		assertScraperResult(url, null, OSAScraper.class, resultFile);
 	}
 	
 	@Ignore // because we need to login in the journal to be able to scrape the references

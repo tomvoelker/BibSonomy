@@ -93,6 +93,7 @@ import org.bibsonomy.scraper.url.kde.jamanet.JamaNetScraper;
 import org.bibsonomy.scraper.url.kde.jap.JAPScraper;
 import org.bibsonomy.scraper.url.kde.jcb.JCBScraper;
 import org.bibsonomy.scraper.url.kde.jci.JCIScraper;
+import org.bibsonomy.scraper.url.kde.jeb.JEBScraper;
 import org.bibsonomy.scraper.url.kde.jmlr.JMLRScraper;
 import org.bibsonomy.scraper.url.kde.jneurosci.JNeurosciScraper;
 import org.bibsonomy.scraper.url.kde.journalogy.JournalogyScraper;
@@ -119,6 +120,7 @@ import org.bibsonomy.scraper.url.kde.nber.NberScraper;
 import org.bibsonomy.scraper.url.kde.nejm.NEJMScraper;
 import org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper;
 import org.bibsonomy.scraper.url.kde.opac.OpacScraper;
+import org.bibsonomy.scraper.url.kde.oup.OxfordUniversityPressScraper;
 import org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper;
 import org.bibsonomy.scraper.url.kde.openuniversity.OpenUniversityScraper;
 import org.bibsonomy.scraper.url.kde.osa.OSAScraper;
@@ -135,6 +137,7 @@ import org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper;
 import org.bibsonomy.scraper.url.kde.pubmedcentral.PubMedCentralScraper;
 import org.bibsonomy.scraper.url.kde.rsc.RSCScraper;
 import org.bibsonomy.scraper.url.kde.rsoc.RSOCScraper;
+import org.bibsonomy.scraper.url.kde.rspb.RSPBScraper;
 import org.bibsonomy.scraper.url.kde.sage.SageJournalScraper;
 import org.bibsonomy.scraper.url.kde.scielo.SCIELOScraper;
 import org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper;
@@ -156,6 +159,7 @@ import org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper;
 import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
 import org.bibsonomy.scraper.url.kde.worldscientific.WorldScientificScraper;
 import org.bibsonomy.scraper.url.kde.wormbase.WormbaseScraper;
+import org.bibsonomy.scraper.url.kde.zenodo.ZenodoScraper;
 
 /**
  * Contains all active UrlScrapers.
@@ -169,6 +173,8 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 	 * Public constructor adding the active scrapers.
 	 */
 	public KDEUrlCompositeScraper() {
+		addScraper(new JEBScraper());
+		addScraper(new RSPBScraper());
 		addScraper(new BioRxivScraper());
 		addScraper(new OpacScraper());
 		addScraper(new IEEEXploreScraper());
@@ -319,6 +325,8 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new LccnLocScraper());
 		addScraper(new ElsevierScraper());
 		addScraper(new CyberleninkaScraper());
+		addScraper(new OxfordUniversityPressScraper());
+		addScraper(new ZenodoScraper());
 		//addScraper(new AkademiaiScraper()); error = 404
 	}
 

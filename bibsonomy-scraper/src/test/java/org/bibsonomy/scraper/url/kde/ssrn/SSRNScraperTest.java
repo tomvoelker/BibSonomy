@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.ssrn;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -44,7 +45,9 @@ public class SSRNScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_164");
+		final String url = "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=519044#";
+		final String resultFile = "SSRNScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, SSRNScraper.class, resultFile);
 	}
 	
 	/**
@@ -52,7 +55,9 @@ public class SSRNScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_165");
+		final String url = "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=900005";
+		final String resultFile = "SSRNScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, SSRNScraper.class, resultFile);
 	}
 
 }

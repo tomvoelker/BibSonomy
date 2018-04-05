@@ -35,6 +35,7 @@ import org.bibsonomy.scraper.generic.HighwireScraper;
 import org.bibsonomy.scraper.generic.UnAPIScraper;
 import org.bibsonomy.scraper.id.kde.doi.ContentNegotiationDOIScraper;
 import org.bibsonomy.scraper.id.kde.doi.DOIScraper;
+import org.bibsonomy.scraper.id.kde.doi.HTMLMetaDataDOIScraper;
 import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
 import org.bibsonomy.scraper.snippet.SnippetScraper;
 
@@ -74,6 +75,9 @@ public class KDEScraperFactory {
 		scraper.addScraper(new DOIScraper());
 		
 		scraper.addScraper(new KDEUrlCompositeScraper());
+		
+		//this scraper searches for a doi so ContentNegotiationDOIScraper has a better chance to getting bibtex
+		scraper.addScraper(new HTMLMetaDataDOIScraper());
 		
 		//this scraper resolves DOI pages which could not be scraped by the URLScrapers
 		scraper.addScraper(new ContentNegotiationDOIScraper());

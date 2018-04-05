@@ -28,6 +28,7 @@ package org.bibsonomy.webapp.util.markdown;
 
 import java.util.Map;
 
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.help.HelpParser;
 import org.bibsonomy.services.help.HelpParserFactory;
 
@@ -42,8 +43,8 @@ public class MarkdownHelpPageParserFactory implements HelpParserFactory {
 	 * @see org.bibsonomy.services.help.HelpParserFactory#createParser(java.util.Map)
 	 */
 	@Override
-	public HelpParser createParser(Map<String, String> replacements) {
-		return new Parser(replacements);
+	public HelpParser createParser(Map<String, String> replacements, URLGenerator urlGenerator) {
+		return new Parser(replacements, urlGenerator);
 	}
 
 }

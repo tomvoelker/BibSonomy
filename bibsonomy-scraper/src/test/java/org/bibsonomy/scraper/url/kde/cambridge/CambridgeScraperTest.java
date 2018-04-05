@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.cambridge;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,7 +45,9 @@ public class CambridgeScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_73");
+		final String url = "https://www.cambridge.org/core/journals/central-european-history/article/max-rubner-and-the-biopolitics-of-rational-nutrition/8A076B9FF653BF6A34C870B7718AFAD5";
+		final String resultFile = "CambridgeScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, CambridgeScraper.class, resultFile);
 	}
 	
 	/**
@@ -51,7 +55,9 @@ public class CambridgeScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_110");
+		final String url = "https://www.cambridge.org/core/journals/journal-of-fluid-mechanics/article/separatedflow-model-for-collapsibletube-oscillations/F8B8F4ABDC08F5B156B6C574F9DF4C01";
+		final String resultFile = "CambridgeScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, CambridgeScraper.class, resultFile);
 	}
 }
 
