@@ -620,16 +620,9 @@ public class BibTex extends Resource {
 	 * @param value
 	 */
 	public void addMiscField(final String miscKey, final String value) {
-<<<<<<< local
-		if (this.miscFields == null) {
-			this.miscFields = new LinkedHashMap<String, String>();
-		}
-		this.miscFields.put(miscKey, value);
-=======
 		this.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS); // map allocate implied and sync
 		this.miscFields.put(miscKey, value);  
 		this.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS); // sync restored
->>>>>>> other
 	}
 
 	/**

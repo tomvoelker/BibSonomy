@@ -345,7 +345,7 @@ public class ContentBasedItemRecommender<R extends Resource> extends AbstractIte
 		
 		final double toCheckLength = saveDocuments.get(String.valueOf(toCheck.getContentId())).getLength();
 		for (final Integer item : similarities.keySet()) {
-			similarities.put(item, similarities.get(item)/saveDocuments.get(String.valueOf(item)).getLength()*toCheckLength);
+		    similarities.put(item, similarities.get(item)/(saveDocuments.get(String.valueOf(item)).getLength()*toCheckLength));
 		}
 		
 		for (final Integer key : similarities.keySet()) {
