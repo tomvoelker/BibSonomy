@@ -31,7 +31,7 @@ import org.bibsonomy.webapp.command.SettingsViewCommand;
 /**
  * @author cvo
  */
-public class JabRefImportCommand extends SettingsViewCommand {
+public class ExportFormatImportCommand extends SettingsViewCommand {
 	private static final long serialVersionUID = -2852728956746251923L;
 
 	/**

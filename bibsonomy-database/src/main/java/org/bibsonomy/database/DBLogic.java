@@ -2093,6 +2093,25 @@ public class DBLogic implements LogicInterface {
 		}
 		return null;
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getDocuments(java.lang.String)
+	 */
+	@Override
+	public List<Document> getDocuments(String userName) {
+		this.ensureLoggedIn();
+
+		final String lowerCaseUserName = userName.toLowerCase();
+		this.permissionDBManager.ensureWriteAccess(this.loginUser, lowerCaseUserName);
+
+		final DBSession session = this.openSession();
+
+		try {
+			return this.docDBManager.getLayoutDocuments(lowerCaseUserName, session);
+		} finally {
+			session.close();
+		}
+	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getDocumentStatistics(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, org.bibsonomy.common.enums.FilterEntity, java.util.Set, java.util.Date, java.util.Date)

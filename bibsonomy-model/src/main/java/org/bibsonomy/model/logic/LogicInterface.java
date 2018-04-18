@@ -399,6 +399,13 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @return document
 	 */
 	public Document getDocument(final String userName, final String fileHash);
+	
+	/**
+	 * Get a list of layout document files for a given user
+	 * @param userName
+	 * @return document
+	 */
+	public List<Document> getDocuments(final String userName);
 
 	/**
 	 * Get a document from an existing Bibtex entry

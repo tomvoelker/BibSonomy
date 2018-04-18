@@ -1,0 +1,16 @@
+<jsp:root version="2.0"
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings">
+
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+
+	<div id="selTab2" class="tab-pane ${(command.selTab eq 2) ? 'active' : ''}">
+		<settings:jabRef command="${command}"/>
+
+		<settings:csl command="${command}"/>
+	</div>
+
+</jsp:root>
+
+
