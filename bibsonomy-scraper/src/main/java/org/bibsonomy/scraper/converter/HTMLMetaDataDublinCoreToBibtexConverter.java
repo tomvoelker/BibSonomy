@@ -58,7 +58,7 @@ public class HTMLMetaDataDublinCoreToBibtexConverter extends AbstractDublinCoreT
 	protected Map<String, String> extractData(final String pageContent) {
 		final Matcher matcher = EXTRACTION_PATTERN.matcher(pageContent);
 
-		Map<String, Set<String>> data = new HashMap<String, Set<String>>();
+		final Map<String, Set<String>> data = new HashMap<String, Set<String>>();
 
 		String key = "";
 		String value = "";
@@ -133,6 +133,12 @@ public class HTMLMetaDataDublinCoreToBibtexConverter extends AbstractDublinCoreT
 	}
 
 	// TODO: move to utils class
+	/**
+	 * @param key
+	 * @param value
+	 * @param language
+	 * @param data
+	 */
 	protected static void addValueToDataIfNotContained(final String key, final String value, final String language, final Map<String, Set<String>> data) {
 		Set<String> valueInData = data.get(key);
 

@@ -58,10 +58,10 @@ public class DOIUtils {
 	public static final String DX_DOI_ORG_URL = "http://" + DX_DOI_ORG + "/";
 
 	private static final Pattern HOST_PATTERN = Pattern.compile(".*" + DX_DOI_ORG);
-	
+
 	private static final String NON_NUMBERS_OR_LETTERS = "[^0-9\\p{L}]*?";
-	
-	
+
+
 	/**
 	 * The first variant is too strict, according to 
 	 *  
@@ -78,10 +78,10 @@ public class DOIUtils {
 	 * 
 	 * 
 	 */
-//	private static final String DOI = "(10\\.\\d+\\/\\d+?)";
+	//	private static final String DOI = "(10\\.\\d+\\/\\d+?)";
 	private static final String DOI = "(doi:\\s*)?(10\\.\\d+\\/[^\\s\"'}]+)";
 	private static final String DOI_END = "[\\s\"'}]*";
-	
+
 	/**
 	 * Matches a pure DOI. Disregards case. 
 	 */
@@ -94,13 +94,13 @@ public class DOIUtils {
 	 */
 	private static final Pattern STRICT_DOI_PATTERN = Pattern.compile("^" + NON_NUMBERS_OR_LETTERS + DOI + DOI_END + NON_NUMBERS_OR_LETTERS + "$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern SLOPPY_DOI_PATTERN = Pattern.compile(".*?" + DOI + DOI_END + ".*", Pattern.CASE_INSENSITIVE);
-	
+
 	/**
 	 * Pattern to clean up a string containing a doi.
 	 */
 	private static final String CLEAN_DOI = "(doi\\s*=.*?)(doi:\\s*|http://.*?)?(10\\.\\d+\\/[^\\s\"'}]+)";
 	private static final Pattern CLEAN_DOI_PATTERN = Pattern.compile(CLEAN_DOI, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
-	
+
 	/**
 	 * Maximum length of a selection to be search a DOI for
 	 */
@@ -114,8 +114,8 @@ public class DOIUtils {
 	public static boolean isDOIURL(final URL url) {
 		return url != null && HOST_PATTERN.matcher(url.getHost()).find();
 	}
-	
-	
+
+
 	/**
 	 * Resolves DOI to a URL using the official DOI resolver {@value #DX_DOI_ORG}.
 	 * 
@@ -160,7 +160,7 @@ public class DOIUtils {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Checks, whether the selection contains a DOI and is not too long (i.e., 
 	 * hopefully only contains the DOI and nothing else. 
@@ -171,7 +171,7 @@ public class DOIUtils {
 	public static boolean isSupportedSelection(final String selection) {
 		return selection != null && selection.length() < MAX_SELECTION_LENGTH && DOIUtils.containsOnlyDOI(selection);
 	}
-	
+
 	/**
 	 * Checks, if the given string contains a DOI.
 	 * This method checks, if <strong>somewhere</strong> in the string something
@@ -184,7 +184,7 @@ public class DOIUtils {
 	public static boolean containsDOI(final String string) {
 		return string != null && SLOPPY_DOI_PATTERN.matcher(string).find();
 	}
-	
+
 	/**
 	 * Checks, if the given string contains (almost only) a DOI.
 	 * 
@@ -195,7 +195,7 @@ public class DOIUtils {
 	public static boolean containsOnlyDOI(final String string) {
 		return string != null && STRICT_DOI_PATTERN.matcher(string).find();
 	}
-	
+
 	/**
 	 * Checks, if the given string represents a DOI.
 	 * 
@@ -205,7 +205,7 @@ public class DOIUtils {
 	public static boolean isDOI(final String doi) {
 		return doi != null && DOI_PATTERN.matcher(doi).find();
 	}
-	
+
 	/**
 	 * Cleans up a doi entry. The string s can be a single Line or
 	 * a whole BibTeX string.
@@ -254,10 +254,12 @@ public class DOIUtils {
 	 * @param url
 	 * @return the found doi
 	 */
-	public static String getDoiFromURL(URL url)  {
-		String doi = extractDOI(url.toString());
-		if (present(doi)) {
-			return cleanDoiFromURL(doi);			
+	public static String getDoiFromURL(final URL url)  {
+		if (present(url)) {
+			final String doi = extractDOI(url.toString());
+			if (present(doi)) {
+				return cleanDoiFromURL(doi);			
+			}
 		}
 		return null;
 	}
@@ -277,5 +279,5 @@ public class DOIUtils {
 		}
 		return doi;
 	}
- 
+
 }
