@@ -106,7 +106,7 @@ public final class BibtexParser {
 
     private final static String[] ENTRY_TYPES = new String[] { "string", "preamble", "article", "book", "booklet",
             "conference", "inbook", "incollection", "inproceedings", "manual", "mastersthesis", "misc", "phdthesis",
-            "proceedings", "techreport", "unpublished", "periodical" // not
+            "proceedings", "techreport", "unpublished", "periodical", "collection" // not
     // really
     // standard
     // but
