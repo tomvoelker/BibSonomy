@@ -16,7 +16,7 @@
 		<result property="user"             column="user_name"           javaType="java.lang.String" />
 		
 		<result property="college"          column="college"           	 javaType="java.lang.String" />
-		<result property="homepage"         column="homepage"     		 javaType="java.lang.String" />
+		<result property="homepage"         column="homepage"     		 javaType="url" />
 		<result property="email"            column="email"           	 javaType="java.lang.String" />
 		
 	</resultMap>

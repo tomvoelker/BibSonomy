@@ -40,7 +40,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 
 /**
- * bibtex download is broken so we use RIS instead
+ * bibtex download is broken (not correctly formatted) so we use RIS instead
  * 
  * @author hagen
  */

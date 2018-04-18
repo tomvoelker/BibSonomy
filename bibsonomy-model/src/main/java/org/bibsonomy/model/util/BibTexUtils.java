@@ -38,6 +38,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -248,7 +249,9 @@ public class BibTexUtils {
 
 	/** article */
 	public static final String ARTICLE = "article";
-	
+
+	/** collection */
+	public static final String COLLECTION = "collection";	
 	/**
 	 * To remove the preprint entry type remove all occurrences of this string and the corresponding types 
 	 * in swrcEntryTypes and risEntryTypes in class Functions in webapp module.
@@ -260,7 +263,7 @@ public class BibTexUtils {
 	 */
 	public static final String[] ENTRYTYPES = {ARTICLE, BOOK, BOOKLET, CONFERENCE, ELECTRONIC, INBOOK, INCOLLECTION, INPROCEEDINGS,
 		MANUAL, MASTERS_THESIS, MISC, PATENT, PERIODICAL, PHD_THESIS, PRESENTATION, PROCEEDINGS, STANDARD, TECH_REPORT, UNPUBLISHED,
-		PREPRINT
+		PREPRINT, COLLECTION
 	};
 
 	/*
@@ -529,10 +532,12 @@ public class BibTexUtils {
 		}
 		
 		/*
-		 * include plain misc fields if desired
+		 * The following is @deprecated. Only a log warning will be triggered. 
+		 * include plain misc fields if desired 
 		 */
 		if (hasFlag(flags, SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD) && present(bib.getMisc())) {
-			buffer.append(DEFAULT_INTENDATION).append(bib.getMisc()).append(KEYVALUE_SEPARATOR).append("\n");
+			//buffer.append(DEFAULT_INTENDATION).append(bib.getMisc()).append(KEYVALUE_SEPARATOR).append("\n");
+			log.error("'SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD' was triggered.");
 		}
 		
 		/*
@@ -664,7 +669,7 @@ public class BibTexUtils {
 	 * @return A string representation of the post in BibTeX format.
 	 */
 	public static String toBibtexString(final Post<BibTex> post, final int flags) {
-		final BibTex bib = post.getResource();	
+		final BibTex bib = post.getResource().clone(); // We want to use a clone since modifying the original has side effects
 		/*
 		 * add additional fields.
 		 *  
@@ -792,8 +797,9 @@ public class BibTexUtils {
 		if (!present(bibtex)) return "";
 
 		// replace markup
-		bibtex = bibtex.replaceAll("\\\\[a-z]+\\{([^\\}]+)\\}", "$1");  // \\markup{marked_up_text}		
-
+		bibtex = bibtex.replaceAll("\\\\[a-z]+\\{([^\\}]+)\\}", "$1");  // \\markup{marked_up_text}
+		bibtex = bibtex.replaceAll("\\\\[a-z]+ ", "");                   // \\relax, \\em, etc.
+		// FIXME: How to handle whitespace around marco correctly?
 		// decode Latex macros into unicode characters
 		return TexDecode.decode(bibtex).trim();
 	}
@@ -1005,7 +1011,13 @@ public class BibTexUtils {
 			}
 
 		}
-		// write serialized misc fields into misc field
+		/* write serialized misc fields into misc field string
+		 * But, return null if string would be of length 0
+		 */
+		
+		if (miscFieldsSerialized.length() == 0) {
+			return null;
+		}
 		return miscFieldsSerialized.toString();
 	}
 

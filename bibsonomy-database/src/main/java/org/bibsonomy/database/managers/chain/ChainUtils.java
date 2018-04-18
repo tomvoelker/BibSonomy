@@ -51,7 +51,7 @@ public class ChainUtils {
 		 * Are there Negation tags?
 		 */
 		boolean existsNegatedTags = false;
-		for (final SystemTag sysTag: param.getSystemTags()) {
+		for (final SystemTag sysTag : param.getSystemTags()) {
 			if (sysTag instanceof NotTagSystemTag) {
 				existsNegatedTags = true;
 				break;

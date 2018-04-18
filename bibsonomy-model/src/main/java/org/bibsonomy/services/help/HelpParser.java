@@ -36,9 +36,10 @@ import java.io.IOException;
 public interface HelpParser {
 	
 	/**
-	 * @param fileName
+	 * @param text the text to parse
+	 * @param language
 	 * @return the parsed content
 	 * @throws IOException
 	 */
-	public String parseText(final String fileName) throws IOException;
+	public String parseText(final String text, String language) throws IOException;
 }

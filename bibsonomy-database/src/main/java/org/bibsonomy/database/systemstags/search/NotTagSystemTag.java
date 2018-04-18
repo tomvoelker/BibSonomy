@@ -44,9 +44,9 @@ public class NotTagSystemTag extends AbstractSearchSystemTagImpl {
 	}
 
 	@Override
-	public void handleParam(GenericParam param) {
-		param.addToSystemTags(this);
-		tagName = this.getArgument();
+	public boolean handleParam(final GenericParam param) {
+		this.tagName = this.getArgument();
+		return false;
 	}
 
 	/**

@@ -28,8 +28,10 @@ package org.bibsonomy.services;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SearchType;
@@ -51,6 +53,7 @@ import org.bibsonomy.model.enums.SimpleExportLayout;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.user.settings.FavouriteLayout;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.services.export.CSLUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlBuilder;
 import org.bibsonomy.util.UrlUtils;
@@ -862,7 +865,8 @@ public class URLGenerator {
 			final String publicationUrl = this.getPublicationUrl(publication, user);
 			switch (source) {
 			case CSL:
-				return "/csl-layout/" + style.toUpperCase() + publicationUrl;
+				final String normedStyle = CSLUtils.normStyle(style);
+				return "/csl-layout/" + normedStyle.toUpperCase() + publicationUrl;
 			case JABREF:
 				return "/layout/" + style.toLowerCase() + publicationUrl;
 			case SIMPLE:
@@ -1288,10 +1292,9 @@ public class URLGenerator {
 	}
 	
 	/**
-	 * Constructs the URL for the report as spammer url
-	 * 
-	 * @param userName
-	 * @return The URL for the user's page for the system
+	 * Constructs the URL for the user relation ajax controller
+	 *
+	 * @return the url to the user relation ajax controller
 	 */
 	public String getUserRelationEditUrl() {
 		String url = this.projectHome + "ajax/"+ USER_RELATION;
@@ -1516,7 +1519,6 @@ public class URLGenerator {
 	}
 
 	/**
-	 * @param personName
 	 * @param authorIndex 
 	 * @param resourceHash
 	 * @param role
@@ -1548,7 +1550,27 @@ public class URLGenerator {
 	 */
 	public String getHelpPage(final String helpPage, final String language) {
 		final UrlBuilder builder = new UrlBuilder(this.projectHome + "help" + "_" + language);
-		builder.addPathElement(helpPage);
+
+		final String helpPath;
+		// handle anchor
+		if (helpPage.contains("#")) {
+			final String[] pathAnchor = helpPage.split("#");
+			builder.setAnchor(pathAnchor[1]);
+			helpPath = pathAnchor[0];
+		} else {
+			helpPath = helpPage;
+		}
+
+		// check if help page is in a subdir
+		if (helpPath.contains("/")) {
+			final String[] path = helpPath.split("/");
+			for (String pathElement : path) {
+				builder.addPathElement(pathElement);
+			}
+		} else {
+			builder.addPathElement(helpPath);
+		}
+
 		return this.getUrl(builder.asString());
 	}
 }

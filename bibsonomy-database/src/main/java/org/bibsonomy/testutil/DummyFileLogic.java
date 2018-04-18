@@ -163,10 +163,10 @@ public class DummyFileLogic implements FileLogic {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.services.filesystem.CSLFileLogic#validCSLLayoutFile(org.bibsonomy.model.util.file.UploadedFile)
+	 * @see org.bibsonomy.services.filesystem.CSLFileLogic#isValidCSLLayoutFile(org.bibsonomy.model.util.file.UploadedFile)
 	 */
 	@Override
-	public boolean validCSLLayoutFile(UploadedFile file) {
+	public boolean isValidCSLLayoutFile(UploadedFile file) {
 		// TODO Auto-generated method stub
 		return false;
 	}

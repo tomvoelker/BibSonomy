@@ -69,6 +69,7 @@
 			WHERE person.person_id = #personId#
 	</update>
 	
+
 	<update id='updatePersonOnAll' parameterClass='org.bibsonomy.model.Person'>
 		UPDATE person SET person_change_id = #personChangeId#, college = #college#, email = #email#, homepage = #homepage#, gender = #gender#, dnb_person_id  = #dnbPersonId#, academic_degree = #academicDegree#, orcid = #orcid#, post_ctr = #postCounter#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
 			WHERE person.person_id = #personId#
@@ -88,8 +89,6 @@
 		UPDATE person SET person_change_id = #personChangeId#, homepage = #homepage#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
 			WHERE person.person_id = #personId#
 	</update>	
-	
-	
 	
 	<update id="updatePersonName" parameterClass='org.bibsonomy.model.PersonName'>
 		Update person_name SET is_main = #isMain# 
@@ -115,7 +114,7 @@
 	</select>
 	
 	<update id='unlinkUser' parameterClass="java.lang.String">
-		UPDATE person set user_name = null WHERE user_name = #username#
+		UPDATE person set user_name = null, email = null, homepage = null WHERE user_name = #username#
 	</update>
 	
 	<statement id="getPosts" resultMap="BibTexCommon.bibtexPost">

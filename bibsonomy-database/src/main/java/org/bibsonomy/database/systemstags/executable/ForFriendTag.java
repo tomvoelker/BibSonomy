@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.database.systemstags.executable;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
@@ -60,7 +62,10 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 
 	private Tag tag; // the original (regular) tag that this systemTag was created from
 
-
+	// a username specified in the .properties that can receive Posts without beeing friends
+	private static String bibliographyUser;
+	
+	
 	@Override
 	public ForFriendTag newInstance() {
 		return new ForFriendTag();
@@ -165,7 +170,7 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 		 *  We decided to ignore errors in systemTags. Thus the user is free use any tag.
 		 *  The drawback: If it is the user's intention to use a systemTag, he will never know if there was a typo! 
 		 */
-		if (!(generalDb.isFriendOf(sender, receiver, session) || groupDb.getCommonGroups(sender, receiver, session).size() > 0)) {
+		if (!(generalDb.isFriendOf(sender, receiver, session) || groupDb.getCommonGroups(sender, receiver, session).size() > 0 || (present(bibliographyUser) && receiver.equals(bibliographyUser)))) {
 			return false;
 		}
 		
@@ -192,4 +197,19 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 			return null;
 		}
 	}
+
+	/**
+	 * @param bibliographyUser the bibliographyUser to set
+	 */
+	public void setBibliographyUser(String bibliographyUser) {
+		ForFriendTag.bibliographyUser = bibliographyUser;
+	}
+
+	/**
+	 * @return the bibliographyUser
+	 */
+	public String getBibliographyUser() {
+		return ForFriendTag.bibliographyUser;
+	}
+
 }

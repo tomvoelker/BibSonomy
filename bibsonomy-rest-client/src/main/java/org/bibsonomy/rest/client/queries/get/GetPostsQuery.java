@@ -153,10 +153,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	 *            the search string to set
 	 */
 	public void setSearch(final String search) {
-		// urlencode is done later
-		if( present(search) ) {
-			this.search = search.replace(" ", "+");
-		}
+		this.search = search;
 	}
 
 	@Override

@@ -32,7 +32,7 @@ import org.springframework.core.convert.converter.Converter;
 /**
  * converts a string to a {@link FavouriteLayout}
  *
- * @author pfister
+ * @author jp
  */
 public class StringToFavouriteLayoutConverter implements Converter<String, FavouriteLayout> {
 	

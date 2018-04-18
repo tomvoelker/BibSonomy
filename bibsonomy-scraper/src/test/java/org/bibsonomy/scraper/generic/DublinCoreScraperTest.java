@@ -26,8 +26,11 @@
  */
 package org.bibsonomy.scraper.generic;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.url.kde.biorxiv.BioRxivScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -39,23 +42,48 @@ public class DublinCoreScraperTest {
 
 	@Test
 	public void testDCScraper() {
-		UnitTestRunner.runSingleTest("url_260");
+		final String url = "http://www.repo.uni-hannover.de/handle/123456789/287";
+		final String resultFile = "DCScraperTest.bib";
+		assertScraperResult(url, null, DublinCoreScraper.class, resultFile);
 	}
 	
 	@Test
 	public void testDCScraper2() {
-		UnitTestRunner.runSingleTest("url_261");
+		final String url = "http://www.phcogres.com/article.asp?issn=0974-8490;year=2009;volume=1;issue=4;spage=172;epage=174;aulast=Shuge;t=6";
+		final String resultFile = "DCScraperTest2.bib";
+		assertScraperResult(url, null, DublinCoreScraper.class, resultFile);
 	}
 	@Test
 	public void testDCScraper3() {
-		UnitTestRunner.runSingleTest("url_269");
+		final String url = "http://www.tara.tcd.ie/handle/2262/13178?mode=full&amp;submit_simple=Show+full+item+record";
+		final String resultFile = "DCScraperTest3.bib";
+		assertScraperResult(url, null, DublinCoreScraper.class, resultFile);
 	}
 	@Test
 	public void testDCScraper4() {
-		UnitTestRunner.runSingleTest("url_270");
+		final String url = "http://www.scirp.org/journal/PaperInformation.aspx?PaperID=37807";
+		final String resultFile = "DCScraperTest4.bib";
+		assertScraperResult(url, null, DublinCoreScraper.class, resultFile);	
 	}
 	@Test
 	public void testDCScraper5() {
-		UnitTestRunner.runSingleTest("url_298");
+		final String url = "http://www.uel.br/revistas/uel/index.php/informacao/article/view/19996";
+		final String resultFile = "DCScraperTest5.bib";
+		assertScraperResult(url, null, DublinCoreScraper.class, resultFile);	
 	}
+	
+	@Test
+	public void testDCScraper6() {
+		final String url = "http://firstmonday.org/ojs/index.php/fm/article/view/7414/6096";
+		final String resultFile = "DCScraperTest6.bib";
+		assertScraperResult(url, null, DublinCoreScraper.class, resultFile);	
+	}
+	
+	@Test
+	public void testDCScraper7() {
+		final String url = "http://www.vtei.cz/2017/06/aktualni-stav-problematiky-ochrannych-pasem-vodnich-zdroju/";
+		final String resultFile = "DCScraperTest7.bib";
+		assertScraperResult(url, null, DublinCoreScraper.class, resultFile);	
+	}
+	
 }

@@ -51,7 +51,7 @@ import org.bibsonomy.services.searcher.ResourceSearch;
 public interface SearchDBInterface<R extends Resource> {
 	
 	/** the max entries to fetch from the database into memory */
-	public static final int SQL_BLOCKSIZE = 40000;
+	public static final int SQL_BLOCKSIZE = 10000;
 
 	/** 
 	 * @param userName

@@ -135,6 +135,14 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 		this.doDefaultAction();
 		return null;
 	}
+	
+	/**
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonByUser(String)
+	 */
+	public Person getPersonByUser(String userName) {
+		this.doDefaultAction();
+		return null;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(java.lang.Integer)
@@ -627,6 +635,15 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public Document getDocument(String userName, String resourceHash, String fileName) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getDocuments(java.lang.String)
+	 */
+	@Override
+	public List<Document> getDocuments(String userName) {
 		this.doDefaultAction();
 		return null;
 	}

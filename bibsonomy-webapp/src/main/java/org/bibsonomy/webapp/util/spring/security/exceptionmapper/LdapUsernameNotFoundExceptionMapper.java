@@ -48,7 +48,7 @@ public class LdapUsernameNotFoundExceptionMapper extends UsernameNotFoundExcepti
 		final User user = new User();
 		if (e instanceof LdapUsernameNotFoundException) {
 			final DirContextOperations ctx = ((LdapUsernameNotFoundException) e).getDirContextOperations();
-
+	
 			/*
 			 * copy user attributes
 			 */

@@ -27,54 +27,16 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<fmt:message key="person.show.academicDegree" var="textAcademicDegree" />
 	<fmt:message key="person.show.addAlternateNameButton" var="textAddAlternateNameButton" />
-	<fmt:message key="person.show.addNameButton" var="textAddNameButton" />
-	<fmt:message key="person.show.addRoleButton" var="textAddRoleButton" />
 	<fmt:message key="person.show.addThesisButton" var="textAddThesisButton" />
-	<fmt:message key="person.show.advisor" var="textAdvisor" />
-	<fmt:message key="person.show.authorOf" var="textAuthorOf" />
 	<fmt:message key="person.show.close" var="textClose" />
-	<fmt:message key="person.show.deleteRoleButton" var="textDeleteRoleButton" />
-	<fmt:message key="person.show.editRoleButton" var="textEditRoleButton" />
 	<fmt:message key="person.show.firstReviewer" var="textFirstReviewer" />
 	<fmt:message key="person.show.formFirstName" var="textFormFirstName" />
 	<fmt:message key="person.show.formLastName" var="textFormLastName" />
-	<fmt:message key="person.show.header" var="textHeader" />
-	<fmt:message key="person.show.modalAddNameHeader" var="textModalAddNameHeader" />
-	<fmt:message key="person.show.modalAddRoleHeader" var="textModalAddRoleHeader" />
-	<fmt:message key="person.show.modalAddThesisHeader" var="textModalAddThesisHeader" />
-	<fmt:message key="person.show.modalDeleteNameHeader" var="textModalDeleteNameHeader" />
-	<fmt:message key="person.show.modalDeleteRoleHeader" var="textModalDeleteRoleHeader" />
-	<fmt:message key="person.show.modalDeleteNameContent" var="textModalDeleteNameContent" />
-	
-	
-	
-	<fmt:message key="person.show.modalDeleteRoleContent" var="textModalDeleteRoleContent" />
-	<fmt:message key="person.show.modalEditRoleHeader" var="textModalEditRoleHeader" />
-	<fmt:message key="person.show.modalLinkPersonHeader" var="textModalLinkPersonHeader" />
-	<fmt:message key="person.show.modalLinkPersonContent" var="textModalLinkPersonContent" />
-	<fmt:message key="person.show.modalUnlinkPersonHeader" var="textModalUnlinkPersonHeader" />
-	<fmt:message key="person.show.modalUnlinkPersonContent" var="textModalUnlinkPersonContent" />
 	<fmt:message key="person.show.newThesisButton" var="textNewThesisButton" />
-	<fmt:message key="person.show.noNamesFound" var="textNoNamesFound"/>
 	<fmt:message key="person.show.noResourcesFound" var="textNoResourcesFound" />
 	<fmt:message key="person.show.orcidId" var="textOrcidId" />
-	<fmt:message key="person.show.other" var="textOther" />
-	<fmt:message key="person.show.otherReviewer" var="textOtherReviewer" />
-	<fmt:message key="person.show.ownPubTab" var="textOwnPubTab" />
-	<fmt:message key="person.show.person" var="textPerson"/>
-	<fmt:message key="person.show.personPanelHeader" var="textPersonPanelHeader" />
-	<fmt:message key="person.show.personAlternateNames" var="textPersonAlternateNames" />
-	<fmt:message key="person.show.deleteNameButton" var="textDeleteNameButton" />
-	<fmt:message key="person.show.resourcesPanelHeader" var="textResourcePanelHeader" />
-	<fmt:message key="person.show.role" var="textRole" />
-	<fmt:message key="person.show.rolePubTab" var="textRolePubTab" />
 	<fmt:message key="person.show.saveButton" var="textSaveButton" />
-	<fmt:message key="person.show.supervisor" var="textSupervisor" />
-	<fmt:message key="person.show.thatsMeButton" var="textThatsMeButton" />
-	<fmt:message key="person.show.thatsMeLabel" var="textThatsMeLabel" />
-	
 	<fmt:message key="person.show.TooltipLockedForm" var="formLockedTooltip" />
 	
 	<c:set var="title" value="${mtl:cleanBibtex(command.person.mainName.firstName)} ${mtl:cleanBibtex(command.person.mainName.lastName)}" />
@@ -96,6 +58,8 @@
 			<script type='text/javascript' src='/resources/javascript/person/roles.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/titleAutocomplete.js'><!-- keep me --></script>
 
+			<script type='text/javascript' src='/resources/jquery/plugins/jquery.maskedinput.js'><!-- keep me --></script>
+
 			<script type='text/javascript' src='/resources/javascript/person/personPage.js'><!-- keep me --></script>
 			
 			<link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
@@ -103,6 +67,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading"></jsp:attribute>
+		
 		<jsp:attribute name="sidebar">
 			<!-- Links to the user who claimed this page or buttons to claim it/realease it -->
 			<h4><fmt:message key="person.sidebar.linkedUserTitle" /></h4>
@@ -128,8 +93,6 @@
 			</c:choose>
 		</jsp:attribute>
 
-
-
 		<jsp:attribute name="content">
 			<errors:logicExceptions exceptions="${command.logicExceptions}" />
 			<c:if test="${not empty command.okHintKey}">
@@ -143,6 +106,14 @@
 			<form method='post' name='personForm' id="personForm" action="" class='form-horizontal'>
 				<input type="hidden" name="ckey" value="${ckey}"/>
 				<input type="hidden" name="personId" value="${command.person.personId}"/>
+				<c:choose>
+					<c:when test='${not empty command.person.user and not empty command.context.loginUser.name and command.person.user eq command.context.loginUser.name}'>
+						<input type="hidden" id="formThatsMe" name="formThatsMe" value="true"/>
+					</c:when>
+					<c:otherwise>
+						<input type="hidden" id="formThatsMe" name="formThatsMe" value="false"/>
+					</c:otherwise>
+				</c:choose>
 
 				<div class="page-header">
 					
@@ -153,11 +124,13 @@
 					<div class="form-group">
 						<h1>
 							<div class="personPageFormPlaceholder">
-								<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
+								<c:if test="${empty command.person.user or (not empty command.person.user and (command.person.user eq command.context.loginUser.name)) and not command.context.loginUser.spammer}">
+									<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
+								</c:if>
 								<span class="personPageFormFieldContent" id="personPageFormAcademicDegreeValue">${command.person.academicDegree}</span>
 							</div>
 							<div class="personPageFormField">
-								<input class='form-control' type="text" name='person.academicDegree' id='formAcademicDegree' placeholder="Dr" autocomplete="off" value="${command.person.academicDegree}" />
+								<input class='form-control' type="text" name='person.academicDegree' id='formAcademicDegree' placeholder="Dr." autocomplete="off" value="${command.person.academicDegree}" />
 							</div>
 							
 							<!-- TODO: REMOVE INLINE CSS -->
@@ -170,7 +143,6 @@
 						</h1>
 					</div>
 				</div>
-				
 				
 				<!-- VCard -->
 				<div id="personInfo" class="row">
@@ -194,11 +166,13 @@
 							
 							<!-- College -->						
 							<div class='form-group'>
-								<label class="control-label col-md-4 col-smallpadding" for='formCollege'>College</label>
+								<label class="control-label col-md-4 col-smallpadding" for='formCollege'><fmt:message key="person.show.college" /></label>
 								
 								<div class="col-md-8">
 									<div class="personPageFormPlaceholder">
-										<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
+										<c:if test="${(not empty command.context.loginUser.name and empty command.person.user) or (not empty command.person.user and (command.person.user eq command.context.loginUser.name)) and not command.context.loginUser.spammer}">
+											<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
+										</c:if>
 										<span class="personPageFormFieldContent" id="personPageFormCollegeValue">${command.person.college}</span> 
 									</div>
 									
@@ -213,10 +187,9 @@
 								</div>
 							</div>
 							
-							<!-- FIXME TODO THE FOLLOWING FIELDS CAN ONLY BE EDITED IF THE EDITOR IS THE OWNER OF THE PAGE -->
 							<!-- Email -->						
 							<div class='form-group'>
-								<label class="control-label col-md-4 col-smallpadding" for='formCollege'>Email</label>
+								<label class="control-label col-md-4 col-smallpadding" for='formEmail'><fmt:message key="person.show.email" /></label>
 								
 								<div class="col-md-8">
 									<div class="personPageFormPlaceholder">
@@ -229,14 +202,17 @@
 												<span data-toggle="tooltip" title="${formLockedTooltip}" class="personPageLockedForm fa fa-info-circle"><!--  --></span>
 											</c:otherwise>
 										</c:choose>
-
+										
+										<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
 										<span class="personPageFormFieldContent" id="personPageFormEmailValue">${command.person.email}</span> 
+										</c:if>	
 									</div>
 									
 									<!-- Only visible if te loginUser claimed this person -->
 									<c:if test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
 										<div class="personPageFormField col-md-8">
-											<input class='form-control' type="text" name='person.email' id="formEmail" value="${command.person.college}"/>
+											<fmt:message key="person.show.email.placeholder" var="textEmailPlaceholder" />
+											<input class='form-control' type="email" name='person.email' id="formEmail" placeholder="${textEmailPlaceholder}" value="${command.person.email}"/>
 										</div>
 										
 										<!-- TODO: REMOVE INLINE CSS -->
@@ -249,7 +225,7 @@
 							
 							<!-- Homepage -->						
 							<div class='form-group'>
-								<label class="control-label col-md-4 col-smallpadding" for='formCollege'>Homepage</label>
+								<label class="control-label col-md-4 col-smallpadding" for='formHomepage'><fmt:message key="person.show.homepage" /></label>
 								
 								<div class="col-md-8">
 									<div class="personPageFormPlaceholder">
@@ -263,13 +239,23 @@
 											</c:otherwise>
 										</c:choose>
 
-										<span class="personPageFormFieldContent" id="personPageFormHomepageValue">${command.person.homepage}</span> 
+
+										<c:choose>
+											<c:when test='${not empty command.person.homepage}'>
+												<a class="personPageFormFieldContent" id="personPageFormHomepageValue" rel="external nofollow" href="${fn:escapeXml(command.person.homepage)}" itemprop="url"><c:out value="${command.person.homepage}"/></a>									
+											</c:when>
+											<c:otherwise>
+												<span class="personPageFormFieldContent" id="personPageFormHomepageValue"><c:out value=" " /></span> 
+											</c:otherwise>
+										</c:choose>
+
 									</div>
 									
 									<!-- Only visible if te loginUser claimed this person -->
 									<c:if test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
-										<div class="personPageFormField col-md-8">
-											<input class='form-control' type="text" name='person.homepage' id="formHomepage" placeholder="TODO College" value="${command.person.homepage}"/>
+										<div class="personPageFormField col-md-8">										
+											<fmt:message key="person.show.homepage.placeholder" var="textHomepagePlaceholder" />
+											<input class='form-control' type="url" name='person.homepage' id="formHomepage" placeholder="${textHomepagePlaceholder}" value="${command.person.homepage}"/>
 										</div>
 										
 										<!-- TODO: REMOVE INLINE CSS -->
@@ -280,86 +266,14 @@
 								</div>
 							</div>
 							
-							
-							
 						</div>
-						
-
-						<!-- ????????????????????????????????????????????????????????????????????????????????????????????? -->	
-						<!-- ????????????????????????????????????????????????????????????????????????????????????????????? -->
-						<c:if test="${false and command.person.disambiguatingPublication.post ne null}">
-							<div class='form-group'>
-								<label class="control-label col-md-4">${textAuthorOf}</label>
-								<div class="col-md-6">
-									<p class='form-control-static'><c:out value="${mtl:cleanBibtex(command.person.disambiguatingPublication.post.resource.title)}" /></p>
-								</div>
-							</div>
-						</c:if>					
-						<!-- ????????????????????????????????????????????????????????????????????????????????????????????? -->	
-						<!-- ????????????????????????????????????????????????????????????????????????????????????????????? -->	
-						
-						
-						
-						<!-- It's me -->
-						<!-- 
-						<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-							<div class='form-group'>
-								<label class="control-label col-md-4" for='thatsMe'>${textThatsMeLabel}</label>
-									<div class="col-md-6">
-										<div class="checkbox"><label>
-											<c:choose>
-												<c:when test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
-													<input type="checkbox" name='formThatsMe' id='formThatsMe' checked="checked" /> ${textThatsMeButton}
-												</c:when>
-												<c:when test='${not empty command.person.user}'>
-													<a href="${absoluteUrlGenerator.getUserUrlByUserName(command.person.user)}"><c:out value="${command.person.user}"/></a>
-												</c:when>
-												<c:otherwise>
-													<input type="checkbox" name='formThatsMe' id='formThatsMe' /> ${textThatsMeButton}
-												</c:otherwise>
-											</c:choose>
-										</label>
-									</div>
-								</div>
-							</div>
-						</c:if>
-						 -->
-							
-						<!-- 
-						<div class="row">
-							<div class='col-md-4'>&#160;</div>
-							<div class="col-md-6">
-							 -->
-								<!-- 
-								<c:choose>
-									<c:when test='${command.person.user eq null}'>
-										${textThatsMeButton}
-										<c:set var="displayLinkButton" value='display:none'/>
-										<c:set var="displayUnlinkButton" value='' />
-									</c:when>
-									<c:otherwise>
-										<c:set var="displayLinkButton" value=''/>
-										<c:set var="displayUnlinkButton" value='display:none' />
-									</c:otherwise>
-								</c:choose>
-								<button style='${displayLinkButton}' type='button' id='btnLink' class='btn btn-default' data-toggle="modal" data-target="#linkPerson">${textThatsMeButton}</button>
-								<button style='${displayUnlinkButton}' type='button' id='btnUnlink' class='btn btn-default' data-toggle="modal" data-target="#unlinkPerson">${textThatsNotMeButton}</button>
-								-->
-								<!--  
-								<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-									<button id='btnSaveSubmit' data-person-id="${command.person.personId}" type='button' class="btn btn-primary pull-right ${systemReadOnly ? 'disabled' : '' }">${textSaveButton}</button>
-								</c:if>
-							</div>
-						</div>
-						-->
-						
-						
+			
 					</div>
 					<div class="col-md-6">
 						
 						<!-- Alternative Names -->
 						<div class='form-group'>
-							<label class="control-label col-md-6">${textPersonAlternateNames}</label>
+							<label class="control-label col-md-6"><fmt:message key="person.show.personAlternateNames" /></label>
 							<div class="col-md-6">
 								<div class="personPageFormPlaceholder">
 									<c:choose>
@@ -384,29 +298,13 @@
 										</c:when>
 										<c:otherwise>
 											<ul id="personPageAlternativeNameList" class="hidden list-unstyled"><!--  --></ul>
-											<p id="personPageAlternativeNamePlaceholder">${textNoNamesFound}</p>
+											<p id="personPageAlternativeNamePlaceholder"><fmt:message key="person.show.noNamesFound" /></p>
 										</c:otherwise>
 									</c:choose>
-									
-										
-									<!-- 
-									<div class='checkbox' id='personName_${name.personNameChangeId}'>
-											<label><input type='radio' name='formSelectedName' value='${name.personNameChangeId}' checked='checked' /> ${name.firstName} ${name.lastName}</label>&#160;
-											</div>
-										<c:otherwise>
-											<div class='checkbox' id='personName_${name.personNameChangeId}'><label><input type='radio' name='formSelectedName' value='${name.personNameChangeId}' /> ${name.firstName} ${name.lastName}</label>&#160;
-												<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-													<span data-person-name-id='${name.personNameChangeId}' data-firstName='${name.firstName}' data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_${name.personNameChangeId}' class='removeName fa fa-remove'></span>
-												</c:if>
-											</div>
-										</c:otherwise>
-									</c:choose>
-									-->
 									
 									<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
 										<bsform:button size="xsmall" value="${textAddAlternateNameButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addName" />
 									</c:if>
-								
 								</div>
 							</div>
 						</div>
@@ -418,24 +316,23 @@
 							
 							<div class="col-md-6">
 								<div class="personPageFormPlaceholder">
-									<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
-									<span class="personPageFormFieldContent" id="personPageFormOrcidValue">${command.person.orcid}</span> 
+									<c:if test="${(not empty command.context.loginUser.name and empty command.person.user) or (not empty command.person.user and (command.person.user eq command.context.loginUser.name)) and not command.context.loginUser.spammer}">
+										<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
+									</c:if>
+									<span class="personPageFormFieldContent" id="personPageFormOrcidValue">${mtl:beatifyOrcid(command.person.orcid)}</span> 
 								</div>
 								<div class="personPageFormField col-md-8">
-									<input class='form-control' type="text" name='person.orcid' id='formOrcid' placeholder="${textOrcidId}" value="${command.person.orcid}"/>
+									<input class='form-control' type="text" name='person.orcid' id='formOrcid' placeholder="${textOrcidId}" value="${mtl:beatifyOrcid(command.person.orcid)}"/>
 								</div>
 								
 								<!-- TODO: REMOVE INLINE CSS -->
 								<div style="margin:12px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
-									<actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_ORCID"></actionbuttons:personPageupdateButton>
+									<actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_ORCID" disabled="true"></actionbuttons:personPageupdateButton>
 								</div>
 							</div>
 						</div>
 
-
 					</div>
-					
-			
 				</div>
 			</form>
 			
@@ -443,8 +340,8 @@
 			<!-- Thesis block -->
 			<div id="thesisBlock">
 				<ul class="nav nav-tabs" role="tablist">
-					<li class="active"><a href="#ownThesis" role="tab" data-toggle="tab"><strong>${textOwnPubTab}</strong></a></li>
-					<li><a href="#relatedThesis" role="tab" data-toggle="tab"><strong>${textRolePubTab}</strong></a></li>
+					<li class="active"><a href="#ownThesis" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.ownPubTab" /></strong></a></li>
+					<li><a href="#relatedThesis" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.rolePubTab" /></strong></a></li>
 				</ul>
 				
 				<div class='tab-content pub-person-tab-content' >
@@ -488,7 +385,6 @@
 						<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
 							<bsform:button className="pull-right" size="defaultSize" style="defaultStyle" dataTarget="#addSupervisedThesis" dataToggle="modal" valueKey="person.show.addThesisButton" titleKey="person.show.addThesisButton" />
 						</c:if>
-						
 					</div>
 
 				</div>
@@ -566,36 +462,14 @@
 				</div>
 			</div>
 			</c:if>
-
 		</jsp:attribute>
-	
+		
 	</layout:paneLayout>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	<!-- ############################################# -->
+	<!-- ############### MODAL DIALOGS ############### -->
+	<!-- ############################################# -->
 
 	<!-- Add new name modal dialog -->
 	<div class="modal fade" id="addName" tabindex="-1" role="dialog"
@@ -608,7 +482,7 @@
 					
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
-						<h4 class="modal-title">${textModalAddNameHeader}</h4>
+						<h4 class="modal-title"><fmt:message key="person.show.modalAddNameHeader" /></h4>
 					</div>
 					<div class="modal-body">
 						<fieldset>
@@ -626,7 +500,7 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
-						<button id='btnAddNameSubmit' type='button' class="btn btn-primary">${textAddNameButton}</button>
+						<button id='btnAddNameSubmit' type='button' class="btn btn-primary"><fmt:message key="person.show.addNameButton" /></button>
 					</div>
 				</form>
 			</div>
@@ -639,23 +513,23 @@
 		aria-labelledby="removeNameLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-hidden="true">&amp;times;</button>
-						<h4 class="modal-title">${textModalDeleteNameHeader}</h4>
-					</div>
-					
-					<div class="modal-body">
-						<p>${textModalDeleteNameContent} <strong id='modalRemoveNameText'>&#160;</strong></p>
-					</div>
-					<div class="modal-footer">
-						<form action="" method="post" class='form-inline' id='removeNameForm'>
-							<input type="hidden" name="ckey" value="${ckey}"/>
-							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
-							<input type='hidden' name='formPersonNameId' id='formPersonNameId' value=''/>&#160;
-							<button type="button" class="btn btn-primary" id='btnRemoveNameSubmit'>${textDeleteNameButton}</button>
-						</form>
-					</div>
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&amp;times;</button>
+					<h4 class="modal-title"><fmt:message key="person.show.modalDeleteNameHeader" /></h4>
+				</div>
+				
+				<div class="modal-body">
+					<p><fmt:message key="person.show.modalDeleteNameContent" /> <strong id='modalRemoveNameText'>&#160;</strong></p>
+				</div>
+				<div class="modal-footer">
+					<form action="" method="post" class='form-inline' id='removeNameForm'>
+						<input type="hidden" name="ckey" value="${ckey}"/>
+						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
+						<input type='hidden' name='formPersonNameId' id='formPersonNameId' value=''/>&#160;
+						<button type="button" class="btn btn-primary" id='btnRemoveNameSubmit'><fmt:message key="person.show.deleteNameButton" /></button>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -664,29 +538,30 @@
 	<div class="modal fade" id="setMainName" tabindex="-1" role="dialog">
 		<div class="modal-dialog">
 			<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-hidden="true">&amp;times;</button>
-						<h4 class="modal-title"><fmt:message key="person.show.modalSetMainNameHeader" /></h4>
-					</div>
-					
-					<div class="modal-body">
-						<p><fmt:message key="person.show.modalSetMainNameContent" />&amp;nbsp; <strong id='modalMainNameText'>&#160;</strong></p>
-					</div>
-					<div class="modal-footer">
-						<form action="" method="post" class='form-inline' id='setMainNameForm'>
-							<input type="hidden" name="ckey" value="${ckey}"/>
-							<input type='hidden' name='person.personId' value='${command.person.personId}' />
-							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
-							<input type='hidden' name='formSelectedName' id='formSelectedName' value=''/>&#160;
-							<button type="button" class="btn btn-primary" id='btnSetMainNameSubmit'><fmt:message key="person.show.saveButton" /></button>
-						</form>
-					</div>
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&amp;times;</button>
+					<h4 class="modal-title"><fmt:message key="person.show.modalSetMainNameHeader" /></h4>
+				</div>
+				
+				<div class="modal-body">
+					<p><fmt:message key="person.show.modalSetMainNameContent" />&amp;nbsp; <strong id='modalMainNameText'>&#160;</strong></p>
+				</div>
+				<div class="modal-footer">
+					<form action="" method="post" class='form-inline' id='setMainNameForm'>
+						<input type="hidden" name="ckey" value="${ckey}"/>
+						<input type='hidden' name='person.personId' value='${command.person.personId}' />
+						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
+						<input type='hidden' name='formSelectedName' id='formSelectedName' value=''/>&#160;
+						<button type="button" class="btn btn-primary" id='btnSetMainNameSubmit'><fmt:message key="person.show.saveButton" /></button>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>
 	
 	<!-- Add thesis modal dialog -->
+	<fmt:message key="person.show.modalAddThesisHeader" var="textModalAddThesisHeader" />
 	<bs:modal modalTitle="${textModalAddThesisHeader}" id="addThesis">
 		<jsp:attribute name="modalBody">
 			<fieldset>
@@ -721,7 +596,7 @@
 		</jsp:attribute>
 	</bs:modal>
 	
-	
+	<!-- Add superviced thesis modal dialog -->
 	<fmt:message key="person.show.modal.addSupervisedThesis.header" var="tmpMsg" />
 	<bs:modal modalTitle="${tmpMsg}" id="addSupervisedThesis">
 		<jsp:attribute name="modalBody">
@@ -779,32 +654,31 @@
 		</jsp:attribute>
 	</bs:modal>
 	
-	
 	<!-- Add role modal dialog -->
 	<div class="modal fade" id="addRole" tabindex="-1" role="dialog" aria-labelledby="addRoleLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-hidden="true">&amp;times;</button>
-						<h4 class="modal-title">${textModalAddRoleHeader}</h4>
-					</div>
-					<div class="modal-body">
-						<fieldset>
-							<div id="person-scroll-menu" class="form-group person-search">
-								<label for='addRoleAuto' class="control-label col-md-3">${textPerson}</label>
-								<fmt:message key="person.show.modal.addRole.placeholder" var="textModalAddRolePlaceholder" />
-								<input class='form-control typeahead' id='addRoleAuto' type='text' name='addRoleAuto' autocomplete="off" placeholder="${textModalAddRolePlaceholder}"/>
-							</div>
-						</fieldset>
-					</div>
-					<div class="modal-footer">
-						<form action="" method="post" id='addRoleForm' class='form-horizontal'>
-							<input type="hidden" name="ckey" value="${ckey}"/>
-							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
-							<button type="button" class="btn btn-primary" id='btnAddRoleSubmit'>${textAddRoleButton}</button>
-						</form>
-					</div>
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&amp;times;</button>
+					<h4 class="modal-title"><fmt:message key="person.show.modalAddRoleHeader" /></h4>
+				</div>
+				<div class="modal-body">
+					<fieldset>
+						<div id="person-scroll-menu" class="form-group person-search">
+							<label for='addRoleAuto' class="control-label col-md-3"><fmt:message key="person.show.person" /></label>
+							<fmt:message key="person.show.modal.addRole.placeholder" var="textModalAddRolePlaceholder" />
+							<input class='form-control typeahead' id='addRoleAuto' type='text' name='addRoleAuto' autocomplete="off" placeholder="${textModalAddRolePlaceholder}"/>
+						</div>
+					</fieldset>
+				</div>
+				<div class="modal-footer">
+					<form action="" method="post" id='addRoleForm' class='form-horizontal'>
+						<input type="hidden" name="ckey" value="${ckey}"/>
+						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+						<button type="button" class="btn btn-primary" id='btnAddRoleSubmit'><fmt:message key="person.show.addRoleButton" /></button>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -816,11 +690,11 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
-          <h4 class="modal-title">${textModalEditRoleHeader} <strong id='modalEditRoleHeaderText'>&#160;</strong></h4>
+          <h4 class="modal-title"><fmt:message key="person.show.modalEditRoleHeader" /> <strong id='modalEditRoleHeaderText'>&#160;</strong></h4>
         </div>
         <div class="modal-body">
           	<div class="form-group">
-          		<label class="control-label col-md-3">${textRole}</label>
+          		<label class="control-label col-md-3"><fmt:message key="person.show.role" /></label>
           				
           		<div class="col-md-7">
           			<c:forEach var="role" items="${command.availableRoles}">
@@ -836,7 +710,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
-          <button type="button" class="btn btn-primary" id='btnEditRoleSubmit'>${textEditRoleButton}</button>
+          <button type="button" class="btn btn-primary" id='btnEditRoleSubmit'><fmt:message key="person.show.editRoleButton" /></button>
         </div>
 			</div>
 		</div>
@@ -847,22 +721,22 @@
 		aria-labelledby="deleteRoleLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-hidden="true">&amp;times;</button>
-						<h4 class="modal-title">${textModalDeleteRoleHeader} <strong id='modalDeleteRoleHeaderText'>&#160;</strong></h4>
-					</div>
-					
-					<div class="modal-body">
-						<p>${textModalDeleteRoleContent} <strong id='modalDeleteRoleContentText'>&#160;</strong></p>
-					</div>
-					<div class="modal-footer">
-						<form action="" method="post" class='form-inline' id='deleteRoleForm'>
-							<input type="hidden" name="ckey" value="${ckey}"/>
-							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
-							<button type="button" class="btn btn-primary" id='btnDeleteRoleSubmit'>${textDeleteRoleButton}</button>
-						</form>
-					</div>
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&amp;times;</button>
+					<h4 class="modal-title"><fmt:message key="person.show.modalDeleteRoleHeader" /> <strong id='modalDeleteRoleHeaderText'>&#160;</strong></h4>
+				</div>
+				
+				<div class="modal-body">
+					<p><fmt:message key="person.show.modalDeleteRoleContent" /> <strong id='modalDeleteRoleContentText'>&#160;</strong></p>
+				</div>
+				<div class="modal-footer">
+					<form action="" method="post" class='form-inline' id='deleteRoleForm'>
+						<input type="hidden" name="ckey" value="${ckey}"/>
+						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+						<button type="button" class="btn btn-primary" id='btnDeleteRoleSubmit'><fmt:message key="person.show.deleteRoleButton" /></button>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -871,22 +745,22 @@
 	<div class="modal fade" id="linkPerson" tabindex="-1" role="dialog" aria-labelledby="linkPersonLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-hidden="true">&amp;times;</button>
-						<h4 class="modal-title">${textModalLinkPersonHeader}</h4>
-					</div>
-					
-					<div class="modal-body">
-						<p>${textModalLinkPersonContent} <strong id='modalLinkPersonContentText'>&#160;</strong></p>
-					</div>
-					<div class="modal-footer">
-						<form action="" method="post" class='form-inline' id='linkPersonForm'>
-							<input type="hidden" name="ckey" value="${ckey}"/>
-							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
-							<button type="button" class="btn btn-primary" data-action='link' data-person-id='${command.person.personId}' id='btnLinkSubmit'>${textThatsMeButton}</button>
-						</form>
-					</div>
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&amp;times;</button>
+					<h4 class="modal-title"><fmt:message key="person.show.modalLinkPersonHeader" /></h4>
+				</div>
+				
+				<div class="modal-body">
+					<p><fmt:message key="person.show.modalLinkPersonContent" /><strong id='modalLinkPersonContentText'>&#160;</strong></p>
+				</div>
+				<div class="modal-footer">
+					<form action="" method="post" class='form-inline' id='linkPersonForm'>
+						<input type="hidden" name="ckey" value="${ckey}"/>
+						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+						<button type="button" class="btn btn-primary" data-action='link' data-person-id='${command.person.personId}' id='btnLinkSubmit'><fmt:message key="person.show.thatsMeButton" /></button>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -896,21 +770,21 @@
 		aria-labelledby="unlinkPersonLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-hidden="true">&amp;times;</button>
-						<h4 class="modal-title">${textModalUnlinkPersonHeader}</h4>
-					</div>
-					
-					<div class="modal-body">
-						<p>${textModalUnlinkPersonContent} <strong id='modalLinkPersonContentText'>&#160;</strong></p>
-					</div>
-					<div class="modal-footer">
-						<form action="" method="post" class='form-inline' id='unlinkPersonForm'>
-							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
-							<button type="button" class="btn btn-primary" data-action='unlink' data-person-id='${command.person.personId}' id='btnUnlinkSubmit'>${textThatsNotMeButton}</button>
-						</form>
-					</div>
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&amp;times;</button>
+					<h4 class="modal-title"><fmt:message key="person.show.modalUnlinkPersonHeader" /></h4>
+				</div>
+				
+				<div class="modal-body">
+					<p><fmt:message key="person.show.modalUnlinkPersonContent" /> <strong id='modalLinkPersonContentText'>&#160;</strong></p>
+				</div>
+				<div class="modal-footer">
+					<form action="" method="post" class='form-inline' id='unlinkPersonForm'>
+						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+						<button type="button" class="btn btn-primary" data-action='unlink' data-person-id='${command.person.personId}' id='btnUnlinkSubmit'><fmt:message key="person.show.thatsNotMeButton" /></button>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>

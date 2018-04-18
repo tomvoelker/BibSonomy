@@ -310,10 +310,10 @@ public class MailUtils {
 		};
 		
 		/*
-		 * Format the message "mail.groupInvite.body" with the given parameters.
+		 * Format the message "mail.group.invite.body" with the given parameters.
 		 */
-		final String messageBody = messageSource.getMessage("mail.groupInvite.body", messagesParameters, locale);
-		final String messageSubject = messageSource.getMessage("mail.groupInvite.subject", messagesParameters, locale);
+		final String messageBody = messageSource.getMessage("mail.group.invite.body", messagesParameters, locale);
+		final String messageSubject = messageSource.getMessage("mail.group.invite.subject", messagesParameters, locale);
 
 		/*
 		 * send an e-Mail to the group (from our registration Adress)

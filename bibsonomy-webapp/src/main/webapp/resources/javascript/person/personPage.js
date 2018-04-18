@@ -1,30 +1,64 @@
+/**
+ * Simple helper function that replaces the font awesome sort icons
+ * according to the acutal sort order
+ * @param 	div		the div where the icon is located
+ * @returns
+ */
 function replaceFaClass(div) {
     sortOrdering = $(div).data('ordering');
     
     if (sortOrdering == 'ASC') {
-    	
     	if ($('span', div).hasClass('fa-sort-alpha-asc')) {
     		$('span', div).removeClass('fa-sort-alpha-asc');
     		$('span', div).addClass('fa-sort-alpha-desc');
     	}
-    	
     	else if ($('span', div).hasClass('fa-sort-numeric-asc')) {
     		$('span', div).removeClass('fa-sort-numeric-asc');
     		$('span', div).addClass('fa-sort-numeric-desc');
     	}
-    	
     } else {
-    	
     	if ($('span', div).hasClass('fa-sort-alpha-desc')) {
     		$('span', div).removeClass('fa-sort-alpha-desc');
     		$('span', div).addClass('fa-sort-alpha-asc');
     	}
-    	
     	else if ($('span', div).hasClass('fa-sort-numeric-desc')) {
     		$('span', div).removeClass('fa-sort-numeric-desc');
     		$('span', div).addClass('fa-sort-numeric-asc');
     	}
     }
+}
+
+/**
+ * Validates a given url string
+ * @param url
+ * @returns	true if the given url is valid or empty, false otherwise
+ */
+function isValidURL(url) {
+	if (!url) {
+		return true;
+	}
+	return /^(https?|s?ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(url);
+}
+
+/**
+ * Validates a given email string
+ * @param mail
+ * @returns true if the given mail is valid or empty, false otherwise
+ */
+function isValidEMail(mail) {
+	if (!mail) {
+		return true;
+	}
+	
+	pattuser = /^([A-Z0-9_%+\-!#$&'*\/=?^`{|}~]+\.?)*[A-Z0-9_%+\-!#$&'*\/=?^`{|}~]+$/i;
+    pattdomain = /^([A-Z0-9-]+\.?)*[A-Z0-9-]+(\.[A-Z]{2,9})+$/i;
+
+    tab = mail.split("@");
+    if (tab.length != 2) {    	
+    	return false;
+    }
+    
+    return (pattuser.test(tab[0]) && pattdomain.test(tab[1]));
 }
 
 $(document).ready(function() {
@@ -142,6 +176,7 @@ $(document).ready(function() {
 		$(this).text($(this).text() == 'less' ? 'more' : 'less'); 
 	}); 
 	
+	// handles the sorting for the publication lists
 	$('.pubSort').click(function() {
 	    sortBy = $(this).data('sort');
 	    sortOrdering = $(this).data('ordering');
@@ -175,6 +210,12 @@ $(document).ready(function() {
 
 	});
 	
+	// orcid formatter
+	$("#formOrcid").mask("9999-9999-9999-9999", {
+		completed: function() {
+			$(this).parent().parent().find(".personProfileUpdate").removeClass("disabled");
+		}
+	});
 	
 	// toggle view/hide all available roles
 	$(".personPageShowAdditionalRoleFields").click(function() {
@@ -208,7 +249,15 @@ $(document).ready(function() {
 	
 	// sends the update request	
 	$(".personProfileUpdate").on("click", function() {
+		
+		// reject update if button is disabled
+		if ($(this).hasClass("disabled")) {
+			return;
+		}
+		
 		parent = $(this).parents('.form-group');
+		
+		thatsMe = $("#formThatsMe").val();
 		
 		// save the form values to update the preview
 		orcid =  $("#formOrcid").val();
@@ -224,6 +273,23 @@ $(document).ready(function() {
 		form_data.push({name: "formAction", value: "update"});
 		form_data.push({name: "updateOperation", value: $(this).attr("data-operation")});
 		form_data.push({name: "formPersonId", value: $(this).attr("data-person-id")});
+		form_data.push({name: "formThatsMe", value: thatsMe});
+		
+		// validate URL
+		if ($(this).attr("data-operation") == "UPDATE_HOMEPAGE") {
+			if (!isValidURL(homepage)) {
+				$("#formHomepage").css("border-color", "red");
+				return;
+			}
+		}
+		
+		// validate E-Mail
+		if ($(this).attr("data-operation") == "UPDATE_EMAIL") {
+			if (!isValidEMail(email)) {
+				$("#formEmail").css("border-color", "red");
+				return;
+			}
+		}		
 		
 		$.post("/person", form_data).done(function(data) {
 			// error handling
@@ -236,8 +302,9 @@ $(document).ready(function() {
 				$("#personPageFormAcademicDegreeValue").text(academicDegree);
 				$("#personPageFormOrcidValue").text(orcid);
 				$("#personPageFormCollegeValue").text(college);
+				$("#personPageFormEmailValue").text(email);
 				$("#personPageFormHomepageValue").text(homepage);
-				
+				$("#personPageFormHomepageValue").attr("href", homepage);
 				// TODO put success text somewhere??
 				
 			} else {
@@ -390,7 +457,5 @@ $(document).ready(function() {
 			}
 		});
 	});
-	
-	
 	
 });

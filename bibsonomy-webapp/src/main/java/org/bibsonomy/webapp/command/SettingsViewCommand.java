@@ -27,13 +27,14 @@
 package org.bibsonomy.webapp.command;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupUpdateOperation;
+import org.bibsonomy.layout.csl.CSLStyle;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
@@ -50,7 +51,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/** Indexes of defined tabs */
 	public final static int MY_PROFILE_IDX = 0;
 	public final static int SETTINGS_IDX = 1;
-	public final static int JABREF_IDX = 2;
+	public final static int LAYOUT_IDX = 2;
 	public final static int GROUP_IDX = 3;
 	public final static int SYNC_IDX = 4;
 	public final static int CV_IDX = 5;
@@ -105,6 +106,11 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 * list with friends of the current login user
 	 */
 	private List<User> userFriends;
+	
+	/**
+	 * The person that has been claimed by the user
+	 */
+	private Person claimedPerson;
 		
 	private String importType;
 	
@@ -141,34 +147,45 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private List<String> nonCreatedBookmarks = null;
 	
 	/**
-	 * name of the begin layout file
+	 * name of the jabref begin layout file
 	 */
 	private String beginName = null;
 	
 	/**
-	 * hash of the begin layout file
+	 * hash of the jabref begin layout file
 	 */
 	private String beginHash = null;
 	
 	/**
-	 * name of the item layout file
+	 * name of the jabref item layout file
 	 */
 	private String itemName = null;
 	
 	/**
-	 * hash of the begin layout file
+	 * hash of the jabref begin layout file
 	 */
 	private String itemHash = null;
 	
 	/**
-	 * name of the end layout file
+	 * name of the jabref end layout file
 	 */
 	private String endName = null;
 	
 	/**
-	 * hash of the end layout file
+	 * hash of the jabref end layout file
 	 */
 	private String endHash = null;
+	
+	/**
+	 * name of the csl layout file
+	 */
+	private String cslName = null;
+	
+	/**
+	 * hash of the csl layout file
+	 */
+	private String cslHash = null;
+	
 	
 	/**
 	 * delete the account yes or no
@@ -210,12 +227,20 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	private boolean deletePicture;
 
-	/** the file to import **/
+	/** the jabref file to import **/
 	private CommonsMultipartFile fileBegin;
-
+	/** the jabref file to import **/
 	private CommonsMultipartFile fileItem;
-
+	/** the jabref file to import **/
 	private CommonsMultipartFile fileEnd;
+	
+	/** the csl file to import **/
+	private CommonsMultipartFile cslFile;
+	
+	/**
+	 * list of all csl layout files of the user
+	 */
+	private List<CSLStyle> cslFiles = null;
 	
 
 	/**
@@ -224,7 +249,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public SettingsViewCommand() {
 		this.addTab(MY_PROFILE_IDX, "navi.myprofile");
 		this.addTab(SETTINGS_IDX, "navi.settings");
-		this.addTab(JABREF_IDX, "settings.jabRef.layoutfile");	
+		this.addTab(LAYOUT_IDX, "settings.layoutfiles");
 		this.addTab(CV_IDX, "navi.cvedit");
 		this.addTab(OAUTH_IDX, "navi.oauth.consumers");
 		this.addTab(GROUP_IDX, "navi.groups");
@@ -232,7 +257,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.setSelTab(MY_PROFILE_IDX);
 		this.setTabURL(TAB_URL);
 	}
-	
 
 	/**
 	 * shows the sync tab for admins
@@ -273,14 +297,14 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	}
 
 	/**
-	 * @return the file
+	 * @return the jabref file
 	 */
 	public CommonsMultipartFile getFile() {
 		return this.file;
 	}
 
 	/**
-	 * @param file the file to set
+	 * @param file the jabref file to set
 	 */
 	public void setFile(CommonsMultipartFile file) {
 		this.file = file;
@@ -375,42 +399,42 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	}
 
 	/**
-	 * @param beginName
+	 * @param beginName for jabref
 	 */
 	public void setBeginName(String beginName) {
 		this.beginName = beginName;
 	}
 
 	/**
-	 * @param beginHash
+	 * @param beginHash for jabref 
 	 */
 	public void setBeginHash(String beginHash) {
 		this.beginHash = beginHash;
 	}
 
 	/**
-	 * @param itemName
+	 * @param itemName for jabref 
 	 */
 	public void setItemName(String itemName) {
 		this.itemName = itemName;
 	}
 
 	/**
-	 * @param itemHash
+	 * @param itemHash for jabref
 	 */
 	public void setItemHash(String itemHash) {
 		this.itemHash = itemHash;
 	}
 
 	/**
-	 * @param endName
+	 * @param endName for jabref
 	 */
 	public void setEndName(String endName) {
 		this.endName = endName;
 	}
 
 	/**
-	 * @param endHash
+	 * @param endHash for jabref
 	 */
 	public void setEndHash(String endHash) {
 		this.endHash = endHash;
@@ -853,44 +877,104 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.operation = operation;
 	}
 	/**
-	 * @return the fileBegin
+	 * @return the fileBegin for jabref
 	 */
 	public CommonsMultipartFile getFileBegin() {
 		return this.fileBegin;
 	}
 
 	/**
-	 * @param fileBegin the fileBegin to set
+	 * @param fileBegin the jabref fileBegin to set
 	 */
 	public void setFileBegin(CommonsMultipartFile fileBegin) {
 		this.fileBegin = fileBegin;
 	}
 
 	/**
-	 * @return the fileItem
+	 * @return the fileItem for jabref
 	 */
 	public CommonsMultipartFile getFileItem() {
 		return this.fileItem;
 	}
 
 	/**
-	 * @param fileItem the fileItem to set
+	 * @param fileItem the jabref fileItem to set
 	 */
 	public void setFileItem(CommonsMultipartFile fileItem) {
 		this.fileItem = fileItem;
 	}
 
 	/**
-	 * @return the fileEnd
+	 * @return the fileEnd for jabref
 	 */
 	public CommonsMultipartFile getFileEnd() {
 		return this.fileEnd;
 	}
 
 	/**
-	 * @param fileEnd the fileEnd to set
+	 * @param fileEnd the jabref fileEnd to set
 	 */
 	public void setFileEnd(CommonsMultipartFile fileEnd) {
 		this.fileEnd = fileEnd;
+	}
+
+
+	/**
+	 * @return the cslName
+	 */
+	public String getCslName() {
+		return this.cslName;
+	}
+
+
+	/**
+	 * @param cslName the cslName to set
+	 */
+	public void setCslName(String cslName) {
+		this.cslName = cslName;
+	}
+
+
+	/**
+	 * @return the cslHash
+	 */
+	public String getCslHash() {
+		return this.cslHash;
+	}
+
+
+	/**
+	 * @param cslHash the cslHash to set
+	 */
+	public void setCslHash(String cslHash) {
+		this.cslHash = cslHash;
+	}
+
+	/**
+	 * @return the cslFiles
+	 */
+	public List<CSLStyle> getCslFiles() {
+		return this.cslFiles;
+	}
+
+
+	/**
+	 * @param cslFiles the cslFiles to set
+	 */
+	public void setCslFiles(List<CSLStyle> cslFiles) {
+		this.cslFiles = cslFiles;
+	}
+	/**
+	 * @return the claimedPerson
+	 */
+	public Person getClaimedPerson() {
+		return this.claimedPerson;
+	}
+
+	/**
+	 * @param claimedPerson the claimedPerson to set
+	 */
+	public void setClaimedPerson(Person claimedPerson) {
+		this.claimedPerson = claimedPerson;
 	}
 }

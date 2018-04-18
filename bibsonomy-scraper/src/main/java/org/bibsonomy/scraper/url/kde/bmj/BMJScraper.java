@@ -49,7 +49,7 @@ public class BMJScraper extends GenericBibTeXURLScraper implements ReferencesScr
 	private static final String SITE_URL = "http://www.bmj.com/";
 	private static final String INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
-	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<li .*>BibTeX .*<a href=\"(.*)\" .*>Download</a></li>");
+	private static final Pattern BIBTEX_PATTERN = Pattern.compile("BibTeX.*?<a.*?href=\"(.*?)\"");
 	private static final Pattern REFERENCES_PATTERN = Pattern.compile("<ol class=\"cit-list\">(.*)</ol>");
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new ArrayList<Pair<Pattern,Pattern>>();
 	
@@ -84,7 +84,7 @@ public class BMJScraper extends GenericBibTeXURLScraper implements ReferencesScr
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		String st_url = SITE_URL;
 		try{
-			Matcher m = BIBTEX_PATTERN.matcher(WebUtils.getContentAsString(url));
+			Matcher m = BIBTEX_PATTERN.matcher(WebUtils.getContentAsString(url.toString()));
 			if (m.find()) {
 				st_url += m.group(1);
 				return st_url;
@@ -102,7 +102,7 @@ public class BMJScraper extends GenericBibTeXURLScraper implements ReferencesScr
 	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
 		String references = null;
 		try {
-			final Matcher m = REFERENCES_PATTERN.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
+			final Matcher m = REFERENCES_PATTERN.matcher(WebUtils.getContentAsString(scrapingContext.getUrl().toString()));
 			if (m.find()) {
 				references = m.group(1);
 			}
