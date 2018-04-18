@@ -33,6 +33,8 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -51,7 +53,8 @@ import org.bibsonomy.util.id.DOIUtils;
  * @author tst
  */
 public class DOIScraper implements Scraper {
-
+	private static final Log log = LogFactory.getLog(DOIScraper.class);
+	
 	private static final String SITE_NAME = "DOIScraper";
 	private static final String INFO 	= "Scraper which follows redirects from " + AbstractUrlScraper.href(DOIUtils.DX_DOI_ORG_URL, DOIUtils.DX_DOI_ORG) + 
 											" and passes the resulting URLs to the following scrapers. Additionally checks, if the given selection" +
@@ -98,38 +101,59 @@ public class DOIScraper implements Scraper {
 			 * remove text selection
 			 */
 			scrapingContext.setSelectedText(null);
-		} else if (DOIUtils.isSupportedSelection(selection)) {
-			/*
-			 * selection contains a DOI -> extract it
-			 */
-			final String doi = DOIUtils.extractDOI(selection);
-			//save the initial DOI URL for possible use in {@link ContentNegotiationDOIScraper}
+		} else
 			try {
-				scrapingContext.setDoiURL(DOIUtils.getURL(doi));
-			} catch (MalformedURLException ex) {
-				//scrape with other scrapers (without use of {@link ContentNegotiationDOIScraper}
-				scrapingContext.setDoiURL(null);
+				if (selectionContainsDOI(selection)){
+					/*
+					 * selection contains a DOI -> extract it
+					 */
+					final String doi = DOIUtils.extractDOI(selection);
+					//save the initial DOI URL for possible use in {@link ContentNegotiationDOIScraper}
+					try {
+						scrapingContext.setDoiURL(DOIUtils.getURL(doi));
+					} catch (MalformedURLException ex) {
+						//scrape with other scrapers (without use of {@link ContentNegotiationDOIScraper}
+						scrapingContext.setDoiURL(null);
+					}
+					
+					final URL redirectUrl = DOIUtils.getUrlForDoi(doi);
+					if (present(redirectUrl)) {
+						scrapingContext.setUrl(redirectUrl);
+					}
+					
+					/*
+					 * remove text selection
+					 */
+					scrapingContext.setSelectedText(null);
+				}
+			} catch (MalformedURLException e) {
+				log.info("selected text is not a url", e);
 			}
-			
-			final URL redirectUrl = DOIUtils.getUrlForDoi(doi);
-			if (present(redirectUrl)) {
-				scrapingContext.setUrl(redirectUrl);
-			}
-			
-			/*
-			 * remove text selection
-			 */
-			scrapingContext.setSelectedText(null);
-		}
 		/*
 		 * always return false, such that the "real" scrapers can do their work
 		 */
 		return false;
 	}
+
+	/**
+	 * @param scrapingContext
+	 * @param selection
+	 * @return
+	 * @throws MalformedURLException
+	 */
+	private static boolean selectionContainsDOI(final String selection)
+			throws MalformedURLException {
+		return DOIUtils.isSupportedSelection(selection) || DOIUtils.isDOIURL(new URL(selection));
+	}
 	
 	@Override
 	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
-		return DOIUtils.isDOIURL(scrapingContext.getUrl()) || DOIUtils.isSupportedSelection(scrapingContext.getSelectedText());
+		try {
+			return DOIUtils.isDOIURL(scrapingContext.getUrl()) || selectionContainsDOI(scrapingContext.getSelectedText());
+		} catch (MalformedURLException e) {
+			log.info("selected text is not a url", e);
+		}
+		return false;
 	}
 	
 	@Override

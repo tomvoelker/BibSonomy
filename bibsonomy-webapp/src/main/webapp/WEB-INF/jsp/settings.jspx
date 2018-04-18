@@ -89,6 +89,18 @@
 			| sidebar
 			+-->
 		<jsp:attribute name="sidebar">
+		
+			<!-- Claimed person -->
+			<c:if test="${not empty command.claimedPerson}">
+				<sidebar:sidebarItem textKey="settings.sidebar.claimedPerson">
+					<jsp:attribute name="content">
+						<a href="${relativeUrlGenerator.getPersonUrl(command.claimedPerson.personId)}">
+							${mtl:cleanBibtex(command.claimedPerson.mainName.firstName)} ${mtl:cleanBibtex(command.claimedPerson.mainName.lastName)}
+						</a>
+					</jsp:attribute>
+				</sidebar:sidebarItem>
+			</c:if>
+			
 			<!-- loginUser.friends -->
 			<sidebar:sidebarItem textKey="friends.friendof">
 				<jsp:attribute name="content">

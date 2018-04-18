@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.frontiersin;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -41,6 +43,8 @@ public class FRONTIERSINScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		UnitTestRunner.runSingleTest("url_340");
+		final String url = "http://journal.frontiersin.org/article/10.3389/fphys.2016.00071/full";
+		final String resultFile = "FRONTIERSINScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, FRONTIERSINScraper.class, resultFile);
 	}
 }

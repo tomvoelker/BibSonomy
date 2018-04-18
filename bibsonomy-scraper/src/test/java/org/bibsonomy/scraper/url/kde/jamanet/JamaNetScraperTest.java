@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.jamanet;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -41,6 +43,8 @@ public class JamaNetScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_358");
+		final String url = "http://jamanetwork.com/journals/jama/fullarticle/2469891";
+		final String resultFile = "JamaNetworkScraperUnitURLTest.bib";
+		assertScraperResult(url, null, JamaNetScraper.class, resultFile);
 	}
 }

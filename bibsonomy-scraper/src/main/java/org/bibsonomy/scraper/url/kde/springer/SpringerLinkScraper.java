@@ -76,7 +76,12 @@ public class SpringerLinkScraper extends GenericBibTeXURLScraper {
 	private static String extractDownloadLink(final String path) {
 		final String doi = DOIUtils.extractDOI(path);
 		if (present(doi)) {
+		    // if present, strip "/fulltext.html"
+		    if (doi.endsWith("/fulltext.html")) {
+			return downloadLinkForDoi(doi.substring(0, doi.length() - "/fulltext.html".length()));
+		    } else {
 			return downloadLinkForDoi(doi);
+		    }
 		}
 		
 		return null;

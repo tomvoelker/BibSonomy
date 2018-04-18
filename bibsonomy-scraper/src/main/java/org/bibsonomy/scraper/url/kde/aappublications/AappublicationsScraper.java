@@ -34,16 +34,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * FIXME: use GenericBibtexScraper
  * @author Mohammed Abed
  */
-public class AappublicationsScraper extends AbstractUrlScraper{
+public class AappublicationsScraper extends GenericBibTeXURLScraper{
 
 	private static final String SITE_NAME = "Pediatrics official journal of the american academy of pediatrics";
 	private static final String SITE_URL = "http://pediatrics.aappublications.org";
@@ -54,31 +56,10 @@ public class AappublicationsScraper extends AbstractUrlScraper{
 	private static Pattern pattern = Pattern.compile("<li class=\"bibtext first\"><a href=\"(.*)\">BibTeX</a></li>");
 	private static final String regex = "@.*?(.*),";
 	private static final Pattern pattern2 = Pattern.compile(regex);
+	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<a.*href=\"([^\"]+)\".*>BibTeX</a>");
 
 	static {
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
-	}
-	
-	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		try {
-			final String cookie = WebUtils.getCookies(sc.getUrl());
-			final String pageContent = WebUtils.getContentAsString(sc.getUrl(), cookie);
-			final Matcher m = pattern.matcher(pageContent);
-			if (m.find()) {
-				String bibtexResult = WebUtils.getContentAsString(new URL(HTTP + HOST + m.group(1).toString()));
-				final Matcher m2 = pattern2.matcher(bibtexResult);
-				if (m2.find()) {
-					final String Replacement = m2.group(1).replace(" ", "");
-					bibtexResult = bibtexResult.replaceAll(regex, "@" + Replacement.concat(","));
-				}
-				sc.setBibtexResult(bibtexResult);
-				return true;
-			}
-			return false;
-		} catch (IOException e) {
-			throw new ScrapingException(e);
-		}
 	}
 	
 	@Override
@@ -99,5 +80,31 @@ public class AappublicationsScraper extends AbstractUrlScraper{
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return PATTERNS;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL, java.lang.String)
+	 */
+	@Override
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
+		try {
+			// using url gives a FileNotFoundException, url.toString() doesn't
+			final String content = WebUtils.getContentAsString(url.toString(), cookies);
+			final Matcher m = BIBTEX_PATTERN.matcher(content);
+			if (m.find()) {
+				return SITE_URL + m.group(1);
+			}
+		} catch (final IOException e) {
+			throw new ScrapingException(e);
+		}
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
+	 */
+	@Override
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		return bibtex;
 	}
 }

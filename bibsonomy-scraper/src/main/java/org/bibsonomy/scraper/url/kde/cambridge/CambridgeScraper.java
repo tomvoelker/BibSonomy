@@ -27,92 +27,57 @@
 package org.bibsonomy.scraper.url.kde.cambridge;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpURL;
-import org.apache.commons.httpclient.URIException;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 
 /**
  * @author wbi
  */
-public class CambridgeScraper extends AbstractUrlScraper {
+public class CambridgeScraper extends GenericRISURLScraper {
 	
 	private static final String SITE_NAME = "Cambridge Journals";
-	private static final String CAMBRIDGE_HOST_NAME  = "http://journals.cambridge.org";
+	private static final String CAMBRIDGE_HOST_NAME  = "https://cambridge.org";
 	private static final String SITE_URL = CAMBRIDGE_HOST_NAME+"/";
 	private static final String info = "This Scraper parses a journal from " + href(SITE_URL, SITE_NAME)+".";
 
-	private static final String CAMBRIDGE_HOST  = "journals.cambridge.org";
-	private static final String CAMBRIDGE_ABSTRACT_PATH = "/action/displayAbstract";
-	private static final String CAMBRIDGE_BIBTEX_DOWNLOAD_PATH = "/action/exportCitation?org.apache.struts.taglib.html.TOKEN=51cf342977f2aaa784c6ddfa66c3572c&emailid=&Download=Download&displayAbstract=No&format=BibTex&componentIds=";
+	private static final String CAMBRIDGE_HOST  = "cambridge.org";
+	private static final String downloadPath = "https://www.cambridge.org/core/services/aop-easybib/export?exportType=ris&citationStyle=apa&productIds=";
 
-	private static final Pattern idPattern = Pattern.compile("aid=([^&]*)");
-
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + CAMBRIDGE_HOST), Pattern.compile(CAMBRIDGE_ABSTRACT_PATH + ".*")));
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + CAMBRIDGE_HOST), EMPTY_PATTERN));
 	
+	@Override
 	public String getInfo() {
 		return info;
 	}
 
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
-
-		String url = sc.getUrl().toString();
-		
-		//get a client for cookie management
-		HttpClient client = WebUtils.getHttpClient();
-
-		String id = null;
-		HttpURL citUrl = null;
-		if(url.startsWith(CAMBRIDGE_HOST_NAME + CAMBRIDGE_ABSTRACT_PATH)) {
-			final Matcher idMatcher = idPattern.matcher(url);
-			if(idMatcher.find())
-				id = idMatcher.group(1);
-			else
-				throw new ScrapingFailureException("No aid found.");
-
-			try {
-				citUrl = new HttpURL(CAMBRIDGE_HOST_NAME + CAMBRIDGE_BIBTEX_DOWNLOAD_PATH + id);
-			} catch (URIException ex) {
-				throw new InternalFailureException(ex);
-			}
-		}
-
-		String bibResult = null;
-		try {
-			bibResult = WebUtils.getContentAsString(client, citUrl);
-		} catch (IOException ex) {
-			throw new InternalFailureException(ex);
-		}
-
-		if(bibResult != null) {
-			sc.setBibtexResult(bibResult);
-			return true;
-		}else
-			throw new ScrapingFailureException("getting bibtex failed");
-	}
-
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL, java.lang.String)
+	 */
+	@Override
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
+		String urlString = url.toString();
+		String id = urlString.substring(urlString.lastIndexOf("/") +1);
+		return downloadPath + id;
+	}
 }

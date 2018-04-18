@@ -113,8 +113,8 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 	}
 	
 	/**
-	 * @param object
-	 * @return
+	 * @param tagsStringList the string list of tags
+	 * @return the converted tags
 	 */
 	private static Set<Tag> convertToTags(List<String> tagsStringList) {
 		final Set<Tag> tags = new HashSet<>();
@@ -139,9 +139,9 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 	protected abstract R createNewResource();
 
 	/**
-	 * @param object
-	 * @return
-	 */
+	 * @param list the list of group strings
+	 * @return the converted groups
+ 	 */
 	private static Set<Group> convertToGroups(List<String> list) {
 		final Set<Group> groups = new HashSet<>();
 		
