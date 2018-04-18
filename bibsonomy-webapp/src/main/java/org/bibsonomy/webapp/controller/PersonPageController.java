@@ -626,7 +626,7 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setMergeConflicts(this.logic.getMergeConflicts(command.getPersonMatchList()));
 		
 		final List<Post<BibTex>> similarAuthorPubs = this.getPublicationsOfSimilarAuthor(person);
-		<<<<<<< local
+
 		command.setSimilarAuthorPubs(similarAuthorPubs);
 		
 		return Views.PERSON_SHOW;

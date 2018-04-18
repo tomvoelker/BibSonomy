@@ -582,7 +582,7 @@
 			</form>
 			<form id="addThesisForm" action="${absoluteUrlGenerator.getPersonUrl(command.person.personId)}" method="post" class='form-inline'>
 				<!-- set via autocomplete -->
-				<input type="hidden" name="ckey" value="${ckey}"/>personPage.js
+				<input type="hidden" name="ckey" value="${ckey}"/>
 				<input type='hidden' name='formInterHash' value=''/>
 				<input type='hidden' name='resourcePersonRelation.personIndex' value=''/>
 				<!-- set statically -->
