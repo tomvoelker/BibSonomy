@@ -593,7 +593,7 @@ public class PersonPageController extends SingleResourceListController implement
 		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
 		List<Post<?>> authorPosts = new ArrayList<>();
 		List<Post<?>> advisorPosts = new ArrayList<>();
-		List<P<<<<<<< localost<?>> otherAuthorPosts = new ArrayList<>();
+		List<Post<?>> otherAuthorPosts = new ArrayList<>();
 		List<Post<?>> otherAdvisorPosts = new ArrayList<>();
 
 		for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
