@@ -62,6 +62,8 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
+import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -898,5 +900,57 @@ public class ReadOnlyLogic implements LogicInterface {
 			return logicAccess;
 		}
 		return new ReadOnlyLogic(logicAccess);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getPersonMatches(java.lang.String)
+	 */
+	@Override
+	public List<PersonMatch> getPersonMatches(String personID) {
+		return this.logicinterface.getPersonMatches(personID);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getMergeConflicts(org.bibsonomy.model.PersonMatch)
+	 */
+	@Override
+	public Map<Integer, PersonMergeFieldConflict[]> getMergeConflicts(List<PersonMatch> matches) {
+		return this.logicinterface.getMergeConflicts(matches);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#denieMerge(org.bibsonomy.model.PersonMatch)
+	 */
+	@Override
+	public void denieMerge(PersonMatch match) {
+
+	}
+	
+	@Override
+	public boolean acceptMerge(PersonMatch match) {
+		return false;
+	}
+	
+	@Override
+	public PersonMatch getPersonMatch(int matchID) {
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#conflictMerge(int, org.json.JSONArray)
+	 */
+	@Override
+	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getForwardId(java.lang.String)
+	 */
+	@Override
+	public String getForwardId(String personId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

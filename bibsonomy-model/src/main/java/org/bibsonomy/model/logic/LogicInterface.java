@@ -54,6 +54,8 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.PersonMatch;
+import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -759,5 +761,33 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param username
 	 */
 	public void unlinkUser(String username);
+	
+	public List<PersonMatch> getPersonMatches(String personID);
+	
+	public PersonMatch getPersonMatch(int matchID);
+	
+	/**
+	 * Returns a List of persons fieldNames that are in conflict but could be resolved
+	 * @param matches
+	 * @return 
+	 */
+	public Map<Integer, PersonMergeFieldConflict[]> getMergeConflicts(List<PersonMatch> matches);
+	
+	public void denieMerge(PersonMatch match);
 
+	public boolean acceptMerge(PersonMatch match);
+
+	/**
+	 * @param formMatchId
+	 * @param array
+	 * @return
+	 */
+	public Boolean conflictMerge(int formMatchId, Map<String, String> map);
+	
+	/**
+	 * 
+	 * @param personId
+	 * @return returns the updated personId, if the person was merged to an other person
+	 */
+	public String getForwardId(String personId);
 }

@@ -127,6 +127,8 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
+import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -269,6 +271,7 @@ public class DBLogic implements LogicInterface {
 
 		this.dbSessionFactory = dbSessionFactory;
 	}
+
 
 	/**
 	 * Returns a new database session. If a user is logged in, he gets the
@@ -3743,5 +3746,84 @@ public class DBLogic implements LogicInterface {
 				}
 			}
 		};
+	}
+
+
+	/**
+	 * 
+	 * @param personID
+	 * @return a list of all matches for a person
+	 */
+	@Override
+	public List<PersonMatch> getPersonMatches(String personID) {
+		final DBSession session = this.openSession();
+		if (present(this.loginUser.getName())){
+			return this.personDBManager.getMatchesForFilterWithUserName(session, personID, this.loginUser.getName());
+		}
+		return this.personDBManager.getMatchesFor(session, personID);
+	}
+
+	/**
+	 * increases the deny counter of a match and denys it after a threshold is reached
+	 * 
+	 * @param match
+	 * @return
+	 */
+	@Override
+	public void denyMerge(PersonMatch match) {
+		final DBSession session = this.openSession();
+		if (present(this.loginUser.getName())) {
+			this.personDBManager.denyMatch(match, session, this.loginUser.getName());
+		}
+	}
+	
+	/**
+	 * performs a merge that has no conflicts
+	 * @param match
+	 * @return
+	 */
+	@Override
+	public boolean acceptMerge(PersonMatch match) {
+		final DBSession session = this.openSession();
+		if (present(this.loginUser.getName())) {
+			return this.personDBManager.mergeSimilarPersons(match, this.loginUser.getName(), session);
+		}
+		return false;
+	}
+	
+	/**
+	 * 
+	 * @param matchID
+	 * @return the match with given matchID
+	 */
+	@Override
+	public PersonMatch getPersonMatch(int matchID) {
+		final DBSession session = this.openSession();
+		return personDBManager.getMatch(matchID, session);
+	}
+
+	/**
+	 * resolves conflicts and performs a merge
+	 * @param formMatchId of the match to merge
+	 * @param map of conflict fields with new values
+	 * @return
+	 */
+	@Override
+	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
+		final DBSession session = this.openSession();
+		if (present(this.loginUser.getName())) {
+			return this.personDBManager.conflictMerge(session, formMatchId, map, this.loginUser.getName());
+		}
+		return false;
+	}
+
+	/**
+	 * @param personId
+	 * @return returns the updated personId, if the person was merged to an other person
+	 */
+	@Override
+	public String getForwardId(String personId) {
+		final DBSession session = this.openSession();
+		return this.personDBManager.getForwardId(personId, session);
 	}
 }

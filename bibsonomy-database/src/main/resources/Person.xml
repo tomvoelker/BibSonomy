@@ -69,6 +69,12 @@
 			WHERE person.person_id = #personId#
 	</update>
 	
+
+	<update id='updatePersonOnAll' parameterClass='org.bibsonomy.model.Person'>
+		UPDATE person SET person_change_id = #personChangeId#, college = #college#, email = #email#, homepage = #homepage#, gender = #gender#, dnb_person_id  = #dnbPersonId#, academic_degree = #academicDegree#, orcid = #orcid#, post_ctr = #postCounter#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
+			WHERE person.person_id = #personId#
+	</update>
+	
 	<update id='updateCollege' parameterClass='org.bibsonomy.model.Person'>
 		UPDATE person SET person_change_id = #personChangeId#, college = #college#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
 			WHERE person.person_id = #personId#
@@ -127,6 +133,22 @@
 		GROUP BY interHash ORDER BY date DESC
 	</statement>
 	
+	<statement id="getPost" parameterClass="java.lang.String" resultMap="BibTexCommon.bibtexPost">
+		SELECT b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
+		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
+		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, 
+		IF("hansii" = b.user_name, b.privnote, NULL) AS privnote , b.scraperid, t1.change_date, b.simhash1 AS interHash, b.simhash2 AS intraHash, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsDummyRows" />
+		FROM tas t1, bibhash h, bibtex b
+		WHERE b.content_id = t1.content_id
+		AND (
+			(b.simhash1 = h.hash
+			AND h.type=1
+			AND b.simhash1 = #item_id#)
+		)
+		GROUP BY interHash ORDER BY b.date DESC
+	</statement>
+	
 	<select id="getBibTexRelationsForPerson" resultMap="PersonCommon.preFilledResourcePersonRelation" parameterClass="bibtexParam">
 		SELECT <include refid ="bibtexAttributes2"/>, t.change_date, t.tag_name, g.*, b2.count, <include refid="reviewRatingsDummyRows" />, <include refid="commonResourcePersonRelationColumns2" />
 		FROM
@@ -181,4 +203,134 @@
 			LIMIT 0,1
 	</statement>
 	
+	<select id="getMatches" resultMap="PersonCommon.personMatch">
+		SELECT match_id, person1_id, person2_id, state from person_match 
+		where state = 0
+	</select>
+	
+	<select id="getMatchbyID" parameterClass="int" resultMap="PersonCommon.personMatch">
+		SELECT match_id, person1_id, person2_id, state from person_match 
+		where match_id = #matchID#
+	</select>
+	
+	<select id="getMatchesFor" parameterClass="java.lang.String" resultMap="PersonCommon.personMatch">
+		SELECT match_id, person1_id, person2_id, state from person_match 
+		where (person1_id = #personid# or person2_id = #personid#) 
+		AND state = 0
+	</select>
+	
+	<statement id="denyMatchByID" parameterClass="org.bibsonomy.database.params.DenyMatchParam">
+		UPDATE person_match SET state = 1 where match_id = #matchId#
+	</statement>
+	
+	<statement id="denyMatchByIDForUser" parameterClass="org.bibsonomy.database.params.DenyMatchParam">
+		INSERT INTO user_denied_match VALUES (#matchId#, #userName#)
+	</statement>
+	
+	<delete id="removeReflexivPersonMatches">
+		delete from person_match where person1_id = person2_id
+	</delete>
+	
+	<delete id="removePersonMatch" parameterClass="int">
+		delete from person_match where match_id = #matchid#
+	</delete>
+	
+	<update id="acceptMerge" parameterClass="int">
+		UPDATE person_match SET state = 2 where match_id = #matchid#
+	</update>
+	
+	<update id="updateResourcePersonRelation" parameterClass="org.bibsonomy.model.ResourcePersonRelation">
+		UPDATE pub_person 
+		SET person_change_id = LAST_INSERT_ID(), log_changed_at = #changedAt#, log_changed_by = #changedBy#, person_id = #person.personId#
+		WHERE person_change_id = #personRelChangeId#
+	</update>
+	
+	<update id="updatePersonMatchAfterMerge" parameterClass="org.bibsonomy.model.PersonMatch">
+		UPDATE person_match
+		SET person1_id = IF(person1_id = #person2.personId#, #person1.personId#, person1_id),
+			person2_id = IF(person2_id = #person2.personId#, #person1.personId#, person2_id)
+		WHERE match_id != #matchID# and state != 2
+	</update>
+	
+	<update id="redirectUserDenys" parameterClass="org.bibsonomy.database.params.DenyMatchParam">
+		UPDATE user_denied_match SET match_id=#newMatchId# WHERE match_id=#matchId#
+	</update>
+	
+	<statement id="getSimilarMatchesForMatch" parameterClass="org.bibsonomy.model.PersonMatch" resultMap="PersonCommon.personMatch">
+		SELECT * FROM person_match 
+		WHERE (person1_id = #person1.personId# AND person2_id = #person2.personId#) 
+		OR (person1_id = #person2.personId# AND person2_id = #person1.personId#)
+	</statement>
+	
+	<statement id="getHabilForPerson" parameterClass="java.lang.String" resultMap="BibTexCommon.bibtexPost">
+		SELECT b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
+		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
+		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, 
+		IF("hansii" = b.user_name, b.privnote, NULL) AS privnote , b.scraperid, t1.change_date, b.simhash1 AS interHash, b.simhash2 AS intraHash, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsDummyRows" />
+		FROM tas t1, bibhash h, bibtex b, pub_person p
+		WHERE b.content_id = t1.content_id
+		AND (
+			(b.simhash1 = h.hash
+			AND h.type=1)
+		)
+		AND p.person_id=#personId# AND p.relator_code = 'Maut'
+		and b.simhash1=p.simhash1 and b.entrytype='phdthesis' 
+		and b.type ='habilitation'
+		GROUP BY interHash ORDER BY b.date DESC
+	</statement>
+	
+	<statement id="getPHDForPerson" parameterClass="java.lang.String" resultMap="BibTexCommon.bibtexPost">
+		SELECT b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
+		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
+		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, 
+		IF("hansii" = b.user_name, b.privnote, NULL) AS privnote , b.scraperid, t1.change_date, b.simhash1 AS interHash, b.simhash2 AS intraHash, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsDummyRows" />
+		FROM tas t1, bibhash h, bibtex b, pub_person p
+		WHERE b.content_id = t1.content_id
+		AND (
+			(b.simhash1 = h.hash
+			AND h.type=1)
+		)
+		AND p.person_id=#personId# AND p.relator_code = 'Maut'
+		and b.simhash1=p.simhash1 and b.entrytype='phdthesis' 
+		and (b.type is NULL or b.type !='habilitation')
+		GROUP BY interHash ORDER BY b.date DESC
+	</statement>
+	
+	<statement id="getPostsForPerson" parameterClass="java.lang.String" resultMap="BibTexCommon.bibtexPost">
+		SELECT b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
+		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
+		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, 
+		IF("hansii" = b.user_name, b.privnote, NULL) AS privnote , b.scraperid, t1.change_date, b.simhash1 AS interHash, b.simhash2 AS intraHash, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsDummyRows" />
+		FROM tas t1, bibhash h, bibtex b, pub_person p
+		WHERE b.content_id = t1.content_id
+		AND b.simhash1 = h.hash	AND h.type=1 AND p.person_id=#personId# AND p.relator_code = 'Maut'
+		AND b.simhash1=p.simhash1 
+		GROUP BY interHash ORDER BY b.date DESC
+	</statement>
+	
+	<select id='getMainName' resultMap='PersonCommon.personName' parameterClass='String'>
+		SELECT <include refid='commonPersonNameColumns'/> FROM person_name 
+			WHERE person_id = #personId# and is_main = 1
+	</select>
+	
+	<select id='getDenysForMatch' resultClass='java.lang.String' parameterClass='int'>
+		SELECT user_name FROM user_denied_match
+		WHERE match_id = #matchid#
+	</select>
+	
+	<insert id="addOtherDNBID" parameterClass="org.bibsonomy.database.params.DNBAliasParam">
+		INSERT INTO other_dnb_ids VALUES (#dnbId#, #otherDnbId#)
+	</insert>
+	
+	<update id="updateTransitivDNBID" parameterClass="org.bibsonomy.database.params.DNBAliasParam">
+		UPDATE other_dnb_ids SET dnb_person_id=#dnbId# where dnb_person_id=#otherDnbId#
+	</update>
+	
+	<select id="getPersonForward" resultClass='java.lang.String' parameterClass='java.lang.String'>
+		SELECT person1_id FROM person_match 
+		WHERE person2_id = #personId# AND state = 2
+	</select>
 </sqlMap>
