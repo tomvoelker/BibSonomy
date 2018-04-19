@@ -16,4 +16,8 @@
 	<import resource="classpath:TestDatabaseBaseContext.xml"/>
 	<import resource="classpath:TestDatabaseContext.xml"/>
 	
+	<bean id="systemTagTest" class="org.bibsonomy.database.systemtags.SystemtagsTest">
+		<property name="maxQuerySize" value="${database.maxQuerySize}" />
+	</bean>
+	
 </beans>

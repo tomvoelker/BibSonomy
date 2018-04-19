@@ -92,7 +92,10 @@
 		| PUMA-specific beans
 		|
 	 	+-->
-	<bean id="openAccessController" class="de.unikassel.puma.webapp.controller.ajax.OpenAccessController" scope="request" parent="ajaxController" />	
+	<bean id="openAccessController" class="de.unikassel.puma.webapp.controller.ajax.OpenAccessController" scope="request" parent="ajaxController">
+		<property name="maxQuerySize" value="${database.maxQuerySize}" />
+		
+	</bean>	
 	
 	<bean id="swordServiceController" class="de.unikassel.puma.webapp.controller.ajax.SwordServiceController" scope="request" parent="ajaxController">
 		<property name="swordService" ref="swordService"/>	
