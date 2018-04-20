@@ -29,11 +29,8 @@ package org.bibsonomy.layout.csl;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,10 +39,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import net.sf.json.JSONArray;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -53,11 +49,8 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.export.CSLUtils;
 import org.bibsonomy.services.filesystem.CslFileLogic;
 import org.bibsonomy.util.IOUtils;
-import org.bibsonomy.util.StringUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import net.sf.json.JSONObject;
@@ -103,12 +96,34 @@ public class CSLFilesManager {
 			final JSONObject aliasesObj = JSONObject.fromObject(jsonContent);
 			for (final Object keyObj : aliasesObj.keySet()) {
 				final String key = (String) keyObj;
-				final String value = (String) aliasesObj.get(key);
+				/*
+				 * can be both: a set of aliases or a alias
+				 * so we handle both cases here
+				 */
+				final Object aliasesOrAlias = aliasesObj.get(key);
 
-				if (!aliases.containsKey(value)) {
-					aliases.put(value, new HashSet<String>());
+				if (aliasesOrAlias instanceof JSONArray) {
+					final JSONArray aliasesArray = (JSONArray) aliasesOrAlias;
+
+					for (final Object alias : aliasesArray) {
+						if (alias instanceof String) {
+							final String value = (String) alias;
+							if (!aliases.containsKey(value)) {
+								aliases.put(value, new HashSet<String>());
+							}
+
+							aliases.get(value).add(key);
+						}
+					}
+				} else if (aliasesOrAlias instanceof String) {
+					final String value = (String) aliasesObj.get(key);
+
+					if (!aliases.containsKey(value)) {
+						aliases.put(value, new HashSet<String>());
+					}
+
+					aliases.get(value).add(key);
 				}
-				aliases.get(value).add(key);
 			}
 
 			final Resource[] resources = resolver.getResources(BASE_PATH_STYLES + "*.csl");

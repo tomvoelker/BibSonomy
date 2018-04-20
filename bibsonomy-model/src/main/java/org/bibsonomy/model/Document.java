@@ -27,6 +27,7 @@
 package org.bibsonomy.model;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -34,7 +35,12 @@ import java.util.Date;
  * 
  * @author Christian Kramer
  */
-public class Document {
+public class Document implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2511680947761687645L;
+
 	/** the filename */
 	private String fileName;
 	

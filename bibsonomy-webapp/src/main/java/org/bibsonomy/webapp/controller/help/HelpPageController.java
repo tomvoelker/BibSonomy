@@ -174,7 +174,11 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		// if pageName does not already have the correct language, redirect
 		if (present(language) && !language.equals(requestLanguage)) {
 			final String localizedPageName = this.getLocalizedHelpPageName(helpPage, language, requestLanguage);
-			return new ExtendedRedirectView(this.urlGenerator.getHelpPage(localizedPageName, requestLanguage));
+			if (present(localizedPageName)) {
+				return new ExtendedRedirectView(this.urlGenerator.getHelpPage(localizedPageName, requestLanguage));
+			}
+
+			return new ExtendedRedirectView(this.urlGenerator.getHelpPage(HELP_HOME, requestLanguage));
 		}
 		
 		// parse content

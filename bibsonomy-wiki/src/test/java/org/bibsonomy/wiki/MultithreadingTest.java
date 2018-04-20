@@ -49,7 +49,7 @@ public class MultithreadingTest extends Thread {
 	}
 	
 	public void run(String username, String realname) { 
-		CVWikiModel model = new CVWikiModel(Locale.ENGLISH);
+		CVWikiModel model = new CVWikiModel(Locale.ENGLISH, 1000);
 		User user = new User(username);
 		user.setRealname(realname);
 		model.setRequestedUser(user);

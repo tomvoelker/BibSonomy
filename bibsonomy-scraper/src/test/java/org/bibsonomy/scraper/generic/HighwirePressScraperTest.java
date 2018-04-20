@@ -24,42 +24,51 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.id.kde.doi;
+package org.bibsonomy.scraper.generic;
+
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Test for HTMLMetaDataDOIScraper
+ * tests for {@link HighwirePressScraper}
  *
  * @author Johannes
  */
 @Category(RemoteTest.class)
-public class HTMLMetaDataDOIScraperTest {
+public class HighwirePressScraperTest {
 
 	@Test
-	public void testGetDoiFromMetaData() throws ScrapingException, MalformedURLException {
-		URL testURL;
-		testURL = new URL("https://www.biorxiv.org/content/early/2017/10/06/199430");
-		String doi = new HTMLMetaDataDOIScraper().getDoiFromMetaData(testURL);
-		assertEquals("10.1101/199430", doi);
+	public void testHighwirePressScraper1() {
+		final String url = "https://www.biorxiv.org/content/early/2017/10/06/199430";
+		final String resultFile = "HighwirePressScraperTest1.bib";
+		assertScraperResult(url, null, HighwirePressScraper.class, resultFile);
 	}
-
+	
 	@Test
-	public void urlTest1() throws ScrapingException, MalformedURLException {
-		final ScrapingContext sc = new ScrapingContext(new URL("https://link.springer.com/book/10.1007/978-3-319-60492-3#about"));
-		HTMLMetaDataDOIScraper scraper = new HTMLMetaDataDOIScraper();
-
-		assertFalse(scraper.scrape(sc));
-		assertEquals("10.1007/978-3-319-60492-3", sc.getSelectedText());
+	public void testHighwirePressScraper2() {
+		final String url = "http://onlinelibrary.wiley.com/doi/10.1002/scj.20874/full";
+		final String resultFile = "HighwirePressScraperTest2.bib";
+		assertScraperResult(url, null, HighwirePressScraper.class, resultFile);
+	}
+	
+	@Test
+	public void testHighwirePressScraper3() {
+		final String url = "https://www.osapublishing.org/jlt/abstract.cfm?uri=jlt-35-20-4553";
+		final String resultFile = "HighwirePressScraperTest3.bib";
+		assertScraperResult(url, null, HighwirePressScraper.class, resultFile);
+	}
+	
+	@Test
+	public void testSupportsScrapingContext() throws MalformedURLException {
+		ScrapingContext scrapingContext = new ScrapingContext(new URL("https://www.biorxiv.org/content/early/2017/10/06/199430"));
+		assertTrue(new HighwirePressScraper().supportsScrapingContext(scrapingContext));
 	}
 }
