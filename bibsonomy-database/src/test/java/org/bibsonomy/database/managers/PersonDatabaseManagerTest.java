@@ -178,7 +178,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertTrue(matches.size() > 0);
 		
 		//conflict for merge with id 4
-		Map<Integer, PersonMergeFieldConflict[]> mergeConflicts = this.PERSON_DATABASE_MANAGER.getMergeConflicts(matches);
+		Map<Integer, PersonMergeFieldConflict[]> mergeConflicts = PersonMatch.getMergeConflicts(matches);
 		assertTrue(mergeConflicts.get(4).length >0);
 		for(PersonMatch match: matches) {
 			if (match.getMatchID() == 4) {
@@ -206,14 +206,14 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		PersonMatch deniedMatch = newMatches.get(0);
 		newMatches = this.PERSON_DATABASE_MANAGER.getMatchesForFilterWithUserName(this.dbSession, deniedMatch.getPerson1().getPersonId(), loginUser.getName());
 		assertTrue(newMatches.size() == 0);
-		for (int i = 2; i < PersonMatch.denyThreshold; i++){
+		for (int i = 2; i < PersonMatch.denieThreshold; i++){
 			this.PERSON_DATABASE_MANAGER.denyMatch(deniedMatch, this.dbSession, "testuser" + i);
 		}
 		//deny match after threshold is reached
 		matches = this.PERSON_DATABASE_MANAGER.getMatches(this.dbSession);
 		assertTrue(matches.size() >0);
 		deniedMatch = this.PERSON_DATABASE_MANAGER.getMatch(deniedMatch.getMatchID(), this.dbSession);
-		this.PERSON_DATABASE_MANAGER.denyMatch(deniedMatch, this.dbSession, "testuser" + PersonMatch.denyThreshold);
+		this.PERSON_DATABASE_MANAGER.denyMatch(deniedMatch, this.dbSession, "testuser" + PersonMatch.denieThreshold);
 		matches = this.PERSON_DATABASE_MANAGER.getMatches(this.dbSession);
 		assertTrue(matches.size() == 0);
 	}

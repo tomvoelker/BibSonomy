@@ -168,7 +168,7 @@ public class PersonPageController extends SingleResourceListController implement
 		list.add(this.logic.getPersonMatch(command.getFormMatchId()));
 		
 		JSONArray array = new JSONArray();
-		for (PersonMergeFieldConflict conflict : (PersonMergeFieldConflict[])this.logic.getMergeConflicts(list).get(command.getFormMatchId())){
+		for (PersonMergeFieldConflict conflict : PersonMatch.getMergeConflicts(list).get(command.getFormMatchId())){
 			JSONObject jsonConflict = new JSONObject();
 			jsonConflict.put("field", conflict.getFieldName());
 			jsonConflict.put("person1Value", conflict.getPerson1Value());
@@ -623,7 +623,7 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setAdvisedThesis(advisorPosts);
 		command.setOtherAdvisedPubs(otherAdvisorPosts);
 		command.setPersonMatchList(this.logic.getPersonMatches(person.getPersonId()));
-		command.setMergeConflicts(this.logic.getMergeConflicts(command.getPersonMatchList()));
+		command.setMergeConflicts(PersonMatch.getMergeConflicts(command.getPersonMatchList()));
 		
 		final List<Post<BibTex>> similarAuthorPubs = this.getPublicationsOfSimilarAuthor(person);
 

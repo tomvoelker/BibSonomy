@@ -936,10 +936,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 		return null;
 	}
 	
-	public Map<Integer, PersonMergeFieldConflict[]> getMergeConflicts(List<PersonMatch> matches){
-		return null;
-	}
-	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#denieMerge(org.bibsonomy.model.PersonMatch)
 	 */

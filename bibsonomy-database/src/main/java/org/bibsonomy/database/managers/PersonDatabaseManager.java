@@ -701,12 +701,12 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			// only other matches will be removed
 			for (int i = 1; i < toMerge.size(); i++) {
 				this.update("redirectUserDenys", new DenyMatchParam(toMerge.get(i).getMatchID(), combinedMerge.getMatchID()), session);
-				combinedMerge.getUserDenys().addAll(toMerge.get(i).getUserDenys());
+				combinedMerge.getUserDenies().addAll(toMerge.get(i).getUserDenies());
 				this.delete("removePersonMatch", toMerge.get(i).getMatchID(), session);
 			}
 			//get userDenys without duplicates
-			combinedMerge.setUserDenys(this.queryForList("getDenysForMatch", combinedMerge.getMatchID(), String.class, session));
-			if (combinedMerge.getUserDenys().size() >= PersonMatch.denyThreshold) {
+			combinedMerge.setUserDenies(this.queryForList("getDenysForMatch", combinedMerge.getMatchID(), String.class, session));
+			if (combinedMerge.getUserDenies().size() >= PersonMatch.denieThreshold) {
 				//deny merge for all if the total user deny count is bigger than the deny threshold
 				this.delete("denyMatchByID", new DenyMatchParam(combinedMerge.getMatchID(), userName), session);
 			}
@@ -750,9 +750,9 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void denyMatch(PersonMatch match, DBSession session, String userName) {
-		if(!match.getUserDenys().contains(userName)) {
+		if(!match.getUserDenies().contains(userName)) {
 			DenyMatchParam param = new DenyMatchParam(match.getMatchID(), userName);
-			if (match.getUserDenys().size() == PersonMatch.denyThreshold-1) {
+			if (match.getUserDenies().size() == PersonMatch.denieThreshold-1) {
 				//deny match for all 
 				this.delete("denyMatchByID", param, session);
 			} 
@@ -787,7 +787,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 */
 	public List<PersonMatch> getMatchesForFilterWithUserName(DBSession session, String personID, String userName) {
 		List<PersonMatch> matches = this.getMatchesFor(session, personID);
-		matches.removeIf(match -> match.getUserDenys().contains(userName));
+		matches.removeIf(match -> match.getUserDenies().contains(userName));
 		
 		return matches;
 	}
@@ -917,7 +917,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @param loginUser
 	 */
 	private Boolean testMergeOnClaims(PersonMatch match, String loginUser) {
-		return match.testMergeOnClaims(loginUser);
+		return this.testMergeOnClaims(match, loginUser);
 	}
 
 	/**

@@ -3770,7 +3770,7 @@ public class DBLogic implements LogicInterface {
 	 * @return
 	 */
 	@Override
-	public void denyMerge(PersonMatch match) {
+	public void denieMerge(PersonMatch match) {
 		final DBSession session = this.openSession();
 		if (present(this.loginUser.getName())) {
 			this.personDBManager.denyMatch(match, session, this.loginUser.getName());
