@@ -252,7 +252,7 @@
 		WHERE match_id != #matchID# and state != 2
 	</update>
 	
-	<update id="redirectUserDenys" parameterClass="org.bibsonomy.database.params.DenyMatchParam">
+	<update id="redirectUserDenies" parameterClass="org.bibsonomy.database.params.DenyMatchParam">
 		UPDATE user_denied_match SET match_id=#newMatchId# WHERE match_id=#matchId#
 	</update>
 	
@@ -316,7 +316,7 @@
 			WHERE person_id = #personId# and is_main = 1
 	</select>
 	
-	<select id='getDenysForMatch' resultClass='java.lang.String' parameterClass='int'>
+	<select id='getDeniesForMatch' resultClass='java.lang.String' parameterClass='int'>
 		SELECT user_name FROM user_denied_match
 		WHERE match_id = #matchid#
 	</select>

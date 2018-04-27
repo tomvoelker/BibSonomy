@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.model.enums.Gender;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * A PersonMatch object contains the id's of two persons which might be equal and a flag if they are equal
@@ -202,5 +203,26 @@ public class PersonMatch implements Serializable, Comparable<PersonMatch> {
 		return map;
 	}
 	
+	/**
+	 * tests if the merge can be performed without a conflict on user claims
+	 * @param loginUser
+	 * @return
+	 */
+	public Boolean testMergeOnClaims(String loginUser) {
+		Boolean p1Claim = ValidationUtils.present(getPerson1().getUser());
+		Boolean p2Claim = ValidationUtils.present(getPerson2().getUser());
+	
+		if (p1Claim && p2Claim) {
+			return false;
+		} else if (!p1Claim && !p2Claim) {
+			return true;
+		} else if (p1Claim) {
+			//TODO notify user1 that their is a merge
+			return getPerson1().getUser().equals(loginUser);
+		} else {
+			//TODO notify user2 that their is a merge
+			return getPerson2().getUser().equals(loginUser);
+		}	
+	}
 	
 }

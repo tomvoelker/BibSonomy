@@ -50,6 +50,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.testutil.TestUtils;
+import org.bibsonomy.util.ValidationUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -185,7 +186,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				//conflcit for merge remains
 				assertTrue(!this.PERSON_DATABASE_MANAGER.mergeSimilarPersons(match, loginUser.getName(), this.dbSession));
 				Map<String, String> map = new HashMap<String, String>();
-				String newPage = "";
+				String newPage = null;
 				for(PersonMergeFieldConflict conflict : mergeConflicts.get(4)) {
 					map.put(conflict.getFieldName(), conflict.getPerson2Value());
 					if (conflict.getFieldName().equals("homepage")) {
@@ -194,7 +195,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				}
 				assertTrue(this.PERSON_DATABASE_MANAGER.conflictMerge(this.dbSession, match.getMatchID(), map, loginUser.getName()));
 				Person updatedPerson = this.PERSON_DATABASE_MANAGER.getPersonById(match.getPerson1().getPersonId(), this.dbSession);
-				assertTrue(updatedPerson.getHomepage().equals(newPage));
+				assertTrue(ValidationUtils.equalsWithNull(updatedPerson.getHomepage(), newPage));
 			} else if (match.getMatchID() == 1) {
 				assertTrue(this.PERSON_DATABASE_MANAGER.mergeSimilarPersons(match, loginUser.getName(), this.dbSession));
 			}

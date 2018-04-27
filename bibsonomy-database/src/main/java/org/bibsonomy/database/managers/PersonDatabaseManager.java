@@ -202,10 +202,15 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void updatePersonOnAll(Person person, DBSession session) {
-		this.plugins.onPersonUpdate(person.getPersonId(), session);
-		person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
-		this.insert("updatePersonOnAll", person, session);
-		session.commitTransaction();
+		session.beginTransaction();
+		try {
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
+			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			this.insert("updatePersonOnAll", person, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
 	}
 	
 	/**
@@ -698,12 +703,12 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			PersonMatch combinedMerge = toMerge.get(0);
 			// only other matches will be removed
 			for (int i = 1; i < toMerge.size(); i++) {
-				this.update("redirectUserDenys", new DenyMatchParam(toMerge.get(i).getMatchID(), combinedMerge.getMatchID()), session);
+				this.update("redirectUserDenies", new DenyMatchParam(toMerge.get(i).getMatchID(), combinedMerge.getMatchID()), session);
 				combinedMerge.getUserDenies().addAll(toMerge.get(i).getUserDenies());
 				this.delete("removePersonMatch", toMerge.get(i).getMatchID(), session);
 			}
-			//get userDenys without duplicates
-			combinedMerge.setUserDenies(this.queryForList("getDenysForMatch", combinedMerge.getMatchID(), String.class, session));
+			//get userDenies without duplicates
+			combinedMerge.setUserDenies(this.queryForList("getDeniesForMatch", combinedMerge.getMatchID(), String.class, session));
 			if (combinedMerge.getUserDenies().size() >= PersonMatch.denieThreshold) {
 				//deny merge for all if the total user deny count is bigger than the deny threshold
 				this.delete("denyMatchByID", new DenyMatchParam(combinedMerge.getMatchID(), userName), session);
@@ -825,14 +830,11 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 				}
 			}
 			// add changes to both so they can be compared with mergable()
-			session.beginTransaction();
-			try {
-				this.updatePersonOnAll(person1, session);
-				this.updatePersonOnAll(person2, session);
-				this.performMerge(match, loginUser, session);
-			} finally {
-				session.endTransaction();
-			}
+
+			this.updatePersonOnAll(person1, session);
+			this.updatePersonOnAll(person2, session);
+			this.performMerge(match, loginUser, session);
+
 		} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			System.err.println(e);
 		}
@@ -915,7 +917,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @param loginUser
 	 */
 	private Boolean testMergeOnClaims(PersonMatch match, String loginUser) {
-		return this.testMergeOnClaims(match, loginUser);
+		return match.testMergeOnClaims(loginUser);
 	}
 
 	/**
