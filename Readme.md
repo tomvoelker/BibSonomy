@@ -6,4 +6,5 @@ the [KDE group](http://www.kde.cs.uni-kassel.de/contact.html) of the University 
 the [DMIR group](http://www.dmir.uni-wuerzburg.de/) of the University of Würzburg, and 
 the [L3S Research Center](http://www.l3s.de/), Germany.
 
+
 More information can be found in the [BibSonomy Wiki](https://bitbucket.org/bibsonomy/bibsonomy/wiki/Home).
