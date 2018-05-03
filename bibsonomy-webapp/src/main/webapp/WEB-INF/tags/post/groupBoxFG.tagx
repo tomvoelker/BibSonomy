@@ -87,6 +87,7 @@
 			var checkedfriends = document.getElementById("post.friends");
 			var groupsform = document.getElementById("post.groups.form");
 			var friendsform = document.getElementById("post.friends.form");
+			$("#inpf_tags").val($("#inpf_tags").val()+" ");
 			
 			var friends=[];
 			var groups=[];
@@ -137,14 +138,14 @@
 						var number=friends.indexOf(selected);
 						$("#friendsOrGroups").append("<li tabindex=1 value=\""+number+"\" class=\"delete-friend\" id=\"delete-friend-"+number+"\"><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
 						tags=$("#inpf_tags").val();
-						tags=tags+" send:"+selected;
+						tags=tags+"send:"+selected+" ";
 						$("#inpf_tags").val(tags);
 						
 							$("li.delete-friend").click(function() {
 								var number=$(this).val();
 								
 								$("#delete-friend-"+number+"").remove();
-								tags=tags.replace(" send:"+friends[number],"");
+								tags=tags.replace("send:"+friends[number]+" ","");
 								
 								$("#inpf_tags").val(tags);
 								friends[number]="";
@@ -166,14 +167,14 @@
 						var number=groups.indexOf(selected);
 						$("#friendsOrGroups").append("<li tabindex=1 value=\""+number+"\" class=\"delete-group\" id=\"delete-group-"+number+"\"><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
 						tags=$("#inpf_tags").val();
-						tags=tags+" for:"+selected;
+						tags=tags+"for:"+selected+" ";
 						$("#inpf_tags").val(tags);
 						
 							$("li.delete-group").click(function() {
 								var number=$(this).val();
 								
 								$("#delete-group-"+number+"").remove();
-								tags=tags.replace(" for:"+groups[number],"");
+								tags=tags.replace("for:"+groups[number]+" ","");
 								
 								$("#inpf_tags").val(tags);
 								groups[number]="";
@@ -209,7 +210,7 @@
 						addfriendsdelete=false;
 						var number=$(this).val();
 						
-						tags=tags.replace(" send:"+friends[number],"");
+						tags=tags.replace("send:"+friends[number]+" ","");
 						
 						$("#delete-friend-"+number+"").remove();
 						
@@ -244,7 +245,7 @@
 						addgroupsdelete=false;
 						var number=$(this).val();
 						
-						tags=tags.replace(" for:"+groups[number],"");
+						tags=tags.replace("for:"+groups[number]+" ","");
 						$("#delete-group-"+number+"").remove();
 						$("#inpf_tags").val(tags);
 						groups[number]="";
@@ -264,6 +265,10 @@
 			
 			function print_labels() {
 				$("#inpf_tags").keyup(function() {
+					$("#friendsOrGroups").empty();
+					add_labels();
+				});
+				$("#inpf_tags").click(function() {
 					$("#friendsOrGroups").empty();
 					add_labels();
 				});

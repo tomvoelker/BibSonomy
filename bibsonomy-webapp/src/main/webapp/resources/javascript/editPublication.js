@@ -388,7 +388,7 @@ function applyKeyDownHandler(element) {
 // adds the send:<username> tag when clicking the save and send to button
 function sendToBibliography(username) {
 	$("#inpf_tags").val(function(index, val) {
-		return val + " send:" + username;
+		return val + "send:" + username;
 	});
 	// this is called onclick of every submit button, so we call it here as well
 	clear_tags();
@@ -397,7 +397,7 @@ function sendToBibliography(username) {
 //adds the send:<groupname> tag when clicking the save and send to button
 function sendGroupToBibliography(groupname) {
 	$("#inpf_tags").val(function(index, val) {
-		return val + " for:" + groupname;
+		return val + "for:" + groupname;
 	});
 	// this is called onclick of every submit button, so we call it here as well
 	clear_tags();
