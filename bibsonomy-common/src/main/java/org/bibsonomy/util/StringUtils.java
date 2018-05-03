@@ -374,6 +374,7 @@ public class StringUtils {
 	public static Map<String, String> parseBracketedKeyValuePairs(String input, char assignmentOperator, char pairDelimiter, char bracketOpen, char bracketClose) throws InvalidModelException {
 		// check input, init hashmap
 		final Map<String, String> keyValPairs = new LinkedHashMap<String, String>();
+
 		if (!present(input)) {
 			return keyValPairs;
 		}

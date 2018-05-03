@@ -30,7 +30,7 @@ import org.bibsonomy.services.filesystem.JabRefFileLogic;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.ServerUploadedFile;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
-import org.bibsonomy.webapp.command.actions.JabRefImportCommand;
+import org.bibsonomy.webapp.command.actions.ExportFormatImportCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -47,7 +47,7 @@ public class JabRefImportValidator implements Validator<SettingsViewCommand> {
 	 */
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return JabRefImportCommand.class.equals(clazz);
+		return ExportFormatImportCommand.class.equals(clazz);
 	}
 	
 	/* (non-Javadoc)
@@ -62,8 +62,9 @@ public class JabRefImportValidator implements Validator<SettingsViewCommand> {
 	}
 
 	/**
-	 * @param fileBegin
-	 * @param errors 
+	 * @param file
+	 * @param errors
+	 * @param fieldSuffix
 	 */
 	private void checkFileName(CommonsMultipartFile file, Errors errors, final String fieldSuffix) {
 		if (file == null || file.getSize() == 0) {

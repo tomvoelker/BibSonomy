@@ -39,19 +39,24 @@ import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.Document;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.UserSettings;
+import org.bibsonomy.model.enums.FavouriteLayoutSource;
+import org.bibsonomy.model.user.settings.FavouriteLayout;
+import org.bibsonomy.services.export.CSLUtils;
+import org.bibsonomy.services.filesystem.CslFileLogic;
 
 /**
  * @author Christian Kramer
  */
 public class DocumentDatabaseManager extends AbstractDatabaseManager {
-	/**
-	 * Documents not attached to posts get this value as content_id.
-	 */
+	/** Documents not attached to posts get this value as content_id */
 	public static final int DEFAULT_CONTENT_ID = 0;
 	
 	private static final DocumentDatabaseManager singleton = new DocumentDatabaseManager();
 	
 	private final DatabasePluginRegistry plugins;
+	private UserDatabaseManager userDatabaseManager;
 	
 	/**
 	 * @return DocumentDatabaseManager
@@ -109,14 +114,35 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void addDocument(final String userName, final int contentId, final String fileHash, final String fileName, final String md5hash, final DBSession session) {
-		final DocumentParam docParam = new DocumentParam();
-		docParam.setUserName(userName);
-		docParam.setFileHash(fileHash);
-		docParam.setFileName(fileName);
-		docParam.setContentId(contentId);
-		docParam.setMd5hash(md5hash);
-		
-		this.insert("insertDoc", docParam, session);
+		try {
+			session.beginTransaction();
+
+			// insert the document, content is stored in the file system
+			final DocumentParam docParam = new DocumentParam();
+			docParam.setUserName(userName);
+			docParam.setFileHash(fileHash);
+			docParam.setFileName(fileName);
+			docParam.setContentId(contentId);
+			docParam.setMd5hash(md5hash);
+
+			this.insert("insertDoc", docParam, session);
+
+			/*
+			 * check if the updated document is a custom csl file
+			 * if it is, add it to the favorite layouts of the logged in user
+			 */
+			final User user = this.userDatabaseManager.getUserDetails(userName, session);
+			final UserSettings userSettings = user.getSettings();
+
+			if (contentId == DEFAULT_CONTENT_ID && fileName.toLowerCase().endsWith(CslFileLogic.LAYOUT_FILE_EXTENSION)) {
+				userSettings.getFavouriteLayouts().add(new FavouriteLayout(FavouriteLayoutSource.CSL, CSLUtils.CUSTOM_PREFIX + userName + " " + fileName));
+				this.userDatabaseManager.updateUserSettingsForUser(user, session);
+			}
+
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
 	}
 
 	/**
@@ -130,8 +156,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	 * @param md5hash
 	 * @param session
 	 */
-	public void updateDocument(final int contentId, final String fileHash, final String fileName, final Date oldDate, final String userName,
-			final String md5hash, final DBSession session) {
+	public void updateDocument(final int contentId, final String fileHash, final String fileName, final Date oldDate, final String userName, final String md5hash, final DBSession session) {
 		final DocumentParam docParam = new DocumentParam();
 		docParam.setFileHash(fileHash);
 		docParam.setFileName(fileName);
@@ -164,17 +189,37 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return document
 	 */
-	public Document getDocument(final String userName, final String fileHash, DBSession session) {
+	public Document getDocument(final String userName, final String fileHash, final DBSession session) {
 		// create the docParam object
 		final DocumentParam docParam = new DocumentParam();
 
 		// fill the docParam object
 		docParam.setFileHash(fileHash);
 		docParam.setUserName(userName);
-		docParam.setContentId(0);
+		docParam.setContentId(DEFAULT_CONTENT_ID);
 
 		// get the requested document
 		return this.getDocumentForLayout(docParam, session);
+	}
+	
+	/**
+	 * This method gets all layout documents for the given user
+	 * 
+	 * @param userName
+	 * @param session
+	 * @return document
+	 */
+	public List<Document> getLayoutDocuments(final String userName, final DBSession session) {
+		// create the docParam object
+		final DocumentParam docParam = new DocumentParam();
+
+		// fill the docParam object
+		docParam.setUserName(userName);
+		docParam.setContentId(DEFAULT_CONTENT_ID);
+
+		// get the requested documents
+		// returns all layout documents
+		return this.queryForList("getLayoutDocuments", docParam, Document.class, session);
 	}
 
 	/**
@@ -228,13 +273,48 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void deleteDocumentWithNoPost(final int contentId, final String userName, final String fileHash, final DBSession session) {
-		// create a DocumentParam object
-		final DocumentParam docParam = new DocumentParam();
-		docParam.setFileHash(fileHash);
-		docParam.setUserName(userName);
-		docParam.setContentId(contentId);
-		// finally delete the document
-		deleteDocumentLayout(docParam, session);
+		try {
+			session.beginTransaction();
+
+			// create a DocumentParam object
+			final DocumentParam docParam = new DocumentParam();
+			docParam.setFileHash(fileHash);
+			docParam.setUserName(userName);
+			docParam.setContentId(contentId);
+
+			// get the comlete document information (file name)
+			final Document document = this.getDocument(userName, fileHash, session);
+
+			// finally delete the document
+			this.deleteDocumentLayout(docParam, session);
+
+			/*
+			 * if the layout was a favorite layout
+			 * than remove it from the list
+			 */
+			final String styleName = document.getFileName();
+
+			final User user = this.userDatabaseManager.getUserDetails(userName, session);
+			final UserSettings userSettings = user.getSettings();
+			FavouriteLayout foundLayout = null;
+			for (final FavouriteLayout layout : userSettings.getFavouriteLayouts()) {
+				if (layout.getSource() == FavouriteLayoutSource.CSL) {
+					String fileNameFromLayout = layout.getStyle().substring(layout.getStyle().lastIndexOf(' ')).trim();
+					if (fileNameFromLayout.equalsIgnoreCase(styleName)) {
+						foundLayout = layout;
+						break;
+					}
+				}
+			}
+			if (foundLayout != null) {
+				userSettings.getFavouriteLayouts().remove(foundLayout);
+				this.userDatabaseManager.updateUserSettingsForUser(user, session);
+			}
+
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
 	}
 
 	private void deleteDocumentForPost(final DocumentParam docParam, final DBSession session) {
@@ -246,15 +326,13 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	 * This method deletes an existing document
 	 * 
 	 * @param contentId
-	 * @param userName
-	 * @param fileName
+	 * @param document
 	 * @param session
 	 */
 	public void deleteDocument(final int contentId, final Document document, final DBSession session) {
 		// create a DocumentParam object
 		final DocumentParam docParam = documentToParam(document);
 		docParam.setContentId(contentId);
-		
 		// finally delete the document
 		deleteDocumentForPost(docParam, session);
 	}
@@ -332,5 +410,12 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		param.setFilters(filters);
 		final Integer result = this.queryForObject("getLayoutDocumentCount", param, Integer.class, session);
 		return saveConvertToint(result);
+	}
+	
+	/**
+	 * @param userDatabaseManager
+	 */
+	public void setUserDatabaseManager(UserDatabaseManager userDatabaseManager){
+		this.userDatabaseManager = userDatabaseManager;
 	}
 }

@@ -46,6 +46,7 @@ import org.bibsonomy.scraper.url.kde.aps.ApsScraper;
 import org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper;
 import org.bibsonomy.scraper.url.kde.asm.AsmScraper;
 import org.bibsonomy.scraper.url.kde.ats.ATSScraper;
+import org.bibsonomy.scraper.url.kde.base.BaseScraper;
 import org.bibsonomy.scraper.url.kde.bibsonomy.BibSonomyScraper;
 import org.bibsonomy.scraper.url.kde.biologists.BiologistsScraper;
 import org.bibsonomy.scraper.url.kde.biomed.BioMedCentralScraper;
@@ -327,6 +328,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new CyberleninkaScraper());
 		addScraper(new OxfordUniversityPressScraper());
 		addScraper(new ZenodoScraper());
+		addScraper(new BaseScraper());
 		//addScraper(new AkademiaiScraper()); error = 404
 	}
 
