@@ -35,14 +35,14 @@
 					<c:if test="${not empty friends}">
 						<div class="radio">
 							<label>
-								<form:radiobutton cssClass="radio-viewable-group" path="abstractGrouping" value="friends" tabindex="2" id="post.friends" /> <fmt:message key="post.groups.friends"/>
+								<form:radiobutton cssClass="radio-viewable-group" path="friendsOrGroups" value="friends" tabindex="2" id="post.friends" /> <fmt:message key="post.groups.friends"/>
 							</label>
 						</div>
 					</c:if>
 					<c:if test="${not empty groups}">
 						<div class="radio">
 							<label>
-								<form:radiobutton cssClass="radio-viewable-group" path="abstractGrouping" value="groups" tabindex="2" id="post.groups" /> <fmt:message key="groups"/>
+								<form:radiobutton cssClass="radio-viewable-group" path="friendsOrGroups" value="groups" tabindex="2" id="post.groups" /> <fmt:message key="groups"/>
 							</label>
 						</div>
 					</c:if>
