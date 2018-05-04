@@ -87,7 +87,9 @@
 			var checkedfriends = document.getElementById("post.friends");
 			var groupsform = document.getElementById("post.groups.form");
 			var friendsform = document.getElementById("post.friends.form");
-			$("#inpf_tags").val($("#inpf_tags").val()+" ");
+			
+			var saved=$("#inpf_tags").val();
+			$("#inpf_tags").val(saved.trim()+" ");
 			
 			var friends=[];
 			var groups=[];
@@ -191,7 +193,7 @@
 				
 				tags=$("#inpf_tags").val();
 				
-				var ref = /send[:][a-z]+/g;
+				var ref = /(send:|sent:)([a-z]+)/g;
 				friends=tags.match(ref);
 				var selected;
 				
@@ -199,6 +201,7 @@
 				if (friends != null) {
 					for (i = 0; i < friends.length; i++) {
 						friends[i]=(friends[i]).replace("send:","");
+						friends[i]=(friends[i]).replace("sent:","");
 						selected=friends[i];
 						$("#friendsOrGroups").append("<li tabindex=1 value=\""+i+"\" class=\"delete-friend-labels\" id=\"delete-friend-"+i+"\"><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
 					} 
@@ -211,6 +214,7 @@
 						var number=$(this).val();
 						
 						tags=tags.replace("send:"+friends[number]+" ","");
+						tags=tags.replace("sent:"+friends[number]+" ","");
 						
 						$("#delete-friend-"+number+"").remove();
 						
