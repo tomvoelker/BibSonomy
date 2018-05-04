@@ -268,7 +268,7 @@
 					$("#friendsOrGroups").empty();
 					add_labels();
 				});
-				$("#inpf_tags").click(function() {
+				$("#ui-id-1").click(function() {
 					$("#friendsOrGroups").empty();
 					add_labels();
 				});
