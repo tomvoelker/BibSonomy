@@ -62,6 +62,9 @@
 							</c:forEach>
 						</select>
 					</c:if>
+					<c:if test="${empty friends}">
+						<div id="emptyfriends" style="visibility: hidden;">empty</div>
+					</c:if>
 					<c:if test="${(empty friends) and (empty groups)}">
 						<div id="noFriendsAndGroups">There are no friends or groups</div>
 					</c:if>
@@ -100,6 +103,10 @@
 			$(friendsform).show();
 			$(checkedfriends).prop("checked", true);
 			$(friendsform).prop("selectedIndex", -1);
+			if ($("#emptyfriends").text() == "empty") {
+				$(checkedgroups).prop("checked", true);
+				$(groupsform).show();
+			}
 			
 						
 			function check_radio_button() {

@@ -47,19 +47,24 @@ public class GroupsPageController extends SingleResourceListController implement
 	 */
 	@Override
 	public View workOn(final GroupsListCommand command) {
-		/*
-		 * get all groups from db; Integer#MAX_VALUE should be enough
-		 */
-		command.setList(logic.getGroups(false, null, 0, Integer.MAX_VALUE));
 		
 		//return Views.GROUPSPAGE;
 		final String format = command.getFormat();
+		/*
+		 * get all groups from db; Integer#MAX_VALUE should be enough
+		 */
+		if ("html".equals(format)) {
+			command.setList(logic.getGroups(false, null, 0, Integer.MAX_VALUE));
+		} else if ("json".equals(format)) {
+			command.setList(command.getContext().getLoginUser().getGroups());
+		}
+		
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			this.endTiming();
 			return Views.GROUPSPAGE;
-		}
+		} 
 				
 		this.endTiming();
 		// export - return the appropriate view
