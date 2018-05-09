@@ -106,6 +106,7 @@
 			if ($("#emptyfriends").text() == "empty") {
 				$(checkedgroups).prop("checked", true);
 				$(groupsform).show();
+				$(groupsform).prop("selectedIndex", -1);
 			}
 			
 						
