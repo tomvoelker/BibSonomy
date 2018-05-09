@@ -66,7 +66,7 @@
 			<a name="groups"><!--  --></a>
 			<bsform:fieldset legendKey="post.resource.groupsandfriends">
 				<jsp:attribute name="content">
-					<post:groupBoxFG groups="${postOwner.groups}" friends="${command.friendsOfUser}" labelColSpan="3"/>
+					<post:groupBoxFG groups="${command.context.loginUser.groups}" friends="${command.friendsOfUser}" labelColSpan="3"/>
 				</jsp:attribute>
 			</bsform:fieldset>
 		</jsp:attribute>
