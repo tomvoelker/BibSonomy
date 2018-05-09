@@ -163,6 +163,7 @@
 							});
 						
 					}
+					$(friendsform).prop("selectedIndex", -1);
 				});
 				$(groupsform).change(function() {
 					var selected=$(groupsform).val();
@@ -192,7 +193,7 @@
 							});
 						
 					}
-					
+					$(groupsform).prop("selectedIndex", -1);
 				});
 			}
 			
