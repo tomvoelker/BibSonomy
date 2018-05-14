@@ -62,9 +62,6 @@
 							</c:forEach>
 						</select>
 					</c:if>
-					<c:if test="${empty friends}">
-						<div id="emptyfriends" style="visibility: hidden;">empty</div>
-					</c:if>
 					<c:if test="${(empty friends) and (empty groups)}">
 						<div id="noFriendsAndGroups">There are no friends or groups</div>
 					</c:if>
@@ -100,11 +97,14 @@
 			var tags;
 			
 			$(groupsform).hide();
-			$(friendsform).show();
+			
 			$(checkedfriends).prop("checked", true);
+			$(friendsform).show();
 			$(friendsform).prop("selectedIndex", -1);
-			if ($("#emptyfriends").text() == "empty") {
+			
+			if( $(friendsform).has('option').length == 0 ) {
 				$(checkedgroups).prop("checked", true);
+				$(checkedfriends).prop("checked", false);
 				$(groupsform).show();
 				$(groupsform).prop("selectedIndex", -1);
 			}
