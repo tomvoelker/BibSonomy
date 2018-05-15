@@ -95,6 +95,7 @@ public abstract class HttpWorker<M extends HttpMethod> {
 	 * @throws ErrorPerformingRequestException
 	 */
 	public Reader perform(final String url, final String requestBody) throws ErrorPerformingRequestException {
+		LOGGER.debug(String.format("perform(url=\"%s\",requestBody=\"%s\") - username=\"%s\", apiKey=\"%s\"", url, requestBody, username, apiKey));
 		final M method = this.getMethod(url, requestBody);
 		
 		//
