@@ -31,18 +31,6 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<name>BibSonomy-Rest-Client</name>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>8</source>
-					<target>8</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 	<artifactId>bibsonomy-rest-client</artifactId>
 	<packaging>jar</packaging>
 	<description>The REST-client.</description>
@@ -73,6 +61,7 @@
 			<artifactId>jaxb-impl</artifactId>
 			<version>2.2.8-b01</version>
 		</dependency>
+		<!-- For testing: http-server mock licensed under Apache License 2.0 -->
 		<dependency>
 			<groupId>com.github.tomakehurst</groupId>
 			<artifactId>wiremock</artifactId>
