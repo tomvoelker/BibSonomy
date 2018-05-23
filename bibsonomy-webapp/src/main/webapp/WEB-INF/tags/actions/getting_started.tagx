@@ -81,6 +81,8 @@
 											key="gettingStarted.navi.collaborate" /></a>
 		 							<a class="list-group-item" href="#discover"><fmt:message
 											key="gettingStarted.navi.discover" /></a>
+									<a class="list-group-item" href="#export"><fmt:message
+											key="gettingStarted.navi.export" /></a>
 								</div>
 							</div>
 						</div>
