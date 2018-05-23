@@ -39,6 +39,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -83,14 +84,36 @@ public class CSLFilesManager {
 			final Map<String, Set<String>> aliases = new HashMap<>();
 			// "inverting" hashmap
 			final JSONObject aliasesObj = JSONObject.fromObject(jsonBuilder.toString());
-			for (final Object keyObj : aliasesObj.keySet() ){
+			for (final Object keyObj : aliasesObj.keySet()) {
 				final String key = (String) keyObj;
-				final String value = (String) aliasesObj.get(key);
-				
-				if (!aliases.containsKey(value)) {
-					aliases.put(value, new HashSet<String>());
+				/*
+				 * can be both: a set of aliases or a alias
+				 * so we handle both cases here
+				 */
+				final Object aliasesOrAlias = aliasesObj.get(key);
+
+				if (aliasesOrAlias instanceof JSONArray) {
+					final JSONArray aliasesArray = (JSONArray) aliasesOrAlias;
+
+					for (final Object alias : aliasesArray) {
+						if (alias instanceof String) {
+							final String value = (String) alias;
+							if (!aliases.containsKey(value)) {
+								aliases.put(value, new HashSet<String>());
+							}
+
+							aliases.get(value).add(key);
+						}
+					}
+				} else if (aliasesOrAlias instanceof String) {
+					final String value = (String) aliasesObj.get(key);
+
+					if (!aliases.containsKey(value)) {
+						aliases.put(value, new HashSet<String>());
+					}
+
+					aliases.get(value).add(key);
 				}
-				aliases.get(value).add(key);
 			}
 			final Resource[] resources = resolver.getResources(BASE_PATH_STYLES + "*.csl");
 			
