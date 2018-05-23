@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.AdminGroupOperation;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 
@@ -56,7 +57,13 @@ public class AdminGroupViewCommand extends BaseCommand {
 	/** list of pending groups */
 	private List<Group> pendingGroups;
 	private List<String> allGroupNames;
+	private List<String> allDeletedGroupNames;
 
+	/**
+	 * The User that will become admin of the group that will be restored
+	 */
+	private String designatedAdmin;
+	
 	public AdminGroupViewCommand() {
 		this.group = new Group();
 	}
@@ -166,11 +173,40 @@ public class AdminGroupViewCommand extends BaseCommand {
 	}
 
 	/**
+	 * @return the allDeletedGroups
+	 */
+	public List<String> getAllDeletedGroupNames() {
+		return this.allDeletedGroupNames;
+	}
+	
+	/**
 	 * @param allGroups
 	 *            the allGroups to set
 	 */
 	public void setAllGroupNames(final List<String> allGroups) {
 		this.allGroupNames = allGroups;
+	}
+	
+	/**
+	 * @param allGroups
+	 *            the allGroups to set
+	 */
+	public void setAllDeletedGroupNames(final List<String> allDeletedGroups) {
+		this.allDeletedGroupNames = allDeletedGroups;
+	}
+
+	/**
+	 * @return the designatedAdmin
+	 */
+	public String getDesignatedAdmin() {
+		return this.designatedAdmin;
+	}
+
+	/**
+	 * @param designatedAdmin the designatedAdmin to set
+	 */
+	public void setDesignatedAdmin(String designatedAdmin) {
+		this.designatedAdmin = designatedAdmin;
 	}
 
 }

@@ -5,7 +5,7 @@ $(document).ready(function() {
 	$('.declineGroupCancel').click(function() {
 		$(this).closest("tr").hide();
 	});	
-})
+});
 
 function declineGroup(element) {
 	nextTR = $(element).closest("tr").next();

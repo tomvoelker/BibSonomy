@@ -29,13 +29,24 @@ package org.bibsonomy.common.enums;
 /**
  *
  * @author niebler
+ * @author mho
  */
 public enum AdminGroupOperation {
-
+	/** fetches the group settings (shared posts etc.) **/
 	FETCH_GROUP_SETTINGS,
-	ACCEPT_GROUP,
-	DECLINE_GROUP,
-	DELETE_GROUP,
-	UPDATE_PERMISSIONS;
 
-}
+	/** accept group creation request **/
+	ACCEPT_GROUP,
+
+	/** decline group creation request **/
+	DECLINE_GROUP,
+
+	/** delete an existing group **/
+	DELETE_GROUP,
+
+	/** update the group permissions **/
+	UPDATE_PERMISSIONS,
+
+	/** restores a deleted group **/
+	RESTORE_GROUP;
+}	
