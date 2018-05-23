@@ -198,6 +198,29 @@
 									</div>
 								</div>
 							</div>
+							<hr />
+							<div id="export">
+								<a name="export">
+									<!--  -->
+								</a>
+								<h2 class="getting-started">
+									<fmt:message key="gettingStarted.navi.export" />
+								</h2>
+								<div class="lead text-center">
+									<fmt:message key="gettingStarted.navi.export.desc" />
+								</div>
+								<div class="row">
+									<div class="col-sm-6">
+										<fmt:message key="gettingStarted.export">
+											<fmt:param value="${properties['project.name']}" />
+										</fmt:message>
+									</div>
+									<div class="col-sm-6">
+										<img class="img-thumbnail img-responsive"
+											src="/resources/image/gettingStarted-export-${properties['project.theme']}.png" />
+									</div>
+								</div>
+							</div>
 							<p>${mtl:ch('nbsp')}</p>
 						</div>
 						<br />
