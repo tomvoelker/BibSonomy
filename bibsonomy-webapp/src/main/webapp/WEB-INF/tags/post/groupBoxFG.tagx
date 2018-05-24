@@ -94,6 +94,9 @@
 			var friends=[];
 			var groups=[];
 			
+			var tempfriends=[];
+			var tempgroups=[];
+			
 			var tags;
 			
 			$(groupsform).hide();
@@ -198,19 +201,30 @@
 			}
 			
 			function add_labels() {			
+				tempfriends=[];
 				friends=[];
 				
 				tags=$("#inpf_tags").val();
 				
-				var ref = /(send:|sent:)([a-z]+)/g;
-				friends=tags.match(ref);
+				var ref = /(send:|sent:)+([a-z]+)/g;
+				tempfriends=tags.match(ref);
+
+				if (tempfriends != null) {
+					var friend;
+					for (var i = 0; i < tempfriends.length ; i++) {
+						friend=tempfriends[i];
+						friend = friend.replace(ref, "$2");
+						friends.push(friend);
+					}
+				}
+				
 				var selected;
 				
 				
 				if (friends != null) {
 					for (i = 0; i < friends.length; i++) {
-						friends[i]=(friends[i]).replace("send:","");
-						friends[i]=(friends[i]).replace("sent:","");
+						//friends[i]=(friends[i]).replace("send:","");
+						//friends[i]=(friends[i]).replace("sent:","");
 						selected=friends[i];
 						$("#friendsOrGroups").append("<li tabindex=1 value=\""+i+"\" class=\"delete-friend-labels\" id=\"delete-friend-"+i+"\"><span class=\"glyphicon glyphicon-remove-sign glyphicon-position\" aria-hidden=\"true\"></span><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
 					} 
@@ -235,18 +249,28 @@
 					friends=[];
 					
 				}
+				tempgroups=[];
 				groups=[];
 				
 				tags=$("#inpf_tags").val();
 				
-				var reg = /for[:][a-z]+/g;
-				groups=tags.match(reg);
-				var selected;
+				var reg = /(for:)+([a-z]+)/g;
+				tempgroups=tags.match(reg);
 				
+				if (tempgroups != null) {
+					var group;
+					for (var i = 0; i < tempgroups.length ; i++) {
+						group=tempgroups[i];
+						group = group.replace(reg, "$2");
+						groups.push(group);
+					}
+				}
+				
+				var selected;
 				
 				if (groups != null) {
 					for (i = 0; i < groups.length; i++) {
-						groups[i]=(groups[i]).replace("for:","");
+						//groups[i]=(groups[i]).replace("for:","");
 						selected=groups[i];
 						$("#friendsOrGroups").append("<li tabindex=1 value=\""+i+"\" class=\"delete-group-labels\" id=\"delete-group-"+i+"\"><span class=\"glyphicon glyphicon-remove-sign glyphicon-position\" aria-hidden=\"true\"></span><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
 					}
