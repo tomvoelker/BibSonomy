@@ -28,6 +28,7 @@ package org.bibsonomy.webapp.controller.admin;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,14 +37,22 @@ import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.AdminGroupOperation;
+import org.bibsonomy.common.enums.GroupCreationMode;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.admin.AdminGroupViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -133,6 +142,32 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 				command.setGroup(null);
 				command.setAdminResponse("settings.group.delete.success");
 				break;
+			case RESTORE_GROUP:
+				final Group requestedGroup = command.getGroup();
+				final GroupRequest groupRequest = command.getGroup().getGroupRequest();
+				final User groupAdmin;
+				final String groupAdminName = groupRequest.getUserName();
+				
+				// check if designated group admin user exists
+				if (present(groupAdminName)) {
+					groupAdmin = this.logic.getUserDetails(groupAdminName);
+					if (!UserUtils.isExistingUser(groupAdmin)) {
+						this.errors.reject("requestGroup.userNotExistError", new Object[]{groupAdmin}, "There's no user with the name {0}.");
+						return Views.ERROR;
+					}
+				} else {
+					command.setAdminResponse("settings.group.reactivate.failure");
+					break;
+				}
+				
+				// prepare the group request object
+				groupRequest.setUserName(groupAdmin.getName());
+				groupRequest.setReason("");
+				
+				this.logic.restoreGroup(requestedGroup);
+				this.mailUtils.sendGroupActivationNotification(requestedGroup, groupAdmin, LocaleUtils.toLocale(groupAdmin.getSettings().getDefaultLanguage()));
+				command.setAdminResponse("settings.group.reactivate.success");
+				break;
 			default:
 				break;
 			}
@@ -148,6 +183,19 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 			allGroupnames.add(group.getName());
 		}
 		command.setAllGroupNames(allGroupnames);
+		
+		// get all deleted groups
+		//final UserRelation userRelation = EnumUtils.searchEnumByName(UserRelation.values(), command.getUserSimilarity());
+		
+		//final List<User> allDeletedGroups = this.logic.getUsers(null, GroupingEntity.GROUP, null, null, null, null, null, null, 0, 12);
+		final List<User> allDeletedGroups = logic.getDeletedGroupUsers(0, Integer.MAX_VALUE);	
+		final List<String> allDeletedGroupNames = new LinkedList<>();
+		
+		for (final User user : allDeletedGroups) {
+			allDeletedGroupNames.add(user.getName());
+		}
+		
+		command.setAllDeletedGroupNames(allDeletedGroupNames);
 
 		return Views.ADMIN_GROUP;
 	}

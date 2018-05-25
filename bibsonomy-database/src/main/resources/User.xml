@@ -8,6 +8,12 @@
 		  FROM user 
 		  WHERE spammer = 0 LIMIT #limit# OFFSET #offset#
 	</select>
+
+	<select id="getAllDeletedGroupUsers" resultMap="Common.user" parameterClass="userParam">
+		SELECT <include refid="commonUserAttributes"/>, NULL as ldapUserId, NULL as openID
+		  FROM user 
+		  WHERE spammer = 1 AND role = 6 LIMIT #limit# OFFSET #offset#
+	</select>	
 	
 	<select id="getUsersBySearch" resultMap="Common.user" parameterClass="userParam">
 		SELECT <include refid="commonUserAttributes"/>, NULL as ldapUserId, NULL as openID
