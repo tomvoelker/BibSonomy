@@ -19,7 +19,7 @@ import org.springframework.web.util.HtmlUtils;
  *
  * @author Johannes
  */
-public class HTMLMetaDataHighwirePressToBibtexConverter extends AbstractDublinCoreToBibTeXConverter{
+public class HTMLMetaDataHighwirePressToBibtexConverter extends AbstractDublinCoreToBibTeXConverter {
 
 	private static final Pattern EXTRACTION_PATTERN = Pattern.compile("(?im)<\\s*meta(?=[^>]*name=\"([^\"]*)\")[^>]*content=\"([^\"]*)\"[^>]*>");
 	private static final Pattern TYPE_EXTRACTION_PATTERN = Pattern.compile("(?im)<\\s*meta(?=[^>]*name=\"og:type\")[^>]*content=\"([^\"]*)\"[^>]*>");
@@ -81,15 +81,15 @@ public class HTMLMetaDataHighwirePressToBibtexConverter extends AbstractDublinCo
 		 * but often next to Highwire Press tags there is an open graph tag "og:type" that specifies the type
 		 */
 		Matcher typeMatcher = TYPE_EXTRACTION_PATTERN.matcher(pageContent);
-		if (typeMatcher.find()) {			
+		if (typeMatcher.find()) {
 			addValueToDataIfNotContained(TYPE_KEY, typeMatcher.group(1), data);
 		} else {
 			typeMatcher = TYPE_EXTRACTION_PATTERN2.matcher(pageContent);
 			if (typeMatcher.find()) {
 				addValueToDataIfNotContained(TYPE_KEY, typeMatcher.group(1), data);
-			}else {
+			} else {
 				//default value if no type was found
-				addValueToDataIfNotContained(TYPE_KEY, "misc", data);				
+				addValueToDataIfNotContained(TYPE_KEY, "misc", data);
 			}
 		}
 
@@ -97,15 +97,7 @@ public class HTMLMetaDataHighwirePressToBibtexConverter extends AbstractDublinCo
 	}
 
 	private static void addValueToDataIfNotContained(final String key, final String value, final Map<String, Set<String>> data) {
-		Set<String> valueInData = data.get(key);
-
-		if (valueInData == null) {				
-			Set<String> s = new HashSet<String>();
-			s.add(value);
-			data.put(key, s);
-		} else if (!valueInData.contains(value)){			
-			valueInData.add(value.trim());
-		}
+		HTMLMetaDataDublinCoreToBibtexConverter.addValueToDataIfNotContained(key, value, null, data);
 	}
 
 	/* (non-Javadoc)

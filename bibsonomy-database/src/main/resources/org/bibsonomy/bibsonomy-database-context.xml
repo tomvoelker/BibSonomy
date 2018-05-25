@@ -252,7 +252,8 @@
 	</bean>
 	
 	<bean id="publicationDatabaseManager" class="org.bibsonomy.database.managers.BibTexDatabaseManager" factory-method="getInstance" parent="postDatabaseManager">
-		<property name="resourceSearch" ref="publicationSearch" />
+		<property name="userDb" ref="userDatabaseManager" />
+ 		<property name="resourceSearch" ref="publicationSearch" />
 		<property name="chain" ref="publicationChain" />
 		<property name="fileLogic" ref="fileLogic" />
 		<property name="publicationSearch" ref="publicationSearch" />

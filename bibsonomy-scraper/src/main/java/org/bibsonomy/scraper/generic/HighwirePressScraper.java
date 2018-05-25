@@ -23,6 +23,8 @@ import org.bibsonomy.util.WebUtils;
  */
 public class HighwirePressScraper implements Scraper {
 	private static final HTMLMetaDataHighwirePressToBibtexConverter HIGHWIRE_PRESS_CONVERTER = new HTMLMetaDataHighwirePressToBibtexConverter();
+
+	private static final String SITE_NAME = "HighwirePressScraper";
 	private static final String SITE_URL = "https://scholar.google.com/intl/en/scholar/inclusion.html#indexing";
 	
 	private static final String INFO = "The HighwirePressScraper resolves bibtex out of HTML Metatags, which are defined" + 
@@ -88,4 +90,17 @@ public class HighwirePressScraper implements Scraper {
 		}
 	}
 
+	/**
+	 * @return site name
+	 */
+	public String getSupportedSiteName(){
+		return SITE_NAME;
+	}
+
+	/**
+	 * @return site url
+	 */
+	public String getSupportedSiteURL(){
+		return SITE_URL;
+	}
 }
