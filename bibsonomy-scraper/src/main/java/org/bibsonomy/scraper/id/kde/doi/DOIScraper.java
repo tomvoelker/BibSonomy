@@ -127,7 +127,7 @@ public class DOIScraper implements Scraper {
 					scrapingContext.setSelectedText(null);
 				}
 			} catch (MalformedURLException e) {
-				log.info("selected text is not a url", e);
+				log.debug("selected text is not a URL", e);
 			}
 		/*
 		 * always return false, such that the "real" scrapers can do their work

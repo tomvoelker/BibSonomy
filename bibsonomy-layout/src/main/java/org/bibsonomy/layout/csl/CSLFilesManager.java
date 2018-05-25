@@ -41,6 +41,7 @@ import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import net.sf.json.JSONObject;
 import net.sf.json.JSONArray;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
