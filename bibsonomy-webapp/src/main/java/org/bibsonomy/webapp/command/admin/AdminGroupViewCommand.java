@@ -58,11 +58,6 @@ public class AdminGroupViewCommand extends BaseCommand {
 	private List<Group> pendingGroups;
 	private List<String> allGroupNames;
 	private List<String> allDeletedGroupNames;
-
-	/**
-	 * The User that will become admin of the group that will be restored
-	 */
-	private String designatedAdmin;
 	
 	public AdminGroupViewCommand() {
 		this.group = new Group();
@@ -193,20 +188,6 @@ public class AdminGroupViewCommand extends BaseCommand {
 	 */
 	public void setAllDeletedGroupNames(final List<String> allDeletedGroups) {
 		this.allDeletedGroupNames = allDeletedGroups;
-	}
-
-	/**
-	 * @return the designatedAdmin
-	 */
-	public String getDesignatedAdmin() {
-		return this.designatedAdmin;
-	}
-
-	/**
-	 * @param designatedAdmin the designatedAdmin to set
-	 */
-	public void setDesignatedAdmin(String designatedAdmin) {
-		this.designatedAdmin = designatedAdmin;
 	}
 
 }
