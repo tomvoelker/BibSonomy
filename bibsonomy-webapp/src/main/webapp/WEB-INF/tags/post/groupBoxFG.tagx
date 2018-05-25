@@ -49,14 +49,14 @@
 				</div>
 				<div class="col-sm-8">
 					<c:if test="${not empty groups}">
-						<select name="post.groups.form" id="post.groups.form" class="form-control">
+						<select name="post.groups.form" id="postgroupsdropdown" class="form-control">
 							<c:forEach items="${groups}" var="group">
 								<option value="${group.name}">${group.name}</option>
 							</c:forEach>
 						</select>
 					</c:if>
 					<c:if test="${not empty friends}">
-						<select name="post.friends.form" id="post.friends.form" class="form-control">
+						<select name="post.friends.form" id="postfriendsdropdown" class="form-control">
 							<c:forEach items="${friends}" var="user">
 								<option value="${user.name}">${user.name}</option>
 							</c:forEach>
@@ -85,8 +85,18 @@
 				$(document).ready(function() {
 			var checkedgroups = document.getElementById("post.groups");
 			var checkedfriends = document.getElementById("post.friends");
-			var groupsform = document.getElementById("post.groups.form");
-			var friendsform = document.getElementById("post.friends.form");
+			var groupsform = document.getElementById("postgroupsdropdown");
+			var friendsform = document.getElementById("postfriendsdropdown");
+			
+			var allowedfriends=[];
+			$("#postfriendsdropdown option").each(function() {
+				allowedfriends.push($(this).val());
+			});
+			
+			var allowedgroups=[];
+			$("#postgroupsdropdown option").each(function() {
+				allowedgroups.push($(this).val());
+			});
 			
 			var saved=$("#inpf_tags").val();
 			$("#inpf_tags").val(saved.trim()+" ");
@@ -208,13 +218,25 @@
 				
 				var ref = /(send:|sent:)+([a-z]+)/g;
 				tempfriends=tags.match(ref);
-
+				
+				var foundfriend=false;
+				
 				if (tempfriends != null) {
 					var friend;
 					for (var i = 0; i < tempfriends.length ; i++) {
 						friend=tempfriends[i];
 						friend = friend.replace(ref, "$2");
-						friends.push(friend);
+						for (var z = 0; z < allowedfriends.length ; z++) {
+							if (friend == allowedfriends[z]) {
+								foundfriend=true;
+								break;
+							}
+						}
+						if (foundfriend == true) {
+							friends.push(friend);
+							foundfriend=false;
+						}
+						
 					}
 				}
 				
@@ -257,12 +279,23 @@
 				var reg = /(for:)+([a-z]+)/g;
 				tempgroups=tags.match(reg);
 				
+				var foundgroup=false;
+				
 				if (tempgroups != null) {
 					var group;
 					for (var i = 0; i < tempgroups.length ; i++) {
 						group=tempgroups[i];
 						group = group.replace(reg, "$2");
-						groups.push(group);
+						for (var z = 0; z < allowedgroups.length ; z++) {
+							if (group == allowedgroups[z]) {
+								foundgroup=true;
+								break;
+							}
+						}
+						if (foundgroup == true) {
+							groups.push(group);
+							foundgroup=false;
+						}
 					}
 				}
 				
