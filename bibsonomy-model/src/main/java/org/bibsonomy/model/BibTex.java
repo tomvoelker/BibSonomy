@@ -866,10 +866,10 @@ public class BibTex extends Resource {
 			ObjectInputStream ois = new ObjectInputStream(bais);
 			return (BibTex) ois.readObject();
 		} catch (IOException e) {
-			log.error("IO Problem cloning an object: in BibTeX ");
+			log.error("IO Problem cloning an object: in BibTeX ", e);
 				return null;
 		} catch (ClassNotFoundException e) {
-			log.error("ClassNotFroundException during cloning an object: in BibTex");
+			log.error("ClassNotFroundException during cloning an object: in BibTex", e);
 				return null;
 		}
 	}
