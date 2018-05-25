@@ -52,7 +52,7 @@ public class UnAPIScraperTest {
 
 	final String[] urls = new String[] {
 //			"http://canarydatabase.org/record/488",
-			"http://www.bibsonomy.org/"
+			"https://www.bibsonomy.org/"
 	};
 
 	@Test
