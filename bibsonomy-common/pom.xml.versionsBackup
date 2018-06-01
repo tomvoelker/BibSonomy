@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    BibSonomy-Importer - Various importers for bookmarks and publications.
+    BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
 
     Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
                                   University of Kassel, Germany
@@ -27,19 +27,19 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>bibsonomy-importer</artifactId>
+	<name>BibSonomy-Common</name>
+	<artifactId>bibsonomy-common</artifactId>
 	<packaging>jar</packaging>
-	<name>BibSonomy-Importer</name>
-	<description>Various importers for bookmarks and publications.</description>
+	<description>
+		Common things (e.g., exceptions, enums, utils, etc.)
+	</description>
 	<parent>
-		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>3.9.0-SNAPSHOT</version>
+		<artifactId>bibsonomy</artifactId>
+		<version>3.8.11</version>
 	</parent>
 	<licenses>
 		<license>
@@ -49,26 +49,16 @@
 	</licenses>
 	<dependencies>
 		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-web-common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-model</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-			<version>2.3</version>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
 		</dependency>
 	</dependencies>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	</build>
 </project>
-
