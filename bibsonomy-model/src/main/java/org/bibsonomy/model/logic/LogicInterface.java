@@ -181,6 +181,14 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	public List<Group> getGroups(boolean pending, String userName, int start, int end);
 
 	/**
+	 * Returns a list of all deleted group users of the system.
+	 * @param start
+	 * @param end
+	 * @return a set of users, an empty set else
+	 */
+	public List<User> getDeletedGroupUsers(int start, int end);
+
+	/**
 	 * Returns details of one group.
 	 *
 	 * @param groupName
@@ -382,6 +390,13 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 */
 	public String updateGroup(Group group, final GroupUpdateOperation operation, final GroupMembership membership);
 
+	/**
+	 * Restores a deleted group
+	 * @param group the group that should be restored
+	 * @return
+	 */
+	public String restoreGroup(final Group group);
+	
 	/**
 	 * Adds a document. If the resourceHash is given, the document is connected
 	 * to the corresponding post. Otherwise, the document is independent of any

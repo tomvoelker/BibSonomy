@@ -41,6 +41,7 @@ import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import net.sf.json.JSONObject;
 import net.sf.json.JSONArray;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
@@ -52,8 +53,6 @@ import org.bibsonomy.util.IOUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.xml.sax.SAXException;
-
-import net.sf.json.JSONObject;
 
 /**
  * class for managing all csl files

@@ -891,6 +891,20 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getDeletedGroupUsers(int, int)
+	 */
+	public List<User> getDeletedGroupUsers(int start, int end) {
+		final DBSession session = this.openSession();
+		try {
+			this.permissionDBManager.ensureAdminAccess(this.loginUser);
+			return this.userDBManager.getDeletedGroupUsers(start, end, session);
+		} finally {
+			session.close();
+		}
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -1292,6 +1306,23 @@ public class DBLogic implements LogicInterface {
 		try {
 			this.groupDBManager.createGroup(group, session);
 
+			return group.getName();
+		} finally {
+			session.close();
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#restoreGroup(org.bibsonomy.model.Group)
+	 */
+	public String restoreGroup(final Group group) {
+		// check admin permissions
+		this.permissionDBManager.ensureAdminAccess(loginUser);
+		
+		final DBSession session = this.openSession();
+		try {
+			this.groupDBManager.restoreGroup(group, session);
 			return group.getName();
 		} finally {
 			session.close();

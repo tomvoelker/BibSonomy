@@ -93,6 +93,7 @@
 								<value>group.name</value>
 								<value>communityPostInspectionPermission</value>
 								<value>declineMessage</value>
+								<value>group.groupRequest.userName</value>
 							</list>
 						</property>
 					</bean>

@@ -392,7 +392,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @return <code>true</code> if loginUser is an admin or userName.
 	 */
 	public boolean isAdminOrSelf(final User loginUser, final String userName) {
-		return present(loginUser.getName()) && loginUser.getName().equals(userName) // loginUser
+		return present(loginUser.getName()) && loginUser.getName().equalsIgnoreCase(userName) // loginUser
 				// =
 				// userName
 				|| this.isAdmin(loginUser);

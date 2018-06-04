@@ -33,7 +33,7 @@
 
 # environment variables
 export MAVEN_OPTS='-Xmx1024m -Xms512m'
-export JAVA_HOME=/usr/lib/jvm/java-7-oracle
+export JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-amd64/
 
 # programs
 MAVEN=mvn
