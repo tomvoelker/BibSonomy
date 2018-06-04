@@ -597,6 +597,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			try {
 				performMerge(match, loginUser, session);
 			} finally {
+				session.commitTransaction();
 				session.endTransaction();
 				return true;
 			}
@@ -833,7 +834,13 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 
 			this.updatePersonOnAll(person1, session);
 			this.updatePersonOnAll(person2, session);
-			this.performMerge(match, loginUser, session);
+			session.beginTransaction();
+			try {
+				this.performMerge(match, loginUser, session);
+				session.commitTransaction();
+			} finally {
+				session.endTransaction();
+			}	
 
 		} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			System.err.println(e);
