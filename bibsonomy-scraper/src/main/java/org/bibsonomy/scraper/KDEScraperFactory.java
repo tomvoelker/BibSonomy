@@ -31,6 +31,7 @@ import org.bibsonomy.scraper.generic.BibtexScraper;
 import org.bibsonomy.scraper.generic.CoinsScraper;
 import org.bibsonomy.scraper.generic.DublinCoreScraper;
 import org.bibsonomy.scraper.generic.EprintScraper;
+import org.bibsonomy.scraper.generic.HighwirePressScraper;
 import org.bibsonomy.scraper.generic.HighwireScraper;
 import org.bibsonomy.scraper.generic.UnAPIScraper;
 import org.bibsonomy.scraper.id.kde.doi.ContentNegotiationDOIScraper;
@@ -102,6 +103,9 @@ public class KDEScraperFactory {
 		
 		//scraper for Dublin Core metadata
 		scraper.addScraper(new DublinCoreScraper());
+		
+		//scraper for Highwire Press tags metadata
+		scraper.addScraper(new HighwirePressScraper());
 		
 		return scraper;
 	}

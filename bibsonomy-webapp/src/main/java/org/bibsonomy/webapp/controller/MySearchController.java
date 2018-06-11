@@ -62,6 +62,8 @@ import org.springframework.security.access.AccessDeniedException;
  */
 public class MySearchController extends SingleResourceListControllerWithTags implements MinimalisticController<MySearchCommand> {
 
+	private int maxQuerySize;
+	
 	@Override
 	public View workOn(final MySearchCommand command) {
 		/*
@@ -92,7 +94,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 			 * displaying a 'wheel of fortune' until all items are loaded
 			 */ 
 			// FIXME: load all publications
-			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, null, null, null, PostLogicInterface.MAX_QUERY_SIZE);
+			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, null, null, null, this.maxQuerySize);
 			this.postProcessAndSortList(command, resourceType);
 		}
 
@@ -267,5 +269,12 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 	@Override
 	public MySearchCommand instantiateCommand() {
 		return new MySearchCommand();
+	}
+
+	/**
+	 * @param maxQuerySize the maxQuerySize to set
+	 */
+	public void setMaxQuerySize(int maxQuerySize) {
+		this.maxQuerySize = maxQuerySize;
 	}
 }

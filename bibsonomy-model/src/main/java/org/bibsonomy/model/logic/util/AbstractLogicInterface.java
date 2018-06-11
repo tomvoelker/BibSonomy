@@ -434,6 +434,15 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getDeletedGroupUsers(int, int)
+	 */
+	@Override
+	public List<User> getDeletedGroupUsers(int start, int end) {
+		this.doDefaultAction();
+		return null;
+	}
+	
+	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getUserStatistics(org.bibsonomy.common.enums.GroupingEntity, java.util.Set, org.bibsonomy.common.enums.Classifier, org.bibsonomy.common.enums.SpamStatus, java.util.Date, java.util.Date)
 	 */
 	@Override
@@ -606,6 +615,15 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public String updateGroup(Group group, GroupUpdateOperation operation, GroupMembership membership) {
+		this.doDefaultAction();
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#restoreGroup(org.bibsonomy.model.Group)
+	 */
+	@Override
+	public String restoreGroup(final Group group) {
 		this.doDefaultAction();
 		return null;
 	}

@@ -1048,4 +1048,50 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	private Group getGroupWithGroupLevelPermissions(final Group group, final DBSession session) {
 		return this.queryForObject("getGroupWithPermissions", group.getName(), Group.class, session);
 	}
+	
+	/**
+	 * Restores a group.
+	 *
+	 * @param groupName
+	 * @param session
+	 */
+	public void restoreGroup(final Group group, final DBSession session) {
+		if (!present(group)) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Given Group is not set.");
+		}
+
+		final GroupRequest groupRequest = group.getGroupRequest();
+		final String groupName = group.getName();
+
+		try {
+			session.beginTransaction();
+			
+			// get the old group user and remove the spammer flag
+			final User groupUser = this.userDb.getUserDetails(groupName, session);
+			groupUser.setToClassify(Integer.valueOf(0));
+			groupUser.setAlgorithm("group_user");
+			groupUser.setSpammer(Boolean.FALSE);
+			this.adminDatabaseManager.flagSpammer(groupUser, AdminDatabaseManager.DELETED_UPDATED_BY, session);
+
+			// creates the pending group
+			this.insertGroup(group, session);
+
+			// "move" the pending group row to the normal group table
+			this.insert("activateGroup", groupName, session);
+
+			// clear the pending group table
+			this.deletePendingGroup(groupName, session);
+
+			// add the group user to the group
+			this.addUserToGroup(groupName, groupName, false, GroupRole.DUMMY, session);
+
+			// add the requesting user to the group with level ADMINISTRATOR
+			this.addUserToGroup(groupName, groupRequest.getUserName(), false, GroupRole.ADMINISTRATOR, session);
+
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
 }

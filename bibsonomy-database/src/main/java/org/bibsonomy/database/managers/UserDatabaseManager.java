@@ -53,6 +53,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.model.util.GroupUtils;
@@ -181,6 +182,22 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return user;
 	}
 
+	/**
+	 * Returns a list of all deleted group users
+	 *
+	 * @param start
+	 * @param end
+	 * @param session
+	 * @return a list of all deleted groups
+	 */
+	public List<User> getDeletedGroupUsers(final int start, final int end, final DBSession session) {
+		final UserParam param = new UserParam();
+		param.setOffset(start);
+		param.setLimit(end);
+		param.setOrder(Order.ALPH);
+		return this.queryForList("getAllDeletedGroupUsers", param, User.class, session);
+	}
+	
 	/**
 	 * Creates a new, empty user w/ default profile picture.
 	 * @return empty user instance
