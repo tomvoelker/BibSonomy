@@ -315,7 +315,7 @@
 					<c:choose>
 						<c:when test="${command.context.loginUser.apiKey eq null}">
 							<p>
-								<fmt:message key="settings.apisupport"><fmt:param><a href="https://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/REST%20API">API</a></fmt:param></fmt:message>
+								<fmt:message key="settings.apisupport"><fmt:param>${properties['project.apiemail']}</fmt:param></fmt:message>
 							</p> 
 						</c:when>
 						<c:otherwise>
@@ -333,7 +333,7 @@
 											</fmt:param>
 											<fmt:param>
 												<!-- TODO: make this configurable -->
-												<span style="white-space: nowrap;"><parts:email address="api-support@bibsonomy.org"/></span>
+												<span style="white-space: nowrap;"><parts:email address="${properties['project.apiemail']}"/></span>
 											</fmt:param>
 										</fmt:message>
 									</p>
