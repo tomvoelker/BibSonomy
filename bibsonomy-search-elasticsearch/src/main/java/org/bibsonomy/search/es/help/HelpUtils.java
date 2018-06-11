@@ -47,19 +47,33 @@ public final class HelpUtils {
 	private HelpUtils() {}
 
 	/**
-	 * build Map for variable replacement
 	 * @param projectName
 	 * @param projectTheme
 	 * @param projectHome
 	 * @return the map
 	 */
+	@Deprecated
 	public static Map<String, String> buildReplacementMap(final String projectName, final String projectTheme, final String projectHome) {
+		return this.buildReplacementMap(projectName, projectTheme, projectHome, "");
+	}
+	
+	/**
+	 * build Map for variable replacement
+	 * @param projectName
+	 * @param projectTheme
+	 * @param projectHome
+	 * @param projectMail
+	 * @return the map
+	 */
+	public static Map<String, String> buildReplacementMap(final String projectName, final String projectTheme, final String projectHome, final String projectMail) {
 		final Map<String, String> replacements = new HashMap<>();
 		replacements.put("project.name", projectName);
 		replacements.put("project.theme", projectTheme);
 		replacements.put(PROJECT_HOME, projectHome);
 		replacements.put("project.version", BasicUtils.VERSION);
+		replacements.put("project.mail", projectMail);
 		return replacements;
 	}
+
 
 }
