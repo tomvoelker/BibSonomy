@@ -101,6 +101,9 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	
 	/** the mail of the project */
 	private String projectNoSpamEmail;
+	
+	/** the mail of the project */
+	private String projectAPIEmail;
 
 	/** the request logic */
 	private RequestLogic requestLogic;
@@ -155,7 +158,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 			return Views.DOWNLOAD_FILE;
 		}
 		
-		final Map<String, String> replacements = HelpUtils.buildReplacementMap(this.projectName, theme, this.projectHome, this.projectEmail, this.projectNoSpamEmail);
+		final Map<String, String> replacements = HelpUtils.buildReplacementMap(this.projectName, theme, this.projectHome, this.projectEmail, this.projectNoSpamEmail, this.projectAPIEmail);
 		// instantiate a new parser
 		final Parser parser = new Parser(replacements, this.urlGenerator);
 		
@@ -358,6 +361,13 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	 */
 	public void setProjectNoSpamEmail(String projectNoSpamEmail) {
 		this.projectNoSpamEmail = projectNoSpamEmail;
+	}
+
+	/**
+	 * @param projectAPIEmail the projectAPIEmail to set
+	 */
+	public void setProjectAPIEmail(String projectAPIEmail) {
+		this.projectAPIEmail = projectAPIEmail;
 	}
 
 	/**

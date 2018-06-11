@@ -54,7 +54,7 @@ public final class HelpUtils {
 	 */
 	@Deprecated
 	public static Map<String, String> buildReplacementMap(final String projectName, final String projectTheme, final String projectHome) {
-		return buildReplacementMap(projectName, projectTheme, projectHome, "", "");
+		return buildReplacementMap(projectName, projectTheme, projectHome, "", "", "api-support@bibsonomy.org");
 	}
 	
 	/**
@@ -66,7 +66,7 @@ public final class HelpUtils {
 	 * @param projectNoSpamEmail
 	 * @return the map
 	 */
-	public static Map<String, String> buildReplacementMap(final String projectName, final String projectTheme, final String projectHome, final String projectEmail, final String projectNoSpamEmail) {
+	public static Map<String, String> buildReplacementMap(final String projectName, final String projectTheme, final String projectHome, final String projectEmail, final String projectNoSpamEmail, final String projectAPIEmail) {
 		final Map<String, String> replacements = new HashMap<>();
 		replacements.put("project.name", projectName);
 		replacements.put("project.theme", projectTheme);
@@ -74,6 +74,7 @@ public final class HelpUtils {
 		replacements.put("project.version", BasicUtils.VERSION);
 		replacements.put("project.email", projectEmail);
 		replacements.put("project.nospamemail", projectNoSpamEmail);
+		replacements.put("project.apiemail", projectAPIEmail);
 		return replacements;
 	}
 
