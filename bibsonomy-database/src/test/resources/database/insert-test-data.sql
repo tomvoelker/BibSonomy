@@ -682,8 +682,15 @@ INSERT INTO `discussion` (`discussion_id`, `type`, `interHash`,`text`,`user_name
 (3, 2, '097248439469d8f5a1e7fad6b02cbfcd', 'SPAM', 'testuser1', '2011-04-18 14:34:38', NULL, 0, 2),
 (4, 2, '097248439469d8f5a1e7fad6b02cbfcd', 'This is a multiple group comment', 'testuser1', '2011-04-20 14:34:39', NULL, 0, 3),
 (4, 2, '097248439469d8f5a1e7fad6b02cbfcd', 'This is a multiple group comment', 'testuser1', '2011-04-20 14:34:39', NULL, 0, 4),
-(4, 2, '097248439469d8f5a1e7fad6b02cbfcd', 'This is a multiple group comment', 'testuser1', '2011-04-20 14:34:39', NULL, 0, 5);
-
+(4, 2, '097248439469d8f5a1e7fad6b02cbfcd', 'This is a multiple group comment', 'testuser1', '2011-04-20 14:34:39', NULL, 0, 5),
+(2, 2, '0c000000d00000f00cef0c00f000e00a', 'This is a test comment!', 'testuser1', '2011-04-08 14:34:37', NULL, 0, 1),
+(2, 2,'0c0000cdc00000b000cbe0fe0ab0acd0','This is a test comment!', 'testuser1', '2011-04-08 14:34:37', NULL, 0, 1),
+(2, 2,'0a00d00000fc00000a0000a0000f0ad0', 'This is a test comment!', 'testuser1', '2011-04-08 14:34:37', NULL, 0, 1),
+(2, 2,'0d0b00c0000a000f00a00ad00ff612fc', 'This is a test comment!', 'testuser1', '2011-04-08 14:34:37', NULL, 0, 1),
+(2, 2,'0ffa0a0ad000a00cbccf000adb0fdde0', 'This is a test comment!', 'testuser1', '2011-04-08 14:34:37', NULL, 0, 1),
+(2, 2,'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'This is a test comment!', 'testuser1', '2011-04-08 14:34:37', NULL, 0, 1),
+(2, 2,'0e0a00c000000f00d0d000b00eefe00b', 'This is a test comment!', 'testuser1', '2011-04-08 14:34:37', NULL, 0, 1),
+(2, 2,'00dc000febca00a0f0f00ce0de000000', 'This is a test comment!', 'testuser1', '2011-04-08 14:34:37', NULL, 0, 1);
 --
 -- Data for table `review_ratings_cache`
 -- 
@@ -727,22 +734,26 @@ INSERT INTO `grouptas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `conten
 (24, 'testbibtex',    'testbibtex',    12, 2, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-03-20 20:35:21');
 
 
-INSERT INTO `person` (`person_change_id`, `person_id`, `academic_degree`, `user_name`, `post_ctr`, `orcid`, `dnb_person_id`, `gender`, `log_changed_at`, `log_changed_by`) VALUES
-(5,'h.muller','',NULL,0,'',NULL,NULL,NULL,NULL);
+INSERT INTO `person` (`person_change_id`, `person_id`, `academic_degree`, `user_name`, `post_ctr`, `orcid`, `dnb_person_id`, `gender`, `log_changed_at`, `log_changed_by`, homepage) VALUES
+(5,'h.muller','',NULL,0,'',NULL,NULL,NULL,NULL,''),
+(20, 'w.test.1','',NULL,0,'',NULL,'m',NULL,NULL, "hisPage"),
+(21, 'w.test.2','', null, 0,'',NULL, "m",NULL,NULL,''),
+(22, 'w.test.3','', null, 0, '',NULL,"m",NULL,NULL,''),
+(23, 'w.test.4', '',NULL,0,'',NULL,'F',NULL,NULL,"myPage")
+;
 
 
 INSERT INTO `person_name` VALUES
 (6,'Heinrich Georg','Müller','h.muller',0,'2015-07-06 14:23:05','testuserP'),
-(7,'Henner','Schorsche','h.muller',1,'2015-07-06 14:23:05','testuserP');
+(7,'Henner','Schorsche','h.muller',1,'2015-07-06 14:23:05','testuserP'),
+(31, 'Willi', 'Test', 'w.test.1', 1,'2015-07-06 14:23:05','testuserP'),
+(32, 'Willi', 'Test', 'w.test.2', 1,'2015-07-06 14:23:05','testuserP'), 
+(33, 'Willi', 'Test', 'w.test.3', 1,'2015-07-06 14:23:05','testuserP'), 
+(34, 'Will', 'Test', 'w.test.4', 1,'2015-07-06 14:23:05','testuserP');
 
 INSERT INTO `pub_person` VALUES
-(3,'0b539e248a02e3edcfe591c64346c7a0','d63038ea59383b94bb52fc4a9b76d1f5','Maut',0,'h.muller',0,'2015-07-06 14:19:55','testuserP',0);
-
-
-INSERT INTO `person` (person_change_id, person_id, homepage, post_ctr, gender) VALUES (20, 'w.test.1', "hisPage", 0, "m"),
-(21, 'w.test.2', null, 0, "m"), (22, 'w.test.3', null, 0, "m"), (23, 'w.test.4', "myPage", 0, "F");
-
-INSERT INTO `pub_person` VALUES (23, '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP', 0),
+(3,'0b539e248a02e3edcfe591c64346c7a0','d63038ea59383b94bb52fc4a9b76d1f5','Maut',0,'h.muller',0,'2015-07-06 14:19:55','testuserP',0),
+(23, '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP', 0),
 (24, '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP', 0),
 (25, '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP', 0),
 (26, '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP', 0),
@@ -751,29 +762,27 @@ INSERT INTO `pub_person` VALUES (23, '0c000000d00000f00cef0c00f000e00a', '0c0000
 (29, '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', 'Maut', 0, 'w.test.3', 0,'2015-07-06 14:19:55','testuserP', 0),
 (30, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Maut', 0, 'w.test.4', 0,'2015-07-06 14:19:55','testuserP', 0);
 
-INSERT INTO `person_name` (person_change_id, first_name, last_name, person_id, is_main) VALUES (31, 'Willi', 'Test', 'w.test.1', 1),
-(32, 'Willi', 'Test', 'w.test.2', 1), (33, 'Willi', 'Test', 'w.test.3', 1), (34, 'Will', 'Test', 'w.test.4', 1);
-
 INSERT INTO `person_match` (match_id, person1_id, person2_id, state) VALUES (1, "w.test.1", "w.test.2", 0),
 (2, "w.test.1", "w.test.3", 0), (3, "w.test.2", "w.test.3", 0), (4, "w.test.1", "w.test.4", 0);
 
-INSERT INTO `bibtex` (content_id, simhash0, simhash1, simhash2, simhash3, author, title) VALUES (34, '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', 'Willi Test and Maria Mueller', 'title1'),
-(35, '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', 'Willi Test and Johann Hilfe', 'title2'),
-(36, '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', 'Willi Test', 'same'),
-(37, '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', 'Willi Test and Mario Mueller', 'title4'),
-(38, '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', 'Willi Test and Ted Hansen', 'title5'),
-(39, 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'Willi Test', 'same'),
-(40, '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', 'Willi Test and Ted Hansen', 'title7'),
-(41, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Willi Test and Johann Hilfe', 'title8');
+INSERT INTO `bibtex` (content_id, simhash0, simhash1, simhash2, simhash3, author, title, change_date,date,user_name) VALUES 
+(34, '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', 'Willi Test and Maria Mueller', 'title1', '2008-01-18 10:20:07','2008-01-18 10:20:07','testuserP'),
+(35, '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', 'Willi Test and Johann Hilfe', 'title2', '2008-01-18 10:20:07','2008-01-18 10:20:07','testuserP'),
+(36, '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', 'Willi Test', 'same', '2008-01-18 10:20:07','2008-01-18 10:20:07','testuserP'),
+(37, '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', 'Willi Test and Mario Mueller', 'title4', '2008-01-18 10:20:07','2008-01-18 10:20:07','testuserP'),
+(38, '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', 'Willi Test and Ted Hansen', 'title5', '2008-01-18 10:20:07','2008-01-18 10:20:07','testuserP'),
+(39, 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'Willi Test', 'same', '2008-01-18 10:20:07','2008-01-18 10:20:07','testuserP'),
+(40, '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', 'Willi Test and Ted Hansen', 'title7', '2008-01-18 10:20:07','2008-01-18 10:20:07','testuserP'),
+(41, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Willi Test and Johann Hilfe', 'title8', '2008-01-18 10:20:07','2008-01-18 10:20:07','testuserP');
 
-INSERT INTO `bibhash` VALUES ('0c000000d00000f00cef0c00f000e00a', 0, 0),
-('0c0000cdc00000b000cbe0fe0ab0acd0', 0, 0),
-('0a00d00000fc00000a0000a0000f0ad0', 0, 0),
-('0d0b00c0000a000f00a00ad00ff612fc', 0, 0),
-('0ffa0a0ad000a00cbccf000adb0fdde0', 0, 0),
-('eb0000af0a0c00b0b0ac0e0a0a00d0c0', 0, 0),
-('0e0a00c000000f00d0d000b00eefe00b', 0, 0),
-('00dc000febca00a0f0f00ce0de000000', 0, 0);
+INSERT INTO `bibhash` VALUES ('0c000000d00000f00cef0c00f000e00a', 1, 0),
+('0c0000cdc00000b000cbe0fe0ab0acd0', 1, 0),
+('0a00d00000fc00000a0000a0000f0ad0', 1, 0),
+('0d0b00c0000a000f00a00ad00ff612fc', 1, 0),
+('0ffa0a0ad000a00cbccf000adb0fdde0', 1, 0),
+('eb0000af0a0c00b0b0ac0e0a0a00d0c0', 1, 0),
+('0e0a00c000000f00d0d000b00eefe00b', 1, 0),
+('00dc000febca00a0f0f00ce0de000000', 1, 0);
 
 INSERT INTO `tas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_type`, `user_name`, `date`, `group`, `change_date`) VALUES
 (50, 'testtag',        'testtag',        34, 1, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-01-18 10:20:07'),
@@ -784,6 +793,4 @@ INSERT INTO `tas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_typ
 (55, 'testtag',        'testtag',        39, 1, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-01-18 10:20:07'),
 (56, 'testtag',        'testtag',        40, 1, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-01-18 10:20:07'),
 (57, 'testtag',        'testtag',        41, 1, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-01-18 10:20:07');
-
-
 
