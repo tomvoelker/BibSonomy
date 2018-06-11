@@ -209,7 +209,9 @@
 									<fmt:message key="gettingStarted.navi.export" />
 								</h2>
 								<div class="lead text-center">
-									<fmt:message key="gettingStarted.navi.export.desc" />
+									<fmt:message key="gettingStarted.navi.export.desc">
+										<fmt:param value="${properties['project.name']}" />
+									</fmt:message>
 								</div>
 								<div class="row">
 									<div class="col-sm-6">
