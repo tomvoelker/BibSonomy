@@ -54,7 +54,7 @@ public final class HelpUtils {
 	 */
 	@Deprecated
 	public static Map<String, String> buildReplacementMap(final String projectName, final String projectTheme, final String projectHome) {
-		return this.buildReplacementMap(projectName, projectTheme, projectHome, "");
+		return buildReplacementMap(projectName, projectTheme, projectHome, "");
 	}
 	
 	/**

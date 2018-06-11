@@ -96,6 +96,9 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	/** the url of the project */
 	private String projectHome;
 	
+	/** the mail of the project */
+	private String projectMail;
+	
 	/** the request logic */
 	private RequestLogic requestLogic;
 	
@@ -149,7 +152,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 			return Views.DOWNLOAD_FILE;
 		}
 		
-		final Map<String, String> replacements = HelpUtils.buildReplacementMap(this.projectName, theme, this.projectHome);
+		final Map<String, String> replacements = HelpUtils.buildReplacementMap(this.projectName, theme, this.projectHome, this.projectMail);
 		// instantiate a new parser
 		final Parser parser = new Parser(replacements, this.urlGenerator);
 		
@@ -338,6 +341,13 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	 */
 	public void setProjectHome(String projectHome) {
 		this.projectHome = projectHome;
+	}
+
+	/**
+	 * @param projectMail the projectMail to set
+	 */
+	public void setProjectMail(String projectMail) {
+		this.projectMail = projectMail;
 	}
 
 	/**
