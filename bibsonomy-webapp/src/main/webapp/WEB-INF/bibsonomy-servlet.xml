@@ -136,6 +136,7 @@
 	<!-- provides access to the wikiRenderer -->
 	<bean id="wikiRenderer" class="org.bibsonomy.wiki.CVWikiModel" scope="request">
 		<constructor-arg value="#{requestLogic.locale}" />
+		<constructor-arg value="${database.maxQuerySize}" />
 		<property name="logic" ref="logic"/>
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer" />
 		<property name="messageSource" ref="messageSource"/>
@@ -771,6 +772,10 @@
 	</bean>
 	
 	<!--  #################### controller #################### -->
+	<bean id="abstractResourcePageController" class="org.bibsonomy.webapp.controller.resource.AbstractResourcePageController" abstract="true" parent="multiResourceListControllerWithTags">
+		<property name="maxQuerySize" value="${database.maxQuerySize}" />
+	</bean>
+	
 	<bean id="resourceController" class="org.bibsonomy.webapp.controller.ResourceListController" abstract="true">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
@@ -830,6 +835,7 @@
 		<property name="oauthLogic" ref="oAuthLogic"/>
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
 		<property name="invisibleOAuthConsumers" value="${invisible.oauth.consumers}"/>
+		<property name="cslFilesManager" ref="CSLFilesManager" />
 	</bean>
 	
 	<bean id="groupSettingsPageController" class="org.bibsonomy.webapp.controller.GroupSettingsPageController" scope="request">
@@ -890,6 +896,7 @@
 	
 	<bean id="mySearchController" class="org.bibsonomy.webapp.controller.MySearchController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
+		<property name="maxQuerySize" value="${database.maxQuerySize}" />
 	</bean>
 	
 	<bean id="friendsPageController" class="org.bibsonomy.webapp.controller.FriendsPageController" scope="request" parent="multiResourceListController">
@@ -911,6 +918,7 @@
 	
 	<bean id="groupReportingPageController" class="org.bibsonomy.webapp.controller.reporting.GroupReportingPageController" scope="request">
 		<property name="logic" ref="logic"/>
+		<property name="maxQuerySize" value="${database.maxQuerySize}" />
 	</bean>	
 	
 	<bean id="groupsPageController" class="org.bibsonomy.webapp.controller.GroupsPageController" scope="request">
@@ -965,7 +973,7 @@
 		<property name="supportedResources" ref="allResources"/>
 	</bean>
 	
-	<bean id="publicationPageController" class="org.bibsonomy.webapp.controller.resource.PublicationPageController" scope="request" parent="multiResourceListControllerWithTags">
+	<bean id="publicationPageController" class="org.bibsonomy.webapp.controller.resource.PublicationPageController" scope="request" parent="abstractResourcePageController">
 		<property name="supportedResources">
 			<set>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
@@ -1012,7 +1020,7 @@
 		</property>
 	</bean>
 	 
-	<bean id="bookmarkPageController" class="org.bibsonomy.webapp.controller.resource.BookmarkPageController" scope="request" parent="multiResourceListController">
+	<bean id="bookmarkPageController" class="org.bibsonomy.webapp.controller.resource.BookmarkPageController" scope="request" parent="abstractResourcePageController">
 		<property name="supportedResources">
 			<set>
 				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>

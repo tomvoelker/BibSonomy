@@ -249,7 +249,9 @@ public class BibTexUtils {
 
 	/** article */
 	public static final String ARTICLE = "article";
-	
+
+	/** collection */
+	public static final String COLLECTION = "collection";	
 	/**
 	 * To remove the preprint entry type remove all occurrences of this string and the corresponding types 
 	 * in swrcEntryTypes and risEntryTypes in class Functions in webapp module.
@@ -261,7 +263,7 @@ public class BibTexUtils {
 	 */
 	public static final String[] ENTRYTYPES = {ARTICLE, BOOK, BOOKLET, CONFERENCE, ELECTRONIC, INBOOK, INCOLLECTION, INPROCEEDINGS,
 		MANUAL, MASTERS_THESIS, MISC, PATENT, PERIODICAL, PHD_THESIS, PRESENTATION, PROCEEDINGS, STANDARD, TECH_REPORT, UNPUBLISHED,
-		PREPRINT
+		PREPRINT, COLLECTION
 	};
 
 	/*

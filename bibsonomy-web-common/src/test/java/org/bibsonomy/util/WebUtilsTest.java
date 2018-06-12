@@ -74,7 +74,7 @@ public class WebUtilsTest {
 	 */
 	@Test
 	public void testRedirectUrl1() throws MalformedURLException {
-		assertEquals("http://www.bibsonomy.org/groups", WebUtils.getRedirectUrl(new URL("http://www.bibsonomy.org/group")).toString());
+		assertEquals("https://www.bibsonomy.org/groups", WebUtils.getRedirectUrl(new URL("http://www.bibsonomy.org/group")).toString());
 	}
 	
 	/**

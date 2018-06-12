@@ -38,6 +38,8 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
+import org.bibsonomy.layout.csl.CSLFilesManager;
+import org.bibsonomy.layout.csl.CSLStyle;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
@@ -75,7 +77,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	protected OAuthLogic oauthLogic;
 	protected LogicInterface logic;
 	protected RequestLogic requestLogic;
-	
+	protected CSLFilesManager cslFilesManager;
 	protected URLGenerator urlGenerator;
 	
 	/**
@@ -142,6 +144,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			this.errors.reject("error.settings.tab");
 		} else {
 			this.checkInstalledJabrefLayout(command);
+			this.checkInstalledCSLLayout(command);
 			this.workOnSyncSettingsTab(command);
 			this.workOnCVTab(command);
 			this.workOnOAuthTab(command);
@@ -191,6 +194,22 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			}
 		}
 	}
+	
+	/**
+	 * checks whether the user has already uploaded csl layout definitions
+	 * and if so loads it into the command
+	 * @param command
+	 */
+	private void checkInstalledCSLLayout(final SettingsViewCommand command) {
+		final String loggedInUserName = command.getContext().getLoginUser().getName();		
+
+		/*
+		 * load all uploaded csl files
+		 */
+		final List<CSLStyle> styles = this.cslFilesManager.loadUserLayouts(loggedInUserName);
+		command.setCslFiles(styles);
+	}
+	
 
 	/**
 	 * function to get the OAuth User Information and store it in the
@@ -400,5 +419,12 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 */
 	public void setUrlGenerator(URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
+	}
+
+	/**
+	 * @param cslFilesManager the cslFilesManager to set
+	 */
+	public void setCslFilesManager(CSLFilesManager cslFilesManager) {
+		this.cslFilesManager = cslFilesManager;		
 	}
 }

@@ -338,6 +338,14 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getDeletedGroupUsers(int, int)
+	 */
+	@Override
+	public List<User> getDeletedGroupUsers(int start, int end) {
+		return this.logicinterface.getDeletedGroupUsers(start, end);
+	}
+	
+	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getUserStatistics(org.bibsonomy.common.enums.GroupingEntity, java.util.Set, org.bibsonomy.common.enums.Classifier, org.bibsonomy.common.enums.SpamStatus, java.util.Date, java.util.Date)
 	 */
 	@Override
@@ -494,6 +502,15 @@ public class ReadOnlyLogic implements LogicInterface {
 		throwReadOnlyException();
 		return null;
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#restoreGroup(org.bibsonomy.model.Group)
+	 */
+	@Override
+	public String restoreGroup(final Group group) {
+		throwReadOnlyException();
+		return null;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#createDocument(org.bibsonomy.model.Document, java.lang.String)
@@ -519,7 +536,14 @@ public class ReadOnlyLogic implements LogicInterface {
 	public Document getDocument(String userName, String resourceHash, String fileName) {
 		return this.logicinterface.getDocument(userName, resourceHash, fileName);
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getDocuments(java.lang.String)
+	 */
+	@Override
+	public List<Document> getDocuments(String userName) {
+		return this.logicinterface.getDocuments(userName);
+	}
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getDocumentStatistics(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.Set, java.util.Date, java.util.Date)
 	 */

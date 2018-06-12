@@ -51,7 +51,10 @@ public class AuthenticationUtils {
 		if (user != null) {
 			return user;
 		}
-		return new User();
+		final User nobody = new User();
+		// privacy friendly settings
+		nobody.getSettings().setLogLevel(1);
+		return nobody;
 	}
 
 	/**

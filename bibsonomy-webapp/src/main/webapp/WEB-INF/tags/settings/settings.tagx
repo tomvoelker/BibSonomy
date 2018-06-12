@@ -209,6 +209,15 @@
 								<div class="col-sm-9">
 									<input class="form-control typeahead" id='searchCitationAutocomplete' type='text' name='searchCitationAutocomplete' autocomplete="off" placeholder='BibTeX, EndNote, CSL, JabRef...'/>
 								</div>
+								<ul id="customLayouts" style="display:none">
+									<c:forEach var="style" items="${command.cslFiles}" varStatus="counter">
+										<c:set var="name" value="${style.name}"/>
+										<c:set var="displayName" value="${style.displayName}"/>	
+										<li data-source="CUSTOM" data-type="CSL" data-name="${name}" data-displayName="${displayName}" data-hash="${style.fileHash}">
+											<!-- keep this -->
+										</li>
+									</c:forEach>
+								</ul>
 							</div>
 						</div>
 					</div>

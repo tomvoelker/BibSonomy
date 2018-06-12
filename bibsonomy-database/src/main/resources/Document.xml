@@ -21,7 +21,14 @@
 		    AND b.user_name = #userName#
 		    AND d.user_name = #userName#
 		    AND d.name = #fileName#
-	</select>	
+	</select>
+	
+	<select id="getLayoutDocuments" resultMap="DocumentCommon.document" parameterClass="documentParam">
+		SELECT <include refid="allDocumentAttributes"/>
+			 FROM document d 
+			WHERE d.user_name=#userName#
+			  AND d.content_id=#contentId#
+	</select>
 		
 	<select id="getDocumentsForPost" resultMap="DocumentCommon.document" parameterClass="documentParam">
 		SELECT <include refid="allDocumentAttributes"/>

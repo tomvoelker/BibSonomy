@@ -303,7 +303,7 @@
 						<property name="controllerBeanName" value="importCSLLayout"/>
 						<property name="allowedFields">
 							<list>
-								<value>file</value>
+								<value>fileItem</value>
 								<value>action</value>
 								<value>ckey</value>
 								<value>hash</value>
@@ -841,6 +841,7 @@
 		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="pingback" ref="pingback"/>
+		<property name="maxQuerySize" value="${database.maxQuerySize}" />
 	</bean>
 
 	<!-- Handles the edit bookmark process -->
@@ -1165,7 +1166,9 @@
 	</bean>	
 	
 	<!-- Handles the settings update of a user -->
-	<bean id="updateUserSettingsController" class="org.bibsonomy.webapp.controller.actions.UpdateUserSettingsController" scope="request" parent="settingsPageController" />
+	<bean id="updateUserSettingsController" class="org.bibsonomy.webapp.controller.actions.UpdateUserSettingsController" scope="request" parent="settingsPageController">
+		<property name="maxQuerySize" value="${database.maxQuerySize}" />
+	</bean>
 	
 	<!-- Handles the settings update of a group -->
 	<bean id="updateGroupController" class="org.bibsonomy.webapp.controller.actions.UpdateGroupController" scope="request">
@@ -1216,12 +1219,15 @@
 	<bean id="importCSLLayout" class="org.bibsonomy.webapp.controller.actions.CSLImportController" scope="request" parent="settingsPageController">
 		<property name="logic" ref="logic" />
 		<property name="fileLogic" ref="fileLogic" />
-		<!-- <property name="jabrefLayoutRenderer" ref="jabrefLayoutRenderer" />
-		<property name="validator" ref="jabRefLayoutValidator" /> -->
+		<property name="validator" ref="cslImportValidator" />
 	</bean>
 	
 	<bean id="jabRefLayoutValidator" class="org.bibsonomy.webapp.validation.JabRefImportValidator">
 		<property name="fileLogic" ref="jabRefFileLogic" />
+	</bean>
+	
+	<bean id="cslImportValidator" class="org.bibsonomy.webapp.validation.CslImportValidator">
+		<property name="fileLogic" ref="cslFileLogic" />
 	</bean>
 	
 	<bean id="deliciousImporterFactory" class="org.bibsonomy.importer.bookmark.service.DeliciousImporterFactory">

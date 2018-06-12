@@ -61,6 +61,8 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 	/** logic interface */
 	private LogicInterface logic;
 	
+	private int maxQuerySize;
+	
 	@Override
 	public View workOn(final GroupReportingCommand command) {
 		// allow only logged-in users FIXME: check errormsg
@@ -88,7 +90,7 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 		 * fetch all bibtex & remove duplicates
 		 */
 		// TODO: really fetch all posts
-		final List<Post<BibTex>> groupBibtexEntries = logic.getPosts(BibTex.class, GroupingEntity.GROUP, command.getRequestedGroup(), tags, null, null, SearchType.LOCAL,null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
+		final List<Post<BibTex>> groupBibtexEntries = logic.getPosts(BibTex.class, GroupingEntity.GROUP, command.getRequestedGroup(), tags, null, null, SearchType.LOCAL,null, null, null, null, 0, this.maxQuerySize);
 		BibTexUtils.removeDuplicates(groupBibtexEntries);
 		
 		
@@ -198,6 +200,13 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 		}
 		final int lastVal = map.get(key);
 		map.put(key, lastVal + 1);
+	}
+	
+	/**
+	 * @param maxQuerySize the maxQuerySize to set
+	 */
+	public void setMaxQuerySize(int maxQuerySize) {
+		this.maxQuerySize = maxQuerySize;
 	}
 
 }

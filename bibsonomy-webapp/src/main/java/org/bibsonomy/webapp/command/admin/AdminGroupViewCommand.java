@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.AdminGroupOperation;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 
@@ -56,7 +57,8 @@ public class AdminGroupViewCommand extends BaseCommand {
 	/** list of pending groups */
 	private List<Group> pendingGroups;
 	private List<String> allGroupNames;
-
+	private List<String> allDeletedGroupNames;
+	
 	public AdminGroupViewCommand() {
 		this.group = new Group();
 	}
@@ -166,11 +168,26 @@ public class AdminGroupViewCommand extends BaseCommand {
 	}
 
 	/**
+	 * @return the allDeletedGroups
+	 */
+	public List<String> getAllDeletedGroupNames() {
+		return this.allDeletedGroupNames;
+	}
+	
+	/**
 	 * @param allGroups
 	 *            the allGroups to set
 	 */
 	public void setAllGroupNames(final List<String> allGroups) {
 		this.allGroupNames = allGroups;
+	}
+	
+	/**
+	 * @param allGroups
+	 *            the allGroups to set
+	 */
+	public void setAllDeletedGroupNames(final List<String> allDeletedGroups) {
+		this.allDeletedGroupNames = allDeletedGroups;
 	}
 
 }

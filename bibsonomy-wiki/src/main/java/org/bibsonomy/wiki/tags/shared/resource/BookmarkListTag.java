@@ -56,11 +56,15 @@ public class BookmarkListTag extends SharedTag {
 
 	private static final Set<String> ALLOWED_ATTRIBUTES = Sets.asSet(REQUESTED_TAGS, LIMIT);
 
+	private int maxQuerySize;
+	
 	/**
 	 * sets the tag
+	 * @param maxQuerySize
 	 */
-	public BookmarkListTag() {
+	public BookmarkListTag(int maxQuerySize) {
 		super(TAG_NAME);
+		this.maxQuerySize = maxQuerySize;
 	}
 
 	@Override
@@ -84,7 +88,7 @@ public class BookmarkListTag extends SharedTag {
  		}
  		
  		// TODO: Remove duplicates, if rendered for group
- 		List<Post<Bookmark>> posts = this.logic.getPosts(Bookmark.class, this.getGroupingEntity(), this.getRequestedName(), Arrays.asList(tags.split(" ")), null, null, SearchType.LOCAL, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
+ 		List<Post<Bookmark>> posts = this.logic.getPosts(Bookmark.class, this.getGroupingEntity(), this.getRequestedName(), Arrays.asList(tags.split(" ")), null, null, SearchType.LOCAL, null, null, null, null, 0, this.maxQuerySize);
 
  		if (tagAttributes.get(LIMIT) != null) {
 			try {
