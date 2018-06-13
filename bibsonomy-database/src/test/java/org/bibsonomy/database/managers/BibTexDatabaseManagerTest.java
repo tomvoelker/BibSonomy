@@ -430,7 +430,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	public void testGetPostsForHomepage() {
 		this.printMethod("testGetPostsForHomepage");
 		final List<Post<BibTex>> post = publicationDb.getPostsForHomepage(null, null, null, 10, 0, null, this.dbSession);
-		assertEquals(4, post.size());
+		assertEquals(3, post.size());
 	}
 
 	/**
@@ -746,7 +746,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		this.printMethod("testGetPosts");
 		final BibTexParam param = new BibTexParam();
 		param.setHash("");
-		
+		param.setLimit(23);
 		List<Post<BibTex>> posts = publicationDb.getPosts(param, this.dbSession);
 		assertEquals(4, posts.size());
 		
