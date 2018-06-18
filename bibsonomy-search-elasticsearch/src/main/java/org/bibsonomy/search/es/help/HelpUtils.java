@@ -64,6 +64,7 @@ public final class HelpUtils {
 	 * @param projectHome
 	 * @param projectEmail
 	 * @param projectNoSpamEmail
+	 * @param projectAPIEmail 
 	 * @return the map
 	 */
 	public static Map<String, String> buildReplacementMap(final String projectName, final String projectTheme, final String projectHome, final String projectEmail, final String projectNoSpamEmail, final String projectAPIEmail) {
