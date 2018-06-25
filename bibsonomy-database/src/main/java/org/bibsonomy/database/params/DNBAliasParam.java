@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
+ * BibSonomy-Database - Database for BibSonomy.
  *
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,41 +24,49 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.common.enums;
+package org.bibsonomy.database.params;
 
 /**
- * Enum that contains all possible update operations for person updates
- * @author mho
+ * TODO: add documentation to this class
+ *
+ * @author jhi
  */
-public enum PersonUpdateOperation {
-
-	/** Update the orcid of a person */
-	UPDATE_ORCID,
-
-	/** Update the academic degree of a person */
-	UPDATE_ACADEMIC_DEGREE,
-
-	/** Update the names of a person */
-	UPDATE_NAMES,
+public class DNBAliasParam {
+	private String dnbId;
+	private String otherDnbId;
 	
-	/** Updates all attributes of a person */
-	UPDATE_ALL,
-
-	/** Updates the college */
-	UPDATE_COLLEGE,
+	/**
+	 * @param dnbId
+	 * @param otherDnbId
+	 */
+	public DNBAliasParam(String dnbId, String otherDnbId) {
+		this.dnbId = dnbId;
+		this.otherDnbId = otherDnbId;
+	}
 	
-	/** Updates the college */
-	UPDATE_EMAIL,
+	/**
+	 * @return the otherDnbId
+	 */
+	public String getOtherDnbId() {
+		return this.otherDnbId;
+	}
+	/**
+	 * @param otherDnbId the otherDnbId to set
+	 */
+	public void setOtherDnbId(String otherDnbId) {
+		this.otherDnbId = otherDnbId;
+	}
+	/**
+	 * @return the dnbId
+	 */
+	public String getDnbId() {
+		return this.dnbId;
+	}
+	/**
+	 * @param dnbId the dnbId to set
+	 */
+	public void setDnbId(String dnbId) {
+		this.dnbId = dnbId;
+	}
 	
-	/** Updates the college */
-	UPDATE_HOMEPAGE,
-	
-	/** Creates a new person */
-	CREATE_PERSON,
-	
-	/** accepts merge */
-	MERGE_ACCEPT,
-	
-	/** denies merge */
-	MERGE_DENIED
 }

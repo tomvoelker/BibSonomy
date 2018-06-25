@@ -386,11 +386,11 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void testGetPostEntries() throws Exception {
 		final List<SearchPost<BibTex>> posts = searchBibTexLogic.getPostEntries(0, 100);
-		assertEquals(14, posts.size());
+		assertEquals(22, posts.size());
 		// check for documents
 		for (final SearchPost<BibTex> searchPost : posts) {
 			final BibTex publication = searchPost.getResource();
-			if ("testuser1".equals(searchPost.getUser().getName()) && "b77ddd8087ad8856d77c740c8dc2864a".equals(publication.getIntraHash())) {
+			if ("b77ddd8087ad8856d77c740c8dc2864a".equals(publication.getIntraHash()) && "testuser1".equals(searchPost.getUser().getName())) {
 				assertEquals(2, publication.getDocuments().size());
 			}
 		}

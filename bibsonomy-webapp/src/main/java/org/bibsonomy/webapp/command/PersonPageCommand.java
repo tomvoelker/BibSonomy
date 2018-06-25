@@ -30,10 +30,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
+import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -84,6 +87,9 @@ public class PersonPageCommand extends BaseCommand {
 	@Deprecated // TODO: bind person directly
 	private int formPersonIndex = -1;
 	
+	private int formMatchId;
+	private String formResponseString;
+	
 	
 	private String formAction;
 	
@@ -102,6 +108,10 @@ public class PersonPageCommand extends BaseCommand {
 	private List<Post<?>> otherAdvisedPubs;
 	
 	private List<Post<BibTex>> similarAuthorPubs;
+	
+	private List<PersonMatch> personMatchList;
+	
+	private Map<Integer, PersonMergeFieldConflict[]> mergeConflicts;
 	
 	private String okHintKey;
 	
@@ -532,6 +542,62 @@ public class PersonPageCommand extends BaseCommand {
 	 */
 	public void setSimilarAuthorPubs(List<Post<BibTex>> similarAuthorPubs) {
 		this.similarAuthorPubs = similarAuthorPubs;
+	}
+
+	/**
+	 * @return the personMatchList
+	 */
+	public List<PersonMatch> getPersonMatchList() {
+		return this.personMatchList;
+	}
+
+	/**
+	 * @param personMatchList the personMatchList to set
+	 */
+	public void setPersonMatchList(List<PersonMatch> personMatchList) {
+		this.personMatchList = personMatchList;
+	}
+
+	/**
+	 * @return the mergeConflicts
+	 */
+	public Map<Integer, PersonMergeFieldConflict[]> getMergeConflicts() {
+		return this.mergeConflicts;
+	}
+
+	/**
+	 * @param mergeConflicts the mergeConflicts to set
+	 */
+	public void setMergeConflicts(Map<Integer, PersonMergeFieldConflict[]> mergeConflicts) {
+		this.mergeConflicts = mergeConflicts;
+	}
+
+	/**
+	 * @return the formMatchId
+	 */
+	public int getFormMatchId() {
+		return this.formMatchId;
+	}
+
+	/**
+	 * @param formMatchId the formMatchId to set
+	 */
+	public void setFormMatchId(int formMatchId) {
+		this.formMatchId = formMatchId;
+	}
+
+	/**
+	 * @return the formResponseString
+	 */
+	public String getFormResponseString() {
+		return this.formResponseString;
+	}
+
+	/**
+	 * @param formResponseString the formResponseString to set
+	 */
+	public void setFormResponseString(String formResponseString) {
+		this.formResponseString = formResponseString;
 	}
 
 }

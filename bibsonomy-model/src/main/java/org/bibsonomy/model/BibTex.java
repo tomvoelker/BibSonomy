@@ -623,6 +623,7 @@ public class BibTex extends Resource {
 		this.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS); // map allocate implied and sync
 		this.miscFields.put(miscKey, value);  
 		this.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS); // sync restored
+
 	}
 
 	/**
