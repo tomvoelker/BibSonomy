@@ -126,11 +126,8 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param userName
 	 */
 	public void ensureWriteAccess(final User loginUser, final String userName) {
-		if (loginUser.getName() == null
-				|| !(loginUser.getName().toLowerCase().equals(userName.toLowerCase())  // This check applies for old groups as well 
-				|| this.hasGroupRoleOrHigher(loginUser, userName, GroupRole.ADMINISTRATOR))) { // this check applies to new groups (hence, userName -> groupName)
-			throw new AccessDeniedException();
-		}
+		// delegate write access check
+		this.ensureIsAdminOrSelfOrHasGroupRoleOrHigher(loginUser, userName, GroupRole.ADMINISTRATOR);
 	}
 
 	/**
@@ -395,7 +392,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @return <code>true</code> if loginUser is an admin or userName.
 	 */
 	public boolean isAdminOrSelf(final User loginUser, final String userName) {
-		return present(loginUser.getName()) && loginUser.getName().equals(userName) // loginUser
+		return present(loginUser.getName()) && loginUser.getName().equalsIgnoreCase(userName) // loginUser
 				// =
 				// userName
 				|| this.isAdmin(loginUser);

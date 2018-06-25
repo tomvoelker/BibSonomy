@@ -39,7 +39,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>3.8.12</version>
+		<version>3.9.0-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>
@@ -97,7 +97,6 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>1.3.2</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>joda-time</groupId>

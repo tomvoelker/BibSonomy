@@ -144,6 +144,7 @@
 		WHERE user_name = #userName#
 	</update>
 	
+	<!-- this only works if ERROR_FOR_DIVISION_BY_ZERO mode is disabled -->
 	<!-- FIXME: double check this statement!!! -->
 	<update id="updateReviewRatingsCache" parameterClass="adminParam" timeout="0">
 		INSERT INTO review_ratings_cache (interHash, number_of_ratings, rating_arithmetic_mean) SELECT d.interHash, 1, d.rating FROM discussion d	WHERE d.rating IS NOT NULL

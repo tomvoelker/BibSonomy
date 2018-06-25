@@ -1,0 +1,8 @@
+<jsp:root version="2.0">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"	
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+
+	<jsp:directive.attribute name="person" type="org.bibsonomy.model.Person" required="true" />
+	<c:set var="personURL">${relativeUrlGenerator.getPersonUrl(person.personID)}</c:set>
+	<a href="${personURL}" title="${person.mainName)}"><span itemprop="name"><c:out value="${person.mainName}" /></span></a>
+</jsp:root>

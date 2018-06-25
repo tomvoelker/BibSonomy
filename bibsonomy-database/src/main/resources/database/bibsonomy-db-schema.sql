@@ -1754,6 +1754,7 @@ CREATE TABLE `pub_person` (
 
 CREATE TABLE `log_pub_person` (
   `person_change_id` int(10) unsigned NOT NULL COMMENT 'sequential number shared among all person tables. Ensures the order of changes and helps updating separate search indexes like elasticsearch.',
+  `new_change_id` int(10) unsigned COMMENT 'old person_change_id to track all changes on this relation',
   `simhash1` char(32) DEFAULT NULL COMMENT '(interHash)',
   `simhash2` char(32) DEFAULT NULL COMMENT '(intraHash)',
   `relator_code` char(4) DEFAULT NULL COMMENT 'marc21 relator code (prefix M + 3 marc21 chars) - see http://www.loc.gov/marc/relators/relacode.html. Particulary relevant are:\n Mths=Thesis advisor,\n Mrev=Reviewer,\n Moth=Other,\n Maut=Author.\nIn addition, we use\n Bmnm=main name (only one tuple with this value per person_id) - usually marks the current real name (with hashes set to null)',
@@ -1799,6 +1800,24 @@ CREATE TABLE `log_postchange` (
 	`content_type` TINYINT(4) NOT NULL,
 	`date` DATETIME NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `person_match`(
+  `match_id` int(10) unsigned NOT NULL unique auto_increment,
+  `person1_id` varchar(64) NOT NULL,
+  `person2_id` varchar(64) NOT NULL,
+  `state` tinyint(4) NOT NULL DEFAULT 0 COMMENT 'set to 1 if merge is denied, 2 if they are merged',
+   PRIMARY KEY  (`match_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `user_denied_match`(
+  `match_id` int(10) unsigned NOT NULL,
+  `user_name` varchar(30) NOT NULL
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `other_dnb_ids`(
+  `dnb_person_id` char(18) NOT NULL,
+  `other_dnb_person_id` char(18) NOT NULL
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

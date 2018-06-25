@@ -74,6 +74,16 @@
 		<result property='post'            resultMap="GoldStandardPublicationCommon.goldStandardPost" />
 	</resultMap>
 	
+	<resultMap id='personMatch' class='org.bibsonomy.model.PersonMatch'>
+		<result property='matchID' column='match_id'/>
+		<result property='state' column='state'/>
+		<result property="person1"          column="person1_id"       javaType='org.bibsonomy.model.Person'       select='getPersonById'/>
+		<result property="person2"          column="person2_id"       javaType='org.bibsonomy.model.Person'       select='getPersonById'/>
+		<result property="userDenies"		column="match_id"		  javaType='java.lang.String'				  select='getDeniesForMatch' />
+		<result property="person1Posts"		column="person1_id"		  javaType='org.bibsonomy.model.Post'		  select='getPostsForPerson' />
+		<result property="person2Posts"		column="person2_id"		  javaType='org.bibsonomy.model.Post'		  select='getPostsForPerson' />
+	</resultMap>
+	
 	<sql id="commonPersonColumns">
 		person.person_change_id as p_person_change_id, person.person_id, person.academic_degree, person.orcid, person.post_ctr, person.log_changed_by, person.log_changed_at, person.user_name, person.dnb_person_id, gender, person.college, person.email, person.homepage
 	</sql>
@@ -109,5 +119,5 @@
 	<sql id="commonResourcePersonRelationColumns2">
 		b2.person_change_id as r_person_change_id, b2.simhash1, b2.simhash2, b2.qualifying, b2.person_id, b2.relator_code, b2.log_changed_by, b2.log_changed_at, b2.person_index
 	</sql>
-	
+
 </sqlMap>

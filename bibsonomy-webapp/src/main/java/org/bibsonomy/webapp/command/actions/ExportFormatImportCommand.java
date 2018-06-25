@@ -29,12 +29,11 @@ package org.bibsonomy.webapp.command.actions;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 
 /**
- * TODO: add documentation to this class
- *
- * @author jp
+ * @author cvo
  */
-public class CSLImportCommand extends SettingsViewCommand{
-	private static final long serialVersionUID = -8231551189396557448L;
+public class ExportFormatImportCommand extends SettingsViewCommand {
+	private static final long serialVersionUID = -2852728956746251923L;
+
 	/**
 	 * hash of the layout definition
 	 */
@@ -53,5 +52,4 @@ public class CSLImportCommand extends SettingsViewCommand{
 	public void setHash(String hash) {
 		this.hash = hash;
 	}
-
 }

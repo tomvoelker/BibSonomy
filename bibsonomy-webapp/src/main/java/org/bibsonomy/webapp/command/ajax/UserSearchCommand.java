@@ -41,6 +41,9 @@ public class UserSearchCommand extends BaseCommand {
 	private List<User> users;
 	private boolean showSpammers;
 	
+	//for ajax callbacks
+	private String callback = "";
+	
 	/**
 	 * @return the users
 	 */
@@ -88,5 +91,19 @@ public class UserSearchCommand extends BaseCommand {
 	 */
 	public boolean showSpammers() {
 		return showSpammers;
+	}
+	
+	/**
+	 * @return the callback
+	 */
+	public String getCallback() {
+		return this.callback;
+	}
+
+	/**
+	 * @param callback the callback to set
+	 */
+	public void setCallback(final String callback) {
+		this.callback = callback;
 	}
 }
