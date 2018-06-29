@@ -326,7 +326,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 									newRequestUriBuilder.append(PATH_SEPERATOR);
 								} else {
 									// simple heuristic: the last path element is the path element containing the requested tags
-									newRequestUriBuilder.append(path.replaceAll("\\+", "%20"));
+									newRequestUriBuilder.append(path.replaceAll("\\+", "%20").replaceAll("%2B", "%20").replaceAll("%2b", "%20"));
 								}
 							}
 

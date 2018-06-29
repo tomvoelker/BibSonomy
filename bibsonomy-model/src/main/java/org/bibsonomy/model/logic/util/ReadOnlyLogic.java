@@ -62,6 +62,8 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
+import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -338,6 +340,14 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getDeletedGroupUsers(int, int)
+	 */
+	@Override
+	public List<User> getDeletedGroupUsers(int start, int end) {
+		return this.logicinterface.getDeletedGroupUsers(start, end);
+	}
+	
+	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getUserStatistics(org.bibsonomy.common.enums.GroupingEntity, java.util.Set, org.bibsonomy.common.enums.Classifier, org.bibsonomy.common.enums.SpamStatus, java.util.Date, java.util.Date)
 	 */
 	@Override
@@ -491,6 +501,15 @@ public class ReadOnlyLogic implements LogicInterface {
 	 */
 	@Override
 	public String updateGroup(Group group, GroupUpdateOperation operation, GroupMembership membership) {
+		throwReadOnlyException();
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#restoreGroup(org.bibsonomy.model.Group)
+	 */
+	@Override
+	public String restoreGroup(final Group group) {
 		throwReadOnlyException();
 		return null;
 	}
@@ -898,5 +917,49 @@ public class ReadOnlyLogic implements LogicInterface {
 			return logicAccess;
 		}
 		return new ReadOnlyLogic(logicAccess);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getPersonMatches(java.lang.String)
+	 */
+	@Override
+	public List<PersonMatch> getPersonMatches(String personID) {
+		return this.logicinterface.getPersonMatches(personID);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#denieMerge(org.bibsonomy.model.PersonMatch)
+	 */
+	@Override
+	public void denieMerge(PersonMatch match) {
+
+	}
+	
+	@Override
+	public boolean acceptMerge(PersonMatch match) {
+		return false;
+	}
+	
+	@Override
+	public PersonMatch getPersonMatch(int matchID) {
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#conflictMerge(int, org.json.JSONArray)
+	 */
+	@Override
+	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getForwardId(java.lang.String)
+	 */
+	@Override
+	public String getForwardId(String personId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -229,7 +229,7 @@
 	</bean>
 
 	<!-- Provider of default SAML Context -->
-	<bean id="contextProvider" class="org.bibsonomy.webapp.util.spring.security.saml.context.RelayStateSamlContextProviderImpl" />
+		<bean id="contextProvider" class="org.bibsonomy.webapp.util.spring.security.saml.context.RelayStateSamlContextProviderImpl" />
 
 	<!-- Processing filter for WebSSO profile messages -->
 	<bean id="samlWebSSOProcessingFilter" class="org.springframework.security.saml.SAMLProcessingFilter">
@@ -296,19 +296,38 @@
 	<!-- SAML 2.0 Logout Profile -->
 	<bean id="logoutprofile" class="org.springframework.security.saml.websso.SingleLogoutProfileImpl" />
 
+	<!-- adding the updated url comparator TODO: remove with the spring security saml update (use the  parserPool, velocityEngine constructor of HTTP*Bind)-->
+	<bean id="urlComparator" class="org.bibsonomy.webapp.util.spring.security.saml.util.URLComparator" />
+
+	<bean id="httpDecoder" class="org.bibsonomy.webapp.util.spring.security.saml.util.HTTPPostDecoder">
+		<constructor-arg ref="parserPool" />
+		<constructor-arg ref="urlComparator" />
+	</bean>
+
+	<bean id="httpEncoder" class="org.opensaml.saml1.binding.encoding.HTTPPostEncoder">
+		<constructor-arg ref="velocityEngine" />
+		<constructor-arg value="/templates/saml2-post-binding.vm" />
+	</bean>
+
 	<!-- Bindings, encoders and decoders used for creating and parsing messages -->
 	<bean id="postBinding" class="org.springframework.security.saml.processor.HTTPPostBinding">
-		<constructor-arg ref="parserPool" />
-		<constructor-arg ref="velocityEngine" />
+		<constructor-arg ref="httpDecoder" />
+		<constructor-arg ref="httpEncoder" />
 	</bean>
+
+	<bean id="redirectDecoder" class="org.bibsonomy.webapp.util.spring.security.saml.util.HTTPRedirectDeflateDecoder">
+		<constructor-arg ref="parserPool" />
+		<constructor-arg ref="urlComparator" />
+	</bean>
+
+	<bean id="redirectEncoder" class="org.opensaml.saml2.binding.encoding.HTTPRedirectDeflateEncoder" />
 
 	<bean id="redirectBinding" class="org.springframework.security.saml.processor.HTTPRedirectDeflateBinding">
-		<constructor-arg ref="parserPool" />
+		<constructor-arg ref="redirectDecoder" />
+		<constructor-arg ref="redirectEncoder" />
 	</bean>
 
-	<bean id="artifactBinding" class="org.springframework.security.saml.processor.HTTPArtifactBinding">
-		<constructor-arg ref="parserPool" />
-		<constructor-arg ref="velocityEngine" />
+	<bean id="artifactDecoder" class="org.bibsonomy.webapp.util.spring.security.saml.util.HTTPArtifactDecoderImpl">
 		<constructor-arg>
 			<bean class="org.springframework.security.saml.websso.ArtifactResolutionProfileImpl">
 				<constructor-arg>
@@ -321,14 +340,43 @@
 				</property>
 			</bean>
 		</constructor-arg>
+		<constructor-arg ref="parserPool" />
+		<constructor-arg ref="urlComparator" />
 	</bean>
+
+	<bean id="artifactEncoder" class="org.opensaml.saml2.binding.encoding.HTTPArtifactEncoder">
+		<constructor-arg ref="velocityEngine" />
+		<constructor-arg value="/templates/saml2-post-artifact-binding.vm" />
+		<constructor-arg><null /></constructor-arg>
+	</bean>
+
+	<bean id="artifactBinding" class="org.springframework.security.saml.processor.HTTPArtifactBinding">
+		<constructor-arg ref="artifactDecoder" />
+		<constructor-arg ref="artifactEncoder" />
+	</bean>
+
+	<bean id="soapDecoder" class="org.bibsonomy.webapp.util.spring.security.saml.util.HTTPSOAP11DecoderImpl">
+		<constructor-arg ref="parserPool" />
+		<constructor-arg ref="urlComparator" />
+	</bean>
+
+	<bean id="soapEncoder" class="org.opensaml.saml1.binding.encoding.HTTPSOAP11Encoder" />
 
 	<bean id="soapBinding" class="org.springframework.security.saml.processor.HTTPSOAP11Binding">
-		<constructor-arg ref="parserPool" />
+		<constructor-arg ref="soapDecoder" />
+		<constructor-arg ref="soapEncoder" />
 	</bean>
 
-	<bean id="paosBinding" class="org.springframework.security.saml.processor.HTTPPAOS11Binding">
+	<bean id="paosDecoder" class="org.bibsonomy.webapp.util.spring.security.saml.util.HTTPPAOS11Decoder">
 		<constructor-arg ref="parserPool" />
+		<constructor-arg ref="urlComparator" />
+	</bean>
+
+	<bean id="paosEncoder" class="org.opensaml.liberty.binding.encoding.HTTPPAOS11Encoder" />
+
+	<bean id="paosBinding" class="org.springframework.security.saml.processor.HTTPPAOS11Binding">
+		<constructor-arg ref="paosDecoder" />
+		<constructor-arg ref="paosEncoder" />
 	</bean>
 
 	<!-- Initialization of OpenSAML library -->

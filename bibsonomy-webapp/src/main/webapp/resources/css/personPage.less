@@ -211,7 +211,41 @@ a.personPageShowAdditionalRoleFields {
 	border-bottom: 1px solid #eee;
 }
 
+.simpleMatchEntry {
+	padding: 0 0 4px 0;
+	border-bottom: 1px solid #eee;
+}
+
+.simpleMatchEntry:nth-child(2n)  {
+	background-color: #f9f9f9;
+}
+
+.subSimplePubEntry:nth-child(2n)  {
+	background-color: #f9f9f9;
+}
+
+.firstSubSimplePubEntry {
+	padding: 0 0 4px 16px;
+	background-color: #fff;
+	border-bottom: 1px solid #eee;
+	background-color: #f9f9f9;
+}
+
+.subSimplePubEntry {
+	padding: 0 0 4px 16px;
+	background-color: #fff;
+	border-bottom: 1px solid #eee;
+}
+
+.subSimplePubEntry:nth-last-child(1){
+	border-bottom: none !important;
+}
+
 .simplePubFirstLine {
+	width: 100%;
+}
+
+.simpleMatchFirstLine {
 	width: 100%;
 }
 
@@ -224,6 +258,17 @@ a.personPageShowAdditionalRoleFields {
 .simplePubTitle a {
 	display: inline-block;
 	padding: 0 56px 0 0;
+}
+
+.simpleMatchTitle {
+	font-weight: bold;
+	display: inline-block;
+	position: relative;
+}
+
+.simpleMatchTitle a {
+	display: inline-block;
+	padding: 0 4px 0 0;
 }
 
 .simplePubYear {
@@ -264,5 +309,19 @@ a.personPageShowAdditionalRoleFields {
 
 .pubSort:hover {
 	color: #333;
+}
+
+.mergePersonLegend {
+	position: absolute;
+	bottom: 0;
+}
+
+.mergePersonLegendEntry {
+	border-bottom: 1px solid #eee;
+	padding: 4px 0 4px 0;
+}
+
+.mergePersonLegendEntry:nth-last-child(1) {
+	border-bottom: none;
 }
 

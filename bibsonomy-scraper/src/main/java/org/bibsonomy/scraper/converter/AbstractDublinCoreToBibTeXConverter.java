@@ -129,7 +129,7 @@ public abstract class AbstractDublinCoreToBibTeXConverter implements BibtexConve
 	 * 
 	 * @return the entrytype
 	 */
-	private static String getEntrytype(final Map<String, String> data) {
+	protected String getEntrytype(final Map<String, String> data) {
 		// instance of DCMI type text
 		if (StringUtils.containsIgnoreCase(data.get(TYPE_KEY), "text")) {
 			// possible values for phdthesis

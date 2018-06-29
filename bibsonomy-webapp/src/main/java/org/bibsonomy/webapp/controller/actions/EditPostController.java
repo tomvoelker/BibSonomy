@@ -117,6 +117,8 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	protected RequestLogic requestLogic;
 	protected URLGenerator urlGenerator;
 
+	private int maxQuerySize;
+	
 	/**
 	 * Returns an instance of the command the controller handles.
 	 *
@@ -306,13 +308,12 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		final List<Post<RESOURCE>> dbPosts = new LinkedList<Post<RESOURCE>>();
 		List<Post<RESOURCE>> tmp;
 		int startCount = 0;
-		final int step = PostLogicInterface.MAX_QUERY_SIZE;
 
 		do {
-			tmp = this.logic.getPosts((Class<RESOURCE>) this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, SearchType.LOCAL, null, null, null, null, startCount, startCount + step);
+			tmp = this.logic.getPosts((Class<RESOURCE>) this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, SearchType.LOCAL, null, null, null, null, startCount, startCount + this.maxQuerySize);
 			dbPosts.addAll(tmp);
-			startCount += step;
-		} while (tmp.size() == step);
+			startCount += this.maxQuerySize;
+		} while (tmp.size() == this.maxQuerySize);
 
 		if (present(dbPosts)) {
 			for (final Post<RESOURCE> dbPost : dbPosts) {
@@ -1183,6 +1184,13 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 */
 	public void setPingback(final Pingback pingback) {
 		this.pingback = pingback;
+	}
+
+	/**
+	 * @param maxQuerySize the maxQuerySize to set
+	 */
+	public void setMaxQuerySize(int maxQuerySize) {
+		this.maxQuerySize = maxQuerySize;
 	}
 
 }

@@ -48,7 +48,7 @@ public class UserSettings implements Serializable {
 	/**
 	 * the profile privacy level
 	 */
-	private ProfilePrivlevel profilePrivlevel = ProfilePrivlevel.PUBLIC;
+	private ProfilePrivlevel profilePrivlevel = ProfilePrivlevel.PRIVATE;
 	
 	/**
 	 * TODO: use {@link TagCloudStyle} as type

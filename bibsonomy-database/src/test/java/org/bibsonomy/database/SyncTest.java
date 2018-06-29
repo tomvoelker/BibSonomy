@@ -67,7 +67,7 @@ public class SyncTest extends AbstractDatabaseManagerTest {
     private static SyncLogicInterface dbLogic;
     private static SynchronizationDatabaseManager syncDb;
 
-    private final static String userName = "Syncuser1";
+    private final static String userName = "syncuser1";
 
     private URI testURI;
 

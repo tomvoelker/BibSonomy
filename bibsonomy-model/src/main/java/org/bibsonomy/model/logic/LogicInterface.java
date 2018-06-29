@@ -54,6 +54,8 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.PersonMatch;
+import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -177,6 +179,14 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @return a set of groups, an empty set else
 	 */
 	public List<Group> getGroups(boolean pending, String userName, int start, int end);
+
+	/**
+	 * Returns a list of all deleted group users of the system.
+	 * @param start
+	 * @param end
+	 * @return a set of users, an empty set else
+	 */
+	public List<User> getDeletedGroupUsers(int start, int end);
 
 	/**
 	 * Returns details of one group.
@@ -380,6 +390,13 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 */
 	public String updateGroup(Group group, final GroupUpdateOperation operation, final GroupMembership membership);
 
+	/**
+	 * Restores a deleted group
+	 * @param group the group that should be restored
+	 * @return
+	 */
+	public String restoreGroup(final Group group);
+	
 	/**
 	 * Adds a document. If the resourceHash is given, the document is connected
 	 * to the corresponding post. Otherwise, the document is independent of any
@@ -759,5 +776,26 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param username
 	 */
 	public void unlinkUser(String username);
+	
+	public List<PersonMatch> getPersonMatches(String personID);
+	
+	public PersonMatch getPersonMatch(int matchID);
+	
+	public void denieMerge(PersonMatch match);
 
+	public boolean acceptMerge(PersonMatch match);
+
+	/**
+	 * @param formMatchId
+	 * @param array
+	 * @return
+	 */
+	public Boolean conflictMerge(int formMatchId, Map<String, String> map);
+	
+	/**
+	 * 
+	 * @param personId
+	 * @return returns the updated personId, if the person was merged to an other person
+	 */
+	public String getForwardId(String personId);
 }
