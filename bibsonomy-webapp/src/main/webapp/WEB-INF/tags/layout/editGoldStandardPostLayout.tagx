@@ -159,8 +159,9 @@
 						</bsform:fieldset>
 		
 						<jsp:invoke fragment="tagsAndGroups" />
-				
-						<jsp:invoke fragment="groupsandfriends" />
+						<c:if test="${properties['groupsandfriendsfeature.activated'] eq 'true'}">
+							<jsp:invoke fragment="groupsandfriends" />
+						</c:if>
 						<!--+
 							| detailed information  
 							+-->
