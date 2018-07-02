@@ -39,6 +39,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
@@ -82,7 +84,7 @@ import org.springframework.validation.Errors;
  * @author Christian Pfeiffer
  */
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand>, ErrorAware {
-	
+	private static final Log log = LogFactory.getLog(PersonMatch.class);
 	private RequestLogic requestLogic;
 	private PersonRoleRenderer personRoleRenderer;
 	private Errors errors;
@@ -163,7 +165,7 @@ public class PersonPageController extends SingleResourceListController implement
 			
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IntrospectionException e) {
 			// TODO Auto-generated catch block
-			System.err.println(e);
+			log.error(e);
 		}
 		JSONObject jsonResponse = new JSONObject();
 		jsonResponse.put("status", false);
