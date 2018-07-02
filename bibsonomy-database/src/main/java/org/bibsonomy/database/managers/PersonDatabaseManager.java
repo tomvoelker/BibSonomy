@@ -317,8 +317,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	public boolean addResourceRelation(ResourcePersonRelation resourcePersonRelation, DBSession session) {
 		session.beginTransaction();
 		try {
-			resourcePersonRelation
-					.setPersonRelChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			resourcePersonRelation.setPersonRelChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("addResourceRelation", resourcePersonRelation, session);
 			session.commitTransaction();
 			return true;
@@ -372,10 +371,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	// TODO: write testcase for this method and test whether groupBy of
 	// OR-mapping works as expected
-	public List<ResourcePersonRelation> getResourcePersonRelationsByPublication(String interHash,
-			DBSession databaseSession) {
-		return this.queryForList("getResourcePersonRelationsByPublication", interHash, ResourcePersonRelation.class,
-				databaseSession);
+	public List<ResourcePersonRelation> getResourcePersonRelationsByPublication(String interHash, DBSession databaseSession) {
+		return this.queryForList("getResourcePersonRelationsByPublication", interHash, ResourcePersonRelation.class, databaseSession);
 	}
 
 	/**
@@ -399,8 +396,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return List<ResourcePersonRelation>
 	 */
-	public List<ResourcePersonRelation> getResourcePersonRelations(final String interhash, final Integer authorIndex,
-			final PersonResourceRelationType role, final DBSession session) {
+	public List<ResourcePersonRelation> getResourcePersonRelations(final String interhash, final Integer authorIndex, final PersonResourceRelationType role, final DBSession session) {
 		final ResourcePersonRelation rpr = new ResourcePersonRelation();
 		Post<BibTex> post = new Post<>();
 		post.setResource(new BibTex());
@@ -416,10 +412,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 		return this.getResourcePersonRelationByResourcePersonRelation(rpr, session);
 	}
 
-	private List<ResourcePersonRelation> getResourcePersonRelationByResourcePersonRelation(ResourcePersonRelation rpr,
-			DBSession session) {
-		return this.queryForList("getResourcePersonRelationByResourcePersonRelation", rpr, ResourcePersonRelation.class,
-				session);
+	private List<ResourcePersonRelation> getResourcePersonRelationByResourcePersonRelation(ResourcePersonRelation rpr, DBSession session) {
+		return this.queryForList("getResourcePersonRelationByResourcePersonRelation", rpr, ResourcePersonRelation.class, session);
 	}
 
 	/**
@@ -429,19 +423,16 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return List<ResourcePersonRelation>
 	 */
-	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(String personId, User loginUser,
-			Class<? extends BibTex> publicationType, DBSession session) {
+	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(String personId, User loginUser, Class<? extends BibTex> publicationType, DBSession session) {
 
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, BibTex.class, null, null, null,
-				null, null, 0, Integer.MAX_VALUE, null, null, null, null, loginUser);
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, BibTex.class, null, null, null, null, null, 0, Integer.MAX_VALUE, null, null, null, null, loginUser);
 		final ResourcePersonRelation personRelation = new ResourcePersonRelation();
 		personRelation.setPerson(new Person());
 		personRelation.getPerson().setPersonId(personId);
 		param.setPersonRelation(personRelation);
 
 		if (publicationType == GoldStandardPublication.class) {
-			return this.queryForList("getComunityBibTexRelationsForPerson", param, ResourcePersonRelation.class,
-					session);
+			return this.queryForList("getComunityBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
 		} else {
 			return this.queryForList("getBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
 		}
@@ -452,10 +443,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return
 	 */
-	public List<ResourcePersonRelation> getResourcePersonRelationsWithPersonsByInterhash(String interhash,
-			DBSession session) {
-		return this.queryForList("getResourcePersonRelationsWithPersonsByInterhash", interhash,
-				ResourcePersonRelation.class, session);
+	public List<ResourcePersonRelation> getResourcePersonRelationsWithPersonsByInterhash(String interhash, DBSession session) {
+		return this.queryForList("getResourcePersonRelationsWithPersonsByInterhash", interhash, ResourcePersonRelation.class, session);
 	}
 
 	/**
@@ -526,8 +515,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 		Post habil1 = this.queryForObject("getHabilForPerson", match.getPerson1().getPersonId(), Post.class, session);
 		Post habil2 = this.queryForObject("getHabilForPerson", match.getPerson2().getPersonId(), Post.class, session);
 		// compare habils via hash
-		if (habil1 != null && habil2 != null
-				&& habil1.getResource().getInterHash() != habil2.getResource().getInterHash()) {
+		if (habil1 != null && habil2 != null && habil1.getResource().getInterHash() != habil2.getResource().getInterHash()) {
 			return false;
 		}
 		Post phd1 = this.queryForObject("getPHDForPerson", match.getPerson1().getPersonId(), Post.class, session);
@@ -558,8 +546,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	private void mergeAllPubs(PersonMatch match, String loginUser, DBSession session) {
-		List<ResourcePersonRelation> allRelationsPerson2 = this.queryForList("getResourcePersonRelationsByPersonId",
-				match.getPerson2().getPersonId(), ResourcePersonRelation.class, session);
+		List<ResourcePersonRelation> allRelationsPerson2 = this.queryForList("getResourcePersonRelationsByPersonId", match.getPerson2().getPersonId(), ResourcePersonRelation.class, session);
 
 		for (ResourcePersonRelation relation : allRelationsPerson2) {
 			// generate new person_change_id and log the old relation
@@ -581,16 +568,13 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	private void mergePersonAliases(String loginUser, PersonMatch match, DBSession session) {
-		List<PersonName> person1Names = this.queryForList("getNames", match.getPerson1().getPersonId(),
-				PersonName.class, session);
-		List<PersonName> person2Names = this.queryForList("getNames", match.getPerson2().getPersonId(),
-				PersonName.class, session);
+		List<PersonName> person1Names = this.queryForList("getNames", match.getPerson1().getPersonId(), PersonName.class, session);
+		List<PersonName> person2Names = this.queryForList("getNames", match.getPerson2().getPersonId(), PersonName.class, session);
 		for (PersonName name2 : person2Names) {
 			// check if person1 already has the name alias
 			boolean contains = false;
 			for (PersonName name1 : person1Names) {
-				if (name2.getFirstName().equals(name1.getFirstName())
-						&& name2.getLastName().equals(name1.getLastName())) {
+				if (name2.getFirstName().equals(name1.getFirstName()) && name2.getLastName().equals(name1.getLastName())) {
 					contains = true;
 				}
 			}
@@ -688,10 +672,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 				// dnb personid has a table that will link ids for the same
 				// person
 				if (fieldName.equals("dnbPersonId") && person1Value != null && person2Value != null) {
-					this.insert("addOtherDNBID", new DNBAliasParam((String) person1Value, (String) person2Value),
-							session);
-					this.update("updateTransitivDNBID", new DNBAliasParam((String) person1Value, (String) person2Value),
-							session);
+					this.insert("addOtherDNBID", new DNBAliasParam((String) person1Value, (String) person2Value), session);
+					this.update("updateTransitivDNBID", new DNBAliasParam((String) person1Value, (String) person2Value), session);
 				}
 			}
 			// write changes if a person was updated
@@ -701,8 +683,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 			if (updated2) {
 				this.updatePerson(match.getPerson2(), session);
 			}
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| IntrospectionException e) {
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IntrospectionException e) {
 			log.error(e);
 		}
 	}
@@ -730,19 +711,16 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 		// merge duplicate matches
 		for (PersonMatch dupe : dupes) {
 			// get the same matches to redirect denys
-			List<PersonMatch> toMerge = this.queryForList("getSimilarMatchesForMatch", dupe, PersonMatch.class,
-					session);
+			List<PersonMatch> toMerge = this.queryForList("getSimilarMatchesForMatch", dupe, PersonMatch.class, session);
 			PersonMatch combinedMerge = toMerge.get(0);
 			// only other matches will be removed
 			for (int i = 1; i < toMerge.size(); i++) {
-				this.update("redirectUserDenies",
-						new DenyMatchParam(toMerge.get(i).getMatchID(), combinedMerge.getMatchID()), session);
+				this.update("redirectUserDenies", new DenyMatchParam(toMerge.get(i).getMatchID(), combinedMerge.getMatchID()), session);
 				combinedMerge.getUserDenies().addAll(toMerge.get(i).getUserDenies());
 				this.delete("removePersonMatch", toMerge.get(i).getMatchID(), session);
 			}
 			// get userDenies without duplicates
-			combinedMerge.setUserDenies(
-					this.queryForList("getDeniesForMatch", combinedMerge.getMatchID(), String.class, session));
+			combinedMerge.setUserDenies(this.queryForList("getDeniesForMatch", combinedMerge.getMatchID(), String.class, session));
 			if (combinedMerge.getUserDenies().size() >= PersonMatch.denieThreshold) {
 				// deny merge for all if the total user deny count is bigger
 				// than the deny threshold
@@ -772,8 +750,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 					desc.getWriteMethod().invoke(person1, person2Value);
 				}
 			}
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| IntrospectionException e) {
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IntrospectionException e) {
 			log.error(e);
 		}
 		return edit;
@@ -858,16 +835,12 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 					this.updateMainName(person2, map.get(fieldName), session, loginUser);
 				} else if (fieldName.equals("gender")) {
 					// genders is an enum
-					new PropertyDescriptor(fieldName, Person.class).getWriteMethod().invoke(person1,
-							Gender.valueOf(map.get(fieldName)));
-					new PropertyDescriptor(fieldName, Person.class).getWriteMethod().invoke(person2,
-							Gender.valueOf(map.get(fieldName)));
+					new PropertyDescriptor(fieldName, Person.class).getWriteMethod().invoke(person1, Gender.valueOf(map.get(fieldName)));
+					new PropertyDescriptor(fieldName, Person.class).getWriteMethod().invoke(person2, Gender.valueOf(map.get(fieldName)));
 				} else {
 					// set all other person values
-					new PropertyDescriptor(fieldName, Person.class).getWriteMethod().invoke(person1,
-							map.get(fieldName));
-					new PropertyDescriptor(fieldName, Person.class).getWriteMethod().invoke(person2,
-							map.get(fieldName));
+					new PropertyDescriptor(fieldName, Person.class).getWriteMethod().invoke(person1, map.get(fieldName));
+					new PropertyDescriptor(fieldName, Person.class).getWriteMethod().invoke(person2, map.get(fieldName));
 				}
 			}
 			// add changes to both so they can be compared with mergable()
@@ -882,8 +855,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 				session.endTransaction();
 			}
 
-		} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e) {
+		} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			log.error(e);
 		}
 
