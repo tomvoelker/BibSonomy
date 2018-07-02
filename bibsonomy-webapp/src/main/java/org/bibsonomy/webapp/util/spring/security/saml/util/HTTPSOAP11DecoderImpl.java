@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
+ * BibSonomy-Webapp - The web application for BibSonomy.
  *
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -12,53 +12,38 @@
  *                               http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.common.enums;
+package org.bibsonomy.webapp.util.spring.security.saml.util;
+
+import org.opensaml.common.binding.decoding.URIComparator;
+import org.opensaml.xml.parse.ParserPool;
 
 /**
- * Enum that contains all possible update operations for person updates
- * @author mho
+ * adapter for the {@link HTTPSOAP11DecoderImpl} to add the correct {@link URIComparator}
+ * @author dzo
  */
-public enum PersonUpdateOperation {
+@Deprecated // remove when updating the saml spring security system
+public class HTTPSOAP11DecoderImpl extends org.opensaml.saml2.binding.decoding.HTTPSOAP11DecoderImpl {
 
-	/** Update the orcid of a person */
-	UPDATE_ORCID,
+	/**
+	 * default constructor
+	 * @param pool
+	 * @param comparator
+	 */
+	public HTTPSOAP11DecoderImpl(final ParserPool pool, final URIComparator comparator) {
+		super(pool);
 
-	/** Update the academic degree of a person */
-	UPDATE_ACADEMIC_DEGREE,
-
-	/** Update the names of a person */
-	UPDATE_NAMES,
-	
-	/** Updates all attributes of a person */
-	UPDATE_ALL,
-
-	/** Updates the college */
-	UPDATE_COLLEGE,
-	
-	/** Updates the college */
-	UPDATE_EMAIL,
-	
-	/** Updates the college */
-	UPDATE_HOMEPAGE,
-	
-	/** Creates a new person */
-	CREATE_PERSON,
-	
-	/** accepts merge */
-	MERGE_ACCEPT,
-	
-	/** denies merge */
-	MERGE_DENIED
+		this.setURIComparator(comparator);
+	}
 }

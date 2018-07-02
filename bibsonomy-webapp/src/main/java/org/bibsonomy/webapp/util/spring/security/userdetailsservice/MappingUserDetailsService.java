@@ -57,8 +57,8 @@ public class MappingUserDetailsService implements SAMLUserDetailsService {
 		//   create anonymous user or throw exception? - probably a special anonymous user with saml data and special contextrepository handling in
 		//   org.bibsonomy.webapp.util.spring.security.UsernameSecurityContextRepository.setLoginUser(HttpServletRequest, Authentication)
 		//   such that it can be checked later
-		final SamlRemoteUserId remoteId = attributeExtractor.getRemoteUserId(credential);
-		final String systemName = userNameMapping.map(remoteId);
+		final SamlRemoteUserId remoteId = this.attributeExtractor.getRemoteUserId(credential);
+		final String systemName = this.userNameMapping.map(remoteId);
 		if (systemName == null) {
 			return new RemoteOnlyUserDetails(credential);
 			// TODO: raise exception somewhere later to allow regular registration:

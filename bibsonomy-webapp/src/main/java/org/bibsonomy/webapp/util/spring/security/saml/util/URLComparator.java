@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
+ * BibSonomy-Webapp - The web application for BibSonomy.
  *
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -12,53 +12,43 @@
  *                               http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.common.enums;
+package org.bibsonomy.webapp.util.spring.security.saml.util;
+
+import org.opensaml.common.binding.decoding.BasicURLComparator;
 
 /**
- * Enum that contains all possible update operations for person updates
- * @author mho
+ * This removes the query params of the url before comparing it
+ *
+ * code copy of org.springframework.security.saml.util.DefaultURLComparator
+ * please remove as soon as we updated the spring security saml dependency
+ *
+ * @author dzo
  */
-public enum PersonUpdateOperation {
+@Deprecated // code copy, update saml dependency
+public class URLComparator extends BasicURLComparator {
 
-	/** Update the orcid of a person */
-	UPDATE_ORCID,
+	@Override
+	public boolean compare(String uri1, String uri2) {
+		if (uri2 == null){
+			return uri1 == null;
+		}
+		int queryStringIndex = uri2.indexOf('?');
+		if (queryStringIndex >= 0){
+			uri2 = uri2.substring(0, queryStringIndex);
+		}
 
-	/** Update the academic degree of a person */
-	UPDATE_ACADEMIC_DEGREE,
-
-	/** Update the names of a person */
-	UPDATE_NAMES,
-	
-	/** Updates all attributes of a person */
-	UPDATE_ALL,
-
-	/** Updates the college */
-	UPDATE_COLLEGE,
-	
-	/** Updates the college */
-	UPDATE_EMAIL,
-	
-	/** Updates the college */
-	UPDATE_HOMEPAGE,
-	
-	/** Creates a new person */
-	CREATE_PERSON,
-	
-	/** accepts merge */
-	MERGE_ACCEPT,
-	
-	/** denies merge */
-	MERGE_DENIED
+		return super.compare(uri1, uri2);
+	}
 }
