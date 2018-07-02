@@ -159,7 +159,7 @@
 					if (found == false) {
 						friends.push(selected);
 						var number=friends.indexOf(selected);
-						$("#friendsOrGroups").append("<li tabindex=1 value=\""+number+"\" class=\"delete-friend\" id=\"delete-friend-"+number+"\"><data-toggle=\"popover\" title=\"${message}\"><span class=\"glyphicon glyphicon-remove-sign glyphicon-position\" aria-hidden=\"true\"></span>"+selected+"</li>");
+						$("#friendsOrGroups").append("<li tabindex=1 value=\""+number+"\" class=\"delete-friend\" id=\"delete-friend-"+number+"\"><data-toggle=\"popover\" title=\"${message}\"><span class=\"fa fa-times fa-icon-position\" aria-hidden=\"true\"></span>"+selected+"</li>");
 						tags=$("#inpf_tags").val();
 						tags=tags+"send:"+selected+" ";
 						$("#inpf_tags").val(tags);
@@ -189,7 +189,7 @@
 					if (found == false) {
 						groups.push(selected);
 						var number=groups.indexOf(selected);
-						$("#friendsOrGroups").append("<li tabindex=1 value=\""+number+"\" class=\"delete-group\" id=\"delete-group-"+number+"\"><data-toggle=\"popover\" title=\"${message}\"><span class=\"glyphicon glyphicon-remove-sign glyphicon-position\" aria-hidden=\"true\"></span>"+selected+"</li>");
+						$("#friendsOrGroups").append("<li tabindex=1 value=\""+number+"\" class=\"delete-group\" id=\"delete-group-"+number+"\"><data-toggle=\"popover\" title=\"${message}\"><span class=\"fa fa-times fa-icon-position\" aria-hidden=\"true\"></span>"+selected+"</li>");
 						tags=$("#inpf_tags").val();
 						tags=tags+"for:"+selected+" ";
 						$("#inpf_tags").val(tags);
@@ -248,7 +248,7 @@
 						//friends[i]=(friends[i]).replace("send:","");
 						//friends[i]=(friends[i]).replace("sent:","");
 						selected=friends[i];
-						$("#friendsOrGroups").append("<li tabindex=1 value=\""+i+"\" class=\"delete-friend-labels\" id=\"delete-friend-"+i+"\"><span class=\"glyphicon glyphicon-remove-sign glyphicon-position\" aria-hidden=\"true\"></span><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
+						$("#friendsOrGroups").append("<li tabindex=1 value=\""+i+"\" class=\"delete-friend-labels\" id=\"delete-friend-"+i+"\"><span class=\"fa fa-times fa-icon-position\" aria-hidden=\"true\"></span><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
 					} 
 					$('[data-toggle="popover"]').popover();
 					
@@ -305,7 +305,7 @@
 					for (i = 0; i < groups.length; i++) {
 						//groups[i]=(groups[i]).replace("for:","");
 						selected=groups[i];
-						$("#friendsOrGroups").append("<li tabindex=1 value=\""+i+"\" class=\"delete-group-labels\" id=\"delete-group-"+i+"\"><span class=\"glyphicon glyphicon-remove-sign glyphicon-position\" aria-hidden=\"true\"></span><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
+						$("#friendsOrGroups").append("<li tabindex=1 value=\""+i+"\" class=\"delete-group-labels\" id=\"delete-group-"+i+"\"><span class=\"fa fa-times fa-icon-position\" aria-hidden=\"true\"></span><data-toggle=\"popover\" title=\"${message}\">"+selected+"</li>");
 					}
 					$('[data-toggle="popover"]').popover();
 		
