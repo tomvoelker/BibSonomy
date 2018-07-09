@@ -186,6 +186,14 @@
 		<constructor-arg value="${project.theme}" />
 	</bean>
 	
+	<bean id="projectEmail" class="java.lang.String">
+		<constructor-arg value="${project.email}" />
+	</bean>
+	
+	<bean id="projectNoSpamEmail" class="java.lang.String">
+		<constructor-arg value="${project.noSpamEmail}" />
+	</bean>
+	
 	<!-- handles sending of mails  -->
 	<bean id="mailUtils" class="org.bibsonomy.util.MailUtils" scope="singleton">
 		<property name="projectHome" ref="projectHome" />

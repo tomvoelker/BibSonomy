@@ -136,6 +136,8 @@ public class HelpSearchManager implements HelpSearch {
 	private String projectName;
 	private String projectTheme;
 	private String projectHome;
+	private String projectEmail;
+	private String projectNoSpamEmail;
 
 	private URLGenerator urlGenerator;
 	
@@ -324,6 +326,20 @@ public class HelpSearchManager implements HelpSearch {
 	 */
 	public void setProjectHome(String projectHome) {
 		this.projectHome = projectHome;
+	}
+	
+	/**
+	 * @param projectEmail the projectEmail to set
+	 */
+	public void setProjectEmail(String projectEmail) {
+		this.projectEmail = projectEmail;
+	}
+	
+	/**
+	 * @param projectNoSpamEmail the projectNoSpamEmail to set
+	 */
+	public void setProjectNoSpamEmail(String projectNoSpamEmail) {
+		this.projectNoSpamEmail = projectNoSpamEmail;
 	}
 
 	/**
