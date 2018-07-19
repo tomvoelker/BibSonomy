@@ -35,7 +35,7 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 
 /**
  * Returns an instance of {@link HttpClient}. The singleton pattern allows us 
- * to instanciate the HttpClient only when it is needed and to have only one 
+ * to instantiate the HttpClient only when it is needed and to have only one 
  * instance of it.
  * 
  * That way we could later on implement/add caching of web pages.
