@@ -68,45 +68,44 @@ public class CslModelConverter {
 	 * BibTeX entry types -> csl types
 	 * XXX: mapping is incomplete
 	 */
-	private static Map<String, String> typemap;
+	private static final Map<String, String> TYPEMAP = new HashMap<String, String>();
 	
 	static {
-		typemap = new HashMap<String, String>();
+		// FIXME: add all from http://docs.citationstyles.org/en/stable/specification.html#appendix-iii-types
+		TYPEMAP.put(BibTexUtils.ARTICLE, "article-journal");
 		
-		typemap.put(BibTexUtils.ARTICLE, "article-journal");
+		TYPEMAP.put(BibTexUtils.BOOK, "book");
+		TYPEMAP.put(BibTexUtils.PROCEEDINGS, "book");
+		TYPEMAP.put(BibTexUtils.PERIODICAL, "book");
+		TYPEMAP.put(BibTexUtils.MANUAL, "book");
 		
-		typemap.put(BibTexUtils.BOOK, "book");
-		typemap.put(BibTexUtils.PROCEEDINGS, "book");
-		typemap.put(BibTexUtils.PERIODICAL, "book");
-		typemap.put(BibTexUtils.MANUAL, "book");
+		TYPEMAP.put(BibTexUtils.BOOKLET, "pamphlet");
 		
-		typemap.put(BibTexUtils.BOOKLET, "pamphlet");
+		TYPEMAP.put(BibTexUtils.DATASET, "dataset");
 		
-		typemap.put(BibTexUtils.INBOOK, "chapter");
-		typemap.put(BibTexUtils.INCOLLECTION, "chapter");
+		TYPEMAP.put(BibTexUtils.INBOOK, "chapter");
+		TYPEMAP.put(BibTexUtils.INCOLLECTION, "chapter");
 		
-		typemap.put(BibTexUtils.INPROCEEDINGS, "paper-conference");
-		typemap.put(BibTexUtils.CONFERENCE, "paper-conference");
+		TYPEMAP.put(BibTexUtils.INPROCEEDINGS, "paper-conference");
+		TYPEMAP.put(BibTexUtils.CONFERENCE, "paper-conference");
 		
-		typemap.put(BibTexUtils.PHD_THESIS, "thesis");
-		typemap.put(BibTexUtils.MASTERS_THESIS, "thesis");
+		TYPEMAP.put(BibTexUtils.PHD_THESIS, "thesis");
+		TYPEMAP.put(BibTexUtils.MASTERS_THESIS, "thesis");
 		
-		typemap.put(BibTexUtils.TECH_REPORT, "report");
+		TYPEMAP.put(BibTexUtils.TECH_REPORT, "report");
 		
-		typemap.put(BibTexUtils.PATENT, "patent");
+		TYPEMAP.put(BibTexUtils.PATENT, "patent");
 		
-		typemap.put(BibTexUtils.ELECTRONIC, "webpage");
+		TYPEMAP.put(BibTexUtils.ELECTRONIC, "webpage");
 		
-		typemap.put(BibTexUtils.PRESENTATION, "speech");
+		TYPEMAP.put(BibTexUtils.PRESENTATION, "speech");
 		
-		typemap.put(BibTexUtils.MISC, "article");
+		TYPEMAP.put(BibTexUtils.MISC, "article");
 		
-		typemap.put(BibTexUtils.STANDARD, "legislation");
+		TYPEMAP.put(BibTexUtils.STANDARD, "legislation");
 		
-		typemap.put(BibTexUtils.UNPUBLISHED, "manuscript");
-		typemap.put(BibTexUtils.PREPRINT, "manuscript");
-		
-		
+		TYPEMAP.put(BibTexUtils.UNPUBLISHED, "manuscript");
+		TYPEMAP.put(BibTexUtils.PREPRINT, "manuscript");
 	}
 
 	/**
@@ -339,7 +338,7 @@ public class CslModelConverter {
 	 * @return the corresponding csl type
 	 */
 	private static final String mapToCslType(final String bibtexType) {
-		return typemap.get(bibtexType);
+		return TYPEMAP.get(bibtexType);
 	}
 	
 	/**

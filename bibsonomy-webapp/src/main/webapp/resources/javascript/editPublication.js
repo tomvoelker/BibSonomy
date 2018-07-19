@@ -28,6 +28,7 @@ var requiredForType = {
         "book":["publisher","volume","number","series","address","edition","month","misc.language","misc.DOI","misc.ISBN","note"],
         "booklet":["howpublished","address","month","misc.language","misc.DOI","misc.ISBN","note"],
         "conference":inproceedingsField,
+        "dataset":["misc.DOI", "url"],
         "inbook":["chapter","pages","publisher","volume","number","series","type","address","edition","month","misc.language","misc.DOI","misc.ISBN","note"],
         "incollection":["publisher","booktitle","volume","number","series","type","chapter","pages","address","edition","month","misc.language","misc.DOI","misc.ISBN","note"],
         "inproceedings":inproceedingsField,
