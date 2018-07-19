@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.enums.Gender;
 
 /**
@@ -41,7 +42,7 @@ import org.bibsonomy.model.enums.Gender;
  * 
  * @author jil
  */
-public class Person implements Serializable {
+public class Person implements Linkable, Serializable {
 
 	private static final long serialVersionUID = 4578956154246424767L;
 	
