@@ -76,6 +76,11 @@
 			<version>2.6</version>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
 			<!-- this is a new "not so fat" JAR -->
 			<groupId>edu.umass.cs.mallet</groupId>
 			<artifactId>mallet</artifactId>
