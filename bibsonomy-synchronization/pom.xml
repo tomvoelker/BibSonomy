@@ -1,34 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-
-    BibSonomy-Synchronization - Handles user synchronization between BibSonomy authorities
-
-    Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
-                                  University of Kassel, Germany
-                                  http://www.kde.cs.uni-kassel.de/
-                              Data Mining and Information Retrieval Group,
-                                  University of Würzburg, Germany
-                                  http://www.is.informatik.uni-wuerzburg.de/en/dmir/
-                              L3S Research Center,
-                                  Leibniz University Hannover, Germany
-                                  http://www.l3s.de/
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<!-- BibSonomy-Synchronization - Handles user synchronization between BibSonomy 
+	authorities Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group, 
+	University of Kassel, Germany http://www.kde.cs.uni-kassel.de/ Data Mining 
+	and Information Retrieval Group, University of Würzburg, Germany http://www.is.informatik.uni-wuerzburg.de/en/dmir/ 
+	L3S Research Center, Leibniz University Hannover, Germany http://www.l3s.de/ 
+	This program is free software: you can redistribute it and/or modify it under 
+	the terms of the GNU General Public License as published by the Free Software 
+	Foundation, either version 3 of the License, or (at your option) any later 
+	version. This program is distributed in the hope that it will be useful, 
+	but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+	or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for 
+	more details. You should have received a copy of the GNU General Public License 
+	along with this program. If not, see <http://www.gnu.org/licenses/>. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<name>BibSonomy-Synchronization</name>
@@ -129,6 +113,16 @@
 			<artifactId>jetty-embedded</artifactId>
 			<version>6.1.10</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.1.1</version>
 		</dependency>
 	</dependencies>
 </project>
