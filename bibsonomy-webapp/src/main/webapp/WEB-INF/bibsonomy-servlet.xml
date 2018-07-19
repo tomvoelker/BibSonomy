@@ -339,7 +339,8 @@
 								<!--  <value>requestedUser</value> -->
 								<!-- <value>requestedRole</value> -->
 								<!-- <value>requestedIndex</value>  -->
-								
+								<value>formResponseString</value>
+								<value>formMatchId</value>
 								<value>formAction</value>
 								<value>formPersonRoles</value>
 								<value>formPersonRole</value>

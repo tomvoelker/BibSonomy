@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.webapp.util.spring.security.provider;
 
+import org.bibsonomy.util.spring.security.RemoteOnlyUserDetails;
+import org.bibsonomy.webapp.util.spring.security.exceptions.SamlUsernameNotFoundException;
 import org.bibsonomy.webapp.util.spring.security.saml.credential.checker.SAMLCredentialChecker;
 import org.springframework.security.saml.SAMLAuthenticationProvider;
 import org.springframework.security.saml.SAMLCredential;
@@ -46,7 +48,16 @@ public class SAMLRestrictedAuthenticationProvider extends SAMLAuthenticationProv
 	@Override
 	protected Object getUserDetails(SAMLCredential credential) {
 		this.preSAMLChecker.checkCredential(credential);
-		return super.getUserDetails(credential);
+
+		final Object userDetails = super.getUserDetails(credential);
+
+		// throw an exception if the user is only authenticated remotely
+		// XXX: only the Wuerzburg IDP currently requires this check here; it is not using the handling
+		// in the SamlCredAuthProvider
+		if (userDetails instanceof RemoteOnlyUserDetails) {
+			throw new SamlUsernameNotFoundException(credential);
+		}
+		return userDetails;
 	}
 
 	/**

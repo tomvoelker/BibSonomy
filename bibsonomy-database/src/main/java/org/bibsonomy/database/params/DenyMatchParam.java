@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
+ * BibSonomy-Database - Database for BibSonomy.
  *
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,41 +24,67 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.common.enums;
+package org.bibsonomy.database.params;
 
 /**
- * Enum that contains all possible update operations for person updates
- * @author mho
+ * TODO: add documentation to this class
+ *
+ * @author jhi
  */
-public enum PersonUpdateOperation {
-
-	/** Update the orcid of a person */
-	UPDATE_ORCID,
-
-	/** Update the academic degree of a person */
-	UPDATE_ACADEMIC_DEGREE,
-
-	/** Update the names of a person */
-	UPDATE_NAMES,
-	
-	/** Updates all attributes of a person */
-	UPDATE_ALL,
-
-	/** Updates the college */
-	UPDATE_COLLEGE,
-	
-	/** Updates the college */
-	UPDATE_EMAIL,
-	
-	/** Updates the college */
-	UPDATE_HOMEPAGE,
-	
-	/** Creates a new person */
-	CREATE_PERSON,
-	
-	/** accepts merge */
-	MERGE_ACCEPT,
-	
-	/** denies merge */
-	MERGE_DENIED
+public class DenyMatchParam {
+	private String userName;
+	private int matchId;
+	private int newMatchId;
+	/**
+	 * @return the newMatchId
+	 */
+	public int getNewMatchId() {
+		return this.newMatchId;
+	}
+	/**
+	 * @param newMatchId the newMatchId to set
+	 */
+	public void setNewMatchId(int newMatchId) {
+		this.newMatchId = newMatchId;
+	}
+	/**
+	 * @param matchID2
+	 * @param userName2
+	 */
+	public DenyMatchParam(int matchID, int newMatchId) {
+		this.matchId=matchId;
+		this.newMatchId=newMatchId;
+	}
+	/**
+	 * @param matchID2
+	 * @param userName2
+	 */
+	public DenyMatchParam(int matchID, String userName) {
+		this.userName=userName;
+		this.matchId = matchID;
+	}
+	/**
+	 * @return the matchId
+	 */
+	public int getMatchId() {
+		return this.matchId;
+	}
+	/**
+	 * @param matchId the matchId to set
+	 */
+	public void setMatchId(int matchId) {
+		this.matchId = matchId;
+	}
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return this.userName;
+	}
+	/**
+	 * @param userName the userName to set
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 }
