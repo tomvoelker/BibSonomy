@@ -223,7 +223,6 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
     public void testUpdatePostToPostInDB() {
         final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", VISIBLE_GROUPS, this.dbSession);
         post.getResource().recalculateHashes();
-        System.out.println(post.getResource().getInterHash());
         goldPubManager.updatePost(post, INTERHASH_GOLD_2, loginUser, null, this.dbSession);
     }
 

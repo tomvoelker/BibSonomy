@@ -104,7 +104,6 @@ public interface SearchDBInterface<R extends Resource> {
 	/**
 	 * @param fromPersonChangeId
 	 * @param toPersonChangeIdExclusive
-	 * @param databaseSession
 	 * @return
 	 */
 	public List<ResourcePersonRelationLogStub> getPubPersonRelationsByChangeIdRange(long fromPersonChangeId, long toPersonChangeIdExclusive);

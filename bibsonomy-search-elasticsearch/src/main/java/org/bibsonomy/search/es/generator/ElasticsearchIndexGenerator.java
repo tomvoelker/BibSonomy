@@ -120,12 +120,13 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 		int skip = 0;
 		int lastContenId = -1;
 		int postListSize = 0;
+		final Map<String, Map<String, Object>> docsToWrite = new HashMap<>();
 		do {
 			postList = this.inputLogic.getPostEntries(lastContenId, SearchDBInterface.SQL_BLOCKSIZE);
 			postListSize = postList.size();
 			skip += postListSize;
 			log.info("Read " + skip + " entries.");
-			final Map<String, Map<String, Object>> docsToWrite = new HashMap<>();
+
 			// cycle through all posts of currently read block
 			for (final SearchPost<R> post : postList) {
 				post.setLastLogDate(newState.getLast_log_date());
@@ -146,13 +147,14 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 					this.clearQueue(docsToWrite);
 				}
 			}
-			
-			this.clearQueue(docsToWrite);
 
 			if (postListSize > 0) {
 				lastContenId = postList.get(postListSize - 1).getContentId().intValue();
 			}
 		} while (postListSize == SearchDBInterface.SQL_BLOCKSIZE);
+
+		// write last unfinished bulk
+		this.clearQueue(docsToWrite);
 		
 		this.writeMetaInfo(newState);
 	}

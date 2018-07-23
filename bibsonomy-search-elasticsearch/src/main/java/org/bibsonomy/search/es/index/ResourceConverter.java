@@ -62,7 +62,7 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Post<R> convert(final Map<String, Object> source, Set<String> allowdUsersForDoc) {
+	public Post<R> convert(final Map<String, Object> source, Set<String> allowedUsersForDoc) {
 		final Post<R> post = new Post<>();
 		
 		if (source.containsKey(Fields.SYSTEM_URL)) {
@@ -73,7 +73,7 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		post.setDate(parseDate(source, Fields.DATE));
 		post.setChangeDate(parseDate(source, Fields.CHANGE_DATE));
 		final String userName = (String) source.get(Fields.USER_NAME);
-		final boolean loadDocuments = allowdUsersForDoc.contains(userName);
+		final boolean loadDocuments = allowedUsersForDoc.contains(userName);
 		fillUser(post, userName);
 		post.setDescription((String) source.get(Fields.DESCRIPTION));
 		
@@ -214,7 +214,7 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 	}
 
 	/**
-	 * @param set
+	 * @param tags
 	 * @return
 	 */
 	private static Set<String> convertTags(final Set<Tag> tags) {
