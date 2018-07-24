@@ -761,8 +761,8 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			 * to allow "and"'s for field search queries we set the dis max to false to enable
 			 * boolean queries for multiple fields
 			 *
-			 * XXX: we also need to set these parameters to the private string queries, else the field is ignored
-			 * and ES searches again in the provided fields
+			 * XXX: we also need to set these parameters to the private string queries, otherwise the configured
+			 * field is ignored and ES searches again in the queried fields
 			 */
 			final QueryBuilder queryBuilder = QueryBuilders.queryStringQuery(searchTerms).defaultOperator(QueryStringQueryBuilder.Operator.AND).useDisMax(false);
 			
