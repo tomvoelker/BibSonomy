@@ -747,7 +747,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @param negatedTags
 	 * @return overall elasticsearch query
 	 */
-	protected final QueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, Collection<String> allowedGroups, Set<String> usersThatShareDocs, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
+	protected final QueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, Collection<String> allowedGroups, Set<String> usersThatShareDocs, String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
 		final BoolQueryBuilder mainQueryBuilder = QueryBuilders.boolQuery();
 		final BoolQueryBuilder mainFilterBuilder = QueryBuilders.boolQuery();
 		
@@ -756,6 +756,11 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		// --------------------------------------------------------------------
 		// the resulting main query
 		if (present(searchTerms)) {
+			//TODO fixme
+			//after the requested user is parsed from a query like 'user:username and term' the searchTerm 'and term' remains and will lead to an exception
+			if (searchTerms.toLowerCase().split(" ")[0].equals("and") || searchTerms.toLowerCase().split(" ")[0].equals("or")){
+				searchTerms = searchTerms.split(" ", 2)[1];
+			}
 			final QueryBuilder queryBuilder = QueryBuilders.queryStringQuery(searchTerms)
 					.minimumShouldMatch("2<75%");
 			
