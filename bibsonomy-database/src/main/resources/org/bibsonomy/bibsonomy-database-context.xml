@@ -226,11 +226,19 @@
 		<property name="chain" ref="discussionChain" />
 	</bean>
 	
+	<bean id="documentDatabaseManager" class="org.bibsonomy.database.managers.DocumentDatabaseManager" factory-method="getInstance">
+		<property name="userDatabaseManager" ref="userDatabaseManager" />
+	</bean>
+	
 	<bean id="userDatabaseManager" class="org.bibsonomy.database.managers.UserDatabaseManager" factory-method="getInstance">
 		<property name="chain" ref="userChain" />
 		<property name="validator" ref="databaseValidator" />
 		<property name="fileLogic" ref="fileLogic" />
 		<property name="usersDefaultToClassify" value="${user.defaultToClassify}" />
+	</bean>
+	
+	<bean id="permissionDatabaseManager" class="org.bibsonomy.database.managers.PermissionDatabaseManager" factory-method="getInstance">
+		<property name="maxQuerySize" value="${database.maxQuerySize}" />
 	</bean>
 	
 	<bean id="groupDatabaseManager" class="org.bibsonomy.database.managers.GroupDatabaseManager" factory-method="getInstance">
@@ -248,7 +256,8 @@
 	</bean>
 	
 	<bean id="publicationDatabaseManager" class="org.bibsonomy.database.managers.BibTexDatabaseManager" factory-method="getInstance" parent="postDatabaseManager">
-		<property name="resourceSearch" ref="publicationSearch" />
+		<property name="userDb" ref="userDatabaseManager" />
+ 		<property name="resourceSearch" ref="publicationSearch" />
 		<property name="chain" ref="publicationChain" />
 		<property name="fileLogic" ref="fileLogic" />
 		<property name="publicationSearch" ref="publicationSearch" />

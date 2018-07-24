@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -39,7 +40,12 @@ import java.util.Set;
  * @author rja
  *
  */
-public class DiscussionItem {
+public class DiscussionItem implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -640702214244246648L;
 
 	/**
 	 * the internal id; only use in database module!

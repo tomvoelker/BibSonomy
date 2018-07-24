@@ -42,11 +42,11 @@ import org.bibsonomy.util.file.AbstractServerFileLogic;
 import org.bibsonomy.util.file.FileUtil;
 
 /**
- * TODO: add documentation to this class
+ * the server side implementation of the {@link CslFileLogic}
  *
- * @author jan
+ * @author jp
  */
-public class ServerCSLFileLogic extends AbstractServerFileLogic implements CslFileLogic{
+public class ServerCSLFileLogic extends AbstractServerFileLogic implements CslFileLogic {
 	
 	private final ExtensionChecker extensionChecker = new ListExtensionChecker(Sets.asSet(CslFileLogic.LAYOUT_FILE_EXTENSION));
 	
@@ -61,21 +61,21 @@ public class ServerCSLFileLogic extends AbstractServerFileLogic implements CslFi
 	@Override
 	public Document writeCSLLayout(final String username, final UploadedFile file) throws Exception{
 		final String filename = file.getFileName();
-//		this.checkFile(this.extensionChecker, filename);
-		
-		final String hashedName = CslLayoutUtils.userLayoutHash(username);
+		this.checkFile(this.extensionChecker, filename);
+
+		// "encoding" spaces, TODO: find a better solution
+		final String encodedName = FilenameUtils.getName(filename).replace(' ', '_');
+		final String hashedName = CslLayoutUtils.userLayoutHash(username, encodedName);
+
 		final Document document = new Document();
-		document.setFileName(FilenameUtils.getName(filename));
+		document.setFileName(encodedName);
 		document.setMd5hash(HashUtils.getMD5Hash(file.getBytes()));
 		document.setFileHash(hashedName);
 		document.setUserName(username);
 		document.setFile(this.writeFile(file, getFilePath(hashedName)));
 		return document;
-		
 	}
-	
-	
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.util.file.AbstractServerFileLogic#getFilePath(java.lang.String)
 	 */
@@ -93,10 +93,10 @@ public class ServerCSLFileLogic extends AbstractServerFileLogic implements CslFi
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.services.filesystem.CSLFileLogic#validCSLLayoutFile(org.bibsonomy.model.util.file.UploadedFile)
+	 * @see org.bibsonomy.services.filesystem.CSLFileLogic#isValidCSLLayoutFile(org.bibsonomy.model.util.file.UploadedFile)
 	 */
 	@Override
-	public boolean validCSLLayoutFile(UploadedFile file) {
+	public boolean isValidCSLLayoutFile(UploadedFile file) {
 		return this.extensionChecker.checkExtension(file.getFileName());
 	}
 

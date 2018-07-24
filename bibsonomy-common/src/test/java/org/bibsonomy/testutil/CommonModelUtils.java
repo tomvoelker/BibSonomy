@@ -65,7 +65,7 @@ public final class CommonModelUtils {
 	}
 
 	/**
-	 * Calls every setter on an object and fills it wiht dummy values.
+	 * Calls every setter on an object and fills it with dummy values.
 	 * @param obj 
 	 */
 	public static void setBeanPropertiesOn(final Object obj) {
@@ -92,6 +92,9 @@ public final class CommonModelUtils {
 	 */
 	private static Object getDummyValue(final Class<?> type, final String name) {
 		if (String.class == type) {
+			if (name.equals("misc")){
+				return "test-misc={test-misc}"; // Just a string test-misc would be invalid since misc wants bibtex like key={value}
+			}
 			return "test-" + name;
 		}
 		if ((int.class == type) || (Integer.class == type)) {

@@ -29,8 +29,11 @@ package org.bibsonomy.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 import org.bibsonomy.model.util.MiscFieldConflictResolutionStrategy;
+import java.util.Map;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.junit.Test;
 
 /**
@@ -42,33 +45,45 @@ public class BibTexTest {
 
 	/**
 	 * tests {@link BibTex#syncMiscFields(MiscFieldConflictResolutionStrategy)}
+	 * This test shall verify that the misc-string and the misc-field are kept in sync via syncMiscFields
 	 */
 	@Test
 	public void testSyncMiscFields() {
 		final BibTex publication = new BibTex();
 
 		final String key = "key";
-		final String value2 = "value2";
+		final String key3 = "key3";
 		final String value1 = "value1";
-		final String misc2 = "  " + key + " = {" + value2 + "}";
-		publication.setMisc(misc2);
-		publication.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_WINS);
-		assertEquals(misc2, publication.getMisc());
-
-		publication.addMiscField(key, value1);
-		publication.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_WINS);
-
-		assertEquals(value2, publication.getMiscField(key));
-		assertEquals(misc2, publication.getMisc());
-		assertTrue(publication.isMiscFieldParsed());
-
-		publication.addMiscField(key, value1);
-		publication.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS);
-
+		final String value2 = "value2";
 		final String misc1 = "  " + key + " = {" + value1 + "}";
-		assertEquals(value1, publication.getMiscField(key));
-		assertEquals(misc1, publication.getMisc());
-		assertTrue(publication.isMiscFieldParsed());
+		final String misc2 = "  " + key + " = {" + value2 + "}";
+		final String misc3 = "  " + key3 + " = {" + value2 + "}";
+		final Map<String,String> misc2fields = BibTexUtils.parseMiscFieldString(misc2);
+		
+		// Alter misc entry via setMisc
+		publication.setMisc(misc2);  // Sync is implied now
+		assertTrue(publication.isMiscFieldParsed()); // check for that
+		assertEquals(misc2, publication.getMisc()); // Assert that miscField equals misc string
 
+		
+		// Alter misc entry via setMiscFields
+		publication.setMiscFields(misc2fields); //Sync is implied
+		assertTrue(publication.isMiscFieldParsed()); // check for that
+		assertEquals(misc2, publication.getMisc());
+		
+		// Alter misc entry via addMiscFields
+		publication.addMiscField(key, value1); // Sync is implied
+		assertTrue(publication.isMiscFieldParsed()); // check for that	
+		assertEquals(misc1, publication.getMisc());
+
+		// Alter misc entry via removeMiscField
+		publication.addMiscField(key3, value2); // Sync is implied
+		assertTrue(publication.isMiscFieldParsed()); // check for that
+		publication.removeMiscField(key); // Sync is implied
+		assertTrue(publication.isMiscFieldParsed()); // check for that
+		assertNull(publication.getMiscField(key));
+		assertEquals(value2, publication.getMiscField(key3));
+		assertEquals(misc3, publication.getMisc());
+			
 	}
 }

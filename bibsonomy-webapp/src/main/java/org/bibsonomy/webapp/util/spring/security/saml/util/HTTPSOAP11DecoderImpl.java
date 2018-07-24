@@ -24,32 +24,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.command.actions;
+package org.bibsonomy.webapp.util.spring.security.saml.util;
 
-import org.bibsonomy.webapp.command.SettingsViewCommand;
+import org.opensaml.common.binding.decoding.URIComparator;
+import org.opensaml.xml.parse.ParserPool;
 
 /**
- * @author cvo
+ * adapter for the {@link HTTPSOAP11DecoderImpl} to add the correct {@link URIComparator}
+ * @author dzo
  */
-public class JabRefImportCommand extends SettingsViewCommand {
-	private static final long serialVersionUID = -2852728956746251923L;
+@Deprecated // remove when updating the saml spring security system
+public class HTTPSOAP11DecoderImpl extends org.opensaml.saml2.binding.decoding.HTTPSOAP11DecoderImpl {
 
 	/**
-	 * hash of the layout definition
+	 * default constructor
+	 * @param pool
+	 * @param comparator
 	 */
-	private String hash;
+	public HTTPSOAP11DecoderImpl(final ParserPool pool, final URIComparator comparator) {
+		super(pool);
 
-	/**
-	 * @return the hash
-	 */
-	public String getHash() {
-		return this.hash;
-	}
-
-	/**
-	 * @param hash the hash to set
-	 */
-	public void setHash(String hash) {
-		this.hash = hash;
+		this.setURIComparator(comparator);
 	}
 }

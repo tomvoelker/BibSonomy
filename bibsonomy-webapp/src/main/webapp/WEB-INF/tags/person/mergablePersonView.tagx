@@ -1,0 +1,98 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:per="urn:jsptagdir:/WEB-INF/tags/resources/person"
+	xmlns:tagper="urn:jsptagdir:/WEB-INF/tags/person"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
+
+	<jsp:directive.attribute name="personMatch"
+		type="org.bibsonomy.model.PersonMatch" required="true" />
+	<jsp:directive.attribute name="currentPerson"
+		type="org.bibsonomy.model.Person" required="true" />
+	<jsp:directive.attribute name="conflicts" type="java.util.Map"
+		required="true" />
+
+	<fmt:message key="person.merge.conflictmerge" var="textConflictMerge" />
+	<fmt:message key="person.merge.merge" var="textMerge" />
+	<fmt:message key="person.merge.deny" var="textDeny" />
+	<fmt:message key="person.merge.reasons" var="textReasons" />
+
+	<div class="simpleMatchEntry" id="match_${personMatch.matchID}">
+		<c:set var="matchedPersonIndex"
+			value="${(currentPerson.personId == personMatch.person1.personId) ? 2 : 1}" />
+		<c:set var="matchedPerson"
+			value="${(matchedPersonIndex == 1) ? personMatch.person1 : personMatch.person2}" />
+		<c:set var="personUrlTemplate">${relativeUrlGenerator.getPersonUrl(matchedPerson.personId)}</c:set>
+
+		<div class="simpleMatchFirstLine">
+			<span class="simpleMatchTitle"> <a href="${personUrlTemplate}"
+				title="${matchedPerson.mainName}"><span itemprop="name"><c:out
+							value="${matchedPerson.mainName}" /></span></a>
+			</span>
+			<div class="btn-group pull-right">
+				<c:choose>
+					<c:when
+						test="${fn:length(conflicts.get(personMatch.matchID)) gt 0}">
+						<button type="button"
+							class="btn btn-warning btn-xs conflictMergeButton"
+							match-id="${personMatch.matchID}" conflicts="${conflicts.get(personMatch.matchID)}"
+							title="${textConflictMerge}" data-toggle='modal'
+							data-target='#conflictModal'>(&#10004;)</button>
+					</c:when>
+					<c:otherwise>
+						<button type="button" class="btn btn-success btn-xs mergeButton"
+							data-operation="MERGE_ACCEPT" match-id="${personMatch.matchID}"
+							title="${textMerge}">&#10004;</button>
+					</c:otherwise>
+				</c:choose>
+				<button type="button" class="btn btn-danger btn-xs mergeButton"
+					data-operation="MERGE_DENIED" match-id="${personMatch.matchID}"
+					title="${textDeny}">&#10006;</button>
+			</div>
+			<c:set var="matchPersonPosts"
+				value="${(matchedPersonIndex == 1) ? personMatch.person1Posts : personMatch.person2Posts}" />
+			<c:if test="${fn:length(matchPersonPosts) gt 0}">
+					<div class="firstSubSimplePubEntry"
+					id="${matchPersonPosts.get(0).resource.interHash}">
+					<span class="ptitle"><bib:title post="${matchPersonPosts.get(0)}" /></span> <span
+						class="personPdesc pdesc"><bib:desc post="${matchPersonPosts.get(0)}"
+						publication="${matchPersonPosts.get(0).resource}" /></span><br />
+				</div>
+				<div id="info_${personMatch.matchID}" class="panel-collapse collapse">
+					<c:forEach var="personPost" items="${matchPersonPosts}">
+						<c:if test="${matchPersonPosts.get(0) != personPost}">
+							<div class="subSimplePubEntry" id="${personPost.resource.interHash}">
+								<span class="ptitle"><bib:title post="${personPost}" /></span> <span
+									class="personPdesc pdesc"><bib:desc post="${personPost}"
+										publication="${personPost.resource}" /></span><br />
+							</div>
+						</c:if>
+					</c:forEach>
+				</div>
+				<c:if test="${fn:length(matchPersonPosts) gt 1}">
+					<button type="button" id="moreMatchReasonsToggler"
+						class="btn btn-info btn-xs" style="" data-toggle="collapse"
+						data-target="#info_${personMatch.matchID}"
+						title="${textReasons}" value="more">more</button>
+				</c:if>
+			</c:if>
+		</div>
+
+
+		<div class="clearflat">
+			<!-- KEEP ME-->
+		</div>
+	</div>
+
+</jsp:root>

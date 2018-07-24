@@ -57,7 +57,7 @@
 					
 					<!-- Safari buttons -->
 					<p class="safari-addon">
-						<a class="btn btn-success btn-lg btn-block" href="/resources/addons/safari/${properties['project.theme']}-buttons-extension/${properties['project.theme']}_buttons.safariextz">
+						<a class="btn btn-success btn-lg btn-block" href="${properties['project.addons.safari.url']}">
 							<fmt:message key="bookmarklet.buttonTextSafari" />
 						</a>
 					</p>

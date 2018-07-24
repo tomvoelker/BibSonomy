@@ -162,21 +162,15 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 	 * @param ignoreError TODO
 	 * @return the scraping context for the url and selection
 	 */
-	protected ScrapingContext buildScrapingContext(final String url, String selection, boolean ignoreError) {
+	protected ScrapingContext buildScrapingContext(final String url, final String selection, final boolean ignoreError) {
 		/*
 		 * We have a URL set which means we shall scrape!
-		 * 
-		 * set selected text
 		 */
-		if (selection == null) {
-			selection = "";
-		}
-		
 		/*
 		 * Create context for scraping
 		 */
 		try {
-			return new ScrapingContext(url == null ? null : new URL(url), selection);
+			return new ScrapingContext(url == null ? null : new URL(url), selection == null ? "" : selection);
 		} catch (final MalformedURLException ex) {
 			/*
 			 * wrong url format

@@ -78,11 +78,9 @@ import org.bibsonomy.services.searcher.ResourceSearch;
 public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexParam> {
 	private static final Log log = LogFactory.getLog(BibTexDatabaseManager.class);
 
-	private static final BibTexDatabaseManager singleton = new BibTexDatabaseManager();
-
 	private static final HashID[] hashRange = HashID.getAllHashIDs();
-	
-	private ResourceSearch<BibTex> publicationSearch;
+
+	private static final BibTexDatabaseManager singleton = new BibTexDatabaseManager();
 
 	/**
 	 * @return BibTexDatabaseManager
@@ -90,8 +88,11 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	public static BibTexDatabaseManager getInstance() {
 		return singleton;
 	}
+	
+	private ResourceSearch<BibTex> publicationSearch;
 
 	/** database manager */
+	private UserDatabaseManager userDb;
 	private final BibTexExtraDatabaseManager extraDb;
 	private final DocumentDatabaseManager docDb;
 
@@ -360,6 +361,23 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 			publication.setExtraUrls(this.extraDb.getURL(resourceHash, userName, session));
 
 			return post;
+		}
+
+		/*
+		 * FIXME: the log_* tables should also be updated when a user is marked as spammer
+		 * and the queries should be adapted
+		 *
+		 * here we disable the resourced moved feature for spammers
+		 * but we allow the spam owner to get the resource moved information
+		 * reason: the spam post is not visible for other users, but the logged posts are visible to all
+		 * this leads to a A -> A redirect if the spammer changed publication A to B and back to A
+		 */
+		if (present(userName) && !userName.equals(authUser)) {
+			final User postUser = this.userDb.getUserDetails(userName, session);
+
+			if (postUser.isSpammer()) {
+				return null;
+			}
 		}
 
 		/*
@@ -671,17 +689,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	/**
-	 * @param fileLogic
-	 *            the fileLogic to set
-	 */
-	public void setFileLogic(final FileLogic fileLogic) {
-		this.fileLogic = fileLogic;
-	}
-
-	/**
-	 * @param options 
-	 * @param queryString
-	 * @param options 
+	 * @param options
 	 * @return
 	 */
 	public List<Post<BibTex>> getPublicationSuggestion(PublicationSuggestionQueryBuilder options) {
@@ -691,8 +699,26 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		log.warn("no publicationSearch available for publication suggestions");
 		return new ArrayList<>();
 	}
-
+	/**
+	 *
+	 * @param publicationSearch the publicationSearch to set
+	 */
 	public void setPublicationSearch(ResourceSearch<BibTex> publicationSearch) {
 		this.publicationSearch = publicationSearch;
+	}
+
+	/**
+	 * @param userDb the userDb to set
+	 */
+	public void setUserDb(UserDatabaseManager userDb) {
+		this.userDb = userDb;
+	}
+
+	/**
+	 * @param fileLogic
+	 *            the fileLogic to set
+	 */
+	public void setFileLogic(final FileLogic fileLogic) {
+		this.fileLogic = fileLogic;
 	}
 }

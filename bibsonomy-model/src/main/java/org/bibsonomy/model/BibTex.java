@@ -26,7 +26,17 @@
  */
 package org.bibsonomy.model;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+
 import java.util.List;
 import java.util.Map;
 
@@ -45,11 +55,14 @@ import org.bibsonomy.model.util.SimHash;
  *
  * @author Christian Schenk
  * @author jensi
+ * @author tom 
  */
 public class BibTex extends Resource {
 	/** for persistence (Serializable) */
 	private static final long serialVersionUID = -8528225443908615779L;
-
+	
+	/** Logging used for problems cloning objects **/
+	private static final Log log = LogFactory.getLog(BibTex.class);
 	/**
 	 * Use this key to reference a citation, e.g. \cite{hotho2006information}.
 	 * TODO: rename to something like citationKey ?
@@ -107,8 +120,10 @@ public class BibTex extends Resource {
 	 *  param to check when the 'misc' field has been parsed. When it is true,
 	 *  one can be sure that all key/value pairs contained in the 'misc'-field 
 	 *  are also present in the miscFields-map.
+	 *  NOTE: This variable has been cannibalized to represent the sync state.
+	 *        One may rename it for that purpose.
 	 */
-	private boolean miscFieldParsed = true;
+	private boolean miscFieldParsed = true; 
 
 	/**
 	 * A document attached to this bibtex resource.
@@ -358,16 +373,29 @@ public class BibTex extends Resource {
 	 * @return misc
 	 */
 	public String getMisc() {
+		if(!this.miscFieldParsed){ // if not in sync do sync
+			this.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS); // by default map wins 
+		};
 		return this.misc;
 	}
 
 	/**
+	 * A new misc string is set (replaced the old one). 
+	 * NOTE: This will also *replace* the miscFields map, not sync with it!
+	 *  
 	 * @param misc
 	 */
-	public void setMisc(final String misc) {
+	public void setMisc(final String misc) throws InvalidModelException {
+		String oldmisc = this.misc; // save old misc in case this goes wrong
 		this.misc = misc;
-		this.miscFieldParsed = false;
-	}
+		this.miscFieldParsed = false;// sync is broken
+		try {
+			this.parseMiscField();       // sync will be restored
+		} catch (Exception e)  {
+			this.misc = oldmisc;  // in case our sync went wrong
+			throw new InvalidModelException("Misc string " + misc + " could not be set."); 
+		}	
+	}	
 
 	/**
 	 * @return month
@@ -580,24 +608,22 @@ public class BibTex extends Resource {
 	 */
 	public String getMiscField(final String miscKey) {
 		if (this.miscFields == null || !this.miscFields.containsKey(miscKey)) return null;
+		if(!this.miscFieldParsed){
+			this.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS); // by default map wins 
+		}
 		return this.miscFields.get(miscKey);
 	}
 
 	/**
-	 * FIXME: this method deletes the old misc fields if {@link #parseMiscField()}
-	 * is not called before (e.g. call {@link #addMiscField(String, String)} and than
-	 * {@link #serializeMiscFields()})
-	 *
-	 * NOTE: after adding misc fields you have to {@link #syncMiscFields(MiscFieldConflictResolutionStrategy)}
-	 *
+	 * 
 	 * @param miscKey
 	 * @param value
 	 */
 	public void addMiscField(final String miscKey, final String value) {
-		if (this.miscFields == null) {
-			this.miscFields = new HashMap<String, String>();
-		}
-		this.miscFields.put(miscKey, value);
+		this.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS); // map allocate implied and sync
+		this.miscFields.put(miscKey, value);  
+		this.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS); // sync restored
+
 	}
 
 	/**
@@ -605,10 +631,14 @@ public class BibTex extends Resource {
 	 * containing the key/value pairs of the internal map.
 	 *
 	 * FIXME: an unmodifiable map would be good here - but breaks the depthEqualityTester elsewhere (dbe)
+	 * NOTE:  We assume here that the misc and miscField are in sync by checking miscFieldParsed
 	 *
 	 * @return an map containing the miscFields
 	 */
 	public Map<String, String> getMiscFields() {
+		if(!this.miscFieldParsed){  // if not parsed we have to sync before get
+			this.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS);
+		};
 		return this.miscFields;
 	}
 
@@ -677,23 +707,28 @@ public class BibTex extends Resource {
 	}
 
 	/**
-	 * Setter for all misc fields.
-	 *
+	 * Setter for all misc fields. By setting all misc fields, the string in 
+	 * misc becomes obsolete and has to be replaced.   
+	 * 
 	 * @param miscFields
 	 */
 	public void setMiscFields(final Map<String,String> miscFields) {
 		this.miscFields = miscFields;
-		this.miscFieldParsed = false;
+		this.miscFieldParsed = false;   // sync broken since new values
+		this.serializeMiscFields();     // replace misc with serialized 
+		                                // parsed miscField -> sync
 	}
 
 	/**
-	 * Parses the 'misc'-field and stores the obtained key/valued pairs
+	 * Parses the 'misc'-field string and stores the obtained key/valued pairs
 	 * in the internal miscFields map.
 	 * @throws InvalidModelException
 	 */
 	public void parseMiscField() throws InvalidModelException {
-		this.miscFields = BibTexUtils.parseMiscFieldString(this.getMisc());
-		this.miscFieldParsed = true;
+		if (this.misc != null && this.misc.length() > 0) { // in case there is really something to do (content in misc string)
+				this.miscFields = BibTexUtils.parseMiscFieldString(this.misc);
+			}
+	    this.miscFieldParsed = true;
 	}
 
 	/**
@@ -739,7 +774,7 @@ public class BibTex extends Resource {
 		final Map<String, String> miscFieldParsed = BibTexUtils.parseMiscFieldString(this.misc);
 
 		if (this.miscFields == null) {
-			this.miscFields = new HashMap<>();
+			this.miscFields = new LinkedHashMap<>();
 		}
 
 		// add all misc field entries to the map
@@ -780,19 +815,27 @@ public class BibTex extends Resource {
 	 */
 	public String removeMiscField(final String miscKey) {
 		if (this.miscFields != null && this.miscFields.containsKey(miscKey)) {
-			this.miscFieldParsed = false;
-			return this.miscFields.remove(miscKey);
+			if(!this.miscFieldParsed){ // if misc and miscFields are not in sync
+				this.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS); // default miscFields wins
+			}
+			String valueForKey = this.miscFields.remove(miscKey);
+			this.miscFieldParsed = false;  // sync is broken 
+			this.serializeMiscFields();    // sync is restored 
+			return valueForKey;
 		}
 		return null;
 	}
 
 	/**
 	 * clear parsed misc fields 
+	 * NOTE: Unsure if it is wise to provide such a method in a misc-miscField-sync setting
 	 */
 	public void clearMiscFields() {
 		if (this.miscFields != null) {
 			this.miscFields.clear();
 		}
+		this.miscFieldParsed = false; // this is true in any case
+									  // at this point
 	}
 
 	/**
@@ -809,6 +852,27 @@ public class BibTex extends Resource {
 			publicationNames = null;
 		}
 		return publicationNames;
+	}
+	
+	/**
+	 * 	clone an BibTex object 
+	 */
+
+	public BibTex clone(){
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(this);
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			return (BibTex) ois.readObject();
+		} catch (IOException e) {
+			log.error("IO Problem cloning an object: in BibTeX ", e);
+				return null;
+		} catch (ClassNotFoundException e) {
+			log.error("ClassNotFroundException during cloning an object: in BibTex", e);
+				return null;
+		}
 	}
 
 }

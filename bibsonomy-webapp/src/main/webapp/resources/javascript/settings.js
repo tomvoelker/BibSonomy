@@ -16,6 +16,12 @@ $(function() {
 	var bibTex = {"source": "SIMPLE", "displayName": "BibTeX", "name":"BIBTEX"};
 	var endnote = {"source": "SIMPLE", "displayName": "EndNote", "name":"ENDNOTE"};
 	var simpleFormatsData = [bibTex, endnote];
+	var customFormatsData = [];
+	
+	$("#customLayouts").children().each(function( index ) {
+		var tmp={"source":$(this).data("source"), "displayName": $(this).data("displayname"), "name": $(this).data("name"), "type": $(this).data("type"), "hash": $(this).data("hash")}
+		customFormatsData.push(tmp);
+	});
 	
 	var simpleFormats = new Bloodhound({
 		datumTokenizer: function (datum) {
@@ -23,6 +29,15 @@ $(function() {
 		},
 		queryTokenizer: Bloodhound.tokenizers.whitespace,
 		local: simpleFormatsData
+	});
+	
+	//custom formats
+	var customFormats = new Bloodhound({
+		datumTokenizer: function (datum) {
+			return layoutTokenizer(datum);
+		},
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		local: customFormatsData
 	});
 	
 	// csl formats
@@ -72,6 +87,13 @@ $(function() {
 		name: 'simple-formats',
 		displayKey: 'displayName',
 		source: simpleFormats,
+		templates: {
+			suggestion: LAYOUT_TEMPLATE
+		}
+	}, {
+		name: 'custom-formats',
+		displayKey: 'displayName',
+		source: customFormats,
 		templates: {
 			suggestion: LAYOUT_TEMPLATE
 		}

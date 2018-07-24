@@ -36,6 +36,7 @@ public class CSLStyle extends org.bibsonomy.model.Layout {
 	private String content;
 	private String aliasedTo;
 	private boolean userLayout;
+	private String fileHash;
 
 	/**
 	 * @param id 
@@ -61,7 +62,6 @@ public class CSLStyle extends org.bibsonomy.model.Layout {
 		this.setAliasedTo(aliasedTo);
 	}
 
-	//TODO eigtl nur vorrübergehend.. vielleicht
 	/**
 	 * @param id 
 	 */
@@ -134,5 +134,19 @@ public class CSLStyle extends org.bibsonomy.model.Layout {
 	 */
 	public void setAliasedTo(String aliasedTo) {
 		this.aliasedTo = aliasedTo;
+	}
+
+	/**
+	 * @return the fileHash
+	 */
+	public String getFileHash() {
+		return this.fileHash;
+	}
+
+	/**
+	 * @param fileHash the fileHash to set
+	 */
+	public void setFileHash(String fileHash) {
+		this.fileHash = fileHash;
 	}
 }

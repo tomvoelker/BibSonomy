@@ -48,7 +48,9 @@
 		</property>
 	</bean>
 	
-	<bean id="forFriendTag" class="org.bibsonomy.database.systemstags.executable.ForFriendTag"/>
+	<bean id="forFriendTag" class="org.bibsonomy.database.systemstags.executable.ForFriendTag">
+		<property name="bibliographyUser" value="${bibliography.bibliographyUser}" />
+	</bean>
 	
 	<!--+
 	    |SEARCH SYSTEMTAGS

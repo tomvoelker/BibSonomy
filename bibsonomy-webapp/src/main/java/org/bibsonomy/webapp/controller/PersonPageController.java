@@ -30,7 +30,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.lang.StringUtils;
@@ -40,9 +42,12 @@ import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
+import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
@@ -62,6 +67,7 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.json.JSONException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -92,6 +98,8 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		if (present(formAction)) {
 			switch(formAction) {
+				case "conflictMerge": return this.conflictMerge(command);
+				case "getConflict": return this.getConflicts(command);
 				case "update": return this.updateAction(command);
 				case "addName": return this.addNameAction(command);
 				case "deleteName": return this.deleteNameAction(command);
@@ -105,7 +113,9 @@ public class PersonPageController extends SingleResourceListController implement
 				case "search": return this.searchAction(command);
 				case "searchAuthor": return this.searchAuthorAction(command);
 				case "searchPub": return this.searchPubAction(command);
+				case "merge": return this.mergeAction(command);
 				case "searchPubAuthor": return this.searchPubAuthorAction(command);
+
 				default: return indexAction();
 			}
 		} else if (present(command.getRequestedPersonId())) {
@@ -121,18 +131,70 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 * @return
 	 */
+	private View conflictMerge(PersonPageCommand command) {
+		try {
+			String responseString = "{\"response\":" + command.getFormResponseString() + "}";
+			org.json.JSONObject obj = new org.json.JSONObject(responseString);
+			org.json.JSONArray jsonArray = obj.getJSONArray("response");
+			PersonMatch match = this.logic.getPersonMatch(command.getFormMatchId());
+			Map<String, String> map = new HashMap<String, String>();
+			for (int i = 0; i < jsonArray.length(); i++) {
+			    org.json.JSONObject explrObject = jsonArray.getJSONObject(i);
+			    map.put(explrObject.getString("name"), explrObject.getString("value"));
+			}
+			JSONObject jsonResponse = new JSONObject();
+			jsonResponse.put("status", this.logic.conflictMerge(command.getFormMatchId(), map));
+			command.setResponseString(jsonResponse.toString());
+			
+			return Views.AJAX_JSON;
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			System.err.println(e);
+		}
+		JSONObject jsonResponse = new JSONObject();
+		jsonResponse.put("status", false);
+		command.setResponseString(jsonResponse.toString());
+		
+		return Views.AJAX_JSON;
+	}
+
+	/**
+	 * @param command
+	 * @return
+	 */
+	private View getConflicts(PersonPageCommand command) {
+		List<PersonMatch> list = new LinkedList<PersonMatch>();
+		list.add(this.logic.getPersonMatch(command.getFormMatchId()));
+		
+		JSONArray array = new JSONArray();
+		for (PersonMergeFieldConflict conflict : PersonMatch.getMergeConflicts(list).get(command.getFormMatchId())){
+			JSONObject jsonConflict = new JSONObject();
+			jsonConflict.put("field", conflict.getFieldName());
+			jsonConflict.put("person1Value", conflict.getPerson1Value());
+			jsonConflict.put("person2Value", conflict.getPerson2Value());
+			array.add(jsonConflict);
+		}
+		command.setResponseString(array.toJSONString());
+		return Views.AJAX_JSON;
+	}
+
+	/**
+	 * @param command
+	 * @return
+	 */
 	private View addThesisAction(PersonPageCommand command) {
 		addRoleAction(command);
 		return showAction(command);
 	}
 
-	
 	/** 
 	 * This is a helper function that adds to an JSONarray from a list of resource-person-relations.
-	 * @param command
+	 * @param suggestions
+	 * @param array
 	 * @return
 	 */
-	private void buildupAuthorResponseArray(final List<ResourcePersonRelation> suggestions,JSONArray array) {
+	private void buildupAuthorResponseArray(final List<ResourcePersonRelation> suggestions, JSONArray array) {
 			for (ResourcePersonRelation rel : suggestions) {
 				JSONObject jsonPersonName = new JSONObject();
 				jsonPersonName.put("interhash", rel.getPost().getResource().getInterHash());
@@ -148,12 +210,12 @@ public class PersonPageController extends SingleResourceListController implement
 	
 	/** 
 	 * This is a helper function adds to an JSONarray Publications form a sugesstions list.  
-	 * @param command
+	 * @param suggestions
+	 * @param array
 	 * @return
 	 */	
 	private void buildupPubResponseArray(final List<Post<BibTex>> suggestions, JSONArray array) {
-		
-		for (Post<BibTex> pub : suggestions) {
+		for (final Post<BibTex> pub : suggestions) {
 			JSONObject jsonPersonName = new JSONObject();
 			jsonPersonName.put("interhash", pub.getResource().getInterHash());
 			jsonPersonName.put("extendedPublicationName", this.personRoleRenderer.getExtendedPublicationName(pub.getResource(), this.requestLogic.getLocale(), false));
@@ -182,7 +244,7 @@ public class PersonPageController extends SingleResourceListController implement
 		final List<Post<BibTex>> suggestions = this.logic.getPublicationSuggestion(command.getFormSelectedName());
 		
 		JSONArray array = new JSONArray();
-		for (Post<BibTex> pub : suggestions) {
+		for (final Post<BibTex> pub : suggestions) {
 			JSONObject jsonPersonName = new JSONObject();
 			jsonPersonName.put("interhash", pub.getResource().getInterHash());
 			jsonPersonName.put("extendedPublicationName", this.personRoleRenderer.getExtendedPublicationName(pub.getResource(), this.requestLogic.getLocale(), false));
@@ -329,6 +391,25 @@ public class PersonPageController extends SingleResourceListController implement
 		return Views.AJAX_TEXT;
 	}
 
+	/*
+	 * performs the merge action for the selected match
+	 */
+	private View mergeAction(PersonPageCommand command) {
+		int id = command.getFormMatchId();
+		JSONObject jsonResponse = new JSONObject();
+
+		PersonMatch match = this.logic.getPersonMatch(id);
+		boolean result = true;
+		if (command.getUpdateOperation() == PersonUpdateOperation.MERGE_ACCEPT) {
+			result = this.logic.acceptMerge(match);
+		} else if(command.getUpdateOperation() == PersonUpdateOperation.MERGE_DENIED) {
+			this.logic.denieMerge(match);
+		}
+		jsonResponse.put("status", result);
+		command.setResponseString(jsonResponse.toString());
+		return Views.AJAX_JSON;
+	}
+	
 	/**
 	 * Action called when a user updates preferences of a person
 	 * @param command
@@ -493,7 +574,10 @@ public class PersonPageController extends SingleResourceListController implement
 		for (PersonResourceRelationType prr : PersonResourceRelationType.values()) {
 			command.getAvailableRoles().add(prr);
 		}
-		
+		String forwardId = this.logic.getForwardId(command.getRequestedPersonId());
+		if (present(forwardId)) {
+			command.setRequestedPersonId(forwardId);
+		}
 		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getRequestedPersonId());
 		
 		if (!present(person)) {
@@ -538,10 +622,11 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setOtherPubs(otherAuthorPosts);
 		command.setAdvisedThesis(advisorPosts);
 		command.setOtherAdvisedPubs(otherAdvisorPosts);
-		
+		command.setPersonMatchList(this.logic.getPersonMatches(person.getPersonId()));
+		command.setMergeConflicts(PersonMatch.getMergeConflicts(command.getPersonMatchList()));
 		
 		final List<Post<BibTex>> similarAuthorPubs = this.getPublicationsOfSimilarAuthor(person);
-		
+
 		command.setSimilarAuthorPubs(similarAuthorPubs);
 		
 		return Views.PERSON_SHOW;
@@ -590,7 +675,8 @@ public class PersonPageController extends SingleResourceListController implement
 		for (final Post<BibTex> post : pubAuthorSearch) {
 			try {
 				// remove post from search if the author has not exactly the same sur- and last-name
-				if (!post.getResource().getAuthor().contains(requestedName)) {
+				if (!present(post.getResource().getAuthor()) 
+						|| !post.getResource().getAuthor().contains(requestedName)) {
 					pubsWithSameAuthorName.remove(post);
 				}
 			} catch (Exception ex) {
@@ -640,7 +726,6 @@ public class PersonPageController extends SingleResourceListController implement
 				
 		return noPersonRelPubList;
 	}
-	
 	
 }
 

@@ -98,10 +98,6 @@ public class HelpSearchManager implements HelpSearch {
 			final XContentBuilder mapping = XContentFactory.jsonBuilder()
 					.startObject()
 						.startObject(HELP_PAGE_TYPE)
-							/*
-							 * set the date detection to false: we load the misc
-							 * fields as field = value into es (=> dynamic mapping)
-							 */
 							.field("date_detection", false)
 							.startObject("properties")
 								.startObject(HEADER_FIELD)
@@ -168,7 +164,9 @@ public class HelpSearchManager implements HelpSearch {
 				
 				@Override
 				public boolean accept(File pathname) {
-					return pathname.isDirectory() && !pathname.isHidden();
+					
+					//folder "code-samples" should not be included
+					return pathname.isDirectory() && !pathname.isHidden() && !pathname.getName().equals("code-samples");
 				}
 			});
 			

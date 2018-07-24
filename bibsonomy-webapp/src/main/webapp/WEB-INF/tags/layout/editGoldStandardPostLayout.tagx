@@ -222,13 +222,26 @@
 								<div class="col-sm-offset-3 col-sm-9">
 									<fmt:message key="save" var="save" />
 									<fmt:message key="save.and.rate" var="saveAndRate" />
-									<div class="btn-toolbar">
+									
+									
+									<div class="btn-toolbar cust-btn-toolbar">
 										<div class="btn-group">
 											<bsform:button type="submit" id="save-post-button" size="defaultSize" value="${save}" style="primary" onclick="clear_tags();" tabindex="2"/>
 										</div>
 										<div class="btn-group">
 											<bsform:button type="submit" id="save-rate-post-button" size="defaultSize" value="${saveAndRate}" name="saveAndRate" style="primary" onclick="clear_tags();" tabindex="2"/>
 										</div>
+	
+										<c:if test="${not empty properties['bibliography.bibliographyUser']}">
+											<fmt:message key="save.and.send_to" var="saveAndSendTo">
+												<fmt:param value="${properties['bibliography.bibliographyUser']}"/>
+											</fmt:message>
+									
+											<div class="btn-group">
+												<bsform:button type="submit" id="save-send-post-button" size="defaultSize" value="${saveAndSendTo}" name="saveAndSendTo" style="primary" onclick="sendToBibliography('${properties['bibliography.bibliographyUser']}');" tabindex="2"/>
+											</div>
+										</c:if>
+																
 									</div>
 								</div>
 							</div>
@@ -263,13 +276,24 @@
  								<a class="list-group-item" onclick="javascript: activateAffixEntry(this)" href="#comments"><fmt:message key="post.resource.fields.comments"/></a>
  							</c:if>
 						</div>
-						<div class="btn-toolbar">
+						<div class="btn-toolbar cust-btn-toolbar">
 							<div class="btn-group">
 								<a class="btn btn-primary btn-sm save-post-item" onclick="javascript: activateAffixEntry(this); $('#save-post-button').trigger('click');"><fmt:message key="save"/></a>
 							</div>
 							<div class="btn-group">
 								<a class="btn btn-primary btn-sm save-rate-post-item" onclick="javascript: activateAffixEntry(this); $('#save-post-button').trigger('click');"><fmt:message key="save.and.rate" /></a>
 							</div>
+							
+							<c:if test="${not empty properties['bibliography.bibliographyUser']}">
+								<fmt:message key="save.and.send_to" var="saveAndSendTo">
+									<fmt:param value="${properties['bibliography.bibliographyUser']}"/>
+								</fmt:message>
+						
+								<div class="btn-group">
+									<a class="btn btn-primary btn-sm save-rate-post-item" onclick="javascript: activateAffixEntry(this); $('#save-send-post-button').trigger('click');">${saveAndSendTo}</a>
+								</div>
+							</c:if>
+							
 						</div>
 					</div>
 				</div>

@@ -73,6 +73,8 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 
 	private final GroupDatabaseManager groupDb;
 	private final GeneralDatabaseManager generalDb;
+	
+	private int maxQuerySize;
 
 	private PermissionDatabaseManager() {
 		this.groupDb = GroupDatabaseManager.getInstance();
@@ -89,8 +91,8 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param itemType
 	 */
 	public void checkStartEnd(final User loginUser, final GroupingEntity groupingEntity, final int start, final int end, final String itemType) {
-		if (!this.isAdmin(loginUser) && end - start > PostLogicInterface.MAX_QUERY_SIZE) {
-			throw new AccessDeniedException("You are not authorized to retrieve more than " + PostLogicInterface.MAX_QUERY_SIZE + " " + itemType + " at a time.");
+		if (!this.isAdmin(loginUser) && end - start > this.maxQuerySize) {
+			throw new AccessDeniedException("You are not authorized to retrieve more than " + this.maxQuerySize + " " + itemType + " at a time.");
 		}
 
 		if (!this.isAdmin(loginUser) && GroupingEntity.ALL.equals(groupingEntity) && (start > PostLogicInterface.MAX_RECENT_POSTS || end > PostLogicInterface.MAX_RECENT_POSTS)) {
@@ -124,11 +126,8 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param userName
 	 */
 	public void ensureWriteAccess(final User loginUser, final String userName) {
-		if (loginUser.getName() == null
-				|| !(loginUser.getName().toLowerCase().equals(userName.toLowerCase())  // This check applies for old groups as well 
-				|| this.hasGroupRoleOrHigher(loginUser, userName, GroupRole.ADMINISTRATOR))) { // this check applies to new groups (hence, userName -> groupName)
-			throw new AccessDeniedException();
-		}
+		// delegate write access check
+		this.ensureIsAdminOrSelfOrHasGroupRoleOrHigher(loginUser, userName, GroupRole.ADMINISTRATOR);
 	}
 
 	/**
@@ -393,7 +392,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @return <code>true</code> if loginUser is an admin or userName.
 	 */
 	public boolean isAdminOrSelf(final User loginUser, final String userName) {
-		return present(loginUser.getName()) && loginUser.getName().equals(userName) // loginUser
+		return present(loginUser.getName()) && loginUser.getName().equalsIgnoreCase(userName) // loginUser
 				// =
 				// userName
 				|| this.isAdmin(loginUser);
@@ -598,5 +597,19 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		if (!this.hasGroupLevelPermission(loginUser, groupLevelPermission)) {
 			throw new AccessDeniedException();
 		}
+	}
+
+	/**
+	 * @return the maxQuerySize
+	 */
+	public int getMaxQuerySize() {
+		return this.maxQuerySize;
+	}
+
+	/**
+	 * @param maxQuerySize the maxQuerySize to set
+	 */
+	public void setMaxQuerySize(int maxQuerySize) {
+		this.maxQuerySize = maxQuerySize;
 	}
 }

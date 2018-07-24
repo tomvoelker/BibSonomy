@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.scraper.generic;
 
 import java.io.IOException;
@@ -23,6 +49,8 @@ import org.bibsonomy.util.WebUtils;
  */
 public class HighwirePressScraper implements Scraper {
 	private static final HTMLMetaDataHighwirePressToBibtexConverter HIGHWIRE_PRESS_CONVERTER = new HTMLMetaDataHighwirePressToBibtexConverter();
+
+	private static final String SITE_NAME = "HighwirePressScraper";
 	private static final String SITE_URL = "https://scholar.google.com/intl/en/scholar/inclusion.html#indexing";
 	
 	private static final String INFO = "The HighwirePressScraper resolves bibtex out of HTML Metatags, which are defined" + 
@@ -88,4 +116,17 @@ public class HighwirePressScraper implements Scraper {
 		}
 	}
 
+	/**
+	 * @return site name
+	 */
+	public String getSupportedSiteName(){
+		return SITE_NAME;
+	}
+
+	/**
+	 * @return site url
+	 */
+	public String getSupportedSiteURL(){
+		return SITE_URL;
+	}
 }

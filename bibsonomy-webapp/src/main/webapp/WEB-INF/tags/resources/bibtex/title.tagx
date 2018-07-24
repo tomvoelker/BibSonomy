@@ -13,7 +13,7 @@
 	<!--  display title -->
 	<c:choose>
 		<c:when test="${isRemotePost}">
-			<c:set var="bibUrlTemplate">${relativeUrlGenerator.getPublicationUrlByIntraHashUsernameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}</c:set>
+			<c:set var="bibUrlTemplate">${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, post.user.name)}</c:set>
 		</c:when>
 		<c:otherwise>
 			<c:set var="bibUrlTemplate">${relativeUrlGenerator.getPostUrl(post)}</c:set>

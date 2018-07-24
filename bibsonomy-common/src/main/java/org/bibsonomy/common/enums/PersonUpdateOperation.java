@@ -54,5 +54,11 @@ public enum PersonUpdateOperation {
 	UPDATE_HOMEPAGE,
 	
 	/** Creates a new person */
-	CREATE_PERSON
+	CREATE_PERSON,
+	
+	/** accepts merge */
+	MERGE_ACCEPT,
+	
+	/** denies merge */
+	MERGE_DENIED
 }

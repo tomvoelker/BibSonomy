@@ -182,18 +182,16 @@ public class PostBibTeXParserTest {
 
 		final Post<BibTex> parsedCopy = parser.getParsedCopy(post, true);
 
-		CommonModelUtils.assertPropertyEquality(post, parsedCopy, 5, null, "resource.author", "resource.authorList");
-
 		/*
 		 * The misc field is parsed and then serialized back again also in
 		 * the original post! Thus, we here manually check if no additional
 		 * fields were added.
 		 */
 		assertEquals(
-				"  isbn = {999-12345-123-x},\n" +
-				"  vgwort = {12},\n" + 
-				"  doi = {my doi}", 
-				parsedCopy.getResource().getMisc());
+					"  vgwort = {12},\n" +
+					"  isbn = {999-12345-123-x},\n" + 
+					"  doi = {my doi}", 
+					parsedCopy.getResource().getMisc());
 	}
 
 	/**
@@ -225,7 +223,7 @@ public class PostBibTeXParserTest {
 		bib.setAbstract("This is a nice abstract.");
 		bib.setPrivnote("This is private!");
 
-		bib.setMisc("  isbn = {999-12345-123-x},\n  vgwort = {12},\n  doi = {my doi}");
+		bib.setMisc("  vgwort = {12},\n  isbn = {999-12345-123-x},\n  doi = {my doi}");
 		return bib;
 	}
 }
