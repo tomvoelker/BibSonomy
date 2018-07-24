@@ -758,11 +758,17 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		if (present(searchTerms)) {
 			//TODO fixme
 			//after the requested user is parsed from a query like 'user:username and term' the searchTerm 'and term' remains and will lead to an exception
-			if (searchTerms.toLowerCase().split(" ")[0].equals("and") || searchTerms.toLowerCase().split(" ")[0].equals("or")){
+			if (searchTerms.split(" ")[0].equals("AND") || searchTerms.split(" ")[0].equals("OR")){
 				searchTerms = searchTerms.split(" ", 2)[1];
 			}
-			final QueryBuilder queryBuilder = QueryBuilders.queryStringQuery(searchTerms)
-					.minimumShouldMatch("2<75%");
+			final QueryBuilder queryBuilder;
+			
+			if (searchTerms.contains("OR")){
+				queryBuilder = QueryBuilders.queryStringQuery(searchTerms);
+			} else {
+				queryBuilder = QueryBuilders.queryStringQuery(searchTerms).minimumShouldMatch("2<75%");
+				
+			}
 			
 			if (present(userName)) {
 				// private field
