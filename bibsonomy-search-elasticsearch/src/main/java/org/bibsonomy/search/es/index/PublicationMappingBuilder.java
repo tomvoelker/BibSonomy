@@ -69,6 +69,7 @@ public class PublicationMappingBuilder extends ResourceMappingBuilder<BibTex> {
 				.startObject(PROPERTIES)
 					.startObject(Fields.Publication.PERSON_NAME)
 						.field(TYPE_FIELD, STRING_TYPE)
+						.array(COPY_TO, Fields.PRIVATE_ALL_FIELD, Fields.ALL_AUTHORS)
 					.endObject()
 				.endObject()
 			.endObject()
