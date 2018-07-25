@@ -58,7 +58,7 @@ import org.w3c.dom.NodeList;
  */
 public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME 	= "IEEEXplore Standards";
-	private static final String SITE_URL  	= "http://ieeexplore.ieee.org/";
+	private static final String SITE_URL  	= "https://ieeexplore.ieee.org/";
 	private static final String info 		= "This scraper creates a BibTeX entry for the standards at " + href(SITE_URL, SITE_NAME)+".";
 	private static final String DOWNLOAD_URL = SITE_URL + "xpl/downloadCitations";
 
