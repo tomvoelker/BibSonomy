@@ -114,7 +114,7 @@ public class SearchPageController extends SingleResourceListController implement
 					}
 					
 					// replace all occurences of "group:*"
-					search = search.replaceAll(groupingEntString + ":[^\\s]*", "").trim();
+					search = search.replaceAll("( (AND|OR) )?" + groupingEntString + ":[^\\s]*", "").trim();
 					
 					// don't search for other grouping entities
 					break;
