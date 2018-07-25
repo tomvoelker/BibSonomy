@@ -238,6 +238,9 @@ public class BibTexUtils {
 	/** electronic */
 	public static final String ELECTRONIC = "electronic";
 
+	/** dataset **/
+	public static final String DATASET = "dataset";
+	
 	/** conference */
 	public static final String CONFERENCE = "conference";
 
@@ -261,7 +264,7 @@ public class BibTexUtils {
 	/**
 	 * the common entrytypes of a BibTeX
 	 */
-	public static final String[] ENTRYTYPES = {ARTICLE, BOOK, BOOKLET, CONFERENCE, ELECTRONIC, INBOOK, INCOLLECTION, INPROCEEDINGS,
+	public static final String[] ENTRYTYPES = {ARTICLE, BOOK, BOOKLET, CONFERENCE, DATASET, ELECTRONIC, INBOOK, INCOLLECTION, INPROCEEDINGS,
 		MANUAL, MASTERS_THESIS, MISC, PATENT, PERIODICAL, PHD_THESIS, PRESENTATION, PROCEEDINGS, STANDARD, TECH_REPORT, UNPUBLISHED,
 		PREPRINT, COLLECTION
 	};
