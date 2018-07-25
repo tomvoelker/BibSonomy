@@ -130,7 +130,7 @@
 						<dd>
 							<c:choose>
 								<c:when test="${doiPresent}">
-									<a itemprop="sameAs" href="http://dx.doi.org/${mtl:encodePathSegment(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a>
+									<a itemprop="sameAs" href="https://doi.org/${mtl:encodePathSegment(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a>
 								</c:when>
 								<c:otherwise>
 									<goldstandardpublication:editField post="${post}" communityPostExists="${isRealGoldstandard}" loginUser="${loginUser}" field="DOI" />
