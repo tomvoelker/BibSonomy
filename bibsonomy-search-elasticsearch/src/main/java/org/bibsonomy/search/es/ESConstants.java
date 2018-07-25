@@ -151,6 +151,7 @@ public final class ESConstants {
 
 		/** field that contains all docs */
 		public static final String ALL_DOCS = "all_docs";
+		public static final String ALL_AUTHORS = "author";
 
 		/** private search content should be copied to this field */
 		public static final String PRIVATE_ALL_FIELD = "all_private";

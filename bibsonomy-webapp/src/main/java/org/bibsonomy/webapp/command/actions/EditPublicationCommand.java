@@ -27,9 +27,11 @@
 package org.bibsonomy.webapp.command.actions;
 
 import java.net.URL;
+import java.util.List;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.scraper.ScrapingContext;
 
@@ -69,6 +71,49 @@ public class EditPublicationCommand extends EditPostCommand<BibTex> {
 	
 	/** the role of the person given by {@link #person} */
 	private PersonResourceRelationType personRole = PersonResourceRelationType.AUTHOR;
+	
+	/**
+	 * list with friends of the current login user
+	 */
+	private List<User> friendsOfUser;
+	
+	/**
+	 * list with friends of the current login user
+	 */
+	private List<User> userFriends;
+	
+	/**
+	 * The person that has been claimed by the user
+	 */
+	private Person claimedPerson;
+	
+	/**
+	 * @return the userFriends
+	 */
+	public List<User> getFriendsOfUser() {
+		return this.friendsOfUser;
+	}
+	
+	/**
+	 * @param friendsOfUser the friendsOfUser to set
+	 */
+	public void setFriendsOfUser(List<User> friendsOfUser) {
+		this.friendsOfUser = friendsOfUser;
+	}
+	
+	/**
+	 * @param userFriends the userFriends to set
+	 */
+	public void setUserFriends(List<User> userFriends) {
+		this.userFriends = userFriends;
+	}
+	
+	/**
+	 * @param claimedPerson the claimedPerson to set
+	 */
+	public void setClaimedPerson(Person claimedPerson) {
+		this.claimedPerson = claimedPerson;
+	}
 	
 	/**
 	 * @return the url
