@@ -98,5 +98,4 @@ public interface PersonLogicInterface {
 	 */
 	public void updatePerson(final Person person, final PersonUpdateOperation operation);
 	
-
 }

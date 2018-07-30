@@ -21,7 +21,7 @@ $(function() {
 	/*
 	 * TODO: remove unused code of old autocompletion -> initTagAutocompletion($('#inpf_tags')); 
 	 */
-	startTagAutocompletion($('#inpf_tags'), false, true, true, true);
+	startTagAutocompletion($('#inpf_tags'), false, true, true, true, true);
 	$("#copiedTags li, .tagbox li a").each(function() {
 		$(this).click(copytag).removeAttr("href").css("cursor", "pointer");
 	});
@@ -906,6 +906,9 @@ function initTagAutocompletionForSendTag(tagbox) {
 		return;
 	
 	var friends = null;
+	
+	var groups = null;
+	
 	getFriends = function () {return friends;};
 	$.ajax({
 		url: '/json/friends?userRelation=FRIEND_OF',
@@ -913,6 +916,18 @@ function initTagAutocompletionForSendTag(tagbox) {
 		dataType: "jsonp",
 		success: function (data) {
 			friends = $.map( data.items, function( item ) {
+				return item.name;
+			});
+		}
+	});
+	
+	getGroups = function () {return groups;};
+	$.ajax({
+		url: '/json/groups',
+		async: false,
+		dataType: "jsonp",
+		success: function (data) {
+			groups = $.map( data.items, function( item ) {
 				return item.name;
 			});
 		}
@@ -930,14 +945,25 @@ function initTagAutocompletionForSendTag(tagbox) {
 		var x = 0;
 		var regexp = new RegExp("^"+partialName);
 		var friends = getFriends();
+		var groups = getGroups();
 		delete sortedCollection;
 		sortedCollection = new Array();
 		clearSuggestion();
-		while(x < friends.length) {
-			if(("send:"+friends[x]).match(regexp) 
-				&& tagbox.val().match(new RegExp("([ ]|^)send:"+friends[x]+"([ ]|$)")) == null)  
-					sortedCollection.push("send:"+friends[x]);
-			x++;
+		if(tagbox.val().indexOf("send:") != -1) {
+			while(x < friends.length) {
+				if(("send:"+friends[x]).match(regexp) 
+					&& tagbox.val().match(new RegExp("([ ]|^)send:"+friends[x]+"([ ]|$)")) == null)  
+						sortedCollection.push("send:"+friends[x]);
+				x++;
+			}
+		}
+		else if(tagbox.val().indexOf("for:") != -1) {
+			while(x < groups.length) {
+				if(("for:"+groups[x]).match(regexp) 
+					&& tagbox.val().match(new RegExp("([ ]|^)for:"+groups[x]+"([ ]|$)")) == null)  
+						sortedCollection.push("for:"+groups[x]);
+				x++;
+			}
 		}
 		addToggleChild(sortedCollection);
 		activeTag = partialName;
@@ -979,7 +1005,7 @@ function initTagAutocompletionForSendTag(tagbox) {
 			while( t.length > x ) {
 				if(tagsNew[x] != undefined 
 						&& tagsNew[x] != t[x]) {
-					if(tagsNew[x].match(/^send:/) == null
+					if((tagsNew[x].match(/^send:/) == null) 
 							|| t[x].length == 0)
 						break;
 					return suggestSendTo(tagsNew[x]);
@@ -987,6 +1013,25 @@ function initTagAutocompletionForSendTag(tagbox) {
 				x++;
 			}
 		}
+		if(getGroups() != null) {
+			var tagsNew = tagbox.val().split(" ");
+			var x = 0;
+			if(tagsNew.length < t.length) {
+				tagsNew = tagsNew.reverse();t = t.reverse();reverse = true;
+			}
+			
+			while( t.length > x ) {
+				if(tagsNew[x] != undefined 
+						&& tagsNew[x] != t[x]) {
+					if((tagsNew[x].match(/^for:/) == null) 
+							|| t[x].length == 0)
+						break;
+					return suggestSendTo(tagsNew[x]);
+				}
+				x++;
+			}
+		}
+		
 	});
 }
 

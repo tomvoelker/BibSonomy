@@ -34,7 +34,6 @@
 	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy</artifactId>
 	<packaging>pom</packaging>
-	<version>3.8.13-SNAPSHOT</version>
 	<description>
 		A blue social bookmark and publication sharing system.
 	</description>
@@ -283,8 +282,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -768,4 +767,5 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	<version>3.8.13</version>
 </project>

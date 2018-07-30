@@ -339,7 +339,8 @@
 								<!--  <value>requestedUser</value> -->
 								<!-- <value>requestedRole</value> -->
 								<!-- <value>requestedIndex</value>  -->
-								
+								<value>formResponseString</value>
+								<value>formMatchId</value>
 								<value>formAction</value>
 								<value>formPersonRoles</value>
 								<value>formPersonRole</value>
@@ -374,6 +375,7 @@
 								<value>person.college</value>
 								<value>person.email</value>
 								<value>person.homepage</value>
+								<value>person.gender</value>
 								
 								<value>newName.firstName</value>
 								<value>newName.lastName</value>
@@ -835,6 +837,7 @@
 		<property name="oauthLogic" ref="oAuthLogic"/>
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
 		<property name="invisibleOAuthConsumers" value="${invisible.oauth.consumers}"/>
+		<property name="cslFilesManager" ref="CSLFilesManager" />
 	</bean>
 	
 	<bean id="groupSettingsPageController" class="org.bibsonomy.webapp.controller.GroupSettingsPageController" scope="request">

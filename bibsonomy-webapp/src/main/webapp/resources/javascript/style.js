@@ -312,8 +312,8 @@ function switchNavi(scope, element) {
 	$("#inpf")
 	.attr("name", "search") // always do a search
 	//.val(hint) // set hint as value
-	.addClass('descriptiveLabel') // add class
-	.descrInputLabel({}) // make the label disappear on click/submit
+	//.addClass('descriptiveLabel') // add class
+	//.descrInputLabel({}) // make the label disappear on click/submit
 	.attr('placeholder', hint); // set hint as placeholder
 	
 	//TODO: WHAT DOES THIS DO????
@@ -326,7 +326,7 @@ function switchNavi(scope, element) {
 	$("#inpf").autocomplete('disable');
 	
 	if (scope == "tag"){
-		startTagAutocompletion($("#inpf"), false, true, false, false);
+		startTagAutocompletion($("#inpf"), false, true, false, false, false);
 	}
 	
 	// TODO: finish suggestion service

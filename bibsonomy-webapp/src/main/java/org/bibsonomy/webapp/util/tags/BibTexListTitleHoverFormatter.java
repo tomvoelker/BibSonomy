@@ -37,6 +37,7 @@ import tags.Functions;
 
 /**
  * Class that implements a jsp el function to render TitleHovers for BibTex.
+ * FIXME: explain what a "TitleHover" is.
  */
 public class BibTexListTitleHoverFormatter {
 	
@@ -78,42 +79,43 @@ public class BibTexListTitleHoverFormatter {
 		
 		final BibTex publication = (BibTex)post.getResource();
 		
-		BibTexListTitleHoverFormatter renderer = new BibTexListTitleHoverFormatter(publication, locale);
+		final BibTexListTitleHoverFormatter renderer = new BibTexListTitleHoverFormatter(publication, locale);
 		
 		renderer.title().add(LB);
 		
-		if (renderer.publication.getEntrytype().equals("article")) {
+		// FIXME add missing entrytypes from BibTexUtils
+		if (renderer.publication.getEntrytype().equals(BibTexUtils.ARTICLE)) {
 			renderer.journal().volumeNumberPages().year(true).note();
 		}
-		else if (renderer.publication.getEntrytype().equals("book")) {
+		else if (renderer.publication.getEntrytype().equals(BibTexUtils.BOOK)) {
 			renderer.series().publisher().address().edition().year(true).note();
 		}
-		else if (renderer.publication.getEntrytype().equals("inbook")) {
+		else if (renderer.publication.getEntrytype().equals(BibTexUtils.INBOOK)) {
 			renderer.volumeOfSeries().chapter().page().publisher().address().edition().year(true).note();
 		}
-		else if (renderer.publication.getEntrytype().equals("booklet")) {
+		else if (renderer.publication.getEntrytype().equals(BibTexUtils.BOOKLET)) {
 			renderer.howpublished().address().year(true).note();
 		}
-		else if (renderer.publication.getEntrytype().equals("incollection")) {
+		else if (renderer.publication.getEntrytype().equals(BibTexUtils.INCOLLECTION)) {
 			renderer.booktitle().volumeOfSeries().chapter().publisher().address().edition().note().year(true);
 		}
-		else if (renderer.publication.getEntrytype().equals("inproceedings")) {
+		else if (renderer.publication.getEntrytype().equals(BibTexUtils.INPROCEEDINGS)) {
 			renderer.booktitle().volumeOfSeries().page().address().organization().publisher().year(true).note();
 		}
-		else if (renderer.publication.getEntrytype().equals("manual")) {
+		else if (renderer.publication.getEntrytype().equals(BibTexUtils.MANUAL)) {
 			renderer.organization().address().edition().year(true).note();
 		}
-		else if (renderer.publication.getEntrytype().equals("mastersthesis") ||
-				renderer.publication.getEntrytype().equals("phdthesis")) {
+		else if (renderer.publication.getEntrytype().equals(BibTexUtils.MASTERS_THESIS) ||
+				renderer.publication.getEntrytype().equals(BibTexUtils.PHD_THESIS)) {
 			renderer.school().address().type().year(true).note();
 		}
-		else if (renderer.publication.getEntrytype().equals("proceedings")) {
+		else if (renderer.publication.getEntrytype().equals(BibTexUtils.PROCEEDINGS)) {
 			renderer.volumeOfSeries().address().organization().publisher().year(true).note();
 		}
-		else if (renderer.publication.getEntrytype().equals("techreport")) {
+		else if (renderer.publication.getEntrytype().equals(BibTexUtils.TECH_REPORT)) {
 			renderer.type().volume().institution().address().year(true);
 		}
-		else if (renderer.publication.getEntrytype().equals("unpublished")) {
+		else if (renderer.publication.getEntrytype().equals(BibTexUtils.UNPUBLISHED)) {
 			renderer.year(true).note();
 		}
 		else {

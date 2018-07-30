@@ -152,11 +152,11 @@ public class ServerFileLogic implements FileLogic {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.services.filesystem.CSLFileLogic#validCSLLayoutFile(org.bibsonomy.model.util.file.UploadedFile)
+	 * @see org.bibsonomy.services.filesystem.CSLFileLogic#isValidCSLLayoutFile(org.bibsonomy.model.util.file.UploadedFile)
 	 */
 	@Override
-	public boolean validCSLLayoutFile(UploadedFile file) {
-		return this.cslFileLogic.validCSLLayoutFile(file);
+	public boolean isValidCSLLayoutFile(UploadedFile file) {
+		return this.cslFileLogic.isValidCSLLayoutFile(file);
 	}
 
 	/* (non-Javadoc)

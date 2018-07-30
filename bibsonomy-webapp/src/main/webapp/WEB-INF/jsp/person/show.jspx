@@ -447,6 +447,21 @@
 			</div>
 			</c:if>
 
+
+			<!-- similar persons, that one could merge -->
+			<c:if test="${fn:length(command.personMatchList) gt 0}">
+			<div style="clear: both;">
+				<h3 class="list-headline">
+					<fmt:message key="person.show.similarPersonMatchList" />
+				</h3>
+				
+				<div id="personMatchesEntries">
+					<c:forEach var="personMatch" items="${command.personMatchList}">
+ 						<per:mergablePersonView personMatch="${personMatch}" currentPerson="${command.person}" conflicts="${command.mergeConflicts}"/>
+					</c:forEach>
+				</div>
+			</div>
+			</c:if>
 		</jsp:attribute>
 		
 	</layout:paneLayout>
@@ -773,5 +788,36 @@
 			</div>
 		</div>
 	</div>
+	
+	<!-- The Modal -->
+	<div id="conflictModal" class="modal fade" role="dialog" tabindex="-1">
+		<fmt:message key="person.show.modal.addSupervisedThesis.header" var="denyMsg" />
+		<div class="modal-dialog">
+			<!-- Modal content -->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">x</button>
+					<h4 class="modal-title">Resolve Merge Conflict</h4>
+
+				</div>
+				<div class="modal-body" id="conflictModalDiaBody">
+					&amp;nbsp;
+				</div>
+				<div class="modal-footer">
+
+					<div class="btn-group pull-right">
+						<button id="conflictModalAccept" type="button" class="btn btn-success btn-sm mergeConflictButton"
+							data-operation="MERGE_ACCEPT" 
+							title="accept merge" data-dismiss="modal">&#10004;</button>
+						<button id="conflictModalDeny" type="button" class="btn btn-danger btn-sm mergeButton"
+							data-operation="MERGE_DENIED" 
+							title="${denyMsg}" data-dismiss="modal">&#10006;</button>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+						
   
 </jsp:root>
