@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -1004,8 +1005,8 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	@Override
-	public boolean createProject(Project project) {
-		return false;
+	public JobResult createProject(final Project project) {
+		return null;
 	}
 
 	@Override

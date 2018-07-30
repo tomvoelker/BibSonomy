@@ -1832,7 +1832,8 @@ CREATE TABLE `projects` (
   `budget` double DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `updated_by` varchar(30) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `project_id` (`project_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

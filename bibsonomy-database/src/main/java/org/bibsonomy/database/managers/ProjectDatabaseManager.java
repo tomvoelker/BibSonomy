@@ -1,5 +1,7 @@
 package org.bibsonomy.database.managers;
 
+import org.bibsonomy.common.JobResult;
+import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
@@ -7,8 +9,10 @@ import org.bibsonomy.database.params.ProjectParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
+import org.bibsonomy.model.validation.ProjectValidator;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * database manager for creating, updating and queriying {@link Project}s
@@ -21,6 +25,9 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager {
 
 	private DatabasePluginRegistry plugins;
 
+	private ProjectValidator validator;
+
+
 	/**
 	 * creates a project with the provided information
 	 * @param loginUser
@@ -28,11 +35,16 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return
 	 */
-	public boolean createProject(final Project project, final User loginUser, final DBSession session) {
+	public JobResult createProject(final Project project, final User loginUser, final DBSession session) {
 		session.beginTransaction();
 		try {
 			final String projectId = this.generateProjectId(project, session);
 			project.setExternalId(projectId);
+
+			final List<ErrorMessage> errorMessages = this.validator.validateProject(project);
+			if (errorMessages.size() > 1) {
+				return JobResult.buildFailure(errorMessages);
+			}
 
 			final ProjectParam projectParam = new ProjectParam();
 
@@ -42,12 +54,14 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager {
 			projectParam.setUpdatedAt(new Date());
 			projectParam.setUpdatedBy(loginUser.getName());
 
+			this.plugins.onProjectInsert(project, session);
 			this.insert("insertProject", projectParam, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
-		return true;
+
+		return JobResult.buildSuccess();
 	}
 
 	private final String generateProjectId(final Project project, final DBSession session) {
@@ -77,5 +91,12 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void setPlugins(DatabasePluginRegistry plugins) {
 		this.plugins = plugins;
+	}
+
+	/**
+	 * @param validator the validator to set
+	 */
+	public void setValidator(ProjectValidator validator) {
+		this.validator = validator;
 	}
 }

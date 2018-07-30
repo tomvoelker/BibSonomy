@@ -1,6 +1,7 @@
 package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import org.bibsonomy.database.common.DBSession;
@@ -55,5 +56,10 @@ public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(projectType, projectDetails.getType());
 		assertEquals(startDate, projectDetails.getStartDate());
 		assertEquals(endDate, projectDetails.getEndDate());
+	}
+
+	@Test
+	public void testProjectIdGeneration() {
+		assertFalse(true); // FIXME: write test and implement
 	}
 }

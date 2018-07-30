@@ -46,4 +46,8 @@
 	</bean>
 	
 	<bean id="resourceFactory" class="org.bibsonomy.model.factories.ResourceFactory" />
+
+	<!-- validators -->
+
+	<bean id="projectValidator" class="org.bibsonomy.model.validation.ProjectValidator" />
 </beans>

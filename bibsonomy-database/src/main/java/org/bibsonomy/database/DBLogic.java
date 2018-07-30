@@ -45,6 +45,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -3881,7 +3882,7 @@ public class DBLogic implements LogicInterface {
 	}
 
 	@Override
-	public boolean createProject(final Project project) {
+	public JobResult createProject(final Project project) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		try (final DBSession session = this.openSession()) {
 			return this.projectDatabaseManager.createProject(project, this.loginUser, session);

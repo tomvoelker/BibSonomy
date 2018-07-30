@@ -1,5 +1,6 @@
 package org.bibsonomy.model.logic;
 
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.logic.querybuilder.ProjectQueryBuilder;
 
@@ -17,7 +18,7 @@ public interface CRISLogicInterface {
 
 	public Project getProjectDetails(final String projectId);
 
-	public boolean createProject(final Project project);
+	public JobResult createProject(final Project project);
 
 	public boolean updateProject(final String projectId, final Project project);
 

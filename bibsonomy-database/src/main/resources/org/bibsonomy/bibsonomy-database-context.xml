@@ -320,6 +320,7 @@
 	<bean id="projectDatabaseManager" class="org.bibsonomy.database.managers.ProjectDatabaseManager">
 		<property name="generalDatabaseManager" ref="generalDatabaseManager" />
 		<property name="plugins" ref="databasePluginManager" />
+		<property name="validator" ref="projectValidator" />
 	</bean>
 	
 	<bean id="databasePluginManager" class="org.bibsonomy.database.plugin.DatabasePluginRegistry" factory-method="getInstance">
