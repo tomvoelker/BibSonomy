@@ -94,6 +94,7 @@ import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.managers.PersonDatabaseManager;
 import org.bibsonomy.database.managers.PostDatabaseManager;
+import org.bibsonomy.database.managers.ProjectDatabaseManager;
 import org.bibsonomy.database.managers.StatisticsDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.managers.TagRelationDatabaseManager;
@@ -128,7 +129,6 @@ import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -137,6 +137,7 @@ import org.bibsonomy.model.Review;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
@@ -145,6 +146,7 @@ import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.model.logic.querybuilder.ProjectQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
@@ -208,6 +210,8 @@ public class DBLogic implements LogicInterface {
 	private final InboxDatabaseManager inboxDBManager;
 	private final WikiDatabaseManager wikiDBManager;
 
+	private final ProjectDatabaseManager projectDatabaseManager;
+
 	private final SynchronizationDatabaseManager syncDBManager;
 
 	private final BibTexReader publicationReader;
@@ -264,6 +268,8 @@ public class DBLogic implements LogicInterface {
 		this.inboxDBManager = InboxDatabaseManager.getInstance();
 
 		this.wikiDBManager = WikiDatabaseManager.getInstance();
+
+		this.projectDatabaseManager = null; // FIXME:
 
 		this.syncDBManager = SynchronizationDatabaseManager.getInstance();
 
@@ -3853,8 +3859,48 @@ public class DBLogic implements LogicInterface {
 	 * @return returns the updated personId, if the person was merged to an other person
 	 */
 	@Override
-	public String getForwardId(String personId) {
+	public String getForwardId(final String personId) {
 		final DBSession session = this.openSession();
 		return this.personDBManager.getForwardId(personId, session);
+	}
+
+	@Override
+	public List<Project> getProjects(final ProjectQueryBuilder builder) {
+		try (final DBSession session = this.openSession()) {
+			return null;
+		}
+	}
+
+	@Override
+	public Project getProjectDetails(final String projectId) {
+		final boolean admin = this.permissionDBManager.isAdmin(this.loginUser);
+
+		try (final DBSession session = this.openSession()) {
+			return this.projectDatabaseManager.getProjectDetails(projectId, admin, session);
+		}
+	}
+
+	@Override
+	public boolean createProject(final Project project) {
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
+		try (final DBSession session = this.openSession()) {
+			return this.projectDatabaseManager.createProject(project, this.loginUser, session);
+		}
+	}
+
+	@Override
+	public boolean updateProject(final String projectId, final Project project) {
+		this.permissionDBManager.ensureAdminAccess(this.getAuthenticatedUser());
+		try (final DBSession session = this.openSession()) {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean deleteProject(String projectId) {
+		this.permissionDBManager.ensureAdminAccess(this.getAuthenticatedUser());
+		try (final DBSession session = this.openSession()) {
+			return false;
+		}
 	}
 }

@@ -589,6 +589,8 @@ public class PersonPageController extends SingleResourceListController implement
 		for (PersonResourceRelationType prr : PersonResourceRelationType.values()) {
 			command.getAvailableRoles().add(prr);
 		}
+
+		// FIXME: this should be done in the logic not here
 		String forwardId = this.logic.getForwardId(command.getRequestedPersonId());
 		if (present(forwardId)) {
 			command.setRequestedPersonId(forwardId);

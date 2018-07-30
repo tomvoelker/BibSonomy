@@ -40,6 +40,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
@@ -265,5 +266,9 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	public void onPersonNameUpdate(Integer personChangeId, DBSession session) {
 		// noop
 	}
-	
+
+	@Override
+	public void onProjectInsert(Project project, DBSession session) {
+		// noop
+	}
 }

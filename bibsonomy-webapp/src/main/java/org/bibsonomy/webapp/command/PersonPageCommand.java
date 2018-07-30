@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.webapp.command;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

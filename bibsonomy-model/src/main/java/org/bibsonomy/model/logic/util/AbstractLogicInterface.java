@@ -62,7 +62,6 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -70,12 +69,14 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.model.logic.querybuilder.ProjectQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -990,5 +991,30 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	public String getForwardId(String personId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<Project> getProjects(ProjectQueryBuilder builder) {
+		return null;
+	}
+
+	@Override
+	public Project getProjectDetails(String projectId) {
+		return null;
+	}
+
+	@Override
+	public boolean createProject(Project project) {
+		return false;
+	}
+
+	@Override
+	public boolean updateProject(String projectId, Project project) {
+		return false;
+	}
+
+	@Override
+	public boolean deleteProject(String projectId) {
+		return false;
 	}
 }

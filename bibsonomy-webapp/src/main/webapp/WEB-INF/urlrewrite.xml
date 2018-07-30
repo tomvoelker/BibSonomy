@@ -1023,6 +1023,15 @@
 		<set type="parameter" name="activationCode">${unescapePath:$1}</set>
 		<to last="true">/activate</to>
 	</rule>
+
+
+	<!-- /project/PROJECT_ID -->
+	<rule>
+		<name>/project/PROJECT_ID</name>
+		<from>^/+project/+(.*)$</from>
+		<set type="parameter" name="requestedProjectId">${unescapePath:$1}</set>
+		<to>/project</to>
+	</rule>
 	
 	<!-- ############## help ############### -->
 	<rule>

@@ -437,6 +437,11 @@ public enum Views implements View {
 	EDIT_GOLD_STANDARD_PUBLICATION("actions/post/editGoldStandardPublication"),
 
 	/**
+	 * the dialog to edit a project
+	 */
+	EDIT_PROJECT("actions/projects/editProject"),
+
+	/**
 	 * The dialog to enter a URL for posting (small dialog).
 	 */
 	POST_BOOKMARK("actions/post/postBookmark"),
@@ -737,7 +742,17 @@ public enum Views implements View {
 	/**
 	 * group request page
 	 */
-	GROUPREQUEST("groupRequest");
+	GROUPREQUEST("groupRequest"),
+
+	/**
+	 * page listing all projects
+	 */
+	PROJECT_PAGE("projects"),
+
+	/**
+	 * page displaying all project details
+	 */
+	PROJECT_DETAILS_PAGE("projects/details");
 
 	/*
 	 * both bookmarks and publications

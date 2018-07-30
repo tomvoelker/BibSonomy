@@ -86,7 +86,7 @@ import org.bibsonomy.model.user.remote.RemoteUserId;
  * @author Jens Illig <illig@innofinity.de>
  * @author Christian Kramer
  */
-public interface LogicInterface extends PersonLogicInterface, PostLogicInterface, GoldStandardPostLogicInterface, DiscussionLogicInterface, SyncLogicInterface {
+public interface LogicInterface extends PersonLogicInterface, PostLogicInterface, GoldStandardPostLogicInterface, DiscussionLogicInterface, SyncLogicInterface, CRISLogicInterface {
 
 	/**
 	 * @return the name of the authenticated user
@@ -787,7 +787,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 
 	/**
 	 * @param formMatchId
-	 * @param array
+	 * @param map
 	 * @return
 	 */
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map);
@@ -797,5 +797,6 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param personId
 	 * @return returns the updated personId, if the person was merged to an other person
 	 */
+	@Deprecated // FIXME: remove; move to logic
 	public String getForwardId(String personId);
 }

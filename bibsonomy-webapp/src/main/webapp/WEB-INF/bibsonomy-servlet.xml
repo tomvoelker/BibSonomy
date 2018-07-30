@@ -769,6 +769,21 @@
 						<property name="controllerBeanName" value="personIntroPageController"/>
 					</bean>
 				</entry>
+				<entry key="/projects">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="projectsController"/>
+					</bean>
+				</entry>
+				<entry key="/project">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="projectDetailsController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedProjectId</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -814,6 +829,15 @@
 	
 	<bean id="relationsController" class="org.bibsonomy.webapp.controller.RelationsController" scope="request">
 		<property name="logic" ref="logic"/>
+	</bean>
+
+	<!-- projects controller -->
+	<bean id="projectsController" class="org.bibsonomy.webapp.controller.ProjectsPageController">
+		<property name="logic" ref="logic" />
+	</bean>
+
+	<bean id="projectDetailsController" class="org.bibsonomy.webapp.controller.ProjectPageController">
+		<property name="logic" ref="logic" />
 	</bean>
 	
 	<bean id="followersPageController" class="org.bibsonomy.webapp.controller.FollowersPageController" scope="request" parent="multiResourceListController">
