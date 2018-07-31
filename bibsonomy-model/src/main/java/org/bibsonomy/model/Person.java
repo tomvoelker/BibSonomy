@@ -57,6 +57,8 @@ public class Person implements Linkable, Serializable {
 	private String academicDegree;
 	/** researcher id on http://orcid.org/ */
 	private String orcid;
+    /** researcher id on http://researcherID.com/ */
+    private String researcherid;
 	/** sameAs relation to a user */
 	private String user;
 	/** {@link User} who last modified this {@link Person} */
@@ -254,19 +256,33 @@ public class Person implements Linkable, Serializable {
 		this.user = user;
 	}
 
-	/**
-	 * @return researcher id on http://orcid.org/
-	 */
-	public String getOrcid() {
-		return this.orcid;
-	}
+    /**
+     * @return researcher id on http://orcid.org/
+     */
+    public String getOrcid() {
+        return this.orcid;
+    }
 
-	/**
-	 * @param orcid researcher id on http://orcid.org/
-	 */
-	public void setOrcid(String orcid) {
-		this.orcid = orcid;
-	}
+    /**
+     * @param orcid researcher id on http://orcid.org/
+     */
+    public void setOrcid(String orcid) {
+        this.orcid = orcid;
+    }
+
+    /**
+     * @return researcher id on http://researcherID.com/
+     */
+    public String getResearcherid() {
+        return this.researcherid;
+    }
+
+    /**
+     * @param researcherid researcher id on http://researcherID.com/
+     */
+    public void setResearcherid(String researcherid) {
+        this.researcherid= researcherid;
+    }
 
 	/**
 	 * @return the number of posts in the system, which this {@link Person} as an author

@@ -348,6 +348,7 @@ public class PersonPageController extends SingleResourceListController implement
 		// set all attributes that might be updated
 		person.setAcademicDegree(command.getPerson().getAcademicDegree());
 		person.setOrcid(command.getPerson().getOrcid().replaceAll("-", ""));
+		person.setResearcherid(command.getPerson().getResearcherid());
 		person.setCollege(command.getPerson().getCollege());
 		
 		// TODO only allow updates if the editor "is" this person

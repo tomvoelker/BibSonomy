@@ -36,6 +36,7 @@
 	<fmt:message key="person.show.newThesisButton" var="textNewThesisButton" />
 	<fmt:message key="person.show.noResourcesFound" var="textNoResourcesFound" />
 	<fmt:message key="person.show.orcidId" var="textOrcidId" />
+	<fmt:message key="person.show.researcherId" var="textResearcherId" />
 	<fmt:message key="person.show.saveButton" var="textSaveButton" />
 	<fmt:message key="person.show.TooltipLockedForm" var="formLockedTooltip" />
 	
@@ -143,7 +144,8 @@
 						</h1>
 					</div>
 				</div>
-				
+
+				Wurst
 				<!-- VCard -->
 				<div id="personInfo" class="row">
 					<div class="col-md-6">
@@ -310,24 +312,47 @@
 						</div>
 							
 					
-						<!-- ORCID -->						
+						<!-- ORCID -->
 						<div class='form-group'>
 							<label class="control-label col-md-6" for='formOrcid'>${textOrcidId}</label>
-							
+
 							<div class="col-md-6">
 								<div class="personPageFormPlaceholder">
 									<c:if test="${(not empty command.context.loginUser.name and empty command.person.user) or (not empty command.person.user and (command.person.user eq command.context.loginUser.name)) and not command.context.loginUser.spammer}">
-										<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
+										<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
 									</c:if>
-									<span class="personPageFormFieldContent" id="personPageFormOrcidValue">${mtl:beatifyOrcid(command.person.orcid)}</span> 
+									<span class="personPageFormFieldContent" id="personPageFormOrcidValue">${mtl:beatifyOrcid(command.person.orcid)}</span>
 								</div>
 								<div class="personPageFormField col-md-8">
 									<input class='form-control' type="text" name='person.orcid' id='formOrcid' placeholder="${textOrcidId}" value="${mtl:beatifyOrcid(command.person.orcid)}"/>
 								</div>
-								
+
 								<!-- TODO: REMOVE INLINE CSS -->
 								<div style="margin:12px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
 									<actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_ORCID" disabled="true"></actionbuttons:personPageupdateButton>
+								</div>
+							</div>
+						</div>
+
+
+						<!-- RESEARCHER ID -->
+						<div class='form-group'>
+							<label class="control-label col-md-6" for='formResearcherid'>${textResearcherId}</label>
+
+							<div class="col-md-6">
+								<div class="personPageFormPlaceholder">
+									<c:if test="${(not empty command.context.loginUser.name and empty command.person.user) or (not empty command.person.user and (command.person.user eq command.context.loginUser.name)) and not command.context.loginUser.spammer}">
+										<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
+									</c:if>
+									<span class="personPageFormFieldContent" id="personPageFormResearcheridValue">${mtl:beatifyResearcherid(command.person.researcherid)}</span>
+								</div>
+								<div class="personPageFormField col-md-8">
+									<input class='form-control' type="text" name='person.researcherid' id='formResearcherid' placeholder="${textResearcherId}" value="${mtl:beatifyResearcherid(command.person.researcherid)}"/>
+								</div>
+
+								<!-- TODO: REMOVE INLINE CSS -->
+								<div style="margin:12px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
+									<actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_RESEARCHERID" disabled="true"></actionbuttons:personPageupdateButton>
 								</div>
 							</div>
 						</div>

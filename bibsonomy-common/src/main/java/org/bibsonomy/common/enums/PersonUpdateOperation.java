@@ -35,6 +35,9 @@ public enum PersonUpdateOperation {
 	/** Update the orcid of a person */
 	UPDATE_ORCID,
 
+	/** Update the researcherid of a person */
+	UPDATE_RESEARCHERID,
+
 	/** Update the academic degree of a person */
 	UPDATE_ACADEMIC_DEGREE,
 

@@ -1073,4 +1073,17 @@ public class Functions {
 		return orcid;
 	}
 
+
+	/**
+	 * Returns a formatted researcherid
+	 * @param researcherid
+	 * @return
+	 */
+	public static String beatifyResearcherid(String researcherid) {
+		if (researcherid.length() == 16) {
+			return researcherid.substring(0, 1) + "-" + researcherid.substring(2, 5) + "-" + researcherid.substring(5, 9);
+		}
+		return researcherid;
+	}
+
 }
