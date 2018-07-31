@@ -181,8 +181,8 @@
 	</insert>
 	
 	<insert id="logPersonName" parameterClass="Integer">
-		INSERT INTO log_person_name (person_change_id, first_name, last_name, person_id, is_main, log_changed_at, log_changed_by, deleted)
-		SELECT person_change_id, first_name, last_name, person_id, is_main, log_changed_at, log_changed_by, 0 as deleted
+		INSERT INTO log_person_name (person_change_id, first_name, last_name, person_id, is_main, log_changed_at, log_changed_by)
+		SELECT person_change_id, first_name, last_name, person_id, is_main, log_changed_at, log_changed_by
 		FROM person_name WHERE person_change_id = #personChangeId#
 	</insert>
 	
@@ -202,6 +202,12 @@
 		INSERT INTO log_pub_person (person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by, deleted)
 		SELECT (SELECT LAST_INSERT_ID() as person_change_id), simhash1, simhash2, relator_code, person_index, person_id, qualifying, #changedAt#, #changedBy#, 1 as deleted
 		FROM pub_person WHERE person_change_id = #personRelChangeId#
+	</insert>
+	
+	<insert id="logPubPersonUpdates" parameterClass="int">
+		INSERT INTO log_pub_person (person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by, deleted, new_change_id)
+		SELECT #personChangeId# as person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by, deleted, (SELECT LAST_INSERT_ID() as new_change_id)
+		FROM pub_person WHERE person_change_id = #personChangeId#
 	</insert>
 	
 	<!-- when updated, 'deleted' field is 0 -->

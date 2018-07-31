@@ -32,7 +32,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>3.8.13-SNAPSHOT</version>
+		<version>3.8.14-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>
@@ -168,7 +168,7 @@
 			<plugin>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>javascript-i18n-messagesource-maven-plugin</artifactId>
-				<version>1.0.0</version>
+				<version>1.0.1</version>
 				<configuration>
 					<messageSources>
 						<messageSource>file:///${project.basedir}/src/main/resources/messages</messageSource>
@@ -708,7 +708,6 @@
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
-			<version>2.3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sksamuel.diff</groupId>

@@ -132,4 +132,17 @@ public class ValidationUtils {
 			throw new IllegalStateException("should not be null");
 		}
 	}
+	
+	/**
+	 * equals including null values
+	 * @param a
+	 * @param b
+	 * @return <code>true</code> if both objects are null or equal, <code>false</code> otherwise
+	 */
+	public static boolean equalsWithNull(Object a, Object b) {
+		if (a==b) return true;
+		if ((a==null) || (b==null)) return false;
+		return a.equals(b);
+	}
+
 }

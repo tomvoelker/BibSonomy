@@ -4,7 +4,7 @@
 <sqlMapConfig>
 
 	<!-- define query timeout (works only with mysql-connector-java 5.0.5+) -->	
-	<settings defaultStatementTimeout="30" />
+	<settings defaultStatementTimeout="30" enhancementEnabled="true" />
 
 	<!-- Type Aliases -->
 	<sqlMap resource="common/TypeAliases.xml" />
@@ -48,6 +48,7 @@
 	<sqlMap resource="common/CommentCommon.xml" />
 	<sqlMap resource="common/ReviewCommon.xml" />
 	<sqlMap resource="common/PersonCommon.xml" />
+	<sqlMap resource="common/ProjectCommon.xml" />
 
 	<sqlMap resource="Synchronization.xml" />
 	<sqlMap resource="General.xml" />
@@ -73,6 +74,7 @@
 	<sqlMap resource="Comment.xml" />
 	<sqlMap resource="Wiki.xml" />
 	<sqlMap resource="Person.xml" />
+	<sqlMap resource="Project.xml" />
 
 	<!-- plugins -->
 	<sqlMap resource="plugins/Logging.xml" />

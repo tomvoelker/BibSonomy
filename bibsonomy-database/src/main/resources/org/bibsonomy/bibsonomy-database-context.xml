@@ -209,6 +209,8 @@
 	<bean id="databaseValidator" class="org.bibsonomy.database.validation.DatabaseModelValidator">
 		<property name="databaseSchemaInformation" ref="dbSchemaInformation" />
 	</bean>
+
+	<bean id="generalDatabaseManager" class="org.bibsonomy.database.managers.GeneralDatabaseManager" factory-method="getInstance"/>
 	
 	<bean id="adminDatabaseManager" class="org.bibsonomy.database.managers.AdminDatabaseManager" factory-method="getInstance">
 		<property name="userDatabaseManager" ref="userDatabaseManager" />
@@ -224,6 +226,10 @@
 		
 	<bean id="discussionDatabaseManager" class="org.bibsonomy.database.managers.discussion.DiscussionDatabaseManager" factory-method="getInstance">
 		<property name="chain" ref="discussionChain" />
+	</bean>
+	
+	<bean id="documentDatabaseManager" class="org.bibsonomy.database.managers.DocumentDatabaseManager" factory-method="getInstance">
+		<property name="userDatabaseManager" ref="userDatabaseManager" />
 	</bean>
 	
 	<bean id="userDatabaseManager" class="org.bibsonomy.database.managers.UserDatabaseManager" factory-method="getInstance">
@@ -310,6 +316,12 @@
 	</bean>
 	
 	<bean id="clipboardDatabaseManager" class="org.bibsonomy.database.managers.ClipboardDatabaseManager" factory-method="getInstance" />
+
+	<bean id="projectDatabaseManager" class="org.bibsonomy.database.managers.ProjectDatabaseManager">
+		<property name="generalDatabaseManager" ref="generalDatabaseManager" />
+		<property name="plugins" ref="databasePluginManager" />
+		<property name="validator" ref="projectValidator" />
+	</bean>
 	
 	<bean id="databasePluginManager" class="org.bibsonomy.database.plugin.DatabasePluginRegistry" factory-method="getInstance">
 		<property name="defaultPlugins">

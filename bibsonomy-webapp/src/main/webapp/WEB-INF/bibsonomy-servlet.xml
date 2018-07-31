@@ -339,7 +339,8 @@
 								<!--  <value>requestedUser</value> -->
 								<!-- <value>requestedRole</value> -->
 								<!-- <value>requestedIndex</value>  -->
-								
+								<value>formResponseString</value>
+								<value>formMatchId</value>
 								<value>formAction</value>
 								<value>formPersonRoles</value>
 								<value>formPersonRole</value>
@@ -374,6 +375,7 @@
 								<value>person.college</value>
 								<value>person.email</value>
 								<value>person.homepage</value>
+								<value>person.gender</value>
 								
 								<value>newName.firstName</value>
 								<value>newName.lastName</value>
@@ -767,6 +769,21 @@
 						<property name="controllerBeanName" value="personIntroPageController"/>
 					</bean>
 				</entry>
+				<entry key="/projects">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="projectsController"/>
+					</bean>
+				</entry>
+				<entry key="/project">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="projectDetailsController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedProjectId</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -813,6 +830,15 @@
 	<bean id="relationsController" class="org.bibsonomy.webapp.controller.RelationsController" scope="request">
 		<property name="logic" ref="logic"/>
 	</bean>
+
+	<!-- projects controller -->
+	<bean id="projectsController" class="org.bibsonomy.webapp.controller.ProjectsPageController">
+		<property name="logic" ref="logic" />
+	</bean>
+
+	<bean id="projectDetailsController" class="org.bibsonomy.webapp.controller.ProjectPageController">
+		<property name="logic" ref="logic" />
+	</bean>
 	
 	<bean id="followersPageController" class="org.bibsonomy.webapp.controller.FollowersPageController" scope="request" parent="multiResourceListController">
 		<property name="supportedResources" ref="allResources"/>	
@@ -835,6 +861,7 @@
 		<property name="oauthLogic" ref="oAuthLogic"/>
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
 		<property name="invisibleOAuthConsumers" value="${invisible.oauth.consumers}"/>
+		<property name="cslFilesManager" ref="CSLFilesManager" />
 	</bean>
 	
 	<bean id="groupSettingsPageController" class="org.bibsonomy.webapp.controller.GroupSettingsPageController" scope="request">

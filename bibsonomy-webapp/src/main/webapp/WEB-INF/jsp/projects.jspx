@@ -1,0 +1,60 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	 
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<c:set var="hasTags" value="${not empty command.requestedTags}" />
+	<fmt:message var="pageTitle" key="navi.search" />
+	
+	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
+	
+	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}">
+		
+		<jsp:attribute name="additionalSorting">
+			<c:choose>
+				<c:when test="${command.sortPage eq 'relevance'}">
+					<li><span class="italic"><fontawesome:icon icon="sort-numeric-asc " spaceAfter="5" /><fmt:message key="sort.rank"/></span></li>
+				</c:when>
+				<c:otherwise>
+					<li><a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'relevance')}"><fontawesome:icon icon="sort-numeric-asc " spaceAfter="5" /><fmt:message key="sort.rank"/></a></li>
+				</c:otherwise>
+			</c:choose>
+		</jsp:attribute>
+		
+		<jsp:attribute name="heading">
+			<c:choose>
+				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL'}">
+					<c:set var="pathMessageKey" value="navi.${command.scope.name().toLowerCase()}"/>
+				</c:when>
+				<c:otherwise>
+					<c:set var="pathMessageKey" value="navi.search"/>
+				</c:otherwise>
+			</c:choose>
+			<parts:search scope="${command.scope}" pathMessageKey="${pathMessageKey}" formAction="/redirect" formInputName="search" formInputValue="${command.requestedSearch}" />
+		</jsp:attribute>
+	
+		<!--+
+			| sidebar
+			+-->
+		<jsp:attribute name="sidebar">
+			<c:set var="requPathToUse" value="${requPath}" />
+			<c:if test="${hasTags}">
+				<c:set var="requPathToUse" value="${mtl:getLowerPath(requPath)}" />
+			</c:if>
+			<sidebar:sidebarTagCloudItem requPath="${requPathToUse}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" scope="${command.scope.name()}"/>
+		</jsp:attribute>
+	
+	</layout:resourceLayout>
+</jsp:root>

@@ -66,6 +66,7 @@ DELETE FROM `pendingUser`;
 DELETE FROM `ranking_queue`;
 DELETE FROM `rankings`;
 DELETE FROM `scraperMetaData`;
+DELETE FROM `similar_persons`;
 DELETE FROM `spammer_tags`;
 DELETE FROM `tags`;
 DELETE FROM `tagtag`;
@@ -83,6 +84,7 @@ DELETE FROM `useruser_similarity`;
 DELETE FROM `useruser_similarity2`;
 DELETE FROM `useruser_similarity_measures`;
 DELETE FROM `weights`;
+DELETE FROM `projects`;
 
 ALTER TABLE `classifier_settings` AUTO_INCREMENT=0;
 

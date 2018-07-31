@@ -1,6 +1,7 @@
 package org.bibsonomy.model.cris;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -10,8 +11,23 @@ import java.util.List;
  */
 public class Project implements Linkable {
 
+	/** the database id */
+	private int id;
+
+	/** the external id of the project */
+	private String externalId;
+
+	/** the internal id of the project */
+	private String internalId;
+
 	/** the title of the project */
 	private String title;
+
+	/** the subtitle of the project */
+	private String subTitle;
+
+	/** the description of the project */
+	private String description;
 
 	/** the type of the type */
 	private String type;
@@ -25,7 +41,49 @@ public class Project implements Linkable {
 	/** the end date */
 	private Date endDate;
 
-	private List<Project> subProjects;
+	private List<Project> subProjects = new LinkedList<>();
+
+	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the externalId
+	 */
+	public String getExternalId() {
+		return externalId;
+	}
+
+	/**
+	 * @param externalId the externalId to set
+	 */
+	public void setExternalId(String externalId) {
+		this.externalId = externalId;
+	}
+
+	/**
+	 * @return the internalId
+	 */
+	public String getInternalId() {
+		return internalId;
+	}
+
+	/**
+	 * @param internalId the internalId to set
+	 */
+	public void setInternalId(String internalId) {
+		this.internalId = internalId;
+	}
 
 	/**
 	 * @return the title
@@ -37,8 +95,36 @@ public class Project implements Linkable {
 	/**
 	 * @param title the title to set
 	 */
-	public void setTitle(String title) {
+	public void setTitle(final String title) {
 		this.title = title;
+	}
+
+	/**
+	 * @return the subTitle
+	 */
+	public String getSubTitle() {
+		return subTitle;
+	}
+
+	/**
+	 * @param subTitle the subTitle to set
+	 */
+	public void setSubTitle(String subTitle) {
+		this.subTitle = subTitle;
+	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	/**

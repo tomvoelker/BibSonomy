@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Project">
+
+
+    <select id="getFullProjectDetails" parameterClass="string" resultMap="ProjectCommon.fullProject">
+        SELECT <include refid="fullProjectAttributes" />
+          FROM projects
+        WHERE project_id = #project_id#
+    </select>
+
+    <insert id="insertProject" parameterClass="projectParam">
+        INSERT INTO projects (<include refid="allProjectAttributes"/>)
+        VALUES (<include refid="insertProjectAttributes"/>)
+    </insert>
+
+   <!--
+    <select id="getAllProjects" resultMap="Project.project">
+        SELECT <include refid="commonProjectAttributes"/>
+        FROM projects
+    </select>
+    <update id="updateProject" parameterClass="project">
+        UPDATE projects
+        WHERE project_name=#name#
+    </update>
+
+    <delete id="deleteProject" parameterClass="string">
+        DELETE FROM projects WHERE project_id = #project_id#
+    </delete> -->
+
+
+</sqlMap>

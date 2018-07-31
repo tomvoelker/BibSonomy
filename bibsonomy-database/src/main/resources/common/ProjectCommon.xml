@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ProjectCommon">
+
+    <resultMap id="fullProject" class="project" groupBy="id">
+        <result property="id"			column="id"             javaType="int" />
+        <result property="externalId"	column="project_id"		javaType="string" />
+        <result property="internalId"	column="internal_id"	javaType="string" />
+        <result property="title"	    column="title"		    javaType="string" />
+        <result property="subTitle"	    column="subtitle"	    javaType="string" />
+        <result property="description"	column="description"	javaType="string" />
+        <result property="startDate" 	column="start_date"		javaType="date" />
+        <result property="endDate"	    column="end_date"	    javaType="date" />
+        <result property="type"	        column="type"	        javaType="string" />
+        <result property="budget"	    column="budget"	        javaType="double" />
+    </resultMap>
+
+    <sql id="fullProjectAttributes">
+        id, project_id, internal_id, title, subtitle, description, start_date, end_date,
+        type, budget
+    </sql>
+
+    <sql id="allProjectAttributes">
+        <include refid="fullProjectAttributes" />, updated_at, updated_by
+    </sql>
+
+    <sql id="insertProjectAttributes">
+        #project.id#, #project.externalId#, #project.internalId#,  #project.title#, #project.subTitle#, #project.description#, #project.startDate#, #project.endDate#, #project.type#, #project.budget#, #updatedAt#, #updatedBy#
+    </sql>
+
+</sqlMap>

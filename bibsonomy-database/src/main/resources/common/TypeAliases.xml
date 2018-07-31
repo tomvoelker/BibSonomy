@@ -37,6 +37,9 @@
 	
 	<typeAlias alias="goldStandardRelation" type="org.bibsonomy.model.enums.GoldStandardRelation" />
 	<typeAlias alias="personResourceRelationType" type="org.bibsonomy.model.enums.PersonResourceRelationType" />
+
+	<!-- CRIS types -->
+	<typeAlias alias="project" type="org.bibsonomy.model.cris.Project" />
 	
 	<!-- Synchronization -->
 	<typeAlias alias="syncResource"		  type="org.bibsonomy.model.sync.SynchronizationResource" />
@@ -80,6 +83,8 @@
 	<typeAlias alias="discussionItemParam"	type="org.bibsonomy.database.params.discussion.DiscussionItemParam" />
 	<typeAlias alias="commentParam"			type="org.bibsonomy.database.params.discussion.CommentParam" />
 	<typeAlias alias="reviewParam"			type="org.bibsonomy.database.params.discussion.ReviewParam" />
+
+	<typeAlias alias="projectParam"         type="org.bibsonomy.database.params.ProjectParam" />
 	
 	<!-- Java types  -->
 	<typeAlias alias="resourceTypeClass"	type="java.lang.Class" />

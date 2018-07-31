@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.webapp.command;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.bibsonomy.model.Group;
@@ -43,6 +45,47 @@ public class GroupsListCommand extends BaseCommand {
 	// dirty hack: alphabet for direct access in group list
 	private String strAlphabet = "#ABCDEFGHIJKLMNOPQRSTUVWXYZα"; 
 	private char[] alphabet = strAlphabet.toCharArray();
+	
+	private String format = "html";
+	
+	/** callback function for JSON outputs */
+	private String callback = "";
+		
+	/**
+	 * @return the callback
+	 */
+	public String getCallback() {
+		return this.callback;
+	}
+
+	/**
+	 * @param callback the callback to set
+	 */
+	public void setCallback(final String callback) {
+		this.callback = callback;
+	}
+	
+	/**
+	 * @return The requested format.
+	 * 
+	 */
+	public String getFormat() {
+		if (present(this.format)) {
+			return this.format;
+		}
+		
+		/*
+		 * the default is html
+		 * */
+		return "html";
+	}
+	
+	/**
+	 * @param format
+	 */
+	public void setFormat(final String format) {
+		this.format = format;
+	}
 	
 	/**
 	 * stores the data if a new group is requested.

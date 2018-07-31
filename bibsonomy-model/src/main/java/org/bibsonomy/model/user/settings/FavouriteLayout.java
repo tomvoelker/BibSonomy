@@ -52,8 +52,9 @@ public class FavouriteLayout {
 	 * @param style
 	 * 
 	 * creates a new favourite layout with source as source, STYLE as style and a display Name
+	 * displayName is generated either by file or style
 	 */
-	public FavouriteLayout(FavouriteLayoutSource source, String style) {
+	public FavouriteLayout(final FavouriteLayoutSource source, final String style) {
 		this.source = source;
 		this.style = style.toUpperCase();
 		this.displayName = style.toLowerCase();
@@ -61,6 +62,14 @@ public class FavouriteLayout {
 			displayName = SimpleExportLayout.BIBTEX.getDisplayName();
 		} else if (SimpleExportLayout.ENDNOTE.getDisplayName().equalsIgnoreCase(style)) {
 			displayName = SimpleExportLayout.ENDNOTE.getDisplayName();
+		} else if (FavouriteLayoutSource.CSL.equals(source)) {
+
+
+
+			if(style.toLowerCase().endsWith(".csl")){
+				this.style = style;
+				this.displayName = style.substring(style.indexOf('_', style.indexOf('_')+1)+1, style.toLowerCase().indexOf(".csl")).trim();
+			}
 		}
 	}
 	
@@ -72,8 +81,7 @@ public class FavouriteLayout {
 	}
 	
 	/**
-	 * ATTENTION
-	 * @return the displayName. Works only for "SIMPLE" source. Nothing else!!
+	 * @return the displayName
 	 */
 	public String getDisplayName() {
 		return this.displayName;

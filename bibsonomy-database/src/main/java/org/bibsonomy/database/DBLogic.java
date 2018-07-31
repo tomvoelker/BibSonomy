@@ -45,6 +45,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -94,6 +95,7 @@ import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.managers.PersonDatabaseManager;
 import org.bibsonomy.database.managers.PostDatabaseManager;
+import org.bibsonomy.database.managers.ProjectDatabaseManager;
 import org.bibsonomy.database.managers.StatisticsDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.managers.TagRelationDatabaseManager;
@@ -127,6 +129,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -135,6 +138,7 @@ import org.bibsonomy.model.Review;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
@@ -143,6 +147,7 @@ import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.model.logic.querybuilder.ProjectQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
@@ -206,6 +211,8 @@ public class DBLogic implements LogicInterface {
 	private final InboxDatabaseManager inboxDBManager;
 	private final WikiDatabaseManager wikiDBManager;
 
+	private final ProjectDatabaseManager projectDatabaseManager;
+
 	private final SynchronizationDatabaseManager syncDBManager;
 
 	private final BibTexReader publicationReader;
@@ -263,12 +270,15 @@ public class DBLogic implements LogicInterface {
 
 		this.wikiDBManager = WikiDatabaseManager.getInstance();
 
+		this.projectDatabaseManager = null; // FIXME:
+
 		this.syncDBManager = SynchronizationDatabaseManager.getInstance();
 
 		this.bibTexExtraDBManager = BibTexExtraDatabaseManager.getInstance();
 
 		this.dbSessionFactory = dbSessionFactory;
 	}
+
 
 	/**
 	 * Returns a new database session. If a user is logged in, he gets the
@@ -888,6 +898,20 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getDeletedGroupUsers(int, int)
+	 */
+	public List<User> getDeletedGroupUsers(int start, int end) {
+		final DBSession session = this.openSession();
+		try {
+			this.permissionDBManager.ensureAdminAccess(this.loginUser);
+			return this.userDBManager.getDeletedGroupUsers(start, end, session);
+		} finally {
+			session.close();
+		}
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -1289,6 +1313,23 @@ public class DBLogic implements LogicInterface {
 		try {
 			this.groupDBManager.createGroup(group, session);
 
+			return group.getName();
+		} finally {
+			session.close();
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#restoreGroup(org.bibsonomy.model.Group)
+	 */
+	public String restoreGroup(final Group group) {
+		// check admin permissions
+		this.permissionDBManager.ensureAdminAccess(loginUser);
+		
+		final DBSession session = this.openSession();
+		try {
+			this.groupDBManager.restoreGroup(group, session);
 			return group.getName();
 		} finally {
 			session.close();
@@ -2092,6 +2133,25 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getDocuments(java.lang.String)
+	 */
+	@Override
+	public List<Document> getDocuments(String userName) {
+		this.ensureLoggedIn();
+
+		final String lowerCaseUserName = userName.toLowerCase();
+		this.permissionDBManager.ensureWriteAccess(this.loginUser, lowerCaseUserName);
+
+		final DBSession session = this.openSession();
+
+		try {
+			return this.docDBManager.getLayoutDocuments(lowerCaseUserName, session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -3724,5 +3784,124 @@ public class DBLogic implements LogicInterface {
 				}
 			}
 		};
+	}
+
+
+	/**
+	 * 
+	 * @param personID
+	 * @return a list of all matches for a person
+	 */
+	@Override
+	public List<PersonMatch> getPersonMatches(String personID) {
+		final DBSession session = this.openSession();
+		if (present(this.loginUser.getName())){
+			return this.personDBManager.getMatchesForFilterWithUserName(session, personID, this.loginUser.getName());
+		}
+		return this.personDBManager.getMatchesFor(session, personID);
+	}
+
+	/**
+	 * increases the deny counter of a match and denys it after a threshold is reached
+	 * 
+	 * @param match
+	 * @return
+	 */
+	@Override
+	public void denieMerge(PersonMatch match) {
+		final DBSession session = this.openSession();
+		if (present(this.loginUser.getName())) {
+			this.personDBManager.denyMatch(match, session, this.loginUser.getName());
+		}
+	}
+	
+	/**
+	 * performs a merge that has no conflicts
+	 * @param match
+	 * @return
+	 */
+	@Override
+	public boolean acceptMerge(PersonMatch match) {
+		final DBSession session = this.openSession();
+		if (present(this.loginUser.getName())) {
+			return this.personDBManager.mergeSimilarPersons(match, this.loginUser.getName(), session);
+		}
+		return false;
+	}
+	
+	/**
+	 * 
+	 * @param matchID
+	 * @return the match with given matchID
+	 */
+	@Override
+	public PersonMatch getPersonMatch(int matchID) {
+		final DBSession session = this.openSession();
+		return personDBManager.getMatch(matchID, session);
+	}
+
+	/**
+	 * resolves conflicts and performs a merge
+	 * @param formMatchId of the match to merge
+	 * @param map of conflict fields with new values
+	 * @return
+	 */
+	@Override
+	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
+		final DBSession session = this.openSession();
+		if (present(this.loginUser.getName())) {
+			return this.personDBManager.conflictMerge(session, formMatchId, map, this.loginUser.getName());
+		}
+		return false;
+	}
+
+	/**
+	 * @param personId
+	 * @return returns the updated personId, if the person was merged to an other person
+	 */
+	@Override
+	public String getForwardId(final String personId) {
+		final DBSession session = this.openSession();
+		return this.personDBManager.getForwardId(personId, session);
+	}
+
+	@Override
+	public List<Project> getProjects(final ProjectQueryBuilder builder) {
+		try (final DBSession session = this.openSession()) {
+			return null;
+		}
+	}
+
+	@Override
+	public Project getProjectDetails(final String projectId) {
+		final boolean admin = this.permissionDBManager.isAdmin(this.loginUser);
+
+		try (final DBSession session = this.openSession()) {
+			return this.projectDatabaseManager.getProjectDetails(projectId, admin, session);
+		}
+	}
+
+	@Override
+	public JobResult createProject(final Project project) {
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
+		try (final DBSession session = this.openSession()) {
+			return this.projectDatabaseManager.createProject(project, this.loginUser, session);
+		}
+	}
+
+	@Override
+	public boolean updateProject(final String projectId, final Project project) {
+		this.permissionDBManager.ensureAdminAccess(this.getAuthenticatedUser());
+		try (final DBSession session = this.openSession()) {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean deleteProject(String projectId) {
+		this.permissionDBManager.ensureAdminAccess(this.getAuthenticatedUser());
+		try (final DBSession session = this.openSession()) {
+			return false;
+		}
 	}
 }

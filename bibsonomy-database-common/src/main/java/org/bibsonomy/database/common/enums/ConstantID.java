@@ -81,6 +81,8 @@ public enum ConstantID {
 	IDS_SYNC_SERVICE(16),
 	/** id of a syncronization service */
 	PERSON_CHANGE_ID(17),
+	/** id of a project */
+	PROJECT_ID(18),
 	
 	/* other ids (not related to SQL tables! */
 	/** marks that no special content type has yet been assigned */

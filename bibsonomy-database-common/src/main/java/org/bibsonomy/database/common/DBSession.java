@@ -39,7 +39,7 @@ import org.bibsonomy.common.errors.ErrorMessage;
  * @author Jens Illig
  * @author Christian Schenk
  */
-public interface DBSession {
+public interface DBSession extends AutoCloseable {
 
 	/**
 	 * Starts a virtual transaction (a real one if no real transaction has been
@@ -76,8 +76,9 @@ public interface DBSession {
 	public void executeBatch();
 
 	/**
-	 * MUST be called to release the db-connection
+	 * we do not throw exceptions
 	 */
+	@Override
 	public void close();
 
 	/**

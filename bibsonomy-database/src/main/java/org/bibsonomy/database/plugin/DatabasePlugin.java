@@ -39,6 +39,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
@@ -360,5 +361,12 @@ public interface DatabasePlugin {
 	 * @param session
 	 */
 	public void onPersonNameUpdate(Integer personChangeId, DBSession session);
+
+	/**
+	 * called before a project is inserted into the database
+	 * @param project
+	 * @param session
+	 */
+	public void onProjectInsert(final Project project, DBSession session);
 
 }
