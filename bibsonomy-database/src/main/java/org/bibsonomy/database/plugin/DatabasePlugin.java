@@ -369,4 +369,12 @@ public interface DatabasePlugin {
 	 */
 	public void onProjectInsert(final Project project, DBSession session);
 
+	/**
+	 * called before a project is updated
+	 * @param oldProject
+	 * @param newProject
+	 * @param session
+	 */
+	public void onProjectUpdate(final Project oldProject, final Project newProject, final DBSession session);
+
 }

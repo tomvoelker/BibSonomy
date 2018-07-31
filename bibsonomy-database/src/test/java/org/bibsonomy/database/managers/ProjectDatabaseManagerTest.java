@@ -1,9 +1,11 @@
 package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
+import org.bibsonomy.common.JobResult;
+import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
@@ -15,9 +17,12 @@ import java.util.Date;
 
 /**
  * tests for {@link ProjectDatabaseManager}
+ *
  * @author dzo
  */
 public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
+
+	private static final String TESTUSER_1_NAME = "testuser1";
 
 	private static ProjectDatabaseManager PROJECT_DATABASE_MANAGER;
 
@@ -46,7 +51,7 @@ public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String internalId = "122323-2323";
 		project.setInternalId(internalId);
 
-		PROJECT_DATABASE_MANAGER.createProject(project, new User("testuser1"), this.dbSession);
+		PROJECT_DATABASE_MANAGER.createProject(project, new User(TESTUSER_1_NAME), this.dbSession);
 
 		final Project projectDetails = PROJECT_DATABASE_MANAGER.getProjectDetails(project.getExternalId(), true, this.dbSession);
 
@@ -56,10 +61,68 @@ public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(projectType, projectDetails.getType());
 		assertEquals(startDate, projectDetails.getStartDate());
 		assertEquals(endDate, projectDetails.getEndDate());
+		assertEquals("regio", projectDetails.getExternalId());
+	}
+
+	/**
+	 * tests {@link ProjectDatabaseManager#updateProject(String, Project, User, DBSession)}
+	 */
+	@Test
+	public void testUpdateProject() {
+		final Project posts = PROJECT_DATABASE_MANAGER.getProjectDetails("posts", true, this.dbSession);
+		float newBuget = 1000.0f;
+		posts.setBudget(newBuget);
+		final int dbId = posts.getId();
+
+		final JobResult result = PROJECT_DATABASE_MANAGER.updateProject(posts.getExternalId(), posts, new User(TESTUSER_1_NAME), this.dbSession);
+
+		assertEquals(Status.OK, result.getStatus());
+
+		final Project postsAfterUpdate = PROJECT_DATABASE_MANAGER.getProjectDetails("posts", true, this.dbSession);
+
+		assertEquals(newBuget, postsAfterUpdate.getBudget(), 0.001);
+		assertNotEquals(dbId, postsAfterUpdate.getId()); // check for id change
 	}
 
 	@Test
+	public void testUpdateProjectNotExistingAndValidation() {
+		// try to update a non-existing project
+		final Project project = new Project();
+
+		final JobResult result = PROJECT_DATABASE_MANAGER.updateProject("regio", project, new User(TESTUSER_1_NAME), this.dbSession);
+		assertEquals(Status.FAIL, result.getStatus());
+		assertEquals(1, result.getErrors().size());
+
+		// test validation
+		final Project posts = PROJECT_DATABASE_MANAGER.getProjectDetails("posts", true, this.dbSession);
+		posts.setEndDate(null);
+
+		final JobResult result2 = PROJECT_DATABASE_MANAGER.updateProject(posts.getExternalId(), posts, new User(TESTUSER_1_NAME), this.dbSession);
+
+		// validation should fail
+		assertEquals(Status.FAIL, result2.getStatus());
+		assertEquals(1, result2.getErrors().size());
+	}
+
+	/**
+	 * tests the generation of the external project id
+	 */
+	@Test
 	public void testProjectIdGeneration() {
-		assertFalse(true); // FIXME: write test and implement
+		final Project project = new Project();
+		project.setTitle("Posts");
+
+		project.setEndDate(new Date());
+		project.setStartDate(new Date());
+
+		project.setBudget(0.0f);
+		project.setType("DFG");
+
+		final JobResult result = PROJECT_DATABASE_MANAGER.createProject(project, new User(TESTUSER_1_NAME), this.dbSession);
+		assertEquals(Status.OK, result.getStatus());
+
+		final Project projectDetails = PROJECT_DATABASE_MANAGER.getProjectDetails("posts.1", true, this.dbSession);
+
+		assertNotNull(projectDetails);
 	}
 }

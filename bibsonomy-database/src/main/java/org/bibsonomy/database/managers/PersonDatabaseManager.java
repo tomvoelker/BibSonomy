@@ -491,7 +491,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * 
-	 * @param personID
+	 * @param personid
 	 * @return a list of all matches for a person
 	 */
 	public List<PersonMatch> getMatchesFor(String personid, DBSession session) {

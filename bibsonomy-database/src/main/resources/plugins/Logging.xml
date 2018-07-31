@@ -240,5 +240,12 @@
 		SET current_content_id = #newContentId#
 		WHERE current_content_id = #oldContentId#
 	</update>
+
+	<insert id="logProjectUpdate" parameterClass="loggingParam">
+		INSERT INTO log_projects (<include refid="fullProjectAttributes" />, new_id, log_date)
+		SELECT <include refid="fullProjectAttributes" />, #newContentId#, #date#
+		FROM projects
+		WHERE id = #newContentId#
+	</insert>
 	
 </sqlMap>

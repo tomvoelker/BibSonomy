@@ -3,7 +3,6 @@
 
 <sqlMap namespace="Project">
 
-
     <select id="getFullProjectDetails" parameterClass="string" resultMap="ProjectCommon.fullProject">
         SELECT <include refid="fullProjectAttributes" />
           FROM projects
@@ -15,15 +14,29 @@
         VALUES (<include refid="insertProjectAttributes"/>)
     </insert>
 
+
+    <update id="updateProject" parameterClass="projectParam">
+        UPDATE projects
+        SET
+            id = #project.id#,
+            internal_id = #project.internalId#,
+            title = #project.title#,
+            subtitle = #project.subTitle#,
+            description = #project.description#,
+            start_date = #project.startDate#,
+            end_date = #project.endDate#,
+            type = #project.type#,
+            budget = #project.budget#,
+            updated_at = #updatedAt#,
+            updated_by = #updatedBy#
+        WHERE project_id = #project.externalId#
+    </update>
+
    <!--
     <select id="getAllProjects" resultMap="Project.project">
         SELECT <include refid="commonProjectAttributes"/>
         FROM projects
     </select>
-    <update id="updateProject" parameterClass="project">
-        UPDATE projects
-        WHERE project_name=#name#
-    </update>
 
     <delete id="deleteProject" parameterClass="string">
         DELETE FROM projects WHERE project_id = #project_id#

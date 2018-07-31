@@ -1010,8 +1010,8 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	@Override
-	public boolean updateProject(String projectId, Project project) {
-		return false;
+	public JobResult updateProject(String projectId, Project project) {
+		return null;
 	}
 
 	@Override

@@ -982,9 +982,9 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	@Override
-	public boolean updateProject(String projectId, Project project) {
+	public JobResult updateProject(String projectId, Project project) {
 		throwReadOnlyException();
-		return false;
+		return JobResult.buildFailure(null);
 	}
 
 	@Override

@@ -361,6 +361,13 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 		}
 	}
 
+	@Override
+	public void onProjectUpdate(Project oldProject, Project newProject, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins) {
+			plugin.onProjectUpdate(oldProject, newProject, session);
+		}
+	}
+
 	/**
 	 * @param defaultPlugins the defaultPlugins to set
 	 */

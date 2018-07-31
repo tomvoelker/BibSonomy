@@ -1,7 +1,9 @@
 package org.bibsonomy.database.managers;
 
+import com.sun.tools.classfile.ConstantPool;
 import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.errors.MissingObjectErrorMessage;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
@@ -10,9 +12,13 @@ import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.validation.ProjectValidator;
+import org.bibsonomy.util.StringUtils;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * database manager for creating, updating and queriying {@link Project}s
@@ -21,12 +27,14 @@ import java.util.List;
  */
 public class ProjectDatabaseManager extends AbstractDatabaseManager {
 
+	/** used to get a new project id */
 	private GeneralDatabaseManager generalDatabaseManager;
 
+	/** to notify others about project changes */
 	private DatabasePluginRegistry plugins;
 
+	/** used to validate a project */
 	private ProjectValidator validator;
-
 
 	/**
 	 * creates a project with the provided information
@@ -67,10 +75,81 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager {
 	private final String generateProjectId(final Project project, final DBSession session) {
 		final String title = project.getTitle();
 
+		final String normedString = StringUtils.normalizeString(title);
+		int counter = 1;
+		String projectId = normedString;
 
-		return title.toLowerCase().replaceAll(" ", "");
+		do {
+			final Project projectInDB = this.getProjectDetails(projectId, true, session);
+			if (!present(projectInDB)) {
+				return projectId;
+			}
+
+			if (counter > 1000) {
+				throw new RuntimeException("Too many project name occurences");
+			}
+
+			projectId = normedString + "." + counter;
+			counter++;
+		} while (true);
 	}
 
+	/**
+	 * updates the given project
+	 *
+	 * @param externalProjectId
+	 * @param project
+	 * @param loggedInUser
+	 * @param session
+	 * @return
+	 */
+	public JobResult updateProject(final String externalProjectId, final Project project, final User loggedInUser, final DBSession session) {
+		try {
+			session.beginTransaction();
+
+			// to ensure that the project id does not change
+			project.setExternalId(externalProjectId);
+
+			final int newID = this.generalDatabaseManager.getNewId(ConstantID.PROJECT_ID, session).intValue();
+
+			final Project projectInDb = this.getProjectDetails(externalProjectId, true, session);
+			if (!present(projectInDb)) {
+				return JobResult.buildFailure(Collections.singletonList(new MissingObjectErrorMessage(externalProjectId, "project")));
+			}
+
+			// call the validation
+			final List<ErrorMessage> validationResults = this.validator.validateProject(project);
+			if (present(validationResults)) {
+				return JobResult.buildFailure(validationResults);
+			}
+
+			final ProjectParam projectParam = new ProjectParam();
+			projectParam.setProject(project);
+			project.setId(newID);
+			projectParam.setUpdatedAt(new Date());
+			projectParam.setUpdatedBy(loggedInUser.getName());
+
+			// inform others about the project update
+			this.plugins.onProjectUpdate(projectInDb, project, session);
+			this.update("updateProject", projectParam, session);
+
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+
+		return JobResult.buildSuccess();
+	}
+
+	/**
+	 * returns details about a project given by the external project id
+	 *
+	 * if fullDetails is <code>true</code> than all details are returned (e.g. the budget of the project)
+	 * @param projectName
+	 * @param fullDetails
+	 * @param session
+	 * @return
+	 */
 	public Project getProjectDetails(final String projectName, final boolean fullDetails, final DBSession session) {
 		if (fullDetails) {
 			return this.queryForObject("getFullProjectDetails", projectName, Project.class, session);

@@ -3890,10 +3890,10 @@ public class DBLogic implements LogicInterface {
 	}
 
 	@Override
-	public boolean updateProject(final String projectId, final Project project) {
+	public JobResult updateProject(final String projectId, final Project project) {
 		this.permissionDBManager.ensureAdminAccess(this.getAuthenticatedUser());
 		try (final DBSession session = this.openSession()) {
-			return false;
+			return this.projectDatabaseManager.updateProject(projectId, project, this.loginUser, session);
 		}
 	}
 

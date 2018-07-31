@@ -795,3 +795,7 @@ INSERT INTO `tas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_typ
 (56, 'testtag',        'testtag',        40, 1, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-01-18 10:20:07'),
 (57, 'testtag',        'testtag',        41, 1, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-01-18 10:20:07');
 
+
+INSERT INTO `projects` (`id`, `internal_id`, `project_id`, `title`, `subtitle`, `description`, `start_date`, `end_date`, `type`, `budget`, `updated_at`, `updated_by`)
+VALUES
+	(1, '122323-2323', 'posts', 'PoSTs', NULL, NULL, '2018-07-31 00:17:56', '2018-07-31 00:26:16', 'BMBF', 130000.45, '2018-07-31 00:17:56', 'testuser1');

@@ -271,4 +271,9 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	public void onProjectInsert(Project project, DBSession session) {
 		// noop
 	}
+
+	@Override
+	public void onProjectUpdate(Project oldProject, Project newProject, DBSession session) {
+		// noop
+	}
 }
