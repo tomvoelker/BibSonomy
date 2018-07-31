@@ -1,6 +1,5 @@
 package org.bibsonomy.database.managers;
 
-import com.sun.tools.classfile.ConstantPool;
 import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.MissingObjectErrorMessage;
@@ -130,9 +129,37 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager {
 			projectParam.setUpdatedBy(loggedInUser.getName());
 
 			// inform others about the project update
-			this.plugins.onProjectUpdate(projectInDb, project, session);
+			this.plugins.onProjectUpdate(projectInDb, project, loggedInUser, session);
 			this.update("updateProject", projectParam, session);
 
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+
+		return JobResult.buildSuccess();
+	}
+
+	/**
+	 * deletes a project from the database
+	 *
+	 * @param externalProjectId
+	 * @param loggedinUser
+	 * @param session
+	 * @return
+	 */
+	public JobResult deleteProject(final String externalProjectId, final User loggedinUser, final DBSession session) {
+		try {
+			session.beginTransaction();
+			final Project projectInDb = this.getProjectDetails(externalProjectId, true, session);
+			if (!present(projectInDb)) {
+				return JobResult.buildFailure(Collections.singletonList(new MissingObjectErrorMessage(externalProjectId, "project")));
+			}
+
+			// inform others
+			this.plugins.onProjectDelete(projectInDb, loggedinUser, session);
+
+			this.delete("deleteProject", projectInDb.getId(), session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();

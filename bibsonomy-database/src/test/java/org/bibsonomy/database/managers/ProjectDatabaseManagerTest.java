@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.Status;
@@ -22,6 +23,7 @@ import java.util.Date;
  */
 public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
+	private static final String PROJECT_ID = "posts";
 	private static final String TESTUSER_1_NAME = "testuser1";
 
 	private static ProjectDatabaseManager PROJECT_DATABASE_MANAGER;
@@ -69,7 +71,7 @@ public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void testUpdateProject() {
-		final Project posts = PROJECT_DATABASE_MANAGER.getProjectDetails("posts", true, this.dbSession);
+		final Project posts = PROJECT_DATABASE_MANAGER.getProjectDetails(PROJECT_ID, true, this.dbSession);
 		float newBuget = 1000.0f;
 		posts.setBudget(newBuget);
 		final int dbId = posts.getId();
@@ -78,7 +80,7 @@ public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		assertEquals(Status.OK, result.getStatus());
 
-		final Project postsAfterUpdate = PROJECT_DATABASE_MANAGER.getProjectDetails("posts", true, this.dbSession);
+		final Project postsAfterUpdate = PROJECT_DATABASE_MANAGER.getProjectDetails(PROJECT_ID, true, this.dbSession);
 
 		assertEquals(newBuget, postsAfterUpdate.getBudget(), 0.001);
 		assertNotEquals(dbId, postsAfterUpdate.getId()); // check for id change
@@ -94,7 +96,7 @@ public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(1, result.getErrors().size());
 
 		// test validation
-		final Project posts = PROJECT_DATABASE_MANAGER.getProjectDetails("posts", true, this.dbSession);
+		final Project posts = PROJECT_DATABASE_MANAGER.getProjectDetails(PROJECT_ID, true, this.dbSession);
 		posts.setEndDate(null);
 
 		final JobResult result2 = PROJECT_DATABASE_MANAGER.updateProject(posts.getExternalId(), posts, new User(TESTUSER_1_NAME), this.dbSession);
@@ -124,5 +126,18 @@ public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final Project projectDetails = PROJECT_DATABASE_MANAGER.getProjectDetails("posts.1", true, this.dbSession);
 
 		assertNotNull(projectDetails);
+	}
+
+	/**
+	 *
+	 */
+	@Test
+	public void testDeleteProject() {
+		final JobResult result = PROJECT_DATABASE_MANAGER.deleteProject(PROJECT_ID, new User(TESTUSER_1_NAME), this.dbSession);
+
+		assertEquals(Status.OK, result.getStatus());
+
+		final Project projectDetails = PROJECT_DATABASE_MANAGER.getProjectDetails(PROJECT_ID, true, this.dbSession);
+		assertNull(projectDetails);
 	}
 }

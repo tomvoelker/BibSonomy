@@ -32,15 +32,15 @@
         WHERE project_id = #project.externalId#
     </update>
 
+    <delete id="deleteProject" parameterClass="int">
+        DELETE FROM projects WHERE id = #id#
+    </delete>
+
    <!--
     <select id="getAllProjects" resultMap="Project.project">
         SELECT <include refid="commonProjectAttributes"/>
         FROM projects
     </select>
 
-    <delete id="deleteProject" parameterClass="string">
-        DELETE FROM projects WHERE project_id = #project_id#
-    </delete> -->
-
-
+     -->
 </sqlMap>

@@ -242,8 +242,8 @@
 	</update>
 
 	<insert id="logProjectUpdate" parameterClass="loggingParam">
-		INSERT INTO log_projects (<include refid="fullProjectAttributes" />, new_id, log_date)
-		SELECT <include refid="fullProjectAttributes" />, #newContentId#, #date#
+		INSERT INTO log_projects (<include refid="fullProjectAttributes" />, new_id, log_date, log_user)
+		SELECT <include refid="fullProjectAttributes" />, #newContentId#, #date#, #postEditor.name#
 		FROM projects
 		WHERE id = #newContentId#
 	</insert>

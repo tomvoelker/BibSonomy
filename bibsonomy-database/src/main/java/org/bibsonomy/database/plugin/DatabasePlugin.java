@@ -39,6 +39,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
@@ -373,8 +374,16 @@ public interface DatabasePlugin {
 	 * called before a project is updated
 	 * @param oldProject
 	 * @param newProject
+	 * @param loggedinUser
 	 * @param session
 	 */
-	public void onProjectUpdate(final Project oldProject, final Project newProject, final DBSession session);
+	public void onProjectUpdate(final Project oldProject, final Project newProject, User loggedinUser, final DBSession session);
 
+	/**
+	 * called before a project is deleted
+	 * @param project
+	 * @param loggedinUser
+	 * @param session
+	 */
+	public void onProjectDelete(Project project, User loggedinUser, DBSession session);
 }
