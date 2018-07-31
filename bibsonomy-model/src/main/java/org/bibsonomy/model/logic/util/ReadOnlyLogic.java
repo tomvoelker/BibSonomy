@@ -952,7 +952,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	 */
 	@Override
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -961,7 +960,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	 */
 	@Override
 	public String getForwardId(String personId) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -978,18 +976,18 @@ public class ReadOnlyLogic implements LogicInterface {
 	@Override
 	public JobResult createProject(Project project) {
 		throwReadOnlyException();
-		return JobResult.buildFailure(null);
+		return null;
 	}
 
 	@Override
 	public JobResult updateProject(String projectId, Project project) {
 		throwReadOnlyException();
-		return JobResult.buildFailure(null);
+		return null;
 	}
 
 	@Override
-	public boolean deleteProject(String projectId) {
+	public JobResult deleteProject(String projectId) {
 		throwReadOnlyException();
-		return false;
+		return null;
 	}
 }

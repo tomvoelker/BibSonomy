@@ -41,6 +41,10 @@ public class Project implements Linkable {
 	/** the end date */
 	private Date endDate;
 
+	/** the parent project */
+	private Project parentProject;
+
+	/** sub projects of the project */
 	private List<Project> subProjects = new LinkedList<>();
 
 	/**
@@ -181,6 +185,20 @@ public class Project implements Linkable {
 	 */
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+
+	/**
+	 * @return the parentProject
+	 */
+	public Project getParentProject() {
+		return parentProject;
+	}
+
+	/**
+	 * @param parentProject the parentProject to set
+	 */
+	public void setParentProject(Project parentProject) {
+		this.parentProject = parentProject;
 	}
 
 	/**

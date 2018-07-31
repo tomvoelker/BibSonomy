@@ -22,6 +22,6 @@ public interface CRISLogicInterface {
 
 	public JobResult updateProject(final String projectId, final Project project);
 
-	public boolean deleteProject(final String projectId);
+	public JobResult deleteProject(final String projectId);
 }
 

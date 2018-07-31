@@ -1015,7 +1015,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	@Override
-	public boolean deleteProject(String projectId) {
-		return false;
+	public JobResult deleteProject(String projectId) {
+		return null;
 	}
 }

@@ -1,5 +1,7 @@
 package org.bibsonomy.database.managers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.MissingObjectErrorMessage;
@@ -16,8 +18,6 @@ import org.bibsonomy.util.StringUtils;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * database manager for creating, updating and queriying {@link Project}s
@@ -53,7 +53,12 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager {
 				return JobResult.buildFailure(errorMessages);
 			}
 
-			final ProjectParam projectParam = new ProjectParam();
+			// get the id of the parent project
+			final ProjectParam projectParam = this.buildParam(project, session);
+
+			if (!present(projectParam)) {
+				return JobResult.buildFailure(Collections.singletonList(new MissingObjectErrorMessage(project.getParentProject().getExternalId(), "project.parent")));
+			}
 
 			final int dbId = this.generalDatabaseManager.getNewId(ConstantID.PROJECT_ID, session).intValue();
 			project.setId(dbId);
@@ -69,6 +74,23 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager {
 		}
 
 		return JobResult.buildSuccess();
+	}
+
+	private ProjectParam buildParam(final Project project, final DBSession session) {
+		final ProjectParam projectParam = new ProjectParam();
+		final Project parentProject = project.getParentProject();
+		if (present(parentProject)) {
+			final String parentExternalId = parentProject.getExternalId();
+			final Project parentProjectDetails = this.getProjectDetails(parentExternalId, true, session);
+
+			if (!present(parentProjectDetails)) {
+				return null;
+			}
+
+			projectParam.setParentProjectId(Integer.valueOf(parentProjectDetails.getId()));
+		}
+
+		return projectParam;
 	}
 
 	private final String generateProjectId(final Project project, final DBSession session) {
@@ -108,7 +130,6 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager {
 
 			// to ensure that the project id does not change
 			project.setExternalId(externalProjectId);
-
 			final int newID = this.generalDatabaseManager.getNewId(ConstantID.PROJECT_ID, session).intValue();
 
 			final Project projectInDb = this.getProjectDetails(externalProjectId, true, session);
@@ -122,7 +143,12 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager {
 				return JobResult.buildFailure(validationResults);
 			}
 
-			final ProjectParam projectParam = new ProjectParam();
+			final ProjectParam projectParam = this.buildParam(project, session);
+
+			if (!present(projectParam)) {
+				return JobResult.buildFailure(Collections.singletonList(new MissingObjectErrorMessage(project.getParentProject().getExternalId(), "project.parent")));
+			}
+
 			projectParam.setProject(project);
 			project.setId(newID);
 			projectParam.setUpdatedAt(new Date());
@@ -172,37 +198,52 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager {
 	 * returns details about a project given by the external project id
 	 *
 	 * if fullDetails is <code>true</code> than all details are returned (e.g. the budget of the project)
-	 * @param projectName
+	 * @param externalProjectId
 	 * @param fullDetails
 	 * @param session
 	 * @return
 	 */
-	public Project getProjectDetails(final String projectName, final boolean fullDetails, final DBSession session) {
-		if (fullDetails) {
-			return this.queryForObject("getFullProjectDetails", projectName, Project.class, session);
+	public Project getProjectDetails(final String externalProjectId, final boolean fullDetails, final DBSession session) {
+		final String statement = fullDetails ? "getFullProjectDetails" : "getProjectDetails";
+		final Project project = this.queryForObject(statement, externalProjectId, Project.class, session);
+
+		if (present(project)) {
+			// get the subprojects
+			final List<Project> subProjects = this.getProjectsByParentId(project.getId(), session);
+			project.setSubProjects(subProjects);
 		}
 
-		return this.queryForObject("getProjectDetails", Project.class, session);
+		return project;
+	}
+
+	/**
+	 * retrieves a list of projects by parent id
+	 * @param projectId
+	 * @param session
+	 * @return
+	 */
+	public List<Project> getProjectsByParentId(final int projectId, final DBSession session) {
+		return this.queryForList("getProjectsByParentId", projectId, Project.class, session);
 	}
 
 	/**
 	 * @param generalDatabaseManager the generalDatabaseManager to set
 	 */
-	public void setGeneralDatabaseManager(GeneralDatabaseManager generalDatabaseManager) {
+	public void setGeneralDatabaseManager(final GeneralDatabaseManager generalDatabaseManager) {
 		this.generalDatabaseManager = generalDatabaseManager;
 	}
 
 	/**
 	 * @param plugins the plugins to set
 	 */
-	public void setPlugins(DatabasePluginRegistry plugins) {
+	public void setPlugins(final DatabasePluginRegistry plugins) {
 		this.plugins = plugins;
 	}
 
 	/**
 	 * @param validator the validator to set
 	 */
-	public void setValidator(ProjectValidator validator) {
+	public void setValidator(final ProjectValidator validator) {
 		this.validator = validator;
 	}
 }

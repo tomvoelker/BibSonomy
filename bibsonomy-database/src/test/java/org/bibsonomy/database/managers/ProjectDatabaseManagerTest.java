@@ -15,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * tests for {@link ProjectDatabaseManager}
@@ -31,6 +32,22 @@ public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@BeforeClass
 	public static void setProjectDatabaseManager() {
 		PROJECT_DATABASE_MANAGER = testDatabaseContext.getBean(ProjectDatabaseManager.class);
+	}
+
+	@Test
+	public void testGetProjectDetails() {
+		final Project postsProject = PROJECT_DATABASE_MANAGER.getProjectDetails(PROJECT_ID, true, this.dbSession);
+		final List<Project> subProjects = postsProject.getSubProjects();
+		assertEquals(1, subProjects.size());
+
+		final Project project = subProjects.iterator().next();
+		assertEquals("PoSTs II", project.getTitle());
+
+		final Project posts2Project = PROJECT_DATABASE_MANAGER.getProjectDetails(project.getExternalId(), true, this.dbSession);
+		final Project parentProject = posts2Project.getParentProject();
+		assertNotNull(parentProject);
+
+		assertEquals(PROJECT_ID, parentProject.getExternalId());
 	}
 
 	/**
@@ -129,7 +146,7 @@ public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 *
+	 * tests {@link ProjectDatabaseManager#deleteProject(String, User, DBSession)}
 	 */
 	@Test
 	public void testDeleteProject() {

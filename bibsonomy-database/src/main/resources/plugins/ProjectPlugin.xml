@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ProjectPlugin">
+
+    <insert id="updateProjectParent" parameterClass="loggingParam">
+        UPDATE projects SET
+          parent_id = #newContentId#
+        where parent_id = #oldContentId#
+    </insert>
+
+</sqlMap>

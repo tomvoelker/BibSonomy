@@ -337,6 +337,7 @@
 				<bean class="org.bibsonomy.database.plugin.plugins.PersonPostConnectorPlugin">
 					<property name="personDatabaseManager" ref="personDatabaseManager" />
 				</bean>
+				<bean class="org.bibsonomy.database.plugin.plugins.ProjectPlugin" />
 			</list>
 		</property>
 	</bean>

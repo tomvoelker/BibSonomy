@@ -3898,10 +3898,10 @@ public class DBLogic implements LogicInterface {
 	}
 
 	@Override
-	public boolean deleteProject(String projectId) {
+	public JobResult deleteProject(String projectId) {
 		this.permissionDBManager.ensureAdminAccess(this.getAuthenticatedUser());
 		try (final DBSession session = this.openSession()) {
-			return false;
+			return this.projectDatabaseManager.deleteProject(projectId, this.loginUser, session);
 		}
 	}
 }

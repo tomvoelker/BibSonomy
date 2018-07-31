@@ -81,4 +81,5 @@
 	<sqlMap resource="plugins/MetaDataPlugin.xml" />
 	<sqlMap resource="plugins/GoldStandardRelation.xml" />
 	<sqlMap resource="plugins/DiscussionPlugin.xml" />
+	<sqlMap resource="plugins/ProjectPlugin.xml" />
 </sqlMapConfig>

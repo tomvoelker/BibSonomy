@@ -17,6 +17,8 @@ public class ProjectParam {
 
 	private Date updatedAt;
 
+	private Integer parentProjectId;
+
 	/**
 	 * @return the project
 	 */
@@ -57,5 +59,19 @@ public class ProjectParam {
 	 */
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+
+	/**
+	 * @return the parentProjectId
+	 */
+	public Integer getParentProjectId() {
+		return parentProjectId;
+	}
+
+	/**
+	 * @param parentProjectId the parentProjectId to set
+	 */
+	public void setParentProjectId(Integer parentProjectId) {
+		this.parentProjectId = parentProjectId;
 	}
 }
