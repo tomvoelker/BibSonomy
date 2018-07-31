@@ -832,11 +832,11 @@
 	</bean>
 
 	<!-- projects controller -->
-	<bean id="projectsController" class="org.bibsonomy.webapp.controller.ProjectsPageController">
+	<bean id="projectsController" class="org.bibsonomy.webapp.controller.ProjectsPageController" scope="request">
 		<property name="logic" ref="logic" />
 	</bean>
 
-	<bean id="projectDetailsController" class="org.bibsonomy.webapp.controller.ProjectPageController">
+	<bean id="projectDetailsController" class="org.bibsonomy.webapp.controller.ProjectPageController" scope="request">
 		<property name="logic" ref="logic" />
 	</bean>
 	
