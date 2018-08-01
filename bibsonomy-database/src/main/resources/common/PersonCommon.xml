@@ -7,7 +7,7 @@
 		<result property="personId"         column="person_id"           javaType="String" />
 		
 		<result property="orcid"            column="orcid"               javaType="java.lang.String" />
-		<result property="researcherid"            column="researcherid"               javaType="java.lang.String" />
+		<result property="researcherid"     column="researcherid"        javaType="java.lang.String" />
 		<result property='academicDegree'   column='academic_degree'     javaType='java.lang.String' />
 		<result property="dnbPersonId"      column="dnb_person_id"       javaType="java.lang.String" />
 		<result property='gender'           column='gender'              javaType='org.bibsonomy.model.enums.Gender' />
