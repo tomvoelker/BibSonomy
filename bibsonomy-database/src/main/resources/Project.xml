@@ -63,12 +63,4 @@
         WHERE parent_id = #id#
           ORDER BY title
     </select>
-
-   <!--
-    <select id="getAllProjects" resultMap="Project.project">
-        SELECT <include refid="commonProjectAttributes"/>
-        FROM projects
-    </select>
-
-     -->
 </sqlMap>
