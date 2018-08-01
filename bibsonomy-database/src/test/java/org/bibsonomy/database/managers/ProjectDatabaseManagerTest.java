@@ -6,10 +6,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.bibsonomy.common.JobResult;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
+import org.bibsonomy.model.enums.ProjectOrder;
+import org.bibsonomy.model.enums.ProjectStatus;
+import org.bibsonomy.model.statistics.Statistics;
 import org.joda.time.DateTime;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -48,6 +52,29 @@ public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertNotNull(parentProject);
 
 		assertEquals(PROJECT_ID, parentProject.getExternalId());
+	}
+
+	@Test
+	public void testGetAllProjects() {
+		final List<Project> allProjects = PROJECT_DATABASE_MANAGER.getAllProjects(null, ProjectOrder.TITLE, SortOrder.ASC, 1, 0, this.dbSession);
+		assertEquals(1, allProjects.size());
+
+		final Project firstProject = allProjects.iterator().next();
+		assertEquals("posts", firstProject.getExternalId());
+
+		// test order
+		final List<Project> allProjectsOrderedByStartDate = PROJECT_DATABASE_MANAGER.getAllProjects(null, ProjectOrder.START_DATE, SortOrder.DESC, 1, 0, this.dbSession);
+		final Project firstProjectByDate = allProjectsOrderedByStartDate.iterator().next();
+		assertEquals("posts_ii", firstProjectByDate.getExternalId());
+
+		final List<Project> allOtherProjects = PROJECT_DATABASE_MANAGER.getAllProjects(null, ProjectOrder.TITLE, SortOrder.ASC, 1, 1, this.dbSession);
+		assertEquals(1, allOtherProjects.size());
+
+		final Project secondProject = allOtherProjects.iterator().next();
+		assertEquals("posts_ii", secondProject.getExternalId());
+
+		final List<Project> allOtherProjects2 = PROJECT_DATABASE_MANAGER.getAllProjects(null, ProjectOrder.TITLE, SortOrder.ASC, 1, 2, this.dbSession);
+		assertEquals(0, allOtherProjects2.size());
 	}
 
 	/**
@@ -156,5 +183,15 @@ public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		final Project projectDetails = PROJECT_DATABASE_MANAGER.getProjectDetails(PROJECT_ID, true, this.dbSession);
 		assertNull(projectDetails);
+	}
+
+	/**
+	 * tests {@link ProjectDatabaseManager#getAllProjectsCounts(ProjectStatus, DBSession)}
+	 */
+	@Test
+	public void testGetAllProjectsCounts() {
+		final Statistics allProjectsCounts = PROJECT_DATABASE_MANAGER.getAllProjectsCounts(null, this.dbSession);
+
+		assertEquals(2, allProjectsCounts.getCount());
 	}
 }

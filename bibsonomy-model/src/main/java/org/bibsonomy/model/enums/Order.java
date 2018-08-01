@@ -27,6 +27,8 @@
 package org.bibsonomy.model.enums;
 
 /**
+ * TODO: rename class to PostOrder
+ *
  * Defines some ordering criteria for lists of entities
  * 
  * FIXME: the orderings "FREQUENCY" AND "POPULAR" probably mean the same. Check

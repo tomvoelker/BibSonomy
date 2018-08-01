@@ -44,6 +44,7 @@ import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Test;
 
 /**
@@ -65,7 +66,7 @@ public class LogicInterfaceHelperTest extends AbstractDatabaseTest {
 			assertEquals("hash", param.getHash());
 
 			param = LogicInterfaceHelper.buildParam(paramClass, Resource.class, null, "", null, "", null, 12, 10, null, null, null, null, new User());
-			assertEquals(LogicInterfaceHelper.DEFAULT_LIST_LIMIT, param.getLimit());
+			assertEquals(QueryDatabaseUtils.DEFAULT_LIST_LIMIT, param.getLimit());
 
 			// hash
 			final String testHash = "11111111111111111111111111111111";

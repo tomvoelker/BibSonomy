@@ -30,7 +30,7 @@
     </resultMap>
 
     <sql id="allProjectAttributes">
-        <include refid="fullProjectAttributes" />, parent_id, updated_at, updated_by
+        id, project_id, internal_id, title, subtitle, description, start_date, end_date, type, budget, parent_id, updated_at, updated_by
     </sql>
 
     <sql id="fullProjectAttributes">
@@ -48,6 +48,19 @@
 
     <sql id="insertProjectAttributes">
         #project.id#, #project.externalId#, #project.internalId#,  #project.title#, #project.subTitle#, #project.description#, #project.startDate#, #project.endDate#, #project.type#, #project.budget#, #parentProjectId#, #updatedAt#, #updatedBy#
+    </sql>
+
+    <sql id="projectStatusFilter">
+        <isNotNull property="projectStatus">
+            WHERE
+            <isEqual property="projectStatus" compareValue="RUNNING">
+                end_date &lt;= CURRENT_TIMESTAMP
+            </isEqual>
+
+            <isEqual property="projectStatus" compareValue="FINISHED">
+                end_date > CURRENT_TIMESTAMP
+            </isEqual>
+        </isNotNull>
     </sql>
 
 </sqlMap>

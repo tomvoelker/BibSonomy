@@ -798,5 +798,5 @@ INSERT INTO `tas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_typ
 
 INSERT INTO `projects` (`id`, `internal_id`, `project_id`, `title`, `subtitle`, `description`, `start_date`, `end_date`, `type`, `budget`, `parent_id`, `updated_at`, `updated_by`)
 VALUES
-	(1, '122323-2323', 'posts', 'PoSTs', NULL, NULL, '2018-07-31 00:17:56', '2018-07-31 00:26:16', 'DFG', 130000.45, null, '2018-07-31 00:17:56', 'testuser1'),
-	(2, '122323-2323', 'posts_ii', 'PoSTs II', NULL, NULL, '2018-07-31 00:17:56', '2018-07-31 00:26:16', 'DFG', 130000.45, 1, '2018-07-31 00:17:56', 'testuser1');
+	(1, '122323-2323', 'posts', 'PoSTs', NULL, NULL, '2018-07-31 00:17:56', '2019-07-31 00:26:16', 'DFG', 130000.45, null, '2018-07-31 00:17:56', 'testuser1'),
+	(2, '122323-2323', 'posts_ii', 'PoSTs II', NULL, NULL, '2018-09-29 00:17:56', '2018-07-31 00:26:16', 'DFG', 130000.45, 1, '2018-07-31 00:17:56', 'testuser1');

@@ -36,12 +36,9 @@
 	</bean>
 	
 	<!-- provides access to the database REST servlet -->
-	<bean id="restLogicFactory" class="org.bibsonomy.model.logic.util.ReadOnlyAwareLogicInterfaceFactory">
+	<bean id="restLogicFactory" class="org.bibsonomy.model.logic.util.ReadOnlyAwareLogicInterfaceFactory" >
 		<constructor-arg>
-			<bean class="org.bibsonomy.database.DBLogicApiInterfaceFactory">
-				<property name="dbSessionFactory" ref="dbSessionFactory" />
-				<property name="bibtexReader" ref="bibtexReader"/>
-			</bean>
+			<bean class="org.bibsonomy.database.DBLogicApiInterfaceFactory" parent="abstractLogicInterfaceFactory" />
 		</constructor-arg>
 		<constructor-arg value="${system.mode.readOnly}" />
 	</bean>

@@ -97,6 +97,7 @@ import org.bibsonomy.database.managers.PersonDatabaseManager;
 import org.bibsonomy.database.managers.PostDatabaseManager;
 import org.bibsonomy.database.managers.ProjectDatabaseManager;
 import org.bibsonomy.database.managers.StatisticsDatabaseManager;
+import org.bibsonomy.database.managers.StatisticsProvider;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.managers.TagRelationDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
@@ -146,8 +147,9 @@ import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.logic.query.ProjectQuery;
+import org.bibsonomy.model.logic.query.Query;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
-import org.bibsonomy.model.logic.querybuilder.ProjectQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
@@ -180,10 +182,12 @@ import org.bibsonomy.util.ValidationUtils;
 public class DBLogic implements LogicInterface {
 	private static final Log log = LogFactory.getLog(DBLogic.class);
 	/*
-	 * help maps for post managers and discussion managers
+	 * help maps for post managers, statistics and discussion managers
 	 */
-	private final Map<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> allDatabaseManagers;
-	private final Map<Class<? extends DiscussionItem>, DiscussionItemDatabaseManager<? extends DiscussionItem>> allDiscussionManagers;
+	private final Map<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> allDatabaseManagers = new HashMap<>();
+	private final Map<Class<? extends DiscussionItem>, DiscussionItemDatabaseManager<? extends DiscussionItem>> allDiscussionManagers = new HashMap<>();
+
+	private final Map<Class<? extends Query>, StatisticsProvider<? extends Query>> allStatisticDatabaseMangers = new HashMap<>();
 
 	private final AuthorDatabaseManager authorDBManager;
 	private final DocumentDatabaseManager docDBManager;
@@ -204,56 +208,39 @@ public class DBLogic implements LogicInterface {
 	private final PersonDatabaseManager personDBManager;
 	private final TagDatabaseManager tagDBManager;
 	private final AdminDatabaseManager adminDBManager;
-	private final DBSessionFactory dbSessionFactory;
+
 	private final StatisticsDatabaseManager statisticsDBManager;
 	private final TagRelationDatabaseManager tagRelationsDBManager;
 	private final ClipboardDatabaseManager clipboardDBManager;
 	private final InboxDatabaseManager inboxDBManager;
 	private final WikiDatabaseManager wikiDBManager;
 
-	private final ProjectDatabaseManager projectDatabaseManager;
+	private ProjectDatabaseManager projectDatabaseManager;
 
 	private final SynchronizationDatabaseManager syncDBManager;
 
-	private final BibTexReader publicationReader;
-	private final User loginUser;
+	private DBSessionFactory dbSessionFactory;
+	private BibTexReader publicationReader;
+	private User loginUser;
 
 	/**
 	 * Returns an implementation of the DBLogic.
-	 *
-	 * @param loginUser
-	 *        - the user which wants to use the logic.
-	 * @param dbSessionFactory
-	 * @param bibtexReader
 	 */
-	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory, final BibTexReader bibtexReader) {
-		this.loginUser = loginUser;
-		this.publicationReader = bibtexReader;
-
-		this.allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>>();
+	protected DBLogic() {
 		// publication db manager
 		this.publicationDBManager = BibTexDatabaseManager.getInstance();
-		this.allDatabaseManagers.put(BibTex.class, this.publicationDBManager);
+
 		// bookmark db manager
 		this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
-		this.allDatabaseManagers.put(Bookmark.class, this.bookmarkDBManager);
 
 		// gold standard publication db manager
 		this.goldStandardPublicationDBManager = GoldStandardPublicationDatabaseManager.getInstance();
-		this.allDatabaseManagers.put(GoldStandardPublication.class, this.goldStandardPublicationDBManager);
-
 		this.goldStandardBookmarkDBManager = GoldStandardBookmarkDatabaseManager.getInstance();
-		this.allDatabaseManagers.put(GoldStandardBookmark.class, this.goldStandardBookmarkDBManager);
 
 		// discussion and discussion item db manager
 		this.commentDBManager = CommentDatabaseManager.getInstance();
 		this.reviewDBManager = ReviewDatabaseManager.getInstance();
 		this.discussionDatabaseManager = DiscussionDatabaseManager.getInstance();
-
-		this.allDiscussionManagers = new HashMap<Class<? extends DiscussionItem>, DiscussionItemDatabaseManager<? extends DiscussionItem>>();
-		this.allDiscussionManagers.put(Comment.class, this.commentDBManager);
-		this.allDiscussionManagers.put(Review.class, this.reviewDBManager);
-
 		this.authorDBManager = AuthorDatabaseManager.getInstance();
 		this.docDBManager = DocumentDatabaseManager.getInstance();
 		this.userDBManager = UserDatabaseManager.getInstance();
@@ -275,8 +262,19 @@ public class DBLogic implements LogicInterface {
 		this.syncDBManager = SynchronizationDatabaseManager.getInstance();
 
 		this.bibTexExtraDBManager = BibTexExtraDatabaseManager.getInstance();
+	}
 
-		this.dbSessionFactory = dbSessionFactory;
+	protected void initializeMaps() {
+		// register the statistic database managers
+		this.allStatisticDatabaseMangers.put(ProjectQuery.class, this.projectDatabaseManager);
+
+		this.allDiscussionManagers.put(Comment.class, this.commentDBManager);
+		this.allDiscussionManagers.put(Review.class, this.reviewDBManager);
+
+		this.allDatabaseManagers.put(BibTex.class, this.publicationDBManager);
+		this.allDatabaseManagers.put(Bookmark.class, this.bookmarkDBManager);
+		this.allDatabaseManagers.put(GoldStandardPublication.class, this.goldStandardPublicationDBManager);
+		this.allDatabaseManagers.put(GoldStandardBookmark.class, this.goldStandardBookmarkDBManager);
 	}
 
 
@@ -3866,9 +3864,22 @@ public class DBLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<Project> getProjects(final ProjectQueryBuilder builder) {
+	public Statistics getStatistics(final Query query) {
 		try (final DBSession session = this.openSession()) {
-			return null;
+			return this.getStatistics(query, session);
+		}
+	}
+
+	private <Q extends Query> Statistics getStatistics(final Q query, final DBSession session) {
+		// cast is safe
+		final StatisticsProvider<Q> statisticsProvider = (StatisticsProvider<Q>) this.allStatisticDatabaseMangers.get(query.getClass());
+		return statisticsProvider.getStatistics(query, session);
+	}
+
+	@Override
+	public List<Project> getProjects(final ProjectQuery builder) {
+		try (final DBSession session = this.openSession()) {
+			return this.projectDatabaseManager.getProjects(builder, this.loginUser, session);
 		}
 	}
 
@@ -3903,5 +3914,33 @@ public class DBLogic implements LogicInterface {
 		try (final DBSession session = this.openSession()) {
 			return this.projectDatabaseManager.deleteProject(projectId, this.loginUser, session);
 		}
+	}
+
+	/**
+	 * @param projectDatabaseManager the projectDatabaseManager to set
+	 */
+	public void setProjectDatabaseManager(ProjectDatabaseManager projectDatabaseManager) {
+		this.projectDatabaseManager = projectDatabaseManager;
+	}
+
+	/**
+	 * @param dbSessionFactory the dbSessionFactory to set
+	 */
+	public void setDbSessionFactory(DBSessionFactory dbSessionFactory) {
+		this.dbSessionFactory = dbSessionFactory;
+	}
+
+	/**
+	 * @param publicationReader the publicationReader to set
+	 */
+	public void setPublicationReader(BibTexReader publicationReader) {
+		this.publicationReader = publicationReader;
+	}
+
+	/**
+	 * @param loginUser the loginUser to set
+	 */
+	public void setLoginUser(User loginUser) {
+		this.loginUser = loginUser;
 	}
 }

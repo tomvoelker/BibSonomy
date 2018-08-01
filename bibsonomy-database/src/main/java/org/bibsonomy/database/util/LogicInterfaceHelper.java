@@ -62,9 +62,7 @@ import org.bibsonomy.model.util.UserUtils;
  */
 public class LogicInterfaceHelper {	
 	private static final Log logger = LogFactory.getLog(LogicInterfaceHelper.class);
-	
-	protected static final int DEFAULT_LIST_LIMIT = 10;
-	
+
 	/**
 	 * 
 	 * Builds a parameter object for the given parameters from the LogicInterface.
@@ -85,7 +83,7 @@ public class LogicInterfaceHelper {
 		param.setOrder(order);
 		param.setOffset(start);
 		if (end - start < 0) {
-			param.setLimit(DEFAULT_LIST_LIMIT);
+			param.setLimit(QueryDatabaseUtils.DEFAULT_LIST_LIMIT);
 		} else {
 			param.setLimit(end - start);
 		}

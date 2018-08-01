@@ -179,5 +179,6 @@ public interface PostLogicInterface {
 	 * @param queryString a query string which may be an arbitrary combination of tokens from title, author, year and school fields
 	 * @return a ranked list of publication posts matching the query. Only one post of the same {@link Resource} is contained in the list
 	 */
+	@Deprecated // TODO: merge into getPosts
 	public List<Post<BibTex>> getPublicationSuggestion(String queryString);
 }

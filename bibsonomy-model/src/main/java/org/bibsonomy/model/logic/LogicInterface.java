@@ -55,13 +55,13 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.logic.query.Query;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.user.remote.RemoteUserId;
@@ -770,6 +770,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	/**
 	 * @param personId
 	 */
+	@Deprecated // FIXME: add to update person logic
 	public void linkUser(String personId);
 
 	/**
@@ -797,6 +798,13 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param personId
 	 * @return returns the updated personId, if the person was merged to an other person
 	 */
-	@Deprecated // FIXME: remove; move to logic
+	@Deprecated // FIXME: remove; move to update person logic
 	public String getForwardId(String personId);
+
+	/**
+	 *
+	 * @param query
+	 * @return
+	 */
+	public Statistics getStatistics(final Query query);
 }

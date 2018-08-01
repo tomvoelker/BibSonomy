@@ -40,7 +40,7 @@ import org.bibsonomy.model.logic.LogicInterface;
  *
  * @author Jens Illig
  */
-public class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory {
+public abstract class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory {
 
 	protected final UserDatabaseManager userDBManager = UserDatabaseManager.getInstance();
 	protected final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
@@ -53,15 +53,18 @@ public class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory
 	 */
 	@Override
 	public LogicInterface getLogicAccess(final String loginName, final String password) {
+		final DBLogic logic = this.buildLogic();
 		if (loginName != null) {
 			final User loggedInUser = this.getLoggedInUser(loginName, password);
 			if (loggedInUser.getName() != null) {
-				return new DBLogic(loggedInUser, this.getDbSessionFactory(), this.bibtexReader);
+				logic.setLoginUser(loggedInUser);
+				return logic;
 			}
 			throw new AccessDeniedException("Wrong Authentication ('" + loginName + "'/'" + password + "')");
 		}
 		// guest access
-		return new DBLogic(new User(), this.getDbSessionFactory(), this.bibtexReader);
+		logic.setLoginUser(new User());
+		return logic;
 	}
 
 	/**

@@ -123,16 +123,22 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	}
 
 	protected LogicInterface getDbLogic(final String userName) {
+		return this.getDbLogic(userName, Role.DEFAULT);
+	}
+
+	protected LogicInterface getDbLogic(final String userName, final Role role) {
 		final User user = new User();
 		user.setName(userName);
-		return new DBLogic(user, getDbSessionFactory(), null);
+		user.setRole(role);
+
+		final DBLogic dbLogic = testDatabaseContext.getBean("dbLogicPrototype", DBLogic.class);
+		dbLogic.setLoginUser(user);
+
+		return dbLogic;
 	}
 	
 	protected LogicInterface getAdminDbLogic(final String userName) {
-		final User user = new User();
-		user.setName(userName);
-		user.setRole(Role.ADMIN);
-		return new DBLogic(user, getDbSessionFactory(), null);
+		return this.getDbLogic(userName, Role.ADMIN);
 	}
 	
 	private static void assertList(final List<Post<BibTex>> posts, final Set<String> checkUserNameOneOf, final Order checkOrder, final Set<String> checkTags, final String checkInterHash, final Set<Integer> mustBeInGroups, final Set<Integer> mustNotBeInGroups) {
@@ -176,12 +182,12 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getPostsByTagName() {
-		LogicInterface anonymousAccess = this.getDbLogic(null);
+		LogicInterface anonymousAccess = this.getDbLogic(null, null);
 		List<Post<BibTex>> bibTexPostsList = anonymousAccess.getPosts(BibTex.class, GroupingEntity.ALL, "", DEFAULT_TAG_LIST, "", null,SearchType.LOCAL, null, null, null, null, 0, 5);
 		assertEquals(5, bibTexPostsList.size());
 		assertList(bibTexPostsList, null, null, DEFAULT_TAG_SET, null, null, null);
 		
-		anonymousAccess = this.getDbLogic("");
+		anonymousAccess = this.getDbLogic("", null);
 		bibTexPostsList = anonymousAccess.getPosts(BibTex.class, GroupingEntity.ALL, "", DEFAULT_TAG_LIST, null, null, SearchType.LOCAL,null, null, null, null, 5, 9);
 		assertEquals(4, bibTexPostsList.size());
 		assertList(bibTexPostsList, null, null, DEFAULT_TAG_SET, null, null, null);
@@ -294,7 +300,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getPostsForGroupByTag() {
-		final LogicInterface anonymousAccess = this.getDbLogic("");
+		final LogicInterface anonymousAccess = this.getDbLogic("", null);
 		final Set<String> usersInGroup = new HashSet<String>();
 		usersInGroup.addAll(getUserNamesByGroupId(TESTGROUP1_ID, this.dbSession) );
 		
@@ -313,7 +319,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getBibtexOfFriendByTags() {
-		final LogicInterface buzzsAccess = this.getDbLogic("buzz");
+		final LogicInterface buzzsAccess = this.getDbLogic("buzz", null);
 		final List<String> tags = Arrays.asList("java");
 		List<Post<BibTex>> bibTexPostsList = buzzsAccess.getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", tags, null, null, SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
 		assertEquals(1, bibTexPostsList.size());
@@ -340,7 +346,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getBibtexOfFriendByUser() {
-		final LogicInterface buzzsAccess = this.getDbLogic("buzz");
+		final LogicInterface buzzsAccess = this.getDbLogic("buzz", null);
 		final Set<Integer> mustGroupIds = new HashSet<Integer>();
 		mustGroupIds.add(FRIENDS_GROUP_ID);
 		final Set<Integer> mustNotGroups = new HashSet<Integer>();
@@ -384,9 +390,9 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		final String sharedTag2 = "sharedTag2";
 		
 		final LogicInterface admLogic  = this.getAdminDbLogic(admUser.getName());
-		final LogicInterface srcLogic  = this.getDbLogic(srcUser.getName());
-		final LogicInterface dstLogic  = this.getDbLogic(dstUser1.getName());
-		final LogicInterface dst2Logic = this.getDbLogic(dstUser2.getName());
+		final LogicInterface srcLogic  = this.getDbLogic(srcUser.getName(), null);
+		final LogicInterface dstLogic  = this.getDbLogic(dstUser1.getName(), null);
+		final LogicInterface dst2Logic = this.getDbLogic(dstUser2.getName(), null);
 		
 		 // create users
 		admLogic.createUser(srcUser);
@@ -539,7 +545,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getBibtexByFriends() {
-		final LogicInterface mwkustersAccess = this.getDbLogic("mwkuster");
+		final LogicInterface mwkustersAccess = this.getDbLogic("mwkuster", null);
 		final Set<Integer> mustGroups = new HashSet<Integer>();
 		mustGroups.add(FRIENDS_GROUP_ID);
 		final Set<Integer> mustNotGroups = new HashSet<Integer>();
@@ -941,8 +947,8 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	}
 
 	private <R extends Resource> void postAndAssertGroup(Group group, Group expectedGroup, String userName, Class<R> resourceType) {
-		
-		final LogicInterface dbl = new DBLogic( getAdminDbLogic(TEST_USER_1).getUserDetails(userName), getDbSessionFactory(), null);
+		final DBLogic dbl = testDatabaseContext.getBean("dbLogicPrototype", DBLogic.class);
+		dbl.setLoginUser(getAdminDbLogic(TEST_USER_1).getUserDetails(userName));
 		final Post<R> post = ModelUtils.generatePost(resourceType);
 		
 		post.getUser().setName(userName);
@@ -1087,7 +1093,8 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void testValidateGroups() {
 		final User user = new User(TEST_USER_2);
-		final DBLogic logic = new DBLogic(user, dbSessionFactory, null);
+		final DBLogic logic = testDatabaseContext.getBean("dbLogicPrototype", DBLogic.class);
+		logic.setLoginUser(user);
 		
 		/*
 		 * test empty group, public group must be added

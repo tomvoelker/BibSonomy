@@ -2,7 +2,7 @@ package org.bibsonomy.model.logic;
 
 import org.bibsonomy.common.JobResult;
 import org.bibsonomy.model.cris.Project;
-import org.bibsonomy.model.logic.querybuilder.ProjectQueryBuilder;
+import org.bibsonomy.model.logic.query.ProjectQuery;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface CRISLogicInterface {
 
-	public List<Project> getProjects(ProjectQueryBuilder builder);
+	public List<Project> getProjects(ProjectQuery query);
 
 	public Project getProjectDetails(final String projectId);
 

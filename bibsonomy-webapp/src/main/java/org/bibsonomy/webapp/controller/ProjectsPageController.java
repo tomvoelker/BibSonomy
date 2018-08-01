@@ -1,7 +1,9 @@
 package org.bibsonomy.webapp.controller;
 
 import org.bibsonomy.model.cris.Project;
+import org.bibsonomy.model.enums.ProjectStatus;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.webapp.command.ProjectsPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -24,7 +26,7 @@ public class ProjectsPageController implements MinimalisticController<ProjectsPa
 
 	@Override
 	public View workOn(final ProjectsPageCommand command) {
-		final List<Project> projects = this.logic.getProjects(null);
+		final List<Project> projects = this.logic.getProjects(ProjectQuery.createBuilder().projectStatus(ProjectStatus.RUNNING).build());
 		command.setProjects(projects);
 
 		return Views.PROJECT_PAGE;

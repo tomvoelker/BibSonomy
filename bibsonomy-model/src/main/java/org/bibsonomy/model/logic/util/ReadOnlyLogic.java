@@ -77,8 +77,9 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.logic.query.ProjectQuery;
+import org.bibsonomy.model.logic.query.Query;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
-import org.bibsonomy.model.logic.querybuilder.ProjectQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -964,23 +965,28 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<Project> getProjects(ProjectQueryBuilder builder) {
-		return this.logicinterface.getProjects(builder);
+	public Statistics getStatistics(final Query query) {
+		return this.logicinterface.getStatistics(query);
 	}
 
 	@Override
-	public Project getProjectDetails(String projectId) {
+	public List<Project> getProjects(final ProjectQuery query) {
+		return this.logicinterface.getProjects(query);
+	}
+
+	@Override
+	public Project getProjectDetails(final String projectId) {
 		return this.logicinterface.getProjectDetails(projectId);
 	}
 
 	@Override
-	public JobResult createProject(Project project) {
+	public JobResult createProject(final Project project) {
 		throwReadOnlyException();
 		return null;
 	}
 
 	@Override
-	public JobResult updateProject(String projectId, Project project) {
+	public JobResult updateProject(final String projectId, final Project project) {
 		throwReadOnlyException();
 		return null;
 	}

@@ -76,8 +76,9 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.logic.query.ProjectQuery;
+import org.bibsonomy.model.logic.query.Query;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
-import org.bibsonomy.model.logic.querybuilder.ProjectQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -981,7 +982,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
@@ -990,12 +990,16 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public String getForwardId(String personId) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<Project> getProjects(ProjectQueryBuilder builder) {
+	public Statistics getStatistics(Query query) {
+		return null;
+	}
+
+	@Override
+	public List<Project> getProjects(ProjectQuery builder) {
 		return null;
 	}
 

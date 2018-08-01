@@ -36,6 +36,27 @@
         DELETE FROM projects WHERE id = #id#
     </delete>
 
+    <select id="getAllProjects" resultMap="ProjectCommon.simpleProject" parameterClass="projectParam">
+        SELECT <include refid="simpleProjectAttributes" />
+        FROM projects
+        <include refid="projectStatusFilter" />
+          ORDER BY
+            <isEqual property="projectOrder" compareValue="START_DATE">
+                start_date <include refid="sortOrder" />, title
+            </isEqual>
+
+            <isEqual property="projectOrder" compareValue="TITLE">
+                title <include refid="sortOrder" />
+            </isEqual>
+        LIMIT #limit#
+        OFFSET #offset#
+    </select>
+
+    <select id="getAllProjectStatistics" resultMap="StatisticCommon.statisticOnlyCount" parameterClass="projectParam">
+        SELECT count(*) as count FROM projects
+        <include refid="projectStatusFilter" />
+    </select>
+
     <select id="getProjectsByParentId" resultMap="ProjectCommon.simpleProject" parameterClass="int">
         SELECT <include refid="simpleProjectAttributes" />
           FROM projects

@@ -3,15 +3,21 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.JobResult;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.MissingObjectErrorMessage;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
+import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.ProjectParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
+import org.bibsonomy.model.enums.ProjectOrder;
+import org.bibsonomy.model.enums.ProjectStatus;
+import org.bibsonomy.model.logic.query.ProjectQuery;
+import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.validation.ProjectValidator;
 import org.bibsonomy.util.StringUtils;
 
@@ -24,7 +30,7 @@ import java.util.List;
  *
  * @author dzo
  */
-public class ProjectDatabaseManager extends AbstractDatabaseManager {
+public class ProjectDatabaseManager extends AbstractDatabaseManager implements StatisticsProvider<ProjectQuery> {
 
 	/** used to get a new project id */
 	private GeneralDatabaseManager generalDatabaseManager;
@@ -34,6 +40,10 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager {
 
 	/** used to validate a project */
 	private ProjectValidator validator;
+
+	private Chain<List<Project>, ProjectQuery> chain;
+
+	private Chain<Statistics, ProjectQuery> statisticsChain;
 
 	/**
 	 * creates a project with the provided information
@@ -216,6 +226,31 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager {
 		return project;
 	}
 
+	public List<Project> getProjects(final ProjectQuery query, final User loginUser, final DBSession session) {
+		return this.chain.perform(query, session);
+	}
+
+	/**
+	 * retrieves all projects in the db (supports pagination)
+	 *
+	 *
+	 * @param projectStatus
+	 * @param sortOrder
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return
+	 */
+	public List<Project> getAllProjects(final ProjectStatus projectStatus, final ProjectOrder order, SortOrder sortOrder, final int limit, final int offset, final DBSession session) {
+		final ProjectParam param = new ProjectParam();
+		param.setProjectStatus(projectStatus);
+		param.setProjectOrder(order);
+		param.setSortOrder(sortOrder);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		return this.queryForList("getAllProjects", param, Project.class, session);
+	}
+
 	/**
 	 * retrieves a list of projects by parent id
 	 * @param projectId
@@ -224,6 +259,22 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<Project> getProjectsByParentId(final int projectId, final DBSession session) {
 		return this.queryForList("getProjectsByParentId", projectId, Project.class, session);
+	}
+
+	@Override
+	public Statistics getStatistics(ProjectQuery query, DBSession session) {
+		return this.statisticsChain.perform(query, session);
+	}
+
+	/**
+	 * get statistics of projects
+	 * @param projectStatus
+	 * @return
+	 */
+	public Statistics getAllProjectsCounts(final ProjectStatus projectStatus, final DBSession session) {
+		final ProjectParam projectParam = new ProjectParam();
+		projectParam.setProjectStatus(projectStatus);
+		return this.queryForObject("getAllProjectStatistics", projectParam, Statistics.class, session);
 	}
 
 	/**
@@ -245,5 +296,19 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void setValidator(final ProjectValidator validator) {
 		this.validator = validator;
+	}
+
+	/**
+	 * @param chain the chain to set
+	 */
+	public void setChain(Chain<List<Project>, ProjectQuery> chain) {
+		this.chain = chain;
+	}
+
+	/**
+	 * @param statisticsChain the statisticsChain to set
+	 */
+	public void setStatisticsChain(Chain<Statistics, ProjectQuery> statisticsChain) {
+		this.statisticsChain = statisticsChain;
 	}
 }

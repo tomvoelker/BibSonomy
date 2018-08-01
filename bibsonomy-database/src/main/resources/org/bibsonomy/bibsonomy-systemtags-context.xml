@@ -36,6 +36,11 @@
 	    +-->
 	<bean id="forGroupTag" class="org.bibsonomy.database.systemstags.executable.ForGroupTag">
 		<property name="fileLogic" ref="fileLogic" />
+		<property name="logicInterfaceFactory" ref="noAuthInterfaceFactory" />
+	</bean>
+
+	<bean id="noAuthInterfaceFactory" class="org.bibsonomy.database.DBLogicNoAuthInterfaceFactory">
+		<lookup-method name="buildLogic" bean="dbLogicPrototype" />
 		<property name="dbSessionFactory" ref="dbSessionFactory" />
 	</bean>
 	

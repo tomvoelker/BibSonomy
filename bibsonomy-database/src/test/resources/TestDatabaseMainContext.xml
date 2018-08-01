@@ -19,5 +19,21 @@
 	<bean id="systemTagTest" class="org.bibsonomy.database.systemtags.SystemtagsTest">
 		<property name="maxQuerySize" value="${database.maxQuerySize}" />
 	</bean>
+
+	<bean id="publicationReader" class="org.bibsonomy.testutil.DummyPublicationReader" />
+
+	<bean id="dbLogicPrototype" class="org.bibsonomy.database.DBLogic" scope="prototype" init-method="initializeMaps">
+		<property name="dbSessionFactory" ref="dbSessionFactory" />
+		<property name="projectDatabaseManager" ref="projectDatabaseManager" />
+		<property name="publicationReader" ref="publicationReader" />
+	</bean>
+
+	<bean id="apiInterfaceFactory" class="org.bibsonomy.database.DBLogicApiInterfaceFactory" parent="abstractInterfaceFactory" />
+	<bean id="logicInterfaceFactory" class="org.bibsonomy.database.DBLogicUserInterfaceFactory" parent="abstractInterfaceFactory" />
+
+	<bean id="abstractInterfaceFactory" class="org.bibsonomy.database.AbstractDBLogicInterfaceFactory" abstract="true">
+		<property name="dbSessionFactory" ref="dbSessionFactory" />
+		<lookup-method name="buildLogic" bean="dbLogicPrototype" />
+	</bean>
 	
 </beans>
