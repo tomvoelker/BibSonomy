@@ -840,8 +840,9 @@ String.prototype.trim = function () {
  * @param multiTags 	- true if several tags are allowed in the text field, false: the textfield will be emptied and the suggested tag put in it. 
  * @param sendAllowed	- true if send:USER is allowed in the given textfield, otherwise false
  * @param showOrigin	- true if the origin of a tag (user, copy, recommended) should be shown, otherwise false
+ * @param forAllowed	- true if for:GROUP is allowed
  */
-function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, showOrigin) {
+function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, showOrigin, forAllowed) {
 	
 	if (textfield[0] == null)
 		return;
@@ -851,6 +852,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 	var ajaxTagArray	= null;
 	var userInput		= null;	
 	var friends 		= null;
+	var groups 			= null;
 
 	
 	/*
@@ -864,6 +866,20 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 			dataType: "jsonp",
 			success: function (data) {
 				friends = $.map( data.items, function( item ) {
+					return item.name;
+				});
+			}
+		});
+	}
+	
+	if(forAllowed) {
+		getGroups = function () {return groups;};
+		$.ajax({
+			url: '/json/groups',
+			async: false,
+			dataType: "jsonp",
+			success: function (data) {
+				groups = $.map( data.items, function( item ) {
 					return item.name;
 				});
 			}
@@ -910,6 +926,20 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 								if(textfieldValue.indexOf(friend) == -1 &&
 										friend.search(regex) == 0) {
 									return { value: friend};
+								}
+							}));
+						} else if (userInput.indexOf("for:") != -1) {
+							userInput = String(userInput).slice(4);
+							var regex = new RegExp(userInput);
+
+							response($.map( groups, function(group) {
+								/*
+								 * If the post is already sent to a user (Example: "sent:bsc"), don't recommend this user ("bsc")
+								 * If the user input is "nra", recommend only users which username begins with "nra" 
+								 */
+								if(textfieldValue.indexOf(group) == -1 &&
+										group.search(regex) == 0) {
+									return { value: group};
 								}
 							}));
 						} else {
@@ -1061,6 +1091,8 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 				 */
 				if(userInput.indexOf("send:") != -1) {
 					textArea.val(substring + "send:" + text + " ");
+				} else if(userInput.indexOf("for:") != -1) {
+					textArea.val(substring + "for:" + text + " ");
 				} else {
 					textArea.val(substring + text + " ");	
 				}
@@ -1102,6 +1134,8 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
              */
 			if (userInput.indexOf("send:") != -1) {
 				termHighlighted = String(userInput).slice(5);
+			} else if(userInput.indexOf("for:") != -1) {
+				termHighlighted = String(userInput).slice(4);
 			} else {
 				termHighlighted = userInput;
 			}
@@ -1161,6 +1195,8 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
                     
         			if (userInput.indexOf("send:") != -1) {
         				me.append(sytledTerm).append(userInput.substring(5)); // 5 is used to slice "send:"
+        			} else if (userInput.indexOf("for:") != -1) {
+        				me.append(sytledTerm).append(userInput.substring(4)); // 4 is used to slice "for:"
         			} else {
         				me.append(styledTerm).append(recommendedTag.substring(termHighlighted.length));
         			}

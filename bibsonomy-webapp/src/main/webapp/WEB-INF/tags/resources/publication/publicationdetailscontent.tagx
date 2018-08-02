@@ -63,12 +63,11 @@
 			<!--+
 				| DOI
 				+-->
-			<c:set var="doi" value="${publication.miscFields['doi']}" />
+			<c:set var="doi" value="${mtl:extractDOI(publication.miscFields['doi'])}" />
 			<c:if test="${not empty doi}">
 				<dt><fmt:message key="bibtex.actions.doi"/>:</dt>
 				<dd>
-					<c:set var="doi" value="${mtl:extractDOI(doi)}" />
-					<a itemprop="sameAs" href="http://dx.doi.org/${fn:escapeXml(doi)}"><c:out value="${doi}"/></a>
+					<a itemprop="sameAs" href="https://doi.org/${mtl:encodePathSegment(doi)}"><c:out value="${doi}"/></a>
 				</dd>
 			</c:if>
 			

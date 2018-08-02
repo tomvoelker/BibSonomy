@@ -28,6 +28,9 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -36,6 +39,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
@@ -48,6 +53,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
@@ -78,7 +84,7 @@ import org.springframework.validation.Errors;
  * @author Christian Pfeiffer
  */
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand>, ErrorAware {
-	
+	private static final Log log = LogFactory.getLog(PersonMatch.class);
 	private RequestLogic requestLogic;
 	private PersonRoleRenderer personRoleRenderer;
 	private Errors errors;
@@ -133,14 +139,23 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	private View conflictMerge(PersonPageCommand command) {
 		try {
-			String responseString = "{\"response\":" + command.getFormResponseString() + "}";
-			org.json.JSONObject obj = new org.json.JSONObject(responseString);
-			org.json.JSONArray jsonArray = obj.getJSONArray("response");
-			PersonMatch match = this.logic.getPersonMatch(command.getFormMatchId());
+			
 			Map<String, String> map = new HashMap<String, String>();
-			for (int i = 0; i < jsonArray.length(); i++) {
-			    org.json.JSONObject explrObject = jsonArray.getJSONObject(i);
-			    map.put(explrObject.getString("name"), explrObject.getString("value"));
+			if(command.getPerson()!=null){
+				for (String fieldName : Person.fieldsWithResolvableMergeConflicts){
+					PropertyDescriptor desc = new PropertyDescriptor(fieldName, Person.class);
+					Object value = desc.getReadMethod().invoke(command.getPerson());
+					if (value != null){
+						if (fieldName == "gender") {
+							map.put("gender", ((Gender) value).toString());
+						} else if (fieldName != "mainName"){
+							map.put(fieldName, (String) value);
+						}
+					}
+				}
+			}
+			if(command.getNewName()!=null){
+				map.put("mainName", ((PersonName) command.getNewName()).getLastName() + ", " + ((PersonName) command.getNewName()).getFirstName());
 			}
 			JSONObject jsonResponse = new JSONObject();
 			jsonResponse.put("status", this.logic.conflictMerge(command.getFormMatchId(), map));
@@ -148,9 +163,9 @@ public class PersonPageController extends SingleResourceListController implement
 			
 			return Views.AJAX_JSON;
 			
-		} catch (JSONException e) {
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IntrospectionException e) {
 			// TODO Auto-generated catch block
-			System.err.println(e);
+			log.error(e);
 		}
 		JSONObject jsonResponse = new JSONObject();
 		jsonResponse.put("status", false);

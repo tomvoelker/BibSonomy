@@ -40,6 +40,7 @@ import java.util.Random;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Tag;
@@ -372,6 +373,8 @@ public class UserUtils {
 		user.setRealname(""); // XXX: realname can't be null (db schema)
 		user.setEmail(""); // XXX: email can't be null (db schema)
 		user.setRole(Role.GROUPUSER);
+		// every info of the group is public; XXX: maybe we want to change it
+		user.getSettings().setProfilePrivlevel(ProfilePrivlevel.PUBLIC);
 		return user;
 	}
 	
@@ -385,7 +388,7 @@ public class UserUtils {
 		if (present(user.getRealname())) {
 			return user.getRealname();
 		} 
-		return (atPrefix? "@" :"") + user.getName();
+		return (atPrefix ? "@" : "") + user.getName();
 	
 	}
 
