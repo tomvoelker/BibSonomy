@@ -54,19 +54,12 @@ public final class PersonUtils {
 		
 		final StringBuilder sb = new StringBuilder();
 		if (present(firstName)) {
-			sb.append(normName(firstName).charAt(0));
+			sb.append(StringUtils.normalizeString(firstName).charAt(0));
 			sb.append('.');
 		}
-		sb.append(normName(lastName));
+		sb.append(StringUtils.normalizeString(lastName));
 	
 		return sb.toString();
 	}
 
-	/**
-	 * @param name
-	 * @return
-	 */
-	private static String normName(final String name) {
-		return StringUtils.foldToASCII(name.trim().toLowerCase().replaceAll("\\s", "_"));
-	}
 }

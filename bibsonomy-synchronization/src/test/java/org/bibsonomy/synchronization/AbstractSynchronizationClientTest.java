@@ -49,6 +49,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationDirection;
@@ -109,8 +110,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 	@SuppressWarnings("javadoc")
 	@BeforeClass
 	public static void initRestServer() throws Exception {
-		final DBLogicApiInterfaceFactory dbLogicFactory = new DBLogicApiInterfaceFactory();
-		dbLogicFactory.setDbSessionFactory(dbSessionFactory);
+		final LogicInterfaceFactory dbLogicFactory = testDatabaseContext.getBean(API_LOGICFACTORY_BEAN_NAME, LogicInterfaceFactory.class);
 		final TestServerBuilder buildServer = new TestServerBuilder(dbLogicFactory, PORT);
 		restServer = buildServer.buildServer();
 		restServer.start();
@@ -135,7 +135,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 	
 	private String[] modifiedBookmarkKeys;
 	private String[] modifiedPublicationKeys;
-	
+
 	@SuppressWarnings({ "unchecked", "javadoc" })
 	@Before
 	public void initialize() {
@@ -159,8 +159,8 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 		/*
 		 * create the logic interfaces
 		 */
-		this.clientLogic = new SyncDBLogic(this.clientUser, dbSessionFactory);
-		this.serverLogic = new SyncDBLogic(this.serverUser, dbSessionFactory);
+		this.clientLogic = createSyncDBLogic(this.clientUser);
+		this.serverLogic = createSyncDBLogic(this.serverUser);
 
 		/*
 		 * iterate over all resource types
@@ -244,7 +244,13 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 			assertEquals(SYNC_SERVER_URI, this.clientLogic.getSyncServiceSettings(this.clientUser.getName(), null, true).get(0).getService().toString());
 		}
 	}
-	
+
+	private LogicInterface createSyncDBLogic(User clientUser) {
+		final DBLogic logic = testDatabaseContext.getBean(DBLogic.class);
+		logic.setLoginUser(clientUser);
+		return logic;
+	}
+
 
 	/**
 	 * helper method to create posts of the given type
@@ -275,11 +281,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 		return post;
 	}
 	
-	private static class SyncDBLogic extends DBLogic {
-		public SyncDBLogic(final User user, final DBSessionFactory dbSessionFactory) {
-			super(user, dbSessionFactory, null);
-		}
-	}
+
 	
 	protected static Map<String, SynchronizationPost> mapFromList(final List<SynchronizationPost> syncPosts) {
 		final Map<String, SynchronizationPost> map = new HashMap<String, SynchronizationPost>();

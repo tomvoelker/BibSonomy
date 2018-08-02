@@ -90,7 +90,9 @@ public class SyncTest extends AbstractDatabaseManagerTest {
 
         final User loginUser = new User();
         loginUser.setName(userName);
-        dbLogic = new DBLogic(loginUser, getDbSessionFactory(), null);
+        final DBLogic logic = testDatabaseContext.getBean(DBLogic.class);
+        logic.setLoginUser(loginUser);
+        dbLogic = logic;
     }
 
     private HashMap<String, SynchronizationPost> listToMap(final List<SynchronizationPost> posts) {

@@ -147,25 +147,19 @@
 	    This bean provides admin access to the logic interface by pretending 
 	    to be a user with role "admin". 
 	 -->
-	<bean id="adminLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.AdminLogicFactoryBean" scope="singleton">
+	<bean id="adminLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.AdminLogicFactoryBean" scope="singleton" parent="abstractLogicInterfaceFactory">
 		<!-- name the admin user will have when accessing the logic interface -->
 		<property name="adminUserName" value="admin"/>
-		<property name="dbSessionFactory" ref="dbSessionFactory"/>
-		<property name="bibtexReader" ref="bibtexReader"/>
 		<property name="readOnly" value="${system.mode.readOnly}" />
 	</bean>
 
 	<!-- provides access to the database for all controllers -->
-	<bean id="logic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" scope="request">
+	<bean id="logic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" scope="request" parent="abstractLogicInterfaceFactory">
 		<property name="user" ref="loginUser"/>
-		<property name="dbSessionFactory" ref="dbSessionFactory"/>
-		<property name="bibtexReader" ref="bibtexReader"/>
 		<property name="readOnly" value="${system.mode.readOnly}" />
 	</bean>
-	<bean id="notLoggedInUserLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean">
+	<bean id="notLoggedInUserLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" parent="abstractLogicInterfaceFactory">
 		<property name="user" ref="notLoggedInUser"/>
-		<property name="dbSessionFactory" ref="dbSessionFactory"/>
-		<property name="bibtexReader" ref="bibtexReader"/>
 		<property name="readOnly" value="${system.mode.readOnly}" />
 	</bean>
 	<bean id="notLoggedInUser" class="org.bibsonomy.model.User"/>
@@ -307,6 +301,18 @@
 	
 	<bean id="bibtexReader" class="org.bibsonomy.model.util.CompositeBibtexReader">
 		<constructor-arg ref="bibtexReaders"/>
+	</bean>
+
+	<!-- prototype for the dblogic -->
+	<bean id="dbLogicPrototype" class="org.bibsonomy.database.DBLogic" scope="prototype" init-method="initializeMaps">
+		<property name="projectDatabaseManager" ref="projectDatabaseManager" />
+		<property name="dbSessionFactory" ref="dbSessionFactory" />
+		<property name="publicationReader" ref="bibtexReader" />
+	</bean>
+
+	<bean id="abstractLogicInterfaceFactory" class="org.bibsonomy.database.AbstractDBLogicInterfaceFactory" abstract="true">
+		<lookup-method name="buildLogic" bean="dbLogicPrototype" />
+		<property name="dbSessionFactory" ref="dbSessionFactory" />
 	</bean>
 	
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">

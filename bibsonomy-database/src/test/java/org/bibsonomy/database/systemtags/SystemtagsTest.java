@@ -75,6 +75,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
@@ -357,8 +358,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		//change posts3 to avoid douplicates
 		posts3.get(0).getResource().setTitle("some other title");
 		// store posts
-		final DBLogicUserInterfaceFactory logicFactory = new DBLogicUserInterfaceFactory();
-		logicFactory.setDbSessionFactory(getDbSessionFactory());
+		final DBLogicUserInterfaceFactory logicFactory = testDatabaseContext.getBean(USER_LOGICFACTORY_BEAN_NAME, DBLogicUserInterfaceFactory.class);
 		final LogicInterface logic1 = logicFactory.getLogicAccess(testUser1.getName(), "password");
 		final LogicInterface logic2 = logicFactory.getLogicAccess(testUser2.getName(), "password");
 
@@ -419,8 +419,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		final User testUser1 = this.createTestUser("senderUser");
 		final User testUser2 = this.createTestUser("receiverUser");
 		// make a logic for each user
-		final DBLogicUserInterfaceFactory logicFactory = new DBLogicUserInterfaceFactory();
-		logicFactory.setDbSessionFactory(getDbSessionFactory());
+		final LogicInterfaceFactory logicFactory = testDatabaseContext.getBean(USER_LOGICFACTORY_BEAN_NAME, LogicInterfaceFactory.class);
 		final LogicInterface user1Logic = logicFactory.getLogicAccess(testUser1.getName(), "password");
 		final LogicInterface user2Logic = logicFactory.getLogicAccess(testUser2.getName(), "password");
 		// user 2 adds user 1 as a friend => user 1 can now send posts to user 2

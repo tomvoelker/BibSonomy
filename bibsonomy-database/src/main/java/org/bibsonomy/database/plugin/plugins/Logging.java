@@ -47,7 +47,11 @@ import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+
+import java.util.Date;
 
 /**
  * This plugin implements logging: on several occasions it'll save the old state
@@ -309,7 +313,6 @@ public class Logging extends AbstractDatabasePlugin {
 		this.insert("logPersonDelete", person, session);
 	}
 
-
 	@Override
 	public void onPubPersonDelete(final ResourcePersonRelation rel, final DBSession session) {
 		this.insert("logPubPerson", rel.getPersonRelChangeId(), session);
@@ -318,4 +321,25 @@ public class Logging extends AbstractDatabasePlugin {
 		this.insert("logPubPersonDelete", rel, session);
 	}
 
+	@Override
+	public void onProjectUpdate(final Project oldProject, final Project newProject, User loggedinUser, DBSession session) {
+		final LoggingParam param = new LoggingParam();
+		param.setNewContentId(newProject.getId());
+		param.setOldContentId(oldProject.getId());
+		param.setDate(new Date());
+		param.setPostEditor(loggedinUser); // TODO: rename field to editor
+
+		this.insert("logProjectUpdate", param, session);
+	}
+
+	@Override
+	public void onProjectDelete(Project project, User loggedinUser, DBSession session) {
+		final LoggingParam param = new LoggingParam();
+		param.setNewContentId(-1);
+		param.setOldContentId(project.getId());
+		param.setDate(new Date());
+		param.setPostEditor(loggedinUser);
+
+		this.insert("logProjectUpdate", param, session);
+	}
 }

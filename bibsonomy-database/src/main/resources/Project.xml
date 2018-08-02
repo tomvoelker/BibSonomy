@@ -3,11 +3,10 @@
 
 <sqlMap namespace="Project">
 
-
     <select id="getFullProjectDetails" parameterClass="string" resultMap="ProjectCommon.fullProject">
-        SELECT <include refid="fullProjectAttributes" />
-          FROM projects
-        WHERE project_id = #project_id#
+        SELECT <include refid="fullProjectAttributes" />, <include refid="parentSimpleProjectAttributes" />
+          FROM projects p LEFT JOIN projects pp ON p.parent_id = pp.id
+        WHERE p.project_id = #project_id#
     </select>
 
     <insert id="insertProject" parameterClass="projectParam">
@@ -15,19 +14,61 @@
         VALUES (<include refid="insertProjectAttributes"/>)
     </insert>
 
+    <update id="updateProject" parameterClass="projectParam">
+        UPDATE projects
+        SET
+            id = #project.id#,
+            internal_id = #project.internalId#,
+            title = #project.title#,
+            subtitle = #project.subTitle#,
+            description = #project.description#,
+            start_date = #project.startDate#,
+            end_date = #project.endDate#,
+            type = #project.type#,
+            budget = #project.budget#,
+            parent_id = #parentProjectId#,
+            updated_at = #updatedAt#,
+            updated_by = #updatedBy#
+        WHERE project_id = #project.externalId#
+    </update>
+
+    <delete id="deleteProject" parameterClass="int">
+        DELETE FROM projects WHERE id = #id#
+    </delete>
+
+    <select id="getAllProjects" resultMap="ProjectCommon.simpleProject" parameterClass="projectParam">
+        SELECT <include refid="simpleProjectAttributes" />
+        FROM projects
+        <include refid="projectStatusFilter" />
+          ORDER BY
+            <isEqual property="projectOrder" compareValue="START_DATE">
+                start_date <include refid="sortOrder" />, title
+            </isEqual>
+
+            <isEqual property="projectOrder" compareValue="TITLE">
+                title <include refid="sortOrder" />
+            </isEqual>
+        LIMIT #limit#
+        OFFSET #offset#
+    </select>
+
+    <select id="getAllProjectStatistics" resultMap="StatisticCommon.statisticOnlyCount" parameterClass="projectParam">
+        SELECT count(*) as count FROM projects
+        <include refid="projectStatusFilter" />
+    </select>
+
+    <select id="getProjectsByParentId" resultMap="ProjectCommon.simpleProject" parameterClass="int">
+        SELECT <include refid="simpleProjectAttributes" />
+          FROM projects
+        WHERE parent_id = #id#
+          ORDER BY title
+    </select>
+
    <!--
     <select id="getAllProjects" resultMap="Project.project">
         SELECT <include refid="commonProjectAttributes"/>
         FROM projects
     </select>
-    <update id="updateProject" parameterClass="project">
-        UPDATE projects
-        WHERE project_name=#name#
-    </update>
 
-    <delete id="deleteProject" parameterClass="string">
-        DELETE FROM projects WHERE project_id = #project_id#
-    </delete> -->
-
-
+     -->
 </sqlMap>

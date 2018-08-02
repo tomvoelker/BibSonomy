@@ -1,5 +1,7 @@
 package org.bibsonomy.model.validation;
 
+import static org.junit.Assert.assertEquals;
+
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.model.cris.Project;
 import org.joda.time.DateTime;
@@ -7,8 +9,6 @@ import org.junit.Test;
 
 import java.util.Date;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * tests for {@link ProjectValidator}

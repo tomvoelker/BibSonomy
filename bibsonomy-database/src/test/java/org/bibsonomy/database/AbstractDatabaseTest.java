@@ -34,5 +34,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public abstract class AbstractDatabaseTest {
 
+	public static final String API_LOGICFACTORY_BEAN_NAME = "apiInterfaceFactory";
+	public static final String USER_LOGICFACTORY_BEAN_NAME = "logicInterfaceFactory";
 	public static final ApplicationContext testDatabaseContext = new ClassPathXmlApplicationContext("TestDatabaseMainContext.xml");
 }

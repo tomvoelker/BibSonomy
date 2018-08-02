@@ -144,6 +144,21 @@
 			</list>
 		</property>
 	</bean>
+
+	<!-- project chain -->
+
+	<bean id="abstractProjectChainElement" class="org.bibsonomy.database.managers.chain.project.ProjectChainElement" abstract="true">
+		<property name="projectDatabaseManager"	ref="projectDatabaseManager" />
+	</bean>
+
+	<bean id="projectChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.project.GetAllProjects" parent="abstractProjectChainElement"/>
+			</list>
+		</property>
+	</bean>
+
 	
 	<!-- post statistic chain -->
 	<bean id="postStatisticChain" class="org.bibsonomy.database.managers.chain.Chain">
@@ -321,6 +336,7 @@
 		<property name="generalDatabaseManager" ref="generalDatabaseManager" />
 		<property name="plugins" ref="databasePluginManager" />
 		<property name="validator" ref="projectValidator" />
+		<property name="chain" ref="projectChain" />
 	</bean>
 	
 	<bean id="databasePluginManager" class="org.bibsonomy.database.plugin.DatabasePluginRegistry" factory-method="getInstance">
@@ -337,6 +353,7 @@
 				<bean class="org.bibsonomy.database.plugin.plugins.PersonPostConnectorPlugin">
 					<property name="personDatabaseManager" ref="personDatabaseManager" />
 				</bean>
+				<bean class="org.bibsonomy.database.plugin.plugins.ProjectPlugin" />
 			</list>
 		</property>
 	</bean>

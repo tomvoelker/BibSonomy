@@ -40,6 +40,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
@@ -269,6 +270,16 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 
 	@Override
 	public void onProjectInsert(Project project, DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onProjectUpdate(Project oldProject, Project newProject, User loggedinUser, DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onProjectDelete(Project project, User loggedinUser, DBSession session) {
 		// noop
 	}
 }

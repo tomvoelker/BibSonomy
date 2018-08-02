@@ -42,6 +42,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
@@ -358,6 +359,20 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	public void onProjectInsert(final Project project, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
 			plugin.onProjectInsert(project, session);
+		}
+	}
+
+	@Override
+	public void onProjectUpdate(final Project oldProject, final Project newProject, User loggedinUser, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins) {
+			plugin.onProjectUpdate(oldProject, newProject, loggedinUser, session);
+		}
+	}
+
+	@Override
+	public void onProjectDelete(final Project project, final User loggedinUser, final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins) {
+			plugin.onProjectDelete(project, loggedinUser, session);
 		}
 	}
 
