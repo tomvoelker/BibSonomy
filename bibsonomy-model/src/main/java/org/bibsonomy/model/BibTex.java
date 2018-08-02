@@ -868,10 +868,10 @@ public class BibTex extends Resource {
 			return (BibTex) ois.readObject();
 		} catch (IOException e) {
 			log.error("IO Problem cloning an object: in BibTeX ", e);
-				return null;
+			return null;
 		} catch (ClassNotFoundException e) {
 			log.error("ClassNotFroundException during cloning an object: in BibTex", e);
-				return null;
+			return null;
 		}
 	}
 

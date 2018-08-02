@@ -257,8 +257,6 @@ public class DBLogic implements LogicInterface {
 
 		this.wikiDBManager = WikiDatabaseManager.getInstance();
 
-		this.projectDatabaseManager = null; // FIXME:
-
 		this.syncDBManager = SynchronizationDatabaseManager.getInstance();
 
 		this.bibTexExtraDBManager = BibTexExtraDatabaseManager.getInstance();
