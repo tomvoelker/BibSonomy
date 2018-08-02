@@ -38,7 +38,8 @@
 		<property name="projectHome" ref="projectHome" />
 		<property name="projectEmail" ref="projectEmail" />
 		<property name="projectNoSpamEmail" ref="projectNoSpamEmail" />
-		<property name="requestLogic" ref="requestLogic" />
+		<property name="projectAPIEmail" ref="projectApiEmail" />
+ 		<property name="requestLogic" ref="requestLogic" />
 		<property name="responseLogic" ref="responseLogic" />
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
 		<property name="search" ref="helpSearchManager" />
@@ -54,6 +55,7 @@
 		<property name="projectHome" ref="projectHome" />
 		<property name="projectEmail" ref="projectEmail" />
 		<property name="projectNoSpamEmail" ref="projectNoSpamEmail" />
+		<property name="projectAPIEmail" ref="projectApiEmail" />
 		<property name="client" ref="esClient" />
 		<property name="factory" ref="markdownFactory" />
 		<property name="urlGenerator" ref="relativeUrlGenerator" />

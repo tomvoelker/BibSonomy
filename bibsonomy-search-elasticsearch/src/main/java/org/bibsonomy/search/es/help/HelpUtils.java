@@ -47,17 +47,6 @@ public final class HelpUtils {
 	private HelpUtils() {}
 
 	/**
-	 * @param projectName
-	 * @param projectTheme
-	 * @param projectHome
-	 * @return the map
-	 */
-	@Deprecated
-	public static Map<String, String> buildReplacementMap(final String projectName, final String projectTheme, final String projectHome) {
-		return buildReplacementMap(projectName, projectTheme, projectHome, "", "", "api-support@bibsonomy.org");
-	}
-	
-	/**
 	 * build Map for variable replacement
 	 * @param projectName
 	 * @param projectTheme

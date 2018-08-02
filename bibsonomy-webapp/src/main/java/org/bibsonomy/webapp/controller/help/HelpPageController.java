@@ -157,7 +157,8 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 			
 			return Views.DOWNLOAD_FILE;
 		}
-		
+
+		// TODO: maybe we should use a prototype for creating the parser
 		final Map<String, String> replacements = HelpUtils.buildReplacementMap(this.projectName, theme, this.projectHome, this.projectEmail, this.projectNoSpamEmail, this.projectAPIEmail);
 		// instantiate a new parser
 		final Parser parser = new Parser(replacements, this.urlGenerator);

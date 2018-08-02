@@ -193,6 +193,10 @@
 	<bean id="projectNoSpamEmail" class="java.lang.String">
 		<constructor-arg value="${project.noSpamEmail}" />
 	</bean>
+
+	<bean id="projectApiEmail" class="java.lang.String">
+		<constructor-arg value="${project.apiEmail}" />
+	</bean>
 	
 	<!-- handles sending of mails  -->
 	<bean id="mailUtils" class="org.bibsonomy.util.MailUtils" scope="singleton">
