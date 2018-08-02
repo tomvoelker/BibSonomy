@@ -3454,7 +3454,7 @@ public class DBLogic implements LogicInterface {
 				}
 			}
 			
-			// check for email, homepage - can yonly be edited if the editr claimed the person
+			// check for email, homepage - can only be edited if the editer claimed the person
 			if (operation.equals(PersonUpdateOperation.UPDATE_EMAIL) || operation.equals(PersonUpdateOperation.UPDATE_HOMEPAGE)) {
 				if (person.getUser() == null) {
 					throw new AccessDeniedException();
@@ -3467,6 +3467,9 @@ public class DBLogic implements LogicInterface {
 			switch (operation) {
 				case UPDATE_ORCID: 
 					this.personDBManager.updateOrcid(person, session);
+					break;
+				case UPDATE_RESEARCHERID:
+					this.personDBManager.updateResearcherid(person, session);
 					break;
 				case UPDATE_ACADEMIC_DEGREE:
 					this.personDBManager.updateAcademicDegree(person, session);

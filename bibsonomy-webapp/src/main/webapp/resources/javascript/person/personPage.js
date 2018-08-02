@@ -226,6 +226,13 @@ $(document).ready(function() {
 			$(this).parent().parent().find(".personProfileUpdate").removeClass("disabled");
 		}
 	});
+
+    // orcid formatter
+    $("#formResearcherid").mask("9-9999-9999", {
+        completed: function() {
+            $(this).parent().parent().find(".personProfileUpdate").removeClass("disabled");
+        }
+    });
 	
 	// toggle view/hide all available roles
 	$(".personPageShowAdditionalRoleFields").click(function() {
@@ -271,6 +278,7 @@ $(document).ready(function() {
 		
 		// save the form values to update the preview
 		orcid =  $("#formOrcid").val();
+		researcherid = $("#formResearcherid").val();
 		academicDegree = $("#formAcademicDegree").val();
 		college = $("#formCollege").val();
 		email = $("#formEmail").val();
@@ -310,6 +318,7 @@ $(document).ready(function() {
 				
 				// TODO: update the preview values (only the updated one)
 				$("#personPageFormAcademicDegreeValue").text(academicDegree);
+				$("#personPageFormResearcheridValue").text(researcherid);
 				$("#personPageFormOrcidValue").text(orcid);
 				$("#personPageFormCollegeValue").text(college);
 				$("#personPageFormEmailValue").text(email);
