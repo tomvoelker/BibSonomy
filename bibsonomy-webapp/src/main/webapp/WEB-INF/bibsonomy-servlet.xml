@@ -371,6 +371,7 @@
 								
 								<value>person.personId</value>
 								<value>person.orcid</value>
+								<value>person.researcherid</value>
 								<value>person.academicDegree</value>
 								<value>person.college</value>
 								<value>person.email</value>

@@ -45,7 +45,7 @@ import org.bibsonomy.model.enums.Gender;
 public class Person implements Linkable, Serializable {
 
 	private static final long serialVersionUID = 4578956154246424767L;
-	public static final String[] fieldsWithResolvableMergeConflicts = {"mainName", "academicDegree", "orcid", "gender", "college", "email", "homepage"};
+	public static final String[] fieldsWithResolvableMergeConflicts = {"mainName", "academicDegree", "orcid", "researcherid", "gender", "college", "email", "homepage"};
 	
 	private int personChangeId;
 	/** null means new non-persistent object */

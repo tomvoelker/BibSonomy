@@ -237,6 +237,25 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 		}
 	}
 
+
+	/**
+	 * Update the ResearcherID of a Person
+	 *
+	 * @param person
+	 * @param session
+	 */
+	public void updateResearcherid(Person person, DBSession session) {
+		session.beginTransaction();
+		try {
+			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			this.insert("updateResearcherid", person, session);
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+
 	/**
 	 * Update the academic degree of a Person
 	 * 
