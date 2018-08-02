@@ -1,8 +1,5 @@
 package org.bibsonomy.model.cris;
 
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Post;
-
 import java.util.Date;
 
 /**
@@ -12,52 +9,83 @@ import java.util.Date;
  */
 public class CRISLink {
 
-	/** the publication that is linked */
-	private Post<? extends BibTex> publication;
+	private Linkable source;
 
-	private Linkable linkable;
+	private Linkable target;
 
-	private Date linkDate;
+	private Date startDate;
+
+	private Date endDate;
+
+	private CRISLinkType linkType;
 
 	/**
-	 * @return the publication
+	 * @return the source
 	 */
-	public Post<? extends BibTex> getPublication() {
-		return publication;
+	public Linkable getSource() {
+		return source;
 	}
 
 	/**
-	 * @param publication the publication to set
+	 * @param source the source to set
 	 */
-	public void setPublication(final Post<? extends BibTex> publication) {
-		this.publication = publication;
+	public void setSource(Linkable source) {
+		this.source = source;
 	}
 
 	/**
-	 * @return the linkable
+	 * @return the target
 	 */
-	public Linkable getLinkable() {
-		return linkable;
+	public Linkable getTarget() {
+		return target;
 	}
 
 	/**
-	 * @param linkable the linkable to set
+	 * @param target the target to set
 	 */
-	public void setLinkable(Linkable linkable) {
-		this.linkable = linkable;
+	public void setTarget(Linkable target) {
+		this.target = target;
 	}
 
 	/**
-	 * @return the linkDate
+	 * @return the startDate
 	 */
-	public Date getLinkDate() {
-		return linkDate;
+	public Date getStartDate() {
+		return startDate;
 	}
 
 	/**
-	 * @param linkDate the linkDate to set
+	 * @param startDate the startDate to set
 	 */
-	public void setLinkDate(Date linkDate) {
-		this.linkDate = linkDate;
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	/**
+	 * @return the endDate
+	 */
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	/**
+	 * @param endDate the endDate to set
+	 */
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
+	/**
+	 * @return the linkType
+	 */
+	public CRISLinkType getLinkType() {
+		return linkType;
+	}
+
+	/**
+	 * @param linkType the linkType to set
+	 */
+	public void setLinkType(CRISLinkType linkType) {
+		this.linkType = linkType;
 	}
 }
