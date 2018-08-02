@@ -61,8 +61,7 @@
 
 	<update id='updateOrcid' parameterClass='org.bibsonomy.model.Person'>
 		UPDATE person SET person_change_id = #personChangeId#, orcid = #orcid#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
-		WHERE person
-		n.person_id = #personId#
+		WHERE person.person_id = #personId#
 	</update>
 	<update id='updateResearcherid' parameterClass='org.bibsonomy.model.Person'>
 		UPDATE person SET person_change_id = #personChangeId#, researcherid = #researcherid#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#

@@ -1073,6 +1073,18 @@ public class Functions {
 		return orcid;
 	}
 
+	/**
+	 * Returns orcid URL
+	 * @param orcid
+	 * @return
+	 */
+	public static String callOrcidURL(String orcid) {
+		if (orcid.length() == 16) {
+			return "https://orcid.org/" + orcid.substring(0, 4) + "-" + orcid.substring(4, 8) + "-" + orcid.substring(8, 12) + "-" + orcid.substring(12, 16);
+		}
+		return orcid;
+	}
+
 
 	/**
 	 * Returns a formatted researcherid
@@ -1082,6 +1094,18 @@ public class Functions {
 	public static String beatifyResearcherid(String researcherid) {
 		if (researcherid.length() == 9) {
 			return researcherid.substring(0, 1) + "-" + researcherid.substring(2, 5) + "-" + researcherid.substring(5, 9);
+		}
+		return researcherid;
+	}
+
+	/**
+	 * Returns researcherid URL
+	 * @param researcherid
+	 * @return
+	 */
+	public static String callResearcheridURL(String researcherid) {
+		if (researcherid.length() == 9) {
+			return "https://orcid.org/eid/" + researcherid.substring(0, 1) + "-" + researcherid.substring(2, 5) + "-" + researcherid.substring(5, 9);
 		}
 		return researcherid;
 	}

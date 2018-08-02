@@ -473,9 +473,21 @@
 	</function>
 
 	<function>
+		<name>callOrcidURL</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>String callOrcidURL(java.lang.String)</function-signature>
+	</function>
+
+	<function>
 		<name>beatifyResearcherid</name>
 		<function-class>tags.Functions</function-class>
 		<function-signature>String beatifyResearcherid(java.lang.String)</function-signature>
+	</function>
+
+	<function>
+		<name>callResearcheridURL</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>String callResearcheridURL(java.lang.String)</function-signature>
 	</function>
 
 </taglib>
