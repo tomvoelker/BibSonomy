@@ -63,7 +63,7 @@ import org.w3c.dom.NodeList;
  */
 public class IEEEXploreBookScraper extends AbstractUrlScraper implements ReferencesScraper, CitedbyScraper {
 	private static final String SITE_NAME = "IEEEXplore Books";
-	private static final String SITE_URL = "http://ieeexplore.ieee.org/books/bkbrowse.jsp";
+	private static final String SITE_URL = "https://ieeexplore.ieee.org/books/bkbrowse.jsp";
 	private static final Log log = LogFactory.getLog(IEEEXploreBookScraper.class);
 	private static final String info = "This scraper creates a BibTeX entry for the books at " +
 			href(SITE_URL, SITE_NAME);
@@ -80,9 +80,9 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 	private static final String CONST_VOLUME   = "Volume: ";
 	private static final String CONST_DATE	   = "Publication Date: ";
 
-	private static final String EXPORT_ARNUM_URL = "http://ieeexplore.ieee.org/xpl/downloadCitations";
-	private static final String REFERENCE_ARNUM_URL = "http://ieeexplore.ieee.org/xpl/dwnldReferences?arnumber=";
-	private static final String CITEDBY_ARNUM_URL = "http://ieeexplore.ieee.org/xpl/abstractCitations.jsp?arnumber=";
+	private static final String EXPORT_ARNUM_URL = "https://ieeexplore.ieee.org/xpl/downloadCitations";
+	private static final String REFERENCE_ARNUM_URL = "https://ieeexplore.ieee.org/xpl/dwnldReferences?arnumber=";
+	private static final String CITEDBY_ARNUM_URL = "https://ieeexplore.ieee.org/xpl/abstractCitations.jsp?arnumber=";
 
 	private static final Pattern URL_PATTERN_BKN      = Pattern.compile("bkn=([^&]*)");
 	private static final Pattern URL_PATTERN_ARNUMBER = Pattern.compile("arnumber=([^&]*)");

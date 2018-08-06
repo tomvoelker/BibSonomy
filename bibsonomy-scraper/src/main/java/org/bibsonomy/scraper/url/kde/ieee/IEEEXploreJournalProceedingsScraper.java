@@ -55,7 +55,7 @@ import org.w3c.dom.NodeList;
 public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
 	private static final Log log = LogFactory.getLog(IEEEXploreJournalProceedingsScraper.class);
 	private static final String SITE_NAME = "IEEEXplore Journals";
-	private static final String SITE_URL = "http://ieeexplore.ieee.org/";
+	private static final String SITE_URL = "https://ieeexplore.ieee.org/";
 	private static final String info = "This scraper creates a BibTeX entry for the journals and proceedings at " + href(SITE_URL, SITE_NAME)+".";
 	
 	private static final String IEEE_HOST = "ieeexplore.ieee.org";
