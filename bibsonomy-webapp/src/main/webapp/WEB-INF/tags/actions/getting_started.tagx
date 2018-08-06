@@ -221,7 +221,7 @@
 									</div>
 									<div class="col-sm-6">
 										<img class="img-thumbnail img-responsive"
-											src="/resources/image/gettingStarted-export-${properties['project.theme']}.png" />
+											src="/resources/image/gettingStarted-export-${properties['project.theme']}.svg" />
 									</div>
 								</div>
 							</div>
