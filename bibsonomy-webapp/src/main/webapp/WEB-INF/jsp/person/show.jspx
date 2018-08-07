@@ -94,6 +94,7 @@
 			</c:choose>
 		</jsp:attribute>
 
+		<!-- fix stuff here -->
 		<jsp:attribute name="content">
 			<errors:logicExceptions exceptions="${command.logicExceptions}" />
 			<c:if test="${not empty command.okHintKey}">
