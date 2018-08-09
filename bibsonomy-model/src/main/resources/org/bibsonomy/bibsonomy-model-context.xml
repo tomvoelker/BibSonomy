@@ -44,6 +44,14 @@
 	<bean id="goldStandardPublicationClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="org.bibsonomy.model.GoldStandardPublication" />
 	</bean>
+
+	<bean id="projectClass" class="java.lang.Class" factory-method="forName">
+		<constructor-arg value="org.bibsonomy.model.cris.Project" />
+	</bean>
+
+	<bean id="personClass" class="java.lang.Class" factory-method="forName">
+		<constructor-arg value="org.bibsonomy.model.Person" />
+	</bean>
 	
 	<bean id="resourceFactory" class="org.bibsonomy.model.factories.ResourceFactory" />
 

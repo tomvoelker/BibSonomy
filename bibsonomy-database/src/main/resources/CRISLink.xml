@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CRISLink">
+
+    <insert id="insertCRISLink" parameterClass="crisLinkParam">
+        INSERT INTO cris_links (id, source_id, source_type, target_id, target_type, start_date, end_date, linktype_type, linktype_value, updated_by, updated_at)
+          VALUES (#linkableId#, #sourceId#, #sourceType.id#, #targetId#, #targetType.id#, #link.startDate#, #link.endDate#, #link.linkType,handler=org.bibsonomy.database.common.typehandler.CRISLinkTypeClassTypeHandlerCallback#, #link.linkType#, #updatedBy#, #updatedAt#)
+    </insert>
+
+    <delete id="deleteCRISLink" parameterClass="crisLinkParam">
+        DELETE FROM cris_links
+          WHERE source_id = #sourceId# AND source_type = #sourceType.id# AND target_id = #targetId# AND target_type = #targetType.id#
+    </delete>
+
+    <select id="getCRISLinkDetails" parameterClass="crisLinkParam" resultMap="CRISLinkCommon.crisLink">
+        SELECT start_date, end_date, linktype_type, linktype_value
+          FROM cris_links
+          WHERE source_id = #sourceId# AND source_type = #sourceType.id# AND target_id = #targetId# AND target_type = #targetType.id#
+    </select>
+</sqlMap>

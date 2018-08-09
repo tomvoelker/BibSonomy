@@ -214,4 +214,9 @@ public class Project implements Linkable {
 	public void setSubProjects(List<Project> subProjects) {
 		this.subProjects = subProjects;
 	}
+
+	@Override
+	public String getLinkableId() {
+		return this.getExternalId();
+	}
 }

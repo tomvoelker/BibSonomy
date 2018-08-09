@@ -39,7 +39,10 @@
 	<typeAlias alias="personResourceRelationType" type="org.bibsonomy.model.enums.PersonResourceRelationType" />
 
 	<!-- CRIS types -->
-	<typeAlias alias="project" type="org.bibsonomy.model.cris.Project" />
+	<typeAlias alias="project" 					type="org.bibsonomy.model.cris.Project" />
+	<typeAlias alias="crisLink"					type="org.bibsonomy.model.cris.CRISLink" />
+	<typeAlias alias="projectPersonLinkType"	type="org.bibsonomy.model.cris.ProjectPersonLinkType" />
+	<typeAlias alias="crisLinkType"				type="org.bibsonomy.model.cris.CRISLinkType" />
 	
 	<!-- Synchronization -->
 	<typeAlias alias="syncResource"		  type="org.bibsonomy.model.sync.SynchronizationResource" />
@@ -85,6 +88,7 @@
 	<typeAlias alias="reviewParam"			type="org.bibsonomy.database.params.discussion.ReviewParam" />
 
 	<typeAlias alias="projectParam"         type="org.bibsonomy.database.params.ProjectParam" />
+	<typeAlias alias="crisLinkParam"        type="org.bibsonomy.database.params.CRISLinkParam" />
 	
 	<!-- Java types  -->
 	<typeAlias alias="resourceTypeClass"	type="java.lang.Class" />

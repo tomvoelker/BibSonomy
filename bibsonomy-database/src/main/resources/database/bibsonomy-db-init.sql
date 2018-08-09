@@ -11,7 +11,8 @@ INSERT INTO `ids` VALUES
 	(15,0,'discussion_id'),
 	(16,0,'synchronization_id'),
 	(17, 0, 'person_change_id'),
-	(18, 0, 'project_id');
+	(18, 0, 'project_id'),
+	(19, 0, 'cris_link_id');
 
 INSERT INTO `groupids` (`group_name`, `group`, `privlevel`, `sharedDocuments`) VALUES
 	('public', -2147483648,1,0),

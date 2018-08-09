@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.database.managers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
@@ -66,7 +68,7 @@ import org.bibsonomy.services.searcher.PersonSearch;
  * @author jensi
  * @author Christian Pfeiffer / eisfair
  */
-public class PersonDatabaseManager extends AbstractDatabaseManager {
+public class PersonDatabaseManager extends AbstractDatabaseManager implements LinkableDatabaseManager<Person> {
 	private static final Log log = LogFactory.getLog(PersonDatabaseManager.class);
 	private final static PersonDatabaseManager singleton = new PersonDatabaseManager();
 
@@ -967,6 +969,16 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForObject("getPersonForward", personId, String.class, session);
 	}
 
+	@Override
+	public Integer getIdForLinkable(final Person linkable, final DBSession session) {
+		final Person person = this.getPersonById(linkable.getPersonId(), session);
+		if (present(person)) {
+			return person.getPersonChangeId();
+		}
+
+		return null;
+	}
+
 	/**
 	 * @param personSearch
 	 *            the personSearch to set
@@ -974,5 +986,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	public void setPersonSearch(PersonSearch personSearch) {
 		this.personSearch = personSearch;
 	}
+
 
 }

@@ -33,6 +33,8 @@ import org.bibsonomy.common.enums.ProfilePrivlevel;
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 
 /**
+ * callback for {@link ProfilePrivlevel}
+ *
  * @author dzo
  */
 public class ProfilePrivlevelTypeHandlerCallback extends AbstractTypeHandlerCallback {

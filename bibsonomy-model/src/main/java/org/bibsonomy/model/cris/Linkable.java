@@ -5,4 +5,9 @@ package org.bibsonomy.model.cris;
  * @author dzo
  */
 public interface Linkable {
+
+	/**
+	 * @return the linkable id of the resource
+	 */
+	public String getLinkableId();
 }

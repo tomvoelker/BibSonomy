@@ -35,14 +35,16 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.metadata.PostMetaData;
+
 /**
  * A post connects a given resource with a user and a certain date.
  * 
  * @param <T>
  *            resource type
  */
-public class Post<T extends Resource> implements Serializable {
+public class Post<T extends Resource> implements Linkable, Serializable {
 
 	/**
 	 * For persistency (Serializable)
@@ -537,4 +539,8 @@ public class Post<T extends Resource> implements Serializable {
 		this.systemUrl = systemUrl;
 	}
 
+	@Override
+	public String getLinkableId() {
+		return this.resource.getInterHash();
+	}
 }

@@ -366,6 +366,11 @@ public class Person implements Linkable, Serializable {
 		this.homepage = homepage;
 	}
 
+	@Override
+	public String getLinkableId() {
+		return this.getPersonId();
+	}
+
 	/**
 	 * returns true if specific attributes are equal or at least null for one person
 	 * @param person
