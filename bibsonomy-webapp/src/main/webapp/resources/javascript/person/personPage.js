@@ -227,8 +227,8 @@ $(document).ready(function() {
 		}
 	});
 
-    // orcid formatter
-    $("#formResearcherid").mask("9-9999-9999", {
+    // researcher id formatter
+    $("#formResearcherid").mask("\a-9999-9999", {
         completed: function() {
             $(this).parent().parent().find(".personProfileUpdate").removeClass("disabled");
         }
