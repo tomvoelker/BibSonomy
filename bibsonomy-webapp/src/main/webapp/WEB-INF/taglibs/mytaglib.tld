@@ -471,29 +471,4 @@
 		<function-class>tags.Functions</function-class>
 		<function-signature>java.util.List reducedAuthorList(java.util.List, boolean)</function-signature>
 	</function>
-
-	<function>
-		<name>beatifyOrcid</name>
-		<function-class>tags.Functions</function-class>
-		<function-signature>java.lang.String beatifyOrcid(java.lang.String)</function-signature>
-	</function>
-
-	<function>
-		<name>callOrcidURL</name>
-		<function-class>tags.Functions</function-class>
-		<function-signature>java.lang.String callOrcidURL(java.lang.String)</function-signature>
-	</function>
-
-	<function>
-		<name>beatifyResearcherid</name>
-		<function-class>tags.Functions</function-class>
-		<function-signature>java.lang.String beatifyResearcherid(java.lang.String)</function-signature>
-	</function>
-
-	<function>
-		<name>callResearcheridURL</name>
-		<function-class>tags.Functions</function-class>
-		<function-signature>java.lang.String callResearcheridURL(java.lang.String)</function-signature>
-	</function>
-
 </taglib>

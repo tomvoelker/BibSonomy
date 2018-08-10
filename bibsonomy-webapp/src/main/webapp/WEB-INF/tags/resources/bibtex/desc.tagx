@@ -9,6 +9,7 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="false" />
 	<jsp:directive.attribute name="linebreakAfterAuthors" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="publishedIn" type="org.bibsonomy.model.BibTex" required="false" />
+	<jsp:directive.attribute name="isWholeAuthorList" type="java.lang.Boolean" required="false" />
 	
 	<c:if test="${empty linebreakAfterAuthors}">
 		<c:set var="linebreakAfterAuthors" value="${false}" />
@@ -16,7 +17,7 @@
 	
 	<c:choose>
 		<c:when test="${publication.entrytype eq 'article'}">
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}" post="${post}" isWholeAuthorList="${isWholeAuthorList}"/>
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>

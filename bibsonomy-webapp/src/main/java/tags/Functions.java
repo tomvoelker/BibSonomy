@@ -1049,11 +1049,9 @@ public class Functions {
 	 *
 	 * @return
 	 */
-	public static List<PersonName> reducedAuthorList(final List<PersonName> authors, boolean isExtended) {
-		int threshold = 15;
-		boolean test2 = isExtended && authors.size() < threshold;
-		boolean test = isExtended || authors.size() < threshold;
-		if (isExtended || authors.size() < threshold) {
+	public static List<PersonName> reducedAuthorList(final List<PersonName> authors, boolean isWhole) {
+		int threshold = 10;
+		if (isWhole || authors.size() < threshold) {
 			return authors;
 		}
 		List<PersonName> return_authors = new LinkedList<>();
@@ -1062,58 +1060,4 @@ public class Functions {
 		}
 		return return_authors;
 	}
-	
-	/**
-	 * Returns a formatted orcid
-	 * @param orcid
-	 * @return
-	 */
-	@Deprecated // remove; useless; can be done in a normal tagx file
-	public static String beatifyOrcid(String orcid) {
-		if (orcid.length() == 16) {
-			return orcid.substring(0, 4) + "-" + orcid.substring(4, 8) + "-" + orcid.substring(8, 12) + "-" + orcid.substring(12, 16);
-		}
-		return orcid;
-	}
-
-	/**
-	 * Returns orcid URL
-	 * @param orcid
-	 * @return
-	 */
-	@Deprecated // remove; useless; can be done in a normal tagx file
-	public static String callOrcidURL(String orcid) {
-		if (orcid.length() == 16) {
-			return "https://orcid.org/" + orcid.substring(0, 4) + "-" + orcid.substring(4, 8) + "-" + orcid.substring(8, 12) + "-" + orcid.substring(12, 16);
-		}
-		return orcid;
-	}
-
-
-	/**
-	 * Returns a formatted researcherid
-	 * @param researcherid
-	 * @return
-	 */
-	@Deprecated // remove; useless; can be done in a normal tagx file
-	public static String beatifyResearcherid(String researcherid) {
-		if (researcherid.length() == 9) {
-			return researcherid.substring(0, 1) + "-" + researcherid.substring(2, 5) + "-" + researcherid.substring(5, 9);
-		}
-		return researcherid;
-	}
-
-	/**
-	 * Returns researcherid URL
-	 * @param researcherid
-	 * @return
-	 */
-	@Deprecated // remove; useless; can be done in a normal tagx file
-	public static String callResearcheridURL(String researcherid) {
-		if (researcherid.length() == 9) {
-			return "https://orcid.org/eid/" + researcherid.substring(0, 1) + "-" + researcherid.substring(2, 5) + "-" + researcherid.substring(5, 9);
-		}
-		return researcherid;
-	}
-
 }
