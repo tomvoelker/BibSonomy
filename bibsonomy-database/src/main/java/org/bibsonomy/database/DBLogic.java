@@ -85,6 +85,7 @@ import org.bibsonomy.database.managers.AuthorDatabaseManager;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BibTexExtraDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
+import org.bibsonomy.database.managers.CRISLinkDatabaseManager;
 import org.bibsonomy.database.managers.ClipboardDatabaseManager;
 import org.bibsonomy.database.managers.CrudableContent;
 import org.bibsonomy.database.managers.DocumentDatabaseManager;
@@ -139,6 +140,7 @@ import org.bibsonomy.model.Review;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
+import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
@@ -216,6 +218,7 @@ public class DBLogic implements LogicInterface {
 	private final WikiDatabaseManager wikiDBManager;
 
 	private ProjectDatabaseManager projectDatabaseManager;
+	private CRISLinkDatabaseManager crisLinkDatabaseManager;
 
 	private final SynchronizationDatabaseManager syncDBManager;
 
@@ -735,7 +738,7 @@ public class DBLogic implements LogicInterface {
 
 		// check for systemTags disabling this resourceType
 		if (!systemTagsAllowResourceType(tags, resourceType)) {
-			return new ArrayList<Post<T>>();
+			return new ArrayList<>();
 		}
 		final DBSession session = this.openSession();
 		try {
@@ -1143,7 +1146,7 @@ public class DBLogic implements LogicInterface {
 		/*
 		 * to store hashes of missing resources
 		 */
-		final List<String> missingResources = new LinkedList<String>();
+		final List<String> missingResources = new LinkedList<>();
 
 		final DBSession session = this.openSession();
 		try {
@@ -3903,7 +3906,7 @@ public class DBLogic implements LogicInterface {
 
 	@Override
 	public JobResult updateProject(final String projectId, final Project project) {
-		this.permissionDBManager.ensureAdminAccess(this.getAuthenticatedUser());
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		try (final DBSession session = this.openSession()) {
 			return this.projectDatabaseManager.updateProject(projectId, project, this.loginUser, session);
 		}
@@ -3911,9 +3914,18 @@ public class DBLogic implements LogicInterface {
 
 	@Override
 	public JobResult deleteProject(String projectId) {
-		this.permissionDBManager.ensureAdminAccess(this.getAuthenticatedUser());
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		try (final DBSession session = this.openSession()) {
 			return this.projectDatabaseManager.deleteProject(projectId, this.loginUser, session);
+		}
+	}
+
+	@Override
+	public JobResult createCRISLink(CRISLink link) {
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
+
+		try (final DBSession session = this.openSession()) {
+			return this.crisLinkDatabaseManager.createCRISLink(link, this.loginUser, session);
 		}
 	}
 
@@ -3922,6 +3934,13 @@ public class DBLogic implements LogicInterface {
 	 */
 	public void setProjectDatabaseManager(ProjectDatabaseManager projectDatabaseManager) {
 		this.projectDatabaseManager = projectDatabaseManager;
+	}
+
+	/**
+	 * @param crisLinkDatabaseManager the crisLinkDatabaseManager to set
+	 */
+	public void setCrisLinkDatabaseManager(CRISLinkDatabaseManager crisLinkDatabaseManager) {
+		this.crisLinkDatabaseManager = crisLinkDatabaseManager;
 	}
 
 	/**

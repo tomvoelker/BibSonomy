@@ -70,6 +70,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
+import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
@@ -1020,6 +1021,11 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 
 	@Override
 	public JobResult deleteProject(String projectId) {
+		return null;
+	}
+
+	@Override
+	public JobResult createCRISLink(CRISLink link) {
 		return null;
 	}
 }

@@ -5,9 +5,7 @@
 -- module. It expects the existence of all tables; their create statements
 -- are found in src/main/resources/bibsonomy_db_schema.sql
 --
--- 
-
-
+--
 
 -- 
 -- Data for table `classifier_settings`
@@ -167,7 +165,7 @@ INSERT INTO `gold_standard` (`content_id`, `title`, `url`, `description`, `date`
 (1025, 'Universität Kassel', 'http://www.uni-kassel.de', 'Nordhessen', '2011-01-01 00:00:00', 'testuser1', '20592a292e53843965c1bb42bfd51876', 1);
 
 -- 
--- Data for insert into similar_persons (match_id, person1_id, person2_id, mode, item1_id, item2_id) values (0, "johirth.0", "johirth.1", "test", "01234567891011121314151617181920", "01234567891011121314151617181921");table `gold_standard_relations`
+-- Data for table `gold_standard_relations`
 -- 
 INSERT INTO `gold_standard_relations` (`publication`, `reference`, `user_name`, `date`, `relation_kind`) VALUES
 ('097248439469d8f5a1e7fad6b02cbfcd', 'ac6aa3ccb181e61801cefbc1401d409a', 'testuser1', '2008-03-20 16:24:55', '0'),
@@ -176,8 +174,7 @@ INSERT INTO `gold_standard_relations` (`publication`, `reference`, `user_name`, 
 
 -- 
 -- Data for table `bookmark`
--- 
-
+--
 INSERT INTO `bookmark` (`content_id`, `book_url_hash`, `book_description`, `book_extended`, `group`, `date`, `user_name`, `to_bib`, `change_date`, `rating`) VALUES
 (1, '6f372faea7ff92eedf52f597090a6291', 'test bookmark descripton', 'test bookmark extended',    3, '1815-12-10 00:00:00', 'testuser1', 0, '2008-01-18 10:17:10', 0),
 (2, '108eca7b644e2c5e09853619bc416ed0', 'Google',                   'bekannteste Suchmaschine',  0, '1815-12-10 00:00:00', 'testuser1', 0, '2008-01-18 10:34:17', 0),
@@ -204,7 +201,7 @@ INSERT INTO `collector` (`user_name`, `content_id`, `date`) VALUES
 ('testuser2', 14, '2008-06-18 14:33:22');
 
 
--- insert into similar_persons (match_id, person1_id, person2_id, mode, item1_id, item2_id) values (0, "johirth.0", "johirth.1", "test", "01234567891011121314151617181920", "01234567891011121314151617181921");
+--
 -- Data for table `document`
 -- 
 INSERT INTO `document` VALUES 
@@ -295,7 +292,8 @@ INSERT INTO `ids` VALUES
 (15, 4, 'comment_id'),
 (16, 12, 'sync_service_id'),
 (17, 7, 'person_change_id'),
-(18, 3, 'project_id');
+(18, 3, 'project_id'),
+(19, 2, 'cris_link_id');
 
 
 --
@@ -800,3 +798,7 @@ INSERT INTO `projects` (`id`, `internal_id`, `project_id`, `title`, `subtitle`, 
 VALUES
 	(1, '122323-2323', 'posts', 'PoSTs', NULL, NULL, '2018-07-31 00:17:56', '2019-07-31 00:26:16', 'DFG', 130000.45, null, '2018-07-31 00:17:56', 'testuser1'),
 	(2, '122323-2323', 'posts_ii', 'PoSTs II', NULL, NULL, '2018-09-29 00:17:56', '2018-07-31 00:26:16', 'DFG', 130000.45, 1, '2018-07-31 00:17:56', 'testuser1');
+
+INSERT INTO `cris_links` (`id`, `source_id`, `source_type`, `target_id`, `target_type`, `start_date`, `end_date`, `linktype_type`, `linktype_value`, `updated_by`, `updated_at`)
+VALUES
+	(1, 1, 3, 5, 2, '2018-07-31 00:17:56', '2019-07-31 00:26:16', 1, '2', 'testuser1', '2018-08-06 02:25:31');

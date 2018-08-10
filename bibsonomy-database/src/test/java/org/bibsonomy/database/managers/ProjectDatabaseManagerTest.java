@@ -28,7 +28,8 @@ import java.util.List;
  */
 public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
-	private static final String PROJECT_ID = "posts";
+	/** the project id */
+	public static final String PROJECT_ID = "posts";
 	private static final String TESTUSER_1_NAME = "testuser1";
 
 	private static ProjectDatabaseManager PROJECT_DATABASE_MANAGER;

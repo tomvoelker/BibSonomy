@@ -28,6 +28,7 @@
 	<typeHandler javaType="personNameList"        callback="org.bibsonomy.database.common.typehandler.PersonNameTypeHandlerCallback" />
 	<typeHandler javaType="goldStandardRelation"  callback="org.bibsonomy.database.common.typehandler.GoldStandardRelationTypeHandlerCallback"/>
 	<typeHandler javaType="personResourceRelationType"  callback="org.bibsonomy.database.common.typehandler.PersonResourceRelationTypeHandlerCallback" />
+	<typeHandler javaType="crisLinkType"          callback="org.bibsonomy.database.common.typehandler.CRISLinkTypeTypeHandlerCallback" />
 	
 	<sqlMap resource="common/Common.xml" />
 	<sqlMap resource="common/BookmarkCommon.xml" />
@@ -49,6 +50,7 @@
 	<sqlMap resource="common/ReviewCommon.xml" />
 	<sqlMap resource="common/PersonCommon.xml" />
 	<sqlMap resource="common/ProjectCommon.xml" />
+	<sqlMap resource="common/CRISLinkCommon.xml" />
 
 	<sqlMap resource="Synchronization.xml" />
 	<sqlMap resource="General.xml" />
@@ -75,6 +77,7 @@
 	<sqlMap resource="Wiki.xml" />
 	<sqlMap resource="Person.xml" />
 	<sqlMap resource="Project.xml" />
+	<sqlMap resource="CRISLink.xml" />
 
 	<!-- plugins -->
 	<sqlMap resource="plugins/Logging.xml" />

@@ -338,6 +338,21 @@
 		<property name="validator" ref="projectValidator" />
 		<property name="chain" ref="projectChain" />
 	</bean>
+
+	<bean id="crisLinkDatabaseManger" class="org.bibsonomy.database.managers.CRISLinkDatabaseManager">
+		<property name="generalDatabaseManager" ref="generalDatabaseManager" />
+		<property name="crisManagers">
+			<map>
+				<entry key-ref="projectClass" value-ref="projectDatabaseManager" />
+				<entry key-ref="personClass" value-ref="personDatabaseManager" />
+			</map>
+		</property>
+		<property name="checkers">
+			<list>
+				<bean class="org.bibsonomy.database.managers.util.cris.ProjectPersonLinkDirectionChecker" />
+			</list>
+		</property>
+	</bean>
 	
 	<bean id="databasePluginManager" class="org.bibsonomy.database.plugin.DatabasePluginRegistry" factory-method="getInstance">
 		<property name="defaultPlugins">

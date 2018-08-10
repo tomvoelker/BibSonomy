@@ -30,7 +30,7 @@ import java.util.List;
  *
  * @author dzo
  */
-public class ProjectDatabaseManager extends AbstractDatabaseManager implements StatisticsProvider<ProjectQuery> {
+public class ProjectDatabaseManager extends AbstractDatabaseManager implements StatisticsProvider<ProjectQuery>, LinkableDatabaseManager<Project> {
 
 	/** used to get a new project id */
 	private GeneralDatabaseManager generalDatabaseManager;
@@ -275,6 +275,16 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 		final ProjectParam projectParam = new ProjectParam();
 		projectParam.setProjectStatus(projectStatus);
 		return this.queryForObject("getAllProjectStatistics", projectParam, Statistics.class, session);
+	}
+
+	@Override
+	public Integer getIdForLinkable(Project linkable, DBSession session) {
+		final Project project = this.getProjectDetails(linkable.getExternalId(), true, session);
+		if (present(project)) {
+			return project.getId();
+		}
+
+		return null;
 	}
 
 	/**
