@@ -33,16 +33,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
@@ -52,16 +43,7 @@ import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.database.systemstags.markup.ReportedSystemTag;
-import org.bibsonomy.model.Author;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.DiscussionItem;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.EndnoteUtils;
@@ -89,6 +71,8 @@ import org.pegdown.PegDownProcessor;
 import com.google.caja.util.Sets;
 import com.sksamuel.diffpatch.DiffMatchPatch;
 import com.sksamuel.diffpatch.DiffMatchPatch.Diff;
+
+import javax.swing.text.html.HTMLDocument;
 
 /**
  * TODO: move to org.bibsonomy.webapp.util.tags package
@@ -1059,6 +1043,24 @@ public class Functions {
 			log.error("error while checking for same host", e);
 		}
 		return false;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public static List<PersonName> reducedAuthorList(final List<PersonName> authors, boolean isExtended) {
+		int threshold = 15;
+		boolean test2 = isExtended && authors.size() < threshold;
+		boolean test = isExtended || authors.size() < threshold;
+		if (isExtended || authors.size() < threshold) {
+			return authors;
+		}
+		List<PersonName> return_authors = new LinkedList<>();
+		for (int i = 0; i <= threshold; i ++) {
+			return_authors.add(authors.get(i));
+		}
+		return return_authors;
 	}
 	
 	/**

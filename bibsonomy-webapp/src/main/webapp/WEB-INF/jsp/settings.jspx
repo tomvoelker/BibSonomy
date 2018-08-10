@@ -117,7 +117,7 @@
 			<sidebar:sidebarItem textKey="friends.yourfriends">
 				<jsp:attribute name="content">
 					<span class="friends-of-user">
-						<ul class="more-list">
+						<ul class="">
 							<c:forEach var="user" items="${command.friendsOfUser}">
 								<li>
 									<user:username user="${user}" />

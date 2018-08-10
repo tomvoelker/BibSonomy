@@ -343,25 +343,25 @@
 	<function>
 		<name>shortPublicationDescription</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String shortPublicationDescription(org.bibsonomy.model.Post)</function-signature>
+		<function-signature>java.lang.String shortPublicationDescription(org.bibsonomy.model.Post)</function-signature>
 	</function>
 
 	<function>
 		<name>shorten</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String shorten(java.lang.String, java.lang.Integer)</function-signature>
+		<function-signature>java.lang.String shorten(java.lang.String, java.lang.Integer)</function-signature>
 	</function>
 
 	<function>
 		<name>toBibtexString</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String toBibtexString(org.bibsonomy.model.Post, java.lang.String, java.lang.Boolean, java.lang.Boolean)</function-signature>
+		<function-signature>java.lang.String toBibtexString(org.bibsonomy.model.Post, java.lang.String, java.lang.Boolean, java.lang.Boolean)</function-signature>
 	</function>
 
 	<function>
 		<name>toEndnoteString</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String toEndnoteString(org.bibsonomy.model.Post, java.lang.Boolean)</function-signature>
+		<function-signature>java.lang.String toEndnoteString(org.bibsonomy.model.Post, java.lang.Boolean)</function-signature>
 	</function>
 
 	<function>
@@ -373,25 +373,25 @@
 	<function>
 		<name>toggleUserSimilarity</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String toggleUserSimilarity(java.lang.String)</function-signature>
+		<function-signature>java.lang.String toggleUserSimilarity(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<name>extractDOI</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String extractDOI(java.lang.String)</function-signature>
+		<function-signature>java.lang.String extractDOI(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<name>getErrorHint</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String getErrorHint(java.lang.String)</function-signature>
+		<function-signature>java.lang.String getErrorHint(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<name>removeInvalidXmlChars</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String removeInvalidXmlChars(java.lang.String)</function-signature>
+		<function-signature>java.lang.String removeInvalidXmlChars(java.lang.String)</function-signature>
 	</function>
 
 	<function>
@@ -409,31 +409,31 @@
 	<function>
 		<name>getDate</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String getDate(java.lang.String, java.lang.String, java.lang.String, java.util.Locale)</function-signature>
+		<function-signature>java.lang.String getDate(java.lang.String, java.lang.String, java.lang.String, java.util.Locale)</function-signature>
 	</function>
 
 	<function>
 		<name>formatDateISO8601</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String formatDateISO8601(java.util.Date)</function-signature>
+		<function-signature>java.lang.String formatDateISO8601(java.util.Date)</function-signature>
 	</function>
 	
 	<function>
 		<name>formatDateW3CDTF</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String formatDateW3CDTF(java.util.Date)</function-signature>
+		<function-signature>java.lang.String formatDateW3CDTF(java.util.Date)</function-signature>
 	</function>
 
 	<function>
 		<name>formatDateMemento</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String formatDateMemento(java.util.Date)</function-signature>
+		<function-signature>java.lang.String formatDateMemento(java.util.Date)</function-signature>
 	</function>
 
 	<function>
 		<name>formatDateRFC1123</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String formatDateRFC1123(java.util.Date)</function-signature>
+		<function-signature>java.lang.String formatDateRFC1123(java.util.Date)</function-signature>
 	</function>
 	
 	<function>
@@ -467,27 +467,33 @@
 	</function>
 
 	<function>
+		<name>reducedAuthorList</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>java.util.List reducedAuthorList(java.util.List, boolean)</function-signature>
+	</function>
+
+	<function>
 		<name>beatifyOrcid</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String beatifyOrcid(java.lang.String)</function-signature>
+		<function-signature>java.lang.String beatifyOrcid(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<name>callOrcidURL</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String callOrcidURL(java.lang.String)</function-signature>
+		<function-signature>java.lang.String callOrcidURL(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<name>beatifyResearcherid</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String beatifyResearcherid(java.lang.String)</function-signature>
+		<function-signature>java.lang.String beatifyResearcherid(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<name>callResearcheridURL</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String callResearcheridURL(java.lang.String)</function-signature>
+		<function-signature>java.lang.String callResearcheridURL(java.lang.String)</function-signature>
 	</function>
 
 </taglib>
