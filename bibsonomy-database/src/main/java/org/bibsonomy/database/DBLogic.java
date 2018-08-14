@@ -2404,8 +2404,8 @@ public class DBLogic implements LogicInterface {
 	 *         in both queries getConceptForUser and getGlobalConceptByName
 	 *         the case of parameter conceptName is ignored
 	 *
-	 * @see org.bibsonomy.model.logic.LogicInterface#getConceptDetails(java.lang.
-	 *      String, org.bibsonomy.common.enums.GroupingEntity, java.lang.String)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getConceptDetails(java.lang.String,
+	 * org.bibsonomy.common.enums.GroupingEntity, java.lang.String)
 	 */
 	@Override
 	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {

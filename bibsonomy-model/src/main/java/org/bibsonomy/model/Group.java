@@ -432,7 +432,7 @@ public class Group implements Serializable {
 		this.pendingMemberships = pendingMemberships;
 	}
 	
-	// TODO: move to utils class
+	// TODO: move to utils class, remove all dependencies
 	public GroupMembership getGroupMembershipForUser(String username) {
 		for (GroupMembership g : this.getMemberships()) {
 			if (g.getUser().getName().equals(username)) {

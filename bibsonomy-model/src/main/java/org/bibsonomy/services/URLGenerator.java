@@ -115,6 +115,8 @@ public class URLGenerator {
 	private static final String FRIEND_PREFIX = "friend";
 	private static final String GROUPS = "groups";
 	private static final String GROUP_PREFIX = "group";
+	private static final String PROJECTS = "projects";
+	private static final String PROJECT_PREFIX = "project";
 	private static final String LOGIN_PREFIX = "login";
 	private static final String LAYOUT_PREFIX = "layout";
 	private static final String ENDNOTE_PREFIX = "endnote";
@@ -715,6 +717,36 @@ public class URLGenerator {
 	public String getGroupUrlByGroupNameAndTagName(final String groupName, final String tagName) {
 		final String url = this.getGroupUrlString(groupName) + "/" + UrlUtils.encodePathSegment(tagName);
 		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL for the projects page
+	 *
+	 * @return URL pointing to the projects page
+	 */
+
+	public String getProjectsUrl() {
+		final String url = this.projectHome + PROJECTS;
+		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL for the project's page.
+	 *
+	 * @param projectName
+	 * @return The URL for the project's page.
+	 */
+	public String getProjectUrlByProjectName(final String projectName) {
+		final String url = this.getProjectUrlString(projectName);
+		return this.getUrl(url);
+	}
+
+	/**
+	 * @param projectName
+	 * @return
+	 */
+	private String getProjectUrlString(final String projectName) {
+		return this.projectHome + PROJECT_PREFIX + "/" + UrlUtils.encodePathSegment(projectName);
 	}
 
 	/**

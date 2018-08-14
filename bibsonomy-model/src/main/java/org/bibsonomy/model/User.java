@@ -40,6 +40,7 @@ import java.util.Set;
 import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.RemoteUserNameSpace;
 import org.bibsonomy.model.util.file.UploadedFile;
@@ -163,6 +164,10 @@ public class User implements Serializable {
 	 * The user belongs to these groups.
 	 */
 	private List<Group> groups;
+	/**
+	 * The user belongs to the following projects
+	 */
+	private List<Project> projects;
 	/**
 	 * 
 	 */
@@ -371,6 +376,23 @@ public class User implements Serializable {
 	 */
 	public void setGroups(final List<Group> groups) {
 		this.groups = groups;
+	}
+
+	/**
+	 * @return projects
+	 */
+	public List<Project> getProjects() {
+		if (this.projects == null) {
+			this.projects = new LinkedList<Project>();
+		}
+		return this.projects;
+	}
+
+	/**
+	 * @param projects
+	 */
+	public void setProjects(final List<Project> projects) {
+		this.projects= projects;
 	}
 
 	public List<Group> getPendingGroups() {
