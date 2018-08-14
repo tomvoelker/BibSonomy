@@ -89,10 +89,10 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param person
 	 * @param session
 	 */
-	public void createPerson(final Person person, final DBSession session) {
+	public String createPerson(final Person person, final DBSession session) {
 		session.beginTransaction();
-		final String tempPersonId = this.generatePersonId(person, session);
-		person.setPersonId(tempPersonId);
+		final String generatedPersonId = this.generatePersonId(person, session);
+		person.setPersonId(generatedPersonId);
 		try {
 			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("insertPerson", person, session);
@@ -100,12 +100,13 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 		} finally {
 			session.endTransaction();
 		}
+		return generatedPersonId;
 	}
 
 	/**
 	 * Generates a unique person ID (used for speaking URL) Concatinates the
 	 * name and a counter variable
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 * @return
@@ -135,7 +136,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Returns a Person identified by it's linked username or null if the given
 	 * User has not claimed a Person so far
-	 * 
+	 *
 	 * @param user
 	 * @param session
 	 * @return Person
@@ -146,7 +147,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns a Person identified by it's unique ID
-	 * 
+	 *
 	 * @param id
 	 * @param session
 	 * @return Person
@@ -157,7 +158,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns a Person identified by it's unique DNB ID
-	 * 
+	 *
 	 * @param dnbId
 	 * @param session
 	 * @return Person
@@ -168,7 +169,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Creates a new name and adds it to the specified Person
-	 * 
+	 *
 	 * @param name
 	 * @param session
 	 */
@@ -185,7 +186,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Updates all fields of a given Person
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 */
@@ -203,7 +204,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Updates all fields of a given Person in the database
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 */
@@ -221,7 +222,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Update the OrcID of a Person
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 */
@@ -239,7 +240,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Update the academic degree of a Person
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 */
@@ -257,7 +258,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Update the College of a Person
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 */
@@ -275,7 +276,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Update the Email of a Person
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 */
@@ -293,7 +294,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Update the Homepage of a Person
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 */
@@ -481,7 +482,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param personID
 	 * @return a list of all matches
 	 */
@@ -490,8 +491,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * 
-	 * @param personID
+	 *
+	 * @param personid
 	 * @return a list of all matches for a person
 	 */
 	public List<PersonMatch> getMatchesFor(String personid, DBSession session) {
@@ -501,7 +502,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * checks if a two persons can be merged on different attributes and their
 	 * phd/habil
-	 * 
+	 *
 	 * @param match
 	 * @return true if no field is different
 	 */
@@ -540,7 +541,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Person pubs will be redirected to person 1 and the change is logged
-	 * 
+	 *
 	 * @param loginUser
 	 * @param match
 	 * @param session
@@ -562,7 +563,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Person aliases will be merged
-	 * 
+	 *
 	 * @param loginUser
 	 * @param match
 	 * @param session
@@ -592,11 +593,11 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * This method will merge two persons, if there are no conflicts The person
 	 * resource relation will be changed Name aliases will be added
-	 * 
+	 *
 	 * @param match
 	 * @param loginUser
 	 * @param session
-	 * 
+	 *
 	 * @return true if the merge was successful
 	 */
 	public boolean mergeSimilarPersons(PersonMatch match, String loginUser, DBSession session) {
@@ -617,7 +618,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * This method will merge two persons, if there are no conflicts The person
 	 * resource relation will be changed Name aliases will be added
-	 * 
+	 *
 	 * @param match
 	 * @param loginUser
 	 * @param session
@@ -646,7 +647,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * updates all attributes for person1 for a conflict merge updates both
 	 * persons because the need to be compared later with mergeable
-	 * 
+	 *
 	 * @param match
 	 * @param session
 	 */
@@ -691,7 +692,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * duplicate matches can occur after a merge was performed, because the
 	 * match list is a transitive closure duplicates will be combined
-	 * 
+	 *
 	 * @param personId
 	 * @param session
 	 */
@@ -731,11 +732,11 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * updates all attributes for person1 for a non conflict merge
-	 * 
+	 *
 	 * @param person1
 	 * @param person2
 	 * @return true if an attributes was updated
-	 * 
+	 *
 	 */
 	private boolean combinePersonsAttributes(Person person1, Person person2) {
 		boolean edit = false;
@@ -785,7 +786,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param session
 	 * @param personID
 	 * @return all matches for a person
@@ -796,7 +797,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * filters the matches such that matches the user denied wont be displayed
-	 * 
+	 *
 	 * @param session
 	 * @param personID
 	 * @return
@@ -810,7 +811,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * performs a merge and resolves its conflicts
-	 * 
+	 *
 	 * @param session
 	 * @param formMatchId
 	 * @param map
@@ -863,7 +864,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param fields
 	 * @return true if only valid fieldNames are in fields
 	 */
@@ -883,7 +884,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * set new mainName to person due to a conflict merge
-	 * 
+	 *
 	 * @param person
 	 * @param newName
 	 * @param session
@@ -931,7 +932,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * tests if the merge can be performed without a conflict on user claims
-	 * 
+	 *
 	 * @param match
 	 * @param loginUser
 	 */

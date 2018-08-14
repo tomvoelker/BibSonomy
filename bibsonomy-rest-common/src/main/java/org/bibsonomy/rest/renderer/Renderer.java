@@ -32,12 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.model.Document;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.data.DataAccessor;
@@ -110,6 +105,22 @@ public interface Renderer {
 	 *            the {@link ViewModel} encapsulates additional information,
 	 */
 	public void serializeUser(Writer writer, User user, ViewModel viewModel);
+
+	/**
+	 * Serializes a personid
+	 *
+	 * @param writer   the {@link Writer} to use.
+	 * @param personId the personId to send
+	 */
+	void serializePersonId(Writer writer, String personId);
+
+	/**
+	 * Serializes a resource person relation id
+	 *
+	 * @param writer     the {@link Writer} to use.
+	 * @param relationId the relationId to send
+	 */
+	void serializeResourcePersonRelationId(Writer writer, String relationId);
 
 	/**
 	 * Serializes a {@link List} of {@link Tag}s.
@@ -336,6 +347,28 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public User parseUser(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads one {@link Person} from a {@link Reader}.
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return one {@link Person} object.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	Person parsePerson(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads one {@link ResourcePersonRelation} from a {@link Reader}.
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return one {@link ResourcePersonRelation} object.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	ResourcePersonRelation parseResourcePersonRelation(Reader reader) throws BadRequestOrResponseException;
 
 	/**
 	 * Reads a List of {@link Post}s from a {@link Reader}.

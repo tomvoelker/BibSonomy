@@ -803,8 +803,9 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
 	 */
 	@Override
-	public void createOrUpdatePerson(Person person) {
+	public String createOrUpdatePerson(Person person) {
 		throwReadOnlyException();
+		return null;
 	}
 	
 	/*

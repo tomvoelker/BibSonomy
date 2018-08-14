@@ -2398,8 +2398,8 @@ public class DBLogic implements LogicInterface {
 	 *         in both queries getConceptForUser and getGlobalConceptByName
 	 *         the case of parameter conceptName is ignored
 	 *
-	 * @see org.bibsonomy.model.logic.LogicInterface#getConceptDetails(java.lang.
-	 *      String, org.bibsonomy.common.enums.GroupingEntity, java.lang.String)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getConceptDetails(java.lang.String,
+     * org.bibsonomy.common.enums.GroupingEntity, java.lang.String)
 	 */
 	@Override
 	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {
@@ -3499,17 +3499,14 @@ public class DBLogic implements LogicInterface {
 	 * FIXME TODO integrate into maincreateOrUpdatePerson 
 	 */
 	@Override
-	public void createOrUpdatePerson(final Person person) {
+	public String createOrUpdatePerson(final Person person) {
 		this.ensureLoggedInAndNoSpammer();
-		final DBSession session = this.openSession();
-		try {
-			this.createOrUpdatePerson(person, session);
-		} finally {
-			session.close();
-		}
+        try (DBSession session = this.openSession()) {
+            return createOrUpdatePerson(person, session);
+        }
 	}
 
-	private void createOrUpdatePerson(final Person person, final DBSession session) {
+	private String createOrUpdatePerson(final Person person, final DBSession session) {
 		this.ensureLoggedInAndNoSpammer();
 		if (person.getUser() != null) {
 			if (!person.getUser().equals(this.loginUser.getName())) {
@@ -3520,7 +3517,7 @@ public class DBLogic implements LogicInterface {
 				if (personOld == null) {
 					throw new NoSuchElementException("person " + person.getPersonId());
 				}
-				if (personOld.getUser() != null && personOld.getUser().equals(this.loginUser.getName()) == false) {
+				if (personOld.getUser() != null && !personOld.getUser().equals(this.loginUser.getName())) {
 					throw new AccessDeniedException();
 				}
 			}
@@ -3534,6 +3531,7 @@ public class DBLogic implements LogicInterface {
 			this.personDBManager.createPerson(person, session);
 		}
 		this.updatePersonNames(person, session);
+		return person.getPersonId();
 	}
 
 	private void updatePersonNames(final Person person, final DBSession session) {

@@ -53,10 +53,10 @@ public interface PersonLogicInterface {
 
 	/**
 	 * sets id for new persons
-	 * 
-	 * @param person the person to be saved or updated
-	 */
-	public void createOrUpdatePerson(Person person);
+	 *
+     * @param person the person to be saved or updated
+     */
+	public String createOrUpdatePerson(Person person);
 	
 	public Person getPersonById(PersonIdType idType, String id);
 	

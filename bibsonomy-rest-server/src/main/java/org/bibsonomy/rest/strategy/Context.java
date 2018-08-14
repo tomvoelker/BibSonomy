@@ -56,10 +56,11 @@ import org.bibsonomy.services.filesystem.FileLogic;
  */
 public final class Context {
 
-	private static final Map<String, ContextHandler> urlHandlers = new HashMap<String, ContextHandler>();
+	private static final Map<String, ContextHandler> urlHandlers = new HashMap<>();
 
 	static {
 		Context.urlHandlers.put(RESTConfig.TAGS_URL, new TagsHandler());
+        Context.urlHandlers.put(RESTConfig.PERSONS_URL, new PersonsHandler());
 		Context.urlHandlers.put(RESTConfig.USERS_URL, new UsersHandler());
 		Context.urlHandlers.put(RESTConfig.GROUPS_URL, new GroupsHandler());
 		Context.urlHandlers.put(RESTConfig.POSTS_URL, new PostsHandler());
@@ -186,7 +187,7 @@ public final class Context {
 	 * @param outStream
 	 * @throws InternServerException
 	 * @throws ResourceMovedException 
-	 * @throws ResourceNotFoundException 
+	 * @throws ObjectNotFoundException
 	 * @throws NoSuchResourceException 
 	 */
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ObjectNotFoundException, ResourceMovedException {

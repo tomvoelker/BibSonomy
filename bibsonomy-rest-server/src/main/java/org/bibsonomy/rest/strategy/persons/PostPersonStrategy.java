@@ -23,6 +23,6 @@ public class PostPersonStrategy extends AbstractCreateStrategy {
     @Override
     protected String create() {
         final Person person = getRenderer().parsePerson(doc);
-        return getLogic().createPerson(person);
+        return getLogic().createOrUpdatePerson(person);
     }
 }
