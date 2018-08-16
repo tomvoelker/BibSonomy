@@ -35,13 +35,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -51,18 +45,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Document;
-import org.bibsonomy.model.GoldStandard;
-import org.bibsonomy.model.GoldStandardPublication;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.GroupMembership;
-import org.bibsonomy.model.ImportResource;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.sync.SynchronizationAction;
@@ -77,33 +60,7 @@ import org.bibsonomy.model.util.data.DataAccessor;
 import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.renderer.xml.AbstractPublicationType;
-import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
-import org.bibsonomy.rest.renderer.xml.BibtexType;
-import org.bibsonomy.rest.renderer.xml.BookmarkType;
-import org.bibsonomy.rest.renderer.xml.DocumentType;
-import org.bibsonomy.rest.renderer.xml.DocumentsType;
-import org.bibsonomy.rest.renderer.xml.ExtraUrlType;
-import org.bibsonomy.rest.renderer.xml.ExtraUrlsType;
-import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
-import org.bibsonomy.rest.renderer.xml.GroupType;
-import org.bibsonomy.rest.renderer.xml.GroupsType;
-import org.bibsonomy.rest.renderer.xml.PostType;
-import org.bibsonomy.rest.renderer.xml.PostsType;
-import org.bibsonomy.rest.renderer.xml.PublicationType;
-import org.bibsonomy.rest.renderer.xml.PublicationsType;
-import org.bibsonomy.rest.renderer.xml.PublishedInType;
-import org.bibsonomy.rest.renderer.xml.ReferenceType;
-import org.bibsonomy.rest.renderer.xml.ReferencesType;
-import org.bibsonomy.rest.renderer.xml.StatType;
-import org.bibsonomy.rest.renderer.xml.SyncDataType;
-import org.bibsonomy.rest.renderer.xml.SyncPostType;
-import org.bibsonomy.rest.renderer.xml.SyncPostsType;
-import org.bibsonomy.rest.renderer.xml.TagType;
-import org.bibsonomy.rest.renderer.xml.TagsType;
-import org.bibsonomy.rest.renderer.xml.UploadDataType;
-import org.bibsonomy.rest.renderer.xml.UserType;
-import org.bibsonomy.rest.renderer.xml.UsersType;
+import org.bibsonomy.rest.renderer.xml.*;
 import org.bibsonomy.rest.validation.StandardXMLModelValidator;
 import org.bibsonomy.rest.validation.XMLModelValidator;
 import org.bibsonomy.util.ValidationUtils;
@@ -430,7 +387,7 @@ public abstract class AbstractRenderer implements Renderer {
 	public void serializeUser(final Writer writer, final User user, final ViewModel viewModel) throws InternServerException {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
-		xmlDoc.setUser(this.createXmlUser(user));
+		xmlDoc.setUser(createXmlUser(user));
 		this.serialize(writer, xmlDoc);
 	}
 
@@ -472,6 +429,56 @@ public abstract class AbstractRenderer implements Renderer {
 			xmlUser.getGroups().setEnd(BigInteger.valueOf(groups.size()));
 		}
 		return xmlUser;
+	}
+
+	private BibsonomyXML getDummyBibsonomyXMLWithOK() {
+		return getDummyBibsonomyXML(StatType.OK);
+	}
+
+	private BibsonomyXML getDummyBibsonomyXML(StatType statType) {
+		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(statType);
+		return xmlDoc;
+	}
+
+	@Override
+	public void serializePerson(Writer writer, Person person, ViewModel viewModel) {
+		final BibsonomyXML xmlDoc = getDummyBibsonomyXMLWithOK();
+		xmlDoc.setPerson(createXmlPerson(person));
+		serialize(writer, xmlDoc);
+	}
+
+	private PersonType createXmlPerson(Person person) throws InternServerException{
+		final PersonType xmlPerson = new PersonType();
+		if (person.getAcademicDegree() != null)
+			xmlPerson.setAcademicDegree(person.getAcademicDegree());
+		if (person.getCollege() != null)
+			xmlPerson.setCollege(person.getCollege());
+		if (person.getPersonId() != null)
+			xmlPerson.setPersonId(person.getPersonId());
+		xmlPerson.setMainName(createXmlPersonName(person.getMainName()));
+		return xmlPerson;
+	}
+
+	private PersonNameType createXmlPersonName(PersonName personName) {
+		final PersonNameType xmlName = new PersonNameType();
+		xmlName.setFirstName(personName.getFirstName());
+		xmlName.setLastName(personName.getLastName());
+		return xmlName;
+	}
+
+	@Override
+	public void serializeResourcePersonRelation(Writer writer, ResourcePersonRelation resourcePersonRelation, ViewModel viewModel) {
+		final BibsonomyXML xmlDoc = getDummyBibsonomyXMLWithOK();
+		xmlDoc.setResourcePersonRelation(createXmlResourcePersonRelation(resourcePersonRelation));
+		serialize(writer, xmlDoc);
+	}
+
+	private ResourcePersonRelationType createXmlResourcePersonRelation(ResourcePersonRelation resourcePersonRelation) {
+		final ResourcePersonRelationType xmlResourcePersonRelation = new ResourcePersonRelationType();
+		xmlResourcePersonRelation.setPerson(createXmlPerson(resourcePersonRelation.getPerson()));
+		xmlResourcePersonRelation.setResource(createXmlPost(resourcePersonRelation.getPost()));
+		return xmlResourcePersonRelation;
 	}
 
 	@Override
@@ -645,6 +652,16 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	@Override
+	public void serializePersonId(Writer writer, String personId) {
+
+	}
+
+	@Override
+	public void serializeResourcePersonRelationId(Writer writer, String resourceId) {
+
+	}
+
+	@Override
 	public void serializeURI(final Writer writer, final String uri) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
@@ -762,6 +779,16 @@ public abstract class AbstractRenderer implements Renderer {
 			throw new BadRequestOrResponseException(xmlDoc.getError());
 		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no user defined.");
+	}
+
+	@Override
+	public Person parsePerson(Reader reader) {
+		return null;
+	}
+
+	@Override
+	public ResourcePersonRelation parseResourcePersonRelation(Reader reader) {
+		return null;
 	}
 
 	@Override

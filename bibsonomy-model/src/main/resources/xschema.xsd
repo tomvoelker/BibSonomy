@@ -50,6 +50,8 @@
 				<xsd:element name="bookmark" type="BookmarkType" />
 				<xsd:element name="bibtex" type="BibtexType" />
 				<xsd:element name="document" type="DocumentType" />
+				<xsd:element name="person" type="PersonType" />
+                <xsd:element name="resourcePersonRelation" type="ResourcePersonRelationType" />
 				<!-- error -->
 				<xsd:element name="error" type="xsd:string" />
 				<!-- hashes to return when creating / updating resources -->
@@ -61,8 +63,8 @@
 				<xsd:element name="uri" type="xsd:anyURI" />
 				<!-- gold standard references -->
 				<xsd:element name="references" type="ReferencesType" />
-				<xsd:element name="syncPosts" type="SyncPostsType"></xsd:element>
-				<xsd:element name="syncData" type="SyncDataType"></xsd:element>
+				<xsd:element name="syncPosts" type="SyncPostsType" />
+				<xsd:element name="syncData" type="SyncDataType" />
 			</xsd:choice>
 
 		</xsd:sequence>
@@ -111,7 +113,7 @@
 
 		<!-- link to details page -->
 		<xsd:attribute name="href" type="xsd:anyURI" />
-		<xsd:attribute name="confidence" type="xsd:double"></xsd:attribute>
+		<xsd:attribute name="confidence" type="xsd:double" />
 	</xsd:complexType>
 
 	<!--
@@ -214,7 +216,26 @@
 	<xsd:complexType name="UploadDataType">
 		<xsd:attribute name="multipartName" use="required" type="xsd:string" />
 	</xsd:complexType>
-	
+
+	<!--
+    	a main name
+	-->
+	<xsd:complexType name="PersonNameType">
+		<xsd:attribute name="firstName" type="xsd:string" />
+		<xsd:attribute name="lastName" type="xsd:string" />
+	</xsd:complexType>
+
+	<!--
+    	a person
+	-->
+	<xsd:complexType name="PersonType">
+		<xsd:sequence>
+			<xsd:element name="mainName" type="PersonNameType" maxOccurs="1" minOccurs="1"/>
+		</xsd:sequence>
+		<xsd:attribute name="college" type="xsd:string" />
+		<xsd:attribute name="academicDegree" type="xsd:string" />
+		<xsd:attribute name="personId" type="xsd:string" />
+	</xsd:complexType>
 	
 	<!-- 
 		list of Documents
@@ -439,4 +460,11 @@
 			<xsd:element name="syncPost" type="SyncPostType" maxOccurs="unbounded" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
+
+    <xsd:complexType name="ResourcePersonRelationType">
+        <xsd:sequence>
+            <xsd:element name="person" type="PersonType" />
+            <xsd:element name="resource" type="PostType" />
+        </xsd:sequence>
+    </xsd:complexType>
 </xsd:schema>

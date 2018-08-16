@@ -39,12 +39,7 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
 import org.bibsonomy.layout.jabref.JabRefConfig;
-import org.bibsonomy.model.Document;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.data.DataAccessor;
@@ -155,6 +150,36 @@ public class JabrefLayoutRenderer implements Renderer {
 	}
 
 	@Override
+	public Person parsePerson(final Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializePerson(Writer writer, Person person, ViewModel viewModel) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializeResourcePersonRelation(Writer writer, ResourcePersonRelation resourcePersonRelation, ViewModel viewModel) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializePersonId(Writer writer, String personId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializeResourcePersonRelationId(Writer writer, String relationId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public ResourcePersonRelation parseResourcePersonRelation(Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public String parseUserId(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
@@ -208,9 +233,7 @@ public class JabrefLayoutRenderer implements Renderer {
 		try {
 			writer.append(renderer.renderLayout(layout, posts, embeddedLayout));
 			writer.flush();
-		} catch (final LayoutRenderingException ex) {
-			throw new InternServerException(ex);
-		} catch (final IOException ex) {
+		} catch (final LayoutRenderingException | IOException ex) {
 			throw new InternServerException(ex);
 		}
 	}

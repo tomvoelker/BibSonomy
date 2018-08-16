@@ -392,6 +392,15 @@ public class UrlRenderer {
 		return builder;
 	}
 
+	public UrlBuilder createUrlBuilderForPersons() {
+		return createUrlBuilderForApi().addPathElement(RESTConfig.PERSONS_URL);
+	}
+
+	public UrlBuilder createUrlBuilderForResourcePersonRelations(String personId) {
+		return createUrlBuilderForApi().addPathElement(RESTConfig.PERSONS_URL)
+				.addPathElement(personId).addPathElement(RESTConfig.RELATION_PARAM);
+	}
+
 	/**
 	 * @param groupName
 	 * @param userName
@@ -477,8 +486,6 @@ public class UrlRenderer {
 	/**
 	 * @param username
 	 * @param relation
-	 * @param start
-	 * @param end
 	 * @return the users friends
 	 */
 	public String createHrefForUserRelationship(final String username, final String relation, final String tag) {

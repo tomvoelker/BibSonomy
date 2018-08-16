@@ -27,6 +27,7 @@
 package org.bibsonomy.rest.renderer;
 
 import java.io.Reader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
 import java.util.Set;
@@ -105,6 +106,30 @@ public interface Renderer {
 	 *            the {@link ViewModel} encapsulates additional information,
 	 */
 	public void serializeUser(Writer writer, User user, ViewModel viewModel);
+
+	/**
+	 * Serializes one {@link Person}.
+	 *
+	 * @param writer
+	 *            a {@link Writer} to use.
+	 * @param person
+	 *            one {@link Person} object.
+	 * @param viewModel
+	 *            the {@link ViewModel} encapsulates additional information,
+	 */
+	void serializePerson(Writer writer, Person person, ViewModel viewModel);
+
+	/**
+	 * Serializes one {@link ResourcePersonRelation}.
+	 *
+	 * @param writer
+	 *            a {@link Writer} to use.
+	 * @param resourcePersonRelation
+	 *            one {@link ResourcePersonRelation} object.
+	 * @param viewModel
+	 *            the {@link ViewModel} encapsulates additional information,
+	 */
+	void serializeResourcePersonRelation(Writer writer, ResourcePersonRelation resourcePersonRelation, ViewModel viewModel);
 
 	/**
 	 * Serializes a personid
