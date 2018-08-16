@@ -226,8 +226,11 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 		return project;
 	}
 
-	public List<Project> getProjects(final ProjectQuery query, final User loginUser, final DBSession session) {
-		return this.chain.perform(query, session);
+	public List<Project> getProjects(final ProjectQuery query, final DBSession session) {
+		final ProjectParam param = new ProjectParam();
+		param.setProjectStatus(query.getProjectStatus());
+		return this.queryForList("getAllProjects", param, Project.class, session);
+		/*return this.chain.perform(param, session);*/
 	}
 
 	/**

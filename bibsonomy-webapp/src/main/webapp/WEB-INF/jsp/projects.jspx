@@ -7,9 +7,7 @@
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
-		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
-		  xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group">
+		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
 	 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
@@ -17,19 +15,19 @@
 	
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 	
-	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.groups" command="${command}" pageTitle="${pageTitle}" activeTab="groups">
+	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.projects" command="${command}" pageTitle="${pageTitle}" activeTab="groups">
 		<!--+
 		 	| heading
 		 	+-->
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.groups" formAction="/group/" formInputName="group"/>
+			<parts:search pathMessageKey="navi.projects" formAction="/project/" formInputName="project"/>
 		</jsp:attribute>
 
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message key="navi.groups" var="groups" />
-					<nav:crumb name="${groups}" active="true" />
+					<fmt:message key="navi.projects" var="projects" />
+					<nav:crumb name="${projects}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
@@ -40,18 +38,8 @@
 		 	+-->
 		<jsp:attribute name="content">
 
-			<h1 class="content-heading"><fmt:message key="navi.groups.all" /></h1>
-			<!--+
-				| explain what groups are good for
-				+-->
-			<bs:alert style="info">
-				<jsp:attribute name="alertBody">
-					<fmt:message key="system.groups">
-						<!-- TODO: use URLGenerator -->
-						<fmt:param value="/grouprequest"/>
-					</fmt:message>
-				</jsp:attribute>
-			</bs:alert>
+			<h1 class="content-heading"><fmt:message key="navi.projects.all" /></h1>
+
 
 			<!--+
 				| show alphabet for direct links to groups
@@ -67,28 +55,28 @@
 				</ul>
 			</div>
 			<c:set var="lastChar" value=""/>
-			<div id="groups">
+			<div id="projects">
 				<dl class="dl-horizontal dt-thumbnail-items group-list">
-				<c:forEach var="group" items="${command.list}">
-					<c:set var="firstGroupNameLetter" value="${fn:toLowerCase(fn:substring(group.name, 0, 1))}" />
+				<c:forEach var="project" items="${command.projects}">
+					<c:set var="firstProjectNameLetter" value="${fn:toLowerCase(fn:substring(project.name, 0, 1))}" />
 					<c:choose>
-						<c:when test="${not fn:contains(letters, firstGroupNameLetter)}">
-							<c:set var="firstGroupNameLetter" value="#" />
+						<c:when test="${not fn:contains(letters, firstProjectNameLetter)}">
+							<c:set var="firstProjectNameLetter" value="#" />
 							<c:set var="anchor" value="numbers" />
 						</c:when>
 						<c:otherwise>
-							<c:set var="anchor" value="${firstGroupNameLetter}" />
+							<c:set var="anchor" value="${firstProjectNameLetter}" />
 						</c:otherwise>
 					</c:choose>
-					<c:if test="${lastChar ne firstGroupNameLetter}">
-						<c:set var="lastChar" value="${firstGroupNameLetter}" />
+					<c:if test="${lastChar ne firstProjectNameLetter}">
+						<c:set var="lastChar" value="${firstProjectNameLetter}" />
 						<dt>
 							<c:choose>
-								<c:when test="${not fn:contains(letters, firstGroupNameLetter)}">
-									<h4><a href="#${anchor}" name="${anchor}">${firstGroupNameLetter}</a></h4>
+								<c:when test="${not fn:contains(letters, firstProjectNameLetter)}">
+									<h4><a href="#${anchor}" name="${anchor}">${firstProjectNameLetter}</a></h4>
 								</c:when>
 								<c:otherwise>
-										<h4><a href="#${anchor}" name="${firstGroupNameLetter}">${firstGroupNameLetter}</a></h4>
+										<h4><a href="#${anchor}" name="${firstProjectNameLetter}">${firstProjectNameLetter}</a></h4>
 								</c:otherwise>
 							</c:choose>
 						</dt>
@@ -96,26 +84,6 @@
 							<p><small><a href="#letter-pagination"><span class="fa fa-arrow-up"><!-- keep me --></span><c:out value=" " /><fmt:message key="totop" /></a></small></p>
 						</dd>
 					</c:if>
-					<dt><group:groupthumbnail noname="${true}" group="${group}" /></dt>
-					<dd>
-						<div class="row">
-							<div class="col-md-7">
-								<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}">
-									<group:groupname group="${group}" noLink="${true}" showRealname="${true}"/>
-								</a>
-								<br />
-								<c:if test="${not empty group.homepage}">
-									<small><a href="${fn:escapeXml(group.homepage)}">Homepage</a></small><c:out value=" " />
-								</c:if>
-								<!-- TODO: use url generator -->
-								<small><a href="/cv/group/${fn:escapeXml(group.name)}">CV</a></small>
-
-							</div>
-							<div class="col-md-5 text-right">
-								<group:actions group="${group}" />
-							</div>
-						</div>
-					</dd>
 				</c:forEach>
 				</dl>
 			</div>

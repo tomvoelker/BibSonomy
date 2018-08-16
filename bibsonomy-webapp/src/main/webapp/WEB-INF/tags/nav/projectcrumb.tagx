@@ -16,9 +16,7 @@
     <c:set var="projectLink" value="" />
 
     <c:if test="${not active}">
-        <c:choose>
-            <c:set var="projectLink" value="${relativeUrlGenerator.getProjectUrlByProjectName(project)}" />
-        </c:choose>
+        <c:set var="projectLink" value="${relativeUrlGenerator.getProjectUrlByProjectName(project)}" />
     </c:if>
     <nav:crumb name="${project}" href="${projectLink}" leadingIcon="fa-group" active="${active}"/>
 </jsp:root>

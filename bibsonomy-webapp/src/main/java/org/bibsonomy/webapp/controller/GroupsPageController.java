@@ -64,7 +64,7 @@ public class GroupsPageController extends SingleResourceListController implement
 		if ("html".equals(format)) {
 			this.endTiming();
 			return Views.GROUPSPAGE;
-		} 
+		}
 				
 		this.endTiming();
 		// export - return the appropriate view

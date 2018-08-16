@@ -48,8 +48,7 @@
             <isEqual property="projectOrder" compareValue="TITLE">
                 title <include refid="sortOrder" />
             </isEqual>
-        LIMIT #limit#
-        OFFSET #offset#
+        LIMIT #limit# OFFSET #offset#
     </select>
 
     <select id="getAllProjectStatistics" resultMap="StatisticCommon.statisticOnlyCount" parameterClass="projectParam">
