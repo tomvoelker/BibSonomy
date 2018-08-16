@@ -310,7 +310,7 @@
 							</div>
 						</div>
 							
-					
+
 						<!-- ORCID -->
 						<div class='form-group'>
 							<label class="control-label col-md-6" for='formOrcid'>${textOrcidId}</label>
@@ -320,10 +320,20 @@
 									<c:if test="${(not empty command.context.loginUser.name and empty command.person.user) or (not empty command.person.user and (command.person.user eq command.context.loginUser.name)) and not command.context.loginUser.spammer}">
 										<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
 									</c:if>
-									<span class="personPageFormFieldContent" id="personPageFormOrcidValue"><a href="${mtl:callOrcidURL(command.person.orcid)}">${mtl:beatifyOrcid(command.person.orcid)}</a></span>
+									<span class="personPageFormFieldContent" id="personPageFormOrcidValue">
+										<c:set var="orcidURL">
+											<per:orcid orcid="${command.person.orcid}" returnUrl="${true}" />
+										</c:set>
+                                        <a href="${orcidURL}">
+                                            <per:orcid orcid="${command.person.orcid}"/>
+		                                </a>
+                                    </span>
 								</div>
 								<div class="personPageFormField col-md-8">
-									<input class='form-control' type="text" name='person.orcid' id='formOrcid' placeholder="${textOrcidId}" value="${mtl:beatifyOrcid(command.person.orcid)}"/>
+									<c:set var="beautifiedOrcid">
+										<per:orcid orcid="${command.person.orcid}"/>
+									</c:set>
+									<input class='form-control' type="text" name='person.orcid' id='formOrcid' placeholder="${textOrcidId}" value="${beatufiedOrcid}"/>
 								</div>
 
 								<!-- TODO: REMOVE INLINE CSS -->
@@ -344,10 +354,20 @@
 									<c:if test="${(not empty command.context.loginUser.name and empty command.person.user) or (not empty command.person.user and (command.person.user eq command.context.loginUser.name)) and not command.context.loginUser.spammer}">
 										<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
 									</c:if>
-									<span class="personPageFormFieldContent" id="personPageFormResearcheridValue"><a href="${mtl:callResearcheridURL(command.person.researcherid)}">${mtl:beatifyResearcherid(command.person.researcherid)}</a></span>
+									<span class="personPageFormFieldContent" id="personPageFormResearcheridValue">
+										<c:set var="researcheridUrl">
+											<per:researcherid researcherid="${comand.person.researcherid}" returnUrl="${true}"/>
+										</c:set>
+										<a href="${researcheridUrl}">
+											<per:researcherid researcherid="${command.person.researcherid}"/>
+										</a>
+									</span>
 								</div>
 								<div class="personPageFormField col-md-8">
-									<input class='form-control' type="text" name='person.researcherid' id='formResearcherid' placeholder="${textResearcherId}" value="${mtl:beatifyResearcherid(command.person.researcherid)}"/>
+									<c:set var="beautifiedResearcherid">
+										<per:researcherid researcherid="comand.person.researcherid"/>
+									</c:set>
+									<input class='form-control' type="text" name='person.researcherid' id='formResearcherid' placeholder="${textResearcherId}" value="${beautifiedResearcherid}"/>
 								</div>
 
 								<!-- TODO: REMOVE INLINE CSS -->
