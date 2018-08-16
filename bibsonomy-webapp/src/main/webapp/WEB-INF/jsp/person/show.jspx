@@ -6,19 +6,9 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:sql="http://java.sun.com/jsp/jstl/sql"
-	xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
-	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"
-	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
-	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
-	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
@@ -85,7 +75,7 @@
 				
 				<c:when test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
 					<p><fmt:message key="person.sidebar.linkedUserClaimText" /></p>
-					<bsform:button size="defaultSize" style="primary" dataTarget="#linkPerson" dataToggle="modal" valueKey="person.show.thatsMeButton" titleKey="person.show.thatsMeButton" />				
+					<bsform:button size="defaultSize" style="primary" dataTarget="#linkPerson" dataToggle="modal" valueKey="person.show.thatsMeButton" titleKey="person.show.thatsMeButton" />
 				</c:when>
 				
 				<c:otherwise>
@@ -321,19 +311,15 @@
 										<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
 									</c:if>
 									<span class="personPageFormFieldContent" id="personPageFormOrcidValue">
-										<c:set var="orcidURL">
-											<per:orcid orcid="${command.person.orcid}" returnUrl="${true}" />
-										</c:set>
-                                        <a href="${orcidURL}">
-                                            <per:orcid orcid="${command.person.orcid}"/>
-		                                </a>
+										<per:orcid orcid="${command.person.orcid}" returnUrl="${true}" />
                                     </span>
 								</div>
 								<div class="personPageFormField col-md-8">
 									<c:set var="beautifiedOrcid">
 										<per:orcid orcid="${command.person.orcid}"/>
 									</c:set>
-									<input class='form-control' type="text" name='person.orcid' id='formOrcid' placeholder="${textOrcidId}" value="${beatufiedOrcid}"/>
+
+									<input class='form-control' type="text" name='person.orcid' id='formOrcid' placeholder="${textOrcidId}" value="${beautifiedOrcid}"/>
 								</div>
 
 								<!-- TODO: REMOVE INLINE CSS -->
@@ -355,12 +341,7 @@
 										<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
 									</c:if>
 									<span class="personPageFormFieldContent" id="personPageFormResearcheridValue">
-										<c:set var="researcheridUrl">
-											<per:researcherid researcherid="${comand.person.researcherid}" returnUrl="${true}"/>
-										</c:set>
-										<a href="${researcheridUrl}">
-											<per:researcherid researcherid="${command.person.researcherid}"/>
-										</a>
+										<per:researcherid researcherid="${comand.person.researcherid}" returnUrl="${true}"/>
 									</span>
 								</div>
 								<div class="personPageFormField col-md-8">

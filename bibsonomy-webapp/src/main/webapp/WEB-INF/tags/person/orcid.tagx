@@ -5,13 +5,19 @@
 
     <jsp:directive.attribute name="orcid" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="returnUrl" type="java.lang.Boolean" required="false"/>
-    <c:choose>
-        <c:when test="${returnUrl}">
-            <c:set var="orcid" value='https://orcid.org/${fn:substring(orcid, 0, 4)}-${fn:substring(orcid, 4, 8)}-${fn:substring(orcid, 8, 12)}-${fn:substring(orcid, 12, 16)}'/>
-        </c:when>
-        <c:otherwise>
-            <c:set var="orcid" value='${fn:substring(orcid, 0, 4)}-${fn:substring(orcid, 4, 8)}-${fn:substring(orcid, 8, 12)}-${fn:substring(orcid, 12, 16)}'/>
-        </c:otherwise>
-    </c:choose>
-    ${orcid}
+
+    <c:if test="${not empty orcid}">
+        <c:set var="formattedId" value="${fn:substring(orcid, 0, 4)}-${fn:substring(orcid, 4, 8)}-${fn:substring(orcid, 8, 12)}-${fn:substring(orcid, 12, 16)}" />
+        <c:choose>
+            <c:when test="${returnUrl}">
+                <!-- TODO: add schema.org -->
+                <a href="https://orcid.org/${formattedId}">
+                    <c:out value="${formattedId}" />
+                </a>
+            </c:when>
+            <c:otherwise>
+                <c:out value="${formattedId}" />
+            </c:otherwise>
+        </c:choose>
+    </c:if>
 </jsp:root>
