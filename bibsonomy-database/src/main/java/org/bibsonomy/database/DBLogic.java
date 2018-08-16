@@ -2986,11 +2986,8 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void createRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
-		this.permissionDBManager.ensureAdminAccess(this.loginUser); // only
-		// admins
-		// can
-		// create
-		// references
+		// only admins can create references
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 
 		final DBSession session = this.openSession();
 		try {
@@ -3009,11 +3006,8 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void deleteRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
-		this.permissionDBManager.ensureAdminAccess(this.loginUser); // only
-		// admins
-		// can
-		// delete
-		// references
+		// only admins can delete references
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 
 		final DBSession session = this.openSession();
 		try {
@@ -3250,6 +3244,8 @@ public class DBLogic implements LogicInterface {
 		/*
 		 * TODO: Only checking should be done, GoldstandardCreation is the job
 		 * of the calling Controller
+		 * FIXME: dzo:  move gold standard creation to logic else we have to implement the logic in
+		 * the discussion ajax controller also for the api; to be discussed
 		 */
 		try {
 			// verify that there exists a gold standard
@@ -3732,6 +3728,7 @@ public class DBLogic implements LogicInterface {
 					if (!this.isWithPosts() && this.isWithPersonsOfPosts()) {
 						throw new IllegalArgumentException("need to fetch posts to retrieve persons of posts");
 					}
+					// TODO: extract a chain of responsibility
 					if (present(this.getInterhash())) {
 						if (!this.isWithPosts() && !present(this.getAuthorIndex()) && !present(this.getPersonId()) && !present(this.getRelationType())) {
 							return DBLogic.this.personDBManager.getResourcePersonRelationsWithPersonsByInterhash(this.getInterhash(), session);
@@ -3766,20 +3763,17 @@ public class DBLogic implements LogicInterface {
 					rVal.addAll(byInterHash.values());
 				}
 				if (this.getOrder() == ResourcePersonRelationQueryBuilder.Order.publicationYear) {
-					Collections.sort(rVal, new Comparator<ResourcePersonRelation>() {
-						@Override
-						public int compare(final ResourcePersonRelation o1, final ResourcePersonRelation o2) {
-							try {
-								final int year1 = Integer.parseInt(o1.getPost().getResource().getYear().trim());
-								final int year2 = Integer.parseInt(o2.getPost().getResource().getYear().trim());
-								if (year1 != year2) {
-									return year2 - year1;
-								}
-							} catch (final Exception e) {
-								log.warn(e);
+					Collections.sort(rVal, (o1, o2) -> {
+						try {
+							final int year1 = Integer.parseInt(o1.getPost().getResource().getYear().trim());
+							final int year2 = Integer.parseInt(o2.getPost().getResource().getYear().trim());
+							if (year1 != year2) {
+								return year2 - year1;
 							}
-							return System.identityHashCode(o1) - System.identityHashCode(o2);
+						} catch (final Exception e) {
+							log.warn(e);
 						}
+						return System.identityHashCode(o1) - System.identityHashCode(o2);
 					});
 				} else if (this.getOrder() != null) {
 					throw new UnsupportedOperationException();
