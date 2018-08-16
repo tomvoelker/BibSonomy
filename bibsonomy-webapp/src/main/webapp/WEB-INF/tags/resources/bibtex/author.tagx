@@ -50,11 +50,11 @@
 	<c:set var="numberOfPersons" value="${fn:length(personList)}" />
 	<c:set var="maxPersonsToShow" value="${restrictToFirstAuthors ? 10 : numberOfPersons}" />
 
-	<c:if test="${numberOfPersons le maxPersonsToShow}">
-		<c:set var="maxPersonsToShow" value="${numberOfPersons}" />
+	<c:set var="personsToShow" value="${personList}" />
+	<c:if test="${numberOfPersons gt maxPersonsToShow}">
+		<spring:eval var="personsToShow" expression="personList.subList(0, maxPersonsToShow)" />
 	</c:if>
 
-	<spring:eval var="personsToShow" expression="personList.subList(0, maxPersonsToShow)" />
 	<c:set var="numberOfPersonsNotShown" value="${numberOfPersons - maxPersonsToShow}" />
 	<c:set var="personListRestricted" value="${numberOfPersonsNotShown gt 0}" />
 
