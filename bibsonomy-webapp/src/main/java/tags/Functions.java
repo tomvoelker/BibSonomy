@@ -1044,20 +1044,4 @@ public class Functions {
 		}
 		return false;
 	}
-
-	/**
-	 *
-	 * @return
-	 */
-	public static List<PersonName> reducedAuthorList(final List<PersonName> authors, boolean isWhole) {
-		int threshold = 10;
-		if (isWhole || authors.size() < threshold) {
-			return authors;
-		}
-		List<PersonName> return_authors = new LinkedList<>();
-		for (int i = 0; i <= threshold; i ++) {
-			return_authors.add(authors.get(i));
-		}
-		return return_authors;
-	}
 }
