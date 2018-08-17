@@ -1,12 +1,12 @@
 package org.bibsonomy.model.cris;
 
-import org.bibsonomy.common.enums.GroupRole;
+import org.bibsonomy.common.enums.ProjectRole;
 import org.bibsonomy.model.User;
 
 public class ProjectMembership {
 
     private User user;
-    private GroupRole groupRole;
+    private ProjectRole projectRole;
 
     /**
      * Default Constructor
@@ -18,11 +18,11 @@ public class ProjectMembership {
     /**
      *
      * @param user
-     * @param groupRole
+     * @param projectRole
      */
-    public ProjectMembership(User user, GroupRole groupRole) {
+    public ProjectMembership(User user, ProjectRole projectRole) {
         this.user = user;
-        this.groupRole = groupRole;
+        this.projectRole = projectRole;
      }
 
     /**
@@ -40,25 +40,25 @@ public class ProjectMembership {
     }
 
     /**
-     * @return the groupRole
+     * @return the projectRole
      */
-    public GroupRole getGroupRole() {
-        return this.groupRole;
+    public ProjectRole getProjectRole() {
+        return this.projectRole;
     }
 
     /**
-     * @param groupRole the groupRole to set
+     * @param projectRole the projectRole to set
      */
-    public void setGroupRole(GroupRole groupRole) {
-        this.groupRole = groupRole;
+    public void setProjectRole(ProjectRole projectRole) {
+        this.projectRole = projectRole;
     }
 
     /**
-     * toString. User GroupRole
+     * toString. User projectRole
      * @return string
      */
     @Override
     public String toString() {
-        return this.user + " " + this.groupRole;
+        return this.user + " " + this.projectRole;
     }
 }

@@ -33,6 +33,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.Normalizer;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -1059,5 +1060,10 @@ public class Functions {
 			return_authors.add(authors.get(i));
 		}
 		return return_authors;
+	}
+
+	public static String projectFormatDate(final Date projectDate) {
+		SimpleDateFormat format = new SimpleDateFormat("dd.MM.yy");
+		return format.format(projectDate);
 	}
 }

@@ -8,15 +8,8 @@
     <jsp:directive.attribute name="relevantFor" type="java.lang.Boolean" required="false" description="the requested user"/>
     <jsp:directive.attribute name="active" type="java.lang.Boolean" required="false" description="the requested user"/>
 
-    <c:if test="${empty active}">
-        <c:set var="active" value="${false}" />
-    </c:if>
-
-    <nav:crumb nameKey="navi.project" />
-    <c:set var="projectLink" value="" />
-
-    <c:if test="${not active}">
-        <c:set var="projectLink" value="${relativeUrlGenerator.getProjectUrlByProjectName(project)}" />
-    </c:if>
+    <c:set var="projectsMain" value="${relativeUrlGenerator.getProjectsUrl()}"/>
+    <nav:crumb nameKey="navi.project" href="${projectsMain}" active="${active}"/>
+    <c:set var="projectLink" value="${relativeUrlGenerator.getProjectUrlByProjectName(project)}" />
     <nav:crumb name="${project}" href="${projectLink}" leadingIcon="fa-group" active="${active}"/>
 </jsp:root>

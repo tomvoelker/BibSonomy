@@ -4,7 +4,9 @@
 		  xmlns:c="http://java.sun.com/jsp/jstl/core"
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
 
     <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
     <c:set var="project" value="${command.project}" />
@@ -29,44 +31,48 @@
 
 		<jsp:attribute name="sidebar">
 			<h4><fmt:message key="project.sidebar.information" /></h4>
-			<c:if test="${not empty command.project.startDate}">
-				<p><fmt:message key="project.sidebar.startdate"/><br/>
-					<!-- fixme format date properly -->
-					<c:out value="${command.project.startDate.toString()}" />
-				</p>
-			</c:if>
-			<c:if test="${not empty command.project.endDate}">
-				<p><fmt:message key="project.sidebar.enddate"/><br/>
-					<c:out value="${command.project.endDate.toString()}" />
-				</p>
-			</c:if>
-			<c:if test="${not empty command.project.parentProject}">
-				<p><fmt:message key="project.sidebar.parentProject"/><br/>
-					<c:out value="${command.project.parentProject}" />
-				</p>
-			</c:if>
-			<c:if test="${not empty command.project.subProjects}">
-				<p><fmt:message key="project.sidebar.subProjects"/><br/>
+			<dl>
+				<c:if test="${not empty command.project.startDate}">
+					<dt><fmt:message key="project.sidebar.startdate"/></dt>
+					<dd><c:out value="${mtl:projectFormatDate(command.project.startDate)}" /></dd>
+				</c:if>
+				<c:if test="${not empty command.project.endDate}">
+					<dt><fmt:message key="project.sidebar.enddate"/></dt>
+					<dd><c:out value="${mtl:projectFormatDate(command.project.endDate)}" /></dd>
+				</c:if>
+				<c:if test="${not empty command.project.parentProject}">
+					<dt><fmt:message key="project.sidebar.parentProject"/></dt>
+					<c:set var="projectLink" value="${relativeUrlGenerator.getProjectUrlByProjectName(command.project.parentProject.title)}" />
+					<dd>
+						<a href="${projectLink}">
+							<c:out value="${command.project.parentProject.title}" />
+						</a>
+					</dd>
+				</c:if>
+				<c:if test="${not empty command.project.subProjects}">
+					<dt><fmt:message key="project.sidebar.subProjects"/></dt>
 					<c:forEach var='subproject' items="${command.project.subProjects}">
-						<!-- Todo Link it -->
-						<c:out value="${subproject.title}" />
+						<c:set var="projectLink" value="${relativeUrlGenerator.getProjectUrlByProjectName(subproject.title)}" />
+						<dd>
+							<a href="${projectLink}">
+								<c:out value="${subproject.title}" />
+							</a>
+						</dd>
 					</c:forEach>
-				</p>
-			</c:if>
-			<c:if test="${not empty command.project.homepage}">
-				<p><fmt:message key="project.sidebar.homepage"/><br/>
-					<c:out value="${command.project.homepage}" />
-				</p>
-			</c:if>
-			<c:if test="${not empty command.project.budget}">
-				<p><fmt:message key="project.sidebar.budget"/><br/>
-					<c:out value="${command.project.budget}" />
-				</p>
-			</c:if>
+				</c:if>
+				<c:if test="${not empty command.project.homepage}">
+					<dt><fmt:message key="project.sidebar.homepage"/></dt>
+					<dd><c:out value="${command.project.homepage}" /></dd>
+				</c:if>
+				<c:if test="${not empty command.project.budget}">
+					<dt><fmt:message key="project.sidebar.budget"/></dt>
+					<dd><c:out value="${command.project.budget}" /> €</dd>
+				</c:if>
+			</dl>
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
-			<div id="projectInfo" class="row">
+			<div id="projectContent" class="row">
 				<div class="col-md-6">
 					<!-- Picture -->
 					<div id="projectImg" class="col-md-4 personPageVcardLeft">
@@ -83,22 +89,26 @@
 							<c:out value="${command.project.title}"/>
 						</h1>
 					</div>
-
-					<div class="form-group">
-						<h2>
-							<c:out value="${command.project.subTitle}" />
-						</h2>
-					</div>
-
-					<!-- Place to add the Contributors -->
 				</div>
-
-				<div class="contentContainer">
-					<span>
-						<c:out value="${command.project.description}"/>
-					</span>
+				<div>
+					<div class="form-group-lg">
+						<p>
+							<h2>
+								<c:out value="${command.project.subTitle}" />
+							</h2>
+						</p>
+					</div>
 				</div>
 			</div>
+			<div class="contentContainer">
+				<!-- fixme how to pad properly?! -->
+				<br/>
+				<div>
+					<h4><fmt:message key="project.description"/></h4>
+					<c:out value="${command.project.description}"/>
+				</div>
+			</div>
+			<!-- Place to add the Contributors -->
 		</jsp:attribute>
 	</layout:paneLayout>
 

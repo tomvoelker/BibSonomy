@@ -471,4 +471,10 @@
 		<function-class>tags.Functions</function-class>
 		<function-signature>java.util.List reducedAuthorList(java.util.List, boolean)</function-signature>
 	</function>
+
+	<function>
+		<name>projectFormatDate</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>java.lang.String projectFormatDate(java.util.Date)</function-signature>
+	</function>
 </taglib>
