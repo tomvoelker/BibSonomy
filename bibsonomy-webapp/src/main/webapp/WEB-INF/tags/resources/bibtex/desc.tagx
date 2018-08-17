@@ -9,7 +9,7 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="false" />
 	<jsp:directive.attribute name="linebreakAfterAuthors" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="publishedIn" type="org.bibsonomy.model.BibTex" required="false" />
-	<jsp:directive.attribute name="isWholeAuthorList" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="restrictToFirstAuthors" type="java.lang.Boolean" required="false" />
 	
 	<c:if test="${empty linebreakAfterAuthors}">
 		<c:set var="linebreakAfterAuthors" value="${false}" />
@@ -17,7 +17,7 @@
 	
 	<c:choose>
 		<c:when test="${publication.entrytype eq 'article'}">
-			<bib:author publication="${publication}" post="${post}" isWholeAuthorList="${isWholeAuthorList}"/>
+			<bib:author publication="${publication}" post="${post}" restrictToFirstAuthors="${restrictToFirstAuthors}" />
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -30,7 +30,7 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'book'}">
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}" post="${post}" restrictToFirstAuthors="${restrictToFirstAuthors}"/>
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -43,7 +43,7 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'inbook'}">
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}" post="${post}" restrictToFirstAuthors="${restrictToFirstAuthors}"/>
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -61,7 +61,7 @@
 		
 		<c:when test="${publication.entrytype eq 'booklet'}">
 			<meta itemprop="bookFormat" content="booklet"/>
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}" post="${post}" restrictToFirstAuthors="${restrictToFirstAuthors}"/>
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -91,7 +91,7 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'inproceedings'}">
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}" post="${post}" restrictToFirstAuthors="${restrictToFirstAuthors}"/>
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -108,7 +108,7 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'manual'}">
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}" post="${post}" restrictToFirstAuthors="${restrictToFirstAuthors}"/>
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -123,7 +123,7 @@
 	
 		<c:when test="${publication.entrytype eq 'mastersthesis' or publication.entrytype eq 'phdthesis'}">
 			<meta itemprop="educationalUse" content="thesis"/>
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}" post="${post}" restrictToFirstAuthors="${restrictToFirstAuthors}"/>
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -135,7 +135,7 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'proceedings'}">
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}" post="${post}" restrictToFirstAuthors="${restrictToFirstAuthors}"/>
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -148,7 +148,7 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'techreport'}">
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}" post="${post}" restrictToFirstAuthors="${restrictToFirstAuthors}"/>
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -160,7 +160,7 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'unpublished'}">
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}" post="${post}" restrictToFirstAuthors="${restrictToFirstAuthors}"/>
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -170,7 +170,7 @@
 		
 		<!-- Misc and others -->
 		<c:otherwise>
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}" post="${post}" restrictToFirstAuthors="${restrictToFirstAuthors}"/>
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>

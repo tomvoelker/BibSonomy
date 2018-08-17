@@ -84,19 +84,23 @@ public class DisambiguationPageController extends SingleResourceListController i
 	
 	@Override
 	public View workOn(final DisambiguationPageCommand command) {
-		if (command.getRequestedHash() == null) {
-			throw new ObjectNotFoundException(command.getRequestedHash());
+		final String requestedHash = command.getRequestedHash();
+		if (requestedHash == null) {
+			throw new ObjectNotFoundException(requestedHash);
 		}
 		
-		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, command.getRequestedHash(), null, null, null, null, null, null, 0, 100);
+		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, requestedHash, null, null, null, null, null, null, 0, 1);
 		
 		if (!present(posts)) {
-			throw new ObjectNotFoundException(command.getRequestedHash());
+			throw new ObjectNotFoundException(requestedHash);
 		}
+
+		// TODO: don't use the command to pass the post to the methods, please add a parameter for the post
 		command.setPost(posts.get(0));
-		if ("newPerson".equals(command.getRequestedAction())) {
+		final String action = command.getRequestedAction();
+		if ("newPerson".equals(action)) {
 			return newAction(command);
-		} else if ("linkPerson".equals(command.getRequestedAction())) {
+		} else if ("linkPerson".equals(action)) {
 			return linkAction(command);
 		}
 		

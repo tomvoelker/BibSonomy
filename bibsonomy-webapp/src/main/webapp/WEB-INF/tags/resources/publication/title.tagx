@@ -36,7 +36,7 @@
 				<span itemprop="name"><c:out value="${pubTitle}" /></span>
 			</h1>
 
-			<p><bib:desc post="${post}" publication="${post.resource}" isWholeAuthorList="${true}"/></p>
+			<p><bib:desc post="${post}" publication="${post.resource}" /></p>
 		</div>
 	</div>
 </jsp:root>
