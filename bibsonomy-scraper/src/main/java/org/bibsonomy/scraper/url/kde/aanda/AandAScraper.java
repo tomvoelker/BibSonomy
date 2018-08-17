@@ -54,7 +54,7 @@ import org.w3c.dom.NodeList;
 public class AandAScraper extends AbstractUrlScraper implements ReferencesScraper{
 	
 	private static final String SITE_NAME = "Astronomy and Astrophysics";
-	private static final String SITE_URL = "http://www.aanda.org/";
+	private static final String SITE_URL = "https://www.aanda.org/";
 	private static final String INFO = "Scraper for references from " + href(SITE_URL, SITE_NAME)+".";
 	
 	private static final Pattern hostPattern = Pattern.compile(".*" + "aanda.org");
