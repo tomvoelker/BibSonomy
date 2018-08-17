@@ -375,6 +375,7 @@
 								<value>person.college</value>
 								<value>person.email</value>
 								<value>person.homepage</value>
+								<value>person.gender</value>
 								
 								<value>newName.firstName</value>
 								<value>newName.lastName</value>

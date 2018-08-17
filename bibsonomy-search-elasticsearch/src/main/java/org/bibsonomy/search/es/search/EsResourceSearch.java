@@ -747,29 +747,36 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @param negatedTags
 	 * @return overall elasticsearch query
 	 */
-	protected final QueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, Collection<String> allowedGroups, Set<String> usersThatShareDocs, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
+	protected final QueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, Collection<String> allowedGroups, Set<String> usersThatShareDocs, String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
 		final BoolQueryBuilder mainQueryBuilder = QueryBuilders.boolQuery();
 		final BoolQueryBuilder mainFilterBuilder = QueryBuilders.boolQuery();
 		
-		// --------------------------------------------------------------------
-		// build the query
-		// --------------------------------------------------------------------
-		// the resulting main query
+		/*
+		 * build the query
+		 * the resulting main query
+		 */
 		if (present(searchTerms)) {
-			final QueryBuilder queryBuilder = QueryBuilders.queryStringQuery(searchTerms)
-					.minimumShouldMatch("2<75%");
+			/*
+			 * per default we use the and operation for multiple search query terms;
+			 * to allow "and"'s for field search queries we set the dis max to false to enable
+			 * boolean queries for multiple fields
+			 *
+			 * XXX: we also need to set these parameters to the private string queries, otherwise the configured
+			 * field is ignored and ES searches again in the queried fields
+			 */
+			final QueryBuilder queryBuilder = QueryBuilders.queryStringQuery(searchTerms).defaultOperator(QueryStringQueryBuilder.Operator.AND).useDisMax(false);
 			
 			if (present(userName)) {
 				// private field
 				final TermQueryBuilder userFilter = QueryBuilders.termQuery(Fields.USER_NAME, userName);
-				final QueryStringQueryBuilder privateFieldSearchQuery = QueryBuilders.queryStringQuery(searchTerms).field(Fields.PRIVATE_ALL_FIELD);
+				final QueryStringQueryBuilder privateFieldSearchQuery = QueryBuilders.queryStringQuery(searchTerms).field(Fields.PRIVATE_ALL_FIELD).defaultOperator(QueryStringQueryBuilder.Operator.AND).useDisMax(false);
 				final BoolQueryBuilder privateFieldQueryFiltered = QueryBuilders.boolQuery().must(privateFieldSearchQuery).filter(userFilter);
 				
 				final BoolQueryBuilder query = QueryBuilders.boolQuery().should(queryBuilder).should(privateFieldQueryFiltered);
 				
 				if (present(usersThatShareDocs)) {
 					// document field
-					final QueryStringQueryBuilder docFieldSearchQuery = QueryBuilders.queryStringQuery(searchTerms).field(Fields.ALL_DOCS);
+					final QueryStringQueryBuilder docFieldSearchQuery = QueryBuilders.queryStringQuery(searchTerms).field(Fields.ALL_DOCS).defaultOperator(QueryStringQueryBuilder.Operator.AND).useDisMax(false);
 					// restrict to users that share documents and to the visible posts (group)
 					final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery().must(buildUserQuery(usersThatShareDocs)).must(buildGroupFilter(allowedGroups));
 					query.should(QueryBuilders.boolQuery().must(docFieldSearchQuery).filter(filterQuery));

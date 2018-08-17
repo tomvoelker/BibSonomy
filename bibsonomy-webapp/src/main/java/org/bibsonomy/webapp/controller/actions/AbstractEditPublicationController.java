@@ -38,8 +38,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
+import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
@@ -118,6 +120,11 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		if ((present(url) || present(selection))) {
 			this.handleScraper(command, url, selection);
 		}
+		
+		final String loggedInUserName = loginUser.getName();
+		command.setUserFriends(this.logic.getUserRelationship(loggedInUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
+		command.setFriendsOfUser(this.logic.getUserRelationship(loggedInUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
+		command.setClaimedPerson(this.logic.getPersonByUser(loggedInUserName));
 	}
 
 	@Override

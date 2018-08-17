@@ -130,12 +130,12 @@
 						</c:choose>
 
 						<!-- DOI -->
-						<c:set var="doi" value="${post.resource.miscFields['doi']}" />
+						<c:set var="doi" value="${mtl:extractDOI(post.resource.miscFields['doi'])}" />
 						<c:choose>
 							<c:when test="${not empty doi}">
 								<li>
 									<fmt:message key="bibtex.actions.doi" var="urlTitle"/>
-									<a class="litem" href="http://dx.doi.org/${mtl:encodePathSegment(mtl:extractDOI(doi))}" title="${urlTitle}"><fmt:message key="bibtex.actions.doi"/></a>
+									<a class="litem" href="https://doi.org/${mtl:encodePathSegment(doi)}" title="${urlTitle}"><fmt:message key="bibtex.actions.doi"/></a>
 								</li>
 							</c:when>
 							<c:otherwise>

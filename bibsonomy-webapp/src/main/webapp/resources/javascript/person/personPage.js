@@ -63,12 +63,22 @@ function isValidEMail(mail) {
 
 $(document).ready(function() {
 	$('.mergeConflictButton').click(function() {
-		var array = $('#conflictInputForm').serializeArray();
-		var form_data = {
-				formMatchId: $(this).attr('match-id'),
-				formAction: 'conflictMerge',
-				formResponseString: JSON.stringify(array)
-		};
+		var form_data = {};
+		$.each($("#conflictInputForm").serializeArray(), function (i, field) {
+			if(field.name == 'person.mainName'){
+				var mainName = field.value;
+				
+				var names = mainName.split(", ");
+				form_data["newName.firstName"]=names[1];
+				form_data["newName.lastName"]=names[0];
+			} else{
+				form_data[field.name] = field.value;
+		    }
+		});
+		
+		form_data["formMatchId"] = $("#conflictModalAccept").attr("match-id");
+		form_data["formAction"] = "conflictMerge";
+		
 		$.post("/person", form_data).done(function(data){
 			if (data.status) {
 				$("#match_" + form_data.formMatchId).slideUp(500, function(){
@@ -128,7 +138,7 @@ $(document).ready(function() {
 			    $(input).addClass("form-control conflictInput");
 			    $(input)[0].setAttribute("type", "text");
 			    $(input)[0].setAttribute("id", "text");
-			    $(input)[0].setAttribute("name", data[conflict].field);
+			    $(input)[0].setAttribute("name", 'person.' + data[conflict].field);
 			    $(input)[0].setAttribute("placeholder", "( " + data[conflict].person1Value + " | " + data[conflict].person2Value + " )");
 			    if (data[conflict].field == 'gender') {
 			    	$(input)[0].setAttribute("pattern", "(m|F)");
@@ -145,10 +155,10 @@ $(document).ready(function() {
 			    		var fieldName = $(input).attr('name');
 			    		var reg;
 			    		switch(fieldName){
-			    			case 'gender':
+			    			case 'person.gender':
 			    				reg = new RegExp('(m|F)');
 			    				break;
-			    			case 'mainName':
+			    			case 'person.mainName':
 			    				reg = new RegExp('(.+)(,)(.+)');
 			    				break;
 			    			default:
