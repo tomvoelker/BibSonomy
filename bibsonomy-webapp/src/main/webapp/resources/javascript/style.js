@@ -326,7 +326,7 @@ function switchNavi(scope, element) {
 	$("#inpf").autocomplete('disable');
 	
 	if (scope == "tag"){
-		startTagAutocompletion($("#inpf"), false, true, false, false);
+		startTagAutocompletion($("#inpf"), false, true, false, false, false);
 	}
 	
 	// TODO: finish suggestion service

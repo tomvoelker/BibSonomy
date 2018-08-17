@@ -85,7 +85,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 * The abstract (or general) group of the post: public, private, or other
 	 */
 	private String abstractGrouping;
-
+	
 	private List<String> groups;
 
 	private List<String> relevantGroups;
@@ -94,6 +94,11 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 
 	private Map<String, Map<String, List<String>>> relevantTagSets;
 
+	/**
+	 * field for the friends or groups dropdowns
+	 */
+	private String friendsOrGroups;
+	
 	/**
 	 * stores an id, e.g. for mapping recommendations to posts
 	 */
@@ -276,6 +281,21 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 		this.abstractGrouping = abstractGrouping;
 	}
 
+	/**
+	 * @return the abstractGrouping
+	 */
+	public String getFriendsOrGroups() {
+		return friendsOrGroups;
+	}
+
+	/**
+	 * @param friendsOrGroups 
+	 * @param abstractGrouping the abstractGrouping to set
+	 */
+	public void setFriendsOrGroups(String friendsOrGroups) {
+		this.friendsOrGroups=friendsOrGroups;
+	}
+	
 	/**
 	 * @return the diffPost
 	 */

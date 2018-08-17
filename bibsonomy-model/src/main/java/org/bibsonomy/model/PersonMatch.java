@@ -35,6 +35,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.util.ValidationUtils;
 
@@ -43,8 +46,8 @@ import org.bibsonomy.util.ValidationUtils;
  *
  * @author jhi
  */
-public class PersonMatch implements Serializable, Comparable<PersonMatch> {
-	
+public class PersonMatch implements Serializable {
+	private static final Log log = LogFactory.getLog(PersonMatch.class);
 	private static final long serialVersionUID = -470932185819510145L;
 	public static final int denieThreshold = 5;
 	
@@ -120,8 +123,10 @@ public class PersonMatch implements Serializable, Comparable<PersonMatch> {
 	/* (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
-	@Override
-	public int compareTo(PersonMatch match) {
+	
+	
+	
+	public int equals(PersonMatch match) {
 		if ((this.person1.getPersonId().equals(match.getPerson1().getPersonId()) && this.person2.getPersonId().equals(match.getPerson2().getPersonId()))
 				|| (this.person1.getPersonId().equals(match.getPerson2().getPersonId()) && this.person2.getPersonId().equals(match.getPerson1().getPersonId()))) {
 			return 0;
@@ -187,14 +192,13 @@ public class PersonMatch implements Serializable, Comparable<PersonMatch> {
 								conflictFields.add(new PersonMergeFieldConflict(fieldName, ((Gender) person1Value).name(), ((Gender) person2Value).name()));
 							}
 						} else {
-							System.err.println(
-									"Missing " + person1Value.getClass() + " class case for merge conflict detection");
+							log.warn("Missing " + person1Value.getClass() + " class case for merge conflict detection");
 						}
 					}
 				}
 			} catch (SecurityException | IllegalArgumentException | IllegalAccessException | InvocationTargetException
 					| IntrospectionException e) {
-				System.err.println(e);
+				log.error(e);
 			}
 			PersonMergeFieldConflict[] p = new PersonMergeFieldConflict[conflictFields.size()];
 			conflictFields.toArray(p);
