@@ -47,10 +47,10 @@ import org.bibsonomy.util.WebUtils;
 public class ACSScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "ACS";
-	private static final String SITE_URL = "http://www.acs.org/";
+	private static final String SITE_URL = "https://www.acs.org/";
 	private static final String info = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
-	private static final String ACS_HOST_NAME  = "http://pubs.acs.org";
+	private static final String ACS_HOST_NAME  = "https://pubs.acs.org";
 	private static final String DOI_PATH = "doi/(abs|pdf|full|pdfplus)/";
 	private static final String ACS_PATH = "/" + DOI_PATH;
 	private static final String ACS_BIBTEX_PATH = "/action/downloadCitation";
