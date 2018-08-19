@@ -1857,7 +1857,7 @@ CREATE TABLE `log_projects` (
   `log_date` timestamp NULL DEFAULT NULL,
   `log_user` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;ProjectMembership.java
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `cris_links` (
   `id` int(11) unsigned NOT NULL,
