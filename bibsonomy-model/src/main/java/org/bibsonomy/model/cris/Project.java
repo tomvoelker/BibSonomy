@@ -27,7 +27,7 @@ public class Project implements Linkable {
 	/** the subtitle of the project */
 	private String subTitle;
 
-	/** The homepage of the project */
+	/** the homepage of the project */
 	private URL homepage;
 
 	/** the description of the project */
@@ -50,9 +50,6 @@ public class Project implements Linkable {
 
 	/** sub projects of the project */
 	private List<Project> subProjects = new LinkedList<>();
-
-	/** the list of the memberships of the project */
-	private List<ProjectMembership> memberships;
 
 	/**
 	 * @return the id
@@ -124,19 +121,19 @@ public class Project implements Linkable {
 		this.subTitle = subTitle;
 	}
 
-    /**
-     * @return the URL
-     */
-    public URL getHomepage() {
-        return homepage;
-    }
+	/**
+	 * @return the URL
+	 */
+	public URL getHomepage() {
+		return homepage;
+	}
 
-    /**
-     * @param homepage the description to set
-     */
-    public void setHomepage(URL homepage) {
-        this.homepage= homepage;
-    }
+	/**
+	 * @param homepage the description to set
+	 */
+	public void setHomepage(URL homepage) {
+		this.homepage = homepage;
+	}
 
 	/**
 	 * @return the description
@@ -235,32 +232,6 @@ public class Project implements Linkable {
 	public void setSubProjects(List<Project> subProjects) {
 		this.subProjects = subProjects;
 	}
-
-    /**
-     * @return the memberships
-     */
-    public List<ProjectMembership> getMemberships() {
-        if (this.memberships == null) {
-            this.memberships = new LinkedList<>();
-        }
-        return this.memberships;
-    }
-
-    /**
-     * @param memberships the memberships to set
-     */
-    public void setMemberships(List<ProjectMembership> memberships) {
-        this.memberships = memberships;
-    }
-
-    public ProjectMembership getProjectMembershipForUser(String username) {
-        for (ProjectMembership g : this.getMemberships()) {
-            if (g.getUser().getName().equals(username)) {
-                return g;
-            }
-        }
-        return null;
-    }
 
 	@Override
 	public String getLinkableId() {

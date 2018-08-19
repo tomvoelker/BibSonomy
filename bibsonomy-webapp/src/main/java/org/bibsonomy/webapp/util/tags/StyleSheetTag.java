@@ -34,7 +34,7 @@ import org.springframework.web.servlet.tags.RequestContextAwareTag;
 
 /**
  * This tag looks for the specified CSS file {@link #path}
- * if it can't find it, it replaces it the LESS file 
+ * if it can't find it, it replaces it with the LESS file
  * with the same name (for development usage)
  * 
  * @author dzo

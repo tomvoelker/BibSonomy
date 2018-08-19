@@ -2,10 +2,7 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.JobResult;
-import org.bibsonomy.common.enums.ProjectRole;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.MissingObjectErrorMessage;
@@ -17,13 +14,11 @@ import org.bibsonomy.database.params.ProjectParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
-import org.bibsonomy.model.cris.ProjectMembership;
 import org.bibsonomy.model.enums.ProjectOrder;
 import org.bibsonomy.model.enums.ProjectStatus;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.validation.ProjectValidator;
-import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.util.StringUtils;
 
 import java.util.Collections;
@@ -37,7 +32,6 @@ import java.util.List;
  */
 public class ProjectDatabaseManager extends AbstractDatabaseManager implements StatisticsProvider<ProjectQuery>, LinkableDatabaseManager<Project> {
 
-	private static final Log log = LogFactory.getLog(ProjectDatabaseManager.class);
 	/** used to get a new project id */
 	private GeneralDatabaseManager generalDatabaseManager;
 
@@ -232,6 +226,11 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 		return project;
 	}
 
+	/**
+	 * @param query
+	 * @param session
+	 * @return all projects that match the query
+	 */
 	public List<Project> getProjects(final ProjectQuery query, final DBSession session) {
 		return this.chain.perform(query, session);
 	}
@@ -291,15 +290,6 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 		}
 
 		return null;
-	}
-
-	private static boolean isUserInProject(final String username, final Project project) {
-		for (final ProjectMembership ms : project.getMemberships()) {
-			if (ms.getUser().getName().equals(username)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**

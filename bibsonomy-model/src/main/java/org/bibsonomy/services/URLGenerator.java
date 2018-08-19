@@ -46,6 +46,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.FavouriteLayoutSource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
@@ -331,7 +332,6 @@ public class URLGenerator {
 	 * 
 	 * @param intraHash
 	 * @param userName
-	 * @param systemUrl
 	 * @return returns the BibTex Export url
 	 */
 	@Deprecated // see getMSWordUrlByIntraHashAndUserName
@@ -344,7 +344,6 @@ public class URLGenerator {
 	 * 
 	 * @param intraHash
 	 * @param userName
-	 * @param systemUrl
 	 * @return returns the Endnote export url
 	 */
 	@Deprecated // FIXME: see getMSWordUrlByIntraHashAndUserName
@@ -357,7 +356,6 @@ public class URLGenerator {
 	 * 
 	 * @param intraHash
 	 * @param userName
-	 * @param systemUrl
 	 * @return returns the MS WORD Reference Manager url
 	 */
 	@Deprecated // FIXME: a more generic method getExportUrlForPost()
@@ -731,22 +729,13 @@ public class URLGenerator {
 	}
 
 	/**
-	 * Constructs the URL for the project's page.
-	 *
-	 * @param projectName
-	 * @return The URL for the project's page.
+	 * @param project
+	 * @return the url of the provided project
 	 */
-	public String getProjectUrlByProjectName(final String projectName) {
-		final String url = this.getProjectUrlString(projectName);
-		return this.getUrl(url);
-	}
+	public String getProjectUrlByProject(final Project project) {
+		final String url = this.projectHome + PROJECT_PREFIX + "/" + UrlUtils.encodePathSegment(project.getExternalId());
 
-	/**
-	 * @param projectName
-	 * @return
-	 */
-	private String getProjectUrlString(final String projectName) {
-		return this.projectHome + PROJECT_PREFIX + "/" + UrlUtils.encodePathSegment(projectName);
+		return this.getUrl(url);
 	}
 
 	/**

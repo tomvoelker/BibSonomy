@@ -550,45 +550,6 @@ public class Functions {
 	}
 
 	/**
-	 * TODO: remove!? Compares two strings word-based. (Maybe usefull in
-	 * future!)
-	 * 
-	 * @param newValue
-	 *        and oldValue
-	 * @return The difference between two strings. (inserted: green, deleted:
-	 *         red, not_changed)
-	 */
-	/*
-	 * public static String compareString(String newValue, String oldValue) {
-	 * 
-	 * 
-	 * if(newValue == null){
-	 * newValue=" ";
-	 * }
-	 * if(oldValue == null){
-	 * oldValue =" ";
-	 * }
-	 * diff_match_patch dmp = new diff_match_patch();
-	 * 
-	 * //split the texts based on words
-	 * LinesToCharsResult a = dmp.diff_linesToWords(newValue, oldValue);
-	 * 
-	 * String lineText1 = a.chars1;
-	 * String lineText2 = a.chars2;
-	 * List<String> lineArray = a.lineArray;
-	 * 
-	 * LinkedList<Diff> diffs = dmp.diff_main(lineText1, lineText2, false);
-	 * 
-	 * dmp.diff_charsToLines(diffs, lineArray);
-	 * 
-	 * //cleans the result so that be more human readable.
-	 * dmp.diff_cleanupSemantic(diffs);
-	 * 
-	 * //applies appropriate colors to the result. (red, green)
-	 * return dmp.diff_prettyHtml(diffs);
-	 * }
-	 */
-	/**
 	 * Quotes a String such that it is usable for JSON.
 	 * 
 	 * @param value
@@ -1044,26 +1005,5 @@ public class Functions {
 			log.error("error while checking for same host", e);
 		}
 		return false;
-	}
-
-	/**
-	 *
-	 * @return
-	 */
-	public static List<PersonName> reducedAuthorList(final List<PersonName> authors, boolean isWhole) {
-		int threshold = 10;
-		if (isWhole || authors.size() < threshold) {
-			return authors;
-		}
-		List<PersonName> return_authors = new LinkedList<>();
-		for (int i = 0; i <= threshold; i ++) {
-			return_authors.add(authors.get(i));
-		}
-		return return_authors;
-	}
-
-	public static String projectFormatDate(final Date projectDate) {
-		SimpleDateFormat format = new SimpleDateFormat("dd.MM.yy");
-		return format.format(projectDate);
 	}
 }
