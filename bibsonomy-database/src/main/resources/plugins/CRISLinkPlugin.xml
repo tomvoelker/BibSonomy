@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CRISLinkPlugin">
+    <update id="updateAllCRISLinkSources" parameterClass="crisLinkParam">
+        UPDATE cris_links
+            SET source_id = #newContentId#
+        WHERE source_id = #sourceId# AND source_type = #sourceType.id#
+    </update>
+
+    <update id="updateAllCRISLinkTargets" parameterClass="crisLinkParam">
+        UPDATE cris_links
+        SET target_id = #newContentId#
+        WHERE target_id = #targetId# AND target_type = #targetType.id#
+    </update>
+
+    <insert id="logCRISLinkDelete" parameterClass="crisLinkParam">
+        INSERT INTO log_cris_links (<include refid="allCRISLinkAttributes" />, new_id, log_date, log_user)
+        SELECT <include refid="allCRISLinkAttributes" />, -1, CURRENT_TIMESTAMP, 'on_delete'
+        FROM cris_links
+        WHERE (source_id = #sourceId# AND source_type = #sourceType.id#) OR
+        (target_id = #targetId# AND target_type = #targetType.id#)
+    </insert>
+
+    <delete id="deleteAllCrisLinks" parameterClass="crisLinkParam">
+        DELETE FROM cris_links
+        WHERE (source_id = #sourceId# AND source_type = #sourceType.id#) OR
+              (target_id = #targetId# AND target_type = #targetType.id#)
+    </delete>
+</sqlMap>

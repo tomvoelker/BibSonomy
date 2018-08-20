@@ -128,7 +128,7 @@ public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final Project postsAfterUpdate = PROJECT_DATABASE_MANAGER.getProjectDetails(PROJECT_ID, true, this.dbSession);
 
 		assertEquals(newBuget, postsAfterUpdate.getBudget(), 0.001);
-		assertNotEquals(dbId, postsAfterUpdate.getId()); // check for id change
+		assertNotEquals(dbId, postsAfterUpdate.getId().intValue()); // check for id change
 	}
 
 	@Test

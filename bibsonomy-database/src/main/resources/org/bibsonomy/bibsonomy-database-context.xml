@@ -370,6 +370,7 @@
 					<property name="personDatabaseManager" ref="personDatabaseManager" />
 				</bean>
 				<bean class="org.bibsonomy.database.plugin.plugins.ProjectPlugin" />
+				<bean class="org.bibsonomy.database.plugin.plugins.CRISLinkPlugin" />
 			</list>
 		</property>
 	</bean>

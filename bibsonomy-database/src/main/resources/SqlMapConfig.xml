@@ -86,4 +86,5 @@
 	<sqlMap resource="plugins/GoldStandardRelation.xml" />
 	<sqlMap resource="plugins/DiscussionPlugin.xml" />
 	<sqlMap resource="plugins/ProjectPlugin.xml" />
+	<sqlMap resource="plugins/CRISLinkPlugin.xml" />
 </sqlMapConfig>

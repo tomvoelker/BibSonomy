@@ -371,6 +371,11 @@ public class Person implements Linkable, Serializable {
 		return this.getPersonId();
 	}
 
+	@Override
+	public Integer getId() {
+		return this.personChangeId;
+	}
+
 	/**
 	 * returns true if specific attributes are equal or at least null for one person
 	 * @param person

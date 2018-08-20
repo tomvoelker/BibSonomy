@@ -10,4 +10,6 @@ public interface Linkable {
 	 * @return the linkable id of the resource
 	 */
 	public String getLinkableId();
+
+	public Integer getId();
 }

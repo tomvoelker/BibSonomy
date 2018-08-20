@@ -543,4 +543,9 @@ public class Post<T extends Resource> implements Linkable, Serializable {
 	public String getLinkableId() {
 		return this.resource.getInterHash();
 	}
+
+	@Override
+	public Integer getId() {
+		return this.contentId;
+	}
 }
