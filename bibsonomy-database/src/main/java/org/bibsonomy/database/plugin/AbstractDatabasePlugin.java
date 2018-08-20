@@ -232,7 +232,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonUpdate(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPersonUpdate(String personId, DBSession session) {
+	public void onPersonUpdate(Person oldPerson, Person newPerson, DBSession session) {
 		// noop
 		
 	}

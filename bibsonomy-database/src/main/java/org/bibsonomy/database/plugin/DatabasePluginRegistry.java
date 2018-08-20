@@ -309,9 +309,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonUpdate(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPersonUpdate(String personId, DBSession session) {
+	public void onPersonUpdate(Person oldPerson, Person newPerson, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPersonUpdate(personId, session);
+			plugin.onPersonUpdate(oldPerson, , session);
 		}	
 		
 	}

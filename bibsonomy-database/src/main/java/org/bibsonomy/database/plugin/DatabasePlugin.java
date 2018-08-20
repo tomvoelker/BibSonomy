@@ -332,10 +332,11 @@ public interface DatabasePlugin {
 	
 	/**
 	 * called when a person will be updated
-	 * @param personId
+	 * @param oldPerson
+	 * @param newPerson
 	 * @param session
 	 */
-	public void onPersonUpdate(final String personId, final DBSession session);
+	public void onPersonUpdate(final Person oldPerson, Person newPerson, final DBSession session);
 	
 	/**
 	 * called when a person will be updated by username change

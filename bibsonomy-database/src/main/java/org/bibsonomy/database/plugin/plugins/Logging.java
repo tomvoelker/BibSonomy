@@ -297,8 +297,8 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onPersonUpdate(final String personId, final DBSession session) {
-		this.insert("logPersonUpdate", personId, session);
+	public void onPersonUpdate(final Person oldPerson, Person newPerson, final DBSession session) {
+		this.insert("logPersonUpdate", oldPerson, session);
 	}
 
 	@Override

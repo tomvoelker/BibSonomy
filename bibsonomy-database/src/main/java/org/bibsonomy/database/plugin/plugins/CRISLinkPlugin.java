@@ -20,7 +20,7 @@ public class CRISLinkPlugin extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onPersonUpdate(String personId, DBSession session) {
+	public void onPersonUpdate(Person oldPerson, Person newPerson, DBSession session) {
 		// update person link
 
 		throw new UnsupportedOperationException("please implement me");

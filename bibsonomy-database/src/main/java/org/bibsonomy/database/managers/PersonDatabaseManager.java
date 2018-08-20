@@ -31,6 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,6 +40,8 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.JobResult;
+import org.bibsonomy.common.errors.MissingObjectErrorMessage;
 import org.bibsonomy.common.exceptions.DuplicateEntryException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
@@ -196,20 +199,31 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		this.updateField(person, "Person", session); // XXX: this is not a single field update
 	}
 
-	private void updateField(final Person person, final String fieldName, final DBSession session) {
+	private JobResult updateField(final Person person, final String fieldName, final DBSession session) {
 		session.beginTransaction();
 		try {
+			// first check if the person is in the database
+			final String personId = person.getPersonId();
+
+			final Person personInDB = getPersonById(personId, session);
+			if (!present(personInDB)) {
+				return JobResult.buildFailure(Collections.singletonList(new MissingObjectErrorMessage(personId, "person")));
+			}
 			// prepare person
 			person.setPersonChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+
 			// inform the plugins about the update
-			this.plugins.onPersonUpdate(person.getPersonId(), session);
-			// update specific field
+			this.plugins.onPersonUpdate(personInDB, person, session);
+
+			// update (specific field)
 			this.update("update" + fieldName, person, session);
 
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
+
+		return JobResult.buildSuccess();
 	}
 
 	/**
