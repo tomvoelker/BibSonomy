@@ -32,7 +32,7 @@
  		</selectKey>
 	</insert>
 	
-	<insert id='addResourceRelation' parameterClass='org.bibsonomy.model.ResourcePersonRelation'>
+	<insert id='insertResourceRelation' parameterClass='org.bibsonomy.model.ResourcePersonRelation'>
 		INSERT INTO pub_person (<include refid="commonResourcePersonRelationColumnsPlain"/>)
 			VALUES (<include refid="commonResourcePersonRelationAttributes" />)
 			

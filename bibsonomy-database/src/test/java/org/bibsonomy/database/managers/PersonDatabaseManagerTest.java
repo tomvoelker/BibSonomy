@@ -72,7 +72,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Before
 	public void init() {
-		if (!initialized) {			
+		if (!initialized) {
 			this.testPerson = new Person();
 			this.testPerson.setMainName(new PersonName("Max", "Mustermann"));
 			PERSON_DATABASE_MANAGER.createPerson(this.testPerson, this.dbSession);
