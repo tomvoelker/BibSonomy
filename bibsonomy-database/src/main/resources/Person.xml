@@ -53,30 +53,25 @@
 			AND person_name.last_name LIKE #lastName#
 			GROUP BY person_id
 	</select>
-	
+
 	<update id='updatePerson' parameterClass='org.bibsonomy.model.Person'>
-		UPDATE person SET person_change_id = #personChangeId#, academic_degree = #academicDegree#, orcid = #orcid#, researcherid = #researcherid#, post_ctr = #postCounter#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
-			WHERE person.person_id = #personId#
+		UPDATE person SET person_change_id = #personChangeId#, college = #college#, email = #email#, homepage = #homepage#, gender = #gender#, dnb_person_id  = #dnbPersonId#, academic_degree = #academicDegree#, orcid = #orcid#, researcherid = #researcherid#, post_ctr = #postCounter#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
+		WHERE person.person_id = #personId#
 	</update>
 
 	<update id='updateOrcid' parameterClass='org.bibsonomy.model.Person'>
 		UPDATE person SET person_change_id = #personChangeId#, orcid = #orcid#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
-		WHERE person.person_id = #personId#
+		WHERE person_id = #personId#
 	</update>
+
 	<update id='updateResearcherid' parameterClass='org.bibsonomy.model.Person'>
-		UPDATE person SET person_change_id = #personChangeId#, researcherid = #researcherid#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
-		WHERE person.person_id = #personId#
+		UPDATE person SET researcherid = #researcherid#, person_change_id = #personChangeId#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
+		WHERE person_id = #personId#
 	</update>
 
 	<update id='updateAcademicDegree' parameterClass='org.bibsonomy.model.Person'>
 		UPDATE person SET person_change_id = #personChangeId#, academic_degree = #academicDegree#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
-			WHERE person.person_id = #personId#
-	</update>
-	
-
-	<update id='updatePersonOnAll' parameterClass='org.bibsonomy.model.Person'>
-		UPDATE person SET person_change_id = #personChangeId#, college = #college#, email = #email#, homepage = #homepage#, gender = #gender#, dnb_person_id  = #dnbPersonId#, academic_degree = #academicDegree#, orcid = #orcid#, post_ctr = #postCounter#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
-			WHERE person.person_id = #personId#
+			WHERE person_id = #personId#
 	</update>
 	
 	<update id='updateCollege' parameterClass='org.bibsonomy.model.Person'>

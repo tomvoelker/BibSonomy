@@ -94,7 +94,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	public void createPerson(final Person person, final DBSession session) {
 		session.beginTransaction();
-		final String tempPersonId = generatePersonId(person, session);
+		final String tempPersonId = this.generatePersonId(person, session);
 		person.setPersonId(tempPersonId);
 		try {
 			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
@@ -113,7 +113,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @param session
 	 * @return
 	 */
-	private static String generatePersonId(final Person person, final DBSession session) {
+	private String generatePersonId(final Person person, final DBSession session) {
 		int counter = 1;
 		final String newPersonId = PersonUtils.generatePersonIdBase(person);
 		String tempPersonId = newPersonId;
@@ -193,33 +193,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @param session
 	 */
 	public void updatePerson(final Person person, final DBSession session) {
-		session.beginTransaction();
-		try {
-			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
-			this.insert("updatePerson", person, session);
-			this.plugins.onPersonUpdate(person.getPersonId(), session);
-			session.commitTransaction();
-		} finally {
-			session.endTransaction();
-		}
-	}
-
-	/**
-	 * Updates all fields of a given Person in the database
-	 * 
-	 * @param person
-	 * @param session
-	 */
-	public void updatePersonOnAll(final Person person, final DBSession session) {
-		session.beginTransaction();
-		try {
-			this.plugins.onPersonUpdate(person.getPersonId(), session);
-			person.setPersonChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
-			this.insert("updatePersonOnAll", person, session);
-			session.commitTransaction();
-		} finally {
-			session.endTransaction();
-		}
+		this.updateField(person, "Person", session); // XXX: this is not a single field update
 	}
 
 	private void updateField(final Person person, final String fieldName, final DBSession session) {
@@ -240,7 +214,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * Update the OrcID of a Person
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 */
@@ -311,8 +285,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			session.commitTransaction();
 			return true;
 		} catch (final DuplicateEntryException e) {
-			session.commitTransaction(); // FIXME: only called to not cancel the
-											// transaction
+			session.commitTransaction(); // FIXME: only called to not cancel the transaction
 			return false;
 		} finally {
 			session.endTransaction();
@@ -536,7 +509,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	private void mergeAllPubs(PersonMatch match, String loginUser, DBSession session) {
 		List<ResourcePersonRelation> allRelationsPerson2 = this.queryForList("getResourcePersonRelationsByPersonId", match.getPerson2().getPersonId(), ResourcePersonRelation.class, session);
 
-		for (ResourcePersonRelation relation : allRelationsPerson2) {
+		for (final ResourcePersonRelation relation : allRelationsPerson2) {
 			// generate new person_change_id and log the old relation
 			this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
 			this.insert("logPubPersonUpdates", relation.getPersonRelChangeId(), session);
@@ -620,7 +593,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 		boolean edit = this.combinePersonsAttributes(match.getPerson1(), match.getPerson2());
 		if (edit) {
-			this.updatePersonOnAll(match.getPerson1(), session);
+			this.updatePerson(match.getPerson1(), session);
 		}
 		this.mergePersonAttributes(match, session);
 		// sets match state to 2
@@ -823,8 +796,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			}
 			// add changes to both so they can be compared with mergable()
 
-			this.updatePersonOnAll(person1, session);
-			this.updatePersonOnAll(person2, session);
+			this.updatePerson(person1, session);
+			this.updatePerson(person2, session);
 			session.beginTransaction();
 			try {
 				this.performMerge(match, loginUser, session);
@@ -897,7 +870,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			}
 		}
 		// new PersonName needs to be added
-		PersonName newMainName = new PersonName(nameParts[1], nameParts[0]);
+		final PersonName newMainName = new PersonName(nameParts[1], nameParts[0]);
 		newMainName.setChangedBy(loginUser);
 		newMainName.setChangedAt(new Date());
 		newMainName.setMain(true);
@@ -913,7 +886,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @param match
 	 * @param loginUser
 	 */
-	private Boolean testMergeOnClaims(PersonMatch match, String loginUser) {
+	private boolean testMergeOnClaims(PersonMatch match, String loginUser) {
 		return match.testMergeOnClaims(loginUser);
 	}
 
