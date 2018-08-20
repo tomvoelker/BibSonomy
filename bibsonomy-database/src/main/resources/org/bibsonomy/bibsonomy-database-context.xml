@@ -352,6 +352,7 @@
 				<bean class="org.bibsonomy.database.managers.util.cris.ProjectPersonLinkDirectionChecker" />
 			</list>
 		</property>
+		<property name="plugins" ref="databasePluginManager" />
 	</bean>
 	
 	<bean id="databasePluginManager" class="org.bibsonomy.database.plugin.DatabasePluginRegistry" factory-method="getInstance">
