@@ -3381,7 +3381,7 @@ public class DBLogic implements LogicInterface {
 	}
 
 	@Override
-	public void addResourceRelation(final ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException {
+	public void createResourceRelation(final ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException {
 		this.ensureLoggedInAndNoSpammer();
 		ValidationUtils.assertNotNull(resourcePersonRelation.getPerson());
 		ValidationUtils.assertNotNull(resourcePersonRelation.getPerson().getPersonId());

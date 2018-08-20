@@ -167,7 +167,7 @@ public class EditPublicationController extends AbstractEditPublicationController
 			resourcePersonRelation.setChangedBy(loginUser.getName());
 			resourcePersonRelation.setRelationType(command.getPersonRole());
 			resourcePersonRelation.setPersonIndex(command.getPersonIndex());
-			this.logic.addResourceRelation(resourcePersonRelation);
+			this.logic.createResourceRelation(resourcePersonRelation);
 			
 			if (!present(command.getPost().getResourcePersonRelations())) {
 				command.getPost().setResourcePersonRelations(new ArrayList<ResourcePersonRelation>());

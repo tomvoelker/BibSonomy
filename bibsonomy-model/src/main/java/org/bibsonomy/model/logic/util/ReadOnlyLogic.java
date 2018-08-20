@@ -796,10 +796,10 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#addResourceRelation(org.bibsonomy.model.ResourcePersonRelation)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createResourceRelation(org.bibsonomy.model.ResourcePersonRelation)
 	 */
 	@Override
-	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException {
+	public void createResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException {
 		throwReadOnlyException();
 	}
 	

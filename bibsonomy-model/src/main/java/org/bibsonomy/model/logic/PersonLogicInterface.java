@@ -68,14 +68,19 @@ public interface PersonLogicInterface {
 	 */
 	public void updatePerson(final Person person, final PersonUpdateOperation operation);
 
-	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException;
+	public void createResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException;
 
 	/**
-	 * FIXME: remove database id TODO_PERSONS
+	 * FIXME: remove database id
 	 * removes a resource relation
 	 * @param resourceRelationId
 	 */
 	public void removeResourceRelation(int resourceRelationId);
+
+	/**
+	 * @param withPersonId
+	 */
+	public void createPersonName(PersonName withPersonId);
 	
 	/**
 	 * FIXME: remove database id TODO_PERSONS
@@ -83,11 +88,6 @@ public interface PersonLogicInterface {
 	 * @param personNameId
 	 */
 	public void removePersonName(Integer personNameId);
-
-	/**
-	 * @param withPersonId
-	 */
-	public void createPersonName(PersonName withPersonId);
 	
 	/**
 	 * @param queryString a search string coming from an autocomplete field. Planned but not yet implemented: May contain an incomplete word, which will be internally autocompleted before searching persons

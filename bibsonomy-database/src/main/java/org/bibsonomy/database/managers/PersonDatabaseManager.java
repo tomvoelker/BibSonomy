@@ -299,7 +299,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		session.beginTransaction();
 		try {
 			resourcePersonRelation.setPersonRelChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
-			this.insert("addResourceRelation", resourcePersonRelation, session);
+			this.insert("createResourceRelation", resourcePersonRelation, session);
 			session.commitTransaction();
 			return true;
 		} catch (final DuplicateEntryException e) {

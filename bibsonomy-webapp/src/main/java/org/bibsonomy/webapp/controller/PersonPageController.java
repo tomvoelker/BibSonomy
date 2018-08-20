@@ -44,7 +44,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
@@ -52,7 +51,6 @@ import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
@@ -63,7 +61,6 @@ import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
-import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import org.bibsonomy.webapp.command.PersonPageCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -73,11 +70,8 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
-import org.json.JSONException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 
 /**
@@ -358,7 +352,7 @@ public class PersonPageController extends SingleResourceListController implement
 			resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
 			resourcePersonRelation.setRelationType(command.getFormPersonRole());
 
-			this.logic.addResourceRelation(resourcePersonRelation);
+			this.logic.createResourceRelation(resourcePersonRelation);
 		} catch (LogicException e) {
 			command.getLogicExceptions().add(e);
 			jsonResponse.put("exception", e.getClass().getSimpleName());
@@ -391,7 +385,7 @@ public class PersonPageController extends SingleResourceListController implement
 			final PersonResourceRelationType relationType = PersonResourceRelationType.valueOf(StringUtils.upperCase(role)); 
 			resourcePersonRelation.setRelationType(relationType);
 			try {
-				this.logic.addResourceRelation(resourcePersonRelation);
+				this.logic.createResourceRelation(resourcePersonRelation);
 			} catch (LogicException e) {
 				command.getLogicExceptions().add(e);
 			}

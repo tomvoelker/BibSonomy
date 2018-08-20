@@ -268,7 +268,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 		resourcePersonRelation.setPost(command.getPost());
 		resourcePersonRelation.setRelationType(command.getRequestedRole());
 		resourcePersonRelation.setPersonIndex(command.getRequestedIndex().intValue());
-		this.logic.addResourceRelation(resourcePersonRelation);
+		this.logic.createResourceRelation(resourcePersonRelation);
 	}
 
 	private static PersonName getMainPersonName(DisambiguationPageCommand command) {
