@@ -94,7 +94,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	public void createPerson(final Person person, final DBSession session) {
 		session.beginTransaction();
-		final String tempPersonId = this.generatePersonId(person, session);
+		final String tempPersonId = generatePersonId(person, session);
 		person.setPersonId(tempPersonId);
 		try {
 			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
@@ -113,7 +113,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @param session
 	 * @return
 	 */
-	private String generatePersonId(final Person person, final DBSession session) {
+	private static String generatePersonId(final Person person, final DBSession session) {
 		int counter = 1;
 		final String newPersonId = PersonUtils.generatePersonIdBase(person);
 		String tempPersonId = newPersonId;
@@ -144,7 +144,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @return Person
 	 */
 	public Person getPersonByUser(final String user, final DBSession session) {
-		return (Person) this.queryForObject("getPersonByUser", user, session);
+		return this.queryForObject("getPersonByUser", user, Person.class, session);
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @return Person
 	 */
 	public Person getPersonById(final String id, final DBSession session) {
-		return (Person) this.queryForObject("getPersonById", id, session);
+		return this.queryForObject("getPersonById", id, Person.class, session);
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @return Person
 	 */
 	public Person getPersonByDnbId(final String dnbId, final DBSession session) {
-		return (Person) this.queryForObject("getPersonByDnbId", dnbId, session);
+		return this.queryForObject("getPersonByDnbId", dnbId, Person.class, session);
 	}
 
 	/**
@@ -204,8 +204,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		}
 	}
 
-
-
 	/**
 	 * Updates all fields of a given Person in the database
 	 * 
@@ -227,9 +225,13 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	private void updateField(final Person person, final String fieldName, final DBSession session) {
 		session.beginTransaction();
 		try {
+			// prepare person
 			person.setPersonChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
-			this.update("update" + fieldName, person, session);
+			// inform the plugins about the update
 			this.plugins.onPersonUpdate(person.getPersonId(), session);
+			// update specific field
+			this.update("update" + fieldName, person, session);
+
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -745,7 +747,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	/**
 	 * add user to the deny list of a match denys a match for all if a threshold
 	 * is reached
-	 * @param matchID
+	 * @param match
+	 * @param userName
 	 * @param session
 	 */
 	public void denyMatch(PersonMatch match, String userName, DBSession session) {
