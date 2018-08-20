@@ -33,7 +33,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -3426,6 +3425,7 @@ public class DBLogic implements LogicInterface {
 	 * @param person		person object containing the new values
 	 * @param operation		the desired update operation
 	 */
+	@Override
 	public void updatePerson(final Person person, final PersonUpdateOperation operation) {
 		this.ensureLoggedInAndNoSpammer();
 		
@@ -3500,8 +3500,6 @@ public class DBLogic implements LogicInterface {
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
-	 * 
-	 * FIXME TODO integrate into maincreateOrUpdatePerson 
 	 */
 	@Override
 	public void createOrUpdatePerson(final Person person) {
@@ -3792,9 +3790,9 @@ public class DBLogic implements LogicInterface {
 	public List<PersonMatch> getPersonMatches(String personID) {
 		final DBSession session = this.openSession();
 		if (present(this.loginUser.getName())){
-			return this.personDBManager.getMatchesForFilterWithUserName(session, personID, this.loginUser.getName());
+			return this.personDBManager.getMatchesForFilterWithUserName(personID, this.loginUser.getName(), session);
 		}
-		return this.personDBManager.getMatchesFor(session, personID);
+		return this.personDBManager.getMatchesFor(personID, session);
 	}
 
 	/**
@@ -3807,7 +3805,7 @@ public class DBLogic implements LogicInterface {
 	public void denieMerge(PersonMatch match) {
 		final DBSession session = this.openSession();
 		if (present(this.loginUser.getName())) {
-			this.personDBManager.denyMatch(match, session, this.loginUser.getName());
+			this.personDBManager.denyMatch(match, this.loginUser.getName(), session);
 		}
 	}
 	
