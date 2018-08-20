@@ -493,11 +493,9 @@ public class PersonPageController extends SingleResourceListController implement
 			command.setResponseString(jsonResponse.toString());
 			return Views.AJAX_JSON;
 		}
-		
-		
+
 		final PersonName personName = command.getNewName();
 		personName.setPersonId(command.getPerson().getPersonId());
-		
 		for (PersonName otherName : person.getNames()) {
 			if (personName.equals(otherName)) {
 				//command.setResponseString(otherName.getPersonNameChangeId()+ "");
@@ -508,7 +506,7 @@ public class PersonPageController extends SingleResourceListController implement
 			}
 		}
 		
-		try {			
+		try {
 			this.logic.createPersonName(personName);
 		} catch (Exception e) {
 			jsonResponse.put("status", false);

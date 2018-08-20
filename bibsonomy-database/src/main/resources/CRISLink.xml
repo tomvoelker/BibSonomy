@@ -5,12 +5,13 @@
 
     <insert id="insertCRISLink" parameterClass="crisLinkParam">
         INSERT INTO cris_links (id, source_id, source_type, target_id, target_type, start_date, end_date, linktype_type, linktype_value, link_source, updated_by, updated_at)
-          VALUES (#linkableId#, #sourceId#, #sourceType.id#, #targetId#, #targetType.id#, #link.startDate#, #link.endDate#, #link.linkType,handler=org.bibsonomy.database.common.typehandler.CRISLinkTypeClassTypeHandlerCallback#, #link.linkType#, #link.dataSource#, #updatedBy#, #updatedAt#)
+          VALUES (#link.id#, #sourceId#, #sourceType.id#, #targetId#, #targetType.id#, #link.startDate#, #link.endDate#, #link.linkType,handler=org.bibsonomy.database.common.typehandler.CRISLinkTypeClassTypeHandlerCallback#, #link.linkType#, #link.dataSource#, #updatedBy#, #updatedAt#)
     </insert>
 
     <update id="updateCRISLink" parameterClass="crisLinkParam">
         UPDATE cris_links
-           SET  start_date = #link.startDate#,
+           SET  id = #link.id#,
+                start_date = #link.startDate#,
                 end_date = #link.endDate#,
                 linktype_type = #link.linkType,handler=org.bibsonomy.database.common.typehandler.CRISLinkTypeClassTypeHandlerCallback#,
                 linktype_value = #link.linkType#,
@@ -25,8 +26,8 @@
           WHERE source_id = #sourceId# AND source_type = #sourceType.id# AND target_id = #targetId# AND target_type = #targetType.id#
     </delete>
 
-    <select id="getCRISLinkDetails" parameterClass="crisLinkParam" resultMap="CRISLinkCommon.crisLink">
-        SELECT start_date, end_date, linktype_type, linktype_value, link_source
+    <select id="getCRISLinkDetails" parameterClass="crisLinkParam" resultMap="CRISLinkCommon.simpleCrisLink">
+        SELECT id, start_date, end_date, linktype_type, linktype_value, link_source
           FROM cris_links
           WHERE source_id = #sourceId# AND source_type = #sourceType.id# AND target_id = #targetId# AND target_type = #targetType.id#
     </select>

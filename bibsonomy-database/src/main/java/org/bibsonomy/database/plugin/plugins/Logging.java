@@ -48,6 +48,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
@@ -321,25 +322,33 @@ public class Logging extends AbstractDatabasePlugin {
 		this.insert("logPubPersonDelete", rel, session);
 	}
 
-	@Override
-	public void onProjectUpdate(final Project oldProject, final Project newProject, User loggedinUser, DBSession session) {
+	private void logUpdate(final String statement, final int oldId, final int newId, User loggedinUser, DBSession session) {
 		final LoggingParam param = new LoggingParam();
-		param.setNewContentId(newProject.getId());
-		param.setOldContentId(oldProject.getId());
+		param.setNewContentId(newId);
+		param.setOldContentId(oldId);
 		param.setDate(new Date());
 		param.setPostEditor(loggedinUser); // TODO: rename field to editor
 
-		this.insert("logProjectUpdate", param, session);
+		this.insert(statement, param, session);
 	}
 
 	@Override
-	public void onProjectDelete(Project project, User loggedinUser, DBSession session) {
-		final LoggingParam param = new LoggingParam();
-		param.setNewContentId(-1);
-		param.setOldContentId(project.getId());
-		param.setDate(new Date());
-		param.setPostEditor(loggedinUser);
+	public void onProjectUpdate(final Project oldProject, final Project newProject, final User loggedinUser, final DBSession session) {
+		this.logUpdate("logProjectUpdate", oldProject.getId(), newProject.getId(), loggedinUser, session);
+	}
 
-		this.insert("logProjectUpdate", param, session);
+	@Override
+	public void onProjectDelete(final Project project, final User loggedinUser, DBSession session) {
+		this.logUpdate("logProjectUpdate", project.getId(), -1, loggedinUser, session);
+	}
+
+	@Override
+	public void onCRISLinkUpdate(CRISLink oldCRISLink, CRISLink link, User loginUser, DBSession session) {
+		this.logUpdate("logCRISLinkUpdate", oldCRISLink.getId(), link.getId(), loginUser, session);
+	}
+
+	@Override
+	public void onCRISLinkDelete(CRISLink crisLink, User loginUser, DBSession session) {
+		this.logUpdate("logCRISLinkUpdate", crisLink.getId(), -1, loginUser, session);
 	}
 }

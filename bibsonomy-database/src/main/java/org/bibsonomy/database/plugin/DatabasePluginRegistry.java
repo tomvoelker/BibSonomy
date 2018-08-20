@@ -58,7 +58,7 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	/**
 	 * @return {@link DatabasePluginRegistry} instance
 	 */
-	@Deprecated
+	@Deprecated // TODO: config via spring
 	public static DatabasePluginRegistry getInstance() {
 		return singleton;
 	}

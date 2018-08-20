@@ -9,6 +9,9 @@ import java.util.Date;
  */
 public class CRISLink {
 
+	/** the database id; only use in database module */
+	private Integer id;
+
 	private Linkable source;
 
 	private Linkable target;
@@ -20,6 +23,20 @@ public class CRISLink {
 	private CRISLinkType linkType;
 
 	private CRISLinkDataSource dataSource;
+
+	/**
+	 * @return the id
+	 */
+	public Integer getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
 	/**
 	 * @return the source

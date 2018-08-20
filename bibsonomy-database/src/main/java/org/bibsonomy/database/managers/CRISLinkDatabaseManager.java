@@ -62,7 +62,7 @@ public class CRISLinkDatabaseManager extends AbstractDatabaseManager {
 			this.ensureLinkDirection(link);
 
 			final ErrorAwareResult<CRISLinkParam> result = createParam(link, loginUser, session);
-			CRISLinkParam param = result.getResult();
+			final CRISLinkParam param = result.getResult();
 			final List<ErrorMessage> errors = result.getErrors();
 
 			/*
@@ -73,8 +73,7 @@ public class CRISLinkDatabaseManager extends AbstractDatabaseManager {
 			}
 
 			final Integer newID = this.generalDatabaseManager.getNewId(ConstantID.LINKABLE_ID, session);
-			param.setLinkableId(newID);
-
+			link.setId(newID);
 
 			// insert the cris link
 			this.insert("insertCRISLink", param, session);
@@ -197,6 +196,9 @@ public class CRISLinkDatabaseManager extends AbstractDatabaseManager {
 			if (present(errors)) {
 				return JobResult.buildFailure(errors);
 			}
+
+			final Integer newID = this.generalDatabaseManager.getNewId(ConstantID.LINKABLE_ID, session);
+			link.setId(newID);
 
 			this.plugins.onCRISLinkUpdate(crisLink, link, loginUser, session);
 			this.update("updateCRISLink", param, session);

@@ -12,8 +12,6 @@ public class CRISLinkParam extends GenericParam {
 
 	private CRISLink link;
 
-	private int linkableId;
-
 	private CRISEntityType sourceType;
 
 	private CRISEntityType targetType;
@@ -38,20 +36,6 @@ public class CRISLinkParam extends GenericParam {
 	 */
 	public void setLink(CRISLink link) {
 		this.link = link;
-	}
-
-	/**
-	 * @return the linkableId
-	 */
-	public int getLinkableId() {
-		return linkableId;
-	}
-
-	/**
-	 * @param linkableId the linkableId to set
-	 */
-	public void setLinkableId(int linkableId) {
-		this.linkableId = linkableId;
 	}
 
 	/**

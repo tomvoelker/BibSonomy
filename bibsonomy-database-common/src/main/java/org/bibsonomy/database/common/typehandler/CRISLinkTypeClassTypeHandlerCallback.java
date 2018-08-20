@@ -1,5 +1,6 @@
 package org.bibsonomy.database.common.typehandler;
 
+import static org.bibsonomy.util.ValidationUtils.present;
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 import org.bibsonomy.model.cris.ProjectPersonLinkType;
 import org.bibsonomy.util.collection.BiHashMap;
@@ -21,9 +22,11 @@ public class CRISLinkTypeClassTypeHandlerCallback extends AbstractTypeHandlerCal
 	}
 
 	@Override
-	public void setParameter(ParameterSetter parameterSetter, Object o) throws SQLException {
-		final Class<?> parameterClass = o.getClass();
-		parameterSetter.setInt(LINK_TYPE_CLASS_ID_MAP.get(parameterClass).intValue());
+	public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {
+		if (present(parameter)) {
+			final Class<?> parameterClass = parameter.getClass();
+			setter.setInt(LINK_TYPE_CLASS_ID_MAP.get(parameterClass).intValue());
+		}
 	}
 
 	@Override

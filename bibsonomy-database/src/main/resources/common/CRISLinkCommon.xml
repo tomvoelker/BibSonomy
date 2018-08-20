@@ -3,11 +3,18 @@
 
 <sqlMap namespace="CRISLinkCommon">
 
-    <!-- tag with its global count, i.e. the number of posts it is part of -->
-    <resultMap id="crisLink" class="crisLink">
+    <!-- a simple cris link, which only contains the information and no link source or target -->
+    <resultMap id="simpleCrisLink" class="crisLink" groupBy="id">
+        <result property="id"			column="id"             javaType="int" />
         <result property="linkType"     column="linktype_value" javaType="crisLinkType" />
         <result property="startDate" 	column="start_date"		javaType="date" />
         <result property="endDate"	    column="end_date"	    javaType="date" />
         <result property="dataSource"   column="link_source"    javaType="crisLinkDataSource" />
     </resultMap>
+
+    <sql id="allCRISLinkAttributes">
+        id, source_id, source_type, target_id, target_type, start_date, end_date, linktype_type, linktype_value,
+        link_source, updated_by, updated_at
+    </sql>
+
 </sqlMap>

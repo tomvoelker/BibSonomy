@@ -247,5 +247,12 @@
 		FROM projects
 		WHERE id = #oldContentId#
 	</insert>
+
+	<insert id="logCRISLinkUpdate" parameterClass="loggingParam">
+		INSERT INTO log_cris_links (<include refid="allCRISLinkAttributes" />, new_id, log_date, log_user)
+		SELECT <include refid="allCRISLinkAttributes" />, #newContentId#, #date#, #postEditor.name#
+		FROM cris_links
+		WHERE id = #oldContentId#
+	</insert>
 	
 </sqlMap>
