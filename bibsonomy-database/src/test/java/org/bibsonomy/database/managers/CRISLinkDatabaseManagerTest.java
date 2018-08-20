@@ -9,11 +9,14 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.CRISLinkDataSource;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.cris.ProjectPersonLinkType;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.util.Date;
 
 /**
  * tests for {@link CRISLinkDatabaseManager}
@@ -45,13 +48,21 @@ public class CRISLinkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById("w.test.1", this.dbSession);
 		link.setTarget(person);
 
-		link.setStartDate(projectDetails.getStartDate());
-		link.setEndDate(projectDetails.getEndDate());
+		final Date startDate = projectDetails.getStartDate();
+		final Date endDate = projectDetails.getEndDate();
+		link.setStartDate(startDate);
+		link.setEndDate(endDate);
 
 		link.setLinkType(ProjectPersonLinkType.MEMBER);
+		link.setDataSource(CRISLinkDataSource.SYSTEM);
 
 		final JobResult result = CRISLINK_DATABASE_MANAGER.createCRISLink(link, new User("testuser1"), this.dbSession);
 		assertEquals(Status.OK, result.getStatus());
+
+		final CRISLink crisLink = CRISLINK_DATABASE_MANAGER.getCRISLink(person, projectDetails, this.dbSession);
+		assertEquals(endDate, crisLink.getEndDate());
+		assertEquals(startDate, crisLink.getStartDate());
+		assertEquals(CRISLinkDataSource.SYSTEM, crisLink.getDataSource());
 	}
 
 	/**

@@ -799,6 +799,6 @@ VALUES
 	(1, '122323-2323', 'posts', 'PoSTs', NULL, NULL, '2018-07-31 00:17:56', '2019-07-31 00:26:16', 'DFG', 130000.45, null, '2018-07-31 00:17:56', 'testuser1'),
 	(2, '122323-2323', 'posts_ii', 'PoSTs II', NULL, NULL, '2018-09-29 00:17:56', '2018-07-31 00:26:16', 'DFG', 130000.45, 1, '2018-07-31 00:17:56', 'testuser1');
 
-INSERT INTO `cris_links` (`id`, `source_id`, `source_type`, `target_id`, `target_type`, `start_date`, `end_date`, `linktype_type`, `linktype_value`, `updated_by`, `updated_at`)
+INSERT INTO `cris_links` (`id`, `source_id`, `source_type`, `target_id`, `target_type`, `start_date`, `end_date`, `linktype_type`, `linktype_value`, `link_source`, `updated_by`, `updated_at`)
 VALUES
-	(1, 1, 3, 5, 2, '2018-07-31 00:17:56', '2019-07-31 00:26:16', 1, '2', 'testuser1', '2018-08-06 02:25:31');
+	(1, 1, 3, 5, 2, '2018-07-31 00:17:56', '2019-07-31 00:26:16', 1, '2', 1, 'testuser1', '2018-08-06 02:25:31');

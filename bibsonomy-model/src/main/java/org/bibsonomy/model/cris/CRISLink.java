@@ -19,6 +19,8 @@ public class CRISLink {
 
 	private CRISLinkType linkType;
 
+	private CRISLinkDataSource dataSource;
+
 	/**
 	 * @return the source
 	 */
@@ -87,5 +89,19 @@ public class CRISLink {
 	 */
 	public void setLinkType(CRISLinkType linkType) {
 		this.linkType = linkType;
+	}
+
+	/**
+	 * @return the dataSource
+	 */
+	public CRISLinkDataSource getDataSource() {
+		return dataSource;
+	}
+
+	/**
+	 * @param dataSource the dataSource to set
+	 */
+	public void setDataSource(CRISLinkDataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 }

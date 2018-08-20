@@ -40,11 +40,11 @@ public class CRISLinkTypeTypeHandlerCallback extends AbstractTypeHandlerCallback
 		try {
 			final int typeId = Integer.parseInt(type);
 
-			final Class<?> clazz = CRISLinkTypeClassTypeHandlerCallback.ID_LINK_TYPE_CLASS_MAP.get(typeId);
+			final Class<?> clazz = CRISLinkTypeClassTypeHandlerCallback.LINK_TYPE_CLASS_ID_MAP.getKeyByValue(typeId);
 
 			final CRISLinkTypeTypeHandlerCallbackDelegate delegate = this.getDelegate(clazz);
-			return delegate.getParameter(1); // FIXME
-		} catch (NumberFormatException e) {
+			return delegate.getParameter(Integer.parseInt(getter.getString()));
+		} catch (final NumberFormatException e) {
 			// ignore
 		}
 

@@ -29,6 +29,7 @@
 	<typeHandler javaType="goldStandardRelation"  callback="org.bibsonomy.database.common.typehandler.GoldStandardRelationTypeHandlerCallback"/>
 	<typeHandler javaType="personResourceRelationType"  callback="org.bibsonomy.database.common.typehandler.PersonResourceRelationTypeHandlerCallback" />
 	<typeHandler javaType="crisLinkType"          callback="org.bibsonomy.database.common.typehandler.CRISLinkTypeTypeHandlerCallback" />
+	<typeHandler javaType="crisLinkDataSource"    callback="org.bibsonomy.database.common.typehandler.CRISLinkDataSourceTypeHandlerCallback" />
 	
 	<sqlMap resource="common/Common.xml" />
 	<sqlMap resource="common/BookmarkCommon.xml" />

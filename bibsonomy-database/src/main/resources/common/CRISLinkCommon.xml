@@ -8,5 +8,6 @@
         <result property="linkType"     column="linktype_value" javaType="crisLinkType" />
         <result property="startDate" 	column="start_date"		javaType="date" />
         <result property="endDate"	    column="end_date"	    javaType="date" />
+        <result property="dataSource"   column="link_source"    javaType="crisLinkDataSource" />
     </resultMap>
 </sqlMap>

@@ -8,6 +8,7 @@ CREATE TABLE `cris_links` (
   `end_date` timestamp NULL DEFAULT NULL,
   `linktype_type` int(11) DEFAULT NULL,
   `linktype_value` varchar(30) DEFAULT NULL,
+  `link_source` int(2) DEFAULT NULL,
   `updated_by` varchar(30) DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)

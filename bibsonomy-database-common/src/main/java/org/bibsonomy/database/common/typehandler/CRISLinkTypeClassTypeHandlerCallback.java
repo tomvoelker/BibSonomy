@@ -2,10 +2,10 @@ package org.bibsonomy.database.common.typehandler;
 
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 import org.bibsonomy.model.cris.ProjectPersonLinkType;
+import org.bibsonomy.util.collection.BiHashMap;
+import org.bibsonomy.util.collection.BiMap;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * stores the class in the database for the {@link CRISLinkTypeTypeHandlerCallback}
@@ -14,15 +14,10 @@ import java.util.Map;
  */
 public class CRISLinkTypeClassTypeHandlerCallback extends AbstractTypeHandlerCallback {
 
-	protected static final Map<Class<?>, Integer> LINK_TYPE_CLASS_ID_MAP = new HashMap<>();
-	protected static final Map<Integer, Class<?>> ID_LINK_TYPE_CLASS_MAP = new HashMap<>();
+	protected static final BiMap<Class<?>, Integer> LINK_TYPE_CLASS_ID_MAP = new BiHashMap<>();
 
 	static {
 		LINK_TYPE_CLASS_ID_MAP.put(ProjectPersonLinkType.class, Integer.valueOf(1));
-
-		for (Map.Entry<Class<?>, Integer> entry : LINK_TYPE_CLASS_ID_MAP.entrySet()) {
-			ID_LINK_TYPE_CLASS_MAP.put(entry.getValue(), entry.getKey());
-		}
 	}
 
 	@Override
