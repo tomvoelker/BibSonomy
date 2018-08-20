@@ -80,6 +80,7 @@ public interface PersonLogicInterface {
 	/**
 	 * @param withPersonId
 	 */
+	@Deprecated // use update person
 	public void createPersonName(PersonName withPersonId);
 	
 	/**
@@ -87,6 +88,7 @@ public interface PersonLogicInterface {
 	 * removes a person name from a specific person
 	 * @param personNameId
 	 */
+	@Deprecated // use update person
 	public void removePersonName(Integer personNameId);
 	
 	/**
