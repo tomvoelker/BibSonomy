@@ -186,13 +186,18 @@ public class CRISLinkDatabaseManager extends AbstractDatabaseManager {
 			final CRISLinkParam param = result.getResult();
 			final List<ErrorMessage> errors = result.getErrors();
 
-			// fixme: check if link exists
+			final Linkable source = link.getSource();
+			final Linkable target = link.getTarget();
+			final CRISLink crisLink = this.getCRISLink(source, target, session);
+			if (!present(crisLink)) {
+				errors.add(new MissingObjectErrorMessage(String.format("%s-%s", source.getLinkableId(), target.getLinkableId()), "crislink"));
+			}
 
 			if (present(errors)) {
 				return JobResult.buildFailure(errors);
 			}
 
-			// TODO: this.plugins.onCRISLinkUpdate(oldLink, link, loggedinUser, session);
+			this.plugins.onCRISLinkUpdate(crisLink, link, loginUser, session);
 			this.update("updateCRISLink", param, session);
 
 			session.commitTransaction();
@@ -236,7 +241,7 @@ public class CRISLinkDatabaseManager extends AbstractDatabaseManager {
 				return JobResult.buildFailure(errors);
 			}
 
-			// TODO: this.plugins.onCRISLinkDelete(crisLink, loggedinUser, session);
+			this.plugins.onCRISLinkDelete(crisLink, loginUser, session);
 			this.delete("deleteCRISLink", param, session);
 
 			session.commitTransaction();

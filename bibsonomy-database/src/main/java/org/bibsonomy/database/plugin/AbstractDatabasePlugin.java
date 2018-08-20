@@ -41,6 +41,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
@@ -280,6 +281,16 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 
 	@Override
 	public void onProjectDelete(Project project, User loggedinUser, DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onCRISLinkUpdate(CRISLink oldCRISLink, CRISLink link, User loginUser, DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onCRISLinkDelete(CRISLink crisLink, User loginUser, DBSession session) {
 		// noop
 	}
 }

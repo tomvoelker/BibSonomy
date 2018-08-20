@@ -40,6 +40,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
@@ -386,4 +387,21 @@ public interface DatabasePlugin {
 	 * @param session
 	 */
 	public void onProjectDelete(Project project, User loggedinUser, DBSession session);
+
+	/**
+	 * called before a cris link is updated
+	 * @param oldCRISLink
+	 * @param link
+	 * @param loginUser
+	 * @param session
+	 */
+	public void onCRISLinkUpdate(CRISLink oldCRISLink, CRISLink link, User loginUser, DBSession session);
+
+	/**
+	 * called before a cris link is deleted
+	 * @param crisLink
+	 * @param loginUser
+	 * @param session
+	 */
+	public void onCRISLinkDelete(CRISLink crisLink, User loginUser, DBSession session);
 }

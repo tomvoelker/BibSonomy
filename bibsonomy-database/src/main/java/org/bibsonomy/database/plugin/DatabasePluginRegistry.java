@@ -43,6 +43,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
@@ -373,6 +374,20 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	public void onProjectDelete(final Project project, final User loggedinUser, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
 			plugin.onProjectDelete(project, loggedinUser, session);
+		}
+	}
+
+	@Override
+	public void onCRISLinkUpdate(CRISLink oldCRISLink, CRISLink link, User loginUser, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins) {
+			plugin.onCRISLinkUpdate(oldCRISLink, link, loginUser, session);
+		}
+	}
+
+	@Override
+	public void onCRISLinkDelete(CRISLink crisLink, User loginUser, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins) {
+			plugin.onCRISLinkDelete(crisLink, loginUser, session);
 		}
 	}
 
