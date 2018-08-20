@@ -28,6 +28,7 @@ package org.bibsonomy.model.logic;
 
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
@@ -35,12 +36,37 @@ import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedExceptio
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Interface for person entity logic.
  * 
  * @author jil
  */
 public interface PersonLogicInterface {
+
+	/**
+	 * gets the person by the person id
+	 * @param idType
+	 * @param id
+	 * @return
+	 */
+	public Person getPersonById(final PersonIdType idType, final String id);
+
+	/**
+	 * sets id for new persons
+	 *
+	 * @param person the person to be saved or updated
+	 */
+	public void createPerson(Person person);
+
+	/**
+	 * Updates the given person
+	 * @param person		the person to update
+	 * @param operation		the desired update operation
+	 */
+	public void updatePerson(final Person person, final PersonUpdateOperation operation);
 
 	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException;
 
@@ -50,22 +76,6 @@ public interface PersonLogicInterface {
 	 * @param resourceRelationId
 	 */
 	public void removeResourceRelation(int resourceRelationId);
-
-	/**
-	 * sets id for new persons
-	 * 
-	 * @param person the person to be saved or updated
-	 */
-	public void createOrUpdatePerson(Person person);
-	
-	public Person getPersonById(PersonIdType idType, String id);
-	
-	/**
-	 * Returns the Person claimed by a given UserName
-	 * @param userName	the name of the user
-	 * @return	a Person object in case the user has claimed a person, null otherwise
-	 */
-	public Person getPersonByUser(String userName);
 	
 	/**
 	 * FIXME: remove database id TODO_PERSONS
@@ -90,12 +100,39 @@ public interface PersonLogicInterface {
 	 */
 	public ResourcePersonRelationQueryBuilder getResourceRelations();
 
-	
 	/**
-	 * Updates the given person
-	 * @param person		the person to update
-	 * @param operation		the desired update operation
+	 * @param personId
 	 */
-	public void updatePerson(final Person person, final PersonUpdateOperation operation);
+	@Deprecated // FIXME: add to update person logic
+	public void linkUser(String personId);
+
+	/**
+	 * @param username
+	 */
+	@Deprecated // FIXME: add to update person logic
+	public void unlinkUser(String username);
+
+	public List<PersonMatch> getPersonMatches(String personID);
+
+	public PersonMatch getPersonMatch(int matchID);
+
+	public void denieMerge(PersonMatch match);
+
+	public boolean acceptMerge(PersonMatch match);
+
+	/**
+	 * @param formMatchId
+	 * @param map
+	 * @return
+	 */
+	public Boolean conflictMerge(int formMatchId, Map<String, String> map);
+
+	/**
+	 *
+	 * @param personId
+	 * @return returns the updated personId, if the person was merged to an other person
+	 */
+	@Deprecated // FIXME: remove; move to get person logic
+	public String getForwardId(String personId);
 	
 }

@@ -250,13 +250,14 @@ public class DisambiguationPageController extends SingleResourceListController i
 		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(person.getPersonId()));
 	}
 
-	private Person createPersonEntity(DisambiguationPageCommand command) {
-		final PersonName mainName = getMainPersonName(command);
-		
+	private Person createPersonEntity(final DisambiguationPageCommand command) {
 		final Person person = new Person();
+
+		final PersonName mainName = getMainPersonName(command);
 		mainName.setMain(true);
 		person.setMainName(mainName);
-		this.logic.createOrUpdatePerson(person);
+
+		this.logic.createPerson(person);
 		command.setPerson(person);
 		return person;
 	}

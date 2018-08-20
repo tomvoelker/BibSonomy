@@ -311,7 +311,7 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	@Override
 	public void onPersonUpdate(Person oldPerson, Person newPerson, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPersonUpdate(oldPerson, , session);
+			plugin.onPersonUpdate(oldPerson, newPerson, session);
 		}	
 		
 	}

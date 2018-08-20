@@ -168,6 +168,7 @@ import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.bibsonomy.util.ExceptionUtils;
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
@@ -3420,6 +3421,43 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
+	 */
+	@Override
+	public void createPerson(final Person person) {
+		this.ensureLoggedInAndNoSpammer();
+		try (final DBSession session = this.openSession()) {
+			this.createPerson(person, session);
+		}
+	}
+
+	private void createPerson(final Person person, final DBSession session) {
+		final String personUser = person.getUser();
+		final String personId = person.getPersonId();
+		if (personUser != null) {
+			// ensure that only the loggedin user can claim a person for his/herself
+			if (!personUser.equals(this.loginUser.getName())) {
+				throw new AccessDeniedException();
+			}
+
+			if (present(personId)) {
+				final Person personOld = this.personDBManager.getPersonById(personId, session);
+				if (personOld == null) {
+					throw new NoSuchElementException("person " + personId);
+				}
+				if (personOld.getUser() != null && !personOld.getUser().equals(this.loginUser.getName())) {
+					throw new AccessDeniedException();
+				}
+			}
+		}
+		person.setChangeDate(new Date());
+		person.setChangedBy(this.loginUser.getName());
+
+		this.personDBManager.createPerson(person, session);
+		this.updatePersonNames(person, session);
+	}
+
 	/**
 	 * Updates the given person
 	 * @param person		person object containing the new values
@@ -3428,38 +3466,38 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void updatePerson(final Person person, final PersonUpdateOperation operation) {
 		this.ensureLoggedInAndNoSpammer();
-		
-		if (!present(person.getPersonId())) {
+
+		final String personId = person.getPersonId();
+		if (!present(personId)) {
 			throw new ValidationException("Invalid person ID given.");
 		}
 
-		final DBSession session = this.openSession();
-			
-		try {
-			
-			// is the person claimed?
-			if (person.getUser() != null) {
-				if (!person.getUser().equals(this.loginUser.getName())) {
-					throw new AccessDeniedException();
-				}
-				if (present(person.getPersonId())) {
-					final Person personOld = this.personDBManager.getPersonById(person.getPersonId(), session);
-					if (personOld == null) {
-						throw new NoSuchElementException("person " + person.getPersonId());
-					}
-					if (personOld.getUser() != null && !personOld.getUser().equals(this.loginUser.getName())) {
-						throw new AccessDeniedException();
-					}
-				}
+		try (final DBSession session = this.openSession()) {
+			// TODO: move to permission logic
+			final Person personOld = this.personDBManager.getPersonById(personId, session);
+			if (personOld == null) {
+				throw new NoSuchElementException("person " + personId);
 			}
-			
-			// check for email, homepage - can only be edited if the editer claimed the person
-			if (operation.equals(PersonUpdateOperation.UPDATE_EMAIL) || operation.equals(PersonUpdateOperation.UPDATE_HOMEPAGE)) {
-				if (person.getUser() == null) {
+			if (personOld.getUser() != null && !personOld.getUser().equals(this.loginUser.getName())) {
+				throw new AccessDeniedException();
+			}
+
+			// ensure that only the person can claimed by the logged in user
+			final String personUser = person.getUser();
+			if (personUser != null) {
+				if (!personUser.equals(this.loginUser.getName())) {
 					throw new AccessDeniedException();
 				}
 			}
 			
+			// check for email, homepage - can only be edited if the editor claimed the person
+			if (Sets.asSet(PersonUpdateOperation.UPDATE_EMAIL, PersonUpdateOperation.UPDATE_HOMEPAGE).contains(operation)) {
+				if (personUser == null) {
+					throw new AccessDeniedException();
+				}
+			}
+
+			// TODO: this should be done in the manager
 			person.setChangeDate(new Date());
 			person.setChangedBy(this.loginUser.getName());
 
@@ -3487,56 +3525,14 @@ public class DBLogic implements LogicInterface {
 					break;
 				case UPDATE_ALL:
 					this.personDBManager.updatePerson(person, session);
+					// TODO: why is this not called in the manager?
 					this.updatePersonNames(person, session);
 					break;
 				default:
 					throw new UnsupportedOperationException("The requested method is not yet implemented.");
 			}
 			
-		} finally {
-			session.close();
 		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
-	 */
-	@Override
-	public void createOrUpdatePerson(final Person person) {
-		this.ensureLoggedInAndNoSpammer();
-		final DBSession session = this.openSession();
-		try {
-			this.createOrUpdatePerson(person, session);
-		} finally {
-			session.close();
-		}
-	}
-
-	private void createOrUpdatePerson(final Person person, final DBSession session) {
-		this.ensureLoggedInAndNoSpammer();
-		if (person.getUser() != null) {
-			if (!person.getUser().equals(this.loginUser.getName())) {
-				throw new AccessDeniedException();
-			}
-			if (present(person.getPersonId())) {
-				final Person personOld = this.personDBManager.getPersonById(person.getPersonId(), session);
-				if (personOld == null) {
-					throw new NoSuchElementException("person " + person.getPersonId());
-				}
-				if (personOld.getUser() != null && personOld.getUser().equals(this.loginUser.getName()) == false) {
-					throw new AccessDeniedException();
-				}
-			}
-		}
-		person.setChangeDate(new Date());
-		person.setChangedBy(this.loginUser.getName());
-
-		if (present(person.getPersonId())) {
-			this.personDBManager.updatePerson(person, session);
-		} else {
-			this.personDBManager.createPerson(person, session);
-		}
-		this.updatePersonNames(person, session);
 	}
 
 	private void updatePersonNames(final Person person, final DBSession session) {
@@ -3580,7 +3576,7 @@ public class DBLogic implements LogicInterface {
 	}
 
 	private static Map<PersonName, PersonName> buildIdentityNamesMapFromNames(final List<PersonName> names) {
-		final Map<PersonName,PersonName> namesMap = new HashMap<>();
+		final Map<PersonName, PersonName> namesMap = new HashMap<>();
 		for (final PersonName name : names) {
 			namesMap.put(name, name);
 		}
@@ -3590,15 +3586,16 @@ public class DBLogic implements LogicInterface {
 	private static void setMainNameIfNoneSet(final Person person) {
 		boolean mainNameFound = false;
 		for (final PersonName name : person.getNames()) {
-			if (name.isMain() == true) {
-				if (mainNameFound == true) {
+			if (name.isMain()) {
+				if (mainNameFound) {
 					name.setMain(false);
 				} else {
 					mainNameFound = true;
 				}
 			}
 		}
-		if (mainNameFound == false) {
+
+		if (!mainNameFound) {
 			person.getNames().get(0).setMain(true);
 		}
 	}
@@ -3621,22 +3618,6 @@ public class DBLogic implements LogicInterface {
 			} else {
 				throw new UnsupportedOperationException("person cannot be found by it type " + idType);
 			}
-		} finally {
-			session.close();
-		}
-	}
-	
-	/**
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonByUser(String)
-	 */
-	public Person getPersonByUser(final String userName) {
-		final DBSession session = this.openSession();
-		
-		try {
-			if (present(userName)) {				
-				return this.personDBManager.getPersonByUser(userName, session);
-			}
-			return null;
 		} finally {
 			session.close();
 		}
@@ -3684,16 +3665,9 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void linkUser(final String personId) {
 		this.ensureLoggedInAndNoSpammer();
-		final DBSession session = this.openSession();
-		try {
-			this.personDBManager.unlinkUser(this.getAuthenticatedUser().getName(), session);
-			final Person person = this.personDBManager.getPersonById(personId, session);
-			person.setUser(this.getAuthenticatedUser().getName());
-			this.createOrUpdatePerson(person, session);
-		} finally {
-			session.close();
+		try (final DBSession session = this.openSession()) {
+			this.personDBManager.linkUser(personId, this.loginUser.getName(), session);
 		}
-
 	}
 
 	@Override

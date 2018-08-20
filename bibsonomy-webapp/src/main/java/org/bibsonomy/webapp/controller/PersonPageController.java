@@ -345,14 +345,14 @@ public class PersonPageController extends SingleResourceListController implement
 		resourcePersonRelation.setPost(post);
 		
 		try {
-			Person person = new Person();
+			final Person person = new Person();
 			if (present(command.getFormPersonId())) {
 				person.setPersonId(command.getFormPersonId());
 			} else {
 				final PersonName mainName = command.getNewName();
 				mainName.setMain(true);
 				person.setMainName(mainName);
-				this.logic.createOrUpdatePerson(person);
+				this.logic.createPerson(person);
 			}
 			resourcePersonRelation.setPerson(person);
 			resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
@@ -448,6 +448,7 @@ public class PersonPageController extends SingleResourceListController implement
 		// TODO only allow updates if the editor "is" this person
 		person.setOrcid(command.getPerson().getOrcid().replaceAll("-", ""));
 		person.setResearcherid(command.getPerson().getResearcherid().replaceAll("-", ""));
+
 		person.setEmail(command.getPerson().getEmail());
 		person.setHomepage(command.getPerson().getHomepage());
 		
@@ -468,7 +469,7 @@ public class PersonPageController extends SingleResourceListController implement
 				this.logic.updatePerson(command.getPerson(), operation);
 			} else {						
 				// standard
-				this.logic.createOrUpdatePerson(command.getPerson());
+				this.logic.createPerson(command.getPerson());
 			}	
 		} catch (Exception e) {
 			jsonResponse.put("status", false);

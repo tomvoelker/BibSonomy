@@ -157,7 +157,7 @@ public class EditPublicationController extends AbstractEditPublicationController
 			}
 			person = command.getPerson();
 			person.setMainName(publicationNames.get(command.getPersonIndex()));
-			this.logic.createOrUpdatePerson(person);
+			this.logic.createPerson(person);
 		}
 		
 		if (person != null) {

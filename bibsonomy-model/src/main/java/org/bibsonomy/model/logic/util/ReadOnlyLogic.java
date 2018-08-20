@@ -807,7 +807,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
 	 */
 	@Override
-	public void createOrUpdatePerson(Person person) {
+	public void createPerson(Person person) {
 		throwReadOnlyException();
 	}
 	
@@ -834,13 +834,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	@Override
 	public Person getPersonById(PersonIdType idType, String id) {
 		return this.logicinterface.getPersonById(idType, id);
-	}
-	
-	/**
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonByUser(String)
-	 */
-	public Person getPersonByUser(String userName) {
-		return this.logicinterface.getPersonByUser(userName);
 	}
 	
 	/* (non-Javadoc)

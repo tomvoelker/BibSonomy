@@ -118,7 +118,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
 	 */
 	@Override
-	public void createOrUpdatePerson(Person person) {
+	public void createPerson(Person person) {
 		this.doDefaultAction();
 	}
 	
@@ -136,14 +136,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public Person getPersonById(PersonIdType idType, String id) {
-		this.doDefaultAction();
-		return null;
-	}
-	
-	/**
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonByUser(String)
-	 */
-	public Person getPersonByUser(String userName) {
 		this.doDefaultAction();
 		return null;
 	}

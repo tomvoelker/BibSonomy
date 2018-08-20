@@ -102,6 +102,10 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		try {
 			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("insertPerson", person, session);
+
+			// now insert person names
+
+
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -181,7 +185,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	public void createPersonName(final PersonName name, final DBSession session) {
 		session.beginTransaction();
 		try {
-			name.setPersonNameChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			name.setPersonNameChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("insertName", name, session);
 			session.commitTransaction();
 		} finally {
@@ -351,13 +355,36 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	}
 
 	/**
+	 * unlinks a user with this current person
+	 *
 	 * @param username
 	 */
-	public void unlinkUser(String username, DBSession session) {
+	public void unlinkUser(final String username, DBSession session) {
 		session.beginTransaction();
 		try {
 			this.update("unlinkUser", username, session);
 			this.plugins.onPersonUpdateByUserName(username, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+
+	/**
+	 * links a person with a user
+	 * @param personId
+	 * @param userName
+	 * @param session
+	 */
+	public void linkUser(final String personId, final String userName, final DBSession session) {
+		try {
+			session.beginTransaction();
+
+			this.unlinkUser(userName, session);
+			final Person person = this.getPersonById(personId, session);
+			person.setUser(userName);
+			this.updatePerson(person, session);
+
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -697,7 +724,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			combinedMerge.setUserDenies(this.queryForList("getDeniesForMatch", combinedMerge.getMatchID(), String.class, session));
 			if (combinedMerge.getUserDenies().size() >= PersonMatch.denieThreshold) {
 				// deny merge for all if the total user deny count is bigger
-				// than the deny threshold
+				// than the deny thresholduu
 				this.delete("denyMatchByID", new DenyMatchParam(combinedMerge.getMatchID(), userName), session);
 			}
 		}
@@ -767,7 +794,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @return
 	 */
 	public List<PersonMatch> getMatchesForFilterWithUserName(String personID, String userName, DBSession session) {
-		List<PersonMatch> matches = this.getMatchesFor(personID, session);
+		final List<PersonMatch> matches = this.getMatchesFor(personID, session);
 		matches.removeIf(match -> match.getUserDenies().contains(userName));
 
 		return matches;
@@ -883,7 +910,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 				return true;
 			}
 		}
-		// new PersonName needs to be added
+		// a new person name needs to be added
 		final PersonName newMainName = new PersonName(nameParts[1], nameParts[0]);
 		newMainName.setChangedBy(loginUser);
 		newMainName.setChangedAt(new Date());

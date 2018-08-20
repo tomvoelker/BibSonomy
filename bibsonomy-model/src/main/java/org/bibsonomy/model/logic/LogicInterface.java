@@ -768,40 +768,6 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);
 
 	/**
-	 * @param personId
-	 */
-	@Deprecated // FIXME: add to update person logic
-	public void linkUser(String personId);
-
-	/**
-	 * @param username
-	 */
-	public void unlinkUser(String username);
-	
-	public List<PersonMatch> getPersonMatches(String personID);
-	
-	public PersonMatch getPersonMatch(int matchID);
-	
-	public void denieMerge(PersonMatch match);
-
-	public boolean acceptMerge(PersonMatch match);
-
-	/**
-	 * @param formMatchId
-	 * @param map
-	 * @return
-	 */
-	public Boolean conflictMerge(int formMatchId, Map<String, String> map);
-	
-	/**
-	 * 
-	 * @param personId
-	 * @return returns the updated personId, if the person was merged to an other person
-	 */
-	@Deprecated // FIXME: remove; move to update person logic
-	public String getForwardId(String personId);
-
-	/**
 	 *
 	 * @param query
 	 * @return
