@@ -72,8 +72,6 @@ public class CRISLinkDatabaseManager extends AbstractDatabaseManager {
 				return JobResult.buildFailure(errors);
 			}
 
-			param.setLink(link);
-
 			final Integer newID = this.generalDatabaseManager.getNewId(ConstantID.LINKABLE_ID, session);
 			param.setLinkableId(newID);
 
@@ -143,6 +141,8 @@ public class CRISLinkDatabaseManager extends AbstractDatabaseManager {
 		final Integer targetId = this.getLinkEntityId(target, session);
 
 		final CRISLinkParam param = new CRISLinkParam();
+		param.setLink(link);
+
 		if (!present(sourceId)) {
 			errorMessages.add(new MissingObjectErrorMessage(source.getLinkableId(), "linkable"));
 		} else {
@@ -163,6 +163,7 @@ public class CRISLinkDatabaseManager extends AbstractDatabaseManager {
 		 */
 		param.setUpdatedBy(loginUser.getName());
 		param.setUpdatedAt(new Date());
+
 
 		return new ErrorAwareResult<>(param, errorMessages);
 	}

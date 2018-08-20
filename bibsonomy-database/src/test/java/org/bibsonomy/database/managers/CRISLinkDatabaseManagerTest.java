@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 
 import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.Status;
@@ -69,9 +70,19 @@ public class CRISLinkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * tests
 	 */
 	@Test
-	@Ignore
 	public void testUpdateCRISLink() {
-		assertFalse(true);
+		final CRISLink link = this.getCRISLink();
+
+		link.setEndDate(null);
+		final ProjectPersonLinkType linkType = ProjectPersonLinkType.MEMBER;
+		link.setLinkType(linkType);
+
+		final JobResult result = CRISLINK_DATABASE_MANAGER.updateCRISLink(link, new User("testuser1"), this.dbSession);
+		assertEquals(Status.OK, result.getStatus());
+
+		final CRISLink crisLink = CRISLINK_DATABASE_MANAGER.getCRISLink(link.getSource(), link.getTarget(), this.dbSession);
+		assertEquals(linkType, crisLink.getLinkType());
+		assertNull(crisLink.getEndDate());
 	}
 
 	/**
@@ -79,6 +90,13 @@ public class CRISLinkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void testDeleteCRISLink() {
+		final CRISLink link = this.getCRISLink();
+
+		final JobResult deleteResult = CRISLINK_DATABASE_MANAGER.deleteCRISLink(link, new User("testuser1"), this.dbSession);
+		assertEquals(Status.OK, deleteResult.getStatus());
+	}
+
+	private CRISLink getCRISLink() {
 		final CRISLink link = new CRISLink();
 
 		final Project projectDetails = PROJECT_DATABASE_MANAGER.getProjectDetails(ProjectDatabaseManagerTest.PROJECT_ID, true, this.dbSession);
@@ -86,8 +104,6 @@ public class CRISLinkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById("h.muller", this.dbSession);
 		link.setTarget(person);
-
-		final JobResult deleteResult = CRISLINK_DATABASE_MANAGER.deleteCRISLink(link, new User("testuser1"), this.dbSession);
-		assertEquals(Status.OK, deleteResult.getStatus());
+		return link;
 	}
 }
