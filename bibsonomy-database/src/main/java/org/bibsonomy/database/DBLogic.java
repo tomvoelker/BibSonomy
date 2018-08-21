@@ -3397,8 +3397,9 @@ public class DBLogic implements LogicInterface {
 
 		resourcePersonRelation.setChangedBy(this.loginUser.getName());
 		resourcePersonRelation.setChangedAt(new Date());
-		try (DBSession session = this.openSession()) {
-			this.personDBManager.addResourceRelation(resourcePersonRelation, session);
+
+		try (final DBSession session = this.openSession()) {
+			this.personDBManager.addResourceRelation(resourcePersonRelation, this.loginUser, session);
 		}
 	}
 
@@ -3838,7 +3839,7 @@ public class DBLogic implements LogicInterface {
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
 		final DBSession session = this.openSession();
 		if (present(this.loginUser.getName())) {
-			return this.personDBManager.conflictMerge(session, formMatchId, map, this.loginUser.getName());
+			return this.personDBManager.conflictMerge(formMatchId, map, this.loginUser.getName(), session);
 		}
 		return false;
 	}
@@ -3851,5 +3852,120 @@ public class DBLogic implements LogicInterface {
 	public String getForwardId(String personId) {
 		final DBSession session = this.openSession();
 		return this.personDBManager.getForwardId(personId, session);
+	}
+
+	@Override
+	public Statistics getStatistics(final Query query) {
+		try (final DBSession session = this.openSession()) {
+			return this.getStatistics(query, session);
+		}
+	}
+
+	private <Q extends Query> Statistics getStatistics(final Q query, final DBSession session) {
+		// cast is safe
+		final StatisticsProvider<Q> statisticsProvider = (StatisticsProvider<Q>) this.allStatisticDatabaseMangers.get(query.getClass());
+		return statisticsProvider.getStatistics(query, session);
+	}
+
+	@Override
+	public List<Project> getProjects(final ProjectQuery builder) {
+		try (final DBSession session = this.openSession()) {
+			return this.projectDatabaseManager.getProjects(builder, session);
+		}
+	}
+
+	@Override
+	public Project getProjectDetails(final String projectId) {
+		final boolean admin = this.permissionDBManager.isAdmin(this.loginUser);
+
+		try (final DBSession session = this.openSession()) {
+			return this.projectDatabaseManager.getProjectDetails(projectId, admin, session);
+		}
+	}
+
+	@Override
+	public JobResult createProject(final Project project) {
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
+		try (final DBSession session = this.openSession()) {
+			return this.projectDatabaseManager.createProject(project, this.loginUser, session);
+		}
+	}
+
+	@Override
+	public JobResult updateProject(final String projectId, final Project project) {
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
+		try (final DBSession session = this.openSession()) {
+			return this.projectDatabaseManager.updateProject(projectId, project, this.loginUser, session);
+		}
+	}
+
+	@Override
+	public JobResult deleteProject(String projectId) {
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
+		try (final DBSession session = this.openSession()) {
+			return this.projectDatabaseManager.deleteProject(projectId, this.loginUser, session);
+		}
+	}
+
+	@Override
+	public JobResult createCRISLink(CRISLink link) {
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
+
+		try (final DBSession session = this.openSession()) {
+			return this.crisLinkDatabaseManager.createCRISLink(link, this.loginUser, session);
+		}
+	}
+
+	@Override
+	public JobResult updateCRISLink(CRISLink link) {
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
+
+		try (final DBSession session = this.openSession()) {
+			return this.crisLinkDatabaseManager.updateCRISLink(link, this.loginUser, session);
+		}
+	}
+
+	@Override
+	public JobResult deleteCRISLink(Linkable source, Linkable target) {
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
+
+		try (final DBSession session = this.openSession()) {
+			return this.crisLinkDatabaseManager.deleteCRISLink(source, target, this.loginUser, session);
+		}
+	}
+
+	/**
+	 * @param projectDatabaseManager the projectDatabaseManager to set
+	 */
+	public void setProjectDatabaseManager(ProjectDatabaseManager projectDatabaseManager) {
+		this.projectDatabaseManager = projectDatabaseManager;
+	}
+
+	/**
+	 * @param crisLinkDatabaseManager the crisLinkDatabaseManager to set
+	 */
+	public void setCrisLinkDatabaseManager(CRISLinkDatabaseManager crisLinkDatabaseManager) {
+		this.crisLinkDatabaseManager = crisLinkDatabaseManager;
+	}
+
+	/**
+	 * @param dbSessionFactory the dbSessionFactory to set
+	 */
+	public void setDbSessionFactory(DBSessionFactory dbSessionFactory) {
+		this.dbSessionFactory = dbSessionFactory;
+	}
+
+	/**
+	 * @param publicationReader the publicationReader to set
+	 */
+	public void setPublicationReader(BibTexReader publicationReader) {
+		this.publicationReader = publicationReader;
+	}
+
+	/**
+	 * @param loginUser the loginUser to set
+	 */
+	public void setLoginUser(User loginUser) {
+		this.loginUser = loginUser;
 	}
 }

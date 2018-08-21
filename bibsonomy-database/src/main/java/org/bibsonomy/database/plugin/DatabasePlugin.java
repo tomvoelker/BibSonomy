@@ -57,11 +57,11 @@ public interface DatabasePlugin {
 
 	/**
 	 * Called when a publication is inserted.
-	 * 
-	 * @param post
+	 *  @param post
+	 * @param loggedinUser
 	 * @param session
 	 */
-	public void onPublicationInsert(Post<? extends BibTex> post, DBSession session);
+	public void onPublicationInsert(Post<? extends BibTex> post, User loggedinUser, DBSession session);
 
 	/**
 	 * Called when a publication is deleted.
@@ -136,11 +136,11 @@ public interface DatabasePlugin {
 	
 	/**
 	 * Called when a Bookmark is inserted.
-	 * 
-	 * @param post
+	 *  @param post
+	 * @param logginUser
 	 * @param session
 	 */
-	public void onBookmarkInsert(Post<? extends Resource> post, DBSession session);
+	public void onBookmarkInsert(Post<? extends Resource> post, User logginUser, DBSession session);
 
 	/**
 	 * Called when a Bookmark is deleted.

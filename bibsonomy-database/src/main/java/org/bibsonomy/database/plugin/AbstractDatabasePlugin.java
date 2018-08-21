@@ -55,7 +55,7 @@ import org.bibsonomy.model.enums.GoldStandardRelation;
 public class AbstractDatabasePlugin extends AbstractDatabaseManager implements DatabasePlugin {
 
 	@Override
-	public void onPublicationInsert(final Post<? extends BibTex> post, final DBSession session) {
+	public void onPublicationInsert(final Post<? extends BibTex> post, User loggedinUser, final DBSession session) {
 		// noop
 	}
 
@@ -105,7 +105,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	}
 
 	@Override
-	public void onBookmarkInsert(final Post<? extends Resource> post, final DBSession session) {
+	public void onBookmarkInsert(final Post<? extends Resource> post, User logginUser, final DBSession session) {
 		// noop
 	}
 

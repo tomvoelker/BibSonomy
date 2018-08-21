@@ -99,7 +99,7 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 			return null;
 		}
 
-		final Post<BibTex> gold = new Post<BibTex>();
+		final Post<BibTex> gold = new Post<>();
 
 		final GoldStandardPublication goldP = new GoldStandardPublication();
 		ObjectUtils.copyPropertyValues(post.getResource(), goldP);

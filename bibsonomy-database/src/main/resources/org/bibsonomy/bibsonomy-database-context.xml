@@ -311,6 +311,7 @@
 	
 	<bean id="personDatabaseManager" class="org.bibsonomy.database.managers.PersonDatabaseManager" factory-method="getInstance">
 		<property name="personSearch" ref="personSearch" />
+		<property name="goldStandardPublicationDatabaseManager" ref="goldStandardPublicationDatabaseManager" />
 	</bean>
 	
 	<bean id="clipboardDatabaseManager" class="org.bibsonomy.database.managers.ClipboardDatabaseManager" factory-method="getInstance" />
