@@ -71,6 +71,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
@@ -97,6 +98,11 @@ import org.bibsonomy.model.user.remote.RemoteUserId;
  * @author dzo
  */
 public abstract class AbstractLogicInterface implements LogicInterface {
+
+	/** the action to do iff the method is not implemented */
+	protected void doDefaultAction() {
+		// noop
+	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createResourceRelation(org.bibsonomy.model.ResourcePersonRelation)
@@ -937,11 +943,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 		this.doDefaultAction();
 	}
 	
-	/** the action to do iff the method is not implemented */
-	protected void doDefaultAction() {
-		// noop
-	}
-	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getPersonMatches(java.lang.String)
 	 */
@@ -983,41 +984,61 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public String getForwardId(String personId) {
+		this.doDefaultAction();
 		return null;
 	}
 
 	@Override
 	public Statistics getStatistics(Query query) {
+		this.doDefaultAction();
 		return null;
 	}
 
 	@Override
 	public List<Project> getProjects(ProjectQuery builder) {
+		this.doDefaultAction();
 		return null;
 	}
 
 	@Override
 	public Project getProjectDetails(String projectId) {
+		this.doDefaultAction();
 		return null;
 	}
 
 	@Override
 	public JobResult createProject(final Project project) {
+		this.doDefaultAction();
 		return null;
 	}
 
 	@Override
 	public JobResult updateProject(String projectId, Project project) {
+		this.doDefaultAction();
 		return null;
 	}
 
 	@Override
 	public JobResult deleteProject(String projectId) {
+		this.doDefaultAction();
 		return null;
 	}
 
 	@Override
 	public JobResult createCRISLink(CRISLink link) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	@Override
+	public JobResult updateCRISLink(CRISLink link) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	@Override
+	public JobResult deleteCRISLink(Linkable source, Linkable target) {
+		this.doDefaultAction();
 		return null;
 	}
 }

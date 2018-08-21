@@ -26,6 +26,7 @@
 		<property name="dbSessionFactory" ref="dbSessionFactory" />
 		<property name="projectDatabaseManager" ref="projectDatabaseManager" />
 		<property name="publicationReader" ref="publicationReader" />
+		<property name="crisLinkDatabaseManager" ref="crisLinkDatabaseManger" />
 	</bean>
 
 	<bean id="apiInterfaceFactory" class="org.bibsonomy.database.DBLogicApiInterfaceFactory" parent="abstractInterfaceFactory" />

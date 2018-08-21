@@ -11,6 +11,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.CRISLinkDataSource;
+import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.cris.ProjectPersonLinkType;
 import org.junit.BeforeClass;
@@ -86,13 +87,13 @@ public class CRISLinkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests {@link CRISLinkDatabaseManager#deleteCRISLink(CRISLink, User, DBSession)}
+	 * tests {@link CRISLinkDatabaseManager#deleteCRISLink(Linkable, Linkable, User, DBSession)}
 	 */
 	@Test
 	public void testDeleteCRISLink() {
 		final CRISLink link = this.getCRISLink();
 
-		final JobResult deleteResult = CRISLINK_DATABASE_MANAGER.deleteCRISLink(link, new User("testuser1"), this.dbSession);
+		final JobResult deleteResult = CRISLINK_DATABASE_MANAGER.deleteCRISLink(link.getSource(), link.getTarget(), new User("testuser1"), this.dbSession);
 		assertEquals(Status.OK, deleteResult.getStatus());
 	}
 

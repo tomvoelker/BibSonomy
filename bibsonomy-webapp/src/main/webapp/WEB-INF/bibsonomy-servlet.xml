@@ -308,6 +308,7 @@
 		<property name="projectDatabaseManager" ref="projectDatabaseManager" />
 		<property name="dbSessionFactory" ref="dbSessionFactory" />
 		<property name="publicationReader" ref="bibtexReader" />
+		<property name="crisLinkDatabaseManager" ref="crisLinkDatabaseManger" />
 	</bean>
 
 	<bean id="abstractLogicInterfaceFactory" class="org.bibsonomy.database.AbstractDBLogicInterfaceFactory" abstract="true">

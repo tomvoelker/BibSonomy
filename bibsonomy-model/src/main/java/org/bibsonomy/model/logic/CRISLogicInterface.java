@@ -2,6 +2,7 @@ package org.bibsonomy.model.logic;
 
 import org.bibsonomy.common.JobResult;
 import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 
@@ -57,5 +58,20 @@ public interface CRISLogicInterface {
 	 * @return
 	 */
 	public JobResult createCRISLink(final CRISLink link);
+
+	/**
+	 * updates the link between the two linkable cris entities
+	 * @param link
+	 * @return the result
+	 */
+	public JobResult updateCRISLink(final CRISLink link);
+
+	/**
+	 * deletes the link between the two linkable cris entities
+	 * @param source
+	 * @param target
+	 * @return
+	 */
+	public JobResult deleteCRISLink(final Linkable source, final Linkable target);
 }
 

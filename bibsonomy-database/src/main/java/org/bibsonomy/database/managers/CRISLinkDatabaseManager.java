@@ -214,14 +214,19 @@ public class CRISLinkDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * deletes the provided link between the entities
 	 *
-	 * @param link
+	 * @param source
+	 * @param target
 	 * @param loginUser
 	 * @param session
 	 * @return
 	 */
-	public JobResult deleteCRISLink(final CRISLink link, final User loginUser, final DBSession session) {
+	public JobResult deleteCRISLink(final Linkable source, final Linkable target, final User loginUser, final DBSession session) {
 		try {
 			session.beginTransaction();
+
+			final CRISLink link = new CRISLink();
+			link.setSource(source);
+			link.setTarget(target);
 
 			this.ensureLinkDirection(link);
 
@@ -233,11 +238,11 @@ public class CRISLinkDatabaseManager extends AbstractDatabaseManager {
 			/*
 			 * check if the crislink to delete is in the database
 			 */
-			final Linkable source = link.getSource();
-			final Linkable target = link.getTarget();
-			final CRISLink crisLink = this.getCRISLink(source, target, session);
+			final Linkable correctSource = link.getSource();
+			final Linkable correctTarget = link.getTarget();
+			final CRISLink crisLink = this.getCRISLink(correctSource, correctTarget, session);
 			if (!present(crisLink)) {
-				errors.add(new MissingObjectErrorMessage(String.format("%s-%s", source.getLinkableId(), target.getLinkableId()), "crislink"));
+				errors.add(new MissingObjectErrorMessage(String.format("%s-%s", correctSource.getLinkableId(), correctTarget.getLinkableId()), "crislink"));
 			}
 
 			if (present(errors)) {

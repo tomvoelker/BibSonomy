@@ -72,6 +72,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
@@ -993,6 +994,18 @@ public class ReadOnlyLogic implements LogicInterface {
 
 	@Override
 	public JobResult createCRISLink(final CRISLink link) {
+		throwReadOnlyException();
+		return null;
+	}
+
+	@Override
+	public JobResult updateCRISLink(final CRISLink link) {
+		throwReadOnlyException();
+		return null;
+	}
+
+	@Override
+	public JobResult deleteCRISLink(final Linkable source, final Linkable target) {
 		throwReadOnlyException();
 		return null;
 	}

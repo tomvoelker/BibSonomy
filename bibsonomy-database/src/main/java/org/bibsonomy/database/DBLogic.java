@@ -140,6 +140,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
@@ -3892,6 +3893,24 @@ public class DBLogic implements LogicInterface {
 
 		try (final DBSession session = this.openSession()) {
 			return this.crisLinkDatabaseManager.createCRISLink(link, this.loginUser, session);
+		}
+	}
+
+	@Override
+	public JobResult updateCRISLink(CRISLink link) {
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
+
+		try (final DBSession session = this.openSession()) {
+			return this.crisLinkDatabaseManager.updateCRISLink(link, this.loginUser, session);
+		}
+	}
+
+	@Override
+	public JobResult deleteCRISLink(Linkable source, Linkable target) {
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
+
+		try (final DBSession session = this.openSession()) {
+			return this.crisLinkDatabaseManager.deleteCRISLink(source, target, this.loginUser, session);
 		}
 	}
 
