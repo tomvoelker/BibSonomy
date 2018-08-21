@@ -26,8 +26,8 @@
  */
 package org.bibsonomy.webapp.command;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
@@ -55,7 +55,7 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	private PersonName personName;
 	private Post<BibTex> post;
 	private List<ResourcePersonRelation> personSuggestions;
-	private HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts;
+	private Map<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts;
 	private List<Post<BibTex>> suggestedPosts;
 
 	/**
@@ -122,10 +122,10 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @param formAddPersonId the formAddPersonId to set
+	 * @param requestedPersonId the formAddPersonId to set
 	 */
-	public void setRequestedPersonId(String formPersonId) {
-		this.requestedPersonId = formPersonId;
+	public void setRequestedPersonId(String requestedPersonId) {
+		this.requestedPersonId = requestedPersonId;
 	}
 
 	/**
@@ -188,14 +188,14 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the suggestedPersonPosts
 	 */
-	public HashMap<ResourcePersonRelation, List<Post<?>>> getSuggestedPersonPosts() {
+	public Map<ResourcePersonRelation, List<Post<?>>> getSuggestedPersonPosts() {
 		return this.suggestedPersonPosts;
 	}
 
 	/**
 	 * @param suggestedPersonPosts the suggestedPersonPosts to set
 	 */
-	public void setSuggestedPersonPosts(HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts) {
+	public void setSuggestedPersonPosts(Map<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts) {
 		this.suggestedPersonPosts = suggestedPersonPosts;
 	}
 

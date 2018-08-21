@@ -442,7 +442,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	
 	/**
 	 * @param must
-	 * @param addShouldYearIfYearInQuery
+	 * @param filter
 	 * @return
 	 */
 	private static QueryBuilder filterQuery(QueryBuilder must, QueryBuilder filter) {

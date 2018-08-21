@@ -557,9 +557,9 @@ public class PersonPageController extends SingleResourceListController implement
 		// bind the new person
 		command.setPerson(person);
 		
-		try {			
+		try {
 			this.logic.updatePerson(person, PersonUpdateOperation.UPDATE_NAMES);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			jsonResponse.put("status", false);
 			// TODO: set proper error message
 			//jsonResponse.put("message", "Some error occured");
@@ -595,12 +595,8 @@ public class PersonPageController extends SingleResourceListController implement
 		if (!present(person)) {
 			return Views.ERROR404;
 		}
+
 		command.setPerson(person);
-		
-		if (DisambiguationPageController.ACTION_KEY_CREATE_AND_LINK_PERSON.equals(this.requestLogic.getLastAction()) || DisambiguationPageController.ACTION_KEY_LINK_PERSON.equals(this.requestLogic.getLastAction())) {
-			command.setOkHintKey(this.requestLogic.getLastAction());
-			this.requestLogic.setLastAction(null);
-		}
 		
 		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
 		List<Post<?>> authorPosts = new ArrayList<>();

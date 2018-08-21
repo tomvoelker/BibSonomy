@@ -86,13 +86,6 @@
 
 		<jsp:attribute name="content">
 			<errors:logicExceptions exceptions="${command.logicExceptions}" />
-			<c:if test="${not empty command.okHintKey}">
-				<bs:alert style="success">
-					<jsp:attribute name="alertBody">
-						<fmt:message key="person.show.created.${command.okHintKey}"/>
-					</jsp:attribute>
-				</bs:alert>
-			</c:if>
 	
 			<form method='post' name='personForm' id="personForm" action="" class='form-horizontal'>
 				<input type="hidden" name="ckey" value="${ckey}"/>

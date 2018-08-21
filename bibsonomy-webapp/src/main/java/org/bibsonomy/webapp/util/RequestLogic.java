@@ -280,14 +280,4 @@ public class RequestLogic {
 	public void ensureSession() {
 		request.getSession(true);
 	}
-	
-	@Deprecated // Use flash messages TODO: remove
-	public void setLastAction(String lastAction) {
-		setSessionAttribute(LAST_ACTION_SESSION_KEY, lastAction);
-	}
-	
-	@Deprecated // Use flash messages TODO: remove
-	public String getLastAction() {
-		return (String) getSessionAttribute(LAST_ACTION_SESSION_KEY);
-	}
 }

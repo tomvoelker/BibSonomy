@@ -59,7 +59,6 @@ public class PersonPageCommand extends BaseCommand {
 	
 	private String formSelectedName;
 
-	
 	@Deprecated // TODO: bind person directly
 	private String formResourceHash;
 	@Deprecated // TODO: bind person directly
@@ -111,8 +110,6 @@ public class PersonPageCommand extends BaseCommand {
 	private List<PersonMatch> personMatchList;
 	
 	private Map<Integer, PersonMergeFieldConflict[]> mergeConflicts;
-	
-	private String okHintKey;
 	
 	@Deprecated // FIXME: remove use errors handling build into spring
 	private final Collection<LogicException> logicExceptions = new ArrayList<>();
@@ -485,20 +482,6 @@ public class PersonPageCommand extends BaseCommand {
 
 	public List<Post<?>> getOtherAdvisedPubs() {
 		return this.otherAdvisedPubs;
-	}
-
-	/**
-	 * @param actionKeyCreateAndLinkPerson
-	 */
-	public void setOkHintKey(String okHintKey) {
-		this.okHintKey = okHintKey;
-	}
-	
-	/**
-	 * @return the okHintKey
-	 */
-	public String getOkHintKey() {
-		return this.okHintKey;
 	}
 
 	/**
