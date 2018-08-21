@@ -54,11 +54,11 @@
         <isNotNull property="projectStatus">
             WHERE
             <isEqual property="projectStatus" compareValue="RUNNING">
-                end_date &lt;= CURRENT_TIMESTAMP
+                start_date &lt; CURRENT_TIMESTAMP AND end_date >= CURRENT_TIMESTAMP
             </isEqual>
 
             <isEqual property="projectStatus" compareValue="FINISHED">
-                end_date > CURRENT_TIMESTAMP
+                end_date &lt; CURRENT_TIMESTAMP
             </isEqual>
         </isNotNull>
     </sql>

@@ -13,6 +13,8 @@ import java.util.List;
 
 /**
  * controller for displaying a list of projects
+ * paths:
+ *    - /projects
  * @author dzo
  */
 public class ProjectsPageController implements MinimalisticController<ProjectsPageCommand> {
@@ -26,7 +28,7 @@ public class ProjectsPageController implements MinimalisticController<ProjectsPa
 
 	@Override
 	public View workOn(final ProjectsPageCommand command) {
-		final List<Project> projects = this.logic.getProjects(ProjectQuery.createBuilder().projectStatus(ProjectStatus.RUNNING).build());
+		final List<Project> projects = this.logic.getProjects(ProjectQuery.createBuilder().projectStatus(ProjectStatus.RUNNING).end(100).build());
 		command.setProjects(projects);
 
 		return Views.PROJECT_PAGE;

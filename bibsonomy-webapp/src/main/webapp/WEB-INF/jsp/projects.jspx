@@ -58,7 +58,7 @@
 			<div id="projects">
 				<dl class="dl-horizontal dt-thumbnail-items group-list">
 				<c:forEach var="project" items="${command.projects}">
-					<c:set var="firstProjectNameLetter" value="${fn:toLowerCase(fn:substring(project.name, 0, 1))}" />
+					<c:set var="firstProjectNameLetter" value="${fn:toLowerCase(fn:substring(project.title, 0, 1))}" />
 					<c:choose>
 						<c:when test="${not fn:contains(letters, firstProjectNameLetter)}">
 							<c:set var="firstProjectNameLetter" value="#" />
