@@ -49,6 +49,7 @@ import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedExceptio
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
 import org.bibsonomy.webapp.command.DisambiguationPageCommand;
@@ -74,6 +75,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 	
 	private RequestLogic requestLogic;
 	private PersonRoleRenderer personRoleRenderer;
+	private URLGenerator urlGenerator;
 	
 	@Override
 	public DisambiguationPageCommand instantiateCommand() {
@@ -85,8 +87,8 @@ public class DisambiguationPageController extends SingleResourceListController i
 	@Override
 	public View workOn(final DisambiguationPageCommand command) {
 		final String requestedHash = command.getRequestedHash();
-		if (requestedHash == null) {
-			throw new ObjectNotFoundException(requestedHash);
+		if (!present(requestedHash)) {
+			throw new MalformedURLSchemeException("error.disambiguation_without_hash");
 		}
 		
 		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, requestedHash, null, null, null, null, null, null, 0, 1);
@@ -116,18 +118,17 @@ public class DisambiguationPageController extends SingleResourceListController i
 		final int requestedIndex = command.getRequestedIndex().intValue();
 		
 		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations().byInterhash(command.getPost().getResource().getInterHash()).byRelationType(requestedRole).byAuthorIndex(requestedIndex).getIt();
-		if (matchingRelations.size() > 0 ) {
-			// FIXME: cache urlgenerator
-			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingRelations.get(0).getPerson().getPersonId()));
+
+		/*
+		 * redirect to the person page of the author/editor
+		 */
+		if (present(matchingRelations)) {
+			return new ExtendedRedirectView(this.urlGenerator.getPersonUrl(matchingRelations.get(0).getPerson().getPersonId()));
 		}
 		
 		final BibTex res = command.getPost().getResource();
-		List<PersonName> persons = res.getPersonNamesByRole(requestedRole);
-		// MacGyver-fix, in case there are multiple similar simhash1 caused by author == editor  
-		if (persons == null ) {
-			persons = getPersonsByFallBack(res, requestedRole);
-		}
-		
+		final List<PersonName> persons = PersonUtils.getPersonsByRoleWithFallback(res, requestedRole);
+
 		if (!present(persons) || requestedIndex < 0 || requestedIndex >= persons.size()) {
 			throw new ObjectNotFoundException(requestedRole + " for " + res.getInterHash());
 		}
@@ -138,8 +139,8 @@ public class DisambiguationPageController extends SingleResourceListController i
 		// FIXME: move escape to es module
 		final String name = QueryParser.escape(BibTexUtils.cleanBibTex(requestedName.toString()));
 		
-		PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
-		List<ResourcePersonRelation> suggestedPersons = query.doIt();		
+		final PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
+		final List<ResourcePersonRelation> suggestedPersons = query.doIt();
 			
 		/*
 		 * FIXME: use author-parameter in getPosts method
@@ -149,8 +150,8 @@ public class DisambiguationPageController extends SingleResourceListController i
 		 */	
 		final List<Post<BibTex>> pubAuthorSearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, name, SearchType.LOCAL, null , Order.ALPH, null, null, 0, 50);
 
-		List<Post<BibTex>> pubsWithSameAuthorName = new ArrayList<>(pubAuthorSearch);
-		for (final Post<BibTex> post : pubAuthorSearch) {			
+		final List<Post<BibTex>> pubsWithSameAuthorName = new ArrayList<>(pubAuthorSearch);
+		for (final Post<BibTex> post : pubAuthorSearch) {
 			try {
 				// remove post from search if the author has not exactly the same sur- and last-name
 				if (!post.getResource().getAuthor().contains(requestedName)) {
@@ -210,26 +211,10 @@ public class DisambiguationPageController extends SingleResourceListController i
 			}
 		}
 		
-		command.setSuggestedPersonPosts(suggestedPersonPosts);		
+		command.setSuggestedPersonPosts(suggestedPersonPosts);
 		command.setSuggestedPosts(noPersonRelPubList);
 		
 		return Views.DISAMBIGUATION;
-	}
-	
-	/**
-	 * @param res
-	 * @param requestedRole
-	 * @return
-	 */
-	private static List<PersonName> getPersonsByFallBack(BibTex res, PersonResourceRelationType requestedRole) {
-		switch (requestedRole) {
-		case AUTHOR:
-			return res.getPersonNamesByRole(PersonResourceRelationType.EDITOR);
-		case EDITOR:
-			return res.getPersonNamesByRole(PersonResourceRelationType.AUTHOR);
-		default:
-			return null;
-		}
 	}
 
 	/**
@@ -272,14 +257,15 @@ public class DisambiguationPageController extends SingleResourceListController i
 	}
 
 	private static PersonName getMainPersonName(DisambiguationPageCommand command) {
-		final BibTex bibtex = command.getPost().getResource();
-		final List<PersonName> publicationNames = bibtex.getPersonNamesByRole(command.getRequestedRole());
+		final BibTex publication = command.getPost().getResource();
+		final List<PersonName> publicationNames = PersonUtils.getPersonsByRole(publication, command.getRequestedRole());
 		final int personIndex = command.getRequestedIndex().intValue();
+
 		if ((publicationNames == null) || (publicationNames.size() <= personIndex)) {
 			throw new IllegalArgumentException();
 		}
-		final PersonName mainName = publicationNames.get(personIndex);
-		return mainName;
+
+		return publicationNames.get(personIndex);
 	}
 	
 	
@@ -306,5 +292,12 @@ public class DisambiguationPageController extends SingleResourceListController i
 
 	public void setPersonRoleRenderer(PersonRoleRenderer personRoleRenderer) {
 		this.personRoleRenderer = personRoleRenderer;
+	}
+
+	/**
+	 * @param urlGenerator the urlGenerator to set
+	 */
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
 	}
 }

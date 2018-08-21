@@ -134,7 +134,7 @@ public class PersonPageController extends SingleResourceListController implement
 	private View conflictMerge(PersonPageCommand command) {
 		try {
 			
-			Map<String, String> map = new HashMap<String, String>();
+			Map<String, String> map = new HashMap<>();
 			if(command.getPerson()!=null){
 				for (String fieldName : Person.fieldsWithResolvableMergeConflicts){
 					PropertyDescriptor desc = new PropertyDescriptor(fieldName, Person.class);
@@ -173,7 +173,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View getConflicts(PersonPageCommand command) {
-		List<PersonMatch> list = new LinkedList<PersonMatch>();
+		List<PersonMatch> list = new LinkedList<>();
 		list.add(this.logic.getPersonMatch(command.getFormMatchId()));
 		
 		JSONArray array = new JSONArray();
@@ -585,6 +585,7 @@ public class PersonPageController extends SingleResourceListController implement
 		}
 
 		// FIXME: this should be done in the logic not here
+		// FIXME: this should render a redirect to the new person
 		String forwardId = this.logic.getForwardId(command.getRequestedPersonId());
 		if (present(forwardId)) {
 			command.setRequestedPersonId(forwardId);

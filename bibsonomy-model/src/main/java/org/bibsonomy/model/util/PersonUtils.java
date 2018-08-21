@@ -28,8 +28,13 @@ package org.bibsonomy.model.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.util.StringUtils;
+
+import java.util.List;
 
 /**
  * util methods for {@link Person}
@@ -62,4 +67,28 @@ public final class PersonUtils {
 		return sb.toString();
 	}
 
+	public static List<PersonName> getPersonsByRoleWithFallback(BibTex publication, PersonResourceRelationType role) {
+		final List<PersonName> personsByRole = getPersonsByRole(publication, role);
+
+		if (personsByRole != null) {
+			return personsByRole;
+		}
+
+		// MacGyver-fix, in case there are multiple similar simhash1 caused by author == editor
+		switch (role) {
+			case AUTHOR: return publication.getEditor();
+			case EDITOR: return publication.getAuthor();
+		}
+
+		return null;
+	}
+
+	public static List<PersonName> getPersonsByRole(final BibTex publication, PersonResourceRelationType role) {
+		switch(role) {
+			case AUTHOR: return publication.getAuthor();
+			case EDITOR: return publication.getEditor();
+		}
+
+		return null;
+	}
 }

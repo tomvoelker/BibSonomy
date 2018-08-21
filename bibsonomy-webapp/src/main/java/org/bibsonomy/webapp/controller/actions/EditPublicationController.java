@@ -42,9 +42,11 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.actions.EditPublicationCommand;
 import org.bibsonomy.webapp.util.View;
@@ -130,7 +132,8 @@ public class EditPublicationController extends AbstractEditPublicationController
 	@Override
 	protected void validatePost(EditPublicationCommand command) {
 		super.validatePost(command);
-		final List<PersonName> publicationNames = (command.getPersonRole() != null) ? command.getPost().getResource().getPersonNamesByRole(command.getPersonRole()) : null;
+		final PersonResourceRelationType personRole = command.getPersonRole();
+		final List<PersonName> publicationNames = (personRole != null) ? PersonUtils.getPersonsByRole(command.getPost().getResource(), personRole) : null;
 		if (((command.getPersonIndex() != null) && (publicationNames != null) && (command.getPersonIndex() >= publicationNames.size())) || ((command.getPersonId() != null) && (command.getPersonIndex() == null))) {
 			this.errors.reject("error.field.valid.personId", "The provided person index is invalid.");
 			return;
@@ -140,22 +143,23 @@ public class EditPublicationController extends AbstractEditPublicationController
 	private void storePersonRelation(final EditPublicationCommand command, final User loginUser, final Post<BibTex> pubPost) throws ResourcePersonAlreadyAssignedException {
 		
 		final Person person;
-		if (present(command.getPerson().getPersonId())) {
+		final Person commandPerson = command.getPerson();
+		if (present(commandPerson.getPersonId())) {
 			// a new publication is added to an existing person
-			person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPerson().getPersonId());
+			person = this.logic.getPersonById(PersonIdType.PERSON_ID, commandPerson.getPersonId());
 			if (command.getPersonIndex() == null) {
-				final List<PersonName> publicationNames = pubPost.getResource().getPersonNamesByRole(command.getPersonRole());
+				final List<PersonName> publicationNames = PersonUtils.getPersonsByRoleWithFallback(pubPost.getResource(), command.getPersonRole());
 				command.setPersonIndex(findPersonIndex(person, publicationNames));
 			}
 		} else {
 			// a new person entity is created by creating a publication post and taking its author name
 			// as the name of the new person (accessible via add person button on persons/genealogy page)
-			final List<PersonName> publicationNames = pubPost.getResource().getPersonNamesByRole(command.getPersonRole());
+			final List<PersonName> publicationNames = PersonUtils.getPersonsByRoleWithFallback(pubPost.getResource(), command.getPersonRole());
 			if ((command.getPersonIndex() != null) && (command.getPersonIndex() >= publicationNames.size())) {
 				this.errors.reject("error.field.valid.personId", "The provided person index is invalid.");
 				return;
 			}
-			person = command.getPerson();
+			person = commandPerson;
 			person.setMainName(publicationNames.get(command.getPersonIndex()));
 			this.logic.createPerson(person);
 		}
