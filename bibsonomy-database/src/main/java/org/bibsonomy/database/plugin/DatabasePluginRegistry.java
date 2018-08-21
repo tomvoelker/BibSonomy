@@ -67,9 +67,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	private List<DatabasePlugin> defaultPlugins;
 	
 	@Override
-	public void onPublicationInsert(final Post<? extends BibTex> post, final DBSession session) {
+	public void onPublicationInsert(final Post<? extends BibTex> post, User loggedinUser, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPublicationInsert(post, session);
+			plugin.onPublicationInsert(post, loggedinUser, session);
 		}
 	}
 
@@ -123,9 +123,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 
 	@Override
-	public void onBookmarkInsert(final Post<? extends Resource> post, final DBSession session) {
+	public void onBookmarkInsert(final Post<? extends Resource> post, User logginUser, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onBookmarkInsert(post, session);
+			plugin.onBookmarkInsert(post, logginUser, session);
 		}
 	}
 

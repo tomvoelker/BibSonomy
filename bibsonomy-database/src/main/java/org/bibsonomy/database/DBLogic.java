@@ -3384,6 +3384,7 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void createResourceRelation(final ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException {
 		this.ensureLoggedInAndNoSpammer();
+
 		ValidationUtils.assertNotNull(resourcePersonRelation.getPerson());
 		ValidationUtils.assertNotNull(resourcePersonRelation.getPerson().getPersonId());
 		ValidationUtils.assertNotNull(resourcePersonRelation.getRelationType());
@@ -3400,11 +3401,9 @@ public class DBLogic implements LogicInterface {
 
 		resourcePersonRelation.setChangedBy(this.loginUser.getName());
 		resourcePersonRelation.setChangedAt(new Date());
-		final DBSession session = this.openSession();
-		try {
-			this.personDBManager.addResourceRelation(resourcePersonRelation, session);
-		} finally {
-			session.close();
+
+		try (final DBSession session = this.openSession()) {
+			this.personDBManager.addResourceRelation(resourcePersonRelation, this.loginUser, session);
 		}
 	}
 
@@ -3819,7 +3818,7 @@ public class DBLogic implements LogicInterface {
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
 		final DBSession session = this.openSession();
 		if (present(this.loginUser.getName())) {
-			return this.personDBManager.conflictMerge(session, formMatchId, map, this.loginUser.getName());
+			return this.personDBManager.conflictMerge(formMatchId, map, this.loginUser.getName(), session);
 		}
 		return false;
 	}

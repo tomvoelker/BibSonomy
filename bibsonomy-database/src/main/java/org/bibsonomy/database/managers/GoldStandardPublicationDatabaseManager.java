@@ -50,6 +50,7 @@ public final class GoldStandardPublicationDatabaseManager extends GoldStandardDa
 	/**
 	 * @return the @{link:GoldStandardPublicationDatabaseManager} instance
 	 */
+	@Deprecated // TODO: use spring config
 	public static GoldStandardPublicationDatabaseManager getInstance() {
 		return INSTANCE;
 	}

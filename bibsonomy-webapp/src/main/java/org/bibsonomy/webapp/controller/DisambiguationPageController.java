@@ -62,8 +62,13 @@ import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * TODO: Document controller
- * FIXME: rename controller
+ * FIXME: move actions to separate controller
+ * this controller to disambiguate an author/editor of a publication
+ * paths:
+ *     - /person/INTERHASH/RELATIONROLE/PERSONNAME_INDEX
+ *
+ *     e.g.
+ *     /person/182b65113dff41c2bd36e9444902dbe7a/author/2
  *
  * @author Christian Pfeiffer, Tom Hanika
  */
@@ -84,7 +89,8 @@ public class DisambiguationPageController extends SingleResourceListController i
 		if (!present(requestedHash)) {
 			throw new MalformedURLSchemeException("error.disambiguation_without_hash");
 		}
-		
+
+		// get the post that should be displayed
 		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, requestedHash, null, null, null, null, null, null, 0, 1);
 		
 		if (!present(posts)) {

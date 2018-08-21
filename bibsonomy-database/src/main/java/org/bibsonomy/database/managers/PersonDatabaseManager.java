@@ -64,6 +64,7 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.services.searcher.PersonSearch;
+import org.bibsonomy.util.ObjectUtils;
 
 /**
  * database manger for handling {@link Person} related actions
@@ -77,6 +78,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	private final GeneralDatabaseManager generalManager;
 	private final DatabasePluginRegistry plugins;
+	private GoldStandardPublicationDatabaseManager goldStandardPublicationDatabaseManager;
 	private PersonSearch personSearch;
 
 	@Deprecated // TODO: config via spring
@@ -104,7 +106,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			this.insert("insertPerson", person, session);
 
 			// now insert person names
-
+			// TODO: move methods from the logic
 
 			session.commitTransaction();
 		} finally {
@@ -292,12 +294,30 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * @param resourcePersonRelation
+	 * @param loggedinUser the loggedin user
 	 * @param session
-	 * @return TODO: add documentation
+	 * @return <code>true</code> iff the relation was added
 	 */
-	public boolean addResourceRelation(ResourcePersonRelation resourcePersonRelation, DBSession session) {
+	public boolean addResourceRelation(final ResourcePersonRelation resourcePersonRelation, User loggedinUser, final DBSession session) {
 		session.beginTransaction();
 		try {
+			/*
+			 * the ensure that the resource is always available even when the user deletes a post
+			 * so we create here a community post of the provided post
+			 * FIXME: it is very inefficient to post the complete post e.g. via api
+			 */
+			final Post<? extends BibTex> post = resourcePersonRelation.getPost();
+			final BibTex publication = post.getResource();
+			publication.recalculateHashes();
+			final Post<GoldStandardPublication> communityPostInDB = this.goldStandardPublicationDatabaseManager.getPostDetails(loggedinUser.getName(), publication.getInterHash(), "", Collections.emptyList(), session);
+			if (!present(communityPostInDB)) {
+				final Post<GoldStandardPublication> communityPost = new Post<>();
+				final GoldStandardPublication goldPublication = new GoldStandardPublication();
+				ObjectUtils.copyPropertyValues(publication, goldPublication);
+				communityPost.setResource(goldPublication);
+				this.goldStandardPublicationDatabaseManager.createPost(communityPost, loggedinUser, session);
+			}
+
 			resourcePersonRelation.setPersonRelChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("insertResourceRelation", resourcePersonRelation, session);
 			session.commitTransaction();
@@ -793,7 +813,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @param session
 	 * @return
 	 */
-	public List<PersonMatch> getMatchesForFilterWithUserName(String personID, String userName, DBSession session) {
+	public List<PersonMatch> getMatchesForFilterWithUserName(final String personID, final String userName, final DBSession session) {
 		final List<PersonMatch> matches = this.getMatchesFor(personID, session);
 		matches.removeIf(match -> match.getUserDenies().contains(userName));
 
@@ -803,13 +823,13 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	/**
 	 * performs a merge and resolves its conflicts
 	 * 
-	 * @param session
 	 * @param formMatchId
 	 * @param map
 	 *            conflicts
+	 * @param session
 	 * @return true if merge could be performed
 	 */
-	public Boolean conflictMerge(DBSession session, int formMatchId, Map<String, String> map, String loginUser) {
+	public Boolean conflictMerge(int formMatchId, Map<String, String> map, String loginUser, DBSession session) {
 		PersonMatch match = this.getMatch(formMatchId, session);
 		// check match in claim and field name conflicts
 		if (!this.testMergeOnClaims(match, loginUser) || !onlyValidFields(map.keySet())) {
@@ -958,4 +978,10 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		this.personSearch = personSearch;
 	}
 
+	/**
+	 * @param goldStandardPublicationDatabaseManager the goldStandardPublicationDatabaseManager to set
+	 */
+	public void setGoldStandardPublicationDatabaseManager(GoldStandardPublicationDatabaseManager goldStandardPublicationDatabaseManager) {
+		this.goldStandardPublicationDatabaseManager = goldStandardPublicationDatabaseManager;
+	}
 }
