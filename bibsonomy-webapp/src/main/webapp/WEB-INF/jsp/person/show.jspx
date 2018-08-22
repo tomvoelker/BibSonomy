@@ -481,362 +481,358 @@
 				</div>
 			</div>
 			</c:if>
-		</jsp:attribute>
-		
-	</layout:paneLayout>
 
+			<!-- ############################################# -->
+			<!-- ############### MODAL DIALOGS ############### -->
+			<!-- ############################################# -->
 
-	<!-- ############################################# -->
-	<!-- ############### MODAL DIALOGS ############### -->
-	<!-- ############################################# -->
+			<!-- Add new name modal dialog -->
+			<div class="modal fade" id="addName" tabindex="-1" role="dialog"
+				 aria-labelledby="addNameLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<form action="" method="post" id='addNameForm' name="addNameForm" class='form-horizontal'>
+							<input type="hidden" name="ckey" value="${ckey}" />
+							<input type='hidden' name='person.personId' value='${command.person.personId}' />
 
-	<!-- Add new name modal dialog -->
-	<div class="modal fade" id="addName" tabindex="-1" role="dialog"
-		aria-labelledby="addNameLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<form action="" method="post" id='addNameForm' name="addNameForm" class='form-horizontal'>
-					<input type="hidden" name="ckey" value="${ckey}" />
-					<input type='hidden' name='person.personId' value='${command.person.personId}' /> 					
-					
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
-						<h4 class="modal-title"><fmt:message key="person.show.modalAddNameHeader" /></h4>
-					</div>
-					<div class="modal-body">
-						<fieldset>
-							<div class="form-group">
-								<label class="control-label col-md-3" for='formFirstName'>${textFormFirstName}</label>
-								<div class="col-md-7">
-									<input type="text" class="form-control" placeholder="${textFormFirstName}" name='newName.firstName' id='formFirstName' />
-								</div>
-								<label class="control-label col-md-3" for='formLastName'>${textFormLastName}</label>
-								<div class="col-md-7">
-									<input type="text" class="form-control" placeholder="${textFormLastName}" name='newName.lastName' id='formLastName' />
-								</div>
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
+								<h4 class="modal-title"><fmt:message key="person.show.modalAddNameHeader" /></h4>
 							</div>
-						</fieldset>
+							<div class="modal-body">
+								<fieldset>
+									<div class="form-group">
+										<label class="control-label col-md-3" for='formFirstName'>${textFormFirstName}</label>
+										<div class="col-md-7">
+											<input type="text" class="form-control" placeholder="${textFormFirstName}" name='newName.firstName' id='formFirstName' />
+										</div>
+										<label class="control-label col-md-3" for='formLastName'>${textFormLastName}</label>
+										<div class="col-md-7">
+											<input type="text" class="form-control" placeholder="${textFormLastName}" name='newName.lastName' id='formLastName' />
+										</div>
+									</div>
+								</fieldset>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
+								<button id='btnAddNameSubmit' type='button' class="btn btn-primary"><fmt:message key="person.show.addNameButton" /></button>
+							</div>
+						</form>
 					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
-						<button id='btnAddNameSubmit' type='button' class="btn btn-primary"><fmt:message key="person.show.addNameButton" /></button>
-					</div>
-				</form>
+				</div>
 			</div>
-		</div>
-	</div>
 
 
-	<!-- Remove name modal dialog -->
-	<div class="modal fade" id="removeName" tabindex="-1" role="dialog"
-		aria-labelledby="removeNameLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&amp;times;</button>
-					<h4 class="modal-title"><fmt:message key="person.show.modalDeleteNameHeader" /></h4>
-				</div>
-				
-				<div class="modal-body">
-					<p><fmt:message key="person.show.modalDeleteNameContent" /> <strong id='modalRemoveNameText'>&#160;</strong></p>
-				</div>
-				<div class="modal-footer">
-					<form action="" method="post" class='form-inline' id='removeNameForm'>
-						<input type="hidden" name="ckey" value="${ckey}"/>
-						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
-						<input type='hidden' name='formPersonNameId' id='formPersonNameId' value=''/>&#160;
-						<button type="button" class="btn btn-primary" id='btnRemoveNameSubmit'><fmt:message key="person.show.deleteNameButton" /></button>
-					</form>
+					<!-- Remove name modal dialog -->
+					<div class="modal fade" id="removeName" tabindex="-1" role="dialog"
+						 aria-labelledby="removeNameLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+									aria-hidden="true">&amp;times;</button>
+							<h4 class="modal-title"><fmt:message key="person.show.modalDeleteNameHeader" /></h4>
+						</div>
+
+						<div class="modal-body">
+							<p><fmt:message key="person.show.modalDeleteNameContent" /> <strong id='modalRemoveNameText'>&#160;</strong></p>
+						</div>
+						<div class="modal-footer">
+							<form action="" method="post" class='form-inline' id='removeNameForm'>
+								<input type="hidden" name="ckey" value="${ckey}"/>
+								<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
+								<input type='hidden' name='formPersonNameId' id='formPersonNameId' value=''/>&#160;
+								<button type="button" class="btn btn-primary" id='btnRemoveNameSubmit'><fmt:message key="person.show.deleteNameButton" /></button>
+							</form>
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
-	</div>
-	
-	<!-- Set main name modal dialog -->
-	<div class="modal fade" id="setMainName" tabindex="-1" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&amp;times;</button>
-					<h4 class="modal-title"><fmt:message key="person.show.modalSetMainNameHeader" /></h4>
-				</div>
-				
-				<div class="modal-body">
-					<p><fmt:message key="person.show.modalSetMainNameContent" />&amp;nbsp; <strong id='modalMainNameText'>&#160;</strong></p>
-				</div>
-				<div class="modal-footer">
-					<form action="" method="post" class='form-inline' id='setMainNameForm'>
-						<input type="hidden" name="ckey" value="${ckey}"/>
-						<input type='hidden' name='person.personId' value='${command.person.personId}' />
-						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
-						<input type='hidden' name='formSelectedName' id='formSelectedName' value=''/>&#160;
-						<button type="button" class="btn btn-primary" id='btnSetMainNameSubmit'><fmt:message key="person.show.saveButton" /></button>
-					</form>
+
+					<!-- Set main name modal dialog -->
+					<div class="modal fade" id="setMainName" tabindex="-1" role="dialog">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+									aria-hidden="true">&amp;times;</button>
+							<h4 class="modal-title"><fmt:message key="person.show.modalSetMainNameHeader" /></h4>
+						</div>
+
+						<div class="modal-body">
+							<p><fmt:message key="person.show.modalSetMainNameContent" />&amp;nbsp; <strong id='modalMainNameText'>&#160;</strong></p>
+						</div>
+						<div class="modal-footer">
+							<form action="" method="post" class='form-inline' id='setMainNameForm'>
+								<input type="hidden" name="ckey" value="${ckey}"/>
+								<input type='hidden' name='person.personId' value='${command.person.personId}' />
+								<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
+								<input type='hidden' name='formSelectedName' id='formSelectedName' value=''/>&#160;
+								<button type="button" class="btn btn-primary" id='btnSetMainNameSubmit'><fmt:message key="person.show.saveButton" /></button>
+							</form>
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
-	</div>
-	
-	<!-- Add thesis modal dialog -->
-	<fmt:message key="person.show.modalAddThesisHeader" var="textModalAddThesisHeader" />
-	<bs:modal modalTitle="${textModalAddThesisHeader}" id="addThesis">
-		<jsp:attribute name="modalBody">
-			<fieldset>
-				<div id="person-scroll-menu" class="form-group">
-					<label for='addThesisAuto' class="control-label">${textThesis}</label>
-					<fmt:message key="person.show.modal.addThesis.placeholder" var="tmpMsg" />
-					<input class='form-control typeahead' id='addThesisAuto' type='text' name='addThesisAuto' autocomplete="off" placeholder="${tmpMsg}"/>
-				</div>
-			</fieldset>
-		</jsp:attribute>
-		<jsp:attribute name="modalFooter">
-			<form action="/postPublication" method="post">
-				<input type="hidden" name="ckey" value="${ckey}"/>
-				<input type="hidden" name='personId' value='${command.person.personId}'/>
-				<input type="hidden" name='personRole' value='AUTHOR'/>
-				<input type="hidden" name='post.resource.entrytype' value='phdthesis'/>
-				<input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
-			</form>
-			<form id="addThesisForm" action="${absoluteUrlGenerator.getPersonUrl(command.person.personId)}" method="post" class='form-inline'>
-				<!-- set via autocomplete -->
-				<input type="hidden" name="ckey" value="${ckey}"/>
-				<input type='hidden' name='formInterHash' value=''/>
-				<input type='hidden' name='resourcePersonRelation.personIndex' value=''/>
-				<!-- set statically -->
-				<input type='hidden' name='formPersonId' value='${command.person.personId}'/>
-				<input type='hidden' name='formPersonRole' value='AUTHOR'/>
-				<input type="hidden" name='formAction' value='addThesis' />
-				<!-- visible elements -->
-				<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
-				<input type="submit" class="btn btn-primary" name='submit' id="addThesisBtn" value='${textAddThesisButton}' />
-			</form>
-		</jsp:attribute>
-	</bs:modal>
-	
-	<!-- Add superviced thesis modal dialog -->
-	<fmt:message key="person.show.modal.addSupervisedThesis.header" var="tmpMsg" />
-	<bs:modal modalTitle="${tmpMsg}" id="addSupervisedThesis">
-		<jsp:attribute name="modalBody">
-			<form id="addSupervisedThesisForm" action="${absoluteUrlGenerator.getPersonUrl(command.person.personId)}" method="post" class="form-horizontal">
-				<input type="hidden" name="ckey" value="${ckey}"/>
-				<fieldset>
-					<div id="person-scroll-menu" class="form-group">
-						<label for='addSupervisedThesisAuto' class="control-label"><fmt:message key="person.show.modal.addSupervisedThesis.text" /></label>
-						<fmt:message key="person.show.modal.addSupervisedThesis.placeholder" var="tmpMsg" />
-						<input class='form-control typeahead' id='addSupervisedThesisAuto' type='text' name='addSupervisedThesisAuto' autocomplete="off" placeholder="${tmpMsg}"/>
-					</div>
-					<div class="form-group">
-						<label for='addSupervisedThesisRole' class="control-label">
-							<fmt:message key="person.show.modal.addSupervisedThesis.role">
-								<fmt:param><c:out value="${mtl:cleanBibtex(command.person.mainName.firstName)} "/> <c:out value="${mtl:cleanBibtex(command.person.mainName.lastName)}"/></fmt:param>
-							</fmt:message>
-						</label>
-						<select id="addSupervisedThesisRole" name="formPersonRole" class="form-control">
-							<c:forEach var="role" items="${command.availableRoles}">
-								<c:choose>
-									<c:when test="${(role != 'AUTHOR') and (role != 'EDITOR') and (role != 'DOCTOR_VATER')}">
-										<option value="${role}"><fmt:message key="person.show.${role.relatorCode}" /></option>
-									</c:when>
-									<c:when test="${role == 'DOCTOR_VATER'}">
-									<option value="${role}" selected="selected"><fmt:message key="person.show.${role.relatorCode}" /></option> 
-									</c:when>
-								</c:choose>
-							</c:forEach>
-						</select>
-					</div>
-				</fieldset>
-				<!-- set via autocomplete -->
-				<input type='hidden' name='formInterHash' value=''/>
-				<input type='hidden' name='resourcePersonRelation.personIndex' value=''/>
-				<!-- set statically -->
-				<input type='hidden' name='formPersonId' value='${command.person.personId}'/>
-				<input type="hidden" name='formAction' value='addThesis' />
-			</form>
-			
-		</jsp:attribute>
-		<jsp:attribute name="modalFooter">
-			<form action="/editPublication" method="post">
-				<input type="hidden" name="ckey" value="${ckey}"/>
-				<input type="hidden" name='personId' value='${command.person.personId}'/>
-				<input type="hidden" name='personRole' value='ADVISOR'/><!-- TODO: this should be selectable via a dropdown button -->
-				<input type="hidden" name='post.resource.entrytype' value='phdThesis'/>
-				<input type="hidden" name='formAction' value='newThesis'/>
-				<input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
-			</form>
-			<form action="#">
-				<input type="hidden" name="ckey" value="${ckey}"/>
-				<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
-				<input type="submit" class="btn btn-primary" name='submit' id="addSupervisedThesisBtn" value='${textAddThesisButton}' onclick="javascript:$('#addSupervisedThesisForm').submit(); return false;" />
-			</form>
-		</jsp:attribute>
-	</bs:modal>
-	
-	<!-- Add role modal dialog -->
-	<div class="modal fade" id="addRole" tabindex="-1" role="dialog" aria-labelledby="addRoleLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&amp;times;</button>
-					<h4 class="modal-title"><fmt:message key="person.show.modalAddRoleHeader" /></h4>
-				</div>
-				<div class="modal-body">
+
+					<!-- Add thesis modal dialog -->
+					<fmt:message key="person.show.modalAddThesisHeader" var="textModalAddThesisHeader" />
+			<bs:modal modalTitle="${textModalAddThesisHeader}" id="addThesis">
+				<jsp:attribute name="modalBody">
 					<fieldset>
-						<div id="person-scroll-menu" class="form-group person-search">
-							<label for='addRoleAuto' class="control-label col-md-3"><fmt:message key="person.show.person" /></label>
-							<fmt:message key="person.show.modal.addRole.placeholder" var="textModalAddRolePlaceholder" />
-							<input class='form-control typeahead' id='addRoleAuto' type='text' name='addRoleAuto' autocomplete="off" placeholder="${textModalAddRolePlaceholder}"/>
+						<div id="person-scroll-menu" class="form-group">
+							<label for='addThesisAuto' class="control-label">${textThesis}</label>
+							<fmt:message key="person.show.modal.addThesis.placeholder" var="tmpMsg" />
+							<input class='form-control typeahead' id='addThesisAuto' type='text' name='addThesisAuto' autocomplete="off" placeholder="${tmpMsg}"/>
 						</div>
 					</fieldset>
-				</div>
-				<div class="modal-footer">
-					<form action="" method="post" id='addRoleForm' class='form-horizontal'>
+				</jsp:attribute>
+				<jsp:attribute name="modalFooter">
+					<form action="/postPublication" method="post">
+						<input type="hidden" name="ckey" value="${ckey}"/>
+						<input type="hidden" name='personId' value='${command.person.personId}'/>
+						<input type="hidden" name='personRole' value='AUTHOR'/>
+						<input type="hidden" name='post.resource.entrytype' value='phdthesis'/>
+						<input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
+					</form>
+					<form id="addThesisForm" action="${absoluteUrlGenerator.getPersonUrl(command.person.personId)}" method="post" class='form-inline'>
+						<!-- set via autocomplete -->
+						<input type="hidden" name="ckey" value="${ckey}"/>
+						<input type='hidden' name='formInterHash' value=''/>
+						<input type='hidden' name='resourcePersonRelation.personIndex' value=''/>
+						<!-- set statically -->
+						<input type='hidden' name='formPersonId' value='${command.person.personId}'/>
+						<input type='hidden' name='formPersonRole' value='AUTHOR'/>
+						<input type="hidden" name='formAction' value='addThesis' />
+						<!-- visible elements -->
+						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+						<input type="submit" class="btn btn-primary" name='submit' id="addThesisBtn" value='${textAddThesisButton}' />
+					</form>
+				</jsp:attribute>
+			</bs:modal>
+
+					<!-- Add superviced thesis modal dialog -->
+					<fmt:message key="person.show.modal.addSupervisedThesis.header" var="tmpMsg" />
+			<bs:modal modalTitle="${tmpMsg}" id="addSupervisedThesis">
+				<jsp:attribute name="modalBody">
+					<form id="addSupervisedThesisForm" action="${absoluteUrlGenerator.getPersonUrl(command.person.personId)}" method="post" class="form-horizontal">
+						<input type="hidden" name="ckey" value="${ckey}"/>
+						<fieldset>
+							<div id="person-scroll-menu" class="form-group">
+								<label for='addSupervisedThesisAuto' class="control-label"><fmt:message key="person.show.modal.addSupervisedThesis.text" /></label>
+								<fmt:message key="person.show.modal.addSupervisedThesis.placeholder" var="tmpMsg" />
+								<input class='form-control typeahead' id='addSupervisedThesisAuto' type='text' name='addSupervisedThesisAuto' autocomplete="off" placeholder="${tmpMsg}"/>
+							</div>
+							<div class="form-group">
+								<label for='addSupervisedThesisRole' class="control-label">
+									<fmt:message key="person.show.modal.addSupervisedThesis.role">
+										<fmt:param><c:out value="${mtl:cleanBibtex(command.person.mainName.firstName)} "/> <c:out value="${mtl:cleanBibtex(command.person.mainName.lastName)}"/></fmt:param>
+									</fmt:message>
+								</label>
+								<select id="addSupervisedThesisRole" name="formPersonRole" class="form-control">
+									<c:forEach var="role" items="${command.availableRoles}">
+										<c:choose>
+											<c:when test="${(role != 'AUTHOR') and (role != 'EDITOR') and (role != 'DOCTOR_VATER')}">
+												<option value="${role}"><fmt:message key="person.show.${role.relatorCode}" /></option>
+											</c:when>
+											<c:when test="${role == 'DOCTOR_VATER'}">
+											<option value="${role}" selected="selected"><fmt:message key="person.show.${role.relatorCode}" /></option>
+											</c:when>
+										</c:choose>
+									</c:forEach>
+								</select>
+							</div>
+						</fieldset>
+						<!-- set via autocomplete -->
+						<input type='hidden' name='formInterHash' value=''/>
+						<input type='hidden' name='resourcePersonRelation.personIndex' value=''/>
+						<!-- set statically -->
+						<input type='hidden' name='formPersonId' value='${command.person.personId}'/>
+						<input type="hidden" name='formAction' value='addThesis' />
+					</form>
+
+				</jsp:attribute>
+				<jsp:attribute name="modalFooter">
+					<form action="/editPublication" method="post">
+						<input type="hidden" name="ckey" value="${ckey}"/>
+						<input type="hidden" name='personId' value='${command.person.personId}'/>
+						<input type="hidden" name='personRole' value='ADVISOR'/><!-- TODO: this should be selectable via a dropdown button -->
+						<input type="hidden" name='post.resource.entrytype' value='phdThesis'/>
+						<input type="hidden" name='formAction' value='newThesis'/>
+						<input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
+					</form>
+					<form action="#">
 						<input type="hidden" name="ckey" value="${ckey}"/>
 						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
-						<button type="button" class="btn btn-primary" id='btnAddRoleSubmit'><fmt:message key="person.show.addRoleButton" /></button>
+						<input type="submit" class="btn btn-primary" name='submit' id="addSupervisedThesisBtn" value='${textAddThesisButton}' onclick="javascript:$('#addSupervisedThesisForm').submit(); return false;" />
 					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	
-	<!-- Edit role modal dialog -->
-	<div class="modal fade" id="editRole" tabindex="-1" role="dialog" aria-labelledby="editRoleLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
-          <h4 class="modal-title"><fmt:message key="person.show.modalEditRoleHeader" /> <strong id='modalEditRoleHeaderText'>&#160;</strong></h4>
-        </div>
-        <div class="modal-body">
-          	<div class="form-group">
-          		<label class="control-label col-md-3"><fmt:message key="person.show.role" /></label>
-          				
-          		<div class="col-md-7">
-          			<c:forEach var="role" items="${command.availableRoles}">
-          				<div class='input-group'>
-							<span class="input-group-addon">
-								<input id='role${role}' type='checkbox' name='formPersonRoles' value='${role}'/>
-							</span>
-							<p class="form-control">${role}</p>
+				</jsp:attribute>
+			</bs:modal>
+
+					<!-- Add role modal dialog -->
+					<div class="modal fade" id="addRole" tabindex="-1" role="dialog" aria-labelledby="addRoleLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+									aria-hidden="true">&amp;times;</button>
+							<h4 class="modal-title"><fmt:message key="person.show.modalAddRoleHeader" /></h4>
 						</div>
-          			</c:forEach>
-				</div>
-			</div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
-          <button type="button" class="btn btn-primary" id='btnEditRoleSubmit'><fmt:message key="person.show.editRoleButton" /></button>
-        </div>
-			</div>
-		</div>
-	</div>
-	
-	<!-- Delete role modal dialog -->
-	<div class="modal fade" id="deleteRole" tabindex="-1" role="dialog"
-		aria-labelledby="deleteRoleLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&amp;times;</button>
-					<h4 class="modal-title"><fmt:message key="person.show.modalDeleteRoleHeader" /> <strong id='modalDeleteRoleHeaderText'>&#160;</strong></h4>
-				</div>
-				
-				<div class="modal-body">
-					<p><fmt:message key="person.show.modalDeleteRoleContent" /> <strong id='modalDeleteRoleContentText'>&#160;</strong></p>
-				</div>
-				<div class="modal-footer">
-					<form action="" method="post" class='form-inline' id='deleteRoleForm'>
-						<input type="hidden" name="ckey" value="${ckey}"/>
-						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
-						<button type="button" class="btn btn-primary" id='btnDeleteRoleSubmit'><fmt:message key="person.show.deleteRoleButton" /></button>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	<!-- Link person modal dialog -->
-	<div class="modal fade" id="linkPerson" tabindex="-1" role="dialog" aria-labelledby="linkPersonLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&amp;times;</button>
-					<h4 class="modal-title"><fmt:message key="person.show.modalLinkPersonHeader" /></h4>
-				</div>
-				
-				<div class="modal-body">
-					<p><fmt:message key="person.show.modalLinkPersonContent" /><strong id='modalLinkPersonContentText'>&#160;</strong></p>
-				</div>
-				<div class="modal-footer">
-					<form action="" method="post" class='form-inline' id='linkPersonForm'>
-						<input type="hidden" name="ckey" value="${ckey}"/>
-						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
-						<button type="button" class="btn btn-primary" data-action='link' data-person-id='${command.person.personId}' id='btnLinkSubmit'><fmt:message key="person.show.thatsMeButton" /></button>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	<!-- Unlink person modal dialog -->	
-	<div class="modal fade" id="unlinkPerson" tabindex="-1" role="dialog"
-		aria-labelledby="unlinkPersonLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&amp;times;</button>
-					<h4 class="modal-title"><fmt:message key="person.show.modalUnlinkPersonHeader" /></h4>
-				</div>
-				
-				<div class="modal-body">
-					<p><fmt:message key="person.show.modalUnlinkPersonContent" /> <strong id='modalLinkPersonContentText'>&#160;</strong></p>
-				</div>
-				<div class="modal-footer">
-					<form action="" method="post" class='form-inline' id='unlinkPersonForm'>
-						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
-						<button type="button" class="btn btn-primary" data-action='unlink' data-person-id='${command.person.personId}' id='btnUnlinkSubmit'><fmt:message key="person.show.thatsNotMeButton" /></button>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	<!-- The Modal -->
-	<div id="conflictModal" class="modal fade" role="dialog" tabindex="-1">
-		<fmt:message key="person.show.modal.addSupervisedThesis.header" var="denyMsg" />
-		<div class="modal-dialog">
-			<!-- Modal content -->
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">x</button>
-					<h4 class="modal-title">Resolve Merge Conflict</h4>
-
-				</div>
-				<div class="modal-body" id="conflictModalDiaBody">
-					&amp;nbsp;
-				</div>
-				<div class="modal-footer">
-
-					<div class="btn-group pull-right">
-						<button id="conflictModalAccept" type="button" class="btn btn-success btn-sm mergeConflictButton"
-							data-operation="MERGE_ACCEPT" 
-							title="accept merge" data-dismiss="modal">&#10004;</button>
-						<button id="conflictModalDeny" type="button" class="btn btn-danger btn-sm mergeButton"
-							data-operation="MERGE_DENIED" 
-							title="${denyMsg}" data-dismiss="modal">&#10006;</button>
+						<div class="modal-body">
+							<fieldset>
+								<div id="person-scroll-menu" class="form-group person-search">
+									<label for='addRoleAuto' class="control-label col-md-3"><fmt:message key="person.show.person" /></label>
+									<fmt:message key="person.show.modal.addRole.placeholder" var="textModalAddRolePlaceholder" />
+									<input class='form-control typeahead' id='addRoleAuto' type='text' name='addRoleAuto' autocomplete="off" placeholder="${textModalAddRolePlaceholder}"/>
+								</div>
+							</fieldset>
+						</div>
+						<div class="modal-footer">
+							<form action="" method="post" id='addRoleForm' class='form-horizontal'>
+								<input type="hidden" name="ckey" value="${ckey}"/>
+								<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+								<button type="button" class="btn btn-primary" id='btnAddRoleSubmit'><fmt:message key="person.show.addRoleButton" /></button>
+							</form>
+						</div>
 					</div>
-					
 				</div>
 			</div>
-		</div>
-	</div>
-						
-  
+
+
+					<!-- Edit role modal dialog -->
+					<div class="modal fade" id="editRole" tabindex="-1" role="dialog" aria-labelledby="editRoleLabel" aria-hidden="true">
+			<div class="modal-dialog">
+			  <div class="modal-content">
+				<div class="modal-header">
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
+				  <h4 class="modal-title"><fmt:message key="person.show.modalEditRoleHeader" /> <strong id='modalEditRoleHeaderText'>&#160;</strong></h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-3"><fmt:message key="person.show.role" /></label>
+
+						<div class="col-md-7">
+							<c:forEach var="role" items="${command.availableRoles}">
+								<div class='input-group'>
+									<span class="input-group-addon">
+										<input id='role${role}' type='checkbox' name='formPersonRoles' value='${role}'/>
+									</span>
+									<p class="form-control">${role}</p>
+								</div>
+							</c:forEach>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+				  <button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
+				  <button type="button" class="btn btn-primary" id='btnEditRoleSubmit'><fmt:message key="person.show.editRoleButton" /></button>
+				</div>
+					</div>
+				</div>
+			</div>
+
+					<!-- Delete role modal dialog -->
+					<div class="modal fade" id="deleteRole" tabindex="-1" role="dialog"
+						 aria-labelledby="deleteRoleLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+									aria-hidden="true">&amp;times;</button>
+							<h4 class="modal-title"><fmt:message key="person.show.modalDeleteRoleHeader" /> <strong id='modalDeleteRoleHeaderText'>&#160;</strong></h4>
+						</div>
+
+						<div class="modal-body">
+							<p><fmt:message key="person.show.modalDeleteRoleContent" /> <strong id='modalDeleteRoleContentText'>&#160;</strong></p>
+						</div>
+						<div class="modal-footer">
+							<form action="" method="post" class='form-inline' id='deleteRoleForm'>
+								<input type="hidden" name="ckey" value="${ckey}"/>
+								<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+								<button type="button" class="btn btn-primary" id='btnDeleteRoleSubmit'><fmt:message key="person.show.deleteRoleButton" /></button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+					<!-- Link person modal dialog -->
+					<div class="modal fade" id="linkPerson" tabindex="-1" role="dialog" aria-labelledby="linkPersonLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+									aria-hidden="true">&amp;times;</button>
+							<h4 class="modal-title"><fmt:message key="person.show.modalLinkPersonHeader" /></h4>
+						</div>
+
+						<div class="modal-body">
+							<p><fmt:message key="person.show.modalLinkPersonContent" /><strong id='modalLinkPersonContentText'>&#160;</strong></p>
+						</div>
+						<div class="modal-footer">
+							<form action="" method="post" class='form-inline' id='linkPersonForm'>
+								<input type="hidden" name="ckey" value="${ckey}"/>
+								<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+								<button type="button" class="btn btn-primary" data-action='link' data-person-id='${command.person.personId}' id='btnLinkSubmit'><fmt:message key="person.show.thatsMeButton" /></button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+					<!-- Unlink person modal dialog -->
+					<div class="modal fade" id="unlinkPerson" tabindex="-1" role="dialog"
+						 aria-labelledby="unlinkPersonLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+									aria-hidden="true">&amp;times;</button>
+							<h4 class="modal-title"><fmt:message key="person.show.modalUnlinkPersonHeader" /></h4>
+						</div>
+
+						<div class="modal-body">
+							<p><fmt:message key="person.show.modalUnlinkPersonContent" /> <strong id='modalLinkPersonContentText'>&#160;</strong></p>
+						</div>
+						<div class="modal-footer">
+							<form action="" method="post" class='form-inline' id='unlinkPersonForm'>
+								<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+								<button type="button" class="btn btn-primary" data-action='unlink' data-person-id='${command.person.personId}' id='btnUnlinkSubmit'><fmt:message key="person.show.thatsNotMeButton" /></button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- The Modal -->
+			<div id="conflictModal" class="modal fade" role="dialog" tabindex="-1">
+				<fmt:message key="person.show.modal.addSupervisedThesis.header" var="denyMsg" />
+				<div class="modal-dialog">
+					<!-- Modal content -->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">x</button>
+							<h4 class="modal-title">Resolve Merge Conflict</h4>
+
+						</div>
+						<div class="modal-body" id="conflictModalDiaBody">
+							&amp;nbsp;
+						</div>
+						<div class="modal-footer">
+
+							<div class="btn-group pull-right">
+								<button id="conflictModalAccept" type="button" class="btn btn-success btn-sm mergeConflictButton"
+										data-operation="MERGE_ACCEPT"
+										title="accept merge" data-dismiss="modal">&#10004;</button>
+								<button id="conflictModalDeny" type="button" class="btn btn-danger btn-sm mergeButton"
+										data-operation="MERGE_DENIED"
+										title="${denyMsg}" data-dismiss="modal">&#10006;</button>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</jsp:attribute>
+	</layout:paneLayout>
 </jsp:root>
