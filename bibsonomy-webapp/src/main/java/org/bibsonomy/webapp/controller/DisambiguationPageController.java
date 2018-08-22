@@ -65,6 +65,7 @@ import org.springframework.validation.Errors;
 
 /**
  * FIXME: move actions to separate controller
+ *
  * this controller to disambiguate an author/editor of a publication
  * paths:
  *     - /person/INTERHASH/RELATIONROLE/PERSONNAME_INDEX
@@ -320,7 +321,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 
 	@Override
 	public Errors getErrors() {
-		return null;
+		return this.errors;
 	}
 
 	@Override
