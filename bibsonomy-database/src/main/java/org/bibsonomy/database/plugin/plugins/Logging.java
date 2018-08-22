@@ -68,13 +68,7 @@ import java.util.Date;
  */
 public class Logging extends AbstractDatabasePlugin {
 
-	private final GeneralDatabaseManager generalManager;
-	/**
-	 *
-	 */
-	public Logging() {
-		this.generalManager = GeneralDatabaseManager.getInstance();
-	}
+	private final GeneralDatabaseManager generalManager = GeneralDatabaseManager.getInstance();
 
 	/*
 	 * (non-Javadoc)

@@ -41,7 +41,7 @@ public class DiscussionPlugin extends AbstractDatabasePlugin {
 	 */
 	@Override
 	public void onDiscussionUpdate(final String interHash, final DiscussionItem discussionItem, final DiscussionItem oldDiscussionItem, final DBSession session) {
-		final DiscussionItemParam<DiscussionItem> param = new DiscussionItemParam<DiscussionItem>();
+		final DiscussionItemParam<DiscussionItem> param = new DiscussionItemParam<>();
 		param.setInterHash(interHash);
 		param.setOldParentHash(oldDiscussionItem.getHash());
 		param.setNewParentHash(discussionItem.getHash());

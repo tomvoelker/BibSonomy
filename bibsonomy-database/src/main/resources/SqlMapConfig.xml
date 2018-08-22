@@ -83,7 +83,7 @@
 	<!-- plugins -->
 	<sqlMap resource="plugins/Logging.xml" />
 	<sqlMap resource="plugins/MetaDataPlugin.xml" />
-	<sqlMap resource="plugins/GoldStandardRelation.xml" />
+	<sqlMap resource="plugins/GoldStandardPublicationPlugin.xml" />
 	<sqlMap resource="plugins/DiscussionPlugin.xml" />
 	<sqlMap resource="plugins/ProjectPlugin.xml" />
 	<sqlMap resource="plugins/CRISLinkPlugin.xml" />

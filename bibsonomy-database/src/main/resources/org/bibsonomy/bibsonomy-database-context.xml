@@ -365,7 +365,7 @@
 					<property name="clipboardDatabaseManager" ref="clipboardDatabaseManager" />
 				</bean>
 				<bean class="org.bibsonomy.database.plugin.plugins.DiscussionPlugin" />
-				<bean class="org.bibsonomy.database.plugin.plugins.GoldStandardPublicationReferencePlugin" />
+				<bean class="org.bibsonomy.database.plugin.plugins.GoldStandardPublicationPlugin" />
 				<bean class="org.bibsonomy.database.plugin.plugins.MetaDataPlugin" />
 				<bean class="org.bibsonomy.database.plugin.plugins.PersonPostConnectorPlugin">
 					<property name="personDatabaseManager" ref="personDatabaseManager" />
