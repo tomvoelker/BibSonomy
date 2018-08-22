@@ -8,9 +8,6 @@ import java.io.Writer;
 
 public class PostPersonStrategy extends AbstractCreateStrategy {
 
-    /**
-     * @param context
-     */
     public PostPersonStrategy(Context context) {
         super(context);
     }

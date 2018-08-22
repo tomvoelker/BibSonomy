@@ -6,17 +6,15 @@ import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.ValidationUtils;
 
 import java.io.StringWriter;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-public class CreatePersonQuery extends AbstractQuery<String> {
+public final class CreatePersonQuery extends AbstractQuery<String> {
     private final Person person;
 
     public CreatePersonQuery(Person person) {
-        if (!present(person)) throw new IllegalArgumentException("no person specified");
-        if (!present(person.getPersonId())) throw new IllegalArgumentException("no userid specified");
+        if (!ValidationUtils.present(person)) throw new IllegalArgumentException("no person specified");
         this.person = person;
     }
 
@@ -31,6 +29,6 @@ public class CreatePersonQuery extends AbstractQuery<String> {
 
     @Override
     protected String getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
-        return isSuccess() ? getRenderer().parsePerson(downloadedDocument).getPersonId() : getError();
+        return isSuccess() ? getRenderer().parsePersonId(downloadedDocument) : getError();
     }
 }

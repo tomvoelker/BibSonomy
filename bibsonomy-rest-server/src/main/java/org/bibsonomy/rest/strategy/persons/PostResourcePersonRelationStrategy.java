@@ -1,7 +1,9 @@
 package org.bibsonomy.rest.strategy.persons;
 
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
@@ -11,11 +13,11 @@ import java.io.Writer;
 
 public class PostResourcePersonRelationStrategy extends AbstractCreateStrategy {
 
-    /**
-     * @param context
-     */
-    public PostResourcePersonRelationStrategy(Context context) {
+    private final String personId;
+
+    public PostResourcePersonRelationStrategy(Context context, String personId) {
         super(context);
+        this.personId = personId;
     }
 
     @Override
@@ -25,6 +27,11 @@ public class PostResourcePersonRelationStrategy extends AbstractCreateStrategy {
 
     @Override
     protected String create() {
+        final Person person = getLogic().getPerson(personId);
+        if (person.getPersonId() == null) {
+            throw new BadRequestOrResponseException("Person with id " + personId + " doesn't exist.");
+        }
+
         final ResourcePersonRelation resourcePersonRelation = getRenderer().parseResourcePersonRelation(doc);
         try {
             getLogic().addResourceRelation(resourcePersonRelation);

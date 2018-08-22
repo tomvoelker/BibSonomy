@@ -185,6 +185,16 @@ public class JabrefLayoutRenderer implements Renderer {
 	}
 
 	@Override
+	public String parsePersonId(final Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String parseResourcePersonRelationId(final Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public List<User> parseUserList(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}

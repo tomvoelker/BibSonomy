@@ -3397,11 +3397,8 @@ public class DBLogic implements LogicInterface {
 
 		resourcePersonRelation.setChangedBy(this.loginUser.getName());
 		resourcePersonRelation.setChangedAt(new Date());
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			this.personDBManager.addResourceRelation(resourcePersonRelation, session);
-		} finally {
-			session.close();
 		}
 	}
 

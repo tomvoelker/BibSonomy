@@ -117,7 +117,7 @@ public interface Renderer {
 	 * @param viewModel
 	 *            the {@link ViewModel} encapsulates additional information,
 	 */
-	void serializePerson(Writer writer, Person person, ViewModel viewModel);
+	public void serializePerson(Writer writer, Person person, ViewModel viewModel);
 
 	/**
 	 * Serializes one {@link ResourcePersonRelation}.
@@ -129,7 +129,7 @@ public interface Renderer {
 	 * @param viewModel
 	 *            the {@link ViewModel} encapsulates additional information,
 	 */
-	void serializeResourcePersonRelation(Writer writer, ResourcePersonRelation resourcePersonRelation, ViewModel viewModel);
+	public void serializeResourcePersonRelation(Writer writer, ResourcePersonRelation resourcePersonRelation, ViewModel viewModel);
 
 	/**
 	 * Serializes a personid
@@ -137,7 +137,7 @@ public interface Renderer {
 	 * @param writer   the {@link Writer} to use.
 	 * @param personId the personId to send
 	 */
-	void serializePersonId(Writer writer, String personId);
+	public void serializePersonId(Writer writer, String personId);
 
 	/**
 	 * Serializes a resource person relation id
@@ -145,7 +145,7 @@ public interface Renderer {
 	 * @param writer     the {@link Writer} to use.
 	 * @param relationId the relationId to send
 	 */
-	void serializeResourcePersonRelationId(Writer writer, String relationId);
+	public void serializeResourcePersonRelationId(Writer writer, String relationId);
 
 	/**
 	 * Serializes a {@link List} of {@link Tag}s.
@@ -330,6 +330,28 @@ public interface Renderer {
 	public String parseUserId(Reader reader) throws BadRequestOrResponseException;
 
 	/**
+	 * Reads an user id from a {@link Reader}
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return an resource hash
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public String parsePersonId(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads an resource person relation id from a {@link Reader}
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return an resource hash
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public String parseResourcePersonRelationId(Reader reader) throws BadRequestOrResponseException;
+
+	/**
 	 * Reads a group id from a {@link Reader}
 	 * 
 	 * @param reader
@@ -382,7 +404,7 @@ public interface Renderer {
 	 * @throws BadRequestOrResponseException
 	 *             if the document within the reader is errorenous.
 	 */
-	Person parsePerson(Reader reader) throws BadRequestOrResponseException;
+	public Person parsePerson(Reader reader) throws BadRequestOrResponseException;
 
 	/**
 	 * Reads one {@link ResourcePersonRelation} from a {@link Reader}.
@@ -393,7 +415,7 @@ public interface Renderer {
 	 * @throws BadRequestOrResponseException
 	 *             if the document within the reader is errorenous.
 	 */
-	ResourcePersonRelation parseResourcePersonRelation(Reader reader) throws BadRequestOrResponseException;
+	public ResourcePersonRelation parseResourcePersonRelation(Reader reader) throws BadRequestOrResponseException;
 
 	/**
 	 * Reads a List of {@link Post}s from a {@link Reader}.

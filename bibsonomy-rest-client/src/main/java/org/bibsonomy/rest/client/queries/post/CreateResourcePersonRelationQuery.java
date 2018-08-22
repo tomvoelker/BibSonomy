@@ -9,7 +9,7 @@ import org.bibsonomy.util.StringUtils;
 
 import java.io.StringWriter;
 
-public class CreateResourcePersonRelationQuery extends AbstractQuery<ResourcePersonRelation> {
+public class CreateResourcePersonRelationQuery extends AbstractQuery<String> {
     private final ResourcePersonRelation resourcePersonRelation;
 
     public CreateResourcePersonRelationQuery(ResourcePersonRelation resourcePersonRelation) {
@@ -27,7 +27,7 @@ public class CreateResourcePersonRelationQuery extends AbstractQuery<ResourcePer
     }
 
     @Override
-    protected ResourcePersonRelation getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
-        return null;
+    protected String getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+        return isSuccess() ? getRenderer().parseResourcePersonRelationId(downloadedDocument) : getError();
     }
 }

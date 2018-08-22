@@ -269,6 +269,22 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	}
 
 	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#parsePersonId(java.io.Reader)
+	 */
+	@Override
+	public String parsePersonId(Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#parseResourcePersonRelationId(java.io.Reader)
+	 */
+	@Override
+	public String parseResourcePersonRelationId(Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.renderer.Renderer#parseGroupId(java.io.Reader)
 	 */
 	@Override

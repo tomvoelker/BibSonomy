@@ -59,6 +59,10 @@ public interface PersonLogicInterface {
 	public String createOrUpdatePerson(Person person);
 	
 	public Person getPersonById(PersonIdType idType, String id);
+
+	public default Person getPerson(String personId) {
+		return getPersonById(PersonIdType.PERSON_ID, personId);
+	}
 	
 	/**
 	 * Returns the Person claimed by a given UserName
