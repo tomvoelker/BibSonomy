@@ -41,9 +41,6 @@ import org.bibsonomy.model.logic.exception.LogicException;
  * @author  Dominik Benz
  */
 public class UserResourceViewCommand extends TagResourceViewCommand {
-
-	@Deprecated // FIXME: remove use errors handling build into spring
-	private final Collection<LogicException> logicExceptions = new LinkedList<>();
 	
 	/** the group whode resources are requested*/
 	private ConceptsCommand concepts = new ConceptsCommand();
@@ -175,13 +172,5 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 */
 	public void setSharedGroups(List<Group> sharedGroups) {
 		this.sharedGroups = sharedGroups;
-	}
-	
-	/**
-	 * @return the logicExceptions
-	 */
-	@Deprecated
-	public Collection<LogicException> getLogicExceptions() {
-		return this.logicExceptions;
 	}
 }

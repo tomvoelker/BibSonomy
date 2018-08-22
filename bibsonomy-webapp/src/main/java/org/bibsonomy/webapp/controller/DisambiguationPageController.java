@@ -45,21 +45,23 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
-import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
 import org.bibsonomy.webapp.command.DisambiguationPageCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
+import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.Errors;
 
 /**
  * FIXME: move actions to separate controller
@@ -72,10 +74,11 @@ import org.bibsonomy.webapp.view.Views;
  *
  * @author Christian Pfeiffer, Tom Hanika
  */
-public class DisambiguationPageController extends SingleResourceListController implements MinimalisticController<DisambiguationPageCommand> {
+public class DisambiguationPageController extends SingleResourceListController implements MinimalisticController<DisambiguationPageCommand>, ErrorAware {
 	private PersonRoleRenderer personRoleRenderer;
 	private URLGenerator urlGenerator;
-	
+	private Errors errors;
+
 	@Override
 	public DisambiguationPageCommand instantiateCommand() {
 		final DisambiguationPageCommand command = new DisambiguationPageCommand();
@@ -230,14 +233,26 @@ public class DisambiguationPageController extends SingleResourceListController i
 		final Person person = createPersonEntity(post, command);
 		try {
 			linkToPerson(command, person, post);
-		} catch (final LogicException e) {
-			command.getLogicExceptions().add(e);
-			return disambiguateAction(post, command);
+		} catch (final ResourcePersonAlreadyAssignedException e) {
+			return this.handleAlreadyAssignedRelations(post, command, e);
 		}
 
 		final ExtendedRedirectViewWithAttributes redirectView = new ExtendedRedirectViewWithAttributes(this.urlGenerator.getPersonUrl(person.getPersonId()));
 		redirectView.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "person.show.created.createAndLinkPerson");
 		return redirectView;
+	}
+
+	private View handleAlreadyAssignedRelations(Post<BibTex> post, DisambiguationPageCommand command, ResourcePersonAlreadyAssignedException e) {
+		final ResourcePersonRelation existingRelation = e.getExistingRelation();
+		final Person existingPerson = existingRelation.getPerson();
+		this.errors.reject("person.show.error.alreadyAssigned", new Object[]{
+						PersonNameUtils.serializePersonName(e.getPubPersonName()),
+						BibTexUtils.cleanBibTex(existingRelation.getPost().getResource().getTitle()),
+						this.urlGenerator.getPersonUrl(existingPerson.getPersonId()),
+						PersonNameUtils.serializePersonName(existingPerson.getMainName())
+		}, "Person resource relation already assigned");
+
+		return disambiguateAction(post, command);
 	}
 
 	private Person createPersonEntity(final Post<BibTex> post,final DisambiguationPageCommand command) {
@@ -283,9 +298,8 @@ public class DisambiguationPageController extends SingleResourceListController i
 		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, personId);
 		try {
 			this.linkToPerson(command, person, post);
-		} catch (final LogicException e) {
-			command.getLogicExceptions().add(e);
-			return disambiguateAction(post, command);
+		} catch (final ResourcePersonAlreadyAssignedException e) {
+			return this.handleAlreadyAssignedRelations(post, command, e);
 		}
 
 		final ExtendedRedirectViewWithAttributes redirectView = new ExtendedRedirectViewWithAttributes(this.urlGenerator.getPersonUrl(personId));
@@ -302,5 +316,15 @@ public class DisambiguationPageController extends SingleResourceListController i
 	 */
 	public void setUrlGenerator(URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
+	}
+
+	@Override
+	public Errors getErrors() {
+		return null;
+	}
+
+	@Override
+	public void setErrors(Errors errors) {
+		this.errors = errors;
 	}
 }

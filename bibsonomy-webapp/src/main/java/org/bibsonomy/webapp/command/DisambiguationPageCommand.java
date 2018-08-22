@@ -40,7 +40,7 @@ import org.bibsonomy.services.person.PersonRoleRenderer;
 /**
  * @author Christian Pfeiffer
  */
-public class DisambiguationPageCommand extends UserResourceViewCommand {
+public class DisambiguationPageCommand extends BaseCommand {
 	
 	@Deprecated // Use a Java JSPTag
 	private PersonRoleRenderer personRoleRenderer;

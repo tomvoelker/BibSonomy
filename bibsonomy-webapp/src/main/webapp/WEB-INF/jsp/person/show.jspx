@@ -85,7 +85,7 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
-			<errors:logicExceptions exceptions="${command.logicExceptions}" />
+			<errors:global />
 	
 			<form method='post' name='personForm' id="personForm" action="" class='form-horizontal'>
 				<input type="hidden" name="ckey" value="${ckey}"/>
