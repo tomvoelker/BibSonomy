@@ -75,7 +75,7 @@ import org.springframework.validation.Errors;
  *
  * @author Christian Pfeiffer, Tom Hanika
  */
-public class DisambiguationPageController extends SingleResourceListController implements MinimalisticController<DisambiguationPageCommand>, ErrorAware {
+public class PersonDisambiguationPageController extends SingleResourceListController implements MinimalisticController<DisambiguationPageCommand>, ErrorAware {
 	private PersonRoleRenderer personRoleRenderer;
 	private URLGenerator urlGenerator;
 	private Errors errors;

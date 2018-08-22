@@ -829,7 +829,7 @@
 		<property name="personRoleRenderer" ref="personRoleRenderer"/>
 	</bean>
 	
-	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.DisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">
+	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.PersonDisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
 		<property name="personRoleRenderer" ref="personRoleRenderer"/>
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
