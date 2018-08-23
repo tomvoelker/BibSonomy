@@ -6,20 +6,24 @@ import org.bibsonomy.rest.strategy.Context;
 
 import java.io.Writer;
 
+/**
+ * strategy to create a new person
+ * @author pda
+ */
 public class PostPersonStrategy extends AbstractCreateStrategy {
 
-    public PostPersonStrategy(Context context) {
-        super(context);
-    }
+	public PostPersonStrategy(Context context) {
+		super(context);
+	}
 
-    @Override
-    protected void render(Writer writer, String personID) {
-        getRenderer().serializePersonId(writer, personID);
-    }
+	@Override
+	protected void render(Writer writer, String personID) {
+		this.getRenderer().serializePersonId(writer, personID);
+	}
 
-    @Override
-    protected String create() {
-        final Person person = getRenderer().parsePerson(doc);
-        return getLogic().createOrUpdatePerson(person);
-    }
+	@Override
+	protected String create() {
+		final Person person = getRenderer().parsePerson(this.doc);
+		return this.getLogic().createOrUpdatePerson(person);
+	}
 }

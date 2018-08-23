@@ -11,34 +11,39 @@ import org.bibsonomy.rest.strategy.Context;
 
 import java.io.Writer;
 
+/**
+ * strategy to create a new post person relation
+ *
+ * @author pda
+ */
 public class PostResourcePersonRelationStrategy extends AbstractCreateStrategy {
 
-    private final String personId;
+	private final String personId;
 
-    public PostResourcePersonRelationStrategy(Context context, String personId) {
-        super(context);
-        this.personId = personId;
-    }
+	public PostResourcePersonRelationStrategy(Context context, String personId) {
+		super(context);
+		this.personId = personId;
+	}
 
-    @Override
-    protected void render(Writer writer, String relationId) {
-        getRenderer().serializeResourcePersonRelationId(writer, relationId);
-    }
+	@Override
+	protected void render(Writer writer, String relationId) {
+		this.getRenderer().serializeResourcePersonRelationId(writer, relationId);
+	}
 
-    @Override
-    protected String create() {
-        final Person person = getLogic().getPerson(personId);
-        if (person.getPersonId() == null) {
-            throw new BadRequestOrResponseException("Person with id " + personId + " doesn't exist.");
-        }
+	@Override
+	protected String create() {
+		final Person person = this.getLogic().getPersonById(PersonIdType.PERSON_ID, this.personId);
+		if (person.getPersonId() == null) {
+			throw new BadRequestOrResponseException("Person with id " + this.personId + " doesn't exist.");
+		}
 
-        final ResourcePersonRelation resourcePersonRelation = getRenderer().parseResourcePersonRelation(doc);
-        try {
-            getLogic().addResourceRelation(resourcePersonRelation);
-            final Resource resource = resourcePersonRelation.getPost().getResource();
-            return resource.getInterHash() + "-" + resource.getIntraHash();
-        } catch (ResourcePersonAlreadyAssignedException e) {
-            throw new BadRequestOrResponseException(e);
-        }
-    }
+		final ResourcePersonRelation resourcePersonRelation = getRenderer().parseResourcePersonRelation(doc);
+		try {
+			this.getLogic().addResourceRelation(resourcePersonRelation);
+			final Resource resource = resourcePersonRelation.getPost().getResource();
+			return resource.getInterHash() + "-" + resource.getIntraHash();
+		} catch (final ResourcePersonAlreadyAssignedException e) {
+			throw new BadRequestOrResponseException(e);
+		}
+	}
 }
