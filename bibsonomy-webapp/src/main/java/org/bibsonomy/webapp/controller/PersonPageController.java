@@ -75,6 +75,13 @@ import org.json.simple.JSONObject;
 import org.springframework.validation.Errors;
 
 /**
+ * controller for a single person details page
+ * paths:
+ * - /person/PERSON_ID
+ *
+ * e.g.
+ * /person/a.hotho
+ *
  * @author Christian Pfeiffer
  */
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand>, ErrorAware {
