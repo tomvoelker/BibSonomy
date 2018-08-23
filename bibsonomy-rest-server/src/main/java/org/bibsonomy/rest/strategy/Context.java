@@ -60,7 +60,7 @@ public final class Context {
 
 	static {
 		Context.urlHandlers.put(RESTConfig.TAGS_URL, new TagsHandler());
-        Context.urlHandlers.put(RESTConfig.PERSONS_URL, new PersonsHandler());
+		Context.urlHandlers.put(RESTConfig.PERSONS_URL, new PersonsHandler());
 		Context.urlHandlers.put(RESTConfig.USERS_URL, new UsersHandler());
 		Context.urlHandlers.put(RESTConfig.GROUPS_URL, new GroupsHandler());
 		Context.urlHandlers.put(RESTConfig.POSTS_URL, new PostsHandler());

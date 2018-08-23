@@ -49,11 +49,18 @@ import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
-import org.bibsonomy.model.*;
+import org.bibsonomy.model.Document;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationData;
@@ -84,7 +91,18 @@ import org.bibsonomy.rest.client.queries.get.GetTagsQuery;
 import org.bibsonomy.rest.client.queries.get.GetUserDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetUserListOfGroupQuery;
 import org.bibsonomy.rest.client.queries.get.GetUserListQuery;
-import org.bibsonomy.rest.client.queries.post.*;
+import org.bibsonomy.rest.client.queries.post.AddUsersToGroupQuery;
+import org.bibsonomy.rest.client.queries.post.CreateConceptQuery;
+import org.bibsonomy.rest.client.queries.post.CreateGroupQuery;
+import org.bibsonomy.rest.client.queries.post.CreatePersonQuery;
+import org.bibsonomy.rest.client.queries.post.CreatePostDocumentQuery;
+import org.bibsonomy.rest.client.queries.post.CreatePostQuery;
+import org.bibsonomy.rest.client.queries.post.CreateRelationQuery;
+import org.bibsonomy.rest.client.queries.post.CreateResourcePersonRelationQuery;
+import org.bibsonomy.rest.client.queries.post.CreateSyncPlanQuery;
+import org.bibsonomy.rest.client.queries.post.CreateUserQuery;
+import org.bibsonomy.rest.client.queries.post.CreateUserRelationshipQuery;
+import org.bibsonomy.rest.client.queries.post.PickPostQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeConceptQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeDocumentNameQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeGroupQuery;
@@ -521,8 +539,7 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation)
-			throws ResourcePersonAlreadyAssignedException {
+	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) {
 		execute(new CreateResourcePersonRelationQuery(resourcePersonRelation));
 	}
 }

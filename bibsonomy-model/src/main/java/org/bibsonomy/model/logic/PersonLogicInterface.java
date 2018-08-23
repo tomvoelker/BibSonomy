@@ -60,10 +60,6 @@ public interface PersonLogicInterface {
 	
 	public Person getPersonById(PersonIdType idType, String id);
 
-	public default Person getPerson(String personId) {
-		return getPersonById(PersonIdType.PERSON_ID, personId);
-	}
-	
 	/**
 	 * Returns the Person claimed by a given UserName
 	 * @param userName	the name of the user

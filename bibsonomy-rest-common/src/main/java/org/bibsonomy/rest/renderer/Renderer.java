@@ -27,13 +27,19 @@
 package org.bibsonomy.rest.renderer;
 
 import java.io.Reader;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.model.*;
+import org.bibsonomy.model.Document;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.data.DataAccessor;
@@ -446,8 +452,7 @@ public interface Renderer {
 	 * 
 	 * @param reader
 	 * 			  the {@link Reader} to use.
-	 * @param uploadFileAccessor 
-	 * @param uploadedFileAccessor provides access to referenced attachments in the read data
+	 * @param uploadFileAccessor provides access to referenced attachments in the read data
 	 * @return one {@link Document} object
 	 * @throws BadRequestOrResponseException
 	 * 				if the document within the reader is errorenous.

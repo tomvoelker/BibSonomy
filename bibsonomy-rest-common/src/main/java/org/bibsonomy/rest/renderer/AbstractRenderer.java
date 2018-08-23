@@ -35,7 +35,13 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -45,7 +51,21 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
-import org.bibsonomy.model.*;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Document;
+import org.bibsonomy.model.GoldStandard;
+import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.ImportResource;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.factories.ResourceFactory;
@@ -61,7 +81,38 @@ import org.bibsonomy.model.util.data.DataAccessor;
 import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.renderer.xml.*;
+import org.bibsonomy.rest.renderer.xml.AbstractPublicationType;
+import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
+import org.bibsonomy.rest.renderer.xml.BibtexType;
+import org.bibsonomy.rest.renderer.xml.BookmarkType;
+import org.bibsonomy.rest.renderer.xml.DocumentType;
+import org.bibsonomy.rest.renderer.xml.DocumentsType;
+import org.bibsonomy.rest.renderer.xml.ExtraUrlType;
+import org.bibsonomy.rest.renderer.xml.ExtraUrlsType;
+import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
+import org.bibsonomy.rest.renderer.xml.GroupType;
+import org.bibsonomy.rest.renderer.xml.GroupsType;
+import org.bibsonomy.rest.renderer.xml.PersonNameType;
+import org.bibsonomy.rest.renderer.xml.PersonType;
+import org.bibsonomy.rest.renderer.xml.PostType;
+import org.bibsonomy.rest.renderer.xml.PostsType;
+import org.bibsonomy.rest.renderer.xml.PublicationType;
+import org.bibsonomy.rest.renderer.xml.PublicationsType;
+import org.bibsonomy.rest.renderer.xml.PublishedInType;
+import org.bibsonomy.rest.renderer.xml.ReferenceType;
+import org.bibsonomy.rest.renderer.xml.ReferencesType;
+import org.bibsonomy.rest.renderer.xml.RelationType;
+import org.bibsonomy.rest.renderer.xml.ResourceLinkType;
+import org.bibsonomy.rest.renderer.xml.ResourcePersonRelationType;
+import org.bibsonomy.rest.renderer.xml.StatType;
+import org.bibsonomy.rest.renderer.xml.SyncDataType;
+import org.bibsonomy.rest.renderer.xml.SyncPostType;
+import org.bibsonomy.rest.renderer.xml.SyncPostsType;
+import org.bibsonomy.rest.renderer.xml.TagType;
+import org.bibsonomy.rest.renderer.xml.TagsType;
+import org.bibsonomy.rest.renderer.xml.UploadDataType;
+import org.bibsonomy.rest.renderer.xml.UserType;
+import org.bibsonomy.rest.renderer.xml.UsersType;
 import org.bibsonomy.rest.validation.StandardXMLModelValidator;
 import org.bibsonomy.rest.validation.XMLModelValidator;
 import org.bibsonomy.util.ValidationUtils;
@@ -469,7 +520,7 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	@Override
-	public void serializeResourcePersonRelation(Writer writer, ResourcePersonRelation resourcePersonRelation, ViewModel viewModel) {
+	public void serializeResourcePersonRelation(final Writer writer, ResourcePersonRelation resourcePersonRelation, ViewModel viewModel) {
 		final BibsonomyXML xmlDoc = getDummyBibsonomyXMLWithOK();
 		xmlDoc.setResourcePersonRelation(createXmlResourcePersonRelation(resourcePersonRelation));
 		serialize(writer, xmlDoc);
@@ -1520,7 +1571,7 @@ public abstract class AbstractRenderer implements Renderer {
 		final ExtraUrlsType extraurls = xmlPublication.getExtraurls();
 		if (ValidationUtils.present(extraurls)) {
 			final List<ExtraUrlType> urls = extraurls.getUrl();
-			final List<BibTexExtra> eurls = new ArrayList<BibTexExtra>(urls.size());
+			final List<BibTexExtra> eurls = new ArrayList<>(urls.size());
 			
 			for (final ExtraUrlType extraUrl : urls) {
 				eurls.add(new BibTexExtra(this.createURL(extraUrl.getHref()), extraUrl.getTitle(), this.createDate(extraUrl.getDate())));
@@ -1551,10 +1602,7 @@ public abstract class AbstractRenderer implements Renderer {
 	 * 1/ The post is parsed on client side. Then the date is the one as sent by
 	 *    the BibSonomy API.
 	 *    
-	 * 2/ The post is parsed on server side; this only happens in the two strategies
-	 *       {@link org.bibsonomy.rest.strategy.users.PutPostStragegy}} and
-	 *       {@link org.bibsonomy.rest.strategy.users.PostPostStragegy}.
-	 *    In both strategies, the date is overwritten in order to prevent malicious users
+	 * 2/ The post is parsed on server side; the date is overwritten in order to prevent malicious users
 	 *    from posting posts with faked dates (e.g. from the future)
 	 *    
 	 * @param date - the date of the XML post

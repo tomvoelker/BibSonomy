@@ -325,8 +325,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 		session.beginTransaction();
 		try {
 			/*
-			 * the ensure that the resource is always available even when the user deletes a post
-			 * so we create here a community post of the provided post
+			 * to ensure that the resource is always available even when the user deletes a post
+			 * we create here a community post of the provided post
 			 * FIXME: it is very inefficient to post the complete post e.g. via api
 			 */
 			final Post<? extends BibTex> post = resourcePersonRelation.getPost();
