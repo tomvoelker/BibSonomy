@@ -79,6 +79,8 @@ public final class RESTConfig {
 
 	public static final String USERS_URL = "users";
 
+    public static final String PERSONS_URL = "persons";
+
 	public static final String DOCUMENTS_SUB_PATH = "documents";
 
 	public static final String FRIENDS_SUB_PATH = "friends";

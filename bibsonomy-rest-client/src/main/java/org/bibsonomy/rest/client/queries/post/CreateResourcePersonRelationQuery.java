@@ -26,56 +26,34 @@
  */
 package org.bibsonomy.rest.client.queries.post;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.io.StringWriter;
-
-import org.bibsonomy.model.User;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.util.StringUtils;
 
-/**
- * Use this Class to create a new user account in bibsonomy.
- * 
- * @author Manuel Bork <manuel.bork@uni-kassel.de>
- */
-public final class CreateUserQuery extends AbstractQuery<String> {
-	private final User user;
+import java.io.StringWriter;
 
-	/**
-	 * Creates a new user account in bibsonomy.
-	 * 
-	 * @param user
-	 *            the user to be created
-	 * @throws IllegalArgumentException
-	 *             if the user is null or the user has neither username nor
-	 *             password specified.
-	 */
-	public CreateUserQuery(final User user) throws IllegalArgumentException {
-		if (!present(user)) throw new IllegalArgumentException("no user specified");
-		if (!present(user.getName())) throw new IllegalArgumentException("no username specified");
-		if (!present(user.getPassword())) throw new IllegalArgumentException("no password specified");
+public class CreateResourcePersonRelationQuery extends AbstractQuery<String> {
+    private final ResourcePersonRelation resourcePersonRelation;
 
-		this.user = user;
-	}
+    public CreateResourcePersonRelationQuery(ResourcePersonRelation resourcePersonRelation) {
+        this.resourcePersonRelation = resourcePersonRelation;
+    }
 
-	@Override
-	protected void doExecute() throws ErrorPerformingRequestException {
-		final StringWriter sw = new StringWriter(100);
-		this.getRenderer().serializeUser(sw, this.user, null);
-		this.downloadedDocument = performRequest(HttpMethod.POST,
-				getUrlRenderer().createUrlBuilderForUsers().asString(),
-				StringUtils.toDefaultCharset(sw.toString()));
-	}
-	
-	@Override
-	protected String getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.isSuccess()) {
-			return this.getRenderer().parseUserId(this.downloadedDocument);
-		}
-		return this.getError();
-	}
+    @Override
+    protected void doExecute() throws ErrorPerformingRequestException {
+        final StringWriter sw = new StringWriter(100);
+        getRenderer().serializeResourcePersonRelation(sw, resourcePersonRelation, null);
+        downloadedDocument = performRequest(HttpMethod.POST,
+                getUrlRenderer().createUrlBuilderForResourcePersonRelations(
+                        resourcePersonRelation.getPerson().getPersonId()).asString(),
+                StringUtils.toDefaultCharset(sw.toString()));
+    }
+
+    @Override
+    protected String getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+        return isSuccess() ? getRenderer().parseResourcePersonRelationId(downloadedDocument) : getError();
+    }
 }

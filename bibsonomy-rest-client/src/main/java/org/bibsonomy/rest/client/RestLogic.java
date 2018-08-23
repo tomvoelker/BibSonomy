@@ -52,8 +52,10 @@ import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.GoldStandardRelation;
@@ -92,9 +94,11 @@ import org.bibsonomy.rest.client.queries.get.GetUserListQuery;
 import org.bibsonomy.rest.client.queries.post.AddUsersToGroupQuery;
 import org.bibsonomy.rest.client.queries.post.CreateConceptQuery;
 import org.bibsonomy.rest.client.queries.post.CreateGroupQuery;
+import org.bibsonomy.rest.client.queries.post.CreatePersonQuery;
 import org.bibsonomy.rest.client.queries.post.CreatePostDocumentQuery;
 import org.bibsonomy.rest.client.queries.post.CreatePostQuery;
 import org.bibsonomy.rest.client.queries.post.CreateRelationQuery;
+import org.bibsonomy.rest.client.queries.post.CreateResourcePersonRelationQuery;
 import org.bibsonomy.rest.client.queries.post.CreateSyncPlanQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserRelationshipQuery;
@@ -476,7 +480,7 @@ public class RestLogic extends AbstractLogicInterface {
 			query.setResourceHash(posts.get(0).getResource().getIntraHash());
 		}
 
-		return execute(query).intValue();
+		return execute(query);
 	}
 	
 	@Override
@@ -527,5 +531,15 @@ public class RestLogic extends AbstractLogicInterface {
 	@Override
 	protected void doDefaultAction() {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String createOrUpdatePerson(Person person) {
+		return execute(new CreatePersonQuery(person));
+	}
+
+	@Override
+	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) {
+		execute(new CreateResourcePersonRelationQuery(resourcePersonRelation));
 	}
 }

@@ -10,6 +10,7 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:publication="urn:jsptagdir:/WEB-INF/tags/resources/publication"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
 	
@@ -42,23 +43,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
-			<c:set var="isPublic" value="${false}"/>
-			<c:choose>
-				<!-- community post -->
-				<c:when test="${goldstandardPresent}">
-					<c:set var="isPublic" value="${true}"/>
-				</c:when>
-				<!-- or first item is public -->
-				<c:otherwise>
-					<!-- quick fix for discussion page -->
-					<c:forEach var="group" items="${command.bibtex.list[0].groups}">
-						<c:if test="${group.name eq 'public'}">
-							<c:set var="isPublic" value="${true}"/>
-						</c:if>
-					</c:forEach>
-				</c:otherwise>
-			</c:choose>
-			
+			<spring:eval expression="T(org.bibsonomy.model.util.GroupUtils).isPublicGroup(command.bibtex.list[0].groups)" var="isPublic" />
 			<goldstandardpublication:details post="${postToShow}" postOfLoggedInUser="${command.postOfLoggedInUser}" loginUser="${command.context.loginUser}" postUserName="${command.postOwner}" postIsPublic="${isPublic}"/>
 		</jsp:attribute>
 	</layout:layout>

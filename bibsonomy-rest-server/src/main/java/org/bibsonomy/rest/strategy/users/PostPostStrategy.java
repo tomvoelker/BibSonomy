@@ -126,7 +126,7 @@ public class PostPostStrategy extends AbstractCreateStrategy {
 	protected Post<? extends Resource> parsePost() {
 		return this.getRenderer().parsePost(this.doc, this.getUploadAccessor());
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.rest.strategy.AbstractCreateStrategy#render(java.io.Writer, java.lang.String)

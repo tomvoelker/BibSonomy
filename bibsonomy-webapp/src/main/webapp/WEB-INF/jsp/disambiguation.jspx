@@ -9,6 +9,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
@@ -100,6 +101,15 @@
 			<div class="clearfix">
 			 	<h2><fmt:message key="disambiguation.pleaseChooseMsg" /></h2>
 				<p><fmt:message key="disambiguation.listExplanation"/></p>
+				<spring:eval expression="T(org.bibsonomy.model.util.GroupUtils).isPublicGroup(post.groups)" var="isPublic" />
+				<c:if test="${not isPublic}">
+					<bsold:alert style="danger">
+						<jsp:attribute name="alertBody">
+							<fmt:message key="disambiguation.warning.goldstandard" />
+						</jsp:attribute>
+					</bsold:alert>
+				</c:if>
+
 				<c:choose>
 					<c:when test="${fn:length(command.suggestedPersonPosts) gt 0}">
 						<div class="list-group">
@@ -165,15 +175,19 @@
 						</bs:linkButton>
 					</c:otherwise>
 				</c:choose>
-					
-				<!-- show more publications of authors with the same name if there are any -->
-				<div class="clearfix">&#160;</div>
-				<h2><fmt:message key="disambiguation.otherPub" /></h2>
-				<div id="otherAuthorPublications" class="simplePub">
-					<c:forEach var="otherPost" items="${command.suggestedPosts}">
-						<per:simplePub post="${otherPost}" />
-					</c:forEach>
-				</div>
+				<c:set var="suggestedPosts" value="${command.suggestedPosts}" />
+				<c:if test="${not empty suggestedPosts}">
+					<!-- show more publications of authors with the same name if there are any -->
+					<div class="clearfix">&#160;</div>
+					<h2><fmt:message key="disambiguation.otherPub" /></h2>
+					<div id="otherAuthorPublications" class="simplePub">
+						<c:forEach var="post" items="${suggestedPosts}">
+							<per:simplePub post="${post}" />
+						</c:forEach>
+					</div>
+				</c:if>
+			</div>
+		</jsp:attribute>
 
 				<!-- create new person for this publication -->
 				<fmt:message var="otherPersonModalTitle" key="disambiguation.otherPerson.modal.title"/>

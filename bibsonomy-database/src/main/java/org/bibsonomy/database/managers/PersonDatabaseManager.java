@@ -97,10 +97,10 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @param person
 	 * @param session
 	 */
-	public void createPerson(final Person person, final DBSession session) {
+	public String createPerson(final Person person, final DBSession session) {
 		session.beginTransaction();
-		final String tempPersonId = this.generatePersonId(person, session);
-		person.setPersonId(tempPersonId);
+		final String generatedPersonId = this.generatePersonId(person, session);
+		person.setPersonId(generatedPersonId);
 		try {
 			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("insertPerson", person, session);
@@ -112,12 +112,13 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		} finally {
 			session.endTransaction();
 		}
+		return generatedPersonId;
 	}
 
 	/**
 	 * Generates a unique person ID (used for speaking URL) Concatinates the
 	 * name and a counter variable
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 * @return
@@ -147,7 +148,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	/**
 	 * Returns a Person identified by it's linked username or null if the given
 	 * User has not claimed a Person so far
-	 * 
+	 *
 	 * @param user
 	 * @param session
 	 * @return Person
@@ -158,7 +159,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * Returns a Person identified by it's unique ID
-	 * 
+	 *
 	 * @param id
 	 * @param session
 	 * @return Person
@@ -169,7 +170,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * Returns a Person identified by it's unique DNB ID
-	 * 
+	 *
 	 * @param dnbId
 	 * @param session
 	 * @return Person
@@ -180,7 +181,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * Creates a new name and adds it to the specified Person
-	 * 
+	 *
 	 * @param name
 	 * @param session
 	 */
@@ -197,7 +198,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * Updates all fields of a given Person
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 */
@@ -254,7 +255,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * Update the academic degree of a Person
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 */
@@ -264,7 +265,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * Update the College of a Person
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 */
@@ -274,7 +275,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * Update the Email of a Person
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 */
@@ -284,7 +285,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * Update the Homepage of a Person
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 */
@@ -302,8 +303,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		session.beginTransaction();
 		try {
 			/*
-			 * the ensure that the resource is always available even when the user deletes a post
-			 * so we create here a community post of the provided post
+			 * to ensure that the resource is always available even when the user deletes a post
+			 * we create here a community post of the provided post
 			 * FIXME: it is very inefficient to post the complete post e.g. via api
 			 */
 			final Post<? extends BibTex> post = resourcePersonRelation.getPost();
@@ -523,7 +524,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	/**
 	 * checks if a two persons can be merged on different attributes and their
 	 * phd/habil
-	 * 
+	 *
 	 * @param match
 	 * @return true if no field is different
 	 */
@@ -562,7 +563,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * Person pubs will be redirected to person 1 and the change is logged
-	 * 
+	 *
 	 * @param loginUser
 	 * @param match
 	 * @param session
@@ -584,7 +585,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * Person aliases will be merged
-	 * 
+	 *
 	 * @param loginUser
 	 * @param match
 	 * @param session
@@ -614,11 +615,11 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	/**
 	 * This method will merge two persons, if there are no conflicts The person
 	 * resource relation will be changed Name aliases will be added
-	 * 
+	 *
 	 * @param match
 	 * @param loginUser
 	 * @param session
-	 * 
+	 *
 	 * @return true if the merge was successful
 	 */
 	public boolean mergeSimilarPersons(final PersonMatch match, String loginUser, DBSession session) {
@@ -639,7 +640,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	/**
 	 * This method will merge two persons, if there are no conflicts The person
 	 * resource relation will be changed Name aliases will be added
-	 * 
+	 *
 	 * @param match
 	 * @param loginUser
 	 * @param session
@@ -668,7 +669,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	/**
 	 * updates all attributes for person1 for a conflict merge updates both
 	 * persons because the need to be compared later with mergeable
-	 * 
+	 *
 	 * @param match
 	 * @param session
 	 */
@@ -713,7 +714,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	/**
 	 * duplicate matches can occur after a merge was performed, because the
 	 * match list is a transitive closure duplicates will be combined
-	 *  @param personId
+	 *
+	 * @param personId
 	 * @param session
 	 */
 	private void mergeMerges(final String personId, final String userName, final DBSession session) {
@@ -752,11 +754,11 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * updates all attributes for person1 for a non conflict merge
-	 * 
+	 *
 	 * @param person1
 	 * @param person2
 	 * @return true if an attributes was updated
-	 * 
+	 *
 	 */
 	private boolean combinePersonsAttributes(Person person1, Person person2) {
 		boolean edit = false;
@@ -807,7 +809,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * filters the matches such that matches the user denied wont be displayed
-	 * 
+	 *
 	 * @param personID
 	 * @param userName
 	 * @param session
@@ -822,7 +824,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * performs a merge and resolves its conflicts
-	 * 
+	 *
 	 * @param formMatchId
 	 * @param map
 	 *            conflicts
@@ -875,7 +877,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	}
 
 	/**
-	 * 
+	 *
 	 * @param fields
 	 * @return true if only valid fieldNames are in fields
 	 */
@@ -895,7 +897,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * set new mainName to person due to a conflict merge
-	 * 
+	 *
 	 * @param person
 	 * @param newName
 	 * @param session
@@ -943,7 +945,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * tests if the merge can be performed without a conflict on user claims
-	 * 
+	 *
 	 * @param match
 	 * @param loginUser
 	 */

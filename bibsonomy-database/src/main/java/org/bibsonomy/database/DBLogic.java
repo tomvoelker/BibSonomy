@@ -3425,14 +3425,14 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
 	 */
 	@Override
-	public void createPerson(final Person person) {
+	public String createPerson(final Person person) {
 		this.ensureLoggedInAndNoSpammer();
 		try (final DBSession session = this.openSession()) {
-			this.createPerson(person, session);
+			return this.createPerson(person, session);
 		}
 	}
 
-	private void createPerson(final Person person, final DBSession session) {
+	private String createPerson(final Person person, final DBSession session) {
 		final String personUser = person.getUser();
 		final String personId = person.getPersonId();
 		if (personUser != null) {
@@ -3456,6 +3456,8 @@ public class DBLogic implements LogicInterface {
 
 		this.personDBManager.createPerson(person, session);
 		this.updatePersonNames(person, session);
+
+		return person.getPersonId();
 	}
 
 	/**
@@ -3531,7 +3533,6 @@ public class DBLogic implements LogicInterface {
 				default:
 					throw new UnsupportedOperationException("The requested method is not yet implemented.");
 			}
-			
 		}
 	}
 
@@ -3708,7 +3709,7 @@ public class DBLogic implements LogicInterface {
 							return DBLogic.this.personDBManager.getResourcePersonRelations(this.getInterhash(), this.getAuthorIndex(), this.getRelationType(), session);
 						}
 					} else if (present(this.getPersonId()) && !this.isWithPersons() && !present(this.getAuthorIndex()) && !present(this.getRelationType())) {
-						final List<ResourcePersonRelation> rVal = DBLogic.this.personDBManager.getResourcePersonRelationsWithPosts(this.getPersonId(), DBLogic.this.loginUser, BibTex.class, session);
+						final List<ResourcePersonRelation> rVal = DBLogic.this.personDBManager.getResourcePersonRelationsWithPosts(this.getPersonId(), DBLogic.this.loginUser, GoldStandardPublication.class, session);
 						for (final ResourcePersonRelation rpr : rVal) {
 							SystemTagsExtractor.handleHiddenSystemTags(rpr.getPost(), DBLogic.this.loginUser.getName());
 						}

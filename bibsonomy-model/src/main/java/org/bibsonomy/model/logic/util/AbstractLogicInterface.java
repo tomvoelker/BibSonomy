@@ -124,8 +124,9 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
 	 */
 	@Override
-	public void createPerson(Person person) {
+	public String createPerson(Person person) {
 		this.doDefaultAction();
+		return null;
 	}
 	
 	/*
@@ -942,7 +943,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	public void unlinkUser(String username) {
 		this.doDefaultAction();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getPersonMatches(java.lang.String)
 	 */

@@ -59,7 +59,7 @@ public interface PersonLogicInterface {
 	 *
 	 * @param person the person to be saved or updated
 	 */
-	public void createPerson(Person person);
+	public String createPerson(Person person);
 
 	/**
 	 * Updates the given person

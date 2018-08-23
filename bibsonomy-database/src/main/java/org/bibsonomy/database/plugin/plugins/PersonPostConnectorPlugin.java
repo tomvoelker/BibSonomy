@@ -50,7 +50,8 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 
 /**
- * connects publications with persons
+ * connects publications with persons when the posting user has his/her account connected to a person
+ * and the post is tagged with the {@link MyOwnSystemTag} system tag
  * 
  * @author dzo
  */
@@ -79,19 +80,18 @@ public class PersonPostConnectorPlugin extends AbstractDatabasePlugin {
 	}
 
 	/**
-	 * @param post
-	 * @param person
+	 * @param post the post to connect
+	 * @param person the person to connect
 	 * @param personList
 	 * @param relationType
 	 * @param loggedinUser
 	 * @param session
 	 */
-	private void autoInsertPersonResourceRelation(final Post<? extends BibTex> post, final Person person, final List<PersonName> personList, PersonResourceRelationType relationType, User loggedinUser, DBSession session) {
-		// if the post is private do not insert the person relation
-
+	private void autoInsertPersonResourceRelation(final Post<? extends BibTex> post, final Person person, final List<PersonName> personList, final PersonResourceRelationType relationType, final User loggedinUser, final DBSession session) {
 		final List<PersonName> personNames = person.getNames();
 		final SortedSet<Integer> foundPersons = new TreeSet<>();
 		if (present(personNames)) {
+			// check if the person name can be found in the publication
 			for (final PersonName personName : personNames) {
 				foundPersons.addAll(PersonNameUtils.getPositionsInPersonList(personName, personList, true));
 			}
