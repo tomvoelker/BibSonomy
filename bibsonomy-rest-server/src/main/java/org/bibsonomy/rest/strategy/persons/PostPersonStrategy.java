@@ -50,6 +50,6 @@ public class PostPersonStrategy extends AbstractCreateStrategy {
 	@Override
 	protected String create() {
 		final Person person = getRenderer().parsePerson(this.doc);
-		return this.getLogic().createOrUpdatePerson(person);
+		return this.getLogic().createPerson(person);
 	}
 }
