@@ -9,15 +9,16 @@
 	
 	<import resource="classpath:org/bibsonomy/bibsonomy-database-common-context.xml" />
 	
-	<bean id="itemRecommenderDataSource" class="${database.datasource.class}" parent="basicDataSource">
+	<bean id="itemRecommenderDataSource" class="org.apache.tomcat.dbcp.dbcp2.BasicDataSource" parent="basicDataSource">
 		<property name="url" value="${database.recommender.item.url}" />
 		<property name="username" value="${database.recommender.item.username}" />
 		<property name="password" value="${database.recommender.item.password}" />
 		<property name="driverClassName" value="${database.recommender.item.driverClassName}" />
 		<property name="maxIdle" value="${database.recommender.item.maxIdle}" />
-		<property name="maxActive" value="${database.recommender.item.maxActive}" />
-		<property name="maxWait" value="${database.recommender.item.maxWait}" />
-		<property name="removeAbandoned" value="${database.recommender.item.removeAbandoned}" />
+		<property name="maxTotal" value="${database.recommender.item.maxTotal}" />
+		<property name="maxWaitMillis" value="${database.recommender.item.maxWait}" />
+		<property name="removeAbandonedOnMaintenance" value="${database.recommender.item.removeAbandoned}" />
+		<property name="removeAbandonedOnBorrow" value="${database.recommender.item.removeAbandoned}" />
 		<property name="removeAbandonedTimeout" value="${database.recommender.item.removeAbandonedTimeout}" />
 	</bean>
 	

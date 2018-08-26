@@ -23,15 +23,16 @@
 		<property name="fromAddress" value="${project.email}" />
 	</bean>
 	
-	<bean id="slaveDataSource" class="${database.datasource.class}" parent="basicDataSource">
+	<bean id="slaveDataSource" class="org.apache.tomcat.dbcp.dbcp2.BasicDataSource" parent="basicDataSource">
 		<property name="driverClassName" value="${database.slave.driverClassName}" />
 		<property name="url" value="${database.slave.url}" />
 		<property name="username" value="${database.slave.username}" />
 		<property name="password" value="${database.slave.password}" />
 		<property name="maxIdle" value="${database.main.maxIdle}" />
-		<property name="maxActive" value="${database.main.maxActive}" />
-		<property name="maxWait" value="${database.main.maxWait}" />
-		<property name="removeAbandoned" value="${database.main.removeAbandoned}" />
+		<property name="maxTotal" value="${database.main.maxTotal}" />
+		<property name="maxWaitMillis" value="${database.main.maxWait}" />
+		<property name="removeAbandonedOnMaintenance" value="${database.main.removeAbandoned}" />
+		<property name="removeAbandonedOnBorrow" value="${database.main.removeAbandoned}" />
 		<property name="removeAbandonedTimeout" value="${database.main.removeAbandonedTimeout}" />
 	</bean>
 	

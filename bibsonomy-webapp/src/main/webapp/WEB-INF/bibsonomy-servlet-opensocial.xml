@@ -70,15 +70,16 @@
 		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
 	</bean>
 	
-	<bean id="oAuthDataSource" class="${database.datasource.class}" parent="basicDataSource">
+	<bean id="oAuthDataSource" class="org.apache.tomcat.dbcp.dbcp2.BasicDataSource" parent="basicDataSource">
 		<property name="driverClassName" value="${database.opensocial.driverClassName}" />
 		<property name="url" value="${database.opensocial.url}" />
 		<property name="username" value="${database.opensocial.username}" />
 		<property name="password" value="${database.opensocial.password}" />
 		<property name="maxIdle" value="${database.opensocial.maxIdle}" />
-		<property name="maxActive" value="${database.opensocial.maxActive}" />
-		<property name="maxWait" value="${database.opensocial.maxWait}" />
-		<property name="removeAbandoned" value="${database.opensocial.removeAbandoned}" />
+		<property name="maxTotal" value="${database.opensocial.maxTotal}" />
+		<property name="maxWaitMillis" value="${database.opensocial.maxWait}" />
+		<property name="removeAbandonedOnMaintenance" value="${database.opensocial.removeAbandoned}" />
+		<property name="removeAbandonedOnBorrow" value="${database.opensocial.removeAbandoned}" />
 		<property name="removeAbandonedTimeout" value="${database.opensocial.removeAbandonedTimeout}" />
 	</bean>
 	
