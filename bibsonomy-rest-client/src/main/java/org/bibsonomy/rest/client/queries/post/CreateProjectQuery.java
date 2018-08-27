@@ -12,6 +12,11 @@ import org.bibsonomy.util.StringUtils;
 import java.io.StringWriter;
 import java.util.Collections;
 
+/**
+ * query to create a project
+ *
+ * @author pda
+ */
 public class CreateProjectQuery extends AbstractQuery<JobResult> {
 
     private final Project project;

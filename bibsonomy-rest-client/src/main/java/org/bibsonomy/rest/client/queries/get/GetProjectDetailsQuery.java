@@ -7,6 +7,11 @@ import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 
 import java.io.StringWriter;
 
+/**
+ * query to get a project
+ *
+ * @author pda
+ */
 public class GetProjectDetailsQuery extends AbstractQuery<Project> {
 
     private final String projectId;
