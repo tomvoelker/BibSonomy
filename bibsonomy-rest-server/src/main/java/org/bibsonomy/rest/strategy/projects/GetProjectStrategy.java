@@ -28,7 +28,7 @@ public class GetProjectStrategy extends Strategy {
     public void perform(ByteArrayOutputStream outStream)
             throws InternServerException, NoSuchResourceException, ResourceMovedException, ObjectNotFoundException {
         final Project project = getLogic().getProjectDetails(projectId);
-        if (project.getExternalId() == null) {
+        if (project == null) {
             throw new NoSuchResourceException("The requested project with id '" + projectId + "' does not exist.");
         }
         getRenderer().serializeProject(writer, project, new ViewModel());

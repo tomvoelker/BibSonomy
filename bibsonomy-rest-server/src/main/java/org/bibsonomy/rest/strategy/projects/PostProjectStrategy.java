@@ -26,11 +26,16 @@
  */
 package org.bibsonomy.rest.strategy.projects;
 
+import org.bibsonomy.common.JobResult;
+import org.bibsonomy.common.enums.Status;
+import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.model.cris.Project;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
 import java.io.Writer;
+import java.util.stream.Collectors;
 
 /**
  * strategy to create a new project
@@ -50,6 +55,11 @@ public class PostProjectStrategy extends AbstractCreateStrategy {
     @Override
     protected String create() {
         final Project project = this.getRenderer().parseProject(this.doc);
-        return this.getLogic().createProject(project).toString();
+        final JobResult jobResult = this.getLogic().createProject(project);
+        if (jobResult.getStatus() == Status.FAIL) {
+            throw new BadRequestOrResponseException(jobResult.getErrors().stream().
+                    map(ErrorMessage::getDefaultMessage).collect(Collectors.joining(",")));
+        }
+        return project.getExternalId();
     }
 }

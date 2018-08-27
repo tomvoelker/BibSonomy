@@ -396,6 +396,15 @@ public class UrlRenderer {
 		return createUrlBuilderForApi().addPathElement(RESTConfig.PERSONS_URL);
 	}
 
+	public UrlBuilder createUrlBuilderForProjects(String projectId) {
+		return createUrlBuilderForApi().addPathElement(RESTConfig.PROJECTS_URL).
+				addPathElement(projectId);
+	}
+
+	public UrlBuilder createUrlBuilderForProjects() {
+		return createUrlBuilderForApi().addPathElement(RESTConfig.PROJECTS_URL);
+	}
+
 	public UrlBuilder createUrlBuilderForResourcePersonRelations(String personId) {
 		return createUrlBuilderForApi().addPathElement(RESTConfig.PERSONS_URL)
 				.addPathElement(personId).addPathElement(RESTConfig.RELATION_PARAM);

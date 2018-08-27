@@ -491,6 +491,9 @@
     </xsd:complexType>
 
 	<xsd:complexType name="ProjectType">
+		<xsd:sequence>
+			<xsd:element name="subProjects" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
 		<xsd:attribute name="externalId" type="xsd:string" />
 		<xsd:attribute name="internalId" type="xsd:string" />
 		<xsd:attribute name="title" type="xsd:string" />
@@ -501,15 +504,6 @@
 		<xsd:attribute name="budget" type="xsd:float" />
 		<xsd:attribute name="startDate" type="xsd:dateTime" />
 		<xsd:attribute name="endDate" type="xsd:dateTime" />
-		<!-- <xsd:attribute name="parentProject" type="ParentProjectType" /> -->
-		<!-- <xsd:attribute name="subProjects" type="ProjectTypeList" /> -->
+		<xsd:attribute name="parentProject" type="xsd:string" />
 	</xsd:complexType>
-
-	<!--
-	<xsd:complexType name="ProjectTypeList">
-		<xsd:sequence>
-			<xsd:element name="subProject" type="ProjectType" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
-	</xsd:complexType>
-	-->
 </xsd:schema>

@@ -473,16 +473,39 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	private ProjectType createXmlCRISProject(Project project) {
-		ProjectType projectType = new ProjectType();
-		projectType.setBudget(project.getBudget());
-		projectType.setDescription(project.getDescription());
-		projectType.setSubTitle(project.getSubTitle());
+		final ProjectType projectType = new ProjectType();
 		projectType.setExternalId(project.getExternalId());
-		projectType.setInternalId(project.getInternalId());
-		projectType.setType(project.getType());
-		projectType.setTitle(project.getTitle());
-		projectType.setStartDate(createXmlCalendar(project.getStartDate()));
-		projectType.setEndDate(createXmlCalendar(project.getEndDate()));
+		if (present(project.getBudget())) {
+			projectType.setBudget(project.getBudget());
+		}
+		if (present(project.getDescription())) {
+			projectType.setDescription(project.getDescription());
+		}
+		if (present(project.getSubTitle())) {
+			projectType.setSubTitle(project.getSubTitle());
+		}
+		if (present(project.getInternalId())) {
+			projectType.setInternalId(project.getInternalId());
+		}
+		if (present(project.getType())) {
+			projectType.setType(project.getType());
+		}
+		if (present(project.getTitle())) {
+			projectType.setTitle(project.getTitle());
+		}
+		if (present(project.getStartDate())) {
+			projectType.setStartDate(createXmlCalendar(project.getStartDate()));
+		}
+		if (present(project.getEndDate())) {
+			projectType.setEndDate(createXmlCalendar(project.getEndDate()));
+		}
+		if (present(project.getParentProject())) {
+			projectType.setParentProject(project.getParentProject().getExternalId());
+		}
+		if (present(project.getSubProjects())) {
+			project.getSubProjects().stream().map(Project::getExternalId).
+					forEach(eid -> projectType.getSubProjects().add(eid));
+		}
 		return projectType;
 	}
 
@@ -866,13 +889,29 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private Project createProject(ProjectType projectType) throws MalformedURLException {
 		final Project project = new Project();
+		if (present(projectType.getParentProject())) {
+			final Project parentProject = new Project();
+			parentProject.setExternalId(projectType.getParentProject());
+			project.setParentProject(parentProject);
+		}
+		if (present(projectType.getSubProjects())) {
+			final LinkedList<Project> subProjects = new LinkedList<>();
+			for (String s : projectType.getSubProjects()) {
+				final Project subProject = new Project();
+				subProject.setExternalId(s);
+				subProjects.add(subProject);
+			}
+			project.setSubProjects(subProjects);
+		}
 		project.setBudget(projectType.getBudget());
 		project.setTitle(projectType.getTitle());
 		project.setSubTitle(projectType.getSubTitle());
 		project.setDescription(projectType.getDescription());
 		project.setExternalId(projectType.getExternalId());
 		project.setInternalId(projectType.getInternalId());
-		project.setHomepage(new URL(projectType.getHomepage()));
+		if (present(projectType.getHomepage())) {
+			project.setHomepage(new URL(projectType.getHomepage()));
+		}
 		project.setStartDate(createDate(projectType.getStartDate()));
 		project.setEndDate(createDate(projectType.getEndDate()));
 		return project;
@@ -1599,7 +1638,7 @@ public abstract class AbstractRenderer implements Renderer {
 		
 		// extra URLs
 		final ExtraUrlsType extraurls = xmlPublication.getExtraurls();
-		if (ValidationUtils.present(extraurls)) {
+		if (present(extraurls)) {
 			final List<ExtraUrlType> urls = extraurls.getUrl();
 			final List<BibTexExtra> eurls = new ArrayList<>(urls.size());
 			

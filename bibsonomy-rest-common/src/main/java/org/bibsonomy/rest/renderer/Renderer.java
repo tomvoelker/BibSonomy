@@ -369,7 +369,7 @@ public interface Renderer {
 	public String parsePersonId(Reader reader) throws BadRequestOrResponseException;
 
 	/**
-	 * Reads an resource person relation id from a {@link Reader}
+	 * Reads a resource person relation id from a {@link Reader}
 	 *
 	 * @param reader
 	 *            the {@link Reader} to use.

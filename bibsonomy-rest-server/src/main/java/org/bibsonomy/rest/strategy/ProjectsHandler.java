@@ -30,7 +30,6 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
-import org.bibsonomy.rest.strategy.persons.PostResourcePersonRelationStrategy;
 import org.bibsonomy.rest.strategy.projects.GetProjectStrategy;
 import org.bibsonomy.rest.strategy.projects.PostProjectRelationStrategy;
 import org.bibsonomy.rest.strategy.projects.PostProjectStrategy;
