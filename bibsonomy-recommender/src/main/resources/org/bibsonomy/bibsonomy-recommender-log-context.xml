@@ -9,7 +9,7 @@
 	
 	<import resource="classpath:org/bibsonomy/bibsonomy-database-common-context.xml" />
 	
-	<bean id="itemRecommenderDataSource" class="org.apache.tomcat.dbcp.dbcp2.BasicDataSource" parent="basicDataSource">
+	<bean id="itemRecommenderDataSource" class="${database.datasource.class}" parent="basicDataSource">
 		<property name="url" value="${database.recommender.item.url}" />
 		<property name="username" value="${database.recommender.item.username}" />
 		<property name="password" value="${database.recommender.item.password}" />

@@ -23,7 +23,7 @@
 		<property name="fromAddress" value="${project.email}" />
 	</bean>
 	
-	<bean id="slaveDataSource" class="org.apache.tomcat.dbcp.dbcp2.BasicDataSource" parent="basicDataSource">
+	<bean id="slaveDataSource" class="${database.datasource.class}" parent="basicDataSource">
 		<property name="driverClassName" value="${database.slave.driverClassName}" />
 		<property name="url" value="${database.slave.url}" />
 		<property name="username" value="${database.slave.username}" />

@@ -333,7 +333,7 @@
 		</property>
 	</bean>
 	
-	<bean id="mainDataSource" class="org.apache.tomcat.dbcp.dbcp2.BasicDataSource" parent="basicDataSource">
+	<bean id="mainDataSource" class="${database.datasource.class}" parent="basicDataSource">
 		<property name="driverClassName" value="${database.main.driverClassName}" />
 		<property name="url" value="${database.main.url}" />
 		<property name="username" value="${database.main.username}" />

@@ -53,7 +53,7 @@
 		<property name="resourceClass" ref="searchGoldStandardBookmarkClass" />
 	</bean>
 	
-	<bean id="searchDataSource" class="org.apache.tomcat.dbcp.dbcp2.BasicDataSource" destroy-method="close" parent="basicDataSource">
+	<bean id="searchDataSource" class="${database.datasource.class}" destroy-method="close" parent="basicDataSource">
 		<property name="driverClassName" value="${database.search.driverClassName}" />
 		<property name="url" value="${database.search.url}" />
 		<property name="username" value="${database.search.username}" />

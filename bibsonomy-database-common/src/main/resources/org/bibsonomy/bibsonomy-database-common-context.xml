@@ -7,7 +7,7 @@
 	                    http://www.springframework.org/schema/util 
 	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 	
-	<bean id="basicDataSource" class="org.apache.tomcat.dbcp.dbcp2.BasicDataSource" destroy-method="close" abstract="true">
+	<bean id="basicDataSource" class="${database.datasource.class}" destroy-method="close" abstract="true">
 		<property name="validationQuery" value="SELECT 42" />
 		<property name="minEvictableIdleTimeMillis" value="1800000" />
 		<property name="timeBetweenEvictionRunsMillis" value="1800000" />
