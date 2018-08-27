@@ -50,7 +50,7 @@
 				<div class="contentContainer row">
 					<div class="col-md-12">
 						<h2><fmt:message key="project.description"/></h2>
-						<c:out value="${command.project.description}"/>
+						<c:out value="${project.description}"/>
 					</div>
 				</div>
 			</c:if>

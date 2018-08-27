@@ -739,17 +739,6 @@ public class URLGenerator {
 	}
 
 	/**
-	 *
-	 * @param projectName
-	 * @return
-	 */
-	private String getProjectPictureUrlByProjectname(final String projectName) {
-		String url = this.projectHome + PICTURE_PREFIX + "/"
-				+ PROJECT_PREFIX + "/" + UrlUtils.encodePathSegment(projectName);
-		return this.getUrl(url);
-	}
-
-	/**
 	 * Constructs the URL for the login page
 	 * 
 	 * @return URL pointing to the login page
