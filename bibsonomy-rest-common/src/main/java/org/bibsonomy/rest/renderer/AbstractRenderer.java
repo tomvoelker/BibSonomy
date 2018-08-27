@@ -42,11 +42,13 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -66,6 +68,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.factories.ResourceFactory;
@@ -81,38 +84,7 @@ import org.bibsonomy.model.util.data.DataAccessor;
 import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.renderer.xml.AbstractPublicationType;
-import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
-import org.bibsonomy.rest.renderer.xml.BibtexType;
-import org.bibsonomy.rest.renderer.xml.BookmarkType;
-import org.bibsonomy.rest.renderer.xml.DocumentType;
-import org.bibsonomy.rest.renderer.xml.DocumentsType;
-import org.bibsonomy.rest.renderer.xml.ExtraUrlType;
-import org.bibsonomy.rest.renderer.xml.ExtraUrlsType;
-import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
-import org.bibsonomy.rest.renderer.xml.GroupType;
-import org.bibsonomy.rest.renderer.xml.GroupsType;
-import org.bibsonomy.rest.renderer.xml.PersonNameType;
-import org.bibsonomy.rest.renderer.xml.PersonType;
-import org.bibsonomy.rest.renderer.xml.PostType;
-import org.bibsonomy.rest.renderer.xml.PostsType;
-import org.bibsonomy.rest.renderer.xml.PublicationType;
-import org.bibsonomy.rest.renderer.xml.PublicationsType;
-import org.bibsonomy.rest.renderer.xml.PublishedInType;
-import org.bibsonomy.rest.renderer.xml.ReferenceType;
-import org.bibsonomy.rest.renderer.xml.ReferencesType;
-import org.bibsonomy.rest.renderer.xml.RelationType;
-import org.bibsonomy.rest.renderer.xml.ResourceLinkType;
-import org.bibsonomy.rest.renderer.xml.ResourcePersonRelationType;
-import org.bibsonomy.rest.renderer.xml.StatType;
-import org.bibsonomy.rest.renderer.xml.SyncDataType;
-import org.bibsonomy.rest.renderer.xml.SyncPostType;
-import org.bibsonomy.rest.renderer.xml.SyncPostsType;
-import org.bibsonomy.rest.renderer.xml.TagType;
-import org.bibsonomy.rest.renderer.xml.TagsType;
-import org.bibsonomy.rest.renderer.xml.UploadDataType;
-import org.bibsonomy.rest.renderer.xml.UserType;
-import org.bibsonomy.rest.renderer.xml.UsersType;
+import org.bibsonomy.rest.renderer.xml.*;
 import org.bibsonomy.rest.validation.StandardXMLModelValidator;
 import org.bibsonomy.rest.validation.XMLModelValidator;
 import org.bibsonomy.util.ValidationUtils;
@@ -494,6 +466,27 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	@Override
+	public void serializeProject(Writer writer, Project project, ViewModel viewModel) {
+		final BibsonomyXML xmlDoc = getDummyBibsonomyXMLWithOK();
+		xmlDoc.setProject(createXmlCRISProject(project));
+		serialize(writer, xmlDoc);
+	}
+
+	private ProjectType createXmlCRISProject(Project project) {
+		ProjectType projectType = new ProjectType();
+		projectType.setBudget(project.getBudget());
+		projectType.setDescription(project.getDescription());
+		projectType.setSubTitle(project.getSubTitle());
+		projectType.setExternalId(project.getExternalId());
+		projectType.setInternalId(project.getInternalId());
+		projectType.setType(project.getType());
+		projectType.setTitle(project.getTitle());
+		projectType.setStartDate(createXmlCalendar(project.getStartDate()));
+		projectType.setEndDate(createXmlCalendar(project.getEndDate()));
+		return projectType;
+	}
+
+	@Override
 	public void serializePerson(Writer writer, Person person, ViewModel viewModel) {
 		final BibsonomyXML xmlDoc = getDummyBibsonomyXMLWithOK();
 		xmlDoc.setPerson(createXmlPerson(person));
@@ -724,6 +717,13 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	@Override
+	public void serializeProjectId(Writer writer, String projectId) {
+		final BibsonomyXML xmlDoc = getDummyBibsonomyXMLWithOK();
+		xmlDoc.setProjectid(projectId);
+		serialize(writer, xmlDoc);
+	}
+
+	@Override
 	public void serializeResourcePersonRelationId(Writer writer, String resourceId) {
 
 	}
@@ -846,6 +846,36 @@ public abstract class AbstractRenderer implements Renderer {
 			throw new BadRequestOrResponseException(xmlDoc.getError());
 		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no user defined.");
+	}
+
+	@Override
+	public Project parseProject(Reader reader) throws BadRequestOrResponseException {
+		final BibsonomyXML xmlDoc = parse(reader);
+		if (xmlDoc.getProject() != null) {
+			try {
+				return createProject(xmlDoc.getProject());
+			} catch (MalformedURLException e) {
+				throw new BadRequestOrResponseException(e);
+			}
+		}
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no project defined.");
+	}
+
+	private Project createProject(ProjectType projectType) throws MalformedURLException {
+		final Project project = new Project();
+		project.setBudget(projectType.getBudget());
+		project.setTitle(projectType.getTitle());
+		project.setSubTitle(projectType.getSubTitle());
+		project.setDescription(projectType.getDescription());
+		project.setExternalId(projectType.getExternalId());
+		project.setInternalId(projectType.getInternalId());
+		project.setHomepage(new URL(projectType.getHomepage()));
+		project.setStartDate(createDate(projectType.getStartDate()));
+		project.setEndDate(createDate(projectType.getEndDate()));
+		return project;
 	}
 
 	@Override

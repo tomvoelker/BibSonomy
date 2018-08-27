@@ -44,12 +44,12 @@ public class PostPersonStrategy extends AbstractCreateStrategy {
 
 	@Override
 	protected void render(Writer writer, String personID) {
-		this.getRenderer().serializePersonId(writer, personID);
+		getRenderer().serializePersonId(writer, personID);
 	}
 
 	@Override
 	protected String create() {
-		final Person person = getRenderer().parsePerson(this.doc);
-		return this.getLogic().createPerson(person);
+		final Person person = getRenderer().parsePerson(doc);
+		return getLogic().createPerson(person);
 	}
 }

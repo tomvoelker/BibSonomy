@@ -40,6 +40,8 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.data.DataAccessor;
@@ -126,6 +128,18 @@ public interface Renderer {
 	public void serializePerson(Writer writer, Person person, ViewModel viewModel);
 
 	/**
+	 * Serializes one {@link Person}.
+	 *
+	 * @param writer
+	 *            a {@link Writer} to use.
+	 * @param project
+	 *            one {@link Project} object.
+	 * @param viewModel
+	 *            the {@link ViewModel} encapsulates additional information,
+	 */
+	public void serializeProject(Writer writer, Project project, ViewModel viewModel);
+
+	/**
 	 * Serializes one {@link ResourcePersonRelation}.
 	 *
 	 * @param writer
@@ -144,6 +158,14 @@ public interface Renderer {
 	 * @param personId the personId to send
 	 */
 	public void serializePersonId(Writer writer, String personId);
+
+	/**
+	 * Serializes a projectid
+	 *
+	 * @param writer   the {@link Writer} to use.
+	 * @param projectId the personId to send
+	 */
+	public void serializeProjectId(Writer writer, String projectId);
 
 	/**
 	 * Serializes a resource person relation id
@@ -413,6 +435,17 @@ public interface Renderer {
 	public Person parsePerson(Reader reader) throws BadRequestOrResponseException;
 
 	/**
+	 * Reads one {@link Person} from a {@link Reader}.
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return one {@link Project} object.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public Project parseProject(Reader reader) throws BadRequestOrResponseException;
+
+	/**
 	 * Reads one {@link ResourcePersonRelation} from a {@link Reader}.
 	 *
 	 * @param reader
@@ -422,6 +455,17 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public ResourcePersonRelation parseResourcePersonRelation(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads one {@link ResourcePersonRelation} from a {@link Reader}.
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return one {@link CRISLink} object.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	//public CRISLink parseCRISLink(Reader reader) throws BadRequestOrResponseException;
 
 	/**
 	 * Reads a List of {@link Post}s from a {@link Reader}.

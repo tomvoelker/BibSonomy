@@ -66,6 +66,7 @@ public final class Context {
 		Context.urlHandlers.put(RESTConfig.POSTS_URL, new PostsHandler());
 		Context.urlHandlers.put(RESTConfig.CONCEPTS_URL, new ConceptsHandler());
 		Context.urlHandlers.put(RESTConfig.SYNC_URL, new SynchronizationHandler());
+		Context.urlHandlers.put(RESTConfig.PROJECTS_URL, new ProjectsHandler());
 	}
 
 	private final Reader doc;
