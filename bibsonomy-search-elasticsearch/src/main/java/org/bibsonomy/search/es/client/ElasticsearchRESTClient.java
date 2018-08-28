@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.ESClient;
+import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.action.DocWriteResponse;
@@ -21,6 +22,8 @@ import org.elasticsearch.action.admin.indices.get.GetIndexRequest;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.get.GetRequest;
+import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.ClearScrollRequest;
@@ -35,6 +38,7 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -106,7 +110,11 @@ public class ElasticsearchRESTClient implements ESClient {
 			final GetAliasesResponse response = this.client.indices().getAlias(getAliasesRequest, this.buildRequestOptions());
 			final Map<String, Set<AliasMetaData>> aliases = response.getAliases();
 
-			final Stream<String> indexNames = aliases.get(alias).stream().map((metaData) -> metaData.indexRouting());
+			final Set<AliasMetaData> aliasMetaData = aliases.get(alias);
+			if (!present(aliasMetaData)) {
+				return new LinkedList<>();
+			}
+			final Stream<String> indexNames = aliasMetaData.stream().map((metaData) -> metaData.indexRouting());
 			return indexNames.collect(Collectors.toList());
 		}, new LinkedList<>(), "error getting index names for alias " + alias);
 	}
@@ -152,16 +160,24 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public SearchIndexSyncState getSearchIndexStateForIndex(String indexName) {
-		return null;
+	public SearchIndexSyncState getSearchIndexStateForIndex(String indexName, String syncStateForIndexName) {
+		return this.secureCall(() -> {
+			final GetRequest getRequest = new GetRequest();
+			getRequest.id(syncStateForIndexName);
+			final GetResponse response = this.client.get(getRequest, this.buildRequestOptions());
+			if (!response.isExists()) {
+				throw new IllegalStateException("no index sync state found for " + indexName);
+			}
+			return ElasticsearchUtils.deserializeSearchIndexState(response.getSourceAsMap());
+		}, null, "error getting search index sync state for index " + syncStateForIndexName);
 	}
 
 	@Override
-	public boolean createIndex(String indexName, Mapping<String> mapping, String settings) {
+	public boolean createIndex(String indexName, Mapping<XContentBuilder> mapping, String settings) {
 		return secureCall(() -> {
 			final CreateIndexRequest createIndexRequest = new CreateIndexRequest();
 			createIndexRequest.index(indexName);
-			createIndexRequest.mapping(mapping.getType(), mapping.getMappingInfo()); // FIXME: not working!
+			createIndexRequest.mapping(mapping.getType(), mapping.getMappingInfo());
 			createIndexRequest.settings(settings, XContentType.JSON); // FIXME: not working
 			final CreateIndexResponse response = this.client.indices().create(createIndexRequest, this.buildRequestOptions());
 			return response.isAcknowledged();

@@ -237,4 +237,13 @@ public final class ElasticsearchUtils {
 		
 		return null;
 	}
+
+	/**
+	 * the index used for saving the index sync states
+	 * @param systemURI the uri of the system (maybe more than one system is sharing a elasticsearch instance)
+	 * @return
+	 */
+	public static String getSearchIndexStateIndexName(final URI systemURI) {
+		return "." + normSystemHome(systemURI) + "_system_info";
+	}
 }

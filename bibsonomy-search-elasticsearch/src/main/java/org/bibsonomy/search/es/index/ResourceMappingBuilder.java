@@ -34,7 +34,6 @@ import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.search.util.MappingBuilder;
-import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
@@ -44,46 +43,43 @@ import org.elasticsearch.common.xcontent.XContentFactory;
  * @author dzo
  * @param <R> 
  */
-public abstract class ResourceMappingBuilder<R extends Resource> implements MappingBuilder<String> {
+public abstract class ResourceMappingBuilder<R extends Resource> implements MappingBuilder<XContentBuilder> {
 
 	/** properties field key */
-	protected static final String PROPERTIES = "properties";
+	public static final String PROPERTIES = "properties";
 
 	/** boost the field (search in _all field) */
-	protected static final String BOOST_FIELD = "boost";
+	public static final String BOOST_FIELD = "boost";
 
-	// /** include field in generated _all field ? */
-	// protected static final String INCLUDE_IN_ALL_FIELD = "include_in_all";
+	/** type text */
+	public static final String TEXT_TYPE = "text";
 
-	/** type string */
-	protected static final String STRING_TYPE = "string";
+	/** type keyword used only for filtering */
+	public static final String KEYWORD_TYPE = "keyword";
 	
 	/** type nested */
-	protected static final String NESTED_TYPE = "nested";
+	public static final String NESTED_TYPE = "nested";
 	
 	/** date type */
-	protected static final String DATE_TYPE = "date";
+	public static final String DATE_TYPE = "date";
 	
 	/** the type field */
-	protected static final String TYPE_FIELD = "type";
+	public static final String TYPE_FIELD = "type";
 	
 	/** the index field */
-	protected static final String INDEX_FIELD = "index";
+	public static final String INDEX_FIELD = "index";
 	
 	/** e.g the date format field */
-	protected static final String FORMAT_FIELD = "format";
+	public static final String FORMAT_FIELD = "format";
 	
 	/** iso date format (optional time) */
-	protected static final String FORMAT_DATE_OPTIONAL_TIME = "dateOptionalTime";
+	public static final String FORMAT_DATE_OPTIONAL_TIME = "dateOptionalTime";
 	
 	/** iso date format */
-	protected static final String DATE_TIME_FORMAT = "date_time";
-	
-	/** not analysed field */
-	protected static final String NOT_ANALYZED = "not_analyzed";
+	public static final String DATE_TIME_FORMAT = "date_time";
 	
 	/** field should not be indexed */
-	protected static final String NOT_INDEXED = "no";
+	public static final String NOT_INDEXED = "false";
 	
 	
 	private Class<R> resourceType;
@@ -101,7 +97,7 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 	 */
 	@SuppressWarnings("resource")
 	@Override
-	public Mapping<String> getMapping() {
+	public Mapping<XContentBuilder> getMapping() {
 		try {
 			final String documentType = this.getDocumentType();
 			XContentBuilder commonPostResourceFields = XContentFactory.jsonBuilder()
@@ -114,27 +110,22 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 							.field("date_detection", false)
 							.startObject(PROPERTIES)
 								.startObject(ESConstants.Fields.Resource.INTRAHASH)
-									.field(TYPE_FIELD, STRING_TYPE)
-									.field(INDEX_FIELD, NOT_ANALYZED)
+									.field(TYPE_FIELD, KEYWORD_TYPE)
 									//.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(ESConstants.Fields.Resource.INTERHASH)
-									.field(TYPE_FIELD, STRING_TYPE)
-									.field(INDEX_FIELD, NOT_ANALYZED)
+									.field(TYPE_FIELD, KEYWORD_TYPE)
 									//.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(ESConstants.Fields.TAGS)
-									.field(TYPE_FIELD, STRING_TYPE)
-									.field(INDEX_FIELD, NOT_ANALYZED)
+									.field(TYPE_FIELD, KEYWORD_TYPE)
 								.endObject()
 								.startObject(ESConstants.Fields.USER_NAME)
-									.field(TYPE_FIELD, STRING_TYPE)
-									.field(INDEX_FIELD, NOT_ANALYZED)
+									.field(TYPE_FIELD, KEYWORD_TYPE)
 									//.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(ESConstants.Fields.GROUPS)
-									.field(TYPE_FIELD, STRING_TYPE)
-									.field(INDEX_FIELD, NOT_ANALYZED)
+									.field(TYPE_FIELD, KEYWORD_TYPE)
 									//.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								/*
@@ -153,12 +144,11 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 									//.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(Fields.SYSTEM_URL)
-									.field(TYPE_FIELD, STRING_TYPE)
-									.field(INDEX_FIELD, NOT_ANALYZED)
+									.field(TYPE_FIELD, KEYWORD_TYPE)
 									//.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(ESConstants.Fields.Resource.TITLE)
-									.field(TYPE_FIELD, STRING_TYPE)
+									.field(TYPE_FIELD, TEXT_TYPE)
 									.field(BOOST_FIELD, 2)
 								.endObject();
 			
@@ -168,9 +158,8 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 							.endObject()
 						// .endObject()
 					.endObject();
-			final String info = Strings.toString(finalObject);
-			final Mapping<String> mapping = new Mapping<>();
-			mapping.setMappingInfo(info);
+			final Mapping<XContentBuilder> mapping = new Mapping<>();
+			mapping.setMappingInfo(finalObject);
 			mapping.setType(documentType);
 			return mapping;
 		} catch (final IOException e) {

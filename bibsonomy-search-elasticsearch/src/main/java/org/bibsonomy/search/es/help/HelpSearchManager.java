@@ -30,9 +30,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -48,6 +46,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.search.es.ESClient;
+import org.bibsonomy.search.es.index.ResourceMappingBuilder;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.services.URLGenerator;
@@ -86,7 +85,7 @@ public class HelpSearchManager implements HelpSearch {
 	
 	private static final String HELP_PAGE_TYPE = "help_page";
 	
-	private static final Mapping<String> MAPPING = new Mapping<>();
+	private static final Mapping<XContentBuilder> MAPPING = new Mapping<>();
 
 	private static final String SETTINGS;
 	
@@ -99,17 +98,17 @@ public class HelpSearchManager implements HelpSearch {
 							.field("date_detection", false)
 							.startObject("properties")
 								.startObject(HEADER_FIELD)
-									.field("type", "string")
+									.field(ResourceMappingBuilder.TYPE_FIELD, ResourceMappingBuilder.TEXT_TYPE)
 									.field("store", "true")
 								.endObject()
 								.startObject(CONTENT_FIELD)
-									.field("type", "string")
+									.field(ResourceMappingBuilder.TYPE_FIELD, ResourceMappingBuilder.TEXT_TYPE)
 									.field("store", "true")
 								.endObject()
 							.endObject()
 						.endObject()
 					.endObject();
-			MAPPING.setMappingInfo(Strings.toString(mapping));
+			MAPPING.setMappingInfo(mapping);
 			mapping.close();
 			SETTINGS = Strings.toString(XContentFactory.jsonBuilder()
 					.startObject()
@@ -158,14 +157,9 @@ public class HelpSearchManager implements HelpSearch {
 		
 		try {
 			final File baseFolder = new File(this.path);
-			final File[] languageFolders = baseFolder.listFiles(new FileFilter() {
-				
-				@Override
-				public boolean accept(File pathname) {
-					
-					//folder "code-samples" should not be included
-					return pathname.isDirectory() && !pathname.isHidden() && !pathname.getName().equals("code-samples");
-				}
+			final File[] languageFolders = baseFolder.listFiles(pathname -> {
+				//folder "code-samples" should not be included
+				return pathname.isDirectory() && !pathname.isHidden() && !pathname.getName().equals("code-samples");
 			});
 			
 			for (final File languageFolder : languageFolders) {
@@ -177,12 +171,7 @@ public class HelpSearchManager implements HelpSearch {
 					this.client.createIndex(indexName, MAPPING, SETTINGS);
 				}
 				
-				final File[] files = languageFolder.listFiles(new FilenameFilter() {
-					@Override
-					public boolean accept(File dir, String name) {
-						return name.endsWith(HelpUtils.FILE_SUFFIX);
-					}
-				});
+				final File[] files = languageFolder.listFiles((dir, name) -> name.endsWith(HelpUtils.FILE_SUFFIX));
 				
 				final Map<String, Map<String, Object>> jsonDocuments = new HashMap<>();
 				for (final File file : files) {

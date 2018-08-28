@@ -50,6 +50,7 @@ import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.util.BasicUtils;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 
 /**
  * generates a new index based on the database contents
@@ -171,11 +172,12 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 	/**
 	 * @param newState
 	 */
-	private void writeMetaInfo(SearchIndexSyncState newState) {
+	private void writeMetaInfo(final SearchIndexSyncState newState) {
 		final String indexName = this.index.getIndexName();
 		final Map<String, Object> values = ElasticsearchUtils.serializeSearchIndexState(newState);
-		
-		final boolean inserted = this.client.insertNewDocument(indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, ESConstants.SYSTEM_INFO_INDEX_TYPE, values);
+
+		final String systemIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.tools.getSystemURI());
+		final boolean inserted = this.client.insertNewDocument(systemIndexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, indexName, values);
 		if (!inserted) {
 			throw new RuntimeException("failed to save systeminformation for index " + indexName);
 		}
@@ -210,7 +212,7 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 			throw new IllegalStateException("index '" + indexName + "' already exists while generating an index");
 		}
 		
-		final Mapping<String> mapping = this.tools.getMappingBuilder().getMapping();
+		final Mapping<XContentBuilder> mapping = this.tools.getMappingBuilder().getMapping();
 		log.info("index not existing - generating a new one ('" + indexName + "')");
 		
 		final boolean created = this.client.createIndex(indexName, mapping, ESConstants.SETTINGS);

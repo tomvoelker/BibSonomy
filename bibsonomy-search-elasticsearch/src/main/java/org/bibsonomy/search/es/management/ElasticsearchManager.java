@@ -485,7 +485,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 		searchIndexInfo.setId(this.client.getIndexNameForAlias(indexName));
 		
 		if (loadSyncState) {
-			searchIndexInfo.setSyncState(this.client.getSearchIndexStateForIndex(indexName));
+			searchIndexInfo.setSyncState(this.client.getSearchIndexStateForIndex(ElasticsearchUtils.getSearchIndexStateIndexName(this.tools.getSystemURI()), indexName));
 		}
 		
 		final SearchIndexStatistics statistics = new SearchIndexStatistics();
@@ -526,7 +526,8 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	 * @param indexName
 	 */
 	protected void updateIndex(final String indexName) {
-		final SearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(indexName);
+		final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.tools.getSystemURI());
+		final SearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, indexName);
 		final SearchIndexSyncState targetState = this.inputLogic.getDbState();
 		
 		final int oldLastTasId = oldState.getLast_tas_id().intValue();
@@ -695,10 +696,10 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	 * @param indexName
 	 * @param state
 	 */
-	private void updateIndexState(String indexName, SearchIndexSyncState state) {
+	private void updateIndexState(final String indexName, final SearchIndexSyncState state) {
 		final Map<String, Object> values = ElasticsearchUtils.serializeSearchIndexState(state);
 		
-		this.client.insertNewDocument(indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, ESConstants.SYSTEM_INFO_INDEX_TYPE, values);
+		this.client.insertNewDocument(ElasticsearchUtils.getSearchIndexStateIndexName(this.tools.getSystemURI()), ESConstants.SYSTEM_INFO_INDEX_TYPE, indexName, values);
 	}
 
 	/**

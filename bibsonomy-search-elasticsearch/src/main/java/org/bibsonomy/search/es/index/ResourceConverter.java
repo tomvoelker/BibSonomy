@@ -184,7 +184,7 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		jsonDocument.put(Fields.GROUPS, convertGroups(post.getGroups()));
 		
 		jsonDocument.put(Fields.TAGS, convertTags(post.getTags()));
-		jsonDocument.put(Fields.SYSTEM_URL, this.systemURI);
+		jsonDocument.put(Fields.SYSTEM_URL, this.systemURI.toString());
 		
 		this.convertResourceInternal(jsonDocument, post.getResource());
 		this.convertPostInternal(post, jsonDocument);

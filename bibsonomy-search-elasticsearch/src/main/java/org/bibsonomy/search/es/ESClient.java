@@ -32,10 +32,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Mapping;
-import org.elasticsearch.action.update.UpdateRequestBuilder;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
@@ -110,18 +109,19 @@ public interface ESClient {
 	boolean existsIndexWithName(String indexName);
 	
 	/**
-	 * @param indexName
+	 * @param indexName the index containing the search index sync state info
+	 * @param syncStateForIndexName the index name of the index
 	 * @return
 	 */
-	public SearchIndexSyncState getSearchIndexStateForIndex(String indexName);
+	SearchIndexSyncState getSearchIndexStateForIndex(String indexName, String syncStateForIndexName);
 	
 	/**
-	 * @param indexName
-	 * @param mapping
-	 * @param settings TODO
+	 * @param indexName the name of the index
+	 * @param mapping the mapping for the type in the index
+	 * @param settings the settings to apply
 	 * @return
 	 */
-	boolean createIndex(String indexName, Mapping<String> mapping, String settings);
+	boolean createIndex(String indexName, Mapping<XContentBuilder> mapping, String settings);
 	
 	/**
 	 * @param indexName
