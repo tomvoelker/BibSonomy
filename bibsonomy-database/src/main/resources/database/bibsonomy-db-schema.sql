@@ -515,6 +515,7 @@ SET character_set_client = utf8;
 CREATE TABLE `groupids` (
   `group_name` varchar(30) NOT NULL default '',
   `group` int(10) NOT NULL default '0',
+  `parent` int(10) DEFAULT NULL,
   `privlevel` tinyint(3) unsigned default '1',
   `sharedDocuments` tinyint(1) default '0',
   `allow_join` TINYINT(1) NULL DEFAULT '1',
