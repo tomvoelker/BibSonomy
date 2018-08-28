@@ -34,6 +34,7 @@ import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.search.util.MappingBuilder;
+import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
@@ -51,8 +52,8 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 	/** boost the field (search in _all field) */
 	protected static final String BOOST_FIELD = "boost";
 
-	/** include field in generated _all field ? */
-	protected static final String INCLUDE_IN_ALL_FIELD = "include_in_all";
+	// /** include field in generated _all field ? */
+	// protected static final String INCLUDE_IN_ALL_FIELD = "include_in_all";
 
 	/** type string */
 	protected static final String STRING_TYPE = "string";
@@ -105,7 +106,7 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 			final String documentType = this.getDocumentType();
 			XContentBuilder commonPostResourceFields = XContentFactory.jsonBuilder()
 					.startObject()
-						.startObject(documentType)
+						// .startObject(documentType)
 							/*
 							 * set the date detection to false: we load the misc
 							 * fields as field = value into es (=> dynamic mapping)
@@ -115,12 +116,12 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 								.startObject(ESConstants.Fields.Resource.INTRAHASH)
 									.field(TYPE_FIELD, STRING_TYPE)
 									.field(INDEX_FIELD, NOT_ANALYZED)
-									.field(INCLUDE_IN_ALL_FIELD, false)
+									//.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(ESConstants.Fields.Resource.INTERHASH)
 									.field(TYPE_FIELD, STRING_TYPE)
 									.field(INDEX_FIELD, NOT_ANALYZED)
-									.field(INCLUDE_IN_ALL_FIELD, false)
+									//.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(ESConstants.Fields.TAGS)
 									.field(TYPE_FIELD, STRING_TYPE)
@@ -129,12 +130,12 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 								.startObject(ESConstants.Fields.USER_NAME)
 									.field(TYPE_FIELD, STRING_TYPE)
 									.field(INDEX_FIELD, NOT_ANALYZED)
-									.field(INCLUDE_IN_ALL_FIELD, false)
+									//.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(ESConstants.Fields.GROUPS)
 									.field(TYPE_FIELD, STRING_TYPE)
 									.field(INDEX_FIELD, NOT_ANALYZED)
-									.field(INCLUDE_IN_ALL_FIELD, false)
+									//.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								/*
 								 * NOTE: we order our search requests by date
@@ -143,18 +144,18 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 								.startObject(ESConstants.Fields.DATE)
 									.field(TYPE_FIELD, DATE_TYPE)
 									.field(FORMAT_FIELD, DATE_TIME_FORMAT)
-									.field(INCLUDE_IN_ALL_FIELD, false)
+									//.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(ESConstants.Fields.CHANGE_DATE)
 									.field(TYPE_FIELD, DATE_TYPE)
 									.field(INDEX_FIELD, NOT_INDEXED)
 									.field(FORMAT_FIELD, DATE_TIME_FORMAT)
-									.field(INCLUDE_IN_ALL_FIELD, false)
+									//.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(Fields.SYSTEM_URL)
 									.field(TYPE_FIELD, STRING_TYPE)
 									.field(INDEX_FIELD, NOT_ANALYZED)
-									.field(INCLUDE_IN_ALL_FIELD, false)
+									//.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(ESConstants.Fields.Resource.TITLE)
 									.field(TYPE_FIELD, STRING_TYPE)
@@ -165,9 +166,9 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 			
 			final XContentBuilder finalObject = commonPostResourceFields
 							.endObject()
-						.endObject()
+						// .endObject()
 					.endObject();
-			final String info = finalObject.string();
+			final String info = Strings.toString(finalObject);
 			final Mapping<String> mapping = new Mapping<>();
 			mapping.setMappingInfo(info);
 			mapping.setType(documentType);

@@ -36,7 +36,8 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.settings.Settings.Builder;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.FactoryBean;
 
 /**
@@ -71,10 +72,10 @@ public class ElasticsearchTransportClientFactoryBean implements FactoryBean<Clie
 			final String esHosts = this.esAddresses;
 			log.info("EsHostss value in Properties:" + esHosts);
 			// Setting cluster name of ES Server
-			final Builder settings = Settings.settingsBuilder().put("cluster.name", this.esClusterName);
+			final Builder settings = Settings.builder().put("cluster.name", this.esClusterName);
 			settings.put(ElasticsearchTransportClientFactoryBean.SNIFF, true);
 			
-			final TransportClient transportClient = TransportClient.builder().settings(settings).build();
+			final TransportClient transportClient = new PreBuiltTransportClient(settings.build());
 			if (present(esHosts)) {
 				final String[] hosts = esHosts.split(",");
 				for (int i = 0; i < hosts.length; i++) {
@@ -86,7 +87,7 @@ public class ElasticsearchTransportClientFactoryBean implements FactoryBean<Clie
 						if (hostInfo.length > 1) {
 							ip = hostInfo[0];
 							port = Integer.parseInt(hostInfo[1]);
-							transportClient.addTransportAddress(new InetSocketTransportAddress(new InetSocketAddress(ip, port)));
+							transportClient.addTransportAddress(new TransportAddress(new InetSocketAddress(ip, port)));
 						}
 					}
 				}

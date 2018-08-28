@@ -38,7 +38,6 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
@@ -58,9 +57,7 @@ import org.bibsonomy.services.help.HelpSearch;
 import org.bibsonomy.services.help.HelpSearchResult;
 import org.bibsonomy.util.StringUtils;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
-import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
@@ -72,7 +69,8 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.highlight.HighlightField;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.jsoup.Jsoup;
 
 /**
@@ -111,9 +109,9 @@ public class HelpSearchManager implements HelpSearch {
 							.endObject()
 						.endObject()
 					.endObject();
-			MAPPING.setMappingInfo(mapping.string());
+			MAPPING.setMappingInfo(Strings.toString(mapping));
 			mapping.close();
-			SETTINGS = XContentFactory.jsonBuilder()
+			SETTINGS = Strings.toString(XContentFactory.jsonBuilder()
 					.startObject()
 						.startObject("analyzer")
 							.startObject("default")
@@ -123,7 +121,7 @@ public class HelpSearchManager implements HelpSearch {
 								.field("filter", Arrays.asList("lowercase", "standard"))
 							.endObject()
 						.endObject()
-					.endObject().string();
+					.endObject());
 		} catch (final IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -176,7 +174,7 @@ public class HelpSearchManager implements HelpSearch {
 				final String indexName = getIndexNameForLanguage(language);
 				
 				if (!this.client.existsIndexWithName(indexName)) {
-					this.client.createIndex(indexName, Collections.singleton(MAPPING), SETTINGS);
+					this.client.createIndex(indexName, MAPPING, SETTINGS);
 				}
 				
 				final File[] files = languageFolder.listFiles(new FilenameFilter() {
@@ -231,44 +229,48 @@ public class HelpSearchManager implements HelpSearch {
 	@Override
 	public SortedSet<HelpSearchResult> search(final String language, final String searchTerms) throws InvalidSearchRequestException {
 		final String indexName = this.getIndexNameForLanguage(language);
-		final SearchRequestBuilder searchBuilder = this.client.prepareSearch(indexName);
+
 		final QueryStringQueryBuilder searchQuery = QueryBuilders.queryStringQuery(searchTerms);
 		final MatchQueryBuilder sidebarQuery = QueryBuilders.matchQuery(HEADER_FIELD, HelpUtils.HELP_SIDEBAR_NAME);
 		final BoolQueryBuilder query = QueryBuilders.boolQuery();
 		query.must(searchQuery);
 		query.mustNot(sidebarQuery);
-		
-		searchBuilder.setQuery(query);
-		searchBuilder.setTypes(HELP_PAGE_TYPE);
-		searchBuilder.setSearchType(SearchType.DEFAULT);
-		searchBuilder.addHighlightedField(CONTENT_FIELD, 100, 1);
-		searchBuilder.setHighlighterRequireFieldMatch(false);
+
+		// get matches
+		final HighlightBuilder highlightBuilder = new HighlightBuilder();
+		highlightBuilder.field(CONTENT_FIELD);
+		highlightBuilder.requireFieldMatch(false);
+		highlightBuilder.fragmentSize(100);
+		highlightBuilder.numOfFragments(1);
+
 		final TreeSet<HelpSearchResult> results = new TreeSet<>();
 		try {
-			final SearchResponse response = searchBuilder.execute().actionGet();
-			if (response != null) {
-				final SearchHits hits = response.getHits();
-				for (final SearchHit searchHit : hits.hits()) {
-					final HelpSearchResult result = new HelpSearchResult();
-					result.setPage(searchHit.getId());
-					result.setScore(searchHit.getScore());
-					
-					final Map<String, HighlightField> highlightFields = searchHit.getHighlightFields();
-					
-					final HighlightField contentHighlight = highlightFields.get(CONTENT_FIELD);
-					if (present(contentHighlight)) {
-						final Text[] fragments = contentHighlight.getFragments();
-						final StringBuilder builder = new StringBuilder();
-						for (final Text fragment : fragments) {
-							builder.append(removeHtml(fragment));
-						}
-						
-						final String highlightText = builder.toString();
-						result.setHighlightContent(highlightText);
+			final SearchHits hits = this.client.search(indexName, HELP_PAGE_TYPE, query, highlightBuilder, null, 0, 25, null, null);
+
+			if (!present(hits)) {
+				return results;
+			}
+
+			for (final SearchHit searchHit : hits.getHits()) {
+				final HelpSearchResult result = new HelpSearchResult();
+				result.setPage(searchHit.getId());
+				result.setScore(searchHit.getScore());
+
+				final Map<String, HighlightField> highlightFields = searchHit.getHighlightFields();
+
+				final HighlightField contentHighlight = highlightFields.get(CONTENT_FIELD);
+				if (present(contentHighlight)) {
+					final Text[] fragments = contentHighlight.getFragments();
+					final StringBuilder builder = new StringBuilder();
+					for (final Text fragment : fragments) {
+						builder.append(removeHtml(fragment));
 					}
-					
-					results.add(result);
+
+					final String highlightText = builder.toString();
+					result.setHighlightContent(highlightText);
 				}
+
+				results.add(result);
 			}
 		} catch (final IndexNotFoundException e) {
 			log.error("index " + indexName + " not found");
@@ -276,7 +278,7 @@ public class HelpSearchManager implements HelpSearch {
 			log.info("parsing query failed.", e);
 			throw new InvalidSearchRequestException();
 		}
-		
+
 		return results;
 	}
 
@@ -288,7 +290,7 @@ public class HelpSearchManager implements HelpSearch {
 		String text = Jsoup.parse(fragment.toString()).text();
 		final int index = text.indexOf('>');
 		if (index != -1) {
-			text = text.substring(index + 1, text.length());
+			text = text.substring(index + 1);
 		}
 		
 		final int tagStartIndex = text.lastIndexOf('<');

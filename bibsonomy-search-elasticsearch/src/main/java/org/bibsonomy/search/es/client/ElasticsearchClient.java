@@ -36,6 +36,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
@@ -55,14 +56,12 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.count.CountRequestBuilder;
-import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
-import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.action.update.UpdateRequestBuilder;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
@@ -70,11 +69,13 @@ import org.elasticsearch.cluster.metadata.AliasMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-
-import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 
 /**
  * the default implementation of the {@link ESClient}
@@ -104,16 +105,14 @@ public class ElasticsearchClient implements ESClient {
 	}
 
 	@Override
-	public boolean createIndex(String indexName, Set<Mapping<String>> mappings, String settings) {
-		final CreateIndexResponse createIndex = this.client.admin().indices().create(new CreateIndexRequest(indexName, Settings.builder().loadFromSource(settings).build())).actionGet();
+	public boolean createIndex(final String indexName, final Mapping<String> mapping, final String settings) {
+		final Settings.Builder settingsBuilder = Settings.builder();
+		final CreateIndexResponse createIndex = this.client.admin().indices().create(new CreateIndexRequest(indexName, settingsBuilder.loadFromSource(settings, XContentType.JSON).build())).actionGet();
 		if (!createIndex.isAcknowledged()) {
 			log.error("Error in creating Index");
 			return false;
 		}
-		
-		for (final Mapping<String> mapping : mappings) {
-			this.client.admin().indices().preparePutMapping(indexName).setType(mapping.getType()).setSource(mapping.getMappingInfo()).execute().actionGet();
-		}
+		this.client.admin().indices().preparePutMapping(indexName).setType(mapping.getType()).setSource(mapping.getMappingInfo()).execute().actionGet();
 		
 		// wait for the yellow (or green) status to prevent NoShardAvailableActionException later
 		this.waitForReadyState();
@@ -133,17 +132,17 @@ public class ElasticsearchClient implements ESClient {
 		final SearchResponse searchResponse = searchRequestBuilder.get();
 		
 		// ensure that there is only one index state stored in the index
-		long hitsInIndex = searchResponse.getHits().totalHits();
+		long hitsInIndex = searchResponse.getHits().getTotalHits();
 		if (hitsInIndex != 1) {
 			throw new IllegalStateException(hitsInIndex + " systeminfos for index " + indexName);
 		}
 		
-		return ElasticsearchUtils.deserializeSearchIndexState(searchResponse.getHits().iterator().next().getSource());
+		return ElasticsearchUtils.deserializeSearchIndexState(searchResponse.getHits().iterator().next().getSourceAsMap());
 	}
 
 	@Override
 	public boolean insertNewDocument(String indexName, String type, String id, Map<String, Object> jsonDocument) {
-		final IndexResponse indexResponse = this.client.prepareIndex(indexName, type, id).setSource(jsonDocument).setRefresh(true).get();
+		final IndexResponse indexResponse = this.client.prepareIndex(indexName, type, id).setSource(jsonDocument).setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL).get();
 		return ((indexResponse != null) && ValidationUtils.present(indexResponse.getId()));
 	}
 	
@@ -171,20 +170,14 @@ public class ElasticsearchClient implements ESClient {
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.ESClient#prepareUpdate(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	@Override
+	//@Override
 	public UpdateRequestBuilder prepareUpdate(String indexName, String type, String id) {
 		return this.client.prepareUpdate(indexName, type, id);
 	}
 
 	@Override
-	public boolean removeDocumentFromIndex(String indexName, String type, String indexID) {
-		final DeleteResponse deleteResponse = this.client.delete(new DeleteRequest(indexName, type, indexID)).actionGet();
-		return deleteResponse.getId() != null;
-	}
-
-	@Override
-	public boolean deleteIndex(String oldIndexName) {
-		final DeleteIndexResponse deleteResult = this.client.admin().indices().delete(new DeleteIndexRequest(oldIndexName)).actionGet();
+	public boolean deleteIndex(String indexName) {
+		final DeleteIndexResponse deleteResult = this.client.admin().indices().delete(new DeleteIndexRequest(indexName)).actionGet();
 		return deleteResult.isAcknowledged();
 	}
 
@@ -231,19 +224,6 @@ public class ElasticsearchClient implements ESClient {
 	public void deleteAlias(String indexName, String alias) {
 		this.updateAliases(null, Collections.singleton(new Pair<>(indexName, alias)));
 	}
-
-	@Override
-	public String getIndexNameForAlias(final String alias) {
-		final List<String> activeindices = this.getIndexNamesForAlias(alias);
-		if (!activeindices.isEmpty()) {
-			if (activeindices.size() > 1) {
-				throw new IllegalStateException("found more than one index for this system!");
-			}
-			
-			return activeindices.iterator().next();
-		}
-		return null;
-	}
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.ESClient#getIndexNamesForAlias(java.lang.String)
@@ -252,6 +232,7 @@ public class ElasticsearchClient implements ESClient {
 	public List<String> getIndexNamesForAlias(String aliasName) {
 		final ImmutableOpenMap<String, List<AliasMetaData>> activeindices = this.client.admin().indices().getAliases(new GetAliasesRequest().aliases(aliasName)).actionGet().getAliases();
 		final List<String> indexNames = new LinkedList<>();
+
 		for (final ObjectObjectCursor<String, List<AliasMetaData>> objectObjectCursor : activeindices) {
 			indexNames.add(objectObjectCursor.key);
 		}
@@ -266,23 +247,28 @@ public class ElasticsearchClient implements ESClient {
 		if (query == null) {
 			query = QueryBuilders.matchAllQuery();
 		}
-		final CountRequestBuilder count = this.client.prepareCount(indexName);
+		final SearchRequestBuilder count = this.client.prepareSearch(indexName);
 		count.setTypes(type);
-		final CountResponse response = count.setQuery(query).get();
-		return response.getCount();
+		count.setSize(0);
+		final SearchResponse response = count.setQuery(query).get();
+		return response.getHits().getTotalHits();
 	}
-	
+
+	@Override
+	public SearchHits search(String indexName, String type, QueryBuilder queryBuilder, HighlightBuilder highlightBuilder, Pair<String, SortOrder> order, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve) {
+		return null;
+	}
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.ESClient#deleteDocuments(java.lang.String, java.lang.String, org.elasticsearch.index.query.TermQueryBuilder)
 	 */
 	@Override
-	public void deleteDocuments(String indexName, String type, QueryBuilder query) {
+	public void deleteDocuments(final String indexName, final String type, final QueryBuilder query) {
 		final SearchRequestBuilder searchRequest = this.client.prepareSearch(indexName);
 		searchRequest.setTypes(type);
 		searchRequest.setQuery(query);
 		searchRequest.setScroll(new TimeValue(3, TimeUnit.MINUTES));
 		searchRequest.setSize(200); // note: per shard!
-		searchRequest.setSearchType(SearchType.SCAN);
 		
 		final SearchResponse searchResponse = searchRequest.get();
 		final String scrollId = searchResponse.getScrollId();
@@ -291,7 +277,7 @@ public class ElasticsearchClient implements ESClient {
 		
 		while (true) {
 			scrollResponse = this.client.prepareSearchScroll(scrollId).get();
-			final SearchHit[] hits = scrollResponse.getHits().hits();
+			final SearchHit[] hits = scrollResponse.getHits().getHits();
 			if (hits.length == 0) {
 				break;
 			}
@@ -310,16 +296,6 @@ public class ElasticsearchClient implements ESClient {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.ESClient#updateDocuments(java.lang.String, java.lang.String, java.util.Map)
-	 */
-	@Override
-	public boolean updateOrCreateDocuments(String indexName, String type, Map<String, Map<String, Object>> jsonDocuments) {
-		final Set<String> idsToDelete = jsonDocuments.keySet();
-		this.deleteDocuments(indexName, type, idsToDelete);
-		return this.insertNewDocuments(indexName, type, jsonDocuments);
-	}
-	
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.ESClient#deleteDocuments(java.lang.String, java.lang.String, java.util.Set)
 	 */
 	@Override
@@ -335,7 +311,12 @@ public class ElasticsearchClient implements ESClient {
 		final BulkResponse bulkResponse = bulkRequest.get();
 		return !bulkResponse.hasFailures();
 	}
-	
+
+	@Override
+	public boolean updateDocument(String indexName, String type, String id, Map<String, Object> jsonDocument) {
+		return false;
+	}
+
 	/**
 	 * @return <code>true</code> if a connection to es can be established 
 	 */
@@ -347,22 +328,6 @@ public class ElasticsearchClient implements ESClient {
 			log.error("disabled indexing", e);
 			return false;
 		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.ESClient#prepareCount(java.lang.String)
-	 */
-	@Override
-	public CountRequestBuilder prepareCount(String indexName) {
-		return this.client.prepareCount(indexName);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.ESClient#prepareSearch(java.lang.String)
-	 */
-	@Override
-	public SearchRequestBuilder prepareSearch(String indexName) {
-		return this.client.prepareSearch(indexName);
 	}
 
 	@Override

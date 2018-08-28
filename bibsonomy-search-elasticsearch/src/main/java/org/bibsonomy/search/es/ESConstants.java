@@ -36,6 +36,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bibsonomy.util.tex.TexDecode;
+import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
 /**
@@ -56,7 +57,7 @@ public final class ESConstants {
 	
 	static {
 		try {
-			SETTINGS = XContentFactory.jsonBuilder()
+			SETTINGS = Strings.toString(XContentFactory.jsonBuilder()
 					.startObject()
 						.startObject("analysis")
 							.startObject("char_filter")
@@ -90,7 +91,7 @@ public final class ESConstants {
 								.endObject()
 							.endObject()
 						.endObject()
-					.endObject().string();
+					.endObject());
 		} catch (final IOException e) {
 			throw new RuntimeException(e);
 		}

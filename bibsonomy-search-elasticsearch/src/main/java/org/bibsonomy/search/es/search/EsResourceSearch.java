@@ -60,7 +60,6 @@ import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
-import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.querybuilder.AbstractSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
@@ -75,28 +74,18 @@ import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.tokenizer.SimpleTokenizer;
 import org.bibsonomy.services.searcher.PersonSearch;
 import org.bibsonomy.services.searcher.ResourceSearch;
-import org.elasticsearch.action.count.CountRequestBuilder;
-import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
-import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder.Operator;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder.Type;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
-import org.elasticsearch.index.query.SimpleQueryStringBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
-import org.elasticsearch.search.aggregations.bucket.terms.TermsBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
 /**
@@ -134,8 +123,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 
 	private String genealogyUser;
 
-	private boolean useAggregation;
-
 	
 	/**
 	 * get tag cloud for given search query for the Shared Resource System
@@ -164,71 +151,33 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			return new LinkedList<>();
 		}
 		
-		if (useAggregation) {
-			final SearchRequestBuilder searchRequestBuilder = this.manager.prepareSearch();
-			searchRequestBuilder.setQuery(query);
-			searchRequestBuilder.setTypes(ResourceFactory.getResourceName(resourceType));
-			
-			final String name = "tags_count";
-			final TermsBuilder count = AggregationBuilders.terms(name).field(Fields.TAGS);
-			searchRequestBuilder.addAggregation(count);
-			
-			final SearchResponse response = searchRequestBuilder.execute().actionGet();
-			if (response != null) {
-				final StringTerms aggregation = response.getAggregations().get(name);
-				final LinkedList<Tag> tags = new LinkedList<>();
-				
-				for (final Bucket bucket : aggregation.getBuckets()) {
-					final String tagName = bucket.getKeyAsString();
-					final long tagCount = bucket.getDocCount();
-					
-					final Tag tag = new Tag();
-					tag.setGlobalcount((int) tagCount);
-					tag.setName(tagName);
-					
-					tags.add(tag);
-				}
-				return tags;
-			}
-		}
-		
-		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
+		final Map<Tag, Integer> tagCounter = new HashMap<>();
 
 		try {
-			final SearchRequestBuilder searchRequestBuilder = this.manager.prepareSearch();
-			searchRequestBuilder.setTypes(ResourceFactory.getResourceName(resourceType));
-			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
-			searchRequestBuilder.setQuery(query);
-			searchRequestBuilder.setFetchSource(Fields.TAGS, null);
-			searchRequestBuilder.addSort(Fields.DATE, SortOrder.DESC);
-			searchRequestBuilder.setFrom(offset).setSize(limit).setExplain(true);
-			final SearchResponse response = searchRequestBuilder.execute().actionGet();
-			if (response != null) {
-				final SearchHits hits = response.getHits();
-				log.debug("Current Search results for '" + searchTerms + "': " + response.getHits().getTotalHits());
-				// TODO: check min TODODZO
-				for (int i = 0; i < Math.min(limit, hits.getTotalHits() - offset); ++i) {
-					SearchHit hit = hits.getAt(i);
-					final Map<String, Object> result = hit.getSource();
-					final Set<Tag> tags = this.resourceConverter.onlyConvertTags(result);
-					// set tag count
-					if (present(tags)) {
-						for (final Tag tag : tags) {
-							/*
-							 * we remove the requested tags because we assume
-							 * that related tags are requested
-							 */
-							if (present(tagIndex) && tagIndex.contains(tag.getName())) {
-								continue;
-							}
-							Integer oldCnt = tagCounter.get(tag);
-							if (!present(oldCnt)) {
-								oldCnt = Integer.valueOf(1);
-							} else {
-								oldCnt++;
-							}
-							tagCounter.put(tag, oldCnt);
+			final SearchHits hits = this.manager.search(query, null, offset, limit, null, Collections.singleton(Fields.TAGS));
+			log.debug("Current Search results for '" + searchTerms + "': " + hits.getTotalHits());
+			// TODO: check min TODODZO
+			for (int i = 0; i < Math.min(limit, hits.getTotalHits() - offset); ++i) {
+				SearchHit hit = hits.getAt(i);
+				final Map<String, Object> result = hit.getSourceAsMap();
+				final Set<Tag> tags = this.resourceConverter.onlyConvertTags(result);
+				// set tag count
+				if (present(tags)) {
+					for (final Tag tag : tags) {
+						/*
+						 * we remove the requested tags because we assume
+						 * that related tags are requested
+						 */
+						if (present(tagIndex) && tagIndex.contains(tag.getName())) {
+							continue;
 						}
+						Integer oldCnt = tagCounter.get(tag);
+						if (!present(oldCnt)) {
+							oldCnt = Integer.valueOf(1);
+						} else {
+							oldCnt++;
+						}
+						tagCounter.put(tag, oldCnt);
 					}
 				}
 			}
@@ -239,7 +188,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			throw new InvalidSearchRequestException();
 		}
 		
-		final List<Tag> tags = new LinkedList<Tag>();
+		final List<Tag> tags = new LinkedList<>();
 		// extract all tags
 		for (final Map.Entry<Tag, Integer> entry : tagCounter.entrySet()) {
 			final Tag tag = entry.getKey();
@@ -276,7 +225,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 */
 	@Override
 	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final org.bibsonomy.common.enums.SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
-		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
+		final ResultList<Post<R>> postList = new ResultList<>();
 		try {
 			final Set<String> allowedUsers = getUsersThatShareDocuments(userName);
 			final QueryBuilder queryBuilder = this.buildQuery(userName,
@@ -287,34 +236,25 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			if (queryBuilder == null) {
 				return postList;
 			}
-			final SearchRequestBuilder searchRequestBuilder = this.manager.prepareSearch();
-			searchRequestBuilder.setTypes(ResourceFactory.getResourceName(this.resourceType));
-			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
-			searchRequestBuilder.setQuery(queryBuilder);
-			if (order != Order.RANK) {
-				searchRequestBuilder.addSort(Fields.DATE, SortOrder.DESC);
-			}
-			searchRequestBuilder.setFrom(offset).setSize(limit);
 
-			final SearchResponse response = searchRequestBuilder.execute().actionGet();
+			final Pair<String, SortOrder> sortOrder = order == Order.RANK ? null : new Pair<>(Fields.DATE, SortOrder.DESC);
+			final SearchHits hits = this.manager.search(queryBuilder, sortOrder, offset, limit, null, null);
 
-			if (response != null) {
-				final SearchHits hits = response.getHits();
+			if (hits != null) {
 				postList.setTotalCount((int) hits.getTotalHits());
-				
-				log.debug("Current Search results for '" + searchTerms + "': " + response.getHits().getTotalHits());
+
 				for (final SearchHit hit : hits) {
-					final Post<R> post = this.resourceConverter.convert(hit.getSource(), allowedUsers);
-					
-					final CountRequestBuilder countBuilder = this.manager.prepareCount();
+					final Post<R> post = this.resourceConverter.convert(hit.getSourceAsMap(), allowedUsers);
 					final R resource = post.getResource();
-					countBuilder.setQuery(QueryBuilders.termQuery(Fields.Resource.INTERHASH, resource.getInterHash()));
-					final CountResponse countResponse = countBuilder.execute().actionGet();
-					
-					resource.setCount((int) countResponse.getCount());
+
+					final long count = this.manager.getDocumentCount(QueryBuilders.termQuery(Fields.Resource.INTERHASH, resource.getInterHash()));
+
+					resource.setCount((int) count);
 					postList.add(post);
 				}
 			}
+
+			return postList;
 		} catch (final IndexNotFoundException e) {
 			log.error("no index found: " + e);
 		} catch (final SearchPhaseExecutionException e) {
@@ -442,7 +382,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	
 	/**
 	 * @param must
-	 * @param addShouldYearIfYearInQuery
+	 * @param filter
 	 * @return
 	 */
 	private static QueryBuilder filterQuery(QueryBuilder must, QueryBuilder filter) {
@@ -455,7 +395,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 
 	/**
 	 * @param options
-	 * @param field
+	 * @param builder
 	 * @return
 	 */
 	private static MultiMatchQueryBuilder addPersonSearch(AbstractSuggestionQueryBuilder<?> options, MultiMatchQueryBuilder builder) {
@@ -473,27 +413,16 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		return builder;
 	}
 
-	private SearchRequestBuilder buildRequest(int offset, double minPlainEsScore, final QueryBuilder queryBuilder) {
-		final SearchRequestBuilder searchRequestBuilder = this.manager.prepareSearch();
-		searchRequestBuilder.setTypes(ResourceFactory.getResourceName(this.resourceType));
-		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
-		searchRequestBuilder.setQuery(queryBuilder) //
-		.setMinScore((float) minPlainEsScore) //
-		.setFrom(offset).setSize(MAX_OFFSET / 10);
-		return searchRequestBuilder;
+	private SearchHits buildRequest(int offset, double minPlainEsScore, final QueryBuilder queryBuilder) {
+		return this.manager.search(queryBuilder, null, offset, MAX_OFFSET / 10, (float) minPlainEsScore, null);
 	}
 	
 	private double fetchMoreResults(final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter, final Set<String> queryTerms, int offset, final Set<String> alreadyAnalyzedInterhashes, double minPlainEsScore, AbstractSuggestionQueryBuilder<?> options) {
 		// for finding persons, we use their names but for finding publications, we like to find publications which are not yet associated to a person entity
 		final QueryBuilder queryBuilder = buildQuery(options);
-		final SearchRequestBuilder searchRequestBuilder = buildRequest(offset, minPlainEsScore, queryBuilder);
+		final SearchHits hits = buildRequest(offset, minPlainEsScore, queryBuilder);
 
-		final SearchResponse response = searchRequestBuilder.execute().actionGet();
-		if (response == null) {
-			return 0;
-		}
-		final SearchHits hits = response.getHits();
-		if (hits.getTotalHits() < 1) {
+		if (hits == null || hits.getTotalHits() < 1) {
 			return 0;
 		}
 		
@@ -507,19 +436,19 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			} else if (hit.getScore() < minScore) {
 				break;
 			}
-			final String interhash = (String) hit.getSource().get(Fields.Resource.INTERHASH);
+			final String interhash = (String) hit.getSourceAsMap().get(Fields.Resource.INTERHASH);
 			if (!alreadyAnalyzedInterhashes.add(interhash)) {
-				final String userName = (String) hit.getSource().get(Fields.USER_NAME);
+				final String userName = (String) hit.getSourceAsMap().get(Fields.USER_NAME);
 				// prefer posts og the genealogy user
 				if (this.genealogyUser.equals(userName)) {
 					// we prefer posts by the genealogy user
-					final Post<R> post = this.resourceConverter.convert(hit.getSource(), Collections.<String>emptySet());
+					final Post<R> post = this.resourceConverter.convert(hit.getSourceAsMap(), Collections.emptySet());
 					exchangePost(relSorter, post);
 				}
 				// we have seen this interhash before -> skip
 				continue;
 			}
-			final Post<R> postTmp = this.resourceConverter.convert(hit.getSource(), Collections.<String>emptySet());
+			final Post<R> postTmp = this.resourceConverter.convert(hit.getSourceAsMap(), Collections.emptySet());
 			if (!(postTmp.getResource() instanceof BibTex)) {
 				continue;
 			}
@@ -670,7 +599,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	}
 
 	/**
-	 * @param termFilterBuilder
+	 * @param filterBuilder
 	 * @param queryString
 	 * @return
 	 */
@@ -764,19 +693,19 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			 * XXX: we also need to set these parameters to the private string queries, otherwise the configured
 			 * field is ignored and ES searches again in the queried fields
 			 */
-			final QueryBuilder queryBuilder = QueryBuilders.queryStringQuery(searchTerms).defaultOperator(QueryStringQueryBuilder.Operator.AND).useDisMax(false);
+			final QueryBuilder queryBuilder = buildStringQueryForSearchTerms(searchTerms);
 			
 			if (present(userName)) {
 				// private field
 				final TermQueryBuilder userFilter = QueryBuilders.termQuery(Fields.USER_NAME, userName);
-				final QueryStringQueryBuilder privateFieldSearchQuery = QueryBuilders.queryStringQuery(searchTerms).field(Fields.PRIVATE_ALL_FIELD).defaultOperator(QueryStringQueryBuilder.Operator.AND).useDisMax(false);
+				final QueryStringQueryBuilder privateFieldSearchQuery = buildStringQueryForSearchTerms(searchTerms).field(Fields.PRIVATE_ALL_FIELD);
 				final BoolQueryBuilder privateFieldQueryFiltered = QueryBuilders.boolQuery().must(privateFieldSearchQuery).filter(userFilter);
 				
 				final BoolQueryBuilder query = QueryBuilders.boolQuery().should(queryBuilder).should(privateFieldQueryFiltered);
 				
 				if (present(usersThatShareDocs)) {
 					// document field
-					final QueryStringQueryBuilder docFieldSearchQuery = QueryBuilders.queryStringQuery(searchTerms).field(Fields.ALL_DOCS).defaultOperator(QueryStringQueryBuilder.Operator.AND).useDisMax(false);
+					final QueryStringQueryBuilder docFieldSearchQuery = buildStringQueryForSearchTerms(searchTerms).field(Fields.ALL_DOCS);
 					// restrict to users that share documents and to the visible posts (group)
 					final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery().must(buildUserQuery(usersThatShareDocs)).must(buildGroupFilter(allowedGroups));
 					query.should(QueryBuilders.boolQuery().must(docFieldSearchQuery).filter(filterQuery));
@@ -845,6 +774,10 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		
 		
 		return QueryBuilders.boolQuery().must(mainQueryBuilder).filter(mainFilterBuilder);
+	}
+
+	private static QueryStringQueryBuilder buildStringQueryForSearchTerms(String searchTerms) {
+		return QueryBuilders.queryStringQuery(searchTerms).defaultOperator(Operator.AND).useDisMax(false);
 	}
 
 	/**
@@ -1008,12 +941,5 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 */
 	public void setGenealogyUser(String genealogyUser) {
 		this.genealogyUser = genealogyUser;
-	}
-
-	/**
-	 * @param useAggregation the useAggregation to set
-	 */
-	public void setUseAggregation(boolean useAggregation) {
-		this.useAggregation = useAggregation;
 	}
 }

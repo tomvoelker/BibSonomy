@@ -46,6 +46,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
@@ -60,10 +61,11 @@ import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.model.SearchIndexStatistics;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.util.Sets;
-import org.elasticsearch.action.count.CountRequestBuilder;
-import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.index.IndexNotFoundException;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.sort.SortOrder;
 
 /**
  * manager for Elasticsearch
@@ -77,7 +79,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	/** how many posts should be retrieved from the database */
 	public static final int SQL_BLOCKSIZE = 5000;
 	private static final long QUERY_TIME_OFFSET_MS = 1000;
-	
+
 	private abstract class AbstractSearchIndexGenerationTask implements Callable<Void> {
 		private final ElasticsearchIndexGenerator<R> generator;
 		private final ElasticsearchIndex<R> newIndex;
@@ -95,7 +97,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 		 * @see java.util.concurrent.Callable#call()
 		 */
 		@Override
-		public final Void call() throws Exception {
+		public final Void call() {
 			try {
 				ElasticsearchManager.this.currentGenerator = this.generator;
 				this.generator.generateIndex();
@@ -194,7 +196,6 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	 * @param updateEnabled 
 	 * @param disabledIndexing 
 	 * @param client
-	 * @param systemURI
 	 * @param inputLogic
 	 * @param tools
 	 */
@@ -589,7 +590,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 		
 		// 4) update the index state
 		try {
-			SearchIndexSyncState newState = new SearchIndexSyncState(oldState);
+			final SearchIndexSyncState newState = new SearchIndexSyncState(oldState);
 			newState.setLast_log_date(targetState.getLast_log_date());
 			newState.setLast_tas_id(Integer.valueOf(newLastTasId));
 			newState.setLastPersonChangeId(targetState.getLastPersonChangeId());
@@ -669,7 +670,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	}
 	
 	/**
-	 * @param standby
+	 * @param state
 	 * @return
 	 */
 	private String getAliasNameForState(final SearchIndexState state) {
@@ -692,7 +693,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 
 	/**
 	 * @param indexName
-	 * @param oldState
+	 * @param state
 	 */
 	private void updateIndexState(String indexName, SearchIndexSyncState state) {
 		final Map<String, Object> values = ElasticsearchUtils.serializeSearchIndexState(state);
@@ -766,7 +767,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 					} while (userPosts.size() == SearchDBInterface.SQL_BLOCKSIZE);
 					break;
 				case 1:
-					log.debug("user " + userName + " flaged as spammer");
+					log.debug("user " + userName + " flagged as spammer");
 					// remove all docs of the user from the index!
 					this.client.deleteDocuments(indexName, this.tools.getResourceTypeAsString(), QueryBuilders.termQuery(Fields.USER_NAME, userName));
 					break;
@@ -779,30 +780,27 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 			this.clearQueue(indexName, convertedPosts);
 		}
 	}
-	
-	/**
-	 * @return the count request builder
-	 * 
-	 */
-	public CountRequestBuilder prepareCount() {
-		return this.client.prepareCount(this.getActiveLocalAlias());
-	}
-	
-	/**
-	 * @return the search request builder
-	 */
-	public SearchRequestBuilder prepareSearch() {
-		return prepareSearch(this.getActiveLocalAlias());
-	}
 
 	/**
-	 * @param indexName
-	 * @return the prepared search builder
+	 * execute a search
+	 * @param query the query to use
+	 * @param order the order
+	 * @param offset the offset
+	 * @param limit the limit
+	 * @param minScore the min score
+	 * @param fieldsToRetrieve the fields to retrieve
+	 * @return
 	 */
-	protected SearchRequestBuilder prepareSearch(final String indexName) {
-		return this.client.prepareSearch(indexName);
+	public SearchHits search(final QueryBuilder query, final Pair<String, SortOrder> order, int offset, int limit, Float minScore, final Set<String> fieldsToRetrieve) {
+		final String resourceType = ResourceFactory.getResourceName(this.tools.getResourceType());
+		return this.client.search(this.getActiveLocalAlias(), resourceType, query, null, order, offset, limit, minScore, fieldsToRetrieve);
 	}
-	
+
+	public long getDocumentCount(QueryBuilder query) {
+		final String resourceType = ResourceFactory.getResourceName(this.tools.getResourceType());
+		return this.client.getDocumentCount(this.getActiveLocalAlias(), resourceType, query);
+	}
+
 	/**
 	 * shut downs the executor service
 	 */

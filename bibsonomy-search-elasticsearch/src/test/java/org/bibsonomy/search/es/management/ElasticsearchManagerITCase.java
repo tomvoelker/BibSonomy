@@ -39,6 +39,7 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
 import org.bibsonomy.search.es.search.ElasticsearchPublicationSearch;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -46,7 +47,7 @@ import org.junit.Test;
  *
  * @author dzo
  */
-public class ElasticsearchManagerTest extends AbstractEsIndexTest {
+public class ElasticsearchManagerITCase extends AbstractEsIndexTest {
 	
 	private static final AdminDatabaseManager adminDatabaseManager = AdminDatabaseManager.getInstance();
 	private static ElasticsearchManager<BibTex> publicationManager;

@@ -54,10 +54,13 @@ import org.bibsonomy.util.ValidationUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.action.update.UpdateRequestBuilder;
 import org.elasticsearch.index.engine.DocumentMissingException;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 
 /**
  * manager that also updates person informations
@@ -100,9 +103,7 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 			final List<Map<String, String>> documents = this.getPublicationConverter().convertDocuments(postDocUpdate.getResource().getDocuments());
 			final String id = ElasticsearchUtils.createElasticSearchId(postDocUpdate.getContentId().intValue());
 			try {
-				final UpdateRequestBuilder update = this.client.prepareUpdate(indexName, this.tools.getResourceTypeAsString(), id);
-				update.setDoc(Collections.singletonMap(Publication.DOCUMENTS, documents))
-						.setRefresh(true).execute().actionGet();
+				this.client.updateDocument(indexName, this.tools.getResourceTypeAsString(), id, Collections.singletonMap(Publication.DOCUMENTS, documents));
 			} catch (final DocumentMissingException e) {
 				log.error("could not update post with " + id, e);
 			}
@@ -136,16 +137,11 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 	}
 
 	private void updateIndexForPersonWithId(String indexName, LRUMap updatedInterhashes, final String personId) {
-		final SearchRequestBuilder searchRequestBuilder = this.prepareSearch(indexName);
-		searchRequestBuilder.setTypes(this.tools.getResourceTypeAsString());
-		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
-		searchRequestBuilder.setQuery(QueryBuilders.termQuery(Fields.PERSON_ENTITY_IDS_FIELD_NAME, personId));
-
-		final SearchResponse response = searchRequestBuilder.execute().actionGet();
-
-		if (response != null) {
-			for (final SearchHit hit : response.getHits()) {
-				final Map<String, Object> doc = hit.getSource();
+		final TermQueryBuilder query = QueryBuilders.termQuery(Fields.PERSON_ENTITY_IDS_FIELD_NAME, personId);
+		final SearchHits hits = this.search(query, null, 0, 1000, null, null);
+		if (hits != null) {
+			for (final SearchHit hit : hits.getHits()) {
+				final Map<String, Object> doc = hit.getSourceAsMap();
 				final String interhash = (String) doc.get(Fields.Resource.INTERHASH);
 				if (updatedInterhashes.put(interhash, interhash) == null) {
 					final List<ResourcePersonRelation> newRels = this.inputLogic.getResourcePersonRelationsByPublication(interhash);
@@ -156,26 +152,20 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 	}
 	
 	private void updateIndexWithPersonRelation(String indexName, String interhash, List<ResourcePersonRelation> newRels) {
-		final SearchRequestBuilder searchRequestBuilder = this.prepareSearch(indexName);
-		searchRequestBuilder.setTypes(this.tools.getResourceTypeAsString());
-		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
-		searchRequestBuilder.setQuery(QueryBuilders.termQuery(Fields.Resource.INTERHASH, interhash));
-
-		final SearchResponse response = searchRequestBuilder.execute().actionGet();
-
+		final TermQueryBuilder query = QueryBuilders.termQuery(Fields.Resource.INTERHASH, interhash);
+		final SearchHits hits = this.search(query, null, 0, 1000, null, null);
 		int numUpdatedPosts = 0;
-		if (response != null) {
-			for (final SearchHit hit : response.getHits()) {
-				final Map<String, Object> doc = hit.getSource();
+		if (hits != null) {
+			for (final SearchHit hit : hits.getHits()) {
+				final Map<String, Object> doc = hit.getSourceAsMap();
 				final PublicationConverter publicationConverter = getPublicationConverter();
 				publicationConverter.updateDocumentWithPersonRelation(doc, newRels);
 				this.updatePostDocument(indexName, doc, hit.getId());
 				numUpdatedPosts++;
 			}
 		}
-		if (log.isDebugEnabled()) {
-			log.debug("updating " + this.toString() + " with " + numUpdatedPosts + " posts having interhash = " + interhash);
-		}
+
+		log.debug("updating " + this.toString() + " with " + numUpdatedPosts + " posts having interhash = " + interhash);
 	}
 
 	/**
@@ -188,9 +178,7 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 	
 	private void updatePostDocument(final String indexName, final Map<String, Object> jsonDocument, final String indexIdStr) {
 		try {
-			this.client.prepareUpdate(indexName, this.tools.getResourceTypeAsString(), indexIdStr)
-					.setDoc(jsonDocument)
-					.setRefresh(true).execute().actionGet();
+			this.client.updateDocument(indexName, this.tools.getResourceTypeAsString(), indexIdStr, jsonDocument);
 		} catch (final DocumentMissingException e) {
 			log.error("could not update documents of post " + indexIdStr);
 		}
