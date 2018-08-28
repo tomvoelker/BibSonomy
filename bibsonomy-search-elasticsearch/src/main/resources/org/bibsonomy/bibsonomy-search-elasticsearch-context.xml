@@ -10,12 +10,12 @@
 	<import resource="classpath:org/bibsonomy/bibsonomy-search-context.xml" />
 	
 	<!-- we use a transport client -->
-	<bean id="elasticsearchClient" class="org.bibsonomy.search.es.util.spring.ElasticsearchTransportClientFactoryBean">
+	<bean id="elasticsearchClient" class="org.bibsonomy.search.es.util.spring.ElasticsearchRESTClientFactoryBean">
 		<property name="esAddresses" value="${search.es.address}"/>
 		<property name="esClusterName" value="${search.es.cluster.name}"/>
 	</bean>
 	
-	<bean id="esClient" class="org.bibsonomy.search.es.client.ElasticsearchClient" destroy-method="shutdown">
+	<bean id="esClient" class="org.bibsonomy.search.es.client.ElasticsearchRESTClient" destroy-method="shutdown">
 		<constructor-arg ref="elasticsearchClient" />
 	</bean>
 	

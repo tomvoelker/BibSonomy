@@ -202,4 +202,19 @@ public interface ESClient {
 	 * @return 
 	 */
 	public boolean deleteDocuments(String indexName, String type, Set<String> idsToDelete);
+
+	/**
+	 * checks if the client can connect to the es instance
+	 * @return
+	 */
+	default boolean isValidConnection() {
+		try {
+			this.waitForReadyState();
+			return true;
+		} catch (Exception e) {
+
+		}
+
+		return false;
+	}
 }
