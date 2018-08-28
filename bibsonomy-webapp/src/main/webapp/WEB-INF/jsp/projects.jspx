@@ -42,6 +42,11 @@
 			<h1 class="content-heading"><fmt:message key="navi.projects.all" /></h1>
 
 
+            <!-- todo insert filter here -->
+            <div class="filter">
+                <input class="name-filter" placeholder="Search"/>
+                <input class="type-filter" placeholder="Funded by"/>
+            </div>
 			<!--+
 				| show alphabet for direct links to groups
 				-->
@@ -59,47 +64,36 @@
 			<div id="projects">
 				<dl class="dl-horizontal dt-thumbnail-items group-list">
 				<c:forEach var="project" items="${command.projects}">
-                    <c:set var="firstProjectNameLetter" value="${fn:toLowerCase(fn:substring(project.title, 0, 1))}" />
-					<c:choose>
-						<c:when test="${not fn:contains(letters, firstProjectNameLetter)}">
-							<c:set var="firstProjectNameLetter" value="#" />
-							<c:set var="anchor" value="numbers" />
-						</c:when>
-						<c:otherwise>
-							<c:set var="anchor" value="${firstProjectNameLetter}" />
-						</c:otherwise>
-					</c:choose>
-					<c:if test="${lastChar ne firstProjectNameLetter}">
-						<c:set var="lastChar" value="${firstProjectNameLetter}" />
-						<dt>
-							<c:choose>
-								<c:when test="${not fn:contains(letters, firstProjectNameLetter)}">
-									<h4><a href="#${anchor}" name="${anchor}">${firstProjectNameLetter}</a></h4>
-								</c:when>
-								<c:otherwise>
-										<h4><a href="#${anchor}" name="${firstProjectNameLetter}">${firstProjectNameLetter}</a></h4>
-								</c:otherwise>
-							</c:choose>
-						</dt>
-						<dd>
-							<p><small><a href="#letter-pagination"><span class="fa fa-arrow-up"><!-- keep me --></span><c:out value=" " /><fmt:message key="totop" /></a></small></p>
-						</dd>
-					</c:if>
-                    <dt><project:projectthumbnail project="${project}"/></dt>
-					<dd>
-						<div class="row">
-							<div class="col-md-7">
-								<a href="${relativeUrlGenerator.getProjectUrlByProject(project)}">
-									<c:out value="${project.title}"/>
-                                </a>
-								<br />
-								<c:if test="${not empty project.homepage}">
-									<small><a href="${fn:escapeXml(project.homepage)}">
-                                        <fmt:message key="project.homepage"/></a></small><c:out value=" " />
-								</c:if>
-							</div>
-						</div>
-					</dd>
+                    <c:if test="${true}">
+                        <!-- todo check filter -->
+                        <c:set var="firstProjectNameLetter" value="${fn:toLowerCase(fn:substring(project.title, 0, 1))}" />
+                        <c:choose>
+                            <c:when test="${not fn:contains(letters, firstProjectNameLetter)}">
+                                <c:set var="firstProjectNameLetter" value="#" />
+                                <c:set var="anchor" value="numbers" />
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="anchor" value="${firstProjectNameLetter}" />
+                            </c:otherwise>
+                        </c:choose>
+                        <c:if test="${lastChar ne firstProjectNameLetter}">
+                            <c:set var="lastChar" value="${firstProjectNameLetter}" />
+                            <dt>
+                                <c:choose>
+                                    <c:when test="${not fn:contains(letters, firstProjectNameLetter)}">
+                                        <h4><a href="#${anchor}" name="${anchor}">${firstProjectNameLetter}</a></h4>
+                                    </c:when>
+                                    <c:otherwise>
+                                            <h4><a href="#${anchor}" name="${firstProjectNameLetter}">${firstProjectNameLetter}</a></h4>
+                                    </c:otherwise>
+                                </c:choose>
+                            </dt>
+                            <dd>
+                                <p><small><a href="#letter-pagination"><span class="fa fa-arrow-up"><!-- keep me --></span><c:out value=" " /><fmt:message key="totop" /></a></small></p>
+                            </dd>
+                        </c:if>
+                        <project:listview project="${project}" />
+                    </c:if>
 				</c:forEach>
 				</dl>
 			</div>
