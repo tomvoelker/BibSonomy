@@ -65,7 +65,7 @@ public class PostResourcePersonRelationStrategy extends AbstractCreateStrategy {
 
 		final ResourcePersonRelation resourcePersonRelation = getRenderer().parseResourcePersonRelation(doc);
 		try {
-			this.getLogic().addResourceRelation(resourcePersonRelation);
+			this.getLogic().createResourceRelation(resourcePersonRelation);
 			final Resource resource = resourcePersonRelation.getPost().getResource();
 			return resource.getInterHash() + "-" + resource.getIntraHash();
 		} catch (final ResourcePersonAlreadyAssignedException e) {

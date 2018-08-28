@@ -111,7 +111,7 @@
 								</c:if>
 								<!-- TODO: use url generator -->
 								<small><a href="/cv/group/${fn:escapeXml(group.name)}">CV</a></small>
-								
+
 							</div>
 							<div class="col-md-5 text-right">
 								<group:actions group="${group}" />

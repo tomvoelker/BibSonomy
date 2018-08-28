@@ -48,18 +48,17 @@ public class JabrefLayoutRendererTest {
 
 	@Before
 	public void setUp() throws Exception {
-		renderer = new JabrefLayoutRenderer(new URLGenerator("http://www.bibsonomy.org/"),JabrefLayoutRenderer.LAYOUT_SIMPLEHTML);
+		renderer = new JabrefLayoutRenderer(new URLGenerator("https://www.bibsonomy.org/"),JabrefLayoutRenderer.LAYOUT_SIMPLEHTML);
 	}
 
 	@Test
-	public void testSerializePost() throws Exception {
+	public void testSerializePost() {
 		final StringWriter writer = new StringWriter();
 		final Post<BibTex> post = ModelUtils.generatePost(BibTex.class);
 		final ViewModel model = new ViewModel();
 		renderer.serializePost(writer, post, model);
 		final String result = writer.getBuffer().toString();
 		assertNotNull(result);
-		System.out.println(result);
 	}
 
 }

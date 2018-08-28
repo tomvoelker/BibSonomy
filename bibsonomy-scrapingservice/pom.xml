@@ -41,7 +41,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>3.8.14-SNAPSHOT</version>
+		<version>3.8.15-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>
@@ -80,7 +80,6 @@
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>com.hp.hpl.jena</groupId>
 			<artifactId>jena</artifactId>
@@ -99,7 +98,6 @@
 			<artifactId>log4j</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
 		<!--+
 			|
 			| For testing Pingback

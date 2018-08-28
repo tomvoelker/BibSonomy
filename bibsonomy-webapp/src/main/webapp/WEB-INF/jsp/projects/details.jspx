@@ -41,13 +41,16 @@
 							<c:out value="${project.subTitle}" />
 						</small>
 					</c:if>
-				</div>
+                    <p>
+                        <c:out value="Insert Authors here"/>
+				    </p>
+                </div>
 			</div>
 			<c:if test="${not empty project.description}">
 				<div class="contentContainer row">
 					<div class="col-md-12">
 						<h2><fmt:message key="project.description"/></h2>
-						<c:out value="${command.project.description}"/>
+						<c:out value="${project.description}"/>
 					</div>
 				</div>
 			</c:if>
@@ -57,16 +60,16 @@
 					<h2><fmt:message key="project.information"/></h2>
 					<dl class="dl-horizontal">
 						<c:if test="${not empty project.startDate}">
-							<dt><fmt:message key="project.sidebar.startdate"/></dt>
+							<dt><fmt:message key="project.startdate"/></dt>
 							<dd><fmt:formatDate value="${project.startDate}" pattern="dd.MM.yy" /></dd>
 						</c:if>
 						<c:if test="${not empty project.endDate}">
-							<dt><fmt:message key="project.sidebar.enddate"/></dt>
+							<dt><fmt:message key="project.enddate"/></dt>
 							<dd><fmt:formatDate value="${project.endDate}" pattern="dd.MM.yy" /></dd>
 						</c:if>
 						<c:set var="parentProject" value="${project.parentProject}" />
 						<c:if test="${not empty parentProject}">
-							<dt><fmt:message key="project.sidebar.parentProject"/></dt>
+							<dt><fmt:message key="project.parentProject"/></dt>
 							<dd>
 								<a href="${relativeUrlGenerator.getProjectUrlByProject(parentProject)}">
 									<c:out value="${parentProject.title}" />
@@ -74,8 +77,8 @@
 							</dd>
 						</c:if>
 						<c:if test="${not empty project.subProjects}">
-							<dt><fmt:message key="project.sidebar.subProjects"/></dt>
-							<c:forEach var='subproject' items="${command.project.subProjects}">
+							<dt><fmt:message key="project.subProjects"/></dt>
+							<c:forEach var='subproject' items="${project.subProjects}">
 								<c:set var="projectLink" value="${relativeUrlGenerator.getProjectUrlByProject(subproject)}" />
 								<dd>
 									<a href="${projectLink}">
@@ -84,14 +87,20 @@
 								</dd>
 							</c:forEach>
 						</c:if>
-						<c:if test="${not empty project.homepage}">
-							<dt><fmt:message key="project.sidebar.homepage"/></dt>
-							<dd><c:out value="${command.project.homepage}" /></dd>
+                        <c:if test="${not empty project.homepage}">
+                            <dt><fmt:message key="project.homepage"/></dt>
+                            <dd><a href="${project.homepage}">
+                                <c:out value="${project.title}"/>
+                            </a></dd>
+                        </c:if>
+                        <c:if test="${not empty project.budget}">
+							<dt><fmt:message key="project.budget"/></dt>
+							<dd><c:out value="${project.budget}" /> €</dd>
 						</c:if>
-						<c:if test="${not empty command.project.budget}">
-							<dt><fmt:message key="project.sidebar.budget"/></dt>
-							<dd><c:out value="${command.project.budget}" /> €</dd>
-						</c:if>
+                        <c:if test="${not empty project.type}">
+                            <dt><fmt:message key="project.type"/></dt>
+                            <dd><c:out value="${project.type}"/></dd>
+                        </c:if>
 					</dl>
 				</div>
 			</div>

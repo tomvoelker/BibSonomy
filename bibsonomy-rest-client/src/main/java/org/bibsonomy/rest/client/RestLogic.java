@@ -61,6 +61,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationData;
@@ -534,12 +535,13 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public String createOrUpdatePerson(Person person) {
-		return execute(new CreatePersonQuery(person));
+	public void createResourceRelation(ResourcePersonRelation resourcePersonRelation)
+			throws ResourcePersonAlreadyAssignedException {
+		execute(new CreateResourcePersonRelationQuery(resourcePersonRelation));
 	}
 
 	@Override
-	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) {
-		execute(new CreateResourcePersonRelationQuery(resourcePersonRelation));
+	public String createPerson(Person person) {
+		return this.execute(new CreatePersonQuery(person));
 	}
 }
