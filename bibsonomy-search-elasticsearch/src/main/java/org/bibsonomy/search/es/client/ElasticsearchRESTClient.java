@@ -91,7 +91,7 @@ public class ElasticsearchRESTClient implements ESClient {
 	private <R> R secureCall(final RESTCall<R> call, R defaultValue, String message) {
 		try {
 			return call.call();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			LOG.error(message, e);
 		}
 
@@ -312,6 +312,17 @@ public class ElasticsearchRESTClient implements ESClient {
 			final BulkResponse bulkResponse = this.client.bulk(bulkRequest, this.buildRequestOptions());
 			return !bulkResponse.hasFailures();
 		}, false, "error deleting documents from index");
+	}
+
+	@Override
+	public boolean isValidConnection() {
+		try {
+			return this.client.ping(this.buildRequestOptions());
+		} catch (final Exception e) {
+			LOG.error("disabling index", e);
+		}
+
+		return false;
 	}
 
 	@Override

@@ -207,14 +207,5 @@ public interface ESClient {
 	 * checks if the client can connect to the es instance
 	 * @return
 	 */
-	default boolean isValidConnection() {
-		try {
-			this.waitForReadyState();
-			return true;
-		} catch (Exception e) {
-
-		}
-
-		return false;
-	}
+	public boolean isValidConnection();
 }
