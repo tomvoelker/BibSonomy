@@ -26,12 +26,10 @@
  */
 package org.bibsonomy.rest.strategy;
 
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
 import org.bibsonomy.rest.strategy.projects.GetProjectStrategy;
-import org.bibsonomy.rest.strategy.projects.PostProjectRelationStrategy;
 import org.bibsonomy.rest.strategy.projects.PostProjectStrategy;
 import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
 
@@ -44,8 +42,6 @@ public class ProjectsHandler implements ContextHandler {
     @Override
     public Strategy createStrategy(Context context, URLDecodingPathTokenizer urlTokens, HttpMethod httpMethod) {
         final int numTokensLeft = urlTokens.countRemainingTokens();
-        final String projectId;
-        final String req;
 
         switch (numTokensLeft) {
             // /projects
@@ -54,24 +50,8 @@ public class ProjectsHandler implements ContextHandler {
             // /projects/[projectID]
             case 1:
                 return createProjectStrategy(context, httpMethod, urlTokens.next());
-            // /projects/[personID]/relation
-            case 2:
-                projectId = urlTokens.next();
-                req = urlTokens.next();
-                if (RESTConfig.RELATION_PARAM.equalsIgnoreCase(req)) {
-                    return createProjectRelationStrategy(context, httpMethod, projectId);
-                }
-                break;
-        }
-        throw new NoSuchResourceException("cannot process url (no strategy available) - please check url syntax");
-    }
-
-    private Strategy createProjectRelationStrategy(Context context, HttpMethod httpMethod, String personId) {
-        switch (httpMethod) {
-            case POST:
-                return new PostProjectRelationStrategy(context,personId);
             default:
-                throw new UnsupportedHttpMethodException(httpMethod, "ProjectRelation");
+                throw new NoSuchResourceException("cannot process url (no strategy available) - please check url syntax");
         }
     }
 

@@ -168,6 +168,14 @@ public interface Renderer {
 	public void serializeProjectId(Writer writer, String projectId);
 
 	/**
+	 * Serializes a cris link id
+	 *
+	 * @param writer   the {@link Writer} to use.
+	 * @param linkId the personId to send
+	 */
+	public void serializeCRISLinkId(Writer writer, String linkId);
+
+	/**
 	 * Serializes a resource person relation id
 	 *
 	 * @param writer     the {@link Writer} to use.
@@ -444,6 +452,17 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public Project parseProject(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads one {@link Person} from a {@link Reader}.
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return one {@link CRISLink} object.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public CRISLink parseCRISLink(Reader reader) throws BadRequestOrResponseException;
 
 	/**
 	 * Reads one {@link ResourcePersonRelation} from a {@link Reader}.
