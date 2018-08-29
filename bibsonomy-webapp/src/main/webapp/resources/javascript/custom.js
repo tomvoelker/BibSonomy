@@ -191,6 +191,21 @@ $(function() {
 		}
 	});
 
+    $('input.searcher').each(function() {
+        var filter = $(this.input).toLowerCase();
+        var dd = document.getElementById("searchproject");
+        var items = dd.getElementsByTagName("dd");
+        for (var i = 0; i < items.length; i++) {
+            var innerdiv = items[i].getElementsByTagName("div")[0].getElementsByTagName("div")[0];
+            var name = innerdiv.getElementsByClass("name")[0]
+            if (name.innerHTML.toLowerCase().indexof(filter) > -1) {
+                items[i].style.display = "";
+            } else {
+                items[i].style.display = "none";
+            }
+        }
+    });
+
 	/**
 	 * SYSTEM TAGS HANDLING
 	 */

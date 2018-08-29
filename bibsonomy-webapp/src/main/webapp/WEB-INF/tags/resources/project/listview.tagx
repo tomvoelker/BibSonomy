@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+
+    <jsp:directive.attribute name="project" type="org.bibsonomy.model.cris.Project" required="true"/>
+
+    <dt></dt>
+    <dd>
+        <div class="row">
+            <div class="col-md-7">
+                <span class="name">
+                    <a href="${relativeUrlGenerator.getProjectUrlByProject(project)}">
+                        <c:out value="${project.title}"/>
+                    </a>
+                </span>
+                <br />
+                <c:if test="${not empty project.type}">
+                    <small class="type">
+                        <c:out value="${project.type}"/>
+                    </small><c:out value=" "/>
+                </c:if>
+                <c:if test="${not empty project.budget}">
+                    <small class="budget">
+                        <c:out value="${project.budget}"/>
+                    </small><c:out value=" "/>
+                </c:if>
+            </div>
+        </div>
+    </dd>
+</jsp:root>

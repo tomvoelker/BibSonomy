@@ -43,15 +43,34 @@
 
 
             <!-- todo insert filter here -->
-            <div class="filter">
-                <input class="name-filter" placeholder="Search"/>
-                <input class="type-filter" placeholder="Funded by"/>
+            <div class="text-right">
+                <input id="searcher" placeholder="Search Projects..."/>
             </div>
 			<!--+
 				| show alphabet for direct links to groups
 				-->
+            <div class="text-info">
+                <dl class="group-list">
+                    <dt>
+                        <fmt:message key="project.amountprojects"/>
+                    </dt>
+                    <dd>
+                        <c:out value="${command.projects.size()}"/>
+                    </dd>
+                    <dt>
+                        <fmt:message key="project.totalbudget"/>
+                    </dt>
+                    <dd>
+                        <c:set var="totalbudget" value="${0}"/>
+                        <c:forEach var="projects" items="${command.projects}">
+                            <c:set var="totalbudget" value="${totalbudget + projects.budget}"/>
+                        </c:forEach>
+                        <c:out value="${totalbudget}"/>
+                    </dd>
+                </dl>
+            </div>
 			<c:set var="letters" value="abcdefghijklmnopqrstuvwxyz" />
-			<div id="linkedAlphabet">
+            <div id="linkedAlphabet">
 				<ul class="pagination pagination-sm" id="letter-pagination">
 					<li><a href="#numbers">#</a></li>
 				<c:forEach var="i" begin="0" end="${fn:length(letters) - 1}" step="1">
@@ -62,7 +81,7 @@
 			</div>
 			<c:set var="lastChar" value=""/>
 			<div id="projects">
-				<dl class="dl-horizontal dt-thumbnail-items group-list">
+				<dl class="dl-horizontal group-list" id="searchproject">
 				<c:forEach var="project" items="${command.projects}">
                     <c:if test="${true}">
                         <!-- todo check filter -->
