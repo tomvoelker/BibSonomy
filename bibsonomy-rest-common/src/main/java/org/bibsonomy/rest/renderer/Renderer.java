@@ -140,6 +140,18 @@ public interface Renderer {
 	public void serializeProject(Writer writer, Project project, ViewModel viewModel);
 
 	/**
+	 * Serializes one {@link Person}.
+	 *
+	 * @param writer
+	 *            a {@link Writer} to use.
+	 * @param crisLink
+	 *            one {@link CRISLink} object.
+	 * @param viewModel
+	 *            the {@link ViewModel} encapsulates additional information,
+	 */
+	public void serializeCRISLink(Writer writer, CRISLink crisLink, ViewModel viewModel);
+
+	/**
 	 * Serializes one {@link ResourcePersonRelation}.
 	 *
 	 * @param writer

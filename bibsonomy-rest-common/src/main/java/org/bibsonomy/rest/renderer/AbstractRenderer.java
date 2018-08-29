@@ -72,24 +72,46 @@ import static org.bibsonomy.util.ValidationUtils.present;
 public abstract class AbstractRenderer implements Renderer {
 	private static final Log log = LogFactory.getLog(AbstractRenderer.class);
 
-	private static final HashMap<String, Function<LinkableType, Linkable>> MAPPERS = new HashMap<>();
+	private static final HashMap<String, Function<LinkableType, Linkable>> TO_LINKABLE_MAPPERS = new HashMap<>();
 
 	static {
-		MAPPERS.put(ProjectType.class.getName(), l -> {
+		TO_LINKABLE_MAPPERS.put(ProjectType.class.getName(), l -> {
 			final Project project = new Project();
 			project.setExternalId(((ProjectType) l).getExternalId());
 			return project;
 		});
-		MAPPERS.put(PersonType.class.getName(), l -> {
+		TO_LINKABLE_MAPPERS.put(PersonType.class.getName(), l -> {
 			final Person person = new Person();
 			person.setPersonId(((PersonType) l).getPersonId());
 			return person;
 		});
-		MAPPERS.put(PostType.class.getName(), l -> {
+		TO_LINKABLE_MAPPERS.put(PostType.class.getName(), l -> {
 			final Post<? extends Resource> post = new Post<>();
 			final BibTex resource = new ResourceFactory().createPublication();
 			resource.setInterHash(((PostType)l).getBibtex().getInterhash());
 			return post;
+		});
+	}
+
+	private static final HashMap<String, Function<Linkable, LinkableType>> TO_LINKABLE_TYPE_MAPPERS = new HashMap<>();
+
+	static {
+		TO_LINKABLE_TYPE_MAPPERS.put(Project.class.getName(), l -> {
+			final ProjectType projectType = new ProjectType();
+			projectType.setExternalId(((Project) l).getExternalId());
+			return projectType;
+		});
+		TO_LINKABLE_TYPE_MAPPERS.put(Person.class.getName(), l -> {
+			final PersonType personType = new PersonType();
+			personType.setPersonId(((Person) l).getPersonId());
+			return personType;
+		});
+		TO_LINKABLE_TYPE_MAPPERS.put(Post.class.getName(), l -> {
+			final PostType postType = new PostType();
+			final BibtexType bibtexType = new BibtexType();
+			bibtexType.setInterhash(((Post<? extends Resource>) l).getResource().getInterHash());
+			postType.setBibtex(bibtexType);
+			return postType;
 		});
 	}
 	
@@ -460,6 +482,37 @@ public abstract class AbstractRenderer implements Renderer {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(statType);
 		return xmlDoc;
+	}
+
+	@Override
+	public void serializeCRISLink(Writer writer, CRISLink crisLink, ViewModel viewModel) {
+		final BibsonomyXML xmlDoc = getDummyBibsonomyXMLWithOK();
+		xmlDoc.setCrisLink(createXmlCRISLink(crisLink));
+		serialize(writer, xmlDoc);
+	}
+
+	private CRISLinkTypeType createXmlCRISLink(CRISLink crisLink) {
+		final CRISLinkTypeType crisLinkTypeType = new CRISLinkTypeType();
+		if (present(crisLink.getStartDate())) {
+			crisLinkTypeType.setStartDate(createXmlCalendar(crisLink.getStartDate()));
+		}
+		if (present(crisLink.getEndDate())) {
+			crisLinkTypeType.setEndDate(createXmlCalendar(crisLink.getEndDate()));
+		}
+		if (present(crisLink.getLinkType())) {
+			crisLinkTypeType.setLinkType(ProjectPersonLinkTypeType.
+					valueOf(((ProjectPersonLinkType)crisLink.getLinkType()).name()));
+		}
+		if (present(crisLink.getDataSource())) {
+			crisLinkTypeType.setDataSource(CRISLinkDataSourceType.valueOf(crisLink.getDataSource().name()));
+		}
+		crisLinkTypeType.setSource(createXmlLinkable(crisLink.getSource()));
+		crisLinkTypeType.setTarget(createXmlLinkable(crisLink.getTarget()));
+		return crisLinkTypeType;
+	}
+
+	private LinkableType createXmlLinkable(Linkable linkable) {
+		return TO_LINKABLE_TYPE_MAPPERS.getOrDefault(linkable.getClass().getName(), null).apply(linkable);
 	}
 
 	@Override
@@ -877,25 +930,33 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private CRISLink createCRISLink(CRISLinkTypeType crisLinkType) {
 		final CRISLink crisLink = new CRISLink();
-		crisLink.setEndDate(createDate(crisLinkType.getEndDate()));
-		crisLink.setStartDate(createDate(crisLinkType.getStartDate()));
-		crisLink.setDataSource(createCRISLinkDataSource(crisLinkType.getDataSource()));
+		if (present(crisLinkType.getEndDate())) {
+			crisLink.setEndDate(createDate(crisLinkType.getEndDate()));
+		}
+		if (present(crisLinkType.getStartDate())) {
+			crisLink.setStartDate(createDate(crisLinkType.getStartDate()));
+		}
+		if (present(crisLinkType.getDataSource())) {
+			crisLink.setDataSource(createCRISLinkDataSource(crisLinkType.getDataSource()));
+		}
+		if (present(crisLinkType.getLinkType())) {
+			crisLink.setLinkType(createCRISLinkType(crisLinkType.getLinkType()));
+		}
 		crisLink.setSource(createCRISLinkable(crisLinkType.getSource()));
 		crisLink.setTarget(createCRISLinkable(crisLinkType.getTarget()));
-		crisLink.setLinkType(createCRISLinkType(crisLinkType.getLinkType()));
 		return crisLink;
 	}
 
 	private CRISLinkType createCRISLinkType(ProjectPersonLinkTypeType projectPersonLinkTypeType) {
-		return ProjectPersonLinkType.valueOf(projectPersonLinkTypeType.name().toUpperCase());
+		return ProjectPersonLinkType.valueOf(projectPersonLinkTypeType.name());
 	}
 
 	private Linkable createCRISLinkable(LinkableType linkableType) {
-		return MAPPERS.getOrDefault(linkableType.getClass().getName(), l -> null).apply(linkableType);
+		return TO_LINKABLE_MAPPERS.getOrDefault(linkableType.getClass().getName(), l -> null).apply(linkableType);
 	}
 
 	private CRISLinkDataSource createCRISLinkDataSource(CRISLinkDataSourceType crisLinkTypeDataSource) {
-		return CRISLinkDataSource.valueOf(crisLinkTypeDataSource.value().toUpperCase());
+		return CRISLinkDataSource.valueOf(crisLinkTypeDataSource.name());
 	}
 
 	@Override

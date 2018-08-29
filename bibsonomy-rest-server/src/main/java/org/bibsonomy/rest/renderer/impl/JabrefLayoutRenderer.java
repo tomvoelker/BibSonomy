@@ -47,6 +47,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
@@ -168,12 +169,22 @@ public class JabrefLayoutRenderer implements Renderer {
 	}
 
 	@Override
+	public CRISLink parseCRISLink(Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public void serializePerson(Writer writer, Person person, ViewModel viewModel) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void serializeProject(Writer writer, Project project, ViewModel viewModel) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializeCRISLink(Writer writer, CRISLink crisLink, ViewModel viewModel) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -189,6 +200,11 @@ public class JabrefLayoutRenderer implements Renderer {
 
 	@Override
 	public void serializeProjectId(Writer writer, String projectId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializeCRISLinkId(Writer writer, String linkId) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -59,6 +59,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
@@ -531,5 +532,10 @@ public class RestLogic extends AbstractLogicInterface {
 	@Override
 	public JobResult createProject(Project project) {
 		return execute(new CreateProjectQuery(project));
+	}
+
+	@Override
+	public JobResult createCRISLink(CRISLink link) {
+		return execute(new CreateCRISLinkQuery(link));
 	}
 }
