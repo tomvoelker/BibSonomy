@@ -527,7 +527,9 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	 */
 	protected void updateIndex(final String indexName) {
 		final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.tools.getSystemURI());
-		final SearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, indexName);
+
+		final String realIndexName = this.client.getIndexNameForAlias(indexName);
+		final SearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, realIndexName);
 		final SearchIndexSyncState targetState = this.inputLogic.getDbState();
 		
 		final int oldLastTasId = oldState.getLast_tas_id().intValue();
@@ -596,12 +598,12 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 			newState.setLast_tas_id(Integer.valueOf(newLastTasId));
 			newState.setLastPersonChangeId(targetState.getLastPersonChangeId());
 			newState.setLastDocumentDate(targetState.getLastDocumentDate());
-			this.updateIndexState(indexName, newState);
+			this.updateIndexState(realIndexName, newState);
 		} catch (final RuntimeException e) {
-			this.updateIndexState(indexName, oldState);
+			this.updateIndexState(realIndexName, oldState);
 			throw e;
 		} catch (final Exception e) {
-			this.updateIndexState(indexName, oldState);
+			this.updateIndexState(realIndexName, oldState);
 			throw new RuntimeException(e);
 		}
 		

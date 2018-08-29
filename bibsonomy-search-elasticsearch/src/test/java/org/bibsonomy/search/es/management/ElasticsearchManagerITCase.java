@@ -71,7 +71,7 @@ public class ElasticsearchManagerITCase extends AbstractEsIndexTest {
 		final String userToFlag = "testuser3";
 		final ResultList<Post<BibTex>> postsBefore = publicationSearch.getPosts(userToFlag, userToFlag, null, null, Collections.<String>emptyList(), null, "test", null, null, null, null, null, null, null, null, Order.ADDED, 10, 0);
 		assertEquals(1, postsBefore.size());
-		
+
 		final User user = new User(userToFlag);
 		user.setSpammer(Boolean.TRUE);
 		user.setAlgorithm("unittest");

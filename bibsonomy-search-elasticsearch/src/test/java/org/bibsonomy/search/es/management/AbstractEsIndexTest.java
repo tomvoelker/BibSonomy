@@ -32,6 +32,10 @@ import java.util.Map;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.springframework.beans.factory.BeanFactory;
@@ -46,10 +50,14 @@ public abstract class AbstractEsIndexTest extends AbstractDatabaseManagerTest {
 	
 	/**
 	 * generates the indices
-	 * @throws InterruptedException
+	 * @throws Exception
 	 */
 	@Before
-	public void createIndices() throws InterruptedException {
+	public void createIndices() throws Exception {
+		final RestHighLevelClient client = EsSpringContextWrapper.getContext().getBean(RestHighLevelClient.class);
+
+		client.indices().delete(new DeleteIndexRequest("_all"), RequestOptions.DEFAULT);
+
 		final Map<Class<? extends Resource>, ElasticsearchManager<? extends Resource>> managers = getAllManagers();
 		for (ElasticsearchManager<? extends Resource> manager : managers.values()) {
 			manager.regenerateAllIndices();

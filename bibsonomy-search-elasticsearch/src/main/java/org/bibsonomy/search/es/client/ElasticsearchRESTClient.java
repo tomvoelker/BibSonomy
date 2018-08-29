@@ -31,6 +31,7 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchScrollRequest;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.GetAliasesResponse;
@@ -59,6 +60,7 @@ import java.util.stream.Stream;
 
 /**
  * implementation of {@link ESClient} using the REST client of Elasticsearch
+ *
  * @author dzo
  */
 public class ElasticsearchRESTClient implements ESClient {
@@ -85,7 +87,7 @@ public class ElasticsearchRESTClient implements ESClient {
 			healthRequest.waitForYellowStatus();
 			this.client.cluster().health(healthRequest, this.buildRequestOptions());
 			return null;
-		} , null, "error while calling health api");
+		}, null, "error while calling health api");
 	}
 
 	private RequestOptions buildRequestOptions() {
@@ -109,13 +111,7 @@ public class ElasticsearchRESTClient implements ESClient {
 			getAliasesRequest.aliases(alias);
 			final GetAliasesResponse response = this.client.indices().getAlias(getAliasesRequest, this.buildRequestOptions());
 			final Map<String, Set<AliasMetaData>> aliases = response.getAliases();
-
-			final Set<AliasMetaData> aliasMetaData = aliases.get(alias);
-			if (!present(aliasMetaData)) {
-				return new LinkedList<>();
-			}
-			final Stream<String> indexNames = aliasMetaData.stream().map((metaData) -> metaData.indexRouting());
-			return indexNames.collect(Collectors.toList());
+			return new LinkedList<>(aliases.keySet());
 		}, new LinkedList<>(), "error getting index names for alias " + alias);
 	}
 
@@ -164,6 +160,7 @@ public class ElasticsearchRESTClient implements ESClient {
 		return this.secureCall(() -> {
 			final GetRequest getRequest = new GetRequest();
 			getRequest.id(syncStateForIndexName);
+			getRequest.index(indexName);
 			final GetResponse response = this.client.get(getRequest, this.buildRequestOptions());
 			if (!response.isExists()) {
 				throw new IllegalStateException("no index sync state found for " + indexName);
@@ -283,38 +280,55 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public void deleteDocuments(String indexName, String type, QueryBuilder query) {
+	public void deleteDocuments(final String indexName, final String type, final QueryBuilder query) {
 		this.secureCall(() -> {
 			final SearchRequest searchRequest = new SearchRequest(indexName);
-			SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+			final SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 			searchSourceBuilder.query(query);
 			searchSourceBuilder.size(200);
+			searchRequest.types(type);
 			searchRequest.source(searchSourceBuilder);
 			searchRequest.scroll(TimeValue.timeValueMinutes(3L));
-			final SearchResponse searchResponse = this.client.search(searchRequest, RequestOptions.DEFAULT);
+
+			// create the scroll search and get the first results
+			final SearchResponse searchResponse = this.client.search(searchRequest, this.buildRequestOptions());
 			final String scrollId = searchResponse.getScrollId();
+			final SearchHits firstHits = searchResponse.getHits();
+			if (firstHits.getTotalHits() > 0) {
+				this.bulkDeleteHits(indexName, type, firstHits.getHits());
+			}
 
 			final SearchScrollRequest searchScrollRequest = new SearchScrollRequest(scrollId);
+			searchScrollRequest.scroll(TimeValue.timeValueMinutes(3L));
 
 			while (true) {
 				final SearchResponse scrollResponse = this.client.scroll(searchScrollRequest, this.buildRequestOptions());
-				final BulkRequest bulkRequest = new BulkRequest();
+
 				final SearchHit[] hits = scrollResponse.getHits().getHits();
 				if (hits.length == 0) {
 					break;
 				}
-				final Stream<DeleteRequest> deleteRequestsStream = Arrays.stream(hits).map(hit -> new DeleteRequest(indexName).type(type).id(hit.getId()));
-				deleteRequestsStream.forEach(bulkRequest::add);
-
-				this.client.bulk(bulkRequest, this.buildRequestOptions());
+				this.bulkDeleteHits(indexName, type, hits);
 			}
 
 			final ClearScrollRequest request = new ClearScrollRequest();
 			request.addScrollId(scrollId);
 			this.client.clearScroll(request, this.buildRequestOptions());
-
 			return null;
 		}, null, "error deleting documents form index " + indexName);
+	}
+
+	private void bulkDeleteHits(String indexName, String type, SearchHit[] hits) throws IOException {
+		final BulkRequest bulkRequest = new BulkRequest();
+		bulkRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
+		final Stream<DeleteRequest> deleteRequestsStream = Arrays.stream(hits).map(hit -> new DeleteRequest(indexName).type(type).id(hit.getId()));
+
+		deleteRequestsStream.forEach(bulkRequest::add);
+		final BulkResponse bulkResponse = this.client.bulk(bulkRequest, this.buildRequestOptions());
+
+		if (bulkResponse.hasFailures()) {
+			LOG.error(bulkResponse.buildFailureMessage());
+		}
 	}
 
 	@Override
