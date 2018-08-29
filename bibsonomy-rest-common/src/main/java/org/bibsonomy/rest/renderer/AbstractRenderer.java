@@ -26,41 +26,11 @@
  */
 package org.bibsonomy.rest.renderer;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.io.Reader;
-import java.io.Writer;
-import java.math.BigInteger;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.*;
-import java.util.function.Function;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Document;
-import org.bibsonomy.model.GoldStandard;
-import org.bibsonomy.model.GoldStandardPublication;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.GroupMembership;
-import org.bibsonomy.model.ImportResource;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.cris.*;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
@@ -81,13 +51,29 @@ import org.bibsonomy.rest.renderer.xml.*;
 import org.bibsonomy.rest.validation.StandardXMLModelValidator;
 import org.bibsonomy.rest.validation.XMLModelValidator;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.Reader;
+import java.io.Writer;
+import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.*;
+import java.util.function.Function;
+
+import static org.bibsonomy.util.ValidationUtils.present;
+
 /**
  * @author dzo
  */
 public abstract class AbstractRenderer implements Renderer {
 	private static final Log log = LogFactory.getLog(AbstractRenderer.class);
 
-	private static final HashMap<String,Function<LinkableType, Linkable>> MAPPERS = new HashMap<>();
+	private static final HashMap<String, Function<LinkableType, Linkable>> MAPPERS = new HashMap<>();
+
 	static {
 		MAPPERS.put(ProjectType.class.getName(), l -> {
 			final Project project = new Project();
@@ -96,10 +82,10 @@ public abstract class AbstractRenderer implements Renderer {
 		});
 		MAPPERS.put(PersonType.class.getName(), l -> {
 			final Person person = new Person();
-			person.setPersonId(((PersonType)l).getPersonId());
+			person.setPersonId(((PersonType) l).getPersonId());
 			return person;
 		});
-		MAPPERS.put(PostType.class.getName(), l-> {
+		MAPPERS.put(PostType.class.getName(), l -> {
 			final Post<? extends Resource> post = new Post<>();
 			//TODO how to set resource->intraHash?
 			return post;
