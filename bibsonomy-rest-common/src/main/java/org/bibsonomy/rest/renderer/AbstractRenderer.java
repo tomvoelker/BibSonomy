@@ -87,7 +87,8 @@ public abstract class AbstractRenderer implements Renderer {
 		});
 		MAPPERS.put(PostType.class.getName(), l -> {
 			final Post<? extends Resource> post = new Post<>();
-			//TODO how to set resource->intraHash?
+			final BibTex resource = new ResourceFactory().createPublication();
+			resource.setInterHash(((PostType)l).getBibtex().getInterhash());
 			return post;
 		});
 	}
@@ -423,7 +424,7 @@ public abstract class AbstractRenderer implements Renderer {
 			xmlUser.setPrediction(BigInteger.valueOf(user.getPrediction()));
 		}
 		if (user.getConfidence() != null) {
-			xmlUser.setConfidence(Double.valueOf(user.getConfidence()));
+			xmlUser.setConfidence(user.getConfidence());
 		}
 		xmlUser.setAlgorithm(user.getAlgorithm());
 		xmlUser.setClassifierMode(user.getMode());
@@ -741,7 +742,9 @@ public abstract class AbstractRenderer implements Renderer {
 
 	@Override
 	public void serializeResourcePersonRelationId(Writer writer, String resourceId) {
-		//TODO ???
+		final BibsonomyXML xmlDoc = getDummyBibsonomyXMLWithOK();
+		xmlDoc.setResourcePersonRelationId(resourceId);
+		serialize(writer, xmlDoc);
 	}
 
 	@Override

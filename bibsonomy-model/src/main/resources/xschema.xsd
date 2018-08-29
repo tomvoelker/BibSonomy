@@ -64,6 +64,7 @@
 				<xsd:element name="personid" type="xsd:string" />
 				<xsd:element name="projectid" type="xsd:string" />
 				<xsd:element name="crislinkid" type="xsd:string" />
+				<xsd:element name="resourcePersonRelationId" type="xsd:string" />
 				<!-- uri to return (i.e. on uploading documents) -->
 				<xsd:element name="uri" type="xsd:anyURI" />
 				<!-- gold standard references -->
