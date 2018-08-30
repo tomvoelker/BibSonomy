@@ -44,9 +44,6 @@
 		<jsp:attribute name="content">
 
 			<h1 class="content-heading"><fmt:message key="navi.projects.all" /></h1>
-
-
-            <!-- todo insert filter here -->
             <div class="text-right">
                 <input id="search-project-input" placeholder="Search Projects..." onkeyup="displaySearch()"/>
             </div>
@@ -68,52 +65,14 @@
                         <c:out value="0"/>
                     </dd>
                 </dl>
+                <hr/>
             </div>
-			<c:set var="letters" value="abcdefghijklmnopqrstuvwxyz" />
-            <div id="linkedAlphabet">
-				<ul class="pagination pagination-sm" id="letter-pagination">
-					<li><a href="#numbers">#</a></li>
-				<c:forEach var="i" begin="0" end="${fn:length(letters) - 1}" step="1">
-					<c:set var="letter" value="${fn:substring(letters, i, i + 1)}" />
-					<li><a href="#${letter}"><c:out value="${fn:toUpperCase(letter)}"/></a></li>
-				</c:forEach>
-				</ul>
-			</div>
-			<c:set var="lastChar" value=""/>
-			<div id="projects">
-				<dl class="dl-horizontal group-list" id="all-projects">
+            <div id="projects">
+				<ul class="list-group" id="all-projects">
                     <c:forEach var="project" items="${command.projects}">
-                        <!-- todo check filter -->
-                        <c:set var="firstProjectNameLetter" value="${fn:toLowerCase(fn:substring(project.title, 0, 1))}" />
-                        <c:choose>
-                            <c:when test="${not fn:contains(letters, firstProjectNameLetter)}">
-                                <c:set var="firstProjectNameLetter" value="#" />
-                                <c:set var="anchor" value="numbers" />
-                            </c:when>
-                            <c:otherwise>
-                                <c:set var="anchor" value="${firstProjectNameLetter}" />
-                            </c:otherwise>
-                        </c:choose>
-                        <c:if test="${lastChar ne firstProjectNameLetter}">
-                            <c:set var="lastChar" value="${firstProjectNameLetter}" />
-                            <dt>
-                                <c:choose>
-                                    <c:when test="${not fn:contains(letters, firstProjectNameLetter)}">
-                                        <h4><a href="#${anchor}" name="${anchor}">${firstProjectNameLetter}</a></h4>
-                                    </c:when>
-                                    <c:otherwise>
-                                            <h4><a href="#${anchor}" name="${firstProjectNameLetter}">${firstProjectNameLetter}</a></h4>
-                                    </c:otherwise>
-                                </c:choose>
-                            </dt>
-                            <!-- fixme do not show letter if no project available -->
-                            <dd>
-                                <p><small><a href="#letter-pagination"><span class="fa fa-arrow-up"><!-- keep me --></span><c:out value=" " /><fmt:message key="totop" /></a></small></p>
-                            </dd>
-                        </c:if>
                         <project:listview project="${project}" />
                     </c:forEach>
-				</dl>
+				</ul>
 			</div>
 		</jsp:attribute>
 	</layout:paneLayout>
