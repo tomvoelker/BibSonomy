@@ -44,8 +44,18 @@
 		<jsp:attribute name="content">
 
 			<h1 class="content-heading"><fmt:message key="navi.projects.all" /></h1>
-            <div class="text-right">
-                <input id="search-project-input" placeholder="Search Projects..." onkeyup="displaySearch()"/>
+            <div class="text-right btn-toolbar">
+                <button class="btn btn-primary btn-sm" id="sort-start-date" onclick="sortList('start-date')">
+                    <fmt:message key="project.sort.startdate"/>
+                </button>
+                <button class="btn btn-primary btn-sm" id="sort-end-date" onclick="sortList('end-date')">
+                    <fmt:message key="project.sort.enddate"/>
+                </button>
+                <button class="btn btn-primary btn-sm" id="sort-type" onclick="sortList('type')">
+                    <fmt:message key="project.sort.type"/>
+                </button>
+                <!-- fixme use fmt:message key="project.search" for placeholder -->
+                <input id="search-project-input" placeholder="Search projects ..." onkeyup="displaySearch()"/>
             </div>
 			<!--+
 				| show alphabet for direct links to groups

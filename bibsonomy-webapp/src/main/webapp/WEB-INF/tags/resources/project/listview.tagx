@@ -14,17 +14,6 @@
             </a>
         </span>
         <br />
-        <c:if test="${not empty project.startDate}">
-            <small class="start-date">
-                <fmt:formatDate value="${project.startDate}" pattern="dd.MM.yy" />
-            </small><c:out value="->"/>
-        </c:if>
-        <c:if test="${not empty project.endDate}">
-            <small class="end-date">
-                <fmt:formatDate value="${project.endDate}" pattern="dd.MM.yy" />
-            </small>
-        </c:if>
-        <br />
         <c:if test="${not empty project.subTitle}">
             <small class="sub-title">
                 <c:out value="${project.subTitle}"/>
@@ -33,6 +22,24 @@
         <c:if test="${not empty project.budget}">
             <small class="budget">
                 <fmt:formatNumber value="${project.budget}" pattern="#,##0.00"/> €
+            </small>
+        </c:if>
+        <c:if test="${not empty project.type}">
+            <small class="budget">
+                <fmt:message key="project.type"/>
+                <c:out value=": "/>
+                <c:out value="${project.type}"/>
+            </small>
+        </c:if>
+        <br />
+        <c:if test="${not empty project.startDate}">
+            <small class="start-date">
+                <fmt:formatDate value="${project.startDate}" pattern="dd.MM.yy" />
+            </small><c:out value=" --> "/>
+        </c:if>
+        <c:if test="${not empty project.endDate}">
+            <small class="end-date">
+                <fmt:formatDate value="${project.endDate}" pattern="dd.MM.yy" />
             </small>
         </c:if>
     </li>

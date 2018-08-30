@@ -30,8 +30,7 @@
 
 		<jsp:attribute name="content">
 			<div id="projectContent" class="row">
-				<!-- FIXME: sub title not working; check why -->
-				<div class="page-header">
+                <<div class="page-header">
 					<h1>
 						<c:out value=" "/>
 						<c:out value="${project.title}"/>
