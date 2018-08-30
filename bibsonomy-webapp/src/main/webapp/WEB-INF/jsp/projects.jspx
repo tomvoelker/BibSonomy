@@ -11,15 +11,19 @@
           xmlns:project="urn:jsptagdir:/WEB-INF/tags/resources/project">
 	 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	
-	<fmt:message var="pageTitle" key="navi.search" />
+
+   	<fmt:message var="pageTitle" key="navi.search" />
 	
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 	
 	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.projects" command="${command}" pageTitle="${pageTitle}" activeTab="projects">
-		<!--+
-		 	| heading
-		 	+-->
+		 <jsp:attribute name="headerExt">
+        <script type="text/javascript" src="${resdir}/javascript/projects.js"><!-- keep me --></script>
+        </jsp:attribute>
+
+        <!--+
+                  | heading
+                  +-->
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.projects" formAction="/project/" formInputName="project"/>
 		</jsp:attribute>
@@ -44,7 +48,7 @@
 
             <!-- todo insert filter here -->
             <div class="text-right">
-                <input id="searcher" placeholder="Search Projects..."/>
+                <input id="search-project-input" placeholder="Search Projects..." onkeyup="displaySearch()"/>
             </div>
 			<!--+
 				| show alphabet for direct links to groups
@@ -54,18 +58,14 @@
                     <dt>
                         <fmt:message key="project.amountprojects"/>
                     </dt>
-                    <dd>
-                        <c:out value="${command.projects.size()}"/>
+                    <dd id="amount-projects">
+                        <c:out value="0"/>
                     </dd>
                     <dt>
                         <fmt:message key="project.totalbudget"/>
                     </dt>
-                    <dd>
-                        <c:set var="totalbudget" value="${0}"/>
-                        <c:forEach var="projects" items="${command.projects}">
-                            <c:set var="totalbudget" value="${totalbudget + projects.budget}"/>
-                        </c:forEach>
-                        <c:out value="${totalbudget}"/>
+                    <dd id="total-budget">
+                        <c:out value="0"/>
                     </dd>
                 </dl>
             </div>
@@ -81,9 +81,8 @@
 			</div>
 			<c:set var="lastChar" value=""/>
 			<div id="projects">
-				<dl class="dl-horizontal group-list" id="searchproject">
-				<c:forEach var="project" items="${command.projects}">
-                    <c:if test="${true}">
+				<dl class="dl-horizontal group-list" id="all-projects">
+                    <c:forEach var="project" items="${command.projects}">
                         <!-- todo check filter -->
                         <c:set var="firstProjectNameLetter" value="${fn:toLowerCase(fn:substring(project.title, 0, 1))}" />
                         <c:choose>
@@ -107,13 +106,13 @@
                                     </c:otherwise>
                                 </c:choose>
                             </dt>
+                            <!-- fixme do not show letter if no project available -->
                             <dd>
                                 <p><small><a href="#letter-pagination"><span class="fa fa-arrow-up"><!-- keep me --></span><c:out value=" " /><fmt:message key="totop" /></a></small></p>
                             </dd>
                         </c:if>
                         <project:listview project="${project}" />
-                    </c:if>
-				</c:forEach>
+                    </c:forEach>
 				</dl>
 			</div>
 		</jsp:attribute>

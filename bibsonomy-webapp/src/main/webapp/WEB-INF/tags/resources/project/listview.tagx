@@ -8,7 +8,7 @@
     <jsp:directive.attribute name="project" type="org.bibsonomy.model.cris.Project" required="true"/>
 
     <dt></dt>
-    <dd>
+    <dd class="show-project">
         <div class="row">
             <div class="col-md-7">
                 <span class="name">
