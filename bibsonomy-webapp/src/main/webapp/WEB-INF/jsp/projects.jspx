@@ -45,14 +45,14 @@
 
 			<h1 class="content-heading"><fmt:message key="navi.projects.all" /></h1>
             <div class="text-right btn-toolbar">
+                <button class="btn btn-primary btn-sm" id="sort-title" onclick="sortList('title')">
+                    <fmt:message key="project.sort.title"/>
+                </button>
                 <button class="btn btn-primary btn-sm" id="sort-start-date" onclick="sortList('start-date')">
                     <fmt:message key="project.sort.startdate"/>
                 </button>
                 <button class="btn btn-primary btn-sm" id="sort-end-date" onclick="sortList('end-date')">
                     <fmt:message key="project.sort.enddate"/>
-                </button>
-                <button class="btn btn-primary btn-sm" id="sort-type" onclick="sortList('type')">
-                    <fmt:message key="project.sort.type"/>
                 </button>
                 <!-- fixme use fmt:message key="project.search" for placeholder -->
                 <input id="search-project-input" placeholder="Search projects ..." onkeyup="displaySearch()"/>
@@ -84,6 +84,10 @@
                     </c:forEach>
 				</ul>
 			</div>
+            <nav aria-label="Page navigation example">
+                <p class="info" id="show-amount"/><br/>
+                <ul class="pagination" id="pagin"/>
+            </nav>
 		</jsp:attribute>
 	</layout:paneLayout>
 </jsp:root>

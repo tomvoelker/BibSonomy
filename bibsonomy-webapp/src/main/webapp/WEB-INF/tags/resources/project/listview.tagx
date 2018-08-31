@@ -8,7 +8,7 @@
     <jsp:directive.attribute name="project" type="org.bibsonomy.model.cris.Project" required="true"/>
 
     <li class="show-project list-group-item">
-        <span class="name">
+        <span class="title">
             <a href="${relativeUrlGenerator.getProjectUrlByProject(project)}">
                 <c:out value="${project.title}"/>
             </a>
@@ -24,13 +24,13 @@
                 <fmt:formatNumber value="${project.budget}" pattern="#,##0.00"/> €
             </small>
         </c:if>
-        <c:if test="${not empty project.type}">
-            <small class="budget">
+<!--        <c:if test="${not empty project.type}">
+            <small class="type">
                 <fmt:message key="project.type"/>
                 <c:out value=": "/>
                 <c:out value="${project.type}"/>
             </small>
-        </c:if>
+        </c:if>-->
         <br />
         <c:if test="${not empty project.startDate}">
             <small class="start-date">
