@@ -14,7 +14,7 @@
 		  JOIN user u ON (i.group_name = u.user_name)
 		ORDER BY i.group_name
 	</select>
-	
+
 	<select id="getPendingGroups" resultMap="GroupCommon.group" parameterClass="groupParam">
 		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage
 		FROM pending_groupids i 
@@ -38,16 +38,18 @@
 		</isNotEmpty>
 	</select>
 
-	<select id="getGroupWithMemberships" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date
+	<select id="getGroupWithMemberships" resultMap="GroupCommon.groupWithMembershipsAndReportingsAndParent" parameterClass="string">
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date, <include refid="parentColumns" />
 		FROM groupids i 
 		<!-- LEFT JOIN is necessary because groups are empty at the point of creation. -->
 		  LEFT JOIN group_memberships g USING (`group`) 
-		  LEFT JOIN user u ON (u.user_name = i.group_name) 
-		WHERE group_name = #groupname#
+		  LEFT JOIN user u ON (u.user_name = i.group_name)
+		  LEFT JOIN groupids pt ON (i.parent = pt.group) <!-- join with parent -->
+		WHERE i.group_name = #groupname#
 		  AND i.group > 2
 		ORDER BY g.user_name
 	</select>
+	<!-- post -> tag Beziehung ansehen -->
 
 	<select id="getGroupWithPermissions" resultMap="GroupCommon.groupWithPermissions" parameterClass="string">
 		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, p.permission
@@ -58,14 +60,15 @@
 	</select>
 	
 	<!-- TODO: merge with getGroupWithMembership using a dynamic query -->
-	<select id="getGroupWithMembershipsAndPermissions" resultMap="GroupCommon.groupWithMembershipsAndReportingsAndPermissions" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription,  <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date, p.permission
+	<select id="getGroupWithMembershipsAndPermissions" resultMap="GroupCommon.groupWithMembershipsAndReportingsAndPermissionsAndParent" parameterClass="string">
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription,  <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date, p.permission, <include refid="parentColumns" />
 		FROM groupids i 
 		<!-- LEFT JOIN is necessary because groups are empty at the point of creation. -->
 		  LEFT JOIN group_memberships g USING (`group`) 
 		  LEFT JOIN user u ON (u.user_name = i.group_name) 
 		  LEFT JOIN group_level_permission p USING (`group`)
-		WHERE group_name = #groupname#
+		  LEFT JOIN groupids pt ON (i.parent = pt.group) <!-- join with parent -->
+		WHERE i.group_name = #groupname#
 		  AND i.group > 2
 		ORDER BY g.user_name
 	</select>
@@ -144,8 +147,8 @@
 	</delete>
 
 	<insert id="activateGroup" parameterClass="string">
-		INSERT INTO groupids (group_name, `group`, privlevel, sharedDocuments, shortDescription)
-		SELECT group_name, `group`, privlevel, sharedDocuments, shortDescription
+		INSERT INTO groupids (group_name, `group`, `parent`, privlevel, sharedDocuments, shortDescription)
+		SELECT group_name, `group`, `parent`, privlevel, sharedDocuments, shortDescription
 		FROM pending_groupids 
 		WHERE pending_groupids.group_name = #name#
 	</insert>
@@ -156,8 +159,8 @@
 	</delete>
 	
 	<insert id="insertPendingGroup" parameterClass="group">
-		INSERT INTO pending_groupids (group_name, `group`, privlevel, sharedDocuments, shortDescription, request_user_name, request_reason)
-		VALUES (#name#, #groupId#, #privlevel#, #sharedDocuments#, #description#, #groupRequest.userName#, #groupRequest.reason#)
+		INSERT INTO pending_groupids (group_name, `group`, `parent`, privlevel, sharedDocuments, shortDescription, request_user_name, request_reason)
+		VALUES (#name#, #groupId#, #parent.groupId#, #privlevel#, #sharedDocuments#, #description#, #groupRequest.userName#, #groupRequest.reason#)
 	</insert>
 
 	<delete id="deletePendingGroup" parameterClass="string">

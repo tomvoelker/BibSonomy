@@ -187,7 +187,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		 */
 		for (final Group group : commonGroups) {
 			/* check if user is admin */
-			Group trueGroup =  this.groupDb.getGroupMembers(userName, group.getName(), true, false, session);
+			Group trueGroup =  this.groupDb.getGroup(userName, group.getName(), true, false, session);
 			GroupMembership adminMembership = GroupUtils.getGroupMembershipForUser(trueGroup, userName, false);
 			if (present(adminMembership) && adminMembership.getGroupRole().hasRole(GroupRole.ADMINISTRATOR)) {
 				return true;

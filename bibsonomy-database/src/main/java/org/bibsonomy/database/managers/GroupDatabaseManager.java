@@ -121,7 +121,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns a specific group with memberships
-	 * DEPRECATED: Use getGroupMembers instead
+	 * DEPRECATED: Use getGroup instead
 	 *
 	 * @param groupname
 	 * @param session
@@ -177,17 +177,23 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Returns a group with all its members if the user is allowed to see them.
+	 * Returns a group with the following information if the user is allowed to see them.
 	 *
-	 * @param authUserName
-	 * @param groupname
-	 * @param getPermissions <code>true</code> iff permissions should be loaded
-	 * @param adminAccess
-	 * @param session
-	 * @return group
+	 * 1) basic group properties
+	 * 2) a list of all group members
+	 * 3) permissions (if they're requested @see getPermissions)
+	 * 4) the groups parent if present
+	 *
+	 * @param authUserName a user.
+	 * @param groupname the groups name.
+	 * @param getPermissions <code>true</code> iff permissions should be loaded.
+	 * @param adminAccess <code>true</code> if admin access is requested.
+	 * @param session a database session that will be used to execute the query.
+	 *
+	 * @return a group. If no group with the given name is found, an 'invalid' group is returned.
 	 */
-	public Group getGroupMembers(final String authUserName, final String groupname, final boolean getPermissions, final boolean adminAccess, final DBSession session) {
-		log.debug("getGroupMembers " + groupname);
+	public Group getGroup(final String authUserName, final String groupname, final boolean getPermissions, final boolean adminAccess, final DBSession session) {
+		log.debug("getGroup " + groupname);
 		Group group;
 		if ("friends".equals(groupname)) {
 			group = GroupUtils.buildFriendsGroup();
@@ -208,6 +214,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			group.setMemberships(Collections.<GroupMembership> emptyList());
 			return group;
 		}
+
 		final String statement;
 		if (getPermissions) {
 			statement = "getGroupWithMembershipsAndPermissions";
@@ -708,7 +715,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void deleteGroup(final String groupname, final boolean quickDelete, final DBSession session) {
 		// make sure that the group exists
-		final Group group = this.getGroupMembers(groupname, groupname, false, false, session);
+		final Group group = this.getGroup(groupname, groupname, false, false, session);
 
 		if (!present(group)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
@@ -902,6 +909,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	public Group getGroupWithPendingMemberships(final String groupname, final DBSession session) {
 		return this.queryForObject("getPendingMembershipsForGroup", groupname, Group.class, session);
+	}
+
+	public List<Group> findChildren(String groupName) {
+		return new ArrayList<>();
 	}
 
 	public void addPendingMembership(final String groupname, final String username, final boolean userSharedDocuments, final GroupRole pendingGroupRole, final DBSession session) {

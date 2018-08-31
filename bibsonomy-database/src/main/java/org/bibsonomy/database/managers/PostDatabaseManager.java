@@ -1469,7 +1469,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		// If the post owner is a group where the executingUser is an moderator
 		// or higher, we fake updating the post as the post owner (= group user)
 		if (present(postOwner) && !postOwner.equals(executingUser)) {
-			final Group postOwnerGroup = this.groupDb.getGroupMembers(executingUser, postOwner, false, true, session);
+			final Group postOwnerGroup = this.groupDb.getGroup(executingUser, postOwner, false, true, session);
 			if (present(postOwnerGroup) && this.permissionDb.isAdminOrHasGroupRoleOrHigher(loginUser, postOwner, GroupRole.MODERATOR)) {
 				executingUser = postOwner;
 			}

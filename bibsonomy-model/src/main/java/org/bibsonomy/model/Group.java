@@ -54,6 +54,11 @@ public class Group implements Serializable {
 	private String name;
 
 	/**
+	 * The parent group.
+	 */
+	private Group parent;
+
+	/**
 	 * The real (long) name of the group.
 	 */
 	private String realname;
@@ -105,6 +110,7 @@ public class Group implements Serializable {
 	/** stores setting regarding publication reporting */
 	private GroupPublicationReportingSettings publicationReportingSettings;
 
+	// (ada) Why does group have a reference to group request!?
 	/** stores information regarding the group request */
 	private GroupRequest groupRequest;
 	
@@ -149,7 +155,25 @@ public class Group implements Serializable {
 		this.sharedDocuments = false;
 		this.allowJoin = false;
 	}
-	
+
+	/**
+	 * Gets this groups parent group if it is set.
+	 *
+	 * @return the parent group if set, <code>null</code> otherwise.
+	 */
+	public Group getParent() {
+		return parent;
+	}
+
+	/**
+	 * Sets this groups parent group.
+	 *
+	 * @param parent the parent group.
+	 */
+	public void setParent(Group parent) {
+		this.parent = parent;
+	}
+
 	/**
 	 * @return groupId
 	 */
