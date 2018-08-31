@@ -36,12 +36,12 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupRole;
+import org.bibsonomy.common.enums.Privlevel;
+import org.bibsonomy.database.managers.fixtures.ExtendedGroupFixture;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.GroupRequest;
@@ -49,6 +49,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.ParamUtils;
 import org.bibsonomy.util.Sets;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -63,6 +64,11 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	private static GroupDatabaseManager groupDb;
 	private static UserDatabaseManager userDb;
 
+	//FIXME (ada) use fixtures for all group tests.
+	private ExtendedGroupFixture rootGroupFixture;
+	private ExtendedGroupFixture childGroup1Fixture;
+	private ExtendedGroupFixture childGroup2Fixture;
+
 	/**
 	 * sets up the manager
 	 */
@@ -70,6 +76,16 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public static void setupManager() {
 		groupDb = GroupDatabaseManager.getInstance();
 		userDb = UserDatabaseManager.getInstance();
+	}
+
+	@Before
+	public void setup() {
+		this.rootGroupFixture = new ExtendedGroupFixture(9, "rootgroup", Privlevel.MEMBERS, true,
+				true, null, "Root Group", "http://www.bibsonomy.org/group/rootgroup");
+		this.childGroup1Fixture = new ExtendedGroupFixture(10, "childgroup1", Privlevel.MEMBERS, true,
+				true, null, "Child Group 1", "http://www.bibsonomy.org/group/childgroup1");
+		this.childGroup2Fixture = new ExtendedGroupFixture(11, "childgroup2", Privlevel.MEMBERS, true,
+				true, null, "Child Group 2", "http://www.bibsonomy.org/group/childgroup2");
 	}
 
 	/**
@@ -612,5 +628,81 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		groupDb.deleteGroup(groupName, false, this.dbSession);
 		assertNull(groupDb.getGroupByName(groupName, this.dbSession));
 	}
+
+
+	/**
+	 * Compares a {@link Group} instance with a fixture.
+	 *
+	 * @param group a group instance.
+	 * @param expected the expected fixture.
+	 */
+	private void assertGroupIsAsExpected(Group group, ExtendedGroupFixture expected) {
+
+		assertThat(group.getName(), equalTo(expected.getName()));
+		assertThat(group.getGroupId(), equalTo(expected.getGroupId()));
+		assertThat(group.getRealname(), equalTo(expected.getRealName()));
+		assertThat(group.getHomepage().toString(), equalTo(expected.getHomepage()));
+		assertThat(group.getDescription(), equalTo(expected.getDescription()));
+		assertThat(group.isSharedDocuments(), equalTo(expected.isSharedDocuments()));
+		assertThat(group.isAllowJoin(), equalTo(expected.isAllowjoin()));
+		assertThat(group.getPrivlevel(), equalTo(expected.getPrivlevel()));
+	}
+
+	/**
+	 * Searches the list of groups for the given fixture and if found compares the two.
+	 *
+	 * @param expected the expected fixture.
+	 * @param groups a list of groups to check.
+	 */
+	private void assertContainsGroup(ExtendedGroupFixture expected, List<Group> groups) {
+		Optional<Group> maybeGroup = groups.stream().filter((g) -> expected.getName().equals(g.getName())).findFirst();
+
+		if(!maybeGroup.isPresent())
+			fail("Could not find the expected group in the list of groups.");
+
+		Group group = maybeGroup.get();
+		assertGroupIsAsExpected(group, expected);
+	}
+
+
+	/**
+	 * Tests if querying subgroups works correctly.
+	 */
+	@Test
+	public void testGetSubgroupsFor() {
+
+		List<ExtendedGroupFixture> expectedSubgroups = Arrays.asList(this.childGroup1Fixture, this.childGroup2Fixture);
+		List<Group> subgroups = groupDb.getSubgroupsFor(this.rootGroupFixture.getGroupId(), this.dbSession);
+
+		assertThat(subgroups.size(), equalTo(2));
+
+		for (ExtendedGroupFixture expectedGroup: expectedSubgroups) {
+			assertContainsGroup(expectedGroup, subgroups);
+		}
+
+		for(Group group: subgroups) {
+			assertGroupIsAsExpected(group.getParent(), rootGroupFixture);
+		}
+	}
+
+
+	@Test
+	public void testGetGroupLoadsSubgroups() {
+		List<ExtendedGroupFixture> expectedSubgroups = Arrays.asList(this.childGroup1Fixture, this.childGroup2Fixture);
+
+		Group root = groupDb.getGroup("rootgroup", "rootgroup", false, false, this.dbSession);
+
+		assertThat(root.getSubgroups().size(), equalTo(2));
+
+		for (ExtendedGroupFixture expectedGroup: expectedSubgroups) {
+			assertContainsGroup(expectedGroup, root.getSubgroups());
+		}
+
+		for(Group group: root.getSubgroups()) {
+			assertGroupIsAsExpected(group.getParent(), rootGroupFixture);
+		}
+	}
+
+
 
 }

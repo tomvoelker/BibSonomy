@@ -116,6 +116,11 @@ public class Group implements Serializable {
 	
 	private List<GroupMembership> memberships;
 	private List<GroupMembership> pendingMemberships;
+
+	/**
+	 * A list of all subgroups.
+	 */
+	private List<Group> subgroups;
 	
 	/**
 	 * default constructor
@@ -347,6 +352,25 @@ public class Group implements Serializable {
 	 */
 	public void setPublicationReportingSettings(GroupPublicationReportingSettings publicationReportingSettings) {
 		this.publicationReportingSettings = publicationReportingSettings;
+	}
+
+	/**
+	 * Gets all direct subgroups for this group.
+	 *
+	 * @return a list of all subgroups for this group.
+	 */
+	public List<Group> getSubgroups() {
+		return subgroups;
+	}
+
+
+	/**
+	 * Sets the subgroups for this group.
+	 *
+	 * @param subgroups a list with subgroups (groups that have this object as a parent).
+	 */
+	public void setSubgroups(List<Group> subgroups) {
+		this.subgroups = subgroups;
 	}
 
 	/**

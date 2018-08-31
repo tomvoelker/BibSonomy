@@ -231,6 +231,9 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			return group;
 		}
 
+		// retrieve all direct subgroups and populate the group object
+		group.setSubgroups(this.getSubgroupsFor(group.getGroupId(), session));
+
 		/*
 		 * update the membership list according to the privlevel settings
 		 * system admins can see all members by default
@@ -275,6 +278,20 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 		return group;
 	}
+
+
+	/**
+	 * Retrieves a list of all subgroups for the given group.
+	 *
+	 * @param groupId the groups id.
+	 * @param session a database session used to execute the query.
+	 *
+	 * @return a list of all subgroups.
+	 */
+	public List<Group> getSubgroupsFor(final int groupId, final DBSession session) {
+		return this.queryForList("getSubgroupsFor", groupId, Group.class, session);
+	}
+
 
 	/**
 	 * Returns the privlevel for a group.

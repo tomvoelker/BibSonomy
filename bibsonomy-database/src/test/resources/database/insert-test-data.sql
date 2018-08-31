@@ -249,7 +249,8 @@ INSERT INTO `groupids` (`group_name`, `group`, `parent`, `privlevel`, `sharedDoc
 ('testgroup3',      5,           NULL, 2, 0),
 ('testgroup4',      6,           NULL, 2, 1),
 ('rootgroup',       9,           NULL, 2, 1),
-('childgroup1',     10,           9,    2, 1);
+('childgroup1',     10,             9, 2, 1),
+('childgroup2',     11,             9, 2, 1);
 
 -- 
 -- Data for table `pending_groupids`
@@ -274,7 +275,8 @@ INSERT INTO `group_memberships` VALUES
 ('testgroup3',  5, 5, '2007-01-01 01:01:01', 3, 0),
 ('testgroup3',  6, 6, '2007-01-01 01:01:01', 3, 0),
 ('rootgroup',   9, 9, '2007-01-01 01:01:01', 3, 0),
-('childgroup1', 10, 10, '2007-01-01 01:01:01', 3, 0);
+('childgroup1', 10, 10, '2007-01-01 01:01:01', 3, 0),
+('childgroup2', 11, 11, '2007-01-01 01:01:01', 3, 0);
 
 
 
@@ -625,6 +627,7 @@ INSERT INTO `user` (`user_name`,`user_email`,`user_password`,`user_password_salt
 ('rootgroup',  'rootgroup@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/rootgroup', 'Root Group', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
 
 ('childgroup1',  'childgroup1@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/childgroup1', 'Child Group 1', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
+('childgroup2',  'childgroup2@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/childgroup2', 'Child Group 2', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
 ('testspammer', 'testspammer@bibsonomy.org', 'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/',                 'Test Spammer', 1, 'http://sfxserv.rug.ac.be:8888/rug', '2007-02-02 02:02:02', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
 ('testspammer2', 'testspammer@bibsonomy.org', 'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/',                 'Test Spammer', 1, 'http://sfxserv.rug.ac.be:8888/rug', '2007-02-02 02:02:02', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
 ('testuser1',   'testuser1@bibsonomy.org',   'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/user/testuser1',   'Test User 1',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'rja',     '1815-12-10 00:00:00', 0,  'en', 0, 1, 3),

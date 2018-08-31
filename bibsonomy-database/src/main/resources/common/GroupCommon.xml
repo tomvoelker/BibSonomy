@@ -48,7 +48,10 @@
 		<result property="sharedDocuments"    column="pt_sharedDocuments"   javaType="boolean"/>
 		<result property="allowJoin"    	  column="pt_allow_join"   	 javaType="boolean"/>
 		<result property="description"    	  column="pt_shortDescription"  javaType="string"/>
+		<result property="realname"           column="upt_user_realname"     javaType="string" />
+		<result property="homepage"			  column="upt_user_homepage"     javaType="url" />
 	</resultMap>
+
 
 	<!--+
 	    | Groups with additional fields 
@@ -57,6 +60,10 @@
 	<resultMap id="group_extended" extends="group_basic" class="group">
 		<result property="realname"           column="user_realname"     javaType="string"/>
 		<result property="homepage"           column="user_homepage"     javaType="url"  />
+	</resultMap>
+
+	<resultMap id="group_extended_with_parent" class="group" extends="group_extended">
+		<result property="parent" resultMap="GroupCommon.group_parent" />
 	</resultMap>
 
 	<resultMap id="group" class="group" extends="group_extended" groupBy="name">
@@ -102,6 +109,6 @@
 	</sql>
 
 	<sql id="parentColumns">
-		pt.group_name as pt_group_name, pt.group as pt_group, pt.privlevel as pt_privlevel, pt.sharedDocuments as pt_sharedDocuments, pt.allow_join as pt_allow_join, pt.shortDescription as pt_shortDescription
+		pt.group_name as pt_group_name, pt.group as pt_group, pt.privlevel as pt_privlevel, pt.sharedDocuments as pt_sharedDocuments, pt.allow_join as pt_allow_join, pt.shortDescription as pt_shortDescription, upt.user_realname as upt_user_realname, upt.user_homepage as upt_user_homepage
 	</sql>
 </sqlMap>
