@@ -30,8 +30,7 @@
 
 		<jsp:attribute name="content">
 			<div id="projectContent" class="row">
-				<!-- FIXME: sub title not working; check why -->
-				<div class="page-header">
+                <<div class="page-header">
 					<h1>
 						<c:out value=" "/>
 						<c:out value="${project.title}"/>
@@ -95,7 +94,7 @@
                         </c:if>
                         <c:if test="${not empty project.budget}">
 							<dt><fmt:message key="project.budget"/></dt>
-							<dd><c:out value="${project.budget}" /> €</dd>
+							<dd><fmt:formatNumber value="${project.budget}" pattern="#,##0.00"/> €</dd>
 						</c:if>
                         <c:if test="${not empty project.type}">
                             <dt><fmt:message key="project.type"/></dt>
