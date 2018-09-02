@@ -18,9 +18,6 @@ import java.util.stream.Stream;
 public class ElasticsearchRESTClientFactoryBean implements FactoryBean<RestHighLevelClient> {
 	private static final Log log = LogFactory.getLog(ElasticsearchRESTClientFactoryBean.class);
 
-	/** Elasticsearch client SNIFF property.*/
-	private static final String SNIFF = "client.transport.sniff";
-
 	/**
 	 * Elasticsearch IP and port values, if we have multiple addresses, they
 	 * will be separated by ","; port and ip are separated by ":"
@@ -28,23 +25,18 @@ public class ElasticsearchRESTClientFactoryBean implements FactoryBean<RestHighL
 	 */
 	private String esAddresses;
 
-	/** Elasticsearch cluster name */
-	private String esClusterName;
-
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.FactoryBean#getObject()
 	 */
 	@Override
 	public RestHighLevelClient getObject() {
-		log.info("creating EsClient instance");
-
-		final String esHosts = this.esAddresses;
-		log.info("EsHostss value in Properties:" + esHosts);
+		log.info("creating rest high level client instance");
+		log.info("EsHostss value in Properties:" + this.esAddresses);
 
 		// convert the provided es address string to http hosts
 		final Stream<HttpHost> hostsStream = Arrays.stream(this.esAddresses.split(",")).map(HttpHost::create);
 
-		RestClientBuilder builder = RestClient.builder(hostsStream.toArray(HttpHost[]::new));
+		final RestClientBuilder builder = RestClient.builder(hostsStream.toArray(HttpHost[]::new));
 		final RestHighLevelClient client = new RestHighLevelClient(builder);
 
 		return client;
@@ -71,12 +63,5 @@ public class ElasticsearchRESTClientFactoryBean implements FactoryBean<RestHighL
 	 */
 	public void setEsAddresses(final String esAddresses) {
 		this.esAddresses = esAddresses;
-	}
-
-	/**
-	 * @param esClusterName the esClusterName to set
-	 */
-	public void setEsClusterName(final String esClusterName) {
-		this.esClusterName = esClusterName;
 	}
 }
