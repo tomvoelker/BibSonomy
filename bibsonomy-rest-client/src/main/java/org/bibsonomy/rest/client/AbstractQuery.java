@@ -30,7 +30,7 @@ import java.io.File;
 import java.io.Reader;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.bibsonomy.rest.auth.AuthenticationAccessor;
+import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 import org.bibsonomy.rest.client.worker.impl.DeleteWorker;

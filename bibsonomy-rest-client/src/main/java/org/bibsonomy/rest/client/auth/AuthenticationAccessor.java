@@ -24,7 +24,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.rest.auth;
+package org.bibsonomy.rest.client.auth;
 
 import java.io.Reader;
 import org.apache.commons.httpclient.HttpMethod;
@@ -49,5 +49,5 @@ public interface AuthenticationAccessor {
 	 * @return
 	 * @throws ErrorPerformingRequestException
 	 */
-	public abstract <M extends HttpMethod> Reader perform(final String url, final String requestBody, final M method, final RenderingFormat renderingFormat) throws ErrorPerformingRequestException;
+	<M extends HttpMethod> Reader perform(final String url, final String requestBody, final M method, final RenderingFormat renderingFormat) throws ErrorPerformingRequestException;
 }

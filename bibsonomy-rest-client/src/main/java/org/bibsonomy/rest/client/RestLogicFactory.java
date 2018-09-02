@@ -30,7 +30,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
-import org.bibsonomy.rest.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.util.FileFactory;
 import org.bibsonomy.rest.client.util.MultiDirectoryFileFactory;
 import org.bibsonomy.rest.client.util.ProgressCallbackFactory;

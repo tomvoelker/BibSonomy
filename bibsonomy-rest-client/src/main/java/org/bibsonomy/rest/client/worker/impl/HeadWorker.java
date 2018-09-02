@@ -31,7 +31,7 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import org.apache.commons.httpclient.methods.HeadMethod;
-import org.bibsonomy.rest.auth.AuthenticationAccessor;
+import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 
@@ -58,7 +58,7 @@ public class HeadWorker extends HttpWorker<HeadMethod> {
 	}
 
 	@Override
-	protected Reader readResponse(HeadMethod method) throws IOException, ErrorPerformingRequestException {
+	protected Reader readResponse(HeadMethod method) {
 		return new StringReader(method.getStatusText());
 	}
 }

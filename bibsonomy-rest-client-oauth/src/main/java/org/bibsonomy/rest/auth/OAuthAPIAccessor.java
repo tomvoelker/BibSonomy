@@ -52,6 +52,7 @@ import net.oauth.http.HttpMessageDecoder;
 
 import org.apache.commons.httpclient.HttpMethod;
 import org.bibsonomy.rest.client.RestLogicFactory;
+import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.util.RestClientUtils;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.rest.renderer.RenderingFormat;

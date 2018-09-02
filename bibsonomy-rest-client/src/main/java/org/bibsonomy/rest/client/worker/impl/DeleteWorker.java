@@ -27,7 +27,7 @@
 package org.bibsonomy.rest.client.worker.impl;
 
 import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.bibsonomy.rest.auth.AuthenticationAccessor;
+import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 
 /**

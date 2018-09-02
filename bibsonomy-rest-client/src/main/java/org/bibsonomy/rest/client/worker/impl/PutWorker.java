@@ -30,7 +30,7 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
-import org.bibsonomy.rest.auth.AuthenticationAccessor;
+import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.util.RestClientUtils;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 
