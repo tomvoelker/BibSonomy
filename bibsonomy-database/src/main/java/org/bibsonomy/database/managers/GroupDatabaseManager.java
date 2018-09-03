@@ -599,12 +599,12 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		// we can't be sure that the database id of the parent group is set
 		// and also that the parent exists
 		final Group parent = group.getParent();
-		if (parent != null) {
+		if (present(parent)) {
 			final String parentGroupName = parent.getName();
 			final int parentGroupId = this.getGroupIdByGroupName(parentGroupName, session);
 			// check if the parent group exists
 			if (parentGroupId == GroupID.INVALID.getId()) {
-				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "The parent group does not exists");
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "The parent group " + parentGroupName + " does not exists");
 			}
 
 			parent.setGroupId(parentGroupId);
