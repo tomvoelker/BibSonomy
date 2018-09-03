@@ -596,13 +596,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		final User groupUser = UserUtils.buildGroupUser(normedGroupName);
 
 		// we can't be sure that the database id of the parent group is set
-        // however we only load the group id if it is set to the default value: GroupID.INVALID
-        if(group.getParent() != null && group.getGroupId() == GroupID.INVALID.getId()) {
-            final String parentGroupName = group.getParent().getName();
-            final int parentGroupId = this.getGroupIdByGroupName(parentGroupName, session);
+		// however we only load the group id if it is set to the default value: GroupID.INVALID
+		if (group.getParent() != null && group.getGroupId() == GroupID.INVALID.getId()) {
+			final String parentGroupName = group.getParent().getName();
+			final int parentGroupId = this.getGroupIdByGroupName(parentGroupName, session);
 
-            group.getParent().setGroupId(parentGroupId);
-        }
+			group.getParent().setGroupId(parentGroupId);
+		}
 
 		try {
 			session.beginTransaction();
