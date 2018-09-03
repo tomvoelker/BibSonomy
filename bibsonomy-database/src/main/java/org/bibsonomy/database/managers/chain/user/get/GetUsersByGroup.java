@@ -48,7 +48,7 @@ public class GetUsersByGroup extends UserChainElement {
 	@Override
 	protected List<User> handle(final UserParam param, final DBSession session) {
 		final List<User> userList = new LinkedList<>();
-		for (final GroupMembership ms : this.groupDb.getGroupMembers(param.getUserName(), param.getRequestedGroupName(), false, false, session).getMemberships()) {
+		for (final GroupMembership ms : this.groupDb.getGroup(param.getUserName(), param.getRequestedGroupName(), false, false, session).getMemberships()) {
 			userList.add(ms.getUser());
 		}
 		return userList;

@@ -515,6 +515,7 @@ SET character_set_client = utf8;
 CREATE TABLE `groupids` (
   `group_name` varchar(30) NOT NULL default '',
   `group` int(10) NOT NULL default '0',
+  `parent` int(10) DEFAULT NULL,
   `privlevel` tinyint(3) unsigned default '1',
   `sharedDocuments` tinyint(1) default '0',
   `allow_join` TINYINT(1) NULL DEFAULT '1',
@@ -1026,6 +1027,7 @@ CREATE TABLE `pending_groupids` (
   `request_reason` text NOT NULL,
   `request_submission_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `group` int(10) NOT NULL default '0',
+  `parent` int(10) default NULL,
   `privlevel` tinyint(3) unsigned default '1',
   `sharedDocuments` tinyint(1) default '0',
   `allow_join` TINYINT(1) NULL DEFAULT '1',
