@@ -554,6 +554,13 @@
 			</dependency>
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-web-common</artifactId>
+				<version>${project.version}</version>
+				<scope>test</scope>
+				<type>test-jar</type>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-wiki</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -574,24 +581,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
-				<artifactId>bibsonomy-web-common</artifactId>
-				<version>${project.version}</version>
-				<scope>test</scope>
-				<type>test-jar</type>
-			</dependency>
-			<dependency>
-				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-webapp</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.bibsonomy</groupId>
-				<artifactId>bibsonomy-webdav</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.bibsonomy</groupId>
-				<artifactId>bibsonomy-spielwiese</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -644,16 +634,6 @@
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-openaccess</artifactId>
 				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.bibsonomy</groupId>
-				<artifactId>bibsonomy-recommender-connector</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-httpclient</groupId>
-				<artifactId>commons-httpclient</artifactId>
-				<version>3.1</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-logging</groupId>
@@ -764,6 +744,11 @@
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
 				<version>1.4</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>4.5.6</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>

@@ -26,8 +26,10 @@
  */
 package org.bibsonomy.scraper.url.kde.usenix;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -42,72 +44,73 @@ public class UsenixScraperTest {
 	 * starts URL test with id url_74
 	 */
 	@Test
-	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_74");
+	public void url1TestRun() {
+		assertScraperResult("http://www.usenix.org/events/lisa2001/tech/apthorpe.html", UsenixScraper.class, "UsenixScraperUnitURLTest1.bib");
 	}
 
 	/**
 	 * starts URL test with id url_75
 	 */
 	@Test
-	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_75");
+	public void url2TestRun() {
+		assertScraperResult("http://usenix.org/events/usenix07/tech/kotla.html", UsenixScraper.class, "UsenixScraperUnitURLTest2.bib");
 	}
 	
 	/**
 	 * starts URL test with id url_76
 	 */
 	@Test
-	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_76");
+	public void url3TestRun() {
+		assertScraperResult("http://usenix.org/events/sec07/tech/drimer.html", UsenixScraper.class, "UsenixScraperUnitURLTest3.bib");
 	}
 
 	/**
 	 * starts URL test with id url_79
 	 */
 	@Test
-	public void url4TestRun(){
-		UnitTestRunner.runSingleTest("url_79");
+	public void url4TestRun() {
+		assertScraperResult("http://usenix.org/publications/library/proceedings/tcl97/libes_writing.html", UsenixScraper.class, "UsenixScraperUnitURLTest4.bib");
 	}
 
 	/**
 	 * starts URL test with id url_80
 	 */
 	@Test
-	public void url5TestRun(){
-		UnitTestRunner.runSingleTest("url_80");
+	@Ignore
+	public void url5TestRun() {
+		assertScraperResult("http://www.usenix.org/publications/library/proceedings/coots98/krishnaswamy.html", UsenixScraper.class, "UsenixScraperUnitURLTest5.bib");
 	}
 	
 	/**
 	 * starts URL test with id url_81
 	 */
 	@Test
-	public void url6TestRun(){
-		UnitTestRunner.runSingleTest("url_81");
+	public void url6TestRun() {
+		assertScraperResult("http://www.usenix.org/publications/library/proceedings/usenix98/sullivan.html", UsenixScraper.class, "UsenixScraperUnitURLTest6.bib");
 	}
 	
 	/**
 	 * starts URL test with id url_82
 	 */
 	@Test
-	public void url7TestRun(){
-		UnitTestRunner.runSingleTest("url_82");
+	public void url7TestRun() {
+		assertScraperResult("http://usenix.org/events/usenix06/tech/liu.html", UsenixScraper.class, "UsenixScraperUnitURLTest7.bib");
 	}
 
 	/**
 	 * starts URL test with id url_83
 	 */
 	@Test
-	public void url8TestRun(){
-		UnitTestRunner.runSingleTest("url_83");
+	public void url8TestRun() {
+		assertScraperResult("http://usenix.org/publications/library/proceedings/ec96/geer.html", UsenixScraper.class, "UsenixScraperUnitURLTest8.bib");
 	}
 
 	/**
 	 * starts URL test with id url_84
 	 */
 	@Test
-	public void url9TestRun(){
-		UnitTestRunner.runSingleTest("url_84");
+	public void url9TestRun() {
+		assertScraperResult("http://usenix.org/publications/library/proceedings/mob95/raja.html", UsenixScraper.class, "UsenixScraperUnitURLTest9.bib");
 	}
 
 	/**
@@ -115,7 +118,7 @@ public class UsenixScraperTest {
 	 */
 	@Test
 	public void url10TestRun(){
-		UnitTestRunner.runSingleTest("url_85");
+		assertScraperResult("http://usenix.org/publications/library/proceedings/sd96/wilkes.html", UsenixScraper.class, "UsenixScraperUnitURLTest10.bib");
 	}
 	
 }
