@@ -29,7 +29,6 @@ package org.bibsonomy.rest.client.util;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.apache.http.HttpHost;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.entity.ContentType;
