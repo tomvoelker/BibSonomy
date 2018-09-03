@@ -928,10 +928,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForObject("getPendingMembershipsForGroup", groupname, Group.class, session);
 	}
 
-	public List<Group> findChildren(String groupName) {
-		return new ArrayList<>();
-	}
-
 	public void addPendingMembership(final String groupname, final String username, final boolean userSharedDocuments, final GroupRole pendingGroupRole, final DBSession session) {
 		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
