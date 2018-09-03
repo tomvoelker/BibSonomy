@@ -38,6 +38,7 @@ import static org.junit.Assert.fail;
 
 import java.util.*;
 
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Privlevel;
@@ -108,7 +109,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getAllGroups() {
 		final List<Group> allGroups = groupDb.getAllGroups(0, 100, this.dbSession);
-		assertEquals(6, allGroups.size());
+		assertEquals(7, allGroups.size());
 
 		for (final Group group : allGroups) {
 			if (group.getName().startsWith("testgroup")) {
@@ -602,6 +603,48 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String parentGroupName = "rootgroup";
 
 		Group parentGroup = groupDb.getGroup(parentGroupName, parentGroupName, false, false, this.dbSession);
+
+		final Group newGroup = new Group();
+		final String groupName = "newchildgroup";
+
+		newGroup.setName(groupName.toUpperCase());
+		newGroup.setParent(parentGroup);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		final String requestedUser = "testrequestuser1";
+
+		groupRequest.setUserName(requestedUser);
+		groupRequest.setReason("testrequestreason1");
+		newGroup.setGroupRequest(groupRequest);
+
+		groupDb.createGroup(newGroup, this.dbSession);
+		groupDb.activateGroup(newGroup.getName(), this.dbSession);
+
+		final Group newGroupTest = groupDb.getGroup(groupName, groupName, false, false, this.dbSession);
+		assertEquals(groupName, newGroupTest.getName());
+		assertGroupContainsMembers(newGroupTest, Sets.asSet(groupName, requestedUser));
+		assertGroupHasBasicProperties(newGroupTest.getParent(), parentGroupName, expectedParentGroupid, expectedParentIsSharedDocuments);
+
+		// check that the group and all members are gone
+		groupDb.deleteGroup(groupName, false, this.dbSession);
+		assertNull(groupDb.getGroupByName(groupName, this.dbSession));
+	}
+
+	/**
+	 * Tests group request, activation and retrieval with a parent set.
+	 */
+	@Test
+	public void testCreateGroupWithParentIfParentIdNotSet() {
+
+		final int expectedParentGroupid = 9;
+		final boolean expectedParentIsSharedDocuments = true;
+		final String parentGroupName = "rootgroup";
+
+		Group parentGroup = groupDb.getGroup(parentGroupName, parentGroupName, false, false, this.dbSession);
+
+		// explicitly set the group id to the default value to checkt whether the parent group is correctly created
+		// if the parent id is not set
+		parentGroup.setGroupId(GroupID.INVALID.getId());
 
 		final Group newGroup = new Group();
 		final String groupName = "newchildgroup";
