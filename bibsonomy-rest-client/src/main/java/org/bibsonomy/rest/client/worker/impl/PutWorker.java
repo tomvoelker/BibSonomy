@@ -26,23 +26,15 @@
  */
 package org.bibsonomy.rest.client.worker.impl;
 
-import java.io.UnsupportedEncodingException;
-
-import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.http.client.methods.HttpPut;
 import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.util.RestClientUtils;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 
 /**
- * TODO: merge duplicate code with PostWorker
- * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
-public final class PutWorker extends HttpWorker<PutMethod> {
-
-	private static final String CONTENT_TYPE = "multipart/form-data";
-	
+public final class PutWorker extends HttpWorker<HttpPut> {
 	/**
 	 * @param username
 	 * @param apiKey
@@ -53,16 +45,9 @@ public final class PutWorker extends HttpWorker<PutMethod> {
 	}
 
 	@Override
-	protected PutMethod getMethod(String url, String requestBody) {
-		final PutMethod put = new PutMethod(url);
-		put.setFollowRedirects(false);
-
-		try {
-			put.setRequestEntity(new StringRequestEntity(requestBody, CONTENT_TYPE, RestClientUtils.CONTENT_CHARSET));
-		} catch (final UnsupportedEncodingException ex) {
-			LOGGER.fatal("Could not encode request entity to UTF-8", ex);
-			throw new RuntimeException(ex);
-		}
+	protected HttpPut getMethod(String url, String requestBody) {
+		final HttpPut put = new HttpPut(url);
+		RestClientUtils.prepareHttpMethod(put, requestBody);
 		return put;
 	}
 }

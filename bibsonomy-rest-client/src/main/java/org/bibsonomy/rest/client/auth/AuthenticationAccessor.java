@@ -27,7 +27,8 @@
 package org.bibsonomy.rest.client.auth;
 
 import java.io.Reader;
-import org.apache.commons.httpclient.HttpMethod;
+
+import org.apache.http.client.methods.HttpRequestBase;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 
@@ -49,5 +50,5 @@ public interface AuthenticationAccessor {
 	 * @return
 	 * @throws ErrorPerformingRequestException
 	 */
-	<M extends HttpMethod> Reader perform(final String url, final String requestBody, final M method, final RenderingFormat renderingFormat) throws ErrorPerformingRequestException;
+	<M extends HttpRequestBase> Reader perform(final String url, final String requestBody, final M method, final RenderingFormat renderingFormat) throws ErrorPerformingRequestException;
 }

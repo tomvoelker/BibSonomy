@@ -29,26 +29,33 @@ package org.bibsonomy.rest.client.worker;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthenticationException;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.util.RestClientUtils;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.rest.renderer.RenderingFormat;
-import org.bibsonomy.rest.utils.HeaderUtils;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
   * @param <M> the http method used by the http worker
  */
-public abstract class HttpWorker<M extends HttpMethod> {
+public abstract class HttpWorker<M extends HttpRequestBase> {
 	/** the logger for all workers */
 	protected static final Log LOGGER = LogFactory.getLog(HttpWorker.class);
 	
-	private final HttpClient httpClient;
+	private final CloseableHttpClient httpClient;
 	/** the http result code of the worker */
 	protected int httpResult;
 
@@ -96,38 +103,40 @@ public abstract class HttpWorker<M extends HttpMethod> {
 	 */
 	public Reader perform(final String url, final String requestBody) throws ErrorPerformingRequestException {
 		final M method = this.getMethod(url, requestBody);
-		
 		//
 		// handle OAuth requests
-		// 
+		//
 		if (this.accessor != null) {
 			return accessor.perform(url, requestBody, method, this.renderingFormat);
 		}
-		
+
 		//
 		// handle http basic requests
-		// 
-		
-		// add auth header
-		method.addRequestHeader(HeaderUtils.HEADER_AUTHORIZATION, HeaderUtils.encodeForAuthorization(this.username, this.apiKey));
-		method.setDoAuthentication(true);
-		// add accept and content type header
-		final String mimeType = this.renderingFormat.getMimeType();
-		method.addRequestHeader("Accept", mimeType);
-		method.addRequestHeader("Content-Type", mimeType);
-		
+		//
 		try {
-			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("calling " + url + " with '" + requestBody + "'");
+			// add accept and content type header
+			final String mimeType = this.renderingFormat.getMimeType();
+			method.addHeader("Accept", mimeType);
+			method.addHeader("Content-Type", mimeType);
+			method.addHeader("Connection", "close"); // we close the connection after we got the response from the server
+
+			// add auth header
+			final UsernamePasswordCredentials creds = new UsernamePasswordCredentials(this.username, this.apiKey);
+			final HttpClientContext context = HttpClientContext.create();
+			method.addHeader(new BasicScheme(Charset.forName(RestClientUtils.CONTENT_CHARSET)).authenticate(creds, method, context));
+
+			LOGGER.debug("calling " + url + " with '" + requestBody + "'");
+
+			final CloseableHttpResponse response = this.getHttpClient().execute(method, context);
+			this.httpResult = response.getStatusLine().getStatusCode();
+
+			LOGGER.debug("HTTP result: " + this.httpResult);
+			try {
+				return this.readResponse(response);
+			} finally {
+				response.close();
 			}
-			this.httpResult = getHttpClient().executeMethod(method);
-			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("HTTP result: " + this.httpResult);
-				LOGGER.debug("response:\n" + method.getResponseBodyAsString());
-				LOGGER.debug("===================================================");
-			}
-			return this.readResponse(method);
-		} catch (final IOException e) {
+		} catch (final IOException | AuthenticationException e) {
 			LOGGER.error(e.getMessage(), e);
 			throw new ErrorPerformingRequestException(e);
 		} finally {
@@ -138,7 +147,7 @@ public abstract class HttpWorker<M extends HttpMethod> {
 	/**
 	 * @param url
 	 * @param requestBody
-	 * @return the {@link HttpMethod} the worker works on
+	 * @return the {@link HttpRequestBase} the worker works on
 	 */
 	protected abstract M getMethod(final String url, final String requestBody);
 	
@@ -149,14 +158,14 @@ public abstract class HttpWorker<M extends HttpMethod> {
 	 * @throws IOException
 	 * @throws ErrorPerformingRequestException
 	 */
-	protected Reader readResponse(final M method) throws IOException, ErrorPerformingRequestException {
-		return new StringReader(method.getResponseBodyAsString());
+	protected Reader readResponse(final HttpResponse method) throws IOException {
+		return new StringReader(EntityUtils.toString(method.getEntity()));
 	}
 
 	/**
 	 * @return Returns the httpClient.
 	 */
-	protected HttpClient getHttpClient() {
+	protected CloseableHttpClient getHttpClient() {
 		return this.httpClient;
 	}
 

@@ -28,21 +28,28 @@ package org.bibsonomy.rest.client.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.params.HttpClientParams;
-import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
+import org.apache.http.HttpHost;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.bibsonomy.rest.RESTConfig;
-import org.bibsonomy.rest.utils.HeaderUtils;
 import org.bibsonomy.util.BasicUtils;
 import org.bibsonomy.util.StringUtils;
 
 /**
  * @author dzo
- * @author agr
  */
 public class RestClientUtils {
+
+	private static final String CONTENT_TYPE = "multipart/form-data";
 	
 	/** the content charset used by the rest client */
 	public static final String CONTENT_CHARSET = StringUtils.CHARSET_UTF_8;
@@ -53,39 +60,49 @@ public class RestClientUtils {
 	/** the read timeout */
 	private static final int READ_TIMEOUT = 5 * 1000;
 
-	/**
-	 * according to http://hc.apache.org/httpclient-3.x/threading.html
-	 * HttpClient is thread safe and we can use one instance for several requests.
-	 */
-	private static final MultiThreadedHttpConnectionManager CONNECTION_MANAGER = new MultiThreadedHttpConnectionManager();
-	private static final HttpClient CLIENT;
+	/** thread safe pooling connection manager */
+	private static final PoolingHttpClientConnectionManager CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();
+
+	private static final RequestConfig DEFAULT_REQUEST_CONFIG = RequestConfig.custom()
+					.setConnectTimeout(CONNECTION_TIMEOUT)
+					.setSocketTimeout(READ_TIMEOUT)
+					.setConnectionRequestTimeout(READ_TIMEOUT).build();
+
+
+	private static final CloseableHttpClient CLIENT = buildClient(DEFAULT_REQUEST_CONFIG);
 
 	/**
 	 * @return the client
 	 */
-	public static HttpClient getDefaultClient() {
+	public static CloseableHttpClient getDefaultClient() {
 		return CLIENT;
 	}
 
-	static {
-		final HttpConnectionManagerParams params = new HttpConnectionManagerParams();
-		params.setConnectionTimeout(CONNECTION_TIMEOUT);
-		params.setSoTimeout(READ_TIMEOUT);
-		CONNECTION_MANAGER.setParams(params);
-		CLIENT = new HttpClient(CONNECTION_MANAGER);
+	/**
+	 * @return a builder with the default request config
+	 */
+	public static RequestConfig.Builder createRequestConfigBuilder() {
+		return RequestConfig.copy(DEFAULT_REQUEST_CONFIG);
+	}
 
+	/**
+	 * build client based on request config
+	 * @param requestConfig
+	 * @return
+	 */
+	public static CloseableHttpClient buildClient(final RequestConfig requestConfig) {
 		/*
-		 * config http client for requests
+		 * configure client
 		 */
-		final HttpClientParams httpClientParams = new HttpClientParams();
-		final DefaultHttpMethodRetryHandler defaultHttpMethodRetryHandler = new DefaultHttpMethodRetryHandler(0, false);
-		httpClientParams.setParameter(HeaderUtils.HEADER_USER_AGENT, RESTConfig.API_USER_AGENT + "_" + BasicUtils.VERSION);
-		httpClientParams.setParameter(HttpClientParams.RETRY_HANDLER, defaultHttpMethodRetryHandler);
-		httpClientParams.setParameter(HttpClientParams.HTTP_CONTENT_CHARSET, RestClientUtils.CONTENT_CHARSET);
-		httpClientParams.setAuthenticationPreemptive(true);
-		
-		CLIENT.setParams(httpClientParams);
-		
+		final HttpClientBuilder builder = HttpClientBuilder.create();
+		builder.setDefaultRequestConfig(requestConfig);
+		builder.setConnectionManager(CONNECTION_MANAGER);
+		builder.setUserAgent(RESTConfig.API_USER_AGENT + "_" + BasicUtils.VERSION);
+		builder.setRedirectStrategy(new LaxRedirectStrategy()); // to enable following redirects for POST requests
+
+		final DefaultHttpRequestRetryHandler defaultHttpMethodRetryHandler = new DefaultHttpRequestRetryHandler(0, false);
+		builder.setRetryHandler(defaultHttpMethodRetryHandler);
+
 		// proxy
 		final String proxyHost = System.getProperty("http.proxyHost");
 		if (present(proxyHost)){
@@ -94,8 +111,22 @@ public class RestClientUtils {
 			if (present(proxyPortString)) {
 				proxyPort = Integer.parseInt(proxyPortString);
 			}
-			
-			CLIENT.getHostConfiguration().setProxy(proxyHost, proxyPort);
+
+			final HttpHost proxy = new HttpHost(proxyHost, proxyPort);
+			final DefaultProxyRoutePlanner proxyRoutePlanner = new DefaultProxyRoutePlanner(proxy);
+			builder.setRoutePlanner(proxyRoutePlanner);
 		}
+
+		// build client
+		return builder.build();
+	}
+
+	/**
+	 * sets the rewuest entity and other stuff
+	 * @param put
+	 * @param requestBody
+	 */
+	public static void prepareHttpMethod(final HttpEntityEnclosingRequestBase put, String requestBody) {
+		put.setEntity(new StringEntity(requestBody, ContentType.create(CONTENT_TYPE, CONTENT_CHARSET)));
 	}
 }

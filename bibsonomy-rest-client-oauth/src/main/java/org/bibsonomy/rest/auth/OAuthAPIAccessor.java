@@ -51,6 +51,7 @@ import net.oauth.client.httpclient3.HttpClient3;
 import net.oauth.http.HttpMessageDecoder;
 
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.bibsonomy.rest.client.RestLogicFactory;
 import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.util.RestClientUtils;
@@ -207,15 +208,15 @@ public class OAuthAPIAccessor implements AuthenticationAccessor {
 	}
 	
 	@Override
-	public <M extends HttpMethod> Reader perform(final String url, final String requestBody, final M method, final RenderingFormat renderingFormat) throws ErrorPerformingRequestException {
-		final List<Map.Entry<?, ?>> params = new ArrayList<Map.Entry<?, ?>>();
+	public <M extends HttpRequestBase> Reader perform(final String url, final String requestBody, final M method, final RenderingFormat renderingFormat) throws ErrorPerformingRequestException {
+		final List<Map.Entry<?, ?>> params = new ArrayList<>();
 		params.add(new OAuth.Parameter("oauth_token", this.accessor.accessToken));
 		try {
 			OAuthMessage request;
 			if (present(requestBody)) {
-				request = this.accessor.newRequestMessage(method.getName(), url, params, new ByteArrayInputStream(requestBody.getBytes(RestClientUtils.CONTENT_CHARSET)));
+				request = this.accessor.newRequestMessage(method.getMethod(), url, params, new ByteArrayInputStream(requestBody.getBytes(RestClientUtils.CONTENT_CHARSET)));
 			} else {
-				request = this.accessor.newRequestMessage(method.getName(), url, params);
+				request = this.accessor.newRequestMessage(method.getMethod(), url, params);
 			}
 			final Object accepted = this.accessor.consumer.getProperty(OAuthConsumer.ACCEPT_ENCODING);
 			if (accepted != null) {

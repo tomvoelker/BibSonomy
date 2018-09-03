@@ -27,17 +27,14 @@
 package org.bibsonomy.rest.client.worker.impl;
 
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
 
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.worker.HttpWorker;
@@ -47,7 +44,7 @@ import org.bibsonomy.rest.utils.HeaderUtils;
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
-public final class GetWorker extends HttpWorker<GetMethod> {
+public final class GetWorker extends HttpWorker<HttpGet> {
 	
 	private final ProgressCallback callback;
 
@@ -65,40 +62,8 @@ public final class GetWorker extends HttpWorker<GetMethod> {
 	}
 	
 	@Override
-	protected GetMethod getMethod(final String url, final String requestBody) {
-		final GetMethod get = new GetMethod(url);
-		get.setFollowRedirects(true);
-		return get;
-	}
-	
-	@Override
-	protected Reader readResponse(final GetMethod method) throws IOException, ErrorPerformingRequestException {
-		if (method.getResponseBodyAsStream() != null) {
-			return performDownload(method.getResponseBodyAsStream(), method.getResponseContentLength(), method.getResponseCharSet());
-		}
-		
-		throw new ErrorPerformingRequestException("No Answer.");
-	}
-
-	private Reader performDownload(final InputStream responseBodyAsStream, final long responseContentLength, String responseCharSet) throws ErrorPerformingRequestException, IOException {
-		if (responseContentLength > Integer.MAX_VALUE) throw new ErrorPerformingRequestException("The response is to long: " + responseContentLength);
-
-		StringBuilder sb = null;
-		if(responseContentLength < 0) {
-			sb = new StringBuilder();
-		} else {
-			sb = new StringBuilder((int) responseContentLength);
-		}
-		final BufferedReader br = new BufferedReader(new InputStreamReader(responseBodyAsStream, responseCharSet));
-		int bytesRead = 0;
-		String line = null;
-		while ((line = br.readLine()) != null) {
-			bytesRead += line.length();
-			callCallback(bytesRead, responseContentLength);
-			sb.append(line);
-		}
-
-		return new StringReader(sb.toString());
+	protected HttpGet getMethod(final String url, final String requestBody) {
+		return new HttpGet(url);
 	}
 	
 	/**
@@ -111,17 +76,15 @@ public final class GetWorker extends HttpWorker<GetMethod> {
 	public void performFileDownload(final String url, final File file) throws ErrorPerformingRequestException {
 		LOGGER.debug("GET: URL: " + url);
 		
-		final GetMethod get = new GetMethod(url);
-		get.addRequestHeader(HeaderUtils.HEADER_AUTHORIZATION, HeaderUtils.encodeForAuthorization(this.username, this.apiKey));
-		get.setDoAuthentication(true);
-		get.setFollowRedirects(true);
+		final HttpGet get = this.getMethod(url, null);
+		get.addHeader(HeaderUtils.HEADER_AUTHORIZATION, HeaderUtils.encodeForAuthorization(this.username, this.apiKey));
 		
 		try {
-			this.httpResult = getHttpClient().executeMethod(get);
+			final HttpResponse response = getHttpClient().execute(get);
+			this.httpResult = response.getStatusLine().getStatusCode();
 			LOGGER.debug("HTTP result: " + this.httpResult);
-			LOGGER.debug("Content-Type:" + get.getRequestHeaders("Content-Type"));
-			LOGGER.debug("===================================================");
-			final InputStream in = get.getResponseBodyAsStream();
+			LOGGER.debug("Content-Type:" + response.getFirstHeader("Content-Type"));
+			final InputStream in = response.getEntity().getContent();
 			
 			/*
 			 * FIXME: check for errors
@@ -138,7 +101,7 @@ public final class GetWorker extends HttpWorker<GetMethod> {
 				do {
 					b = in.read();
 					dos.write(b);
-					callCallback(bytesRead++, get.getResponseContentLength());
+					callCallback(bytesRead++, response.getEntity().getContentLength());
 				} while (b > -1);
 				
 				in.close();
