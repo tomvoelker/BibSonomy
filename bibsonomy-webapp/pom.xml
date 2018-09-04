@@ -532,6 +532,10 @@
 					<artifactId>xercesImpl</artifactId>
 					<groupId>org.apache.xerces</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>commons-httpclient</artifactId>
+					<groupId>commons-httpclient</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -676,7 +680,6 @@
 			<artifactId>nekohtml</artifactId>
 			<version>1.9.21</version>
 		</dependency>
-		
 		<!-- TODO: shinding not compatible with newer version -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
