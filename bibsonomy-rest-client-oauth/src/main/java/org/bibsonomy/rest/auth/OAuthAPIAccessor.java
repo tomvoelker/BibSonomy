@@ -47,10 +47,9 @@ import net.oauth.OAuthMessage;
 import net.oauth.OAuthServiceProvider;
 import net.oauth.ParameterStyle;
 import net.oauth.client.OAuthClient;
-import net.oauth.client.httpclient3.HttpClient3;
+import net.oauth.client.httpclient4.HttpClient4;
 import net.oauth.http.HttpMessageDecoder;
 
-import org.apache.commons.httpclient.HttpMethod;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.bibsonomy.rest.client.RestLogicFactory;
 import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
@@ -75,7 +74,7 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
  */
 public class OAuthAPIAccessor implements AuthenticationAccessor {
 	/** global OAuth client */
-	private static final OAuthClient OAUTH_CLIENT = new OAuthClient(new HttpClient3());
+	private static final OAuthClient OAUTH_CLIENT = new OAuthClient(new HttpClient4());
 	
 	/** end points */
 	/** url for obtaining (temporary) request tokens */

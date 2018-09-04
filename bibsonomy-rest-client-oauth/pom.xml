@@ -33,7 +33,7 @@
 	<name>BibSonomy-Rest-Client-OAuth</name>
 	<artifactId>bibsonomy-rest-client-oauth</artifactId>
 	<packaging>jar</packaging>
-	<description>The REST-client OAuth Accessor.</description>
+	<description>The REST-client OAuth</description>
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
@@ -62,8 +62,8 @@
 		</dependency>
 		<dependency>
 			<groupId>net.oauth.core</groupId>
-			<artifactId>oauth-httpclient3</artifactId>
-			<version>20090617</version>
+			<artifactId>oauth-httpclient4</artifactId>
+			<version>20090913</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
