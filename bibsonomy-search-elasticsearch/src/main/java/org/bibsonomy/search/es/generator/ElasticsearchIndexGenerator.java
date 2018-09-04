@@ -28,7 +28,6 @@ package org.bibsonomy.search.es.generator;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
