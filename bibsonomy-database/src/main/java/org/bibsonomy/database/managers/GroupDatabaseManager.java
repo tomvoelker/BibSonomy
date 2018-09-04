@@ -77,6 +77,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * @return GroupDatabaseManager
 	 */
+	@Deprecated // TODO: use spring config
 	public static GroupDatabaseManager getInstance() {
 		return singleton;
 	}
@@ -612,13 +613,18 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		final User groupUser = UserUtils.buildGroupUser(normedGroupName);
 
 		// we can't be sure that the database id of the parent group is set
-        // however we only load the group id if it is set to the default value: GroupID.INVALID
-        if(group.getParent() != null && group.getGroupId() == GroupID.INVALID.getId()) {
-            final String parentGroupName = group.getParent().getName();
-            final int parentGroupId = this.getGroupIdByGroupName(parentGroupName, session);
+		// and also that the parent exists
+		final Group parent = group.getParent();
+		if (present(parent)) {
+			final String parentGroupName = parent.getName();
+			final int parentGroupId = this.getGroupIdByGroupName(parentGroupName, session);
+			// check if the parent group exists
+			if (parentGroupId == GroupID.INVALID.getId()) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "The parent group " + parentGroupName + " does not exists");
+			}
 
-            group.getParent().setGroupId(parentGroupId);
-        }
+			parent.setGroupId(parentGroupId);
+		}
 
 		try {
 			session.beginTransaction();
@@ -686,10 +692,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Insert a TagSet
+	 * insert a TagSet
 	 * 
 	 * @param tagset the Set to insert
-	 * @param group the group which owns the tagset
+	 * @param groupname the group which owns the tagset
 	 * @param session
 	 */
 	private void insertTagSet(final TagSet tagset, final String groupname, final DBSession session) {
@@ -719,15 +725,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Deletes a TagSet in the DataBase
 	 * 
 	 * @param setName - the name of the TagSet to delete
-	 * @param group - the group of the TagSet
+	 * @param groupname - the group of the TagSet
 	 * @param session
 	 */
 	private void deleteTagSet(final String setName, final String groupname, final DBSession session) {
 		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
-			throw new RuntimeException(); // never happens but calms down
-											// eclipse
 		}
 		final TagSet tagset = this.getTagSetBySetNameAndGroup(setName, group.getGroupId(), session);
 		if (tagset == null) {
@@ -1053,18 +1057,12 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		this.update("updateGroupPublicationReportingSettings", group, session);
 	}
 
-	/**
-	 * @param userDb the userDb to set
-	 */
-	public void setUserDb(final UserDatabaseManager userDb) {
-		this.userDb = userDb;
-	}
+
 
 	/**
 	 * @param loginUserName
 	 * @param group
 	 * @param session
-	 * @param paramGroup
 	 */
 	public void updateGroupLevelPermissions(final String loginUserName, final Group group, final DBSession session) {
 		try {
@@ -1099,9 +1097,9 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * Restores a group.
+	 * restores a deleted group.
 	 *
-	 * @param groupName
+	 * @param group
 	 * @param session
 	 */
 	public void restoreGroup(final Group group, final DBSession session) {
@@ -1141,6 +1139,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		} finally {
 			session.endTransaction();
 		}
+	}
+
+	/**
+	 * @param userDb the userDb to set
+	 */
+	public void setUserDb(final UserDatabaseManager userDb) {
+		this.userDb = userDb;
 	}
 	
 }
