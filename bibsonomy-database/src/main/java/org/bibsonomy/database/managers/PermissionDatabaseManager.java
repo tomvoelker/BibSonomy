@@ -348,15 +348,26 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		return GroupID.isSpecialGroup(groupName);
 	}
 
+
 	/**
-	 * @param userName
-	 * @param groupName
-	 * @param session
-	 * @return if the given user is a member of the specified group
+	 * Checks whether the user <code>username</code> is a member of <code>groupName</code> or one of its parents.
+	 *
+	 * @param userName a username.
+	 * @param groupName a group name.
+	 * @param session a db session.
+	 *
+	 * @return <code>true</code> if the user is a member of <code>groupName</code> or one of its parents, <code>false</code> otherwise.
 	 */
 	public boolean isMemberOfGroup(final String userName, final String groupName, final DBSession session) {
-		final Integer groupID = this.groupDb.getGroupIdByGroupNameAndUserName(groupName, userName, session);
-		return groupID.intValue() != GroupID.INVALID.getId();
+		// check if user is member of the group
+		final Integer groupID = this.groupDb.getGroupIdByGroupNameAndUserName(groupName, userName, session); //TODO: introduce a new method in groupdbmanager
+		if (groupID.intValue() != GroupID.INVALID.getId()) {
+			return true;
+		} else {
+			// additionally check if the user is a member of one of the parent groups.
+			List<Integer> parentGroupIds = this.groupDb.getParentGroupsWhereUserIsMember(groupName, userName, session);
+			return parentGroupIds.size() > 0;
+		}
 	}
 
 	/**

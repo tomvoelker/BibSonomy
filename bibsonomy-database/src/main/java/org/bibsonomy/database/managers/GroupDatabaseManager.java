@@ -48,6 +48,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagSetParam;
 import org.bibsonomy.database.params.WikiParam;
+import org.bibsonomy.database.params.sane.GetParentGroupIdsRecursively;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Group;
@@ -503,6 +504,21 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		}
 		return rVal;
 	}
+
+	/**
+	 * Recursively finds all parents of <code>groupName</code> that the user <code>username</code> is a member of.
+	 *
+	 * This excludes the group <code>groupName</code> itself!
+	 *
+	 * @param groupName name of the group.
+	 * @param username name of the user.
+	 * @param session a db session.
+	 *
+	 * @return the ids of all parent groups the user is a member of. Or an empy list, if none are found.
+	 */
+	public List<Integer> getParentGroupsWhereUserIsMember(final String groupName, final String username, final DBSession session) {
+	    return this.queryForList("getParentGroupsWhereUserIsMember", new GetParentGroupIdsRecursively(username, groupName), Integer.class, session);
+    }
 
 	/**
 	 * Activates a group.

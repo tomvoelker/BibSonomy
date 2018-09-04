@@ -546,6 +546,23 @@ CREATE TABLE `group_memberships` (
 SET character_set_client = @saved_cs_client;
 
 --
+-- Table structure for table `group_hierarchy`
+-- The table contains ONLY parent-child relations, no self relations, e.g. (1, 1)
+--
+DROP TABLE IF EXISTS `group_hierarchy`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `group_hierarchy` (
+  `child_group_id` int(10) NOT NULL,
+  `parent_group_id` int(10) NOT NULL,
+  FOREIGN KEY (`child_group_id`) REFERENCES `groupids`(`group`),
+  FOREIGN KEY (`parent_group_id`) REFERENCES `groupids`(`group`),
+  INDEX(`child_group_id`),
+  INDEX(`parent_group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `grouptas`
 --
 

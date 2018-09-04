@@ -26,9 +26,11 @@
  */
 package org.bibsonomy.database.managers;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -69,6 +71,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	private ExtendedGroupFixture rootGroupFixture;
 	private ExtendedGroupFixture childGroup1Fixture;
 	private ExtendedGroupFixture childGroup2Fixture;
+	private ExtendedGroupFixture childGroup3Depth2Fixture;
 
 	/**
 	 * sets up the manager
@@ -87,6 +90,8 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				true, null, "Child Group 1", "http://www.bibsonomy.org/group/childgroup1");
 		this.childGroup2Fixture = new ExtendedGroupFixture(11, "childgroup2", Privlevel.MEMBERS, true,
 				true, null, "Child Group 2", "http://www.bibsonomy.org/group/childgroup2");
+		this.childGroup3Depth2Fixture = new ExtendedGroupFixture(12, "childgroup3depth2", Privlevel.MEMBERS, true,
+				true, null, "Child Group 3 Depth 2", "http://www.bibsonomy.org/group/childgroup3depth2");
 	}
 
 	/**
@@ -109,7 +114,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getAllGroups() {
 		final List<Group> allGroups = groupDb.getAllGroups(0, 100, this.dbSession);
-		assertEquals(7, allGroups.size());
+		assertEquals(8, allGroups.size());
 
 		for (final Group group : allGroups) {
 			if (group.getName().startsWith("testgroup")) {
@@ -744,6 +749,30 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		for(Group group: root.getSubgroups()) {
 			assertGroupIsAsExpected(group.getParent(), rootGroupFixture);
 		}
+	}
+
+	@Test
+	public void testGetParentGroupsWhereUserIsMember() {
+		String groupName = this.childGroup1Fixture.getName();
+		String userName = this.rootGroupFixture.getName();
+		Integer parentId = this.rootGroupFixture.getGroupId();
+
+		List<Integer> results = groupDb.getParentGroupsWhereUserIsMember(groupName, userName, dbSession);
+		assertThat(results.size(), equalTo(1));
+		assertThat(results, hasItems(parentId));
+
+		groupName = this.childGroup3Depth2Fixture.getName();
+		results = groupDb.getParentGroupsWhereUserIsMember(groupName, userName, dbSession);
+		assertThat(results.size(), equalTo(1));
+		assertThat(results, hasItems(parentId));
+
+		userName = this.childGroup1Fixture.getName();
+		parentId = this.childGroup1Fixture.getGroupId();
+
+		results = groupDb.getParentGroupsWhereUserIsMember(groupName, userName, dbSession);
+		assertThat(results.size(), equalTo(1));
+		assertThat(results, hasItems(parentId));
+
 	}
 
 

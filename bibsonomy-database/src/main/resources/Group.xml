@@ -126,6 +126,16 @@
 		      </isNotNull>
 	</select>
 
+	<!--
+	 	Selects the ids of all groups that are parents of the given group (by group_name).
+	-->
+	<select id="getParentGroupsWhereUserIsMember" resultClass="int" parameterClass="org.bibsonomy.database.params.sane.GetParentGroupIdsRecursively">
+		SELECT parent_group_id FROM `group_hierarchy` gh
+		  JOIN `groupids` g ON (gh.child_group_id = g.group)
+		  JOIN `group_memberships` gm ON (gm.group = gh.parent_group_id)
+		WHERE g.group_name = #groupname# and gm.user_name = #username#
+	</select>
+
 	<select id="getTagSetsForGroup" resultMap="GroupCommon.tagsets" parameterClass="string">
 		SELECT set_name, tag_name 
 		FROM groupids i
