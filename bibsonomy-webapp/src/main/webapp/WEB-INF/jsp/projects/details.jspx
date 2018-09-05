@@ -77,7 +77,7 @@
 						</c:if>
 						<c:set var="parentProject" value="${project.parentProject}" />
 						<c:if test="${not empty parentProject}">
-							<dt><fmt:message key="project.parentProject"/></dt>
+							<dt><fmt:message key="project.parentproject"/></dt>
 							<dd>
 								<a href="${relativeUrlGenerator.getProjectUrlByProject(parentProject)}">
 									<c:out value="${parentProject.title}" />
@@ -85,7 +85,7 @@
 							</dd>
 						</c:if>
 						<c:if test="${not empty project.subProjects}">
-							<dt><fmt:message key="project.subProjects"/></dt>
+							<dt><fmt:message key="project.subprojects"/></dt>
 							<c:forEach var='subproject' items="${project.subProjects}">
 								<c:set var="projectLink" value="${relativeUrlGenerator.getProjectUrlByProject(subproject)}" />
 								<dd>

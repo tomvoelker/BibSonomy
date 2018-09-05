@@ -12,7 +12,7 @@
     <c:set var="project" value="${command.project}" />
     <layout:paneLayout command="${command}" requPath="${requPath}" showPageOptions="${true}" noSidebar="${true}" activeTab="project" pageTitle="${title}">
         <jsp:attribute name="headerExt">
-               <script type="text/javascript" src="${resdir}/javascript/editProject.js"><!-- keep me --></script>
+               <script type="text/javascript" src="${resdir}/javascript/actions/editProjects.js"><!-- keep me --></script>
         </jsp:attribute>
 
         <jsp:attribute name="heading">

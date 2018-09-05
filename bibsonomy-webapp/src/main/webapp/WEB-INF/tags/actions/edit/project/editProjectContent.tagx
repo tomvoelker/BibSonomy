@@ -1,107 +1,186 @@
 <?xml version="1.0" ?>
 <jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:c="http://java.sun.com/jsp/jstl/core"
-          xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-          xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-          xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
           xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
 
     <jsp:directive.attribute name="project" type="org.bibsonomy.model.cris.Project" required="true" />
 
     <div class="content">
+        <!-- title -->
         <div class="content-heading">
-            <h2 class="project-subtitle">
+            <legend class="project-subtitle">
                 <fmt:message key="project.actions.edit" />
                 <c:out value=" ${project.title}" />
-            </h2>
+            </legend>
         </div>
-        <div class="list-group-item">
-            <form>
-                <dl>
-                    <dt>
-                        <fmt:message key="project.edit.title" />
-                        <c:out value=": " />
-                    </dt>
-                    <dd>
+        <form id="postForm" role="form" class="form-horizontal">
+
+            <!-- edit title-->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">
+                    <fmt:message key="project.title" />
+                </label>
+                <div class="col-sm-9">
                         <c:set var="titlePlaceholder" >
                             <fmt:message key="project.edit.title" />
                         </c:set>
                         <input type="text" class="form-control" value="${project.title}" placeholder="${titlePlaceholder}"/>
-                    </dd>
-                    <br />
-                    <dt>
-                        <fmt:message key="project.edit.subtitle" />
-                        <c:out value=": " />
-                    </dt>
-                    <dd>
-                        <c:set var="subtitlePlaceholder" >
-                            <fmt:message key="project.edit.subtitle" />
-                        </c:set>
-                        <input type="text" class="form-control" value="${project.subTitle}" placeholder="${subtitlePlaceholder}"/>
-                    </dd>
-                    <br />
-                    <dt>
-                        <fmt:message key="project.edit.description" />
-                        <c:out value=": " />
-                    </dt>
-                    <dd>
-                        <c:set var="descriptionPlaceholder" >
-                            <fmt:message key="project.edit.description" />
-                        </c:set>
-                        <input type="text" class="form-control" value="${project.description}" placeholder="${descriptionPlaceholder}"/>
-                    </dd>
-                    <br />
-                    <dt>
-                        <fmt:message key="project.edit.persons" />
-                        <c:out value=": " />
-                    </dt>
-                    <dd>
-                        <c:set var="personPlaceholder" >
-                            <fmt:message key="project.edit.persons" />
-                        </c:set>
-                        <!-- fixme change that to something proper -->
-                        <input type="text" class="form-control" placeholder="${personPlaceholder}"/>
-                    </dd>
-                    <br />
-                    <dt>
-                        <fmt:message key="project.startdate" />
-                        <c:out value=": " />
-                    </dt>
-                    <dd>
-                        <div class="input-group date" data-provide="datepicker">
-                            <c:set var="startdatePlaceholder" >
-                                <fmt:message key="project.startdate" />
-                            </c:set>
-                            <c:set var="startdate">
-                                <fmt:formatDate value="${project.startDate}" pattern="dd.MM.yy" />
-                            </c:set>
-                            <input type="text" class="form-control" value="${startdate}" placeholder="${startdatePlaceholder}"/>
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar"/>
-                            </span>
+                    <!--
+                    <span class="help-block">
+                        <c:out value="This field is required."/>
+                    </span>
+                    -->
+                </div>
+            </div>
+
+            <!-- edit subtitle -->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">
+                    <fmt:message key="project.subtitle" />
+                </label>
+                <div class="col-sm-9">
+                    <fmt:message key="project.edit.subtitle" var="subtitlePlaceholder" />
+                    <input type="text" class="form-control" value="${project.subTitle}" placeholder="${subtitlePlaceholder}"/>
+                </div>
+            </div>
+            <!-- edit description -->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">
+                    <fmt:message key="project.edit.description" />
+                </label>
+                <div class="col-sm-9">
+                    <textarea name="description" id="description" class="form-control" cols="30" rows="4">
+                        <c:out value="${project.description}" />
+                    </textarea>
+                </div>
+            </div>
+
+            <!-- edit involved persons-->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">
+                    <fmt:message key="project.persons" />
+                </label>
+                <div class="col-sm-9">
+                    <fmt:message key="project.edit.persons" var="personPlaceholder" />
+                    <!-- fixme change that to something proper -->
+                    <input type="text" class="form-control" placeholder="${personPlaceholder}"/>
+                </div>
+            </div>
+
+            <!-- edit start date -->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">
+                    <fmt:message key="project.startdate" />
+                </label>
+                <div class="col-sm-9">
+                    <fmt:formatDate value="${project.startDate}" pattern="dd.MM.yyyy" var="startdate" />
+                    <div class="input-group date" id="dp3" data-date="${empty startdate ? '1989-01-01' : startdate}" data-date-format="yyyy-mm-dd" data-date-viewmode="years">
+                        <fmt:message key="project.startdate" var="startdatePlaceholder"/>
+                        <input type="text" class="form-control" value="${startdate}" placeholder="${startdatePlaceholder}" name="project.startdate" />
+                        <span class="input-group-addon"><i class="fa fa-calendar"><!--  --></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- edit end date -->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">
+                    <fmt:message key="project.enddate" />
+                </label>
+                <div class="col-sm-9">
+                    <fmt:formatDate value="${project.endDate}" pattern="dd.MM.yy" var="enddate"/>
+                    <div class="input-group date" id="dp3" data-date="${empty enddate ? '1989-01-01' : enddate}" data-date-format="yyyy-mm-dd" data-date-viewmode="years">
+                    <fmt:message key="project.enddate" var="enddatePlaceholder" />
+                        <input type="text" class="form-control" value="${enddate}" placeholder="${enddatePlaceholder}"/>
+                        <span class="input-group-addon"><i class="fa fa-calendar"><!--  --></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- edit type/founding -->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">
+                    <fmt:message key="project.type" />
+                </label>
+                <div class="col-sm-9">
+                    <fmt:message key="project.type" var="typePlaceholder" />
+                    <input type="text" class="form-control" value="${project.type}" placeholder="${typePlaceholder}"/>
+                </div>
+            </div>
+
+            <!-- edit budget-->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">
+                    <fmt:message key="project.budget" />
+                </label>
+                <div class="col-sm-9">
+                    <fmt:message key="project.budget" var="budgetPlaceholder"/>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <c:out value="€" />
+                        </span>
+                        <input type="text" id="inlineFormInputGroup" class="form-control" value="${project.budget}" placeholder="${budgetPlaceholder}"/>
+                    </div>
+                </div>
+            </div>
+
+            <!-- edit homepage -->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">
+                    <fmt:message key="project.homepage" />
+                </label>
+                <div class="col-sm-9">
+                    <fmt:message key="project.homepage" var="homepagePlaceholder" />
+                    <c:set var="homepage" value="${project.homepage}" />
+                    <a href="${project.homepage}">
+                        <input type="text" class="form-control" value="${homepage}" placeholder="${homepagePlaceholder}"/>
+                    </a>
+                </div>
+            </div>
+
+            <!-- edit parent project -->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">
+                    <fmt:message key="project.parentproject" />
+                </label>
+                <div class="col-sm-9">
+                    <fmt:message key="project.edit.parentproject" var="parentPlaceholder" />
+                    <!-- fixme get all projects and select from them -->
+                    <a href="${relativeUrlGenerator.getProjectUrlByProject(project.parentProject)}">
+                        <input type="text" class="form-control" value="${project.parentProject.title}" placeholder="${parentPlaceholder}"/>
+                    </a>
+                </div>
+            </div>
+
+            <!-- edit sub projects -->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">
+                    <fmt:message key="project.subprojects" />
+                </label>
+                <div class="col-sm-9">
+                    <fmt:message key="project.edit.subproject" var="subprojectsPlaceholder" />
+                    <c:forEach var="subproject" items="${project.subProjects}">
+                    <!-- fixme get list of projects, sanity checks -->
+                        <input type="text" class="subproject-input form-control" value="${subproject.title}" placeholder="${subprojectsPlaceholder}"/>
+                    </c:forEach>
+                    <input type="text" class="form-control subproject-input" placeholder="${subprojectsPlaceholder}"/>
+                </div>
+            </div>
+
+            <!-- save button -->
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-9">
+                    <div class="btn-toolbar cust-btn-toolbar">
+                        <div class="btn-group">
+                            <button value="save" name="" class="btn btn-primary" type="submit">
+                                <span class="button-text">
+                                    <fmt:message key="save" />
+                                </span>
+                            </button>
                         </div>
-                    </dd>
-                    <br />
-                    <dt>
-                        <fmt:message key="project.enddate" />
-                        <c:out value=": " />
-                    </dt>
-                    <dd>
-                        <div class="input-group date" data-provide="datepicker">
-                            <c:set var="enddatePlaceholder" >
-                                <fmt:message key="project.enddate" />
-                            </c:set>
-                            <c:set var="enddate">
-                                <fmt:formatDate value="${project.endDate}" pattern="dd.MM.yy" />
-                            </c:set>
-                            <input type="text" class="form-control" value="${enddate}" placeholder="${enddatePlaceholder}"/>
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar"/>
-                            </span>
-                        </div>
-                    </dd>
-                </dl>
-            </form>
-        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </jsp:root>
