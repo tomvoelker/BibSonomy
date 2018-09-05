@@ -49,6 +49,7 @@ import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagSetParam;
 import org.bibsonomy.database.params.WikiParam;
 import org.bibsonomy.database.params.sane.GetParentGroupIdsRecursively;
+import org.bibsonomy.database.params.sane.InsertParentRelations;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Group;
@@ -521,11 +522,14 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	    return this.queryForList("getParentGroupsWhereUserIsMember", new GetParentGroupIdsRecursively(username, groupName), Integer.class, session);
     }
 
+
 	/**
 	 * Activates a group.
 	 *
-	 * @param groupName
-	 * @param session
+	 * After activation parent relation entries are created.
+	 *
+	 * @param groupName a pending group name.
+	 * @param session a database session.
 	 */
 	public void activateGroup(final String groupName, final DBSession session) {
 		// get the group
@@ -554,18 +558,31 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			// add the requesting user to the group with level ADMINISTRATOR
 			this.addUserToGroup(groupName, groupRequest.getUserName(), false, GroupRole.ADMINISTRATOR, session);
 
+			// add entries to the group_hierarchy table
+
+			Group parent = group.getParent();
+			if (present(parent)) {
+				this.insert(
+						"insertParentRelations",
+						new InsertParentRelations(parent.getGroupId(), group.getGroupId()),
+						session
+				);
+			}
+
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
 	}
 
+
 	/**
-	 * Returns a specific pending group
+	 * Returns a specific pending group. Additionally loads the parent group if it is set.
 	 *
-	 * @param groupname
-	 * @param requestingUser
-	 * @param session
+	 * @param groupname a group name.
+	 * @param requestingUser the requesting user.
+	 * @param session a database session.
+	 *
 	 * @return Returns a {@link Group} object if the group exists otherwise
 	 *         null.
 	 */
@@ -578,14 +595,15 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		final GroupParam groupParam = new GroupParam();
 		groupParam.setUserName(requestingUser);
 		groupParam.setRequestedGroupName(normedGroupName);
+
 		return this.queryForObject("getPendingGroup", groupParam, Group.class, session);
 	}
 
 	/**
 	 * Creates a group in the database.
 	 *
-	 * @param group
-	 * @param session
+	 * @param group a group.
+	 * @param session a database session.
 	 */
 	public void createGroup(final Group group, final DBSession session) {
 		final String groupName = group.getName();

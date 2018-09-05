@@ -28,11 +28,13 @@
 		LIMIT #limit# OFFSET #offset#
 	</select>
 	
-	<select id="getPendingGroup" resultMap="GroupCommon.group" parameterClass="groupParam">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage
+	<select id="getPendingGroup" resultMap="GroupCommon.groupWithParent" parameterClass="groupParam">
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, <include refid="parentColumns" />
 		FROM pending_groupids i 
 		  JOIN pendingUser u ON (i.group_name = u.user_name)
-		WHERE group_name = #requestedGroupName#
+		  LEFT JOIN groupids pt ON (i.parent = pt.group) <!-- join with parent -->
+		  LEFT JOIN user upt ON (upt.user_name = pt.group_name)
+		WHERE i.group_name = #requestedGroupName#
 		<isNotEmpty prepend="AND" property="userName">
 			i.request_user_name = #userName#
 		</isNotEmpty>
@@ -127,7 +129,7 @@
 	</select>
 
 	<!--
-	 	Selects the ids of all groups that are parents of the given group (by group_name).
+	 	Selects the ids of all groups that are parents of the given group where the user is a member (by group_name).
 	-->
 	<select id="getParentGroupsWhereUserIsMember" resultClass="int" parameterClass="org.bibsonomy.database.params.sane.GetParentGroupIdsRecursively">
 		SELECT parent_group_id FROM `group_hierarchy` gh
@@ -287,5 +289,15 @@
 		WHERE i.parent = #groupId#
 		ORDER BY i.group_name
 	</select>
-	
+
+	<!--
+	 	Selects the ids of all groups that are parents of the given group where the user is a member (by group_name).
+	-->
+	<insert id="insertParentRelations" parameterClass="org.bibsonomy.database.params.sane.InsertParentRelations">
+		INSERT INTO `group_hierarchy`
+		  SELECT #childGroupId#, parent_group_id FROM `group_hierarchy` gh
+		    WHERE gh.child_group_id = #parentGroupId#
+		  UNION
+		  SELECT #childGroupId#, #parentGroupId#
+	</insert>
 </sqlMap>
