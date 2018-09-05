@@ -532,10 +532,6 @@
 					<artifactId>xercesImpl</artifactId>
 					<groupId>org.apache.xerces</groupId>
 				</exclusion>
-				<exclusion>
-					<artifactId>commons-httpclient</artifactId>
-					<groupId>commons-httpclient</groupId>
-				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>

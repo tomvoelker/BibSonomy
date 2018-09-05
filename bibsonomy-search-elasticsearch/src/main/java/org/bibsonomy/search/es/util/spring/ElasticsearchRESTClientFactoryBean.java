@@ -25,6 +25,31 @@ public class ElasticsearchRESTClientFactoryBean implements FactoryBean<RestHighL
 	 */
 	private String esAddresses;
 
+	@Deprecated // FIXME: copied from httpHost of httpclient 4 lib; used to also use httpclient3 lib dependencies
+	public static HttpHost create(String s) {
+		String text = s;
+		String scheme = null;
+		int schemeIdx = s.indexOf("://");
+		if (schemeIdx > 0) {
+			scheme = s.substring(0, schemeIdx);
+			text = s.substring(schemeIdx + 3);
+		}
+
+		int port = -1;
+		int portIdx = text.lastIndexOf(":");
+		if (portIdx > 0) {
+			try {
+				port = Integer.parseInt(text.substring(portIdx + 1));
+			} catch (NumberFormatException var7) {
+				throw new IllegalArgumentException("Invalid HTTP host: " + text);
+			}
+
+			text = text.substring(0, portIdx);
+		}
+
+		return new HttpHost(text, port, scheme);
+	}
+
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.FactoryBean#getObject()
 	 */
@@ -34,7 +59,7 @@ public class ElasticsearchRESTClientFactoryBean implements FactoryBean<RestHighL
 		log.info("EsHostss value in Properties:" + this.esAddresses);
 
 		// convert the provided es address string to http hosts
-		final Stream<HttpHost> hostsStream = Arrays.stream(this.esAddresses.split(",")).map(HttpHost::create);
+		final Stream<HttpHost> hostsStream = Arrays.stream(this.esAddresses.split(",")).map(ElasticsearchRESTClientFactoryBean::create);
 
 		final RestClientBuilder builder = RestClient.builder(hostsStream.toArray(HttpHost[]::new));
 		final RestHighLevelClient client = new RestHighLevelClient(builder);
