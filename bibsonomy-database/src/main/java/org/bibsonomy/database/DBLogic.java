@@ -964,7 +964,7 @@ public class DBLogic implements LogicInterface {
 				return this.groupDBManager.getPendingGroup(groupName, requestingUser, session);
 			}
 
-			final Group myGroup = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, true, this.permissionDBManager.isAdmin(this.loginUser), session);
+			final Group myGroup = this.groupDBManager.getGroup(this.loginUser.getName(), groupName, true, this.permissionDBManager.isAdmin(this.loginUser), session);
 			if (!GroupUtils.isValidGroup(myGroup)) {
 				return null;
 			}
@@ -1101,7 +1101,7 @@ public class DBLogic implements LogicInterface {
 		try {
 			session.beginTransaction();
 			// make sure that the group exists
-			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, true, true, session);
+			final Group group = this.groupDBManager.getGroup(this.loginUser.getName(), groupName, true, true, session);
 
 			if (!present(group)) {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') doesn't exist");
@@ -1368,7 +1368,7 @@ public class DBLogic implements LogicInterface {
 			session.beginTransaction();
 
 			// check the groups existence and retrieve the current group
-			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, false, this.permissionDBManager.isAdmin(this.loginUser), session);
+			final Group group = this.groupDBManager.getGroup(this.loginUser.getName(), groupName, false, this.permissionDBManager.isAdmin(this.loginUser), session);
 			if (!GroupUtils.isValidGroup(group) && !(GroupUpdateOperation.ACTIVATE.equals(operation) || GroupUpdateOperation.DELETE_GROUP_REQUEST.equals(operation))) {
 				throw new IllegalArgumentException("Group does not exist");
 			}
