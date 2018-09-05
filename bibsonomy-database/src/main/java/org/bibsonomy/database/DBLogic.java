@@ -1106,6 +1106,10 @@ public class DBLogic implements LogicInterface {
 			if (!present(group)) {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') doesn't exist");
 			}
+
+			if (present(group.getParent()) || present(group.getSubgroups())) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') is part of a hierarchy and can't be deleted.");
+			}
 			
 			if (!quickDelete) {
 				// ensure that the group has no members except the admin (please not the group user of older groups has role ADMIN)
