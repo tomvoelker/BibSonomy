@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
-<!--FIXME: do we really selects -->
+<!--FIXME: do we really use selects to query the database?-->
 <sqlMap namespace="PersonCommon">
 	<resultMap id="abstractPerson" class="person" groupBy="personId">
 		<result property="personChangeId"   column="p_person_change_id"    javaType="int" />
@@ -37,7 +37,7 @@
 		<result property="names" resultMap="PersonCommon.simplePersonName" />
 	</resultMap>
 
-	<resultMap id="personName" class="person" groupBy="personNameChangeId">
+	<resultMap id="personName" class="personName" groupBy="personNameChangeId">
 		<result property="personNameChangeId"  column="n_person_change_id"  javaType="int" />
 		<result property="firstName"       column="first_name"        javaType="string" />
 		<result property="lastName"        column="last_name"         javaType="string" />

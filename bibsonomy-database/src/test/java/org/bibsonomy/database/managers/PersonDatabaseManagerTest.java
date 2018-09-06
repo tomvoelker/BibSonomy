@@ -51,6 +51,7 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.testutil.TestUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -60,14 +61,21 @@ import org.junit.Test;
  * @author mho
  */
 public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
-	private static final PersonDatabaseManager PERSON_DATABASE_MANAGER = PersonDatabaseManager.getInstance();
-	private static final BibTexDatabaseManager PUBLICATION_DATABASE_MANAGER = BibTexDatabaseManager.getInstance();
-	private static final GoldStandardPublicationDatabaseManager COMMUNITY_DATABASE_MANAGER = GoldStandardPublicationDatabaseManager.getInstance();
+	private static PersonDatabaseManager PERSON_DATABASE_MANAGER;
+	private static BibTexDatabaseManager PUBLICATION_DATABASE_MANAGER;
+	private static GoldStandardPublicationDatabaseManager COMMUNITY_DATABASE_MANAGER;
 	
 	private static final User loginUser = new User("testuser1");
 	
 	private Person testPerson;
 	private static boolean initialized = false;
+
+	@BeforeClass
+	public static void setupManagers() {
+		PERSON_DATABASE_MANAGER = testDatabaseContext.getBean(PersonDatabaseManager.class);
+		PUBLICATION_DATABASE_MANAGER = testDatabaseContext.getBean(BibTexDatabaseManager.class);
+		COMMUNITY_DATABASE_MANAGER = testDatabaseContext.getBean(GoldStandardPublicationDatabaseManager.class);
+	}
 	
 	/**
 	 * Initializes the test environment for this class
@@ -190,7 +198,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			if (match.getMatchID() == 4) {
 				//conflcit for merge remains
 				assertTrue(!PERSON_DATABASE_MANAGER.mergeSimilarPersons(match, loginUser.getName(), this.dbSession));
-				Map<String, String> map = new HashMap<String, String>();
+				Map<String, String> map = new HashMap<>();
 				String newPage = null;
 				for(PersonMergeFieldConflict conflict : mergeConflicts.get(4)) {
 					map.put(conflict.getFieldName(), conflict.getPerson2Value());
