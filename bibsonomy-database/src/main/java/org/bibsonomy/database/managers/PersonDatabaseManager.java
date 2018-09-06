@@ -45,8 +45,10 @@ import org.bibsonomy.common.errors.MissingObjectErrorMessage;
 import org.bibsonomy.common.exceptions.DuplicateEntryException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.enums.CRISEntityType;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.params.CRISLinkParam;
 import org.bibsonomy.database.params.DNBAliasParam;
 import org.bibsonomy.database.params.DenyMatchParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
@@ -59,6 +61,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
@@ -964,12 +967,24 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	@Override
 	public Integer getIdForLinkable(final Person linkable, final DBSession session) {
+		final Integer loadedId = linkable.getPersonChangeId();
+		if (present(loadedId)) {
+			return loadedId;
+		}
 		final Person person = this.getPersonById(linkable.getPersonId(), session);
 		if (present(person)) {
 			return person.getPersonChangeId();
 		}
 
 		return null;
+	}
+
+	@Override
+	public List<CRISLink> getLinksForSource(final Integer linkId, final CRISEntityType crisEntityType, final DBSession session) {
+		final CRISLinkParam param = new CRISLinkParam();
+		param.setSourceId(linkId.intValue());
+		param.setSourceType(crisEntityType);
+		return this.queryForList("getPersonCRISLinks", param, CRISLink.class, session);
 	}
 
 	/**

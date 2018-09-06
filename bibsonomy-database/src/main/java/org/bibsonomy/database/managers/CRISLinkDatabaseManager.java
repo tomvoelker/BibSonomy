@@ -127,6 +127,30 @@ public class CRISLinkDatabaseManager extends AbstractDatabaseManager {
 		return crisLink;
 	}
 
+	/**
+	 * loads all links for the provided linkable and the provided linkable
+	 * @param linkable
+	 * @param linksToload
+	 * @param session
+	 * @return
+	 */
+	public List<CRISLink> loadCRISLinks(Linkable linkable, List<Class<? extends Linkable>> linksToload, final DBSession session) {
+		final List<CRISLink> allLinks = new LinkedList<>();
+
+		final CRISEntityType crisEntityType = CRISEntityType.getCRISEntityType(linkable.getClass());
+
+		final Integer linkId = getLinkEntityId(linkable, session);
+
+		for (Class<? extends Linkable> linkToLoad : linksToload) {
+			final LinkableDatabaseManager<? extends Linkable> linkableDatabaseManager = this.crisManagers.get(linkToLoad);
+			final List<CRISLink> links = linkableDatabaseManager.getLinksForSource(linkId, crisEntityType, session);
+
+			allLinks.addAll(links);
+		}
+
+		return allLinks;
+	}
+
 	private ErrorAwareResult<CRISLinkParam> createParam(final CRISLink link, User loginUser, final DBSession session) {
 		final Linkable source = link.getSource();
 		final Linkable target = link.getTarget();

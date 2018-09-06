@@ -335,6 +335,7 @@
 
 	<bean id="projectDatabaseManager" class="org.bibsonomy.database.managers.ProjectDatabaseManager">
 		<property name="generalDatabaseManager" ref="generalDatabaseManager" />
+		<property name="crisLinkDatabaseManager" ref="crisLinkDatabaseManger" />
 		<property name="plugins" ref="databasePluginManager" />
 		<property name="validator" ref="projectValidator" />
 		<property name="chain" ref="projectChain" />

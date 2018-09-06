@@ -1,7 +1,11 @@
 package org.bibsonomy.database.managers;
 
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.enums.CRISEntityType;
+import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Linkable;
+
+import java.util.List;
 
 /**
  * common method for a Database manager that is responsible for a {@link org.bibsonomy.model.cris.Linkable} cris entity
@@ -16,5 +20,7 @@ public interface LinkableDatabaseManager<L extends Linkable> {
 	 * @param session
 	 * @return the database id of the entity
 	 */
-	public Integer getIdForLinkable(final L linkable, final DBSession session);
+	Integer getIdForLinkable(final L linkable, final DBSession session);
+
+	List<CRISLink> getLinksForSource(Integer linkId, CRISEntityType crisEntityType, DBSession session);
 }

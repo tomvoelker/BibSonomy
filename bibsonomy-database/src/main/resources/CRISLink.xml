@@ -27,8 +27,16 @@
     </delete>
 
     <select id="getCRISLinkDetails" parameterClass="crisLinkParam" resultMap="CRISLinkCommon.simpleCrisLink">
-        SELECT id, start_date, end_date, linktype_type, linktype_value, link_source
+        SELECT <include refid="simpleCRISColumns" />
           FROM cris_links
           WHERE source_id = #sourceId# AND source_type = #sourceType.id# AND target_id = #targetId# AND target_type = #targetType.id#
+    </select>
+
+    <select id="getPersonCRISLinks" parameterClass="crisLinkParam" resultMap="CRISLinkCommon.personCrisLink">
+        SELECT <include refid="simpleCRISColumns" />, p.person_id, p.academic_degree, pn.person_change_id AS person_name_change_id, pn.first_name, pn.last_name
+          FROM cris_links
+            JOIN person p ON(p.person_change_id = target_id)
+            JOIN person_name pn USING(person_id)
+          WHERE source_id = #sourceId# and source_type = #sourceType.id#
     </select>
 </sqlMap>
