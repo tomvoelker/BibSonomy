@@ -60,6 +60,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -77,20 +78,7 @@ import org.bibsonomy.rest.client.queries.delete.DeleteSyncDataQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteUserQuery;
 import org.bibsonomy.rest.client.queries.delete.RemoveUserFromGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.UnpickClipboardQuery;
-import org.bibsonomy.rest.client.queries.get.GetConceptDetailsQuery;
-import org.bibsonomy.rest.client.queries.get.GetFriendsQuery;
-import org.bibsonomy.rest.client.queries.get.GetGroupDetailsQuery;
-import org.bibsonomy.rest.client.queries.get.GetGroupListQuery;
-import org.bibsonomy.rest.client.queries.get.GetLastSyncDataQuery;
-import org.bibsonomy.rest.client.queries.get.GetPostDetailsQuery;
-import org.bibsonomy.rest.client.queries.get.GetPostDocumentQuery;
-import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
-import org.bibsonomy.rest.client.queries.get.GetTagDetailsQuery;
-import org.bibsonomy.rest.client.queries.get.GetTagRelationQuery;
-import org.bibsonomy.rest.client.queries.get.GetTagsQuery;
-import org.bibsonomy.rest.client.queries.get.GetUserDetailsQuery;
-import org.bibsonomy.rest.client.queries.get.GetUserListOfGroupQuery;
-import org.bibsonomy.rest.client.queries.get.GetUserListQuery;
+import org.bibsonomy.rest.client.queries.get.*;
 import org.bibsonomy.rest.client.queries.post.AddUsersToGroupQuery;
 import org.bibsonomy.rest.client.queries.post.CreateConceptQuery;
 import org.bibsonomy.rest.client.queries.post.CreateGroupQuery;
@@ -541,5 +529,10 @@ public class RestLogic extends AbstractLogicInterface {
 	@Override
 	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) {
 		execute(new CreateResourcePersonRelationQuery(resourcePersonRelation));
+	}
+
+	@Override
+	public Person getPersonById(PersonIdType idType, String id) {
+		return execute(new GetPersonByIdQuery(id));
 	}
 }
