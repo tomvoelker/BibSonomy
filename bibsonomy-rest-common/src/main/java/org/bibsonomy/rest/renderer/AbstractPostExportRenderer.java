@@ -184,7 +184,7 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	 */
 	@Override
 	public void serializePersonId(Writer writer, String personId) {
-		handleUnsupportedMediaType();
+		this.handleUnsupportedMediaType();
 	}
 
 	/* (non-Javadoc)
@@ -192,7 +192,12 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	 */
 	@Override
 	public void serializeResourcePersonRelationId(Writer writer, String resourcePersonRelationId) {
-		handleUnsupportedMediaType();
+		this.handleUnsupportedMediaType();
+	}
+
+	@Override
+	public void serializeResourcePersonRelations(Writer writer, List<ResourcePersonRelation> relations) {
+		this.handleUnsupportedMediaType();
 	}
 
 	/* (non-Javadoc)
@@ -336,6 +341,11 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	 */
 	@Override
 	public ResourcePersonRelation parseResourcePersonRelation(Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<ResourcePersonRelation> parseResourcePersonRelations(Reader reader) {
 		throw new UnsupportedOperationException();
 	}
 

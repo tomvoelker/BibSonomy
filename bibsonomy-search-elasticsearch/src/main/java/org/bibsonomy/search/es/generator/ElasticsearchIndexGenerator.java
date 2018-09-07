@@ -138,6 +138,7 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 				}
 				
 				if (isNotSpammer(post)) {
+					log.debug("converting post " + post.getContentId() + " " + post.getResource().getIntraHash());
 					final Map<String, Object> convertedPost = this.tools.getConverter().convert(post);
 					docsToWrite.put(ElasticsearchUtils.createElasticSearchId(post.getContentId().intValue()), convertedPost);
 				}

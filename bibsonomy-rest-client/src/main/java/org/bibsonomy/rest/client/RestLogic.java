@@ -62,6 +62,7 @@ import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationData;
@@ -71,6 +72,7 @@ import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.auth.AuthenticationAccessor;
+import org.bibsonomy.rest.client.queries.get.GetResourcePersonRelationsQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostDocumentQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostQuery;
@@ -164,6 +166,14 @@ public class RestLogic extends AbstractLogicInterface {
 
 		this.authUser = loggedinUser;
 		this.accessor = accessor;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.util.AbstractLogicInterface#doDefaultAction()
+	 */
+	@Override
+	protected void doDefaultAction() {
+		throw new UnsupportedOperationException();
 	}
 
 	private <T> T execute(final AbstractQuery<T> query) {
@@ -512,13 +522,23 @@ public class RestLogic extends AbstractLogicInterface {
 		
 		this.execute(new ChangeDocumentNameQuery(userName, resourceHash, documentName, document));
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.util.AbstractLogicInterface#doDefaultAction()
-	 */
+
 	@Override
-	protected void doDefaultAction() {
-		throw new UnsupportedOperationException();
+	public Person getPersonById(PersonIdType idType, String id) {
+		if (!PersonIdType.PERSON_ID.equals(idType)) {
+			this.doDefaultAction();
+		}
+		return execute(new GetPersonByIdQuery(id));
+	}
+
+	@Override
+	public ResourcePersonRelationQueryBuilder getResourceRelations() {
+		return new ResourcePersonRelationQueryBuilder() {
+			@Override
+			public List<ResourcePersonRelation> getIt() {
+				return RestLogic.this.execute(new GetResourcePersonRelationsQuery(this.getPersonId()));
+			}
+		};
 	}
 
 	@Override
@@ -529,10 +549,5 @@ public class RestLogic extends AbstractLogicInterface {
 	@Override
 	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) {
 		execute(new CreateResourcePersonRelationQuery(resourcePersonRelation));
-	}
-
-	@Override
-	public Person getPersonById(PersonIdType idType, String id) {
-		return execute(new GetPersonByIdQuery(id));
 	}
 }

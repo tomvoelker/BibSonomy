@@ -16,20 +16,22 @@ import static org.bibsonomy.util.ValidationUtils.present;
 public class GetPersonByIdQuery extends AbstractQuery<Person> {
     private final String id;
 
-    public GetPersonByIdQuery(String id) {
+    public GetPersonByIdQuery(final String id) {
         if (!present(id)) throw new IllegalArgumentException("no id given");
         this.id = id;
     }
 
     @Override
     protected void doExecute() throws ErrorPerformingRequestException {
-        final String url = getUrlRenderer().createUrlBuilderForPersons(id).asString();
-        downloadedDocument = performGetRequest(url);
+        final String url = getUrlRenderer().createUrlBuilderForPersons(this.id).asString();
+        this.downloadedDocument = performGetRequest(url);
     }
 
     @Override
     protected Person getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
-        if (getHttpStatusCode() == HttpStatus.SC_NOT_FOUND) return null;
-        return getRenderer().parsePerson(downloadedDocument);
+        if (this.getHttpStatusCode() == HttpStatus.SC_NOT_FOUND) {
+            return null;
+        }
+        return this.getRenderer().parsePerson(this.downloadedDocument);
     }
 }

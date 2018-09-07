@@ -69,7 +69,7 @@ public final class RESTConfig {
 
 	public static final String TAGS_URL = "tags";
 	
-	public static final String RELATION_PARAM = "relation";
+	public static final String RELATION_PARAM = "relations";
 
 	public static final String REFERENCES_SUB_PATH = "references";
 	

@@ -138,6 +138,13 @@ public interface Renderer {
 	public void serializeResourcePersonRelation(Writer writer, ResourcePersonRelation resourcePersonRelation, ViewModel viewModel);
 
 	/**
+	 * Serializes a list of {@link ResourcePersonRelation}.
+	 * @param writer
+	 * @param relations
+	 */
+	void serializeResourcePersonRelations(Writer writer, List<ResourcePersonRelation> relations);
+
+	/**
 	 * Serializes a personid
 	 *
 	 * @param writer   the {@link Writer} to use.
@@ -422,6 +429,13 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public ResourcePersonRelation parseResourcePersonRelation(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads a list of {@link ResourcePersonRelation}s from a {@link Reader}.
+	 * @param reader  the {@link Reader} to use.
+	 * @return a list of {@link ResourcePersonRelation}s
+	 */
+	List<ResourcePersonRelation> parseResourcePersonRelations(Reader reader);
 
 	/**
 	 * Reads a List of {@link Post}s from a {@link Reader}.
