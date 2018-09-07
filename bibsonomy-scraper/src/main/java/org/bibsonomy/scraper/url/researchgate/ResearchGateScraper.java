@@ -26,8 +26,7 @@ public class ResearchGateScraper extends GenericBibTeXURLScraper {
 
 	private static final String INFO = "Scraper for references from " + href(SITE_URL, SITE_NAME) + ".";
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Arrays.asList(
-					new Pair<>(Pattern.compile(HOST), Pattern.compile("/publication/.*")),
-					new Pair<>()
+					new Pair<>(Pattern.compile(HOST), Pattern.compile("/publication/.*"))
 	);
 
 	private static final Pattern ID_PATTERN = Pattern.compile("/publication/([0-9]+)_.*");
