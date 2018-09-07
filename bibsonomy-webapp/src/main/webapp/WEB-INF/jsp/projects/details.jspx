@@ -6,7 +6,8 @@
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
 		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-          xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
+          xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
+          xmlns:members="urn:jsptagdir:/WEB-INF/tags/project">
 
     <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
     <c:set var="project" value="${command.project}" />
@@ -44,9 +45,13 @@
 							<c:out value="${project.subTitle}" />
 						</small>
 					</c:if>
-                    <p class="project-authors">
-                        <c:out value="Insert Authors here"/>
-				    </p>
+
+                    <!-- show member -->
+                    <c:if test="${not empty project.crisLinks}">
+                        <div class="project-authors">
+                            <members:memberList project="${project}" />
+                        </div>
+                    </c:if>
                 </div>
 			</div>
 

@@ -1,22 +1,22 @@
 <?xml version="1.0" ?>
 
 <jsp:root version="2.0"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
-	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
-	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
-	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
-	xmlns:bsold="urn:jsptagdir:/WEB-INF/tags/bs"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:per="urn:jsptagdir:/WEB-INF/tags/person">
+          xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+          xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+          xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+          xmlns:spring="http://www.springframework.org/tags"
+          xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
+          xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
+          xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
+          xmlns:bsold="urn:jsptagdir:/WEB-INF/tags/bs"
+          xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+          xmlns:form="http://www.springframework.org/tags/form"
+          xmlns:per="urn:jsptagdir:/WEB-INF/tags/person">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
@@ -136,7 +136,7 @@
 									<c:set var="collapseID" value="${collapseID + 1}"/>
 									<c:if test="${fn:length(rel.value) gt 0}">
 										<a class="btn btn-default btn-xs" style="float: right;" aria-expanded="false" data-toggle="collapse" href="#collapse_${collapseID}">
-         										<span class="fa fa-expand"></span>
+                                            <span class="fa fa-expand"></span>
        									</a>        									
        									<div id="collapse_${collapseID}" class="collapse collapsingOverflow simplePub">
 											<c:forEach var="posts" items="${rel.value}">
@@ -189,7 +189,7 @@
 			</div>
 		</jsp:attribute>
 
-				<!-- create new person for this publication -->
+                <!-- create new person for this publication -->
 				<fmt:message var="otherPersonModalTitle" key="disambiguation.otherPerson.modal.title"/>
 				<bsold:modal modalTitle="${otherPersonModalTitle}" id="otherPerson">
 					<jsp:attribute name="modalBody">
@@ -270,11 +270,8 @@
 								<a href='#tmp' id='linkShowPerson' type="button" class="btn btn-default pull-right" style="margin-right: 1em;"><fmt:message key="disambiguation.link.modal.viewButton"/></a>
 							</div>
 						</div>
-
-					</jsp:attribute>
+                    </jsp:attribute>
 				</bsold:modal>
-			</div>
-		</jsp:attribute>
 
 		<jsp:attribute name="sidebar">
 			<sidebar:sidebarItem textKey="disambiguation.title">
