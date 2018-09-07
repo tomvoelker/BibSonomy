@@ -862,16 +862,16 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private Person createPerson(PersonType personType) {
 		final Person person = new Person();
-		person.setMainName(createPersonName(personType.getMainName()));
+		if (personType.getMainName() != null) {
+			person.setMainName(createPersonName(personType.getMainName()));
+		}
 		if (personType.getCollege() != null) {
 			person.setCollege(personType.getCollege());
 		}
 		if (personType.getAcademicDegree() != null) {
 			person.setAcademicDegree(personType.getAcademicDegree());
 		}
-		if (personType.getPersonId() != null) {
-			person.setPersonId(personType.getPersonId());
-		}
+		person.setPersonId(personType.getPersonId());
 		return person;
 	}
 
