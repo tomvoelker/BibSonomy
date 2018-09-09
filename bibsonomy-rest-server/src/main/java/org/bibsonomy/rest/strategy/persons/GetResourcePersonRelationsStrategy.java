@@ -10,7 +10,7 @@ import java.io.Writer;
 import java.util.List;
 
 /**
- * a list of resource person relations
+ * strategy to get a list of resource person relations
  *
  * @author dzo, pda
  */
@@ -35,8 +35,7 @@ public class GetResourcePersonRelationsStrategy extends AbstractGetListStrategy<
 
 	@Override
 	protected List<ResourcePersonRelation> getList() {
-
-		return this.getLogic().getResourceRelations().byPersonId(this.personId).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
+		return this.getLogic().getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(this.personId).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear));
 	}
 
 	@Override

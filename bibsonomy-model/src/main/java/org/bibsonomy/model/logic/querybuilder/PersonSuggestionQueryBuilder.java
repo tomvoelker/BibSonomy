@@ -36,9 +36,8 @@ import org.bibsonomy.model.ResourcePersonRelation;
  *
  * @author jensi
  */
-public abstract class PersonSuggestionQueryBuilder extends AbstractSuggestionQueryBuilder<PersonSuggestionQueryBuilder> {
-	
-	
+public class PersonSuggestionQueryBuilder extends AbstractSuggestionQueryBuilder<PersonSuggestionQueryBuilder> {
+
 	private boolean preferUnlinked;
 	private boolean allowNamesWithoutEntities = true;
 
@@ -49,11 +48,6 @@ public abstract class PersonSuggestionQueryBuilder extends AbstractSuggestionQue
 		super(query);
 	}
 	
-	/**
-	 * @return the result of the processed query
-	 */
-	public abstract List<ResourcePersonRelation> doIt();
-	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.querybuilder.AbstractSuggestionQueryBuilder#getThis()
 	 */
@@ -63,7 +57,7 @@ public abstract class PersonSuggestionQueryBuilder extends AbstractSuggestionQue
 	}
 
 	/**
-	 * @param b
+	 * @param preferUnlinked
 	 * @return
 	 */
 	public PersonSuggestionQueryBuilder preferUnlinked(boolean preferUnlinked) {
@@ -79,7 +73,7 @@ public abstract class PersonSuggestionQueryBuilder extends AbstractSuggestionQue
 	 * @param allowNamesWithoutEntities - whether the query response may contain names of bibtex-authors/editors that are not associated to a person entity.
 	 * @return this
 	 */
-	public AbstractSuggestionQueryBuilder<PersonSuggestionQueryBuilder> allowNamesWithoutEntities(boolean allowNamesWithoutEntities) {
+	public PersonSuggestionQueryBuilder allowNamesWithoutEntities(boolean allowNamesWithoutEntities) {
 		this.allowNamesWithoutEntities = allowNamesWithoutEntities;
 		return this;
 	}

@@ -165,7 +165,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
 	 */
 	@Override
-	public PersonSuggestionQueryBuilder getPersonSuggestion(String queryString) {
+	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder builder) {
 		this.doDefaultAction();
 		return null;
 	}
@@ -174,7 +174,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations()
 	 */
 	@Override
-	public ResourcePersonRelationQueryBuilder getResourceRelations() {
+	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQueryBuilder builder) {
 		this.doDefaultAction();
 		return null;
 	}

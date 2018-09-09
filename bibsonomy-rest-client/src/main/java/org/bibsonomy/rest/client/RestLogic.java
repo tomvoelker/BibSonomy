@@ -532,13 +532,8 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public ResourcePersonRelationQueryBuilder getResourceRelations() {
-		return new ResourcePersonRelationQueryBuilder() {
-			@Override
-			public List<ResourcePersonRelation> getIt() {
-				return RestLogic.this.execute(new GetResourcePersonRelationsQuery(this.getPersonId()));
-			}
-		};
+	public List<ResourcePersonRelation> getResourceRelations(final ResourcePersonRelationQueryBuilder builder) {
+		return this.execute(new GetResourcePersonRelationsQuery(builder.getPersonId()));
 	}
 
 	@Override

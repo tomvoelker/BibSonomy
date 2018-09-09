@@ -111,7 +111,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 		final PersonResourceRelationType requestedRole = command.getRequestedRole();
 		final int requestedIndex = command.getRequestedIndex().intValue();
 		
-		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations().byInterhash(command.getPost().getResource().getInterHash()).byRelationType(requestedRole).byAuthorIndex(requestedIndex).getIt();
+		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byInterhash(command.getPost().getResource().getInterHash()).byRelationType(requestedRole).byAuthorIndex(requestedIndex));
 		if (matchingRelations.size() > 0 ) {
 			// FIXME: cache urlgenerator
 			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingRelations.get(0).getPerson().getPersonId()));
@@ -134,8 +134,8 @@ public class DisambiguationPageController extends SingleResourceListController i
 		// FIXME: move escape to es module
 		final String name = QueryParser.escape(BibTexUtils.cleanBibTex(requestedName.toString()));
 		
-		PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
-		List<ResourcePersonRelation> suggestedPersons = query.doIt();		
+		final PersonSuggestionQueryBuilder query = new PersonSuggestionQueryBuilder(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
+		List<ResourcePersonRelation> suggestedPersons = this.logic.getPersonSuggestion(query);
 			
 		/*
 		 * FIXME: use author-parameter in getPosts method
@@ -167,7 +167,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 			if (!suggestedPerson.getPerson().getMainName().toString().equals(name))
 				continue;
 			
-			List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(suggestedPerson.getPerson().getPersonId()).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
+			List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(suggestedPerson.getPerson().getPersonId()).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear));
 			List<Post<?>> personPosts = new ArrayList<>();
 
 			for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
