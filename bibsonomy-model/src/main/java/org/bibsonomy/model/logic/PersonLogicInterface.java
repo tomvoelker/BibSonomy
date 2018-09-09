@@ -61,14 +61,7 @@ public interface PersonLogicInterface {
      */
 	public String createOrUpdatePerson(Person person);
 	
-	public Person getPersonById(PersonIdType idType, String id);
-
-	/**
-	 * Returns the Person claimed by a given UserName
-	 * @param userName	the name of the user
-	 * @return	a Person object in case the user has claimed a person, null otherwise
-	 */
-	public Person getPersonByUser(String userName);
+	Person getPersonById(PersonIdType idType, String id);
 	
 	/**
 	 * FIXME: remove database id TODO_PERSONS

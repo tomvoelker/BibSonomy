@@ -47,6 +47,7 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ScraperMetadata;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -124,7 +125,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		final String loggedInUserName = loginUser.getName();
 		command.setUserFriends(this.logic.getUserRelationship(loggedInUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
 		command.setFriendsOfUser(this.logic.getUserRelationship(loggedInUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
-		command.setClaimedPerson(this.logic.getPersonByUser(loggedInUserName));
+		command.setClaimedPerson(this.logic.getPersonById(PersonIdType.USER, loggedInUserName));
 	}
 
 	@Override
