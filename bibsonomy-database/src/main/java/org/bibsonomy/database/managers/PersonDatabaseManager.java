@@ -381,7 +381,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	public void removePersonName(int personNameChangeId, String loginUser, DBSession databaseSession) {
 		databaseSession.beginTransaction();
 		try {
-			PersonName person = new PersonName();
+			final PersonName person = new PersonName();
 			person.setPersonNameChangeId(personNameChangeId);
 			person.setChangedAt(new Date());
 			person.setChangedBy(loginUser);
@@ -505,21 +505,10 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 *
-	 * @param personID
 	 * @return a list of all matches
 	 */
 	public List<PersonMatch> getMatches(DBSession session) {
 		return this.queryForList("getMatches", null, PersonMatch.class, session);
-	}
-
-	/**
-	 *
-	 * @param personid
-	 * @return a list of all matches for a person
-	 */
-	public List<PersonMatch> getMatchesFor(String personid, DBSession session) {
-		return this.queryForList("getMatchesFor", personid, PersonMatch.class, session);
 	}
 
 	/**
@@ -570,9 +559,13 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	private void mergeAllPubs(PersonMatch match, String loginUser, DBSession session) {
-		List<ResourcePersonRelation> allRelationsPerson2 = this.queryForList("getResourcePersonRelationsByPersonId", match.getPerson2().getPersonId(), ResourcePersonRelation.class, session);
+		/*
+		 * update the resource person relations by setting the person id to the new person id
+		 * person2 will be merged into person1
+		 */
+		final List<ResourcePersonRelation> allRelations = this.queryForList("getResourcePersonRelationsByPersonId", match.getPerson2().getPersonId(), ResourcePersonRelation.class, session);
 
-		for (ResourcePersonRelation relation : allRelationsPerson2) {
+		for (ResourcePersonRelation relation : allRelations) {
 			// generate new person_change_id and log the old relation
 			this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
 			this.insert("logPubPersonUpdates", relation.getPersonRelChangeId(), session);
@@ -721,7 +714,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 */
 	private void mergeMerges(String personId, DBSession session, String userName) {
 		List<PersonMatch> matches = this.getMatchesFor(session, personId);
-		List<PersonMatch> dupes = new LinkedList<PersonMatch>();
+		List<PersonMatch> dupes = new LinkedList<>();
 		// get all duplicate matches
 		// one copy remains because j is always bigger than i
 		for (int i = 0; i < matches.size() - 1; i++) {
@@ -785,7 +778,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * add user to the deny list of a match denys a match for all if a threshold
 	 * is reached
 	 *
-	 * @param matchID
+	 * @param match
+	 * @param userName
 	 * @param session
 	 */
 	public void denyMatch(PersonMatch match, DBSession session, String userName) {
