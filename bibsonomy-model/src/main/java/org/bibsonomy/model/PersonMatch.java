@@ -47,8 +47,10 @@ import org.bibsonomy.util.ValidationUtils;
  * @author jhi
  */
 public class PersonMatch implements Serializable {
-	private static final Log log = LogFactory.getLog(PersonMatch.class);
 	private static final long serialVersionUID = -470932185819510145L;
+
+	private static final Log log = LogFactory.getLog(PersonMatch.class);
+
 	public static final int denieThreshold = 5;
 	
 	private Person person1;
@@ -166,10 +168,10 @@ public class PersonMatch implements Serializable {
 	public static Map<Integer, PersonMergeFieldConflict[]> getMergeConflicts(List<PersonMatch> matches){
 		//A map with a list of conflicts for every match of a person
 		//If a match does not have any conflict it has an entry with an empty list
-		Map<Integer, PersonMergeFieldConflict[]> map = new HashMap<Integer, PersonMergeFieldConflict[]>();
+		Map<Integer, PersonMergeFieldConflict[]> map = new HashMap<>();
 		for(PersonMatch match : matches){
 			//the list of all fields that are holding a conflict
-			List<PersonMergeFieldConflict> conflictFields = new LinkedList<PersonMergeFieldConflict>();
+			List<PersonMergeFieldConflict> conflictFields = new LinkedList<>();
 			try {
 				for (String fieldName : Person.fieldsWithResolvableMergeConflicts) {
 					PropertyDescriptor desc = new PropertyDescriptor(fieldName, Person.class);
@@ -178,7 +180,7 @@ public class PersonMatch implements Serializable {
 					if (person1Value != null && person2Value != null) {
 						//test if the values are different and add them to the list
 						if (person1Value.getClass().equals(String.class)) {
-							if (!((String) person1Value).equals((String) person2Value)) {
+							if (!(person1Value).equals(person2Value)) {
 								conflictFields.add(new PersonMergeFieldConflict(fieldName, (String)person1Value, (String)person2Value));
 							}
 						} else if (person1Value.getClass().equals(PersonName.class)) {
@@ -188,7 +190,7 @@ public class PersonMatch implements Serializable {
 								conflictFields.add(new PersonMergeFieldConflict(fieldName, person1Name, person2Name));
 							}
 						} else if (person1Value.getClass().equals(Gender.class)) {
-							if (!((Gender) person1Value).equals((Gender) person2Value)) {
+							if (!(person1Value).equals(person2Value)) {
 								conflictFields.add(new PersonMergeFieldConflict(fieldName, ((Gender) person1Value).name(), ((Gender) person2Value).name()));
 							}
 						} else {
@@ -208,6 +210,7 @@ public class PersonMatch implements Serializable {
 	}
 	
 	/**
+	 * FIXME cant be done here
 	 * tests if the merge can be performed without a conflict on user claims
 	 * @param loginUser
 	 * @return
@@ -226,7 +229,7 @@ public class PersonMatch implements Serializable {
 		} else {
 			//TODO notify user2 that their is a merge
 			return getPerson2().getUser().equals(loginUser);
-		}	
+		}
 	}
 	
 }
