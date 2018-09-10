@@ -54,7 +54,7 @@
 				<configuration>
 					<!-- otherwise the javascript/css files compressed by yuicompressor-maven-plugin 
 						are overwritten by this plugin -->
-					<warSourceExcludes>**/*.js,**/*.css,WEB-INF/tags/layout/parts/messages.tagx</warSourceExcludes>
+					<!--<warSourceExcludes>**/*.js,**/*.css,WEB-INF/tags/layout/parts/messages.tagx</warSourceExcludes>-->
 				</configuration>
 			</plugin>
 			<plugin>

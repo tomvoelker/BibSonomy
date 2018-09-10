@@ -153,14 +153,6 @@ public interface Renderer {
 	public void serializePersonId(Writer writer, String personId);
 
 	/**
-	 * Serializes a resource person relation id
-	 *
-	 * @param writer     the {@link Writer} to use.
-	 * @param relationId the relationId to send
-	 */
-	public void serializeResourcePersonRelationId(Writer writer, String relationId);
-
-	/**
 	 * Serializes a {@link List} of {@link Tag}s.
 	 * 
 	 * @param writer
@@ -352,17 +344,6 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public String parsePersonId(Reader reader) throws BadRequestOrResponseException;
-
-	/**
-	 * Reads an resource person relation id from a {@link Reader}
-	 *
-	 * @param reader
-	 *            the {@link Reader} to use.
-	 * @return an resource hash
-	 * @throws BadRequestOrResponseException
-	 *             if the document within the reader is errorenous.
-	 */
-	public String parseResourcePersonRelationId(Reader reader) throws BadRequestOrResponseException;
 
 	/**
 	 * Reads a group id from a {@link Reader}

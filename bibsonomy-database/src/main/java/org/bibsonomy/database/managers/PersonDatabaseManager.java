@@ -40,6 +40,8 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.DuplicateEntryException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
@@ -77,6 +79,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	private final GeneralDatabaseManager generalManager;
 	private final DatabasePluginRegistry plugins;
 	private GoldStandardPublicationDatabaseManager goldStandardPublicationDatabaseManager;
+	private BibTexDatabaseManager publicationDatabaseManager;
 	private PersonSearch personSearch;
 
 	public static PersonDatabaseManager getInstance() {
@@ -331,12 +334,27 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 			 */
 			final Post<? extends BibTex> post = resourcePersonRelation.getPost();
 			final BibTex publication = post.getResource();
+
+			final String intraHash = publication.getIntraHash();
 			publication.recalculateHashes();
 			final Post<GoldStandardPublication> communityPostInDB = this.goldStandardPublicationDatabaseManager.getPostDetails(loggedinUser.getName(), publication.getInterHash(), "", Collections.emptyList(), session);
 			if (!present(communityPostInDB)) {
+				final BibTex resourceToCopy;
+				// FIXME: use a better way to test whether a dummy post was provided or a real post FIXME_CRIS
+				if (!present(publication.getTitle())) {
+					final List<Post<BibTex>> postsByHash = this.publicationDatabaseManager.getPostsByHash("", intraHash, HashID.SIM_HASH2, GroupID.PUBLIC.getId(), Collections.emptyList(), 1, 0, session);
+					if (present(postsByHash)) {
+						resourceToCopy = postsByHash.get(0).getResource();
+					} else {
+						throw new RuntimeException("can't create community post");
+					}
+				} else {
+					resourceToCopy = publication;
+				}
+
 				final Post<GoldStandardPublication> communityPost = new Post<>();
 				final GoldStandardPublication goldPublication = new GoldStandardPublication();
-				ObjectUtils.copyPropertyValues(publication, goldPublication);
+				ObjectUtils.copyPropertyValues(resourceToCopy, goldPublication);
 				communityPost.setResource(goldPublication);
 				this.goldStandardPublicationDatabaseManager.createPost(communityPost, loggedinUser, session);
 			}
@@ -346,8 +364,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 			session.commitTransaction();
 			return true;
 		} catch (final DuplicateEntryException e) {
-			session.commitTransaction(); // FIXME: only called to not cancel the
-											// transaction
+			session.commitTransaction(); // FIXME: only called to not cancel the transaction
 			return false;
 		} finally {
 			session.endTransaction();
@@ -980,5 +997,12 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void setGoldStandardPublicationDatabaseManager(GoldStandardPublicationDatabaseManager goldStandardPublicationDatabaseManager) {
 		this.goldStandardPublicationDatabaseManager = goldStandardPublicationDatabaseManager;
+	}
+
+	/**
+	 * @param publicationDatabaseManager the publicationDatabaseManager to set
+	 */
+	public void setPublicationDatabaseManager(BibTexDatabaseManager publicationDatabaseManager) {
+		this.publicationDatabaseManager = publicationDatabaseManager;
 	}
 }

@@ -187,14 +187,6 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 		this.handleUnsupportedMediaType();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.Renderer#serializeResourcePersonRelationId(java.io.Writer, java.lang.String)
-	 */
-	@Override
-	public void serializeResourcePersonRelationId(Writer writer, String resourcePersonRelationId) {
-		this.handleUnsupportedMediaType();
-	}
-
 	@Override
 	public void serializeResourcePersonRelations(Writer writer, List<ResourcePersonRelation> relations) {
 		this.handleUnsupportedMediaType();
@@ -285,14 +277,6 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	 */
 	@Override
 	public String parsePersonId(Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.Renderer#parseResourcePersonRelationId(java.io.Reader)
-	 */
-	@Override
-	public String parseResourcePersonRelationId(Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
 
