@@ -1,7 +1,8 @@
 <?xml version="1.0" ?>
 <jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:c="http://java.sun.com/jsp/jstl/core"
-          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+          xmlns:form="http://www.springframework.org/tags/form">
 
     <jsp:directive.attribute name="project" type="org.bibsonomy.model.cris.Project" required="true" />
 
@@ -13,8 +14,8 @@
                 <c:out value=" ${project.title}" />
             </legend>
         </div>
-        <form id="postForm" role="form" class="form-horizontal">
 
+        <form:form cssClass="form-horizontal" name="account" method="post" action="/editProject?ckey=${ckey}" enctype="multipart/form-data">
             <!-- edit title-->
             <div class="form-group">
                 <label class="col-sm-3 control-label">
@@ -167,20 +168,13 @@
                 </div>
             </div>
 
-            <!-- save button -->
-            <div class="form-group">
-                <div class="col-sm-offset-3 col-sm-9">
-                    <div class="btn-toolbar cust-btn-toolbar">
-                        <div class="btn-group">
-                            <button value="save" name="" class="btn btn-primary" type="submit">
-                                <span class="button-text">
-                                    <fmt:message key="save" />
-                                </span>
-                            </button>
-                        </div>
-                    </div>
+            <p class="clearfix"><!--  --></p>
+            <div class="col-sm-offset-3 ">
+                <div class="form-group">
+                    <fmt:message var="saveButton" key="save" />
+                    <bsform:button type="submit" style="primary" size="defaultSize" value="${saveButton}" />
                 </div>
             </div>
-        </form>
+        </form:form>
     </div>
 </jsp:root>

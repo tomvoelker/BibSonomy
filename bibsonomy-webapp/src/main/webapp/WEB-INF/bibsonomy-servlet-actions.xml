@@ -462,6 +462,7 @@
                         <property name="allowedFields">
                             <list>
                                 <value>projectIdToUpdate</value>
+                                <value>ckey</value>
                             </list>
                         </property>
                     </bean>
@@ -869,6 +870,8 @@
 
     <bean id="editProjectController" class="org.bibsonomy.webapp.controller.actions.EditProjectController" scope="request">
         <property name="logic" ref="logic" />
+        <property name="urlGenerator" ref="absoluteUrlGenerator"/>
+        <property name="requestLogic" ref="requestLogic" />
     </bean>
 
 	<!-- Handles the edit publication process -->
@@ -1348,6 +1351,5 @@
 		<property name="adminLogic" ref="adminLogic"/>
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="authenticationManager" ref="samlAuthenticationManager"/>
-	</bean>	
-	
+	</bean>
 </beans>
