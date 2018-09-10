@@ -325,6 +325,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @return <code>true</code> iff the relation was added
 	 */
 	public boolean addResourceRelation(final ResourcePersonRelation resourcePersonRelation, User loggedinUser, final DBSession session) {
+		// FIXME: add validator (index)
 		session.beginTransaction();
 		try {
 			/*
@@ -336,8 +337,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 			final BibTex publication = post.getResource();
 
 			final String intraHash = publication.getIntraHash();
-			publication.recalculateHashes();
-			final Post<GoldStandardPublication> communityPostInDB = this.goldStandardPublicationDatabaseManager.getPostDetails(loggedinUser.getName(), publication.getInterHash(), "", Collections.emptyList(), session);
+			final String interHash = publication.getInterHash();
+			final Post<GoldStandardPublication> communityPostInDB = this.goldStandardPublicationDatabaseManager.getPostDetails(loggedinUser.getName(), interHash, "", Collections.emptyList(), session);
 			if (!present(communityPostInDB)) {
 				final BibTex resourceToCopy;
 				// FIXME: use a better way to test whether a dummy post was provided or a real post FIXME_CRIS
@@ -356,6 +357,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 				final GoldStandardPublication goldPublication = new GoldStandardPublication();
 				ObjectUtils.copyPropertyValues(resourceToCopy, goldPublication);
 				communityPost.setResource(goldPublication);
+				goldPublication.recalculateHashes();
 				this.goldStandardPublicationDatabaseManager.createPost(communityPost, loggedinUser, session);
 			}
 
