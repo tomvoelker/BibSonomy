@@ -35,5 +35,5 @@ public enum ProjectPersonLinkType implements CRISLinkType {
 	MANAGER,
 
 	/** works on the project */
-	MEMBER;
+	MEMBER
 }

@@ -86,44 +86,67 @@ import org.springframework.validation.Errors;
  */
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(PersonMatch.class);
+
 	private RequestLogic requestLogic;
 	private PersonRoleRenderer personRoleRenderer;
 	private Errors errors;
-	
-	
+
 	@Override
 	public View workOn(final PersonPageCommand command) {
 		final RequestWrapperContext context = command.getContext();
 		final String formAction = command.getFormAction();
-		if (!present(formAction) && !present(command.getRequestedPersonId())){
+		final boolean action = present(formAction);
+		if (!action && !present(command.getRequestedPersonId())){
 			throw new MalformedURLSchemeException("The person page was requested without a person in the request.");
 		}
-		
-		if (!context.isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
+
+		/*
+		 * check the ckey if a formaction is set
+		 * FIXME: do not ignore the ckey check later
+		 */
+		if (action && !context.isValidCkey()) {
+			this.errors.reject("error.field.valid.ckey");
 		}
 		
-		if (present(formAction)) {
-			switch(formAction) {
-				case "conflictMerge": return this.conflictMerge(command);
-				case "getConflict": return this.getConflicts(command);
-				case "update": return this.updateAction(command);
-				case "addName": return this.addNameAction(command);
-				case "deleteName": return this.deleteNameAction(command);
-				case "setMainName": return this.setMainNameAction(command);
-				case "addRole": return this.addRoleAction(command);
-				case "addThesis": return this.addThesisAction(command);
-				case "editRole": return this.editRoleAction(command);
-				case "deleteRole": return this.deleteRoleAction(command);
-				case "unlink": return this.unlinkAction(command);
-				case "link": return this.linkAction(command);
-				case "search": return this.searchAction(command);
-				case "searchAuthor": return this.searchAuthorAction(command);
-				case "searchPub": return this.searchPubAction(command);
-				case "merge": return this.mergeAction(command);
-				case "searchPubAuthor": return this.searchPubAuthorAction(command);
+		if (action) {
+			switch (formAction) {
+				case "conflictMerge":
+					return this.conflictMerge(command);
+				case "getConflict":
+					return this.getConflicts(command);
+				case "update":
+					return this.updateAction(command);
+				case "addName":
+					return this.addNameAction(command);
+				case "deleteName":
+					return this.deleteNameAction(command);
+				case "setMainName":
+					return this.setMainNameAction(command);
+				case "addRole":
+					return this.addRoleAction(command);
+				case "addThesis":
+					return this.addThesisAction(command);
+				case "editRole":
+					return this.editRoleAction(command);
+				case "deleteRole":
+					return this.deleteRoleAction(command);
+				case "unlink":
+					return this.unlinkAction(command);
+				case "link":
+					return this.linkAction(command);
+				case "search":
+					return this.searchAction(command);
+				case "searchAuthor":
+					return this.searchAuthorAction(command);
+				case "searchPub":
+					return this.searchPubAction(command);
+				case "merge":
+					return this.mergeAction(command);
+				case "searchPubAuthor":
+					return this.searchPubAuthorAction(command);
 
-				default: return indexAction();
+				default:
+					return indexAction();
 			}
 		} else if (present(command.getRequestedPersonId())) {
 			return this.showAction(command);
@@ -180,7 +203,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View getConflicts(PersonPageCommand command) {
-		List<PersonMatch> list = new LinkedList<>();
+		final List<PersonMatch> list = new LinkedList<>();
 		list.add(this.logic.getPersonMatch(command.getFormMatchId()));
 		
 		JSONArray array = new JSONArray();
@@ -211,8 +234,8 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private void buildupAuthorResponseArray(final List<ResourcePersonRelation> suggestions, JSONArray array) {
-			for (ResourcePersonRelation rel : suggestions) {
-				JSONObject jsonPersonName = new JSONObject();
+			for (final ResourcePersonRelation rel : suggestions) {
+				final JSONObject jsonPersonName = new JSONObject();
 				jsonPersonName.put("interhash", rel.getPost().getResource().getInterHash());
 				jsonPersonName.put("personIndex", rel.getPersonIndex());
 				//jsonPersonName.put("personNameId", personName.getPersonChangeId());
