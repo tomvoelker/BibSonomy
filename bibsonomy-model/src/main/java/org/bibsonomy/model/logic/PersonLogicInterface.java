@@ -90,17 +90,19 @@ public interface PersonLogicInterface {
 	 */
 	@Deprecated // use update person
 	public void removePersonName(Integer personNameId);
-	
-	/**
-	 * @param queryString a search string coming from an autocomplete field. Planned but not yet implemented: May contain an incomplete word, which will be internally autocompleted before searching persons
-	 * @return a builder object fo optional parameters
-	 */
-	public PersonSuggestionQueryBuilder getPersonSuggestion(String queryString);
 
 	/**
+	 *
+	 * @param builder the builder
+	 * @return
+	 */
+	List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder builder);
+
+	/**
+	 * @param builder the builder
 	 * @return a querybuilder object by which options for the query can be specified
 	 */
-	public ResourcePersonRelationQueryBuilder getResourceRelations();
+	List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQueryBuilder builder);
 
 	/**
 	 * @param personId

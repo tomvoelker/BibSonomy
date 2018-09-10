@@ -75,7 +75,7 @@ public abstract class AbstractJabrefLayoutTest {
 		AbstractJabrefLayoutTest.testedLayouts = testedLayouts;
 		AbstractJabrefLayoutTest.entryTypeSplitSuffix = entryTypeSplitSuffix;
 		final File testCaseFolder = new File(JabrefLayoutAntiScriptInjectionTest.class.getResource(testCaseFolderPath).getFile());
-		final Collection<Object[]> layoutTests = new ArrayList<Object[]>();
+		final Collection<Object[]> layoutTests = new ArrayList<>();
 
 		for (File file : testCaseFolder.listFiles(isResultLayoutOrDir)) {
 			if (file != null) {
@@ -142,8 +142,7 @@ public abstract class AbstractJabrefLayoutTest {
 				sb.delete(index, index2);
 				renderedLayout = sb.toString();
 			}	
-		}
-		else if (layoutName.equals("tablerefs") || layoutName.equals("tablerefsabsbib") || layoutName.equals("tablerefsabsbibsort")) {
+		} else if (layoutName.equals("tablerefs") || layoutName.equals("tablerefsabsbib") || layoutName.equals("tablerefsabsbibsort")) {
 			/*
 			 * Deletes Lines containing a current timestamp ("Created by ... TIME")
 			 */
@@ -152,8 +151,7 @@ public abstract class AbstractJabrefLayoutTest {
 			int index2 = sb.lastIndexOf("</small>");
 			sb.delete(index, index2);
 			renderedLayout = sb.toString();
-		}
-		else if (layoutName.equals("din1505year") || layoutName.equals("simplehtmlyear") || layoutName.startsWith("harvardhtmlyear")) {
+		}  else if (layoutName.equals("din1505year") || layoutName.equals("simplehtmlyear") || layoutName.startsWith("harvardhtmlyear")) {
 			/*
 			 * Deletes randomly appearing bibsonomy quicknav_group
 			 */
@@ -165,8 +163,7 @@ public abstract class AbstractJabrefLayoutTest {
 				sb.delete(index, index2 + find.length());
 				renderedLayout = sb.toString();
 			}
-		}
-		else if (layoutName.startsWith("publist-year")) {
+		} else if (layoutName.startsWith("publist-year")) {
 			/*
 			 * Deletes randomly appearing bibsonomy quicknav_group with id
 			 */
@@ -179,8 +176,7 @@ public abstract class AbstractJabrefLayoutTest {
 				renderedLayout = sb.toString();
 			}
 		}
-		
-		
+
 		renderedLayout = renderedLayout.replaceAll("\\r", "").trim();
 		return renderedLayout;
 	}
@@ -195,24 +191,18 @@ public abstract class AbstractJabrefLayoutTest {
 		return "";
 	}
 	
-	protected static final FilenameFilter isResultLayout = new FilenameFilter() {
-		@Override
-		public boolean accept(File dir, String name) {
-			if (dir != null) {
-				return name.endsWith(".layoutResult");
-			}
-			return false;
+	protected static final FilenameFilter isResultLayout = (dir, name) -> {
+		if (dir != null) {
+			return name.endsWith(".layoutResult");
 		}
+		return false;
 	};
 	
-	protected static final FilenameFilter isResultLayoutOrDir = new FilenameFilter() {
-		@Override
-		public boolean accept(File dir, String name) {
-			if (dir != null) {
-				return (dir.isDirectory() || name.endsWith(".layoutResult"));
-			}
-			return false;
+	protected static final FilenameFilter isResultLayoutOrDir = (dir, name) -> {
+		if (dir != null) {
+			return (dir.isDirectory() || name.endsWith(".layoutResult"));
 		}
-	}; 
+		return false;
+	};
 	
 }

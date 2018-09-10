@@ -243,9 +243,15 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 * @return
 	 */
-	private View searchAuthorAction(PersonPageCommand command) { 
-		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName()).withEntityPersons(true).withNonEntityPersons(true).withRelationType(PersonResourceRelationType.AUTHOR).preferUnlinked(true).doIt();
-		JSONArray array = new JSONArray();
+	private View searchAuthorAction(PersonPageCommand command) {
+		final PersonSuggestionQueryBuilder builder = new PersonSuggestionQueryBuilder(command.getFormSelectedName());
+		builder.withEntityPersons(true)
+						.withNonEntityPersons(true)
+						.withRelationType(PersonResourceRelationType.AUTHOR)
+						.preferUnlinked(true);
+
+		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(builder);
+		final JSONArray array = new JSONArray();
 		buildupAuthorResponseArray(suggestions,array);
 		command.setResponseString(array.toJSONString());
 		
@@ -277,17 +283,21 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 * @return
 	 */
-	private View searchPubAuthorAction(PersonPageCommand command) { 
-		final List<ResourcePersonRelation> suggestionsPerson = this.logic.getPersonSuggestion(command.getFormSelectedName()).withEntityPersons(true).withNonEntityPersons(true).withRelationType(PersonResourceRelationType.AUTHOR).preferUnlinked(true).doIt();
+	private View searchPubAuthorAction(final PersonPageCommand command) {
+		final PersonSuggestionQueryBuilder builder = new PersonSuggestionQueryBuilder(command.getFormSelectedName())
+						.withEntityPersons(true).withNonEntityPersons(true)
+						.withRelationType(PersonResourceRelationType.AUTHOR)
+						.preferUnlinked(true);
+
+		final List<ResourcePersonRelation> suggestionsPerson = this.logic.getPersonSuggestion(builder);
 		final List<Post<BibTex>> suggestionsPub = this.logic.getPublicationSuggestion(command.getFormSelectedName());
 		
-		JSONArray array = new JSONArray();
+		final JSONArray array = new JSONArray();
 		buildupAuthorResponseArray(suggestionsPerson, array); // Person(with publication) oriented search return 
 		buildupPubResponseArray(suggestionsPub, array);  // Publications(not associated to Persons) oriented search return
 		command.setResponseString(array.toJSONString());
 		
 		return Views.AJAX_JSON;
-		
 	}
 
 	/**
@@ -296,7 +306,12 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	@SuppressWarnings("unchecked")
 	private View searchAction(PersonPageCommand command) {
-		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName()).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values()).doIt();
+		final PersonSuggestionQueryBuilder builder = new PersonSuggestionQueryBuilder(command.getFormSelectedName())
+						.withEntityPersons(true)
+						.withNonEntityPersons(true)
+						.withRelationType(PersonResourceRelationType.AUTHOR)
+						.preferUnlinked(true);
+		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(builder);
 		
 		final JSONArray array = new JSONArray();
 		for (ResourcePersonRelation rel : suggestions) {
@@ -605,7 +620,7 @@ public class PersonPageController extends SingleResourceListController implement
 
 		command.setPerson(person);
 		
-		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
+		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear));
 		List<Post<?>> authorPosts = new ArrayList<>();
 		List<Post<?>> advisorPosts = new ArrayList<>();
 		List<Post<?>> otherAuthorPosts = new ArrayList<>();
@@ -671,13 +686,14 @@ public class PersonPageController extends SingleResourceListController implement
 	}
 	
 	private List<Post<BibTex>> getPublicationsOfSimilarAuthor(Person person) {
-		
-		final PersonName requestedName = person.getMainName();		
+		final PersonName requestedName = person.getMainName();
 		final String name = person.getMainName().toString();
-		
-		PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
-		List<ResourcePersonRelation> suggestedPersons = query.doIt();		
-			
+
+		final PersonSuggestionQueryBuilder builder = new PersonSuggestionQueryBuilder(name);
+		builder.withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
+
+		List<ResourcePersonRelation> suggestedPersons = this.logic.getPersonSuggestion(builder);
+
 		/*
 		 * FIXME: use author-parameter in getPosts method
 		 * @see bibsonomy.database.managers.PostDatabaseManager.#getPostsByResourceSearch()
@@ -700,13 +716,13 @@ public class PersonPageController extends SingleResourceListController implement
 			}
 		}
 		
-		List<Post<?>> postsOfSuggestedPersons = new ArrayList<>();
-		HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts = new HashMap<>();
+		final List<Post<?>> postsOfSuggestedPersons = new ArrayList<>();
+		Map<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts = new HashMap<>();
 
 		// get all persons with same name
 		for (final ResourcePersonRelation suggestedPerson : suggestedPersons) {
 
-			List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(suggestedPerson.getPerson().getPersonId()).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
+			List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(suggestedPerson.getPerson().getPersonId()).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear));
 			List<Post<?>> personPosts = new ArrayList<>();
 			
 			for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {

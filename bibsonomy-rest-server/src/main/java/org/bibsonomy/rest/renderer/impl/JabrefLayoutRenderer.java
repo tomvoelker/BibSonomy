@@ -172,17 +172,22 @@ public class JabrefLayoutRenderer implements Renderer {
 	}
 
 	@Override
+	public void serializeResourcePersonRelations(Writer writer, List<ResourcePersonRelation> relations) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public void serializePersonId(Writer writer, String personId) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void serializeResourcePersonRelationId(Writer writer, String relationId) {
+	public ResourcePersonRelation parseResourcePersonRelation(Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public ResourcePersonRelation parseResourcePersonRelation(Reader reader) throws BadRequestOrResponseException {
+	public List<ResourcePersonRelation> parseResourcePersonRelations(Reader reader) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -193,11 +198,6 @@ public class JabrefLayoutRenderer implements Renderer {
 
 	@Override
 	public String parsePersonId(final Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public String parseResourcePersonRelationId(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
 
