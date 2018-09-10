@@ -74,7 +74,7 @@ public class SearchInfoDBLogic extends AbstractDatabaseManager implements Search
 	public List<String> getGroupMembersByGroupName(final String groupName) {
 		final DBSession session = this.openSession();
 		try {
-			return this.queryForList("getGroupMembersByGroupName", groupName, String.class, session);
+			return this.queryForList("getGroupMembersByGroupName", groupName, String.class, session); //TODO (AD) query for parent memberships
 		} finally {
 			session.close();
 		}

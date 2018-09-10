@@ -27,10 +27,13 @@
 package org.bibsonomy.search;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
+import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.search.testutils.SearchSpringContextWrapper;
+import org.hamcrest.CoreMatchers;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -39,6 +42,7 @@ import org.junit.Test;
  *
  * @author dzo
  */
+//FIXME (AD) This test suite does not populate the database with testing data and instead relies on the database being already initialized by another database test.
 public class SearchInfoDBLogicTest {
 	
 	private static SearchInfoDBLogic LOGIC;
@@ -47,7 +51,7 @@ public class SearchInfoDBLogicTest {
 	 * retrieves the logic from the config
 	 */
 	@BeforeClass
-	public static final void setLogic() {
+	public static void setLogic() {
 		LOGIC = SearchSpringContextWrapper.getBeanFactory().getBean(SearchInfoDBLogic.class);
 	}
 	
@@ -59,4 +63,19 @@ public class SearchInfoDBLogicTest {
 		final Set<String> users = LOGIC.getUserNamesThatShareDocumentsWithUser("testuser1");
 		assertEquals(1, users.size());
 	}
+
+	@Test
+	public void testGetGroupMembersByGroupName() {
+		List<String> users = LOGIC.getGroupMembersByGroupName("rootgroup");
+
+		assertThat(users.size(), CoreMatchers.equalTo(4));
+		assertThat(users, CoreMatchers.hasItems("childgroup1", "childgroup2", "childgroup3depth2", "rootgroup"));
+
+		users = LOGIC.getGroupMembersByGroupName("childgroup1");
+
+		assertThat(users.size(), CoreMatchers.equalTo(2));
+		assertThat(users, CoreMatchers.hasItems("childgroup1", "childgroup3depth2"));
+
+	}
 }
+
