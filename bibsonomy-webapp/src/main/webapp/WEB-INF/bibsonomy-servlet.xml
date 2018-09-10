@@ -387,8 +387,6 @@
 								
 								<value>newName.firstName</value>
 								<value>newName.lastName</value>
-								
-																
 							</list>
 						</property>
 					</bean>
@@ -792,6 +790,11 @@
 						</property>
 					</bean>
 				</entry>
+                <entry key="/report">
+                    <bean parent="controllerBase">
+                        <property name="controllerBeanName" value="reportPageController"/>
+                    </bean>
+                </entry>
 			</map>
 		</property>
 	</bean>
@@ -847,7 +850,12 @@
 	<bean id="projectDetailsController" class="org.bibsonomy.webapp.controller.ProjectPageController" scope="request">
 		<property name="logic" ref="logic" />
 	</bean>
-	
+
+    <!-- report controller -->
+    <bean id="reportPageController" class="org.bibsonomy.webapp.controller.ReportPageController" scope="request">
+        <property name="logic" ref="logic" />
+    </bean>
+
 	<bean id="followersPageController" class="org.bibsonomy.webapp.controller.FollowersPageController" scope="request" parent="multiResourceListController">
 		<property name="supportedResources" ref="allResources"/>	
 	</bean>

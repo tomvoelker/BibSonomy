@@ -59,9 +59,7 @@
                 </c:set>
                 <input id="search-project-input" placeholder="${searchPlaceholder}" onkeyup="displaySearch()"/>
             </div>
-			<!--+
-				| show alphabet for direct links to groups
-				-->
+
             <div class="text-info">
                 <dl class="group-list">
                     <dt>

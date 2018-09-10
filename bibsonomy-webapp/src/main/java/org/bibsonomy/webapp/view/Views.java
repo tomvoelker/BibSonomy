@@ -500,7 +500,7 @@ public enum Views implements View {
 	/**
 	 * report page
 	 */
-	REPORT("actions/report/reportPage"),
+	REPORT("report"),
 
 	/* *****************************************************
 	 * OpenSocial views

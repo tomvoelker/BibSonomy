@@ -51,7 +51,7 @@ public class EditProjectController implements MinimalisticController<EditProject
 
 		// todo db update
 		final String referer = command.getReferer();
-		return new ExtendedRedirectView(referer);
+		return new ExtendedRedirectView(this.urlGenerator.getProjectHome());
 	}
 
 	private View returnEditView(String requestedProjectId, EditProjectCommand command){
