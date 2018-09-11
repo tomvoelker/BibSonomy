@@ -1,42 +1,24 @@
 $(document).ready(function () {
-    var budgetItems = $(".budget");
-    budgetItems.each( function () {
-        $(this).hide();
-    });
-    displaySearch();
+    search();
 });
 
-function displaySearch() {
-    var filter = $("#search-project-input").val().toLowerCase();
-    var list = $("#all-projects");
-    var items = $(list).find(".show-project");
+function search() {
+    var filter = $("#search").val().toLowerCase();
+    var list = $("#all-posts");
+    var items = $(list).find(".post-item");
     var displayedItems = 0;
-    var totalBudget = 0.0;
     for (var i = 0; i < items.length; i++) {
-        var projectTitle = $(items[i]).children(".title");
-        var projectSubtitle = $(items[i]).children(".sub-title");
-        var projectBudget = $(items[i]).children(".budget");
-        if ($(projectTitle).text().toLowerCase().indexOf(filter) !== -1) {
+        var name = $(items[i]).children(".name");
+        if ($(name).text().toLowerCase().indexOf(filter) !== -1) {
             $(items[i]).show();
             $(items[i]).addClass("display-project");
             displayedItems = displayedItems + 1;
-            if (typeof $(projectBudget) !== 'undefined') {
-                totalBudget = totalBudget + parseFloat($(projectBudget).text().slice(0, -2).replace(/,/g, ""));
-            }
-        } else if (typeof $(projectSubtitle) !== 'undefined' && $(projectSubtitle).text().toLowerCase().indexOf(filter) !== -1) {
-            $(items[i]).show();
-            $(items[i]).addClass("display-project");
-            displayedItems = displayedItems + 1;
-            if (typeof projectBudget !== 'undefined') {
-                totalBudget = totalBudget + parseFloat($(projectBudget).text().slice(0, -2).replace(/,/g, ""));
-            }
         } else {
             $(items[i]).hide();
             $(items[i]).removeClass("display-project");
         }
     }
     $("#amount-projects").text(displayedItems.toLocaleString());
-    $("#total-budget").text(totalBudget.toLocaleString() + " €");
     updatePagination(displayedItems);
 }
 
@@ -66,4 +48,3 @@ function updatePagination(size){
         showCurrentPage(parseInt($(this).text()))
     });
 }
-
