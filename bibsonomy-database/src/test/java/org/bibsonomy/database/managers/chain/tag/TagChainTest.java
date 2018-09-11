@@ -28,10 +28,7 @@ package org.bibsonomy.database.managers.chain.tag;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -101,32 +98,6 @@ public class TagChainTest extends AbstractDatabaseManagerTest {
 		assertEquals(GetPopularTags.class, tagChain.getChainElement(param).getClass());
 	}
 
-	/**
-	 * get related tags
-	 */
-	@Test
-	@Ignore
-	public void getRelatedTags() {
-		// TODO: implement test
-	}
-
-	/**
-	 * get related tags for group
-	 */
-	@Test
-	@Ignore
-	public void getRelatedTagsForGroup() {
-		// TODO: implement test
-	}
-
-	/**
-	 * get similar tags
-	 */
-	@Test
-	@Ignore
-	public void getSimilarTags() {
-		// TODO: implement test
-	}
 
 	/**
 	 * get tags by author
@@ -205,13 +176,6 @@ public class TagChainTest extends AbstractDatabaseManagerTest {
 		assertEquals(GetTagsByExpression.class, tagChain.getChainElement(param).getClass());
 	}
 
-	/**
-	 * get tags by friend of user
-	 */
-	@Test
-	public void GetTagsByFriendOfUser() {
-		// TODO
-	}
 
 	/**
 	 * get tags by group
@@ -224,25 +188,24 @@ public class TagChainTest extends AbstractDatabaseManagerTest {
 		param.getTagIndex().clear();
 		param.setRequestedGroupName("requestedGroup");
 		param.addGroup(GroupID.PUBLIC.getId());
-		assertEquals(GetTagsByGroup.class, tagChain.getChainElement(param).getClass());
+		assertEquals(GetTagsByResourceSearch.class, tagChain.getChainElement(param).getClass());
 	}
 
 	/**
-	 * get tags by hash
+	 * get related tags by group
 	 */
 	@Test
-	@Ignore
-	public void GetTagsByHash() {
-		// TODO: implement test
-	}
-
-	/**
-	 * get tags by hash for user
-	 */
-	@Test
-	@Ignore
-	public void GetTagsByHashForUser() {
-		// TODO: implement test
+	public void GetRelatedTagsForGroup() {
+		final TagParam param = new TagParam();
+		param.setGrouping(GroupingEntity.GROUP);
+		param.setBibtexKey(null);
+		param.setTagIndex(Arrays.asList(new TagIndex("test", 2)));
+		param.setSearch(null);
+		param.setTitle(null);
+		param.setAuthor(null);
+		param.setRequestedGroupName("requestedGroup");
+		param.addGroup(GroupID.PUBLIC.getId());
+		assertEquals(GetTagsByResourceSearch.class, tagChain.getChainElement(param).getClass());
 	}
 
 	/**

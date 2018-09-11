@@ -102,7 +102,6 @@
 			<list>
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByResourceSearch" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByUser" />
-				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByGroup" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByFriendOfUser" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetAllTags" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetSimilarTags" />
