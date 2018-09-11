@@ -681,6 +681,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		if (present(this.resourceSearch)) {
 			if (present(searchType)){
 				return this.resourceSearch.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationName, allowedGroups, searchType, searchTerms, titleSearchTerms, authorSearchTerms, null, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
+				//FIXME (AD) Why is bibtexKey set to null?
 			}
 			log.error("no search type or resource type is set");
 		}

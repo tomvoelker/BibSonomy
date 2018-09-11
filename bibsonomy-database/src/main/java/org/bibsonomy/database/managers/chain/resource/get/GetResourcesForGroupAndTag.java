@@ -45,7 +45,9 @@ import org.bibsonomy.model.Resource;
  * 
  * @author Miranda Grahl
  * @param <R> 
- * @param <P> 
+ * @param <P>
+ *
+ * @deprecated
  */
 public class GetResourcesForGroupAndTag<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 

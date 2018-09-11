@@ -64,12 +64,18 @@ public class ChainUtils {
 		 * OR
 		 * 2. There are negated tags
 		 */
+		//TODO (AD) define rules for handling the query if groups are involved
 		if ((present(tagIndex) && pdm.useResourceSearchForTagQuery(tagIndex.size())) ||	existsNegatedTags) {
 			return true;
 		}
 		if ((param.getGrouping() == GroupingEntity.ALL) && (param.getNumSimpleConcepts() > 0)) {
 			return true;
 		}
+		/*
+		 * Handle requests for groups.
+		 */
+		if (param.getGrouping() == GroupingEntity.GROUP)
+			return true;
 		
 		return false;
 	}
