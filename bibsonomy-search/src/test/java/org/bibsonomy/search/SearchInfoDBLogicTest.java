@@ -32,6 +32,7 @@ import static org.junit.Assert.assertThat;
 import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.search.testutils.SearchSpringContextWrapper;
 import org.hamcrest.CoreMatchers;
 import org.junit.BeforeClass;
@@ -42,8 +43,7 @@ import org.junit.Test;
  *
  * @author dzo
  */
-//FIXME (AD) This test suite does not populate the database with testing data and instead relies on the database being already initialized by another database test.
-public class SearchInfoDBLogicTest {
+public class SearchInfoDBLogicTest extends AbstractDatabaseManagerTest {
 	
 	private static SearchInfoDBLogic LOGIC;
 	
