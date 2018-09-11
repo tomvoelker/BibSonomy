@@ -8,22 +8,22 @@ function search() {
     var items = $(list).find(".post-item");
     var displayedItems = 0;
     for (var i = 0; i < items.length; i++) {
-        var name = $(items[i]).children(".name");
+        var name = $(items[i]).children(".ptitle");
         if ($(name).text().toLowerCase().indexOf(filter) !== -1) {
             $(items[i]).show();
-            $(items[i]).addClass("display-project");
+            $(items[i]).addClass("display-post");
             displayedItems = displayedItems + 1;
         } else {
             $(items[i]).hide();
-            $(items[i]).removeClass("display-project");
+            $(items[i]).removeClass("display-post");
         }
     }
-    $("#amount-projects").text(displayedItems.toLocaleString());
+    $("#amount-post").text(displayedItems.toLocaleString());
     updatePagination(displayedItems);
 }
 
 function updatePagination(size){
-    var pageSize = 10;
+    var pageSize = 50;
     var pagecount = size / pageSize;
     var pagin = $("#pagin");
     pagin.empty();
@@ -31,9 +31,9 @@ function updatePagination(size){
         pagin.append('<li><a href="#">' + (i + 1) + '</a></li>');
     }
     pagin.children().first().addClass("active");
-    $("#show-amount").text("Showing " + pageSize + " of " + size.toString() + " projects. ");
+    $("#show-amount").text("Showing " + pageSize + " of " + size.toString() + " publications. ");
     showCurrentPage = function(page) {
-        var list = $(".display-project");
+        var list = $(".display-post");
         $(list).hide();
         $(list).each(function (n) {
             if (n >= pageSize * (page - 1) && n < pageSize * page) {

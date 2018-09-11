@@ -23,14 +23,14 @@
             | heading
             +-->
         <jsp:attribute name="heading">
-                <parts:search pathMessageKey="navi.projects" formAction="/project/" formInputName="project"/>
+                <parts:search pathMessageKey="navi.posts" formAction="/posts/" formInputName="post"/>
             </jsp:attribute>
 
         <jsp:attribute name="breadcrumbs">
             <nav:breadcrumbs>
                 <jsp:attribute name="crumbs">
-                    <fmt:message key="navi.projects" var="projects" />
-                    <nav:crumb name="${projects}" active="true" />
+                    <fmt:message key="navi.home" var="home" />
+                    <nav:crumb name="${home}" active="true" />
                 </jsp:attribute>
             </nav:breadcrumbs>
         </jsp:attribute>
@@ -41,23 +41,30 @@
         <jsp:attribute name="content">
 
             <h1 class="content-heading"><fmt:message key="report.head" /></h1>
-            <div class="text-right btn-toolbar">
-                <fmt:message key="report.filter.author" var="authorFilter"/>
-                <input id="search-author" placeholder="${authorFilter}" onkeyup="filterAuthor()"/>
-                <fmt:message key="report.filter.group" var="groupFilter"/>
-                <input id="search-group" placeholder="${groupFilter}" onkeyup="filterGroup()"/>
-                <fmt:message key="report.filter.project" var="projectFilter"/>
-                <input id="search-project" placeholder="${projectFilter}" onkeyup="filterProject()"/>
-                <fmt:message key="report.search" var="search"/>
-                <input id="search" placeholder="${search}" onkeyup="search()"/>
+            <div class="text-right form-inline">
+                <div class="col-sm-3">
+                    <fmt:message key="report.filter.author" var="authorFilter"/>
+                    <input type="text" class="form-control" id="search-author" placeholder="${authorFilter}" onkeyup="filterAuthor()"/>
+                </div>
+                <div class="col-sm-3">
+                    <fmt:message key="report.filter.project" var="projectFilter"/>
+                    <input type="text" class="form-control" id="search-project" placeholder="${projectFilter}" onkeyup="filterProject()"/>
+                </div>
+                <div class="col-sm-3">
+                    <fmt:message key="report.filter.year" var="yearFilter"/>
+                    <input type="text" class="form-control" id="search-year" placeholder="${yearFilter}" onkeyup="filterYear()"/>
+                </div><div class="col-sm-3">
+                    <fmt:message key="report.search" var="search"/>
+                    <input type="text" class="form-control" id="search" placeholder="${search}" onkeyup="search()"/>
+                </div>
             </div>
 
             <div class="text-info">
-                <dl class="group-list">
+                <dl>
                     <dt>
                         <fmt:message key="project.amountprojects"/>
                     </dt>
-                    <dd id="amount-projects">
+                    <dd id="amount-post">
                         <c:out value="0"/>
                     </dd>
                 </dl>
@@ -67,14 +74,7 @@
             <div id="posts">
 				<ul class="list-group" id="all-posts">
                     <c:forEach var="post" items="${command.posts}">
-                        <span class="truncatedDesc batchInfo" id="post-item">
-                            <span itemprop="name" id="name">
-                                ${post.resource.title}
-                            </span>
-                            <br/>
-                            <bib:date publication="${post.resource}" braces="true"/>
-                            <c:out value=" "/>
-                            <bib:author publication="${post.resource}"/>
+                        <li class="list-group-item post-item">
                             <div>
                                 <div class="ptitle">
                                     <bib:title post="${post}"/>
@@ -83,7 +83,7 @@
                                     <bib:desc publication="${post.resource}"/>
                                 </div>
                             </div>
-                        </span>
+                        </li>
                     </c:forEach>
 				</ul>
 			</div>
