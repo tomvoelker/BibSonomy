@@ -86,8 +86,6 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 		// query the resource searcher
 		//TODO (dzo) full text search does not yet support filter for pdf only -> IMPLEMENT
 		//TODO (dzo) Do we really need the hashId in GetResourcesForGroup?
-		//TODO (ada) Mark all chain elements as deprecated instead of removing them directly
-		//TODO (ada) check if resource handler is in the correct position in the chain
 
 		return this.databaseManager.getPostsByResourceSearch(param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getRelationTags(), param.getGroupNames(),param.getSearchType(), param.getSearch(), param.getTitle(), param.getAuthor(), tagIndex, year, firstYear, lastYear, negatedTags, param.getOrder(), param.getLimit(), param.getOffset());
 	}
