@@ -9,164 +9,60 @@
     <div class="content">
         <!-- title -->
         <div class="content-heading">
-            <legend class="project-subtitle">
+            <legend class="project-subTitle">
                 <fmt:message key="project.actions.edit" />
                 <c:out value=" ${project.title}" />
             </legend>
         </div>
 
-        <form:form cssClass="form-horizontal" name="account" method="post" action="/editProject?ckey=${ckey}" enctype="multipart/form-data">
+        <form:form cssClass="form-horizontal" method="post" action="/editProject?ckey=${ckey}" enctype="multipart/form-data">
             <!-- edit title-->
-            <div class="form-group">
-                <label class="col-sm-3 control-label">
-                    <fmt:message key="project.title" />
-                </label>
-                <div class="col-sm-9">
-                        <c:set var="titlePlaceholder" >
-                            <fmt:message key="project.edit.title" />
-                        </c:set>
-                        <input type="text" class="form-control" value="${project.title}" placeholder="${titlePlaceholder}"/>
-                    <!--
-                    <span class="help-block">
-                        <c:out value="This field is required."/>
-                    </span>
-                    -->
-                </div>
-            </div>
-
+            <bsform:input path="project.title" labelColSpan="3" inputColSpan="9" noHelp="true" />
             <!-- edit subtitle -->
-            <div class="form-group">
-                <label class="col-sm-3 control-label">
-                    <fmt:message key="project.subtitle" />
-                </label>
-                <div class="col-sm-9">
-                    <fmt:message key="project.edit.subtitle" var="subtitlePlaceholder" />
-                    <input type="text" class="form-control" value="${project.subTitle}" placeholder="${subtitlePlaceholder}"/>
-                </div>
-            </div>
+            <bsform:input path="project.subTitle" labelColSpan="3" inputColSpan="9" noHelp="true" />
             <!-- edit description -->
-            <div class="form-group">
-                <label class="col-sm-3 control-label">
-                    <fmt:message key="project.edit.description" />
-                </label>
-                <div class="col-sm-9">
-                    <textarea name="description" id="description" class="form-control" cols="30" rows="4">
-                        <c:out value="${project.description}" />
-                    </textarea>
-                </div>
-            </div>
-
-            <!-- edit involved persons-->
-            <div class="form-group">
-                <label class="col-sm-3 control-label">
-                    <fmt:message key="project.persons" />
-                </label>
-                <div class="col-sm-9">
-                    <fmt:message key="project.edit.persons" var="personPlaceholder" />
-                    <!-- fixme change that to something proper -->
-                    <input type="text" class="form-control" placeholder="${personPlaceholder}"/>
-                </div>
-            </div>
-
+            <bsform:input path="project.description" labelColSpan="3" inputColSpan="9" noHelp="true" />
+            <!-- todo edit involved persons
+            <bsform:input path="project.persons" labelColSpan="3" inputColSpan="9" noHelp="true" /> -->
             <!-- edit start date -->
             <div class="form-group">
                 <label class="col-sm-3 control-label">
-                    <fmt:message key="project.startdate" />
+                    <fmt:message key="project.startDate" />
                 </label>
                 <div class="col-sm-9">
                     <fmt:formatDate value="${project.startDate}" pattern="dd.MM.yyyy" var="startdate" />
                     <div class="input-group date" id="dp3" data-date="${empty startdate ? '1989-01-01' : startdate}" data-date-format="yyyy-mm-dd" data-date-viewmode="years">
-                        <fmt:message key="project.startdate" var="startdatePlaceholder"/>
-                        <input type="text" class="form-control" value="${startdate}" placeholder="${startdatePlaceholder}" name="project.startdate" />
+                        <fmt:message key="project.startDate" var="startDatePlaceholder"/>
+                        <input type="text" class="form-control" value="${startdate}" placeholder="${startDatePlaceholder}" name="project.startDate" />
                         <span class="input-group-addon"><i class="fa fa-calendar"><!--  --></i></span>
                     </div>
                 </div>
             </div>
-
             <!-- edit end date -->
             <div class="form-group">
                 <label class="col-sm-3 control-label">
-                    <fmt:message key="project.enddate" />
+                    <fmt:message key="project.endDate" />
                 </label>
                 <div class="col-sm-9">
                     <fmt:formatDate value="${project.endDate}" pattern="dd.MM.yy" var="enddate"/>
                     <div class="input-group date" id="dp3" data-date="${empty enddate ? '1989-01-01' : enddate}" data-date-format="yyyy-mm-dd" data-date-viewmode="years">
-                    <fmt:message key="project.enddate" var="enddatePlaceholder" />
-                        <input type="text" class="form-control" value="${enddate}" placeholder="${enddatePlaceholder}"/>
+                    <fmt:message key="project.endDate" var="endDatePlaceholder" />
+                        <input type="text" class="form-control" value="${enddate}" placeholder="${endDatePlaceholder}" name="project.endDate" />
                         <span class="input-group-addon"><i class="fa fa-calendar"><!--  --></i></span>
                     </div>
                 </div>
             </div>
 
             <!-- edit type/founding -->
-            <div class="form-group">
-                <label class="col-sm-3 control-label">
-                    <fmt:message key="project.type" />
-                </label>
-                <div class="col-sm-9">
-                    <fmt:message key="project.type" var="typePlaceholder" />
-                    <input type="text" class="form-control" value="${project.type}" placeholder="${typePlaceholder}"/>
-                </div>
-            </div>
-
+            <bsform:input path="project.type" labelColSpan="3" inputColSpan="9" noHelp="true" />
             <!-- edit budget-->
-            <div class="form-group">
-                <label class="col-sm-3 control-label">
-                    <fmt:message key="project.budget" />
-                </label>
-                <div class="col-sm-9">
-                    <fmt:message key="project.budget" var="budgetPlaceholder"/>
-                    <div class="input-group">
-                        <span class="input-group-addon">
-                            <c:out value="€" />
-                        </span>
-                        <input type="text" id="inlineFormInputGroup" class="form-control" value="${project.budget}" placeholder="${budgetPlaceholder}"/>
-                    </div>
-                </div>
-            </div>
-
+            <bsform:input path="project.budget" labelColSpan="3" inputColSpan="9" noHelp="true" />
             <!-- edit homepage -->
-            <div class="form-group">
-                <label class="col-sm-3 control-label">
-                    <fmt:message key="project.homepage" />
-                </label>
-                <div class="col-sm-9">
-                    <fmt:message key="project.homepage" var="homepagePlaceholder" />
-                    <c:set var="homepage" value="${project.homepage}" />
-                    <a href="${project.homepage}">
-                        <input type="text" class="form-control" value="${homepage}" placeholder="${homepagePlaceholder}"/>
-                    </a>
-                </div>
-            </div>
-
-            <!-- edit parent project -->
-            <div class="form-group">
-                <label class="col-sm-3 control-label">
-                    <fmt:message key="project.parentproject" />
-                </label>
-                <div class="col-sm-9">
-                    <fmt:message key="project.edit.parentproject" var="parentPlaceholder" />
-                    <!-- fixme get all projects and select from them -->
-                    <a href="${relativeUrlGenerator.getProjectUrlByProject(project.parentProject)}">
-                        <input type="text" class="form-control" value="${project.parentProject.title}" placeholder="${parentPlaceholder}"/>
-                    </a>
-                </div>
-            </div>
-
-            <!-- edit sub projects -->
-            <div class="form-group">
-                <label class="col-sm-3 control-label">
-                    <fmt:message key="project.subprojects" />
-                </label>
-                <div class="col-sm-9">
-                    <fmt:message key="project.edit.subproject" var="subprojectsPlaceholder" />
-                    <c:forEach var="subproject" items="${project.subProjects}">
-                    <!-- fixme get list of projects, sanity checks -->
-                        <input type="text" class="subproject-input form-control" value="${subproject.title}" placeholder="${subprojectsPlaceholder}"/>
-                    </c:forEach>
-                    <input type="text" class="form-control subproject-input" placeholder="${subprojectsPlaceholder}"/>
-                </div>
-            </div>
+            <bsform:input path="project.homepage" labelColSpan="3" inputColSpan="9" noHelp="true" />
+            <!-- todo edit parent project
+            <bsform:input path="project.parentProject" labelColSpan="3" inputColSpan="9" noHelp="true" /> -->
+            <!-- todo edit sub projects
+            <bsform:input path="project.subProjects" labelColSpan="3" inputColSpan="9" noHelp="true" /> -->
 
             <p class="clearfix"><!--  --></p>
             <div class="col-sm-offset-3 ">

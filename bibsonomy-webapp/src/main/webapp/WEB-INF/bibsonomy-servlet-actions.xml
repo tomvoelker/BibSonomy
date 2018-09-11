@@ -456,13 +456,24 @@
 						</property>
 					</bean>
 				</entry>
-                <entry key="editProject">
+                <entry key="/editProject">
                     <bean parent="controllerBase">
                         <property name="controllerBeanName" value="editProjectController"/>
                         <property name="allowedFields">
                             <list>
                                 <value>projectIdToUpdate</value>
                                 <value>ckey</value>
+                                <value>title</value>
+                                <value>subTitle</value>
+                                <value>description</value>
+                                <value>homepage</value>
+                                <value>type</value>
+                                <value>budget</value>
+                                <value>startDate</value>
+                                <value>endDate</value>
+                                <value>parentProject</value>
+                                <value>subProjects</value>
+                                <value>crislinks</value>
                             </list>
                         </property>
                     </bean>

@@ -1,13 +1,9 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
-import org.bibsonomy.model.enums.ProjectStatus;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.actions.EditProjectCommand;
@@ -17,8 +13,6 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
-
-import java.util.List;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -39,9 +33,8 @@ public class EditProjectController implements MinimalisticController<EditProject
 	public View workOn(final EditProjectCommand command) {
 		final RequestWrapperContext context = command.getContext();
 		final String requestedProjectId = command.getProjectIdToUpdate();
-		final User loginUser = context.getLoginUser();
 
-		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
+		if (!context.isUserLoggedIn()) {
 			throw new AccessDeniedException("please log in");
 		}
 
@@ -49,11 +42,41 @@ public class EditProjectController implements MinimalisticController<EditProject
 			return returnEditView(requestedProjectId, command);
 		}
 
-		// todo db update
+		updateProject(command.getProject(), command);
 		final String referer = command.getReferer();
+		if (present(referer)) {
+			return new ExtendedRedirectView(referer);
+		}
 		return new ExtendedRedirectView(this.urlGenerator.getProjectHome());
 	}
 
+	/**
+	 *
+	 * @param project
+	 * @param command
+	 */
+	private void updateProject(Project project, EditProjectCommand command) {
+		project.setTitle(command.getTitle());
+		project.setSubTitle(command.getSubTitle());
+		project.setDescription(command.getDescription());
+		project.setType(command.getType());
+		project.setBudget(command.getBudget());
+		project.setStartDate(command.getStartDate());
+		project.setEndDate(command.getEndDate());
+		project.setParentProject(command.getParentProject());
+		project.setSubProjects(command.getSubProjects());
+		project.setCrisLinks(command.getCrisLinks());
+
+		// todo catch errors
+		// this.logic.updateProject(project.getExternalId(), project);
+	}
+
+	/**
+	 *
+	 * @param requestedProjectId
+	 * @param command
+	 * @return
+	 */
 	private View returnEditView(String requestedProjectId, EditProjectCommand command){
 		final Project projectDetails = this.logic.getProjectDetails(requestedProjectId);
 		if (!present(projectDetails)) {
