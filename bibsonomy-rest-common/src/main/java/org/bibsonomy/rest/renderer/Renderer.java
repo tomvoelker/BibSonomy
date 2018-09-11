@@ -138,20 +138,19 @@ public interface Renderer {
 	public void serializeResourcePersonRelation(Writer writer, ResourcePersonRelation resourcePersonRelation, ViewModel viewModel);
 
 	/**
+	 * Serializes a list of {@link ResourcePersonRelation}.
+	 * @param writer
+	 * @param relations
+	 */
+	void serializeResourcePersonRelations(Writer writer, List<ResourcePersonRelation> relations);
+
+	/**
 	 * Serializes a personid
 	 *
 	 * @param writer   the {@link Writer} to use.
 	 * @param personId the personId to send
 	 */
 	public void serializePersonId(Writer writer, String personId);
-
-	/**
-	 * Serializes a resource person relation id
-	 *
-	 * @param writer     the {@link Writer} to use.
-	 * @param relationId the relationId to send
-	 */
-	public void serializeResourcePersonRelationId(Writer writer, String relationId);
 
 	/**
 	 * Serializes a {@link List} of {@link Tag}s.
@@ -347,17 +346,6 @@ public interface Renderer {
 	public String parsePersonId(Reader reader) throws BadRequestOrResponseException;
 
 	/**
-	 * Reads an resource person relation id from a {@link Reader}
-	 *
-	 * @param reader
-	 *            the {@link Reader} to use.
-	 * @return an resource hash
-	 * @throws BadRequestOrResponseException
-	 *             if the document within the reader is errorenous.
-	 */
-	public String parseResourcePersonRelationId(Reader reader) throws BadRequestOrResponseException;
-
-	/**
 	 * Reads a group id from a {@link Reader}
 	 * 
 	 * @param reader
@@ -422,6 +410,13 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public ResourcePersonRelation parseResourcePersonRelation(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads a list of {@link ResourcePersonRelation}s from a {@link Reader}.
+	 * @param reader  the {@link Reader} to use.
+	 * @return a list of {@link ResourcePersonRelation}s
+	 */
+	List<ResourcePersonRelation> parseResourcePersonRelations(Reader reader);
 
 	/**
 	 * Reads a List of {@link Post}s from a {@link Reader}.

@@ -392,6 +392,10 @@ public class UrlRenderer {
 		return builder;
 	}
 
+	public UrlBuilder createUrlBuilderForPersons(String personId) {
+		return createUrlBuilderForApi().addPathElement(RESTConfig.PERSONS_URL).addPathElement(personId);
+	}
+
 	public UrlBuilder createUrlBuilderForPersons() {
 		return createUrlBuilderForApi().addPathElement(RESTConfig.PERSONS_URL);
 	}

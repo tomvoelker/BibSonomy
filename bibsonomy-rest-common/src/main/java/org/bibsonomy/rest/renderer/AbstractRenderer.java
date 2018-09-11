@@ -42,6 +42,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -104,6 +105,7 @@ import org.bibsonomy.rest.renderer.xml.ReferencesType;
 import org.bibsonomy.rest.renderer.xml.RelationType;
 import org.bibsonomy.rest.renderer.xml.ResourceLinkType;
 import org.bibsonomy.rest.renderer.xml.ResourcePersonRelationType;
+import org.bibsonomy.rest.renderer.xml.ResourcePersonRelationsType;
 import org.bibsonomy.rest.renderer.xml.StatType;
 import org.bibsonomy.rest.renderer.xml.SyncDataType;
 import org.bibsonomy.rest.renderer.xml.SyncPostType;
@@ -535,6 +537,17 @@ public abstract class AbstractRenderer implements Renderer {
 		return xmlResourcePersonRelation;
 	}
 
+	@Override
+	public void serializeResourcePersonRelations(Writer writer, List<ResourcePersonRelation> relations) {
+		final BibsonomyXML xmlDoc = getDummyBibsonomyXMLWithOK();
+
+		final ResourcePersonRelationsType listWrapper = new ResourcePersonRelationsType();
+		relations.stream().map(this::createXmlResourcePersonRelation).forEach(listWrapper.getResourcePersonRelation()::add);
+
+		xmlDoc.setResourcePersonRelations(listWrapper);
+		serialize(writer, xmlDoc);
+	}
+
 	private RelationType createXmlRelationType(PersonResourceRelationType personResourceRelationType) {
 		return RelationType.valueOf(personResourceRelationType.name());
 	}
@@ -724,11 +737,6 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	@Override
-	public void serializeResourcePersonRelationId(Writer writer, String resourceId) {
-
-	}
-
-	@Override
 	public void serializeURI(final Writer writer, final String uri) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
@@ -862,16 +870,16 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private Person createPerson(PersonType personType) {
 		final Person person = new Person();
-		person.setMainName(createPersonName(personType.getMainName()));
+		if (personType.getMainName() != null) {
+			person.setMainName(createPersonName(personType.getMainName()));
+		}
 		if (personType.getCollege() != null) {
 			person.setCollege(personType.getCollege());
 		}
 		if (personType.getAcademicDegree() != null) {
 			person.setAcademicDegree(personType.getAcademicDegree());
 		}
-		if (personType.getPersonId() != null) {
-			person.setPersonId(personType.getPersonId());
-		}
+		person.setPersonId(personType.getPersonId());
 		return person;
 	}
 
@@ -880,18 +888,6 @@ public abstract class AbstractRenderer implements Renderer {
 		name.setFirstName(personNameType.getFirstName());
 		name.setLastName(personNameType.getLastName());
 		return name;
-	}
-
-	@Override
-	public String parseResourcePersonRelationId(Reader reader) throws BadRequestOrResponseException {
-		final BibsonomyXML xmlDoc = parse(reader);
-		if (xmlDoc.getResourcePersonRelation() != null) {
-			return xmlDoc.getResourcehash();
-		}
-		if (xmlDoc.getError() != null) {
-			throw new BadRequestOrResponseException(xmlDoc.getError());
-		}
-		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no resource-person-relation defined.");
 	}
 
 	@Override
@@ -908,7 +904,6 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private ResourcePersonRelation createResourcePersonRelation(ResourcePersonRelationType resourcePersonRelationType) {
 		final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
-		resourcePersonRelation.setPerson(createPerson(resourcePersonRelationType.getPerson()));
 		resourcePersonRelation.setPost(createDummyResource(resourcePersonRelationType.getResource()));
 		resourcePersonRelation.setPersonIndex(resourcePersonRelationType.getPersonIndex().intValue());
 		resourcePersonRelation.setRelationType(PersonResourceRelationType.valueOf(
@@ -923,6 +918,20 @@ public abstract class AbstractRenderer implements Renderer {
 		final Post<BibTex> post = new Post<>();
 		post.setResource(bibTex);
 		return post;
+	}
+
+	@Override
+	public List<ResourcePersonRelation> parseResourcePersonRelations(Reader reader) {
+		final BibsonomyXML xmlDoc = this.parse(reader);
+		final ResourcePersonRelationsType xmlRelations = xmlDoc.getResourcePersonRelations();
+		if (xmlRelations != null) {
+
+			return xmlRelations.getResourcePersonRelation().stream().map(this::createResourcePersonRelation).collect(Collectors.toList());
+		}
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no resource-person-relation defined.");
 	}
 
 	@Override

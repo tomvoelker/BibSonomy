@@ -187,10 +187,8 @@
 					</div>
 				</c:if>
 			</div>
-		</jsp:attribute>
-
-                <!-- create new person for this publication -->
-				<fmt:message var="otherPersonModalTitle" key="disambiguation.otherPerson.modal.title"/>
+			<!-- create new person for this publication -->
+			<fmt:message var="otherPersonModalTitle" key="disambiguation.otherPerson.modal.title"/>
 				<bsold:modal modalTitle="${otherPersonModalTitle}" id="otherPerson">
 					<jsp:attribute name="modalBody">
 						<p><fmt:message key="disambiguation.otherPerson.modal.msg"><fmt:param value="${title}"/></fmt:message></p>
@@ -243,7 +241,7 @@
 					</jsp:attribute>
 
 					<jsp:attribute name="modalFooter">
-
+						<!-- keep me -->
 					</jsp:attribute>
 
 				</bsold:modal>
@@ -272,6 +270,7 @@
 						</div>
                     </jsp:attribute>
 				</bsold:modal>
+		</jsp:attribute>
 
 		<jsp:attribute name="sidebar">
 			<sidebar:sidebarItem textKey="disambiguation.title">
@@ -281,5 +280,4 @@
 			</sidebar:sidebarItem>
 		</jsp:attribute>
 	</layout:paneLayout>
-
 </jsp:root>

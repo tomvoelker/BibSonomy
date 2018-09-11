@@ -86,7 +86,7 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 		command.setPersonRoleRenderer(personRoleRenderer);
 		return command;
 	}
-	
+
 	@Override
 	public View workOn(final DisambiguationPageCommand command) {
 		final String requestedHash = command.getRequestedHash();
@@ -96,7 +96,7 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 
 		// get the post that should be displayed
 		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, requestedHash, null, null, null, null, null, null, 0, 1);
-		
+
 		if (!present(posts)) {
 			throw new ObjectNotFoundException(requestedHash);
 		}
@@ -109,11 +109,11 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 		} else if ("linkPerson".equals(action)) {
 			return linkAction(post, command);
 		}
-		
+
 		if (!present(command.getRequestedIndex())) {
 			throw new MalformedURLSchemeException("error.disambiguation.without_index");
 		}
-		
+
 		return this.disambiguateAction(post, command);
 	}
 
@@ -122,7 +122,7 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 		final int requestedIndex = command.getRequestedIndex().intValue();
 
 		final BibTex publication = post.getResource();
-		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations().byInterhash(publication.getInterHash()).byRelationType(requestedRole).byAuthorIndex(requestedIndex).getIt();
+		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byInterhash(publication.getInterHash()).byRelationType(requestedRole).byAuthorIndex(requestedIndex));
 
 		/*
 		 * redirect to the person page of the author/editor
@@ -130,27 +130,26 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 		if (present(matchingRelations)) {
 			return new ExtendedRedirectView(this.urlGenerator.getPersonUrl(matchingRelations.get(0).getPerson().getPersonId()));
 		}
-		
+
 		final BibTex res = publication;
 		final List<PersonName> persons = PersonUtils.getPersonsByRoleWithFallback(res, requestedRole);
 
 		if (!present(persons) || requestedIndex < 0 || requestedIndex >= persons.size()) {
 			throw new ObjectNotFoundException(requestedRole + " for " + res.getInterHash());
 		}
-		
+
 		final PersonName requestedName = persons.get(requestedIndex);
 		command.setPersonName(requestedName);
 
 		// FIXME: move escape to es module
 		final String name = QueryParser.escape(BibTexUtils.cleanBibTex(requestedName.toString()));
-		
-		final PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
-		final List<ResourcePersonRelation> suggestedPersons = query.doIt();
-			
+
+		final List<ResourcePersonRelation> suggestedPersons = this.logic.getPersonSuggestion(new PersonSuggestionQueryBuilder(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values()));
+
 		/*
 		 * FIXME: introduce a person system tag that searches for the exact person
 		 * @see bibsonomy.database.managers.PostDatabaseManager.#getPostsByResourceSearch()
-		 * 
+		 *
 		 * get at least 50 publications from authors with same name
 		 */
 		final List<Post<BibTex>> pubAuthorSearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, name, SearchType.LOCAL, null , Order.ALPH, null, null, 0, 50);
@@ -176,8 +175,8 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 			// discard theses from authors with a different name
 			if (!suggestedPerson.getPerson().getMainName().toString().equals(name))
 				continue;
-			
-			List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(suggestedPerson.getPerson().getPersonId()).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
+
+			List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(suggestedPerson.getPerson().getPersonId()).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear));
 			final List<Post<?>> personPosts = new ArrayList<>();
 
 			for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
@@ -215,7 +214,7 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 				}
 			}
 		}
-		
+
 		command.setSuggestedPersonPosts(suggestedPersonPosts);
 		command.setSuggestedPosts(noPersonRelPubList);
 		command.setPost(post);
