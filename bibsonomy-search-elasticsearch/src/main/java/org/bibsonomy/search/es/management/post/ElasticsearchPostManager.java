@@ -24,7 +24,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.es.management;
+package org.bibsonomy.search.es.management.post;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -51,7 +51,9 @@ import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
-import org.bibsonomy.search.es.generator.ElasticsearchIndexGenerator;
+import org.bibsonomy.search.es.index.generator.post.ElasticsearchIndexGenerator;
+import org.bibsonomy.search.es.management.ElasticsearchIndex;
+import org.bibsonomy.search.es.management.ElasticsearchIndexTools;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.exceptions.IndexAlreadyGeneratingException;
 import org.bibsonomy.search.management.SearchIndexManager;
@@ -73,8 +75,8 @@ import org.elasticsearch.search.sort.SortOrder;
  * @author dzo
  * @param <R> 
  */
-public class ElasticsearchManager<R extends Resource> implements SearchIndexManager<R> {
-	private static final Log log = LogFactory.getLog(ElasticsearchManager.class);
+public class ElasticsearchPostManager<R extends Resource> implements SearchIndexManager<R> {
+	private static final Log log = LogFactory.getLog(ElasticsearchPostManager.class);
 	
 	/** how many posts should be retrieved from the database */
 	public static final int SQL_BLOCKSIZE = 5000;
@@ -99,14 +101,14 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 		@Override
 		public final Void call() {
 			try {
-				ElasticsearchManager.this.currentGenerator = this.generator;
+				ElasticsearchPostManager.this.currentGenerator = this.generator;
 				this.generator.generateIndex();
 				this.indexGenerated(this.newIndex);
 			} catch (final Exception e) {
 				log.error("error while generating index", e);
 			} finally {
-				ElasticsearchManager.this.currentGenerator = null;
-				ElasticsearchManager.this.generatorLock.release();
+				ElasticsearchPostManager.this.currentGenerator = null;
+				ElasticsearchPostManager.this.generatorLock.release();
 			}
 			
 			return null;
@@ -136,11 +138,11 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 		}
 		
 		/* (non-Javadoc)
-		 * @see org.bibsonomy.search.es.management.ElasticsearchManager.ElasticSearchIndexGenerationTask#indexGenerated(org.bibsonomy.search.es.management.ElasticsearchIndex)
+		 * @see org.bibsonomy.search.es.management.post.ElasticsearchPostManager.ElasticSearchIndexGenerationTask#indexGenerated(org.bibsonomy.search.es.management.ElasticsearchIndex)
 		 */
 		@Override
 		protected void indexGenerated(ElasticsearchIndex<R> generatedIndex) {
-			ElasticsearchManager.this.activateNewIndex(generatedIndex, this.toRegenerateIndexName);
+			ElasticsearchPostManager.this.activateNewIndex(generatedIndex, this.toRegenerateIndexName);
 		}
 	}
 	
@@ -162,12 +164,12 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 		}
 
 		/* (non-Javadoc)
-		 * @see org.bibsonomy.search.es.management.ElasticsearchManager.AbstractSearchIndexGenerationTask#indexGenerated(org.bibsonomy.search.es.management.ElasticsearchIndex)
+		 * @see org.bibsonomy.search.es.management.post.ElasticsearchPostManager.AbstractSearchIndexGenerationTask#indexGenerated(org.bibsonomy.search.es.management.ElasticsearchIndex)
 		 */
 		@Override
 		protected void indexGenerated(final ElasticsearchIndex<R> generatedIndex) {
 			if (this.activeIndexAfterGeneration) {
-				ElasticsearchManager.this.activateNewIndex(generatedIndex, null);
+				ElasticsearchPostManager.this.activateNewIndex(generatedIndex, null);
 			}
 		}
 	}
@@ -199,7 +201,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	 * @param inputLogic
 	 * @param tools
 	 */
-	public ElasticsearchManager(final boolean updateEnabled, final boolean disabledIndexing, final ESClient client, SearchDBInterface<R> inputLogic, ElasticsearchIndexTools<R> tools) {
+	public ElasticsearchPostManager(final boolean updateEnabled, final boolean disabledIndexing, final ESClient client, SearchDBInterface<R> inputLogic, ElasticsearchIndexTools<R> tools) {
 		super();
 		this.updateEnabled = updateEnabled;
 		this.disabledIndexing = disabledIndexing;

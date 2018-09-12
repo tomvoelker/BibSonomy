@@ -24,35 +24,40 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.es.index;
+package org.bibsonomy.search.es.management.post;
 
-import java.io.IOException;
+import java.util.Date;
 
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.search.es.ESConstants.Fields;
-import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.search.es.ESClient;
+import org.bibsonomy.search.es.management.ElasticsearchIndexTools;
+import org.bibsonomy.search.es.management.post.ElasticsearchPostManager;
+import org.bibsonomy.search.management.database.SearchDBInterface;
 
 /**
- * mappping builder for indexed {@link Bookmark}s
+ * special class that manages community posts
  *
  * @author dzo
+ * @param <R> 
  */
-public class BookmarkMappingBuilder extends ResourceMappingBuilder<Bookmark> {
+public class ElasticsearchCommunityManager<R extends Resource> extends ElasticsearchPostManager<R> {
 	
 	/**
-	 * @param resourceType
+	 * @param updateEnabled
+	 * @param disabledIndexing
+	 * @param client
+	 * @param inputLogic
+	 * @param tools
 	 */
-	public BookmarkMappingBuilder(Class<Bookmark> resourceType) {
-		super(resourceType);
+	public ElasticsearchCommunityManager(boolean updateEnabled, boolean disabledIndexing, ESClient client, SearchDBInterface<R> inputLogic, ElasticsearchIndexTools<R> tools) {
+		super(updateEnabled, disabledIndexing, client, inputLogic, tools);
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.ResourceMapping#doResourceSpecificMapping(org.elasticsearch.common.xcontent.XContentBuilder)
+	 * @see org.bibsonomy.search.es.management.post.ElasticsearchPostManager#updatePredictions(java.lang.String, java.util.Date, java.util.Date)
 	 */
 	@Override
-	protected void doResourceSpecificMapping(XContentBuilder builder) throws IOException {
-		builder.startObject(Fields.Bookmark.URL)
-					.field(TYPE_FIELD, TEXT_TYPE)
-				.endObject();
+	protected void updatePredictions(String indexName, Date lastPredictionChangeDate, Date currentLastPreditionChangeDate) {
+		// noop no user related content
 	}
 }

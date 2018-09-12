@@ -32,8 +32,8 @@ import java.util.Map;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
+import org.bibsonomy.search.es.management.post.ElasticsearchPostManager;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.junit.AfterClass;
@@ -58,8 +58,8 @@ public abstract class AbstractEsIndexTest extends AbstractDatabaseManagerTest {
 
 		client.indices().delete(new DeleteIndexRequest("_all"), RequestOptions.DEFAULT);
 
-		final Map<Class<? extends Resource>, ElasticsearchManager<? extends Resource>> managers = getAllManagers();
-		for (ElasticsearchManager<? extends Resource> manager : managers.values()) {
+		final Map<Class<? extends Resource>, ElasticsearchPostManager<? extends Resource>> managers = getAllManagers();
+		for (ElasticsearchPostManager<? extends Resource> manager : managers.values()) {
 			manager.regenerateAllIndices();
 		}
 		
@@ -76,8 +76,8 @@ public abstract class AbstractEsIndexTest extends AbstractDatabaseManagerTest {
 	}
 
 	private static void closeAllIndices() {
-		final Map<Class<? extends Resource>, ElasticsearchManager<? extends Resource>> managers = getAllManagers();
-		for (final ElasticsearchManager<?> lrm : managers.values()) {
+		final Map<Class<? extends Resource>, ElasticsearchPostManager<? extends Resource>> managers = getAllManagers();
+		for (final ElasticsearchPostManager<?> lrm : managers.values()) {
 			lrm.shutdown();
 		}
 	}
@@ -86,8 +86,8 @@ public abstract class AbstractEsIndexTest extends AbstractDatabaseManagerTest {
 	 * @return
 	 */
 	@SuppressWarnings({ "unchecked", "resource" })
-	private static Map<Class<? extends Resource>, ElasticsearchManager<? extends Resource>> getAllManagers() {
+	private static Map<Class<? extends Resource>, ElasticsearchPostManager<? extends Resource>> getAllManagers() {
 		final BeanFactory bf = EsSpringContextWrapper.getContext();
-		return (Map<Class<? extends Resource>, ElasticsearchManager<? extends Resource>>) bf.getBean("elasticsearchManagers");
+		return (Map<Class<? extends Resource>, ElasticsearchPostManager<? extends Resource>>) bf.getBean("elasticsearchManagers");
 	}
 }

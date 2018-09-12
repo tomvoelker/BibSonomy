@@ -24,7 +24,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.es.index;
+package org.bibsonomy.search.es.index.converter.post;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -102,7 +102,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.ResourceConverter#createNewResource()
+	 * @see org.bibsonomy.search.es.index.converter.post.ResourceConverter#createNewResource()
 	 */
 	@Override
 	protected BibTex createNewResource() {
@@ -111,7 +111,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertResourceInternal(org.bibsonomy.model.Resource, java.util.Map, boolean)
+	 * @see org.bibsonomy.search.es.index.converter.post.ResourceConverter#convertResourceInternal(org.bibsonomy.model.Resource, java.util.Map, boolean)
 	 */
 	@Override
 	protected void convertResourceInternal(final Post<BibTex> post, Map<String, Object> source, final boolean loadDocuments) {
@@ -211,7 +211,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertPostInternal(java.util.Map, org.bibsonomy.model.Post)
+	 * @see org.bibsonomy.search.es.index.converter.post.ResourceConverter#convertPostInternal(java.util.Map, org.bibsonomy.model.Post)
 	 */
 	@Override
 	protected void convertPostInternal(final Map<String, Object> source, Post<BibTex> post) {
@@ -222,7 +222,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertResource(java.util.Map, org.bibsonomy.model.Resource)
+	 * @see org.bibsonomy.search.es.index.converter.post.ResourceConverter#convertResource(java.util.Map, org.bibsonomy.model.Resource)
 	 */
 	@Override
 	protected void convertResource(final Map<String, Object> jsonDocument, BibTex resource) {
@@ -334,7 +334,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	}
 
 	/**
-	 * @param author
+	 * @param persons
 	 * @return
 	 */
 	private static List<Map<String, String>> convertPersonNames(List<PersonName> persons) {
@@ -348,7 +348,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertPostInternal(java.util.Map, org.bibsonomy.model.Post)
+	 * @see org.bibsonomy.search.es.index.converter.post.ResourceConverter#convertPostInternal(java.util.Map, org.bibsonomy.model.Post)
 	 */
 	@Override
 	protected void convertPostInternal(final Post<BibTex> post, final Map<String, Object> jsonDocument) {

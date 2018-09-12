@@ -24,20 +24,51 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.es.index;
+package org.bibsonomy.search.es.index.converter.post;
 
-import org.bibsonomy.search.es.ESConstants;
+import java.net.URI;
+import java.util.Map;
+
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardBookmark;
+import org.bibsonomy.model.Post;
 
 /**
- * Names of the constants in this enum are directly used as values of the
- * {@link ESConstants#NORMALIZED_ENTRY_TYPE_FIELD_NAME} field in the index.
+ * converter for {@link GoldStandardBookmark}
  *
- * @author jensi
+ * @author dzo
  */
-public enum NormalizedEntryTypes {
-	habilitation,
-	phdthesis,
-	master_thesis,
-	bachelor_thesis,
-	candidate_thesis
+public class CommunityBookmarkConverter extends BookmarkConverter {
+
+	/**
+	 * @param systemURI
+	 */
+	public CommunityBookmarkConverter(URI systemURI) {
+		super(systemURI);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.index.BookmarkConverter#createNewResource()
+	 */
+	@Override
+	protected Bookmark createNewResource() {
+		return new GoldStandardBookmark();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.index.converter.post.ResourceConverter#fillUser(org.bibsonomy.model.Post, java.lang.String)
+	 */
+	@Override
+	protected void fillUser(Post<Bookmark> post, String userName) {
+		// nothing to do
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.index.converter.post.ResourceConverter#fillIndexDocument(org.bibsonomy.model.Post, java.util.Map)
+	 */
+	@Override
+	protected void fillIndexDocumentUser(Post<Bookmark> post, Map<String, Object> jsonDocument) {
+		// nothing to do
+	}
+
 }

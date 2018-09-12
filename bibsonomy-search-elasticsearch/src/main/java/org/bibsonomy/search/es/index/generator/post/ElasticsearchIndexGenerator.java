@@ -24,7 +24,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.es.generator;
+package org.bibsonomy.search.es.index.generator.post;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -57,6 +57,7 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
  * @author dzo
  * @param <R> 
  */
+@Deprecated // use the generic index generator
 public class ElasticsearchIndexGenerator<R extends Resource> {
 	private static final Log log = LogFactory.getLog(ElasticsearchIndexGenerator.class);
 	
@@ -85,7 +86,7 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 		this.client = client;
 		this.tools = tools;
 	}
-	
+
 	/**
 	 * method that generates a new ElasticSearch index
 	 */

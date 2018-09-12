@@ -24,38 +24,41 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.es.management;
+package org.bibsonomy.search.es.index.converter.post;
 
-import java.util.Date;
+import java.net.URI;
+import java.util.Map;
 
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.search.es.ESClient;
-import org.bibsonomy.search.management.database.SearchDBInterface;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.search.es.ESConstants.Fields;
 
 /**
- * special class that manages community posts
+ * {@link ResourceConverter} for {@link Bookmark}s
  *
  * @author dzo
- * @param <R> 
  */
-public class ElasticsearchCommunityManager<R extends Resource> extends ElasticsearchManager<R> {
+public class BookmarkConverter extends ResourceConverter<Bookmark> {
 	
 	/**
-	 * @param updateEnabled
-	 * @param disabledIndexing
-	 * @param client
-	 * @param inputLogic
-	 * @param tools
+	 * @param systemURI
 	 */
-	public ElasticsearchCommunityManager(boolean updateEnabled, boolean disabledIndexing, ESClient client, SearchDBInterface<R> inputLogic, ElasticsearchIndexTools<R> tools) {
-		super(updateEnabled, disabledIndexing, client, inputLogic, tools);
+	public BookmarkConverter(URI systemURI) {
+		super(systemURI);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.management.ElasticsearchManager#updatePredictions(java.lang.String, java.util.Date, java.util.Date)
-	 */
 	@Override
-	protected void updatePredictions(String indexName, Date lastPredictionChangeDate, Date currentLastPreditionChangeDate) {
-		// noop no user related content
+	protected void convertResource(Map<String, Object> jsonDocument, Bookmark resource) {
+		jsonDocument.put(Fields.Bookmark.URL, resource.getUrl());
+	}
+
+	@Override
+	protected Bookmark createNewResource() {
+		return new Bookmark();
+	}
+
+	@Override
+	protected void convertResourceInternal(final Post<Bookmark> post, final Map<String, Object> source, final boolean loadDocuments) {
+		post.getResource().setUrl((String) source.get(Fields.Bookmark.URL));
 	}
 }

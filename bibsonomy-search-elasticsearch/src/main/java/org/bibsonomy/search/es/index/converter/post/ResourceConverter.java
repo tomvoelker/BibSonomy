@@ -24,7 +24,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.es.index;
+package org.bibsonomy.search.es.index.converter.post;
 
 import java.net.URI;
 import java.util.Date;
@@ -42,6 +42,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
+import org.bibsonomy.search.util.Converter;
 
 /**
  * abstract class to convert the model to the ES mapping
@@ -49,7 +50,7 @@ import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
  * @author dzo
  * @param <R> 
  */
-public abstract class ResourceConverter<R extends Resource> implements org.bibsonomy.search.util.ResourceConverter<R, Map<String, Object>> {
+public abstract class ResourceConverter<R extends Resource> implements Converter<Post<R>, Map<String, Object>, Set<String>> {
 	
 	private final URI systemURI;
 	
@@ -214,7 +215,7 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 	}
 
 	/**
-	 * @param set
+	 * @param tags
 	 * @return
 	 */
 	private static Set<String> convertTags(final Set<Tag> tags) {

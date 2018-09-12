@@ -86,6 +86,38 @@ public final class ElasticsearchUtils {
 		return indexName + "-" + timeStamp;
 	}
 
+	public static String getLocalAliasForType(final String type, final URI systemHome, final SearchIndexState state) {
+		final String prefix = getPrefixForState(state);
+
+		return prefix + "-" + getIndexName(systemHome, type);
+	}
+
+	private static final String getIndexName(final URI systemHome, final String type) {
+		final String hostname = normSystemHome(systemHome);
+		return hostname + "_" + type;
+	}
+
+	private static String getPrefixForState(SearchIndexState state) {
+		final String prefix;
+		switch (state) {
+			case ACTIVE:
+				prefix = ACTIVE_INDEX_ALIAS;
+				break;
+			case INACTIVE:
+				prefix = INACTIVE_INDEX_ALIAS;
+				break;
+			case STANDBY:
+				prefix = STANDBY_INDEX_ALIAS;
+				break;
+			case GENERATING:
+				prefix = ESConstants.TEMP_INDEX_PREFIX;
+				break;
+			default:
+				throw new IllegalArgumentException(state + " not supported");
+		}
+		return prefix;
+	}
+
 	/**
 	 * returns the alias of the local system for the resource
 	 * 
@@ -94,25 +126,10 @@ public final class ElasticsearchUtils {
 	 * @param state
 	 * @return returns the alias name
 	 */
+	@Deprecated
 	public static String getLocalAliasForResource(final Class<? extends Resource> resourceType, final URI systemHome, final SearchIndexState state) {
-		final String prefix;
-		switch (state) {
-		case ACTIVE:
-			prefix = ACTIVE_INDEX_ALIAS;
-			break;
-		case INACTIVE:
-			prefix = INACTIVE_INDEX_ALIAS;
-			break;
-		case STANDBY:
-			prefix = STANDBY_INDEX_ALIAS;
-			break;
-		case GENERATING:
-			prefix = ESConstants.TEMP_INDEX_PREFIX;
-			break;
-		default:
-			throw new IllegalArgumentException(state + " not supported");
-		}
-		
+		final String prefix = getPrefixForState(state);
+
 		return prefix + "-" + getIndexName(systemHome, resourceType);
 	}
 
@@ -163,7 +180,7 @@ public final class ElasticsearchUtils {
 	}
 
 	/**
-	 * @param state
+	 * @param date the date for the index
 	 * @return
 	 */
 	private static Date getDateForIndex(Date date) {

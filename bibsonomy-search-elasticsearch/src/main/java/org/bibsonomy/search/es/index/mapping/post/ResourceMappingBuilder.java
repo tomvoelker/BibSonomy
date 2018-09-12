@@ -24,7 +24,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.es.index;
+package org.bibsonomy.search.es.index.mapping.post;
 
 import java.io.IOException;
 
@@ -45,43 +45,7 @@ import org.elasticsearch.common.xcontent.XContentFactory;
  */
 public abstract class ResourceMappingBuilder<R extends Resource> implements MappingBuilder<XContentBuilder> {
 
-	/** properties field key */
-	public static final String PROPERTIES = "properties";
 
-	/** boost the field (search in _all field) */
-	public static final String BOOST_FIELD = "boost";
-
-	/** type text */
-	public static final String TEXT_TYPE = "text";
-
-	/** type keyword used only for filtering */
-	public static final String KEYWORD_TYPE = "keyword";
-	
-	/** type nested */
-	public static final String NESTED_TYPE = "nested";
-	
-	/** date type */
-	public static final String DATE_TYPE = "date";
-	
-	/** the type field */
-	public static final String TYPE_FIELD = "type";
-	
-	/** the index field */
-	public static final String INDEX_FIELD = "index";
-	
-	/** e.g the date format field */
-	public static final String FORMAT_FIELD = "format";
-	
-	/** iso date format (optional time) */
-	public static final String FORMAT_DATE_OPTIONAL_TIME = "dateOptionalTime";
-	
-	/** iso date format */
-	public static final String DATE_TIME_FORMAT = "date_time";
-	
-	/** field should not be indexed */
-	public static final String NOT_INDEXED = "false";
-	
-	
 	private Class<R> resourceType;
 
 	/**
@@ -108,24 +72,24 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 							 * fields as field = value into es (=> dynamic mapping)
 							 */
 							.field("date_detection", false)
-							.startObject(PROPERTIES)
+							.startObject(ESConstants.IndexSettings.PROPERTIES)
 								.startObject(ESConstants.Fields.Resource.INTRAHASH)
-									.field(TYPE_FIELD, KEYWORD_TYPE)
+									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
 									//.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(ESConstants.Fields.Resource.INTERHASH)
-									.field(TYPE_FIELD, KEYWORD_TYPE)
+									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
 									//.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(ESConstants.Fields.TAGS)
-									.field(TYPE_FIELD, KEYWORD_TYPE)
+									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
 								.endObject()
 								.startObject(ESConstants.Fields.USER_NAME)
-									.field(TYPE_FIELD, KEYWORD_TYPE)
+									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
 									//.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(ESConstants.Fields.GROUPS)
-									.field(TYPE_FIELD, KEYWORD_TYPE)
+									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
 									//.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								/*
@@ -133,23 +97,23 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 								 * => this field must be analyzed by es 
 								 */
 								.startObject(ESConstants.Fields.DATE)
-									.field(TYPE_FIELD, DATE_TYPE)
-									.field(FORMAT_FIELD, DATE_TIME_FORMAT)
+									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.DATE_TYPE)
+									.field(ESConstants.IndexSettings.FORMAT_FIELD, ESConstants.IndexSettings.DATE_TIME_FORMAT)
 									//.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(ESConstants.Fields.CHANGE_DATE)
-									.field(TYPE_FIELD, DATE_TYPE)
-									.field(INDEX_FIELD, NOT_INDEXED)
-									.field(FORMAT_FIELD, DATE_TIME_FORMAT)
+									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.DATE_TYPE)
+									.field(ESConstants.IndexSettings.INDEX_FIELD, ESConstants.IndexSettings.NOT_INDEXED)
+									.field(ESConstants.IndexSettings.FORMAT_FIELD, ESConstants.IndexSettings.DATE_TIME_FORMAT)
 									//.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(Fields.SYSTEM_URL)
-									.field(TYPE_FIELD, KEYWORD_TYPE)
+									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
 									//.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(ESConstants.Fields.Resource.TITLE)
-									.field(TYPE_FIELD, TEXT_TYPE)
-									.field(BOOST_FIELD, 2)
+									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.TEXT_TYPE)
+									.field(ESConstants.IndexSettings.BOOST_FIELD, 2)
 								.endObject();
 			
 			this.doResourceSpecificMapping(commonPostResourceFields);

@@ -30,8 +30,8 @@ import java.net.URI;
 
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
-import org.bibsonomy.search.es.index.ResourceConverter;
-import org.bibsonomy.search.es.index.ResourceMappingBuilder;
+import org.bibsonomy.search.es.index.converter.post.ResourceConverter;
+import org.bibsonomy.search.es.index.mapping.post.ResourceMappingBuilder;
 
 /**
  * this is a container for

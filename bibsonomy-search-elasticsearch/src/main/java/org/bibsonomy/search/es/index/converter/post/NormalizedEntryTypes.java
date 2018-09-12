@@ -24,51 +24,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.es.index;
+package org.bibsonomy.search.es.index.converter.post;
 
-import java.net.URI;
-import java.util.Map;
-
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.search.es.ESConstants.Fields;
+import org.bibsonomy.search.es.ESConstants;
 
 /**
- * {@link ResourceConverter} for {@link Bookmark}s
+ * Names of the constants in this enum are directly used as values of the
+ * {@link ESConstants#NORMALIZED_ENTRY_TYPE_FIELD_NAME} field in the index.
  *
- * @author dzo
+ * @author jensi
  */
-public class BookmarkConverter extends ResourceConverter<Bookmark> {
-	
-	/**
-	 * @param systemURI
-	 */
-	public BookmarkConverter(URI systemURI) {
-		super(systemURI);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertResource(java.util.Map, org.bibsonomy.model.Resource)
-	 */
-	@Override
-	protected void convertResource(Map<String, Object> jsonDocument, Bookmark resource) {
-		jsonDocument.put(Fields.Bookmark.URL, resource.getUrl());
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.ResourceConverter#createNewResource()
-	 */
-	@Override
-	protected Bookmark createNewResource() {
-		return new Bookmark();
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertResourceInternal(org.bibsonomy.model.Resource, java.util.Map, boolean)
-	 */
-	@Override
-	protected void convertResourceInternal(final Post<Bookmark> post, final Map<String, Object> source, final boolean loadDocuments) {
-		post.getResource().setUrl((String) source.get(Fields.Bookmark.URL));
-	}
+public enum NormalizedEntryTypes {
+	habilitation,
+	phdthesis,
+	master_thesis,
+	bachelor_thesis,
+	candidate_thesis
 }

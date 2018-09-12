@@ -24,51 +24,61 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.es.index;
+package org.bibsonomy.search.es.index.converter.post;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.GoldStandardBookmark;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Document;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 
 /**
- * converter for {@link GoldStandardBookmark}
+ * converter for {@link GoldStandardPublication}
  *
  * @author dzo
  */
-public class CommunityBookmarkConverter extends BookmarkConverter {
+public class CommunityPublicationConverter extends PublicationConverter {
 
 	/**
 	 * @param systemURI
 	 */
-	public CommunityBookmarkConverter(URI systemURI) {
-		super(systemURI);
+	public CommunityPublicationConverter(URI systemURI) {
+		super(systemURI, null);
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.BookmarkConverter#createNewResource()
+	 * @see org.bibsonomy.search.es.index.converter.post.PublicationConverter#createNewResource()
 	 */
 	@Override
-	protected Bookmark createNewResource() {
-		return new GoldStandardBookmark();
+	protected BibTex createNewResource() {
+		return new GoldStandardPublication();
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.ResourceConverter#fillUser(org.bibsonomy.model.Post, java.lang.String)
+	 * @see org.bibsonomy.search.es.index.converter.post.PublicationConverter#convertDocuments(java.util.List)
 	 */
 	@Override
-	protected void fillUser(Post<Bookmark> post, String userName) {
+	public List<Map<String, String>> convertDocuments(List<Document> documents) {
+		// nothing to do
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.index.converter.post.ResourceConverter#fillUser(org.bibsonomy.model.Post, java.lang.String)
+	 */
+	@Override
+	protected void fillUser(Post<BibTex> post, String userName) {
 		// nothing to do
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.ResourceConverter#fillIndexDocument(org.bibsonomy.model.Post, java.util.Map)
+	 * @see org.bibsonomy.search.es.index.converter.post.ResourceConverter#fillIndexDocument(org.bibsonomy.model.Post, java.util.Map)
 	 */
 	@Override
-	protected void fillIndexDocumentUser(Post<Bookmark> post, Map<String, Object> jsonDocument) {
+	protected void fillIndexDocumentUser(Post<BibTex> post, Map<String, Object> jsonDocument) {
 		// nothing to do
 	}
-
 }

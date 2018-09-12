@@ -24,61 +24,36 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.es.index;
+package org.bibsonomy.search.es.index.mapping.post;
 
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
 
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Document;
-import org.bibsonomy.model.GoldStandardPublication;
-import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.search.es.ESConstants;
+import org.bibsonomy.search.es.ESConstants.Fields;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 
 /**
- * converter for {@link GoldStandardPublication}
+ * mappping builder for indexed {@link Bookmark}s
  *
  * @author dzo
  */
-public class CommunityPublicationConverter extends PublicationConverter {
-
+public class BookmarkMappingBuilder extends ResourceMappingBuilder<Bookmark> {
+	
 	/**
-	 * @param systemURI
+	 * @param resourceType
 	 */
-	public CommunityPublicationConverter(URI systemURI) {
-		super(systemURI, null);
+	public BookmarkMappingBuilder(Class<Bookmark> resourceType) {
+		super(resourceType);
 	}
-	
+
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.PublicationConverter#createNewResource()
+	 * @see org.bibsonomy.search.es.index.ResourceMapping#doResourceSpecificMapping(org.elasticsearch.common.xcontent.XContentBuilder)
 	 */
 	@Override
-	protected BibTex createNewResource() {
-		return new GoldStandardPublication();
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.PublicationConverter#convertDocuments(java.util.List)
-	 */
-	@Override
-	public List<Map<String, String>> convertDocuments(List<Document> documents) {
-		// nothing to do
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.ResourceConverter#fillUser(org.bibsonomy.model.Post, java.lang.String)
-	 */
-	@Override
-	protected void fillUser(Post<BibTex> post, String userName) {
-		// nothing to do
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.ResourceConverter#fillIndexDocument(org.bibsonomy.model.Post, java.util.Map)
-	 */
-	@Override
-	protected void fillIndexDocumentUser(Post<BibTex> post, Map<String, Object> jsonDocument) {
-		// nothing to do
+	protected void doResourceSpecificMapping(XContentBuilder builder) throws IOException {
+		builder.startObject(Fields.Bookmark.URL)
+					.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.TEXT_TYPE)
+				.endObject();
 	}
 }

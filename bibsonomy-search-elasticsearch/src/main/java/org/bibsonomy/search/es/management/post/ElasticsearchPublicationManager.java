@@ -24,7 +24,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.es.management;
+package org.bibsonomy.search.es.management.post;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -45,17 +45,13 @@ import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.ESConstants.Fields.Publication;
-import org.bibsonomy.search.es.index.PublicationConverter;
-import org.bibsonomy.search.es.index.ResourceConverter;
+import org.bibsonomy.search.es.index.converter.post.PublicationConverter;
+import org.bibsonomy.search.es.index.converter.post.ResourceConverter;
+import org.bibsonomy.search.es.management.ElasticsearchIndexTools;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.util.ValidationUtils;
-import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.action.support.WriteRequest;
-import org.elasticsearch.action.update.UpdateRequestBuilder;
 import org.elasticsearch.index.engine.DocumentMissingException;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.TermQueryBuilder;
@@ -69,7 +65,7 @@ import org.elasticsearch.search.SearchHits;
  * @author jensi
  * @param <P> 
  */
-public class ElasticsearchPublicationManager<P extends BibTex> extends ElasticsearchManager<P> {
+public class ElasticsearchPublicationManager<P extends BibTex> extends ElasticsearchPostManager<P> {
 	private static final Log log = LogFactory.getLog(ElasticsearchPublicationManager.class);
 	
 	private static final int UPDATED_INTERHASHES_CACHE_SIZE = 25000;

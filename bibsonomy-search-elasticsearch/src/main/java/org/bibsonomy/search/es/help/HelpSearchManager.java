@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.search.es.ESClient;
-import org.bibsonomy.search.es.index.ResourceMappingBuilder;
+import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.services.URLGenerator;
@@ -98,11 +98,11 @@ public class HelpSearchManager implements HelpSearch {
 							.field("date_detection", false)
 							.startObject("properties")
 								.startObject(HEADER_FIELD)
-									.field(ResourceMappingBuilder.TYPE_FIELD, ResourceMappingBuilder.TEXT_TYPE)
+									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.TEXT_TYPE)
 									.field("store", "true")
 								.endObject()
 								.startObject(CONTENT_FIELD)
-									.field(ResourceMappingBuilder.TYPE_FIELD, ResourceMappingBuilder.TEXT_TYPE)
+									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.TEXT_TYPE)
 									.field("store", "true")
 								.endObject()
 							.endObject()

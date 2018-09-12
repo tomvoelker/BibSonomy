@@ -96,6 +96,38 @@ public final class ESConstants {
 			throw new RuntimeException(e);
 		}
 	}
+
+	public interface IndexSettings {
+
+		/** properties field key */
+		String PROPERTIES = "properties";
+		/** flag to copy the field also to the other fields */
+		String COPY_TO = "copy_to";
+		/** boost the field (search in _all field) */
+		String BOOST_FIELD = "boost";
+		/** type text */
+		String TEXT_TYPE = "text";
+		/** type keyword used only for filtering */
+		String KEYWORD_TYPE = "keyword";
+		/** type nested */
+		String NESTED_TYPE = "nested";
+		/** date type */
+		String DATE_TYPE = "date";
+		/** the type field */
+		String TYPE_FIELD = "type";
+		/** the index field */
+		String INDEX_FIELD = "index";
+		/** e.g the date format field */
+		String FORMAT_FIELD = "format";
+		/** iso date format (optional time) */
+		String FORMAT_DATE_OPTIONAL_TIME = "dateOptionalTime";
+		/** iso date format */
+		String DATE_TIME_FORMAT = "date_time";
+		/** field should not be indexed */
+		String NOT_INDEXED = "false";
+		/** set to false to disable indexing */
+		String ENABLED = "enabled";
+	}
 	
 	/**
 	 * Index type for the system information
