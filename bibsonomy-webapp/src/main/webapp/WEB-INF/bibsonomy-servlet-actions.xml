@@ -472,8 +472,7 @@
                                 <value>project.budget</value>
                                 <value>project.startDate</value>
                                 <value>project.endDate</value>
-                                <value>project.parentProject</value>
-                                <value>project.parentProject.title</value>
+                                <value>project.parentProject.externalId</value>
                             </list>
                         </property>
                     </bean>

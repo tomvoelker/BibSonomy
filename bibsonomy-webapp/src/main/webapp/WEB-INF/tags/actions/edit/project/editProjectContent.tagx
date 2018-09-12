@@ -17,7 +17,10 @@
 
         <form:form cssClass="form-horizontal" method="post" action="/editProject?ckey=${ckey}" enctype="multipart/form-data">
             <!-- edit externalId -->
-            <bsform:input path="project.externalId" labelColSpan="3" inputColSpan="9" noHelp="true" disabled="true"/>
+            <!-- todo change hidden to disable, but still get Id for controller -->
+            <div class="hidden">
+                <bsform:input path="project.externalId" labelColSpan="3" inputColSpan="9" noHelp="true"/>
+            </div>
             <!-- edit title -->
             <bsform:input path="project.title" labelColSpan="3" inputColSpan="9" noHelp="true" />
             <!-- edit subtitle -->
@@ -62,7 +65,7 @@
             <!-- edit homepage -->
             <bsform:input path="project.homepage" labelColSpan="3" inputColSpan="9" noHelp="true" />
             <!-- todo edit parent project -->
-            <bsform:input path="project.parentProject.title" labelColSpan="3" inputColSpan="9" noHelp="true" />
+            <bsform:input path="project.parentProject.externalId" labelColSpan="3" inputColSpan="9" noHelp="true" />
             <!-- todo edit sub projects
             <bsform:input path="project.subProjects" labelColSpan="3" inputColSpan="9" noHelp="true" /> -->
 

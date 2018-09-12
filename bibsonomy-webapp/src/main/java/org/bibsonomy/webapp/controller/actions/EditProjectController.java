@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.cris.Project;
@@ -42,9 +43,10 @@ public class EditProjectController implements MinimalisticController<EditProject
 			return returnEditView(requestedProjectId, command);
 		}
 
-		this.updateProject(command.getProject());
+		JobResult result = this.updateProject(command.getProject());
 		final String referer = command.getReferer();
 		if (present(referer)) {
+			// todo never has referer
 			return new ExtendedRedirectView(referer);
 		}
 		return new ExtendedRedirectView(this.urlGenerator.getProjectsUrl());
@@ -54,14 +56,14 @@ public class EditProjectController implements MinimalisticController<EditProject
 	 * Set the properties not editable in this view.
 	 * @param project
 	 */
-	private void updateProject(Project project) {
+	private JobResult updateProject(Project project) {
 		Project originalProject = this.logic.getProjectDetails(project.getExternalId());
 		project.setSubProjects(originalProject.getSubProjects());
 		project.setCrisLinks(originalProject.getCrisLinks());
-		// todo external id or title?
+		project.setId(originalProject.getId());
 		Project parentProject = this.logic.getProjectDetails(project.getParentProject().getExternalId());
 		project.setParentProject(parentProject);
-		// this.logic.updateProject(project.getExternalId(), project);
+		return this.logic.updateProject(project.getExternalId(), project);
 	}
 
 	/**

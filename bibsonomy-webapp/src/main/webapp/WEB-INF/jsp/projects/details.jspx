@@ -47,11 +47,16 @@
 					</c:if>
 
                     <!-- show member -->
-                    <c:if test="${not empty project.crisLinks}">
-                        <div class="project-authors">
-                            <members:memberList project="${project}" showManagerOnly="${true}"/>
-                        </div>
-                    </c:if>
+                    <c:choose>
+                        <c:when test="${not empty project.crisLinks}" >
+                            <div class="project-authors">
+                                <members:memberList project="${project}" showManagerOnly="${true}"/>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <fmt:message key="project.noMembers" />
+                        </c:otherwise>
+                    </c:choose>
                 </div>
 			</div>
 
