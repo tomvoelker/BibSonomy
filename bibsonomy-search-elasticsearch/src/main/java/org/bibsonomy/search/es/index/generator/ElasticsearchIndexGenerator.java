@@ -13,7 +13,6 @@ import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;
-import org.bibsonomy.search.util.MappingBuilder;
 import org.bibsonomy.util.BasicUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
@@ -30,25 +29,42 @@ import java.util.Map;
  *
  * @author dzo
  */
-public class ElasticserchIndexGenerator<T> {
-	private static final Log LOG = LogFactory.getLog(ElasticserchIndexGenerator.class);
+public class ElasticsearchIndexGenerator<T> {
+	private static final Log LOG = LogFactory.getLog(ElasticsearchIndexGenerator.class);
 
 	// the index to generate
-	private String indexName;
+	private final String indexName;
 
-	private ESClient client;
+	private final ESClient client;
 
-	private MappingBuilder<XContentBuilder> mappingBuilder;
+	private final URI systemId;
 
-	private URI systemId;
+	private final IndexGenerationLogic<T> generationLogic;
 
-	private IndexGenerationLogic<T> generationLogic;
+	private final Converter<T, Map<String, Object>, ?> converter;
 
-	private Converter<T, Map<String, Object>, ?> converter;
+	private final EntityInformationProvider<T> entityInformationProvider;
 
 	private int numberOfEntities;
-	private EntityInformationProvider<T> entityInformationProvider;
+
 	private int writtenEntities;
+
+	/**
+	 * default construtor with all required fields
+	 * @param indexName
+	 * @param systemId
+	 * @param client
+	 * @param generationLogic
+	 * @param entityInformationProvider
+	 */
+	public ElasticsearchIndexGenerator(String indexName, URI systemId, ESClient client, IndexGenerationLogic<T> generationLogic, EntityInformationProvider<T> entityInformationProvider) {
+		this.indexName = indexName;
+		this.client = client;
+		this.systemId = systemId;
+		this.generationLogic = generationLogic;
+		this.entityInformationProvider = entityInformationProvider;
+		this.converter = this.entityInformationProvider.getConverter();
+	}
 
 	/**
 	 * method that generates a new ElasticSearch index
@@ -71,7 +87,7 @@ public class ElasticserchIndexGenerator<T> {
 			throw new IllegalStateException("index '" + indexName + "' already exists while generating an index");
 		}
 
-		final Mapping<XContentBuilder> mapping = this.mappingBuilder.getMapping();
+		final Mapping<XContentBuilder> mapping = this.entityInformationProvider.getMappingBuilder().getMapping();
 		LOG.info("generating a new index ('" + this.indexName + "')");
 
 		final boolean created = this.client.createIndex(this.indexName, mapping, ESConstants.SETTINGS);
@@ -178,5 +194,12 @@ public class ElasticserchIndexGenerator<T> {
 			return 0;
 		}
 		return this.writtenEntities / (double) this.numberOfEntities;
+	}
+
+	/**
+	 * @return the indexName
+	 */
+	public String getIndexName() {
+		return indexName;
 	}
 }

@@ -80,8 +80,22 @@ public final class ElasticsearchUtils {
 	 * @param resourceType
 	 * @return returns the indexName based on the parameters
 	 */
+	@Deprecated
 	public static String getIndexNameWithTime(URI systemHome, Class<? extends Resource> resourceType) {
 		final String indexName = getIndexName(systemHome, resourceType);
+		long timeStamp = System.currentTimeMillis();
+		return indexName + "-" + timeStamp;
+	}
+
+	/**
+	 * returns the index name based on the home url and resource type
+	 * Index Name: systemurl + ResourceType + Unix time stamp
+	 * @param type
+	 * @param resourceType
+	 * @return returns the indexName based on the parameters
+	 */
+	public static String getIndexNameWithTime(URI systemHome, final String type) {
+		final String indexName = getIndexName(systemHome, type);
 		long timeStamp = System.currentTimeMillis();
 		return indexName + "-" + timeStamp;
 	}

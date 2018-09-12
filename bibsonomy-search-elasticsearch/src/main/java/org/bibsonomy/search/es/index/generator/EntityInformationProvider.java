@@ -1,14 +1,45 @@
 package org.bibsonomy.search.es.index.generator;
 
+import org.bibsonomy.search.util.Converter;
+import org.bibsonomy.search.util.MappingBuilder;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+
+import java.util.Map;
+
 /**
  * provides entity informations
  * @param <E>
  */
-public interface EntityInformationProvider<E> {
+public abstract class EntityInformationProvider<E> {
 
-	int getContentId(E e);
+	private final Converter<E, Map<String, Object>, ?> converter;
 
-	String getEntityId(E entity);
+	private final MappingBuilder<XContentBuilder> mappingBuilder;
 
-	String getType();
+	/**
+	 * the entity information provider
+	 * @param converter
+	 * @param mappingBuilder
+	 */
+	protected EntityInformationProvider(Converter<E, Map<String, Object>, ?> converter, MappingBuilder<XContentBuilder> mappingBuilder) {
+		this.converter = converter;
+		this.mappingBuilder = mappingBuilder;
+	}
+
+	public abstract int getContentId(E e);
+
+	public abstract String getEntityId(E entity);
+
+	public abstract String getType();
+
+	/**
+	 * @return the converter
+	 */
+	public Converter<E, Map<String, Object>, ?> getConverter() {
+		return this.converter;
+	}
+
+	public MappingBuilder<XContentBuilder> getMappingBuilder() {
+		return this.mappingBuilder;
+	}
 }

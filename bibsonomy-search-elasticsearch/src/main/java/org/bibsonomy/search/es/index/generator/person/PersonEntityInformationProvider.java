@@ -1,5 +1,6 @@
 package org.bibsonomy.search.es.index.generator.person;
 
+import org.bibsonomy.search.es.index.converter.person.PersonConverter;
 import org.bibsonomy.search.es.index.mapping.person.PersonMappingBuilder;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
@@ -9,7 +10,14 @@ import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
  *
  * @author dzo
  */
-public class PersonEntityInformationProvider implements EntityInformationProvider<Person> {
+public class PersonEntityInformationProvider extends EntityInformationProvider<Person> {
+
+	/**
+	 * the entity information provider
+	 */
+	public PersonEntityInformationProvider() {
+		super(new PersonConverter(), new PersonMappingBuilder());
+	}
 
 	@Override
 	public int getContentId(Person person) {
