@@ -5,8 +5,9 @@
 
 	<jsp:directive.attribute name="project" type="org.bibsonomy.model.cris.Project" required="true"/>
 	<jsp:directive.attribute name="showAll" type="java.lang.Boolean" required="false"/>
+    <jsp:directive.attribute name="showManagerOnly" type="java.lang.Boolean" required="false" />
 
-	<c:set var="numberOfMembers" value="${fn:length(project.crisLinks)}"/>
+	<c:set var="numberOfMembers" value="${fn:length(members)}"/>
 	<c:set var="maxMembersToShow" value="${showAll ? 10 : numberOfMembers}"/>
 
 	<c:set var="membersToShow" value="${project.crisLinks}"/>
@@ -19,7 +20,8 @@
 
 	<span class="${not showAll ? 'show-more-person-list' : ''}">
 		<c:forEach var="member" items="${membersToShow}" varStatus="loopStatus">
-			<c:set var="memberName" value="${member.target.names[0]}"/>
+			<!-- todo showmanager only c:if -->
+            <c:set var="memberName" value="${member.target.names[0]}"/>
 			<c:if test="${loopStatus.last and not loopStatus.first and not membersListRestricted}">
 				<c:out value=" "/><fmt:message key="and"/><c:out value=" "/>
 			</c:if>

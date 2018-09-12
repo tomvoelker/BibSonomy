@@ -463,17 +463,17 @@
                             <list>
                                 <value>projectIdToUpdate</value>
                                 <value>ckey</value>
-                                <value>title</value>
-                                <value>subTitle</value>
-                                <value>description</value>
-                                <value>homepage</value>
-                                <value>type</value>
-                                <value>budget</value>
-                                <value>startDate</value>
-                                <value>endDate</value>
-                                <value>parentProject</value>
-                                <value>subProjects</value>
-                                <value>crislinks</value>
+                                <value>project.externalId</value>
+                                <value>project.title</value>
+                                <value>project.subTitle</value>
+                                <value>project.description</value>
+                                <value>project.homepage</value>
+                                <value>project.type</value>
+                                <value>project.budget</value>
+                                <value>project.startDate</value>
+                                <value>project.endDate</value>
+                                <value>project.parentProject</value>
+                                <value>project.parentProject.title</value>
                             </list>
                         </property>
                     </bean>

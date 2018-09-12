@@ -42,37 +42,29 @@ public class EditProjectController implements MinimalisticController<EditProject
 			return returnEditView(requestedProjectId, command);
 		}
 
-		updateProject(command.getProject(), command);
+		this.updateProject(command.getProject());
 		final String referer = command.getReferer();
 		if (present(referer)) {
 			return new ExtendedRedirectView(referer);
 		}
-		return new ExtendedRedirectView(this.urlGenerator.getProjectHome());
+		return new ExtendedRedirectView(this.urlGenerator.getProjectsUrl());
 	}
 
 	/**
-	 *
+	 * Set the properties not editable in this view.
 	 * @param project
-	 * @param command
 	 */
-	private void updateProject(Project project, EditProjectCommand command) {
-		project.setTitle(command.getTitle());
-		project.setSubTitle(command.getSubTitle());
-		project.setDescription(command.getDescription());
-		project.setType(command.getType());
-		project.setBudget(command.getBudget());
-		project.setStartDate(command.getStartDate());
-		project.setEndDate(command.getEndDate());
-		project.setParentProject(command.getParentProject());
-		project.setSubProjects(command.getSubProjects());
-		project.setCrisLinks(command.getCrisLinks());
-
-		// todo catch errors
+	private void updateProject(Project project) {
+		Project originalProject = this.logic.getProjectDetails(project.getExternalId());
+		project.setSubProjects(originalProject.getSubProjects());
+		project.setCrisLinks(originalProject.getCrisLinks());
+		// todo external id or title?
+		Project parentProject = this.logic.getProjectDetails(project.getParentProject().getExternalId());
+		project.setParentProject(parentProject);
 		// this.logic.updateProject(project.getExternalId(), project);
 	}
 
 	/**
-	 *
 	 * @param requestedProjectId
 	 * @param command
 	 * @return

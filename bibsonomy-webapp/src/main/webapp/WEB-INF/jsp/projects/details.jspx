@@ -49,7 +49,7 @@
                     <!-- show member -->
                     <c:if test="${not empty project.crisLinks}">
                         <div class="project-authors">
-                            <members:memberList project="${project}" />
+                            <members:memberList project="${project}" showManagerOnly="${true}"/>
                         </div>
                     </c:if>
                 </div>
@@ -73,16 +73,16 @@
                     </h2>
 					<dl class="dl-horizontal">
 						<c:if test="${not empty project.startDate}">
-							<dt><fmt:message key="project.startdate"/></dt>
+							<dt><fmt:message key="project.startDate"/></dt>
 							<dd><fmt:formatDate value="${project.startDate}" pattern="dd.MM.yy" /></dd>
 						</c:if>
 						<c:if test="${not empty project.endDate}">
-							<dt><fmt:message key="project.enddate"/></dt>
+							<dt><fmt:message key="project.endDate"/></dt>
 							<dd><fmt:formatDate value="${project.endDate}" pattern="dd.MM.yy" /></dd>
 						</c:if>
 						<c:set var="parentProject" value="${project.parentProject}" />
 						<c:if test="${not empty parentProject}">
-							<dt><fmt:message key="project.parentproject"/></dt>
+							<dt><fmt:message key="project.parentProject"/></dt>
 							<dd>
 								<a href="${relativeUrlGenerator.getProjectUrlByProject(parentProject)}">
 									<c:out value="${parentProject.title}" />
@@ -90,7 +90,7 @@
 							</dd>
 						</c:if>
 						<c:if test="${not empty project.subProjects}">
-							<dt><fmt:message key="project.subprojects"/></dt>
+							<dt><fmt:message key="project.subProjects"/></dt>
 							<c:forEach var='subproject' items="${project.subProjects}">
 								<c:set var="projectLink" value="${relativeUrlGenerator.getProjectUrlByProject(subproject)}" />
 								<dd>
@@ -113,6 +113,12 @@
                         <c:if test="${not empty project.type}">
                             <dt><fmt:message key="project.type"/></dt>
                             <dd><c:out value="${project.type}"/></dd>
+                        </c:if>
+                        <c:if test="${not empty project.crisLinks}">
+                            <dt><fmt:message key="project.crisLinks" /></dt>
+                            <dd>
+                                <members:memberList project="${project}"/>
+                            </dd>
                         </c:if>
 					</dl>
 				</div>

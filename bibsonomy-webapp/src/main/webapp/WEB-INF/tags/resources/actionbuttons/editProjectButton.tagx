@@ -5,7 +5,7 @@
     <jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true"/>
 
     <!-- fixme use intrahash or sth like that -->
-    <c:set var="url" value="/editProject?projectIdToUpdate=${project.title.toLowerCase()}"/>
+    <c:set var="url" value="/editProject?projectIdToUpdate=${project.externalId}"/>
     <c:set var="editTitle" value="project"/>
 
     <a class="${buttonClasses}" href="${url}">
