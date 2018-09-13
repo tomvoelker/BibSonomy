@@ -485,11 +485,11 @@ public abstract class AbstractRenderer implements Renderer {
 		return xmlUser;
 	}
 
-	private BibsonomyXML getDummyBibsonomyXMLWithOK() {
-		return getDummyBibsonomyXML(StatType.OK);
+	private BibsonomyXML getEmptyBibsonomyXMLWithOK() {
+		return getEmptyBibsonomyXML(StatType.OK);
 	}
 
-	private BibsonomyXML getDummyBibsonomyXML(StatType statType) {
+	private BibsonomyXML getEmptyBibsonomyXML(StatType statType) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(statType);
 		return xmlDoc;
@@ -497,19 +497,28 @@ public abstract class AbstractRenderer implements Renderer {
 
 	@Override
 	public void serializePerson(Writer writer, Person person, ViewModel viewModel) {
-		final BibsonomyXML xmlDoc = getDummyBibsonomyXMLWithOK();
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
 		xmlDoc.setPerson(createXmlPerson(person));
 		serialize(writer, xmlDoc);
 	}
 
 	private PersonType createXmlPerson(Person person) throws InternServerException{
 		final PersonType xmlPerson = new PersonType();
-		if (person.getAcademicDegree() != null)
+		if (person.getAcademicDegree() != null) {
 			xmlPerson.setAcademicDegree(person.getAcademicDegree());
-		if (person.getCollege() != null)
+		}
+		if (person.getCollege() != null) {
 			xmlPerson.setCollege(person.getCollege());
-		if (person.getPersonId() != null)
+		}
+		if (person.getPersonId() != null) {
 			xmlPerson.setPersonId(person.getPersonId());
+		}
+		if (person.getHomepage() != null) {
+			xmlPerson.setHomepage(person.getHomepage().toString());
+		}
+		if (person.getEmail() != null) {
+			xmlPerson.setEmail(person.getEmail());
+		}
 		xmlPerson.setMainName(createXmlPersonName(person.getMainName()));
 		return xmlPerson;
 	}
@@ -523,7 +532,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	@Override
 	public void serializeResourcePersonRelation(final Writer writer, ResourcePersonRelation resourcePersonRelation, ViewModel viewModel) {
-		final BibsonomyXML xmlDoc = getDummyBibsonomyXMLWithOK();
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
 		xmlDoc.setResourcePersonRelation(createXmlResourcePersonRelation(resourcePersonRelation));
 		serialize(writer, xmlDoc);
 	}
@@ -539,7 +548,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	@Override
 	public void serializeResourcePersonRelations(Writer writer, List<ResourcePersonRelation> relations) {
-		final BibsonomyXML xmlDoc = getDummyBibsonomyXMLWithOK();
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
 
 		final ResourcePersonRelationsType listWrapper = new ResourcePersonRelationsType();
 		relations.stream().map(this::createXmlResourcePersonRelation).forEach(listWrapper.getResourcePersonRelation()::add);
@@ -731,7 +740,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	@Override
 	public void serializePersonId(Writer writer, String personId) {
-		final BibsonomyXML xmlDoc = getDummyBibsonomyXMLWithOK();
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
 		xmlDoc.setPersonid(personId);
 		serialize(writer, xmlDoc);
 	}
@@ -878,6 +887,17 @@ public abstract class AbstractRenderer implements Renderer {
 		}
 		if (personType.getAcademicDegree() != null) {
 			person.setAcademicDegree(personType.getAcademicDegree());
+		}
+		if (personType.getEmail() != null) {
+			person.setEmail(personType.getEmail());
+		}
+		if (personType.getHomepage() != null) {
+			try {
+				final URL url = new URL(personType.getHomepage());
+				person.setHomepage(url);
+			} catch (MalformedURLException e) {
+				person.setHomepage(null);
+			}
 		}
 		person.setPersonId(personType.getPersonId());
 		return person;

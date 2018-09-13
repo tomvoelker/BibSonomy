@@ -51,7 +51,7 @@ public class RestClientUtils {
 	private static final int CONNECTION_TIMEOUT = 5 * 1000;
 
 	/** the read timeout */
-	private static final int READ_TIMEOUT = 5 * 1000;
+	private static final int READ_TIMEOUT = 5 * 1000 * 60;
 
 	/**
 	 * according to http://hc.apache.org/httpclient-3.x/threading.html
