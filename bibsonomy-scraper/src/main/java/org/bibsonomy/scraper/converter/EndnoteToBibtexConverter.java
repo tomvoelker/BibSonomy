@@ -370,7 +370,7 @@ public class EndnoteToBibtexConverter implements BibtexConverter {
 		endnoteToBibtexFieldMap.put("%C",               "howpublished"); // Place Published
 		endnoteToBibtexFieldMap.put("%D",                       "year"); // Year
 		endnoteToBibtexFieldMap.put("%E",                     "editor"); // Editor
-		// endnoteToBibtexFieldMap.put("%F", "label"); // Label
+		// endnoteToBibtexFieldMap.put("%FEMALE", "label"); // Label
 		// endnoteToBibtexFieldMap.put("%G", "language"); // Language
 		// endnoteToBibtexFieldMap.put("%H", "translated_author"); // Translated
 		// Author

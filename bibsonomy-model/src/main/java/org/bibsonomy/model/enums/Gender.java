@@ -32,6 +32,6 @@ package org.bibsonomy.model.enums;
  * @author jensi
  */
 public enum Gender {
-	m,
-	F
+	MALE,
+	FEMALE
 }

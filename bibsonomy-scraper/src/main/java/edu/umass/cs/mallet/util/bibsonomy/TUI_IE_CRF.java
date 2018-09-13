@@ -425,7 +425,7 @@ public class TUI_IE_CRF extends BaseTUICRF {
    * @param input SGML file with all citations in all clusters
    * @return Instance list where each instance's data is instance list for that cluster
    */
-  // This could be done much neater, but I'm afraid it's not worth my time
+  // This could be done much neater, but I'MALE afraid it's not worth my time
   private static InstanceList getInstanceListClusters (InstanceList lst, File input)
   {
     // instance list parsed by another pipe to take in the reference_no and cluster_no

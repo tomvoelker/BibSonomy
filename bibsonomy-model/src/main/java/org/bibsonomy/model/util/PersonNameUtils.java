@@ -262,7 +262,7 @@ public class PersonNameUtils {
 	 *           Knuth       --&gt; knuth
 	 * Knuth, Donald         --&gt; d.knuth
 	 * Knuth, Donald E.      --&gt; d.knuth
-	 * Maarten de Rijke      --&gt; m.rijke
+	 * Maarten de Rijke      --&gt; MALE.rijke
 	 * Balby Marinho, Leandro--&gt; l.marinho
 	 * </pre>
 	 * 

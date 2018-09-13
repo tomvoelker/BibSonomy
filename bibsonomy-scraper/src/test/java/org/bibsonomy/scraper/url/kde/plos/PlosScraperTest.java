@@ -196,7 +196,7 @@ public class PlosScraperTest {
 		assertNotNull(reference);
 		assertTrue(reference.length() > 100);
 		assertEquals("<li id=\"ref1\"><span class=\"ord".trim(), reference.substring(0, 30).trim());
-		assertTrue(reference.contains("Portaels F"));
+		assertTrue(reference.contains("Portaels FEMALE"));
 	}
 
 }

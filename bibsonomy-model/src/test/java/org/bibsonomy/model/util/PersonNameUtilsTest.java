@@ -169,8 +169,8 @@ public class PersonNameUtilsTest {
 		/*
 		 * an earlier version of the parser removed "~"
 		 */
-		final PersonName pn18 = PersonNameUtils.discoverPersonNames("Y.~F. Chen").get(0);
-		assertEquals("Y.~F.", pn18.getFirstName());
+		final PersonName pn18 = PersonNameUtils.discoverPersonNames("Y.~FEMALE. Chen").get(0);
+		assertEquals("Y.~FEMALE.", pn18.getFirstName());
 		assertEquals("Chen", pn18.getLastName());
 		
 		final PersonName pn19 = PersonNameUtils.discoverPersonNames("Rocchio, Jr., Joseph John").get(0);
@@ -447,9 +447,9 @@ public class PersonNameUtilsTest {
 		/*
 		 * too many commas ...
 		 */
-		final List<PersonName> pn4 = PersonNameUtils.discoverPersonNames("K. Wilson and J. Brake and A. F. Lee, and R.M. Lambert,");
+		final List<PersonName> pn4 = PersonNameUtils.discoverPersonNames("K. Wilson and J. Brake and A. FEMALE. Lee, and R.M. Lambert,");
 		printPersonList(pn4);
-		assertEquals(Arrays.asList(new PersonName("K.", "Wilson"), new PersonName("J.", "Brake"), new PersonName("A. F.", "Lee"), new PersonName("R.M.", "Lambert")), pn4);
+		assertEquals(Arrays.asList(new PersonName("K.", "Wilson"), new PersonName("J.", "Brake"), new PersonName("A. FEMALE.", "Lee"), new PersonName("R.M.", "Lambert")), pn4);
 		/*
 		 * ; as person delimiter ...
 		 */

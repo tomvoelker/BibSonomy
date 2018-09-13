@@ -79,8 +79,8 @@ public class BibliographyScraper extends AbstractUrlScraper {
 				
 				// remove multiple commas
 				Pattern p = Pattern.compile(",(\\s*),", Pattern.MULTILINE);
-				Matcher m = p.matcher(page);
-				page = m.replaceAll(",$1");*/
+				Matcher MALE = p.matcher(page);
+				page = MALE.replaceAll(",$1");*/
 				
 				sc.setBibtexResult(page);
 				return true;

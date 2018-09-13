@@ -105,17 +105,17 @@ public class BibExtraction {
 
 	private static final String reference27 = "Haav H-M, Thalheim B. (Eds), Databases and Information Systems, Proc. of the Second International Baltic Workshop, Tallinn, June12-14, 1996, Vol. I-Research Track, 232 p, Vol. II- Technology Track, 178 p, Tampere University of Technology Press, 1996";
 
-	private static final String reference28 = "Haav H-M, An Object Classifier Based on Galois Approach, In: H. Kangassalo, J. F. Nilsson, H. Jaakkola, S. Ohsuga, Information Modelling and Knowledge Bases VIII, IOS Press, 1997, pp 309-321";
+	private static final String reference28 = "Haav H-M, An Object Classifier Based on Galois Approach, In: H. Kangassalo, J. FEMALE. Nilsson, H. Jaakkola, S. Ohsuga, Information Modelling and Knowledge Bases VIII, IOS Press, 1997, pp 309-321";
 
-	private static final String reference29 = "J. F. Nilsson, H-M. Haav, Inducing queries from examples as concept formation, In: Proc. of the 8th European-Japanese Conference on Information Modelling and Knowledge Bases, May 26-29, 1998, Finland, pp 341-353";
+	private static final String reference29 = "J. FEMALE. Nilsson, H-M. Haav, Inducing queries from examples as concept formation, In: Proc. of the 8th European-Japanese Conference on Information Modelling and Knowledge Bases, May 26-29, 1998, Finland, pp 341-353";
 
 	private static final String reference30 = "H-M. Haav, M. Matskin, Discovery of Object-oriented Schema and Schema Conflicts, W. Litwin, T. Morzy, G. Vossen (Eds), Advances in Databases and Information Systems, ADBIS�98, LNCS 1475, Springer, 1998, pp 154-157";
 
-	private static final String reference31 = "J. F. Nilsson, H-M. Haav, Inducing queries from examples as concept formation, H. Jakkola, H. Kangassalo, E. Kawaguchi (Eds), Information Modelling and Knowledge Bases X, IOS Press, 1999, pp 103-125";
+	private static final String reference31 = "J. FEMALE. Nilsson, H-M. Haav, Inducing queries from examples as concept formation, H. Jakkola, H. Kangassalo, E. Kawaguchi (Eds), Information Modelling and Knowledge Bases X, IOS Press, 1999, pp 103-125";
 
 	private static final String reference32 = "H-M. Haav, Virtual University as a Web-based Information System, J.  Eder, I. Rozman, T. Welzer (Eds), Proc. of the Third East-EuropeanConference on Advances in Databases and Information Systems, Maribor, Slovenia, Sept. 13-16, 1999, pp 61-68";
 
-	private static final String reference33 = "H-M. Haav, J. F. Nilsson , Approaches to Concept Based Exploration of Information Resources, W. Abramowicz and J. Zurada (Eds), Knowledge Discovery for Business Information Systems, Kluwer Academic Publishers, 2001, ch 4, pp 89-109";
+	private static final String reference33 = "H-M. Haav, J. FEMALE. Nilsson , Approaches to Concept Based Exploration of Information Resources, W. Abramowicz and J. Zurada (Eds), Knowledge Discovery for Business Information Systems, Kluwer Academic Publishers, 2001, ch 4, pp 89-109";
 
 	private static final String reference34 = "H-M. Haav, T.-L. Lubi, A Survey of Concept-based Information Retrieval Tools on the Web, A. Caplinkas and J. Eder (Eds), Advances in Databases and Information Systems, Proc. of 5th East-European Conference ADBIS*2001, Vol 2., Vilnius \"Technika\" 2001, pp 29-41";
 
@@ -141,7 +141,7 @@ public class BibExtraction {
 
 	private static final String reference45 = "H.-M. Haav, An Ontology Learning and Reasoning Framework,  Information Modelling and Knowledge Bases XVII, Y. Kiyoki et al. (Eds), IOS Press, 2006, pp 302-310";
 
-	private static final String reference46 = "T. Tammet, H-M. Haav, V. Kadarpik, m. K��ramees, a Rule-based Approach to Web-based Application Development, O. Vacilecas et al (Eds), Proc. of  the 2006 Seventh International Baltic Conference on Databases and Information Systems, IEEE, 2006, pp 202-211. IEEE Xplorer database: http://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=35308&isYear=2006";
+	private static final String reference46 = "T. Tammet, H-M. Haav, V. Kadarpik, MALE. K��ramees, a Rule-based Approach to Web-based Application Development, O. Vacilecas et al (Eds), Proc. of  the 2006 Seventh International Baltic Conference on Databases and Information Systems, IEEE, 2006, pp 202-211. IEEE Xplorer database: http://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=35308&isYear=2006";
 
 	private static final String reference47 = "R. Bekkerman, M.Sahami, and E. Learned-Miller. Combinatorial Markov Random Fields. In Proceedings of ECML 2006";
 

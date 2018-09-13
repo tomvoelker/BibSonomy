@@ -298,7 +298,7 @@ public class DBLogic implements LogicInterface {
 			final User user = this.userDBManager.getUserDetails(userName, session);
 
 			/*
-			 * only admin and myself may see which group I'm a member of
+			 * only admin and myself may see which group I'MALE a member of
 			 * group admins may see the details of the group's dummy user (in
 			 * that case, the group's name is user.getName()
 			 */

@@ -368,7 +368,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 				post.getResource().recalculateHashes();
 
 				/*
-				 * user may import n bibtexes which m>1 of them are the same.
+				 * user may import n bibtexes which MALE>1 of them are the same.
 				 *
 				 * Since similar bibtexes have similar intrahashes, we find duplicate bibtexes
 				 * by comparing intrahashes, and then add an error to not_unique bibtexes.
