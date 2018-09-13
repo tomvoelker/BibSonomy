@@ -230,6 +230,13 @@
 	<!--
     	a person
 	-->
+	<xsd:simpleType name="GenderType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="M" />
+			<xsd:enumeration value="F" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
 	<xsd:complexType name="PersonType">
 		<xsd:sequence>
 			<xsd:element name="mainName" type="PersonNameType" />
@@ -239,6 +246,8 @@
 		<xsd:attribute name="personId" type="xsd:string" />
 		<xsd:attribute name="homepage" type="xsd:anyURI" />
 		<xsd:attribute name="email" type="xsd:string" />
+		<xsd:attribute name="orcid" type="xsd:string" />
+		<xsd:attribute name="gender" type="GenderType" />
 	</xsd:complexType>
 	
 	<!-- 

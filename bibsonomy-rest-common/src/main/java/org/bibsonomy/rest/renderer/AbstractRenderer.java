@@ -67,6 +67,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.factories.ResourceFactory;
@@ -82,39 +83,7 @@ import org.bibsonomy.model.util.data.DataAccessor;
 import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.renderer.xml.AbstractPublicationType;
-import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
-import org.bibsonomy.rest.renderer.xml.BibtexType;
-import org.bibsonomy.rest.renderer.xml.BookmarkType;
-import org.bibsonomy.rest.renderer.xml.DocumentType;
-import org.bibsonomy.rest.renderer.xml.DocumentsType;
-import org.bibsonomy.rest.renderer.xml.ExtraUrlType;
-import org.bibsonomy.rest.renderer.xml.ExtraUrlsType;
-import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
-import org.bibsonomy.rest.renderer.xml.GroupType;
-import org.bibsonomy.rest.renderer.xml.GroupsType;
-import org.bibsonomy.rest.renderer.xml.PersonNameType;
-import org.bibsonomy.rest.renderer.xml.PersonType;
-import org.bibsonomy.rest.renderer.xml.PostType;
-import org.bibsonomy.rest.renderer.xml.PostsType;
-import org.bibsonomy.rest.renderer.xml.PublicationType;
-import org.bibsonomy.rest.renderer.xml.PublicationsType;
-import org.bibsonomy.rest.renderer.xml.PublishedInType;
-import org.bibsonomy.rest.renderer.xml.ReferenceType;
-import org.bibsonomy.rest.renderer.xml.ReferencesType;
-import org.bibsonomy.rest.renderer.xml.RelationType;
-import org.bibsonomy.rest.renderer.xml.ResourceLinkType;
-import org.bibsonomy.rest.renderer.xml.ResourcePersonRelationType;
-import org.bibsonomy.rest.renderer.xml.ResourcePersonRelationsType;
-import org.bibsonomy.rest.renderer.xml.StatType;
-import org.bibsonomy.rest.renderer.xml.SyncDataType;
-import org.bibsonomy.rest.renderer.xml.SyncPostType;
-import org.bibsonomy.rest.renderer.xml.SyncPostsType;
-import org.bibsonomy.rest.renderer.xml.TagType;
-import org.bibsonomy.rest.renderer.xml.TagsType;
-import org.bibsonomy.rest.renderer.xml.UploadDataType;
-import org.bibsonomy.rest.renderer.xml.UserType;
-import org.bibsonomy.rest.renderer.xml.UsersType;
+import org.bibsonomy.rest.renderer.xml.*;
 import org.bibsonomy.rest.validation.StandardXMLModelValidator;
 import org.bibsonomy.rest.validation.XMLModelValidator;
 import org.bibsonomy.util.ValidationUtils;
@@ -519,6 +488,12 @@ public abstract class AbstractRenderer implements Renderer {
 		if (person.getEmail() != null) {
 			xmlPerson.setEmail(person.getEmail());
 		}
+		if (person.getOrcid() != null) {
+			xmlPerson.setOrcid(person.getOrcid());
+		}
+		if (person.getGender() != null) {
+			xmlPerson.setGender(GenderType.valueOf(person.getGender().name().toUpperCase()));
+		}
 		xmlPerson.setMainName(createXmlPersonName(person.getMainName()));
 		return xmlPerson;
 	}
@@ -898,6 +873,12 @@ public abstract class AbstractRenderer implements Renderer {
 			} catch (MalformedURLException e) {
 				person.setHomepage(null);
 			}
+		}
+		if (personType.getGender() != null) {
+			person.setGender(Gender.valueOf(personType.getGender().name()));
+		}
+		if (personType.getOrcid() != null) {
+			person.setOrcid(personType.getOrcid());
 		}
 		person.setPersonId(personType.getPersonId());
 		return person;
