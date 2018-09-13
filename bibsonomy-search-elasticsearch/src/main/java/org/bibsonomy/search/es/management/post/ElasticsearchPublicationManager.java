@@ -28,6 +28,7 @@ package org.bibsonomy.search.es.management.post;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.net.URI;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -46,8 +47,8 @@ import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.ESConstants.Fields.Publication;
 import org.bibsonomy.search.es.index.converter.post.PublicationConverter;
-import org.bibsonomy.search.es.index.converter.post.ResourceConverter;
-import org.bibsonomy.search.es.management.ElasticsearchIndexTools;
+import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
+import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.SearchIndexSyncState;
@@ -69,18 +70,22 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 	private static final Log log = LogFactory.getLog(ElasticsearchPublicationManager.class);
 	
 	private static final int UPDATED_INTERHASHES_CACHE_SIZE = 25000;
-	
 
 	/**
-	 * @param updateEnabled
+	 * default constructor
+	 *
+	 * @param systemId
 	 * @param disabledIndexing
+	 * @param updateEnabled
 	 * @param client
+	 * @param generator
+	 * @param entityInformationProvider
 	 * @param inputLogic
-	 * @param tools
 	 */
-	public ElasticsearchPublicationManager(boolean updateEnabled, boolean disabledIndexing, ESClient client, SearchDBInterface<P> inputLogic, ElasticsearchIndexTools<P> tools) {
-		super(updateEnabled, disabledIndexing, client, inputLogic, tools);
+	public ElasticsearchPublicationManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<P>> generator, EntityInformationProvider<Post<P>> entityInformationProvider, SearchDBInterface<P> inputLogic) {
+		super(systemId, disabledIndexing, updateEnabled, client, generator, entityInformationProvider, inputLogic);
 	}
+
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.management.ElasticSearchManager#updateResourceSpecificProperties(java.lang.String, org.bibsonomy.search.update.SearchIndexState, org.bibsonomy.search.update.SearchIndexState)
@@ -99,7 +104,7 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 			final List<Map<String, String>> documents = this.getPublicationConverter().convertDocuments(postDocUpdate.getResource().getDocuments());
 			final String id = ElasticsearchUtils.createElasticSearchId(postDocUpdate.getContentId().intValue());
 			try {
-				this.client.updateDocument(indexName, this.tools.getResourceTypeAsString(), id, Collections.singletonMap(Publication.DOCUMENTS, documents));
+				this.client.updateDocument(indexName, this.entityInformationProvider.getType(), id, Collections.singletonMap(Publication.DOCUMENTS, documents));
 			} catch (final DocumentMissingException e) {
 				log.error("could not update post with " + id, e);
 			}
@@ -165,16 +170,17 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 	}
 
 	/**
+	 * FIXME: this cast is not nice
 	 * @return
 	 */
 	private PublicationConverter getPublicationConverter() {
-		final ResourceConverter<P> converter = this.tools.getConverter();
+		final Object converter = this.entityInformationProvider.getConverter();
 		return (PublicationConverter) converter;
 	}
 	
 	private void updatePostDocument(final String indexName, final Map<String, Object> jsonDocument, final String indexIdStr) {
 		try {
-			this.client.updateDocument(indexName, this.tools.getResourceTypeAsString(), indexIdStr, jsonDocument);
+			this.client.updateDocument(indexName, this.entityInformationProvider.getType(), indexIdStr, jsonDocument);
 		} catch (final DocumentMissingException e) {
 			log.error("could not update documents of post " + indexIdStr);
 		}

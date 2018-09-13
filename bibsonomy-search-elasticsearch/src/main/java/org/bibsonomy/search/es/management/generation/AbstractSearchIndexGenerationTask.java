@@ -17,9 +17,11 @@ import java.util.concurrent.Callable;
 public abstract class AbstractSearchIndexGenerationTask<T> implements Callable<Void> {
 	private static final Log LOG = LogFactory.getLog(AbstractSearchIndexGenerationTask.class);
 
-
+	/** the manager that is started the recommendation task */
 	protected final ElasticsearchManager<T> manager;
+	/** the generator to use */
 	private final ElasticsearchIndexGenerator<T> generator;
+	/** the name of the index to generate */
 	private final String newIndexName;
 
 	/**
@@ -39,13 +41,12 @@ public abstract class AbstractSearchIndexGenerationTask<T> implements Callable<V
 	@Override
 	public final Void call() {
 		try {
-			this.manager.generatingIndex(this.generator);
-			this.generator.generateIndex();
+			this.generator.generateIndex(this.newIndexName);
 			this.indexGenerated(this.newIndexName);
 		} catch (final Exception e) {
 			LOG.error("error while generating index", e);
 		} finally {
-			this.manager.generatedIndex(this.generator);
+			this.manager.generatedIndex();
 		}
 
 		return null;

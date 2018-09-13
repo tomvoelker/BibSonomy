@@ -91,7 +91,7 @@ public final class ElasticsearchUtils {
 	 * returns the index name based on the home url and resource type
 	 * Index Name: systemurl + ResourceType + Unix time stamp
 	 * @param type
-	 * @param resourceType
+	 * @param type
 	 * @return returns the indexName based on the parameters
 	 */
 	public static String getIndexNameWithTime(URI systemHome, final String type) {

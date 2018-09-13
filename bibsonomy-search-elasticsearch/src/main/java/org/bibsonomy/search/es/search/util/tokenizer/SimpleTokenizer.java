@@ -24,7 +24,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.es.search.tokenizer;
+package org.bibsonomy.search.es.search.util.tokenizer;
 
 import java.util.Collections;
 import java.util.Iterator;

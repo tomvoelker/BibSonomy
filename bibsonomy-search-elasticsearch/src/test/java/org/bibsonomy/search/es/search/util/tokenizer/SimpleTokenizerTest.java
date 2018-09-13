@@ -24,13 +24,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.es.search.tokenizer;
+package org.bibsonomy.search.es.search.util.tokenizer;
+
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -45,21 +46,21 @@ public class SimpleTokenizerTest {
 	 */
 	@Test
 	public void testIterator() {
-		final List<String >res = new ArrayList<>();
+		final List<String> res = new ArrayList<>();
 		for (final String token : new SimpleTokenizer("Henner Hurz  Schorsche")) {
 			res.add(token);
 		}
-		Assert.assertEquals(Arrays.asList("Henner", "Hurz", "Schorsche"), res);
+
+		assertEquals(Arrays.asList("Henner", "Hurz", "Schorsche"), res);
 	}
-	
-	
+
 	@Test
 	public void testIt2() {
 		List<String >res = new ArrayList<>();
 		for (String token : new SimpleTokenizer("Michael Collins")) {
 			res.add(token);
 		}
-		Assert.assertEquals(Arrays.asList("Michael", "Collins"), res);
+		assertEquals(Arrays.asList("Michael", "Collins"), res);
 	}
 	
 }

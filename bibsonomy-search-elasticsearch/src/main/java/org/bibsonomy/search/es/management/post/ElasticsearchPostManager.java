@@ -28,17 +28,13 @@ package org.bibsonomy.search.es.management.post;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,21 +42,15 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.factories.ResourceFactory;
-import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
-import org.bibsonomy.search.es.management.ElasticsearchIndex;
-import org.bibsonomy.search.es.management.ElasticsearchIndexTools;
+import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
+import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.management.database.SearchDBInterface;
-import org.bibsonomy.search.model.SearchIndexInfo;
-import org.bibsonomy.search.model.SearchIndexState;
-import org.bibsonomy.search.model.SearchIndexStatistics;
 import org.bibsonomy.search.update.SearchIndexSyncState;
-import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHits;
@@ -79,144 +69,36 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	public static final int SQL_BLOCKSIZE = 5000;
 	private static final long QUERY_TIME_OFFSET_MS = 1000;
 	
-	/** iff <code>true</code> the update of the index is disabled */
-	private boolean updateEnabled;
-	
 	/** access to the main database */
 	protected final SearchDBInterface<R> inputLogic;
-	
-	/** mappers, converters, */
-	protected final ElasticsearchIndexTools<R> tools;
-	
+
 	/**
-	 * @param updateEnabled 
-	 * @param disabledIndexing 
+	 * default constructor
+	 *
+	 * @param systemId
+	 * @param disabledIndexing
+	 * @param updateEnabled
 	 * @param client
-	 * @param inputLogic
-	 * @param tools
+	 * @param generator
+	 * @param entityInformationProvider
 	 */
-	public ElasticsearchPostManager(final boolean updateEnabled, final boolean disabledIndexing, final ESClient client, SearchDBInterface<R> inputLogic, ElasticsearchIndexTools<R> tools) {
-		super(disabledIndexing);
-		this.updateEnabled = updateEnabled;
-		this.client = client;
+	public ElasticsearchPostManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<R>> generator, EntityInformationProvider<Post<R>> entityInformationProvider, final SearchDBInterface<R> inputLogic) {
+		super(systemId, disabledIndexing, updateEnabled, client, generator, entityInformationProvider);
 		this.inputLogic = inputLogic;
-		this.tools = tools;
-	}
-
-	/**
-	 * @return informations about the indices managed by this manager
-	 */
-	@Override
-	public List<SearchIndexInfo> getIndexInformations() {
-		final List<SearchIndexInfo> infos = new LinkedList<>();
-		try {
-			final String localActiveAlias = this.getActiveLocalAlias();
-			final SearchIndexInfo searchIndexInfo = getIndexInfoForIndex(localActiveAlias, SearchIndexState.ACTIVE, true);
-			infos.add(searchIndexInfo);
-		} catch (final IndexNotFoundException e) {
-			// ignore
-		}
-		
-		try {
-			final String localInactiveAlias = this.getInactiveLocalAlias();
-			final SearchIndexInfo searchIndexInfoInactive = getIndexInfoForIndex(localInactiveAlias, SearchIndexState.INACTIVE, true);
-			infos.add(searchIndexInfoInactive);
-		} catch (final IndexNotFoundException e) {
-			// ignore
-		}
-		
-		final List<String> indices = this.getAllStandByIndices();
-		for (final String indexName : indices) {
-			final SearchIndexInfo searchIndexInfoStandBy = getIndexInfoForIndex(indexName, SearchIndexState.STANDBY, true);
-			searchIndexInfoStandBy.setId(indexName);
-			infos.add(searchIndexInfoStandBy);
-		}
-		
-		if (this.currentGenerator != null) {
-			try {
-				final String indexName = this.currentGenerator.getIndexName();
-				final SearchIndexInfo searchIndexInfoGeneratingIndex = getIndexInfoForIndex(indexName, SearchIndexState.GENERATING, false);
-				searchIndexInfoGeneratingIndex.setIndexGenerationProgress(this.currentGenerator.getProgress());
-				searchIndexInfoGeneratingIndex.setId(indexName);
-				infos.add(searchIndexInfoGeneratingIndex);
-			} catch (final IndexNotFoundException e) {
-				// ignore
-			}
-		}
-		
-		// TODO: include indices that could not be generated (dead bodies)
-		
-		return infos;
-	}
-
-	/**
-	 * @return all standby index names
-	 */
-	private List<String> getAllStandByIndices() {
-		return this.client.getIndexNamesForAlias(this.getAliasNameForState(SearchIndexState.STANDBY));
-	}
-
-	/**
-	 * @param indexName
-	 * @param state 
-	 * @param loadSyncState 
-	 * @return
-	 */
-	private SearchIndexInfo getIndexInfoForIndex(final String indexName, SearchIndexState state, boolean loadSyncState) {
-		final SearchIndexInfo searchIndexInfo = new SearchIndexInfo();
-		searchIndexInfo.setState(state);
-		searchIndexInfo.setId(this.client.getIndexNameForAlias(indexName));
-		
-		if (loadSyncState) {
-			searchIndexInfo.setSyncState(this.client.getSearchIndexStateForIndex(ElasticsearchUtils.getSearchIndexStateIndexName(this.tools.getSystemURI()), indexName));
-		}
-		
-		final SearchIndexStatistics statistics = new SearchIndexStatistics();
-		final long count = this.client.getDocumentCount(indexName, this.tools.getResourceTypeAsString(), null);
-		statistics.setNumberOfDocuments(count);
-		searchIndexInfo.setStatistics(statistics);
-		return searchIndexInfo;
-	}
-
-	/**
-	 * update the inactive index
-	 */
-	@Override
-	public void updateIndex() {
-		if (!this.updateEnabled) {
-			log.debug("skipping updating index, update disabled");
-			return;
-		}
-		
-		if (!this.updateLock.tryAcquire()) {
-			log.warn("Another update in progress. Skipping update.");
-			return;
-		}
-		
-		try {
-			final String localInactiveAlias = this.getInactiveLocalAlias();
-			this.updateIndex(localInactiveAlias);
-			
-			this.switchActiveAndInactiveIndex();
-		} catch (final IndexNotFoundException e) {
-			log.error("Can't update " + this.tools.getResourceTypeAsString() + " index. No inactive index available.");
-		} finally {
-			this.updateLock.release();
-		}
 	}
 
 	/**
 	 * @param indexName
 	 */
+	@Override
 	protected void updateIndex(final String indexName) {
-		final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.tools.getSystemURI());
+		final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId);
 
 		final String realIndexName = this.client.getIndexNameForAlias(indexName);
 		final SearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, realIndexName);
 		final SearchIndexSyncState targetState = this.inputLogic.getDbState();
 		
 		final int oldLastTasId = oldState.getLast_tas_id().intValue();
-		int newLastTasId = oldLastTasId;
 		
 		/*
 		 * 1) flag/unflag spammer
@@ -236,7 +118,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 				idsToDelete.add(indexID);
 			}
 			
-			this.client.deleteDocuments(indexName, this.tools.getResourceTypeAsString(), idsToDelete);
+			this.client.deleteDocuments(indexName, this.entityInformationProvider.getType(), idsToDelete);
 		}
 
 		/*
@@ -244,18 +126,17 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 		 */
 		log.debug("inserting new/updated posts into " + indexName);
 		final Map<String, Map<String, Object>> convertedPosts = new HashMap<>();
-		List<SearchPost<R>> newPosts;
+		List<Post<R>> newPosts;
 		int offset = 0;
 		int totalCountNewPosts = 0;
 		do {
 			newPosts = this.inputLogic.getNewPosts(oldLastTasId, SearchDBInterface.SQL_BLOCKSIZE, offset);
-			for (final SearchPost<R> post : newPosts) {
-				final Map<String, Object> convertedPost = this.tools.getConverter().convert(post);
+			for (final Post<R> post : newPosts) {
+				final Map<String, Object> convertedPost = this.entityInformationProvider.getConverter().convert(post);
 				
 				final Integer contentId = post.getContentId();
 				final String id = ElasticsearchUtils.createElasticSearchId(contentId.intValue());
 				convertedPosts.put(id, convertedPost);
-				newLastTasId = Math.max(post.getLastTasId().intValue(), newLastTasId);
 			}
 			
 			if (convertedPosts.size() >= ESConstants.BULK_INSERT_SIZE) {
@@ -278,7 +159,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 		try {
 			final SearchIndexSyncState newState = new SearchIndexSyncState(oldState);
 			newState.setLast_log_date(targetState.getLast_log_date());
-			newState.setLast_tas_id(Integer.valueOf(newLastTasId));
+			newState.setLast_tas_id(targetState.getLast_tas_id());
 			newState.setLastPersonChangeId(targetState.getLastPersonChangeId());
 			newState.setLastDocumentDate(targetState.getLastDocumentDate());
 			this.updateIndexState(realIndexName, newState);
@@ -289,7 +170,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 			this.updateIndexState(realIndexName, oldState);
 			throw new RuntimeException(e);
 		}
-		
+
 		if (log.isDebugEnabled()) {
 			log.debug("posts updated for " + indexName);
 		}
@@ -303,7 +184,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 		/*
 		 * maybe we are updating an updated post in es
 		 */
-		this.client.updateOrCreateDocuments(localInactiveAlias, this.tools.getResourceTypeAsString(), convertedPosts);
+		this.client.updateOrCreateDocuments(localInactiveAlias, this.entityInformationProvider.getType(), convertedPosts);
 		convertedPosts.clear();
 	}
 
@@ -314,7 +195,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	private void updateIndexState(final String indexName, final SearchIndexSyncState state) {
 		final Map<String, Object> values = ElasticsearchUtils.serializeSearchIndexState(state);
 		
-		this.client.insertNewDocument(ElasticsearchUtils.getSearchIndexStateIndexName(this.tools.getSystemURI()), ESConstants.SYSTEM_INFO_INDEX_TYPE, indexName, values);
+		this.client.insertNewDocument(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId), ESConstants.SYSTEM_INFO_INDEX_TYPE, indexName, values);
 	}
 
 	/**
@@ -362,13 +243,13 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 					log.debug("user " + userName + " flaged as non-spammer");
 					
 					int offset = 0;
-					List<SearchPost<R>> userPosts;
+					List<Post<R>> userPosts;
 					do {
 						userPosts = this.inputLogic.getPostsForUser(userName, SearchDBInterface.SQL_BLOCKSIZE, offset);
 						// insert new records into index
 						if (present(userPosts)) {
-							for (final SearchPost<R> post : userPosts) {
-								final Map<String, Object> convertedPost = this.tools.getConverter().convert(post);
+							for (final Post<R> post : userPosts) {
+								final Map<String, Object> convertedPost = this.entityInformationProvider.getConverter().convert(post);
 								final String id = ElasticsearchUtils.createElasticSearchId(post.getContentId().intValue());
 								
 								convertedPosts.put(id, convertedPost);
@@ -385,7 +266,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 				case 1:
 					log.debug("user " + userName + " flagged as spammer");
 					// remove all docs of the user from the index!
-					this.client.deleteDocuments(indexName, this.tools.getResourceTypeAsString(), QueryBuilders.termQuery(Fields.USER_NAME, userName));
+					this.client.deleteDocuments(indexName, this.entityInformationProvider.getType(), QueryBuilders.termQuery(Fields.USER_NAME, userName));
 					break;
 				}
 			}
@@ -408,12 +289,10 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	 * @return
 	 */
 	public SearchHits search(final QueryBuilder query, final Pair<String, SortOrder> order, int offset, int limit, Float minScore, final Set<String> fieldsToRetrieve) {
-		final String resourceType = ResourceFactory.getResourceName(this.tools.getResourceType());
-		return this.client.search(this.getActiveLocalAlias(), resourceType, query, null, order, offset, limit, minScore, fieldsToRetrieve);
+		return this.client.search(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query, null, order, offset, limit, minScore, fieldsToRetrieve);
 	}
 
 	public long getDocumentCount(QueryBuilder query) {
-		final String resourceType = ResourceFactory.getResourceName(this.tools.getResourceType());
-		return this.client.getDocumentCount(this.getActiveLocalAlias(), resourceType, query);
+		return this.client.getDocumentCount(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query);
 	}
 }

@@ -78,7 +78,7 @@
 	</select>
 	
 	<!-- get list of all bookmarks for given user -->
-	<select id="getBookmarkForUser" resultMap="SearchBookmarkCommon.searchLogBookmarkPost" parameterClass="searchParam">
+	<select id="getBookmarkForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="searchParam">
 		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
 		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, t.tas_id, bb.change_date AS log_date, bb.change_date, -1 AS rating, -1 AS number_of_ratings
 		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,

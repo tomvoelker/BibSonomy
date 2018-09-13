@@ -32,8 +32,6 @@ import java.util.Map;
 public class ElasticsearchIndexGenerator<T> {
 	private static final Log LOG = LogFactory.getLog(ElasticsearchIndexGenerator.class);
 
-	// the index to generate
-	private final String indexName;
 
 	private final ESClient client;
 
@@ -45,20 +43,21 @@ public class ElasticsearchIndexGenerator<T> {
 
 	private final EntityInformationProvider<T> entityInformationProvider;
 
+	private boolean generating = false;
+
 	private int numberOfEntities;
 
 	private int writtenEntities;
+	private String indexName;
 
 	/**
 	 * default construtor with all required fields
-	 * @param indexName
 	 * @param systemId
 	 * @param client
 	 * @param generationLogic
 	 * @param entityInformationProvider
 	 */
-	public ElasticsearchIndexGenerator(String indexName, URI systemId, ESClient client, IndexGenerationLogic<T> generationLogic, EntityInformationProvider<T> entityInformationProvider) {
-		this.indexName = indexName;
+	public ElasticsearchIndexGenerator(URI systemId, ESClient client, IndexGenerationLogic<T> generationLogic, EntityInformationProvider<T> entityInformationProvider) {
 		this.client = client;
 		this.systemId = systemId;
 		this.generationLogic = generationLogic;
@@ -69,39 +68,43 @@ public class ElasticsearchIndexGenerator<T> {
 	/**
 	 * method that generates a new ElasticSearch index
 	 */
-	public void generateIndex() {
-		this.createNewIndex();
-		this.fillIndexWithData();
-		this.indexCreated();
+	public void generateIndex(final String indexName) {
+		this.generating = true;
+		this.indexName = indexName;
+		this.createNewIndex(indexName);
+		this.fillIndexWithData(indexName);
+		this.indexCreated(indexName);
+		this.indexName = null;
+		this.generating = false;
 	}
 
 	/**
 	 * this methods creates the new index
 	 */
-	private void createNewIndex() {
+	private void createNewIndex(final String indexName) {
 		this.client.waitForReadyState();
 
 		// check if the index already exists if not, it creates empty index
-		final boolean indexExists = this.client.existsIndexWithName(this.indexName);
+		final boolean indexExists = this.client.existsIndexWithName(indexName);
 		if (indexExists) {
 			throw new IllegalStateException("index '" + indexName + "' already exists while generating an index");
 		}
 
 		final Mapping<XContentBuilder> mapping = this.entityInformationProvider.getMappingBuilder().getMapping();
-		LOG.info("generating a new index ('" + this.indexName + "')");
+		LOG.info("generating a new index ('" + indexName + "')");
 
-		final boolean created = this.client.createIndex(this.indexName, mapping, ESConstants.SETTINGS);
+		final boolean created = this.client.createIndex(indexName, mapping, ESConstants.SETTINGS);
 		if (!created) {
-			throw new RuntimeException("can not create index '" + this.indexName + "'"); // TODO: use specific exception
+			throw new RuntimeException("can not create index '" + indexName + "'"); // TODO: use specific exception
 		}
 
-		this.client.createAlias(this.indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.GENERATING));
+		this.client.createAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.GENERATING));
 	}
 
 	/**
 	 * inserts the posts form the database into the index
 	 */
-	private void fillIndexWithData() {
+	private void fillIndexWithData(final String indexName) {
 		LOG.info("Filling index with database post entries.");
 
 		// number of post entries to calculate progress
@@ -136,26 +139,26 @@ public class ElasticsearchIndexGenerator<T> {
 				docsToWrite.put(this.entityInformationProvider.getEntityId(entity), convertedEntity);
 
 				if (docsToWrite.size() > ESConstants.BULK_INSERT_SIZE) {
-					this.clearQueue(docsToWrite);
+					this.clearQueue(indexName, docsToWrite);
 				}
 			}
 
-			this.clearQueue(docsToWrite);
+			this.clearQueue(indexName, docsToWrite);
 
 			if (entityListSize > 0) {
 				lastContenId = this.entityInformationProvider.getContentId(entityList.get(entityListSize - 1));
 			}
 		} while (entityListSize == SearchDBInterface.SQL_BLOCKSIZE);
 
-		this.writeMetaInfo(newState);
+		this.writeMetaInfoToIndex(indexName, newState);
 	}
 
 	/**
 	 * @param docsToWrite
 	 */
-	private void clearQueue(final Map<String, Map<String, Object>> docsToWrite) {
+	private void clearQueue(final String indexName, final Map<String, Map<String, Object>> docsToWrite) {
 		if (present(docsToWrite)) {
-			this.client.insertNewDocuments(this.indexName, this.entityInformationProvider.getType(), docsToWrite);
+			this.client.insertNewDocuments(indexName, this.entityInformationProvider.getType(), docsToWrite);
 			this.writtenEntities += docsToWrite.size();
 			docsToWrite.clear();
 		}
@@ -164,26 +167,26 @@ public class ElasticsearchIndexGenerator<T> {
 	/**
 	 * @param newState
 	 */
-	private void writeMetaInfo(final SearchIndexSyncState newState) {
+	private void writeMetaInfoToIndex(final String indexName, final SearchIndexSyncState newState) {
 		final Map<String, Object> values = ElasticsearchUtils.serializeSearchIndexState(newState);
 
 		final String systemIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId);
-		final boolean inserted = this.client.insertNewDocument(systemIndexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, this.indexName, values);
+		final boolean inserted = this.client.insertNewDocument(systemIndexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, indexName, values);
 
 		if (!inserted) {
-			throw new RuntimeException("failed to save systeminformation for index " + this.indexName);
+			throw new RuntimeException("failed to save systeminformation for index " + indexName);
 		}
 
-		LOG.info("updated systeminformation of index " + this.indexName + " to " + values);
+		LOG.info("updated systeminformation of index " + indexName + " to " + values);
 	}
 
 	/**
 	 * methods removes the index state generating and adds the index state alias standby to the generated index
 	 */
-	private void indexCreated() {
-		this.client.deleteAlias(this.indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.GENERATING));
+	private void indexCreated(final String indexName) {
+		this.client.deleteAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.GENERATING));
 
-		this.client.createAlias(this.indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.STANDBY));
+		this.client.createAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.STANDBY));
 	}
 
 	/**
@@ -194,6 +197,13 @@ public class ElasticsearchIndexGenerator<T> {
 			return 0;
 		}
 		return this.writtenEntities / (double) this.numberOfEntities;
+	}
+
+	/**
+	 * @return the generating
+	 */
+	public boolean isGenerating() {
+		return generating;
 	}
 
 	/**

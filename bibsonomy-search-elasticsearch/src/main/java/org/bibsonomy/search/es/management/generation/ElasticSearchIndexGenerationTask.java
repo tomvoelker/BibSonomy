@@ -8,17 +8,17 @@ import org.bibsonomy.search.es.management.ElasticsearchManager;
  * @author dzo
  */
 public class ElasticSearchIndexGenerationTask<T> extends AbstractSearchIndexGenerationTask<T> {
-	private boolean activeIndexAfterGeneration;
+	private boolean activateIndexAfterGeneration;
 
 	/**
 	 * @param manager
 	 * @param generator
 	 * @param newIndex
-	 * @param activeIndexAfterGeneration
+	 * @param activateIndexAfterGeneration
 	 */
-	public ElasticSearchIndexGenerationTask(final ElasticsearchManager<T> manager, ElasticsearchIndexGenerator<T> generator, String newIndex, boolean activeIndexAfterGeneration) {
+	public ElasticSearchIndexGenerationTask(final ElasticsearchManager<T> manager, ElasticsearchIndexGenerator<T> generator, String newIndex, boolean activateIndexAfterGeneration) {
 		super(manager, generator, newIndex);
-		this.activeIndexAfterGeneration = activeIndexAfterGeneration;
+		this.activateIndexAfterGeneration = activateIndexAfterGeneration;
 	}
 
 	/* (non-Javadoc)
@@ -26,7 +26,7 @@ public class ElasticSearchIndexGenerationTask<T> extends AbstractSearchIndexGene
 	 */
 	@Override
 	protected void indexGenerated(final String generatedIndex) {
-		if (this.activeIndexAfterGeneration) {
+		if (this.activateIndexAfterGeneration) {
 			this.manager.activateNewIndex(generatedIndex, null);
 		}
 	}

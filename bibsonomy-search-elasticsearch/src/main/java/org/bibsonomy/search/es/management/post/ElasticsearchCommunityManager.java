@@ -26,12 +26,14 @@
  */
 package org.bibsonomy.search.es.management.post;
 
+import java.net.URI;
 import java.util.Date;
 
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.es.ESClient;
-import org.bibsonomy.search.es.management.ElasticsearchIndexTools;
-import org.bibsonomy.search.es.management.post.ElasticsearchPostManager;
+import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
+import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 
 /**
@@ -41,16 +43,20 @@ import org.bibsonomy.search.management.database.SearchDBInterface;
  * @param <R> 
  */
 public class ElasticsearchCommunityManager<R extends Resource> extends ElasticsearchPostManager<R> {
-	
+
 	/**
-	 * @param updateEnabled
+	 * default constructor
+	 *
+	 * @param systemId
 	 * @param disabledIndexing
+	 * @param updateEnabled
 	 * @param client
+	 * @param generator
+	 * @param entityInformationProvider
 	 * @param inputLogic
-	 * @param tools
 	 */
-	public ElasticsearchCommunityManager(boolean updateEnabled, boolean disabledIndexing, ESClient client, SearchDBInterface<R> inputLogic, ElasticsearchIndexTools<R> tools) {
-		super(updateEnabled, disabledIndexing, client, inputLogic, tools);
+	public ElasticsearchCommunityManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<R>> generator, EntityInformationProvider<Post<R>> entityInformationProvider, SearchDBInterface<R> inputLogic) {
+		super(systemId, disabledIndexing, updateEnabled, client, generator, entityInformationProvider, inputLogic);
 	}
 
 	/* (non-Javadoc)
