@@ -121,6 +121,13 @@ public class Group implements Serializable {
 	 * A list of all subgroups.
 	 */
 	private List<Group> subgroups;
+
+
+	/**
+	 * Flag that signals if this group is an organization.
+	 */
+	private boolean organization;
+
 	
 	/**
 	 * default constructor
@@ -371,6 +378,26 @@ public class Group implements Serializable {
 	 */
 	public void setSubgroups(List<Group> subgroups) {
 		this.subgroups = subgroups;
+	}
+
+
+	/**
+	 * Signals whether the group should be treated as an organization.
+	 *
+	 * @return <code>true</code> if this group is an organization, <code>false</code> otherwise.
+	 */
+	public boolean isOrganization() {
+		return organization;
+	}
+
+
+	/**
+	 * Sets the organization flag.
+	 *
+	 * @param organization <code>true</code> if this group is an organization, <code>false</code> otherwise.
+	 */
+	public void setOrganization(boolean organization) {
+		this.organization = organization;
 	}
 
 	/**

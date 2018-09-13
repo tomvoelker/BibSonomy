@@ -1106,7 +1106,14 @@ public class DBLogic implements LogicInterface {
 			if (!present(group)) {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') doesn't exist");
 			}
-			
+
+			/*
+			 * only administrators are allowed to delete an organization
+			 */
+			if (group.isOrganization()) {
+				this.permissionDBManager.ensureAdminAccess(this.loginUser);
+			}
+
 			if (!quickDelete) {
 				// ensure that the group has no members except the admin (please not the group user of older groups has role ADMIN)
 				final List<GroupMembership> groupMemberships = GroupUtils.getGroupMemberShipsWithoutDummyUser(group.getMemberships());
@@ -1309,9 +1316,24 @@ public class DBLogic implements LogicInterface {
 		if (this.loginUser.isSpammer()) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "The user is flagged as spammer - cannot create a group with this name");
 		}
+
+		/*
+		 * only allow administrators to create new organizations
+		 */
+		if (group.isOrganization()) {
+			this.permissionDBManager.ensureAdminAccess(this.loginUser);
+		}
+
 		final DBSession session = this.openSession();
 		try {
 			this.groupDBManager.createGroup(group, session);
+
+			/*
+			 * activate the group immediatly if it's an organization
+			 */
+			if (group.isOrganization())  {
+				this.groupDBManager.activateGroup(group.getName(), session);
+			}
 
 			return group.getName();
 		} finally {
@@ -1373,6 +1395,13 @@ public class DBLogic implements LogicInterface {
 				throw new IllegalArgumentException("Group does not exist");
 			}
 			final GroupMembership currentGroupMembership = group.getGroupMembershipForUser(requestedUserName);
+
+			/*
+			 * only administrator can update organizations
+			 */
+			if (group.isOrganization() && !GroupUpdateOperation.UPDATE_USER_SHARED_DOCUMENTS.equals(operation)) {
+				this.permissionDBManager.ensureAdminAccess(this.loginUser);
+			}
 
 			// perform actual operation
 			switch (operation) {

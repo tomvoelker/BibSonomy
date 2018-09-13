@@ -82,11 +82,11 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Before
 	public void setup() {
 		this.rootGroupFixture = new ExtendedGroupFixture(9, "rootgroup", Privlevel.MEMBERS, true,
-				true, null, "Root Group", "http://www.bibsonomy.org/group/rootgroup");
+				true, null, false, "Root Group", "http://www.bibsonomy.org/group/rootgroup");
 		this.childGroup1Fixture = new ExtendedGroupFixture(10, "childgroup1", Privlevel.MEMBERS, true,
-				true, null, "Child Group 1", "http://www.bibsonomy.org/group/childgroup1");
+				true, null, false,"Child Group 1", "http://www.bibsonomy.org/group/childgroup1");
 		this.childGroup2Fixture = new ExtendedGroupFixture(11, "childgroup2", Privlevel.MEMBERS, true,
-				true, null, "Child Group 2", "http://www.bibsonomy.org/group/childgroup2");
+				true, null, false, "Child Group 2", "http://www.bibsonomy.org/group/childgroup2");
 	}
 
 	/**
@@ -272,12 +272,16 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		groupRequest.setUserName(requestedUser);
 		groupRequest.setReason("testrequestreason1");
 		newGroup.setGroupRequest(groupRequest);
+		newGroup.setOrganization(true);
 
 		groupDb.createGroup(newGroup, this.dbSession);
 		groupDb.activateGroup(newGroup.getName(), this.dbSession);
 		final Group newGroupTest = groupDb.getGroup(groupName, groupName, false, false, this.dbSession);
 		assertEquals(groupName, newGroupTest.getName());
 		assertGroupContainsMembers(newGroupTest, Sets.asSet(groupName, requestedUser));
+
+		// check that organization is correctly set
+		assertThat(newGroupTest.isOrganization(), equalTo(true));
 
 		// check that the group and all members are gone
 		groupDb.deleteGroup(groupName, false, this.dbSession);
