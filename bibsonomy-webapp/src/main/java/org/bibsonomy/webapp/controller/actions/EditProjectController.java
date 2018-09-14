@@ -1,29 +1,28 @@
 package org.bibsonomy.webapp.controller.actions;
 
 import org.bibsonomy.common.JobResult;
+import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.errors.MissingFieldErrorMessage;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
-import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.URLGenerator;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.actions.EditProjectCommand;
-import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestLogic;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
-import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.util.*;
+import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.Errors;
+
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * controller for editing and creating a project
  */
-public class EditProjectController implements MinimalisticController<EditProjectCommand> {
+public class EditProjectController implements MinimalisticController<EditProjectCommand>, ErrorAware {
 	private LogicInterface logic;
 	private URLGenerator urlGenerator;
-	protected RequestLogic requestLogic;
+	private Errors errors;
 
 	@Override
 	public EditProjectCommand instantiateCommand() {
@@ -40,16 +39,25 @@ public class EditProjectController implements MinimalisticController<EditProject
 		}
 
 		if (!context.isValidCkey()) {
+			this.errors.reject("error.field.valid.ckey", "The provided security token is invalid.");
 			return returnEditView(requestedProjectId, command);
 		}
 
+		command.setProjectIdToUpdate(command.getProject().getExternalId());
+
 		JobResult result = this.updateProject(command.getProject());
-		final String referer = command.getReferer();
-		if (present(referer)) {
-			// todo never has referer
-			return new ExtendedRedirectView(referer);
+		if (!result.getStatus().getMessage().equals("OK")) {
+			for (ErrorMessage e : result.getErrors()) {
+				this.errors.rejectValue("project." + e.getErrorCode().split("\\.")[e.getErrorCode().split("\\.").length - 1], e.getErrorCode(), e.getDefaultMessage());
+				// this.errors.rejectValue("project." + ((MissingFieldErrorMessage)e).getMissing(), e.getErrorCode(), e.getDefaultMessage());
+			}
 		}
-		return new ExtendedRedirectView(this.urlGenerator.getProjectsUrl());
+		if (this.errors.hasErrors()) {
+			return Views.EDIT_PROJECT;
+		}
+		final ExtendedRedirectViewWithAttributes redirect = new ExtendedRedirectViewWithAttributes(this.urlGenerator.getProjectUrlByProject(command.getProject()));
+		redirect.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "project.edit.success");
+		return redirect;
 	}
 
 	/**
@@ -74,27 +82,9 @@ public class EditProjectController implements MinimalisticController<EditProject
 	private View returnEditView(String requestedProjectId, EditProjectCommand command){
 		final Project projectDetails = this.logic.getProjectDetails(requestedProjectId);
 		if (!present(projectDetails)) {
-			throw new ObjectNotFoundException("project with id '" + requestedProjectId + "' not found");
+			this.errors.reject("error.project.not.found");
 		}
 		command.setProject(projectDetails);
-
-		/*
-		 * We store the referrer in the command, to send the user back to the
-		 * page he's coming from at the end of the posting process.
-		 */
-		if (!present(command.getReferer())) {
-			String referer = this.requestLogic.getReferer();
-			if (referer == null) {
-				final String url = command.getUrl();
-				if (UrlUtils.isHTTPS(url)) {
-					referer = url;
-				} else {
-					referer = null;
-				}
-			}
-			command.setReferer(referer);
-		}
-
 		return Views.EDIT_PROJECT;
 	}
 
@@ -112,7 +102,13 @@ public class EditProjectController implements MinimalisticController<EditProject
 		this.urlGenerator = urlGenerator;
 	}
 
-	public void setRequestLogic(RequestLogic requestLogic) {
-		this.requestLogic = requestLogic;
+	@Override
+	public Errors getErrors() {
+		return this.errors;
+	}
+
+	@Override
+	public void setErrors(Errors errors) {
+		this.errors = errors;
 	}
 }

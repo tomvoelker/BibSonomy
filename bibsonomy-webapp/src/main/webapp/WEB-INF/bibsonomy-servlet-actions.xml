@@ -881,7 +881,6 @@
     <bean id="editProjectController" class="org.bibsonomy.webapp.controller.actions.EditProjectController" scope="request">
         <property name="logic" ref="logic" />
         <property name="urlGenerator" ref="absoluteUrlGenerator"/>
-        <property name="requestLogic" ref="requestLogic" />
     </bean>
 
 	<!-- Handles the edit publication process -->

@@ -3,11 +3,11 @@
 
     <jsp:directive.attribute name="project" type="org.bibsonomy.model.cris.Project" required="true" />
     <jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
-
+    <jsp:directive.attribute name="textRight" type="java.lang.Boolean" required="false" />
     <c:set var="buttonClasses" value="btn btn-default btn-xs "/>
 
     <div class="edit-media-buttons btn-group btn-group-xs dropdown dropdown-align-right">
-        <!-- fixme who is allowed to edit and delete?! and how to check that -->
+    <!-- fixme who is allowed to edit and delete?! and how to check that -->
         <c:if test="${true}">
             <button:editProjectButton project="${project}" buttonClasses="${buttonClasses}"/>
             <button:deleteProjectButton project="${project}" buttonClasses="${buttonClasses}"/>

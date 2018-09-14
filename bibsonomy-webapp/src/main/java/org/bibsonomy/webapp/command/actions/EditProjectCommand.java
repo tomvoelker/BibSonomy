@@ -3,20 +3,12 @@ package org.bibsonomy.webapp.command.actions;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.webapp.command.BaseCommand;
 
-import java.net.URL;
-import java.util.Date;
 
 public class EditProjectCommand extends BaseCommand {
 
 	private String projectIdToUpdate;
 
 	private Project project;
-
-	/**
-	 * For some pages we need to store the referer to send the user back
-	 * to that page.
-	 */
-	private String referer;
 
 	/**
 	 * @return the projectIdToUpdate
@@ -44,20 +36,6 @@ public class EditProjectCommand extends BaseCommand {
 	 */
 	public void setProject(Project project) {
 		this.project = project;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getReferer() {
-		return this.referer;
-	}
-
-	/**
-	 * @param referer
-	 */
-	public void setReferer(String referer) {
-		this.referer = referer;
 	}
 
 	/**

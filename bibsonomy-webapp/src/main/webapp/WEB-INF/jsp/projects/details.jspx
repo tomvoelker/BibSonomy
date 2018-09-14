@@ -29,6 +29,9 @@
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<nav:projectcrumb project="${project}" active="${true}"/>
+                    <span style="float: right;">
+                        <buttons:projectActions project="${project}" loginUserName="${command.context.loginUser.name}"/>
+                    </span>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
@@ -38,7 +41,7 @@
                 <div class="page-header">
 					<h1 class="project-title">
 						<c:out value="${project.title}"/>
-					    <buttons:projectActions project="${project}" loginUserName="${command.context.loginUser.name}"/>
+					    <!-- <buttons:projectActions project="${project}" loginUserName="${command.context.loginUser.name}"/> -->
 					</h1>
                     <c:if test="${not empty project.subTitle}">
 						<small class="project-subtitle">
@@ -54,7 +57,9 @@
                             </div>
                         </c:when>
                         <c:otherwise>
-                            <fmt:message key="project.noMembers" />
+                            <div class="project-authors">
+                                <fmt:message key="project.noMembers" />
+                            </div>
                         </c:otherwise>
                     </c:choose>
                 </div>
