@@ -1107,7 +1107,7 @@ public class DBLogic implements LogicInterface {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') doesn't exist");
 			}
 
-			if (present(group.getParent()) || present(group.getSubgroups())) {
+			if (present(group.getSubgroups())) {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') is part of a hierarchy and can't be deleted.");
 			}
 			
