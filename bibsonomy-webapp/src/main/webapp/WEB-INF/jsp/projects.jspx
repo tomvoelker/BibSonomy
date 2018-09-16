@@ -18,7 +18,7 @@
 	
 	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.projects" command="${command}" pageTitle="${pageTitle}" activeTab="projects">
 		 <jsp:attribute name="headerExt">
-        <script type="text/javascript" src="${resdir}/javascript/projects.js"><!-- keep me --></script>
+            <script type="text/javascript" src="${resdir}/javascript/projects.js"><!-- keep me --></script>
         </jsp:attribute>
 
         <!--+
@@ -54,12 +54,12 @@
                 <button class="btn btn-primary btn-sm" id="sort-end-date" onclick="sortList('end-date')">
                     <fmt:message key="project.sort.enddate"/>
                 </button>
-                <!-- fixme use fmt:message key="project.search" for placeholder -->
-                <input id="search-project-input" placeholder="Search projects ..." onkeyup="displaySearch()"/>
+                <c:set var="searchPlaceholder" >
+                    <fmt:message key="project.search" />
+                </c:set>
+                <input id="search-project-input" placeholder="${searchPlaceholder}" onkeyup="displaySearch()"/>
             </div>
-			<!--+
-				| show alphabet for direct links to groups
-				-->
+
             <div class="text-info">
                 <dl class="group-list">
                     <dt>

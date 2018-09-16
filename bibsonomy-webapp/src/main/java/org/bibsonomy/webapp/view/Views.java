@@ -497,6 +497,11 @@ public enum Views implements View {
 	 */
 	EDIT_TAGS("actions/edit/edittags"),
 
+	/**
+	 * report page
+	 */
+	REPORT("report"),
+
 	/* *****************************************************
 	 * OpenSocial views
 	 */

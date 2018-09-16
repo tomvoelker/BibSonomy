@@ -1,51 +1,90 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.JobResult;
+import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.errors.MissingFieldErrorMessage;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
-import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
-import org.bibsonomy.model.enums.ProjectStatus;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.query.ProjectQuery;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.actions.EditProjectCommand;
-import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
-import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.*;
+import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.Errors;
 
-import java.util.List;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * controller for editing and creating a project
  */
-public class EditProjectController implements MinimalisticController<EditProjectCommand> {
+public class EditProjectController implements MinimalisticController<EditProjectCommand>, ErrorAware {
 	private LogicInterface logic;
+	private URLGenerator urlGenerator;
+	private Errors errors;
 
 	@Override
 	public EditProjectCommand instantiateCommand() {
-		final EditProjectCommand editProjectCommand = new EditProjectCommand();
-		final Project project = new Project();
-		project.setParentProject(new Project());
-		editProjectCommand.setProject(project);
-		return editProjectCommand;
+		return new EditProjectCommand();
 	}
 
 	@Override
 	public View workOn(final EditProjectCommand command) {
 		final RequestWrapperContext context = command.getContext();
-		final User loginUser = context.getLoginUser();
-		if (!context.isUserLoggedIn() || Role.ADMIN.equals(loginUser.getRole())) {
+		final String requestedProjectId = command.getProjectIdToUpdate();
+
+		if (!context.isUserLoggedIn()) {
 			throw new AccessDeniedException("please log in");
 		}
 
-		/*
-		 * get all running projects to assign a parent project
-		 */
-		final List<Project> projects = this.logic.getProjects(ProjectQuery.createBuilder().projectStatus(ProjectStatus.RUNNING).build());
-		command.setProjects(projects);
+		if (!context.isValidCkey()) {
+			this.errors.reject("error.field.valid.ckey", "The provided security token is invalid.");
+			return returnEditView(requestedProjectId, command);
+		}
 
+		command.setProjectIdToUpdate(command.getProject().getExternalId());
 
+		JobResult result = this.updateProject(command.getProject());
+		if (!result.getStatus().getMessage().equals("OK")) {
+			for (ErrorMessage e : result.getErrors()) {
+				this.errors.rejectValue("project." + e.getErrorCode().split("\\.")[e.getErrorCode().split("\\.").length - 1], e.getErrorCode(), e.getDefaultMessage());
+				// this.errors.rejectValue("project." + ((MissingFieldErrorMessage)e).getMissing(), e.getErrorCode(), e.getDefaultMessage());
+			}
+		}
+		if (this.errors.hasErrors()) {
+			return Views.EDIT_PROJECT;
+		}
+		final ExtendedRedirectViewWithAttributes redirect = new ExtendedRedirectViewWithAttributes(this.urlGenerator.getProjectUrlByProject(command.getProject()));
+		redirect.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "project.edit.success");
+		return redirect;
+	}
 
+	/**
+	 * Set the properties not editable in this view.
+	 * @param project
+	 */
+	private JobResult updateProject(Project project) {
+		Project originalProject = this.logic.getProjectDetails(project.getExternalId());
+		project.setSubProjects(originalProject.getSubProjects());
+		project.setCrisLinks(originalProject.getCrisLinks());
+		project.setId(originalProject.getId());
+		Project parentProject = this.logic.getProjectDetails(project.getParentProject().getExternalId());
+		project.setParentProject(parentProject);
+		return this.logic.updateProject(project.getExternalId(), project);
+	}
+
+	/**
+	 * @param requestedProjectId
+	 * @param command
+	 * @return
+	 */
+	private View returnEditView(String requestedProjectId, EditProjectCommand command){
+		final Project projectDetails = this.logic.getProjectDetails(requestedProjectId);
+		if (!present(projectDetails)) {
+			this.errors.reject("error.project.not.found");
+		}
+		command.setProject(projectDetails);
 		return Views.EDIT_PROJECT;
 	}
 
@@ -54,5 +93,22 @@ public class EditProjectController implements MinimalisticController<EditProject
 	 */
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
+	}
+
+	/**
+	 * @param urlGenerator
+	 */
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
+	}
+
+	@Override
+	public Errors getErrors() {
+		return this.errors;
+	}
+
+	@Override
+	public void setErrors(Errors errors) {
+		this.errors = errors;
 	}
 }

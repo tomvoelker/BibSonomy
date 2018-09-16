@@ -37,6 +37,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.BiConsumer;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -71,24 +72,6 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	
 	private static final String PERSON_DELIMITER = " & ";
 	private static final String NAME_PART_DELIMITER = " ; ";
-	
-	private static interface PersonNameSetter {
-		public void setPersonNames(final BibTex publication, final List<PersonName> personNames);
-	}
-	
-	private static final PersonNameSetter AUTHOR_NAME_SETTER = new PersonNameSetter() {
-		@Override
-		public void setPersonNames(BibTex publication, List<PersonName> personNames) {
-			publication.setAuthor(personNames);
-		}
-	};
-	
-	private static final PersonNameSetter EDITOR_NAME_SETTER = new PersonNameSetter() {
-		@Override
-		public void setPersonNames(BibTex publication, List<PersonName> personNames) {
-			publication.setEditor(personNames);
-		}
-	};
 	
 	private FileContentExtractorService fileContentExtractorService;
 	
@@ -127,8 +110,8 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		publication.setDay((String) source.get(Fields.Publication.DAY));
 		publication.setEdition((String) source.get(Fields.Publication.EDITION));
 		
-		setPersonNames(Fields.Publication.EDITORS, EDITOR_NAME_SETTER, publication, source);
-		setPersonNames(Fields.Publication.AUTHORS, AUTHOR_NAME_SETTER, publication, source);
+		setPersonNames(Fields.Publication.EDITORS, BibTex::setEditor, publication, source);
+		setPersonNames(Fields.Publication.AUTHORS, BibTex::setAuthor, publication, source);
 		
 		publication.setEntrytype((String) source.get(Publication.ENTRY_TYPE));
 		publication.setHowpublished((String) source.get(Publication.HOWPUBLISHED));
@@ -188,7 +171,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 * @param publication
 	 * @param source
 	 */
-	private static void setPersonNames(final String fieldName, final PersonNameSetter personNameSetter, BibTex publication, Map<String, Object> source) {
+	private static void setPersonNames(final String fieldName, final BiConsumer<BibTex, List<PersonName>> personNameSetter, BibTex publication, Map<String, Object> source) {
 		final Object rawPersonNamesFieldValue = source.get(fieldName);
 		if (rawPersonNamesFieldValue instanceof List) {
 			@SuppressWarnings("unchecked")
@@ -204,7 +187,8 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 					personNameStringBuilder.append(PersonNameUtils.PERSON_NAME_DELIMITER);
 				}
 			}
-			personNameSetter.setPersonNames(publication, PersonNameUtils.discoverPersonNamesIgnoreExceptions(personNameStringBuilder.toString()));
+
+			personNameSetter.accept(publication, PersonNameUtils.discoverPersonNamesIgnoreExceptions(personNameStringBuilder.toString()));
 		} else if (rawPersonNamesFieldValue != null){
 			log.error("person name not a list; was " + rawPersonNamesFieldValue.getClass());
 		}
@@ -334,7 +318,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	}
 
 	/**
-	 * @param author
+	 * @param persons
 	 * @return
 	 */
 	private static List<Map<String, String>> convertPersonNames(List<PersonName> persons) {

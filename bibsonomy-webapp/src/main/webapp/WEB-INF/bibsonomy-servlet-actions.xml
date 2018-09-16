@@ -456,6 +456,27 @@
 						</property>
 					</bean>
 				</entry>
+                <entry key="/editProject">
+                    <bean parent="controllerBase">
+                        <property name="controllerBeanName" value="editProjectController"/>
+                        <property name="allowedFields">
+                            <list>
+                                <value>projectIdToUpdate</value>
+                                <value>ckey</value>
+                                <value>project.externalId</value>
+                                <value>project.title</value>
+                                <value>project.subTitle</value>
+                                <value>project.description</value>
+                                <value>project.homepage</value>
+                                <value>project.type</value>
+                                <value>project.budget</value>
+                                <value>project.startDate</value>
+                                <value>project.endDate</value>
+                                <value>project.parentProject.externalId</value>
+                            </list>
+                        </property>
+                    </bean>
+                </entry>
 				<entry key="/editGoldStandardPublication">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="editGoldStandardPublicationController"/>
@@ -853,11 +874,15 @@
 					<property name="alertType" value="warning" /> 
 				</bean>
 			</list>
-			
 		</property>
 	</bean>
 	
-	
+
+    <bean id="editProjectController" class="org.bibsonomy.webapp.controller.actions.EditProjectController" scope="request">
+        <property name="logic" ref="logic" />
+        <property name="urlGenerator" ref="absoluteUrlGenerator"/>
+    </bean>
+
 	<!-- Handles the edit publication process -->
 	<bean id="editPublicationController" class="org.bibsonomy.webapp.controller.actions.EditPublicationController" scope="request" parent="editPostController">
 		<property name="scraper" ref="kdeScraperChain"/>
@@ -1335,6 +1360,5 @@
 		<property name="adminLogic" ref="adminLogic"/>
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="authenticationManager" ref="samlAuthenticationManager"/>
-	</bean>	
-	
+	</bean>
 </beans>

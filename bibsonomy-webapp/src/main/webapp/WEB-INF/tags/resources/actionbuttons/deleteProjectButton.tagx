@@ -1,0 +1,6 @@
+<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page">
+
+    <jsp:directive.attribute name="project" type="org.bibsonomy.model.cris.Project" required="true" />
+    <jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true"/>
+    <!-- fixme implement me! -->
+</jsp:root>

@@ -5,13 +5,18 @@
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
-		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
+          xmlns:members="urn:jsptagdir:/WEB-INF/tags/project">
 
     <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
     <c:set var="project" value="${command.project}" />
 
 	<layout:paneLayout pageTitle="${title}" command="${command}" requPath="${requPath}" showPageOptions="${true}" noSidebar="${true}">
 
+        <jsp:attribute name="headerExt">
+            <link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
+        </jsp:attribute>
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.project" formAction="${relativeUrlGenerator.getProjectUrlByProject(project)}" formInputName="tag">
 				<jsp:attribute name="pathPart">
@@ -24,46 +29,65 @@
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<nav:projectcrumb project="${project}" active="${true}"/>
+                    <span style="float: right;">
+                        <buttons:projectActions project="${project}" loginUserName="${command.context.loginUser.name}"/>
+                    </span>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
 			<div id="projectContent" class="row">
-                <<div class="page-header">
-					<h1>
-						<c:out value=" "/>
+                <div class="page-header">
+					<h1 class="project-title">
 						<c:out value="${project.title}"/>
+					    <!-- <buttons:projectActions project="${project}" loginUserName="${command.context.loginUser.name}"/> -->
 					</h1>
-					<c:if test="${not empty project.subTitle}">
-						<small>
+                    <c:if test="${not empty project.subTitle}">
+						<small class="project-subtitle">
 							<c:out value="${project.subTitle}" />
 						</small>
 					</c:if>
-                    <p>
-                        <c:out value="Insert Authors here"/>
-				    </p>
+
+                    <!-- show member -->
+                    <c:choose>
+                        <c:when test="${not empty project.crisLinks}" >
+                            <div class="project-authors">
+                                <members:memberList project="${project}" showManagerOnly="${true}"/>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="project-authors">
+                                <fmt:message key="project.noMembers" />
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
 			</div>
+
 			<c:if test="${not empty project.description}">
 				<div class="contentContainer row">
 					<div class="col-md-12">
-						<h2><fmt:message key="project.description"/></h2>
+						<h2 class="project-subheadlines"><fmt:message key="project.description"/></h2>
 						<c:out value="${project.description}"/>
 					</div>
 				</div>
 			</c:if>
+            <hr/>
 
 			<div class="row">
 				<div class="col-md-12">
-					<h2><fmt:message key="project.information"/></h2>
+					<h2 class="project-subheadlines">
+                        <fmt:message key="project.information"/>
+                        <c:out value=": "/>
+                    </h2>
 					<dl class="dl-horizontal">
 						<c:if test="${not empty project.startDate}">
-							<dt><fmt:message key="project.startdate"/></dt>
+							<dt><fmt:message key="project.startDate"/></dt>
 							<dd><fmt:formatDate value="${project.startDate}" pattern="dd.MM.yy" /></dd>
 						</c:if>
 						<c:if test="${not empty project.endDate}">
-							<dt><fmt:message key="project.enddate"/></dt>
+							<dt><fmt:message key="project.endDate"/></dt>
 							<dd><fmt:formatDate value="${project.endDate}" pattern="dd.MM.yy" /></dd>
 						</c:if>
 						<c:set var="parentProject" value="${project.parentProject}" />
@@ -99,6 +123,12 @@
                         <c:if test="${not empty project.type}">
                             <dt><fmt:message key="project.type"/></dt>
                             <dd><c:out value="${project.type}"/></dd>
+                        </c:if>
+                        <c:if test="${not empty project.crisLinks}">
+                            <dt><fmt:message key="project.crisLinks" /></dt>
+                            <dd>
+                                <members:memberList project="${project}"/>
+                            </dd>
                         </c:if>
 					</dl>
 				</div>

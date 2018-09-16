@@ -54,6 +54,6 @@ public class CreateResourcePersonRelationQuery extends AbstractQuery<String> {
 
     @Override
     protected String getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
-        return isSuccess() ? getRenderer().parseResourcePersonRelationId(downloadedDocument) : getError();
+        return isSuccess() ? getRenderer().parseResourceHash(downloadedDocument) : getError();
     }
 }

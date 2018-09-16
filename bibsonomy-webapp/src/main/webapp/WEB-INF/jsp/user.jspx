@@ -122,7 +122,18 @@
 			</sidebar:sidebarItem>
 			
 			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" scope="${command.scope.name()}"/>
-			
+
+            <!-- Claimed person -->
+            <c:if test="${not empty command.claimedPerson}">
+				<sidebar:sidebarItem textKey="settings.sidebar.claimedPerson">
+					<jsp:attribute name="content">
+						<a href="${relativeUrlGenerator.getPersonUrl(command.claimedPerson.personId)}">
+							${mtl:cleanBibtex(command.claimedPerson.mainName.firstName)} ${mtl:cleanBibtex(command.claimedPerson.mainName.lastName)}
+						</a>
+					</jsp:attribute>
+				</sidebar:sidebarItem>
+			</c:if>
+
 			<c:if test="${isAdmin}">
 				<sidebar:sidebarItem textKey="user.details">
 					<jsp:attribute name="content">

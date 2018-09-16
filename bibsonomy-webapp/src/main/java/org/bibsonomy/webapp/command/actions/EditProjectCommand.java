@@ -3,15 +3,12 @@ package org.bibsonomy.webapp.command.actions;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.webapp.command.BaseCommand;
 
-import java.util.List;
 
 public class EditProjectCommand extends BaseCommand {
 
 	private String projectIdToUpdate;
 
 	private Project project;
-
-	private List<Project> projects;
 
 	/**
 	 * @return the projectIdToUpdate
@@ -42,16 +39,10 @@ public class EditProjectCommand extends BaseCommand {
 	}
 
 	/**
-	 * @return the projects
+	 *
+	 * @return
 	 */
-	public List<Project> getProjects() {
-		return projects;
-	}
-
-	/**
-	 * @param projects the projects to set
-	 */
-	public void setProjects(List<Project> projects) {
-		this.projects = projects;
+	public String getUrl() {
+		return "/editProject?projectIdToUpdate=" + this.projectIdToUpdate;
 	}
 }

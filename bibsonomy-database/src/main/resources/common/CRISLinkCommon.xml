@@ -11,10 +11,18 @@
         <result property="endDate"	    column="end_date"	    javaType="date" />
         <result property="dataSource"   column="link_source"    javaType="crisLinkDataSource" />
     </resultMap>
+    
+    <resultMap id="personCrisLink" class="crisLink" groupBy="id" extends="simpleCrisLink">
+        <result property="target"    resultMap="PersonCommon.simplePerson" />
+    </resultMap>
 
     <sql id="allCRISLinkAttributes">
         id, source_id, source_type, target_id, target_type, start_date, end_date, linktype_type, linktype_value,
         link_source, updated_by, updated_at
+    </sql>
+
+    <sql id="simpleCRISColumns">
+        id, start_date, end_date, linktype_type, linktype_value, link_source
     </sql>
 
 </sqlMap>

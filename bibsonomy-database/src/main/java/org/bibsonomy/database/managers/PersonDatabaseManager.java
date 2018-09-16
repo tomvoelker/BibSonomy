@@ -42,11 +42,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.errors.MissingObjectErrorMessage;
+import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.DuplicateEntryException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.enums.CRISEntityType;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.params.CRISLinkParam;
 import org.bibsonomy.database.params.DNBAliasParam;
 import org.bibsonomy.database.params.DenyMatchParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
@@ -59,6 +63,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
@@ -79,6 +84,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	private final GeneralDatabaseManager generalManager;
 	private final DatabasePluginRegistry plugins;
 	private GoldStandardPublicationDatabaseManager goldStandardPublicationDatabaseManager;
+	private BibTexDatabaseManager publicationDatabaseManager;
 	private PersonSearch personSearch;
 
 	@Deprecated // TODO: config via spring
@@ -300,6 +306,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @return <code>true</code> iff the relation was added
 	 */
 	public boolean addResourceRelation(final ResourcePersonRelation resourcePersonRelation, User loggedinUser, final DBSession session) {
+		// FIXME: add validator (index)
 		session.beginTransaction();
 		try {
 			/*
@@ -309,13 +316,29 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			 */
 			final Post<? extends BibTex> post = resourcePersonRelation.getPost();
 			final BibTex publication = post.getResource();
-			publication.recalculateHashes();
-			final Post<GoldStandardPublication> communityPostInDB = this.goldStandardPublicationDatabaseManager.getPostDetails(loggedinUser.getName(), publication.getInterHash(), "", Collections.emptyList(), session);
+
+			final String intraHash = publication.getIntraHash();
+			final String interHash = publication.getInterHash();
+			final Post<GoldStandardPublication> communityPostInDB = this.goldStandardPublicationDatabaseManager.getPostDetails(loggedinUser.getName(), interHash, "", Collections.emptyList(), session);
 			if (!present(communityPostInDB)) {
+				final BibTex resourceToCopy;
+				// FIXME: use a better way to test whether a dummy post was provided or a real post FIXME_CRIS
+				if (!present(publication.getTitle())) {
+					final List<Post<BibTex>> postsByHash = this.publicationDatabaseManager.getPostsByHash("", intraHash, HashID.SIM_HASH2, GroupID.PUBLIC.getId(), Collections.emptyList(), 1, 0, session);
+					if (present(postsByHash)) {
+						resourceToCopy = postsByHash.get(0).getResource();
+					} else {
+						throw new RuntimeException("can't create community post");
+					}
+				} else {
+					resourceToCopy = publication;
+				}
+
 				final Post<GoldStandardPublication> communityPost = new Post<>();
 				final GoldStandardPublication goldPublication = new GoldStandardPublication();
-				ObjectUtils.copyPropertyValues(publication, goldPublication);
+				ObjectUtils.copyPropertyValues(resourceToCopy, goldPublication);
 				communityPost.setResource(goldPublication);
+				goldPublication.recalculateHashes();
 				this.goldStandardPublicationDatabaseManager.createPost(communityPost, loggedinUser, session);
 			}
 
@@ -358,7 +381,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	public void removePersonName(int personNameChangeId, String loginUser, DBSession databaseSession) {
 		databaseSession.beginTransaction();
 		try {
-			PersonName person = new PersonName();
+			final PersonName person = new PersonName();
 			person.setPersonNameChangeId(personNameChangeId);
 			person.setChangedAt(new Date());
 			person.setChangedBy(loginUser);
@@ -504,7 +527,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	}
 
 	/**
-	 * 
+	 *
 	 * @param session
 	 * @return a list of all matches
 	 */
@@ -514,7 +537,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 *
-	 * @param personid
+	 * @param personID
 	 * @return a list of all matches for a person
 	 */
 	public List<PersonMatch> getMatchesFor(String personid, DBSession session) {
@@ -569,9 +592,13 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @param session
 	 */
 	private void mergeAllPubs(PersonMatch match, String loginUser, DBSession session) {
-		List<ResourcePersonRelation> allRelationsPerson2 = this.queryForList("getResourcePersonRelationsByPersonId", match.getPerson2().getPersonId(), ResourcePersonRelation.class, session);
+		/*
+		 * update the resource person relations by setting the person id to the new person id
+		 * person2 will be merged into person1
+		 */
+		final List<ResourcePersonRelation> allRelations = this.queryForList("getResourcePersonRelationsByPersonId", match.getPerson2().getPersonId(), ResourcePersonRelation.class, session);
 
-		for (final ResourcePersonRelation relation : allRelationsPerson2) {
+		for (final ResourcePersonRelation relation : allRelations) {
 			// generate new person_change_id and log the old relation
 			this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
 			this.insert("logPubPersonUpdates", relation.getPersonRelChangeId(), session);
@@ -746,7 +773,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			combinedMerge.setUserDenies(this.queryForList("getDeniesForMatch", combinedMerge.getMatchID(), String.class, session));
 			if (combinedMerge.getUserDenies().size() >= PersonMatch.denieThreshold) {
 				// deny merge for all if the total user deny count is bigger
-				// than the deny thresholduu
+				// than the deny threshold
 				this.delete("denyMatchByID", new DenyMatchParam(combinedMerge.getMatchID(), userName), session);
 			}
 		}
@@ -783,6 +810,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	/**
 	 * add user to the deny list of a match denys a match for all if a threshold
 	 * is reached
+	 *
 	 * @param match
 	 * @param userName
 	 * @param session
@@ -964,12 +992,24 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	@Override
 	public Integer getIdForLinkable(final Person linkable, final DBSession session) {
+		final Integer loadedId = linkable.getPersonChangeId();
+		if (present(loadedId)) {
+			return loadedId;
+		}
 		final Person person = this.getPersonById(linkable.getPersonId(), session);
 		if (present(person)) {
 			return person.getPersonChangeId();
 		}
 
 		return null;
+	}
+
+	@Override
+	public List<CRISLink> getLinksForSource(final Integer linkId, final CRISEntityType crisEntityType, final DBSession session) {
+		final CRISLinkParam param = new CRISLinkParam();
+		param.setSourceId(linkId.intValue());
+		param.setSourceType(crisEntityType);
+		return this.queryForList("getPersonCRISLinks", param, CRISLink.class, session);
 	}
 
 	/**
@@ -985,5 +1025,12 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	public void setGoldStandardPublicationDatabaseManager(GoldStandardPublicationDatabaseManager goldStandardPublicationDatabaseManager) {
 		this.goldStandardPublicationDatabaseManager = goldStandardPublicationDatabaseManager;
+	}
+
+	/**
+	 * @param publicationDatabaseManager the publicationDatabaseManager to set
+	 */
+	public void setPublicationDatabaseManager(BibTexDatabaseManager publicationDatabaseManager) {
+		this.publicationDatabaseManager = publicationDatabaseManager;
 	}
 }
