@@ -80,10 +80,5 @@ public class ProjectValidatorTest {
 		project.setTitle(null);
 		final List<ErrorMessage> errorMessages5 = VALIDATOR.validateProject(project);
 		assertEquals(4, errorMessages5.size());
-
-		project.setType(null);
-		final List<ErrorMessage> errorMessages6 = VALIDATOR.validateProject(project);
-		assertEquals(5, errorMessages6.size());
-
 	}
 }
