@@ -45,6 +45,7 @@ import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagSetParam;
 import org.bibsonomy.database.params.WikiParam;
@@ -85,11 +86,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	private UserDatabaseManager userDb;
 	private final AdminDatabaseManager adminDatabaseManager;
+	private final GeneralDatabaseManager generalDatabaseManager;
 	private final DatabasePluginRegistry plugins;
 
 	private GroupDatabaseManager() {
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.adminDatabaseManager = AdminDatabaseManager.getInstance();
+		this.generalDatabaseManager = GeneralDatabaseManager.getInstance();
 	}
 
 	/**
@@ -672,7 +675,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Inserts a group into the pending groups table.
 	 */
 	private void insertGroup(final Group group, final DBSession session) {
-		final int newGroupId = this.getNewGroupId(session);
+		final int newGroupId = this.generalDatabaseManager.getNewId(ConstantID.GROUP_ID, session);
 		group.setGroupId(newGroupId);
 		this.insert("insertPendingGroup", group, session);
 		this.insertDefaultWiki(group, session);
@@ -760,13 +763,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		param.setSetName(setName);
 		param.setGroupId(group.getGroupId());
 		this.delete("deleteTagSet", param, session);
-	}
-
-	/**
-	 * Returns a new groupId.
-	 */
-	private int getNewGroupId(final DBSession session) {
-		return this.queryForObject("getNewGroupId", null, Integer.class, session).intValue();
 	}
 
 	/**

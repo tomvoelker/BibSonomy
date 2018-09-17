@@ -17,3 +17,5 @@ CREATE TABLE `group_hierarchy` (
   INDEX(`parent_group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
+
+INSERT INTO ids (`name`, `value`, `description`) VALUES (20, (SELECT max(`group`) + 1 FROM groupids), 'group_id')

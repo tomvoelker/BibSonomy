@@ -305,7 +305,8 @@ INSERT INTO `ids` VALUES
 (16, 12, 'sync_service_id'),
 (17, 7, 'person_change_id'),
 (18, 3, 'project_id'),
-(19, 2, 'cris_link_id');
+(19, 2, 'cris_link_id'),
+(20,12, 'group_id');
 
 
 --

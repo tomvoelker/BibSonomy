@@ -105,13 +105,6 @@
 		  WHERE t.content_id = #contentId# 
 	</select>
 
-	<select id="getNewGroupId" resultClass="int">
-		SELECT MAX(g.id) + 1 AS id FROM
-			(SELECT MAX(`group`) AS id FROM groupids 
-			UNION 
-			SELECT MAX(`group`) AS id FROM pending_groupids) AS g
-	</select>
-
 	<!-- TODO: Does this need pending_group_memberships as well? -->
 	<select id="getGroupIdsForUser" resultClass="int" parameterClass="string">
 		SELECT `group` FROM group_memberships WHERE user_name = #userName#
@@ -131,7 +124,7 @@
 	<!--
 	 	Selects the ids of all groups that are parents of the given group where the user is a member (by group_name).
 	-->
-	<select id="getParentGroupsWhereUserIsMember" resultClass="int" parameterClass="org.bibsonomy.database.params.sane.GetParentGroupIdsRecursively">
+	<select id="getParentGroupsWhereUserIsMember" resultClass="int" parameterClass="org.bibsonomy.database.params.group.GetParentGroupIdsRecursively">
 		SELECT parent_group_id FROM `group_hierarchy` gh
 		  JOIN `groupids` g ON (gh.child_group_id = g.group)
 		  JOIN `group_memberships` gm ON (gm.group = gh.parent_group_id)
@@ -293,7 +286,7 @@
 	<!--
 	 	Selects the ids of all groups that are parents of the given group where the user is a member (by group_name).
 	-->
-	<insert id="insertParentRelations" parameterClass="org.bibsonomy.database.params.sane.InsertParentRelations">
+	<insert id="insertParentRelations" parameterClass="org.bibsonomy.database.params.group.InsertParentRelations">
 		INSERT INTO `group_hierarchy`
 		  SELECT #childGroupId#, parent_group_id FROM `group_hierarchy` gh
 		    WHERE gh.child_group_id = #parentGroupId#
