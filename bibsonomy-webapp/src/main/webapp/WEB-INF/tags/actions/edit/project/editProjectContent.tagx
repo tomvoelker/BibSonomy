@@ -59,10 +59,8 @@
             <bsform:input path="project.type" labelColSpan="3" inputColSpan="9" noHelp="true" />
             <!-- edit budget-->
             <bsform:input path="project.budget" labelColSpan="3" inputColSpan="9" noHelp="true" />
-            <!-- edit homepage -->
-            <bsform:input path="project.homepage" labelColSpan="3" inputColSpan="9" noHelp="true" />
             <!-- todo edit parent project -->
-            <bsform:input path="project.parentProject.externalId" labelColSpan="3" inputColSpan="9" noHelp="true" />
+            <bsform:input path="project.parentProject.externalId" labelColSpan="3" inputColSpan="9" />
             <!-- todo edit sub projects
             <bsform:input path="project.subProjects" labelColSpan="3" inputColSpan="9" noHelp="true" /> -->
 

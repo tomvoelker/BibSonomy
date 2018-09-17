@@ -53,9 +53,6 @@ public class Project implements Linkable {
 	/** the subtitle of the project */
 	private String subTitle;
 
-	/** the homepage of the project */
-	private URL homepage;
-
 	/** the description of the project */
 	private String description;
 
@@ -149,20 +146,6 @@ public class Project implements Linkable {
 	 */
 	public void setSubTitle(String subTitle) {
 		this.subTitle = subTitle;
-	}
-
-	/**
-	 * @return the URL
-	 */
-	public URL getHomepage() {
-		return homepage;
-	}
-
-	/**
-	 * @param homepage the description to set
-	 */
-	public void setHomepage(URL homepage) {
-		this.homepage = homepage;
 	}
 
 	/**

@@ -110,12 +110,6 @@
 								</dd>
 							</c:forEach>
 						</c:if>
-                        <c:if test="${not empty project.homepage}">
-                            <dt><fmt:message key="project.homepage"/></dt>
-                            <dd><a href="${project.homepage}">
-                                <c:out value="${project.title}"/>
-                            </a></dd>
-                        </c:if>
                         <c:if test="${not empty project.budget}">
 							<dt><fmt:message key="project.budget"/></dt>
 							<dd><fmt:formatNumber value="${project.budget}" pattern="#,##0.00"/> €</dd>
