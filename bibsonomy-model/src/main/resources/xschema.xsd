@@ -232,8 +232,8 @@
 	-->
 	<xsd:simpleType name="GenderType">
 		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="MALE" />
-			<xsd:enumeration value="FEMALE" />
+			<xsd:enumeration value="M" />
+			<xsd:enumeration value="F" />
 		</xsd:restriction>
 	</xsd:simpleType>
 
