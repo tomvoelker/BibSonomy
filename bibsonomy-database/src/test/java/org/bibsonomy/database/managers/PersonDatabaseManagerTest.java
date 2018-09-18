@@ -27,7 +27,6 @@
 package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -39,7 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
@@ -47,7 +45,6 @@ import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
@@ -69,6 +66,8 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	private static final GoldStandardPublicationDatabaseManager COMMUNITY_DATABASE_MANAGER = GoldStandardPublicationDatabaseManager.getInstance();
 	
 	private static final User loginUser = new User("testuser1");
+
+	private static final String PERSON_ID = "h.muller";
 	
 	private Person testPerson;
 	private static boolean initialized = false;
@@ -79,7 +78,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Before
 	public void init() {
-		if (!initialized) {			
+		if (!initialized) {
 			this.testPerson = new Person();
 			this.testPerson.setMainName(new PersonName("Max", "Mustermann"));
 			PERSON_DATABASE_MANAGER.createPerson(this.testPerson, this.dbSession);
@@ -107,14 +106,14 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String intraHash = "b77ddd8087ad8856d77c740c8dc2864a";
 		final Post<? extends BibTex> post = PUBLICATION_DATABASE_MANAGER.getPostDetails(loginUser.getName(), intraHash, loginUser.getName(), Collections.singletonList(Integer.valueOf(PUBLIC_GROUP_ID)), this.dbSession);
 		resourcePersonRelation.setPost(post);
-		final Person person = PERSON_DATABASE_MANAGER.getPersonById("h.muller", this.dbSession);
+		final Person person = PERSON_DATABASE_MANAGER.getPersonById(PERSON_ID, this.dbSession);
 		resourcePersonRelation.setPerson(person);
 		resourcePersonRelation.setRelationType(PersonResourceRelationType.AUTHOR);
 		assertTrue(PERSON_DATABASE_MANAGER.addResourceRelation(resourcePersonRelation, loginUser, this.dbSession));
 
 		// check if the community post was created
 		final Post<GoldStandardPublication> communityPost = COMMUNITY_DATABASE_MANAGER.getPostDetails(loginUser.getName(), post.getResource().getInterHash(), "", Collections.emptyList(), this.dbSession);
-
+		// inserting a publication resource relation should have created a new community post
 		assertNotNull(communityPost);
 
 		// test inserting of a duplicate
@@ -130,7 +129,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.testPerson.setAcademicDegree(scientificDegree);
 		PERSON_DATABASE_MANAGER.updateAcademicDegree(this.testPerson, this.dbSession);
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById(this.testPerson.getPersonId(), this.dbSession);
-		assertEquals(person.getAcademicDegree(), scientificDegree);
+		assertEquals(scientificDegree, person.getAcademicDegree());
 	}
 	
 	/**
@@ -142,7 +141,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.testPerson.setOrcid(orcid);
 		PERSON_DATABASE_MANAGER.updateOrcid(this.testPerson, this.dbSession);
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById(this.testPerson.getPersonId(), this.dbSession);
-		assertEquals(person.getOrcid(), orcid);
+		assertEquals(orcid, person.getOrcid());
 	}
 
 	/**
@@ -154,7 +153,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.testPerson.setCollege(college);
 		PERSON_DATABASE_MANAGER.updateCollege(this.testPerson, this.dbSession);
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById(this.testPerson.getPersonId(), this.dbSession);
-		assertEquals(person.getCollege(), college);
+		assertEquals(college, person.getCollege());
 	}
 	
 	/**
@@ -166,7 +165,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.testPerson.setEmail(email);
 		PERSON_DATABASE_MANAGER.updateEmail(this.testPerson, this.dbSession);
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById(this.testPerson.getPersonId(), this.dbSession);
-		assertEquals(person.getEmail(), email);
+		assertEquals(email, person.getEmail());
 	}
 	
 	/**
@@ -179,7 +178,17 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.testPerson.setHomepage(homepage);
 		PERSON_DATABASE_MANAGER.updateHomepage(this.testPerson, this.dbSession);
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById(this.testPerson.getPersonId(), this.dbSession);
-		assertEquals(person.getHomepage(), homepage);
+		assertEquals(homepage, person.getHomepage());
+	}
+
+	@Test
+	public void testGetPublicationPersonRelations() {
+		final List<ResourcePersonRelation> resourcePersonRelationsWithPosts = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts(PERSON_ID, loginUser, GoldStandardPublication.class, this.dbSession);
+
+		assertEquals(1, resourcePersonRelationsWithPosts.size());
+
+		final ResourcePersonRelation resourcePersonRelation = resourcePersonRelationsWithPosts.get(0);
+		assertEquals("Wurst aufs Brot", resourcePersonRelation.getPost().getResource().getTitle());
 	}
 	
 	@Test

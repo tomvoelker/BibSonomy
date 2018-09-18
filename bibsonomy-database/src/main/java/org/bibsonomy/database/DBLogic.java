@@ -3691,21 +3691,21 @@ public class DBLogic implements LogicInterface {
 	}
 
 	private List<ResourcePersonRelation> queryResourceRelations(ResourcePersonRelationQueryBuilder builder) {
-		final DBSession session = DBLogic.this.openSession();
+		final DBSession session = this.openSession();
 		try {
 			if (!builder.isWithPosts() && builder.isWithPersonsOfPosts()) {
 				throw new IllegalArgumentException("need to fetch posts to retrieve persons of posts");
 			}
 			if (present(builder.getInterhash())) {
 				if (!builder.isWithPosts() && !present(builder.getAuthorIndex()) && !present(builder.getPersonId()) && !present(builder.getRelationType())) {
-					return DBLogic.this.personDBManager.getResourcePersonRelationsWithPersonsByInterhash(builder.getInterhash(), session);
+					return this.personDBManager.getResourcePersonRelationsWithPersonsByInterhash(builder.getInterhash(), session);
 				} else if (present(builder.getAuthorIndex()) && present(builder.getRelationType()) && !builder.isWithPosts() && !builder.isWithPersons() && !present(builder.getPersonId())) {
-					return DBLogic.this.personDBManager.getResourcePersonRelations(builder.getInterhash(), builder.getAuthorIndex(), builder.getRelationType(), session);
+					return this.personDBManager.getResourcePersonRelations(builder.getInterhash(), builder.getAuthorIndex(), builder.getRelationType(), session);
 				}
 			} else if (present(builder.getPersonId()) && !builder.isWithPersons() && !present(builder.getAuthorIndex()) && !present(builder.getRelationType())) {
-				final List<ResourcePersonRelation> rVal = DBLogic.this.personDBManager.getResourcePersonRelationsWithPosts(builder.getPersonId(), DBLogic.this.loginUser, GoldStandardPublication.class, session);
+				final List<ResourcePersonRelation> rVal = this.personDBManager.getResourcePersonRelationsWithPosts(builder.getPersonId(), this.loginUser, GoldStandardPublication.class, session);
 				for (final ResourcePersonRelation rpr : rVal) {
-					SystemTagsExtractor.handleHiddenSystemTags(rpr.getPost(), DBLogic.this.loginUser.getName());
+					SystemTagsExtractor.handleHiddenSystemTags(rpr.getPost(), this.loginUser.getName());
 				}
 				if (builder.isWithPersonsOfPosts()) {
 					for (final ResourcePersonRelation resourcePersonRelation : rVal) {

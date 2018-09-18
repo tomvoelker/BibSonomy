@@ -49,7 +49,7 @@ public class GetGoldStandardsByResourceSearch<RR extends Resource, R extends Res
 	protected List<Post<R>> handle(final P param, final DBSession session) {
 		ResourceSearch<R> search = this.databaseManager.getSearch();
 		if (search == null) {
-			// FIXME: should probably not be null, but was null for goldstandardbookmarks (test via http://localhost:8080/api/posts?resourcetype=goldstandardbookmark&sortPage=TITLE&sortOrder=ASC ) which might be at the wrong chain element here? 
+			// FIXME: should probably not be null, but was null for goldstandardbookmarks (test via http://localhost/api/posts?resourcetype=goldstandardbookmark&sortPage=TITLE&sortOrder=ASC ) which might be at the wrong chain element here?
 			throw new UnsupportedResourceTypeException();
 		}
 		return search.getPosts(param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), null, param.getGroupNames(), param.getSearchType(), param.getSearch(), param.getTitle(), param.getAuthor(), null, null, null, null, null, null, param.getOrder(), param.getLimit(), param.getOffset());
