@@ -11,13 +11,14 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:publication="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
-	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
+	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<c:set var="goldstandardPresent" value="${not empty command.goldStandardPublications.list}" />
-	<c:set var="postToShow" value="${command.bibtex.list[0]}" />
+	<c:if test="${not empty command.bibtex.list}">
+		<c:set var="postToShow" value="${command.bibtex.list[0]}" />
+	</c:if>
 	<c:if test="${goldstandardPresent}">
 		<c:set var="postToShow" value="${command.goldStandardPublications.list[0]}" />
 	</c:if>
@@ -43,7 +44,15 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
-			<spring:eval expression="T(org.bibsonomy.model.util.GroupUtils).isPublicGroup(command.bibtex.list[0].groups)" var="isPublic" />
+			<c:choose>
+				<c:when test="${empty command.bibtex.list}">
+					<c:set var="isPublic" value="${true}"/>
+				</c:when>
+				<c:otherwise>
+					<spring:eval expression="T(org.bibsonomy.model.util.GroupUtils).isPublicGroup(command.bibtex.list[0].groups)"
+						 var="isPublic"/>
+				</c:otherwise>
+			</c:choose>
 			<goldstandardpublication:details post="${postToShow}" postOfLoggedInUser="${command.postOfLoggedInUser}" loginUser="${command.context.loginUser}" postUserName="${command.postOwner}" postIsPublic="${isPublic}"/>
 		</jsp:attribute>
 	</layout:layout>

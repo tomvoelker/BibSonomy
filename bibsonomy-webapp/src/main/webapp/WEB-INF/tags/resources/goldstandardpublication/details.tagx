@@ -229,12 +229,16 @@
 					<li>
 						<a href="#linksresources"><fmt:message key="publications.resource.headline" /></a>
 					</li>
-					<li>
-						<a href="#tags">Tags</a>
-					</li>
-					<li>
-						<a href="#users"><span class="capitalize"><fmt:message key="users"/></span></a>
-					</li>
+					<c:if test="${not empty command.tagcloud.tags}">
+						<li>
+							<a href="#tags">Tags</a>
+						</li>
+					</c:if>
+					<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
+						<li>
+							<a href="#users"><span class="capitalize"><fmt:message key="users"/></span></a>
+						</li>
+					</c:if>
 					<c:if test="${hasRelatedPublication}">
 						<li>
 							<a href="#related-publications">Related Publications</a> <!-- TODO: i18n -->
