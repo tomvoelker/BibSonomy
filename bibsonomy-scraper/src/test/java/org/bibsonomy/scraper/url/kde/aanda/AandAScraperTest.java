@@ -77,7 +77,7 @@ public class AandAScraperTest {
 		assertNotNull(reference);
 		
 		assertTrue(reference.length() > 100);		
-		assertEquals("<li>\n"+"                "+"<a name=\"BH98\"></a>Balbus, S. A., &amp; Hawley, J. FEMALE. 1998, Rev. Mod.".trim(), reference.substring(0, 119).trim());
+		assertEquals("<li>\n"+"                "+"<a name=\"BH98\"></a>Balbus, S. A., &amp; Hawley, J. F. 1998, Rev. Mod.".trim(), reference.substring(0, 119).trim());
 		assertTrue(reference.contains("Balbus, S. A."));
 	}
 }

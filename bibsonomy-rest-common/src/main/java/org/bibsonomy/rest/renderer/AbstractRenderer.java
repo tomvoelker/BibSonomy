@@ -492,7 +492,7 @@ public abstract class AbstractRenderer implements Renderer {
 			xmlPerson.setOrcid(person.getOrcid());
 		}
 		if (person.getGender() != null) {
-			xmlPerson.setGender(GenderType.valueOf(person.getGender().name()));
+			xmlPerson.setGender(GenderType.valueOf(person.getGender().name().toUpperCase()));
 		}
 		xmlPerson.setMainName(createXmlPersonName(person.getMainName()));
 		return xmlPerson;

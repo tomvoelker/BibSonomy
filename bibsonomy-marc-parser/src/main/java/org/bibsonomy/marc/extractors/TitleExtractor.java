@@ -163,12 +163,12 @@ public class TitleExtractor implements AttributeExtractor {
  * 1publikationen/arbeitsmaterialien/hebis-handbuch/kategorien
  * /kategorien_detail.php?we_editObject_ID=2253 002@ 2.Position a -> einbändiges
  * werk (book) 002@ 2.Position a -> teil eines mehrbändigen W. (book) f ->
- * gesamtname (036c $a) + ": " + teilname=normalname (021a $a) FEMALE -> nur
+ * gesamtname (036c $a) + ": " + teilname=normalname (021a $a) F -> nur
  * teiltitel (021a $a)
  * 
  * mvbook für gesammte sammlungen book für einzelne bücher aus der sammlung
  * 
- * 002@ b (Zeitschrift) -> periodical 021a als titel 029A oder FEMALE 033A 031@ $a
+ * 002@ b (Zeitschrift) -> periodical 021a als titel 029A oder F 033A 031@ $a
  * (marc 362 a) (wichtig) o (Aufsatz) ->?
  * 
  * series extractor:
