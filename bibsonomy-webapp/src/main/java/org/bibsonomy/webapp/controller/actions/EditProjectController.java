@@ -48,8 +48,14 @@ public class EditProjectController implements MinimalisticController<EditProject
 		JobResult result = this.updateProject(command.getProject());
 		if (!result.getStatus().getMessage().equals("OK")) {
 			for (ErrorMessage e : result.getErrors()) {
-				this.errors.rejectValue("project." + e.getErrorCode().split("\\.")[e.getErrorCode().split("\\.").length - 1], e.getErrorCode(), e.getDefaultMessage());
-				// this.errors.rejectValue("project." + ((MissingFieldErrorMessage)e).getMissing(), e.getErrorCode(), e.getDefaultMessage());
+				String errorMessage = e.getErrorCode();
+				String error = errorMessage.split("\\.")[errorMessage.split("\\.").length - 1];
+				if (error.contains("date")) {
+					error = error.replace("date", "Date");
+				}
+				int lastIndex = errorMessage.lastIndexOf("\\.");
+				String prefix = errorMessage.substring(0, lastIndex);
+				this.errors.rejectValue("project." + error, prefix + error, e.getDefaultMessage());
 			}
 		}
 		if (this.errors.hasErrors()) {

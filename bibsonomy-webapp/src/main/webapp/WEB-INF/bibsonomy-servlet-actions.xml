@@ -467,12 +467,42 @@
                                 <value>project.title</value>
                                 <value>project.subTitle</value>
                                 <value>project.description</value>
-                                <value>project.homepage</value>
                                 <value>project.type</value>
                                 <value>project.budget</value>
                                 <value>project.startDate</value>
                                 <value>project.endDate</value>
                                 <value>project.parentProject.externalId</value>
+                            </list>
+                        </property>
+                    </bean>
+                </entry>
+                <entry key="/newProject">
+                    <bean parent="controllerBase">
+                        <property name="controllerBeanName" value="createNewProjectController"/>
+                        <property name="allowedFields">
+                            <list>
+                                <value>ckey</value>
+                                <value>project.title</value>
+                                <value>project.subTitle</value>
+                                <value>project.description</value>
+                                <value>project.type</value>
+                                <value>project.budget</value>
+                                <value>project.startDate</value>
+                                <value>project.endDate</value>
+                                <value>project.parentProject.externalId</value>
+                            </list>
+                        </property>
+                    </bean>
+                </entry>
+                <entry key="/editProjectMember">
+                    <bean parent="controllerBase">
+                        <property name="controllerBeanName" value="editProjectMemberController"/>
+                        <property name="allowedFields">
+                            <list>
+                                <value>projectIdToUpdate</value>
+                                <value>ckey</value>
+                                <value>project.externalId</value>
+                                <value>project.crisLinks</value>
                             </list>
                         </property>
                     </bean>
@@ -876,14 +906,23 @@
 			</list>
 		</property>
 	</bean>
-	
 
     <bean id="editProjectController" class="org.bibsonomy.webapp.controller.actions.EditProjectController" scope="request">
         <property name="logic" ref="logic" />
         <property name="urlGenerator" ref="absoluteUrlGenerator"/>
     </bean>
 
-	<!-- Handles the edit publication process -->
+    <bean id="createNewProjectController" class="org.bibsonomy.webapp.controller.actions.CreateNewProjectController" scope="request">
+        <property name="logic" ref="logic" />
+        <property name="urlGenerator" ref="absoluteUrlGenerator"/>
+    </bean>
+
+    <bean id="editProjectMemberController" class="org.bibsonomy.webapp.controller.actions.EditProjectMemberController" scope="request">
+        <property name="logic" ref="logic" />
+        <property name="urlGenerator" ref="absoluteUrlGenerator"/>
+    </bean>
+
+    <!-- Handles the edit publication process -->
 	<bean id="editPublicationController" class="org.bibsonomy.webapp.controller.actions.EditPublicationController" scope="request" parent="editPostController">
 		<property name="scraper" ref="kdeScraperChain"/>
 		<property name="swordService" ref="swordService"/>

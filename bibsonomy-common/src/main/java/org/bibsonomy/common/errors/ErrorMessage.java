@@ -50,7 +50,7 @@ public class ErrorMessage {
 	 * @param errorCode 	is a key to the corresponding localized String in the message_properties files
 	 * @param parameters are some Strings for the localized message
 	 */
-	public ErrorMessage(final String defaultMessage, final String errorCode, final String[] parameters) {
+	public ErrorMessage(final String defaultMessage, String errorCode, final String[] parameters) {
 		this.defaultMessage = defaultMessage;
 		this.errorCode = errorCode;
 		if (present(parameters)) {
