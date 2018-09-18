@@ -84,16 +84,19 @@ public class DisambiguationPageController extends SingleResourceListController i
 	
 	@Override
 	public View workOn(final DisambiguationPageCommand command) {
-		if (command.getRequestedHash() == null) {
-			throw new ObjectNotFoundException(command.getRequestedHash());
+		final String requestedHash = command.getRequestedHash();
+		if (requestedHash == null) {
+			throw new ObjectNotFoundException(requestedHash);
 		}
-		
-		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, command.getRequestedHash(), null, null, null, null, null, null, 0, 100);
-		
-		if (!present(posts)) {
-			throw new ObjectNotFoundException(command.getRequestedHash());
+
+		/*
+		 * first we check if the post is in our database
+		 */
+		final Post<? extends BibTex> post = this.findPost(requestedHash);
+		if (!present(post)) {
+			throw new ObjectNotFoundException(requestedHash);
 		}
-		command.setPost(posts.get(0));
+		command.setPost(post);
 		if ("newPerson".equals(command.getRequestedAction())) {
 			return newAction(command);
 		} else if ("linkPerson".equals(command.getRequestedAction())) {
@@ -105,6 +108,43 @@ public class DisambiguationPageController extends SingleResourceListController i
 		}
 		
 		return disambiguateAction(command);
+	}
+
+	/**
+	 * method that normalizes the provided hash (removes the hash id from the hash iff it starts with the hash id)
+	 * @param hash
+	 * @return
+	 */
+	private static String normHash(final String hash) {
+		if (!present(hash)) {
+			return hash;
+		}
+
+		// no hash id given use the provided hash
+		if (hash.length() == 32) {
+			return hash;
+		}
+
+		// strip the hash id
+		return hash.substring(1);
+	}
+
+	private Post<? extends BibTex> findPost(final String requestedHash) {
+		final String interHash = normHash(requestedHash);
+		// first try to find a community post
+		final Post<? extends BibTex> postDetails = (Post<? extends BibTex>) this.logic.getPostDetails(interHash, "");
+		if (present(postDetails)) {
+			return postDetails;
+		}
+
+		// else find a post in the database
+		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, requestedHash, null, null, null, null, null, null, 0, 1);
+		if (present(posts)) {
+			return posts.get(0);
+		}
+
+		// nothing found
+		return null;
 	}
 
 	private View disambiguateAction(final DisambiguationPageCommand command) {
