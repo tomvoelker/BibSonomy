@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
@@ -210,7 +211,12 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 
 		try {
 			final String localInactiveAlias = this.getInactiveLocalAlias();
-			this.updateIndex(localInactiveAlias);
+			final String realIndexName = this.client.getIndexNameForAlias(localInactiveAlias);
+			if (!present(realIndexName)) {
+				LOG.error("no inactive index found for " + this.entityInformationProvider.getType());
+				return;
+			}
+			this.updateIndex(realIndexName);
 			this.switchActiveAndInactiveIndex();
 		} catch (final IndexNotFoundException e) {
 			LOG.error("Can't update " + this.entityInformationProvider.getType() + " index. No inactive index available.");
@@ -227,22 +233,32 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 	@Override
 	public List<SearchIndexInfo> getIndexInformations() {
 		final List<SearchIndexInfo> infos = new LinkedList<>();
+
+		// get infos about the current active index
 		try {
 			final String localActiveAlias = this.getActiveLocalAlias();
-			final SearchIndexInfo searchIndexInfo = getIndexInfoForIndex(localActiveAlias, SearchIndexState.ACTIVE, true);
-			infos.add(searchIndexInfo);
+			final String localActiveIndexName = this.client.getIndexNameForAlias(localActiveAlias);
+			if (present(localActiveIndexName)) {
+				final SearchIndexInfo searchIndexInfo = getIndexInfoForIndex(localActiveIndexName, SearchIndexState.ACTIVE, true);
+				infos.add(searchIndexInfo);
+			}
 		} catch (final IndexNotFoundException e) {
 			// ignore
 		}
 
+		// get infos about the current inactive index
 		try {
 			final String localInactiveAlias = this.getInactiveLocalAlias();
-			final SearchIndexInfo searchIndexInfoInactive = getIndexInfoForIndex(localInactiveAlias, SearchIndexState.INACTIVE, true);
-			infos.add(searchIndexInfoInactive);
+			final String localInactiveIndexName = this.client.getIndexNameForAlias(localInactiveAlias);
+			if (present(localInactiveIndexName)) {
+				final SearchIndexInfo searchIndexInfo = getIndexInfoForIndex(localInactiveIndexName, SearchIndexState.INACTIVE, true);
+				infos.add(searchIndexInfo);
+			}
 		} catch (final IndexNotFoundException e) {
 			// ignore
 		}
 
+		// get infos about the standby indices
 		final List<String> indices = this.getAllStandByIndices();
 		for (final String indexName : indices) {
 			final SearchIndexInfo searchIndexInfoStandBy = getIndexInfoForIndex(indexName, SearchIndexState.STANDBY, true);
@@ -250,6 +266,7 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 			infos.add(searchIndexInfoStandBy);
 		}
 
+		// get info about the index which is currently generated
 		if (this.generator.isGenerating()) {
 			try {
 				final SearchIndexInfo searchIndexInfoGeneratingIndex = new SearchIndexInfo();
@@ -281,7 +298,7 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 	private SearchIndexInfo getIndexInfoForIndex(final String indexName, final SearchIndexState state, boolean loadSyncState) {
 		final SearchIndexInfo searchIndexInfo = new SearchIndexInfo();
 		searchIndexInfo.setState(state);
-		searchIndexInfo.setId(this.client.getIndexNameForAlias(indexName));
+		searchIndexInfo.setId(indexName);
 
 		if (loadSyncState) {
 			searchIndexInfo.setSyncState(this.client.getSearchIndexStateForIndex(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId), indexName));
@@ -392,7 +409,7 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 	@Override
 	public void enableIndex(String indexName) {
 		if (!this.updateLock.tryAcquire()) {
-			LOG.error("can't enable index ");
+			LOG.error("can't enable index");
 			return;
 		}
 		try {
@@ -441,9 +458,24 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 	}
 
 	/**
+	 * @return all public fields of the managed index
+	 */
+	public Set<String> getPublicFields() {
+		return this.entityInformationProvider.getPublicFields();
+	}
+
+	/**
+	 * @return all private fields of the managed index
+	 */
+	public Set<String> getPrivateFields() {
+		return this.entityInformationProvider.getPrivateFields();
+	}
+
+	/**
 	 * shut downs the executor service
 	 */
 	public void shutdown() {
 		this.executorService.shutdownNow();
 	}
+
 }

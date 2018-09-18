@@ -94,8 +94,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	protected void updateIndex(final String indexName) {
 		final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId);
 
-		final String realIndexName = this.client.getIndexNameForAlias(indexName);
-		final SearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, realIndexName);
+		final SearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, indexName);
 		final SearchIndexSyncState targetState = this.inputLogic.getDbState();
 		
 		final int oldLastTasId = oldState.getLast_tas_id().intValue();
@@ -162,12 +161,12 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 			newState.setLast_tas_id(targetState.getLast_tas_id());
 			newState.setLastPersonChangeId(targetState.getLastPersonChangeId());
 			newState.setLastDocumentDate(targetState.getLastDocumentDate());
-			this.updateIndexState(realIndexName, newState);
+			this.updateIndexState(indexName, newState);
 		} catch (final RuntimeException e) {
-			this.updateIndexState(realIndexName, oldState);
+			this.updateIndexState(indexName, oldState);
 			throw e;
 		} catch (final Exception e) {
-			this.updateIndexState(realIndexName, oldState);
+			this.updateIndexState(indexName, oldState);
 			throw new RuntimeException(e);
 		}
 

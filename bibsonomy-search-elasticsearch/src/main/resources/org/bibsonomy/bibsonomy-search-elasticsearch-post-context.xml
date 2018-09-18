@@ -123,14 +123,12 @@
 	<bean id="elasticsearchBookmarkSearch" class="org.bibsonomy.search.es.search.post.EsResourceSearch">
 		<property name="manager" ref="elasticsearchBookmarkManager" />
 		<property name="resourceConverter" ref="elasticsearchBookmarkConverter" />
-		<property name="resourceType" ref="bookmarkClass" />
 		<property name="infoLogic" ref="searchInfoLogic" />
 	</bean>
 
 	<bean id="elasticsearchPublicationSearch" class="org.bibsonomy.search.es.search.post.ElasticsearchPublicationSearch">
 		<property name="manager" ref="elasticsearchPublicationManager" />
 		<property name="resourceConverter" ref="elasticsearchPublicationConverter" />
-		<property name="resourceType" ref="publicationClass" />
 		<property name="infoLogic" ref="searchInfoLogic" />
 		<property name="genealogyUser" value="${genealogy.import.user}" />
 	</bean>
@@ -138,14 +136,12 @@
 	<bean id="elasticsearchCommunityBookmarkSearch" class="org.bibsonomy.search.es.search.post.EsResourceSearch">
 		<property name="manager" ref="elasticsearchCommunityBookmarkManager" />
 		<property name="resourceConverter" ref="elasticsearchCommunityBookmarkConverter" />
-		<property name="resourceType" ref="goldStandardBookmarkClass" />
 		<property name="infoLogic" ref="searchInfoLogic" />
 	</bean>
 
 	<bean id="elasticsearchCommunityPublicationSearch" class="org.bibsonomy.search.es.search.post.ElasticsearchPublicationSearch">
 		<property name="manager" ref="elasticsearchCommunityPublicationManager" />
 		<property name="resourceConverter" ref="elasticsearchCommunityPublicationConverter" />
-		<property name="resourceType" ref="goldStandardPublicationClass" />
 		<property name="infoLogic" ref="searchInfoLogic" />
 		<property name="genealogyUser" value="${genealogy.import.user}" />
 	</bean>

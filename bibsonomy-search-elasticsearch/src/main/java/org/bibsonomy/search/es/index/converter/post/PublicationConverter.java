@@ -55,7 +55,6 @@ import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
-import org.bibsonomy.search.es.ESConstants.Fields.Publication;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.index.utils.FileContentExtractorService;
 import org.bibsonomy.util.ValidationUtils;
@@ -130,24 +129,24 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		setPersonNames(Fields.Publication.EDITORS, EDITOR_NAME_SETTER, publication, source);
 		setPersonNames(Fields.Publication.AUTHORS, AUTHOR_NAME_SETTER, publication, source);
 		
-		publication.setEntrytype((String) source.get(Publication.ENTRY_TYPE));
-		publication.setHowpublished((String) source.get(Publication.HOWPUBLISHED));
-		publication.setInstitution((String) source.get(Publication.INSTITUTION));
-		publication.setJournal((String) source.get(Publication.JOURNAL));
-		publication.setMisc((String) source.get(Publication.MISC));
-		publication.setMonth((String) source.get(Publication.MONTH));
-		publication.setNote((String) source.get(Publication.NOTE));
-		publication.setNumber((String) source.get(Publication.NUMBER));
-		publication.setOrganization((String) source.get(Publication.ORGANIZATION));
-		publication.setPages((String) source.get(Publication.PAGES));
-		publication.setPrivnote((String) source.get(Publication.PRIVNOTE));
-		publication.setPublisher((String) source.get(Publication.PUBLISHER));
-		publication.setSchool((String) source.get(Publication.SCHOOL));
-		publication.setSeries((String) source.get(Publication.SERIES));
-		publication.setType((String) source.get(Publication.TYPE));
-		publication.setUrl((String) source.get(Publication.URL));
-		publication.setVolume((String) source.get(Publication.VOLUME));
-		publication.setYear((String) source.get(Publication.YEAR));
+		publication.setEntrytype((String) source.get(Fields.Publication.ENTRY_TYPE));
+		publication.setHowpublished((String) source.get(Fields.Publication.HOWPUBLISHED));
+		publication.setInstitution((String) source.get(Fields.Publication.INSTITUTION));
+		publication.setJournal((String) source.get(Fields.Publication.JOURNAL));
+		publication.setMisc((String) source.get(Fields.Publication.MISC));
+		publication.setMonth((String) source.get(Fields.Publication.MONTH));
+		publication.setNote((String) source.get(Fields.Publication.NOTE));
+		publication.setNumber((String) source.get(Fields.Publication.NUMBER));
+		publication.setOrganization((String) source.get(Fields.Publication.ORGANIZATION));
+		publication.setPages((String) source.get(Fields.Publication.PAGES));
+		publication.setPrivnote((String) source.get(Fields.Publication.PRIVNOTE));
+		publication.setPublisher((String) source.get(Fields.Publication.PUBLISHER));
+		publication.setSchool((String) source.get(Fields.Publication.SCHOOL));
+		publication.setSeries((String) source.get(Fields.Publication.SERIES));
+		publication.setType((String) source.get(Fields.Publication.TYPE));
+		publication.setUrl((String) source.get(Fields.Publication.URL));
+		publication.setVolume((String) source.get(Fields.Publication.VOLUME));
+		publication.setYear((String) source.get(Fields.Publication.YEAR));
 		
 		if (loadDocuments) {
 			final String userName;
@@ -157,7 +156,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 			} else {
 				userName = null;
 			}
-			publication.setDocuments(convertDocuments(source.get(Publication.DOCUMENTS), userName));
+			publication.setDocuments(convertDocuments(source.get(Fields.Publication.DOCUMENTS), userName));
 		}
 	}
 
@@ -173,10 +172,10 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 			final List<Map<String, String>> docMaps = (List<Map<String, String>>) object;
 			for (Map<String, String> docMap : docMaps) {
 				final Document document = new Document();
-				document.setFileName(docMap.get(Publication.Document.NAME));
-				document.setFileHash(docMap.get(Publication.Document.HASH));
-				document.setMd5hash(docMap.get(Publication.Document.CONTENT_HASH));
-				document.setDate(ElasticsearchUtils.parseDate(docMap.get(Publication.Document.DATE)));
+				document.setFileName(docMap.get(Fields.Publication.Document.NAME));
+				document.setFileHash(docMap.get(Fields.Publication.Document.HASH));
+				document.setMd5hash(docMap.get(Fields.Publication.Document.CONTENT_HASH));
+				document.setDate(ElasticsearchUtils.parseDate(docMap.get(Fields.Publication.Document.DATE)));
 				document.setUserName(userName);
 				documents.add(document);
 			}
@@ -247,7 +246,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 			jsonDocument.put(Fields.Publication.AUTHORS, convertPersonNames(authors));
 		}
 		
-		jsonDocument.put(Publication.ENTRY_TYPE, resource.getEntrytype());
+		jsonDocument.put(Fields.Publication.ENTRY_TYPE, resource.getEntrytype());
 		jsonDocument.put(Fields.Publication.HOWPUBLISHED, resource.getHowpublished());
 		
 		jsonDocument.put(Fields.Publication.INSTITUTION, resource.getInstitution());
@@ -265,20 +264,36 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 				log.warn("parsing misc field failed", e);
 			}
 		}
-		
+
+		/*
+		 * handle the misc field
+		 */
 		final Map<String, String> parsedMiscField = resource.getMiscFields();
 		if (present(parsedMiscField)) {
-			for (final Entry<String, String> miscFieldEntry : parsedMiscField.entrySet()) {
-				String key = normKey(miscFieldEntry.getKey());
-				
-				// check if the key can be added by other fields
-				if (jsonDocument.containsKey(key) || Fields.ALL_FIELDS.contains(key)) {
-					key = "misc_" + key;
+			// handle special misc fields
+			for (final String specialMiscField : ESConstants.Fields.Publication.SPECIAL_MISC_FIELDS) {
+				final String specialMiscFieldValue = getSpecialMiscFieldValue(parsedMiscField, specialMiscField);
+				if (present(specialMiscFieldValue)) {
+					jsonDocument.put(specialMiscField, specialMiscFieldValue);
 				}
-				
-				jsonDocument.put(key, miscFieldEntry.getValue());
 			}
+
+			// convert all misc fields to a nested field
+			final List<Map<String, String>> miscFields = new LinkedList<>();
+			for (final Entry<String, String> miscFieldEntry : parsedMiscField.entrySet()) {
+				final String key = normKey(miscFieldEntry.getKey());
+				final String value = miscFieldEntry.getValue();
+
+				final Map<String, String> miscField = new HashMap<>();
+				miscField.put(Fields.Publication.MISC_KEY, key);
+				miscField.put(Fields.Publication.MISC_VALUE, value);
+
+				miscFields.add(miscField);
+			}
+
+			jsonDocument.put(Fields.Publication.MISC_FIELDS, miscFields);
 		}
+
 		jsonDocument.put(Fields.Publication.MONTH, resource.getMonth());
 		jsonDocument.put(Fields.Publication.NOTE, resource.getNote());
 		jsonDocument.put(Fields.Publication.NUMBER, resource.getNumber());
@@ -294,11 +309,21 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		jsonDocument.put(Fields.Publication.URL, resource.getUrl());
 		jsonDocument.put(Fields.Publication.VOLUME, resource.getVolume());
 		
-		jsonDocument.put(Publication.YEAR, resource.getYear());
+		jsonDocument.put(Fields.Publication.YEAR, resource.getYear());
 		
-		jsonDocument.put(Publication.DOCUMENTS, convertDocuments(resource.getDocuments()));
+		jsonDocument.put(Fields.Publication.DOCUMENTS, convertDocuments(resource.getDocuments()));
 	}
-	
+
+	private static String getSpecialMiscFieldValue(Map<String, String> miscField, String key) {
+		for (final Entry<String, String> miscFieldEntry : miscField.entrySet()) {
+			if (key.equalsIgnoreCase(miscFieldEntry.getKey())) {
+				return miscFieldEntry.getValue();
+			}
+		}
+
+		return null;
+	}
+
 	/**
 	 * @param documents
 	 * @return the converted documents
@@ -311,14 +336,14 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		
 		for (final Document document : documents) {
 			final Map<String, String> documentMap = new HashMap<>();
-			documentMap.put(Publication.Document.NAME, document.getFileName());
-			documentMap.put(Publication.Document.HASH, document.getFileHash());
-			documentMap.put(Publication.Document.CONTENT_HASH, document.getMd5hash());
+			documentMap.put(Fields.Publication.Document.NAME, document.getFileName());
+			documentMap.put(Fields.Publication.Document.HASH, document.getFileHash());
+			documentMap.put(Fields.Publication.Document.CONTENT_HASH, document.getMd5hash());
 			final String content = this.fileContentExtractorService.extractContent(document);
 			if (present(content)) {
-				documentMap.put(Publication.Document.TEXT, content);
+				documentMap.put(Fields.Publication.Document.TEXT, content);
 			}
-			documentMap.put(Publication.Document.DATE, ElasticsearchUtils.dateToString(document.getDate()));
+			documentMap.put(Fields.Publication.Document.DATE, ElasticsearchUtils.dateToString(document.getDate()));
 			list.add(documentMap);
 		}
 		
@@ -341,7 +366,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		final List<Map<String, String>> serializedPersonNames = new LinkedList<>();
 		
 		for (final PersonName person : persons) {
-			serializedPersonNames.add(Collections.singletonMap(Publication.PERSON_NAME, PersonNameUtils.serializePersonName(person)));
+			serializedPersonNames.add(Collections.singletonMap(Fields.Publication.PERSON_NAME, PersonNameUtils.serializePersonName(person)));
 		}
 		
 		return serializedPersonNames;

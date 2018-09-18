@@ -74,6 +74,7 @@ import org.bibsonomy.search.es.management.post.ElasticsearchPostManager;
 import org.bibsonomy.search.es.search.util.tokenizer.SimpleTokenizer;
 import org.bibsonomy.services.searcher.PersonSearch;
 import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.util.Sets;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -104,8 +105,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	
 	private static final float GENEALOGY_USER_PREFERENCE_FACTOR = 1.1f;
 	private static final Pattern YEAR_PATTERN = Pattern.compile("[12][0-9]{3}");
-	
-	private Class<R> resourceType;
 
 	/** post model converter */
 	private ResourceConverter<R> resourceConverter;
@@ -679,7 +678,11 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	protected final QueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, Collection<String> allowedGroups, Set<String> usersThatShareDocs, String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
 		final BoolQueryBuilder mainQueryBuilder = QueryBuilders.boolQuery();
 		final BoolQueryBuilder mainFilterBuilder = QueryBuilders.boolQuery();
-		
+		// here we exclude the logged in user the docs are already queried using the private fields
+		final Set<String> usersToQueryForDocuments = new HashSet<>(usersThatShareDocs);
+		if (present(userName)) {
+			usersToQueryForDocuments.remove(userName);
+		}
 		/*
 		 * build the query
 		 * the resulting main query
@@ -693,19 +696,19 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			 * XXX: we also need to set these parameters to the private string queries, otherwise the configured
 			 * field is ignored and ES searches again in the queried fields
 			 */
-			final QueryBuilder queryBuilder = buildStringQueryForSearchTerms(searchTerms);
+			final QueryBuilder queryBuilder = buildStringQueryForSearchTerms(searchTerms, this.manager.getPublicFields());
 			
 			if (present(userName)) {
 				// private field
 				final TermQueryBuilder userFilter = QueryBuilders.termQuery(Fields.USER_NAME, userName);
-				final QueryStringQueryBuilder privateFieldSearchQuery = buildStringQueryForSearchTerms(searchTerms).field(Fields.PRIVATE_ALL_FIELD);
+				final QueryStringQueryBuilder privateFieldSearchQuery = buildStringQueryForSearchTerms(searchTerms, this.manager.getPrivateFields());
 				final BoolQueryBuilder privateFieldQueryFiltered = QueryBuilders.boolQuery().must(privateFieldSearchQuery).filter(userFilter);
 				
 				final BoolQueryBuilder query = QueryBuilders.boolQuery().should(queryBuilder).should(privateFieldQueryFiltered);
 				
-				if (present(usersThatShareDocs)) {
+				if (present(usersToQueryForDocuments)) {
 					// document field
-					final QueryStringQueryBuilder docFieldSearchQuery = buildStringQueryForSearchTerms(searchTerms).field(Fields.ALL_DOCS);
+					final QueryStringQueryBuilder docFieldSearchQuery = buildStringQueryForSearchTerms(searchTerms, Sets.asSet(Fields.Publication.ALL_DOCS));
 					// restrict to users that share documents and to the visible posts (group)
 					final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery().must(buildUserQuery(usersThatShareDocs)).must(buildGroupFilter(allowedGroups));
 					query.should(QueryBuilders.boolQuery().must(docFieldSearchQuery).filter(filterQuery));
@@ -771,13 +774,14 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		
 		// all done
 		log.debug("Search query: '" + mainQueryBuilder.toString() + "' and filters: '" + mainFilterBuilder.toString() + "'");
-		
-		
 		return QueryBuilders.boolQuery().must(mainQueryBuilder).filter(mainFilterBuilder);
 	}
 
-	private static QueryStringQueryBuilder buildStringQueryForSearchTerms(String searchTerms) {
-		return QueryBuilders.queryStringQuery(searchTerms).defaultOperator(Operator.AND).useDisMax(false);
+	private static QueryStringQueryBuilder buildStringQueryForSearchTerms(String searchTerms, final Set<String> fields) {
+		final QueryStringQueryBuilder builder = QueryBuilders.queryStringQuery(searchTerms).defaultOperator(Operator.AND).tieBreaker(1f);
+		// set the fields where the string query should search for the string
+		fields.stream().forEach(builder::field);
+		return builder;
 	}
 
 	/**
@@ -906,13 +910,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 */
 	public void setResourceConverter(final ResourceConverter<R> resourceConverter) {
 		this.resourceConverter = resourceConverter;
-	}
-
-	/**
-	 * @param resourceType the resourceType to set
-	 */
-	public void setResourceType(final Class<R> resourceType) {
-		this.resourceType = resourceType;
 	}
 
 	/**
