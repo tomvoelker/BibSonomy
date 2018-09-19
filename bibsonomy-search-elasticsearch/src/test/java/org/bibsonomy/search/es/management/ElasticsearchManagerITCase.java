@@ -37,20 +37,20 @@ import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
-import org.bibsonomy.search.es.search.ElasticsearchPublicationSearch;
+import org.bibsonomy.search.es.management.post.ElasticsearchPostManager;
+import org.bibsonomy.search.es.search.post.ElasticsearchPublicationSearch;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * tests for {@link ElasticsearchManager}
+ * tests for {@link ElasticsearchPostManager}
  *
  * @author dzo
  */
 public class ElasticsearchManagerITCase extends AbstractEsIndexTest {
 	
 	private static final AdminDatabaseManager adminDatabaseManager = AdminDatabaseManager.getInstance();
-	private static ElasticsearchManager<BibTex> publicationManager;
+	private static ElasticsearchPostManager<BibTex> publicationManager;
 	private static ElasticsearchPublicationSearch<BibTex> publicationSearch;
 	
 	/**
@@ -59,12 +59,12 @@ public class ElasticsearchManagerITCase extends AbstractEsIndexTest {
 	@SuppressWarnings("unchecked")
 	@BeforeClass
 	public static final void initManager() {
-		publicationManager = EsSpringContextWrapper.getContext().getBean("elasticsearchPublicationManager", ElasticsearchManager.class);
+		publicationManager = EsSpringContextWrapper.getContext().getBean("elasticsearchPublicationManager", ElasticsearchPostManager.class);
 		publicationSearch = EsSpringContextWrapper.getContext().getBean("elasticsearchPublicationSearch", ElasticsearchPublicationSearch.class);
 	}
 	
 	/**
-	 * tests {@link ElasticsearchManager#updateIndex()}
+	 * tests {@link ElasticsearchPostManager#updateIndex()}
 	 */
 	@Test
 	public void testUpdateIndexWithSpammer() {

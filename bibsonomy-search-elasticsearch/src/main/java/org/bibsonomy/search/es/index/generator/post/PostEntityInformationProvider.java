@@ -1,0 +1,104 @@
+package org.bibsonomy.search.es.index.generator.post;
+
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.factories.ResourceFactory;
+import org.bibsonomy.search.es.ESConstants;
+import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
+import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
+import org.bibsonomy.search.util.Converter;
+import org.bibsonomy.search.util.MappingBuilder;
+import org.bibsonomy.util.Sets;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * implementation of the {@link EntityInformationProvider} interface for posts
+ * @param <R>
+ */
+public class PostEntityInformationProvider<R extends Resource> extends EntityInformationProvider<Post<R>> {
+
+	public static final Set<String> PRIVATE_FIELDS = Sets.asSet(
+					ESConstants.Fields.Publication.PRIVNOTE,
+					ESConstants.Fields.Publication.ALL_DOCS
+	);
+
+	// TODO: maybe we should separate bookmark and publication fields
+	public static final Set<String> PUBLIC_FIELDS = Sets.asSet(
+					ESConstants.Fields.Resource.TITLE,
+					ESConstants.Fields.Bookmark.URL,
+					ESConstants.Fields.Publication.ALL_AUTHORS,
+					ESConstants.Fields.Publication.MISC_FIELDS_VALUES,
+					ESConstants.Fields.Publication.SCHOOL,
+					ESConstants.Fields.Publication.YEAR,
+					ESConstants.Fields.Publication.BIBTEXKEY,
+					ESConstants.Fields.Publication.ADDRESS,
+					ESConstants.Fields.Publication.ENTRY_TYPE,
+					ESConstants.Fields.Publication.ANNOTE,
+					ESConstants.Fields.Publication.KEY,
+					ESConstants.Fields.Publication.ABSTRACT,
+					ESConstants.Fields.Publication.BOOKTITLE,
+					ESConstants.Fields.Publication.CHAPTER,
+					ESConstants.Fields.Publication.CROSSREF,
+					ESConstants.Fields.Publication.DAY,
+					ESConstants.Fields.Publication.EDITION,
+					ESConstants.Fields.Publication.HOWPUBLISHED,
+					ESConstants.Fields.Publication.INSTITUTION,
+					ESConstants.Fields.Publication.JOURNAL,
+					ESConstants.Fields.Publication.MONTH,
+					ESConstants.Fields.Publication.NOTE,
+					ESConstants.Fields.Publication.NUMBER,
+					ESConstants.Fields.Publication.ORGANIZATION,
+					ESConstants.Fields.Publication.PAGES,
+					ESConstants.Fields.Publication.PUBLISHER,
+					ESConstants.Fields.Publication.SERIES,
+					ESConstants.Fields.Publication.TYPE,
+					ESConstants.Fields.Publication.URL,
+					ESConstants.Fields.Publication.VOLUME
+	);
+
+	static {
+		PUBLIC_FIELDS.addAll(ESConstants.Fields.Publication.SPECIAL_MISC_FIELDS);
+	}
+
+	private Class<R> resourceType;
+
+	/**
+	 * the entity information provider
+	 *  @param converter
+	 * @param mappingBuilder
+	 * @param resourceType
+	 */
+	public PostEntityInformationProvider(Converter<Post<R>, Map<String, Object>, ?> converter, MappingBuilder<XContentBuilder> mappingBuilder, final Class<R> resourceType) {
+		super(converter, mappingBuilder);
+
+		this.resourceType = resourceType;
+	}
+
+	@Override
+	public int getContentId(Post<R> post) {
+		return post.getContentId();
+	}
+
+	@Override
+	public String getEntityId(Post<R> entity) {
+		return ElasticsearchUtils.createElasticSearchId(entity.getContentId());
+	}
+
+	@Override
+	public String getType() {
+		return ResourceFactory.getResourceName(this.resourceType);
+	}
+
+	@Override
+	public Set<String> getPublicFields() {
+		return PUBLIC_FIELDS;
+	}
+
+	@Override
+	public Set<String> getPrivateFields() {
+		return PRIVATE_FIELDS;
+	}
+}

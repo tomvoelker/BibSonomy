@@ -34,8 +34,8 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.search.es.management.AbstractEsIndexTest;
+import org.bibsonomy.search.es.search.post.ElasticsearchPublicationSearch;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

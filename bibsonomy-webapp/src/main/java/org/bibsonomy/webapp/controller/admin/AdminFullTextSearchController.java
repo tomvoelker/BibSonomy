@@ -60,7 +60,7 @@ import org.springframework.security.access.AccessDeniedException;
 public class AdminFullTextSearchController implements MinimalisticController<AdminFullTextSearchCommand> {
 	private static final Log log = LogFactory.getLog(AdminFullTextSearchController.class);
 	
-	private Map<Class<? extends Resource>, SearchIndexManager<? extends Resource>> managers;
+	private Map<Class<?>, SearchIndexManager> managers;
 	
 	@Override
 	public View workOn(final AdminFullTextSearchCommand command) {
@@ -80,7 +80,7 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 		final AdminFullTextAction action = command.getAction();
 		if (present(action)) {
 			final Class<? extends Resource> resource = command.getResource();
-			final SearchIndexManager<? extends Resource> mananger = this.managers.get(resource);
+			final SearchIndexManager mananger = this.managers.get(resource);
 			if (mananger == null) {
 				throw new IllegalArgumentException("cannot find manager for resource " + resource);
 			}
@@ -112,11 +112,11 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 		
 		// get some infos about the search indices
 		final Map<String, List<SearchIndexInfo>> infoMap = command.getSearchIndexInfo();
-		for (final Entry<Class<? extends Resource>, SearchIndexManager<? extends Resource>> managementEntry : this.managers.entrySet()) {
-			final SearchIndexManager<? extends Resource> manager = managementEntry.getValue();
+		for (final Entry<Class<?>, SearchIndexManager> managementEntry : this.managers.entrySet()) {
+			final SearchIndexManager manager = managementEntry.getValue();
 			
 			final List<SearchIndexInfo> information = manager.getIndexInformations();
-			infoMap.put(ResourceFactory.getResourceName(managementEntry.getKey()), information);
+			infoMap.put(managementEntry.getKey().getSimpleName(), information);
 		}
 		
 		return Views.ADMIN_FULL_TEXT_SEARCH;
@@ -130,7 +130,7 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 	/**
 	 * @param managers the managers to set
 	 */
-	public void setManagers(Map<Class<? extends Resource>, SearchIndexManager<? extends Resource>> managers) {
+	public void setManagers(Map<Class<?>, SearchIndexManager> managers) {
 		this.managers = managers;
 	}
 }

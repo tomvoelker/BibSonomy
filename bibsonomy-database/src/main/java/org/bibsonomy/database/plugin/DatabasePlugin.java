@@ -61,7 +61,9 @@ public interface DatabasePlugin {
 	 * @param post
 	 * @param session
 	 */
-	public void onPublicationInsert(Post<? extends BibTex> post, DBSession session);
+	default void onPublicationInsert(Post<? extends BibTex> post, DBSession session) {
+		// noop
+	}
 
 	/**
 	 * Called when a publication is deleted.
@@ -69,7 +71,9 @@ public interface DatabasePlugin {
 	 * @param contentId
 	 * @param session
 	 */
-	public void onPublicationDelete(int contentId, DBSession session);
+	default void onPublicationDelete(int contentId, DBSession session) {
+		// noop
+	}
 
 	/**
 	 * Called when a publication is updated.
@@ -78,7 +82,9 @@ public interface DatabasePlugin {
 	 * @param contentId
 	 * @param session
 	 */
-	public void onPublicationUpdate(int newContentId, int contentId, DBSession session);
+	default void onPublicationUpdate(int newContentId, int contentId, DBSession session) {
+		// noop
+	}
 	
 	/**
 	 * @param username

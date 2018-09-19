@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.search.es.ESClient;
-import org.bibsonomy.search.es.index.ResourceMappingBuilder;
+import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.services.URLGenerator;
@@ -98,12 +98,11 @@ public class HelpSearchManager implements HelpSearch {
 							.field("date_detection", false)
 							.startObject("properties")
 								.startObject(HEADER_FIELD)
-									.field(ResourceMappingBuilder.TYPE_FIELD, ResourceMappingBuilder.TEXT_TYPE)
-									.field("store", "true")
+									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.TEXT_TYPE)
+									.field("boost", 2.0)
 								.endObject()
 								.startObject(CONTENT_FIELD)
-									.field(ResourceMappingBuilder.TYPE_FIELD, ResourceMappingBuilder.TEXT_TYPE)
-									.field("store", "true")
+									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.TEXT_TYPE)
 								.endObject()
 							.endObject()
 						.endObject()
@@ -112,12 +111,17 @@ public class HelpSearchManager implements HelpSearch {
 			mapping.close();
 			SETTINGS = Strings.toString(XContentFactory.jsonBuilder()
 					.startObject()
-						.startObject("analyzer")
-							.startObject("default")
-								.field("type", "custom")
-								.field("char_filter", Arrays.asList("html_strip"))
-								.field("tokenizer", "standard")
-								.field("filter", Arrays.asList("lowercase", "standard"))
+						.startObject("analysis")
+							.startObject("analyzer")
+								.startObject("my_analyzer")
+									.field("tokenizer", "standard")
+									.field("filter", Arrays.asList("lowercase", "standard"))
+								.endObject()
+							.endObject()
+							.startObject("char_filter")
+								.startObject("my_char_filter")
+									.field("type", "html_strip")
+								.endObject()
 							.endObject()
 						.endObject()
 					.endObject());
@@ -180,10 +184,12 @@ public class HelpSearchManager implements HelpSearch {
 					try (final BufferedReader helpPage = new BufferedReader(new InputStreamReader(new FileInputStream(file), StringUtils.DEFAULT_CHARSET))) {
 						final String markdown = StringUtils.getStringFromReader(helpPage);
 						final String content = parser.parseText(markdown, language);
-						final Map<String, Object> doc = new HashMap<>();
-						doc.put(HEADER_FIELD, fileName);
-						doc.put(CONTENT_FIELD, content);
-						jsonDocuments.put(fileName, doc);
+						if (containsContent(content)) {
+							final Map<String, Object> doc = new HashMap<>();
+							doc.put(HEADER_FIELD, fileName);
+							doc.put(CONTENT_FIELD, content);
+							jsonDocuments.put(fileName, doc);
+						}
 					} catch (final Exception e) {
 						log.error("cannot parse file " + fileName, e);
 					}
@@ -195,6 +201,10 @@ public class HelpSearchManager implements HelpSearch {
 		} finally {
 			this.updateLock.release();
 		}
+	}
+
+	private static boolean containsContent(String content) {
+		return !REDIRECT_PATTERN.matcher(content).find();
 	}
 
 	/**

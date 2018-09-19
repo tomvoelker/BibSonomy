@@ -55,7 +55,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -333,6 +332,10 @@ public class ElasticsearchRESTClient implements ESClient {
 
 	@Override
 	public boolean deleteDocuments(String indexName, String type, Set<String> idsToDelete) {
+		if (!present(idsToDelete)) {
+			// nothing to delete
+			return true;
+		}
 		return this.secureCall(() -> {
 			final BulkRequest bulkRequest = new BulkRequest();
 
