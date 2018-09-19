@@ -75,6 +75,7 @@ import org.bibsonomy.search.es.search.util.tokenizer.SimpleTokenizer;
 import org.bibsonomy.services.searcher.PersonSearch;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.Sets;
+import org.elasticsearch.ElasticsearchStatusException;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -85,6 +86,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
+import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
@@ -122,6 +124,28 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 
 	private String genealogyUser;
 
+	@FunctionalInterface
+	private interface ElasticsearchSearchCall<T> {
+		T call();
+	}
+
+	private static <T> T callSearch(final ElasticsearchSearchCall<T> call, final T defaultValue) {
+		try {
+			return call.call();
+		} catch (final ElasticsearchStatusException e) {
+			if (!RestStatus.NOT_FOUND.equals(e.status())) {
+				log.error("unknown error while searching", e);
+			} else {
+				log.error("no index found: ", e);
+			}
+		} catch (final SearchPhaseExecutionException e) {
+			log.info("parsing query failed.", e);
+			throw new InvalidSearchRequestException();
+		}
+
+		return defaultValue;
+	}
+
 	
 	/**
 	 * get tag cloud for given search query for the Shared Resource System
@@ -149,11 +173,11 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		if (query == null) {
 			return new LinkedList<>();
 		}
-		
-		final Map<Tag, Integer> tagCounter = new HashMap<>();
 
-		try {
+		final Map<Tag, Integer> tagCounter = callSearch(() -> {
+			final Map<Tag, Integer> tagCounterMap = new HashMap<>();
 			final SearchHits hits = this.manager.search(query, null, offset, limit, null, Collections.singleton(Fields.TAGS));
+
 			log.debug("Current Search results for '" + searchTerms + "': " + hits.getTotalHits());
 			// TODO: check min TODODZO
 			for (int i = 0; i < Math.min(limit, hits.getTotalHits() - offset); ++i) {
@@ -170,23 +194,19 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 						if (present(tagIndex) && tagIndex.contains(tag.getName())) {
 							continue;
 						}
-						Integer oldCnt = tagCounter.get(tag);
+						Integer oldCnt = tagCounterMap.get(tag);
 						if (!present(oldCnt)) {
 							oldCnt = Integer.valueOf(1);
 						} else {
 							oldCnt++;
 						}
-						tagCounter.put(tag, oldCnt);
+						tagCounterMap.put(tag, oldCnt);
 					}
 				}
 			}
-		} catch (final IndexNotFoundException e) {
-			log.error("IndexMissingException: " + e);
-		} catch (final SearchPhaseExecutionException e) {
-			log.info("parsing search query failed", e);
-			throw new InvalidSearchRequestException();
-		}
-		
+			return tagCounterMap;
+		}, Collections.emptyMap());
+
 		final List<Tag> tags = new LinkedList<>();
 		// extract all tags
 		for (final Map.Entry<Tag, Integer> entry : tagCounter.entrySet()) {
@@ -224,23 +244,24 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 */
 	@Override
 	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final org.bibsonomy.common.enums.SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
-		final ResultList<Post<R>> postList = new ResultList<>();
-		try {
+
+		final ResultList<Post<R>> postList = callSearch(() -> {
+			final ResultList<Post<R>> posts = new ResultList<>();
 			final Set<String> allowedUsers = getUsersThatShareDocuments(userName);
 			final QueryBuilder queryBuilder = this.buildQuery(userName,
-					requestedUserName, requestedGroupName,
-					requestedRelationNames, allowedGroups, allowedUsers, searchTerms,
-					titleSearchTerms, authorSearchTerms, bibtexKey,
-					tagIndex, year, firstYear, lastYear, negatedTags);
+							requestedUserName, requestedGroupName,
+							requestedRelationNames, allowedGroups, allowedUsers, searchTerms,
+							titleSearchTerms, authorSearchTerms, bibtexKey,
+							tagIndex, year, firstYear, lastYear, negatedTags);
 			if (queryBuilder == null) {
-				return postList;
+				return posts;
 			}
 
 			final Pair<String, SortOrder> sortOrder = order == Order.RANK ? null : new Pair<>(Fields.DATE, SortOrder.DESC);
 			final SearchHits hits = this.manager.search(queryBuilder, sortOrder, offset, limit, null, null);
 
 			if (hits != null) {
-				postList.setTotalCount((int) hits.getTotalHits());
+				posts.setTotalCount((int) hits.getTotalHits());
 
 				for (final SearchHit hit : hits) {
 					final Post<R> post = this.resourceConverter.convert(hit.getSourceAsMap(), allowedUsers);
@@ -249,17 +270,12 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 					final long count = this.manager.getDocumentCount(QueryBuilders.termQuery(Fields.Resource.INTERHASH, resource.getInterHash()));
 
 					resource.setCount((int) count);
-					postList.add(post);
+					posts.add(post);
 				}
 			}
 
-			return postList;
-		} catch (final IndexNotFoundException e) {
-			log.error("no index found: " + e);
-		} catch (final SearchPhaseExecutionException e) {
-			log.info("parsing query failed.", e);
-			throw new InvalidSearchRequestException();
-		}
+			return posts;
+		}, new ResultList<>());
 		return postList;
 	}
 
