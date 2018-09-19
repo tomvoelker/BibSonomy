@@ -78,8 +78,6 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	
 	/** name of the default project theme */
 	private static final String DEFAULT_PROJECT_THEME = "default";
-	
-	private static final Pattern REDIRECT_PATTERN = Pattern.compile("<!--\\s*redirect\\s*:(.*)\\s*-->");
 
 	private Errors errors;
 
@@ -186,7 +184,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		try (final BufferedReader inputReader = new BufferedReader(new InputStreamReader(new FileInputStream(markdownFile), StringUtils.CHARSET_UTF_8))) {
 			final String text = StringUtils.getStringFromReader(inputReader);
 			
-			final Matcher matcher = REDIRECT_PATTERN.matcher(text);
+			final Matcher matcher = HelpSearch.REDIRECT_PATTERN.matcher(text);
 			if (matcher.find()) {
 				final String redirectPage = matcher.group(1).trim();
 				return new ExtendedRedirectView(this.urlGenerator.getHelpPage(redirectPage, requestLanguage), true);

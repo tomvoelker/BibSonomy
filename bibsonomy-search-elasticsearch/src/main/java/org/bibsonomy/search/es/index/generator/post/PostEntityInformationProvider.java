@@ -20,6 +20,49 @@ import java.util.Set;
  */
 public class PostEntityInformationProvider<R extends Resource> extends EntityInformationProvider<Post<R>> {
 
+	public static final Set<String> PRIVATE_FIELDS = Sets.asSet(
+					ESConstants.Fields.Publication.PRIVNOTE,
+					ESConstants.Fields.Publication.ALL_DOCS
+	);
+
+	// TODO: maybe we should separate bookmark and publication fields
+	public static final Set<String> PUBLIC_FIELDS = Sets.asSet(
+					ESConstants.Fields.Resource.TITLE,
+					ESConstants.Fields.Bookmark.URL,
+					ESConstants.Fields.Publication.ALL_AUTHORS,
+					ESConstants.Fields.Publication.MISC_FIELDS_VALUES,
+					ESConstants.Fields.Publication.SCHOOL,
+					ESConstants.Fields.Publication.YEAR,
+					ESConstants.Fields.Publication.BIBTEXKEY,
+					ESConstants.Fields.Publication.ADDRESS,
+					ESConstants.Fields.Publication.ENTRY_TYPE,
+					ESConstants.Fields.Publication.ANNOTE,
+					ESConstants.Fields.Publication.KEY,
+					ESConstants.Fields.Publication.ABSTRACT,
+					ESConstants.Fields.Publication.BOOKTITLE,
+					ESConstants.Fields.Publication.CHAPTER,
+					ESConstants.Fields.Publication.CROSSREF,
+					ESConstants.Fields.Publication.DAY,
+					ESConstants.Fields.Publication.EDITION,
+					ESConstants.Fields.Publication.HOWPUBLISHED,
+					ESConstants.Fields.Publication.INSTITUTION,
+					ESConstants.Fields.Publication.JOURNAL,
+					ESConstants.Fields.Publication.MONTH,
+					ESConstants.Fields.Publication.NOTE,
+					ESConstants.Fields.Publication.NUMBER,
+					ESConstants.Fields.Publication.ORGANIZATION,
+					ESConstants.Fields.Publication.PAGES,
+					ESConstants.Fields.Publication.PUBLISHER,
+					ESConstants.Fields.Publication.SERIES,
+					ESConstants.Fields.Publication.TYPE,
+					ESConstants.Fields.Publication.URL,
+					ESConstants.Fields.Publication.VOLUME
+	);
+
+	static {
+		PUBLIC_FIELDS.addAll(ESConstants.Fields.Publication.SPECIAL_MISC_FIELDS);
+	}
+
 	private Class<R> resourceType;
 
 	/**
@@ -49,52 +92,13 @@ public class PostEntityInformationProvider<R extends Resource> extends EntityInf
 		return ResourceFactory.getResourceName(this.resourceType);
 	}
 
-	// TODO: maybe we should separate bookmark and publication fields
 	@Override
 	public Set<String> getPublicFields() {
-		return Sets.asSet(
-						ESConstants.Fields.Resource.TITLE,
-						ESConstants.Fields.Bookmark.URL,
-						ESConstants.Fields.Publication.ALL_AUTHORS,
-						ESConstants.Fields.Publication.MISC_FIELDS_VALUES,
-						ESConstants.Fields.Publication.SCHOOL,
-						ESConstants.Fields.Publication.YEAR,
-						ESConstants.Fields.Publication.BIBTEXKEY,
-						ESConstants.Fields.Publication.ADDRESS,
-						ESConstants.Fields.Publication.ENTRY_TYPE,
-						ESConstants.Fields.Publication.ANNOTE,
-						ESConstants.Fields.Publication.KEY,
-						ESConstants.Fields.Publication.ABSTRACT,
-						ESConstants.Fields.Publication.BOOKTITLE,
-						ESConstants.Fields.Publication.CHAPTER,
-						ESConstants.Fields.Publication.CROSSREF,
-						ESConstants.Fields.Publication.DAY,
-						ESConstants.Fields.Publication.EDITION,
-						ESConstants.Fields.Publication.HOWPUBLISHED,
-						ESConstants.Fields.Publication.INSTITUTION,
-						ESConstants.Fields.Publication.JOURNAL,
-						ESConstants.Fields.Publication.MONTH,
-						ESConstants.Fields.Publication.NOTE,
-						ESConstants.Fields.Publication.NUMBER,
-						ESConstants.Fields.Publication.ORGANIZATION,
-						ESConstants.Fields.Publication.PAGES,
-						ESConstants.Fields.Publication.PUBLISHER,
-						ESConstants.Fields.Publication.SERIES,
-						ESConstants.Fields.Publication.TYPE,
-						ESConstants.Fields.Publication.URL,
-						ESConstants.Fields.Publication.VOLUME,
-						ESConstants.Fields.Publication.DOI,
-						ESConstants.Fields.Publication.ISSN,
-						ESConstants.Fields.Publication.ISBN,
-						ESConstants.Fields.Publication.LANGUAGE
-		);
+		return PUBLIC_FIELDS;
 	}
 
 	@Override
 	public Set<String> getPrivateFields() {
-		return Sets.asSet(
-						ESConstants.Fields.Publication.PRIVNOTE,
-						ESConstants.Fields.Publication.ALL_DOCS
-		);
+		return PRIVATE_FIELDS;
 	}
 }
