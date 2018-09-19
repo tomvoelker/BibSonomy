@@ -27,9 +27,9 @@
 package org.bibsonomy.scraper.converter;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,8 +57,11 @@ public class HTMLMetaDataDublinCoreToBibtexConverter extends AbstractDublinCoreT
 	@Override
 	protected Map<String, String> extractData(final String pageContent) {
 		final Matcher matcher = EXTRACTION_PATTERN.matcher(pageContent);
-
-		final Map<String, Set<String>> data = new HashMap<String, Set<String>>();
+		/*
+		 * the extracted values must be stored in a list; because for authors the order of the meta tags
+		 * matters
+		 */
+		final Map<String, List<String>> data = new HashMap<>();
 
 		String key = "";
 		String value = "";
@@ -120,8 +123,8 @@ public class HTMLMetaDataDublinCoreToBibtexConverter extends AbstractDublinCoreT
 	 * @param data is a Map<String, List<String>>
 	 * @return a Map<String, String>
 	 */
-	private static Map<String, String> convertMap(Map<String, Set<String>> data) {
-		Map<String, String> r = new HashMap<String, String>();
+	private static Map<String, String> convertMap(Map<String, List<String>> data) {
+		Map<String, String> r = new HashMap<>();
 		
 		for (String k : data.keySet()){
 			for (String v : data.get(k)){
@@ -139,11 +142,11 @@ public class HTMLMetaDataDublinCoreToBibtexConverter extends AbstractDublinCoreT
 	 * @param language
 	 * @param data
 	 */
-	protected static void addValueToDataIfNotContained(final String key, final String value, final String language, final Map<String, Set<String>> data) {
-		Set<String> valueInData = data.get(key);
+	protected static void addValueToDataIfNotContained(final String key, final String value, final String language, final Map<String, List<String>> data) {
+		List<String> valueInData = data.get(key);
 
 		if (valueInData == null) {
-			Set<String> s = new HashSet<String>();
+			List<String> s = new LinkedList<>();
 			s.add(value);
 			data.put(key, s);
 		} else if (!valueInData.contains(value)){
