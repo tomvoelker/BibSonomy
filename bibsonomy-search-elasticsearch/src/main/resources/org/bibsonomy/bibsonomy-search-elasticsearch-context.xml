@@ -30,7 +30,7 @@
 	</bean>
 
 	<bean id="systemURI" class="java.net.URI">
-		<constructor-arg value="${project.home}" />
+		<constructor-arg value="${search.es.systemId}" />
 	</bean>
 
 	<util:map id="elasticsearchManagers">
