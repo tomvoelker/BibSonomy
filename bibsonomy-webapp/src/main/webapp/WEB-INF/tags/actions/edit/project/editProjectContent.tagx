@@ -1,8 +1,9 @@
 <?xml version="1.0" ?>
 <jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:c="http://java.sun.com/jsp/jstl/core"
-          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-          xmlns:form="http://www.springframework.org/tags/form" xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+          xmlns:form="http://www.springframework.org/tags/form">
 
     <jsp:directive.attribute name="project" type="org.bibsonomy.model.cris.Project" required="true" />
 
@@ -15,7 +16,7 @@
             </legend>
         </div>
 
-        <form:form cssClass="form-horizontal" method="post" action="/editProject?ckey=${ckey}" enctype="multipart/form-data">
+        <form:form cssClass="form-horizontal" method="post" action="/editProject?ckey=${ckey}">
             <!-- edit externalId -->
             <bsform:input path="project.externalId" labelColSpan="3" inputColSpan="9" noHelp="true" readonly="${true}"/>
             <!-- edit title -->
@@ -36,7 +37,7 @@
                     <div class="input-group date" id="dp3" data-date="${empty startdate ? '1989-01-01' : startdate}" data-date-format="yyyy-mm-dd" data-date-viewmode="years">
                         <fmt:message key="project.startDate" var="startDatePlaceholder"/>
                         <input type="text" class="form-control" value="${startdate}" placeholder="${startDatePlaceholder}" name="project.startDate" />
-                        <span class="input-group-addon"><i class="fa fa-calendar"><!--  --></i></span>
+                        <span class="input-group-addon"><i class="fa fa-calendar"><!-- --></i></span>
                     </div>
                 </div>
             </div>
@@ -50,7 +51,7 @@
                     <div class="input-group date" id="dp3" data-date="${empty enddate ? '1989-01-01' : enddate}" data-date-format="yyyy-mm-dd" data-date-viewmode="years">
                     <fmt:message key="project.endDate" var="endDatePlaceholder" />
                         <input type="text" class="form-control" value="${enddate}" placeholder="${endDatePlaceholder}" name="project.endDate" />
-                        <span class="input-group-addon"><i class="fa fa-calendar"><!--  --></i></span>
+                        <span class="input-group-addon"><i class="fa fa-calendar"><!-- --></i></span>
                     </div>
                 </div>
             </div>
@@ -68,7 +69,11 @@
             <div class="col-sm-offset-3 ">
                 <div class="form-group">
                     <fmt:message var="saveButton" key="save" />
-                    <bsform:button type="submit" style="primary" size="defaultSize" value="${saveButton}" />
+                    <bsform:button type="submit" name="save" style="primary" size="defaultSize" value="${saveButton}" />
+                    <fmt:message var="deleteButton" key="project.delete" />
+                    <span style="float: right;">
+                        <bsform:button type="submit" name="delete" style="danger" size="defaultSize" value="${deleteButton}" />
+                    </span>
                 </div>
             </div>
         </form:form>

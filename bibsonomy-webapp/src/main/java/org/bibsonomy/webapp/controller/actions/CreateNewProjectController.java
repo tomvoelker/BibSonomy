@@ -38,6 +38,9 @@ public class CreateNewProjectController implements MinimalisticController<Create
 			return Views.NEW_PROJECT;
 		}
 		Project project = command.getProject();
+		if (project.getParentProject().getExternalId().equals("")) {
+			project.setParentProject(null);
+		}
 		JobResult result = this.logic.createProject(project);
 		if (!result.getStatus().getMessage().equals("OK")) {
 			for (ErrorMessage e : result.getErrors()) {
@@ -46,9 +49,9 @@ public class CreateNewProjectController implements MinimalisticController<Create
 				if (error.contains("date")) {
 					error = error.replace("date", "Date");
 				}
-				int lastIndex = errorMessage.lastIndexOf("\\.");
+				int lastIndex = errorMessage.lastIndexOf(".");
 				String prefix = errorMessage.substring(0, lastIndex);
-				this.errors.rejectValue("project." + error, prefix + error, e.getDefaultMessage());
+				this.errors.rejectValue("project." + error, prefix + "." + error, e.getDefaultMessage());
 				// this.errors.rejectValue("project." + ((MissingFieldErrorMessage)e).getMissing(), e.getErrorCode(), e.getDefaultMessage());
 			}
 		}

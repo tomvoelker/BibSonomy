@@ -10,6 +10,8 @@ public class EditProjectCommand extends BaseCommand {
 
 	private Project project;
 
+	private String action;
+
 	/**
 	 * @return the projectIdToUpdate
 	 */
@@ -39,7 +41,20 @@ public class EditProjectCommand extends BaseCommand {
 	}
 
 	/**
-	 *
+	 * @return
+	 */
+	public String getAction() {
+		return action;
+	}
+
+	/**
+	 * @param action
+	 */
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	/**
 	 * @return
 	 */
 	public String getUrl() {

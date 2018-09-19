@@ -13,6 +13,22 @@ public class ProjectPageCommand extends BaseCommand {
 
 	private Project project;
 
+	private String members;
+
+	/**
+	 * @return
+	 */
+	public String getMembers() {
+		return members;
+	}
+
+	/**
+	 * @param members
+	 */
+	public void setMembers(String members) {
+		this.members = members;
+	}
+
 	/**
 	 * @return the requestedProjectId
 	 */

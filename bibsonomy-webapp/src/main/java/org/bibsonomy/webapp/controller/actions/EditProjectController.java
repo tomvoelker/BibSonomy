@@ -2,7 +2,6 @@ package org.bibsonomy.webapp.controller.actions;
 
 import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.errors.ErrorMessage;
-import org.bibsonomy.common.errors.MissingFieldErrorMessage;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -12,6 +11,7 @@ import org.bibsonomy.webapp.util.*;
 import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -45,22 +45,34 @@ public class EditProjectController implements MinimalisticController<EditProject
 
 		command.setProjectIdToUpdate(command.getProject().getExternalId());
 
+		final String action = command.getAction();
+
 		JobResult result = this.updateProject(command.getProject());
 		if (!result.getStatus().getMessage().equals("OK")) {
 			for (ErrorMessage e : result.getErrors()) {
-				String errorMessage = e.getErrorCode();
-				String error = errorMessage.split("\\.")[errorMessage.split("\\.").length - 1];
-				if (error.contains("date")) {
-					error = error.replace("date", "Date");
-				}
-				int lastIndex = errorMessage.lastIndexOf("\\.");
-				String prefix = errorMessage.substring(0, lastIndex);
-				this.errors.rejectValue("project." + error, prefix + error, e.getDefaultMessage());
+				String error = e.getErrorCode().split("\\.")[e.getErrorCode().split("\\.").length - 1];
+				this.errors.rejectValue("project." + error, e.getErrorCode(), e.getDefaultMessage());
 			}
 		}
 		if (this.errors.hasErrors()) {
 			return Views.EDIT_PROJECT;
 		}
+		final ExtendedRedirectViewWithAttributes redirect = new ExtendedRedirectViewWithAttributes(this.urlGenerator.getProjectUrlByProject(command.getProject()));
+		redirect.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "project.edit.success");
+		return redirect;
+	}
+
+	@RequestMapping(params = "save")
+	public View save(final EditProjectCommand command) {
+		Project project = command.getProject();
+		final ExtendedRedirectViewWithAttributes redirect = new ExtendedRedirectViewWithAttributes(this.urlGenerator.getProjectUrlByProject(command.getProject()));
+		redirect.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "project.edit.success");
+		return redirect;
+	}
+
+	@RequestMapping(params = "delete")
+	public View delete(final EditProjectCommand command) {
+		Project project = command.getProject();
 		final ExtendedRedirectViewWithAttributes redirect = new ExtendedRedirectViewWithAttributes(this.urlGenerator.getProjectUrlByProject(command.getProject()));
 		redirect.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "project.edit.success");
 		return redirect;
