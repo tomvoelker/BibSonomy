@@ -476,6 +476,19 @@
                         </property>
                     </bean>
                 </entry>
+                <entry key="/deleteProject">
+                    <bean parent="controllerBase">
+                        <property name="controllerBeanName" value="deleteProjectController"/>
+                        <property name="allowedFields">
+                            <list>
+                                <value>projectIdToDelete</value>
+                                <value>ckey</value>
+                                <value>project.externalId</value>
+                                <value>project.title</value>
+                            </list>
+                        </property>
+                    </bean>
+                </entry>
                 <entry key="/newProject">
                     <bean parent="controllerBase">
                         <property name="controllerBeanName" value="createNewProjectController"/>
@@ -908,6 +921,11 @@
 	</bean>
 
     <bean id="editProjectController" class="org.bibsonomy.webapp.controller.actions.EditProjectController" scope="request">
+        <property name="logic" ref="logic" />
+        <property name="urlGenerator" ref="absoluteUrlGenerator"/>
+    </bean>
+
+    <bean id="deleteProjectController" class="org.bibsonomy.webapp.controller.actions.DeleteProjectController" scope="request">
         <property name="logic" ref="logic" />
         <property name="urlGenerator" ref="absoluteUrlGenerator"/>
     </bean>

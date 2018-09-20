@@ -28,34 +28,9 @@
             <!-- todo edit involved persons
             <bsform:input path="project.crisLinks" labelColSpan="3" inputColSpan="9" noHelp="true" /> -->
             <!-- edit start date -->
-            <div class="form-group">
-                <label class="col-sm-3 control-label">
-                    <fmt:message key="project.startDate" />
-                </label>
-                <div class="col-sm-9">
-                    <fmt:formatDate value="${project.startDate}" pattern="yyyy-MM-dd" var="startdate" />
-                    <div class="input-group date" id="dp3" data-date="${empty startdate ? '1989-01-01' : startdate}" data-date-format="yyyy-mm-dd" data-date-viewmode="years">
-                        <fmt:message key="project.startDate" var="startDatePlaceholder"/>
-                        <input type="text" class="form-control" value="${startdate}" placeholder="${startDatePlaceholder}" name="project.startDate" />
-                        <span class="input-group-addon"><i class="fa fa-calendar"><!-- --></i></span>
-                    </div>
-                </div>
-            </div>
+            <bsform:dateInput path="project.startDate" value="${project.startDate}" labelColSpan="3" inputColSpan="9" noHelp="true" />
             <!-- edit end date -->
-            <div class="form-group">
-                <label class="col-sm-3 control-label">
-                    <fmt:message key="project.endDate" />
-                </label>
-                <div class="col-sm-9">
-                    <fmt:formatDate value="${project.endDate}" pattern="yyyy-MM-dd" var="enddate"/>
-                    <div class="input-group date" id="dp3" data-date="${empty enddate ? '1989-01-01' : enddate}" data-date-format="yyyy-mm-dd" data-date-viewmode="years">
-                    <fmt:message key="project.endDate" var="endDatePlaceholder" />
-                        <input type="text" class="form-control" value="${enddate}" placeholder="${endDatePlaceholder}" name="project.endDate" />
-                        <span class="input-group-addon"><i class="fa fa-calendar"><!-- --></i></span>
-                    </div>
-                </div>
-            </div>
-
+            <bsform:dateInput value="${project.endDate}" path="project.endDate" labelColSpan="3" inputColSpan="9" noHelp="true" />
             <!-- edit type/founding -->
             <bsform:input path="project.type" labelColSpan="3" inputColSpan="9" noHelp="true" />
             <!-- edit budget-->
@@ -70,10 +45,6 @@
                 <div class="form-group">
                     <fmt:message var="saveButton" key="save" />
                     <bsform:button type="submit" name="save" style="primary" size="defaultSize" value="${saveButton}" />
-                    <fmt:message var="deleteButton" key="project.delete" />
-                    <span style="float: right;">
-                        <bsform:button type="submit" name="delete" style="danger" size="defaultSize" value="${deleteButton}" />
-                    </span>
                 </div>
             </div>
         </form:form>

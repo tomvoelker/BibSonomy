@@ -738,6 +738,12 @@ public class URLGenerator {
 		return this.getUrl(url);
 	}
 
+	public String getProjectDeleteUrl(final String projectId) {
+		final String url = this.projectHome + "/deleteProject?projectIdToDelete=" + UrlUtils.encodePathSegment(projectId);
+
+		return this.getUrl(url);
+	}
+
 	/**
 	 * Constructs the URL for the login page
 	 * 

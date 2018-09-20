@@ -10,7 +10,9 @@ public class EditProjectCommand extends BaseCommand {
 
 	private Project project;
 
-	private String action;
+	private String save;
+
+	private String delete;
 
 	/**
 	 * @return the projectIdToUpdate
@@ -43,15 +45,29 @@ public class EditProjectCommand extends BaseCommand {
 	/**
 	 * @return
 	 */
-	public String getAction() {
-		return action;
+	public String getSave() {
+		return save;
 	}
 
 	/**
-	 * @param action
+	 * @param save
 	 */
-	public void setAction(String action) {
-		this.action = action;
+	public void setSave(String save) {
+		this.save = save;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getDelete() {
+		return delete;
+	}
+
+	/**
+	 * @param delete
+	 */
+	public void setDelete(String delete) {
+		this.delete = delete;
 	}
 
 	/**

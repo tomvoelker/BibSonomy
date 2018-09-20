@@ -11,8 +11,6 @@ import org.bibsonomy.webapp.util.*;
 import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -45,8 +43,6 @@ public class EditProjectController implements MinimalisticController<EditProject
 
 		command.setProjectIdToUpdate(command.getProject().getExternalId());
 
-		final String action = command.getAction();
-
 		JobResult result = this.updateProject(command.getProject());
 		if (!result.getStatus().getMessage().equals("OK")) {
 			for (ErrorMessage e : result.getErrors()) {
@@ -57,22 +53,6 @@ public class EditProjectController implements MinimalisticController<EditProject
 		if (this.errors.hasErrors()) {
 			return Views.EDIT_PROJECT;
 		}
-		final ExtendedRedirectViewWithAttributes redirect = new ExtendedRedirectViewWithAttributes(this.urlGenerator.getProjectUrlByProject(command.getProject()));
-		redirect.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "project.edit.success");
-		return redirect;
-	}
-
-	@RequestMapping(params = "save")
-	public View save(final EditProjectCommand command) {
-		Project project = command.getProject();
-		final ExtendedRedirectViewWithAttributes redirect = new ExtendedRedirectViewWithAttributes(this.urlGenerator.getProjectUrlByProject(command.getProject()));
-		redirect.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "project.edit.success");
-		return redirect;
-	}
-
-	@RequestMapping(params = "delete")
-	public View delete(final EditProjectCommand command) {
-		Project project = command.getProject();
 		final ExtendedRedirectViewWithAttributes redirect = new ExtendedRedirectViewWithAttributes(this.urlGenerator.getProjectUrlByProject(command.getProject()));
 		redirect.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "project.edit.success");
 		return redirect;

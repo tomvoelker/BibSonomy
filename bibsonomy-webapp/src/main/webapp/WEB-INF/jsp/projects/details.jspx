@@ -29,12 +29,14 @@
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<nav:projectcrumb project="${project}" active="${true}"/>
-                    <span style="float: right;">
-                        <div class="edit-media-buttons btn-group btn-group-xs dropdown dropdown-align-right">
-                            <!-- fixme who is allowed to edit and delete?! and how to check that -->
-                            <buttons:editProjectButton project="${project}" buttonClasses="btn btn-default btn-xs"/>
-                        </div>
-                    </span>
+                    <c:if test="${command.context.loginUser.role eq 'ADMIN'}" >
+                        <span style="float: right;">
+                            <div class="edit-media-buttons btn-group btn-group-xs dropdown dropdown-align-right">
+                                <buttons:editProjectButton project="${project}" buttonClasses="btn btn-default btn-xs"/>
+                                <buttons:deleteProjectButton project="${project}" buttonClasses="btn btn-default btn-xs"/>
+                            </div>
+                        </span>
+                    </c:if>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
@@ -62,7 +64,7 @@
                                 <fmt:message key="project.noMembers" />
                             </c:otherwise>
                         </c:choose>
-                        <span style="float: right" >
+                        <span style="float: right;">
                             <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#addMember">
                                 <span class="fa fa-plus" />
                             </button>
@@ -133,6 +135,8 @@
 					</dl>
 				</div>
 			</div>
+            <!-- add delete modal -->
+            <project:deleteModal project="${project}" />
             <!-- add member modal -->
             <project:memberModal project="${project}" />
 		</jsp:attribute>
