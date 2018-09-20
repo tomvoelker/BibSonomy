@@ -353,7 +353,15 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 					resourceToCopy = publication;
 				}
 
+				/*
+				 * create a new post and setup it with user and date information
+				 */
 				final Post<GoldStandardPublication> communityPost = new Post<>();
+				final Date postingDate = new Date();
+				communityPost.setDate(postingDate);
+				communityPost.setChangeDate(postingDate);
+				communityPost.setUser(loggedinUser);
+
 				final GoldStandardPublication goldPublication = new GoldStandardPublication();
 				ObjectUtils.copyPropertyValues(resourceToCopy, goldPublication);
 				communityPost.setResource(goldPublication);
