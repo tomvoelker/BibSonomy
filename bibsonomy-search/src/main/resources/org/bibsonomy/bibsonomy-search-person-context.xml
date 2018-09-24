@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/util
+						http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<bean id="personSearchSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource" ref="searchDataSource" />
+		<property name="configLocation" value="classpath:generation/IndexGenerationSQLMapConig.xml" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+
+	<bean id="personSearchSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="personSearchSqlMapClient"/>
+	</bean>
+
+	<bean id="personGenerationDBLogic" class="org.bibsonomy.search.index.generator.person.PersonIndexGenerationLogic">
+		<property name="sessionFactory" ref="personSearchSessionFactory"/>
+	</bean>
+</beans>

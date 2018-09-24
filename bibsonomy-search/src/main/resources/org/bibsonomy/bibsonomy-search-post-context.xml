@@ -6,9 +6,6 @@
 						http://www.springframework.org/schema/beans/spring-beans.xsd
 						http://www.springframework.org/schema/util
 						http://www.springframework.org/schema/util/spring-util.xsd">
-	<bean id="searchSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
-		<property name="client" ref="searchSqlMapClient"/>
-	</bean>
 
 	<bean id="personSearchDatabaseManager" class="org.bibsonomy.search.management.database.manager.PersonSearchDatabaseManager" />
 

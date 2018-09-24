@@ -28,7 +28,9 @@ package org.bibsonomy.testutil;
 
 import java.util.List;
 
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.services.searcher.PersonSearch;
 
@@ -44,6 +46,11 @@ public class DummyPersonSearch implements PersonSearch {
 	 */
 	@Override
 	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options) {
+		return null;
+	}
+
+	@Override
+	public List<Person> getPersonSuggestions(PersonSuggestionQuery query) {
 		return null;
 	}
 

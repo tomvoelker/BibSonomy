@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/util
+						http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<bean id="newPersonSearch" class="org.bibsonomy.search.es.search.person.ElasticsearchPersonSearch">
+
+	</bean>
+
+	<bean id="elasticsearchPersonEntityInformationProvider" class="org.bibsonomy.search.es.index.generator.person.PersonEntityInformationProvider" />
+
+	<bean id="elasticsearchPersonManager" class="org.bibsonomy.search.es.management.person.ElasticsearchPersonManager" parent="elasticsearchAbstractIndexManager">
+		<constructor-arg>
+			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator">
+				<constructor-arg ref="systemURI" />
+				<constructor-arg ref="esClient" />
+				<constructor-arg ref="personGenerationDBLogic" />
+				<constructor-arg ref="elasticsearchPersonEntityInformationProvider" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg ref="elasticsearchPersonEntityInformationProvider" />
+	</bean>
+
+</beans>

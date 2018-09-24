@@ -1,19 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
-<sqlMap namespace="SearchGoldStandardBookmarkCommon">
-	<resultMap id="goldStandardBookmark" class="goldStandardBookmark" extends="BookmarkCommon.bookmark">
-		<!-- to get a GoldStandardBookmark object instead of a normal bookmark -->
+<sqlMap namespace="PersonGeneration">
+
+	<resultMap id="person" class="person" groupBy="personChangeId">
+		<result property="personChangeId"	column="person_change_id"	javaType="int" />
+		<result property="personId"			column="person_id" 			javaType="string" />
+		<result property="academicDegree"	column="academic_degree"	javaType="string" />
+		<result property="orcid"			column="orcid"				javaType="string" />
+		<result property="college"			column="college"			javaType="string" />
+		<result property="user"				column="user_name"			javaType="string"/>
+		<result property="email"			column="email"				javaType="string"/>
+		<result property="homepage"			column="homepage"			javaType="url"/>
+		<result property="names"			resultMap="PersonGeneration.personName"/>
+	</resultMap>
+	
+	<resultMap id="personName" class="personName" groupBy="personNameChangeId">
+		<result property="personNameChangeId" column="person_name_change_id" javaType="int" />
+		<result property="firstName"		column="first_name"			javaType="string" />
+		<result property="lastName"			column="last_name"			javaType="string" />
+		<result property="isMain"			column="is_main"			javaType="boolean" />
 	</resultMap>
 
-	<resultMap id="searchGoldStandardBookmarkPost" class="searchPost" extends="GoldStandardPublicationCommon.posts">
-		<result property="groups"      resultMap="Common.group" />
-		<result property="resource"    resultMap="SearchGoldStandardBookmarkCommon.goldStandardBookmark" />
-		<!-- this is intended misuse - it would be better to call lastTasId lastResoucePostId or so -->
-		<result property="lastTasId"   column="content_id" />
-	</resultMap>
+	<select id="getPersons" resultMap="person">
+		SELECT pp.*, pn.person_change_id AS person_name_change_id, pn.first_name, pn.last_name, pn.is_main
+		FROM
+			(
+				SELECT * FROM person p
+					WHERE p.person_change_id > #lastContentId#
+				ORDER BY p.person_change_id ASC
+				LIMIT #limit#
+			) AS pp
+		JOIN person_name pn USING(person_id)
+	</select>
 
-	<sql id="allGoldStandardBookmarkAttributesNoChangeDate">
-		b.content_id, b.title, b.url AS book_url, b.content_type, b.approved, b.simhash1 AS interHash, b.simhash2 AS intraHash, b.user_name, b.description, b.date
-	</sql>
+	<select id="getPersonsCount" resultClass="int">
+		SELECT count(*) FROM person p
+	</select>
+
+	<select id="getLastPersonChangeId" resultClass="int">
+		SELECT value FROM ids where name = 17
+	</select>
 </sqlMap>

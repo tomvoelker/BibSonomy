@@ -294,7 +294,7 @@ INSERT INTO `ids` VALUES
 (14, 3,  'message_id'),
 (15, 4, 'comment_id'),
 (16, 12, 'sync_service_id'),
-(17, 7, 'person_change_id');
+(17, 23, 'person_change_id');
 
 
 --

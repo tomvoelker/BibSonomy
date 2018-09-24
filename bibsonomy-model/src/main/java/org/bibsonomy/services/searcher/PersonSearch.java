@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 
 /**
@@ -44,6 +45,10 @@ public interface PersonSearch {
 	 * @param options contains a query with some mixture of parts of a name, parts of the title or the university name
 	 * @return a list of {@link ResourcePersonRelation} objects with initialized {@link Person} references. Each {@link Person} object is further initialized with a main name.
 	 */
-	public  List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options);
-	
+	@Deprecated
+	default List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options) {
+		throw new UnsupportedOperationException();
+	}
+
+	List<Person> getPersonSuggestions(final PersonSuggestionQuery query);
 }

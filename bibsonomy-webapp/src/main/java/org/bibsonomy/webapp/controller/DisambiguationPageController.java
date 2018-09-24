@@ -135,7 +135,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 		final String name = QueryParser.escape(BibTexUtils.cleanBibTex(requestedName.toString()));
 		
 		PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
-		List<ResourcePersonRelation> suggestedPersons = query.doIt();		
+		List<ResourcePersonRelation> suggestedPersons = query.doIt();
 			
 		/*
 		 * FIXME: use author-parameter in getPosts method
@@ -146,7 +146,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 		final List<Post<BibTex>> pubAuthorSearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, name, SearchType.LOCAL, null , Order.ALPH, null, null, 0, 50);
 
 		List<Post<BibTex>> pubsWithSameAuthorName = new ArrayList<>(pubAuthorSearch);
-		for (final Post<BibTex> post : pubAuthorSearch) {			
+		for (final Post<BibTex> post : pubAuthorSearch) {
 			try {
 				// remove post from search if the author has not exactly the same sur- and last-name
 				if (!post.getResource().getAuthor().contains(requestedName)) {
@@ -206,7 +206,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 			}
 		}
 		
-		command.setSuggestedPersonPosts(suggestedPersonPosts);		
+		command.setSuggestedPersonPosts(suggestedPersonPosts);
 		command.setSuggestedPosts(noPersonRelPubList);
 		
 		return Views.DISAMBIGUATION;

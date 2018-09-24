@@ -60,6 +60,7 @@ import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
 import org.bibsonomy.model.logic.querybuilder.AbstractSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
@@ -363,7 +364,12 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		}
 		return new ArrayList<>();
 	}
-	
+
+	@Override
+	public List<Person> getPersonSuggestions(PersonSuggestionQuery query) {
+		throw new UnsupportedOperationException();
+	}
+
 	// TODO: the outcomment calls would be nice but would slow down the query
 	private static QueryBuilder buildQuery(AbstractSuggestionQueryBuilder<?> options) {
 		final QueryBuilder queryBuilder = filterQuery( //
@@ -926,13 +932,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 */
 	public void setResourceConverter(final ResourceConverter<R> resourceConverter) {
 		this.resourceConverter = resourceConverter;
-	}
-
-	/**
-	 * @param dbLogic the dbLogic to set
-	 */
-	public void setDbLogic(SearchInfoLogic dbLogic) {
-		this.infoLogic = dbLogic;
 	}
 
 	/**
