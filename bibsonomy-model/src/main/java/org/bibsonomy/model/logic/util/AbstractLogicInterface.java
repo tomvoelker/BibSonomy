@@ -75,6 +75,7 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
@@ -165,6 +166,12 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public PersonSuggestionQueryBuilder getPersonSuggestion(String queryString) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	@Override
+	public List<Person> getPersons(PersonSuggestionQuery query) {
 		this.doDefaultAction();
 		return null;
 	}
@@ -960,7 +967,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	@Override
 	public void denieMerge(PersonMatch match) {
 		this.doDefaultAction();
-		
 	}
 	
 	@Override

@@ -5,6 +5,8 @@ import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.search.SearchHits;
 
 import java.net.URI;
 
@@ -32,5 +34,16 @@ public class ElasticsearchPersonManager extends ElasticsearchManager<Person> {
 	@Override
 	protected void updateIndex(String indexName) {
 
+	}
+
+	/**
+	 * executes the query on the activve index
+	 * @param query
+	 * @param limit
+	 * @param offset
+	 * @return
+	 */
+	public SearchHits search(final QueryBuilder query, int limit, int offset) {
+		return this.client.search(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query, null, null, offset, limit, null, null);
 	}
 }

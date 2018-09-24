@@ -17,7 +17,7 @@
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
 	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
-	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
@@ -114,10 +114,24 @@
 			 	<h2><fmt:message key="disambiguation.pleaseChooseMsg" /></h2>
 				<p><fmt:message key="disambiguation.listExplanation"/></p>
 				<c:choose>
-					<c:when test="${fn:length(command.suggestedPersonPosts) gt 0}">
+					<c:when test="${not empty command.personSuggestions}">
 						<div class="list-group">
-							<c:forEach var='rel' items="${command.suggestedPersonPosts}">								
+							<c:forEach var="person" items="${command.personSuggestions}">
+								<!-- if for the person relation expand view -->
+								<c:set var="collapseID" value="${collapseID + 1}"/>
+								<!-- > 0 because the topPublication is also in this list ${fn:length(person.relations) gt 1}-->
+								<c:set var="personHasRelations" value="${true}" />
 								<div class="list-group-item">
+									<div class="btn-group btn-group-xs pull-right">
+										<a href="${relativeUrlGenerator.getPersonUrl(person.personId)}" class="btn btn-default"><fontawesome:icon icon="eye" /></a>
+										<c:if test="${true}">
+											<!-- TODO: change test -->
+											<!-- show relations expand button -->
+											<a class="btn btn-default" aria-expanded="false" data-toggle="collapse" href="#collapse_${collapseID}">
+												<fontawesome:icon icon="expand" />
+											</a>
+										</c:if>
+									</div>
 									<c:choose>
 										<c:when test="${not empty command.context.loginUser.name}">
 											<c:set var="dataToggle" value="modal"/>
@@ -126,34 +140,42 @@
 										</c:when>
 										<c:otherwise>
 											<c:set var="dataToggle" value=""/>
-											<c:set var="href" value="${absoluteUrlGenerator.getPersonUrl(rel.key.person.personId)}"/>
+											<c:set var="href" value="${absoluteUrlGenerator.getPersonUrl(personSuggestionsEntry.key.personId)}"/>
 											<c:set var="dataTarget" value=""/>
 										</c:otherwise>
 									</c:choose>
-									
-									<!-- button link to assign the derived post to an existing person -->
-									<a class='btnLinkPerson' data-toggle="${dataToggle}" data-target="${dataTarget}" href="${href}" data-person-url="${absoluteUrlGenerator.getPersonUrl(rel.key.person.personId)}" data-person-id="${fn:escapeXml(rel.key.person.personId)}" >
-										${command.personRoleRenderer.getExtendedPersonName(rel.key, request.locale, true)}
+									<a class='btnLinkPerson' data-toggle="${dataToggle}" data-target="${dataTarget}" href="${href}" data-person-url="${absoluteUrlGenerator.getPersonUrl(person.personId)}" data-person-id="${fn:escapeXml(person.personId)}" >
+
+										<h4 class="list-group-item-heading">
+
+
+											<per:simplePerson person="${person}" />
+										</h4>
+										<!-- person information -->
+										<spring:eval var="topPublication" expression="T(org.bibsonomy.model.util.PersonUtils).findTopRelation(null)" />
+										<c:if test="${not empty topPublication}">
+											TODO
+										</c:if>
 									</a>
-									<!-- show some publications of the person if there are any to show -->
-									<c:set var="collapseID" value="${collapseID + 1}"/>
-									<c:if test="${fn:length(rel.value) gt 0}">											
-										<a class="btn btn-default btn-xs" style="float: right;" aria-expanded="false" data-toggle="collapse" href="#collapse_${collapseID}">
-         										<span class="fa fa-expand"></span>
-       									</a>        									
-       									<div id="collapse_${collapseID}" class="collapse collapsingOverflow simplePub">													
-											<c:forEach var="posts" items="${rel.value}">
-												<per:simplePub post="${posts}" />
-											</c:forEach>
+									<c:if test="${personHasRelations}">
+										<div id="collapse_${collapseID}" class="collapse collapsingOverflow simplePub">
+											TODO
+											<!--<c:forEach var="posts" items="${rel.value}">-->
+											<!--	<per:simplePub post="${posts}" />-->
+											<!--</c:forEach>-->
 										</div>
 									</c:if>
 								</div>
 							</c:forEach>
 							<!-- if user is logged in, enable to create a new person for the derived post -->
 							<c:if test="${not empty command.context.loginUser.name}">
-								<div class="list-group-item">
-									<a class='btnLinkPerson' data-toggle="modal" data-target="#otherPerson" href="#otherPerson"><span class="authorName">${textOtherPerson}</span></a>
-								</div>
+								<h4 class="list-group-item-heading">
+									<div class="list-group-item">
+										<a class='btnLinkPerson' data-toggle="modal" data-target="#otherPerson" href="#otherPerson">
+											<span class="authorName">${textOtherPerson}</span>
+										</a>
+									</div>
+								</h4>
 							</c:if>
 						</div>
 					</c:when>
@@ -179,13 +201,15 @@
 					</c:otherwise>
 				</c:choose>
 					
-				<!-- show more publications of authors with the same name if there are any -->			
+				<!-- show more publications of authors with the same name if there are any -->
 				<div class="clearfix">&#160;</div>
 				<h2><fmt:message key="disambiguation.otherPub" /></h2>
 				<div id="otherAuthorPublications" class="simplePub">
+					FIXME
+					<!--
 					<c:forEach var="post" items="${command.suggestedPosts}">
 						<per:simplePub post="${post}" />
-					</c:forEach>					
+					</c:forEach>-->
 				</div>
 			</div>
 		</jsp:attribute>
@@ -211,7 +235,7 @@
 			</ul>
 			
 			<div id="otherPersonTabs" class="tab-content">
-				<div class="tab-pane active" id="newPerson">					
+				<div class="tab-pane active" id="newPerson">
 					<form:form action="${absoluteUrlGenerator.getDisambiguationUrl(command.requestedHash, command.requestedRole, command.requestedIndex)}" id="form_newPerson" method="POST" cssClass="form-horizontal">
 						<fieldset>
 							<input type="hidden" name="requestedAction"   value="newPerson" />
@@ -273,7 +297,7 @@
 						<input type="hidden" name="requestedPersonId" value="" id="fieldLinkPersonId" />
 						
 						<fmt:message var="textLinkPersonButton" key="disambiguation.link.modal.saveButton"/>
-						<bsform:button type="submit" style="success" className="pull-right "  value="${textLinkPersonButton}" size="defaultSize" />
+						<bsform:button type="submit" style="success" className="pull-right"  value="${textLinkPersonButton}" size="defaultSize" />
 					</form:form>
 					
 					<a href='#tmp' id='linkShowPerson' type="button" class="btn btn-default pull-right" style="margin-right: 1em;"><fmt:message key="disambiguation.link.modal.viewButton"/></a>

@@ -15,7 +15,9 @@ public class AbstractPersonSearchTest extends AbstractDatabaseManagerTest {
 	private static final ElasticsearchPersonManager PERSON_SEARCH_MANAGER = EsSpringContextWrapper.getContext().getBean(ElasticsearchPersonManager.class);
 
 	@Before
-	public void createIndices() {
+	public void createIndices() throws InterruptedException {
 		PERSON_SEARCH_MANAGER.regenerateAllIndices();
+		// wait for the docs to be indexed by elasticsearch
+		Thread.sleep(2000);
 	}
 }

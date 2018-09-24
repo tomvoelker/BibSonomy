@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	$(".btnLinkPerson").on("click", function() {
-		var e = $(this);
-		$("#linkShowPerson").attr('href', e.attr("data-person-url"));
-		$("#fieldLinkPersonId").val( e.attr("data-person-id"));
+		var link = $(this);
+		$("#linkShowPerson").attr('href', link.attr("data-person-url"));
+		$("#fieldLinkPersonId").val(link.attr("data-person-id"));
 	});
 });

@@ -35,6 +35,7 @@ import java.util.Map.Entry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.factories.ResourceFactory;
@@ -59,7 +60,7 @@ import org.springframework.security.access.AccessDeniedException;
  */
 public class AdminFullTextSearchController implements MinimalisticController<AdminFullTextSearchCommand> {
 	private static final Log log = LogFactory.getLog(AdminFullTextSearchController.class);
-	
+
 	private Map<Class<?>, SearchIndexManager> managers;
 	
 	@Override
@@ -79,10 +80,10 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 		
 		final AdminFullTextAction action = command.getAction();
 		if (present(action)) {
-			final Class<? extends Resource> resource = command.getResource();
-			final SearchIndexManager mananger = this.managers.get(resource);
+			final Class<?> entityClass = getEntityClass(command.getEntity());
+			final SearchIndexManager mananger = this.managers.get(entityClass);
 			if (mananger == null) {
-				throw new IllegalArgumentException("cannot find manager for resource " + resource);
+				throw new IllegalArgumentException("cannot find manager for resource " + entityClass);
 			}
 			final String indexId = command.getId();
 			switch (action) {
@@ -120,6 +121,14 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 		}
 		
 		return Views.ADMIN_FULL_TEXT_SEARCH;
+	}
+
+	private static Class<?> getEntityClass(final String entity) {
+		if ("person".equalsIgnoreCase(entity)) {
+			return Person.class;
+		}
+
+		return ResourceFactory.getResourceClass(entity);
 	}
 
 	@Override

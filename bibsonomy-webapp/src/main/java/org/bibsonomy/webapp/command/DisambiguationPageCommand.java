@@ -28,6 +28,8 @@ package org.bibsonomy.webapp.command;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
@@ -54,9 +56,7 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	private Person person;
 	private PersonName personName;
 	private Post<BibTex> post;
-	private List<ResourcePersonRelation> personSuggestions;
-	private HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts;
-	private List<Post<BibTex>> suggestedPosts;
+	private List<Person> personSuggestions;
 
 	/**
 	 * @return the requestedHash
@@ -165,16 +165,19 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @param personSuggestions
+	 * @return the personSuggestions
 	 */
-	public void setPersonSuggestions(List<ResourcePersonRelation> personSuggestions) {
+	public List<Person> getPersonSuggestions() {
+		return personSuggestions;
+	}
+
+	/**
+	 * @param personSuggestions the personSuggestions to set
+	 */
+	public void setPersonSuggestions(List<Person> personSuggestions) {
 		this.personSuggestions = personSuggestions;
 	}
 
-	public List<ResourcePersonRelation> getPersonSuggestions() {
-		return this.personSuggestions;
-	}
-	
 	@Deprecated
 	public PersonRoleRenderer getPersonRoleRenderer() {
 		return this.personRoleRenderer;
@@ -185,31 +188,4 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 		this.personRoleRenderer = personRoleRenderer;
 	}
 
-	/**
-	 * @return the suggestedPersonPosts
-	 */
-	public HashMap<ResourcePersonRelation, List<Post<?>>> getSuggestedPersonPosts() {
-		return this.suggestedPersonPosts;
-	}
-
-	/**
-	 * @param suggestedPersonPosts the suggestedPersonPosts to set
-	 */
-	public void setSuggestedPersonPosts(HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts) {
-		this.suggestedPersonPosts = suggestedPersonPosts;
-	}
-
-	/**
-	 * @return the suggestedPosts
-	 */
-	public List<Post<BibTex>> getSuggestedPosts() {
-		return this.suggestedPosts;
-	}
-
-	/**
-	 * @param otherAdvisorPosts the suggestedPosts to set
-	 */
-	public void setSuggestedPosts(List<Post<BibTex>> otherAdvisorPosts) {
-		this.suggestedPosts = otherAdvisorPosts;
-	}
 }

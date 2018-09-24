@@ -30,6 +30,7 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.model.enums.Gender;
@@ -69,22 +70,20 @@ public class Person implements Serializable {
 	private String dnbPersonId;
 	/** the gender */
 	private Gender gender;
-	
-	
-	
+	/** the college of the person */
 	private String college;
+	/** the email of the person */
 	private String email;
-	// FIXME use URL instead of string
-	//private String homepage;
-	
+	/** the homepage of the person */
 	private URL homepage;
-	
+
+	private List<ResourcePersonRelation> resourceRelations = new LinkedList<>();
 	
 	/**
-	 * 
+	 * default constructor
 	 */
 	public Person() {
-		this.names = new ArrayList<PersonName>();
+		this.names = new ArrayList<>();
 	}
 	
 	/**
@@ -120,8 +119,8 @@ public class Person implements Serializable {
 	 * @param int usually current real name
 	 */
 	public void setMainName(int id) {
-		for(PersonName name : this.names) {
-			if(name.getPersonNameChangeId() == id) {
+		for (PersonName name : this.names) {
+			if (name.getPersonNameChangeId() == id) {
 				name.setMain(true);
 				this.mainName = name;
 			} else {
@@ -347,6 +346,20 @@ public class Person implements Serializable {
 	 */
 	public void setHomepage(URL homepage) {
 		this.homepage = homepage;
+	}
+
+	/**
+	 * @return the resourceRelations
+	 */
+	public List<ResourcePersonRelation> getResourceRelations() {
+		return resourceRelations;
+	}
+
+	/**
+	 * @param resourceRelations the resourceRelations to set
+	 */
+	public void setResourceRelations(List<ResourcePersonRelation> resourceRelations) {
+		this.resourceRelations = resourceRelations;
 	}
 
 	/**

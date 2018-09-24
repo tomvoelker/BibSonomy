@@ -144,6 +144,7 @@ import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
@@ -3370,6 +3371,11 @@ public class DBLogic implements LogicInterface {
 				return DBLogic.this.personDBManager.getPersonSuggestion(this);
 			}
 		};
+	}
+
+	@Override
+	public List<Person> getPersons(PersonSuggestionQuery query) {
+		return this.personDBManager.getPersons(query);
 	}
 
 	@Override

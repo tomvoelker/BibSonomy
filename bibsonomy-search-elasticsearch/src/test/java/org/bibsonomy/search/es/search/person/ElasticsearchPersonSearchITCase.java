@@ -1,5 +1,6 @@
 package org.bibsonomy.search.es.search.person;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 
@@ -21,8 +22,15 @@ public class ElasticsearchPersonSearchITCase extends AbstractPersonSearchTest {
 
 	@Test
 	public void testGetPersonSuggestions() {
-		final List<Person> personSuggestions = PERSON_SEARCH.getPersonSuggestions(new PersonSuggestionQuery("Schorsche, Henner"));
+		final List<Person> personSuggestions = PERSON_SEARCH.getPersonSuggestions(new PersonSuggestionQuery("Schorsche"));
 
-		assertThat(personSuggestions.size(), is(3));
+		assertThat(personSuggestions.size(), is(1));
+
+		final Person person = personSuggestions.get(0);
+		assertThat(person.getPersonId(), equalTo("h.muller"));
+
+
+		final List<Person> lowerCaseResult = PERSON_SEARCH.getPersonSuggestions(new PersonSuggestionQuery("schorsche"));
+		assertThat(lowerCaseResult.size(), is(1));
 	}
 }

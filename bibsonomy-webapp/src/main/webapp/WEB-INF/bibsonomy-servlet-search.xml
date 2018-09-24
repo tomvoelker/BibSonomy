@@ -17,7 +17,7 @@
 	<alias name="elasticsearchCommunityBookmarkManager" alias="searchCommunityBookmarkManager" />
 	<alias name="elasticsearchCommunityPublicationManager" alias="searchCommunityPublicationManager" />
 	
-	<alias name="elasticsearchPublicationSearch" alias="personSearch" />
+	<alias name="newPersonSearch" alias="personSearch" />
 	
 	<alias name="elasticsearchBookmarkSearch" alias="bookmarkSearch" />
 	<alias name="elasticsearchPublicationSearch" alias="publicationSearch" />

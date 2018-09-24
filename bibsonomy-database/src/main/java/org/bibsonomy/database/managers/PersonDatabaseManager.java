@@ -56,6 +56,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.services.searcher.PersonSearch;
@@ -453,6 +454,15 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options) {
 		return this.personSearch.getPersonSuggestion(options);
+	}
+
+	/**
+	 * based on the query this logic returns all matching persons
+	 * @param query
+	 * @return
+	 */
+	public List<Person> getPersons(final PersonSuggestionQuery query) {
+		return this.personSearch.getPersonSuggestions(query);
 	}
 
 	/**

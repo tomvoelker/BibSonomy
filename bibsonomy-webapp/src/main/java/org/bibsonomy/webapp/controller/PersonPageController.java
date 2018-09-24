@@ -58,6 +58,7 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
+import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
@@ -286,7 +287,6 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setResponseString(array.toJSONString());
 		
 		return Views.AJAX_JSON;
-		
 	}
 
 	/**
@@ -295,18 +295,30 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	@SuppressWarnings("unchecked")
 	private View searchAction(PersonPageCommand command) {
-		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName()).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values()).doIt();
-		
+		final List<Person> persons = this.logic.getPersons(new PersonSuggestionQuery(command.getFormSelectedName()));
+
 		final JSONArray array = new JSONArray();
+		for (final Person person : persons) {
+			final JSONObject jsonPersonName = new JSONObject();
+			jsonPersonName.put("personId", person.getPersonId());
+			final String personName = BibTexUtils.cleanBibTex(person.getMainName().toString());
+			jsonPersonName.put("personName", personName);
+			jsonPersonName.put("extendedPersonName", personName); // FIXME: this.personRoleRenderer.getExtendedPersonName(rel, this.requestLogic.getLocale(), false));
+
+			array.add(jsonPersonName);
+		}
+
+		/* final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName()).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values()).doIt();
+		
+
 		for (ResourcePersonRelation rel : suggestions) {
-			JSONObject jsonPersonName = new JSONObject();
+			final JSONObject jsonPersonName = new JSONObject();
 			jsonPersonName.put("personId", rel.getPerson().getPersonId());
-			//jsonPersonName.put("personNameId", personName.getPersonChangeId());
 			jsonPersonName.put("personName", BibTexUtils.cleanBibTex(rel.getPerson().getMainName().toString()));
 			jsonPersonName.put("extendedPersonName", this.personRoleRenderer.getExtendedPersonName(rel, this.requestLogic.getLocale(), false));
 			
 			array.add(jsonPersonName);
-		}
+		}*/
 		command.setResponseString(array.toJSONString());
 		
 		return Views.AJAX_JSON;
@@ -672,74 +684,79 @@ public class PersonPageController extends SingleResourceListController implement
 	
 	private List<Post<BibTex>> getPublicationsOfSimilarAuthor(Person person) {
 		
-		final PersonName requestedName = person.getMainName();		
+		final PersonName requestedName = person.getMainName();
 		final String name = person.getMainName().toString();
-		
-		PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
-		List<ResourcePersonRelation> suggestedPersons = query.doIt();		
-			
-		/*
-		 * FIXME: use author-parameter in getPosts method
-		 * @see bibsonomy.database.managers.PostDatabaseManager.#getPostsByResourceSearch()
-		 * 
-		 * get at least 50 publications from authors with same name
-		 */	
-		final List<Post<BibTex>> pubAuthorSearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, name, SearchType.LOCAL, null , Order.ALPH, null, null, 0, 50);
 
-		List<Post<BibTex>> pubsWithSameAuthorName = new ArrayList<>(pubAuthorSearch);
-		for (final Post<BibTex> post : pubAuthorSearch) {
-			try {
-				// remove post from search if the author has not exactly the same sur- and last-name
-				if (!present(post.getResource().getAuthor()) 
-						|| !post.getResource().getAuthor().contains(requestedName)) {
-					pubsWithSameAuthorName.remove(post);
-				}
-			} catch (Exception ex) {
-				// remove the post
-				pubsWithSameAuthorName.remove(post);
-			}
-		}
-		
-		List<Post<?>> postsOfSuggestedPersons = new ArrayList<>();
-		HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts = new HashMap<>();
+		// TODO: query the logic for all publications with the author but without the already assigned publications
 
-		// get all persons with same name
-		for (final ResourcePersonRelation suggestedPerson : suggestedPersons) {
+		return new LinkedList<>();
 
-			List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(suggestedPerson.getPerson().getPersonId()).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
-			List<Post<?>> personPosts = new ArrayList<>();
-			
-			for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
-				// escape thesis of person
-				final boolean isThesis = resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis");
-				if (isThesis)
-					continue;
-
-				// get pub from the known person			
-				if (resourcePersonRelation.getRelationType().equals(PersonResourceRelationType.AUTHOR)) {
-					personPosts.add(resourcePersonRelation.getPost());
-					postsOfSuggestedPersons.add(resourcePersonRelation.getPost());
-				}
-			}
-			suggestedPersonPosts.put(suggestedPerson, personPosts);
-		}
-
-		// update the post-list from the search result
-		// FIXME: this should be redone once the author-parameter is used
-		List<Post<BibTex>> noPersonRelPubList = new ArrayList<>(pubsWithSameAuthorName);
-		for (final Post<BibTex> post : pubsWithSameAuthorName) {
-			final String currentPostInterHash = post.getResource().getInterHash();
-
-			// remove post if it's already related to a person
-			for (final Post<?> personPost : postsOfSuggestedPersons) {				
-				if (currentPostInterHash.equals(personPost.getResource().getInterHash())) {
-					noPersonRelPubList.remove(post);
-					break;
-				}
-			}
-		}
-				
-		return noPersonRelPubList;
+		// FIXME:
+//		PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
+//		List<ResourcePersonRelation> suggestedPersons = query.doIt();
+//
+//		/*
+//		 * FIXME: use author-parameter in getPosts method
+//		 * @see bibsonomy.database.managers.PostDatabaseManager.#getPostsByResourceSearch()
+//		 *
+//		 * get at least 50 publications from authors with same name
+//		 */
+//		final List<Post<BibTex>> pubAuthorSearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, name, SearchType.LOCAL, null , Order.ALPH, null, null, 0, 50);
+//
+//		List<Post<BibTex>> pubsWithSameAuthorName = new ArrayList<>(pubAuthorSearch);
+//		for (final Post<BibTex> post : pubAuthorSearch) {
+//			try {
+//				// remove post from search if the author has not exactly the same sur- and last-name
+//				if (!present(post.getResource().getAuthor())
+//						|| !post.getResource().getAuthor().contains(requestedName)) {
+//					pubsWithSameAuthorName.remove(post);
+//				}
+//			} catch (Exception ex) {
+//				// remove the post
+//				pubsWithSameAuthorName.remove(post);
+//			}
+//		}
+//
+//		List<Post<?>> postsOfSuggestedPersons = new ArrayList<>();
+//		HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts = new HashMap<>();
+//
+//		// get all persons with same name
+//		for (final ResourcePersonRelation suggestedPerson : suggestedPersons) {
+//
+//			List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(suggestedPerson.getPerson().getPersonId()).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
+//			List<Post<?>> personPosts = new ArrayList<>();
+//
+//			for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
+//				// escape thesis of person
+//				final boolean isThesis = resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis");
+//				if (isThesis)
+//					continue;
+//
+//				// get pub from the known person
+//				if (resourcePersonRelation.getRelationType().equals(PersonResourceRelationType.AUTHOR)) {
+//					personPosts.add(resourcePersonRelation.getPost());
+//					postsOfSuggestedPersons.add(resourcePersonRelation.getPost());
+//				}
+//			}
+//			suggestedPersonPosts.put(suggestedPerson, personPosts);
+//		}
+//
+//		// update the post-list from the search result
+//		// FIXME: this should be redone once the author-parameter is used
+//		List<Post<BibTex>> noPersonRelPubList = new ArrayList<>(pubsWithSameAuthorName);
+//		for (final Post<BibTex> post : pubsWithSameAuthorName) {
+//			final String currentPostInterHash = post.getResource().getInterHash();
+//
+//			// remove post if it's already related to a person
+//			for (final Post<?> personPost : postsOfSuggestedPersons) {
+//				if (currentPostInterHash.equals(personPost.getResource().getInterHash())) {
+//					noPersonRelPubList.remove(post);
+//					break;
+//				}
+//			}
+//		}
+//
+//		return noPersonRelPubList;
 	}
 	
 }

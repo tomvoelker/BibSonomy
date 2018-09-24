@@ -76,6 +76,7 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
@@ -934,7 +935,12 @@ public class ReadOnlyLogic implements LogicInterface {
 	public void denieMerge(PersonMatch match) {
 
 	}
-	
+
+	@Override
+	public List<Person> getPersons(PersonSuggestionQuery query) {
+		return this.logicinterface.getPersons(query);
+	}
+
 	@Override
 	public boolean acceptMerge(PersonMatch match) {
 		return false;

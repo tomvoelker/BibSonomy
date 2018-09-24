@@ -43,6 +43,7 @@ import org.junit.Test;
  *
  * @author jensi
  */
+@Deprecated // TODO: remove TODO_SEARCHREWORK
 public class ElasticsearchPublicationSearchITCase extends AbstractEsIndexTest {
 	
 	/**

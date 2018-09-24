@@ -80,8 +80,12 @@ public class PersonConverter implements Converter<Person, Map<String, Object>, O
 		person.setOrcid((String) source.get(PersonFields.ORCID_ID));
 		// FIXME: add researcher id
 		person.setUser((String) source.get(PersonFields.USER_NAME));
-		person.setGender(Gender.valueOf((String) source.get(PersonFields.GENDER)));
-		person.setNames(convertToNames(source.get(PersonFields.NAME)));
+		final String genderString = (String) source.get(PersonFields.GENDER);
+		if (present(genderString)) {
+			person.setGender(Gender.valueOf(genderString));
+		}
+
+		person.setNames(convertToNames(source.get(PersonFields.NAMES)));
 
 		return person;
 	}
@@ -94,7 +98,7 @@ public class PersonConverter implements Converter<Person, Map<String, Object>, O
 		for (Map<String, Object> personMapping : values) {
 			final String personNameStr = (String) personMapping.get(PersonFields.NAME);
 			final PersonName personName = PersonNameUtils.discoverPersonNamesIgnoreExceptions(personNameStr).get(0);
-			personName.setMain(Boolean.parseBoolean((String) personMapping.get(PersonFields.MAIN)));
+			personName.setMain((Boolean) personMapping.get(PersonFields.MAIN));
 			personNames.add(personName);
 		}
 
