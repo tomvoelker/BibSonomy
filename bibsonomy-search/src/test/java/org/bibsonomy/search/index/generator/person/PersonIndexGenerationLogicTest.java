@@ -1,7 +1,8 @@
 package org.bibsonomy.search.index.generator.person;
 
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.model.Person;
@@ -35,6 +36,8 @@ public class PersonIndexGenerationLogicTest extends AbstractDatabaseManagerTest 
 		final PersonName mainName = testPerson.getMainName();
 		assertThat(mainName.getFirstName(), is("Henner"));
 		assertThat(mainName.getLastName(), is("Schorsche"));
+
+		assertThat(testPerson.getChangeDate(), notNullValue());
 	}
 
 	/**
@@ -49,6 +52,6 @@ public class PersonIndexGenerationLogicTest extends AbstractDatabaseManagerTest 
 	@Test
 	public void testGetDbState() {
 		final SearchIndexSyncState dbState = PERSON_INDEX_GENERATIONLOGIC.getDbState();
-		assertThat(dbState.getLastPersonChangeId(), is(23l));
+		assertThat(dbState.getLastPersonChangeId(), is(34l));
 	}
 }

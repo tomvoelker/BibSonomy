@@ -32,10 +32,6 @@ public class PersonMappingBuilder implements MappingBuilder<XContentBuilder> {
 		try {
 			XContentBuilder personMapping = XContentFactory.jsonBuilder()
 							.startObject()
-							/*
-							 * set the date detection to false: we load the misc
-							 * fields as field = value into es (=> dynamic mapping)
-							 */
 								.field("date_detection", false)
 								.startObject(ESConstants.IndexSettings.PROPERTIES)
 									// person id
@@ -83,14 +79,13 @@ public class PersonMappingBuilder implements MappingBuilder<XContentBuilder> {
 									.startObject(PersonFields.NAMES)
 										.field(TYPE_FIELD, NESTED_TYPE)
 										.startObject(ESConstants.IndexSettings.PROPERTIES)
-											.startObject(ESConstants.Fields.Publication.PERSON_NAME)
-												.field(PersonFields.NAME, TEXT_TYPE)
+											.startObject(PersonFields.NAME)
+												.field(ESConstants.IndexSettings.TYPE_FIELD, TEXT_TYPE)
 												.array(ESConstants.IndexSettings.COPY_TO, PersonFields.ALL_NAMES)
 											.endObject()
 										.endObject()
 									.endObject()
 								.endObject()
-							.endObject()
 						.endObject();
 			final Mapping<XContentBuilder> mapping = new Mapping<>();
 			mapping.setMappingInfo(personMapping);

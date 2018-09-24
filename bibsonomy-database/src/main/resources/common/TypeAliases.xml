@@ -40,6 +40,7 @@
 	<!-- person related classes -->
 	<typeAlias alias="person"				type="org.bibsonomy.model.Person" />
 	<typeAlias alias="personName"			type="org.bibsonomy.model.PersonName" />
+	<typeAlias alias="gender"				type="org.bibsonomy.model.enums.Gender" />
 	<typeAlias alias="personResourceRelationType" type="org.bibsonomy.model.enums.PersonResourceRelationType" />
 	
 	<!-- Synchronization -->

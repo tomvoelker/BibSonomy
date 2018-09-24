@@ -12,7 +12,9 @@
 		<result property="user"				column="user_name"			javaType="string"/>
 		<result property="email"			column="email"				javaType="string"/>
 		<result property="homepage"			column="homepage"			javaType="url"/>
+		<result property="gender"			column="gender"				javaType="gender" />
 		<result property="names"			resultMap="PersonGeneration.personName"/>
+		<result property="changeDate"		column="log_changed_at"		javaType="date" />
 	</resultMap>
 	
 	<resultMap id="personName" class="personName" groupBy="personNameChangeId">

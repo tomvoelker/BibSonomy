@@ -1,5 +1,6 @@
 package org.bibsonomy.search.es.index.converter.person;
 
+import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Person;
@@ -31,13 +32,20 @@ public class PersonConverter implements Converter<Person, Map<String, Object>, O
 		mapping.put(PersonFields.PERSON_ID, person.getPersonId());
 		mapping.put(PersonFields.ACADEMIC_DEGREE, person.getAcademicDegree());
 		mapping.put(PersonFields.COLLEGE, person.getCollege());
-		mapping.put(PersonFields.HOMEPAGE, person.getHomepage().toString());
+		final URL homepage = person.getHomepage();
+		if (present(homepage)) {
+			mapping.put(PersonFields.HOMEPAGE, homepage.toString());
+		}
 		mapping.put(PersonFields.EMAIL, person.getEmail());
 		mapping.put(PersonFields.ORCID_ID, person.getOrcid());
 		mapping.put(PersonFields.USER_NAME, person.getUser());
 		// FIXME: add researcher id
 		// mapping.put(PersonFields.RESEARCHER_ID, person.getResearcherId());
-		mapping.put(PersonFields.GENDER, person.getGender().toString());
+
+		final Gender gender = person.getGender();
+		if (present(gender)) {
+			mapping.put(PersonFields.GENDER, gender.toString());
+		}
 
 		// map all names
 		final List<PersonName> names = person.getNames();
@@ -50,7 +58,6 @@ public class PersonConverter implements Converter<Person, Map<String, Object>, O
 		}
 
 		mapping.put(PersonFields.NAMES, convertedNames);
-
 		mapping.put(PersonFields.CHANGE_DATE, ElasticsearchUtils.dateToString(person.getChangeDate()));
 		return mapping;
 	}

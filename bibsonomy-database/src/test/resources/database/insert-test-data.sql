@@ -294,7 +294,7 @@ INSERT INTO `ids` VALUES
 (14, 3,  'message_id'),
 (15, 4, 'comment_id'),
 (16, 12, 'sync_service_id'),
-(17, 23, 'person_change_id');
+(17, 34, 'person_change_id');
 
 
 --
@@ -735,11 +735,11 @@ INSERT INTO `grouptas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `conten
 
 
 INSERT INTO `person` (`person_change_id`, `person_id`, `academic_degree`, `user_name`, `post_ctr`, `orcid`, `dnb_person_id`, `gender`, `log_changed_at`, `log_changed_by`, homepage) VALUES
-(5,'h.muller','',NULL,0,'',NULL,NULL,NULL,NULL,''),
-(20, 'w.test.1','',NULL,0,'',NULL,'m',NULL,NULL, "hisPage"),
-(21, 'w.test.2','', null, 0,'',NULL, "m",NULL,NULL,''),
-(22, 'w.test.3','', null, 0, '',NULL,"m",NULL,NULL,''),
-(23, 'w.test.4', '',NULL,0,'',NULL,'F',NULL,NULL,"myPage")
+(5, 'h.muller', '', NULL, 0, '', NULL, NULL, '2015-07-06 14:19:55', NULL, ''),
+(20, 'w.test.1', '', NULL, 0, '', NULL, 'm', '2015-07-06 14:19:55', NULL, "hisPage"),
+(21, 'w.test.2', '', null, 0,'', NULL, 'm', '2015-07-06 16:19:55', NULL, ''),
+(22, 'w.test.3', '', null, 0, '', NULL, 'm', '2015-07-06 18:19:55', NULL, ''),
+(23, 'w.test.4', '', NULL, 0, '', NULL, 'F', '2016-07-06 14:19:55', NULL, "myPage")
 ;
 
 
