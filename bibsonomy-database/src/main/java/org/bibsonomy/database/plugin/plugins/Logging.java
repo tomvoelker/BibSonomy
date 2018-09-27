@@ -47,7 +47,10 @@ import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+
+import java.util.Date;
 
 /**
  * This plugin implements logging: on several occasions it'll save the old state
@@ -303,11 +306,13 @@ public class Logging extends AbstractDatabasePlugin {
 		this.insert("logPersonDelete", person, session);
 	}
 
-
 	@Override
-	public void onPubPersonDelete(final ResourcePersonRelation rel, final DBSession session) {
+	public void onPubPersonDelete(final ResourcePersonRelation rel, User loginUser, final DBSession session) {
+		rel.setChangedAt(new Date());
+		rel.setChangedBy(loginUser.getName());
 		this.insert("logPubPerson", rel.getPersonRelChangeId(), session);
 		// XXX: we need to fetch a new id so the next insert statement can refer to the last generated id
+		// FIXME: just don't use the last generated id!!! why is the person logged twice
 		this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
 		this.insert("logPubPersonDelete", rel, session);
 	}

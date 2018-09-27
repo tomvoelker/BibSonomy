@@ -382,22 +382,27 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * @param personRelChangeId
+	 * @param interHash
+	 * @param index
+	 * @param type
 	 * @param loginUser
-	 * @param databaseSession
+	 * @param session
 	 */
-	public void removeResourceRelation(int personRelChangeId, String loginUser, DBSession databaseSession) {
-		databaseSession.beginTransaction();
+	public void removeResourceRelation(final String interHash, final int index, final PersonResourceRelationType type, final User loginUser, final DBSession session) {
+		session.beginTransaction();
+
 		try {
-			ResourcePersonRelation rel = new ResourcePersonRelation();
-			rel.setPersonRelChangeId(personRelChangeId);
-			rel.setChangedBy(loginUser);
-			rel.setChangedAt(new Date());
-			this.delete("removeResourceRelation", Integer.valueOf(personRelChangeId), databaseSession);
-			this.plugins.onPubPersonDelete(rel, databaseSession);
-			databaseSession.commitTransaction();
+			final ResourcePersonRelation resourcePersonRelation = this.getResourcePersonRelation(interHash, index, type, session);
+			if (!present(resourcePersonRelation)) {
+				// TODO: notify someone
+				return;
+			}
+
+			this.delete("removeResourceRelation", resourcePersonRelation.getPersonRelChangeId(), session);
+			this.plugins.onPubPersonDelete(resourcePersonRelation, loginUser, session);
+			session.commitTransaction();
 		} finally {
-			databaseSession.endTransaction();
+			session.endTransaction();
 		}
 	}
 
@@ -465,6 +470,19 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	private List<ResourcePersonRelation> getResourcePersonRelationByResourcePersonRelation(ResourcePersonRelation rpr, DBSession session) {
 		return this.queryForList("getResourcePersonRelationByResourcePersonRelation", rpr, ResourcePersonRelation.class, session);
+	}
+
+	private ResourcePersonRelation getResourcePersonRelation(final String interhash, final int index, final PersonResourceRelationType type, DBSession session) {
+		final ResourcePersonRelation param = new ResourcePersonRelation();
+		param.setPersonIndex(index);
+		param.setRelationType(type);
+		final Post<BibTex> post = new Post<>();
+		final BibTex bibTex = new BibTex();
+		post.setResource(bibTex);
+		bibTex.setInterHash(interhash);
+		param.setPost(post);
+
+		return this.queryForObject("getResourcePersonRelationByResourcePersonRelation", param, ResourcePersonRelation.class, session);
 	}
 
 	/**

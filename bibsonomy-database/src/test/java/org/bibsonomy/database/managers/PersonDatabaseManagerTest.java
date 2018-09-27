@@ -26,7 +26,9 @@
  */
 package org.bibsonomy.database.managers;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -38,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
@@ -70,7 +73,6 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	private static final String PERSON_ID = "h.muller";
 	
 	private Person testPerson;
-	private static boolean initialized = false;
 	
 	/**
 	 * Initializes the test environment for this class
@@ -78,11 +80,9 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Before
 	public void init() {
-		if (!initialized) {
-			this.testPerson = new Person();
-			this.testPerson.setMainName(new PersonName("Max", "Mustermann"));
-			PERSON_DATABASE_MANAGER.createPerson(this.testPerson, this.dbSession);
-		}
+		this.testPerson = new Person();
+		this.testPerson.setMainName(new PersonName("Max", "Mustermann"));
+		PERSON_DATABASE_MANAGER.createPerson(this.testPerson, this.dbSession);
 	}	
 	
 	/**
@@ -118,6 +118,21 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		// test inserting of a duplicate
 		assertFalse(PERSON_DATABASE_MANAGER.addResourceRelation(resourcePersonRelation, loginUser, this.dbSession));
+	}
+
+	/**
+	 * tests {@link PersonDatabaseManager#removeResourceRelation(String, int, PersonResourceRelationType, User, DBSession)}
+	 */
+	@Test
+	public void testRemoveResourceRelation() {
+		final List<ResourcePersonRelation> resourcePersonRelationsWithPosts = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts(PERSON_ID, loginUser, GoldStandardPublication.class, this.dbSession);
+
+		final ResourcePersonRelation firstRelation = resourcePersonRelationsWithPosts.get(0);
+		PERSON_DATABASE_MANAGER.removeResourceRelation(firstRelation.getPost().getResource().getInterHash(), firstRelation.getPersonIndex(), firstRelation.getRelationType(), loginUser, this.dbSession);
+
+		final List<ResourcePersonRelation> afterDeletion = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts(PERSON_ID, loginUser, GoldStandardPublication.class, this.dbSession);
+
+		assertThat(afterDeletion.size(), is(resourcePersonRelationsWithPosts.size() - 1));
 	}
 	
 	/**

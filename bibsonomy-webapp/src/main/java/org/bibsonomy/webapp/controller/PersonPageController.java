@@ -410,7 +410,7 @@ public class PersonPageController extends SingleResourceListController implement
 	}
 	
 	private View deleteRoleAction(PersonPageCommand command) {
-		this.logic.removeResourceRelation(Integer.valueOf(command.getFormResourcePersonRelationId()).intValue());
+		this.logic.removeResourceRelation(null, -1, null); // FIXME: change
 		
 		return Views.AJAX_TEXT;
 	}

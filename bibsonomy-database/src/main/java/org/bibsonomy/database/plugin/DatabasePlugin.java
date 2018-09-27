@@ -352,9 +352,10 @@ public interface DatabasePlugin {
 	/**
 	 * called when a pubPerson will be deleted
 	 * @param rel the relation to be deleted updated with the deleting user and the date of the deletion
+	 * @param loginUser
 	 * @param session
 	 */
-	public void onPubPersonDelete(final ResourcePersonRelation rel, final DBSession session);
+	public void onPubPersonDelete(final ResourcePersonRelation rel, User loginUser, final DBSession session);
 
 	/**
 	 * @param personChangeId

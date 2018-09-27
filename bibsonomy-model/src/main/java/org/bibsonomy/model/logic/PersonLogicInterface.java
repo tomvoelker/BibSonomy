@@ -48,11 +48,13 @@ public interface PersonLogicInterface {
 	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException;
 
 	/**
-	 * FIXME: remove database id TODO_PERSONS
 	 * removes a resource relation
-	 * @param resourceRelationId
+	 *
+	 * @param interHash
+	 * @param index
+	 * @param type
 	 */
-	public void removeResourceRelation(int resourceRelationId);
+	void removeResourceRelation(String interHash, int index, PersonResourceRelationType type);
 
 	/**
 	 * sets id for new persons
