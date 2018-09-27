@@ -59,6 +59,8 @@ public class PersonPageCommand extends BaseCommand {
 	
 	private String formSelectedName;
 
+	private String pubToDelete;
+
 	@Deprecated // TODO: bind person directly
 	private String formResourceHash;
 	@Deprecated // TODO: bind person directly
@@ -165,7 +167,7 @@ public class PersonPageCommand extends BaseCommand {
 	public void setPerson(Person person) {
 		this.person = person;
 	}
-	
+
 	/**
 	 * @return String
 	 */

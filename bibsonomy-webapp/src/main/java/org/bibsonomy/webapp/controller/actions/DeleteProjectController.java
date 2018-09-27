@@ -49,9 +49,6 @@ public class DeleteProjectController implements MinimalisticController<DeletePro
 				isMember = true;
 			}
 		}
-		boolean a = !(context.getLoginUser().getRole().getRole() == 0);
-		boolean b = !(context.getLoginUser().getRole().getRole() == 0) || isMember;
-		boolean c = !(context.getLoginUser().getRole().getRole() == 0) && isMember;
 		if (!(context.getLoginUser().getRole().getRole() == 0) || isMember) {
 			throw new AccessDeniedException("not allowed");
 		}

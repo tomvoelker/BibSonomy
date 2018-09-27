@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.URLGenerator;
@@ -12,6 +13,8 @@ import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+
+import java.util.List;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -28,9 +31,18 @@ public class EditProjectMemberController implements MinimalisticController<EditP
 
 	@Override
 	public View workOn(EditProjectMemberCommand command) {
-		final RequestWrapperContext context = command.getContext();
 		final String requestedProjectId = command.getProjectIdToUpdate();
+
+		Project project = this.logic.getProjectDetails(requestedProjectId);
+
+		List<CRISLink> links = generateCrisLinks();
+		project.setCrisLinks(links);
+		this.logic.updateProject(requestedProjectId, project);
 		return Views.PROJECT_PAGE;
+	}
+
+	private List<CRISLink> generateCrisLinks() {
+		return null;
 	}
 
 	@Override

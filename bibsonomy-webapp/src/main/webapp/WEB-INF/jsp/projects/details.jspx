@@ -16,6 +16,9 @@
 
         <jsp:attribute name="headerExt">
             <link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
+            <script type="text/javascript" src="${resdir}/typeahead.js/js/typeahead.bundle.js"><!-- keep me --></script>
+            <script type="text/javascript" src="${resdir}/javascript/project.js"><!-- keep me --></script>
+            <script type="text/javascript" src="${resdir}/javascript/person/personAutocomplete.js"><!-- keep me --></script>
         </jsp:attribute>
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.project" formAction="${relativeUrlGenerator.getProjectUrlByProject(project)}" formInputName="tag">
