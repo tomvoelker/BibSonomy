@@ -385,6 +385,16 @@
 						</property>
 					</bean>
 				</entry>
+                <entry key="/deletePublicationFromPerson">
+                    <bean parent="controllerBase">
+                        <property name="controllerBeanName" value="deletePublicationFromPersonController"/>
+                        <property name="allowedFields">
+                            <list>
+                                <value>person</value>
+                            </list>
+                        </property>
+                    </bean>
+                </entry>
 				<entry key="/persondisambiguation">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="disambiguationPageController"/>
@@ -805,6 +815,11 @@
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="personRoleRenderer" ref="personRoleRenderer"/>
 	</bean>
+
+    <bean id="deletePublicationFromPerson" class="org.bibsonomy.webapp.controller.DeletePublicationFromPersonController" scope="request">
+        <property name="logic" ref="logic"/>
+        <property name="urlGenerator" ref="relativeUrlGenerator" />
+    </bean>
 	
 	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.DisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
