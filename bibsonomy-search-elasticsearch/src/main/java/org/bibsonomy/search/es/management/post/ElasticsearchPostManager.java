@@ -45,6 +45,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
+import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
@@ -124,7 +125,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 		 * 3) add new and updated posts to the index
 		 */
 		log.debug("inserting new/updated posts into " + indexName);
-		final Map<String, Map<String, Object>> convertedPosts = new HashMap<>();
+		final Map<String, IndexData> convertedPosts = new HashMap<>();
 		List<Post<R>> newPosts;
 		int offset = 0;
 		int totalCountNewPosts = 0;
@@ -135,7 +136,10 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 				
 				final Integer contentId = post.getContentId();
 				final String id = ElasticsearchUtils.createElasticSearchId(contentId.intValue());
-				convertedPosts.put(id, convertedPost);
+				final IndexData indexData = new IndexData();
+				indexData.setType(this.entityInformationProvider.getType());
+				indexData.setSource(convertedPost);
+				convertedPosts.put(id, indexData);
 			}
 			
 			if (convertedPosts.size() >= ESConstants.BULK_INSERT_SIZE) {
@@ -179,7 +183,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	 * @param localInactiveAlias
 	 * @param convertedPosts
 	 */
-	private void clearQueue(final String localInactiveAlias, final Map<String, Map<String, Object>> convertedPosts) {
+	private void clearQueue(final String localInactiveAlias, final Map<String, IndexData> convertedPosts) {
 		/*
 		 * maybe we are updating an updated post in es
 		 */
@@ -192,9 +196,8 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	 * @param state
 	 */
 	private void updateIndexState(final String indexName, final SearchIndexSyncState state) {
-		final Map<String, Object> values = ElasticsearchUtils.serializeSearchIndexState(state);
-		
-		this.client.insertNewDocument(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId), ESConstants.SYSTEM_INFO_INDEX_TYPE, indexName, values);
+		final IndexData indexData = ElasticsearchUtils.buildIndexDataForState(state);
+		this.client.insertNewDocument(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId), indexName, indexData);
 	}
 
 	/**
@@ -227,8 +230,8 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 		// the prediction table holds up to two entries per user
 		// - the first entry is the one to consider (ordered descending by date)
 		// we keep track of users which appear twice via this set
-		final Set<String> alreadyUpdated = new HashSet<String>();
-		final Map<String, Map<String, Object>> convertedPosts = new HashMap<>();
+		final Set<String> alreadyUpdated = new HashSet<>();
+		final Map<String, IndexData> convertedPosts = new HashMap<>();
 		for (final User user : predictedUsers) {
 			final String userName = user.getName();
 			final boolean unknowUser = alreadyUpdated.add(userName);
@@ -250,8 +253,10 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 							for (final Post<R> post : userPosts) {
 								final Map<String, Object> convertedPost = this.entityInformationProvider.getConverter().convert(post);
 								final String id = ElasticsearchUtils.createElasticSearchId(post.getContentId().intValue());
-								
-								convertedPosts.put(id, convertedPost);
+								final IndexData indexData = new IndexData();
+								indexData.setType(this.entityInformationProvider.getType());
+								indexData.setSource(convertedPost);
+								convertedPosts.put(id, indexData);
 								
 								if (convertedPosts.size() >= SearchDBInterface.SQL_BLOCKSIZE / 2) {
 									this.clearQueue(indexName, convertedPosts);

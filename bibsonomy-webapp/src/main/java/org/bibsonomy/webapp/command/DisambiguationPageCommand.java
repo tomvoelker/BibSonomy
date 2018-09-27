@@ -26,16 +26,12 @@
  */
 package org.bibsonomy.webapp.command;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.services.person.PersonRoleRenderer;
 
@@ -47,13 +43,12 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	@Deprecated // Use a Java JSPTag
 	private PersonRoleRenderer personRoleRenderer;
 	private String requestedAction;
+	private String requestedPersonId;
+
 	private String requestedHash;
 	private PersonResourceRelationType requestedRole;
 	private Integer requestedIndex;
-	
-	private String requestedPersonId;
-	
-	private Person person;
+
 	private PersonName personName;
 	private Post<BibTex> post;
 	private List<Person> personSuggestions;
@@ -87,20 +82,6 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @return the person
-	 */
-	public Person getPerson() {
-		return this.person;
-	}
-
-	/**
-	 * @param person the person to set
-	 */
-	public void setPerson(Person person) {
-		this.person = person;
-	}
-
-	/**
 	 * @return
 	 */
 	public PersonResourceRelationType getRequestedRole() {
@@ -115,17 +96,17 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @return the formAddPersonId
+	 * @return the requestedPersonId
 	 */
 	public String getRequestedPersonId() {
 		return this.requestedPersonId;
 	}
 
 	/**
-	 * @param formAddPersonId the formAddPersonId to set
+	 * @param requestedPersonId the requestedPersonId to set
 	 */
-	public void setRequestedPersonId(String formPersonId) {
-		this.requestedPersonId = formPersonId;
+	public void setRequestedPersonId(String requestedPersonId) {
+		this.requestedPersonId = requestedPersonId;
 	}
 
 	/**

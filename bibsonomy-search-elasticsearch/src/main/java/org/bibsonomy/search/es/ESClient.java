@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -84,23 +85,15 @@ public interface ESClient {
 	 */
 	public List<String> getIndexNamesForAlias(String aliasName);
 
-	/**
-	 * @param indexName
-	 * @param type
-	 * @param id
-	 * @param jsonDocument
-	 * @return <code>true</code> iff the document was inserted successfully
-	 */
-	public boolean insertNewDocument(String indexName, String type, String id, Map<String, Object> jsonDocument);
-	
+	boolean insertNewDocument(String indexName, String id, IndexData indexData);
+
 	/**
 	 * 
 	 * @param indexName
-	 * @param type
 	 * @param jsonDocuments
 	 * @return <code>true</code> iff all documents were inserted successfully
 	 */
-	public boolean insertNewDocuments(String indexName, String type, Map<String, Map<String, Object>> jsonDocuments);
+	boolean insertNewDocuments(String indexName, Map<String, IndexData> jsonDocuments);
 	
 	/**
 	 * @param indexName
@@ -142,10 +135,10 @@ public interface ESClient {
 	 */
 	boolean updateAliases(Set<Pair<String, String>> aliasesToAdd, Set<Pair<String, String>> aliasesToRemove);
 	
-	default boolean updateOrCreateDocuments(String indexName, String type, Map<String, Map<String, Object>> jsonDocuments) {
+	default boolean updateOrCreateDocuments(String indexName, String type, Map<String, IndexData> jsonDocuments) {
 		final Set<String> idsToDelete = jsonDocuments.keySet();
 		this.deleteDocuments(indexName, type, idsToDelete);
-		return this.insertNewDocuments(indexName, type, jsonDocuments);
+		return this.insertNewDocuments(indexName, jsonDocuments);
 	}
 
 	/**

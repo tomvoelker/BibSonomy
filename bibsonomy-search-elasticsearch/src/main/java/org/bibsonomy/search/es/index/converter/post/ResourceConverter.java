@@ -27,7 +27,6 @@
 package org.bibsonomy.search.es.index.converter.post;
 
 import java.net.URI;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -71,8 +70,8 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 			post.setSystemUrl(systemUrl);
 		}
 		
-		post.setDate(parseDate(source, Fields.DATE));
-		post.setChangeDate(parseDate(source, Fields.CHANGE_DATE));
+		post.setDate(ElasticsearchUtils.parseDate(source, Fields.DATE));
+		post.setChangeDate(ElasticsearchUtils.parseDate(source, Fields.CHANGE_DATE));
 		final String userName = (String) source.get(Fields.USER_NAME);
 		final boolean loadDocuments = allowdUsersForDoc.contains(userName);
 		fillUser(post, userName);
@@ -151,16 +150,6 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 		}
 		
 		return groups;
-	}
-
-	/**
-	 * @param source
-	 * @param key
-	 * @return the date
-	 */
-	protected static Date parseDate(Map<String, Object> source, String key) {
-		final String dateAsString = (String) source.get(key);
-		return ElasticsearchUtils.parseDate(dateAsString);
 	}
 
 	/**

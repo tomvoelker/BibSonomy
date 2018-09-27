@@ -115,29 +115,30 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public boolean insertNewDocument(String indexName, String type, String id, Map<String, Object> jsonDocument) {
+	public boolean insertNewDocument(String indexName, String id, IndexData indexData) {
 		return this.secureCall(() -> {
-			final IndexRequest indexRequest = buildIndexRequest(indexName, type, id, jsonDocument);
+			final IndexRequest indexRequest = buildIndexRequest(indexName, id, indexData);
 			final IndexResponse response = this.client.index(indexRequest, this.buildRequestOptions());
 			return response.getResult() == DocWriteResponse.Result.CREATED;
 		}, false, "error while inserting new document");
 	}
 
-	private static IndexRequest buildIndexRequest(String indexName, String type, String id, Map<String, Object> jsonDocument) {
+	private static IndexRequest buildIndexRequest(String indexName, String id, IndexData indexData) {
 		final IndexRequest indexRequest = new IndexRequest();
-		indexRequest.index(indexName);
-		indexRequest.type(type); // TODO: remove with es 7
-		indexRequest.id(id);
-		indexRequest.source(jsonDocument);
-		return indexRequest;
+		return indexRequest.index(indexName)
+								.routing(indexData.getRouting())
+								.type(indexData.getType()) // TODO: remove with es 7
+								.id(id)
+								.source(indexData.getSource());
 	}
 
 	@Override
-	public boolean insertNewDocuments(String indexName, String type, Map<String, Map<String, Object>> jsonDocuments) {
+	public boolean insertNewDocuments(String indexName, Map<String, IndexData> jsonDocuments) {
 		return this.secureCall(() -> {
 			final BulkRequest bulkRequest = new BulkRequest();
 			// convert each document to a indexrequest object and add all to the request
-			final Stream<IndexRequest> indexRequests = jsonDocuments.entrySet().stream().map(entity -> buildIndexRequest(indexName, type, entity.getKey(), entity.getValue()));
+			final Stream<IndexRequest> indexRequests = jsonDocuments.entrySet().stream().map(entity -> buildIndexRequest(indexName,entity.getKey(), entity.getValue()));
+
 			indexRequests.forEach(bulkRequest::add);
 
 			final BulkResponse bulkResponse = this.client.bulk(bulkRequest, this.buildRequestOptions());

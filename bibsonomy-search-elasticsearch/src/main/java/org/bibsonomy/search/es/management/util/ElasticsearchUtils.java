@@ -38,6 +38,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.search.es.ESConstants;
+import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.joda.time.format.DateTimeFormatter;
@@ -276,5 +277,27 @@ public final class ElasticsearchUtils {
 	 */
 	public static String getSearchIndexStateIndexName(final URI systemURI) {
 		return "." + normSystemHome(systemURI) + "_system_info";
+	}
+
+	/**
+	 * builds a indexData object for the state
+	 * @param state
+	 * @return the index data for the state
+	 */
+	public static IndexData buildIndexDataForState(SearchIndexSyncState state) {
+		final IndexData indexData = new IndexData();
+		indexData.setType(ESConstants.SYSTEM_INFO_INDEX_TYPE);
+		indexData.setSource(serializeSearchIndexState(state));
+		return indexData;
+	}
+
+	/**
+	 * @param source
+	 * @param key
+	 * @return the date
+	 */
+	public static Date parseDate(Map<String, Object> source, String key) {
+		final String dateAsString = (String) source.get(key);
+		return parseDate(dateAsString);
 	}
 }

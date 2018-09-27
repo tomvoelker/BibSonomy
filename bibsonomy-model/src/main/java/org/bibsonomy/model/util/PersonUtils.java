@@ -95,7 +95,10 @@ public final class PersonUtils {
 		}
 
 		// prefer authors
-		findRelationByRelationType(PersonResourceRelationType.AUTHOR, relations);
+		final ResourcePersonRelation relationByRelationType = findRelationByRelationType(PersonResourceRelationType.AUTHOR, relations);
+		if (present(relationByRelationType)) {
+			return relationByRelationType;
+		}
 
 		// fall back
 		return relations.get(0);

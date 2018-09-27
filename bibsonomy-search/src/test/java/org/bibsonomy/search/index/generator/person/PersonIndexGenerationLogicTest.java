@@ -7,6 +7,8 @@ import static org.junit.Assert.assertThat;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.search.testutils.SearchSpringContextWrapper;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.junit.Test;
@@ -49,9 +51,36 @@ public class PersonIndexGenerationLogicTest extends AbstractDatabaseManagerTest 
 		assertThat(numberOfPersons, is(5));
 	}
 
+	/**
+	 * tests {@link PersonIndexGenerationLogic#getDbState()}
+	 */
 	@Test
 	public void testGetDbState() {
 		final SearchIndexSyncState dbState = PERSON_INDEX_GENERATIONLOGIC.getDbState();
 		assertThat(dbState.getLastPersonChangeId(), is(34l));
+	}
+
+	/**
+	 * tests {@link PersonIndexGenerationLogic#getToManyEntities(int, int)}
+	 */
+	@Test
+	public void testGetToManyEntities() {
+		final List<ResourcePersonRelation> toManyEntities = PERSON_INDEX_GENERATIONLOGIC.getToManyEntities(0, 100);
+		assertThat(toManyEntities.size(), is(9));
+
+		final ResourcePersonRelation relation = toManyEntities.get(0);
+		assertThat(relation.getRelationType(), is(PersonResourceRelationType.AUTHOR));
+		assertThat(relation.getPersonIndex(), is(0));
+		assertThat(relation.getPerson().getPersonId(), is("h.muller"));
+		assertThat(relation.getPost().getResource().getTitle(), is("Wurst aufs Brot"));
+	}
+
+	/**
+	 * tests {@link PersonIndexGenerationLogic#getNumberOfToManyEntities()}
+	 */
+	@Test
+	public void testGetNumberOfToManyEntities() {
+		final int numberOfToManyEntities = PERSON_INDEX_GENERATIONLOGIC.getNumberOfToManyEntities();
+		assertThat(numberOfToManyEntities, is(9));
 	}
 }

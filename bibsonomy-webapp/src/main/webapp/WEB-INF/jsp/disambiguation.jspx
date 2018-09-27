@@ -6,16 +6,8 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:sql="http://java.sun.com/jsp/jstl/sql"
-	xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
-	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
-	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
 	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:spring="http://www.springframework.org/tags"
@@ -25,9 +17,7 @@
 	xmlns:bsold="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"
-	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
-	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex">	 
+	xmlns:per="urn:jsptagdir:/WEB-INF/tags/person">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
@@ -119,13 +109,15 @@
 							<c:forEach var="person" items="${command.personSuggestions}">
 								<!-- if for the person relation expand view -->
 								<c:set var="collapseID" value="${collapseID + 1}"/>
-								<!-- > 0 because the topPublication is also in this list ${fn:length(person.relations) gt 1}-->
-								<c:set var="personHasRelations" value="${true}" />
+								<c:set var="relations" value="${person.resourceRelations}" />
+								<!-- > 0 because the topPublication is also in this list -->
+								<c:set var="personHasRelations" value="${fn:length(relations) gt 1}" />
+								<spring:eval var="topRelation" expression="T(org.bibsonomy.model.util.PersonUtils).findTopRelation(relations)" />
+								<c:set var="topPost" value="${topRelation.post}" />
 								<div class="list-group-item">
 									<div class="btn-group btn-group-xs pull-right">
 										<a href="${relativeUrlGenerator.getPersonUrl(person.personId)}" class="btn btn-default"><fontawesome:icon icon="eye" /></a>
-										<c:if test="${true}">
-											<!-- TODO: change test -->
+										<c:if test="${personHasRelations}">
 											<!-- show relations expand button -->
 											<a class="btn btn-default" aria-expanded="false" data-toggle="collapse" href="#collapse_${collapseID}">
 												<fontawesome:icon icon="expand" />
@@ -140,29 +132,27 @@
 										</c:when>
 										<c:otherwise>
 											<c:set var="dataToggle" value=""/>
-											<c:set var="href" value="${absoluteUrlGenerator.getPersonUrl(personSuggestionsEntry.key.personId)}"/>
+											<c:set var="href" value="${relativeUrlGenerator.getPersonUrl(person.personId)}"/>
 											<c:set var="dataTarget" value=""/>
 										</c:otherwise>
 									</c:choose>
-									<a class='btnLinkPerson' data-toggle="${dataToggle}" data-target="${dataTarget}" href="${href}" data-person-url="${absoluteUrlGenerator.getPersonUrl(person.personId)}" data-person-id="${fn:escapeXml(person.personId)}" >
+									<a class='btnLinkPerson' data-toggle="${dataToggle}" data-target="${dataTarget}" href="${href}" data-person-url="${relativeUrlGenerator.getPersonUrl(person.personId)}" data-person-id="${fn:escapeXml(person.personId)}" >
 
 										<h4 class="list-group-item-heading">
-
-
 											<per:simplePerson person="${person}" />
 										</h4>
-										<!-- person information -->
-										<spring:eval var="topPublication" expression="T(org.bibsonomy.model.util.PersonUtils).findTopRelation(null)" />
-										<c:if test="${not empty topPublication}">
-											TODO
-										</c:if>
+										<p class="list-group-item-text">Test<a href="Test" >TestLink</a></p>
 									</a>
+									<!-- person information -->
+									<c:if test="${not empty topRelation}">
+										${topRelation.relationType}
+										<per:simplePub post="${topPost}" />
+									</c:if>
 									<c:if test="${personHasRelations}">
-										<div id="collapse_${collapseID}" class="collapse collapsingOverflow simplePub">
-											TODO
-											<!--<c:forEach var="posts" items="${rel.value}">-->
-											<!--	<per:simplePub post="${posts}" />-->
-											<!--</c:forEach>-->
+										<div id="collapse_${collapseID}" class="collapse simplePub">
+											<c:forEach var="relation" items="${relations}">
+												<per:simplePub post="${relation.post}" />
+											</c:forEach>
 										</div>
 									</c:if>
 								</div>

@@ -3,9 +3,12 @@
 
 <sqlMap namespace="PersonGeneration">
 
-	<resultMap id="person" class="person" groupBy="personChangeId">
+	<resultMap id="simplePerson" class="person" groupBy="personChangeId">
 		<result property="personChangeId"	column="person_change_id"	javaType="int" />
 		<result property="personId"			column="person_id" 			javaType="string" />
+	</resultMap>
+
+	<resultMap id="person" class="person" groupBy="personChangeId" extends="PersonGeneration.simplePerson">
 		<result property="academicDegree"	column="academic_degree"	javaType="string" />
 		<result property="orcid"			column="orcid"				javaType="string" />
 		<result property="college"			column="college"			javaType="string" />
@@ -16,12 +19,21 @@
 		<result property="names"			resultMap="PersonGeneration.personName"/>
 		<result property="changeDate"		column="log_changed_at"		javaType="date" />
 	</resultMap>
-	
+
 	<resultMap id="personName" class="personName" groupBy="personNameChangeId">
 		<result property="personNameChangeId" column="person_name_change_id" javaType="int" />
 		<result property="firstName"		column="first_name"			javaType="string" />
 		<result property="lastName"			column="last_name"			javaType="string" />
 		<result property="isMain"			column="is_main"			javaType="boolean" />
+	</resultMap>
+
+	<resultMap id="personResourceRelation" class="resourcePersonRelation" groupBy="personRelChangeId">
+		<result property="personRelChangeId"	column="person_change_id"	javaType="int" />
+		<result property="relationType"			column="relator_code"		javaType="personResourceRelationType" />
+		<result property="changedAt"			column="log_changed_at"		javaType="date" />
+		<result property="personIndex"			column="person_index"		javaType="int" />
+		<result property="person"				resultMap="PersonGeneration.simplePerson" />
+		<result property="post" 				resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost" />
 	</resultMap>
 
 	<select id="getPersons" resultMap="person">
@@ -36,11 +48,27 @@
 		JOIN person_name pn USING(person_id)
 	</select>
 
+	<select id="getResourceRelations" resultMap="personResourceRelation">
+		SELECT ppr.*, <include refid="allGoldStandardPublicationAttributesSearch" />, b.simhash1 AS interHash, b.simhash2 AS intraHash, b.change_date, b.group, 'public' AS group_name, 1 AS count, b.content_id, -1 AS rating, -1 AS number_of_ratings
+		FROM
+			(
+				SELECT * from pub_person
+					WHERE person_change_id > #lastContentId#
+				ORDER BY person_change_id
+				LIMIT #limit#
+			) AS ppr
+		JOIN gold_standard b USING(simhash1)
+	</select>
+
 	<select id="getPersonsCount" resultClass="int">
 		SELECT count(*) FROM person p
 	</select>
 
 	<select id="getLastPersonChangeId" resultClass="int">
 		SELECT value FROM ids where name = 17
+	</select>
+
+	<select id="getPersonRelationsCount" resultClass="int">
+		SELECT count(*) FROM pub_person pp
 	</select>
 </sqlMap>

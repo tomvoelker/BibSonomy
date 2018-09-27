@@ -86,6 +86,7 @@
 	</bean>
 
 	<bean id="elasticsearchCommunityBookmarkConverter" class="org.bibsonomy.search.es.index.converter.post.CommunityBookmarkConverter" parent="elasticsearchResourceConverter" />
+
 	<bean id="elasticsearchCommunityPublicationConverter" class="org.bibsonomy.search.es.index.converter.post.CommunityPublicationConverter" parent="elasticsearchResourceConverter" />
 
 	<bean id="elasticsearchBookmarkEntityInformationProvider" class="org.bibsonomy.search.es.index.generator.post.PostEntityInformationProvider">

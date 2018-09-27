@@ -58,4 +58,13 @@ public abstract class EntityInformationProvider<E> {
 	public Set<String> getPrivateFields() {
 		return Collections.emptySet();
 	}
+
+	/**
+	 * the routing information for this entity
+	 * @param entity
+	 * @return
+	 */
+	public String getRouting(E entity) {
+		return null;
+	}
 }

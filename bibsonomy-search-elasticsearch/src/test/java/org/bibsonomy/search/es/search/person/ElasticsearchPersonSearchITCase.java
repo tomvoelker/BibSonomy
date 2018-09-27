@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
 import org.junit.Test;
@@ -29,6 +30,10 @@ public class ElasticsearchPersonSearchITCase extends AbstractPersonSearchTest {
 		final Person person = personSuggestions.get(0);
 		assertThat(person.getPersonId(), equalTo("h.muller"));
 
+		// check for the resource relations
+		final List<ResourcePersonRelation> resourceRelations = person.getResourceRelations();
+		assertThat(resourceRelations.size(), is(1));
+		assertThat(resourceRelations.get(0).getPost().getResource().getTitle(), equalTo("Wurst aufs Brot"));
 
 		final List<Person> lowerCaseResult = PERSON_SEARCH.getPersonSuggestions(new PersonSuggestionQuery("schorsche"));
 		assertThat(lowerCaseResult.size(), is(1));

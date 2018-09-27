@@ -137,7 +137,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 		final PersonName requestedName = personNames.get(requestedIndex);
 		command.setPersonName(requestedName);
 
-		// FIXME: move escape to es module
+		// FIXME: move escape to es module?
 		final String name = QueryParser.escape(BibTexUtils.cleanBibTex(requestedName.toString()));
 		final List<Person> persons = this.logic.getPersons(new PersonSuggestionQuery(name));
 
@@ -260,12 +260,12 @@ public class DisambiguationPageController extends SingleResourceListController i
 
 	private Person createPersonEntity(DisambiguationPageCommand command) {
 		final PersonName mainName = getMainPersonName(command);
-		
-		final Person person = new Person();
 		mainName.setMain(true);
+
+		final Person person = new Person();
 		person.setMainName(mainName);
+
 		this.logic.createOrUpdatePerson(person);
-		command.setPerson(person);
 		return person;
 	}
 

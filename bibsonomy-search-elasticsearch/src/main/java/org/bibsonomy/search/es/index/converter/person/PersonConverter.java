@@ -1,18 +1,19 @@
 package org.bibsonomy.search.es.index.converter.person;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.util.PersonNameUtils;
-import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.util.Converter;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,6 +60,8 @@ public class PersonConverter implements Converter<Person, Map<String, Object>, O
 
 		mapping.put(PersonFields.NAMES, convertedNames);
 		mapping.put(PersonFields.CHANGE_DATE, ElasticsearchUtils.dateToString(person.getChangeDate()));
+
+		mapping.put(PersonFields.JOIN_FIELD, Collections.singletonMap("name", PersonFields.TYPE_PERSON));
 		return mapping;
 	}
 
@@ -86,6 +89,7 @@ public class PersonConverter implements Converter<Person, Map<String, Object>, O
 		}
 
 		person.setNames(convertToNames(source.get(PersonFields.NAMES)));
+		person.setChangeDate(ElasticsearchUtils.parseDate(source, PersonFields.CHANGE_DATE));
 
 		return person;
 	}
