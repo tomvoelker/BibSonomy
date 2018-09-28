@@ -44,6 +44,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
@@ -115,6 +116,7 @@ public class PersonPageController extends SingleResourceListController implement
 				case "searchPub": return this.searchPubAction(command);
 				case "merge": return this.mergeAction(command);
 				case "searchPubAuthor": return this.searchPubAuthorAction(command);
+				case "linkPublication": return this.linkPublicationAction(command);
 
 				default: return indexAction();
 			}
@@ -338,6 +340,38 @@ public class PersonPageController extends SingleResourceListController implement
 	private View linkAction(PersonPageCommand command) {
 		this.logic.linkUser(command.getFormPersonId());
 		return Views.AJAX_TEXT;
+	}
+	
+	private View linkPublicationAction(PersonPageCommand command) {
+		final JSONObject jsonResponse = new JSONObject();
+		
+		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, command.getFormInterHash(), null, null, null, null, null, null, 0, 100);
+		
+		if (!present(posts)) {
+			throw new ObjectNotFoundException(command.getFormIntraHash());
+		}
+		
+		final Person person = logic.getPersonById(PersonIdType.PERSON_ID, command.getFormPersonId());
+		
+		final int index = posts.get(0).getResource().getAuthor().indexOf(person.getMainName());
+		
+		try {
+			final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
+			resourcePersonRelation.setPerson(person);
+			resourcePersonRelation.setPost(posts.get(0));
+			resourcePersonRelation.setRelationType(PersonResourceRelationType.AUTHOR);
+			resourcePersonRelation.setPersonIndex(index);
+			this.logic.addResourceRelation(resourcePersonRelation);
+		} catch (Exception e) {
+			jsonResponse.put("status", false);
+			// TODO: set proper error message
+			//jsonResponse.put("message", "Some error occured");
+			command.setResponseString(jsonResponse.toString());
+			return Views.AJAX_JSON;
+		}	
+		jsonResponse.put("status", true);
+		command.setResponseString(jsonResponse.toString());
+		return Views.AJAX_JSON;
 	}
 	
 	/**
