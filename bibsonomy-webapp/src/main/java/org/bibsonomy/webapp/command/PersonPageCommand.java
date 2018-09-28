@@ -60,6 +60,13 @@ public class PersonPageCommand extends BaseCommand {
 	
 	private String formSelectedName;
 
+	/** Properties if deleting relations */
+	private String typeToDelete;
+
+	private String interhashToDelete;
+
+	private String indexToDelete;
+
 	
 	@Deprecated // TODO: bind person directly
 	private String formResourceHash;
@@ -96,16 +103,16 @@ public class PersonPageCommand extends BaseCommand {
 	private Person person;
 	private Post<? extends Resource> post;
 	
-	private List<Post<?>> thesis;
-	private List<Post<?>> advisedThesis;
-	private List<Post<?>> allPosts;
+	private List<ResourcePersonRelation> thesis;
+	private List<ResourcePersonRelation> advisedThesis;
+	private List<ResourcePersonRelation> allPosts;
 	
 	@Deprecated // FIXME: access enum directly
 	private List<PersonResourceRelationType> availableRoles = new ArrayList<>();
 	
 	private String responseString;
-	private List<Post<?>> otherPubs;
-	private List<Post<?>> otherAdvisedPubs;
+	private List<ResourcePersonRelation> otherPubs;
+	private List<ResourcePersonRelation> otherAdvisedPubs;
 	
 	private List<Post<BibTex>> similarAuthorPubs;
 	
@@ -215,42 +222,42 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @return the thesis
 	 */
-	public List<Post<?>> getThesis() {
+	public List<ResourcePersonRelation> getThesis() {
 		return this.thesis;
 	}
 
 	/**
 	 * @param thesis the thesis to set
 	 */
-	public void setThesis(List<Post<?>> thesis) {
+	public void setThesis(List<ResourcePersonRelation> thesis) {
 		this.thesis = thesis;
 	}
 
 	/**
 	 * @return the advisedThesis
 	 */
-	public List<Post<?>> getAdvisedThesis() {
+	public List<ResourcePersonRelation> getAdvisedThesis() {
 		return this.advisedThesis;
 	}
 
 	/**
 	 * @param advisedThesis the advisedThesis to set
 	 */
-	public void setAdvisedThesis(List<Post<?>> advisedThesis) {
+	public void setAdvisedThesis(List<ResourcePersonRelation> advisedThesis) {
 		this.advisedThesis = advisedThesis;
 	}
 
 	/**
 	 * @return the allPosts
 	 */
-	public List<Post<?>> getAllPosts() {
+	public List<ResourcePersonRelation> getAllPosts() {
 		return this.allPosts;
 	}
 
 	/**
 	 * @param allPosts the allPosts to set
 	 */
-	public void setAllPosts(List<Post<?>> allPosts) {
+	public void setAllPosts(List<ResourcePersonRelation> allPosts) {
 		this.allPosts = allPosts;
 	}
 
@@ -469,27 +476,27 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @param otherAuthorPosts
 	 */
-	public void setOtherPubs(List<Post<?>> otherAuthorPosts) {
+	public void setOtherPubs(List<ResourcePersonRelation> otherAuthorPosts) {
 		this.otherPubs = otherAuthorPosts;
 	}
 
-	public List<Post<?>> getOtherPubs() {
+	public List<ResourcePersonRelation> getOtherPubs() {
 		return this.otherPubs;
 	}
 
 	/**
-	 * @param otherAdvisorPosts
+	 * @param otherAdvisedPubs
 	 */
-	public void setOtherAdvisedPubs(List<Post<?>> otherAdvisedPubs) {
+	public void setOtherAdvisedPubs(List<ResourcePersonRelation> otherAdvisedPubs) {
 		this.otherAdvisedPubs = otherAdvisedPubs;
 	}
 
-	public List<Post<?>> getOtherAdvisedPubs() {
+	public List<ResourcePersonRelation> getOtherAdvisedPubs() {
 		return this.otherAdvisedPubs;
 	}
 
 	/**
-	 * @param actionKeyCreateAndLinkPerson
+	 * @param okHintKey
 	 */
 	public void setOkHintKey(String okHintKey) {
 		this.okHintKey = okHintKey;
@@ -600,4 +607,45 @@ public class PersonPageCommand extends BaseCommand {
 		this.formResponseString = formResponseString;
 	}
 
+	/**
+	 * @return
+	 */
+	public String getTypeToDelete() {
+		return typeToDelete;
+	}
+
+	/**
+	 * @param typeToDelete
+	 */
+	public void setTypeToDelete(String typeToDelete) {
+		this.typeToDelete = typeToDelete;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getInterhashToDelete() {
+		return interhashToDelete;
+	}
+
+	/**
+	 * @param interhashToDelete
+	 */
+	public void setInterhashToDelete(String interhashToDelete) {
+		this.interhashToDelete = interhashToDelete;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getIndexToDelete() {
+		return indexToDelete;
+	}
+
+	/**
+	 * @param indexToDelete
+	 */
+	public void setIndexToDelete(String indexToDelete) {
+		this.indexToDelete = indexToDelete;
+	}
 }

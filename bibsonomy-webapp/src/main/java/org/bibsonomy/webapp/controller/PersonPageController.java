@@ -615,25 +615,25 @@ public class PersonPageController extends SingleResourceListController implement
 		}
 		
 		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear));
-		List<Post<?>> authorPosts = new ArrayList<>();
-		List<Post<?>> advisorPosts = new ArrayList<>();
-		List<Post<?>> otherAuthorPosts = new ArrayList<>();
-		List<Post<?>> otherAdvisorPosts = new ArrayList<>();
+		List<ResourcePersonRelation> authorRelations = new ArrayList<>();
+		List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
+		List<ResourcePersonRelation> otherAuthorRelations = new ArrayList<>();
+		List<ResourcePersonRelation> otherAdvisorRelationss = new ArrayList<>();
 
 		for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
 			final boolean isThesis = resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis");
 			
 			if (resourcePersonRelation.getRelationType().equals(PersonResourceRelationType.AUTHOR)) {
 				if (isThesis) {
-					authorPosts.add(resourcePersonRelation.getPost());
+					authorRelations.add(resourcePersonRelation);
 				} else {
-					otherAuthorPosts.add(resourcePersonRelation.getPost());
+					otherAuthorRelations.add(resourcePersonRelation);
 				}
 			} else {
 				if (isThesis) {
-					advisorPosts.add(resourcePersonRelation.getPost());
+					advisorRelations.add(resourcePersonRelation);
 				} else {
-					otherAdvisorPosts.add(resourcePersonRelation.getPost());
+					otherAdvisorRelationss.add(resourcePersonRelation);
 				}
 			}
 			
@@ -642,10 +642,10 @@ public class PersonPageController extends SingleResourceListController implement
 			resourcePersonRelation.getPost().getResource().setNumberOfRatings(null);
 		}
 		
-		command.setThesis(authorPosts);
-		command.setOtherPubs(otherAuthorPosts);
-		command.setAdvisedThesis(advisorPosts);
-		command.setOtherAdvisedPubs(otherAdvisorPosts);
+		command.setThesis(authorRelations);
+		command.setOtherPubs(otherAuthorRelations);
+		command.setAdvisedThesis(advisorRelations);
+		command.setOtherAdvisedPubs(otherAdvisorRelationss);
 		command.setPersonMatchList(this.logic.getPersonMatches(person.getPersonId()));
 		command.setMergeConflicts(PersonMatch.getMergeConflicts(command.getPersonMatchList()));
 		
@@ -741,7 +741,7 @@ public class PersonPageController extends SingleResourceListController implement
 			final String currentPostInterHash = post.getResource().getInterHash();
 
 			// remove post if it's already related to a person
-			for (final Post<?> personPost : postsOfSuggestedPersons) {				
+			for (final Post<?> personPost : postsOfSuggestedPersons) {
 				if (currentPostInterHash.equals(personPost.getResource().getInterHash())) {
 					noPersonRelPubList.remove(post);
 					break;

@@ -2,9 +2,10 @@
           xmlns="http://www.w3.org/1999/xhtml"
           xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-          xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex">
-	
-	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+          xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="relation" type="org.bibsonomy.model.ResourcePersonRelation" required="false"/>
 
 	<div class="simplePubEntry" 
 		data-year="${mtl:getDate('', '', post.resource.year, locale)}" 
@@ -15,14 +16,26 @@
 			<span class="simplePubTitle"><bib:title post="${post}" />
 				<span class="simplePubYear"><bib:year publication="${post.resource}" braces="true" /></span>
 			</span>
-            <span style="float: right;">
-                <button type="button" class="btn btn-xs" data-target="#unlinkPublication" data-toggle="modal">
-                    <span class="fa fa-trash" />
-                </button>
-            </span>
+            <c:if test="${not empty relation}" >
+                <span style="float: right;">
+                    <button type="button" class="btn btn-xs delete-button">
+                        <span class="fa fa-trash" />
+                    </button>
+                    <div class="hidden interhash">
+                        <c:out value="${post.resource.interHash}" />
+                    </div>
+                    <div class="hidden index">
+                        <c:out value="${relation.personIndex}" />
+                    </div>
+                    <div class="hidden type">
+                        <c:out value="${relation.relationType}" />
+                    </div>
+                </span>
+            </c:if>
 		</div>
 		<div class="clearflat"><!-- KEEP ME --></div>
 		<span class="simplePubAuthor"><bib:author publication="${post.resource}" post="${post}" /></span>
 		<span class="simplePubPublisher"><bib:publisher publication="${post.resource}" noComma="true" /></span>
+
     </div>
 </jsp:root>

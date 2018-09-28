@@ -390,7 +390,10 @@
                         <property name="controllerBeanName" value="deletePublicationFromPersonController"/>
                         <property name="allowedFields">
                             <list>
-                                <value>person</value>
+                                <value>person.personId</value>
+                                <value>typeToDelete</value>
+                                <value>interhashToDelete</value>
+                                <value>indexToDelete</value>
                             </list>
                         </property>
                     </bean>
@@ -816,7 +819,7 @@
 		<property name="personRoleRenderer" ref="personRoleRenderer"/>
 	</bean>
 
-    <bean id="deletePublicationFromPerson" class="org.bibsonomy.webapp.controller.DeletePublicationFromPersonController" scope="request">
+    <bean id="deletePublicationFromPersonController" class="org.bibsonomy.webapp.controller.DeletePublicationFromPersonController" scope="request">
         <property name="logic" ref="logic"/>
         <property name="urlGenerator" ref="relativeUrlGenerator" />
     </bean>
