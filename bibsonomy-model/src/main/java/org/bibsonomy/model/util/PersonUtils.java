@@ -28,8 +28,12 @@ package org.bibsonomy.model.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.util.StringUtils;
+
+import java.util.List;
 
 /**
  * util methods for {@link Person}
@@ -68,5 +72,52 @@ public final class PersonUtils {
 	 */
 	private static String normName(final String name) {
 		return StringUtils.foldToASCII(name.trim().toLowerCase().replaceAll("\\s", "_"));
+	}
+
+	/**
+	 * finds the index of the person in the author or editor list of the publication
+	 * @param person
+	 * @param resource
+	 * @return
+	 */
+	public static int findIndexOfPerson(final Person person, final BibTex resource) {
+		final int indexOfPerson = findIndexOfPerson(person, resource.getAuthor());
+		if (indexOfPerson >= 0) {
+			return indexOfPerson;
+		}
+
+		return findIndexOfPerson(person, resource.getEditor());
+	}
+
+	/**
+	 * finds the index of the person in the person list
+	 * see PersonNameUtils.getPositionsInPersonList (this list does not norm the person name)
+	 *
+	 * @param person
+	 * @param personNames
+	 * @return
+	 */
+	public static int findIndexOfPerson(final Person person, final List<PersonName> personNames) {
+		if (!present(personNames)) {
+			return -1;
+		}
+
+		// first try the main name to prefer it (mainname is also in the person name list of a person)
+		final int mainNameIndex = personNames.indexOf(person.getMainName());
+
+		if (mainNameIndex >= 0) {
+			return mainNameIndex;
+		}
+
+		// now try the other names
+		for (final PersonName personName : person.getNames()) {
+			final int personNameIndex = personNames.indexOf(personName);
+
+			if (personNameIndex >= 0) {
+				return personNameIndex;
+			}
+		}
+
+		return -1;
 	}
 }

@@ -830,7 +830,9 @@
 					</p>
 				</div>
 				<div class="modal-footer">
-					<form action="" method="post" class='form-inline' id='unlinkPersonForm'>
+					<form action="/addPersonResourceRelation" method="post" class='form-inline'>
+						<!-- FIXME: add person selector -->
+
 						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
 
 						<button type="button" class="btn btn-primary"
@@ -856,7 +858,7 @@
                     </button>
                 </div>
                 <div class="modal-footer">
-                    <form:form action="/deletePublicationFromPerson" method="post" >
+                    <form:form action="/deletePersonResourceRelation" method="post" >
                         <form:hidden path="person.personId" />
                         <form:hidden path="typeToDelete" />
                         <form:hidden path="interhashToDelete"/>

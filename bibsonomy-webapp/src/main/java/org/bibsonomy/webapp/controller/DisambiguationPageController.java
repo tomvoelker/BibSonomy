@@ -316,9 +316,10 @@ public class DisambiguationPageController extends SingleResourceListController i
 		final PersonName mainName = publicationNames.get(personIndex);
 		return mainName;
 	}
-	
-	
+
 	/**
+	 *
+	 * FIXME: remove this method, use the add resource relation controller
 	 * creates a new person, links the resource and redirects to the new person page
 	 * @param command
 	 * @return
