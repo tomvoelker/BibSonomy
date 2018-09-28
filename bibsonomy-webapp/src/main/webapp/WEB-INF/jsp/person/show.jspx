@@ -21,6 +21,8 @@
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:bsold="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 	xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"
 	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"> 
@@ -441,7 +443,7 @@
 				
 				<div id="otherPublicationsOfSimialrAuthor">
 					<c:forEach var="post" items="${command.similarAuthorPubs}">
-						<per:simplePubView post="${post}" />
+						<per:simplePubView post="${post}" buttons="true" personId="${command.person.personId}" />
 					</c:forEach>
 				</div>
 			</div>
@@ -818,6 +820,41 @@
 			</div>
 		</div>
 	</div>
+	
+	<!-- Link publication -->
+	<div class="modal fade" id="linkPublication" tabindex="-1" role="dialog"
+		aria-labelledby="linkPublicationLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
+					<h4 class="modal-title"><fmt:message key="person.show.modalLinkPublicationHeader" /></h4>
+				</div>
+				
+				<div class="modal-body">
+					<p>
+						<fmt:message key="person.show.modalLinkPublicationBody" /> <br/>
+						<strong id="modalLinkPublicationContentText">&#160;</strong>
+					</p>
+				</div>
+				<div class="modal-footer">
+					<form action="" method="post" class='form-inline' id='unlinkPersonForm'>
+						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+						
+						<button type="button" class="btn btn-primary" 
+						data-action='linkPublication' 
+						data-person-id='${command.person.personId}' 
+						data-interhash=""
+						id='btnLinkPulicationSubmit'>
+							<fmt:message key="friends.button.add" />
+						</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+
 						
   
 </jsp:root>
