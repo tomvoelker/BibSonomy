@@ -9,9 +9,7 @@
 
 
 	<!-- FIXME: rename file to simple relation view -->
-	<!-- FIXME: change relation to required true and remove post as attribute? -->
-    <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
-	<jsp:directive.attribute name="relation" type="org.bibsonomy.model.ResourcePersonRelation" required="false"/>
+	<jsp:directive.attribute name="relation" type="org.bibsonomy.model.ResourcePersonRelation" required="true"/>
 	<jsp:directive.attribute name="buttons" type="java.lang.Boolean" required="false" description="displays the accept/decline button bar"/>
 	<jsp:directive.attribute name="personId" type="java.lang.String" required="false" description="ID of the person"/>
 

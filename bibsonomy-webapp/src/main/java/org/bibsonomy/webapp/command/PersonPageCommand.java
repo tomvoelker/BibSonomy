@@ -114,7 +114,7 @@ public class PersonPageCommand extends BaseCommand {
 	private List<ResourcePersonRelation> otherPubs;
 	private List<ResourcePersonRelation> otherAdvisedPubs;
 	
-	private List<Post<BibTex>> similarAuthorPubs;
+	private List<ResourcePersonRelation> similarAuthorPubs;
 	
 	private List<PersonMatch> personMatchList;
 	
@@ -540,14 +540,14 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @return the similarAuthorPubs
 	 */
-	public List<Post<BibTex>> getSimilarAuthorPubs() {
+	public List<ResourcePersonRelation> getSimilarAuthorPubs() {
 		return this.similarAuthorPubs;
 	}
 
 	/**
 	 * @param similarAuthorPubs the similarAuthorPubs to set
 	 */
-	public void setSimilarAuthorPubs(List<Post<BibTex>> similarAuthorPubs) {
+	public void setSimilarAuthorPubs(List<ResourcePersonRelation> similarAuthorPubs) {
 		this.similarAuthorPubs = similarAuthorPubs;
 	}
 

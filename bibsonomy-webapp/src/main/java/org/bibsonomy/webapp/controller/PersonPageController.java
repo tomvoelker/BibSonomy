@@ -650,10 +650,17 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setOtherAdvisedPubs(otherAdvisorRelationss);
 		command.setPersonMatchList(this.logic.getPersonMatches(person.getPersonId()));
 		command.setMergeConflicts(PersonMatch.getMergeConflicts(command.getPersonMatchList()));
-		
+
+
 		final List<Post<BibTex>> similarAuthorPubs = this.getPublicationsOfSimilarAuthor(person);
 
-		command.setSimilarAuthorPubs(similarAuthorPubs);
+		List<ResourcePersonRelation> similarAuthorRelations = new ArrayList<>();
+		for (Post<BibTex> post : similarAuthorPubs) {
+			ResourcePersonRelation relation = new ResourcePersonRelation();
+			relation.setPost(post);
+			similarAuthorRelations.add(relation);
+		}
+		command.setSimilarAuthorPubs(similarAuthorRelations);
 		
 		return Views.PERSON_SHOW;
 	}
@@ -750,7 +757,7 @@ public class PersonPageController extends SingleResourceListController implement
 				}
 			}
 		}
-				
+
 		return noPersonRelPubList;
 	}
 	
