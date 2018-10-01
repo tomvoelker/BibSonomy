@@ -3,8 +3,9 @@
           xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
           xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
-		  xmlns:c="http://java.sun.com/jsp/jstl/core"
-		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 
 	<!-- FIXME: rename file to simple relation view -->
@@ -56,19 +57,12 @@
 			</span>
 			<c:if test="${not empty relation}">
                 <span style="float: right;">
-                    <button type="button" class="btn btn-xs delete-button">
+                    <button type="button" class="btn btn-xs delete-button"
+                    data-interhash="${post.resource.interHash}"
+                    data-personIndex="${relation.personIndex}"
+                    data-relationType="${relation.relationType}">
                         <span class="fa fa-trash"/>
                     </button>
-					<!-- FIXME: these values should be data-* attributes of the button -->
-                    <div class="hidden interhash">
-                        <c:out value="${post.resource.interHash}"/>
-                    </div>
-                    <div class="hidden index">
-                        <c:out value="${relation.personIndex}"/>
-                    </div>
-                    <div class="hidden type">
-                        <c:out value="${relation.relationType}"/>
-                    </div>
                 </span>
 			</c:if>
 		</div>
