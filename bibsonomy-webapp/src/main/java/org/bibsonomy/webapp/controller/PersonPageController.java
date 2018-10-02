@@ -60,6 +60,7 @@ import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
 import org.bibsonomy.webapp.command.PersonPageCommand;
@@ -658,6 +659,8 @@ public class PersonPageController extends SingleResourceListController implement
 		for (Post<BibTex> post : similarAuthorPubs) {
 			ResourcePersonRelation relation = new ResourcePersonRelation();
 			relation.setPost(post);
+			relation.setPersonIndex(PersonUtils.findIndexOfPerson(person, post.getResource()));
+			relation.setRelationType(PersonUtils.getRelationType(person, post.getResource()));
 			similarAuthorRelations.add(relation);
 		}
 		command.setSimilarAuthorPubs(similarAuthorRelations);

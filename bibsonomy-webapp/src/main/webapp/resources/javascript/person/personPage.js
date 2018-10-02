@@ -387,44 +387,6 @@ $(document).ready(function() {
 		});	
 	});
 	
-	
-	$(".linkPublicationButton").on("click", function() {
-		var e = $(this);
-		$("#btnLinkPulicationSubmit").attr("data-interhash", e.data("interhash"));
-		$("#modalLinkPublicationContentText").text(e.closest(".simplePubEntry").data("title"));
-		
-	});
-	
-	$("#btnLinkPulicationSubmit").on("click", function() {	
-		$.post("/person",
-				{ 	formAction: "linkPublication",
-					formPersonId: $(this).attr("data-person-id"),
-					formInterHash: $(this).attr("data-interhash")
-				}
-		).done(function(data) {
-			if (data.status) {
-				// everything is fine - reload to render the page again
-				location.reload();
-			} else {
-				$("#linkPublication").modal("hide");
-				// error during update
-				if (data.message != "") {
-					// display the error somewhere
-					$("#personPageAjaxError").text(data.message).show();
-				} else {
-					$("#personPageAjaxError").show();
-					$("personPageAjaxErrorDefaultMessage").show();
-				}
-			}
-		});
-		
-		
-		
-		
-	});
-	
-	
-	
 	// inserts the the values into the modal (TODO: check if data can be taken from fields)
 	$(".removeName").on("click", function() {
 		var e = $(this);

@@ -49,7 +49,8 @@
 			<script type='text/javascript' src='/resources/javascript/person/roles.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/titleAutocomplete.js'><!-- keep me --></script>
 
-            <script type='text/javascript' src='/resources/javascript/person/deletePublicationModal.js'><!-- keep me --></script>
+            <script type='text/javascript' src='/resources/javascript/person/deletePersonRelationResource.js'><!-- keep me --></script>
+            <script type='text/javascript' src='/resources/javascript/person/addPersonRelationResource.js'><!-- keep me --></script>
 
 			<script type='text/javascript' src='/resources/jquery/plugins/jquery.maskedinput.js'><!-- keep me --></script>
 
@@ -813,31 +814,30 @@
 	</div>
 
 	<!-- Link publication -->
-	<div class="modal fade" id="linkPublication" tabindex="-1" role="dialog"
-		aria-labelledby="linkPublicationLabel" aria-hidden="true">
+	<div class="modal fade" id="linkPublication" tabindex="-1" role="dialog" aria-labelledby="linkPublicationLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
 					<h4 class="modal-title"><fmt:message key="person.show.modalLinkPublicationHeader" /></h4>
 				</div>
-
 				<div class="modal-body">
-					<p>
-						<fmt:message key="person.show.modalLinkPublicationBody" /> <br/>
-						<strong id="modalLinkPublicationContentText">&#160;</strong>
-					</p>
-				</div>
+					<fmt:message key="person.show.modalLinkPublicationBody" /> <br/>
+					<strong id="modalLinkPublicationContentText">&#160;</strong> <br/> <br/>
+                    <fmt:message key="person.show.modalLinkPublicationSelect"/> <br/>
+                    <!-- select will be dynamically filled by addPersonRelationResource.js -->
+                    <select class="form-control" id="addPublicationAuthorSelect"/>
+                </div>
+                <!-- todo why does it disappear? -->
 				<div class="modal-footer">
-					<form:form action="/addPersonResourceRelation" method="post">
-						<!-- FIXME: add person selector -->
+					<form:form action="/addPersonResourceRelation" method="post" id="addPersonResourceRelationForm">
+						<form:hidden path="index" />
                         <form:hidden path="person.personId"/>
                         <form:hidden path="interhash"/>
-
-						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
-
+                        <form:hidden path="type"/>
+						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
 						<fmt:message key="friends.button.add" var="add"/>
-						<input type="submit" class="btn btn-primary" value="${add}" data-action='linkPublication' id='btnLinkPulicationSubmit'/>
+						<input type="submit" class="btn btn-primary" value="${add}"/>
 					</form:form>
 				</div>
 			</div>
@@ -859,7 +859,7 @@
                         <form:hidden path="type"/>
                         <form:hidden path="interhash"/>
                         <form:hidden path="index"/>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><fmt:message key="close"/></button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">${textClose}</button>
                         <fmt:message key="delete" var="delete" />
                         <input type="submit" class="btn btn-primary" value="${delete}"/>
                     </form:form>

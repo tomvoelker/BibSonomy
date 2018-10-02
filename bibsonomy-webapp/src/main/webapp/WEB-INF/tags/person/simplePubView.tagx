@@ -41,15 +41,12 @@
 				<!-- href="${absoluteUrlGenerator.getPersonUrl(personId)}" -->
 				<c:choose>
                     <c:when test="${addPub}">
-                        <a class='btn btn-success btn-sm linkPublicationButton'
-                            href="#linkPublication"
-                            data-toggle="modal"
-                            data-person-url="${relativeUrlGenerator.getPersonUrl(personId)}"
-                            data-person-id="${fn:escapeXml(personId)}"
-                            data-interhash="${post.resource.interHash}"
-                            dataTarget="#linkPublication">
+                        <button type="button" class="btn btn-success btn-sm add-button"
+                                data-interhash="${post.resource.interHash}"
+                                data-index="${relation.personIndex}"
+                                data-type="${relation.relationType}">
                             <fontawesome:icon icon="check" spaceAfter="0" />
-                        </a>
+                        </button>
                     </c:when>
                     <c:otherwise>
                         <button type="button" class="btn btn-xs delete-button"

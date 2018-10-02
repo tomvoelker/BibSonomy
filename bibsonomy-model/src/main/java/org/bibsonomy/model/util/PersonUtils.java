@@ -31,6 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.util.StringUtils;
 
 import java.util.List;
@@ -119,5 +120,25 @@ public final class PersonUtils {
 		}
 
 		return -1;
+	}
+
+	/**
+	 * Returns the relation of the person of a post. Is either AUTHOR or EDITOR
+	 * @param person
+	 * @param resource
+	 * @return
+	 */
+	public static PersonResourceRelationType getRelationType(final Person person, final BibTex resource){
+		if (!present(resource)) {
+			return null;
+		}
+		PersonName name = person.getMainName();
+		if (resource.getAuthor().contains(name)) {
+			return PersonResourceRelationType.AUTHOR;
+		}
+		if (resource.getEditor().contains(name)) {
+			return PersonResourceRelationType.EDITOR;
+		}
+		return null;
 	}
 }
