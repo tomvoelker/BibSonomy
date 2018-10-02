@@ -11,11 +11,17 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.util.PersonUtils;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.person.relation.PersonResourceRelationCommand;
+import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.bibsonomy.webapp.view.Views;
 import org.json.simple.JSONObject;
+import org.springframework.validation.Errors;
 
 import java.util.List;
 
@@ -26,9 +32,10 @@ import java.util.List;
  *
  * @author dzo, mho
  */
-public class AddPersonResourceRelationController implements MinimalisticController<PersonResourceRelationCommand> {
-
+public class AddPersonResourceRelationController implements MinimalisticController<PersonResourceRelationCommand>, ErrorAware {
 	private LogicInterface logic;
+	private URLGenerator urlGenerator;
+	private Errors errors;
 
 	@Override
 	public PersonResourceRelationCommand instantiateCommand() {
@@ -55,25 +62,29 @@ public class AddPersonResourceRelationController implements MinimalisticControll
 		final String personId = command.getPerson().getPersonId();
 		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, personId);
 
+		if (!present(type)) {
+			PersonUtils.getRelationType(person, post.getResource());
+		}
+
 		// TODO: what should we do when the person was not found?
 
 		try {
 			final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
 			resourcePersonRelation.setPerson(person);
-			resourcePersonRelation.setPost(post);
 			resourcePersonRelation.setRelationType(type);
 			resourcePersonRelation.setPersonIndex(index);
+			resourcePersonRelation.setPost(post);
 			this.logic.addResourceRelation(resourcePersonRelation);
-		} catch (Exception e) {
-			jsonResponse.put("status", false);
-			// TODO: set proper error message
-			//jsonResponse.put("message", "Some error occured");
-			command.setResponseString(jsonResponse.toString());
-			return Views.AJAX_JSON;
+		} catch (ResourcePersonAlreadyAssignedException e) {
+			errors.reject("person.error.addRelation");
 		}
-		jsonResponse.put("status", true);
-		command.setResponseString(jsonResponse.toString());
-		return Views.AJAX_JSON;
+		final ExtendedRedirectViewWithAttributes redirect = new ExtendedRedirectViewWithAttributes(this.urlGenerator.getPersonUrl(personId));
+		if (this.errors.hasErrors()) {
+			redirect.addAttribute(ExtendedRedirectViewWithAttributes.ERRORS_KEY, this.errors);
+		} else {
+			redirect.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "person.success.addRelation");
+		}
+		return redirect;
 	}
 
 	/**
@@ -81,5 +92,22 @@ public class AddPersonResourceRelationController implements MinimalisticControll
 	 */
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
+	}
+
+	/**
+	 * @param urlGenerator
+	 */
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
+	}
+
+	@Override
+	public Errors getErrors() {
+		return errors;
+	}
+
+	@Override
+	public void setErrors(Errors errors) {
+		this.errors = errors;
 	}
 }

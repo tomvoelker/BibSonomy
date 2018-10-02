@@ -15,7 +15,7 @@ $(document).ready(function() {
         $('#addPublicationAuthorSelect').val(index);
         var type = ele.data('type');
         var interhash = ele.data('interhash');
-        var form = $('#deletePersonResourceRelationForm');
+        var form = $('#addPersonResourceRelationForm');
         form.find('#interhash').val(interhash);
         form.find('#index').val(index);
         form.find('#type').val(type);
@@ -23,7 +23,7 @@ $(document).ready(function() {
     });
 
     $('#addPublicationAuthorSelect').change(function() {
-        $('#deletePersonResourceRelationForm').find('#index').val($(this).val())
+        $('#addPersonResourceRelationForm').find('#index').val($(this).val())
     });
 });
 

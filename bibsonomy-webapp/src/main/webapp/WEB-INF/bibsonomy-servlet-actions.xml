@@ -1358,8 +1358,9 @@
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
 	</bean>
 
-	<bean id="addPersonResoruceRelationController" class="org.bibsonomy.webapp.controller.person.relation.AddPersonResourceRelationController" scope="request">
+	<bean id="addPersonResourceRelationController" class="org.bibsonomy.webapp.controller.person.relation.AddPersonResourceRelationController" scope="request">
 		<property name="logic" ref="logic"/>
+        <property name="urlGenerator" ref="relativeUrlGenerator" />
 	</bean>
 	
 	<bean id="vuFindUserInitController" class="org.bibsonomy.webapp.controller.actions.VuFindUserInitController" scope="request" lazy-init="true">

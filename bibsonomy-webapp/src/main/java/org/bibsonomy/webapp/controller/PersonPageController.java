@@ -93,12 +93,12 @@ public class PersonPageController extends SingleResourceListController implement
 		if (!present(formAction) && !present(command.getRequestedPersonId())){
 			throw new MalformedURLSchemeException("The person page was requested without a person in the request.");
 		}
-		
-		if (!context.isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
-		}
+
 		
 		if (present(formAction)) {
+			if (!context.isValidCkey()) {
+				errors.reject("error.field.valid.ckey");
+			}
 			switch(formAction) {
 				case "conflictMerge": return this.conflictMerge(command);
 				case "getConflict": return this.getConflicts(command);

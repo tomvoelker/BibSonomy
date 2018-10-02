@@ -96,6 +96,8 @@
 					</jsp:attribute>
 				</bs:alert>
 			</c:if>
+
+            <errors:global/>
 	
 			<form method='post' name='personForm' id="personForm" action="" class='form-horizontal'>
 				<input type="hidden" name="ckey" value="${ckey}"/>
@@ -822,25 +824,27 @@
 					<h4 class="modal-title"><fmt:message key="person.show.modalLinkPublicationHeader" /></h4>
 				</div>
 				<div class="modal-body">
-					<fmt:message key="person.show.modalLinkPublicationBody" /> <br/>
-					<strong id="modalLinkPublicationContentText">&#160;</strong> <br/> <br/>
+                    <fmt:message key="person.show.modalLinkPublicationBody" /> <br/>
+                    <strong id="modalLinkPublicationContentText">&#160;</strong> <br/> <br/>
                     <fmt:message key="person.show.modalLinkPublicationSelect"/> <br/>
-                    <!-- select will be dynamically filled by addPersonRelationResource.js -->
-                    <select class="form-control" id="addPublicationAuthorSelect"/>
+                    <label class="item item-select">
+                        <select class="form-control" id="addPublicationAuthorSelect">
+                            <!-- select will be dynamically filled by addPersonRelationResource.js. Keep me. -->
+                        </select>
+                    </label>
                 </div>
-                <!-- todo why does it disappear? -->
-				<div class="modal-footer">
-					<form:form action="/addPersonResourceRelation" method="post" id="addPersonResourceRelationForm">
-						<form:hidden path="index" />
+                <div class="modal-footer">
+                    <form:form action="/addPersonResourceRelation" method="post" id="addPersonResourceRelationForm">
+                        <form:hidden path="index" />
                         <form:hidden path="person.personId"/>
                         <form:hidden path="interhash"/>
                         <form:hidden path="type"/>
-						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
-						<fmt:message key="friends.button.add" var="add"/>
-						<input type="submit" class="btn btn-primary" value="${add}"/>
-					</form:form>
-				</div>
-			</div>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
+                        <fmt:message key="friends.button.add" var="add"/>
+                        <input type="submit" class="btn btn-primary" value="${add}"/>
+                    </form:form>
+                </div>
+            </div>
 		</div>
 	</div>
 

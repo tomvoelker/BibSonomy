@@ -4,18 +4,21 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.person.relation.PersonResourceRelationCommand;
+import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
+import org.springframework.validation.Errors;
 
 /**
  * TODO: add documentetion to this controller
  *
  * @author tok
  */
-public class DeletePersonResourceRelationController implements MinimalisticController<PersonResourceRelationCommand> {
+public class DeletePersonResourceRelationController implements MinimalisticController<PersonResourceRelationCommand>, ErrorAware {
 	private LogicInterface logic;
 	private URLGenerator urlGenerator;
+	private Errors errors;
 
 	@Override
 	public PersonResourceRelationCommand instantiateCommand() {
@@ -29,8 +32,18 @@ public class DeletePersonResourceRelationController implements MinimalisticContr
 		final String interhashToDelete = command.getInterhash();
 		final int indexToDelete = command.getIndex();
 
-		// this.logic.removeResourceRelation(interhashToDelete, indexToDelete, typeToDelete);
-		return new ExtendedRedirectView(this.urlGenerator.getPersonUrl(personId));
+		try {
+			this.logic.removeResourceRelation(interhashToDelete, indexToDelete, typeToDelete);
+		} catch (Exception e) {
+			errors.reject("person.error.addRelation");
+		}
+		final ExtendedRedirectViewWithAttributes redirect = new ExtendedRedirectViewWithAttributes(this.urlGenerator.getPersonUrl(personId));
+		if (this.errors.hasErrors()) {
+			redirect.addAttribute(ExtendedRedirectViewWithAttributes.ERRORS_KEY, this.errors);
+		} else {
+			redirect.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "person.success.addRelation");
+		}
+		return redirect;
 	}
 
 	/**
@@ -45,5 +58,15 @@ public class DeletePersonResourceRelationController implements MinimalisticContr
 	 */
 	public void setUrlGenerator(URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
+	}
+
+	@Override
+	public Errors getErrors() {
+		return this.errors;
+	}
+
+	@Override
+	public void setErrors(Errors errors) {
+		this.errors = errors;
 	}
 }
