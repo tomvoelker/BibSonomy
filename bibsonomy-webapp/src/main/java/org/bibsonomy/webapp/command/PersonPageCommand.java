@@ -60,12 +60,12 @@ public class PersonPageCommand extends BaseCommand {
 	
 	private String formSelectedName;
 
-	/** Properties if deleting relations */
-	private String typeToDelete;
+	/** Properties if deleting or adding relations */
+	private String type;
 
-	private String interhashToDelete;
+	private String interhash;
 
-	private String indexToDelete;
+	private String index;
 
 	
 	@Deprecated // TODO: bind person directly
@@ -610,42 +610,42 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @return
 	 */
-	public String getTypeToDelete() {
-		return typeToDelete;
+	public String getType() {
+		return type;
 	}
 
 	/**
-	 * @param typeToDelete
+	 * @param type
 	 */
-	public void setTypeToDelete(String typeToDelete) {
-		this.typeToDelete = typeToDelete;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getInterhashToDelete() {
-		return interhashToDelete;
-	}
-
-	/**
-	 * @param interhashToDelete
-	 */
-	public void setInterhashToDelete(String interhashToDelete) {
-		this.interhashToDelete = interhashToDelete;
+	public void setType (String type) {
+		this.type = type;
 	}
 
 	/**
 	 * @return
 	 */
-	public String getIndexToDelete() {
-		return indexToDelete;
+	public String getInterhash() {
+		return interhash;
 	}
 
 	/**
-	 * @param indexToDelete
+	 * @param interhash
 	 */
-	public void setIndexToDelete(String indexToDelete) {
-		this.indexToDelete = indexToDelete;
+	public void setInterhash(String interhash) {
+		this.interhash = interhash;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getIndex() {
+		return index;
+	}
+
+	/**
+	 * @param index
+	 */
+	public void setIndex(String index) {
+		this.index = index;
 	}
 }

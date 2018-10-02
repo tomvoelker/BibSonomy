@@ -850,10 +850,10 @@
 	</util:list>
 
 	<util:list id="personRelationParameters">
-		<value>personId</value>
-		<value>typeToDelete</value>
-		<value>interhashToDelete</value>
-		<value>indexToDelete</value>
+		<value>person.personId</value>
+		<value>type</value>
+		<value>interhash</value>
+		<value>index</value>
 	</util:list>
 
 	<!--  #################### controller #################### -->

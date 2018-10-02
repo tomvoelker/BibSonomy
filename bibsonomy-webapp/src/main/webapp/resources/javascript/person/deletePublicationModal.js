@@ -7,9 +7,10 @@ $(document).ready(function() {
         var interhash = ele.data('interhash');
         var index = ele.data('personindex');
         var type = ele.data('relationtype');
-        $('#interhashToDelete').val(interhash);
-        $('#indexToDelete').val(index);
-        $('#typeToDelete').val(type);
+        var form = $('#deletePersonResourceRelationForm');
+        form.find('#interhash').val(interhash);
+        form.find('#index').val(index);
+        form.find('#type').val(type);
         $("#unlinkPublication").modal("toggle");
     });
 });

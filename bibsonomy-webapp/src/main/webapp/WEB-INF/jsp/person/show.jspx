@@ -405,7 +405,7 @@
 				
 				<div id="otherPublications">
 					<c:forEach var="relation" items="${command.otherPubs}">
-						<per:simplePubView relation="${relation}" />
+						<per:simplePubView relation="${relation}" buttons="true"/>
 					</c:forEach>
 				</div>
 				
@@ -424,17 +424,17 @@
 							<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
 							<ul class="dropdown-menu">
 								<li class="dropdown-header"><fmt:message key="post.meta.sort.criterion" /></li>
-								<li class="enabled"><span data-div="otherPublicationsOfSimialrAuthor" data-sort="year" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="clock-o" spaceAfter="5" /><fmt:message key="post.resource.year"/></span></li>
-								<li><span data-div="otherPublicationsOfSimialrAuthor" data-sort="title" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.title"/></span></li>
-								<li><span data-div="otherPublicationsOfSimialrAuthor" data-sort="author" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.author"/></span></li>
+								<li class="enabled"><span data-div="otherPublicationsOfSimilarAuthor" data-sort="year" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="clock-o" spaceAfter="5" /><fmt:message key="post.resource.year"/></span></li>
+								<li><span data-div="otherPublicationsOfSimilarAuthor" data-sort="title" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.title"/></span></li>
+								<li><span data-div="otherPublicationsOfSimilarAuthor" data-sort="author" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.author"/></span></li>
 							</ul>
 						</div>
 					</div>
 				</h3>
 				
-				<div id="otherPublicationsOfSimialrAuthor">
+				<div id="otherPublicationsOfSimilarAuthor">
 					<c:forEach var="relation" items="${command.similarAuthorPubs}">
-						<per:simplePubView relation="${relation}" buttons="true" personId="${command.person.personId}"/>
+						<per:simplePubView relation="${relation}" buttons="true" addPub="true" personId="${command.person.personId}"/>
 					</c:forEach>
 				</div>
 			</div>
@@ -829,19 +829,16 @@
 					</p>
 				</div>
 				<div class="modal-footer">
-					<form action="/addPersonResourceRelation" method="post" class='form-inline'>
+					<form:form action="/addPersonResourceRelation" method="post">
 						<!-- FIXME: add person selector -->
+                        <form:hidden path="person.personId"/>
+                        <form:hidden path="interhash"/>
 
 						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
 
-						<button type="button" class="btn btn-primary"
-						data-action='linkPublication'
-						data-person-id='${command.person.personId}'
-						data-interhash=""
-						id='btnLinkPulicationSubmit'>
-							<fmt:message key="friends.button.add" />
-						</button>
-					</form>
+						<fmt:message key="friends.button.add" var="add"/>
+						<input type="submit" class="btn btn-primary" value="${add}" data-action='linkPublication' id='btnLinkPulicationSubmit'/>
+					</form:form>
 				</div>
 			</div>
 		</div>
@@ -857,14 +854,14 @@
                     </button>
                 </div>
                 <div class="modal-footer">
-                    <form:form action="/deletePersonResourceRelation" method="post" >
-                        <form:hidden path="person.personId" />
-                        <form:hidden path="typeToDelete" />
-                        <form:hidden path="interhashToDelete"/>
-                        <form:hidden path="indexToDelete"/>
+                    <form:form action="/deletePersonResourceRelation" method="post" id="deletePersonResourceRelationForm">
+                        <form:hidden path="person.personId"/>
+                        <form:hidden path="type"/>
+                        <form:hidden path="interhash"/>
+                        <form:hidden path="index"/>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><fmt:message key="close"/></button>
                         <fmt:message key="delete" var="delete" />
-                        <input type="submit" class="btn btn-primary" value="${delete}" size="defaultSize" />
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <input type="submit" class="btn btn-primary" value="${delete}"/>
                     </form:form>
                 </div>
             </div>

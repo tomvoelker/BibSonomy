@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.command.person.relation;
 
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.webapp.command.ajax.AjaxCommand;
 
@@ -8,26 +9,26 @@ import org.bibsonomy.webapp.command.ajax.AjaxCommand;
  */
 public class PersonResourceRelationCommand extends AjaxCommand<Void> {
 
-	private String personId;
+	private Person person;
 
 	private PersonResourceRelationType type;
 
-	private String interHash;
+	private String interhash;
 
 	private int index;
 
 	/**
-	 * @return the personId
+	 * @return the person
 	 */
-	public String getPersonId() {
-		return personId;
+	public Person getPerson() {
+		return person;
 	}
 
 	/**
-	 * @param personId the personId to set
+	 * @param person the personId to set
 	 */
-	public void setPersonId(String personId) {
-		this.personId = personId;
+	public void setPerson(Person person) {
+		this.person = person;
 	}
 
 	/**
@@ -45,17 +46,17 @@ public class PersonResourceRelationCommand extends AjaxCommand<Void> {
 	}
 
 	/**
-	 * @return the interHash
+	 * @return the interhash
 	 */
-	public String getInterHash() {
-		return interHash;
+	public String getInterhash() {
+		return interhash;
 	}
 
 	/**
-	 * @param interHash the interHash to set
+	 * @param interhash the interHash to set
 	 */
-	public void setInterHash(String interHash) {
-		this.interHash = interHash;
+	public void setInterhash(String interhash) {
+		this.interhash = interhash;
 	}
 
 	/**

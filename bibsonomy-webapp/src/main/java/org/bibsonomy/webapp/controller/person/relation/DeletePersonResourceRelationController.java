@@ -24,12 +24,12 @@ public class DeletePersonResourceRelationController implements MinimalisticContr
 
 	@Override
 	public View workOn(final PersonResourceRelationCommand command) {
-		final String personId = command.getPersonId();
+		final String personId = command.getPerson().getPersonId();
 		final PersonResourceRelationType typeToDelete = command.getType();
-		final String interhashToDelete = command.getInterHash();
+		final String interhashToDelete = command.getInterhash();
 		final int indexToDelete = command.getIndex();
 
-		this.logic.removeResourceRelation(interhashToDelete, indexToDelete, typeToDelete);
+		// this.logic.removeResourceRelation(interhashToDelete, indexToDelete, typeToDelete);
 		return new ExtendedRedirectView(this.urlGenerator.getPersonUrl(personId));
 	}
 

@@ -39,7 +39,7 @@ public class AddPersonResourceRelationController implements MinimalisticControll
 	public View workOn(PersonResourceRelationCommand command) {
 		final JSONObject jsonResponse = new JSONObject();
 
-		final String interhash = command.getInterHash();
+		final String interhash = command.getInterhash();
 		final int index = command.getIndex();
 		final PersonResourceRelationType type = command.getType();
 
@@ -52,7 +52,7 @@ public class AddPersonResourceRelationController implements MinimalisticControll
 
 		final Post<BibTex> post = posts.get(0);
 
-		final String personId = command.getPersonId();
+		final String personId = command.getPerson().getPersonId();
 		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, personId);
 
 		// TODO: what should we do when the person was not found?
