@@ -119,13 +119,7 @@ public class PersonMatch implements Serializable {
 	public void setUserDenies(List<String> userDenies) {
 		this.userDenies = userDenies;
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	
-	
-	
+
 	public int equals(PersonMatch match) {
 		if ((this.person1.getPersonId().equals(match.getPerson1().getPersonId()) && this.person2.getPersonId().equals(match.getPerson2().getPersonId()))
 				|| (this.person1.getPersonId().equals(match.getPerson2().getPersonId()) && this.person2.getPersonId().equals(match.getPerson1().getPersonId()))) {
@@ -159,6 +153,8 @@ public class PersonMatch implements Serializable {
 	}
 	
 	/**
+	 * FIXME: logic code in model class, please move
+	 *
 	 * returns a map that contains for each match in matches a list
 	 * @param matches
 	 * @return
@@ -166,10 +162,10 @@ public class PersonMatch implements Serializable {
 	public static Map<Integer, PersonMergeFieldConflict[]> getMergeConflicts(List<PersonMatch> matches){
 		//A map with a list of conflicts for every match of a person
 		//If a match does not have any conflict it has an entry with an empty list
-		Map<Integer, PersonMergeFieldConflict[]> map = new HashMap<Integer, PersonMergeFieldConflict[]>();
+		Map<Integer, PersonMergeFieldConflict[]> map = new HashMap<>();
 		for(PersonMatch match : matches){
 			//the list of all fields that are holding a conflict
-			List<PersonMergeFieldConflict> conflictFields = new LinkedList<PersonMergeFieldConflict>();
+			List<PersonMergeFieldConflict> conflictFields = new LinkedList<>();
 			try {
 				for (String fieldName : Person.fieldsWithResolvableMergeConflicts) {
 					PropertyDescriptor desc = new PropertyDescriptor(fieldName, Person.class);
@@ -208,24 +204,26 @@ public class PersonMatch implements Serializable {
 	}
 	
 	/**
+	 * FIXME: logic code in model class, please move
+	 *
 	 * tests if the merge can be performed without a conflict on user claims
 	 * @param loginUser
-	 * @return
+	 * @return TODO: document what this method returns
 	 */
-	public Boolean testMergeOnClaims(String loginUser) {
-		Boolean p1Claim = ValidationUtils.present(getPerson1().getUser());
-		Boolean p2Claim = ValidationUtils.present(getPerson2().getUser());
-	
+	public boolean testMergeOnClaims(User loginUser) {
+		final String loggedinUserName = loginUser.getName();
+		final boolean p1Claim = ValidationUtils.present(getPerson1().getUser());
+		final boolean p2Claim = ValidationUtils.present(getPerson2().getUser());
 		if (p1Claim && p2Claim) {
 			return false;
 		} else if (!p1Claim && !p2Claim) {
 			return true;
 		} else if (p1Claim) {
 			//TODO notify user1 that their is a merge
-			return getPerson1().getUser().equals(loginUser);
+			return getPerson1().getUser().equals(loggedinUserName);
 		} else {
 			//TODO notify user2 that their is a merge
-			return getPerson2().getUser().equals(loginUser);
+			return getPerson2().getUser().equals(loggedinUserName);
 		}	
 	}
 	

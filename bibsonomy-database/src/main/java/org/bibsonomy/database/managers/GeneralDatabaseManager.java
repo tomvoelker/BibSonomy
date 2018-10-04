@@ -47,6 +47,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * @return the singleton instance
 	 */
+	@Deprecated // inject via spring
 	public static GeneralDatabaseManager getInstance() {
 		return singleton;
 	}
