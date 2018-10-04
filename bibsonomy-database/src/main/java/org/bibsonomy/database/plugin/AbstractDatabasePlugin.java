@@ -40,6 +40,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
@@ -233,7 +234,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPubPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPubPersonDelete(ResourcePersonRelation rel, DBSession session) {
+	public void onPubPersonDelete(ResourcePersonRelation rel, User loggedinUser, DBSession session) {
 		// noop
 	}
 

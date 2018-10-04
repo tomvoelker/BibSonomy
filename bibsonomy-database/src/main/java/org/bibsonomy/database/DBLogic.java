@@ -128,7 +128,6 @@ import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -3419,7 +3418,7 @@ public class DBLogic implements LogicInterface {
 		this.ensureLoggedInAndNoSpammer();
 		final DBSession session = this.openSession();
 		try {
-			this.personDBManager.removeResourceRelation(resourceRelationId, this.loginUser.getName(), session);
+			this.personDBManager.removeResourceRelation(resourceRelationId, this.loginUser, session);
 		} finally {
 			session.close();
 		}
@@ -3795,9 +3794,10 @@ public class DBLogic implements LogicInterface {
 	public List<PersonMatch> getPersonMatches(String personID) {
 		final DBSession session = this.openSession();
 		if (present(this.loginUser.getName())){
-			return this.personDBManager.getMatchesForFilterWithUserName(session, personID, this.loginUser.getName());
+			return this.personDBManager.getMatchesForFilterWithUserName(personID, this.loginUser.getName(), session);
 		}
-		return this.personDBManager.getMatchesFor(session, personID);
+
+		return this.personDBManager.getMatchesFor(personID, session);
 	}
 
 	/**
@@ -3810,7 +3810,7 @@ public class DBLogic implements LogicInterface {
 	public void denieMerge(PersonMatch match) {
 		final DBSession session = this.openSession();
 		if (present(this.loginUser.getName())) {
-			this.personDBManager.denyMatch(match, session, this.loginUser.getName());
+			this.personDBManager.denyMatch(match, this.loginUser.getName(), session);
 		}
 	}
 	
@@ -3823,7 +3823,7 @@ public class DBLogic implements LogicInterface {
 	public boolean acceptMerge(PersonMatch match) {
 		final DBSession session = this.openSession();
 		if (present(this.loginUser.getName())) {
-			return this.personDBManager.mergeSimilarPersons(match, this.loginUser.getName(), session);
+			return this.personDBManager.mergeSimilarPersons(match, this.loginUser, session);
 		}
 		return false;
 	}
@@ -3849,7 +3849,7 @@ public class DBLogic implements LogicInterface {
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
 		final DBSession session = this.openSession();
 		if (present(this.loginUser.getName())) {
-			return this.personDBManager.conflictMerge(session, formMatchId, map, this.loginUser.getName());
+			return this.personDBManager.conflictMerge(formMatchId, map, this.loginUser, session);
 		}
 		return false;
 	}

@@ -116,10 +116,10 @@ public class Person implements Serializable {
 	}
 
 	/**
-	 * @param int usually current real name
+	 * @param id usually current real name
 	 */
 	public void setMainName(int id) {
-		for (PersonName name : this.names) {
+		for (final PersonName name : this.names) {
 			if (name.getPersonNameChangeId() == id) {
 				name.setMain(true);
 				this.mainName = name;
@@ -130,11 +130,10 @@ public class Person implements Serializable {
 	}
 	
 	/**
-	 * 
-	 * @param PersonName name
+	 * @param name
 	 */
 	public void setMainName(PersonName name) {
-		if(!this.names.contains(name)) {
+		if (!this.names.contains(name)) {
 			name.setPersonId(this.getPersonId());
 			name.setMain(true);
 			this.names.add(name);
@@ -143,13 +142,14 @@ public class Person implements Serializable {
 	}
 	/**
 	 * 
-	 * @param PersonName name
+	 * @param name
 	 */
 	public void addName(PersonName name) {
-		if(this.getNames().contains(name))
+		if (this.getNames().contains(name)) {
 			return;
-		
-		if(name != null)  {
+		}
+
+		if (name != null) {
 			name.setPersonId(this.getPersonId());
 			name.setMain(false);
 			this.getNames().add(name);
@@ -157,13 +157,13 @@ public class Person implements Serializable {
 	}
 	
 	/**
-	 * 
-	 * @param PersonName name
+	 * @param name the person name to remove
 	 */
 	public void removeName(PersonName name) {
-		if(!this.getNames().contains(name))
+		if (!this.getNames().contains(name)) {
 			return;
-		if(name != null) {
+		}
+		if (name != null) {
 			this.names.remove(name);
 		}
 	}
@@ -228,6 +228,7 @@ public class Person implements Serializable {
 		if (personId == null) {
 			return obj == this;
 		}
+
 		return ((obj instanceof Person) && (this.getPersonId().equals(((Person)obj).getPersonId())));
 	}
 	

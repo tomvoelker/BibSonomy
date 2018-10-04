@@ -380,7 +380,7 @@ public class PersonPageCommand extends BaseCommand {
 	 * @return String
 	 */
 	public String getFormResourcePersonRelationId() {
-		return this.formResourcePersonRelationId;
+			return this.formResourcePersonRelationId;
 	}
 
 	/**
