@@ -43,7 +43,7 @@ public class PersonResourceRelationConverter implements Converter<ResourcePerson
 		// and the type of the one to many relation that is stored in the person index
 		final Map<Object, Object> relation = new HashMap<>();
 		relation.put("name", PersonFields.TYPE_RELATION);
-		relation.put("parent", source.getPerson().getPersonId());
+		relation.put("parent", String.valueOf(source.getPerson().getPersonChangeId()));
 		mapping.put(PersonFields.JOIN_FIELD, relation);
 		return mapping;
 	}

@@ -72,6 +72,7 @@ public class PersonIndexGenerationLogicTest extends AbstractDatabaseManagerTest 
 		assertThat(relation.getRelationType(), is(PersonResourceRelationType.AUTHOR));
 		assertThat(relation.getPersonIndex(), is(0));
 		assertThat(relation.getPerson().getPersonId(), is("h.muller"));
+		assertThat(relation.getPerson().getPersonChangeId(), is(5));
 		assertThat(relation.getPost().getResource().getTitle(), is("Wurst aufs Brot"));
 	}
 

@@ -30,7 +30,7 @@ public class PersonEntityInformationProvider extends OneToManyEntityInformationP
 
 	@Override
 	public String getEntityId(Person entity) {
-		return entity.getPersonId();
+		return String.valueOf(entity.getPersonChangeId());
 	}
 
 	@Override

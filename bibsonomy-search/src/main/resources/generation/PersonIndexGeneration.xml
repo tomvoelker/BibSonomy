@@ -4,7 +4,7 @@
 <sqlMap namespace="PersonGeneration">
 
 	<resultMap id="simplePerson" class="person" groupBy="personChangeId">
-		<result property="personChangeId"	column="person_change_id"	javaType="int" />
+		<result property="personChangeId"	column="person_change_id"		javaType="int" />
 		<result property="personId"			column="person_id" 			javaType="string" />
 	</resultMap>
 
@@ -28,7 +28,7 @@
 	</resultMap>
 
 	<resultMap id="personResourceRelation" class="resourcePersonRelation" groupBy="personRelChangeId">
-		<result property="personRelChangeId"	column="person_change_id"	javaType="int" />
+		<result property="personRelChangeId"	column="person_relation_change_id"	javaType="int" />
 		<result property="relationType"			column="relator_code"		javaType="personResourceRelationType" />
 		<result property="changedAt"			column="log_changed_at"		javaType="date" />
 		<result property="personIndex"			column="person_index"		javaType="int" />
@@ -49,7 +49,7 @@
 	</select>
 
 	<select id="getResourceRelations" resultMap="personResourceRelation">
-		SELECT ppr.*, <include refid="allGoldStandardPublicationAttributesSearch" />, b.simhash1 AS interHash, b.simhash2 AS intraHash, b.change_date, b.group, 'public' AS group_name, 1 AS count, b.content_id, -1 AS rating, -1 AS number_of_ratings
+		SELECT ppr.person_id, ppr.relator_code, ppr.person_index, ppr.person_change_id AS person_relation_change_id, ppr.log_changed_at, p.person_change_id, <include refid="allGoldStandardPublicationAttributesSearch" />, b.simhash1 AS interHash, b.simhash2 AS intraHash, b.change_date, b.group, 'public' AS group_name, 1 AS count, b.content_id, -1 AS rating, -1 AS number_of_ratings
 		FROM
 			(
 				SELECT * from pub_person
@@ -58,6 +58,7 @@
 				LIMIT #limit#
 			) AS ppr
 		JOIN gold_standard b USING(simhash1)
+		JOIN person p USING(person_id)
 	</select>
 
 	<select id="getPersonsCount" resultClass="int">
