@@ -751,16 +751,16 @@ INSERT INTO `person_name` VALUES
 (33, 'Willi', 'Test', 'w.test.3', 1,'2015-07-06 14:23:05','testuserP'), 
 (34, 'Will', 'Test', 'w.test.4', 1,'2015-07-06 14:23:05','testuserP');
 
-INSERT INTO `pub_person` VALUES
-(3,'0b539e248a02e3edcfe591c64346c7a0','d63038ea59383b94bb52fc4a9b76d1f5','Maut',0,'h.muller',0,'2015-07-06 14:19:55','testuserP',0),
-(23, '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP', 0),
-(24, '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP', 0),
-(25, '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP', 0),
-(26, '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP', 0),
-(27, '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP', 0),
-(28, 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP', 0),
-(29, '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', 'Maut', 0, 'w.test.3', 0,'2015-07-06 14:19:55','testuserP', 0),
-(30, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Maut', 0, 'w.test.4', 0,'2015-07-06 14:19:55','testuserP', 0);
+INSERT INTO `pub_person` (`person_change_id`, `simhash1`, `simhash2`, `relator_code`, `person_index`, `person_id`, `qualifying`, `log_changed_at`, `log_changed_by`) VALUES
+(3,'0b539e248a02e3edcfe591c64346c7a0','d63038ea59383b94bb52fc4a9b76d1f5','Maut',0,'h.muller',0,'2015-07-06 14:19:55','testuserP'),
+(23, '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP'),
+(24, '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP'),
+(25, '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP'),
+(26, '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP'),
+(27, '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP'),
+(28, 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP'),
+(29, '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', 'Maut', 0, 'w.test.3', 0,'2015-07-06 14:19:55','testuserP'),
+(30, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Maut', 0, 'w.test.4', 0,'2015-07-06 14:19:55','testuserP');
 
 INSERT INTO `person_match` (match_id, person1_id, person2_id, state) VALUES (1, "w.test.1", "w.test.2", 0),
 (2, "w.test.1", "w.test.3", 0), (3, "w.test.2", "w.test.3", 0), (4, "w.test.1", "w.test.4", 0);

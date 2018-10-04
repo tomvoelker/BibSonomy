@@ -40,6 +40,7 @@ import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.exceptions.DatabaseException;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
@@ -52,6 +53,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
+ * Tests for {@link GoldStandardPublicationDatabaseManager}
+ *
  * @author dzo
  */
 public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabaseManagerTest {
@@ -223,12 +226,11 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
     public void testUpdatePostToPostInDB() {
         final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", VISIBLE_GROUPS, this.dbSession);
         post.getResource().recalculateHashes();
-        System.out.println(post.getResource().getInterHash());
         goldPubManager.updatePost(post, INTERHASH_GOLD_2, loginUser, null, this.dbSession);
     }
 
     /**
-     * tests {@link GoldStandardDatabaseManager#addReferencesToPost(String, String, Set, org.bibsonomy.database.common.DBSession)} and {@link GoldStandardDatabaseManager#removeReferencesFromPost(String, String, Set, org.bibsonomy.database.common.DBSession)}
+     * tests {@link GoldStandardDatabaseManager#addRelationsToPost(String, String, Set, GoldStandardRelation, DBSession)} (String, String, Set, org.bibsonomy.database.common.DBSession)} and {@link GoldStandardDatabaseManager#removeRelationsFromPost(String, String, Set, GoldStandardRelation, DBSession)} (String, String, Set, org.bibsonomy.database.common.DBSession)}
      */
     @Test
     public void testAddRemoveReferences() {

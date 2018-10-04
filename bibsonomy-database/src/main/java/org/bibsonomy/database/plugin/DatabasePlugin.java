@@ -39,6 +39,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
@@ -351,9 +352,10 @@ public interface DatabasePlugin {
 	/**
 	 * called when a pubPerson will be deleted
 	 * @param rel the relation to be deleted updated with the deleting user and the date of the deletion
+	 * @param loggedinUser
 	 * @param session
 	 */
-	public void onPubPersonDelete(final ResourcePersonRelation rel, final DBSession session);
+	public void onPubPersonDelete(final ResourcePersonRelation rel, User loggedinUser, final DBSession session);
 
 	/**
 	 * @param personChangeId
@@ -361,4 +363,14 @@ public interface DatabasePlugin {
 	 */
 	public void onPersonNameUpdate(Integer personChangeId, DBSession session);
 
+	/**
+	 * called before a relation is updated (currently the oldRelation is deleted the new relation is inserted)
+	 * @param oldRelation
+	 * @param newRelation
+	 * @param loggedinUser
+	 * @param session
+	 */
+	default void onPersonResourceRelationUpdate(ResourcePersonRelation oldRelation, ResourcePersonRelation newRelation, User loggedinUser, DBSession session) {
+		// noop
+	}
 }
