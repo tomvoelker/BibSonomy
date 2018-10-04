@@ -36,6 +36,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
+import org.bibsonomy.search.index.database.DatabaseInformationLogic;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**

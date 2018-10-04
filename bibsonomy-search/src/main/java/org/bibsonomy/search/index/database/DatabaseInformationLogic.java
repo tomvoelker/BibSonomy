@@ -1,4 +1,4 @@
-package org.bibsonomy.search.management.database;
+package org.bibsonomy.search.index.database;
 
 import org.bibsonomy.search.update.SearchIndexSyncState;
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PersonUpdate">
+
+	<select id="getUpdatedAndNewPersons" resultMap="SearchPersonCommon.person">
+		SELECT p.*, <include refid="personFields" />
+		FROM person p
+			JOIN person_name pn USING(person_id)
+		WHERE p.person_change_id > #lastContentId# OR pn.person_change_id > #lastContentId#
+			LIMIT #limit#
+			OFFSET #offset#
+	</select>
+
+</sqlMap>

@@ -6,6 +6,7 @@ import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagement;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.search.index.database.person.PersonDatabaseInformationLogic;
 import org.bibsonomy.search.index.generator.IndexGenerationLogic;
 import org.bibsonomy.search.index.generator.OneToManyIndexGenerationLogic;
 import org.bibsonomy.search.management.database.params.SearchParam;
@@ -18,7 +19,7 @@ import java.util.List;
  *
  * @author dzo
  */
-public class PersonIndexGenerationLogic extends AbstractDatabaseManagerWithSessionManagement implements OneToManyIndexGenerationLogic<Person, ResourcePersonRelation> {
+public class PersonIndexGenerationLogic extends PersonDatabaseInformationLogic implements OneToManyIndexGenerationLogic<Person, ResourcePersonRelation> {
 
 	private static SearchParam buildParam(int lastPersonId, int limit) {
 		final SearchParam param = new SearchParam();
@@ -31,16 +32,6 @@ public class PersonIndexGenerationLogic extends AbstractDatabaseManagerWithSessi
 	public int getNumberOfEntities() {
 		try (final DBSession session = this.openSession()) {
 			return this.queryForObject("getPersonsCount", Integer.class, session);
-		}
-	}
-
-	@Override
-	public SearchIndexSyncState getDbState() {
-		try (final DBSession session = this.openSession()) {
-			final SearchIndexSyncState searchIndexSyncState = new SearchIndexSyncState();
-			final Integer lastId = this.queryForObject("getLastPersonChangeId", Integer.class, session);
-			searchIndexSyncState.setLastPersonChangeId(lastId);
-			return searchIndexSyncState;
 		}
 	}
 

@@ -46,6 +46,10 @@ public class PersonMappingBuilder implements MappingBuilder<XContentBuilder> {
 							.startObject()
 								.field("date_detection", false)
 								.startObject(ESConstants.IndexSettings.PROPERTIES)
+									// database id
+									.startObject(PersonFields.PERSON_DATABASE_ID)
+										.field(TYPE_FIELD, "integer")
+									.endObject()
 									// person id
 									.startObject(PersonFields.PERSON_ID)
 										.field(TYPE_FIELD, KEYWORD_TYPE)

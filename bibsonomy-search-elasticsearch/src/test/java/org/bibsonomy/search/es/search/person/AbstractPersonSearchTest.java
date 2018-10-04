@@ -12,7 +12,7 @@ import org.junit.Before;
  */
 public class AbstractPersonSearchTest extends AbstractDatabaseManagerTest {
 
-	private static final ElasticsearchPersonManager PERSON_SEARCH_MANAGER = EsSpringContextWrapper.getContext().getBean(ElasticsearchPersonManager.class);
+	protected static final ElasticsearchPersonManager PERSON_SEARCH_MANAGER = EsSpringContextWrapper.getContext().getBean(ElasticsearchPersonManager.class);
 
 	@Before
 	public void createIndices() throws InterruptedException {

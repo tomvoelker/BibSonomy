@@ -77,6 +77,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	private final DatabasePluginRegistry plugins;
 	private PersonSearch personSearch;
 
+	@Deprecated // use spring config
 	public static PersonDatabaseManager getInstance() {
 		return singleton;
 	}

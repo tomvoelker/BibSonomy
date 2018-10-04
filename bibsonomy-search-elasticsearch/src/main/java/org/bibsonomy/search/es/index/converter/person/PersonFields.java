@@ -6,6 +6,10 @@ package org.bibsonomy.search.es.index.converter.person;
  * @author dzo
  */
 public interface PersonFields {
+
+	/** the field containing the database id (person_change_id) */
+	String PERSON_DATABASE_ID = "database_id";
+
 	/** the person id field */
 	String PERSON_ID = "person_id";
 

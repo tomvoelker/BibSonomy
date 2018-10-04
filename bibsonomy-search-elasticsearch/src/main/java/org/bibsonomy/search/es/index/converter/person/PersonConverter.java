@@ -30,6 +30,8 @@ public class PersonConverter implements Converter<Person, Map<String, Object>, O
 	@Override
 	public Map<String, Object> convert(final Person person) {
 		final Map<String, Object> mapping = new HashMap<>();
+		mapping.put(PersonFields.PERSON_DATABASE_ID, person.getPersonChangeId());
+
 		mapping.put(PersonFields.PERSON_ID, person.getPersonId());
 		mapping.put(PersonFields.ACADEMIC_DEGREE, person.getAcademicDegree());
 		mapping.put(PersonFields.COLLEGE, person.getCollege());

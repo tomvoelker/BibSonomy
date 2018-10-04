@@ -180,27 +180,6 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	}
 
 	/**
-	 * @param localInactiveAlias
-	 * @param convertedPosts
-	 */
-	private void clearQueue(final String localInactiveAlias, final Map<String, IndexData> convertedPosts) {
-		/*
-		 * maybe we are updating an updated post in es
-		 */
-		this.client.updateOrCreateDocuments(localInactiveAlias, this.entityInformationProvider.getType(), convertedPosts);
-		convertedPosts.clear();
-	}
-
-	/**
-	 * @param indexName
-	 * @param state
-	 */
-	private void updateIndexState(final String indexName, final SearchIndexSyncState state) {
-		final IndexData indexData = ElasticsearchUtils.buildIndexDataForState(state);
-		this.client.insertNewDocument(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId), indexName, indexData);
-	}
-
-	/**
 	 * @param oldState
 	 * @param targetState
 	 * @param indexName

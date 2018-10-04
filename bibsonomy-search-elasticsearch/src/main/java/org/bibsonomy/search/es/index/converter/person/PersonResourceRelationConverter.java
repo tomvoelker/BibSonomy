@@ -36,6 +36,7 @@ public class PersonResourceRelationConverter implements Converter<ResourcePerson
 		mapping.put(PersonFields.RelationFields.INDEX, personIndex);
 		mapping.put(PersonFields.RelationFields.RELATION_TYPE, source.getRelationType().toString());
 		mapping.put(PersonFields.CHANGE_DATE, ElasticsearchUtils.dateToString(source.getChangedAt()));
+		mapping.put(PersonFields.PERSON_DATABASE_ID, source.getPersonRelChangeId());
 
 		final Map<String, Object> convertedPost = this.postConverter.convert(source.getPost());
 		mapping.put(PersonFields.RelationFields.POST, convertedPost);
@@ -43,7 +44,7 @@ public class PersonResourceRelationConverter implements Converter<ResourcePerson
 		// and the type of the one to many relation that is stored in the person index
 		final Map<Object, Object> relation = new HashMap<>();
 		relation.put("name", PersonFields.TYPE_RELATION);
-		relation.put("parent", String.valueOf(source.getPerson().getPersonChangeId()));
+		relation.put("parent", source.getPerson().getPersonId());
 		mapping.put(PersonFields.JOIN_FIELD, relation);
 		return mapping;
 	}

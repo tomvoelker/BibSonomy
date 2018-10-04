@@ -46,7 +46,7 @@ public class SearchParam {
 	/** newest tas_id during last index update */
 	private Integer lastTasId;
 	
-	private int lastContentId;
+	private long lastContentId;
 	
 	private int lastOffset; // TODO or just use offset?
 
@@ -146,14 +146,14 @@ public class SearchParam {
 	/**
 	 * @return the lastContentId
 	 */
-	public int getLastContentId() {
+	public long getLastContentId() {
 		return lastContentId;
 	}
 
 	/**
 	 * @param lastContentId the lastContentId to set
 	 */
-	public void setLastContentId(final int lastContentId) {
+	public void setLastContentId(final long lastContentId) {
 		this.lastContentId = lastContentId;
 	}
 	

@@ -5,8 +5,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.es.ESClient;
+import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.management.generation.AbstractSearchIndexGenerationTask;
@@ -18,6 +18,7 @@ import org.bibsonomy.search.management.SearchIndexManager;
 import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.model.SearchIndexStatistics;
+import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.util.Sets;
 import org.elasticsearch.index.IndexNotFoundException;
 
@@ -25,6 +26,7 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -226,6 +228,31 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 	}
 
 	protected abstract void updateIndex(final String indexName);
+
+	/**
+	 * @param indexName
+	 * @param convertedPosts
+	 */
+	protected void clearQueue(final String indexName, final Map<String, IndexData> convertedPosts) {
+		if (!present(convertedPosts)) {
+			// nothing to insert
+			return;
+		}
+		/*
+		 * maybe we are updating an updated post in es
+		 */
+		this.client.updateOrCreateDocuments(indexName, this.entityInformationProvider.getType(), convertedPosts);
+		convertedPosts.clear();
+	}
+
+	/**
+	 * @param indexName
+	 * @param state
+	 */
+	protected void updateIndexState(final String indexName, final SearchIndexSyncState state) {
+		final IndexData indexData = ElasticsearchUtils.buildIndexDataForState(state);
+		this.client.insertNewDocument(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId), indexName, indexData);
+	}
 
 	/**
 	 * @return informations about the indices managed by this manager
