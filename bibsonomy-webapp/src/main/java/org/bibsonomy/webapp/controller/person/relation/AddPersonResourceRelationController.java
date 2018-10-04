@@ -44,13 +44,17 @@ public class AddPersonResourceRelationController implements MinimalisticControll
 
 	@Override
 	public View workOn(PersonResourceRelationCommand command) {
-		final JSONObject jsonResponse = new JSONObject();
-
 		final String interhash = command.getInterhash();
 		final int index = command.getIndex();
 		final PersonResourceRelationType type = command.getType();
-
 		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, interhash, null, null, null, null, null, null, 0, 100);
+
+		/*
+		 * check the ckey
+		 */
+		if (!command.getContext().isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+		}
 
 		// TODO: this results in an exception; maybe add error and handle it in the database
 		if (!present(posts)) {

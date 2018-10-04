@@ -32,6 +32,13 @@ public class DeletePersonResourceRelationController implements MinimalisticContr
 		final String interhashToDelete = command.getInterhash();
 		final int indexToDelete = command.getIndex();
 
+		/*
+		 * check the ckey
+		 */
+		if (!command.getContext().isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+		}
+
 		try {
 			this.logic.removeResourceRelation(interhashToDelete, indexToDelete, typeToDelete);
 		} catch (Exception e) {

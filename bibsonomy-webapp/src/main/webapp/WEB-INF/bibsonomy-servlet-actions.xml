@@ -850,7 +850,8 @@
 	</util:list>
 
 	<util:list id="personRelationParameters">
-		<value>person.personId</value>
+		<value>ckey</value>
+        <value>person.personId</value>
 		<value>type</value>
 		<value>interhash</value>
 		<value>index</value>

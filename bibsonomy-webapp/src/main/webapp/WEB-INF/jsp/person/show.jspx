@@ -834,7 +834,7 @@
                     </label>
                 </div>
                 <div class="modal-footer">
-                    <form:form action="/addPersonResourceRelation" method="post" id="addPersonResourceRelationForm">
+                    <form:form action="/addPersonResourceRelation?ckey=${ckey}" method="post" id="addPersonResourceRelationForm">
                         <form:hidden path="index" />
                         <form:hidden path="person.personId"/>
                         <form:hidden path="interhash"/>
@@ -858,7 +858,7 @@
                     </button>
                 </div>
                 <div class="modal-footer">
-                    <form:form action="/deletePersonResourceRelation" method="post" id="deletePersonResourceRelationForm">
+                    <form:form action="/deletePersonResourceRelation?ckey=${ckey}" method="post" id="deletePersonResourceRelationForm">
                         <form:hidden path="person.personId"/>
                         <form:hidden path="type"/>
                         <form:hidden path="interhash"/>
