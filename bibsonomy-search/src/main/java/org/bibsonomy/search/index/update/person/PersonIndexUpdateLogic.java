@@ -5,8 +5,8 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.search.index.database.person.PersonDatabaseInformationLogic;
 import org.bibsonomy.search.index.update.IndexUpdateLogic;
 import org.bibsonomy.search.management.database.params.SearchParam;
-import org.bibsonomy.search.update.SearchIndexSyncState;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,10 +17,11 @@ import java.util.List;
 public class PersonIndexUpdateLogic extends PersonDatabaseInformationLogic implements IndexUpdateLogic<Person> {
 
 	@Override
-	public List<Person> getNewerEntities(long lastEntityId, int size, int offset) {
+	public List<Person> getNewerEntities(long lastEntityId, Date lastLogDate, int size, int offset) {
 		try (final DBSession session = this.openSession()) {
 			final SearchParam param = new SearchParam();
 			param.setLastContentId(lastEntityId);
+			param.setLastLogDate(lastLogDate);
 			param.setLimit(size);
 			param.setOffset(offset);
 			return this.queryForList("getUpdatedAndNewPersons", param, Person.class, session);

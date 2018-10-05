@@ -40,9 +40,24 @@
 		pn.person_change_id AS person_name_change_id, pn.first_name, pn.last_name, pn.is_main
 	</sql>
 
+	<sql id="personResourceRelationWithPostColumns">
+		ppr.person_id, ppr.relator_code, ppr.person_index, ppr.person_change_id AS person_relation_change_id, ppr.log_changed_at, p.person_change_id, <include refid="allGoldStandardPublicationAttributesSearch" />, b.simhash1 AS interHash, b.simhash2 AS intraHash, b.change_date, b.group, 'public' AS group_name, 1 AS count, b.content_id, -1 AS rating, -1 AS number_of_ratings
+	</sql>
+
 	<!-- FIXME: move to other file -->
 	<select id="getLastPersonChangeId" resultClass="int">
-		SELECT value FROM ids where name = 17
+		SELECT value
+			FROM ids
+		WHERE name = 17
+	</select>
+
+	<select id="getLastPersonChangeLogDate" resultClass="date">
+		SELECT MAX(log_date) FROM
+		(SELECT MAX(log_changed_at) AS log_date
+			FROM log_person
+			UNION
+			SELECT MAX(log_date) AS log_date
+			FROM log_person_name) AS g
 	</select>
 
 </sqlMap>

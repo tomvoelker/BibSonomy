@@ -40,7 +40,7 @@
 			</bean>
 		</constructor-arg>
 		<constructor-arg ref="elasticsearchPersonEntityInformationProvider" />
-		<constructor-arg ref="personUpdateDBLogic" />
+		<constructor-arg ref="personAndPersonRelationUpdateLogic" />
 	</bean>
 
 </beans>

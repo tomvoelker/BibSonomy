@@ -5,11 +5,38 @@
 
 	<select id="getUpdatedAndNewPersons" resultMap="SearchPersonCommon.person">
 		SELECT p.*, <include refid="personFields" />
-		FROM person p
-			JOIN person_name pn USING(person_id)
-		WHERE p.person_change_id > #lastContentId# OR pn.person_change_id > #lastContentId#
+		FROM
+			<!-- check for new persons -->
+			(SELECT person_id
+			FROM person
+				WHERE person_change_id > #lastContentId#
+			UNION
+			<!-- check for new person names -->
+			SELECT person_id
+			FROM person_name
+				WHERE person_change_id > #lastContentId#
+			UNION
+			<!-- find persons where the person name was updated/deleted -->
+			SELECT person_id
+			FROM log_person_name
+				WHERE log_date >= #lastLogDate#
 			LIMIT #limit#
-			OFFSET #offset#
+			OFFSET #offset#) AS pp
+		JOIN person p USING (person_id)
+		JOIN person_name pn USING (person_id)
 	</select>
 
+	<select id="getUpdatedOrNewPersonRelations" resultMap="SearchPersonCommon.personResourceRelation">
+		SELECT <include refid="personResourceRelationWithPostColumns" />
+			FROM
+			(
+				SELECT *
+				FROM pub_person
+					WHERE person_change_id > #lastContentId#
+				LIMIT #limit#
+				OFFSET #offset#
+			) AS ppr
+		JOIN gold_standard b USING (simhash1)
+		JOIN person p USING (person_id)
+	</select>
 </sqlMap>

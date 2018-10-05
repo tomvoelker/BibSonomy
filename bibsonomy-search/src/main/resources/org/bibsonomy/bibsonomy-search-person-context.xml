@@ -34,4 +34,13 @@
 	<bean id="personUpdateDBLogic" class="org.bibsonomy.search.index.update.person.PersonIndexUpdateLogic">
 		<property name="sessionFactory" ref="personUpdateSearchSessionFactory"/>
 	</bean>
+
+	<bean id="personResourceRelationDBLogic" class="org.bibsonomy.search.index.update.person.PersonResourceRelationUpdateLogic">
+		<property name="sessionFactory" ref="personUpdateSearchSessionFactory"/>
+	</bean>
+
+	<bean id="personAndPersonRelationUpdateLogic" class="org.bibsonomy.search.index.update.OneToManyIndexUpdateLogic">
+		<constructor-arg ref="personUpdateDBLogic" />
+		<constructor-arg ref="personResourceRelationDBLogic" />
+	</bean>
 </beans>

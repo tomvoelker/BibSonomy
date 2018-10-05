@@ -1,20 +1,24 @@
 package org.bibsonomy.search.es.management.person;
 
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
+import org.bibsonomy.search.es.index.generator.OneToManyEntityInformationProvider;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.index.update.IndexUpdateLogic;
+import org.bibsonomy.search.index.update.OneToManyIndexUpdateLogic;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHits;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +30,8 @@ import java.util.Map;
  */
 public class ElasticsearchPersonManager extends ElasticsearchManager<Person> {
 
-	private final IndexUpdateLogic<Person> updateIndexLogic;
+	private final OneToManyIndexUpdateLogic<Person, ResourcePersonRelation> updateIndexLogic;
+	private final OneToManyEntityInformationProvider<Person, ResourcePersonRelation> oneToManyEntityInformationProvider;
 
 	/**
 	 * default constructor
@@ -36,35 +41,46 @@ public class ElasticsearchPersonManager extends ElasticsearchManager<Person> {
 	 * @param updateEnabled
 	 * @param client
 	 * @param generator
-	 * @param entityInformationProvider
+	 * @param oneToManyEntityInformationProvider
 	 */
-	public ElasticsearchPersonManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Person> generator, EntityInformationProvider<Person> entityInformationProvider, final IndexUpdateLogic<Person> updateIndexLogic) {
-		super(systemId, disabledIndexing, updateEnabled, client, generator, entityInformationProvider);
+	public ElasticsearchPersonManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Person> generator, OneToManyEntityInformationProvider<Person, ResourcePersonRelation> oneToManyEntityInformationProvider, final OneToManyIndexUpdateLogic<Person, ResourcePersonRelation> updateIndexLogic) {
+		super(systemId, disabledIndexing, updateEnabled, client, generator, oneToManyEntityInformationProvider);
 		this.updateIndexLogic = updateIndexLogic;
+		this.oneToManyEntityInformationProvider = oneToManyEntityInformationProvider;
 	}
 
 	@Override
 	protected void updateIndex(String indexName) {
 		final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId);
 		final SearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, indexName);
-		final SearchIndexSyncState targetState = this.updateIndexLogic.getDbState();
+		final IndexUpdateLogic<Person> parentUpdateLogic = this.updateIndexLogic.getIndexUpdateLogic();
+		final SearchIndexSyncState targetState = parentUpdateLogic.getDbState();
 
-		// update person index by first update persons (name changes, attribute updates) and new created persons
+		// update persons
+		this.updateEntity(indexName, oldState, parentUpdateLogic, this.oneToManyEntityInformationProvider);
+
+		// update person resource relations
+		this.updateEntity(indexName, oldState, this.updateIndexLogic.getToManyIndexUpdateLogic(), this.oneToManyEntityInformationProvider.getToManyEntityInformationProvider());
+
+		this.updateIndexState(indexName, targetState);
+	}
+
+	private <E> void updateEntity(final String indexName, final SearchIndexSyncState oldState, final IndexUpdateLogic<E> updateIndexLogic, final EntityInformationProvider<E> entityInformationProvider) {
 		final Map<String, IndexData> convertedEntities = new HashMap<>();
 		final long lastPersonChangeId = oldState.getLastPersonChangeId();
+		final Date lastLogDate = oldState.getLast_log_date();
 		int offset = 0;
-		List<Person> newPersons;
+		List<E> newEntity;
 		do {
-			newPersons = this.updateIndexLogic.getNewerEntities(lastPersonChangeId, SearchDBInterface.SQL_BLOCKSIZE, offset);
+			newEntity = updateIndexLogic.getNewerEntities(lastPersonChangeId, lastLogDate, SearchDBInterface.SQL_BLOCKSIZE, offset);
 
-			for (final Person person : newPersons) {
-				final Map<String, Object> convertedPost = this.entityInformationProvider.getConverter().convert(person);
+			for (final E entity : newEntity) {
 
-
+				final Map<String, Object> convertedPost = entityInformationProvider.getConverter().convert(entity);
 				final IndexData indexData = new IndexData();
-				indexData.setType(this.entityInformationProvider.getType());
+				indexData.setType(entityInformationProvider.getType());
 				indexData.setSource(convertedPost);
-				convertedEntities.put(this.entityInformationProvider.getEntityId(person), indexData);
+				convertedEntities.put(entityInformationProvider.getEntityId(entity), indexData);
 			}
 
 			if (convertedEntities.size() >= ESConstants.BULK_INSERT_SIZE) {
@@ -72,19 +88,14 @@ public class ElasticsearchPersonManager extends ElasticsearchManager<Person> {
 			}
 
 			offset += SearchDBInterface.SQL_BLOCKSIZE;
-		} while (newPersons.size() == SearchDBInterface.SQL_BLOCKSIZE);
+		} while (newEntity.size() == SearchDBInterface.SQL_BLOCKSIZE);
 
 		this.clearQueue(indexName, convertedEntities);
-
-		// update person resource relations
-
-
-		// set the new state of the index
-		this.updateIndexState(indexName, targetState);
 	}
 
 	/**
-	 * executes the query on the activve index
+	 * executes the query against the active index
+	 *
 	 * @param query
 	 * @param limit
 	 * @param offset

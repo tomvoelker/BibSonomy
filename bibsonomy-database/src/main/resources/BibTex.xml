@@ -90,7 +90,7 @@
 	</select>
 
 	<select id="getBibTexByTagNamesForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid="allBibtexAttributesWithSimHashes"/>,t.change_date, t.tag_name, h.ctr AS count, g.group, g.group_name, <include refid="reviewRatingsRows" />
+		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.change_date, t.tag_name, h.ctr AS count, g.group, g.group_name, <include refid="reviewRatingsRows" />
 		FROM  (	<!-- select all publication posts from the user with the given tags -->
 				SELECT t1.content_id
 				FROM <include refid="tagFromQuery"/>
