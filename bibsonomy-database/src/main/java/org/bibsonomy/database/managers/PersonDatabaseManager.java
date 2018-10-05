@@ -332,24 +332,30 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * @param personNameChangeId
-	 * @param databaseSession
+	 * @param loggedInUser
+	 * @param session
 	 */
-	public void removePersonName(int personNameChangeId, String loginUser, DBSession databaseSession) {
-		databaseSession.beginTransaction();
+	public void removePersonName(int personNameChangeId, final User loggedInUser, DBSession session) {
+		session.beginTransaction();
 		try {
-			final PersonName person = new PersonName();
-			person.setPersonNameChangeId(personNameChangeId);
-			person.setChangedAt(new Date());
-			person.setChangedBy(loginUser);
+			final PersonName oldPersonName = this.getPersonNameById(personNameChangeId, session);
 
+			if (!present(oldPersonName)) {
+				session.commitTransaction();
+				return;
+			}
 			// inform the plugins (e.g. log the deleted relation)
-			this.plugins.onPersonNameDelete(person, databaseSession);
-			this.delete("removePersonName", Integer.valueOf(personNameChangeId), databaseSession);
+			this.plugins.onPersonNameDelete(oldPersonName, loggedInUser, session);
+			this.delete("removePersonName", Integer.valueOf(personNameChangeId), session);
 
-			databaseSession.commitTransaction();
+			session.commitTransaction();
 		} finally {
-			databaseSession.endTransaction();
+			session.endTransaction();
 		}
+	}
+
+	private PersonName getPersonNameById(int personNameChangeId, final DBSession session) {
+		return this.queryForObject("getPersonNameById", personNameChangeId, PersonName.class, session);
 	}
 
 	// TODO: write testcase for this method and test whether groupBy of
@@ -378,7 +384,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param authorIndex
 	 * @param role
 	 * @param session
-	 * @return List<ResourcePersonRelation>
+	 * @return list of ResourcePersonRelation
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelations(final String interhash, final Integer authorIndex, final PersonResourceRelationType role, final DBSession session) {
 		final ResourcePersonRelation rpr = new ResourcePersonRelation();
@@ -452,10 +458,10 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param newNameWithOldId
 	 * @param session
 	 */
-	public void updatePersonName(PersonName newNameWithOldId, DBSession session) {
+	public void updatePersonName(final PersonName newNameWithOldId, final User loggedinUser, final DBSession session) {
 		session.beginTransaction();
 		try {
-			this.plugins.onPersonNameUpdate(newNameWithOldId.getPersonNameChangeId(), session);
+			this.plugins.onPersonNameUpdate(newNameWithOldId, loggedinUser, session);
 			this.delete("removePersonName", newNameWithOldId.getPersonNameChangeId(), session);
 			this.createPersonName(newNameWithOldId, session);
 			session.commitTransaction();
@@ -914,7 +920,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 			return false;
 		}
 		mainName.setMain(false);
-		this.updatePersonName(mainName, session);
+		this.updatePersonName(mainName, loggedinUser, session);
 		// FIXME: why not using PersonNameUtils.discoverPersonName???
 		// the name was inserted "lastName, firstName"
 		final String[] nameParts = newName.split(", ", 2);
@@ -932,7 +938,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 				personName.setMain(true);
 				personName.setChangedBy(loggedinUserName);
 				personName.setChangedAt(changeDate);
-				this.updatePersonName(personName, session);
+				this.updatePersonName(personName, loggedinUser, session);
 				return true;
 			}
 		}

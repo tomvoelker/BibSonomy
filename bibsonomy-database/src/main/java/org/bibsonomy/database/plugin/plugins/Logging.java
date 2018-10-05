@@ -282,16 +282,18 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onPersonNameUpdate(final Integer personChangeId, final DBSession session) {
-		this.insert("logPersonName", personChangeId, session);
+	public void onPersonNameUpdate(final PersonName oldPersonName, User loggedinUser, final DBSession session) {
+		this.onPersonNameDelete(oldPersonName, loggedinUser, session); // FIXME: do we want to log the new id of the name?
 	}
 
 	@Override
-	public void onPersonNameDelete(final PersonName personName, final DBSession session) {
-		this.insert("logPersonName", personName.getPersonNameChangeId(), session);
-		// we need to fetch a new id so the next insert statement can refer to the last generated id
-		this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
-		this.insert("logPersonNameDelete", personName, session);
+	public void onPersonNameDelete(final PersonName personName, final User loggedInUser, final DBSession session) {
+		final LoggingParam param = new LoggingParam();
+		param.setOldContentId(personName.getPersonNameChangeId());
+		param.setPostEditor(loggedInUser);
+		param.setDate(new Date());
+
+		this.insert("logPersonName", param, session);
 	}
 
 	@Override
@@ -326,7 +328,7 @@ public class Logging extends AbstractDatabasePlugin {
 		param.setOldContentId(oldRelationId);
 		param.setNewContentId(newRelationId);
 		param.setDate(new Date());
-		param.setPostOwner(loggedinUser); // FIXME: rename field of param
+		param.setPostEditor(loggedinUser); // FIXME: rename field of param
 
 		this.insert("logPubPerson", param, session);
 	}

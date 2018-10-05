@@ -26,8 +26,9 @@
  */
 package org.bibsonomy.database.managers;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
@@ -65,6 +66,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	private static final BibTexDatabaseManager PUBLICATION_DATABASE_MANAGER = BibTexDatabaseManager.getInstance();
 	
 	private static final User loginUser = new User("testuser1");
+	private static final String PERSON_ID = "h.muller";
 	
 	private Person testPerson;
 	
@@ -176,6 +178,15 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById(this.testPerson.getPersonId(), this.dbSession);
 		assertEquals(person.getHomepage(), homepage);
 	}
+
+	@Test
+	public void testRemovePersonName() {
+		PERSON_DATABASE_MANAGER.removePersonName(7, loginUser, this.dbSession);
+
+		final Person personById = PERSON_DATABASE_MANAGER.getPersonById(PERSON_ID, this.dbSession);
+
+		assertThat(personById.getNames().size(), is(1));
+	}
 	
 	@Test
 	public void testSimilarPerson(){
@@ -189,7 +200,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			if (match.getMatchID() == 4) {
 				// conflict for merge remains
 				assertTrue(!this.PERSON_DATABASE_MANAGER.mergeSimilarPersons(match, loginUser, this.dbSession));
-				Map<String, String> map = new HashMap<String, String>();
+				Map<String, String> map = new HashMap<>();
 				String newPage = null;
 				for(PersonMergeFieldConflict conflict : mergeConflicts.get(4)) {
 					map.put(conflict.getFieldName(), conflict.getPerson2Value());
