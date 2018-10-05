@@ -180,22 +180,18 @@
  		  </isLessEqual> 
 	</insert>
 	
-	<insert id="logPersonName" parameterClass="Integer">
-		INSERT INTO log_person_name (person_change_id, first_name, last_name, person_id, is_main, log_changed_at, log_changed_by)
-		SELECT person_change_id, first_name, last_name, person_id, is_main, log_changed_at, log_changed_by
-		FROM person_name WHERE person_change_id = #personChangeId#
+	<insert id="logPersonName" parameterClass="loggingParam">
+		INSERT INTO log_person_name (person_change_id, first_name, last_name, person_id, is_main, log_changed_at, log_changed_by, log_date, edited_by)
+		SELECT person_change_id, first_name, last_name, person_id, is_main, log_changed_at, log_changed_by, #date#, #postEditor.name#
+		FROM person_name
+			WHERE person_change_id = #oldContentId#
 	</insert>
-	
-	<insert id="logPersonNameDelete" parameterClass="org.bibsonomy.model.PersonName">
-		INSERT INTO log_person_name (person_change_id, first_name, last_name, person_id, is_main, log_changed_at, log_changed_by, deleted)
-		SELECT (SELECT LAST_INSERT_ID() as person_change_id), first_name, last_name, person_id, is_main, #changedAt#, #changedBy#, 1 as deleted
-		FROM person_name WHERE person_change_id = #personNameChangeId#
-	</insert>
-	
+
 	<insert id="logPubPerson" parameterClass="loggingParam">
 		INSERT INTO log_pub_person (person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by, log_date, edited_by <isNotNull property="newContentId">, new_change_id</isNotNull> )
-		SELECT person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by, #date#, #postOwner.name# <isNotNull property="newContentId">, #newContentId#</isNotNull>
-		FROM pub_person WHERE person_change_id = #oldContentId#
+		SELECT person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by, #date#, #postEditor.name# <isNotNull property="newContentId">, #newContentId#</isNotNull>
+		FROM pub_person
+			WHERE person_change_id = #oldContentId#
 	</insert>
 	
 	<!-- when updated, 'deleted' field is 0 -->

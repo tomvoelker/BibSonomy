@@ -42,8 +42,15 @@
 	</insert>
 	
 	<select id='getNames' resultMap='PersonCommon.personName' parameterClass='String'>
-		SELECT <include refid='commonPersonNameColumns'/> FROM person_name 
-			WHERE person_name.person_id = #personId#
+		SELECT <include refid='commonPersonNameColumns'/>
+		FROM person_name
+			WHERE person_id = #personId#
+	</select>
+
+	<select id="getPersonNameById" resultMap="PersonCommon.personName" parameterClass="int">
+		SELECT <include refid='commonPersonNameColumns'/>
+		FROM person_name
+			WHERE person_change_id = #personChangeId#
 	</select>
 	
 	<select id="findPersonNames" resultMap='PersonCommon.personName' parameterClass='org.bibsonomy.model.PersonName'>

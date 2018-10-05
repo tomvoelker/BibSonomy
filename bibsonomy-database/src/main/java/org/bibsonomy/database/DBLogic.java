@@ -3561,10 +3561,10 @@ public class DBLogic implements LogicInterface {
 						newName.setChangedAt(new Date());
 						newName.setChangedBy(this.loginUser.getName());
 						newName.setPersonNameChangeId(oldName.getPersonNameChangeId());
-						this.personDBManager.updatePersonName(newName, session);
+						this.personDBManager.updatePersonName(newName, this.loginUser, session);
 					}
 				} else {
-					this.personDBManager.removePersonName(oldName.getPersonNameChangeId(), this.loginUser.getName(), session);
+					this.personDBManager.removePersonName(oldName.getPersonNameChangeId(), this.loginUser, session);
 				}
 			}
 			for (final PersonName newName : person.getNames()) {
@@ -3652,7 +3652,7 @@ public class DBLogic implements LogicInterface {
 		this.ensureLoggedInAndNoSpammer();
 		final DBSession session = this.openSession();
 		try {
-			this.personDBManager.removePersonName(personChangeId, this.loginUser.getName(), session);
+			this.personDBManager.removePersonName(personChangeId, this.loginUser, session);
 		} finally {
 			session.close();
 		}

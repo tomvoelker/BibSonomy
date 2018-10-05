@@ -297,9 +297,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonDelete(org.bibsonomy.model.Person, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPersonNameDelete(PersonName personName, DBSession session) {
+	public void onPersonNameDelete(PersonName personName, User loggedInUser, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPersonNameDelete(personName, session);
+			plugin.onPersonNameDelete(personName, loggedInUser, session);
 		}
 	}
 
@@ -348,9 +348,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onUpdatePersonName(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPersonNameUpdate(Integer personChangeId, DBSession session) {
+	public void onPersonNameUpdate(PersonName oldPerson, User loggedinUser, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPersonNameUpdate(personChangeId, session);
+			plugin.onPersonNameUpdate(oldPerson, loggedinUser, session);
 		}
 	}
 
