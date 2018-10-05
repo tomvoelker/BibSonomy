@@ -47,8 +47,8 @@
 		FROM gold_standard WHERE simhash1 = #oldHash#
 	</insert>
 		
-	<insert id="logGoldStandardRelationDelete">
-		INSERT INTO log_gold_standard_relations (publication, reference, user_name) VALUES (#hash#, #refHash#, #username#)
+	<insert id="logGoldStandardRelationDelete" parameterClass="goldstandardReferenceParam">
+		INSERT INTO log_gold_standard_relations (<include refid="commonLogGoldStandardReferenceAttributes" />) VALUES (#hash#, #refHash#, #username#, #relation#)
 	</insert>
 
 	<insert id="logBookmark" parameterClass="bookmarkParam">
@@ -192,6 +192,23 @@
 		SELECT person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by, #date#, #postEditor.name# <isNotNull property="newContentId">, #newContentId#</isNotNull>
 		FROM pub_person
 			WHERE person_change_id = #oldContentId#
+
+	<insert id="logPubPerson" parameterClass="Integer">
+		INSERT INTO log_pub_person (person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by, deleted)
+		SELECT person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by, deleted
+		FROM pub_person WHERE person_change_id = #personChangeId#
+	</insert>
+
+	<insert id="logPubPersonDelete" parameterClass="org.bibsonomy.model.ResourcePersonRelation">
+		INSERT INTO log_pub_person (<include refid="allPubPersonRelationLogAttributes" />)
+		SELECT (SELECT LAST_INSERT_ID() as person_change_id), simhash1, simhash2, relator_code, person_index, person_id, qualifying, #changedAt#, #changedBy#, 1 as deleted
+		FROM pub_person WHERE person_change_id = #personRelChangeId#
+	</insert>
+
+	<insert id="logPubPersonUpdates" parameterClass="int">
+		INSERT INTO log_pub_person (person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by, deleted, new_change_id)
+		SELECT #personChangeId# as person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by, deleted, (SELECT LAST_INSERT_ID() as new_change_id)
+		FROM pub_person WHERE person_change_id = #personChangeId#
 	</insert>
 	
 	<!-- when updated, 'deleted' field is 0 -->

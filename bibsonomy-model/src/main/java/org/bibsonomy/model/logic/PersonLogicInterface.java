@@ -31,6 +31,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
@@ -48,27 +49,22 @@ public interface PersonLogicInterface {
 	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException;
 
 	/**
-	 * FIXME: remove database id TODO_PERSONS
 	 * removes a resource relation
-	 * @param resourceRelationId
+	 *
+	 * @param interHash
+	 * @param index
+	 * @param type
 	 */
-	public void removeResourceRelation(int resourceRelationId);
+	void removeResourceRelation(String interHash, int index, PersonResourceRelationType type);
 
 	/**
 	 * sets id for new persons
-	 * 
-	 * @param person the person to be saved or updated
-	 */
-	public void createOrUpdatePerson(Person person);
+	 *
+     * @param person the person to be saved or updated
+     */
+	public String createOrUpdatePerson(Person person);
 	
-	public Person getPersonById(PersonIdType idType, String id);
-	
-	/**
-	 * Returns the Person claimed by a given UserName
-	 * @param userName	the name of the user
-	 * @return	a Person object in case the user has claimed a person, null otherwise
-	 */
-	public Person getPersonByUser(String userName);
+	Person getPersonById(PersonIdType idType, String id);
 	
 	/**
 	 * FIXME: remove database id TODO_PERSONS
@@ -83,10 +79,10 @@ public interface PersonLogicInterface {
 	public void createPersonName(PersonName withPersonId);
 	
 	/**
-	 * @param queryString a search string coming from an autocomplete field. Planned but not yet implemented: May contain an incomplete word, which will be internally autocompleted before searching persons
+	 * @param builder the builder
 	 * @return a builder object fo optional parameters
 	 */
-	public PersonSuggestionQueryBuilder getPersonSuggestion(String queryString);
+	List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder builder);
 
 	/**
 	 * retrieves persons from the database
@@ -96,16 +92,16 @@ public interface PersonLogicInterface {
 	List<Person> getPersons(final PersonSuggestionQuery query);
 
 	/**
+	 * @param builder the builder
 	 * @return a querybuilder object by which options for the query can be specified
 	 */
-	public ResourcePersonRelationQueryBuilder getResourceRelations();
-
+	List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQueryBuilder builder);
 	
 	/**
 	 * Updates the given person
 	 * @param person		the person to update
 	 * @param operation		the desired update operation
 	 */
-	public void updatePerson(final Person person, final PersonUpdateOperation operation);
+	void updatePerson(final Person person, final PersonUpdateOperation operation);
 	
 }

@@ -52,13 +52,17 @@ import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationData;
@@ -68,6 +72,8 @@ import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
+import org.bibsonomy.rest.client.queries.get.GetPersonByIdQuery;
+import org.bibsonomy.rest.client.queries.get.GetResourcePersonRelationsQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostDocumentQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostQuery;
@@ -92,9 +98,11 @@ import org.bibsonomy.rest.client.queries.get.GetUserListQuery;
 import org.bibsonomy.rest.client.queries.post.AddUsersToGroupQuery;
 import org.bibsonomy.rest.client.queries.post.CreateConceptQuery;
 import org.bibsonomy.rest.client.queries.post.CreateGroupQuery;
+import org.bibsonomy.rest.client.queries.post.CreatePersonQuery;
 import org.bibsonomy.rest.client.queries.post.CreatePostDocumentQuery;
 import org.bibsonomy.rest.client.queries.post.CreatePostQuery;
 import org.bibsonomy.rest.client.queries.post.CreateRelationQuery;
+import org.bibsonomy.rest.client.queries.post.CreateResourcePersonRelationQuery;
 import org.bibsonomy.rest.client.queries.post.CreateSyncPlanQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserRelationshipQuery;
@@ -172,6 +180,14 @@ public class RestLogic extends AbstractLogicInterface {
 
 		this.authUser = loggedinUser;
 		this.accessor = accessor;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.util.AbstractLogicInterface#doDefaultAction()
+	 */
+	@Override
+	protected void doDefaultAction() {
+		throw new UnsupportedOperationException();
 	}
 
 	private <T> T execute(final AbstractQuery<T> query) {
@@ -476,7 +492,7 @@ public class RestLogic extends AbstractLogicInterface {
 			query.setResourceHash(posts.get(0).getResource().getIntraHash());
 		}
 
-		return execute(query).intValue();
+		return execute(query);
 	}
 	
 	@Override
@@ -520,12 +536,27 @@ public class RestLogic extends AbstractLogicInterface {
 		
 		this.execute(new ChangeDocumentNameQuery(userName, resourceHash, documentName, document));
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.util.AbstractLogicInterface#doDefaultAction()
-	 */
+
 	@Override
-	protected void doDefaultAction() {
-		throw new UnsupportedOperationException();
+	public Person getPersonById(PersonIdType idType, String id) {
+		if (!PersonIdType.PERSON_ID.equals(idType)) {
+			this.doDefaultAction();
+		}
+		return execute(new GetPersonByIdQuery(id));
+	}
+
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(final ResourcePersonRelationQueryBuilder builder) {
+		return this.execute(new GetResourcePersonRelationsQuery(builder.getPersonId()));
+	}
+
+	@Override
+	public String createOrUpdatePerson(Person person) {
+		return execute(new CreatePersonQuery(person));
+	}
+
+	@Override
+	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) {
+		execute(new CreateResourcePersonRelationQuery(resourcePersonRelation));
 	}
 }

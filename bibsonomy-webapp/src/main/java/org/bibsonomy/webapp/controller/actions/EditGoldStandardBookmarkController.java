@@ -104,7 +104,7 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 		if (!present(post)) {
 			return null;
 		}
-		final Post<Bookmark> gold = new Post<Bookmark>();
+		final Post<Bookmark> gold = new Post<>();
 		final GoldStandardBookmark goldResource = new GoldStandardBookmark();
 
 		ObjectUtils.copyPropertyValues(post.getResource(), goldResource);

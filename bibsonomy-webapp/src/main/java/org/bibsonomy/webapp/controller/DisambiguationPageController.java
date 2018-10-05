@@ -43,6 +43,7 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
+import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
@@ -79,16 +80,19 @@ public class DisambiguationPageController extends SingleResourceListController i
 	
 	@Override
 	public View workOn(final DisambiguationPageCommand command) {
-		if (command.getRequestedHash() == null) {
-			throw new ObjectNotFoundException(command.getRequestedHash());
+		final String requestedHash = command.getRequestedHash();
+		if (requestedHash == null) {
+			throw new ObjectNotFoundException(requestedHash);
 		}
-		
-		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, command.getRequestedHash(), null, null, null, null, null, null, 0, 100);
-		
-		if (!present(posts)) {
-			throw new ObjectNotFoundException(command.getRequestedHash());
+
+		/*
+		 * first we check if the post is in our database
+		 */
+		final Post<? extends BibTex> post = this.findPost(requestedHash);
+		if (!present(post)) {
+			throw new ObjectNotFoundException(requestedHash);
 		}
-		command.setPost(posts.get(0));
+		command.setPost(post);
 
 		// FIXME: move these action to separate controllers
 		if ("newPerson".equals(command.getRequestedAction())) {
@@ -104,6 +108,43 @@ public class DisambiguationPageController extends SingleResourceListController i
 		return disambiguateAction(command);
 	}
 
+	/**
+	 * method that normalizes the provided hash (removes the hash id from the hash iff it starts with the hash id)
+	 * @param hash
+	 * @return
+	 */
+	private static String normHash(final String hash) {
+		if (!present(hash)) {
+			return hash;
+		}
+
+		// no hash id given use the provided hash
+		if (hash.length() == 32) {
+			return hash;
+		}
+
+		// strip the hash id
+		return hash.substring(1);
+	}
+
+	private Post<? extends BibTex> findPost(final String requestedHash) {
+		final String interHash = normHash(requestedHash);
+		// first try to find a community post
+		final Post<? extends BibTex> postDetails = (Post<? extends BibTex>) this.logic.getPostDetails(interHash, "");
+		if (present(postDetails)) {
+			return postDetails;
+		}
+
+		// else find a post in the database
+		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, requestedHash, null, null, null, null, null, null, 0, 1);
+		if (present(posts)) {
+			return posts.get(0);
+		}
+
+		// nothing found
+		return null;
+	}
+
 	private View disambiguateAction(final DisambiguationPageCommand command) {
 		/*
 		 * first check if there is already a person resource relation
@@ -111,10 +152,8 @@ public class DisambiguationPageController extends SingleResourceListController i
 		 */
 		final PersonResourceRelationType requestedRole = command.getRequestedRole();
 		final int requestedIndex = command.getRequestedIndex().intValue();
-		
-		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations().byInterhash(command.getPost().getResource().getInterHash()).byRelationType(requestedRole).byAuthorIndex(requestedIndex).getIt();
+		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byInterhash(command.getPost().getResource().getInterHash()).byRelationType(requestedRole).byAuthorIndex(requestedIndex));
 		if (present(matchingRelations)) {
-			// FIXME: cache urlgenerator
 			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingRelations.get(0).getPerson().getPersonId()));
 		}
 
@@ -150,7 +189,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 		// FIXME: get all posts that are containing the post but are not assigned to another person
 		// PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
 		// ist<ResourcePersonRelation> suggestedPersons = query.doIt();
-			
+
 //		/*
 //		 * FIXME: use author-parameter in getPosts method
 //		 * @see bibsonomy.database.managers.PostDatabaseManager.#getPostsByResourceSearch()
@@ -288,9 +327,10 @@ public class DisambiguationPageController extends SingleResourceListController i
 		final PersonName mainName = publicationNames.get(personIndex);
 		return mainName;
 	}
-	
-	
+
 	/**
+	 *
+	 * FIXME: remove this method, use the add resource relation controller
 	 * creates a new person, links the resource and redirects to the new person page
 	 * @param command
 	 * @return

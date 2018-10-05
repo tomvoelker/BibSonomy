@@ -120,4 +120,12 @@
 		b2.person_change_id as r_person_change_id, b2.simhash1, b2.simhash2, b2.qualifying, b2.person_id, b2.relator_code, b2.log_changed_by, b2.log_changed_at, b2.person_index
 	</sql>
 
+	<sql id="allPubPersonRelationLogAttributes">
+		person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by, deleted
+	</sql>
+
+	<sql id="allPubPersonRelationAttributes">
+		person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by
+	</sql>
+
 </sqlMap>

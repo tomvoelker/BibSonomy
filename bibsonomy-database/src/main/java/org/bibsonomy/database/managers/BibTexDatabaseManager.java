@@ -64,10 +64,9 @@ import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
- * Used to create, read, update and delete BibTexs from the database.
+ * Used to create, read, update and delete {@link BibTex} from the database.
  * 
- * FIXME: why do some methods use loginUserName and some methods not? Shouldn't
- * all methods need loginUserName?
+ * FIXME: why do some methods use loginUserName and some methods not? Shouldn't all methods need loginUserName?
  * 
  * @author Miranda Grahl
  * @author Jens Illig
@@ -513,6 +512,11 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		this.insert("insertScraperMetadata", scraperMetadata, session);
 	}
 
+	@Override
+	protected void onPostInsert(final Post<BibTex> post, final User loggedinUser, final DBSession session) {
+		this.plugins.onPublicationInsert(post, loggedinUser, session);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -559,11 +563,11 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.bibsonomy.database.managers.PostDatabaseManager#getInsertParam(org
+	 * org.bibsonomy.database.managers.PostDatabaseManager#createInsertParam(org
 	 * .bibsonomy.model.Post, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	protected BibTexParam getInsertParam(final Post<? extends BibTex> post, final DBSession session) {
+	protected BibTexParam createInsertParam(final Post<? extends BibTex> post) {
 		final BibTexParam insert = this.getNewParam();
 		insert.setResource(post.getResource());
 		insert.setRequestedContentId(post.getContentId());
@@ -577,9 +581,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		final int groupId = post.getGroups().iterator().next().getGroupId();
 		insert.setGroupId(groupId);
 
-		// inform plugin
-		// FIXME: why calling the plugins in the create insert param method, not expected here!
-		this.plugins.onPublicationInsert(post, session);
 		return insert;
 	}
 

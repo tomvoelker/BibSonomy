@@ -32,9 +32,14 @@ import org.bibsonomy.database.params.LoggingParam;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 
 /**
+ * handles updates that are necessary when the interhash changes when a community publication is updated
+ * e.g. relations and person resource relations
+ *
+ * or when the publication is deleted
+ *
  * @author dzo
  */
-public class GoldStandardPublicationReferencePlugin extends AbstractDatabasePlugin {
+public class GoldStandardPublicationPlugin extends AbstractDatabasePlugin {
 
 	@Override
 	public void onGoldStandardDelete(final String interhash, final DBSession session) {
@@ -43,8 +48,15 @@ public class GoldStandardPublicationReferencePlugin extends AbstractDatabasePlug
 		param.setHash(interhash);
 		param.setRefHash(interhash);
 
+		// delete the references, but before log it
+		this.insert("logDeletedRelationsGoldStandardPublication", param, session);
+		this.insert("logDeletedGoldStandardPublicationRelations", param, session);
 		this.delete("deleteRelationsGoldStandardPublication", param, session);
 		this.delete("deleteGoldStandardPublicationRelations", param, session);
+
+		// delete the person relations, but before log it
+		this.insert("logDeletedPersonRelationsByInterhash", param, session);
+		this.delete("deletePersonRelationsByInterhash", param, session);
 	}
 
 	@Override
@@ -54,8 +66,16 @@ public class GoldStandardPublicationReferencePlugin extends AbstractDatabasePlug
 		param.setNewHash(newInterhash);
 		param.setOldHash(interhash);
 
+		/*
+		 * move the relations
+		 */
 		this.update("updateGoldStandardPublicationRelations", param, session);
 		this.update("updateRelationsGoldStandardPublication", param, session);
+
+		/*
+		 * move the person resource relations
+		 */
+		this.update("updatePersonRelationsByInterhash", param, session);
 
 		/*
 		 * move discussion with the gold standard

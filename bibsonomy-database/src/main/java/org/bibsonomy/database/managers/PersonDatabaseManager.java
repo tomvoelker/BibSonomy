@@ -31,6 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,6 +40,8 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.DuplicateEntryException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
@@ -62,6 +65,7 @@ import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.services.searcher.PersonSearch;
+import org.bibsonomy.util.ObjectUtils;
 
 /**
  * database manger for handling {@link Person} related actions
@@ -75,6 +79,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	private final GeneralDatabaseManager generalManager;
 	private final DatabasePluginRegistry plugins;
+	private GoldStandardPublicationDatabaseManager goldStandardPublicationDatabaseManager;
+	private BibTexDatabaseManager publicationDatabaseManager;
 	private PersonSearch personSearch;
 
 	@Deprecated // use spring config
@@ -93,10 +99,10 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param person
 	 * @param session
 	 */
-	public void createPerson(final Person person, final DBSession session) {
+	public String createPerson(final Person person, final DBSession session) {
 		session.beginTransaction();
-		final String tempPersonId = this.generatePersonId(person, session);
-		person.setPersonId(tempPersonId);
+		final String generatedPersonId = this.generatePersonId(person, session);
+		person.setPersonId(generatedPersonId);
 		try {
 			// get a new id from the database for the new person
 			person.setPersonChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
@@ -105,12 +111,13 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 		} finally {
 			session.endTransaction();
 		}
+		return generatedPersonId;
 	}
 
 	/**
 	 * Generates a unique person ID (used for speaking URL) Concatinates the
 	 * name and a counter variable
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 * @return
@@ -140,7 +147,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Returns a Person identified by it's linked username or null if the given
 	 * User has not claimed a Person so far
-	 * 
+	 *
 	 * @param user
 	 * @param session
 	 * @return Person
@@ -151,7 +158,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns a Person identified by it's unique ID
-	 * 
+	 *
 	 * @param id
 	 * @param session
 	 * @return Person
@@ -162,7 +169,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns a Person identified by it's unique DNB ID
-	 * 
+	 *
 	 * @param dnbId
 	 * @param session
 	 * @return Person
@@ -173,7 +180,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Creates a new name and adds it to the specified Person
-	 * 
+	 *
 	 * @param name
 	 * @param session
 	 */
@@ -189,8 +196,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Updates all fields of the given Person
-	 * 
+	 * Updates all fields of a given Person
+	 *
 	 * @param person
 	 * @param session
 	 */
@@ -237,7 +244,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Update the OrcID of a Person
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 */
@@ -247,7 +254,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Update the academic degree of a Person
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 */
@@ -257,7 +264,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Update the College of a Person
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 */
@@ -267,7 +274,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Update the Email of a Person
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 */
@@ -277,7 +284,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Update the Homepage of a Person
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 */
@@ -287,19 +294,61 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * @param resourcePersonRelation
+	 * @param loggedinUser the loggedin user
 	 * @param session
-	 * @return TODO: add documentation
+	 * @return <code>true</code> iff the relation was added
 	 */
-	public boolean addResourceRelation(ResourcePersonRelation resourcePersonRelation, DBSession session) {
+	public boolean addResourceRelation(final ResourcePersonRelation resourcePersonRelation, User loggedinUser, final DBSession session) {
+		// FIXME: add validator (index)
 		session.beginTransaction();
 		try {
+			/*
+			 * to ensure that the resource is always available even when the user deletes a post
+			 * we create here a community post of the provided post
+			 * FIXME: it is very inefficient to post the complete post e.g. via api
+			 */
+			final Post<? extends BibTex> post = resourcePersonRelation.getPost();
+			final BibTex publication = post.getResource();
+
+			final String intraHash = publication.getIntraHash();
+			final String interHash = publication.getInterHash();
+			final Post<GoldStandardPublication> communityPostInDB = this.goldStandardPublicationDatabaseManager.getPostDetails(loggedinUser.getName(), interHash, "", Collections.emptyList(), session);
+			if (!present(communityPostInDB)) {
+				final BibTex resourceToCopy;
+				// FIXME: use a better way to test whether a dummy post was provided or a real post FIXME_CRIS
+				if (!present(publication.getTitle())) {
+					final List<Post<BibTex>> postsByHash = this.publicationDatabaseManager.getPostsByHash("", intraHash, HashID.SIM_HASH2, GroupID.PUBLIC.getId(), Collections.emptyList(), 1, 0, session);
+					if (present(postsByHash)) {
+						resourceToCopy = postsByHash.get(0).getResource();
+					} else {
+						throw new RuntimeException("can't create community post");
+					}
+				} else {
+					resourceToCopy = publication;
+				}
+
+				/*
+				 * create a new post and setup it with user and date information
+				 */
+				final Post<GoldStandardPublication> communityPost = new Post<>();
+				final Date postingDate = new Date();
+				communityPost.setDate(postingDate);
+				communityPost.setChangeDate(postingDate);
+				communityPost.setUser(loggedinUser);
+
+				final GoldStandardPublication goldPublication = new GoldStandardPublication();
+				ObjectUtils.copyPropertyValues(resourceToCopy, goldPublication);
+				communityPost.setResource(goldPublication);
+				goldPublication.recalculateHashes();
+				this.goldStandardPublicationDatabaseManager.createPost(communityPost, loggedinUser, session);
+			}
+
 			resourcePersonRelation.setPersonRelChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("addResourceRelation", resourcePersonRelation, session);
 			session.commitTransaction();
 			return true;
 		} catch (final DuplicateEntryException e) {
-			session.commitTransaction(); // FIXME: only called to not cancel the
-											// transaction
+			session.commitTransaction(); // FIXME: only called to not cancel the transaction
 			return false;
 		} finally {
 			session.endTransaction();
@@ -313,6 +362,39 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void removeResourceRelation(int personRelChangeId, User loggedinUser, DBSession session) {
 		this.removeResourceRelation(personRelChangeId, loggedinUser, false, session);
+	}
+
+	public void removeResourceRelation(final String interHash, final int index, final PersonResourceRelationType type, final User loginUser, final DBSession session) {
+		this.removeResourceRelation(interHash, index, type, loginUser, false, session);
+	}
+
+	/**
+	 * @param interHash
+	 * @param index
+	 * @param type
+	 * @param loginUser
+	 * @param session
+	 */
+	private void removeResourceRelation(final String interHash, final int index, final PersonResourceRelationType type, final User loginUser, final boolean update, final DBSession session) {
+		session.beginTransaction();
+
+		try {
+			final ResourcePersonRelation resourcePersonRelation = this.getResourcePersonRelation(interHash, index, type, session);
+			if (!present(resourcePersonRelation)) {
+				// TODO: notify someone
+				return;
+			}
+			// inform the plugins (e.g. to log the deleted relation)
+			if (!update) {
+				this.plugins.onPubPersonDelete(resourcePersonRelation, loginUser, session);
+			}
+
+			this.delete("removeResourceRelation", resourcePersonRelation.getPersonRelChangeId(), session);
+			this.plugins.onPubPersonDelete(resourcePersonRelation, loginUser, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
 	}
 
 	private void removeResourceRelation(int personRelChangeId, User loggedinUser, boolean update, DBSession session) {
@@ -408,6 +490,19 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getResourcePersonRelationByResourcePersonRelation", rpr, ResourcePersonRelation.class, session);
 	}
 
+	private ResourcePersonRelation getResourcePersonRelation(final String interhash, final int index, final PersonResourceRelationType type, DBSession session) {
+		final ResourcePersonRelation param = new ResourcePersonRelation();
+		param.setPersonIndex(index);
+		param.setRelationType(type);
+		final Post<BibTex> post = new Post<>();
+		final BibTex bibTex = new BibTex();
+		post.setResource(bibTex);
+		bibTex.setInterHash(interhash);
+		param.setPost(post);
+
+		return this.queryForObject("getResourcePersonRelationByResourcePersonRelation", param, ResourcePersonRelation.class, session);
+	}
+
 	/**
 	 * @param personId
 	 * @param loginUser
@@ -500,7 +595,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * checks if a two persons can be merged on different attributes and their
 	 * phd/habil
-	 * 
+	 *
 	 * @param match
 	 * @param loggedInUser
 	 * @param session
@@ -592,7 +687,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 			// remove it from the person
 			this.removeResourceRelation(oldId, loggedinUser, true, session);
-			this.addResourceRelation(newRelation, session);
+			this.addResourceRelation(newRelation, loggedinUser, session);
 
 			session.commitTransaction();
 		} finally {
@@ -632,11 +727,11 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * This method will merge two persons, if there are no conflicts The person
 	 * resource relation will be changed Name aliases will be added
-	 * 
+	 *
 	 * @param match
 	 * @param loggedinUser
 	 * @param session
-	 * 
+	 *
 	 * @return true if the merge was successful
 	 */
 	public boolean mergeSimilarPersons(PersonMatch match, User loggedinUser, DBSession session) {
@@ -657,7 +752,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * This method will merge two persons, if there are no conflicts The person
 	 * resource relation will be changed Name aliases will be added
-	 * 
+	 *
 	 * @param match
 	 * @param loggedinUser
 	 * @param session
@@ -686,7 +781,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * updates all attributes for person1 for a conflict merge updates both
 	 * persons because the need to be compared later with mergeable
-	 * 
+	 *
 	 * @param match
 	 * @param session
 	 */
@@ -771,11 +866,11 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * updates all attributes for person1 for a non conflict merge
-	 * 
+	 *
 	 * @param person1
 	 * @param person2
 	 * @return true if an attributes was updated
-	 * 
+	 *
 	 */
 	private boolean combinePersonsAttributes(Person person1, Person person2) {
 		boolean edit = false;
@@ -800,7 +895,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * add user to the deny list of a match denys a match for all if a threshold
 	 * is reached
-	 *  @param match
+	 *
+	 * @param match
 	 * @param userName
 	 * @param session
 	 */
@@ -828,7 +924,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * FIXME: why are we not filtering this using a query?
 	 *
 	 * filters the matches such that matches the user denied wont be displayed
-	 * 
+	 *
 	 * @param personID
 	 * @param userName
 	 * @param session
@@ -843,7 +939,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * performs a merge and resolves its conflicts
-	 * 
+	 *
 	 * @param formMatchId
 	 * @param map
 	 *            conflicts
@@ -897,7 +993,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param fields
 	 * @return true if only valid fieldNames are in fields
 	 */
@@ -917,7 +1013,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * set new mainName to person due to a conflict merge
-	 *  @param person
+	 *
+	 * @param person
 	 * @param newName FIXME: why is newName not of type PersonName
 	 * @param session
 	 */
@@ -966,7 +1063,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * tests if the merge can be performed without a conflict on user claims
-	 * 
+	 *
 	 * @param match
 	 * @param loginUser
 	 */
@@ -991,4 +1088,17 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 		this.personSearch = personSearch;
 	}
 
+	/**
+	 * @param goldStandardPublicationDatabaseManager the goldStandardPublicationDatabaseManager to set
+	 */
+	public void setGoldStandardPublicationDatabaseManager(GoldStandardPublicationDatabaseManager goldStandardPublicationDatabaseManager) {
+		this.goldStandardPublicationDatabaseManager = goldStandardPublicationDatabaseManager;
+	}
+
+	/**
+	 * @param publicationDatabaseManager the publicationDatabaseManager to set
+	 */
+	public void setPublicationDatabaseManager(BibTexDatabaseManager publicationDatabaseManager) {
+		this.publicationDatabaseManager = publicationDatabaseManager;
+	}
 }

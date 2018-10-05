@@ -50,7 +50,7 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	private Integer requestedIndex;
 
 	private PersonName personName;
-	private Post<BibTex> post;
+	private Post<? extends BibTex> post;
 	private List<Person> personSuggestions;
 
 	/**
@@ -70,14 +70,14 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the post
 	 */
-	public Post<BibTex> getPost() {
+	public Post<? extends BibTex> getPost() {
 		return this.post;
 	}
 
 	/**
 	 * @param post the post to set
 	 */
-	public void setPost(Post<BibTex> post) {
+	public void setPost(Post<? extends BibTex> post) {
 		this.post = post;
 	}
 

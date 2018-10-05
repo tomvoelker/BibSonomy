@@ -26,14 +26,12 @@
  */
 package org.bibsonomy.webapp.command;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.PersonUpdateOperation;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonMergeFieldConflict;
@@ -59,6 +57,13 @@ public class PersonPageCommand extends BaseCommand {
 	private String requestedPersonId;
 	
 	private String formSelectedName;
+
+	/** Properties if deleting or adding relations */
+	private String type;
+
+	private String interhash;
+
+	private String index;
 
 	
 	@Deprecated // TODO: bind person directly
@@ -96,18 +101,18 @@ public class PersonPageCommand extends BaseCommand {
 	private Person person;
 	private Post<? extends Resource> post;
 	
-	private List<Post<?>> thesis;
-	private List<Post<?>> advisedThesis;
-	private List<Post<?>> allPosts;
+	private List<ResourcePersonRelation> thesis;
+	private List<ResourcePersonRelation> advisedThesis;
+	private List<ResourcePersonRelation> allPosts;
 	
 	@Deprecated // FIXME: access enum directly
 	private List<PersonResourceRelationType> availableRoles = new ArrayList<>();
 	
 	private String responseString;
-	private List<Post<?>> otherPubs;
-	private List<Post<?>> otherAdvisedPubs;
+	private List<ResourcePersonRelation> otherPubs;
+	private List<ResourcePersonRelation> otherAdvisedPubs;
 	
-	private List<Post<BibTex>> similarAuthorPubs;
+	private List<ResourcePersonRelation> similarAuthorPubs;
 	
 	private List<PersonMatch> personMatchList;
 	
@@ -215,42 +220,42 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @return the thesis
 	 */
-	public List<Post<?>> getThesis() {
+	public List<ResourcePersonRelation> getThesis() {
 		return this.thesis;
 	}
 
 	/**
 	 * @param thesis the thesis to set
 	 */
-	public void setThesis(List<Post<?>> thesis) {
+	public void setThesis(List<ResourcePersonRelation> thesis) {
 		this.thesis = thesis;
 	}
 
 	/**
 	 * @return the advisedThesis
 	 */
-	public List<Post<?>> getAdvisedThesis() {
+	public List<ResourcePersonRelation> getAdvisedThesis() {
 		return this.advisedThesis;
 	}
 
 	/**
 	 * @param advisedThesis the advisedThesis to set
 	 */
-	public void setAdvisedThesis(List<Post<?>> advisedThesis) {
+	public void setAdvisedThesis(List<ResourcePersonRelation> advisedThesis) {
 		this.advisedThesis = advisedThesis;
 	}
 
 	/**
 	 * @return the allPosts
 	 */
-	public List<Post<?>> getAllPosts() {
+	public List<ResourcePersonRelation> getAllPosts() {
 		return this.allPosts;
 	}
 
 	/**
 	 * @param allPosts the allPosts to set
 	 */
-	public void setAllPosts(List<Post<?>> allPosts) {
+	public void setAllPosts(List<ResourcePersonRelation> allPosts) {
 		this.allPosts = allPosts;
 	}
 
@@ -469,27 +474,27 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @param otherAuthorPosts
 	 */
-	public void setOtherPubs(List<Post<?>> otherAuthorPosts) {
+	public void setOtherPubs(List<ResourcePersonRelation> otherAuthorPosts) {
 		this.otherPubs = otherAuthorPosts;
 	}
 
-	public List<Post<?>> getOtherPubs() {
+	public List<ResourcePersonRelation> getOtherPubs() {
 		return this.otherPubs;
 	}
 
 	/**
-	 * @param otherAdvisorPosts
+	 * @param otherAdvisedPubs
 	 */
-	public void setOtherAdvisedPubs(List<Post<?>> otherAdvisedPubs) {
+	public void setOtherAdvisedPubs(List<ResourcePersonRelation> otherAdvisedPubs) {
 		this.otherAdvisedPubs = otherAdvisedPubs;
 	}
 
-	public List<Post<?>> getOtherAdvisedPubs() {
+	public List<ResourcePersonRelation> getOtherAdvisedPubs() {
 		return this.otherAdvisedPubs;
 	}
 
 	/**
-	 * @param actionKeyCreateAndLinkPerson
+	 * @param okHintKey
 	 */
 	public void setOkHintKey(String okHintKey) {
 		this.okHintKey = okHintKey;
@@ -533,14 +538,14 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @return the similarAuthorPubs
 	 */
-	public List<Post<BibTex>> getSimilarAuthorPubs() {
+	public List<ResourcePersonRelation> getSimilarAuthorPubs() {
 		return this.similarAuthorPubs;
 	}
 
 	/**
 	 * @param similarAuthorPubs the similarAuthorPubs to set
 	 */
-	public void setSimilarAuthorPubs(List<Post<BibTex>> similarAuthorPubs) {
+	public void setSimilarAuthorPubs(List<ResourcePersonRelation> similarAuthorPubs) {
 		this.similarAuthorPubs = similarAuthorPubs;
 	}
 
@@ -600,4 +605,45 @@ public class PersonPageCommand extends BaseCommand {
 		this.formResponseString = formResponseString;
 	}
 
+	/**
+	 * @return
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * @param type
+	 */
+	public void setType (String type) {
+		this.type = type;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getInterhash() {
+		return interhash;
+	}
+
+	/**
+	 * @param interhash
+	 */
+	public void setInterhash(String interhash) {
+		this.interhash = interhash;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getIndex() {
+		return index;
+	}
+
+	/**
+	 * @param index
+	 */
+	public void setIndex(String index) {
+		this.index = index;
+	}
 }

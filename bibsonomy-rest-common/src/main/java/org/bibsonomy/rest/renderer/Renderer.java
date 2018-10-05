@@ -34,8 +34,10 @@ import java.util.Set;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SynchronizationData;
@@ -110,6 +112,45 @@ public interface Renderer {
 	 *            the {@link ViewModel} encapsulates additional information,
 	 */
 	public void serializeUser(Writer writer, User user, ViewModel viewModel);
+
+	/**
+	 * Serializes one {@link Person}.
+	 *
+	 * @param writer
+	 *            a {@link Writer} to use.
+	 * @param person
+	 *            one {@link Person} object.
+	 * @param viewModel
+	 *            the {@link ViewModel} encapsulates additional information,
+	 */
+	public void serializePerson(Writer writer, Person person, ViewModel viewModel);
+
+	/**
+	 * Serializes one {@link ResourcePersonRelation}.
+	 *
+	 * @param writer
+	 *            a {@link Writer} to use.
+	 * @param resourcePersonRelation
+	 *            one {@link ResourcePersonRelation} object.
+	 * @param viewModel
+	 *            the {@link ViewModel} encapsulates additional information,
+	 */
+	public void serializeResourcePersonRelation(Writer writer, ResourcePersonRelation resourcePersonRelation, ViewModel viewModel);
+
+	/**
+	 * Serializes a list of {@link ResourcePersonRelation}.
+	 * @param writer
+	 * @param relations
+	 */
+	void serializeResourcePersonRelations(Writer writer, List<ResourcePersonRelation> relations);
+
+	/**
+	 * Serializes a personid
+	 *
+	 * @param writer   the {@link Writer} to use.
+	 * @param personId the personId to send
+	 */
+	public void serializePersonId(Writer writer, String personId);
 
 	/**
 	 * Serializes a {@link List} of {@link Tag}s.
@@ -294,6 +335,17 @@ public interface Renderer {
 	public String parseUserId(Reader reader) throws BadRequestOrResponseException;
 
 	/**
+	 * Reads an user id from a {@link Reader}
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return an resource hash
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public String parsePersonId(Reader reader) throws BadRequestOrResponseException;
+
+	/**
 	 * Reads a group id from a {@link Reader}
 	 * 
 	 * @param reader
@@ -338,6 +390,35 @@ public interface Renderer {
 	public User parseUser(Reader reader) throws BadRequestOrResponseException;
 
 	/**
+	 * Reads one {@link Person} from a {@link Reader}.
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return one {@link Person} object.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public Person parsePerson(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads one {@link ResourcePersonRelation} from a {@link Reader}.
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return one {@link ResourcePersonRelation} object.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public ResourcePersonRelation parseResourcePersonRelation(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads a list of {@link ResourcePersonRelation}s from a {@link Reader}.
+	 * @param reader  the {@link Reader} to use.
+	 * @return a list of {@link ResourcePersonRelation}s
+	 */
+	List<ResourcePersonRelation> parseResourcePersonRelations(Reader reader);
+
+	/**
 	 * Reads a List of {@link Post}s from a {@link Reader}.
 	 * 
 	 * @param reader
@@ -366,8 +447,7 @@ public interface Renderer {
 	 * 
 	 * @param reader
 	 * 			  the {@link Reader} to use.
-	 * @param uploadFileAccessor 
-	 * @param uploadedFileAccessor provides access to referenced attachments in the read data
+	 * @param uploadFileAccessor provides access to referenced attachments in the read data
 	 * @return one {@link Document} object
 	 * @throws BadRequestOrResponseException
 	 * 				if the document within the reader is errorenous.

@@ -69,7 +69,7 @@ public final class RESTConfig {
 
 	public static final String TAGS_URL = "tags";
 	
-	public static final String RELATION_PARAM = "relation";
+	public static final String RELATION_PARAM = "relations";
 
 	public static final String REFERENCES_SUB_PATH = "references";
 	
@@ -78,6 +78,8 @@ public final class RESTConfig {
 	public static final String RELATION_PARTOF = GoldStandardRelation.PART_OF.toString().toLowerCase();
 
 	public static final String USERS_URL = "users";
+
+    public static final String PERSONS_URL = "persons";
 
 	public static final String DOCUMENTS_SUB_PATH = "documents";
 

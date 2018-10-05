@@ -10,13 +10,15 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:publication="urn:jsptagdir:/WEB-INF/tags/resources/publication"
-	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
-	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<c:set var="goldstandardPresent" value="${not empty command.goldStandardPublications.list}" />
-	<c:set var="postToShow" value="${command.bibtex.list[0]}" />
+	<c:if test="${not empty command.bibtex.list}">
+		<c:set var="postToShow" value="${command.bibtex.list[0]}" />
+	</c:if>
 	<c:if test="${goldstandardPresent}">
 		<c:set var="postToShow" value="${command.goldStandardPublications.list[0]}" />
 	</c:if>
@@ -42,23 +44,15 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
-			<c:set var="isPublic" value="${false}"/>
 			<c:choose>
-				<!-- community post -->
-				<c:when test="${goldstandardPresent}">
+				<c:when test="${empty command.bibtex.list}">
 					<c:set var="isPublic" value="${true}"/>
 				</c:when>
-				<!-- or first item is public -->
 				<c:otherwise>
-					<!-- quick fix for discussion page -->
-					<c:forEach var="group" items="${command.bibtex.list[0].groups}">
-						<c:if test="${group.name eq 'public'}">
-							<c:set var="isPublic" value="${true}"/>
-						</c:if>
-					</c:forEach>
+					<spring:eval expression="T(org.bibsonomy.model.util.GroupUtils).isPublicGroup(command.bibtex.list[0].groups)"
+						 var="isPublic"/>
 				</c:otherwise>
 			</c:choose>
-			
 			<goldstandardpublication:details post="${postToShow}" postOfLoggedInUser="${command.postOfLoggedInUser}" loginUser="${command.context.loginUser}" postUserName="${command.postOwner}" postIsPublic="${isPublic}"/>
 		</jsp:attribute>
 	</layout:layout>

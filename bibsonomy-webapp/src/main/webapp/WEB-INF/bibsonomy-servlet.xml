@@ -379,8 +379,6 @@
 								
 								<value>newName.firstName</value>
 								<value>newName.lastName</value>
-								
-																
 							</list>
 						</property>
 					</bean>

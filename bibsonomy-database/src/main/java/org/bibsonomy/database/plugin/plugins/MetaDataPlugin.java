@@ -35,6 +35,7 @@ import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
 
 /**
  * This plugin allows the saving of specific data.
@@ -44,7 +45,7 @@ import org.bibsonomy.model.Resource;
 public class MetaDataPlugin extends AbstractDatabasePlugin {
 
 	@Override
-	public void onPublicationInsert(final Post<? extends BibTex> post, final DBSession session) {
+	public void onPublicationInsert(final Post<? extends BibTex> post, User loggedinUser, final DBSession session) {
 		// check for copyFrom
 		if (present(post) && present(post.getCopyFrom())) {
 			final PostParam param = createParam(post, MetaDataPluginKey.COPY_PUBLICATION);
@@ -53,7 +54,7 @@ public class MetaDataPlugin extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onBookmarkInsert(final Post<? extends Resource> post, final DBSession session) {
+	public void onBookmarkInsert(final Post<? extends Resource> post, User logginUser, final DBSession session) {
 		// check for copyFrom
 		if (present(post) && present(post.getCopyFrom())) {
 			final PostParam param = createParam(post, MetaDataPluginKey.COPY_BOOKMARK);

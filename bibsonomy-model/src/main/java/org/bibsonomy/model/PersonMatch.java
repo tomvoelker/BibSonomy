@@ -47,8 +47,10 @@ import org.bibsonomy.util.ValidationUtils;
  * @author jhi
  */
 public class PersonMatch implements Serializable {
-	private static final Log log = LogFactory.getLog(PersonMatch.class);
 	private static final long serialVersionUID = -470932185819510145L;
+
+	private static final Log log = LogFactory.getLog(PersonMatch.class);
+
 	public static final int denieThreshold = 5;
 	
 	private Person person1;
@@ -174,7 +176,7 @@ public class PersonMatch implements Serializable {
 					if (person1Value != null && person2Value != null) {
 						//test if the values are different and add them to the list
 						if (person1Value.getClass().equals(String.class)) {
-							if (!((String) person1Value).equals((String) person2Value)) {
+							if (!(person1Value).equals(person2Value)) {
 								conflictFields.add(new PersonMergeFieldConflict(fieldName, (String)person1Value, (String)person2Value));
 							}
 						} else if (person1Value.getClass().equals(PersonName.class)) {
@@ -184,7 +186,7 @@ public class PersonMatch implements Serializable {
 								conflictFields.add(new PersonMergeFieldConflict(fieldName, person1Name, person2Name));
 							}
 						} else if (person1Value.getClass().equals(Gender.class)) {
-							if (!((Gender) person1Value).equals((Gender) person2Value)) {
+							if (!(person1Value).equals(person2Value)) {
 								conflictFields.add(new PersonMergeFieldConflict(fieldName, ((Gender) person1Value).name(), ((Gender) person2Value).name()));
 							}
 						} else {

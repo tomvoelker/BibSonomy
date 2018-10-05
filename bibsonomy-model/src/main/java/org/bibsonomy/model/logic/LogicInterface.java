@@ -126,7 +126,6 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param status
 	 * @param startDate
 	 * @param endDate
-	 * @param constraints
 	 * @return statistic informations about the users
 	 */
 	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, final Classifier classifier, final SpamStatus status, Date startDate, Date endDate);

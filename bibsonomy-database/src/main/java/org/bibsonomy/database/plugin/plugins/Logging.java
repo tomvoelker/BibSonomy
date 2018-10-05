@@ -27,6 +27,7 @@
 package org.bibsonomy.database.plugin.plugins;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
@@ -67,13 +68,7 @@ import java.util.Date;
  */
 public class Logging extends AbstractDatabasePlugin {
 
-	private final GeneralDatabaseManager generalManager;
-	/**
-	 *
-	 */
-	public Logging() {
-		this.generalManager = GeneralDatabaseManager.getInstance();
-	}
+	private final GeneralDatabaseManager generalManager = GeneralDatabaseManager.getInstance();
 
 	/*
 	 * (non-Javadoc)

@@ -103,6 +103,15 @@
 			<div class="clearfix">
 			 	<h2><fmt:message key="disambiguation.pleaseChooseMsg" /></h2>
 				<p><fmt:message key="disambiguation.listExplanation"/></p>
+				<spring:eval expression="T(org.bibsonomy.model.util.GroupUtils).isPublicGroup(command.post.groups)" var="isPublic" />
+				<c:if test="${not isPublic}">
+					<bsold:alert style="danger">
+						<jsp:attribute name="alertBody">
+							<fmt:message key="disambiguation.warning.goldstandard" />
+						</jsp:attribute>
+					</bsold:alert>
+				</c:if>
+
 				<c:choose>
 					<c:when test="${not empty command.personSuggestions}">
 						<div class="list-group">

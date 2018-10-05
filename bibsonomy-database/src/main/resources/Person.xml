@@ -172,14 +172,13 @@
 	
 	<select id="getComunityBibTexRelationsForPerson" resultMap="PersonCommon.preFilledCommunityResourcePersonRelation" parameterClass="bibtexParam">
 		SELECT
-			<include refid="allGoldStandardPublicationAttributesAnonym" />, b.simhash2 as intraHash, b.simhash1 as interHash, b.change_date, 0 as count, <include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
+			<include refid="allGoldStandardPublicationAttributesAnonym" />, b.simhash2 as intraHash, b.simhash1 as interHash, b.change_date, 1 as count, <include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
 		FROM
 			gold_standard b
-			<include refid="reviewRatingsJoinPublication" />,
-			bibhash h, pub_person
+			<include refid="reviewRatingsJoinPublication" />
+			JOIN pub_person USING(simhash1)
 		WHERE
-			<include refid="bibtexSimHash"/>
-			AND b.simhash1=pub_person.simhash1 AND pub_person.person_id=#personRelation.person.personId#
+			pub_person.person_id = #personRelation.person.personId#
 	</select>
 	
 	<statement id="getResourcePersonRelationsByPublication" parameterClass="java.lang.String" resultMap="PersonCommon.resourcePersonRelationWithPersonPrefilled">
