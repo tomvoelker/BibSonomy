@@ -1788,6 +1788,8 @@ CREATE TABLE `log_person_name` (
   `is_main` tinyint(1) DEFAULT '0',
   `log_changed_at` datetime DEFAULT NULL,
   `log_changed_by` varchar(30) DEFAULT NULL COMMENT 'user_name of the user, who changed the tuple last',
+  `log_date` datetime DEFAULT NULL,
+  `edited_by` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`person_change_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
