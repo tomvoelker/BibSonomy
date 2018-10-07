@@ -7,51 +7,51 @@
 		<result property="personChangeId"   column="p_person_change_id"    javaType="int" />
 		<result property="personId"         column="person_id"           javaType="String" />
 		
-		<result property="orcid"            column="orcid"               javaType="java.lang.String" />
-		<result property='academicDegree'   column='academic_degree'     javaType='java.lang.String' />
-		<result property="dnbPersonId"      column="dnb_person_id"       javaType="java.lang.String" />
+		<result property="orcid"            column="orcid"               javaType="string" />
+		<result property='academicDegree'   column='academic_degree'     javaType='string' />
+		<result property="dnbPersonId"      column="dnb_person_id"       javaType="string" />
 		<result property='gender'           column='gender'              javaType='org.bibsonomy.model.enums.Gender' />
 		<result property="postCounter"      column="post_ctr"            javaType="integer" />
-		<result property="changedBy"        column="log_changed_by"      javaType="java.lang.String" />
-		<result property="changeDate"       column="log_changed_at"      javaType="java.util.Date" />
-		<result property="user"             column="user_name"           javaType="java.lang.String" />
+		<result property="changedBy"        column="log_changed_by"      javaType="string" />
+		<result property="changeDate"       column="log_changed_at"      javaType="date" />
+		<result property="user"             column="user_name"           javaType="string" />
 		
-		<result property="college"          column="college"           	 javaType="java.lang.String" />
+		<result property="college"          column="college"           	 javaType="string" />
 		<result property="homepage"         column="homepage"     		 javaType="url" />
-		<result property="email"            column="email"           	 javaType="java.lang.String" />
+		<result property="email"            column="email"           	 javaType="string" />
 		
 	</resultMap>
 	
-	<resultMap id="lazyLoadingPerson" class="org.bibsonomy.model.Person" extends="abstractPerson">
+	<resultMap id="lazyLoadingPerson" class="person" extends="abstractPerson">
 		<result property="names"            column="person_id"           javaType="java.util.ArrayList" select="getNames" />
 	</resultMap>
 	
-	<resultMap id="personWithNamesPrefilled" class="org.bibsonomy.model.Person" extends="abstractPerson">
+	<resultMap id="personWithNamesPrefilled" class="person" extends="abstractPerson">
 		<result property="names"            resultMap="PersonCommon.personName" />
 	</resultMap>
 	
 	
-	<resultMap id="personName" class="org.bibsonomy.model.PersonName" groupBy="personNameChangeId">
+	<resultMap id="personName" class="personName" groupBy="personNameChangeId">
 		<result property="personNameChangeId"  column="n_person_change_id"  javaType="int" />
-		<result property="firstName"       column="first_name"        javaType="java.lang.String" />
-		<result property="lastName"        column="last_name"         javaType="java.lang.String" />
-		<result property="personId"        column="person_id"         javaType="java.lang.String" />
+		<result property="firstName"       column="first_name"        javaType="string" />
+		<result property="lastName"        column="last_name"         javaType="string" />
+		<result property="personId"        column="person_id"         javaType="string" />
 		<result property="isMain"          column="is_main"           javaType="boolean" />
-		<result property="changedBy"       column="log_changed_by"    javaType="java.lang.String" />
-		<result property="changedAt"       column="log_changed_at"    javaType="java.util.Date" />
+		<result property="changedBy"       column="log_changed_by"    javaType="string" />
+		<result property="changedAt"       column="log_changed_at"    javaType="date" />
 	</resultMap>
 	
-	<resultMap id="abstractResourcePersonRelation" class="org.bibsonomy.model.ResourcePersonRelation">
+	<resultMap id="abstractResourcePersonRelation" class="personResourceRelation">
 		<result property="personRelChangeId" column="r_person_change_id" javaType="int" />
 		<result property="qualifying"        column="qualifying"       javaType="int" />
 		<result property="relationType"      column="relator_code"     javaType="personResourceRelationType" />
-		<result property="changedBy"         column="log_changed_by"   javaType="java.lang.String" />
-		<result property="changedAt"         column="log_changed_at"   javaType="java.util.Date" />
+		<result property="changedBy"         column="log_changed_by"   javaType="string" />
+		<result property="changedAt"         column="log_changed_at"   javaType="date" />
 		<result property="personIndex"       column="person_index"     javaType="int" />
 	</resultMap>
 	
-	<resultMap id="lazyLoadingResourcePersonRelation" class="org.bibsonomy.model.ResourcePersonRelation" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
-		<result property="person"          column="person_id"       javaType="org.bibsonomy.model.Person"       select="getPersonById" />
+	<resultMap id="lazyLoadingResourcePersonRelation" class="personResourceRelation" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
+		<result property="person"          column="person_id"       javaType="person"       select="getPersonById" />
 		<result property="post"            column="simhash1"        javaType="bibtex"                           select="getPosts"/>
 	</resultMap>
 	
@@ -60,27 +60,27 @@
 	</resultMap>
 	
 	<resultMap id="resourcePersonRelationLogStub" class="org.bibsonomy.model.ResourcePersonRelationLogStub" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
-		<result property="personId"        column="person_id"       javaType="java.lang.String" />
-		<result property="postInterhash"   column="simhash1"        javaType="java.lang.String" />
+		<result property="personId"        column="person_id"       javaType="string" />
+		<result property="postInterhash"   column="simhash1"        javaType="string" />
 		<result property="deleted"         column="deleted"         javaType="boolean" />
 	</resultMap>
 	
-	<resultMap id="preFilledResourcePersonRelation" class="org.bibsonomy.model.ResourcePersonRelation" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
-		<result property="person"          column="person_id"       javaType="org.bibsonomy.model.Person"       select="getPersonById" />
+	<resultMap id="preFilledResourcePersonRelation" class="personResourceRelation" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
+		<result property="person"          column="person_id"       javaType="person"       select="getPersonById" />
 		<result property="post"            resultMap="BibTexCommon.bibtexPost" />
 	</resultMap>
 	
-	<resultMap id="preFilledCommunityResourcePersonRelation" class="org.bibsonomy.model.ResourcePersonRelation" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
-		<result property="person"          column="person_id"       javaType="org.bibsonomy.model.Person"       select="getPersonById" />
+	<resultMap id="preFilledCommunityResourcePersonRelation" class="personResourceRelation" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
+		<result property="person"          column="person_id"       javaType="person"       select="getPersonById" />
 		<result property="post"            resultMap="GoldStandardPublicationCommon.goldStandardPost" />
 	</resultMap>
 	
-	<resultMap id="personMatch" class="org.bibsonomy.model.PersonMatch">
+	<resultMap id="personMatch" class="personMatch">
 		<result property="matchID" column="match_id"/>
 		<result property="state" column="state"/>
-		<result property="person1"          column="person1_id"       javaType="org.bibsonomy.model.Person"       select="getPersonById"/>
-		<result property="person2"          column="person2_id"       javaType="org.bibsonomy.model.Person"       select="getPersonById"/>
-		<result property="userDenies"		column="match_id"		  javaType="java.lang.String"				  select="getDeniesForMatch" />
+		<result property="person1"          column="person1_id"       javaType="person"       select="getPersonById"/>
+		<result property="person2"          column="person2_id"       javaType="person"       select="getPersonById"/>
+		<result property="userDenies"		column="match_id"		  javaType="string"				  select="getDeniesForMatch" />
 		<result property="person1Posts"		column="person1_id"		  javaType="org.bibsonomy.model.Post"		  select="getPostsForPerson" />
 		<result property="person2Posts"		column="person2_id"		  javaType="org.bibsonomy.model.Post"		  select="getPostsForPerson" />
 	</resultMap>
