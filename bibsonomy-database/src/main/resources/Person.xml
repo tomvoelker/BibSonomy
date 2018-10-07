@@ -133,16 +133,6 @@
 		ORDER BY date DESC
 	</select>
 	
-	<select id="getPost" parameterClass="string" resultMap="BibTexCommon.bibtexPost">
-		SELECT <include refid="commonPublicationAttributesWithourPrivateNote" />, <include refid="reviewRatingsDummyRows" />
-		FROM bibtex b
-		JOIN tas t1 USING (content_id)
-		JOIN bibhash h ON (b.simhash1 = h.hash AND h.type = 1)
-		WHERE b.simhash1 = #item_id#
-		GROUP BY interHash
-		ORDER BY b.date DESC
-	</select>
-	
 	<select id="getBibTexRelationsForPerson" resultMap="PersonCommon.preFilledResourcePersonRelation" parameterClass="bibtexParam">
 		SELECT <include refid ="bibtexAttributes2"/>, t.change_date, t.tag_name, g.*, b2.count, <include refid="reviewRatingsDummyRows" />, <include refid="commonResourcePersonRelationColumns2" />
 		FROM
