@@ -80,6 +80,7 @@ public class ElasticsearchPersonManager extends ElasticsearchManager<Person> {
 				final IndexData indexData = new IndexData();
 				indexData.setType(entityInformationProvider.getType());
 				indexData.setSource(convertedPost);
+				indexData.setRouting(entityInformationProvider.getRouting(entity));
 				convertedEntities.put(entityInformationProvider.getEntityId(entity), indexData);
 			}
 
