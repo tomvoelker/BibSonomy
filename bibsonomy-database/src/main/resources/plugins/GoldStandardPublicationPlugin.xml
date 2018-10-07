@@ -4,8 +4,8 @@
 <sqlMap namespace="GoldStandardPublicationPlugin">
 
 	<insert id="logDeletedPersonRelationsByInterhash" parameterClass="goldstandardReferenceParam">
-		INSERT INTO log_pub_person (<include refid="allPubPersonRelationLogAttributes" />)
-		SELECT <include refid="allPubPersonRelationAttributes" />, 1 as deleted
+		INSERT INTO log_pub_person (<include refid="allPubPersonRelationAttributes" />)
+		SELECT <include refid="allPubPersonRelationAttributes" />
 		FROM pub_person
 			WHERE simhash1 = #hash#
 	</insert>

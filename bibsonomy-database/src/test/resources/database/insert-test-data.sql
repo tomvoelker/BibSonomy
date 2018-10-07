@@ -792,10 +792,6 @@ INSERT INTO `bibtex` (content_id, simhash0, simhash1, simhash2, simhash3, author
 (40, '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', 'Willi Test and Ted Hansen', 'title7', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP'),
 (41, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Willi Test and Johann Hilfe', 'title8', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP');
 
-INSERT INTO `gold_standard` (`content_id`, `journal`, `volume`, `chapter`, `edition`, `month`,      `day`,      `booktitle`,                 `howPublished`,      `institution`,  `organization`, `publisher`, `address`, `school`, `series`, `bibtexKey`, `group`, `date`, `user_name`, `url`, `type`, `description`, `annote`, `note`, `pages`, `bKey`, `number`, `crossref`, `misc`, `bibtexAbstract`, `simhash0`, `simhash1`, `simhash2`, `simhash3`, `entrytype`, `title`, `author`, `editor`, `year`, `privnote`, `scraperid`, `change_date`, `rating`, `content_type`) VALUES
-(1073741857, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'University of Nowhere', NULL, 'muller2004wurst', 0, '2015-07-06 14:15:12', 'testuserP', NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, '9132de6d174bcfd8018d0b299642f12d', '0b539e248a02e3edcfe591c64346c7a0', 'd63038ea59383b94bb52fc4a9b76d1f5', '', 'phdthesis', 'Wurst aufs Brot', 'Müller, Heinrich Georg', NULL, '2004', NULL, 0, '2015-07-06 12:21:34', 0, 2);
-
-
 INSERT INTO `bibhash` VALUES ('0c000000d00000f00cef0c00f000e00a', 1, 0),
 ('0c0000cdc00000b000cbe0fe0ab0acd0', 1, 0),
 ('0a00d00000fc00000a0000a0000f0ad0', 1, 0),

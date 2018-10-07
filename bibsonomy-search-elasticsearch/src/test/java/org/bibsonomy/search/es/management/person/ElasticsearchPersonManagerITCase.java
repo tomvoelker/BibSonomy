@@ -120,7 +120,7 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 		resourcePersonRelation.setPost(post);
 		resourcePersonRelation.setChangedAt(new Date()); // TODO: do this in the database manager?
 		resourcePersonRelation.setChangedBy(TESTUSER1_NAME);
-		final boolean updated = PERSON_DATABASE_MANAGER.addResourceRelation(resourcePersonRelation, this.dbSession);
+		final boolean updated = PERSON_DATABASE_MANAGER.addResourceRelation(resourcePersonRelation, TESTUSER1, this.dbSession);
 		assertThat(updated, is(true));
 
 		this.updateIndex();

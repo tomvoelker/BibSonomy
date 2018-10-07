@@ -135,14 +135,6 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests {@link PersonDatabaseManager#removeResourceRelation(int, User, DBSession)}
-	 */
-	@Test
-	public void testRemoveResourceRelation() {
-		PERSON_DATABASE_MANAGER.removeResourceRelation(30, loginUser, this.dbSession);
-	}
-
-	/**
 	 * tests {@link PersonDatabaseManager#updateAcademicDegree(Person, org.bibsonomy.database.common.DBSession)}
 	 */
 	@Test
