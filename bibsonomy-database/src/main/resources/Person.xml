@@ -275,18 +275,6 @@
 		ORDER BY b.date DESC
 	</select>
 	
-	<select id="getPostsForPerson" parameterClass="string" resultMap="BibTexCommon.bibtexPost">
-		SELECT <include refid="commonPublicationAttributesWithoutPrivateNote" />, <include refid="reviewRatingsDummyRows" />
-		FROM bibtex b
-		JOIN tas t1 USING (content_id)
-		JOIN bibhash h ON (h.hash = 1 AND b.simhash1 = h.hash)
-		JOIN pub_person p (simhash1)
-		WHERE p.person_id = #personId#
-		AND p.relator_code = 'Maut'
-		GROUP BY interHash
-		ORDER BY b.date DESC
-	</select>
-	
 	<select id="getDeniesForMatch" resultClass="string" parameterClass="int">
 		SELECT user_name
 		FROM user_denied_match
