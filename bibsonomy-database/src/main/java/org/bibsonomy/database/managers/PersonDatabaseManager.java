@@ -196,7 +196,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Updates all fields of a given Person
+	 * Updates all fields of the given Person
 	 *
 	 * @param person
 	 * @param session
@@ -355,15 +355,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 		}
 	}
 
-	/**
-	 * @param personRelChangeId
-	 * @param loggedinUser
-	 * @param session
-	 */
-	public void removeResourceRelation(int personRelChangeId, User loggedinUser, DBSession session) {
-		this.removeResourceRelation(personRelChangeId, loggedinUser, false, session);
-	}
-
 	public void removeResourceRelation(final String interHash, final int index, final PersonResourceRelationType type, final User loginUser, final DBSession session) {
 		this.removeResourceRelation(interHash, index, type, loginUser, false, session);
 	}
@@ -389,25 +380,13 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 				this.plugins.onPubPersonDelete(resourcePersonRelation, loginUser, session);
 			}
 
-			this.delete("removeResourceRelation", resourcePersonRelation.getPersonRelChangeId(), session);
-			this.plugins.onPubPersonDelete(resourcePersonRelation, loginUser, session);
-			session.commitTransaction();
-		} finally {
-			session.endTransaction();
-		}
-	}
-
-	private void removeResourceRelation(int personRelChangeId, User loggedinUser, boolean update, DBSession session) {
-		try {
-			session.beginTransaction();
-			final ResourcePersonRelation rel = new ResourcePersonRelation();
-			rel.setPersonRelChangeId(personRelChangeId);
-
 			// inform the plugins (e.g. to log the deleted relation)
 			if (!update) {
-				this.plugins.onPubPersonDelete(rel, loggedinUser, session);
+				this.plugins.onPubPersonDelete(resourcePersonRelation, loginUser, session);
 			}
-			this.delete("removeResourceRelation", personRelChangeId, session);
+
+			this.delete("removeResourceRelation", resourcePersonRelation.getPersonRelChangeId(), session);
+			this.plugins.onPubPersonDelete(resourcePersonRelation, loginUser, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -584,7 +563,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param personID
 	 * @return a list of all matches for a person
 	 */
@@ -607,20 +586,22 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 			return false;
 		}
 
-		// check if a phd/habil conflict raises
 		final Person person1 = match.getPerson1();
 		final Person person2 = match.getPerson2();
 		final String personId1 = person1.getPersonId();
-		final Post habil1 = this.queryForObject("getHabilForPerson", personId1, Post.class, session);
-
 		final String personId2 = person2.getPersonId();
+
+		// check if a phd/habil conflict raises
+		final Post habil1 = this.queryForObject("getHabilForPerson", personId1, Post.class, session);
 		final Post habil2 = this.queryForObject("getHabilForPerson", personId2, Post.class, session);
+
 		// compare habils via hash
 		if (habil1 != null && habil2 != null && !habil1.getResource().getInterHash().equals(habil2.getResource().getInterHash())) {
 			return false;
 		}
-		Post phd1 = this.queryForObject("getPHDForPerson", personId1, Post.class, session);
-		Post phd2 = this.queryForObject("getPHDForPerson", personId2, Post.class, session);
+
+		final Post<?> phd1 = this.queryForObject("getPHDForPerson", personId1, Post.class, session);
+		final Post<?> phd2 = this.queryForObject("getPHDForPerson", personId2, Post.class, session);
 		// compare phd via hash
 		if (phd1 != null && phd2 != null && !phd1.getResource().getInterHash().equals(phd2.getResource().getInterHash())) {
 			return false;
@@ -641,13 +622,13 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Person pubs will be redirected to person 1 and the change is logged
-	 * 
-	 * @param loggedinUser
+	 *
 	 * @param match
+	 * @param loggedinUser
 	 * @param session
 	 */
 	private void mergeAllPubs(final PersonMatch match, final User loggedinUser, final DBSession session) {
-		final List<ResourcePersonRelation> allRelationsPerson2 = this.queryForList("getResourcePersonRelationsByPersonId", match.getPerson2().getPersonId(), ResourcePersonRelation.class, session);
+		final List<ResourcePersonRelation> allRelationsPerson2 = this.getResourcePersonRelationsWithPosts(match.getPerson2().getPersonId(), loggedinUser, GoldStandardPublication.class, session);
 		try {
 			session.beginTransaction();
 			for (final ResourcePersonRelation relation : allRelationsPerson2) {
@@ -686,7 +667,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 			this.plugins.onPersonResourceRelationUpdate(relation, newRelation, loggedinUser, session);
 
 			// remove it from the person
-			this.removeResourceRelation(oldId, loggedinUser, true, session);
+			this.removeResourceRelation(relation.getPost().getResource().getInterHash(), relation.getPersonIndex(), relation.getRelationType(), loggedinUser, true, session);
 			this.addResourceRelation(newRelation, loggedinUser, session);
 
 			session.commitTransaction();
@@ -697,7 +678,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Person aliases will be merged
-	 * 
+	 *
 	 * @param loggedinUser
 	 * @param match
 	 * @param session
@@ -940,6 +921,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * performs a merge and resolves its conflicts
 	 *
+
 	 * @param formMatchId
 	 * @param map
 	 *            conflicts
@@ -1013,7 +995,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * set new mainName to person due to a conflict merge
-	 *
 	 * @param person
 	 * @param newName FIXME: why is newName not of type PersonName
 	 * @param session

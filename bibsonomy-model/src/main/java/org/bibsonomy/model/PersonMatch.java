@@ -226,7 +226,7 @@ public class PersonMatch implements Serializable {
 		} else {
 			//TODO notify user2 that their is a merge
 			return getPerson2().getUser().equals(loggedinUserName);
-		}	
+		}
 	}
 	
 }
