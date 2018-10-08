@@ -261,16 +261,6 @@
 		AND (b.type is NULL or b.type != 'habilitation')
 	</select>
 
-	<select id="getPostsForPerson" parameterClass="string" resultMap="GoldStandardPublicationCommon.goldStandardPost">
-		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsDummyRows" />
-		FROM gold_standard b
-		JOIN pub_person p (simhash1)
-		WHERE p.person_id = #personId#
-		AND p.relator_code = 'Maut'
-		GROUP BY interHash
-		ORDER BY b.date DESC
-	</select>
-
 	<select id="getDeniesForMatch" resultClass="string" parameterClass="int">
 		SELECT user_name
 		FROM user_denied_match
