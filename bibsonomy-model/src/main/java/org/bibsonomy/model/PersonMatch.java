@@ -121,13 +121,7 @@ public class PersonMatch implements Serializable {
 	public void setUserDenies(List<String> userDenies) {
 		this.userDenies = userDenies;
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	
-	
-	
+
 	public int equals(PersonMatch match) {
 		if ((this.person1.getPersonId().equals(match.getPerson1().getPersonId()) && this.person2.getPersonId().equals(match.getPerson2().getPersonId()))
 				|| (this.person1.getPersonId().equals(match.getPerson2().getPersonId()) && this.person2.getPersonId().equals(match.getPerson1().getPersonId()))) {
@@ -161,6 +155,8 @@ public class PersonMatch implements Serializable {
 	}
 	
 	/**
+	 * FIXME: logic code in model class, please move
+	 *
 	 * returns a map that contains for each match in matches a list
 	 * @param matches
 	 * @return
@@ -210,25 +206,26 @@ public class PersonMatch implements Serializable {
 	}
 	
 	/**
-	 * FIXME cant be done here
+	 * FIXME: logic code in model class, please move
+	 *
 	 * tests if the merge can be performed without a conflict on user claims
 	 * @param loginUser
-	 * @return
+	 * @return TODO: document what this method returns
 	 */
-	public Boolean testMergeOnClaims(String loginUser) {
-		Boolean p1Claim = ValidationUtils.present(getPerson1().getUser());
-		Boolean p2Claim = ValidationUtils.present(getPerson2().getUser());
-	
+	public boolean testMergeOnClaims(User loginUser) {
+		final String loggedinUserName = loginUser.getName();
+		final boolean p1Claim = ValidationUtils.present(getPerson1().getUser());
+		final boolean p2Claim = ValidationUtils.present(getPerson2().getUser());
 		if (p1Claim && p2Claim) {
 			return false;
 		} else if (!p1Claim && !p2Claim) {
 			return true;
 		} else if (p1Claim) {
 			//TODO notify user1 that their is a merge
-			return getPerson1().getUser().equals(loginUser);
+			return getPerson1().getUser().equals(loggedinUserName);
 		} else {
 			//TODO notify user2 that their is a merge
-			return getPerson2().getUser().equals(loginUser);
+			return getPerson2().getUser().equals(loggedinUserName);
 		}
 	}
 	

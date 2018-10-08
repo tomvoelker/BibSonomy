@@ -63,25 +63,21 @@ public class GoldStandardBookmarkDatabaseManagerTest extends AbstractDatabaseMan
 	
 	@Test
 	public void createBookmark() {
-		final String interhash = this.createGoldStandardBookmark();
-		// clear database
-		this.deletePost(interhash);
+		this.createGoldStandardBookmark();
 	}
 	
 	@Test
 	public void createDuplicate() {
-		final String interhash = this.createGoldStandardBookmark();
+		this.createGoldStandardBookmark();
 		try {
 			this.createGoldStandardBookmark();
 			fail("duplicate missing database exception");
 		} catch (final DatabaseException ex) {
 			// ignore
 		}
-		
-		this.deletePost(interhash);
 	}
 
-	protected String createGoldStandardBookmark() {
+	protected void createGoldStandardBookmark() {
 		this.pluginMock.reset();
 		assertFalse(this.pluginMock.isOnGoldStandardCreate());
 		
@@ -93,23 +89,23 @@ public class GoldStandardBookmarkDatabaseManagerTest extends AbstractDatabaseMan
 		assertNotNull(manager.getPostDetails("", interhash, "", null, this.dbSession).getResource());
 		
 		assertTrue(this.pluginMock.isOnGoldStandardCreate());
-		return interhash;
 	}
-	
-	private void deletePost(final String interhash) {
+
+	@Test
+	public void testDeletePost() {
 		this.pluginMock.reset();
 		assertFalse(this.pluginMock.isOnGoldStandardDelete());
 		
 		// delete post
-		manager.deletePost("", interhash, null, this.dbSession);
-		assertNull(manager.getPostDetails("", interhash, "", null, this.dbSession));
+		manager.deletePost("", GOLD_BOOKMARK_INTERHASH, null, this.dbSession);
+		assertNull(manager.getPostDetails("", GOLD_BOOKMARK_INTERHASH, "", null, this.dbSession));
 		
 		assertTrue(this.pluginMock.isOnGoldStandardDelete());
 	}
 	
 	// TODO: add a builder for posts!
 	private Post<GoldStandardBookmark> generateGoldBookmark() {
-		final Post<GoldStandardBookmark> post = new Post<GoldStandardBookmark>();
+		final Post<GoldStandardBookmark> post = new Post<>();
 
 		// groups
 		final Group group = GroupUtils.buildPublicGroup();
