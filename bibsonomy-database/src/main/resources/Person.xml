@@ -123,14 +123,10 @@
 		WHERE user_name = #username#
 	</update>
 	
-	<select id="getPosts" resultMap="BibTexCommon.bibtexPost">
-		SELECT <include refid="commonPublicationAttributesWithoutPrivateNote" />, <include refid="reviewRatingsDummyRows" />
-		FROM bibtex b
-		JOIN tas t1 USING (content_id)
-		JOIN bibhash h ON (b.simhash1 = h.hash AND h.type = 1)
+	<select id="getPosts" resultMap="GoldStandardPublicationCommon.goldStandardPost">
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsDummyRows" />
+		FROM gold_standard b
 		WHERE b.simhash1 = #simhash1#
-		GROUP BY interHash
-		ORDER BY date DESC
 	</select>
 	
 	<select id="getBibTexRelationsForPerson" resultMap="PersonCommon.preFilledResourcePersonRelation" parameterClass="bibtexParam">
@@ -152,7 +148,7 @@
 	</select>
 	
 	<select id="getComunityBibTexRelationsForPerson" resultMap="PersonCommon.preFilledCommunityResourcePersonRelation" parameterClass="bibtexParam">
-		SELECT <include refid="allGoldStandardPublicationAttributesAnonym" />, b.simhash2 as intraHash, b.simhash1 as interHash, b.change_date, 1 as count, <include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
 		FROM
 			gold_standard b
 			<include refid="reviewRatingsJoinPublication" />
@@ -245,39 +241,29 @@
 		OR (person1_id = #person2.personId# AND person2_id = #person1.personId#)
 	</select>
 	
-	<select id="getHabilForPerson" parameterClass="string" resultMap="BibTexCommon.bibtexPost">
-		SELECT <include refid="commonPublicationAttributesWithoutPrivateNote" />, <include refid="reviewRatingsDummyRows" />
-		FROM bibtex b
-		JOIN tas t1 USING (content_id)
-		JOIN bibhash h ON (h.hash = 1 AND b.simhash1 = h.hash)
+	<select id="getHabilForPerson" parameterClass="string" resultMap="GoldStandardPublicationCommon.goldStandardPost">
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsDummyRows" />
+		FROM gold_standard b
 		JOIN pub_person p USING (simhash1)
 		WHERE p.person_id = #personId#
 		AND p.relator_code = 'Maut'
 		AND b.entrytype = 'phdthesis'
 		AND b.type = 'habilitation'
-		GROUP BY interHash <!-- to only get one post -->
-		ORDER BY b.date DESC
 	</select>
 
-	<select id="getPHDForPerson" parameterClass="string" resultMap="BibTexCommon.bibtexPost">
-		SELECT <include refid="commonPublicationAttributesWithoutPrivateNote" />, <include refid="reviewRatingsDummyRows" />
-		FROM bibtex b
-		JOIN tas t1 USING (content_id)
-		JOIN bibhash h ON (h.hash = 1 AND b.simhash1 = h.hash)
+	<select id="getPHDForPerson" parameterClass="string" resultMap="GoldStandardPublicationCommon.goldStandardPost">
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsDummyRows" />
+		FROM gold_standard b
 		JOIN pub_person p USING (simhash1)
 		WHERE p.person_id = #personId#
 		AND p.relator_code = 'Maut'
 		AND b.entrytype = 'phdthesis'
 		AND (b.type is NULL or b.type != 'habilitation')
-		GROUP BY interHash <!-- to only get one post -->
-		ORDER BY b.date DESC
 	</select>
 
-	<select id="getPostsForPerson" parameterClass="string" resultMap="BibTexCommon.bibtexPost">
-		SELECT <include refid="commonPublicationAttributesWithoutPrivateNote" />, <include refid="reviewRatingsDummyRows" />
-		FROM bibtex b
-		JOIN tas t1 USING (content_id)
-		JOIN bibhash h ON (h.hash = 1 AND b.simhash1 = h.hash)
+	<select id="getPostsForPerson" parameterClass="string" resultMap="GoldStandardPublicationCommon.goldStandardPost">
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsDummyRows" />
+		FROM gold_standard b
 		JOIN pub_person p (simhash1)
 		WHERE p.person_id = #personId#
 		AND p.relator_code = 'Maut'
