@@ -501,20 +501,22 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 			return false;
 		}
 
-		// check if a phd/habil conflict raises
 		final Person person1 = match.getPerson1();
 		final Person person2 = match.getPerson2();
 		final String personId1 = person1.getPersonId();
-		final Post habil1 = this.queryForObject("getHabilForPerson", personId1, Post.class, session);
-
 		final String personId2 = person2.getPersonId();
+
+		// check if a phd/habil conflict raises
+		final Post habil1 = this.queryForObject("getHabilForPerson", personId1, Post.class, session);
 		final Post habil2 = this.queryForObject("getHabilForPerson", personId2, Post.class, session);
+
 		// compare habils via hash
 		if (habil1 != null && habil2 != null && !habil1.getResource().getInterHash().equals(habil2.getResource().getInterHash())) {
 			return false;
 		}
-		Post phd1 = this.queryForObject("getPHDForPerson", personId1, Post.class, session);
-		Post phd2 = this.queryForObject("getPHDForPerson", personId2, Post.class, session);
+
+		final Post<?> phd1 = this.queryForObject("getPHDForPerson", personId1, Post.class, session);
+		final Post<?> phd2 = this.queryForObject("getPHDForPerson", personId2, Post.class, session);
 		// compare phd via hash
 		if (phd1 != null && phd2 != null && !phd1.getResource().getInterHash().equals(phd2.getResource().getInterHash())) {
 			return false;
@@ -541,7 +543,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	private void mergeAllPubs(final PersonMatch match, final User loggedinUser, final DBSession session) {
-		final List<ResourcePersonRelation> allRelationsPerson2 = this.queryForList("getResourcePersonRelationsByPersonId", match.getPerson2().getPersonId(), ResourcePersonRelation.class, session);
+		final List<ResourcePersonRelation> allRelationsPerson2 = this.getResourcePersonRelationsWithPosts(match.getPerson2().getPersonId(), loggedinUser, BibTex.class, session);
 		try {
 			session.beginTransaction();
 			for (final ResourcePersonRelation relation : allRelationsPerson2) {
