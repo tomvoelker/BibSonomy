@@ -120,7 +120,7 @@
 		b2.person_change_id as r_person_change_id, b2.simhash1, b2.simhash2, b2.qualifying, b2.person_id, b2.relator_code, b2.log_changed_by, b2.log_changed_at, b2.person_index
 	</sql>
 
-	<sql id="commonPublicationAttributesWithourPrivateNote">
+	<sql id="commonPublicationAttributesWithoutPrivateNote">
 		b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
 		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
 		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,

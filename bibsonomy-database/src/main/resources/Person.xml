@@ -124,7 +124,7 @@
 	</update>
 	
 	<select id="getPosts" resultMap="BibTexCommon.bibtexPost">
-		SELECT <include refid="commonPublicationAttributesWithourPrivateNote" />, <include refid="reviewRatingsDummyRows" />
+		SELECT <include refid="commonPublicationAttributesWithoutPrivateNote" />, <include refid="reviewRatingsDummyRows" />
 		FROM bibtex b
 		JOIN tas t1 USING (content_id)
 		JOIN bibhash h ON (b.simhash1 = h.hash AND h.type = 1)
@@ -248,7 +248,7 @@
 	</select>
 	
 	<select id="getHabilForPerson" parameterClass="string" resultMap="BibTexCommon.bibtexPost">
-		SELECT <include refid="commonPublicationAttributesWithourPrivateNote" />, <include refid="reviewRatingsDummyRows" />
+		SELECT <include refid="commonPublicationAttributesWithoutPrivateNote" />, <include refid="reviewRatingsDummyRows" />
 		FROM bibtex b
 		JOIN tas t1 USING (content_id)
 		JOIN bibhash h ON (h.hash = 1 AND b.simhash1 = h.hash)
@@ -262,7 +262,7 @@
 	</select>
 	
 	<select id="getPHDForPerson" parameterClass="string" resultMap="BibTexCommon.bibtexPost">
-		SELECT <include refid="commonPublicationAttributesWithourPrivateNote" />, <include refid="reviewRatingsDummyRows" />
+		SELECT <include refid="commonPublicationAttributesWithoutPrivateNote" />, <include refid="reviewRatingsDummyRows" />
 		FROM bibtex b
 		JOIN tas t1 USING (content_id)
 		JOIN bibhash h ON (h.hash = 1 AND b.simhash1 = h.hash)
@@ -276,7 +276,7 @@
 	</select>
 	
 	<select id="getPostsForPerson" parameterClass="string" resultMap="BibTexCommon.bibtexPost">
-		SELECT <include refid="commonPublicationAttributesWithourPrivateNote" />, <include refid="reviewRatingsDummyRows" />
+		SELECT <include refid="commonPublicationAttributesWithoutPrivateNote" />, <include refid="reviewRatingsDummyRows" />
 		FROM bibtex b
 		JOIN tas t1 USING (content_id)
 		JOIN bibhash h ON (h.hash = 1 AND b.simhash1 = h.hash)
