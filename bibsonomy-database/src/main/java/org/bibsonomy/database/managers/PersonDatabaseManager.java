@@ -543,7 +543,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	private void mergeAllPubs(final PersonMatch match, final User loggedinUser, final DBSession session) {
-		final List<ResourcePersonRelation> allRelationsPerson2 = this.queryForList("getResourcePersonRelationsByPersonId", match.getPerson2().getPersonId(), ResourcePersonRelation.class, session);
+		final List<ResourcePersonRelation> allRelationsPerson2 = this.getResourcePersonRelationsWithPosts(match.getPerson2().getPersonId(), loggedinUser, BibTex.class, session);
 		try {
 			session.beginTransaction();
 			for (final ResourcePersonRelation relation : allRelationsPerson2) {
