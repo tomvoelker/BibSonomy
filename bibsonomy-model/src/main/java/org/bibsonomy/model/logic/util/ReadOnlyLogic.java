@@ -885,7 +885,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removeResourceRelation(int)
 	 */
 	@Override
-	public void removeResourceRelation(String interHash, int index, PersonResourceRelationType type) {
+	public void removeResourceRelation(String personId, String interHash, int index, PersonResourceRelationType type) {
 		throwReadOnlyException();
 	}
 	

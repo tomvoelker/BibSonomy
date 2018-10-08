@@ -354,28 +354,30 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * @param personId
 	 * @param interHash
 	 * @param index
 	 * @param type
 	 * @param loginUser
 	 * @param session
 	 */
-	public void removeResourceRelation(final String interHash, final int index, final PersonResourceRelationType type, final User loginUser, final DBSession session) {
-		this.removeResourceRelation(interHash, index, type, loginUser, false, session);
+	public void removeResourceRelation(String personId, final String interHash, final int index, final PersonResourceRelationType type, final User loginUser, final DBSession session) {
+		this.removeResourceRelation(personId, interHash, index, type, loginUser, false, session);
 	}
 
 	/**
+	 * @param personId
 	 * @param interHash
 	 * @param index
 	 * @param type
 	 * @param loginUser
 	 * @param session
 	 */
-	protected void removeResourceRelation(final String interHash, final int index, final PersonResourceRelationType type, final User loginUser, final boolean update, final DBSession session) {
+	protected void removeResourceRelation(String personId, final String interHash, final int index, final PersonResourceRelationType type, final User loginUser, final boolean update, final DBSession session) {
 		session.beginTransaction();
 
 		try {
-			final ResourcePersonRelation resourcePersonRelation = this.getResourcePersonRelation(interHash, index, type, session);
+			final ResourcePersonRelation resourcePersonRelation = this.getResourcePersonRelation(personId, interHash, index, type, session);
 			if (!present(resourcePersonRelation)) {
 				// TODO: notify someone
 				return;
@@ -469,14 +471,18 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getResourcePersonRelationByResourcePersonRelation", rpr, ResourcePersonRelation.class, session);
 	}
 
-	private ResourcePersonRelation getResourcePersonRelation(final String interhash, final int index, final PersonResourceRelationType type, DBSession session) {
+	private ResourcePersonRelation getResourcePersonRelation(String personId, final String interhash, final int index, final PersonResourceRelationType type, DBSession session) {
 		final ResourcePersonRelation param = new ResourcePersonRelation();
 		param.setPersonIndex(index);
 		param.setRelationType(type);
+
+		final Person person = new Person();
+		person.setPersonId(personId);
+		param.setPerson(person);
 		final Post<BibTex> post = new Post<>();
 		final BibTex bibTex = new BibTex();
-		post.setResource(bibTex);
 		bibTex.setInterHash(interhash);
+		post.setResource(bibTex);
 		param.setPost(post);
 
 		return this.queryForObject("getResourcePersonRelationByResourcePersonRelation", param, ResourcePersonRelation.class, session);
@@ -644,7 +650,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 		try {
 			session.beginTransaction();
 
-			final int oldId = relation.getPersonRelChangeId();
 			final Integer newId = this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
 			relation.setPersonRelChangeId(newId);
 
@@ -658,7 +663,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 			this.plugins.onPersonResourceRelationUpdate(relation, newRelation, loggedinUser, session);
 
 			// remove it from the person
-			this.removeResourceRelation(relation.getPost().getResource().getInterHash(), relation.getPersonIndex(), relation.getRelationType(), loggedinUser, true, session);
+			this.removeResourceRelation(relation.getPerson().getPersonId(), relation.getPost().getResource().getInterHash(), relation.getPersonIndex(), relation.getRelationType(), loggedinUser, true, session);
 			this.addResourceRelation(newRelation, loggedinUser, session);
 
 			session.commitTransaction();

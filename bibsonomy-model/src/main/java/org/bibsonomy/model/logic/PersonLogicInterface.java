@@ -50,11 +50,12 @@ public interface PersonLogicInterface {
 	/**
 	 * removes a resource relation
 	 *
+	 * @param personId
 	 * @param interHash
 	 * @param index
 	 * @param type
 	 */
-	void removeResourceRelation(String interHash, int index, PersonResourceRelationType type);
+	void removeResourceRelation(String personId, String interHash, int index, PersonResourceRelationType type);
 
 	/**
 	 * sets id for new persons

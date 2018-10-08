@@ -110,9 +110,10 @@
 	<select id="getResourcePersonRelationByResourcePersonRelation" resultMap="PersonCommon.lazyLoadingResourcePersonRelation" parameterClass="personResourceRelation">
 		SELECT <include refid="commonResourcePersonRelationColumns" />
 		FROM pub_person
-		WHERE pub_person.simhash1 = #post.resource.interHash#
-		AND pub_person.relator_code = #relationType.relatorCode#
-		AND pub_person.person_index = #personIndex#
+		WHERE simhash1 = #post.resource.interHash#
+		AND person_id = #person.personId#
+		AND relator_code = #relationType.relatorCode#
+		AND person_index = #personIndex#
 	</select>
 	
 	<update id="unlinkUser" parameterClass="string">

@@ -44,7 +44,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
@@ -412,7 +411,7 @@ public class PersonPageController extends SingleResourceListController implement
 	}
 	
 	private View deleteRoleAction(PersonPageCommand command) {
-		this.logic.removeResourceRelation(null, -1, null); // FIXME: change
+		this.logic.removeResourceRelation(null, null, -1, null); // FIXME: change
 		
 		return Views.AJAX_TEXT;
 	}

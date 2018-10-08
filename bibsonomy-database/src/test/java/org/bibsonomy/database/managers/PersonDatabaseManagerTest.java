@@ -120,14 +120,14 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests {@link PersonDatabaseManager#removeResourceRelation(String, int, PersonResourceRelationType, User, DBSession)}
+	 * tests {@link PersonDatabaseManager#removeResourceRelation(String, String, int, PersonResourceRelationType, User, DBSession)}
 	 */
 	@Test
 	public void testRemoveResourceRelation() {
 		final List<ResourcePersonRelation> resourcePersonRelationsWithPosts = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts(PERSON_ID, loginUser, GoldStandardPublication.class, this.dbSession);
 
 		final ResourcePersonRelation firstRelation = resourcePersonRelationsWithPosts.get(0);
-		PERSON_DATABASE_MANAGER.removeResourceRelation(firstRelation.getPost().getResource().getInterHash(), firstRelation.getPersonIndex(), firstRelation.getRelationType(), loginUser, this.dbSession);
+		PERSON_DATABASE_MANAGER.removeResourceRelation(PERSON_ID, firstRelation.getPost().getResource().getInterHash(), firstRelation.getPersonIndex(), firstRelation.getRelationType(), loginUser, this.dbSession);
 
 		final List<ResourcePersonRelation> afterDeletion = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts(PERSON_ID, loginUser, GoldStandardPublication.class, this.dbSession);
 

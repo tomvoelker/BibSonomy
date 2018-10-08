@@ -3401,11 +3401,11 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonRelation(java.lang.String, java.lang.String, org.bibsonomy.model.Person, org.bibsonomy.model.enums.PersonResourceRelation)
 	 */
 	@Override
-	public void removeResourceRelation(final String interHash, int index, PersonResourceRelationType type) {
+	public void removeResourceRelation(String personId, final String interHash, int index, PersonResourceRelationType type) {
 		this.ensureLoggedInAndNoSpammer();
 		final DBSession session = this.openSession();
 		try {
-			this.personDBManager.removeResourceRelation(interHash, index, type, this.loginUser, session);
+			this.personDBManager.removeResourceRelation(personId, interHash, index, type, this.loginUser, session);
 		} finally {
 			session.close();
 		}

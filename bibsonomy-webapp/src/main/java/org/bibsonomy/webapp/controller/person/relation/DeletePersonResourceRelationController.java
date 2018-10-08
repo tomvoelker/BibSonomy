@@ -40,10 +40,11 @@ public class DeletePersonResourceRelationController implements MinimalisticContr
 		}
 
 		try {
-			this.logic.removeResourceRelation(interhashToDelete, indexToDelete, typeToDelete);
+			this.logic.removeResourceRelation(personId, interhashToDelete, indexToDelete, typeToDelete);
 		} catch (Exception e) {
 			errors.reject("person.error.addRelation");
 		}
+
 		final ExtendedRedirectViewWithAttributes redirect = new ExtendedRedirectViewWithAttributes(this.urlGenerator.getPersonUrl(personId));
 		if (this.errors.hasErrors()) {
 			redirect.addAttribute(ExtendedRedirectViewWithAttributes.ERRORS_KEY, this.errors);
