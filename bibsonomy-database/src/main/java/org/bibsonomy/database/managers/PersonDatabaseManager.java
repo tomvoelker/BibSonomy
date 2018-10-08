@@ -387,7 +387,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 			}
 
 			this.delete("removeResourceRelation", resourcePersonRelation.getPersonRelChangeId(), session);
-			this.plugins.onPubPersonDelete(resourcePersonRelation, loginUser, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
