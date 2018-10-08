@@ -30,8 +30,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.search.es.client.DeleteData;
 import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Mapping;
@@ -40,6 +42,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.jsoup.select.Collector;
 
 /**
  * Wrapper around an ElasticSearch Client.
@@ -135,9 +138,16 @@ public interface ESClient {
 	 */
 	boolean updateAliases(Set<Pair<String, String>> aliasesToAdd, Set<Pair<String, String>> aliasesToRemove);
 	
-	default boolean updateOrCreateDocuments(String indexName, String type, Map<String, IndexData> jsonDocuments) {
-		final Set<String> idsToDelete = jsonDocuments.keySet();
-		this.deleteDocuments(indexName, type, idsToDelete);
+	default boolean updateOrCreateDocuments(String indexName, Map<String, IndexData> jsonDocuments) {
+		final List<DeleteData> deleteData = jsonDocuments.entrySet().stream().map((entry) -> {
+			final DeleteData delete = new DeleteData();
+			final IndexData indexData = entry.getValue();
+			delete.setType(indexData.getType());
+			delete.setId(entry.getKey());
+			delete.setRouting(indexData.getRouting());
+			return delete;
+		}).collect(Collectors.toList());
+		this.deleteDocuments(indexName, deleteData);
 		return this.insertNewDocuments(indexName, jsonDocuments);
 	}
 
@@ -186,15 +196,14 @@ public interface ESClient {
 	 * @param type
 	 * @param query
 	 */
-	public void deleteDocuments(String indexName, String type, QueryBuilder query);
+	void deleteDocuments(String indexName, String type, QueryBuilder query);
 	
 	/**
 	 * @param indexName
-	 * @param type
-	 * @param idsToDelete
+	 * @param documentsToDelete
 	 * @return 
 	 */
-	public boolean deleteDocuments(String indexName, String type, Set<String> idsToDelete);
+	boolean deleteDocuments(String indexName, List<DeleteData> documentsToDelete);
 
 	/**
 	 * checks if the client can connect to the es instance

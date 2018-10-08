@@ -241,7 +241,7 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 		/*
 		 * maybe we are updating an updated post in es
 		 */
-		this.client.updateOrCreateDocuments(indexName, this.entityInformationProvider.getType(), convertedPosts);
+		this.client.updateOrCreateDocuments(indexName, convertedPosts);
 		convertedPosts.clear();
 	}
 

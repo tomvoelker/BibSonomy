@@ -26,6 +26,12 @@
 		JOIN person_name pn USING (person_id)
 	</select>
 
+	<select id="getDeletedPersonResourceRelations" resultMap="SearchPersonCommon.simplePersonResourceRelation" parameterClass="date">
+		SELECT person_change_id AS person_relation_change_id, -1 AS person_change_id, person_id
+		FROM log_pub_person
+		WHERE log_date >= #lastLogDate#
+	</select>
+
 	<select id="getUpdatedOrNewPersonRelations" resultMap="SearchPersonCommon.personResourceRelation">
 		SELECT <include refid="personResourceRelationWithPostColumns" />
 			FROM

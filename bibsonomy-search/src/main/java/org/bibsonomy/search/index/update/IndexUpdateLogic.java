@@ -6,13 +6,13 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * logic interface to get
+ * logic interface to get updates from the database
  * @param <E>
  */
 public interface IndexUpdateLogic<E> extends DatabaseInformationLogic {
 
 	/**
-	 * returns the updated persons
+	 * returns the updated entities
 	 *
 	 * @param lastEntityId
 	 * @param lastLogDate
@@ -21,4 +21,11 @@ public interface IndexUpdateLogic<E> extends DatabaseInformationLogic {
 	 * @return
 	 */
 	List<E> getNewerEntities(long lastEntityId, Date lastLogDate, int size, int offset);
+
+	/**
+	 * returns deleted entites
+	 * @param lastLogDate
+	 * @return
+	 */
+	List<E> getDeletedEntites(Date lastLogDate);
 }

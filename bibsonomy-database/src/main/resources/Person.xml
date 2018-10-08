@@ -55,12 +55,6 @@
 			WHERE person_change_id = #personChangeId#
 	</select>
 
-	<select id="getPersonNameById" resultMap="PersonCommon.personName" parameterClass="int">
-		SELECT <include refid="commonPersonNameColumns"/>
-		FROM person_name
-		WHERE person_change_id = #personChangeId#
-	</select>
-
 	<update id="updatePerson" parameterClass="person">
 		UPDATE person
 		SET person_change_id = #personChangeId#, college = #college#, email = #email#, homepage = #homepage#, gender = #gender#, dnb_person_id  = #dnbPersonId#, academic_degree = #academicDegree#, orcid = #orcid#, post_ctr = #postCounter#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#

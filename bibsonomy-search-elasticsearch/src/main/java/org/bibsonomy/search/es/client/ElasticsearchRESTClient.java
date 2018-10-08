@@ -332,15 +332,16 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public boolean deleteDocuments(String indexName, String type, Set<String> idsToDelete) {
-		if (!present(idsToDelete)) {
+	public boolean deleteDocuments(String indexName, List<DeleteData> documentsToDelete) {
+		if (!present(documentsToDelete)) {
 			// nothing to delete
 			return true;
 		}
+
 		return this.secureCall(() -> {
 			final BulkRequest bulkRequest = new BulkRequest();
 
-			final Stream<DeleteRequest> deleteRequestsStream = idsToDelete.stream().map(id -> new DeleteRequest().id(id).type(type).index(indexName));
+			final Stream<DeleteRequest> deleteRequestsStream = documentsToDelete.stream().map(deleteData -> new DeleteRequest().id(deleteData.getId()).type(deleteData.getType()).routing(deleteData.getRouting()).index(indexName));
 			deleteRequestsStream.forEach(bulkRequest::add);
 
 			final BulkResponse bulkResponse = this.client.bulk(bulkRequest, this.buildRequestOptions());

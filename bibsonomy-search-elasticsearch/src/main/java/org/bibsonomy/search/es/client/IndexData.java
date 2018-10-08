@@ -7,43 +7,9 @@ import java.util.Map;
  *
  * @author dzo
  */
-public class IndexData {
-
-	/*+ the routing information for this index data */
-	private String routing;
-
-	/** the type information for this index data */
-	private String type;
+public class IndexData extends AbstractData {
 
 	private Map<String, Object> source;
-
-	/**
-	 * @return the routing
-	 */
-	public String getRouting() {
-		return routing;
-	}
-
-	/**
-	 * @param routing the routing to set
-	 */
-	public void setRouting(String routing) {
-		this.routing = routing;
-	}
-
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
 
 	/**
 	 * @return the source

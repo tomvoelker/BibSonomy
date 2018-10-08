@@ -38,7 +38,7 @@ public class PersonResourceRelationEntityInformationProvider extends EntityInfor
 
 	@Override
 	public String getEntityId(ResourcePersonRelation entity) {
-		return entity.getPost().getResource().getInterHash() + "_" + entity.getPersonIndex() + "_" + entity.getRelationType().toString();
+		return String.valueOf(entity.getPersonRelChangeId());
 	}
 
 	/**

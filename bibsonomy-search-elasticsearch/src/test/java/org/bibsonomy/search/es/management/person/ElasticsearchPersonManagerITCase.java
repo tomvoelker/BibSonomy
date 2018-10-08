@@ -39,6 +39,8 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 	private static final BibTexDatabaseManager PUBLICATION_DATABASE_MANAGER = testDatabaseContext.getBean(BibTexDatabaseManager.class);
 
 	// FIXME: move somewhere else
+	private static final String RESOURCE_HASH = "b77ddd8087ad8856d77c740c8dc2864a";
+	private static final String RESOURCE_INTERHASH = "097248439469d8f5a1e7fad6b02cbfcd";
 	private static final String TESTUSER1_NAME = "testuser1";
 	private static final User TESTUSER1 = new User("testuser1");
 
@@ -112,11 +114,14 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 		/*
 		 * now we create a new relation and check if the relation is updated
 		 */
+		final PersonResourceRelationType relationType = PersonResourceRelationType.ADVISOR;
+		final int authorIndex = -1;
+
 		final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
 		resourcePersonRelation.setPerson(newPerson);
-		resourcePersonRelation.setRelationType(PersonResourceRelationType.ADVISOR);
-		resourcePersonRelation.setPersonIndex(-1);
-		final Post<BibTex> post = PUBLICATION_DATABASE_MANAGER.getPostDetails(TESTUSER1_NAME, "b77ddd8087ad8856d77c740c8dc2864a", TESTUSER1_NAME, Collections.emptyList(), this.dbSession);
+		resourcePersonRelation.setRelationType(relationType);
+		resourcePersonRelation.setPersonIndex(authorIndex);
+		final Post<BibTex> post = PUBLICATION_DATABASE_MANAGER.getPostDetails(TESTUSER1_NAME, RESOURCE_HASH, TESTUSER1_NAME, Collections.emptyList(), this.dbSession);
 		resourcePersonRelation.setPost(post);
 		resourcePersonRelation.setChangedAt(new Date()); // TODO: do this in the database manager?
 		resourcePersonRelation.setChangedBy(TESTUSER1_NAME);
@@ -129,6 +134,13 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 		final List<ResourcePersonRelation> resourceRelations = personAfterRelationAdded.get(0).getResourceRelations();
 
 		assertThat(resourceRelations.size(), is(1));
+
+		PERSON_DATABASE_MANAGER.removeResourceRelation(RESOURCE_INTERHASH, authorIndex, relationType, TESTUSER1, this.dbSession);
+
+		this.updateIndex();
+
+		final List<Person> personsAfterRelationDelete = PERSON_SEARCH.getPersonSuggestions(newPersonQuery);
+		assertThat(personsAfterRelationDelete.get(0).getResourceRelations().size(), is(0));
 	}
 
 	private void updateIndex() {

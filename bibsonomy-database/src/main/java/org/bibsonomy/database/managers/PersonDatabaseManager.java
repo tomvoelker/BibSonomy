@@ -380,13 +380,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 				this.plugins.onPubPersonDelete(resourcePersonRelation, loginUser, session);
 			}
 
-			// inform the plugins (e.g. to log the deleted relation)
-			if (!update) {
-				this.plugins.onPubPersonDelete(resourcePersonRelation, loginUser, session);
-			}
-
 			this.delete("removeResourceRelation", resourcePersonRelation.getPersonRelChangeId(), session);
-			this.plugins.onPubPersonDelete(resourcePersonRelation, loginUser, session);
+			
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();

@@ -27,12 +27,15 @@
 		<result property="isMain"			column="is_main"			javaType="boolean" />
 	</resultMap>
 
-	<resultMap id="personResourceRelation" class="resourcePersonRelation" groupBy="personRelChangeId">
+	<resultMap id="simplePersonResourceRelation" class="personResourceRelation" groupBy="personRelChangeId">
 		<result property="personRelChangeId"	column="person_relation_change_id"	javaType="int" />
+		<result property="person"				resultMap="SearchPersonCommon.simplePerson" />
+	</resultMap>
+
+	<resultMap id="personResourceRelation" class="personResourceRelation" groupBy="personRelChangeId" extends="simplePersonResourceRelation">
 		<result property="relationType"			column="relator_code"		javaType="personResourceRelationType" />
 		<result property="changedAt"			column="log_changed_at"		javaType="date" />
 		<result property="personIndex"			column="person_index"		javaType="int" />
-		<result property="person"				resultMap="SearchPersonCommon.simplePerson" />
 		<result property="post" 				resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost" />
 	</resultMap>
 

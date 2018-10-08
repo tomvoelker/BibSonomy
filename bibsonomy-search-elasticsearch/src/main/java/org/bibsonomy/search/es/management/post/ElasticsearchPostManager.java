@@ -32,6 +32,7 @@ import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,6 +46,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
+import org.bibsonomy.search.es.client.DeleteData;
 import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
@@ -112,13 +114,16 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 			final List<Integer> contentIdsToDelete = this.inputLogic.getContentIdsToDelete(new Date(oldState.getLast_log_date().getTime() - QUERY_TIME_OFFSET_MS));
 			
 			
-			final Set<String> idsToDelete = new HashSet<>();
+			final List<DeleteData> idsToDelete = new LinkedList<>();
 			for (final Integer contentId : contentIdsToDelete) {
 				final String indexID = ElasticsearchUtils.createElasticSearchId(contentId.intValue());
-				idsToDelete.add(indexID);
+				final DeleteData deleteData = new DeleteData();
+				deleteData.setType(this.entityInformationProvider.getType());
+				deleteData.setId(indexID);
+				idsToDelete.add(deleteData);
 			}
 			
-			this.client.deleteDocuments(indexName, this.entityInformationProvider.getType(), idsToDelete);
+			this.client.deleteDocuments(indexName, idsToDelete);
 		}
 
 		/*

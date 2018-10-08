@@ -30,6 +30,13 @@ public class PersonResourceRelationUpdateLogic extends AbstractDatabaseManagerWi
 	}
 
 	@Override
+	public List<ResourcePersonRelation> getDeletedEntites(Date lastLogDate) {
+		try (final DBSession session = this.openSession()) {
+			return this.queryForList("getDeletedPersonResourceRelations", lastLogDate, ResourcePersonRelation.class, session);
+		}
+	}
+
+	@Override
 	public SearchIndexSyncState getDbState() {
 		throw new UnsupportedOperationException("use parent update logic to get the db state");
 	}

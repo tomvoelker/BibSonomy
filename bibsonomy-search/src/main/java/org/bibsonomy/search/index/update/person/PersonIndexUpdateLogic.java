@@ -6,6 +6,7 @@ import org.bibsonomy.search.index.database.person.PersonDatabaseInformationLogic
 import org.bibsonomy.search.index.update.IndexUpdateLogic;
 import org.bibsonomy.search.management.database.params.SearchParam;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -27,4 +28,11 @@ public class PersonIndexUpdateLogic extends PersonDatabaseInformationLogic imple
 			return this.queryForList("getUpdatedAndNewPersons", param, Person.class, session);
 		}
 	}
+
+	@Override
+	public List<Person> getDeletedEntites(Date lastLogDate) {
+		// currently persons can not be deleted
+		return Collections.emptyList();
+	}
+
 }

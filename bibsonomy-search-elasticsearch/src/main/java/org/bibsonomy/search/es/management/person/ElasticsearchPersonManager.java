@@ -4,6 +4,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
+import org.bibsonomy.search.es.client.DeleteData;
 import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
@@ -20,8 +21,11 @@ import org.elasticsearch.search.SearchHits;
 import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * manager for persons
@@ -65,20 +69,42 @@ public class ElasticsearchPersonManager extends ElasticsearchManager<Person> {
 		this.updateIndexState(indexName, targetState);
 	}
 
+
+
 	private <E> void updateEntity(final String indexName, final SearchIndexSyncState oldState, final IndexUpdateLogic<E> updateIndexLogic, final EntityInformationProvider<E> entityInformationProvider) {
-		final Map<String, IndexData> convertedEntities = new HashMap<>();
 		final long lastPersonChangeId = oldState.getLastPersonChangeId();
 		final Date lastLogDate = oldState.getLast_log_date();
+		final String entityType = entityInformationProvider.getType();
+
+		/*
+		 * delete old entities
+		 */
+		final List<E> deletedEntities = updateIndexLogic.getDeletedEntites(lastLogDate);
+
+		// convert the entities to the list of delete data
+		final List<DeleteData> idsToDelete = deletedEntities.stream().map(entity -> {
+			final DeleteData deleteData = new DeleteData();
+			deleteData.setType(entityType);
+			deleteData.setId(entityInformationProvider.getEntityId(entity));
+			deleteData.setRouting(entityInformationProvider.getRouting(entity));
+			return deleteData;
+		}).collect(Collectors.toList());
+
+		this.client.deleteDocuments(indexName, idsToDelete);
+
+		/*
+		 * insert new or updated entities
+		 */
+		final Map<String, IndexData> convertedEntities = new HashMap<>();
 		int offset = 0;
 		List<E> newEntity;
 		do {
 			newEntity = updateIndexLogic.getNewerEntities(lastPersonChangeId, lastLogDate, SearchDBInterface.SQL_BLOCKSIZE, offset);
 
 			for (final E entity : newEntity) {
-
 				final Map<String, Object> convertedPost = entityInformationProvider.getConverter().convert(entity);
 				final IndexData indexData = new IndexData();
-				indexData.setType(entityInformationProvider.getType());
+				indexData.setType(entityType);
 				indexData.setSource(convertedPost);
 				indexData.setRouting(entityInformationProvider.getRouting(entity));
 				convertedEntities.put(entityInformationProvider.getEntityId(entity), indexData);
