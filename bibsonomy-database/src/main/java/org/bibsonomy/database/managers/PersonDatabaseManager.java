@@ -659,7 +659,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 			this.plugins.onPersonResourceRelationUpdate(relation, newRelation, loggedinUser, session);
 
 			// remove it from the person
-			this.removeResourceRelation(oldId, loggedinUser, true, session);
+			this.removeResourceRelation(relation.getPost().getResource().getInterHash(), relation.getPersonIndex(), relation.getRelationType(), loggedinUser, true, session);
 			this.addResourceRelation(newRelation, loggedinUser, session);
 
 			session.commitTransaction();
