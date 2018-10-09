@@ -27,6 +27,8 @@ public class PostEntityInformationProvider<R extends Resource> extends EntityInf
 
 	// TODO: maybe we should separate bookmark and publication fields
 	public static final Set<String> PUBLIC_FIELDS = Sets.asSet(
+					ESConstants.Fields.TAGS,
+					ESConstants.Fields.DESCRIPTION,
 					ESConstants.Fields.Resource.TITLE,
 					ESConstants.Fields.Bookmark.URL,
 					ESConstants.Fields.Publication.ALL_AUTHORS,
