@@ -34,6 +34,6 @@ public class ElasticsearchOneToManyIndexGenerator<T, M> extends ElasticsearchInd
 	protected void insertDataIntoIndex(String indexName) {
 		super.insertDataIntoIndex(indexName);
 
-		this.insertDataIntoIndex(indexName, (lastContenId, limit) -> this.generatorLogic.getToManyEntities(lastContenId, limit), this.entityInformationProvider.getToManyEntityInformationProvider());
+		this.insertDataIntoIndex(indexName, (lastContenId, limit) -> this.generatorLogic.getToManyEntities(lastContenId, limit), this.entityInformationProvider.getToManyEntityInformationProvider(), new IndexVoter<M>());
 	}
 }

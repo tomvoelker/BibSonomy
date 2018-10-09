@@ -40,7 +40,7 @@ public class ElasticsearchIndexGenerator<T> {
 
 	private final IndexGenerationLogic<T> generationLogic;
 
-	private final EntityInformationProvider<T> entityInformationProvider;
+	protected final EntityInformationProvider<T> entityInformationProvider;
 
 	private boolean generating = false;
 
@@ -55,11 +55,25 @@ public class ElasticsearchIndexGenerator<T> {
 	}
 
 	/**
-	 * default construtor with all required fields
-	 * @param systemId
-	 * @param client
-	 * @param generationLogic
-	 * @param entityInformationProvider
+	 * an entity is added to the index iff the provided index voter votes for the entity
+	 *
+	 * (maybe an implementation wants to check the already added
+	 *
+	 * @param <E>
+	 */
+	protected class IndexVoter<E> {
+		public boolean indexEntity(final E entity) {
+			return true;
+		}
+	}
+
+	/**
+	 * default constructor with all required fields
+	 *
+	 * @param systemId the system id
+	 * @param client the client to use
+	 * @param generationLogic the generation logic to use
+	 * @param entityInformationProvider the entity information provider for this entity index
 	 */
 	public ElasticsearchIndexGenerator(URI systemId, ESClient client, IndexGenerationLogic<T> generationLogic, EntityInformationProvider<T> entityInformationProvider) {
 		this.client = client;
@@ -127,10 +141,10 @@ public class ElasticsearchIndexGenerator<T> {
 	}
 
 	protected void insertDataIntoIndex(String indexName) {
-		this.insertDataIntoIndex(indexName, (lastContenId, limit) -> ElasticsearchIndexGenerator.this.generationLogic.getEntites(lastContenId, limit), this.entityInformationProvider);
+		this.insertDataIntoIndex(indexName, (lastContenId, limit) -> ElasticsearchIndexGenerator.this.generationLogic.getEntites(lastContenId, limit), this.entityInformationProvider, new IndexVoter<>());
 	}
 
-	protected final <E> void insertDataIntoIndex(String indexName, Generator<E> generator, EntityInformationProvider<E> entityInformationProvider) {
+	protected final <E> void insertDataIntoIndex(String indexName, Generator<E> generator, EntityInformationProvider<E> entityInformationProvider, final IndexVoter<E> indexVoter) {
 		LOG.info("Start writing entities to index");
 
 		final Converter<E, Map<String, Object>, ?> converter = entityInformationProvider.getConverter();
@@ -149,17 +163,19 @@ public class ElasticsearchIndexGenerator<T> {
 
 			// cycle through all posts of currently read block
 			for (final E entity : entityList) {
-				final Map<String, Object> convertedEntity = converter.convert(entity);
+				if (indexVoter.indexEntity(entity)) {
+					final Map<String, Object> convertedEntity = converter.convert(entity);
 
-				final IndexData indexData = new IndexData();
-				indexData.setSource(convertedEntity);
-				indexData.setType(entityInformationProvider.getType());
-				indexData.setRouting(entityInformationProvider.getRouting(entity));
+					final IndexData indexData = new IndexData();
+					indexData.setSource(convertedEntity);
+					indexData.setType(entityInformationProvider.getType());
+					indexData.setRouting(entityInformationProvider.getRouting(entity));
 
-				docsToWrite.put(entityInformationProvider.getEntityId(entity), indexData);
+					docsToWrite.put(entityInformationProvider.getEntityId(entity), indexData);
 
-				if (docsToWrite.size() > ESConstants.BULK_INSERT_SIZE) {
-					this.clearQueue(indexName, docsToWrite);
+					if (docsToWrite.size() > ESConstants.BULK_INSERT_SIZE) {
+						this.clearQueue(indexName, docsToWrite);
+					}
 				}
 			}
 
@@ -176,7 +192,7 @@ public class ElasticsearchIndexGenerator<T> {
 	 */
 	private void clearQueue(final String indexName, final Map<String, IndexData> docsToWrite) {
 		if (present(docsToWrite)) {
-			this.client.insertNewDocuments(indexName, docsToWrite);
+			this.client.updateOrCreateDocuments(indexName, docsToWrite);
 			this.writtenEntities += docsToWrite.size();
 			docsToWrite.clear();
 		}

@@ -7,6 +7,17 @@
 						http://www.springframework.org/schema/util
 						http://www.springframework.org/schema/util/spring-util.xsd">
 
+
+	<bean id="communityPostGenerationSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource" ref="searchDataSource" />
+		<property name="configLocation" value="classpath:generation/communitypost/CommunityPostIndexGenerationSQLMapConfig.xml" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+
+	<bean id="communityPostGenerationSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="communityPostGenerationSqlMapClient"/>
+	</bean>
+
 	<bean id="personSearchDatabaseManager" class="org.bibsonomy.search.management.database.manager.PersonSearchDatabaseManager" />
 
 	<bean id="generationLogic" class="org.bibsonomy.search.index.generator.post.PostIndexGenerationLogic" abstract="true">
@@ -29,6 +40,16 @@
 
 	<bean id="publicationSearchDBLogic" class="org.bibsonomy.search.management.database.SearchDBLogic" parent="publicationGenerationDBLogic">
 		<constructor-arg ref="personSearchDatabaseManager" />
+	</bean>
+
+	<bean id="communityPublicationGenerationDBLogic" class="org.bibsonomy.search.index.generator.post.CommunityPostIndexGenerationLogic">
+		<constructor-arg ref="goldStandardPublicationClass"/>
+		<property name="sessionFactory" ref="communityPostGenerationSessionFactory" />
+	</bean>
+
+	<bean id="communityBookmarkGenerationDBLogic" class="org.bibsonomy.search.index.generator.post.CommunityPostIndexGenerationLogic">
+		<constructor-arg ref="goldStandardBookmarkClass"/>
+		<property name="sessionFactory" ref="communityPostGenerationSessionFactory" />
 	</bean>
 
 	<bean id="goldStandardPublicationGenerationDBLogic" class="org.bibsonomy.search.index.generator.post.PostIndexGenerationLogic" parent="generationLogic">

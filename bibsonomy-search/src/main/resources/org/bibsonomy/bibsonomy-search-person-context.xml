@@ -9,7 +9,7 @@
 
 	<bean id="personSearchSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
 		<property name="dataSource" ref="searchDataSource" />
-		<property name="configLocation" value="classpath:generation/IndexGenerationSQLMapConig.xml" />
+		<property name="configLocation" value="classpath:generation/person/PersonIndexGenerationSQLMapConfig.xml" />
 		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
 	</bean>
 

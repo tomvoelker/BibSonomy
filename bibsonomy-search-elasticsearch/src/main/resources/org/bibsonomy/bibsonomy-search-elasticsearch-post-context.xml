@@ -101,13 +101,13 @@
 		<constructor-arg ref="publicationClass" />
 	</bean>
 
-	<bean id="elasticsearchCommunityPublicationEntityInformationProvider" class="org.bibsonomy.search.es.index.generator.post.PostEntityInformationProvider">
+	<bean id="elasticsearchCommunityPublicationEntityInformationProvider" class="org.bibsonomy.search.es.index.generator.post.CommunityPostEntityInformationProvider">
 		<constructor-arg ref="elasticsearchCommunityPublicationConverter" />
 		<constructor-arg ref="elasticsearchCommunityPublicationMappingBuilder" />
 		<constructor-arg ref="goldStandardPublicationClass" />
 	</bean>
 
-	<bean id="elasticsearchCommunityBookmarkEntityInformationProvider" class="org.bibsonomy.search.es.index.generator.post.PostEntityInformationProvider">
+	<bean id="elasticsearchCommunityBookmarkEntityInformationProvider" class="org.bibsonomy.search.es.index.generator.post.CommunityPostEntityInformationProvider">
 		<constructor-arg ref="elasticsearchCommunityBookmarkConverter" />
 		<constructor-arg ref="elasticsearchCommunityBookmarkMappingBuilder" />
 		<constructor-arg ref="goldStandardBookmarkClass" />
