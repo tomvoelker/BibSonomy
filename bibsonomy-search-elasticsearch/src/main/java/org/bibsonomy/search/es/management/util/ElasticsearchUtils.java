@@ -245,7 +245,7 @@ public final class ElasticsearchUtils {
 		searchIndexState.setMappingVersion(mappingVersion);
 		
 		searchIndexState.setLastPersonChangeId(((Integer) source.get(LAST_PERSON_CHANGE_ID_KEY)).longValue());
-		searchIndexState.setLastPostContentId((Long) source.get(LAST_POST_CONTENT_ID_KEY));
+		searchIndexState.setLastPostContentId((Integer) source.get(LAST_POST_CONTENT_ID_KEY));
 
 		return searchIndexState;
 	}
