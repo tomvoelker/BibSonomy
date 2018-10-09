@@ -63,6 +63,7 @@ public final class ElasticsearchUtils {
 	private static final String LAST_TAS_KEY = "last_tas_id";
 	private static final String LAST_DOCUMENT_DATE_KEY = "last_document_date";
 	private static final String LAST_PREDICTION_CHANGE_DATE = "lastPredictionChangeDate";
+	private static final String LAST_POST_CONTENT_ID_KEY = "last_post_content_id";
 	private static final String MAPPING_VERSION = "mapping_version";
 	
 	/** Alias for the inactive index */
@@ -191,6 +192,8 @@ public final class ElasticsearchUtils {
 		if (present(lastPredictionDate)) {
 			values.put(LAST_PREDICTION_CHANGE_DATE, Long.valueOf(lastPredictionDate.getTime()));
 		}
+		final long lastPostContentId = state.getLastPostContentId();
+		values.put(LAST_POST_CONTENT_ID_KEY, lastPostContentId);
 		return values;
 	}
 
@@ -242,6 +245,8 @@ public final class ElasticsearchUtils {
 		searchIndexState.setMappingVersion(mappingVersion);
 		
 		searchIndexState.setLastPersonChangeId(((Integer) source.get(LAST_PERSON_CHANGE_ID_KEY)).longValue());
+		searchIndexState.setLastPostContentId((Long) source.get(LAST_POST_CONTENT_ID_KEY));
+
 		return searchIndexState;
 	}
 	

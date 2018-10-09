@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.search.es.index.converter.post;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,6 +35,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -88,6 +92,13 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 		resource.setInterHash((String) source.get(Fields.Resource.INTERHASH));
 		resource.setIntraHash((String) source.get(Fields.Resource.INTRAHASH));
 		resource.setTitle((String) source.get(Fields.Resource.TITLE));
+
+		if (source.containsKey(Fields.ALL_USERS)) {
+			final List<String> userNames = (List<String>) source.get(Fields.ALL_USERS);
+			final List<User> users = userNames.stream().map(name -> new User(name)).collect(Collectors.toList());
+			post.setUsers(users);
+		}
+
 		post.setResource(resource);
 		
 		this.convertResourceInternal(post, source, loadDocuments);
@@ -172,6 +183,13 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 		fillIndexDocumentUser(post, jsonDocument);
 		
 		jsonDocument.put(Fields.GROUPS, convertGroups(post.getGroups()));
+
+		// add users that also posted this post
+		final List<User> users = post.getUsers();
+		if (present(users)) {
+			final List<String> userNames = users.stream().map(User::getName).collect(Collectors.toList());
+			jsonDocument.put(Fields.ALL_USERS, userNames);
+		}
 		
 		jsonDocument.put(Fields.TAGS, convertTags(post.getTags()));
 		jsonDocument.put(Fields.SYSTEM_URL, this.systemURI.toString());

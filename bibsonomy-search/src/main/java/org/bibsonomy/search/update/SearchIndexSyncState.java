@@ -44,6 +44,8 @@ public class SearchIndexSyncState {
 	private long lastPersonChangeId;
 	private Date lastDocumentDate;
 	private Date lastPredictionChangeDate;
+	/** the last content id of normal posts */
+	private long lastPostContentId;
 	private String mappingVersion;
 
 	/**
@@ -147,6 +149,20 @@ public class SearchIndexSyncState {
 		this.lastPredictionChangeDate = lastPredictionChangeDate;
 	}
 
+	/**
+	 * @return the lastPostContentId
+	 */
+	public long getLastPostContentId() {
+		return lastPostContentId;
+	}
+
+	/**
+	 * @param lastPostContentId the lastPostContentId to set
+	 */
+	public void setLastPostContentId(long lastPostContentId) {
+		this.lastPostContentId = lastPostContentId;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -180,6 +196,10 @@ public class SearchIndexSyncState {
 		}
 		
 		if (!ObjectUtils.equals(lastPredictionChangeDate, otherState.lastPredictionChangeDate)) {
+			return false;
+		}
+
+		if (!ObjectUtils.equals(this.lastPostContentId, otherState.lastPostContentId)) {
 			return false;
 		}
 		

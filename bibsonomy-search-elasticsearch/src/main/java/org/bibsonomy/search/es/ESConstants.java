@@ -152,9 +152,11 @@ public final class ESConstants {
 	public static final int BULK_INSERT_SIZE = 1000;
 
 	/** contains all field information */
-	public static final class Fields {
+	public interface Fields {
 		/** the name of the user of the post */
 		public static final String USER_NAME = "user_name";
+		/** list of all users that posted this post (with the same interhash) */
+		String ALL_USERS = "all_users";
 		/** the groups of the post */
 		public static final String GROUPS = "groups";
 		/** the tags of the post */

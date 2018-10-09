@@ -48,10 +48,14 @@
 
 	<bean id="elasticsearchCommunityPublicationManager" class="org.bibsonomy.search.es.management.post.ElasticsearchCommunityManager" parent="elasticsearchAbstractIndexManager">
 		<constructor-arg>
-			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator">
+			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchIndexGeneratorWithMultipleSources">
 				<constructor-arg ref="systemURI" />
 				<constructor-arg ref="esClient" />
-				<constructor-arg ref="goldStandardPublicationGenerationDBLogic" />
+				<constructor-arg>
+					<list>
+						<ref bean="communityPublicationGenerationDBLogic" />
+					</list>
+				</constructor-arg>
 				<constructor-arg ref="elasticsearchCommunityPublicationEntityInformationProvider" />
 			</bean>
 		</constructor-arg>

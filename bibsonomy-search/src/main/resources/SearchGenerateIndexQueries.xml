@@ -10,18 +10,6 @@
 		FROM tas
 	</select>
 	
-	<!-- used by the gold standard index instead of getLastTasId -->
-	<select id="getLastContentIdGoldStandardPublication" resultClass="integer">
-		SELECT MAX(content_id)
-		FROM gold_standard WHERE content_type = 2
-	</select>
-	
-	<!-- TODO: merge with getLastContentIdGoldStandardPublication -->
-	<select id="getLastContentIdGoldStandardBookmark" resultClass="integer">
-		SELECT MAX(content_id)
-		FROM gold_standard WHERE content_type = 1
-	</select>
-	
 	<select id="getLastPredictionDate" resultClass="date">
 		SELECT MAX(updated_at)
 		FROM prediction
@@ -60,14 +48,6 @@
 	<select id="getLastLogBookmark" resultClass="date">
 		SELECT MAX(log_date)
 		FROM log_bookmark
-	</select>
-	
-	<select id="getLastLogGoldStandardPublication" resultClass="date">
-		SELECT MAX(log_date) FROM log_gold_standard l WHERE l.content_type = 2
-	</select>
-	
-	<select id="getLastLogGoldStandardBookmark" resultClass="date">
-		SELECT MAX(log_date) FROM log_gold_standard l WHERE l.content_type = 1
 	</select>
 	
 	<!-- get users which where flagged as spammers/non-spammers since last index update --> 

@@ -16,6 +16,19 @@
 		WHERE b.content_type = 1
 	</select>
 
+	<!-- db state information -->
+	<select id="getLastContentIdCommunity" resultClass="long" parameterClass="int">
+		SELECT MAX(content_id)
+		FROM gold_standard
+		WHERE content_type = #content_type#
+	</select>
+
+	<select id="getLastLogDateCommunity" resultClass="date" parameterClass="int">
+		SELECT MAX(log_date)
+		FROM log_gold_standard l
+		WHERE l.content_type = #content_type#
+	</select>
+
 	<!-- get list of all public publication posts -->
 	<select id="getBibTexForCommunityIndex" parameterClass="searchParam" resultMap="SearchPublicationCommon.searchPublicationPost">
 		SELECT bb.*, -1 AS rating, -1 AS number_of_ratings, b.user_name AS other_user_name

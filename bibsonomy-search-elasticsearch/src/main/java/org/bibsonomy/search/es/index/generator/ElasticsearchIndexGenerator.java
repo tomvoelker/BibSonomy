@@ -130,6 +130,7 @@ public class ElasticsearchIndexGenerator<T> {
 		LOG.info("Number of post entries: " + this.numberOfEntities);
 
 		// initialize variables
+		// FIXME: introduce a index state for each entity
 		final SearchIndexSyncState newState = this.generationLogic.getDbState();
 		newState.setMappingVersion(BasicUtils.VERSION);
 		if (newState.getLast_log_date() == null) {
