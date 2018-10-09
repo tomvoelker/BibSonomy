@@ -23,7 +23,7 @@
 	<sqlMap resource="common/SearchPersonCommon.xml" />
 
 	<!-- queries to include -->
-	<sqlMap resource="update/PersonIndexUpdate.xml" />
+	<sqlMap resource="update/person/PersonIndexUpdate.xml" />
 
 </sqlMapConfig>
 

@@ -23,7 +23,7 @@
 
 	<bean id="personUpdateSearchSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
 		<property name="dataSource" ref="searchDataSource" />
-		<property name="configLocation" value="classpath:update/PersonIndexUpdateSQLMapConig.xml" />
+		<property name="configLocation" value="classpath:update/person/PersonIndexUpdateSQLMapConig.xml" />
 		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
 	</bean>
 
