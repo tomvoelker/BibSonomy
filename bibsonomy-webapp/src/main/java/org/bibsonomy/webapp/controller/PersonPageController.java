@@ -85,6 +85,8 @@ import org.springframework.validation.Errors;
  */
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(PersonMatch.class);
+
+	private URLGenerator urlGenerator;
 	private RequestLogic requestLogic;
 	private PersonRoleRenderer personRoleRenderer;
 	private Errors errors;
@@ -578,21 +580,26 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		return Views.AJAX_JSON;	
 	}
-	
-	
+
 	/**
-	 * Default action called when a user url is called
+	 * handles the person page
 	 * @param command
 	 * @return
 	 */
 	private View showAction(PersonPageCommand command) {
+		/*
+		 * check if the requested person was already merged with another person
+		 * and redirect to the other person
+		 */
+		final String forwardId = this.logic.getForwardId(command.getRequestedPersonId());
+		if (present(forwardId)) {
+			return new ExtendedRedirectView(this.urlGenerator.getPersonUrl(forwardId));
+		}
+
 		for (PersonResourceRelationType prr : PersonResourceRelationType.values()) {
 			command.getAvailableRoles().add(prr);
 		}
-		String forwardId = this.logic.getForwardId(command.getRequestedPersonId());
-		if (present(forwardId)) {
-			command.setRequestedPersonId(forwardId);
-		}
+
 		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getRequestedPersonId());
 		
 		if (!present(person)) {
@@ -645,29 +652,6 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setSimilarAuthorPubs(similarAuthorPubs);
 		
 		return Views.PERSON_SHOW;
-	}
-	
-	@Override
-	public Errors getErrors() {
-		return this.errors;
-	}
-
-	@Override
-	public void setErrors(Errors errors) {
-		this.errors = errors;
-	}
-
-	@Override
-	public PersonPageCommand instantiateCommand() {
-		return new PersonPageCommand();
-	}
-
-	public void setRequestLogic(RequestLogic requestLogic) {
-		this.requestLogic = requestLogic;
-	}
-
-	public void setPersonRoleRenderer(PersonRoleRenderer personRoleRenderer) {
-		this.personRoleRenderer = personRoleRenderer;
 	}
 	
 	private List<Post<BibTex>> getPublicationsOfSimilarAuthor(Person person) {
@@ -741,7 +725,36 @@ public class PersonPageController extends SingleResourceListController implement
 				
 		return noPersonRelPubList;
 	}
-	
+
+	@Override
+	public Errors getErrors() {
+		return this.errors;
+	}
+
+	@Override
+	public void setErrors(Errors errors) {
+		this.errors = errors;
+	}
+
+	@Override
+	public PersonPageCommand instantiateCommand() {
+		return new PersonPageCommand();
+	}
+
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
+	}
+
+	public void setPersonRoleRenderer(PersonRoleRenderer personRoleRenderer) {
+		this.personRoleRenderer = personRoleRenderer;
+	}
+
+	/**
+	 * @param urlGenerator the urlGenerator to set
+	 */
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
+	}
 }
 
 
