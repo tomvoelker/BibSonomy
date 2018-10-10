@@ -3629,7 +3629,7 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		
 		try {
-			if (present(userName)) {				
+			if (present(userName)) {
 				return this.personDBManager.getPersonByUser(userName, session);
 			}
 			return null;
@@ -3786,12 +3786,13 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<PersonMatch> getPersonMatches(String personID) {
-		final DBSession session = this.openSession();
-		if (present(this.loginUser.getName())){
-			return this.personDBManager.getMatchesForFilterWithUserName(personID, this.loginUser.getName(), session);
-		}
+		try (final DBSession session = this.openSession()) {
+			if (present(this.loginUser.getName())) {
+				return this.personDBManager.getMatchesForFilterWithUserName(personID, this.loginUser.getName(), session);
+			}
 
-		return this.personDBManager.getMatchesFor(personID, session);
+			return this.personDBManager.getMatchesFor(personID, session);
+		}
 	}
 
 	/**
@@ -3802,9 +3803,10 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void denieMerge(PersonMatch match) {
-		final DBSession session = this.openSession();
-		if (present(this.loginUser.getName())) {
-			this.personDBManager.denyMatch(match, this.loginUser.getName(), session);
+		try (final DBSession session = this.openSession()) {
+			if (present(this.loginUser.getName())) {
+				this.personDBManager.denyMatch(match, this.loginUser.getName(), session);
+			}
 		}
 	}
 	
@@ -3815,11 +3817,12 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public boolean acceptMerge(PersonMatch match) {
-		final DBSession session = this.openSession();
-		if (present(this.loginUser.getName())) {
-			return this.personDBManager.mergeSimilarPersons(match, this.loginUser, session);
+		try (final DBSession session = this.openSession()) {
+			if (present(this.loginUser.getName())) {
+				return this.personDBManager.mergeSimilarPersons(match, this.loginUser, session);
+			}
+			return false;
 		}
-		return false;
 	}
 	
 	/**
@@ -3829,8 +3832,9 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public PersonMatch getPersonMatch(int matchID) {
-		final DBSession session = this.openSession();
-		return personDBManager.getMatch(matchID, session);
+		try (final DBSession session = this.openSession()) {
+			return personDBManager.getMatch(matchID, session);
+		}
 	}
 
 	/**
@@ -3841,11 +3845,12 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
-		final DBSession session = this.openSession();
-		if (present(this.loginUser.getName())) {
-			return this.personDBManager.conflictMerge(formMatchId, map, this.loginUser, session);
+		try (final DBSession session = this.openSession()) {
+			if (present(this.loginUser.getName())) {
+				return this.personDBManager.conflictMerge(formMatchId, map, this.loginUser, session);
+			}
+			return false;
 		}
-		return false;
 	}
 
 	/**
@@ -3854,7 +3859,8 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public String getForwardId(String personId) {
-		final DBSession session = this.openSession();
-		return this.personDBManager.getForwardId(personId, session);
+		try (final DBSession session = this.openSession()) {
+			return this.personDBManager.getForwardId(personId, session);
+		}
 	}
 }
