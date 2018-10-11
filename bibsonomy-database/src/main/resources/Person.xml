@@ -181,6 +181,15 @@
 		FROM person_match
 		WHERE state = 0
 	</select>
+
+	<!-- FIXME: merge this into the getMatches Query -->
+	<select id="getPostsForPerson" parameterClass="string" resultMap="GoldStandardPublicationCommon.goldStandardPost">
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsDummyRows" />
+		FROM gold_standard b
+		JOIN pub_person p (simhash1)
+		WHERE p.person_id = #personId#
+		AND p.relator_code = 'Maut'
+	</select>
 	
 	<select id="getMatchbyID" parameterClass="int" resultMap="PersonCommon.personMatch">
 		SELECT match_id, person1_id, person2_id, state
