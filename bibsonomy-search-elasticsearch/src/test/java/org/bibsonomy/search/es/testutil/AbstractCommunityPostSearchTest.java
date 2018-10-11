@@ -20,4 +20,17 @@ public abstract class AbstractCommunityPostSearchTest<R extends Resource> extend
 		// wait for the docs to be indexed by elasticsearch
 		Thread.sleep(2000);
 	}
+
+	protected void updateIndex() {
+		// update both indices
+		this.getManager().updateIndex();
+		this.getManager().updateIndex();
+
+		// wait some time
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// noop
+		}
+	}
 }

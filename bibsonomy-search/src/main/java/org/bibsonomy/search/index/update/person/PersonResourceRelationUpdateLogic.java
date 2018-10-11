@@ -30,7 +30,7 @@ public class PersonResourceRelationUpdateLogic extends AbstractDatabaseManagerWi
 	}
 
 	@Override
-	public List<ResourcePersonRelation> getDeletedEntites(Date lastLogDate) {
+	public List<ResourcePersonRelation> getDeletedEntities(Date lastLogDate) {
 		try (final DBSession session = this.openSession()) {
 			return this.queryForList("getDeletedPersonResourceRelations", lastLogDate, ResourcePersonRelation.class, session);
 		}

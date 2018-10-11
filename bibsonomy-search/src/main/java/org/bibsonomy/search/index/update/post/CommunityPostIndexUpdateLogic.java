@@ -1,0 +1,74 @@
+package org.bibsonomy.search.index.update.post;
+
+import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagement;
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.ResourceAwareAbstractDatabaseManagerWithSessionManagement;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.search.index.update.IndexUpdateLogic;
+import org.bibsonomy.search.update.SearchIndexSyncState;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * all neccessary methods for updating a community post index
+ * @param <R>
+ */
+public class CommunityPostIndexUpdateLogic<R extends Resource> extends ResourceAwareAbstractDatabaseManagerWithSessionManagement<R> implements IndexUpdateLogic<Post<R>> {
+
+	/**
+	 * default constructor
+	 *
+	 * @param resourceClass the resource class
+	 */
+	public CommunityPostIndexUpdateLogic(Class<R> resourceClass) {
+		super(resourceClass);
+	}
+
+	@Override
+	public List<Post<R>> getNewerEntities(long lastEntityId, Date lastLogDate, int size, int offset) {
+		return null;
+	}
+
+	@Override
+	public List<Post<R>> getDeletedEntities(Date lastLogDate) {
+		try (final DBSession session = this.openSession()) {
+			return (List<Post<R>>) this.queryForList("test", lastLogDate, session);
+		}
+	}
+
+	/**
+	 * returns the latest public post with the provided interhash in the system
+	 * @param interHash
+	 * @return
+	 */
+	public Post<R> getNewestPostByInterHash(final String interHash) {
+		try (final DBSession session = this.openSession()) {
+			return (Post<R>) this.queryForObject("getLatest" + this.getResourceName() + "Post", interHash, session);
+		}
+	}
+
+	/**
+	 * this method returns posts of the user that are the newest posts (by interhash)
+	 * and there is no community post in the database
+	 *
+	 * @param userName the name of the user
+	 * @param limit how many posts should be returned
+	 * @param offset how many posts should be skipped
+	 * @return posts of the user
+	 */
+	public List<Post<R>> getPostsOfUser(String userName, int limit, int offset) {
+		return null;
+	}
+
+	public List<Post<R>> getAllPostsOfUser(String userName) {
+		return null;
+	}
+
+	@Override
+	public SearchIndexSyncState getDbState() {
+		return null;
+	}
+
+}

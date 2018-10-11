@@ -27,5 +27,5 @@ public interface IndexUpdateLogic<E> extends DatabaseInformationLogic {
 	 * @param lastLogDate
 	 * @return
 	 */
-	List<E> getDeletedEntites(Date lastLogDate);
+	List<E> getDeletedEntities(Date lastLogDate);
 }

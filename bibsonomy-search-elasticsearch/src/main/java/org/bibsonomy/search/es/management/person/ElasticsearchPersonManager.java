@@ -21,10 +21,8 @@ import org.elasticsearch.search.SearchHits;
 import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -79,7 +77,7 @@ public class ElasticsearchPersonManager extends ElasticsearchManager<Person> {
 		/*
 		 * delete old entities
 		 */
-		final List<E> deletedEntities = updateIndexLogic.getDeletedEntites(lastLogDate);
+		final List<E> deletedEntities = updateIndexLogic.getDeletedEntities(lastLogDate);
 
 		// convert the entities to the list of delete data
 		final List<DeleteData> idsToDelete = deletedEntities.stream().map(entity -> {

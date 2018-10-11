@@ -1,7 +1,7 @@
 package org.bibsonomy.search.index.generator.post;
 
-import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagement;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.ResourceAwareAbstractDatabaseManagerWithSessionManagement;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -19,27 +19,23 @@ import java.util.List;
  *
  * @author dzo
  */
-public class CommunityPostIndexGenerationLogic<R extends Resource> extends AbstractDatabaseManagerWithSessionManagement implements IndexGenerationLogic<Post<R>> {
-
-	private final Class<R> resourceClass;
+public class CommunityPostIndexGenerationLogic<R extends Resource> extends ResourceAwareAbstractDatabaseManagerWithSessionManagement<R> implements IndexGenerationLogic<Post<R>> {
 
 	/**
 	 * default constructor
-	 * @param resourceClass
+	 *
+	 * @param resourceClass the resource class
 	 */
 	public CommunityPostIndexGenerationLogic(Class<R> resourceClass) {
-		this.resourceClass = resourceClass;
+		super(resourceClass);
 	}
+
 
 	@Override
 	public int getNumberOfEntities() {
 		try (final DBSession session = this.openSession()) {
 			return saveConvertToint(this.queryForObject("get" + this.getResourceName() + "Count", Integer.class, session));
 		}
-	}
-
-	private String getResourceName() {
-		return this.resourceClass.getSimpleName();
 	}
 
 	@Override
@@ -57,7 +53,7 @@ public class CommunityPostIndexGenerationLogic<R extends Resource> extends Abstr
 	public SearchIndexSyncState getDbState() {
 		try (final DBSession session = this.openSession()) {
 			final SearchIndexSyncState searchIndexSyncState = new SearchIndexSyncState();
-			final ConstantID contentType = ConstantID.getContentTypeByClass(this.resourceClass);
+			final ConstantID contentType = this.getConstantID();
 			final int contentTypeId = contentType.getId();
 
 			final Date lastLogDate = this.queryForObject("getLastLogDateCommunity", contentTypeId, Date.class, session);

@@ -226,7 +226,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 				log.debug("updating spammer status for user " + userName);
 				switch (user.getPrediction().intValue()) {
 				case 0:
-					log.debug("user " + userName + " flaged as non-spammer");
+					log.debug("user " + userName + " flagged as non-spammer");
 					
 					int offset = 0;
 					List<Post<R>> userPosts;

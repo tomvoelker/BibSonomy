@@ -26,23 +26,40 @@
  */
 package org.bibsonomy.search.es.management.post;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.URI;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
 import org.bibsonomy.search.es.ESClient;
+import org.bibsonomy.search.es.ESConstants;
+import org.bibsonomy.search.es.client.DeleteData;
+import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
+import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
+import org.bibsonomy.search.index.update.post.CommunityPostIndexUpdateLogic;
 import org.bibsonomy.search.management.database.SearchDBInterface;
+import org.bibsonomy.search.update.SearchIndexSyncState;
 
 /**
  * special class that manages community posts
  *
  * @author dzo
- * @param <R> 
+ * @param <G> the community resource class
  */
-public class ElasticsearchCommunityManager<R extends Resource> extends ElasticsearchPostManager<R> {
+public class ElasticsearchCommunityManager<G extends Resource> extends ElasticsearchPostManager<G> {
+
+	private CommunityPostIndexUpdateLogic<G> postUpdateLogic;
+	private CommunityPostIndexUpdateLogic<G> communityPostUpdateLogic;
 
 	/**
 	 * default constructor
@@ -55,15 +72,162 @@ public class ElasticsearchCommunityManager<R extends Resource> extends Elasticse
 	 * @param entityInformationProvider
 	 * @param inputLogic
 	 */
-	public ElasticsearchCommunityManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<R>> generator, EntityInformationProvider<Post<R>> entityInformationProvider, SearchDBInterface<R> inputLogic) {
+	public ElasticsearchCommunityManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<G>> generator, EntityInformationProvider<Post<G>> entityInformationProvider, SearchDBInterface<G> inputLogic) {
 		super(systemId, disabledIndexing, updateEnabled, client, generator, entityInformationProvider, inputLogic);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.management.post.ElasticsearchPostManager#updatePredictions(java.lang.String, java.util.Date, java.util.Date)
-	 */
+
 	@Override
-	protected void updatePredictions(String indexName, Date lastPredictionChangeDate, Date currentLastPreditionChangeDate) {
-		// noop no user related content
+	protected void updateIndex(String indexName) {
+		final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId);
+
+		final SearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, indexName);
+		// final SearchIndexSyncState targetState = this.postUpdateLogic.getDbState();
+		final Integer communityPostLastContentId = oldState.getLast_tas_id();
+		final Date communityPostLastLogDate = oldState.getLast_log_date();
+		final Date postLastLogDate = null; // oldState.getLastPostLogDate();
+		/*
+		 * 1. step: get only deleted entries, not updated
+		 *
+		 * a) get all community deletes
+		 */
+		final List<Post<G>> deletedEntities = this.communityPostUpdateLogic.getDeletedEntities(communityPostLastLogDate);
+		deletePostsFromIndexAndInsertOtherPostInDB(indexName, deletedEntities);
+
+		/*
+		 * b) now do the same for the "normal post"
+		 */
+		final List<Post<G>> deletedNormalPosts = this.postUpdateLogic.getDeletedEntities(postLastLogDate);
+		deletePostsFromIndexAndInsertOtherPostInDB(indexName, deletedNormalPosts);
+
+		/*
+		 * 2. step: insert updated or new posts
+		 * a) for the "normal" posts
+		 */
+		this.insertNewPosts(indexName, communityPostLastContentId, communityPostLastLogDate, this.postUpdateLogic);
+
+		/*
+		 * b) new posts for "normal" entities
+		 * here posts with a community post are excluded by the logic
+		 */
+		this.insertNewPosts(indexName, communityPostLastContentId, communityPostLastLogDate, this.communityPostUpdateLogic);
+
+		/*
+		 * 3. handle flagging of users
+		 * user flagged as spammer: the community posts that are created were created by the user must be removed and
+		 * replaced with the most current post in the database (when there is another post with the hash in the database)
+		 *
+		 * user unflagged as spammer: the post in the index must be updated iff there is no community post in the database
+		 * and the post is newer than the post in the index
+		 */
+		final List<User> users = this.inputLogic.getPredictionForTimeRange(postLastLogDate, null);// FIXME: should not be null
+		final Map<String, IndexData> postsToInsert = new LinkedHashMap<>();
+		for (final User user : users) {
+			final String userName = user.getName();
+			final int prediction = user.getPrediction();
+			switch (prediction) {
+				case 0:
+					// user unflagged as spammer
+					int offset = 0;
+					List<Post<G>> userPosts;
+					do {
+						// get new posts to insert
+						userPosts = this.communityPostUpdateLogic.getPostsOfUser(userName, SQL_BLOCKSIZE, offset);
+						// insert new records into index
+						if (present(userPosts)) {
+							for (final Post<G> post : userPosts) {
+								final IndexData indexData = this.buildIndexDataForPost(post);
+								final String id = ElasticsearchUtils.createElasticSearchId(post.getContentId().intValue());
+								postsToInsert.put(id, indexData);
+							}
+						}
+
+						offset += SearchDBInterface.SQL_BLOCKSIZE;
+					} while (userPosts.size() == SearchDBInterface.SQL_BLOCKSIZE);
+					break;
+				case 1:
+					/*
+					 * user flagged as spammer
+					 */
+					final List<Post<G>> allPostsOfUser = this.communityPostUpdateLogic.getAllPostsOfUser(userName);
+					this.deletePostsFromIndexAndInsertOtherPostInDB(indexName, allPostsOfUser);
+					break;
+			}
+		}
+
+		/*
+		 * TODO: implement
+		 * update the all_users field; add users, and maybe remove users
+		 */
+
+		/*
+		 * n step: update the target state
+		 */
+	}
+
+	private void insertNewPosts(String indexName, Integer communityPostLastContentId, Date communityPostLastLogDate, CommunityPostIndexUpdateLogic<G> indexUpdateLogic) {
+		int offset = 0;
+		int postSize;
+		final Map<String, IndexData> postUpdateMap = new LinkedHashMap<>();
+		do {
+			final List<Post<G>> newerEntities = indexUpdateLogic.getNewerEntities(communityPostLastContentId, communityPostLastLogDate, SQL_BLOCKSIZE, offset);
+
+			for (final Post<G> newEntity : newerEntities) {
+				final IndexData indexData = this.buildIndexDataForPost(newEntity);
+				final String entityId = this.entityInformationProvider.getEntityId(newEntity);
+
+				postUpdateMap.put(entityId, indexData);
+			}
+
+			if (postUpdateMap.size() >= ESConstants.BULK_INSERT_SIZE) {
+				this.clearQueue(indexName, postUpdateMap);
+			}
+
+			postSize = newerEntities.size();
+			offset += SQL_BLOCKSIZE;
+		} while (postSize != SQL_BLOCKSIZE);
+
+		this.clearQueue(indexName, postUpdateMap);
+	}
+
+	/**
+	 * this methods deletes the given posts from the index and if possible it replaces a deleted post with the newest post
+	 * that remains in the database
+	 *
+	 * @param indexName
+	 * @param deletedEntities
+	 */
+	private <RR extends Resource> void deletePostsFromIndexAndInsertOtherPostInDB(final String indexName, List<Post<RR>> deletedEntities) {
+		final Stream<String> interHashesToDelete = deletedEntities.stream().map(Post::getResource).map(Resource::getInterHash);
+		final List<DeleteData> postsToDelete = new LinkedList<>();
+		final Map<String, IndexData> postsToUpdate = new LinkedHashMap<>();
+
+		interHashesToDelete.forEach(interHash -> {
+			final DeleteData deleteData = new DeleteData();
+			deleteData.setId(interHash);
+			postsToDelete.add(deleteData);
+
+			// check it there is another post in the database
+			final Post<G> newestPostByInterHash = this.communityPostUpdateLogic.getNewestPostByInterHash(interHash);
+			if (present(newestPostByInterHash)) {
+				// prepare the post for indexing
+				final IndexData indexData = this.buildIndexDataForPost(newestPostByInterHash);
+
+				final String entityId = this.entityInformationProvider.getEntityId(newestPostByInterHash);
+				postsToUpdate.put(entityId, indexData);
+			}
+		});
+
+		this.client.updateOrCreateDocuments(indexName, postsToUpdate);
+		this.client.deleteDocuments(indexName, postsToDelete);
+	}
+
+	private IndexData buildIndexDataForPost(Post<G> newestPostByInterHash) {
+		final Map<String, Object> source = this.entityInformationProvider.getConverter().convert(newestPostByInterHash);
+		final IndexData indexData = new IndexData();
+		indexData.setSource(source);
+		indexData.setType(this.entityInformationProvider.getType());
+		indexData.setRouting(this.entityInformationProvider.getRouting(newestPostByInterHash));
+		return indexData;
 	}
 }

@@ -18,6 +18,16 @@
 		<property name="client" ref="communityPostGenerationSqlMapClient"/>
 	</bean>
 
+	<bean id="communityPostUpdateSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource" ref="searchDataSource" />
+		<property name="configLocation" value="classpath:update/communitypost/CommunityPostIndexUpdateSQLMapConfig.xml" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+
+	<bean id="communityPostUpdateSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="communityPostUpdateSqlMapClient"/>
+	</bean>
+
 	<bean id="personSearchDatabaseManager" class="org.bibsonomy.search.management.database.manager.PersonSearchDatabaseManager" />
 
 	<bean id="generationLogic" class="org.bibsonomy.search.index.generator.post.PostIndexGenerationLogic" abstract="true">
@@ -60,6 +70,11 @@
 	<bean id="communityBookmarkGenerationDBLogic" class="org.bibsonomy.search.index.generator.post.CommunityPostIndexGenerationLogic">
 		<constructor-arg ref="goldStandardBookmarkClass"/>
 		<property name="sessionFactory" ref="communityPostGenerationSessionFactory" />
+	</bean>
+
+	<bean id="communityPublicationIndexUpdateLogic" class="org.bibsonomy.search.index.update.post.CommunityPostIndexUpdateLogic">
+		<constructor-arg ref="goldStandardPublicationClass" />
+		<property name="sessionFactory" ref="communityPostUpdateSessionFactory" />
 	</bean>
 
 	<bean id="goldStandardPublicationGenerationDBLogic" class="org.bibsonomy.search.index.generator.post.PostIndexGenerationLogic" parent="generationLogic">
