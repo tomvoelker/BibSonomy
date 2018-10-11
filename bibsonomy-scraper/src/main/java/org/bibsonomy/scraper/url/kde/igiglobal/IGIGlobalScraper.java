@@ -28,14 +28,13 @@ package org.bibsonomy.scraper.url.kde.igiglobal;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -43,11 +42,13 @@ import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
- * @author Haile
+ * scraper igi global
  *
+ * @author Haile
  */
 public class IGIGlobalScraper extends AbstractUrlScraper {
 	
@@ -60,8 +61,8 @@ public class IGIGlobalScraper extends AbstractUrlScraper {
 	private static final Pattern EVENTARGUMENT = Pattern.compile("<input type=\"hidden\" name=\"__EVENTARGUMENT\" id=\"__EVENTARGUMENT\" value=\"(.*?)\" />");
 	private static final Pattern VIEWSTATE = Pattern.compile("<input type=\"hidden\" name=\"__VIEWSTATE\" id=\"__VIEWSTATE\" value=\"(.*?)\" />");
 	
-	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "igi-global.com"), AbstractUrlScraper.EMPTY_PATTERN));
-	
+	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<>(Pattern.compile(".*" + "igi-global.com"), AbstractUrlScraper.EMPTY_PATTERN));
+
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
@@ -82,6 +83,7 @@ public class IGIGlobalScraper extends AbstractUrlScraper {
 			throw new InternalFailureException(e);
 		}
 	}
+
 	private String getCitationInRIS(final String url) throws Exception {
 		final String html = WebUtils.getContentAsString(url);
 		
@@ -105,33 +107,33 @@ public class IGIGlobalScraper extends AbstractUrlScraper {
 		if(m_viewstate.find())
 			viewstate = m_viewstate.group(1);
 
-		final PostMethod post = new PostMethod(url);
-		post.addParameters(new NameValuePair[] {
-				new NameValuePair("ctl00$ctl00$ucBookstoreSearchTop$txtSearch", "Search title, author, ISBN..."),
-				new NameValuePair("ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.x", "30"),
-				new NameValuePair("ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.y", "7"),
-				new NameValuePair("ctl00$ctl00$cphMain$cphSidebarRightTop$ucInfoSciOnDemandSidebar$txtSearchPhrase", "Full text search term(s)"),
-				new NameValuePair("__EVENTVALIDATION", eventvalidation),
-				new NameValuePair("__EVENTTARGET", eventtarget),
-				new NameValuePair("__EVENTARGUMENT", eventargument),
-				new NameValuePair("__VIEWSTATE", viewstate)
-		});
 
-		return WebUtils.getPostContentAsString(WebUtils.getHttpClient(), post);
+		final String postData = "ctl00$ctl00$ucBookstoreSearchTop$txtSearch=" + UrlUtils.safeURIEncode("Search title, author, ISBN...") + "&"
+						+ "ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.x=30&"
+						+ "ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.y=7&"
+						+ "ctl00$ctl00$cphMain$cphSidebarRightTop$ucInfoSciOnDemandSidebar$txtSearchPhrase=" + UrlUtils.safeURIEncode("Full text search term(s)") + "&"
+						+ "__EVENTVALIDATION=" + UrlUtils.safeURIEncode(eventvalidation) + "&"
+						+ "__EVENTTARGET=" + UrlUtils.safeURIEncode(eventtarget) + "&"
+						+ "__EVENTARGUMENT=" + UrlUtils.safeURIEncode(eventargument) + "&"
+						+ "__VIEWSTATE=" + UrlUtils.safeURIEncode(viewstate);
+		return WebUtils.getContentAsString(url, null, postData, null);
 	}
 	
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
+
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
+
 	@Override
 	public String getInfo() {
 		return INFO;
 	}
+
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;

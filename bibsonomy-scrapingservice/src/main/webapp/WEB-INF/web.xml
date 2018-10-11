@@ -35,12 +35,6 @@
 		<servlet-name>ScrapingServlet</servlet-name>
 		<servlet-class>org.bibsonomy.scrapingservice.servlets.ScrapingServlet</servlet-class>
 	</servlet>
-	<servlet>
-		<description>service for android beta testing</description>
-		<display-name>AndroidLoggingServiceServlet</display-name>
-		<servlet-name>AndroidLoggingServiceServlet</servlet-name>
-		<servlet-class>org.bibsonomy.android.loggingservice.AndroidLoggingServiceServlet</servlet-class>
-	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
@@ -50,11 +44,6 @@
 	<servlet-mapping>
 		<servlet-name>ScrapingServlet</servlet-name>
 		<url-pattern>/service</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>AndroidLoggingServiceServlet</servlet-name>
-		<url-pattern>/android/logging</url-pattern>
 	</servlet-mapping>
 
 

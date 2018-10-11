@@ -39,6 +39,7 @@ import org.bibsonomy.model.Resource;
  *
  * @param <R>
  */
+@Deprecated // TODO: remove
 public class SearchPost<R extends Resource> extends Post<R> {
 	private static final long serialVersionUID = 6167951235868739450L;
 

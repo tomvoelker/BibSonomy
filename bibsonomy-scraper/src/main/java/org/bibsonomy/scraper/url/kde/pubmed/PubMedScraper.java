@@ -29,15 +29,16 @@ package org.bibsonomy.scraper.url.kde.pubmed;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpURL;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.http.HttpException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -55,7 +56,7 @@ import org.bibsonomy.util.WebUtils;
 public class PubMedScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "PubMed";
 	private static final String SITE_URL = "http://www.ncbi.nlm.nih.gov/";
-	private static final String info = "This scraper parses a publication page of citations from "
+	private static final String INFO = "This scraper parses a publication page of citations from "
 			+ href(SITE_URL, SITE_NAME)+".";
 
 	private static final String HOST = "ncbi.nlm.nih.gov";
@@ -63,18 +64,20 @@ public class PubMedScraper extends AbstractUrlScraper {
 	private static final String UK_PUBMED_CENTRAL_HOST = "ukpmc.ac.uk";
 	private static final String EUROPE_PUBMED_CENTRAL_HOST = "europepmc.org";
 
-	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
+
 	
-	private static Pattern RISLINKPATTERN = Pattern.compile("href=\"((\\.\\./)*+.*?\\?wicket:interface=.*?:export:exportlink::ILinkListener::)");
-	private static Pattern PMIDQUERYPATTERN = Pattern.compile("\\d+");
-	private static Pattern PMIDPATTERN = Pattern.compile("PMID\\:\\D*(\\d+)");
-	
-	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + PUBMED_EUTIL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + UK_PUBMED_CENTRAL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + EUROPE_PUBMED_CENTRAL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
-	}
+	private static final Pattern RISLINKPATTERN = Pattern.compile("href=\"((\\.\\./)*+.*?\\?wicket:interface=.*?:export:exportlink::ILinkListener::)");
+	private static final Pattern PMIDQUERYPATTERN = Pattern.compile("\\d+");
+	private static final Pattern PMIDPATTERN = Pattern.compile("PMID\\:\\D*(\\d+)");
+
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Arrays.asList(
+					new Pair<>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN),
+					new Pair<>(Pattern.compile(".*" + PUBMED_EUTIL_HOST), AbstractUrlScraper.EMPTY_PATTERN),
+					new Pair<>(Pattern.compile(".*" + UK_PUBMED_CENTRAL_HOST), AbstractUrlScraper.EMPTY_PATTERN),
+					new Pair<>(Pattern.compile(".*" + EUROPE_PUBMED_CENTRAL_HOST), AbstractUrlScraper.EMPTY_PATTERN)
+	);
+
+	private static final RisToBibtexConverter RIS_TO_BIBTEX_CONVERTER = new RisToBibtexConverter();
 
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)
@@ -100,18 +103,16 @@ public class PubMedScraper extends AbstractUrlScraper {
 				// try to scrape with new URL-Pattern
 				// avoid crashes
 			} else {
-				HttpClient client = WebUtils.getHttpClient();
+				final HttpClient client = WebUtils.getHttpClient();
 				
 				// try to find link for RIS export
-				GetMethod method = new GetMethod(sc.getUrl().toExternalForm());
+				HttpGet method = new HttpGet(sc.getUrl().toExternalForm());
 				String pageContent = WebUtils.getContentAsString(client, method);
 				
 				Matcher risLinkMatcher = RISLINKPATTERN.matcher(pageContent);
 				if (risLinkMatcher.find()) {
-					HttpURL risURL = new HttpURL(new HttpURL(method.getURI().getURI()), risLinkMatcher.group(1));
-					RisToBibtexConverter c = new RisToBibtexConverter();
-					String ris = WebUtils.getContentAsString(client, risURL);
-					bibtexresult = c.toBibtex(ris);
+					final URL risUrl = new URL(sc.getUrl().toExternalForm() + "/" + risLinkMatcher.group(1));
+					bibtexresult = RIS_TO_BIBTEX_CONVERTER.toBibtex(WebUtils.getContentAsString(client, risUrl.toURI()));
 				} else {
 					
 					Matcher ma = PMIDPATTERN.matcher(pageContent);
@@ -151,24 +152,27 @@ public class PubMedScraper extends AbstractUrlScraper {
 			} else
 				throw new ScrapingFailureException("getting bibtex failed");
 
-		} catch (IOException e) {
+		} catch (IOException | HttpException | URISyntaxException e) {
 			throw new InternalFailureException(e);
 		}
 	}
 
+	@Override
 	public String getInfo() {
-		return info;
+		return INFO;
 	}
 
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return patterns;
+		return PATTERNS;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}

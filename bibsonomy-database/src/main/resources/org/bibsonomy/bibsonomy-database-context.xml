@@ -151,7 +151,7 @@
 		</property>
 	</bean>
 
-	
+
 	<!-- post statistic chain -->
 	<bean id="postStatisticChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
@@ -217,8 +217,8 @@
 		<property name="databaseSchemaInformation" ref="dbSchemaInformation" />
 	</bean>
 
-	<bean id="generalDatabaseManager" class="org.bibsonomy.database.managers.GeneralDatabaseManager" factory-method="getInstance"/>
-	
+	<bean id="generalDatabaseManager" class="org.bibsonomy.database.managers.GeneralDatabaseManager" factory-method="getInstance" />
+
 	<bean id="adminDatabaseManager" class="org.bibsonomy.database.managers.AdminDatabaseManager" factory-method="getInstance">
 		<property name="userDatabaseManager" ref="userDatabaseManager" />
 		<property name="groupDatabaseManager" ref="groupDatabaseManager" />
@@ -347,7 +347,7 @@
 		</property>
 		<property name="plugins" ref="databasePluginManager" />
 	</bean>
-	
+
 	<bean id="databasePluginManager" class="org.bibsonomy.database.plugin.DatabasePluginRegistry" factory-method="getInstance">
 		<property name="defaultPlugins">
 			<list>

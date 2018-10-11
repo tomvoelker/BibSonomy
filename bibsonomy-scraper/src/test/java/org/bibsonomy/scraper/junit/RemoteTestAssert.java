@@ -54,6 +54,17 @@ import bibtex.parser.BibtexParser;
  * @author dzo
  */
 public class RemoteTestAssert {
+
+	/**
+	 * calls the specified scraper with the provided url and tests the returned result of the scraper
+	 * with the contents of the provided result file
+	 * @param url
+	 * @param scraperClass
+	 * @param resultFile
+	 */
+	public static void assertScraperResult(final String url, final Class<? extends Scraper> scraperClass, final String resultFile) {
+		assertScraperResult(url, null, scraperClass, resultFile);
+	}
 	
 	/**
 	 * calls the specified scraper with the 

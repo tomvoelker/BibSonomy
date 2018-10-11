@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+
+	<sqlMap resource="common/TypeAliases.xml" />
+	<sqlMap resource="common/TypeAliases-search.xml" />
+
+	<typeHandler javaType="personNameList"              callback="org.bibsonomy.database.common.typehandler.PersonNameTypeHandlerCallback" />
+	<typeHandler javaType="personResourceRelationType"  callback="org.bibsonomy.database.common.typehandler.PersonResourceRelationTypeHandlerCallback" />
+
+	<typeHandler javaType="url" callback="org.bibsonomy.database.common.typehandler.UrlTypeHandlerCallback" />
+
+
+	<!-- queries to include -->
+	<sqlMap resource="generation/PersonIndexGeneration.xml" />
+
+</sqlMapConfig>
+

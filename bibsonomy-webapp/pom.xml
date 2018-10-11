@@ -32,7 +32,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>3.8.15-SNAPSHOT</version>
+		<version>3.8.16-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>
@@ -410,13 +410,8 @@
 			<version>1.6.3</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.3.3</version>
 		</dependency>
 		<dependency>
 			<groupId>dom4j</groupId>
@@ -681,7 +676,6 @@
 			<artifactId>nekohtml</artifactId>
 			<version>1.9.21</version>
 		</dependency>
-		
 		<!-- TODO: shinding not compatible with newer version -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -723,6 +717,12 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.11.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
