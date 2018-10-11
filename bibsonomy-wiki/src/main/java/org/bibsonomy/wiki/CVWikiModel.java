@@ -105,6 +105,7 @@ public class CVWikiModel extends AbstractWikiModel {
 			register(configuration, new RegDateTag());
 			register(configuration, new BookmarkListTag(maxQuerySize));
 			register(configuration, new PublicationListTag(maxQuerySize));
+			CONFIG = configuration;
 		}
 		return CONFIG;
 	}
