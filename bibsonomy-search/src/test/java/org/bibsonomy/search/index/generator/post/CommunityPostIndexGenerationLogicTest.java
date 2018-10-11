@@ -3,6 +3,7 @@ package org.bibsonomy.search.index.generator.post;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.junit.Test;
@@ -14,7 +15,7 @@ import java.util.List;
  *
  * @author dzo
  */
-public abstract class CommunityPostIndexGenerationLogicTest<R extends Resource> {
+public abstract class CommunityPostIndexGenerationLogicTest<R extends Resource> extends AbstractDatabaseManagerTest {
 
 	/**
 	 * finds the first post with the specified interhash in a list of posts

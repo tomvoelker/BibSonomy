@@ -47,6 +47,16 @@
 		<property name="sessionFactory" ref="communityPostGenerationSessionFactory" />
 	</bean>
 
+	<bean id="communityNormalPublicationGenerationDBLogic" class="org.bibsonomy.search.index.generator.post.CommunityPostIndexGenerationLogic">
+		<constructor-arg ref="publicationClass"/>
+		<property name="sessionFactory" ref="communityPostGenerationSessionFactory" />
+	</bean>
+
+	<bean id="communityNormalBookmarkGenerationDBLogic" class="org.bibsonomy.search.index.generator.post.CommunityPostIndexGenerationLogic">
+		<constructor-arg ref="bookmarkClass"/>
+		<property name="sessionFactory" ref="communityPostGenerationSessionFactory" />
+	</bean>
+
 	<bean id="communityBookmarkGenerationDBLogic" class="org.bibsonomy.search.index.generator.post.CommunityPostIndexGenerationLogic">
 		<constructor-arg ref="goldStandardBookmarkClass"/>
 		<property name="sessionFactory" ref="communityPostGenerationSessionFactory" />

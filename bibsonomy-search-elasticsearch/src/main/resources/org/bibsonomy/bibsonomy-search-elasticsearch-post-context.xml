@@ -35,10 +35,15 @@
 
 	<bean id="elasticsearchCommunityBookmarkManager" class="org.bibsonomy.search.es.management.post.ElasticsearchCommunityManager" parent="elasticsearchAbstractIndexManager">
 		<constructor-arg>
-			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator">
+			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchIndexGeneratorWithMultipleSources">
 				<constructor-arg ref="systemURI" />
 				<constructor-arg ref="esClient" />
-				<constructor-arg ref="goldStandardPublicationGenerationDBLogic" />
+				<constructor-arg>
+					<list>
+						<ref bean="communityNormalBookmarkGenerationDBLogic" />
+						<ref bean="communityBookmarkGenerationDBLogic" />
+					</list>
+				</constructor-arg>
 				<constructor-arg ref="elasticsearchCommunityBookmarkEntityInformationProvider" />
 			</bean>
 		</constructor-arg>
@@ -53,6 +58,7 @@
 				<constructor-arg ref="esClient" />
 				<constructor-arg>
 					<list>
+						<ref bean="communityNormalPublicationGenerationDBLogic" />
 						<ref bean="communityPublicationGenerationDBLogic" />
 					</list>
 				</constructor-arg>

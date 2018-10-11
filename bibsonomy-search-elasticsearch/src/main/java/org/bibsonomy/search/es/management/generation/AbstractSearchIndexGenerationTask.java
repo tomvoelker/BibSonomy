@@ -45,6 +45,7 @@ public abstract class AbstractSearchIndexGenerationTask<T> implements Callable<V
 			this.indexGenerated(this.newIndexName);
 		} catch (final Exception e) {
 			LOG.error("error while generating index", e);
+			throw new RuntimeException(e);
 		} finally {
 			this.manager.generatedIndex();
 		}
