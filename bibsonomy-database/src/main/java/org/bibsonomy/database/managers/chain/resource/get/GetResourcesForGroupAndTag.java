@@ -49,6 +49,7 @@ import org.bibsonomy.model.Resource;
  *
  * @deprecated
  */
+@Deprecated
 public class GetResourcesForGroupAndTag<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override

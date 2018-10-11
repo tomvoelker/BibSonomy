@@ -41,6 +41,7 @@ import org.bibsonomy.model.Tag;
  *
  * @deprecated
  */
+@Deprecated
 public class GetRelatedTagsForGroup extends TagChainElement {
 
 	@Override

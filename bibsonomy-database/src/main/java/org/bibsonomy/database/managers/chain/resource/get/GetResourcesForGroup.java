@@ -52,6 +52,7 @@ import org.bibsonomy.model.enums.Order;
  *
  * @deprecated
  */
+@Deprecated
 public class GetResourcesForGroup<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override
