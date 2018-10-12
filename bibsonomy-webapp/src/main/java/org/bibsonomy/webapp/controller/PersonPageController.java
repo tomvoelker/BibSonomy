@@ -33,7 +33,6 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -58,6 +57,7 @@ import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.PersonMatchUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
@@ -174,14 +174,13 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 * @return
 	 */
-	private View getConflicts(PersonPageCommand command) {
-		final List<PersonMatch> list = new LinkedList<>();
+	private View getConflicts(final PersonPageCommand command) {
 		final int formMatchId = command.getFormMatchId();
-		list.add(this.logic.getPersonMatch(formMatchId));
+		final PersonMatch personMatch = this.logic.getPersonMatch(formMatchId);
 		
-		JSONArray array = new JSONArray();
-		for (PersonMergeFieldConflict conflict : PersonMatch.getMergeConflicts(list).get(formMatchId)){
-			JSONObject jsonConflict = new JSONObject();
+		final JSONArray array = new JSONArray();
+		for (PersonMergeFieldConflict conflict : PersonMatchUtils.getPersonMergeConflicts(personMatch)) {
+			final JSONObject jsonConflict = new JSONObject();
 			jsonConflict.put("field", conflict.getFieldName());
 			jsonConflict.put("person1Value", conflict.getPerson1Value());
 			jsonConflict.put("person2Value", conflict.getPerson2Value());
@@ -207,12 +206,12 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private void buildupAuthorResponseArray(final List<ResourcePersonRelation> suggestions, JSONArray array) {
-			for (ResourcePersonRelation rel : suggestions) {
-				JSONObject jsonPersonName = new JSONObject();
+			for (final ResourcePersonRelation rel : suggestions) {
+				final JSONObject jsonPersonName = new JSONObject();
 				jsonPersonName.put("interhash", rel.getPost().getResource().getInterHash());
 				final int personIndex = rel.getPersonIndex();
 				jsonPersonName.put("personIndex", personIndex);
-				//jsonPersonName.put("personNameId", personName.getPersonChangeId());
+
 				final BibTex pub = rel.getPost().getResource();
 				final List<PersonName> authors = pub.getAuthor();
 				jsonPersonName.put("personName", BibTexUtils.cleanBibTex(authors.get(personIndex).toString()));
@@ -641,7 +640,7 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setAdvisedThesis(advisorPosts);
 		command.setOtherAdvisedPubs(otherAdvisorPosts);
 		command.setPersonMatchList(this.logic.getPersonMatches(person.getPersonId()));
-		command.setMergeConflicts(PersonMatch.getMergeConflicts(command.getPersonMatchList()));
+		command.setMergeConflicts(PersonMatchUtils.getMergeConflicts(command.getPersonMatchList()));
 		
 		final List<Post<BibTex>> similarAuthorPubs = this.getPublicationsOfSimilarAuthor(person);
 

@@ -49,6 +49,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.util.PersonMatchUtils;
 import org.bibsonomy.testutil.TestUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.junit.Before;
@@ -194,7 +195,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertTrue(matches.size() > 0);
 		
 		// conflict for merge with id 4
-		Map<Integer, PersonMergeFieldConflict[]> mergeConflicts = PersonMatch.getMergeConflicts(matches);
+		Map<Integer, PersonMergeFieldConflict[]> mergeConflicts = PersonMatchUtils.getMergeConflicts(matches);
 		assertTrue(mergeConflicts.get(4).length >0);
 		for(PersonMatch match: matches) {
 			if (match.getMatchID() == 4) {
