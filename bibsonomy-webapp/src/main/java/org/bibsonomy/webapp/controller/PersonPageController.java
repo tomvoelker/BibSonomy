@@ -44,7 +44,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
@@ -52,8 +51,6 @@ import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
@@ -61,9 +58,9 @@ import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
-import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import org.bibsonomy.webapp.command.PersonPageCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -73,11 +70,8 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
-import org.json.JSONException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 
 /**
@@ -90,7 +84,11 @@ public class PersonPageController extends SingleResourceListController implement
 	private RequestLogic requestLogic;
 	private PersonRoleRenderer personRoleRenderer;
 	private Errors errors;
-	
+
+	@Override
+	public PersonPageCommand instantiateCommand() {
+		return new PersonPageCommand();
+	}
 	
 	@Override
 	public View workOn(final PersonPageCommand command) {
@@ -140,52 +138,49 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View conflictMerge(PersonPageCommand command) {
+		final JSONObject jsonResponse = new JSONObject();
+
 		try {
-			
-			Map<String, String> map = new HashMap<String, String>();
-			if(command.getPerson()!=null){
-				for (String fieldName : Person.fieldsWithResolvableMergeConflicts){
-					PropertyDescriptor desc = new PropertyDescriptor(fieldName, Person.class);
-					Object value = desc.getReadMethod().invoke(command.getPerson());
-					if (value != null){
-						if (fieldName == "gender") {
-							map.put("gender", ((Gender) value).toString());
-						} else if (fieldName != "mainName"){
-							map.put(fieldName, (String) value);
-						}
+			final Map<String, String> map = new HashMap<>();
+			final Person person = command.getPerson();
+			if (present(person)) {
+				for (final String fieldName : Person.fieldsWithResolvableMergeConflicts){
+					final PropertyDescriptor desc = new PropertyDescriptor(fieldName, Person.class);
+					final Object value = desc.getReadMethod().invoke(person);
+
+					if (value != null) {
+						map.put(fieldName, value.toString());
 					}
 				}
 			}
-			if(command.getNewName()!=null){
-				map.put("mainName", ((PersonName) command.getNewName()).getLastName() + ", " + ((PersonName) command.getNewName()).getFirstName());
+			final PersonName newName = command.getNewName();
+			if (present(newName)) {
+				map.put("mainName", PersonNameUtils.serializePersonName(newName));
 			}
-			JSONObject jsonResponse = new JSONObject();
+
 			jsonResponse.put("status", this.logic.conflictMerge(command.getFormMatchId(), map));
-			command.setResponseString(jsonResponse.toString());
-			
-			return Views.AJAX_JSON;
-			
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IntrospectionException e) {
-			// TODO Auto-generated catch block
-			log.error(e);
+			log.error("error while building cpm", e);
+			jsonResponse.put("status", false);
 		}
-		JSONObject jsonResponse = new JSONObject();
-		jsonResponse.put("status", false);
+
 		command.setResponseString(jsonResponse.toString());
-		
 		return Views.AJAX_JSON;
 	}
 
 	/**
+	 * FIXME: we DO NOT use database ids in the webapp!!!!!!!
+	 *
 	 * @param command
 	 * @return
 	 */
 	private View getConflicts(PersonPageCommand command) {
-		List<PersonMatch> list = new LinkedList<PersonMatch>();
-		list.add(this.logic.getPersonMatch(command.getFormMatchId()));
+		final List<PersonMatch> list = new LinkedList<>();
+		final int formMatchId = command.getFormMatchId();
+		list.add(this.logic.getPersonMatch(formMatchId));
 		
 		JSONArray array = new JSONArray();
-		for (PersonMergeFieldConflict conflict : PersonMatch.getMergeConflicts(list).get(command.getFormMatchId())){
+		for (PersonMergeFieldConflict conflict : PersonMatch.getMergeConflicts(list).get(formMatchId)){
 			JSONObject jsonConflict = new JSONObject();
 			jsonConflict.put("field", conflict.getFieldName());
 			jsonConflict.put("person1Value", conflict.getPerson1Value());
@@ -215,11 +210,12 @@ public class PersonPageController extends SingleResourceListController implement
 			for (ResourcePersonRelation rel : suggestions) {
 				JSONObject jsonPersonName = new JSONObject();
 				jsonPersonName.put("interhash", rel.getPost().getResource().getInterHash());
-				jsonPersonName.put("personIndex", rel.getPersonIndex());
+				final int personIndex = rel.getPersonIndex();
+				jsonPersonName.put("personIndex", personIndex);
 				//jsonPersonName.put("personNameId", personName.getPersonChangeId());
 				final BibTex pub = rel.getPost().getResource();
 				final List<PersonName> authors = pub.getAuthor();
-				jsonPersonName.put("personName", BibTexUtils.cleanBibTex(authors.get(rel.getPersonIndex()).toString()));
+				jsonPersonName.put("personName", BibTexUtils.cleanBibTex(authors.get(personIndex).toString()));
 				jsonPersonName.put("extendedPublicationName", this.personRoleRenderer.getExtendedPublicationName(pub, this.requestLogic.getLocale(), false));
 				array.add(jsonPersonName);
 			}
@@ -319,9 +315,9 @@ public class PersonPageController extends SingleResourceListController implement
 	}
 
 	/**
-	 * Action called when a user want to unlink an author from a publication
+	 * action called when a user want to unlink an author from a publication
 	 * @param command
-	 * @return
+	 * @return the ajax text view
 	 */
 	private View unlinkAction(PersonPageCommand command) {
 		this.logic.unlinkUser(this.logic.getAuthenticatedUser().getName());
@@ -428,29 +424,31 @@ public class PersonPageController extends SingleResourceListController implement
 	}
 	
 	/**
-	 * Action called when a user updates preferences of a person
+	 * action called when a user updates preferences of a person
 	 * @param command
 	 */
 	private View updateAction(PersonPageCommand command) {
 		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getFormPersonId());
-		
-		if (command.getPerson() == null) {
+
+		// TODO: check if person present!
+
+		final Person commandPerson = command.getPerson();
+		if (!present(commandPerson)) {
 			// FIXME: proper frontend responses in cases like this
 			throw new NoSuchElementException();
 		}
 		
-		
-		PersonUpdateOperation operation = command.getUpdateOperation();
+		final PersonUpdateOperation operation = command.getUpdateOperation();
 		JSONObject jsonResponse = new JSONObject();
 		
 		// set all attributes that might be updated
-		person.setAcademicDegree(command.getPerson().getAcademicDegree());
-		person.setOrcid(command.getPerson().getOrcid().replaceAll("-", ""));
-		person.setCollege(command.getPerson().getCollege());
+		person.setAcademicDegree(commandPerson.getAcademicDegree());
+		person.setOrcid(commandPerson.getOrcid().replaceAll("-", ""));
+		person.setCollege(commandPerson.getCollege());
 		
 		// TODO only allow updates if the editor "is" this person
-		person.setEmail(command.getPerson().getEmail());
-		person.setHomepage(command.getPerson().getHomepage());
+		person.setEmail(commandPerson.getEmail());
+		person.setHomepage(commandPerson.getHomepage());
 		
 		// FIXME: write independent update method
 		// FIXME: add its me action
@@ -460,27 +458,25 @@ public class PersonPageController extends SingleResourceListController implement
 
 		// bind the new person
 		command.setPerson(person);
-		
-		// ???
-		//command.getPerson().setUser(command.isFormThatsMe() ? AuthenticationUtils.getUser().getName() : null);
-				
-		try {	
+
+		try {
 			if (operation != null) {
-				this.logic.updatePerson(command.getPerson(), operation);
-			} else {						
+				this.logic.updatePerson(commandPerson, operation);
+			} else {
 				// standard
-				this.logic.createOrUpdatePerson(command.getPerson());
-			}	
+				this.logic.createOrUpdatePerson(commandPerson);
+			}
+
+			jsonResponse.put("status", true);
+			command.setResponseString(jsonResponse.toString());
+			return Views.AJAX_JSON;
 		} catch (Exception e) {
 			jsonResponse.put("status", false);
 			// TODO: set proper error message
 			//jsonResponse.put("message", "Some error occured");
 			command.setResponseString(jsonResponse.toString());
 			return Views.AJAX_JSON;
-		}	
-		jsonResponse.put("status", true);
-		command.setResponseString(jsonResponse.toString());
-		return Views.AJAX_JSON;
+		}
 	}
 
 	/**
@@ -734,11 +730,6 @@ public class PersonPageController extends SingleResourceListController implement
 	@Override
 	public void setErrors(Errors errors) {
 		this.errors = errors;
-	}
-
-	@Override
-	public PersonPageCommand instantiateCommand() {
-		return new PersonPageCommand();
 	}
 
 	public void setRequestLogic(RequestLogic requestLogic) {
