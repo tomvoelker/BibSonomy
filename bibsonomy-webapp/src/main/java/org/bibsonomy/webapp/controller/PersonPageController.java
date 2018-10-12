@@ -41,9 +41,7 @@ import java.util.NoSuchElementException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
-import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
@@ -51,7 +49,6 @@ import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
@@ -104,6 +101,7 @@ public class PersonPageController extends SingleResourceListController implement
 			if (!context.isValidCkey()) {
 				errors.reject("error.field.valid.ckey");
 			}
+
 			switch(formAction) {
 				case "conflictMerge": return this.conflictMerge(command);
 				case "getConflict": return this.getConflicts(command);
@@ -181,7 +179,7 @@ public class PersonPageController extends SingleResourceListController implement
 		list.add(this.logic.getPersonMatch(formMatchId));
 		
 		JSONArray array = new JSONArray();
-		for (PersonMergeFieldConflict conflict : PersonMatch.getMergeConflicts(list).get(formMatchId)){
+		for (PersonMergeFieldConflict conflict : PersonMatch.getMergeConflicts(list).get(formMatchId)) {
 			JSONObject jsonConflict = new JSONObject();
 			jsonConflict.put("field", conflict.getFieldName());
 			jsonConflict.put("person1Value", conflict.getPerson1Value());
@@ -210,11 +208,12 @@ public class PersonPageController extends SingleResourceListController implement
 	private void buildupAuthorResponseArray(final List<ResourcePersonRelation> suggestions, JSONArray array) {
 			for (ResourcePersonRelation rel : suggestions) {
 				JSONObject jsonPersonName = new JSONObject();
-				jsonPersonName.put("interhash", rel.getPost().getResource().getInterHash());
+				final BibTex publication = rel.getPost().getResource();
+				jsonPersonName.put("interhash", publication.getInterHash());
 				final int personIndex = rel.getPersonIndex();
 				jsonPersonName.put("personIndex", personIndex);
 				//jsonPersonName.put("personNameId", personName.getPersonChangeId());
-				final BibTex pub = rel.getPost().getResource();
+				final BibTex pub = publication;
 				final List<PersonName> authors = pub.getAuthor();
 				jsonPersonName.put("personName", BibTexUtils.cleanBibTex(authors.get(personIndex).toString()));
 				jsonPersonName.put("extendedPublicationName", this.personRoleRenderer.getExtendedPublicationName(pub, this.requestLogic.getLocale(), false));
@@ -507,7 +506,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 */
 	private View addNameAction(PersonPageCommand command) {
-		final Person person = logic.getPersonById(PersonIdType.PERSON_ID, command.getPerson().getPersonId());
+		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPerson().getPersonId());
 
 		final JSONObject jsonResponse = new JSONObject();
 
@@ -631,7 +630,7 @@ public class PersonPageController extends SingleResourceListController implement
 			this.requestLogic.setLastAction(null);
 		}
 
-		// maybe this should be done in the view?
+		// TODO: maybe this should be done in the view?
 		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear));
 		List<ResourcePersonRelation> authorRelations = new ArrayList<>();
 		List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
