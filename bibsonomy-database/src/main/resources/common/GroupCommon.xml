@@ -9,9 +9,10 @@
 		<result property="name"               column="group_name"        javaType="string" />
 		<result property="privlevel"          column="privlevel"         javaType="Privlevel"/>
 		<result property="sharedDocuments"    column="sharedDocuments"   javaType="boolean"/>
-		<result property="allowJoin"    	  column="allow_join"   	 javaType="boolean"/>	
+		<result property="allowJoin"    	  column="allow_join"   	 javaType="boolean"/>
 		<result property="description"    	  column="shortDescription"  javaType="string"/>
 		<result property="organization"		  column="organization"      javaType="boolean" />
+		<result property="externalId"		  column="external_id"       javaType="string" />
 	</resultMap>
 
 	<!-- +
@@ -103,7 +104,7 @@
 	</resultMap>
 
 	<sql id="basicColumns">
-		i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, i.organization
+		i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, i.organization, i.external_id
 	</sql>
 
 	<sql id="requestColumns">

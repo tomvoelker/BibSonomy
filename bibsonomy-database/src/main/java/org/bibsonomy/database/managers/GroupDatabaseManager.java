@@ -612,6 +612,9 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 		try {
 			session.beginTransaction();
+			/*
+			 * every group has a corresponding user with the name of the group.
+			 */
 			this.userDb.createUser(groupUser, session);
 			this.insertGroup(group, session);
 			session.commitTransaction();

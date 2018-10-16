@@ -524,6 +524,7 @@ CREATE TABLE `groupids` (
   `publ_reporting_mail_template` text,
   `publ_reporting_external_url` varchar(255) DEFAULT NULL,
   `organization` BOOLEAN DEFAULT FALSE,
+  `external_id` VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY  (`group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -1037,6 +1038,7 @@ CREATE TABLE `pending_groupids` (
   `publ_reporting_mail_template` text,
   `publ_reporting_external_url` varchar(255) DEFAULT NULL,
   `organization` BOOLEAN DEFAULT FALSE,
+  `external_id` VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY  (`group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;

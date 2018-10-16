@@ -1229,7 +1229,7 @@ public class DBLogic implements LogicInterface {
 			/*
 			 * retrieve the user's groups
 			 */
-			final Set<Integer> groupIds = new HashSet<Integer>(this.groupDBManager.getGroupIdsForUser(user.getName(), session));
+			final Set<Integer> groupIds = new HashSet<>(this.groupDBManager.getGroupIdsForUser(user.getName(), session));
 			/*
 			 * add "friends" group
 			 */
@@ -1320,24 +1320,23 @@ public class DBLogic implements LogicInterface {
 		/*
 		 * only allow administrators to create new organizations
 		 */
-		if (group.isOrganization()) {
+		final boolean isOrganization = group.isOrganization();
+		final String externalGroupId = group.getExternalId();
+		if (present(externalGroupId) || isOrganization) {
 			this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		}
 
-		final DBSession session = this.openSession();
-		try {
+		try (final DBSession session = this.openSession()) {
 			this.groupDBManager.createGroup(group, session);
 
 			/*
-			 * activate the group immediatly if it's an organization
+			 * activate the group immediately if it's an organization
 			 */
-			if (group.isOrganization())  {
+			if (isOrganization)  {
 				this.groupDBManager.activateGroup(group.getName(), session);
 			}
 
 			return group.getName();
-		} finally {
-			session.close();
 		}
 	}
 	
@@ -1347,14 +1346,11 @@ public class DBLogic implements LogicInterface {
 	 */
 	public String restoreGroup(final Group group) {
 		// check admin permissions
-		this.permissionDBManager.ensureAdminAccess(loginUser);
-		
-		final DBSession session = this.openSession();
-		try {
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
+
+		try (final DBSession session = this.openSession()) {
 			this.groupDBManager.restoreGroup(group, session);
 			return group.getName();
-		} finally {
-			session.close();
 		}
 	}
 
@@ -1376,8 +1372,6 @@ public class DBLogic implements LogicInterface {
 		final String requestedUserName = present(membership) && present(membership.getUser()) && present(membership.getUser().getName()) ? membership.getUser().getName() : null;
 		final boolean userSharedDocuments = present(membership) ? membership.isUserSharedDocuments() : false;
 
-		final DBSession session = this.openSession();
-
 		/*
 		 * for every operation the user must at least be logged in
 		 */
@@ -1386,7 +1380,7 @@ public class DBLogic implements LogicInterface {
 		/*
 		 * perform operations
 		 */
-		try {
+		try (final DBSession session = this.openSession()) {
 			session.beginTransaction();
 
 			// check the groups existence and retrieve the current group
@@ -1540,8 +1534,6 @@ public class DBLogic implements LogicInterface {
 			}
 			session.commitTransaction();
 			session.endTransaction();
-		} finally {
-			session.close();
 		}
 		return groupName;
 	}
@@ -3886,7 +3878,6 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public Project getProjectDetails(final String projectId) {
 		final boolean admin = this.permissionDBManager.isAdmin(this.loginUser);
-
 		try (final DBSession session = this.openSession()) {
 			return this.projectDatabaseManager.getProjectDetails(projectId, admin, session);
 		}
@@ -3919,7 +3910,6 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public JobResult createCRISLink(CRISLink link) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
-
 		try (final DBSession session = this.openSession()) {
 			return this.crisLinkDatabaseManager.createCRISLink(link, this.loginUser, session);
 		}
@@ -3928,7 +3918,6 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public JobResult updateCRISLink(CRISLink link) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
-
 		try (final DBSession session = this.openSession()) {
 			return this.crisLinkDatabaseManager.updateCRISLink(link, this.loginUser, session);
 		}
@@ -3937,7 +3926,6 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public JobResult deleteCRISLink(Linkable source, Linkable target) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
-
 		try (final DBSession session = this.openSession()) {
 			return this.crisLinkDatabaseManager.deleteCRISLink(source, target, this.loginUser, session);
 		}

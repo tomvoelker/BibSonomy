@@ -43,9 +43,7 @@ import org.bibsonomy.common.enums.Privlevel;
 public class Group implements Serializable {
 	private static final long serialVersionUID = -4364391580208670647L;
 
-	/**
-	 * The internal id of this group.
-	 */
+	/** The internal id of this group. */
 	private int groupId = GroupID.INVALID.getId();
 
 	/**
@@ -117,18 +115,15 @@ public class Group implements Serializable {
 	private List<GroupMembership> memberships;
 	private List<GroupMembership> pendingMemberships;
 
-	/**
-	 * A list of all subgroups.
-	 */
+	/** a list of all subgroups. */
 	private List<Group> subgroups;
 
-
-	/**
-	 * Flag that signals if this group is an organization.
-	 */
+	/** flag that signals if this group is an organization. */
 	private boolean organization;
 
-	
+	/** the id of the group in an external source (e.g. the database of the university) */
+	private String externalId;
+
 	/**
 	 * default constructor
 	 */
@@ -233,7 +228,7 @@ public class Group implements Serializable {
 	 */
 	public List<Post<? extends Resource>> getPosts() {
 		if (this.posts == null) {
-			this.posts = new LinkedList<Post<? extends Resource>>();
+			this.posts = new LinkedList<>();
 		}
 		return this.posts;
 	}
@@ -380,24 +375,36 @@ public class Group implements Serializable {
 		this.subgroups = subgroups;
 	}
 
-
 	/**
-	 * Signals whether the group should be treated as an organization.
+	 * signals whether the group should be treated as an organization.
 	 *
-	 * @return <code>true</code> if this group is an organization, <code>false</code> otherwise.
+	 * @return <code>true</code> iff this group is an organization
 	 */
 	public boolean isOrganization() {
 		return organization;
 	}
 
-
 	/**
 	 * Sets the organization flag.
 	 *
-	 * @param organization <code>true</code> if this group is an organization, <code>false</code> otherwise.
+	 * @param organization <code>true</code> iff this group is an organization
 	 */
 	public void setOrganization(boolean organization) {
 		this.organization = organization;
+	}
+
+	/**
+	 * @return the externalId
+	 */
+	public String getExternalId() {
+		return externalId;
+	}
+
+	/**
+	 * @param externalId the externalId to set
+	 */
+	public void setExternalId(String externalId) {
+		this.externalId = externalId;
 	}
 
 	/**
@@ -523,11 +530,13 @@ public class Group implements Serializable {
 		
 		return null;
 	}
-	
-	
+
+	/**
+	 * @return the group level permissions of this group
+	 */
 	public Set<GroupLevelPermission> getGroupLevelPermissions() {
 		if (this.groupLevelPermissions == null) {
-			this.groupLevelPermissions = new HashSet<GroupLevelPermission>();
+			this.groupLevelPermissions = new HashSet<>();
 		}
 		return this.groupLevelPermissions;
 	}
@@ -540,7 +549,7 @@ public class Group implements Serializable {
 	}
 
 	/**
-	 * @param communityPostInspection
+	 * @param groupLevelPermission
 	 */
 	public void addGroupLevelPermission(GroupLevelPermission groupLevelPermission) {
 		this.getGroupLevelPermissions().add(groupLevelPermission);
