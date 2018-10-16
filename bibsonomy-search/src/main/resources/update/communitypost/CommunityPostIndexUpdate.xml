@@ -144,4 +144,12 @@
 		JOIN bookmark p ON (bb.interHash = p.book_url_hash) <!-- self join to get all users of the post-->
 	</select>
 
+	<!-- "normal" publications -->
+	<select id="getDeletedBookmarkPosts" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
+		SELECT <include refid ="allGoldStandardBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
+		FROM log_bookmark b
+		WHERE b.log_date >= #lastLogDate#
+		AND
+	</select>
+
 </sqlMap>

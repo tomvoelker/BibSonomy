@@ -58,8 +58,8 @@ import org.bibsonomy.search.update.SearchIndexSyncState;
  */
 public class ElasticsearchCommunityManager<G extends Resource> extends ElasticsearchPostManager<G> {
 
+	private final CommunityPostIndexUpdateLogic<G> communityPostUpdateLogic;
 	private CommunityPostIndexUpdateLogic<G> postUpdateLogic;
-	private CommunityPostIndexUpdateLogic<G> communityPostUpdateLogic;
 
 	/**
 	 * default constructor
@@ -71,11 +71,12 @@ public class ElasticsearchCommunityManager<G extends Resource> extends Elasticse
 	 * @param generator
 	 * @param entityInformationProvider
 	 * @param inputLogic
+	 * @param communityPostUpdateLogic
 	 */
-	public ElasticsearchCommunityManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<G>> generator, EntityInformationProvider<Post<G>> entityInformationProvider, SearchDBInterface<G> inputLogic) {
+	public ElasticsearchCommunityManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<G>> generator, EntityInformationProvider<Post<G>> entityInformationProvider, SearchDBInterface<G> inputLogic, CommunityPostIndexUpdateLogic<G> communityPostUpdateLogic) {
 		super(systemId, disabledIndexing, updateEnabled, client, generator, entityInformationProvider, inputLogic);
+		this.communityPostUpdateLogic = communityPostUpdateLogic;
 	}
-
 
 	@Override
 	protected void updateIndex(String indexName) {
@@ -94,21 +95,18 @@ public class ElasticsearchCommunityManager<G extends Resource> extends Elasticse
 		final List<Post<G>> deletedEntities = this.communityPostUpdateLogic.getDeletedEntities(communityPostLastLogDate);
 		deletePostsFromIndexAndInsertOtherPostInDB(indexName, deletedEntities);
 
-		/*
-		 * b) now do the same for the "normal post"
-		 */
-		final List<Post<G>> deletedNormalPosts = this.postUpdateLogic.getDeletedEntities(postLastLogDate);
+ 		final List<Post<G>> deletedNormalPosts = this.postUpdateLogic.getDeletedEntities(postLastLogDate);
 		deletePostsFromIndexAndInsertOtherPostInDB(indexName, deletedNormalPosts);
 
 		/*
 		 * 2. step: insert updated or new posts
 		 * a) for the "normal" posts
+		 * here posts with a community post are excluded by the logic
 		 */
 		this.insertNewPosts(indexName, communityPostLastContentId, communityPostLastLogDate, this.postUpdateLogic);
 
 		/*
-		 * b) new posts for "normal" entities
-		 * here posts with a community post are excluded by the logic
+		 * b) new posts for gold standard posts
 		 */
 		this.insertNewPosts(indexName, communityPostLastContentId, communityPostLastLogDate, this.communityPostUpdateLogic);
 
@@ -157,7 +155,7 @@ public class ElasticsearchCommunityManager<G extends Resource> extends Elasticse
 
 		/*
 		 * TODO: implement
-		 * update the all_users field; add users, and maybe remove users
+		 * update the all_users field; add users, and remove users
 		 */
 
 		/*
@@ -205,6 +203,7 @@ public class ElasticsearchCommunityManager<G extends Resource> extends Elasticse
 		interHashesToDelete.forEach(interHash -> {
 			final DeleteData deleteData = new DeleteData();
 			deleteData.setId(interHash);
+			deleteData.setType(this.entityInformationProvider.getType());
 			postsToDelete.add(deleteData);
 
 			// check it there is another post in the database
