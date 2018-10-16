@@ -56,11 +56,13 @@
 
 	<select id="getLastPersonChangeLogDate" resultClass="date">
 		SELECT MAX(log_date) FROM
-		(SELECT MAX(log_changed_at) AS log_date
+		(
+			SELECT MAX(log_changed_at) AS log_date
 			FROM log_person
 			UNION
 			SELECT MAX(log_date) AS log_date
-			FROM log_person_name) AS g
+			FROM log_person_name
+		) AS g
 	</select>
 
 </sqlMap>

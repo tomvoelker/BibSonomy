@@ -139,7 +139,7 @@ public interface ESClient {
 	boolean updateAliases(Set<Pair<String, String>> aliasesToAdd, Set<Pair<String, String>> aliasesToRemove);
 	
 	default boolean updateOrCreateDocuments(String indexName, Map<String, IndexData> jsonDocuments) {
-		final List<DeleteData> deleteData = jsonDocuments.entrySet().stream().map((entry) -> {
+		final List<DeleteData> deleteData = jsonDocuments.entrySet().stream().map(entry -> {
 			final DeleteData delete = new DeleteData();
 			final IndexData indexData = entry.getValue();
 			delete.setType(indexData.getType());

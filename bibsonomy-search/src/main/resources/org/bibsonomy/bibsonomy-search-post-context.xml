@@ -77,6 +77,11 @@
 		<property name="sessionFactory" ref="communityPostUpdateSessionFactory" />
 	</bean>
 
+	<bean id="communityBookmarkIndexUpdateLogic" class="org.bibsonomy.search.index.update.post.CommunityPostIndexUpdateLogic">
+		<constructor-arg ref="goldStandardBookmarkClass" />
+		<property name="sessionFactory" ref="communityPostUpdateSessionFactory" />
+	</bean>
+
 	<bean id="goldStandardPublicationGenerationDBLogic" class="org.bibsonomy.search.index.generator.post.PostIndexGenerationLogic" parent="generationLogic">
 		<property name="resourceClass" ref="goldStandardPublicationClass"/>
 	</bean>

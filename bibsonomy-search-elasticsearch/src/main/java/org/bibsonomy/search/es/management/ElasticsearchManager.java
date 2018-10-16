@@ -86,7 +86,7 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 			// check if index is the current active one
 			final String currentActiveIndexName = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
 			final String inactiveIndex = this.client.getIndexNameForAlias(this.getInactiveLocalAlias());
-			if (currentActiveIndexName.equals(indexName) && present(inactiveIndex)) {
+			if (present(currentActiveIndexName) && currentActiveIndexName.equals(indexName) && present(inactiveIndex)) {
 				this.switchActiveAndInactiveIndex();
 			}
 

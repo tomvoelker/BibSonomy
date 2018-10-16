@@ -116,7 +116,6 @@ public class PersonPageController extends SingleResourceListController implement
 				case "unlink": return this.unlinkAction(command);
 				case "link": return this.linkAction(command);
 				case "search": return this.searchAction(command);
-				case "searchAuthor": return this.searchAuthorAction(command);
 				case "searchPub": return this.searchPubAction(command);
 				case "merge": return this.mergeAction(command);
 				case "searchPubAuthor": return this.searchPubAuthorAction(command);
@@ -234,25 +233,6 @@ public class PersonPageController extends SingleResourceListController implement
 			jsonPersonName.put("extendedPublicationName", this.personRoleRenderer.getExtendedPublicationName(pub.getResource(), this.requestLogic.getLocale(), false));
 			array.add(jsonPersonName);
 		}
-	}
-	
-	/**
-	 * @param command
-	 * @return
-	 */
-	private View searchAuthorAction(PersonPageCommand command) {
-		final PersonSuggestionQueryBuilder builder = new PersonSuggestionQueryBuilder(command.getFormSelectedName());
-		builder.withEntityPersons(true)
-						.withNonEntityPersons(true)
-						.withRelationType(PersonResourceRelationType.AUTHOR)
-						.preferUnlinked(true);
-
-		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(builder);
-		final JSONArray array = new JSONArray();
-		buildupAuthorResponseArray(suggestions,array);
-		command.setResponseString(array.toJSONString());
-		
-		return Views.AJAX_JSON;
 	}
 	
 	/**

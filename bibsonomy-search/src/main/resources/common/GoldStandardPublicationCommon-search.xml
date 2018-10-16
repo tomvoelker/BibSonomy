@@ -29,4 +29,8 @@
 	<sql id="goldStandardOtherFields">
 		'public' AS group_name, 1 AS count, -1 AS rating, -1 AS number_of_ratings, p.user_name AS other_user_name
 	</sql>
+
+	<sql id="goldStandardOtherFieldsDummyOtherUsers">
+		'public' AS group_name, 1 AS count, -1 AS rating, -1 AS number_of_ratings, NULL AS other_user_name
+	</sql>
 </sqlMap>

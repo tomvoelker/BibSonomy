@@ -25,7 +25,7 @@ public class ElasticsearchCommunityManagerPublicationITCase extends AbstractComm
 
 	private static final EsResourceSearch<GoldStandardPublication> COMMUNITY_PUBLICATION_SEARCH = EsSpringContextWrapper.getContext().getBean("elasticsearchCommunityPublicationSearch", EsResourceSearch.class);
 
-	private static final ElasticsearchCommunityManager<GoldStandardPublication> MANAGER = EsSpringContextWrapper.getContext().getBean("elasticsearchCommunityBookmarkManager", ElasticsearchCommunityManager.class);
+	private static final ElasticsearchCommunityManager<GoldStandardPublication> MANAGER = EsSpringContextWrapper.getContext().getBean("elasticsearchCommunityPublicationManager", ElasticsearchCommunityManager.class);
 
 	private static final GoldStandardPublicationDatabaseManager GOLD_STANDARD_PUBLICATION_DATABASE_MANAGER = testDatabaseContext.getBean(GoldStandardPublicationDatabaseManager.class);
 

@@ -218,8 +218,9 @@ public class ElasticsearchCommunityManager<G extends Resource> extends Elasticse
 			}
 		});
 
-		this.client.updateOrCreateDocuments(indexName, postsToUpdate);
+		// first delete the posts, then insert or update existing posts
 		this.client.deleteDocuments(indexName, postsToDelete);
+		this.client.updateOrCreateDocuments(indexName, postsToUpdate);
 	}
 
 	private IndexData buildIndexDataForPost(Post<G> newestPostByInterHash) {
