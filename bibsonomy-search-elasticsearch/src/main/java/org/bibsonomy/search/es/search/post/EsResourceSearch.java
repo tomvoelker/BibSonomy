@@ -308,7 +308,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 
 	private SortedSet<Pair<Float, ResourcePersonRelation>> iterativelyFetchSuggestions(Set<String> tokenizedQueryString, AbstractSuggestionQueryBuilder<?> options) {
 		// we use inverted scores such that the best results automatically appear first according to the ascending order of a sorted map
-		final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter = new TreeSet<>(new FirstValuePairComparator<Float, ResourcePersonRelation>(false));
+		final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter = new TreeSet<>(new FirstValuePairComparator<>(false));
 		// unfortunately our version of elasticsearch does not support topHits aggregation so we have to group by interhash ourselves: AggregationBuilder aggregation = AggregationBuilders.terms("agg").field("gender").subAggregation(AggregationBuilders.topHits("top"));
 		double bestScore = Double.NaN;
 		// remember alreadyAnalyzedInterhashes to skip over multiple posts of the same resource
@@ -382,9 +382,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 									.operator(Operator.AND) // "and" here means every term in the query must be in one of the following fields
 									.field(Fields.Resource.TITLE, 2.5f) //
 									.field(Fields.Publication.SCHOOL, 1.3f) //
-								) //
-								.tieBreaker(0.8f) //
-								.boost(4) //
+									) //
+									.tieBreaker(0.8f) //
+									.boost(4) //
 						) //
 						.should(QueryBuilders.boolQuery() //
 //								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.habilitation.name()).boost(11)) //
@@ -656,20 +656,10 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			if ((rpr.getPerson().getPersonId() == null) || (foundPersonIds.add(rpr.getPerson().getPersonId()) == true)) {
 				// we have not seen this personId earlier in the sorted map, so add it to the response list
 				rVal.add(rpr);
-//				if (rVal.size() == suggestionSize) {
-//					return rVal;
-//				}
 			}
 		}
 		return rVal;
 	}
-	
-	/**
-	 * @param personSuggestionSize the person suggestion size
-	 */
-//	public void setSuggestionSize(int personSuggestionSize) {
-//		this.suggestionSize = personSuggestionSize;
-//	}
 	
 	/**
 	 * build the overall elasticsearch query term

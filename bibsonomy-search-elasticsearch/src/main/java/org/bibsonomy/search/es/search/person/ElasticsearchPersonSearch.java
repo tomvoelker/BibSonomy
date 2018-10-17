@@ -6,6 +6,7 @@ import org.apache.lucene.search.join.ScoreMode;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
+import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.index.converter.person.PersonConverter;
 import org.bibsonomy.search.es.index.converter.person.PersonFields;
 import org.bibsonomy.search.es.index.converter.person.PersonResourceRelationConverter;
@@ -14,6 +15,7 @@ import org.bibsonomy.services.searcher.PersonSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.InnerHitBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -52,16 +54,39 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 
 	@Override
 	public List<Person> getPersonSuggestions(final PersonSuggestionQuery query) {
+		final String personQuery = query.getQuery();
+
 		final BoolQueryBuilder mainQuery = QueryBuilders.boolQuery();
+
+		/*
+		 * maybe some of tokens of the query contain the title of a publication of the author
+		 */
+		final MultiMatchQueryBuilder resourceRelationQuery = QueryBuilders.multiMatchQuery(personQuery);
+		resourceRelationQuery.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
+						.operator(Operator.AND) // "and" here means every term in the query must be in one of the following fields
+						.field(PersonFields.RelationFields.POST + "." + ESConstants.Fields.Resource.TITLE, 2.5f)
+						.field(PersonFields.RelationFields.POST + "." + ESConstants.Fields.Publication.SCHOOL, 1.3f)
+						.tieBreaker(0.8f)
+						.boost(4);
+		final HasChildQueryBuilder childSearchQuery = JoinQueryBuilders.hasChildQuery(PersonFields.TYPE_RELATION, resourceRelationQuery, ScoreMode.Max);
 
 		final HasChildQueryBuilder childQuery = JoinQueryBuilders.hasChildQuery(PersonFields.TYPE_RELATION, QueryBuilders.matchAllQuery(), ScoreMode.None);
 		final InnerHitBuilder innerHit = new InnerHitBuilder();
 		childQuery.innerHit(innerHit);
-		final MatchQueryBuilder nameQuery = QueryBuilders.matchQuery(PersonFields.NAMES + "." + PersonFields.NAME, query.getQuery());
-		nameQuery.operator(Operator.AND);
+
+		final MatchQueryBuilder nameQuery = QueryBuilders.matchQuery(PersonFields.NAMES + "." + PersonFields.NAME, personQuery);
 		final NestedQueryBuilder nestedNamesQuery = QueryBuilders.nestedQuery(PersonFields.NAMES, nameQuery, ScoreMode.Max);
+		nestedNamesQuery.boost(2.7f);
+
+		/*
+		 * build the search query
+		 */
+		final BoolQueryBuilder mainSearchQuery = QueryBuilders.boolQuery();
+		mainSearchQuery.should(nestedNamesQuery);
+		mainSearchQuery.should(childSearchQuery);
+
+		mainQuery.must(mainSearchQuery);
 		mainQuery.should(childQuery);
-		mainQuery.must(nestedNamesQuery);
 
 		final SearchHits searchHits = this.manager.search(mainQuery, 5, 0);// TODO: set limit
 		final LinkedList<Person> persons = new LinkedList<>();
