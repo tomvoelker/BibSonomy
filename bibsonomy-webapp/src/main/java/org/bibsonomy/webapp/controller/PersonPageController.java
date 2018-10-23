@@ -104,7 +104,7 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		if (present(formAction)) {
 			switch(formAction) {
-				case "mergePersonsWithConflicts": return this.conflictMerge(command);
+				case "conflictMerge": return this.conflictMerge(command);
 				case "getConflict": return this.getConflicts(command);
 				case "update": return this.updateAction(command);
 				case "addName": return this.addNameAction(command);
