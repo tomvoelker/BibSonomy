@@ -182,7 +182,7 @@
 					<c:choose>
 						<c:when test="${command.user.apiKey eq null}">
 							<p>
-								<fmt:message key="settings.apisupport"><fmt:param><a href="/help/doc/api.html">API</a></fmt:param></fmt:message>
+								<fmt:message key="settings.apisupport"><fmt:param>${properties['project.apiemail']}</fmt:param></fmt:message>
 							</p> 
 						</c:when>
 						<c:otherwise>
@@ -202,7 +202,7 @@
 												<!--
 													TODO: make this configurable 
 									 			-->
-												<span style="white-space: nowrap;"><parts:email address="api-support@bibsonomy.org"/></span>
+												<span style="white-space: nowrap;"><parts:email address="${properties['project.apiemail']}"/></span>
 											</fmt:param>
 										</fmt:message>
 									</p>
