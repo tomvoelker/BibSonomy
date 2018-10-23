@@ -69,6 +69,12 @@ public class SpringerScraper extends AbstractUrlScraper {
 
 		try {
 			final String url = sc.getUrl().toString();
+			
+			if (url.contains(".pdf")) {
+				url.replaceAll("/content/pdf", "");
+				url.replaceAll(".pdf", "");
+			}
+			
 			final String isbn = ISBNUtils.extractISBN(url);
 			final String bibtex = WorldCatScraper.getBibtexByISBN(isbn);
 
