@@ -363,7 +363,7 @@ public class PersonPageController extends SingleResourceListController implement
 
 		jsonResponse.put("personId", resourcePersonRelation.getPerson().getPersonId());
 		jsonResponse.put("resourcePersonRelationid", resourcePersonRelation.getPersonRelChangeId() + "");
-		jsonResponse.put("personUrl", new URLGenerator().getPersonUrl(resourcePersonRelation.getPerson().getPersonId()));
+		jsonResponse.put("personUrl", this.urlGenerator.getPersonUrl(resourcePersonRelation.getPerson().getPersonId()));
 		command.setResponseString(jsonResponse.toJSONString());
 		
 		return Views.AJAX_JSON;
@@ -394,7 +394,7 @@ public class PersonPageController extends SingleResourceListController implement
 			}
 		}
 		
-		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getPersonId()));
+		return new ExtendedRedirectView(this.urlGenerator.getPersonUrl(command.getPerson().getPersonId()));
 	}
 	
 	private View deleteRoleAction(PersonPageCommand command) {
@@ -586,7 +586,8 @@ public class PersonPageController extends SingleResourceListController implement
 		 * check if the requested person was already merged with another person
 		 * and redirect to the other person
 		 */
-		final String forwardId = this.logic.getForwardId(command.getRequestedPersonId());
+		final String requestedPersonId = command.getRequestedPersonId();
+		final String forwardId = this.logic.getForwardId(requestedPersonId);
 		if (present(forwardId)) {
 			return new ExtendedRedirectView(this.urlGenerator.getPersonUrl(forwardId));
 		}
@@ -595,7 +596,7 @@ public class PersonPageController extends SingleResourceListController implement
 			command.getAvailableRoles().add(prr);
 		}
 
-		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getRequestedPersonId());
+		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, requestedPersonId);
 		
 		if (!present(person)) {
 			return Views.ERROR404;
