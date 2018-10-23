@@ -39,13 +39,12 @@ import java.util.Map;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
-import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListControllerWithTags;
@@ -233,7 +232,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			goldStandard = (Post<G>) this.logic.getPostDetails(goldHash, GoldStandardPostLogicInterface.GOLD_STANDARD_USER_NAME);
 		} catch (final ObjectNotFoundException ex) {
 			// ignore
-		} catch (final ResourceMovedException ex) {
+		} catch (final ObjectMovedException ex) {
 			// ignore
 		}
 		

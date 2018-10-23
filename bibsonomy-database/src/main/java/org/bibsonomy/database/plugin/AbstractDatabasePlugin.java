@@ -36,7 +36,6 @@ import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -231,7 +230,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPersonDelete(Person person, DBSession session) {
+	public void onPersonDelete(Person person, User user, DBSession session) {
 		// noop
 	}
 

@@ -42,6 +42,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -804,24 +805,24 @@ public class URLGenerator {
 	 * Constructs a URL for the given resource's intrahash. If you have the post
 	 * as object, please use {@link #getPostUrl(Post)}.
 	 * 
-	 * @param resourceType
+	 * @param type
 	 *            - The type of resource. Currently, only URLs for
 	 *            {@link Bookmark} or {@link BibTex} are supported.
-	 * @param intraHash
+	 * @param
 	 * @param userName
 	 * @return The URL pointing to the post of that user for the resource
 	 *         represented by the given intrahash.
 	 */
-	public String getPostUrl(final Class<?> resourceType,
-			final String intraHash, final String userName) {
-		if (resourceType == Bookmark.class) {
-			return this.getBookmarkUrlByIntraHashAndUsername(intraHash,
-					userName);
-		} else if (resourceType == BibTex.class) {
-			return this.getPublicationUrlByIntraHashAndUsername(intraHash,
-					userName);
+	public String getObjectUrl(final Class<?> type, final String id, final String userName) {
+		if (type == Person.class) {
+			return this.getPersonUrl(id);
+		}
+		if (type == Bookmark.class) {
+			return this.getBookmarkUrlByIntraHashAndUsername(id, userName);
+		} else if (type == BibTex.class) {
+			return this.getPublicationUrlByIntraHashAndUsername(id, userName);
 		} else {
-			throw new UnsupportedResourceTypeException();
+			throw new IllegalArgumentException(type + " not supproted");
 		}
 	}
 

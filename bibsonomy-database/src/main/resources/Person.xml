@@ -106,6 +106,16 @@
 		DELETE FROM person_name
 		WHERE person_change_id = #personNameId#
 	</delete>
+
+	<delete id="deletePersonNamesByPersonId" parameterClass="string">
+		DELETE FROM person_name
+		WHERE person_id = #personId#
+	</delete>
+
+	<delete id="deletePersonById" parameterClass="string">
+		DELETE FROM person
+		WHERE person_id = #personId#
+	</delete>
 	
 	<select id="getResourcePersonRelationByResourcePersonRelation" resultMap="PersonCommon.lazyLoadingResourcePersonRelation" parameterClass="personResourceRelation">
 		SELECT <include refid="commonResourcePersonRelationColumns" />
@@ -245,6 +255,19 @@
 		FROM person_match
 		WHERE (person1_id = #person1.personId# AND person2_id = #person2.personId#)
 		OR (person1_id = #person2.personId# AND person2_id = #person1.personId#)
+	</select>
+
+	<select id="getPostsForPerson" parameterClass="java.lang.String" resultMap="BibTexCommon.bibtexPost">
+		SELECT b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
+		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
+		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype,
+		IF("hansii" = b.user_name, b.privnote, NULL) AS privnote , b.scraperid, t1.change_date, b.simhash1 AS interHash, b.simhash2 AS intraHash, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsDummyRows" />
+		FROM tas t1, bibhash h, bibtex b, pub_person p
+		WHERE b.content_id = t1.content_id
+		AND b.simhash1 = h.hash	AND h.type=1 AND p.person_id=#personId# AND p.relator_code = 'Maut'
+		AND b.simhash1=p.simhash1
+		GROUP BY interHash ORDER BY b.date DESC
 	</select>
 	
 	<select id="getHabilForPerson" parameterClass="string" resultMap="BibTexCommon.bibtexPost">

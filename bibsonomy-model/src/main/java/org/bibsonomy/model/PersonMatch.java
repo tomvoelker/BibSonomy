@@ -26,20 +26,11 @@
  */
 package org.bibsonomy.model;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.bibsonomy.model.enums.Gender;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * A PersonMatch object contains the id's of two persons which might be equal and a flag if they are equal
@@ -133,6 +124,7 @@ public class PersonMatch implements Serializable {
 	public List<Post> getPerson1Posts() {
 		return this.person1Posts;
 	}
+
 	/**
 	 * @param person1Posts the person1Posts to set
 	 */
@@ -145,35 +137,12 @@ public class PersonMatch implements Serializable {
 	public List<Post> getPerson2Posts() {
 		return this.person2Posts;
 	}
+
 	/**
 	 * @param person2Posts the person2Posts to set
 	 */
 	public void setPerson2Posts(List<Post> person2Posts) {
 		this.person2Posts = person2Posts;
-	}
-
-	/**
-	 * FIXME: logic code in model class, please move
-	 *
-	 * tests if the merge can be performed without a conflict on user claims
-	 * @param loginUser
-	 * @return TODO: document what this method returns
-	 */
-	public boolean testMergeOnClaims(User loginUser) {
-		final String loggedinUserName = loginUser.getName();
-		final boolean p1Claim = ValidationUtils.present(getPerson1().getUser());
-		final boolean p2Claim = ValidationUtils.present(getPerson2().getUser());
-		if (p1Claim && p2Claim) {
-			return false;
-		} else if (!p1Claim && !p2Claim) {
-			return true;
-		} else if (p1Claim) {
-			//TODO notify user1 that their is a merge
-			return getPerson1().getUser().equals(loggedinUserName);
-		} else {
-			//TODO notify user2 that their is a merge
-			return getPerson2().getUser().equals(loggedinUserName);
-		}	
 	}
 	
 }

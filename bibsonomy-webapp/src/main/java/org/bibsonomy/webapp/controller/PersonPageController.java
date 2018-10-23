@@ -104,7 +104,7 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		if (present(formAction)) {
 			switch(formAction) {
-				case "conflictMerge": return this.conflictMerge(command);
+				case "mergePersonsWithConflicts": return this.conflictMerge(command);
 				case "getConflict": return this.getConflicts(command);
 				case "update": return this.updateAction(command);
 				case "addName": return this.addNameAction(command);
@@ -581,21 +581,12 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 * @return
 	 */
-	private View showAction(PersonPageCommand command) {
-		/*
-		 * check if the requested person was already merged with another person
-		 * and redirect to the other person
-		 */
+	private View showAction(final PersonPageCommand command) {
 		final String requestedPersonId = command.getRequestedPersonId();
-		final String forwardId = this.logic.getForwardId(requestedPersonId);
-		if (present(forwardId)) {
-			return new ExtendedRedirectView(this.urlGenerator.getPersonUrl(forwardId));
-		}
-
-		for (PersonResourceRelationType prr : PersonResourceRelationType.values()) {
-			command.getAvailableRoles().add(prr);
-		}
-
+		/*
+		 * get the person; if person with the requested id was merged with another person, this method
+		 * throws a ObjectMovedException and the wrapper will render the redirect
+		 */
 		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, requestedPersonId);
 		
 		if (!present(person)) {
@@ -646,6 +637,11 @@ public class PersonPageController extends SingleResourceListController implement
 		final List<Post<BibTex>> similarAuthorPubs = this.getPublicationsOfSimilarAuthor(person);
 
 		command.setSimilarAuthorPubs(similarAuthorPubs);
+
+		// prepare command
+		for (PersonResourceRelationType prr : PersonResourceRelationType.values()) {
+			command.getAvailableRoles().add(prr);
+		}
 		
 		return Views.PERSON_SHOW;
 	}

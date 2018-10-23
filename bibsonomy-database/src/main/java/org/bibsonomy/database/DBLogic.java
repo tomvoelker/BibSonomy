@@ -71,9 +71,9 @@ import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.SynchronizationRunningException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -834,7 +834,7 @@ public class DBLogic implements LogicInterface {
 	 * .String, java.lang.String)
 	 */
 	@Override
-	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) throws ResourceMovedException, ObjectNotFoundException {
+	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) throws ObjectMovedException, ObjectNotFoundException {
 		final DBSession session = this.openSession();
 		try {
 			return this.getPostDetails(resourceHash, userName, session);
@@ -2005,7 +2005,7 @@ public class DBLogic implements LogicInterface {
 				Post<BibTex> post = null;
 				try {
 					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
-				} catch (final ResourceMovedException ex) {
+				} catch (final ObjectMovedException ex) {
 					// ignore
 				} catch (final ObjectNotFoundException ex) {
 					// ignore
@@ -2094,7 +2094,7 @@ public class DBLogic implements LogicInterface {
 				try {
 					// FIXME: remove strange getpostdetails method
 					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, lowerCaseUserName, UserUtils.getListOfGroupIDs(this.loginUser), true, session);
-				} catch (final ResourceMovedException ex) {
+				} catch (final ObjectMovedException ex) {
 					// ignore
 				} catch (final ObjectNotFoundException ex) {
 					// ignore
@@ -2195,7 +2195,7 @@ public class DBLogic implements LogicInterface {
 				Post<BibTex> post = null;
 				try {
 					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
-				} catch (final ResourceMovedException ex) {
+				} catch (final ObjectMovedException ex) {
 					// ignore
 				} catch (final ObjectNotFoundException ex) {
 					// ignore
@@ -2249,7 +2249,7 @@ public class DBLogic implements LogicInterface {
 				Post<BibTex> post = null;
 				try {
 					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
-				} catch (final ResourceMovedException ex) {
+				} catch (final ObjectMovedException ex) {
 					// ignore
 				} catch (final ObjectNotFoundException ex) {
 					// ignore
@@ -3819,7 +3819,7 @@ public class DBLogic implements LogicInterface {
 	public boolean acceptMerge(PersonMatch match) {
 		try (final DBSession session = this.openSession()) {
 			if (present(this.loginUser.getName())) {
-				return this.personDBManager.mergeSimilarPersons(match, this.loginUser, session);
+				return this.personDBManager.mergePersons(match, this.loginUser, session);
 			}
 			return false;
 		}
@@ -3847,20 +3847,9 @@ public class DBLogic implements LogicInterface {
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
 		try (final DBSession session = this.openSession()) {
 			if (present(this.loginUser.getName())) {
-				return this.personDBManager.conflictMerge(formMatchId, map, this.loginUser, session);
+				return this.personDBManager.mergePersonsWithConflicts(formMatchId, map, this.loginUser, session);
 			}
 			return false;
-		}
-	}
-
-	/**
-	 * @param personId
-	 * @return returns the updated personId, if the person was merged to an other person
-	 */
-	@Override
-	public String getForwardId(String personId) {
-		try (final DBSession session = this.openSession()) {
-			return this.personDBManager.getForwardId(personId, session);
 		}
 	}
 }
