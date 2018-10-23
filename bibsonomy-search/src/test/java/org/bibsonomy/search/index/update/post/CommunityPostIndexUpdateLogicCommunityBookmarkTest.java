@@ -14,11 +14,11 @@ import java.util.List;
  *
  * @author dzo
  */
-public class CommunityPostIndexUpdateLogicCommunityBookmarkTest extends CommunityPostIndexUpdateLogicTest<GoldStandardBookmark> {
-	private static final CommunityPostIndexUpdateLogic<GoldStandardBookmark> UPDATE_LOGIC = (CommunityPostIndexUpdateLogic<GoldStandardBookmark>) SearchSpringContextWrapper.getBeanFactory().getBean("communityBookmarkIndexUpdateLogic");
+public class CommunityPostIndexUpdateLogicCommunityBookmarkTest extends CommunityPostIndexCommunityUpdateLogicTest<GoldStandardBookmark> {
+	private static final CommunityPostIndexCommunityUpdateLogic<GoldStandardBookmark> UPDATE_LOGIC = (CommunityPostIndexCommunityUpdateLogic<GoldStandardBookmark>) SearchSpringContextWrapper.getBeanFactory().getBean("communityIndexUpdateLogicCommunityBookmark");
 
 	@Override
-	protected CommunityPostIndexUpdateLogic<GoldStandardBookmark> getUpdateLogic() {
+	protected CommunityPostIndexCommunityUpdateLogic<GoldStandardBookmark> getUpdateLogic() {
 		return UPDATE_LOGIC;
 	}
 

@@ -10,16 +10,16 @@ import org.bibsonomy.search.testutils.SearchSpringContextWrapper;
 import java.util.List;
 
 /**
- * tests for {@link CommunityPostIndexUpdateLogic}
+ * tests for {@link CommunityPostIndexCommunityUpdateLogic}
  *
  * @author dzo
  */
-public class CommunityPostIndexUpdateLogicCommunityPublicationTest extends CommunityPostIndexUpdateLogicTest<GoldStandardPublication> {
+public class CommunityPostIndexUpdateLogicCommunityPublicationTest extends CommunityPostIndexCommunityUpdateLogicTest<GoldStandardPublication> {
 
-	private static final CommunityPostIndexUpdateLogic<GoldStandardPublication> UPDATE_LOGIC = (CommunityPostIndexUpdateLogic<GoldStandardPublication>) SearchSpringContextWrapper.getBeanFactory().getBean("communityPublicationIndexUpdateLogic");
+	private static final CommunityPostIndexCommunityUpdateLogic<GoldStandardPublication> UPDATE_LOGIC = (CommunityPostIndexCommunityUpdateLogic<GoldStandardPublication>) SearchSpringContextWrapper.getBeanFactory().getBean("communityPublicationIndexUpdateLogic");
 
 	@Override
-	protected CommunityPostIndexUpdateLogic<GoldStandardPublication> getUpdateLogic() {
+	protected CommunityPostIndexCommunityUpdateLogic<GoldStandardPublication> getUpdateLogic() {
 		return UPDATE_LOGIC;
 	}
 

@@ -12,13 +12,13 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * abstract class for {@link CommunityPostIndexUpdateLogic} tests
+ * abstract class for {@link CommunityPostIndexCommunityUpdateLogic} tests
  *
  * @param <R>
  */
-public abstract class CommunityPostIndexUpdateLogicTest<R extends Resource> extends AbstractDatabaseManagerTest {
+public abstract class CommunityPostIndexCommunityUpdateLogicTest<R extends Resource> extends AbstractDatabaseManagerTest {
 
-	protected abstract CommunityPostIndexUpdateLogic<R> getUpdateLogic();
+	protected abstract CommunityPostIndexCommunityUpdateLogic<R> getUpdateLogic();
 
 	@Test
 	public void testGetNewestPostByInterHash() {
@@ -31,7 +31,7 @@ public abstract class CommunityPostIndexUpdateLogicTest<R extends Resource> exte
 	protected abstract String getPostInterHash();
 
 	/**
-	 * tests {@link CommunityPostIndexUpdateLogic#getDeletedEntities(Date)}
+	 * tests {@link CommunityPostIndexCommunityUpdateLogic#getDeletedEntities(Date)}
 	 */
 	@Test
 	public void testGetDeletedEntities() {
@@ -41,7 +41,7 @@ public abstract class CommunityPostIndexUpdateLogicTest<R extends Resource> exte
 	}
 
 	/**
-	 * tests {@link CommunityPostIndexUpdateLogic#getNewerEntities(long, Date, int, int)}
+	 * tests {@link CommunityPostIndexCommunityUpdateLogic#getNewerEntities(long, Date, int, int)}
 	 */
 	@Test
 	public void testGetNewEntities() {
@@ -55,7 +55,7 @@ public abstract class CommunityPostIndexUpdateLogicTest<R extends Resource> exte
 	protected abstract long getLastEntityIdForNewEntities();
 
 	/**
-	 * tests {@link CommunityPostIndexUpdateLogic#getPostsOfUser(String, int, int)}
+	 * tests {@link CommunityPostIndexCommunityUpdateLogic#getPostsOfUser(String, int, int)}
 	 */
 	@Test
 	public void testGetPostsOfUser() {
@@ -71,7 +71,7 @@ public abstract class CommunityPostIndexUpdateLogicTest<R extends Resource> exte
 	protected abstract void testPostsOfUser1(List<Post<R>> postsOfUser);
 
 	/**
-	 * tests {@link CommunityPostIndexUpdateLogic#getAllPostsOfUser(String)}
+	 * tests {@link CommunityPostIndexCommunityUpdateLogic#getAllPostsOfUser(String)}
 	 */
 	@Test
 	public void testGetAllPostsOfUser() {

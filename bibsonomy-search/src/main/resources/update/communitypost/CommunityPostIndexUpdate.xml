@@ -145,11 +145,24 @@
 	</select>
 
 	<!-- "normal" publications -->
+	<select id="getDeletedBibTexPosts" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
+		FROM log_bibtex b
+		LEFT JOIN gold_standard gb USING(simhash1)
+		WHERE b.log_date >= #lastLogDate#
+		AND b.new_content_id = 0
+		AND gb.title IS NULL <!-- only select publications without a community post -->
+	</select>
+
+
+	<!-- "normal" bookmarks -->
 	<select id="getDeletedBookmarkPosts" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
 		SELECT <include refid ="allGoldStandardBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
 		FROM log_bookmark b
+		LEFT JOIN gold_standard gb ON (b.book_url_hash = gb.simhash1)
 		WHERE b.log_date >= #lastLogDate#
-		AND
+		AND b.new_content_id = 0
+		AND gb.title IS NULL <!-- only select bookmarks without a community post -->
 	</select>
 
 </sqlMap>

@@ -16,14 +16,14 @@ import java.util.List;
  * @param <R>
  * @author dzo
  */
-public class CommunityPostIndexUpdateLogic<R extends Resource> extends ResourceAwareAbstractDatabaseManagerWithSessionManagement<R> implements IndexUpdateLogic<Post<R>> {
+public class CommunityPostIndexCommunityUpdateLogic<R extends Resource> extends ResourceAwareAbstractDatabaseManagerWithSessionManagement<R> implements IndexUpdateLogic<Post<R>> {
 
 	/**
 	 * default constructor
 	 *
 	 * @param resourceClass the resource class
 	 */
-	public CommunityPostIndexUpdateLogic(Class<R> resourceClass) {
+	public CommunityPostIndexCommunityUpdateLogic(Class<R> resourceClass) {
 		super(resourceClass);
 	}
 
