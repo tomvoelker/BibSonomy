@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author dzo
  */
-public class CommunityPostIndexUpdateLogicBookmarkTest extends CommunityPostIndexUpdateLogicTest<GoldStandardBookmark> {
+public class CommunityPostIndexUpdateLogicCommunityBookmarkTest extends CommunityPostIndexUpdateLogicTest<GoldStandardBookmark> {
 	private static final CommunityPostIndexUpdateLogic<GoldStandardBookmark> UPDATE_LOGIC = (CommunityPostIndexUpdateLogic<GoldStandardBookmark>) SearchSpringContextWrapper.getBeanFactory().getBean("communityBookmarkIndexUpdateLogic");
 
 	@Override

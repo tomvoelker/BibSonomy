@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author dzo
  */
-public class CommunityPostIndexUpdateLogicPublicationTest extends CommunityPostIndexUpdateLogicTest<GoldStandardPublication> {
+public class CommunityPostIndexUpdateLogicCommunityPublicationTest extends CommunityPostIndexUpdateLogicTest<GoldStandardPublication> {
 
 	private static final CommunityPostIndexUpdateLogic<GoldStandardPublication> UPDATE_LOGIC = (CommunityPostIndexUpdateLogic<GoldStandardPublication>) SearchSpringContextWrapper.getBeanFactory().getBean("communityPublicationIndexUpdateLogic");
 
