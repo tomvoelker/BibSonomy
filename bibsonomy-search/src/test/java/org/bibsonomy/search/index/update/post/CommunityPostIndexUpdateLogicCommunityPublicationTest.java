@@ -16,10 +16,10 @@ import java.util.List;
  */
 public class CommunityPostIndexUpdateLogicCommunityPublicationTest extends CommunityPostIndexCommunityUpdateLogicTest<GoldStandardPublication> {
 
-	private static final CommunityPostIndexCommunityUpdateLogic<GoldStandardPublication> UPDATE_LOGIC = (CommunityPostIndexCommunityUpdateLogic<GoldStandardPublication>) SearchSpringContextWrapper.getBeanFactory().getBean("communityPublicationIndexUpdateLogic");
+	private static final CommunityPostIndexCommunityUpdateLogic<GoldStandardPublication> UPDATE_LOGIC = (CommunityPostIndexCommunityUpdateLogic<GoldStandardPublication>) SearchSpringContextWrapper.getBeanFactory().getBean("communityIndexUpdateLogicCommunityPublication");
 
 	@Override
-	protected CommunityPostIndexCommunityUpdateLogic<GoldStandardPublication> getUpdateLogic() {
+	protected CommunityPostIndexCommunityUpdateLogic<GoldStandardPublication> getCommunityUpdateLogic() {
 		return UPDATE_LOGIC;
 	}
 
@@ -58,6 +58,6 @@ public class CommunityPostIndexUpdateLogicCommunityPublicationTest extends Commu
 
 	@Override
 	protected void testAllPostsOfUser1(List<Post<GoldStandardPublication>> testuser1Posts) {
-		assertThat(testuser1Posts.size(), is(2));
+		assertThat(testuser1Posts.size(), is(1));
 	}
 }

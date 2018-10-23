@@ -49,7 +49,8 @@
 		</constructor-arg>
 		<constructor-arg ref="elasticsearchCommunityBookmarkEntityInformationProvider" />
 		<constructor-arg ref="goldStandardBookmarkSearchDBLogic" />
-		<constructor-arg ref="communityBookmarkIndexUpdateLogic" />
+		<constructor-arg ref="communityIndexUpdateLogicCommunityBookmark" />
+		<constructor-arg ref="communityIndexUpdateLogicBookmark" />
 	</bean>
 
 	<bean id="elasticsearchCommunityPublicationManager" class="org.bibsonomy.search.es.management.post.ElasticsearchCommunityManager" parent="elasticsearchAbstractIndexManager">
@@ -68,7 +69,8 @@
 		</constructor-arg>
 		<constructor-arg ref="elasticsearchCommunityPublicationEntityInformationProvider" />
 		<constructor-arg ref="goldStandardPublicationSearchDBLogic" />
-		<constructor-arg ref="communityPublicationIndexUpdateLogic" />
+		<constructor-arg ref="communityIndexUpdateLogicCommunityPublication" />
+		<constructor-arg ref="communityIndexUpdateLogicPublication" />
 	</bean>
 
 	<bean id="elasticsearchBookmarkMappingBuilder" class="org.bibsonomy.search.es.index.mapping.post.BookmarkMappingBuilder">

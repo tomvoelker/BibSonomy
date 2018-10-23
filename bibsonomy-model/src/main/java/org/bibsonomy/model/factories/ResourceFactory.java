@@ -216,7 +216,15 @@ public class ResourceFactory {
 	 * @return the superior resource class
 	 */
 	public static Class<? extends Resource> findSuperiorResourceClass(final Resource resource) {
-		return RESOURCE_CLASSES_SUPERIOR_MAP.get(resource.getClass());
+		return findSuperiorResourceClass(resource.getClass());
+	}
+
+	/**
+	 * @param resourceClass
+	 * @return the superior resoruce class
+	 */
+	public static Class<? extends Resource> findSuperiorResourceClass(final Class<? extends Resource> resourceClass) {
+		return RESOURCE_CLASSES_SUPERIOR_MAP.get(resourceClass);
 	}
 
 	/**

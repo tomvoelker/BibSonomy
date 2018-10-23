@@ -82,8 +82,13 @@
 		<property name="sessionFactory" ref="communityPostUpdateSessionFactory" />
 	</bean>
 
-	<bean id="communityIndexUpdateLogicPublication" class="org.bibsonomy.search.index.update.post.CommunityPostIndexCommunityUpdateLogic">
-		<constructor-arg ref="publicationClass" />
+	<bean id="communityIndexUpdateLogicPublication" class="org.bibsonomy.search.index.update.post.CommunityPostIndexUpdateLogic">
+		<constructor-arg ref="goldStandardPublicationClass" />
+		<property name="sessionFactory" ref="communityPostUpdateSessionFactory" />
+	</bean>
+
+	<bean id="communityIndexUpdateLogicBookmark" class="org.bibsonomy.search.index.update.post.CommunityPostIndexUpdateLogic">
+		<constructor-arg ref="goldStandardBookmarkClass" />
 		<property name="sessionFactory" ref="communityPostUpdateSessionFactory" />
 	</bean>
 

@@ -18,7 +18,7 @@ public class CommunityPostIndexUpdateLogicCommunityBookmarkTest extends Communit
 	private static final CommunityPostIndexCommunityUpdateLogic<GoldStandardBookmark> UPDATE_LOGIC = (CommunityPostIndexCommunityUpdateLogic<GoldStandardBookmark>) SearchSpringContextWrapper.getBeanFactory().getBean("communityIndexUpdateLogicCommunityBookmark");
 
 	@Override
-	protected CommunityPostIndexCommunityUpdateLogic<GoldStandardBookmark> getUpdateLogic() {
+	protected CommunityPostIndexCommunityUpdateLogic<GoldStandardBookmark> getCommunityUpdateLogic() {
 		return UPDATE_LOGIC;
 	}
 
@@ -57,6 +57,6 @@ public class CommunityPostIndexUpdateLogicCommunityBookmarkTest extends Communit
 
 	@Override
 	protected void testAllPostsOfUser1(List<Post<GoldStandardBookmark>> testuser1Posts) {
-
+		assertThat(testuser1Posts.get(0).getResource().getTitle(), is("Google"));
 	}
 }

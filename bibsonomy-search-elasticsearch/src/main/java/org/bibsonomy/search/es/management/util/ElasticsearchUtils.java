@@ -168,14 +168,6 @@ public final class ElasticsearchUtils {
 	}
 
 	/**
-	 * @param contentId
-	 * @return the id for the elastic search index
-	 */
-	public static String createElasticSearchId(int contentId) {
-		return String.valueOf(contentId);
-	}
-
-	/**
 	 * @param state
 	 * @return the serialized index state
 	 */

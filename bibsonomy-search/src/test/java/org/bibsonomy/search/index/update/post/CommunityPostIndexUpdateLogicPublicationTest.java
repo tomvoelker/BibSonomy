@@ -11,23 +11,13 @@ import java.util.List;
  *
  * @author dzo
  */
-public class CommunityPostIndexUpdateLogicPublicationTest extends CommunityPostIndexCommunityUpdateLogicTest<BibTex> {
+public class CommunityPostIndexUpdateLogicPublicationTest extends CommunityPostIndexUpdateLogicTest<BibTex> {
 
-	private static final CommunityPostIndexCommunityUpdateLogic<BibTex> UPDATE_LOGIC = (CommunityPostIndexCommunityUpdateLogic<BibTex>) SearchSpringContextWrapper.getBeanFactory().getBean("communityIndexUpdateLogicPublication");
+	private static final CommunityPostIndexUpdateLogic<BibTex> UPDATE_LOGIC = (CommunityPostIndexUpdateLogic<BibTex>) SearchSpringContextWrapper.getBeanFactory().getBean("communityIndexUpdateLogicPublication");
 
 	@Override
-	protected CommunityPostIndexCommunityUpdateLogic<BibTex> getUpdateLogic() {
+	protected CommunityPostIndexUpdateLogic<BibTex> getUpdateLogic() {
 		return UPDATE_LOGIC;
-	}
-
-	@Override
-	protected void testNewestPostByInterHash(Post<BibTex> newestPostByInterHash) {
-
-	}
-
-	@Override
-	protected String getPostInterHash() {
-		return null;
 	}
 
 	@Override
@@ -38,20 +28,5 @@ public class CommunityPostIndexUpdateLogicPublicationTest extends CommunityPostI
 	@Override
 	protected long getLastEntityIdForNewEntities() {
 		return 0;
-	}
-
-	@Override
-	protected void testPostsofUser2(List<Post<BibTex>> testuser3Posts) {
-
-	}
-
-	@Override
-	protected void testPostsOfUser1(List<Post<BibTex>> postsOfUser) {
-
-	}
-
-	@Override
-	protected void testAllPostsOfUser1(List<Post<BibTex>> testuser1Posts) {
-
 	}
 }

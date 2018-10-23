@@ -5,7 +5,6 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
-import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.MappingBuilder;
 import org.bibsonomy.util.Sets;
@@ -16,7 +15,9 @@ import java.util.Set;
 
 /**
  * implementation of the {@link EntityInformationProvider} interface for posts
+ *
  * @param <R>
+ * @author dzo
  */
 public class PostEntityInformationProvider<R extends Resource> extends EntityInformationProvider<Post<R>> {
 
@@ -86,7 +87,7 @@ public class PostEntityInformationProvider<R extends Resource> extends EntityInf
 
 	@Override
 	public String getEntityId(Post<R> entity) {
-		return ElasticsearchUtils.createElasticSearchId(entity.getContentId());
+		return String.valueOf(entity.getContentId());
 	}
 
 	@Override

@@ -154,15 +154,47 @@
 		AND gb.title IS NULL <!-- only select publications without a community post -->
 	</select>
 
+	<select id="getNewBibTexPosts" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
+		SELECT bb.*, <include refid="goldStandardOtherFields" />
+		FROM
+		(
+			SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group
+			FROM bibtex b
+			LEFT JOIN gold_standard gp USING(simhash1)
+			WHERE b.content_id > #lastContentId#
+			AND gp.title IS NULL
+			ORDER BY b.content_id DESC
+			LIMIT #limit#
+			OFFSET #offset#
+		) AS bb
+		LEFT JOIN bibtex p ON (bb.interHash = p.simhash1)
+	</select>
 
 	<!-- "normal" bookmarks -->
 	<select id="getDeletedBookmarkPosts" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
-		SELECT <include refid ="allGoldStandardBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
+		SELECT <include refid ="allGoldStandardNormalBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
 		FROM log_bookmark b
 		LEFT JOIN gold_standard gb ON (b.book_url_hash = gb.simhash1)
 		WHERE b.log_date >= #lastLogDate#
 		AND b.new_content_id = 0
 		AND gb.title IS NULL <!-- only select bookmarks without a community post -->
+	</select>
+
+	<select id="getNewBookmarkPosts" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
+		SELECT bb.*, <include refid="goldStandardOtherFields" />, u.book_url
+		FROM
+		(
+			SELECT <include refid ="allGoldStandardNormalBookmarkAttributesNoChangeDate"/>, b.change_date, b.group
+			FROM bookmark b
+			LEFT JOIN gold_standard gb ON (b.book_url_hash = gb.simhash1)
+			WHERE b.content_id > #lastContentId#
+			AND gb.title IS NULL
+			ORDER BY b.content_id DESC
+			LIMIT #limit#
+			OFFSET #offset#
+		) AS bb
+		JOIN urls u ON (u.book_url_hash = bb.interHash)
+		LEFT JOIN bookmark p ON (bb.interHash = p.book_url_hash)
 	</select>
 
 </sqlMap>

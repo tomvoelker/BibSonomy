@@ -116,7 +116,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 			
 			final List<DeleteData> idsToDelete = new LinkedList<>();
 			for (final Integer contentId : contentIdsToDelete) {
-				final String indexID = ElasticsearchUtils.createElasticSearchId(contentId.intValue());
+				final String indexID = String.valueOf(contentId.intValue());
 				final DeleteData deleteData = new DeleteData();
 				deleteData.setType(this.entityInformationProvider.getType());
 				deleteData.setId(indexID);
@@ -140,7 +140,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 				final Map<String, Object> convertedPost = this.entityInformationProvider.getConverter().convert(post);
 				
 				final Integer contentId = post.getContentId();
-				final String id = ElasticsearchUtils.createElasticSearchId(contentId.intValue());
+				final String id = this.entityInformationProvider.getEntityId(post);
 				final IndexData indexData = new IndexData();
 				indexData.setType(this.entityInformationProvider.getType());
 				indexData.setSource(convertedPost);
@@ -236,7 +236,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 						if (present(userPosts)) {
 							for (final Post<R> post : userPosts) {
 								final Map<String, Object> convertedPost = this.entityInformationProvider.getConverter().convert(post);
-								final String id = ElasticsearchUtils.createElasticSearchId(post.getContentId().intValue());
+								final String id = this.entityInformationProvider.getEntityId(post);
 								final IndexData indexData = new IndexData();
 								indexData.setType(this.entityInformationProvider.getType());
 								indexData.setSource(convertedPost);

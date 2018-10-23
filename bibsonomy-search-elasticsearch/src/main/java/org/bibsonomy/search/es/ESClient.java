@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.search.es;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +44,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.jsoup.select.Collector;
 
 /**
  * Wrapper around an ElasticSearch Client.
@@ -139,6 +140,9 @@ public interface ESClient {
 	boolean updateAliases(Set<Pair<String, String>> aliasesToAdd, Set<Pair<String, String>> aliasesToRemove);
 	
 	default boolean updateOrCreateDocuments(String indexName, Map<String, IndexData> jsonDocuments) {
+		if (!present(jsonDocuments)) {
+			return true;
+		}
 		final List<DeleteData> deleteData = jsonDocuments.entrySet().stream().map(entry -> {
 			final DeleteData delete = new DeleteData();
 			final IndexData indexData = entry.getValue();

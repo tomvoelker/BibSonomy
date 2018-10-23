@@ -46,6 +46,7 @@ import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
+import org.bibsonomy.search.index.update.post.CommunityPostIndexCommunityUpdateLogic;
 import org.bibsonomy.search.index.update.post.CommunityPostIndexUpdateLogic;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.SearchIndexSyncState;
@@ -58,24 +59,13 @@ import org.bibsonomy.search.update.SearchIndexSyncState;
  */
 public class ElasticsearchCommunityManager<G extends Resource> extends ElasticsearchPostManager<G> {
 
-	private final CommunityPostIndexUpdateLogic<G> communityPostUpdateLogic;
-	private CommunityPostIndexUpdateLogic<G> postUpdateLogic;
+	private final CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic;
+	private final CommunityPostIndexUpdateLogic<G> postUpdateLogic;
 
-	/**
-	 * default constructor
-	 *
-	 * @param systemId
-	 * @param disabledIndexing
-	 * @param updateEnabled
-	 * @param client
-	 * @param generator
-	 * @param entityInformationProvider
-	 * @param inputLogic
-	 * @param communityPostUpdateLogic
-	 */
-	public ElasticsearchCommunityManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<G>> generator, EntityInformationProvider<Post<G>> entityInformationProvider, SearchDBInterface<G> inputLogic, CommunityPostIndexUpdateLogic<G> communityPostUpdateLogic) {
+	public ElasticsearchCommunityManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<G>> generator, EntityInformationProvider<Post<G>> entityInformationProvider, SearchDBInterface<G> inputLogic, CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic, CommunityPostIndexUpdateLogic<G> postUpdateLogic) {
 		super(systemId, disabledIndexing, updateEnabled, client, generator, entityInformationProvider, inputLogic);
 		this.communityPostUpdateLogic = communityPostUpdateLogic;
+		this.postUpdateLogic = postUpdateLogic;
 	}
 
 	@Override
@@ -85,6 +75,7 @@ public class ElasticsearchCommunityManager<G extends Resource> extends Elasticse
 		final SearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, indexName);
 		// final SearchIndexSyncState targetState = this.postUpdateLogic.getDbState();
 		final Integer communityPostLastContentId = oldState.getLast_tas_id();
+		final Integer postLastContentId = 0; // FIXME: use the correct
 		final Date communityPostLastLogDate = oldState.getLast_log_date();
 		final Date postLastLogDate = null; // oldState.getLastPostLogDate();
 		/*
@@ -93,17 +84,20 @@ public class ElasticsearchCommunityManager<G extends Resource> extends Elasticse
 		 * a) get all community deletes
 		 */
 		final List<Post<G>> deletedEntities = this.communityPostUpdateLogic.getDeletedEntities(communityPostLastLogDate);
-		deletePostsFromIndexAndInsertOtherPostInDB(indexName, deletedEntities);
+		this.deletePostsFromIndexAndInsertOtherPostInDB(indexName, deletedEntities);
 
+		/*
+		 * now all normal posts that were deleted without a community post
+		 */
  		final List<Post<G>> deletedNormalPosts = this.postUpdateLogic.getDeletedEntities(postLastLogDate);
-		deletePostsFromIndexAndInsertOtherPostInDB(indexName, deletedNormalPosts);
+		this.deletePostsFromIndexAndInsertOtherPostInDB(indexName, deletedNormalPosts);
 
 		/*
 		 * 2. step: insert updated or new posts
 		 * a) for the "normal" posts
 		 * here posts with a community post are excluded by the logic
 		 */
-		this.insertNewPosts(indexName, communityPostLastContentId, communityPostLastLogDate, this.postUpdateLogic);
+		this.insertNewPosts(indexName, postLastContentId, postLastLogDate, this.postUpdateLogic);
 
 		/*
 		 * b) new posts for gold standard posts
@@ -135,7 +129,7 @@ public class ElasticsearchCommunityManager<G extends Resource> extends Elasticse
 						if (present(userPosts)) {
 							for (final Post<G> post : userPosts) {
 								final IndexData indexData = this.buildIndexDataForPost(post);
-								final String id = ElasticsearchUtils.createElasticSearchId(post.getContentId().intValue());
+								final String id = this.entityInformationProvider.getEntityId(post);
 								postsToInsert.put(id, indexData);
 							}
 						}
@@ -183,7 +177,7 @@ public class ElasticsearchCommunityManager<G extends Resource> extends Elasticse
 
 			postSize = newerEntities.size();
 			offset += SQL_BLOCKSIZE;
-		} while (postSize != SQL_BLOCKSIZE);
+		} while (postSize == SQL_BLOCKSIZE);
 
 		this.clearQueue(indexName, postUpdateMap);
 	}

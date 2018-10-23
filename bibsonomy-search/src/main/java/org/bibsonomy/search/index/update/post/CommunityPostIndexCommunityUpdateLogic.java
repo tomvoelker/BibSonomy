@@ -16,7 +16,7 @@ import java.util.List;
  * @param <R>
  * @author dzo
  */
-public class CommunityPostIndexCommunityUpdateLogic<R extends Resource> extends ResourceAwareAbstractDatabaseManagerWithSessionManagement<R> implements IndexUpdateLogic<Post<R>> {
+public class CommunityPostIndexCommunityUpdateLogic<R extends Resource> extends CommunityPostIndexUpdateLogic<R> {
 
 	/**
 	 * default constructor
@@ -24,25 +24,7 @@ public class CommunityPostIndexCommunityUpdateLogic<R extends Resource> extends 
 	 * @param resourceClass the resource class
 	 */
 	public CommunityPostIndexCommunityUpdateLogic(Class<R> resourceClass) {
-		super(resourceClass);
-	}
-
-	@Override
-	public List<Post<R>> getNewerEntities(long lastEntityId, Date lastLogDate, int size, int offset) {
-		try (final DBSession session = this.openSession()) {
-			final SearchParam param = new SearchParam();
-			param.setLastLogDate(lastLogDate);
-			param.setLimit(size);
-			param.setOffset(offset);
-			return (List<Post<R>>) this.queryForList("getNew" + this.getResourceName() + "Posts", param, session);
-		}
-	}
-
-	@Override
-	public List<Post<R>> getDeletedEntities(Date lastLogDate) {
-		try (final DBSession session = this.openSession()) {
-			return (List<Post<R>>) this.queryForList("getDeleted" + this.getResourceName() + "Posts", lastLogDate, session);
-		}
+		super(resourceClass, false);
 	}
 
 	/**
@@ -83,11 +65,6 @@ public class CommunityPostIndexCommunityUpdateLogic<R extends Resource> extends 
 		try (final DBSession session = this.openSession()) {
 			return (List<Post<R>>) this.queryForList("get" + this.getResourceName() + "PostsForUser", userName, session);
 		}
-	}
-
-	@Override
-	public SearchIndexSyncState getDbState() {
-		return null;
 	}
 
 }

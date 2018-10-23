@@ -102,7 +102,7 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 		// TODO: bulk update
 		for (final Post<P> postDocUpdate : postsForDocUpdate) {
 			final List<Map<String, String>> documents = this.getPublicationConverter().convertDocuments(postDocUpdate.getResource().getDocuments());
-			final String id = ElasticsearchUtils.createElasticSearchId(postDocUpdate.getContentId().intValue());
+			final String id = this.entityInformationProvider.getEntityId(postDocUpdate);
 			try {
 				this.client.updateDocument(indexName, this.entityInformationProvider.getType(), id, Collections.singletonMap(Publication.DOCUMENTS, documents));
 			} catch (final DocumentMissingException e) {

@@ -67,8 +67,8 @@ public class ElasticsearchCommunityManagerPublicationITCase extends AbstractComm
 
 		final List<Post<GoldStandardPublication>> afterCommunityDelete = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, "title1", null, null, null, null, null, null, null, null, null, 10, 0);
 
-		// deleting the community post shoud do nothing, if at least one user
-		assertThat(afterCommunityDelete, is(1));
+		// deleting the community post should do nothing, if at least one user has the publication in his her collection
+		assertThat(afterCommunityDelete.size(), is(1));
 
 		final boolean userPostDeleted = PUBLICATION_DATABASE_MANAGER.deletePost("testuserP", intraHash, loggedinUser, this.dbSession);
 		assertThat(userPostDeleted, is(true));
