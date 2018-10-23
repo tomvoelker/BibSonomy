@@ -64,4 +64,16 @@ public class IEEEXploreJournalProceedingsScraperTest {
 		final String resultFile = "IEEEXploreJournalProceedingsScraperUnitURLTest2.bib";
 		RemoteTestAssert.assertScraperResult(url, selection, scraperClass, resultFile);
 	}
+	
+	/**
+	 * starts URL test 3
+	 */
+	@Test
+	public void urlTestRun3() {
+		final String url = "https://ieeexplore.ieee.org/document/6189346";
+		final String selection = null;
+		final Class<? extends Scraper> scraperClass = org.bibsonomy.scraper.url.kde.ieee.IEEEXploreJournalProceedingsScraper.class;
+		final String resultFile = "IEEEXploreJournalProceedingsScraperUnitURLTest3.bib";
+		RemoteTestAssert.assertScraperResult(url, selection, scraperClass, resultFile);
+	}
 }

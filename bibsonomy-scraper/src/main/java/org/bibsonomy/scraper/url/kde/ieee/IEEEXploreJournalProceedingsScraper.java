@@ -69,6 +69,7 @@ public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
 	private static final String CONST_PAGES      = "On page(s): ";
 	private static final String CONST_BOOKTITLE	 = "This paper appears in: ";
 
+	private static final Pattern pattern0 = Pattern.compile("/document/([^&]*)");
 	private static final Pattern pattern = Pattern.compile("/document/([^&]*)/");
 	private static final Pattern pattern1 = Pattern.compile("arnumber=([^&]*)");
 	private static final Pattern pattern2 = Pattern.compile("chklist=([^%]*)");
@@ -81,7 +82,11 @@ public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
 		sc.setScraper(this);
 
 		String id = null;
-		Matcher matcher = pattern.matcher(sc.getUrl().toString());
+		Matcher matcher = pattern0.matcher(sc.getUrl().toString());
+		if (matcher.find()) {
+			id = matcher.group(1);
+		}
+		matcher = pattern.matcher(sc.getUrl().toString());
 		if (matcher.find()) {
 			id = matcher.group(1);
 		}
