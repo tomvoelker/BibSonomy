@@ -62,7 +62,6 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.services.searcher.PersonSearch;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * database manger for handling {@link Person} related actions
@@ -78,6 +77,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	private final DatabasePluginRegistry plugins;
 	private PersonSearch personSearch;
 
+	@Deprecated // config via spring
 	public static PersonDatabaseManager getInstance() {
 		return singleton;
 	}
@@ -403,7 +403,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelations(final String interhash, final Integer authorIndex, final PersonResourceRelationType role, final DBSession session) {
 		final ResourcePersonRelation rpr = new ResourcePersonRelation();
-		Post<BibTex> post = new Post<>();
+		final Post<BibTex> post = new Post<>();
 		post.setResource(new BibTex());
 		post.getResource().setInterHash(interhash);
 		rpr.setPost(post);
@@ -1006,8 +1006,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 		final String person1User = match.getPerson1().getUser();
 		final String person2User = match.getPerson2().getUser();
 
-		final boolean p1Claim = ValidationUtils.present(person1User);
-		final boolean p2Claim = ValidationUtils.present(person2User);
+		final boolean p1Claim = present(person1User);
+		final boolean p2Claim = present(person2User);
 		if (p1Claim && p2Claim) {
 			return false;
 		} else if (!p1Claim && !p2Claim) {
