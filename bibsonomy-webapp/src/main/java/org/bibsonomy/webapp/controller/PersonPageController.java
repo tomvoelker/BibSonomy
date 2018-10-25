@@ -324,7 +324,10 @@ public class PersonPageController extends SingleResourceListController implement
 	}
 	
 	private View linkAction(PersonPageCommand command) {
-		this.logic.linkUser(command.getFormPersonId());
+		final Person person = new Person();
+		person.setPersonId(command.getFormPersonId());
+		person.setUser(command.getContext().getLoginUser().getName());
+		this.logic.updatePerson(person, PersonUpdateOperation.LINK_USER);
 		return Views.AJAX_TEXT;
 	}
 	

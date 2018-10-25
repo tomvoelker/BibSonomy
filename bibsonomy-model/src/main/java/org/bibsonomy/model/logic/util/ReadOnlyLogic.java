@@ -871,14 +871,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#linkUser(java.lang.String)
-	 */
-	@Override
-	public void linkUser(String personId) {
-		throwReadOnlyException();
-	}
-	
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(java.lang.Integer)
 	 */
 	@Override

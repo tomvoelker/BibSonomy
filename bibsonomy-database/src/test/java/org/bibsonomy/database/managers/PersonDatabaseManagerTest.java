@@ -178,6 +178,17 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertThat(person.getHomepage(), is(homepage));
 	}
 
+
+	@Test
+	public void testUpdateUserLink() {
+		final String usernameToLink = loginUser.getName();
+		this.testPerson.setUser(usernameToLink);
+		PERSON_DATABASE_MANAGER.updateUserLink(this.testPerson, this.dbSession);
+
+		final Person person = PERSON_DATABASE_MANAGER.getPersonById(this.testPerson.getPersonId(), this.dbSession);
+		assertThat(person.getUser(), is(usernameToLink));
+	}
+
 	@Test
 	public void testRemovePersonName() {
 		PERSON_DATABASE_MANAGER.removePersonName(7, loginUser, this.dbSession);
@@ -186,6 +197,8 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		assertThat(personById.getNames().size(), is(1));
 	}
+
+
 	
 	@Test
 	public void testMergePersons() {

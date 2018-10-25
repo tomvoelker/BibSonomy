@@ -61,33 +61,39 @@
 		WHERE person.person_id = #personId#
 	</update>
 	
-	<update id="updateOrcid" parameterClass="person">
+	<update id="updatePersonOrcid" parameterClass="person">
 		UPDATE person
 		SET person_change_id = #personChangeId#, orcid = #orcid#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
 		WHERE person.person_id = #personId#
 	</update>
 	
-	<update id="updateAcademicDegree" parameterClass="person">
+	<update id="updatePersonAcademicDegree" parameterClass="person">
 		UPDATE person
 		SET person_change_id = #personChangeId#, academic_degree = #academicDegree#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
 		WHERE person.person_id = #personId#
 	</update>
 	
-	<update id="updateCollege" parameterClass="person">
+	<update id="updatePersonCollege" parameterClass="person">
 		UPDATE person
 		SET person_change_id = #personChangeId#, college = #college#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
 		WHERE person.person_id = #personId#
 	</update>
 	
-	<update id="updateEmail" parameterClass="person">
+	<update id="updatePersonEmail" parameterClass="person">
 		UPDATE person
 		SET person_change_id = #personChangeId#, email = #email#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
 		WHERE person.person_id = #personId#
 	</update>
 
-	<update id="updateHomepage" parameterClass="person">
+	<update id="updatePersonHomepage" parameterClass="person">
 		UPDATE person
 		SET person_change_id = #personChangeId#, homepage = #homepage#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
+		WHERE person.person_id = #personId#
+	</update>
+
+	<update id="updatePersonUser" parameterClass="person">
+		UPDATE person
+		SET person_change_id = #personChangeId#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
 		WHERE person.person_id = #personId#
 	</update>
 	

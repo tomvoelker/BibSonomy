@@ -223,7 +223,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 		}
 	}
 
-	private void updateField(final Person person, final String fieldName, final DBSession session) {
+	private void updatePersonField(final Person person, final String fieldName, final DBSession session) {
 		session.beginTransaction();
 		try {
 			// first check if the person is in the database
@@ -241,7 +241,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 			this.plugins.onPersonUpdate(personId, session);
 
 			// update (specific field)
-			this.update("update" + fieldName, person, session);
+			this.update("updatePerson" + fieldName, person, session);
 
 			session.commitTransaction();
 		} finally {
@@ -256,7 +256,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void updateOrcid(Person person, DBSession session) {
-		this.updateField(person, "Orcid", session);
+		this.updatePersonField(person, "Orcid", session);
 	}
 
 	/**
@@ -266,7 +266,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void updateAcademicDegree(Person person, DBSession session) {
-		this.updateField(person, "AcademicDegree", session);
+		this.updatePersonField(person, "AcademicDegree", session);
 	}
 
 	/**
@@ -276,7 +276,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void updateCollege(Person person, DBSession session) {
-		this.updateField(person, "College", session);
+		this.updatePersonField(person, "College", session);
 	}
 
 	/**
@@ -286,7 +286,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void updateEmail(Person person, DBSession session) {
-		this.updateField(person, "Email", session);
+		this.updatePersonField(person, "Email", session);
 	}
 
 	/**
@@ -296,7 +296,16 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void updateHomepage(Person person, DBSession session) {
-		this.updateField(person,"Homepage", session);
+		this.updatePersonField(person,"Homepage", session);
+	}
+
+	/**
+	 *
+	 * @param person
+	 * @param session
+	 */
+	public void updateUserLink(Person person, DBSession session) {
+		this.updatePersonField(person, "User", session);
 	}
 
 	/**
@@ -1037,5 +1046,4 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	public void setPersonSearch(PersonSearch personSearch) {
 		this.personSearch = personSearch;
 	}
-
 }

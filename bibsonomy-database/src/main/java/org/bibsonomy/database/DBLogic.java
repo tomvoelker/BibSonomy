@@ -3410,11 +3410,8 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void removeResourceRelation(final int resourceRelationId) {
 		this.ensureLoggedInAndNoSpammer();
-		final DBSession session = this.openSession();
-		try {
+		try (final DBSession session = this.openSession()) {
 			this.personDBManager.removeResourceRelation(resourceRelationId, this.loginUser, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -3423,28 +3420,32 @@ public class DBLogic implements LogicInterface {
 	 * @param person		person object containing the new values
 	 * @param operation		the desired update operation
 	 */
+	@Override
 	public void updatePerson(final Person person, final PersonUpdateOperation operation) {
 		this.ensureLoggedInAndNoSpammer();
-		
-		if (!present(person.getPersonId())) {
+
+		final String personId = person.getPersonId();
+		if (!present(personId)) {
 			throw new ValidationException("Invalid person ID given.");
 		}
-
-		final DBSession session = this.openSession();
 			
-		try {
-			
+		try (final DBSession session = this.openSession()) {
 			// is the person claimed?
-			if (person.getUser() != null) {
-				if (!person.getUser().equals(this.loginUser.getName())) {
+			final String claimedUser = person.getUser();
+			final String loggedinUserName = this.loginUser.getName();
+			if (present(claimedUser)) {
+				if (!claimedUser.equals(loggedinUserName)) {
 					throw new AccessDeniedException();
 				}
-				if (present(person.getPersonId())) {
-					final Person personOld = this.personDBManager.getPersonById(person.getPersonId(), session);
+
+				if (present(personId)) {
+					final Person personOld = this.personDBManager.getPersonById(personId, session);
 					if (personOld == null) {
-						throw new NoSuchElementException("person " + person.getPersonId());
+						throw new NoSuchElementException("person " + personId);
 					}
-					if (personOld.getUser() != null && !personOld.getUser().equals(this.loginUser.getName())) {
+
+					// the claimed person can not be changed
+					if (personOld.getUser() != null && !personOld.getUser().equals(loggedinUserName)) {
 						throw new AccessDeniedException();
 					}
 				}
@@ -3452,13 +3453,13 @@ public class DBLogic implements LogicInterface {
 			
 			// check for email, homepage - can yonly be edited if the editr claimed the person
 			if (operation.equals(PersonUpdateOperation.UPDATE_EMAIL) || operation.equals(PersonUpdateOperation.UPDATE_HOMEPAGE)) {
-				if (person.getUser() == null) {
+				if (claimedUser == null) {
 					throw new AccessDeniedException();
 				}
 			}
 			
 			person.setChangeDate(new Date());
-			person.setChangedBy(this.loginUser.getName());
+			person.setChangedBy(loggedinUserName);
 
 			switch (operation) {
 				case UPDATE_ORCID: 
@@ -3479,6 +3480,12 @@ public class DBLogic implements LogicInterface {
 				case UPDATE_HOMEPAGE:
 					this.personDBManager.updateHomepage(person, session);
 					break;
+				case LINK_USER:
+					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, claimedUser);
+					// first unlink with the old person
+					this.personDBManager.unlinkUser(claimedUser, session);
+					this.personDBManager.updateUserLink(person, session);
+					break;
 				case UPDATE_ALL:
 					this.personDBManager.updatePerson(person, session);
 					this.updatePersonNames(person, session);
@@ -3486,9 +3493,6 @@ public class DBLogic implements LogicInterface {
 				default:
 					throw new UnsupportedOperationException("The requested method is not yet implemented.");
 			}
-			
-		} finally {
-			session.close();
 		}
 	}
 	
@@ -3604,6 +3608,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public Person getPersonById(final PersonIdType idType, final String id) {
+		// TODO: implement a chain
 		final DBSession session = this.openSession();
 		try {
 			if (PersonIdType.PERSON_ID == idType) {
@@ -3662,7 +3667,7 @@ public class DBLogic implements LogicInterface {
 			if (byInterHash.containsKey(interhash)) {
 				continue;
 			}
-			byInterHash.put(interhash,rpr);
+			byInterHash.put(interhash, rpr);
 		}
 	}
 
@@ -3675,21 +3680,6 @@ public class DBLogic implements LogicInterface {
 		} finally {
 			session.close();
 		}
-	}
-
-	@Override
-	public void linkUser(final String personId) {
-		this.ensureLoggedInAndNoSpammer();
-		final DBSession session = this.openSession();
-		try {
-			this.personDBManager.unlinkUser(this.getAuthenticatedUser().getName(), session);
-			final Person person = this.personDBManager.getPersonById(personId, session);
-			person.setUser(this.getAuthenticatedUser().getName());
-			this.createOrUpdatePerson(person, session);
-		} finally {
-			session.close();
-		}
-
 	}
 
 	@Override
