@@ -645,8 +645,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	@Override
 	public void serializeGroup(final Writer writer, final Group group, final ViewModel model) throws InternServerException {
-		final BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setStat(StatType.OK);
+		final BibsonomyXML xmlDoc = getDummyBibsonomyXMLWithOK();
 		xmlDoc.setGroup(this.createXmlGroup(group));
 		this.serialize(writer, xmlDoc);
 	}
@@ -656,16 +655,23 @@ public abstract class AbstractRenderer implements Renderer {
 		xmlGroup.setName(group.getName());
 		xmlGroup.setDescription(group.getDescription());
 		xmlGroup.setRealname(group.getRealname());
-		if (group.getHomepage() != null) {
+		if (present(group.getHomepage())) {
 			xmlGroup.setHomepage(group.getHomepage().toString());
 		}
 		xmlGroup.setHref(this.urlRenderer.createHrefForGroup(group.getName()));
 		xmlGroup.setDescription(group.getDescription());
-		if (group.getMemberships() != null) {
+		if (present(group.getMemberships())) {
 			for (final GroupMembership membership : group.getMemberships()) {
 				final User user = membership.getUser();
 				xmlGroup.getUser().add(this.createXmlUser(user));
 			}
+		}
+		if (present(group.getParent())) {
+			xmlGroup.setParent(createXmlGroup(group.getParent()));
+		}
+		xmlGroup.setOrganization(group.isOrganization());
+		if (present(group.getExternalId())) {
+			xmlGroup.setExternalId(group.getExternalId());
 		}
 		return xmlGroup;
 	}
@@ -1227,6 +1233,15 @@ public abstract class AbstractRenderer implements Renderer {
 				membership.setUser(user);
 				group.getMemberships().add(membership);
 			}
+		}
+		group.setOrganization(xmlGroup.isOrganization());
+
+		if (present(xmlGroup.getExternalId())) {
+			group.setExternalId(xmlGroup.getExternalId());
+		}
+
+		if (present(xmlGroup.getParent())) {
+			group.setParent(createGroup(xmlGroup.getParent()));
 		}
 
 		return group;
