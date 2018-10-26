@@ -52,6 +52,9 @@ public enum PersonUpdateOperation {
 	
 	/** Updates the college */
 	UPDATE_HOMEPAGE,
+
+	/** updates the linked user */
+	LINK_USER,
 	
 	/** Creates a new person */
 	CREATE_PERSON,

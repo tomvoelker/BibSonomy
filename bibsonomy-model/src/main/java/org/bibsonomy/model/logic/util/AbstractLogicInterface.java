@@ -52,8 +52,8 @@ import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
@@ -184,7 +184,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPostDetails(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Post<? extends Resource> getPostDetails(String resourceHash, String userName) throws ResourceMovedException, ObjectNotFoundException {
+	public Post<? extends Resource> getPostDetails(String resourceHash, String userName) throws ObjectMovedException, ObjectNotFoundException {
 		this.doDefaultAction();
 		return null;
 	}
@@ -919,14 +919,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#linkUser(java.lang.String)
-	 */
-	@Override
-	public void linkUser(String personId) {
-		this.doDefaultAction();
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#unlinkUser(java.lang.String)
 	 */
 	@Override
@@ -972,15 +964,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getForwardId(java.lang.String)
-	 */
-	@Override
-	public String getForwardId(String personId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

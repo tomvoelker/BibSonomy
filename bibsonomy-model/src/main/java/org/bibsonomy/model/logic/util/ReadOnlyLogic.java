@@ -52,9 +52,9 @@ import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ReadOnlyDatabaseException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
@@ -117,7 +117,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPostDetails(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Post<? extends Resource> getPostDetails(String resourceHash, String userName) throws ResourceMovedException, ObjectNotFoundException {
+	public Post<? extends Resource> getPostDetails(String resourceHash, String userName) throws ObjectMovedException, ObjectNotFoundException {
 		return this.logicinterface.getPostDetails(resourceHash, userName);
 	}
 
@@ -866,14 +866,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#linkUser(java.lang.String)
-	 */
-	@Override
-	public void linkUser(String personId) {
-		throwReadOnlyException();
-	}
-	
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(java.lang.Integer)
 	 */
 	@Override
@@ -944,15 +936,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	 */
 	@Override
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getForwardId(java.lang.String)
-	 */
-	@Override
-	public String getForwardId(String personId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
