@@ -27,9 +27,10 @@
 package org.bibsonomy.rest.strategy.persons;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.rest.ViewModel;
@@ -60,7 +61,7 @@ public class GetPersonStrategy extends Strategy {
 	}
 
 	@Override
-	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceMovedException, ObjectNotFoundException {
+	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ObjectMovedException, ObjectNotFoundException {
 		final Person person = this.getLogic().getPersonById(PersonIdType.PERSON_ID, this.personId);
 		if (!present(person)) {
 			throw new NoSuchResourceException("The requested person with id '" + this.personId + "' does not exist.");
