@@ -483,11 +483,15 @@ public abstract class AbstractRenderer implements Renderer {
 		return xmlUser;
 	}
 
-	private BibsonomyXML getDummyBibsonomyXMLWithOK() {
-		return getDummyBibsonomyXML(StatType.OK);
+	private BibsonomyXML getEmptyBibsonomyXMLWithOK() {
+		return getEmptyBibsonomyXML(StatType.OK);
 	}
 
-	private BibsonomyXML getDummyBibsonomyXML(StatType statType) {
+	private BibsonomyXML getEmptyBibsonomyXMLWithFail() {
+		return getEmptyBibsonomyXML(StatType.FAIL);
+	}
+
+	private BibsonomyXML getEmptyBibsonomyXML(StatType statType) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(statType);
 		return xmlDoc;
@@ -495,7 +499,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	@Override
 	public void serializePerson(Writer writer, Person person, ViewModel viewModel) {
-		final BibsonomyXML xmlDoc = getDummyBibsonomyXMLWithOK();
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
 		xmlDoc.setPerson(createXmlPerson(person));
 		serialize(writer, xmlDoc);
 	}
@@ -521,7 +525,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	@Override
 	public void serializeResourcePersonRelation(final Writer writer, ResourcePersonRelation resourcePersonRelation, ViewModel viewModel) {
-		final BibsonomyXML xmlDoc = getDummyBibsonomyXMLWithOK();
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
 		xmlDoc.setResourcePersonRelation(createXmlResourcePersonRelation(resourcePersonRelation));
 		serialize(writer, xmlDoc);
 	}
@@ -645,7 +649,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	@Override
 	public void serializeGroup(final Writer writer, final Group group, final ViewModel model) throws InternServerException {
-		final BibsonomyXML xmlDoc = getDummyBibsonomyXMLWithOK();
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
 		xmlDoc.setGroup(this.createXmlGroup(group));
 		this.serialize(writer, xmlDoc);
 	}
@@ -685,15 +689,13 @@ public abstract class AbstractRenderer implements Renderer {
 
 	@Override
 	public void serializeFail(final Writer writer) {
-		final BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setStat(StatType.FAIL);
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithFail();
 		this.serialize(writer, xmlDoc);
 	}
 
 	@Override
 	public void serializeError(final Writer writer, final String errorMessage) {
-		final BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setStat(StatType.FAIL);
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithFail();
 		xmlDoc.setError(errorMessage);
 		this.serialize(writer, xmlDoc);
 	}
@@ -724,7 +726,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	@Override
 	public void serializePersonId(Writer writer, String personId) {
-		final BibsonomyXML xmlDoc = getDummyBibsonomyXMLWithOK();
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
 		xmlDoc.setPersonid(personId);
 		serialize(writer, xmlDoc);
 	}
