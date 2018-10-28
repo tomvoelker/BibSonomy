@@ -28,8 +28,11 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,9 +52,11 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.model.util.UserUtils;
 
 /**
@@ -75,6 +80,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	private final GeneralDatabaseManager generalDb;
 	
 	private int maxQuerySize;
+	private Map<String, String> specialUserTagMap = Collections.emptyMap();
 
 	private PermissionDatabaseManager() {
 		this.groupDb = GroupDatabaseManager.getInstance();
@@ -537,13 +543,11 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		 * some special users like 'dblp' are not allowed)
 		 */
 		if (relation.isInternal()) {
-			if (!present(targetUser.getName())) {
+			final String targetUserName = targetUser.getName();
+			if (!present(targetUserName)) {
 				throw new ValidationException("error.relationship_with_nonexisting_user");
 			}
-			if (UserUtils.isDBLPUser(targetUser)) {
-				throw new ValidationException("error.relationship_with_dblp");
-			}
-			if (UserUtils.isSpecialUser(targetUser)) {
+			if (this.isSpecialUser(targetUserName)) {
 				throw new ValidationException("error.relationship_with_special_user");
 			}
 			if (loginUser.isSpammer()) {
@@ -600,6 +604,22 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * @param userName the name of the user
+	 * @return <code>true</code> iff the user is a special user
+	 */
+	public boolean isSpecialUser(String userName) {
+		return this.specialUserTagMap.containsKey(userName);
+	}
+
+	/**
+	 * @param userName
+	 * @return the tags for this special user
+	 */
+	public List<Tag> getTagsForSpecialUser(String userName) {
+		return Collections.singletonList(TagUtils.createFrequentTag(this.specialUserTagMap.get(userName)));
+	}
+
+	/**
 	 * @return the maxQuerySize
 	 */
 	public int getMaxQuerySize() {
@@ -611,5 +631,12 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void setMaxQuerySize(int maxQuerySize) {
 		this.maxQuerySize = maxQuerySize;
+	}
+
+	/**
+	 * @param specialUserTagMap the specialUserTagMap to set
+	 */
+	public void setSpecialUserTagMap(Map<String, String> specialUserTagMap) {
+		this.specialUserTagMap = specialUserTagMap;
 	}
 }

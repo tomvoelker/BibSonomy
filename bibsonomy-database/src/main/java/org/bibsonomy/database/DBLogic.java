@@ -1013,7 +1013,7 @@ public class DBLogic implements LogicInterface {
 			throw new UnsupportedResourceTypeException("The requested resourcetype (" + resourceType.getClass().getName() + ") is not supported.");
 		} catch (final QueryTimeoutException ex) {
 			// if a query times out, we return an empty list
-			return new ArrayList<Tag>();
+			return new ArrayList<>();
 		} finally {
 			session.close();
 		}

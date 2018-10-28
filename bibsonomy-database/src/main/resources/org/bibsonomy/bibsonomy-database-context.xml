@@ -236,9 +236,10 @@
 		<property name="fileLogic" ref="fileLogic" />
 		<property name="usersDefaultToClassify" value="${user.defaultToClassify}" />
 	</bean>
-	
+
 	<bean id="permissionDatabaseManager" class="org.bibsonomy.database.managers.PermissionDatabaseManager" factory-method="getInstance">
 		<property name="maxQuerySize" value="${database.maxQuerySize}" />
+		<property name="specialUserTagMap" value="${system.specialUsersTagMap}" />
 	</bean>
 	
 	<bean id="groupDatabaseManager" class="org.bibsonomy.database.managers.GroupDatabaseManager" factory-method="getInstance">
@@ -268,6 +269,7 @@
 	</bean>
 	
 	<bean id="tagDatabaseManager" class="org.bibsonomy.database.managers.TagDatabaseManager" factory-method="getInstance">
+		<property name="permissionDatabaseManager" ref="permissionDatabaseManager" />
 		<property name="bookmarkSearch" ref="bookmarkSearch" />
 		<property name="publicationSearch" ref="publicationSearch" />
 		<property name="chain" ref="tagChain" />
