@@ -407,7 +407,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	@Override
 	public void testGetPostsForHomepage() {
 		final List<Post<BibTex>> post = publicationDb.getPostsForHomepage(null, null, null, 10, 0, null, this.dbSession);
-		assertEquals(3, post.size());
+		assertEquals(4, post.size());
 	}
 
 	/**
@@ -415,8 +415,8 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Override
 	public void testGetPostsPopular() {
-		final List<Post<BibTex>> l = publicationDb.getPostsPopular(0, 10, 0, HashID.INTER_HASH, this.dbSession);
-		assertEquals(1, l.size());
+		final List<Post<BibTex>> popularPosts = publicationDb.getPostsPopular(0, 10, 0, HashID.INTER_HASH, this.dbSession);
+		assertEquals(1, popularPosts.size());
 	}
 
 	/**
