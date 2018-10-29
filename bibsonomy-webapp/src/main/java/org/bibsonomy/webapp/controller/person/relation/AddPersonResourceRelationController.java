@@ -43,10 +43,10 @@ public class AddPersonResourceRelationController implements MinimalisticControll
 	}
 
 	@Override
-	public View workOn(PersonResourceRelationCommand command) {
+	public View workOn(final PersonResourceRelationCommand command) {
 		final String interhash = command.getInterhash();
 		final int index = command.getIndex();
-		final PersonResourceRelationType type = command.getType();
+		PersonResourceRelationType type = command.getType();
 		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, interhash, null, null, null, null, null, null, 0, 100);
 
 		/*
@@ -67,7 +67,7 @@ public class AddPersonResourceRelationController implements MinimalisticControll
 		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, personId);
 
 		if (!present(type)) {
-			PersonUtils.getRelationType(person, post.getResource());
+			type = PersonUtils.getRelationType(person, post.getResource());
 		}
 
 		// TODO: what should we do when the person was not found?
@@ -82,6 +82,7 @@ public class AddPersonResourceRelationController implements MinimalisticControll
 		} catch (ResourcePersonAlreadyAssignedException e) {
 			errors.reject("person.error.addRelation");
 		}
+
 		final ExtendedRedirectViewWithAttributes redirect = new ExtendedRedirectViewWithAttributes(this.urlGenerator.getPersonUrl(personId));
 		if (this.errors.hasErrors()) {
 			redirect.addAttribute(ExtendedRedirectViewWithAttributes.ERRORS_KEY, this.errors);

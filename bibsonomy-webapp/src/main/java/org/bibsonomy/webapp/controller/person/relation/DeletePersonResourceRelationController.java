@@ -42,14 +42,14 @@ public class DeletePersonResourceRelationController implements MinimalisticContr
 		try {
 			this.logic.removeResourceRelation(personId, interhashToDelete, indexToDelete, typeToDelete);
 		} catch (Exception e) {
-			errors.reject("person.error.addRelation");
+			errors.reject("person.error.deleteRelation");
 		}
 
 		final ExtendedRedirectViewWithAttributes redirect = new ExtendedRedirectViewWithAttributes(this.urlGenerator.getPersonUrl(personId));
 		if (this.errors.hasErrors()) {
 			redirect.addAttribute(ExtendedRedirectViewWithAttributes.ERRORS_KEY, this.errors);
 		} else {
-			redirect.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "person.success.addRelation");
+			redirect.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "person.success.deleteRelation");
 		}
 		return redirect;
 	}

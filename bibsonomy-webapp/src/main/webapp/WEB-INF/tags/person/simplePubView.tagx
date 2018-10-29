@@ -41,7 +41,7 @@
 				<!-- href="${absoluteUrlGenerator.getPersonUrl(personId)}" -->
 				<c:choose>
                     <c:when test="${addPub}">
-                        <button type="button" class="btn btn-success btn-sm add-button"
+                        <button type="button" class="btn btn-success btn-xs add-button"
                                 data-interhash="${post.resource.interHash}"
                                 data-index="${relation.personIndex}"
                                 data-type="${relation.relationType}">
