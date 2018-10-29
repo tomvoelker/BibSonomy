@@ -93,9 +93,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 
 	@Override
-	public void onGoldStandardDelete(final String interhash, final DBSession session) {
+	public void onGoldStandardDelete(final String interhash, User loggedinUser, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onGoldStandardDelete(interhash, session);
+			plugin.onGoldStandardDelete(interhash, loggedinUser, session);
 		}
 	}
 

@@ -115,7 +115,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertNotNull(communityPost);
 
 		// test inserting of a duplicate
-		assertThat(PERSON_DATABASE_MANAGER.addResourceRelation(resourcePersonRelation, loginUser, this.dbSession), is(true));
+		assertThat(PERSON_DATABASE_MANAGER.addResourceRelation(resourcePersonRelation, loginUser, this.dbSession), is(false));
 	}
 
 	/**

@@ -100,11 +100,6 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	}
 
 	@Override
-	public void onGoldStandardDelete(final String interhash, final DBSession session) {
-		// noop
-	}
-
-	@Override
 	public void onBookmarkInsert(final Post<? extends Resource> post, User logginUser, final DBSession session) {
 		// noop
 	}

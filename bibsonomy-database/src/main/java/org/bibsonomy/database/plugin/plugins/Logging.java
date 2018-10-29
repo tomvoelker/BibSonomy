@@ -138,7 +138,7 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onGoldStandardDelete(final String interhash, final DBSession session) {
+	public void onGoldStandardDelete(final String interhash, User loggedinUser, final DBSession session) {
 		final LoggingParam logParam = new LoggingParam();
 		logParam.setOldHash(interhash);
 		logParam.setNewContentId(0);

@@ -40,6 +40,7 @@ import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.Test;
@@ -55,7 +56,7 @@ public class GoldStandardBookmarkDatabaseManagerTest extends AbstractDatabaseMan
 	
 	@Test
 	public void getGoldStandardBookmark() {
-		final Post<GoldStandardBookmark> post = manager.getPostDetails("", GOLD_BOOKMARK_INTERHASH, "", Collections.<Integer>emptyList(), this.dbSession);
+		final Post<GoldStandardBookmark> post = manager.getPostDetails("", GOLD_BOOKMARK_INTERHASH, "", Collections.emptyList(), this.dbSession);
 		final GoldStandardBookmark bookmark = post.getResource();
 		assertEquals("http://www.uni-kassel.de", bookmark.getUrl());
 		assertEquals(1025, post.getContentId().intValue());
@@ -97,7 +98,7 @@ public class GoldStandardBookmarkDatabaseManagerTest extends AbstractDatabaseMan
 		assertFalse(this.pluginMock.isOnGoldStandardDelete());
 		
 		// delete post
-		manager.deletePost("", GOLD_BOOKMARK_INTERHASH, null, this.dbSession);
+		manager.deletePost("", GOLD_BOOKMARK_INTERHASH, new User("testuser1"), this.dbSession);
 		assertNull(manager.getPostDetails("", GOLD_BOOKMARK_INTERHASH, "", null, this.dbSession));
 		
 		assertTrue(this.pluginMock.isOnGoldStandardDelete());
