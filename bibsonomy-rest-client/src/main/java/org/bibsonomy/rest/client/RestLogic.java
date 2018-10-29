@@ -37,16 +37,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.ConceptUpdateOperation;
-import org.bibsonomy.common.enums.Filter;
-import org.bibsonomy.common.enums.GroupUpdateOperation;
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.enums.TagRelation;
-import org.bibsonomy.common.enums.TagSimilarity;
-import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.enums.*;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.Document;
@@ -93,12 +84,7 @@ import org.bibsonomy.rest.client.queries.post.CreateSyncPlanQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserRelationshipQuery;
 import org.bibsonomy.rest.client.queries.post.PickPostQuery;
-import org.bibsonomy.rest.client.queries.put.ChangeConceptQuery;
-import org.bibsonomy.rest.client.queries.put.ChangeDocumentNameQuery;
-import org.bibsonomy.rest.client.queries.put.ChangeGroupQuery;
-import org.bibsonomy.rest.client.queries.put.ChangePostQuery;
-import org.bibsonomy.rest.client.queries.put.ChangeSyncStatusQuery;
-import org.bibsonomy.rest.client.queries.put.ChangeUserQuery;
+import org.bibsonomy.rest.client.queries.put.*;
 import org.bibsonomy.rest.client.util.FileFactory;
 import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.util.ProgressCallbackFactory;
@@ -544,5 +530,10 @@ public class RestLogic extends AbstractLogicInterface {
 	@Override
 	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) {
 		execute(new CreateResourcePersonRelationQuery(resourcePersonRelation));
+	}
+
+	@Override
+	public void updatePerson(Person person, PersonUpdateOperation operation) {
+		execute(new UpdatePersonQuery(person, operation));
 	}
 }
