@@ -240,6 +240,7 @@
 	<xsd:complexType name="PersonType">
 		<xsd:sequence>
 			<xsd:element name="mainName" type="PersonNameType" />
+			<xsd:element name="names" type="PersonNameType" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 		<xsd:attribute name="college" type="xsd:string" />
 		<xsd:attribute name="academicDegree" type="xsd:string" />

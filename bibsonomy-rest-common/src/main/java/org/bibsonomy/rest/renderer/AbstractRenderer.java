@@ -458,6 +458,10 @@ public abstract class AbstractRenderer implements Renderer {
 		return getEmptyBibsonomyXML(StatType.OK);
 	}
 
+	private BibsonomyXML getEmptyBibsonomyXMLWithFAIL() {
+		return getEmptyBibsonomyXML(StatType.FAIL);
+	}
+
 	private BibsonomyXML getEmptyBibsonomyXML(StatType statType) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(statType);
@@ -473,28 +477,36 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private PersonType createXmlPerson(Person person) throws InternServerException{
 		final PersonType xmlPerson = new PersonType();
-		if (person.getAcademicDegree() != null) {
+		if (present(person.getAcademicDegree())) {
 			xmlPerson.setAcademicDegree(person.getAcademicDegree());
 		}
-		if (person.getCollege() != null) {
+		if (present(person.getCollege())) {
 			xmlPerson.setCollege(person.getCollege());
 		}
-		if (person.getPersonId() != null) {
+		if (present(person.getPersonId())) {
 			xmlPerson.setPersonId(person.getPersonId());
 		}
-		if (person.getHomepage() != null) {
+		if (present(person.getHomepage())) {
 			xmlPerson.setHomepage(person.getHomepage().toString());
 		}
-		if (person.getEmail() != null) {
+		if (present(person.getEmail())) {
 			xmlPerson.setEmail(person.getEmail());
 		}
-		if (person.getOrcid() != null) {
+		if (present(person.getOrcid())) {
 			xmlPerson.setOrcid(person.getOrcid());
 		}
-		if (person.getGender() != null) {
+		if (present(person.getGender())) {
 			xmlPerson.setGender(GenderType.valueOf(person.getGender().name().toUpperCase()));
 		}
-		xmlPerson.setMainName(createXmlPersonName(person.getMainName()));
+		if (present(person.getMainName())) {
+			xmlPerson.setMainName(createXmlPersonName(person.getMainName()));
+		}
+		if (present(person.getPersonId())) {
+			xmlPerson.setPersonId(person.getPersonId());
+		}
+		if (present(person.getNames())) {
+			person.getNames().stream().map(this::createXmlPersonName).forEach(xmlPerson.getNames()::add);
+		}
 		return xmlPerson;
 	}
 
@@ -574,8 +586,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	@Override
 	public void serializeTag(final Writer writer, final Tag tag, final ViewModel model) throws InternServerException {
-		final BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setStat(StatType.OK);
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
 		xmlDoc.setTag(this.createXmlTag(tag));
 		this.serialize(writer, xmlDoc);
 	}
@@ -642,8 +653,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	@Override
 	public void serializeGroup(final Writer writer, final Group group, final ViewModel model) throws InternServerException {
-		final BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setStat(StatType.OK);
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
 		xmlDoc.setGroup(this.createXmlGroup(group));
 		this.serialize(writer, xmlDoc);
 	}
@@ -669,46 +679,40 @@ public abstract class AbstractRenderer implements Renderer {
 
 	@Override
 	public void serializeOK(final Writer writer) {
-		final BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setStat(StatType.OK);
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
 		this.serialize(writer, xmlDoc);
 	}
 
 	@Override
 	public void serializeFail(final Writer writer) {
-		final BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setStat(StatType.FAIL);
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithFAIL();
 		this.serialize(writer, xmlDoc);
 	}
 
 	@Override
 	public void serializeError(final Writer writer, final String errorMessage) {
-		final BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setStat(StatType.FAIL);
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithFAIL();
 		xmlDoc.setError(errorMessage);
 		this.serialize(writer, xmlDoc);
 	}
 
 	@Override
 	public void serializeGroupId(final Writer writer, final String groupId) {
-		final BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setStat(StatType.OK);
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
 		xmlDoc.setGroupid(groupId);
 		this.serialize(writer, xmlDoc);
 	}
 
 	@Override
 	public void serializeResourceHash(final Writer writer, final String hash) {
-		final BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setStat(StatType.OK);
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
 		xmlDoc.setResourcehash(hash);
 		this.serialize(writer, xmlDoc);
 	}
 
 	@Override
 	public void serializeUserId(final Writer writer, final String userId) {
-		final BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setStat(StatType.OK);
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
 		xmlDoc.setUserid(userId);
 		this.serialize(writer, xmlDoc);
 	}
@@ -722,16 +726,14 @@ public abstract class AbstractRenderer implements Renderer {
 
 	@Override
 	public void serializeURI(final Writer writer, final String uri) {
-		final BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setStat(StatType.OK);
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
 		xmlDoc.setUri(uri);
 		this.serialize(writer, xmlDoc);
 	}
 
 	@Override
 	public void serializeSynchronizationPosts(final Writer writer, final List<? extends SynchronizationPost> posts) {
-		final BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setStat(StatType.OK);
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
 		final SyncPostsType xmlSyncPosts = new SyncPostsType();
 		for (final SynchronizationPost post : posts) {
 			final SyncPostType xmlSyncPost = this.createXmlSyncPost(post);
@@ -764,8 +766,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	@Override
 	public void serializeSynchronizationData(final Writer writer, final SynchronizationData syncData) {
-		final BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setStat(StatType.OK);
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
 		
 		final SyncDataType xmlSyncData = new SyncDataType();
 		xmlSyncData.setLastSyncDate(this.createXmlCalendar(syncData.getLastSyncDate()));
@@ -808,8 +809,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	@Override
 	public void serializeReference(final Writer writer, final String referenceHash) {
-		final BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setStat(StatType.OK);
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
 		final ReferencesType refsType = new ReferencesType();
 		final ReferenceType type = new ReferenceType();
 		type.setInterhash(referenceHash);
@@ -854,19 +854,19 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private Person createPerson(PersonType personType) {
 		final Person person = new Person();
-		if (personType.getMainName() != null) {
+		if (present(personType.getMainName())) {
 			person.setMainName(createPersonName(personType.getMainName()));
 		}
-		if (personType.getCollege() != null) {
+		if (present(personType.getCollege())) {
 			person.setCollege(personType.getCollege());
 		}
-		if (personType.getAcademicDegree() != null) {
+		if (present(personType.getAcademicDegree())) {
 			person.setAcademicDegree(personType.getAcademicDegree());
 		}
-		if (personType.getEmail() != null) {
+		if (present(personType.getEmail())) {
 			person.setEmail(personType.getEmail());
 		}
-		if (personType.getHomepage() != null) {
+		if (present(personType.getHomepage())) {
 			try {
 				final URL url = new URL(personType.getHomepage());
 				person.setHomepage(url);
@@ -874,13 +874,18 @@ public abstract class AbstractRenderer implements Renderer {
 				person.setHomepage(null);
 			}
 		}
-		if (personType.getGender() != null) {
+		if (present(personType.getGender())) {
 			person.setGender(Gender.valueOf(personType.getGender().name()));
 		}
-		if (personType.getOrcid() != null) {
+		if (present(personType.getOrcid())) {
 			person.setOrcid(personType.getOrcid());
 		}
-		person.setPersonId(personType.getPersonId());
+		if (present(personType.getNames())) {
+			person.setNames(personType.getNames().stream().map(this::createPersonName).collect(Collectors.toList()));
+		}
+		if (present(personType.getPersonId())) {
+			person.setPersonId(personType.getPersonId());
+		}
 		return person;
 	}
 
