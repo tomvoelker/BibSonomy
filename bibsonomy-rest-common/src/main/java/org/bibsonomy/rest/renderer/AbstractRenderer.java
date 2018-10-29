@@ -73,6 +73,9 @@ import org.bibsonomy.model.sync.SynchronizationAction;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
+import org.bibsonomy.model.user.remote.RemoteUserId;
+import org.bibsonomy.model.user.remote.SamlRemoteUserId;
+import org.bibsonomy.model.user.remote.SimpleRemoteUserId;
 import org.bibsonomy.model.util.ModelValidationUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
@@ -81,38 +84,7 @@ import org.bibsonomy.model.util.data.DataAccessor;
 import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.renderer.xml.AbstractPublicationType;
-import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
-import org.bibsonomy.rest.renderer.xml.BibtexType;
-import org.bibsonomy.rest.renderer.xml.BookmarkType;
-import org.bibsonomy.rest.renderer.xml.DocumentType;
-import org.bibsonomy.rest.renderer.xml.DocumentsType;
-import org.bibsonomy.rest.renderer.xml.ExtraUrlType;
-import org.bibsonomy.rest.renderer.xml.ExtraUrlsType;
-import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
-import org.bibsonomy.rest.renderer.xml.GroupType;
-import org.bibsonomy.rest.renderer.xml.GroupsType;
-import org.bibsonomy.rest.renderer.xml.PersonNameType;
-import org.bibsonomy.rest.renderer.xml.PersonType;
-import org.bibsonomy.rest.renderer.xml.PostType;
-import org.bibsonomy.rest.renderer.xml.PostsType;
-import org.bibsonomy.rest.renderer.xml.PublicationType;
-import org.bibsonomy.rest.renderer.xml.PublicationsType;
-import org.bibsonomy.rest.renderer.xml.PublishedInType;
-import org.bibsonomy.rest.renderer.xml.ReferenceType;
-import org.bibsonomy.rest.renderer.xml.ReferencesType;
-import org.bibsonomy.rest.renderer.xml.RelationType;
-import org.bibsonomy.rest.renderer.xml.ResourceLinkType;
-import org.bibsonomy.rest.renderer.xml.ResourcePersonRelationType;
-import org.bibsonomy.rest.renderer.xml.StatType;
-import org.bibsonomy.rest.renderer.xml.SyncDataType;
-import org.bibsonomy.rest.renderer.xml.SyncPostType;
-import org.bibsonomy.rest.renderer.xml.SyncPostsType;
-import org.bibsonomy.rest.renderer.xml.TagType;
-import org.bibsonomy.rest.renderer.xml.TagsType;
-import org.bibsonomy.rest.renderer.xml.UploadDataType;
-import org.bibsonomy.rest.renderer.xml.UserType;
-import org.bibsonomy.rest.renderer.xml.UsersType;
+import org.bibsonomy.rest.renderer.xml.*;
 import org.bibsonomy.rest.validation.StandardXMLModelValidator;
 import org.bibsonomy.rest.validation.XMLModelValidator;
 import org.bibsonomy.util.ValidationUtils;
@@ -459,12 +431,16 @@ public abstract class AbstractRenderer implements Renderer {
 			xmlUser.setPrediction(BigInteger.valueOf(user.getPrediction()));
 		}
 		if (user.getConfidence() != null) {
-			xmlUser.setConfidence(Double.valueOf(user.getConfidence()));
+			xmlUser.setConfidence(user.getConfidence());
 		}
 		xmlUser.setAlgorithm(user.getAlgorithm());
 		xmlUser.setClassifierMode(user.getMode());
 		if (user.getToClassify() != null) {
 			xmlUser.setToClassify(BigInteger.valueOf(user.getToClassify()));
+		}
+		if (present(user.getRemoteUserIds())) {
+			user.getRemoteUserIds().stream().map(this::createXmlRemoteUserIdType).
+					forEach(xmlUser.getRemoteUserId()::add);
 		}
 	
 		/*
@@ -481,6 +457,15 @@ public abstract class AbstractRenderer implements Renderer {
 			xmlUser.getGroups().setEnd(BigInteger.valueOf(groups.size()));
 		}
 		return xmlUser;
+	}
+
+	private RemoteUserIdType createXmlRemoteUserIdType(RemoteUserId remoteUserId) {
+		final RemoteUserIdType remoteUserIdType = new RemoteUserIdType();
+		remoteUserIdType.setUserId(remoteUserId.getSimpleId());
+		if (remoteUserId instanceof SamlRemoteUserId) {
+			remoteUserIdType.setIdentityProvider(((SamlRemoteUserId) remoteUserId).getIdentityProviderId());
+		}
+		return remoteUserIdType;
 	}
 
 	private BibsonomyXML getEmptyBibsonomyXMLWithOK() {
@@ -665,10 +650,8 @@ public abstract class AbstractRenderer implements Renderer {
 		xmlGroup.setHref(this.urlRenderer.createHrefForGroup(group.getName()));
 		xmlGroup.setDescription(group.getDescription());
 		if (present(group.getMemberships())) {
-			for (final GroupMembership membership : group.getMemberships()) {
-				final User user = membership.getUser();
-				xmlGroup.getUser().add(this.createXmlUser(user));
-			}
+			group.getMemberships().stream().map(GroupMembership::getUser).
+					map(this::createXmlUser).forEach(xmlGroup.getUser()::add);
 		}
 		if (present(group.getParent())) {
 			xmlGroup.setParent(createXmlGroup(group.getParent()));
@@ -1194,6 +1177,9 @@ public abstract class AbstractRenderer implements Renderer {
 		if (xmlUser.getToClassify() != null) {
 			user.setToClassify(xmlUser.getToClassify().intValue());
 		}
+		if (present(xmlUser.getRemoteUserId())) {
+			xmlUser.getRemoteUserId().stream().map(this::createRemoteUserId).forEach(user::setRemoteUserId);
+		}
 		/*
 		 * copy groups
 		 */
@@ -1205,6 +1191,13 @@ public abstract class AbstractRenderer implements Renderer {
 			}
 		}
 		return user;
+	}
+
+	private RemoteUserId createRemoteUserId(RemoteUserIdType remoteUserIdType) {
+		if (present(remoteUserIdType.getIdentityProvider())) {
+			return new SamlRemoteUserId(remoteUserIdType.getIdentityProvider(), remoteUserIdType.getUserId());
+		}
+		return new SimpleRemoteUserId(remoteUserIdType.getUserId());
 	}
 
 	/**

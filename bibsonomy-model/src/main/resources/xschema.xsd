@@ -90,7 +90,7 @@
 	-->
 	<xsd:complexType name="UserType">
 		<xsd:sequence>
-			<xsd:element name="groups" type="GroupsType" minOccurs="0" maxOccurs="1">
+			<xsd:element name="groups" type="GroupsType" minOccurs="0" >
 				<xsd:annotation>
 					<xsd:documentation>
 						The groups, the user is a member of, excluding
@@ -99,6 +99,7 @@
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="remoteUserId" minOccurs="0" maxOccurs="unbounded" type="RemoteUserIdType" />
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="required" />
 		<xsd:attribute name="realname" type="xsd:string" />
@@ -115,6 +116,12 @@
 		<!-- link to details page -->
 		<xsd:attribute name="href" type="xsd:anyURI" />
 		<xsd:attribute name="confidence" type="xsd:double" />
+	</xsd:complexType>
+
+
+	<xsd:complexType name="RemoteUserIdType">
+		<xsd:attribute name="userId" type="xsd:string" />
+		<xsd:attribute name="identityProvider" type="xsd:string" />
 	</xsd:complexType>
 
 	<!--
