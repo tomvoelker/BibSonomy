@@ -28,7 +28,6 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -72,6 +71,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * @return PermissionDatabaseManager
 	 */
+	@Deprecated // use spring config
 	public static PermissionDatabaseManager getInstance() {
 		return singleton;
 	}
@@ -607,7 +607,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param userName the name of the user
 	 * @return <code>true</code> iff the user is a special user
 	 */
-	public boolean isSpecialUser(String userName) {
+	public boolean isSpecialUser(final String userName) {
 		return this.specialUserTagMap.containsKey(userName);
 	}
 
@@ -615,7 +615,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param userName
 	 * @return the tags for this special user
 	 */
-	public List<Tag> getTagsForSpecialUser(String userName) {
+	public List<Tag> getTagsForSpecialUser(final String userName) {
 		return Collections.singletonList(TagUtils.createFrequentTag(this.specialUserTagMap.get(userName)));
 	}
 
