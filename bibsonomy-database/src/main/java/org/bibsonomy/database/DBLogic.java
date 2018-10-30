@@ -31,9 +31,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -288,8 +288,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public User getUserDetails(final String userName) {
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			/*
 			 * We don't use userName but user.getName() in the remaining part of
 			 * this method, since the name gets normalized in getUserDetails().
@@ -302,7 +301,7 @@ public class DBLogic implements LogicInterface {
 			 * that case, the group's name is user.getName()
 			 */
 			if (this.permissionDBManager.isAdminOrSelf(this.loginUser, user.getName())
-					|| this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, user.getName(), GroupRole.ADMINISTRATOR)) {
+							|| this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, user.getName(), GroupRole.ADMINISTRATOR)) {
 				user.setGroups(this.groupDBManager.getGroupsForUser(user.getName(), true, session));
 				user.setPendingGroups(this.groupDBManager.getPendingMembershipsForUser(userName, session));
 				// inject the reported spammers.
@@ -360,8 +359,6 @@ public class DBLogic implements LogicInterface {
 			 */
 
 			return user;
-		} finally {
-			session.close();
 		}
 	}
 
@@ -390,10 +387,9 @@ public class DBLogic implements LogicInterface {
 
 		final List<SynchronizationPost> posts;
 
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			final SynchronizationData data = this.syncDBManager.getLastSyncData(userName, service, resourceType, null, session);
-			
+
 			/*
 			 * check for a running synchronization
 			 */
@@ -460,19 +456,17 @@ public class DBLogic implements LogicInterface {
 			final String loginUserName = this.loginUser.getName();
 			for (final SynchronizationPost post : posts) {
 				switch (post.getAction()) {
-				case CREATE_CLIENT:
-					// $FALL-THROUGH$
-				case UPDATE_CLIENT:
-					// FIXME: this is horribly expensive!
-					post.setPost(resourceTypeDatabaseManager.getPostDetails(loginUserName, post.getIntraHash(), userName, listOfGroupIDs, session));
-					break;
-				default:
-					break;
+					case CREATE_CLIENT:
+						// $FALL-THROUGH$
+					case UPDATE_CLIENT:
+						// FIXME: this is horribly expensive!
+						post.setPost(resourceTypeDatabaseManager.getPostDetails(loginUserName, post.getIntraHash(), userName, listOfGroupIDs, session));
+						break;
+					default:
+						break;
 				}
 			}
 
-		} finally {
-			session.close();
 		}
 
 		return posts;
@@ -558,11 +552,8 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void deleteSyncServer(final String userName, final URI service) {
 		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			this.syncDBManager.deleteSyncServerForUser(userName, service, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -575,11 +566,8 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public List<SyncService> getSyncServiceSettings(final String userName, final URI service, final boolean server) {
 		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			return this.syncDBManager.getSyncServiceSettings(userName, service, server, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -590,11 +578,8 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public SyncService getSyncServiceDetails(final URI serviceURI) {
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			return this.syncDBManager.getSyncServiceDetails(serviceURI, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -608,8 +593,7 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public SynchronizationData getLastSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType) {
 		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			final SynchronizationData lastSyncData = this.syncDBManager.getLastSyncData(userName, service, resourceType, null, session);
 			if (present(lastSyncData)) {
 				return lastSyncData;
@@ -626,8 +610,6 @@ public class DBLogic implements LogicInterface {
 			synchronizationData.setLastSyncDate(new Date(0));
 			synchronizationData.setStatus(SynchronizationStatus.UNDONE);
 			return synchronizationData;
-		} finally {
-			session.close();
 		}
 	}
 
@@ -1139,7 +1121,7 @@ public class DBLogic implements LogicInterface {
 		/*
 		 * to store hashes of missing resources
 		 */
-		final List<String> missingResources = new LinkedList<String>();
+		final List<String> missingResources = new LinkedList<>();
 
 		final DBSession session = this.openSession();
 		try {
@@ -2979,11 +2961,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void createRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
-		this.permissionDBManager.ensureAdminAccess(this.loginUser); // only
-		// admins
-		// can
-		// create
-		// references
+		this.permissionDBManager.ensureAdminAccess(this.loginUser); // only admins can create references
 
 		final DBSession session = this.openSession();
 		try {
@@ -3002,11 +2980,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void deleteRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
-		this.permissionDBManager.ensureAdminAccess(this.loginUser); // only
-		// admins
-		// can
-		// delete
-		// references
+		this.permissionDBManager.ensureAdminAccess(this.loginUser); // only admins can delete references
 
 		final DBSession session = this.openSession();
 		try {
@@ -3424,42 +3398,48 @@ public class DBLogic implements LogicInterface {
 	public void updatePerson(final Person person, final PersonUpdateOperation operation) {
 		this.ensureLoggedInAndNoSpammer();
 
+		// at least the person id must be set (to know which person should be updated)
 		final String personId = person.getPersonId();
 		if (!present(personId)) {
 			throw new ValidationException("Invalid person ID given.");
 		}
-			
+
 		try (final DBSession session = this.openSession()) {
-			// is the person claimed?
-			final String claimedUser = person.getUser();
-			final String loggedinUserName = this.loginUser.getName();
-			if (present(claimedUser)) {
-				if (!claimedUser.equals(loggedinUserName)) {
-					throw new AccessDeniedException();
-				}
-
-				if (present(personId)) {
-					final Person personOld = this.personDBManager.getPersonById(personId, session);
-					if (personOld == null) {
-						throw new NoSuchElementException("person " + personId);
-					}
-
-					// the claimed person can not be changed
-					if (personOld.getUser() != null && !personOld.getUser().equals(loggedinUserName)) {
-						throw new AccessDeniedException();
-					}
-				}
+			// check that the old person exists
+			final Person personOld = this.personDBManager.getPersonById(personId, session);
+			if (personOld == null) {
+				throw new NoSuchElementException("person " + personId);
 			}
-			
-			// check for email, homepage - can yonly be edited if the editr claimed the person
-			if (operation.equals(PersonUpdateOperation.UPDATE_EMAIL) || operation.equals(PersonUpdateOperation.UPDATE_HOMEPAGE)) {
-				if (claimedUser == null) {
-					throw new AccessDeniedException();
-				}
+
+			/*
+			 * check if the user can edit the person
+			 * (when it is already claimed by an user only that user (and admins) can edit the person)
+			 */
+			final String oldClaimedUser = personOld.getUser();
+			if (present(oldClaimedUser)) {
+				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, oldClaimedUser);
+			}
+
+			/*
+			 * a person can only be claimed by the loggedin user or the admin can do it for everyone
+			 * FIXME: check that the user exisits!
+			 */
+			final String claimedUser = person.getUser();
+			final boolean personClaimed = present(claimedUser);
+			if (personClaimed) {
+				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, claimedUser);
+			}
+
+			/*
+			 * check for email, homepage - can only be edited if the loggedin user claimed
+			 * the person (but admins can edit infos anyway)
+			 */
+			if (!personClaimed && Arrays.asList(PersonUpdateOperation.UPDATE_EMAIL, PersonUpdateOperation.UPDATE_HOMEPAGE).contains(operation)) {
+				this.permissionDBManager.ensureAdminAccess(this.loginUser);
 			}
 			
 			person.setChangeDate(new Date());
-			person.setChangedBy(loggedinUserName);
+			person.setChangedBy(this.loginUser.getName());
 
 			switch (operation) {
 				case UPDATE_ORCID: 
@@ -3498,8 +3478,6 @@ public class DBLogic implements LogicInterface {
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
-	 * 
-	 * FIXME TODO integrate into maincreateOrUpdatePerson 
 	 */
 	@Override
 	public void createOrUpdatePerson(final Person person) {
@@ -3746,20 +3724,17 @@ public class DBLogic implements LogicInterface {
 					rVal.addAll(byInterHash.values());
 				}
 				if (this.getOrder() == ResourcePersonRelationQueryBuilder.Order.publicationYear) {
-					Collections.sort(rVal, new Comparator<ResourcePersonRelation>() {
-						@Override
-						public int compare(final ResourcePersonRelation o1, final ResourcePersonRelation o2) {
-							try {
-								final int year1 = Integer.parseInt(o1.getPost().getResource().getYear().trim());
-								final int year2 = Integer.parseInt(o2.getPost().getResource().getYear().trim());
-								if (year1 != year2) {
-									return year2 - year1;
-								}
-							} catch (final Exception e) {
-								log.warn(e);
+					Collections.sort(rVal, (o1, o2) -> {
+						try {
+							final int year1 = Integer.parseInt(o1.getPost().getResource().getYear().trim());
+							final int year2 = Integer.parseInt(o2.getPost().getResource().getYear().trim());
+							if (year1 != year2) {
+								return year2 - year1;
 							}
-							return System.identityHashCode(o1) - System.identityHashCode(o2);
+						} catch (final Exception e) {
+							log.warn(e);
 						}
+						return System.identityHashCode(o1) - System.identityHashCode(o2);
 					});
 				} else if (this.getOrder() != null) {
 					throw new UnsupportedOperationException();
@@ -3767,7 +3742,6 @@ public class DBLogic implements LogicInterface {
 			}
 		};
 	}
-
 
 	/**
 	 * 
