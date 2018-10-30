@@ -134,6 +134,16 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
+	 * tests {@link PersonDatabaseManager#getResourcePersonRelations(String, Integer, PersonResourceRelationType, DBSession)}
+	 */
+	@Test
+	public void testGetResourcePersonRelations() {
+		final List<ResourcePersonRelation> resourcePersonRelations = PERSON_DATABASE_MANAGER.getResourcePersonRelations("0b539e248a02e3edcfe591c64346c7a0", 0, PersonResourceRelationType.AUTHOR, this.dbSession);
+
+		assertThat(resourcePersonRelations.size(), is(1));
+	}
+
+	/**
 	 * tests {@link PersonDatabaseManager#updateAcademicDegree(Person, org.bibsonomy.database.common.DBSession)}
 	 */
 	@Test

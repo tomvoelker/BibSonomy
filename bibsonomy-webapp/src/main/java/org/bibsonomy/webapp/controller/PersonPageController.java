@@ -456,7 +456,7 @@ public class PersonPageController extends SingleResourceListController implement
 		}
 		
 		final PersonUpdateOperation operation = command.getUpdateOperation();
-		JSONObject jsonResponse = new JSONObject();
+		final JSONObject jsonResponse = new JSONObject();
 		
 		// set all attributes that might be updated
 		person.setAcademicDegree(commandPerson.getAcademicDegree());
@@ -487,7 +487,8 @@ public class PersonPageController extends SingleResourceListController implement
 			jsonResponse.put("status", true);
 			command.setResponseString(jsonResponse.toString());
 			return Views.AJAX_JSON;
-		} catch (Exception e) {
+		} catch (final Exception e) {
+			log.error("error while updating person " + commandPerson.getPersonId(), e);
 			jsonResponse.put("status", false);
 			// TODO: set proper error message
 			//jsonResponse.put("message", "Some error occured");
