@@ -28,6 +28,7 @@ package org.bibsonomy.rest.renderer.impl;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.List;
@@ -39,14 +40,7 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
 import org.bibsonomy.layout.jabref.JabRefConfig;
-import org.bibsonomy.model.Document;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.data.DataAccessor;
@@ -163,6 +157,11 @@ public class JabrefLayoutRenderer implements Renderer {
 
 	@Override
 	public void serializePerson(Writer writer, Person person, ViewModel viewModel) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializePersonMatch(StringWriter writer, PersonMatch match, ViewModel viewModel) {
 		throw new UnsupportedOperationException();
 	}
 

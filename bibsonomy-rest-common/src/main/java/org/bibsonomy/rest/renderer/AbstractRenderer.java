@@ -478,10 +478,14 @@ public abstract class AbstractRenderer implements Renderer {
         setValue(xmlPersonMatch::setPerson2, match::getPerson2, this::createXmlPerson);
         setValue(xmlPersonMatch::setState, match::getState);
         if (present(match.getPerson1Posts())) {
-        	match.getPerson1Posts().stream().map(this::createXmlPost).forEach(xmlPersonMatch.getPerson1Posts()::add);
+        	for (Post post : match.getPerson1Posts()) {
+        		xmlPersonMatch.getPerson1Posts().add(createXmlPost(post));
+			}
 		}
 		if (present(match.getPerson2Posts())) {
-			match.getPerson2Posts().stream().map(this::createXmlPost).forEach(xmlPersonMatch.getPerson2Posts()::add);
+			for (Post post : match.getPerson2Posts()) {
+				xmlPersonMatch.getPerson2Posts().add(createXmlPost(post));
+			}
 		}
 		setValue(xmlPersonMatch::setMatchId, match::getMatchID);
 		setValue(xmlPersonMatch::setState, match::getState);
