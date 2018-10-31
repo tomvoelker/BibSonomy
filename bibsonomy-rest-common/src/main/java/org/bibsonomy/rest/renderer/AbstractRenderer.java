@@ -488,9 +488,7 @@ public abstract class AbstractRenderer implements Renderer {
 		}
 		setValue(xmlPersonMatch::setMatchId, match::getMatchID);
 		setValue(xmlPersonMatch::setState, match::getState);
-		if (present(match.getUserDenies())) {
-			match.getUserDenies().forEach(xmlPersonMatch.getUserDenies()::add);
-		}
+		setValue(xmlPersonMatch.getUserDenies()::addAll, match::getUserDenies);
 		return xmlPersonMatch;
 	}
 
