@@ -461,10 +461,7 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	private static<T> void setValue(Consumer<T> consumer, Supplier<T> supplier) {
-	    final T value = supplier.get();
-	    if (present(value)) {
-	        consumer.accept(value);
-        }
+        setValue(consumer, supplier, Function.identity());
     }
 
     private static<T,E> void setValue(Consumer<T> consumer, Supplier<E> supplier, Function<E, T> transformer) {
