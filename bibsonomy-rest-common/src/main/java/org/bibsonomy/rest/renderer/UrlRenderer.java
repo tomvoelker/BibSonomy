@@ -393,6 +393,10 @@ public class UrlRenderer {
 		return builder;
 	}
 
+	public UrlBuilder createUrlBuilderForPersonMatch() {
+		return createUrlBuilderForPersons().addPathElement(RESTConfig.PERSONS_MERGE_URL);
+	}
+
 	public UrlBuilder createUrlBuilderForPersons(String personId) {
 		return createUrlBuilderForPersons().addPathElement(personId);
 	}

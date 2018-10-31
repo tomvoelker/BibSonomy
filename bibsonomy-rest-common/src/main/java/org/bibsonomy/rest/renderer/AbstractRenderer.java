@@ -29,19 +29,18 @@ package org.bibsonomy.rest.renderer;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Reader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -52,21 +51,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Document;
-import org.bibsonomy.model.GoldStandard;
-import org.bibsonomy.model.GoldStandardPublication;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.GroupMembership;
-import org.bibsonomy.model.ImportResource;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
@@ -469,6 +454,37 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	@Override
+	public void serializePersonMatch(StringWriter writer, PersonMatch match, ViewModel viewModel) {
+		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
+		xmlDoc.setPersonMatch(createXmlPersonMatch(match));
+		serialize(writer, xmlDoc);
+	}
+
+	private static<T> void setValue(Consumer<T> consumer, Supplier<T> supplier) {
+	    final T value = supplier.get();
+	    if (present(value)) {
+	        consumer.accept(value);
+        }
+    }
+
+    private static<T,E> void setValue(Consumer<T> consumer, Supplier<E> supplier, Function<E, T> transformer) {
+	    final E value = supplier.get();
+	    if (present(value)) {
+	        consumer.accept(transformer.apply(value));
+        }
+    }
+
+	private PersonMatchType createXmlPersonMatch(PersonMatch match) {
+		final PersonMatchType xmlPersonMatch = new PersonMatchType();
+		setValue(xmlPersonMatch::setMatchId, match::getMatchID);
+		setValue(xmlPersonMatch::setPerson1, match::getPerson1, this::createXmlPerson);
+        setValue(xmlPersonMatch::setPerson2, match::getPerson2, this::createXmlPerson);
+        setValue(xmlPersonMatch::setState, match::getState);
+        //setValue(xmlPersonMatch::setPerson1Posts, match::getPerson1Posts, );
+		return xmlPersonMatch;
+	}
+
+	@Override
 	public void serializePerson(Writer writer, Person person, ViewModel viewModel) {
 		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
 		xmlDoc.setPerson(createXmlPerson(person));
@@ -477,33 +493,16 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private PersonType createXmlPerson(Person person) throws InternServerException{
 		final PersonType xmlPerson = new PersonType();
-		if (present(person.getAcademicDegree())) {
-			xmlPerson.setAcademicDegree(person.getAcademicDegree());
-		}
-		if (present(person.getCollege())) {
-			xmlPerson.setCollege(person.getCollege());
-		}
-		if (present(person.getPersonId())) {
-			xmlPerson.setPersonId(person.getPersonId());
-		}
-		if (present(person.getHomepage())) {
-			xmlPerson.setHomepage(person.getHomepage().toString());
-		}
-		if (present(person.getEmail())) {
-			xmlPerson.setEmail(person.getEmail());
-		}
-		if (present(person.getOrcid())) {
-			xmlPerson.setOrcid(person.getOrcid());
-		}
+		setValue(xmlPerson::setAcademicDegree, person::getAcademicDegree);
+		setValue(xmlPerson::setCollege, person::getCollege);
+		setValue(xmlPerson::setPersonId, person::getPersonId);
+        setValue(xmlPerson::setHomepage, person::getHomepage, URL::toString);
+        setValue(xmlPerson::setEmail, person::getEmail);
+		setValue(xmlPerson::setOrcid, person::getOrcid);
 		if (present(person.getGender())) {
 			xmlPerson.setGender(GenderType.valueOf(person.getGender().name().toUpperCase()));
 		}
-		if (present(person.getMainName())) {
-			xmlPerson.setMainName(createXmlPersonName(person.getMainName()));
-		}
-		if (present(person.getPersonId())) {
-			xmlPerson.setPersonId(person.getPersonId());
-		}
+		setValue(xmlPerson::setMainName, person::getMainName, this::createXmlPersonName);
 		if (present(person.getNames())) {
 			person.getNames().stream().map(this::createXmlPersonName).forEach(xmlPerson.getNames()::add);
 		}

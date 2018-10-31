@@ -40,15 +40,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.*;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
-import org.bibsonomy.model.Document;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.GroupMembership;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
@@ -72,18 +64,7 @@ import org.bibsonomy.rest.client.queries.delete.DeleteUserQuery;
 import org.bibsonomy.rest.client.queries.delete.RemoveUserFromGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.UnpickClipboardQuery;
 import org.bibsonomy.rest.client.queries.get.*;
-import org.bibsonomy.rest.client.queries.post.AddUsersToGroupQuery;
-import org.bibsonomy.rest.client.queries.post.CreateConceptQuery;
-import org.bibsonomy.rest.client.queries.post.CreateGroupQuery;
-import org.bibsonomy.rest.client.queries.post.CreatePersonQuery;
-import org.bibsonomy.rest.client.queries.post.CreatePostDocumentQuery;
-import org.bibsonomy.rest.client.queries.post.CreatePostQuery;
-import org.bibsonomy.rest.client.queries.post.CreateRelationQuery;
-import org.bibsonomy.rest.client.queries.post.CreateResourcePersonRelationQuery;
-import org.bibsonomy.rest.client.queries.post.CreateSyncPlanQuery;
-import org.bibsonomy.rest.client.queries.post.CreateUserQuery;
-import org.bibsonomy.rest.client.queries.post.CreateUserRelationshipQuery;
-import org.bibsonomy.rest.client.queries.post.PickPostQuery;
+import org.bibsonomy.rest.client.queries.post.*;
 import org.bibsonomy.rest.client.queries.put.*;
 import org.bibsonomy.rest.client.util.FileFactory;
 import org.bibsonomy.rest.client.util.ProgressCallback;
@@ -535,5 +516,10 @@ public class RestLogic extends AbstractLogicInterface {
 	@Override
 	public void updatePerson(Person person, PersonUpdateOperation operation) {
 		execute(new UpdatePersonQuery(person, operation));
+	}
+
+	@Override
+	public boolean acceptMerge(PersonMatch match) {
+		return execute(new MergePersonQuery(match));
 	}
 }
