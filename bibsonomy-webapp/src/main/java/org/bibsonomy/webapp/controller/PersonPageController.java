@@ -456,8 +456,9 @@ public class PersonPageController extends SingleResourceListController implement
 		}
 		
 		final PersonUpdateOperation operation = command.getUpdateOperation();
-		JSONObject jsonResponse = new JSONObject();
-		
+		final JSONObject jsonResponse = new JSONObject();
+
+		// FIXME: why do we have to copy all values from the command person to the person found in the logic?
 		// set all attributes that might be updated
 		person.setAcademicDegree(commandPerson.getAcademicDegree());
 		person.setOrcid(commandPerson.getOrcid().replaceAll("-", ""));
@@ -473,27 +474,19 @@ public class PersonPageController extends SingleResourceListController implement
 		//command.getPerson().getMainName().setMain(false);
 		//command.getPerson().setMainName(Integer.parseInt(command.getFormSelectedName()));
 
-		// bind the new person
-		command.setPerson(person);
-
 		try {
-			if (operation != null) {
-				this.logic.updatePerson(commandPerson, operation);
-			} else {
-				// standard
-				this.logic.createOrUpdatePerson(commandPerson);
-			}
-
+			this.logic.updatePerson(person, operation);
 			jsonResponse.put("status", true);
-			command.setResponseString(jsonResponse.toString());
-			return Views.AJAX_JSON;
-		} catch (Exception e) {
+
+		} catch (final Exception e) {
+			log.error("error while updating person " + commandPerson.getPersonId(), e);
 			jsonResponse.put("status", false);
 			// TODO: set proper error message
 			//jsonResponse.put("message", "Some error occured");
-			command.setResponseString(jsonResponse.toString());
-			return Views.AJAX_JSON;
 		}
+
+		command.setResponseString(jsonResponse.toString());
+		return Views.AJAX_JSON;
 	}
 
 	/**
@@ -665,7 +658,7 @@ public class PersonPageController extends SingleResourceListController implement
 			similarAuthorRelations.add(relation);
 		}
 		command.setSimilarAuthorPubs(similarAuthorRelations);
-		
+
 		return Views.PERSON_SHOW;
 	}
 

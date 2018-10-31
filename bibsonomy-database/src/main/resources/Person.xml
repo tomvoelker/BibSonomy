@@ -127,7 +127,9 @@
 		SELECT <include refid="commonResourcePersonRelationColumns" />
 		FROM pub_person
 		WHERE simhash1 = #post.resource.interHash#
-		AND person_id = #person.personId#
+		<isNotNull property="person">
+			AND person_id = #person.personId#
+		</isNotNull>
 		AND relator_code = #relationType.relatorCode#
 		AND person_index = #personIndex#
 	</select>

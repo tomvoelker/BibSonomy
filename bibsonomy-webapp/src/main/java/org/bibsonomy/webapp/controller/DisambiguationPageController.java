@@ -150,9 +150,13 @@ public class DisambiguationPageController extends SingleResourceListController i
 	private View disambiguateAction(final DisambiguationPageCommand command) {
 		final PersonResourceRelationType requestedRole = command.getRequestedRole();
 		final int requestedIndex = command.getRequestedIndex().intValue();
-		
-		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byInterhash(command.getPost().getResource().getInterHash()).byRelationType(requestedRole).byAuthorIndex(requestedIndex));
-		if (matchingRelations.size() > 0 ) {
+
+		final ResourcePersonRelationQueryBuilder personResourceRelationQuery = new ResourcePersonRelationQueryBuilder()
+						.byInterhash(command.getPost().getResource().getInterHash())
+						.byRelationType(requestedRole)
+						.byAuthorIndex(requestedIndex);
+		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations(personResourceRelationQuery);
+		if (matchingRelations.size() > 0) {
 			// FIXME: cache urlgenerator
 			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingRelations.get(0).getPerson().getPersonId()));
 		}
@@ -246,7 +250,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 			}
 		}
 		
-		command.setSuggestedPersonPosts(suggestedPersonPosts);		
+		command.setSuggestedPersonPosts(suggestedPersonPosts);
 		command.setSuggestedPosts(noPersonRelPubList);
 		
 		return Views.DISAMBIGUATION;
