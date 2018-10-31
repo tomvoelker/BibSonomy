@@ -480,7 +480,14 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(xmlPersonMatch::setPerson1, match::getPerson1, this::createXmlPerson);
         setValue(xmlPersonMatch::setPerson2, match::getPerson2, this::createXmlPerson);
         setValue(xmlPersonMatch::setState, match::getState);
-        //setValue(xmlPersonMatch::setPerson1Posts, match::getPerson1Posts, );
+        if (present(match.getPerson1Posts())) {
+        	match.getPerson1Posts().stream().map(this::createXmlPost).forEach(xmlPersonMatch.getPerson1Posts()::add);
+		}
+		if (present(match.getPerson2Posts())) {
+			match.getPerson2Posts().stream().map(this::createXmlPost).forEach(xmlPersonMatch.getPerson2Posts()::add);
+		}
+		setValue(xmlPersonMatch::setMatchId, match::getMatchID);
+		setValue(xmlPersonMatch::setState, match::getState);
 		return xmlPersonMatch;
 	}
 
@@ -499,9 +506,7 @@ public abstract class AbstractRenderer implements Renderer {
         setValue(xmlPerson::setHomepage, person::getHomepage, URL::toString);
         setValue(xmlPerson::setEmail, person::getEmail);
 		setValue(xmlPerson::setOrcid, person::getOrcid);
-		if (present(person.getGender())) {
-			xmlPerson.setGender(GenderType.valueOf(person.getGender().name().toUpperCase()));
-		}
+		setValue(xmlPerson::setGender, person::getGender, p -> GenderType.valueOf(p.name().toUpperCase()));
 		setValue(xmlPerson::setMainName, person::getMainName, this::createXmlPersonName);
 		if (present(person.getNames())) {
 			person.getNames().stream().map(this::createXmlPersonName).forEach(xmlPerson.getNames()::add);
@@ -525,10 +530,10 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private ResourcePersonRelationType createXmlResourcePersonRelation(ResourcePersonRelation resourcePersonRelation) {
 		final ResourcePersonRelationType xmlResourcePersonRelation = new ResourcePersonRelationType();
-		xmlResourcePersonRelation.setPerson(createXmlPerson(resourcePersonRelation.getPerson()));
-		xmlResourcePersonRelation.setResource(createXmlResourceLink(resourcePersonRelation.getPost()));
-		xmlResourcePersonRelation.setRelationType(createXmlRelationType(resourcePersonRelation.getRelationType()));
-		xmlResourcePersonRelation.setPersonIndex(BigInteger.valueOf(resourcePersonRelation.getPersonIndex()));
+		setValue(xmlResourcePersonRelation::setPerson, resourcePersonRelation::getPerson, this::createXmlPerson);
+		setValue(xmlResourcePersonRelation::setResource, resourcePersonRelation::getPost, this::createXmlResourceLink);
+		setValue(xmlResourcePersonRelation::setRelationType, resourcePersonRelation::getRelationType, this::createXmlRelationType);
+		setValue(xmlResourcePersonRelation::setPersonIndex, resourcePersonRelation::getPersonIndex, i -> BigInteger.valueOf(i));
 		return xmlResourcePersonRelation;
 	}
 

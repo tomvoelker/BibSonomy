@@ -515,8 +515,8 @@
 		<xsd:sequence>
 			<xsd:element name="person1" type="PersonType" />
 			<xsd:element name="person2" type="PersonType" />
-			<xsd:element name="person1Posts" type="PostsType" />
-			<xsd:element name="person2Posts" type="PostsType" />
+			<xsd:element name="person1Posts" type="PostType" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="person2Posts" type="PostType" minOccurs="0" maxOccurs="unbounded" />
 			<xsd:element name="userDenies" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 		<xsd:attribute name="state" type="xsd:int" />
