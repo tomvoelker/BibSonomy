@@ -41,6 +41,7 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
@@ -90,8 +91,12 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 	}
 
 	@Override
-	protected View finalRedirect(final String userName, final Post<BibTex> post, final String referer) {
-		return new ExtendedRedirectView(this.urlGenerator.getResourceUrl(post.getResource()));
+	protected View finalRedirect(final String userName, final Post<BibTex> post, final String referer, boolean update) {
+		final String redirectUrl = present(referer) ? referer : this.urlGenerator.getResourceUrl(post.getResource());
+
+		final ExtendedRedirectViewWithAttributes view = new ExtendedRedirectViewWithAttributes(redirectUrl);
+		view.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "actions.communityPost." + (update ? "update" : "create") + ".success");
+		return view;
 	}
 
 	private static Post<BibTex> convertToGoldStandard(final Post<BibTex> post) {

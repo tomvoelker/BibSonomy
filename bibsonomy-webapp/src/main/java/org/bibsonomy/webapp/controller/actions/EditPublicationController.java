@@ -77,7 +77,7 @@ public class EditPublicationController extends AbstractEditPublicationController
 	}
 	
 	@Override
-	protected View finalRedirect(String userName, Post<BibTex> post, String referer) {
+	protected View finalRedirect(String userName, Post<BibTex> post, String referer, boolean update) {
 		
 		/*
 		 * If a SWORD service is configured and the user claims to be the creator of the 
@@ -90,7 +90,7 @@ public class EditPublicationController extends AbstractEditPublicationController
 			return new ExtendedRedirectView(publicationUrl + "?referer=" + ref);
 		}
 		
-		return super.finalRedirect(userName, post, referer);
+		return super.finalRedirect(userName, post, referer, update);
 	}
 	
 	/* (non-Javadoc)
