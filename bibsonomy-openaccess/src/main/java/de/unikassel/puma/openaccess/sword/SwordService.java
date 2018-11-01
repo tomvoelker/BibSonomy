@@ -42,7 +42,7 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.SwordException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
@@ -352,8 +352,8 @@ public class SwordService {
 			}			
 		} catch (final ObjectNotFoundException e) {
 			log.warn("ResourceNotFoundException! SwordService-retrieveDocumentsFromDatabase");
-		} catch (final ResourceMovedException e) {
-			log.warn("ResourceMovedException! SwordService-retrieveDocumentsFromDatabase");
+		} catch (final ObjectMovedException e) {
+			log.warn("ObjectMovedException! SwordService-retrieveDocumentsFromDatabase");
 		}
 		return null;
 	}

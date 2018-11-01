@@ -55,7 +55,6 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -768,13 +767,9 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);
 
 	/**
-	 * @param personId
-	 */
-	public void linkUser(String personId);
-
-	/**
 	 * @param username
 	 */
+	@Deprecated
 	public void unlinkUser(String username);
 	
 	public List<PersonMatch> getPersonMatches(String personID);
@@ -791,11 +786,4 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @return
 	 */
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map);
-	
-	/**
-	 * 
-	 * @param personId
-	 * @return returns the updated personId, if the person was merged to an other person
-	 */
-	public String getForwardId(String personId);
 }

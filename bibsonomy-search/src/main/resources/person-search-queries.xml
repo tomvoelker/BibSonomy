@@ -3,12 +3,12 @@
 <sqlMap namespace="Search">
 
 	<select id="getPubPersonChangesByChangeIdRange" parameterClass="org.bibsonomy.common.Pair" resultMap='PersonCommon.resourcePersonRelationLogStub'>
-			SELECT * from ((SELECT <include refid='commonResourcePersonRelationColumns' />, pub_person.deleted
+			SELECT * from ((SELECT <include refid='commonResourcePersonRelationColumns' />
 				FROM log_pub_person pub_person
 				WHERE person_change_id >= #first# AND person_change_id &lt; #second#
 				ORDER BY person_change_id)
 			UNION
-			(SELECT <include refid='commonResourcePersonRelationColumns' />, pub_person.deleted
+			(SELECT <include refid='commonResourcePersonRelationColumns' />
 				FROM pub_person
 				WHERE person_change_id >= #first# AND person_change_id &lt; #second#
 				ORDER BY person_change_id)) u ORDER BY r_person_change_id

@@ -148,7 +148,7 @@ public class SimplePingback implements Pingback {
 				log.debug("sending trackback for " + link.getUrl() + " to " + link.getPingbackUrl());
 			}
 			post.getResource().recalculateHashes(); // FIXME: shouldn't the UrlGenerator take care of this?
-			final String permaLink = urlGenerator.getPostUrl(post);
+			final String permaLink = this.urlGenerator.getPostUrl(post);
 			return trackbackClient.sendPingback(permaLink, link);
 		} catch (final PingbackException e) {
 			log.debug("Trackback to '" + link.getUrl() + "' failed", e);
