@@ -130,5 +130,10 @@
 			<version>6.1.10</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-dbcp2</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
