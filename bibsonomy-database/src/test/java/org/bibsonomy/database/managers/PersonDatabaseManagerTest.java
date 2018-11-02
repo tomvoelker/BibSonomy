@@ -27,6 +27,7 @@
 package org.bibsonomy.database.managers;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -252,8 +253,14 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		try {
 			PERSON_DATABASE_MANAGER.getPersonById(personToMerge.getPersonId(), this.dbSession);
 			fail("object moved exception expected");
-		} catch (ObjectMovedException e) {
+		} catch (final ObjectMovedException e) {
 			assertThat(e.getNewId(), is(personMergeTarget.getPersonId()));
+		}
+
+		final List<ResourcePersonRelation> relations = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts(personMergeTarget.getPersonId(), loginUser, GoldStandardPublication.class, this.dbSession);
+
+		for (final ResourcePersonRelation relation : relations) {
+			assertThat(relation.getRelationType(), is(notNullValue()));
 		}
 
 		// the person should have a new name and a the gender should be updated

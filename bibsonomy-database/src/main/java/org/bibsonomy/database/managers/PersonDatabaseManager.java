@@ -681,6 +681,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 			newRelation.setPost(relation.getPost());
 			newRelation.setPerson(person);
 			newRelation.setPersonRelChangeId(newId);
+			newRelation.setRelationType(relation.getRelationType());
 			newRelation.setChangedBy(loggedinUser.getName());
 			newRelation.setChangedAt(new Date());
 
@@ -702,7 +703,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param loggedinUser
 	 * @param session
 	 */
-	private void mergePersonNameAliases(PersonMatch match, User loggedinUser, DBSession session) {
+	private void mergePersonNameAliases(final PersonMatch match, final User loggedinUser, final DBSession session) {
 		final Person personMergeTarget = match.getPerson1();
 		final String personMergeTargetId = personMergeTarget.getPersonId();
 		final List<PersonName> person1Names = this.queryForList("getNames", personMergeTargetId, PersonName.class, session);
