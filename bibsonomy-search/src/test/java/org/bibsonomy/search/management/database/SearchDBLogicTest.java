@@ -328,7 +328,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void testGetPostEntries() throws Exception {
 		final List<SearchPost<BibTex>> posts = searchBibTexLogic.getPostEntries(0, 100);
-		assertEquals(22, posts.size());
+		assertEquals(14, posts.size());
 		// check for documents
 		for (final SearchPost<BibTex> searchPost : posts) {
 			final BibTex publication = searchPost.getResource();

@@ -36,7 +36,7 @@ import java.util.Map;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.RESTConfig;
@@ -186,11 +186,11 @@ public final class Context {
 	/**
 	 * @param outStream
 	 * @throws InternServerException
-	 * @throws ResourceMovedException 
+	 * @throws ObjectMovedException
 	 * @throws ObjectNotFoundException
 	 * @throws NoSuchResourceException 
 	 */
-	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ObjectNotFoundException, ResourceMovedException {
+	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ObjectNotFoundException, ObjectMovedException {
 		this.strategy.initWriter(outStream);
 		this.strategy.perform(outStream);
 		this.strategy.shutdownWriter(outStream);

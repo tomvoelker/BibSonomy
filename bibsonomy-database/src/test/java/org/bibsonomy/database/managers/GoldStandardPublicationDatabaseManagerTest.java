@@ -39,7 +39,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.exceptions.DatabaseException;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
@@ -52,11 +54,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
+ * Tests for {@link GoldStandardPublicationDatabaseManager}
+ *
  * @author dzo
  */
 public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
-    private static final List<Integer> VISIBLE_GROUPS = Arrays.asList(GroupID.PUBLIC.getId());
+    private static final List<Integer> VISIBLE_GROUPS = Collections.singletonList(GroupID.PUBLIC.getId());
     private static final String WRONG_INTERHASH = "interhashorintrahashorhashor";
     private static final String INTERHASH_GOLD_1 = "097248439469d8f5a1e7fad6b02cbfcd";
     private static final String INTERHASH_GOLD_2 = "ac6aa3ccb181e61801cefbc1401d409a";
@@ -85,7 +89,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
     }
 
     /**
-     * @return
+     * @return the interhash of the created gold standard
      */
     private String createGoldStandardPublication() {
         assertFalse(this.pluginMock.isOnGoldStandardCreate());
@@ -144,7 +148,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
     }
 
     /**
-     * tests {@link GoldStandardPublicationDatabaseManager#updatePost(Post, String, org.bibsonomy.common.enums.PostUpdateOperation, org.bibsonomy.database.common.DBSession)} without changing the inter-/intraHash
+     * tests {@link GoldStandardPublicationDatabaseManager#updatePost(Post, String, User, PostUpdateOperation, DBSession)} without changing the inter-/intraHash
      */
     @Test
     public void updatePostWithoutChangingHash() {
@@ -227,7 +231,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
     }
 
     /**
-     * tests {@link GoldStandardDatabaseManager#addReferencesToPost(String, String, Set, org.bibsonomy.database.common.DBSession)} and {@link GoldStandardDatabaseManager#removeReferencesFromPost(String, String, Set, org.bibsonomy.database.common.DBSession)}
+     * tests {@link GoldStandardDatabaseManager#addRelationsToPost(String, String, Set, GoldStandardRelation, DBSession)} (String, String, Set, org.bibsonomy.database.common.DBSession)} and {@link GoldStandardDatabaseManager#removeRelationsFromPost(String, String, Set, GoldStandardRelation, DBSession)} (String, String, Set, org.bibsonomy.database.common.DBSession)}
      */
     @Test
     public void testAddRemoveReferences() {
@@ -278,14 +282,14 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
         assertFalse(this.pluginMock.isOnGoldStandardDelete());
 
         // delete post
-        goldPubManager.deletePost("", interhash, null, this.dbSession);
+        goldPubManager.deletePost("", interhash, loginUser, this.dbSession);
         assertNull(goldPubManager.getPostDetails("", interhash, "", null, this.dbSession));
 
         assertTrue(this.pluginMock.isOnGoldStandardDelete());
     }
 
     private Post<GoldStandardPublication> generateGoldPublication() {
-        final Post<GoldStandardPublication> post = new Post<GoldStandardPublication>();
+        final Post<GoldStandardPublication> post = new Post<>();
 
         // groups
         final Group group = GroupUtils.buildPublicGroup();

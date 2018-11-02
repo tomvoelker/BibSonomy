@@ -91,4 +91,71 @@ public final class PersonUtils {
 
 		return null;
 	}
+
+	/**
+	 * finds the index of the person in the author or editor list of the publication
+	 * @param person
+	 * @param resource
+	 * @return
+	 */
+	public static int findIndexOfPerson(final Person person, final BibTex resource) {
+		final int indexOfPerson = findIndexOfPerson(person, resource.getAuthor());
+		if (indexOfPerson >= 0) {
+			return indexOfPerson;
+		}
+
+		return findIndexOfPerson(person, resource.getEditor());
+	}
+
+	/**
+	 * finds the index of the person in the person list
+	 * see PersonNameUtils.getPositionsInPersonList (this list does not norm the person name)
+	 *
+	 * @param person
+	 * @param personNames
+	 * @return
+	 */
+	public static int findIndexOfPerson(final Person person, final List<PersonName> personNames) {
+		if (!present(personNames)) {
+			return -1;
+		}
+
+		// first try the main name to prefer it (mainname is also in the person name list of a person)
+		final int mainNameIndex = personNames.indexOf(person.getMainName());
+
+		if (mainNameIndex >= 0) {
+			return mainNameIndex;
+		}
+
+		// now try the other names
+		for (final PersonName personName : person.getNames()) {
+			final int personNameIndex = personNames.indexOf(personName);
+
+			if (personNameIndex >= 0) {
+				return personNameIndex;
+			}
+		}
+
+		return -1;
+	}
+
+	/**
+	 * Returns the relation of the person of a post. Is either AUTHOR or EDITOR
+	 * @param person
+	 * @param resource
+	 * @return
+	 */
+	public static PersonResourceRelationType getRelationType(final Person person, final BibTex resource){
+		if (!present(resource)) {
+			return null;
+		}
+		PersonName name = person.getMainName();
+		if (resource.getAuthor().contains(name)) {
+			return PersonResourceRelationType.AUTHOR;
+		}
+		if (resource.getEditor().contains(name)) {
+			return PersonResourceRelationType.EDITOR;
+		}
+		return null;
+	}
 }

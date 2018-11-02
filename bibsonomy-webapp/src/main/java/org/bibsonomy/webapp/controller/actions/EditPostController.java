@@ -50,7 +50,7 @@ import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.GoldStandard;
@@ -470,7 +470,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				// comparePost is the history revision which will be restored.
 				final int compareVersion = command.getCompareVersion();
 				@SuppressWarnings("unchecked")
-				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(postOwner), null, intraHashToUpdate, null, SearchType.LOCAL, Sets.<Filter>asSet(FilterEntity.HISTORY), null, null, null, compareVersion, compareVersion + 1).get(0);
+				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(postOwner), null, intraHashToUpdate, null, SearchType.LOCAL, Sets.asSet(FilterEntity.HISTORY), null, null, null, compareVersion, compareVersion + 1).get(0);
 
 				// TODO: why don't we set the dbPost = comparePost? why do we
 				// have to restore all fields by hand?
@@ -549,7 +549,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		/*
 		 * send final redirect
 		 */
-		return this.finalRedirect(command, post, postOwnerName);
+		return this.finalRedirect(command, post, postOwnerName, true);
 	}
 
 	/**
@@ -629,7 +629,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	protected Post<RESOURCE> getPostDetails(final String intraHash, final String userName) {
 		try {
 			return (Post<RESOURCE>) this.logic.getPostDetails(intraHash, userName);
-		} catch (final ResourceMovedException e) {
+		} catch (final ObjectMovedException e) {
 			/*
 			 * getPostDetails() has a redirect mechanism that checks for posts
 			 * in the log tables. If it find's a post with the given hash there,
@@ -743,13 +743,14 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * Create the final redirect after successful creating / updating a post. We
 	 * redirect to the URL the user was initially coming from. If we don't have
 	 * that URL (for whatever reason), we redirect to the user's page.
-	 * @param userName	the logged in user?
-	 * @param post		the saved post
+	 * @param userName  the logged in user?
+	 * @param post    the saved post
 	 * @param referer
 	 *            - the URL of the page the user is initially coming from
+	 * @param update
 	 * @return the redirect view
 	 */
-	protected View finalRedirect(final String userName, final Post<RESOURCE> post, final String referer) {
+	protected View finalRedirect(final String userName, final Post<RESOURCE> post, final String referer, boolean update) {
 		/*
 		 * If there is no referer URL given, or if we come from a
 		 * postBookmark/postPublication page, redirect to the user's home page.
@@ -846,10 +847,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		this.createOrUpdateSuccess(command, loginUser, post);
 
-		return this.finalRedirect(command, post, loginUserName);
+		return this.finalRedirect(command, post, loginUserName, false);
 	}
 
-	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, final String postOwnerName) {
+	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, final String postOwnerName, boolean update) {
 		if (present(command.getSaveAndRate())) {
 			final String ratingUrl = this.urlGenerator.getCommunityRatingUrl(post);
 			return new ExtendedRedirectView(ratingUrl);
@@ -861,7 +862,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			final ResourcePersonRelation resourcePersonRelation = post.getResourcePersonRelations().get(post.getResourcePersonRelations().size() - 1);
 			return new ExtendedRedirectView(this.urlGenerator.getPersonUrl(resourcePersonRelation.getPerson().getPersonId()));
 		}
-		return this.finalRedirect(postOwnerName, post, command.getReferer());
+		return this.finalRedirect(postOwnerName, post, command.getReferer(), update);
 	}
 
 	/**

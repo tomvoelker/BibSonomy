@@ -28,10 +28,8 @@ package org.bibsonomy.services;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SearchType;
@@ -42,6 +40,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -831,24 +830,24 @@ public class URLGenerator {
 	 * Constructs a URL for the given resource's intrahash. If you have the post
 	 * as object, please use {@link #getPostUrl(Post)}.
 	 * 
-	 * @param resourceType
+	 * @param type
 	 *            - The type of resource. Currently, only URLs for
 	 *            {@link Bookmark} or {@link BibTex} are supported.
-	 * @param intraHash
+	 * @param
 	 * @param userName
 	 * @return The URL pointing to the post of that user for the resource
 	 *         represented by the given intrahash.
 	 */
-	public String getPostUrl(final Class<?> resourceType,
-			final String intraHash, final String userName) {
-		if (resourceType == Bookmark.class) {
-			return this.getBookmarkUrlByIntraHashAndUsername(intraHash,
-					userName);
-		} else if (resourceType == BibTex.class) {
-			return this.getPublicationUrlByIntraHashAndUsername(intraHash,
-					userName);
+	public String getObjectUrl(final Class<?> type, final String id, final String userName) {
+		if (type == Person.class) {
+			return this.getPersonUrl(id);
+		}
+		if (type == Bookmark.class) {
+			return this.getBookmarkUrlByIntraHashAndUsername(id, userName);
+		} else if (type == BibTex.class) {
+			return this.getPublicationUrlByIntraHashAndUsername(id, userName);
 		} else {
-			throw new UnsupportedResourceTypeException();
+			throw new IllegalArgumentException(type + " not supported");
 		}
 	}
 
@@ -872,7 +871,6 @@ public class URLGenerator {
 			throw new UnsupportedResourceTypeException();
 		}
 	}
-	
 	
 	/**
 	 * @param post
@@ -1453,14 +1451,6 @@ public class URLGenerator {
 	}
 
 	/**
-	 * @see URLGenerator#setCheckUrls(boolean)
-	 * @return checkUrls
-	 */
-	public boolean isCheckUrls() {
-		return this.checkUrls;
-	}
-
-	/**
 	 * Checks if the given URL points to the given page. Useful for checking the
 	 * referrer header.
 	 * 
@@ -1497,21 +1487,7 @@ public class URLGenerator {
 	 *            adds all misc field urls to the bibtex in this post
 	 */
 	public void setBibtexMiscUrls(final Post<BibTex> post) {
-		post.getResource().addMiscField(
-				BibTexUtils.ADDITIONAL_MISC_FIELD_BIBURL,
-				this.getPublicationUrl(post.getResource(), post.getUser())
-						.toString());
-	}
-
-	/**
-	 * If set to <code>true</code>, all generated URLs are put into {@link URL}
-	 * objects. If that fails, <code>null</code> is returned. The default is
-	 * <code>false</code> such that no checking occurs.
-	 * 
-	 * @param checkUrls
-	 */
-	public void setCheckUrls(final boolean checkUrls) {
-		this.checkUrls = checkUrls;
+		post.getResource().addMiscField(BibTexUtils.ADDITIONAL_MISC_FIELD_BIBURL, this.getPublicationUrl(post.getResource(), post.getUser()));
 	}
 
 	/**
@@ -1520,19 +1496,6 @@ public class URLGenerator {
 	 */
 	public String getCommunityRatingUrl(final Post<? extends Resource> post) {
 		return this.getResourceUrl(post) + DISCUSSION_ID;
-	}
-
-	/**
-	 * ProjectHome defaults to <code>/</code>, such that relative URLs are
-	 * generated. Note that this does not work with
-	 * {@link #setCheckUrls(boolean)} set to <code>true</code>, since
-	 * {@link URL} does not support relative URLs (or more correctly: relative
-	 * URLs are not URLs).
-	 * 
-	 * @param projectHome
-	 */
-	public void setProjectHome(final String projectHome) {
-		this.projectHome = projectHome;
 	}
 	
 	/**
@@ -1599,5 +1562,37 @@ public class URLGenerator {
 		}
 
 		return this.getUrl(builder.asString());
+	}
+
+	/**
+	 * ProjectHome defaults to <code>/</code>, such that relative URLs are
+	 * generated. Note that this does not work with
+	 * {@link #setCheckUrls(boolean)} set to <code>true</code>, since
+	 * {@link URL} does not support relative URLs (or more correctly: relative
+	 * URLs are not URLs).
+	 *
+	 * @param projectHome
+	 */
+	public void setProjectHome(final String projectHome) {
+		this.projectHome = projectHome;
+	}
+
+	/**
+	 * If set to <code>true</code>, all generated URLs are put into {@link URL}
+	 * objects. If that fails, <code>null</code> is returned. The default is
+	 * <code>false</code> such that no checking occurs.
+	 *
+	 * @param checkUrls
+	 */
+	public void setCheckUrls(final boolean checkUrls) {
+		this.checkUrls = checkUrls;
+	}
+
+	/**
+	 * @see URLGenerator#setCheckUrls(boolean)
+	 * @return checkUrls
+	 */
+	public boolean isCheckUrls() {
+		return this.checkUrls;
 	}
 }

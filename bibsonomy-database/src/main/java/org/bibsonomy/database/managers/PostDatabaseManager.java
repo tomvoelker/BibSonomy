@@ -52,8 +52,8 @@ import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.IdenticalHashErrorMessage;
 import org.bibsonomy.common.errors.UpdatePostErrorMessage;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
@@ -1330,7 +1330,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	public Post<R> getPostDetails(final String loginUserName, final String resourceHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session) throws ResourceMovedException, ObjectNotFoundException {
+	public Post<R> getPostDetails(final String loginUserName, final String resourceHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session) throws ObjectMovedException, ObjectNotFoundException {
 		final List<Post<R>> list = this.getPostsByHashForUser(loginUserName, resourceHash, requestedUserName, visibleGroupIDs, HashID.INTRA_HASH, session);
 
 		if (list.isEmpty()) {
@@ -1390,9 +1390,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			Post<R> postInDB = null;
 			try {
 				postInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<Integer>(), session);
-			} catch(final ResourceMovedException ex) {
+			} catch(final ObjectMovedException ex) {
 				/*
-				 * getPostDetails() throws a ResourceMovedException for hashes
+				 * getPostDetails() throws a ObjectMovedException for hashes
 				 * for which
 				 * no actual post exists, but an old post has existed with that
 				 * hash.
@@ -1486,9 +1486,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			// if yes, check if a post exists with the old intrahash
 			try {
 				oldPost = this.getPostDetails(executingUser, oldHash, postOwner, new ArrayList<Integer>(), session);
-			} catch(final ResourceMovedException ex) {
+			} catch(final ObjectMovedException ex) {
 				/*
-				 * getPostDetails() throws a ResourceMovedException for
+				 * getPostDetails() throws a ObjectMovedException for
 				 * hashes for which
 				 * no actual post exists, but an old post has existed with
 				 * that hash.
@@ -1552,9 +1552,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			Post<R> newPostInDB = null;
 			try {
 				newPostInDB = this.getPostDetails(executingUser, intraHash, postOwner, new ArrayList<Integer>(), session);
-			} catch (final ResourceMovedException ex) {
+			} catch (final ObjectMovedException ex) {
 				/*
-				 * getPostDetails() throws a ResourceMovedException for hashes
+				 * getPostDetails() throws a ObjectMovedException for hashes
 				 * for which
 				 * no actual post exists, but an old post has existed with that
 				 * hash.
@@ -1975,7 +1975,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		Post<R> post = null;
 		try {
 			post = this.getPostDetails(userName, resourceHash, userName, new ArrayList<Integer>(), session);
-		} catch (final ResourceMovedException ex) {
+		} catch (final ObjectMovedException ex) {
 			// ignore
 		} catch (final ObjectNotFoundException ex) {
 			// ignore

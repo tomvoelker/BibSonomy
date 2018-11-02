@@ -1751,7 +1751,6 @@ CREATE TABLE `pub_person` (
   `qualifying` tinyint(4) DEFAULT NULL COMMENT 'set to\n0 for any publication\n1 for the first work associated to some newly created person entity\n2 for a person without a publication\n10 for a bachelor thesis @mastersthesis or @phdthesis with (lowercase) type field containing “bachelor”\n20 for master thesis @mastersthesis with or without, or @phdthesis with (lowercase) type field containing “master”\n30 for phdthesis\none single tuple per person id (the one with the highest value by the scoring above) is increased by +50. Whenever an entry is added or removed this is updated.',
   `log_changed_at` datetime DEFAULT NULL,
   `log_changed_by` varchar(30) DEFAULT NULL COMMENT 'user_name of the user, who changed the association last',
-  `deleted` tinyint(4) NOT NULL DEFAULT 0 COMMENT 'set to 1 for tuples keeping track of explicitly falsified associations, otherwise 0',
   PRIMARY KEY (`person_change_id`),
   UNIQUE KEY `pub_person_simhash1_relator_code_person_index_idx` (`simhash1`,`relator_code`,`person_index`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1767,7 +1766,8 @@ CREATE TABLE `log_pub_person` (
   `qualifying` tinyint(4) DEFAULT NULL COMMENT 'set to\n0 for any publication\n1 for the first work associated to some newly created person entity\n2 for a person without a publication\n10 for a bachelor thesis @mastersthesis or @phdthesis with (lowercase) type field containing “bachelor”\n20 for master thesis @mastersthesis with or without, or @phdthesis with (lowercase) type field containing “master”\n30 for phdthesis\none single tuple per person id (the one with the highest value by the scoring above) is increased by +50. Whenever an entry is added or removed this is updated.',
   `log_changed_at` datetime DEFAULT NULL,
   `log_changed_by` varchar(30) DEFAULT NULL COMMENT 'user_name of the user, who changed the association last',
-  `deleted` tinyint(4) NOT NULL COMMENT 'set to 1 for tuples keeping track of explicitly falsified associations, otherwise 0',
+  `log_date` datetime DEFAULT NULL,
+  `edited_by` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`person_change_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1792,6 +1792,8 @@ CREATE TABLE `log_person_name` (
   `is_main` tinyint(1) DEFAULT '0',
   `log_changed_at` datetime DEFAULT NULL,
   `log_changed_by` varchar(30) DEFAULT NULL COMMENT 'user_name of the user, who changed the tuple last',
+  `log_date` datetime DEFAULT NULL,
+  `edited_by` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`person_change_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

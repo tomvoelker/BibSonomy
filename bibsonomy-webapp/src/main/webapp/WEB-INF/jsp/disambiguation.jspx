@@ -102,6 +102,7 @@
 			 	<h2><fmt:message key="disambiguation.pleaseChooseMsg" /></h2>
 				<p><fmt:message key="disambiguation.listExplanation"/></p>
 				<spring:eval expression="T(org.bibsonomy.model.util.GroupUtils).isPublicGroup(post.groups)" var="isPublic" />
+				<c:set var="isPublic" value="${isPublic or empty command.post.groups}" /> <!--TODO: community posts do not have groups :( -->
 				<c:if test="${not isPublic}">
 					<bsold:alert style="danger">
 						<jsp:attribute name="alertBody">
@@ -137,7 +138,7 @@
 									<c:if test="${fn:length(rel.value) gt 0}">
 										<a class="btn btn-default btn-xs" style="float: right;" aria-expanded="false" data-toggle="collapse" href="#collapse_${collapseID}">
                                             <span class="fa fa-expand"></span>
-       									</a>        									
+       									</a>
        									<div id="collapse_${collapseID}" class="collapse collapsingOverflow simplePub">
 											<c:forEach var="posts" items="${rel.value}">
 												<per:simplePub post="${posts}" />

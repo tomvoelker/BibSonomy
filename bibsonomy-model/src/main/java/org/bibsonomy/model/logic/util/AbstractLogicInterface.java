@@ -53,8 +53,8 @@ import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
@@ -76,6 +76,7 @@ import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.ProjectQuery;
@@ -116,7 +117,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removeResourceRelation(int)
 	 */
 	@Override
-	public void removeResourceRelation(int resourceRelationId) {
+	public void removeResourceRelation(String personId, String interHash, int index, PersonResourceRelationType type) {
 		this.doDefaultAction();
 	}
 
@@ -194,7 +195,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPostDetails(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Post<? extends Resource> getPostDetails(String resourceHash, String userName) throws ResourceMovedException, ObjectNotFoundException {
+	public Post<? extends Resource> getPostDetails(String resourceHash, String userName) throws ObjectMovedException, ObjectNotFoundException {
 		this.doDefaultAction();
 		return null;
 	}
@@ -929,14 +930,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#linkUser(java.lang.String)
-	 */
-	@Override
-	public void linkUser(String personId) {
-		this.doDefaultAction();
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#unlinkUser(java.lang.String)
 	 */
 	@Override
@@ -977,15 +970,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getForwardId(java.lang.String)
-	 */
-	@Override
-	public String getForwardId(String personId) {
-		this.doDefaultAction();
 		return null;
 	}
 

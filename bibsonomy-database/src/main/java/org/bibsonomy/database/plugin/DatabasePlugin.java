@@ -131,11 +131,13 @@ public interface DatabasePlugin {
 	
 	/**
 	 * Called when a gold standard publication is deleted.
-	 * 
-	 * @param interhash
+	 *  @param interhash
+	 * @param loggedinUser
 	 * @param session
 	 */
-	public void onGoldStandardDelete(String interhash, DBSession session);
+	default void onGoldStandardDelete(String interhash, User loggedinUser, DBSession session) {
+		// noop
+	}
 	
 	/**
 	 * Called when a Bookmark is inserted.
@@ -326,9 +328,12 @@ public interface DatabasePlugin {
 	/**
 	 * called when a personName will be deleted
 	 * @param personName should be set to the old personNameChangeId and the new modifiedBy and modifiedBy values
+	 * @param loggedInUser the user that deleted the person name
 	 * @param session
 	 */
-	public void onPersonNameDelete(final PersonName personName, final DBSession session);
+	default void onPersonNameDelete(final PersonName personName, User loggedInUser, final DBSession session) {
+		// noop
+	}
 	
 	/**
 	 * called when a person will be updated
@@ -348,23 +353,38 @@ public interface DatabasePlugin {
 	/**
 	 * called when a person will be deleted
 	 * @param person should be set to the old personId and the new modifiedBy and modifiedBy values
+	 * @param user
 	 * @param session
 	 */
-	public void onPersonDelete(final Person person, final DBSession session);
+	public void onPersonDelete(final Person person, User user, final DBSession session);
 	
 	/**
 	 * called when a pubPerson will be deleted
 	 * @param rel the relation to be deleted updated with the deleting user and the date of the deletion
+	 * @param loginUser
 	 * @param session
 	 */
-	public void onPubPersonDelete(final ResourcePersonRelation rel, final DBSession session);
+	public void onPubPersonDelete(final ResourcePersonRelation rel, User loginUser, final DBSession session);
 
 	/**
-	 * @param personChangeId
+	 * @param oldPerson
+	 * @param loggedinUser
 	 * @param session
 	 */
-	public void onPersonNameUpdate(Integer personChangeId, DBSession session);
+	default void onPersonNameUpdate(PersonName oldPerson, User loggedinUser, DBSession session) {
+		// noop
+	}
 
+	/**
+	 * called before a relation is updated (currently the oldRelation is deleted the new relation is inserted)
+	 * @param oldRelation
+	 * @param newRelation
+	 * @param loggedinUser
+	 * @param session
+	 */
+	default void onPersonResourceRelationUpdate(ResourcePersonRelation oldRelation, ResourcePersonRelation newRelation, User loggedinUser, DBSession session) {
+		// noop
+	}
 	/**
 	 * called before a project is inserted into the database
 	 * @param project

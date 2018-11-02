@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
-<!--FIXME: do we really use selects to query the database?-->
+<!-- FIXME: remove lacy loading -->
 <sqlMap namespace="PersonCommon">
 	<resultMap id="abstractPerson" class="person" groupBy="personId">
 		<result property="personChangeId"   column="p_person_change_id"    javaType="int" />
@@ -20,7 +20,6 @@
 		<result property="college"          column="college"           	 javaType="string" />
 		<result property="homepage"         column="homepage"     		 javaType="url" />
 		<result property="email"            column="email"           	 javaType="string" />
-		
 	</resultMap>
 	
 	<resultMap id="lazyLoadingPerson" class="person" extends="abstractPerson">
@@ -30,7 +29,7 @@
 	<resultMap id="personWithNamesPrefilled" class="person" extends="abstractPerson">
 		<result property="names"            resultMap="PersonCommon.personName" />
 	</resultMap>
-	
+
 	<resultMap id="simplePerson" class="person" groupBy="personId">
 		<result property="personId"         column="person_id"           javaType="string" />
 		<result property="academicDegree"   column="academic_degree"     javaType="string" />
@@ -46,7 +45,7 @@
 		<result property="changedBy"       column="log_changed_by"    javaType="string" />
 		<result property="changedAt"       column="log_changed_at"    javaType="date" />
 	</resultMap>
-	
+
 	<resultMap id="simplePersonName" class="personName" groupBy="personNameChangeId">
 		<result property="personNameChangeId" column="person_name_change_id" javaType="int" />
 		<result property="firstName"       column="first_name"        javaType="java.lang.String" />
@@ -87,16 +86,17 @@
 		<result property="post"            resultMap="GoldStandardPublicationCommon.goldStandardPost" />
 	</resultMap>
 	
-	<resultMap id="personMatch" class="org.bibsonomy.model.PersonMatch">
+	<resultMap id="personMatch" class="personMatch">
 		<result property="matchID" column="match_id"/>
 		<result property="state" column="state"/>
-		<result property="person1"          column="person1_id"       javaType="person"       select="getPersonById"/>
-		<result property="person2"          column="person2_id"       javaType="person"       select="getPersonById"/>
-		<result property="userDenies"		column="match_id"		  javaType="string"		  select="getDeniesForMatch" />
-		<result property="person1Posts"		column="person1_id"		  javaType="post"		  select="getPostsForPerson" />
-		<result property="person2Posts"		column="person2_id"		  javaType="post"		  select="getPostsForPerson" />
+		<result property="person1"          column="person1_id"       javaType="person"		select="getPersonById"/>
+		<result property="person2"          column="person2_id"       javaType="person"		select="getPersonById"/>
+		<result property="userDenies"		column="match_id"		  javaType="string"		select="getDeniesForMatch" />
+		<result property="person1Posts"		column="person1_id"		  javaType="org.bibsonomy.model.Post"		  select="getPostsForPerson" />
+		<result property="person2Posts"		column="person2_id"		  javaType="org.bibsonomy.model.Post"		  select="getPostsForPerson" />
 	</resultMap>
-	
+
+	<!-- FIXME: use table alias instead of full table name -->
 	<sql id="commonPersonColumns">
 		person.person_change_id as p_person_change_id, person.person_id, person.academic_degree, person.orcid, person.researcherid, person.post_ctr, person.log_changed_by, person.log_changed_at, person.user_name, person.dnb_person_id, gender, person.college, person.email, person.homepage
 	</sql>
@@ -134,7 +134,7 @@
 	</sql>
 
 	<sql id="allPubPersonRelationLogAttributes">
-		person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by, deleted
+		person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by
 	</sql>
 
 	<sql id="allPubPersonRelationAttributes">

@@ -31,6 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -71,9 +72,9 @@ import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.SynchronizationRunningException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -145,6 +146,7 @@ import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -296,8 +298,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public User getUserDetails(final String userName) {
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			/*
 			 * We don't use userName but user.getName() in the remaining part of
 			 * this method, since the name gets normalized in getUserDetails().
@@ -310,7 +311,7 @@ public class DBLogic implements LogicInterface {
 			 * that case, the group's name is user.getName()
 			 */
 			if (this.permissionDBManager.isAdminOrSelf(this.loginUser, user.getName())
-					|| this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, user.getName(), GroupRole.ADMINISTRATOR)) {
+							|| this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, user.getName(), GroupRole.ADMINISTRATOR)) {
 				user.setGroups(this.groupDBManager.getGroupsForUser(user.getName(), true, session));
 				user.setPendingGroups(this.groupDBManager.getPendingMembershipsForUser(userName, session));
 				// inject the reported spammers.
@@ -368,8 +369,6 @@ public class DBLogic implements LogicInterface {
 			 */
 
 			return user;
-		} finally {
-			session.close();
 		}
 	}
 
@@ -398,10 +397,9 @@ public class DBLogic implements LogicInterface {
 
 		final List<SynchronizationPost> posts;
 
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			final SynchronizationData data = this.syncDBManager.getLastSyncData(userName, service, resourceType, null, session);
-			
+
 			/*
 			 * check for a running synchronization
 			 */
@@ -468,19 +466,17 @@ public class DBLogic implements LogicInterface {
 			final String loginUserName = this.loginUser.getName();
 			for (final SynchronizationPost post : posts) {
 				switch (post.getAction()) {
-				case CREATE_CLIENT:
-					// $FALL-THROUGH$
-				case UPDATE_CLIENT:
-					// FIXME: this is horribly expensive!
-					post.setPost(resourceTypeDatabaseManager.getPostDetails(loginUserName, post.getIntraHash(), userName, listOfGroupIDs, session));
-					break;
-				default:
-					break;
+					case CREATE_CLIENT:
+						// $FALL-THROUGH$
+					case UPDATE_CLIENT:
+						// FIXME: this is horribly expensive!
+						post.setPost(resourceTypeDatabaseManager.getPostDetails(loginUserName, post.getIntraHash(), userName, listOfGroupIDs, session));
+						break;
+					default:
+						break;
 				}
 			}
 
-		} finally {
-			session.close();
 		}
 
 		return posts;
@@ -566,11 +562,8 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void deleteSyncServer(final String userName, final URI service) {
 		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			this.syncDBManager.deleteSyncServerForUser(userName, service, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -583,11 +576,8 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public List<SyncService> getSyncServiceSettings(final String userName, final URI service, final boolean server) {
 		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			return this.syncDBManager.getSyncServiceSettings(userName, service, server, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -598,11 +588,8 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public SyncService getSyncServiceDetails(final URI serviceURI) {
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			return this.syncDBManager.getSyncServiceDetails(serviceURI, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -616,8 +603,7 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public SynchronizationData getLastSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType) {
 		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			final SynchronizationData lastSyncData = this.syncDBManager.getLastSyncData(userName, service, resourceType, null, session);
 			if (present(lastSyncData)) {
 				return lastSyncData;
@@ -634,8 +620,6 @@ public class DBLogic implements LogicInterface {
 			synchronizationData.setLastSyncDate(new Date(0));
 			synchronizationData.setStatus(SynchronizationStatus.UNDONE);
 			return synchronizationData;
-		} finally {
-			session.close();
 		}
 	}
 
@@ -842,7 +826,7 @@ public class DBLogic implements LogicInterface {
 	 * .String, java.lang.String)
 	 */
 	@Override
-	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) throws ResourceMovedException, ObjectNotFoundException {
+	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) throws ObjectMovedException, ObjectNotFoundException {
 		final DBSession session = this.openSession();
 		try {
 			return this.getPostDetails(resourceHash, userName, session);
@@ -1021,7 +1005,7 @@ public class DBLogic implements LogicInterface {
 			throw new UnsupportedResourceTypeException("The requested resourcetype (" + resourceType.getClass().getName() + ") is not supported.");
 		} catch (final QueryTimeoutException ex) {
 			// if a query times out, we return an empty list
-			return new ArrayList<Tag>();
+			return new ArrayList<>();
 		} finally {
 			session.close();
 		}
@@ -2013,7 +1997,7 @@ public class DBLogic implements LogicInterface {
 				Post<BibTex> post = null;
 				try {
 					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
-				} catch (final ResourceMovedException ex) {
+				} catch (final ObjectMovedException ex) {
 					// ignore
 				} catch (final ObjectNotFoundException ex) {
 					// ignore
@@ -2102,7 +2086,7 @@ public class DBLogic implements LogicInterface {
 				try {
 					// FIXME: remove strange getpostdetails method
 					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, lowerCaseUserName, UserUtils.getListOfGroupIDs(this.loginUser), true, session);
-				} catch (final ResourceMovedException ex) {
+				} catch (final ObjectMovedException ex) {
 					// ignore
 				} catch (final ObjectNotFoundException ex) {
 					// ignore
@@ -2203,7 +2187,7 @@ public class DBLogic implements LogicInterface {
 				Post<BibTex> post = null;
 				try {
 					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
-				} catch (final ResourceMovedException ex) {
+				} catch (final ObjectMovedException ex) {
 					// ignore
 				} catch (final ObjectNotFoundException ex) {
 					// ignore
@@ -2257,7 +2241,7 @@ public class DBLogic implements LogicInterface {
 				Post<BibTex> post = null;
 				try {
 					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
-				} catch (final ResourceMovedException ex) {
+				} catch (final ObjectMovedException ex) {
 					// ignore
 				} catch (final ObjectNotFoundException ex) {
 					// ignore
@@ -3406,13 +3390,10 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonRelation(java.lang.String, java.lang.String, org.bibsonomy.model.Person, org.bibsonomy.model.enums.PersonResourceRelation)
 	 */
 	@Override
-	public void removeResourceRelation(final int resourceRelationId) {
+	public void removeResourceRelation(String personId, final String interHash, int index, PersonResourceRelationType type) {
 		this.ensureLoggedInAndNoSpammer();
-		final DBSession session = this.openSession();
-		try {
-			this.personDBManager.removeResourceRelation(resourceRelationId, this.loginUser.getName(), session);
-		} finally {
-			session.close();
+		try (final DBSession session = this.openSession()) {
+			this.personDBManager.removeResourceRelation(personId, interHash, index, type, this.loginUser, session);
 		}
 	}
 
@@ -3464,34 +3445,44 @@ public class DBLogic implements LogicInterface {
 	public void updatePerson(final Person person, final PersonUpdateOperation operation) {
 		this.ensureLoggedInAndNoSpammer();
 
+		// at least the person id must be set (to know which person should be updated)
 		final String personId = person.getPersonId();
 		if (!present(personId)) {
 			throw new ValidationException("Invalid person ID given.");
 		}
 
 		try (final DBSession session = this.openSession()) {
-			// TODO: move to permission logic
+			// check that the old person exists
 			final Person personOld = this.personDBManager.getPersonById(personId, session);
 			if (personOld == null) {
 				throw new NoSuchElementException("person " + personId);
 			}
-			if (personOld.getUser() != null && !personOld.getUser().equals(this.loginUser.getName())) {
-				throw new AccessDeniedException();
+
+			/*
+			 * check if the user can edit the person
+			 * (when it is already claimed by an user only that user (and admins) can edit the person)
+			 */
+			final String oldClaimedUser = personOld.getUser();
+			if (present(oldClaimedUser)) {
+				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, oldClaimedUser);
 			}
 
-			// ensure that only the person can claimed by the logged in user
-			final String personUser = person.getUser();
-			if (personUser != null) {
-				if (!personUser.equals(this.loginUser.getName())) {
-					throw new AccessDeniedException();
-				}
+			/*
+			 * a person can only be claimed by the loggedin user or the admin can do it for everyone
+			 * FIXME: check that the user exisits!
+			 */
+			final String claimedUser = person.getUser();
+			final boolean personClaimed = present(claimedUser);
+			if (personClaimed) {
+				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, claimedUser);
 			}
-			
-			// check for email, homepage - can only be edited if the editor claimed the person
-			if (Sets.asSet(PersonUpdateOperation.UPDATE_EMAIL, PersonUpdateOperation.UPDATE_HOMEPAGE).contains(operation)) {
-				if (personUser == null) {
-					throw new AccessDeniedException();
-				}
+
+			/*
+			 * check for email, homepage - can only be edited if the loggedin user claimed
+			 * the person (but admins can edit infos anyway)
+			 */
+			if (!personClaimed && Sets.asSet(PersonUpdateOperation.UPDATE_EMAIL, PersonUpdateOperation.UPDATE_HOMEPAGE).contains(operation)) {
+				this.permissionDBManager.ensureAdminAccess(this.loginUser);
 			}
 
 			// TODO: this should be done in the manager
@@ -3519,6 +3510,12 @@ public class DBLogic implements LogicInterface {
 					break;
 				case UPDATE_HOMEPAGE:
 					this.personDBManager.updateHomepage(person, session);
+					break;
+				case LINK_USER:
+					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, claimedUser);
+					// first unlink with the old person
+					this.personDBManager.unlinkUser(claimedUser, session);
+					this.personDBManager.updateUserLink(person, session);
 					break;
 				case UPDATE_ALL:
 					this.personDBManager.updatePerson(person, session);
@@ -3551,10 +3548,10 @@ public class DBLogic implements LogicInterface {
 						newName.setChangedAt(new Date());
 						newName.setChangedBy(this.loginUser.getName());
 						newName.setPersonNameChangeId(oldName.getPersonNameChangeId());
-						this.personDBManager.updatePersonName(newName, session);
+						this.personDBManager.updatePersonName(newName, this.loginUser, session);
 					}
 				} else {
-					this.personDBManager.removePersonName(oldName.getPersonNameChangeId(), this.loginUser.getName(), session);
+					this.personDBManager.removePersonName(oldName.getPersonNameChangeId(), this.loginUser, session);
 				}
 			}
 			for (final PersonName newName : person.getNames()) {
@@ -3601,6 +3598,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public Person getPersonById(final PersonIdType idType, final String id) {
+		// TODO: implement a chain
 		final DBSession session = this.openSession();
 		try {
 			if (PersonIdType.PERSON_ID == idType) {
@@ -3627,7 +3625,7 @@ public class DBLogic implements LogicInterface {
 		this.ensureLoggedInAndNoSpammer();
 		final DBSession session = this.openSession();
 		try {
-			this.personDBManager.removePersonName(personChangeId, this.loginUser.getName(), session);
+			this.personDBManager.removePersonName(personChangeId, this.loginUser, session);
 		} finally {
 			session.close();
 		}
@@ -3643,7 +3641,7 @@ public class DBLogic implements LogicInterface {
 			if (byInterHash.containsKey(interhash)) {
 				continue;
 			}
-			byInterHash.put(interhash,rpr);
+			byInterHash.put(interhash, rpr);
 		}
 	}
 
@@ -3655,14 +3653,6 @@ public class DBLogic implements LogicInterface {
 			this.personDBManager.createPersonName(personName, session);
 		} finally {
 			session.close();
-		}
-	}
-
-	@Override
-	public void linkUser(final String personId) {
-		this.ensureLoggedInAndNoSpammer();
-		try (final DBSession session = this.openSession()) {
-			this.personDBManager.linkUser(personId, this.loginUser.getName(), session);
 		}
 	}
 
@@ -3701,9 +3691,9 @@ public class DBLogic implements LogicInterface {
 					return this.personDBManager.getResourcePersonRelations(builder.getInterhash(), builder.getAuthorIndex(), builder.getRelationType(), session);
 				}
 			} else if (present(builder.getPersonId()) && !builder.isWithPersons() && !present(builder.getAuthorIndex()) && !present(builder.getRelationType())) {
-				final List<ResourcePersonRelation> rVal = DBLogic.this.personDBManager.getResourcePersonRelationsWithPosts(builder.getPersonId(), DBLogic.this.loginUser, GoldStandardPublication.class, session);
+				final List<ResourcePersonRelation> rVal = this.personDBManager.getResourcePersonRelationsWithPosts(builder.getPersonId(), this.loginUser, GoldStandardPublication.class, session);
 				for (final ResourcePersonRelation rpr : rVal) {
-					SystemTagsExtractor.handleHiddenSystemTags(rpr.getPost(), DBLogic.this.loginUser.getName());
+					SystemTagsExtractor.handleHiddenSystemTags(rpr.getPost(), this.loginUser.getName());
 				}
 				if (builder.isWithPersonsOfPosts()) {
 					for (final ResourcePersonRelation resourcePersonRelation : rVal) {
@@ -3755,11 +3745,13 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<PersonMatch> getPersonMatches(String personID) {
-		final DBSession session = this.openSession();
-		if (present(this.loginUser.getName())){
-			return this.personDBManager.getMatchesForFilterWithUserName(personID, this.loginUser.getName(), session);
+		try (final DBSession session = this.openSession()) {
+			if (present(this.loginUser.getName())) {
+				return this.personDBManager.getMatchesForFilterWithUserName(personID, this.loginUser.getName(), session);
+			}
+
+			return this.personDBManager.getMatchesFor(personID, session);
 		}
-		return this.personDBManager.getMatchesFor(personID, session);
 	}
 
 	/**
@@ -3770,9 +3762,10 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void denieMerge(PersonMatch match) {
-		final DBSession session = this.openSession();
-		if (present(this.loginUser.getName())) {
-			this.personDBManager.denyMatch(match, this.loginUser.getName(), session);
+		try (final DBSession session = this.openSession()) {
+			if (present(this.loginUser.getName())) {
+				this.personDBManager.denyMatch(match, this.loginUser.getName(), session);
+			}
 		}
 	}
 	
@@ -3783,11 +3776,12 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public boolean acceptMerge(PersonMatch match) {
-		final DBSession session = this.openSession();
-		if (present(this.loginUser.getName())) {
-			return this.personDBManager.mergeSimilarPersons(match, this.loginUser.getName(), session);
+		try (final DBSession session = this.openSession()) {
+			if (present(this.loginUser.getName())) {
+				return this.personDBManager.mergePersons(match, this.loginUser, session);
+			}
+			return false;
 		}
-		return false;
 	}
 	
 	/**
@@ -3797,8 +3791,9 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public PersonMatch getPersonMatch(int matchID) {
-		final DBSession session = this.openSession();
-		return personDBManager.getMatch(matchID, session);
+		try (final DBSession session = this.openSession()) {
+			return personDBManager.getMatch(matchID, session);
+		}
 	}
 
 	/**
@@ -3811,19 +3806,9 @@ public class DBLogic implements LogicInterface {
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
 		final DBSession session = this.openSession();
 		if (present(this.loginUser.getName())) {
-			return this.personDBManager.conflictMerge(formMatchId, map, this.loginUser.getName(), session);
+			return this.personDBManager.mergePersonsWithConflicts(formMatchId, map, this.loginUser, session);
 		}
 		return false;
-	}
-
-	/**
-	 * @param personId
-	 * @return returns the updated personId, if the person was merged to an other person
-	 */
-	@Override
-	public String getForwardId(final String personId) {
-		final DBSession session = this.openSession();
-		return this.personDBManager.getForwardId(personId, session);
 	}
 
 	@Override

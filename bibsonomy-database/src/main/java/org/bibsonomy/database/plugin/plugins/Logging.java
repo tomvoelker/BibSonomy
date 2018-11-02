@@ -26,8 +26,9 @@
  */
 package org.bibsonomy.database.plugin.plugins;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.BibTexParam;
@@ -139,12 +140,10 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onGoldStandardDelete(final String interhash, final DBSession session) {
+	public void onGoldStandardDelete(final String interhash, User loggedinUser, final DBSession session) {
 		final LoggingParam logParam = new LoggingParam();
 		logParam.setOldHash(interhash);
-		/*
-		 * FIXME: Should we not use newId 0?
-		 */
+		logParam.setNewContentId(0);
 		logParam.setNewHash("");
 		this.insert("logGoldStandard", logParam, session);
 	}
@@ -279,16 +278,18 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onPersonNameUpdate(final Integer personChangeId, final DBSession session) {
-		this.insert("logPersonName", personChangeId, session);
+	public void onPersonNameUpdate(final PersonName oldPersonName, User loggedinUser, final DBSession session) {
+		this.onPersonNameDelete(oldPersonName, loggedinUser, session); // FIXME: do we want to log the new id of the name?
 	}
 
 	@Override
-	public void onPersonNameDelete(final PersonName personName, final DBSession session) {
-		this.insert("logPersonName", personName.getPersonNameChangeId(), session);
-		// we need to fetch a new id so the next insert statement can refer to the last generated id
-		this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
-		this.insert("logPersonNameDelete", personName, session);
+	public void onPersonNameDelete(final PersonName personName, final User loggedInUser, final DBSession session) {
+		final LoggingParam param = new LoggingParam();
+		param.setOldContentId(personName.getPersonNameChangeId());
+		param.setPostEditor(loggedInUser);
+		param.setDate(new Date());
+
+		this.insert("logPersonName", param, session);
 	}
 
 	@Override
@@ -302,18 +303,24 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onPersonDelete(final Person person, final DBSession session) {
-		this.insert("logPersonUpdate", person.getPersonId(), session);
-		person.setPersonChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+	public void onPersonDelete(final Person person, User user, final DBSession session) {
+		final LoggingParam param = new LoggingParam();
+		param.setOldHash(person.getPersonId());
+		param.setPostEditor(user);
+		param.setDate(new Date());
+
+		this.insert("logPersonNames", param, session);
 		this.insert("logPersonDelete", person, session);
 	}
 
 	@Override
-	public void onPubPersonDelete(final ResourcePersonRelation rel, final DBSession session) {
-		this.insert("logPubPerson", rel.getPersonRelChangeId(), session);
-		// XXX: we need to fetch a new id so the next insert statement can refer to the last generated id
-		this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
-		this.insert("logPubPersonDelete", rel, session);
+	public void onPersonResourceRelationUpdate(ResourcePersonRelation oldRelation, ResourcePersonRelation newRelation, User loggedinUser, DBSession session) {
+		this.logPersonResourceRelation(oldRelation.getPersonRelChangeId(), newRelation.getPersonRelChangeId(), loggedinUser, session);
+	}
+
+	@Override
+	public void onPubPersonDelete(final ResourcePersonRelation rel, User loggedinUser, final DBSession session) {
+		this.logPersonResourceRelation(rel.getPersonRelChangeId(), null, loggedinUser, session);
 	}
 
 	private void logUpdate(final String statement, final int oldId, final int newId, User loggedinUser, DBSession session) {
@@ -344,5 +351,14 @@ public class Logging extends AbstractDatabasePlugin {
 	@Override
 	public void onCRISLinkDelete(CRISLink crisLink, User loginUser, DBSession session) {
 		this.logUpdate("logCRISLinkUpdate", crisLink.getId(), -1, loginUser, session);
+	}
+	private void logPersonResourceRelation(Integer oldRelationId, Integer newRelationId, final User loggedinUser, final DBSession session) {
+		final LoggingParam param = new LoggingParam();
+		param.setOldContentId(oldRelationId);
+		param.setNewContentId(newRelationId);
+		param.setDate(new Date());
+		param.setPostEditor(loggedinUser); // FIXME: rename field of param
+
+		this.insert("logPubPerson", param, session);
 	}
 }

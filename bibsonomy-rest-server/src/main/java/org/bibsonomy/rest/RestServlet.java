@@ -53,8 +53,8 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ReadOnlyDatabaseException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncService;
@@ -294,12 +294,12 @@ public final class RestServlet extends HttpServlet {
 		} catch (final AccessDeniedException e) {
 			log.info(e.getMessage());
 			this.sendError(request, response, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
-		} catch (final ResourceMovedException e) {
+		} catch (final ObjectMovedException e) {
 			log.info(e.getMessage());
 			/*
 			 * sending new location TODO: add date using
 			 */
-			response.setHeader("Location", this.urlRenderer.createHrefForResource(e.getUserName(), e.getNewIntraHash()));
+			response.setHeader("Location", this.urlRenderer.createHrefForResource(e.getUserName(), e.getNewId()));
 			this.sendError(request, response, HttpServletResponse.SC_MOVED_PERMANENTLY, e.getMessage());
 		} catch (final ReadOnlyDatabaseException e) {
 			this.sendError(request, response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
