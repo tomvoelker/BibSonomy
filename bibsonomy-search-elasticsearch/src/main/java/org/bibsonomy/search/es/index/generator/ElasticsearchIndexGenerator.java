@@ -11,7 +11,7 @@ import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.index.generator.IndexGenerationLogic;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.model.SearchIndexState;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.util.BasicUtils;
@@ -131,7 +131,7 @@ public class ElasticsearchIndexGenerator<T> {
 
 		// initialize variables
 		// FIXME: introduce a index state for each entity
-		final SearchIndexSyncState newState = this.generationLogic.getDbState();
+		final DefaultSearchIndexSyncState newState = this.generationLogic.getDbState();
 		newState.setMappingVersion(BasicUtils.VERSION);
 		if (newState.getLast_log_date() == null) {
 			newState.setLast_log_date(new Date(System.currentTimeMillis() - 1000));
@@ -202,7 +202,7 @@ public class ElasticsearchIndexGenerator<T> {
 	/**
 	 * @param newState
 	 */
-	private void writeMetaInfoToIndex(final String indexName, final SearchIndexSyncState newState) {
+	private void writeMetaInfoToIndex(final String indexName, final DefaultSearchIndexSyncState newState) {
 		final Map<String, Object> values = ElasticsearchUtils.serializeSearchIndexState(newState);
 
 		final String systemIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId);

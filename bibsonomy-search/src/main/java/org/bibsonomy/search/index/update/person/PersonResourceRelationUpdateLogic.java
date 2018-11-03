@@ -5,7 +5,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.search.index.update.IndexUpdateLogic;
 import org.bibsonomy.search.management.database.params.SearchParam;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 
 import java.util.Date;
 import java.util.List;
@@ -37,7 +37,7 @@ public class PersonResourceRelationUpdateLogic extends AbstractDatabaseManagerWi
 	}
 
 	@Override
-	public SearchIndexSyncState getDbState() {
+	public DefaultSearchIndexSyncState getDbState() {
 		throw new UnsupportedOperationException("use parent update logic to get the db state");
 	}
 }

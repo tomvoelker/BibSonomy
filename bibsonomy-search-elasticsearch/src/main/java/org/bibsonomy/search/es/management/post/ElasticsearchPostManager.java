@@ -53,7 +53,7 @@ import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.management.database.SearchDBInterface;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHits;
@@ -97,8 +97,8 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	protected void updateIndex(final String indexName) {
 		final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId);
 
-		final SearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, indexName);
-		final SearchIndexSyncState targetState = this.inputLogic.getDbState();
+		final DefaultSearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, indexName);
+		final DefaultSearchIndexSyncState targetState = this.inputLogic.getDbState();
 		
 		final int oldLastTasId = oldState.getLast_tas_id().intValue();
 		
@@ -165,7 +165,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 		
 		// 4) update the index state
 		try {
-			final SearchIndexSyncState newState = new SearchIndexSyncState(oldState);
+			final DefaultSearchIndexSyncState newState = new DefaultSearchIndexSyncState(oldState);
 			newState.setLast_log_date(targetState.getLast_log_date());
 			newState.setLast_tas_id(targetState.getLast_tas_id());
 			newState.setLastPersonChangeId(targetState.getLastPersonChangeId());
@@ -189,7 +189,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	 * @param targetState
 	 * @param indexName
 	 */
-	protected void updateResourceSpecificProperties(final String indexName, final SearchIndexSyncState oldState, SearchIndexSyncState targetState) {
+	protected void updateResourceSpecificProperties(final String indexName, final DefaultSearchIndexSyncState oldState, DefaultSearchIndexSyncState targetState) {
 		// noop
 	}
 	

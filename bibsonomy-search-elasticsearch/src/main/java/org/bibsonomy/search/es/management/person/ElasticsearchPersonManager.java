@@ -14,7 +14,7 @@ import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.index.update.IndexUpdateLogic;
 import org.bibsonomy.search.index.update.OneToManyIndexUpdateLogic;
 import org.bibsonomy.search.management.database.SearchDBInterface;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHits;
 
@@ -54,9 +54,9 @@ public class ElasticsearchPersonManager extends ElasticsearchManager<Person> {
 	@Override
 	protected void updateIndex(String indexName) {
 		final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId);
-		final SearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, indexName);
+		final DefaultSearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, indexName);
 		final IndexUpdateLogic<Person> parentUpdateLogic = this.updateIndexLogic.getIndexUpdateLogic();
-		final SearchIndexSyncState targetState = parentUpdateLogic.getDbState();
+		final DefaultSearchIndexSyncState targetState = parentUpdateLogic.getDbState();
 
 		// update persons
 		this.updateEntity(indexName, oldState, parentUpdateLogic, this.oneToManyEntityInformationProvider);
@@ -69,7 +69,7 @@ public class ElasticsearchPersonManager extends ElasticsearchManager<Person> {
 
 
 
-	private <E> void updateEntity(final String indexName, final SearchIndexSyncState oldState, final IndexUpdateLogic<E> updateIndexLogic, final EntityInformationProvider<E> entityInformationProvider) {
+	private <E> void updateEntity(final String indexName, final DefaultSearchIndexSyncState oldState, final IndexUpdateLogic<E> updateIndexLogic, final EntityInformationProvider<E> entityInformationProvider) {
 		final long lastPersonChangeId = oldState.getLastPersonChangeId();
 		final Date lastLogDate = oldState.getLast_log_date();
 		final String entityType = entityInformationProvider.getType();

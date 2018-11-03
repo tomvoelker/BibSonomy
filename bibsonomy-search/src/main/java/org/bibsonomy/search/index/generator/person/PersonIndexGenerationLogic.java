@@ -1,16 +1,11 @@
 package org.bibsonomy.search.index.generator.person;
 
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.common.enums.ConstantID;
-import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.model.Person;
-import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagement;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.search.index.database.person.PersonDatabaseInformationLogic;
-import org.bibsonomy.search.index.generator.IndexGenerationLogic;
 import org.bibsonomy.search.index.generator.OneToManyIndexGenerationLogic;
 import org.bibsonomy.search.management.database.params.SearchParam;
-import org.bibsonomy.search.update.SearchIndexSyncState;
 
 import java.util.List;
 

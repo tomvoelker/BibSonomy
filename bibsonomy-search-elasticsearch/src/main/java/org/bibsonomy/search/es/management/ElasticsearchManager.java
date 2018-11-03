@@ -18,7 +18,7 @@ import org.bibsonomy.search.management.SearchIndexManager;
 import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.model.SearchIndexStatistics;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.util.Sets;
 import org.elasticsearch.index.IndexNotFoundException;
 
@@ -249,7 +249,7 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 	 * @param indexName
 	 * @param state
 	 */
-	protected void updateIndexState(final String indexName, final SearchIndexSyncState state) {
+	protected void updateIndexState(final String indexName, final DefaultSearchIndexSyncState state) {
 		final IndexData indexData = ElasticsearchUtils.buildIndexDataForState(state);
 		this.client.insertNewDocument(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId), indexName, indexData);
 	}

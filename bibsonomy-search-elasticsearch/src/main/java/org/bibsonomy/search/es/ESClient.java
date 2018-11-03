@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.client.DeleteData;
 import org.bibsonomy.search.es.client.IndexData;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -110,7 +110,7 @@ public interface ESClient {
 	 * @param syncStateForIndexName the index name of the index
 	 * @return
 	 */
-	SearchIndexSyncState getSearchIndexStateForIndex(String indexName, String syncStateForIndexName);
+	DefaultSearchIndexSyncState getSearchIndexStateForIndex(String indexName, String syncStateForIndexName);
 	
 	/**
 	 * @param indexName the name of the index

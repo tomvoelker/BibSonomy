@@ -6,7 +6,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.index.update.IndexUpdateLogic;
 import org.bibsonomy.search.management.database.params.SearchParam;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 
 import java.util.Date;
 import java.util.List;
@@ -56,7 +56,7 @@ public class CommunityPostIndexUpdateLogic<R extends Resource> extends ResourceA
 	}
 
 	@Override
-	public SearchIndexSyncState getDbState() {
+	public DefaultSearchIndexSyncState getDbState() {
 		return null;
 	}
 }

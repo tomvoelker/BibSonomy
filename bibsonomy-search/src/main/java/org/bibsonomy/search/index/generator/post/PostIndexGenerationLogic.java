@@ -11,7 +11,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagement;
 import org.bibsonomy.search.index.generator.IndexGenerationLogic;
 import org.bibsonomy.search.management.database.params.SearchParam;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 
 import java.util.Collections;
 import java.util.Date;
@@ -80,8 +80,8 @@ public class PostIndexGenerationLogic<R extends Resource> extends AbstractDataba
 	}
 
 	@Override
-	public SearchIndexSyncState getDbState() {
-		final SearchIndexSyncState newState = new SearchIndexSyncState();
+	public DefaultSearchIndexSyncState getDbState() {
+		final DefaultSearchIndexSyncState newState = new DefaultSearchIndexSyncState();
 		newState.setLast_tas_id(this.getLastTasId());
 		newState.setLast_log_date(this.getLastLogDate());
 		newState.setLastPersonChangeId(this.getLastPersonChangeId());

@@ -73,6 +73,8 @@ public class ElasticsearchCommunityManagerPublicationITCase extends AbstractComm
 		final boolean userPostDeleted = PUBLICATION_DATABASE_MANAGER.deletePost("testuserP", intraHash, loggedinUser, this.dbSession);
 		assertThat(userPostDeleted, is(true));
 
+		this.updateIndex();
+
 		final List<Post<GoldStandardPublication>> afterNormalPostDelete = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, "title1", null, null, null, null, null, null, null, null, null, 10, 0);
 
 		assertThat(afterNormalPostDelete.size(), is(0));

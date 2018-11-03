@@ -49,7 +49,7 @@ import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.index.update.post.CommunityPostIndexCommunityUpdateLogic;
 import org.bibsonomy.search.index.update.post.CommunityPostIndexUpdateLogic;
 import org.bibsonomy.search.management.database.SearchDBInterface;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 
 /**
  * special class that manages community posts
@@ -72,8 +72,8 @@ public class ElasticsearchCommunityManager<G extends Resource> extends Elasticse
 	protected void updateIndex(String indexName) {
 		final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId);
 
-		final SearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, indexName);
-		// final SearchIndexSyncState targetState = this.postUpdateLogic.getDbState();
+		final DefaultSearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, indexName);
+		// final DefaultSearchIndexSyncState targetState = this.postUpdateLogic.getDbState();
 		final Integer communityPostLastContentId = oldState.getLast_tas_id();
 		final Integer postLastContentId = 0; // FIXME: use the correct
 		final Date communityPostLastLogDate = oldState.getLast_log_date();

@@ -10,7 +10,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.search.testutils.SearchSpringContextWrapper;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.junit.Test;
 
 import java.util.List;
@@ -56,7 +56,7 @@ public class PersonIndexGenerationLogicTest extends AbstractDatabaseManagerTest 
 	 */
 	@Test
 	public void testGetDbState() {
-		final SearchIndexSyncState dbState = PERSON_INDEX_GENERATIONLOGIC.getDbState();
+		final DefaultSearchIndexSyncState dbState = PERSON_INDEX_GENERATIONLOGIC.getDbState();
 		assertThat(dbState.getLastPersonChangeId(), is(34l));
 	}
 

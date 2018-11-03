@@ -49,9 +49,8 @@ import org.bibsonomy.search.es.ESConstants.Fields.Publication;
 import org.bibsonomy.search.es.index.converter.post.PublicationConverter;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
-import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.management.database.SearchDBInterface;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.util.ValidationUtils;
 import org.elasticsearch.index.engine.DocumentMissingException;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -91,7 +90,7 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 	 * @see org.bibsonomy.search.es.management.ElasticSearchManager#updateResourceSpecificProperties(java.lang.String, org.bibsonomy.search.update.SearchIndexState, org.bibsonomy.search.update.SearchIndexState)
 	 */
 	@Override
-	protected void updateResourceSpecificProperties(String indexName, SearchIndexSyncState oldState, SearchIndexSyncState targetState) {
+	protected void updateResourceSpecificProperties(String indexName, DefaultSearchIndexSyncState oldState, DefaultSearchIndexSyncState targetState) {
 		// TODO: limit offset TODODZO
 		Date lastDocDate = oldState.getLastDocumentDate();
 		if (!present(lastDocDate)) {
@@ -121,7 +120,7 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 	 * @param targetState
 	 * @param updatedInterhashes
 	 */
-	private void applyPersonChangesToIndex(String indexName, SearchIndexSyncState oldState, SearchIndexSyncState targetState, LRUMap updatedInterhashes) {
+	private void applyPersonChangesToIndex(String indexName, DefaultSearchIndexSyncState oldState, DefaultSearchIndexSyncState targetState, LRUMap updatedInterhashes) {
 		for (long minPersonChangeId = oldState.getLastPersonChangeId() + 1; minPersonChangeId < targetState.getLastPersonChangeId(); minPersonChangeId = Math.min(targetState.getLastPersonChangeId(), minPersonChangeId + SQL_BLOCKSIZE)) {
 			final List<PersonName> personMainNameChanges = this.inputLogic.getPersonMainNamesByChangeIdRange(minPersonChangeId, minPersonChangeId + SQL_BLOCKSIZE);
 			for (PersonName name : personMainNameChanges) {
@@ -186,7 +185,7 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 		}
 	}
 
-	private void applyChangesInPubPersonRelationsToIndex(final String indexName, SearchIndexSyncState oldState, SearchIndexSyncState targetState, final LRUMap updatedInterhashes) {
+	private void applyChangesInPubPersonRelationsToIndex(final String indexName, DefaultSearchIndexSyncState oldState, DefaultSearchIndexSyncState targetState, final LRUMap updatedInterhashes) {
 		for (long minPersonChangeId = oldState.getLastPersonChangeId() + 1; minPersonChangeId < targetState.getLastPersonChangeId(); minPersonChangeId += SQL_BLOCKSIZE) {
 			final List<ResourcePersonRelationLogStub> relChanges = this.inputLogic.getPubPersonRelationsByChangeIdRange(minPersonChangeId, minPersonChangeId + SQL_BLOCKSIZE);
 			if (log.isDebugEnabled() || ValidationUtils.present(relChanges)) {

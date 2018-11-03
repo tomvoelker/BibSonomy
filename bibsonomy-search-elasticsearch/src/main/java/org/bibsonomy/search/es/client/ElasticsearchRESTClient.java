@@ -7,7 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
@@ -156,7 +156,7 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public SearchIndexSyncState getSearchIndexStateForIndex(String indexName, String syncStateForIndexName) {
+	public DefaultSearchIndexSyncState getSearchIndexStateForIndex(String indexName, String syncStateForIndexName) {
 		return this.secureCall(() -> {
 			final GetRequest getRequest = new GetRequest();
 			getRequest.id(syncStateForIndexName);

@@ -7,7 +7,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.index.generator.IndexGenerationLogic;
 import org.bibsonomy.search.management.database.params.SearchParam;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 
 import java.util.Date;
 import java.util.List;
@@ -50,9 +50,9 @@ public class CommunityPostIndexGenerationLogic<R extends Resource> extends Resou
 
 	// TODO: move
 	@Override
-	public SearchIndexSyncState getDbState() {
+	public DefaultSearchIndexSyncState getDbState() {
 		try (final DBSession session = this.openSession()) {
-			final SearchIndexSyncState searchIndexSyncState = new SearchIndexSyncState();
+			final DefaultSearchIndexSyncState searchIndexSyncState = new DefaultSearchIndexSyncState();
 			final ConstantID contentType = this.getConstantID();
 			final int contentTypeId = contentType.getId();
 

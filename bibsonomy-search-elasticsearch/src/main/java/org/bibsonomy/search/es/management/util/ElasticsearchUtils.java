@@ -40,7 +40,7 @@ import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.model.SearchIndexState;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -171,7 +171,7 @@ public final class ElasticsearchUtils {
 	 * @param state
 	 * @return the serialized index state
 	 */
-	public static Map<String, Object> serializeSearchIndexState(SearchIndexSyncState state) {
+	public static Map<String, Object> serializeSearchIndexState(DefaultSearchIndexSyncState state) {
 		final Map<String, Object> values = new HashMap<>();
 		values.put(LAST_TAS_KEY, state.getLast_tas_id());
 		final Date lastLogDate = getDateForIndex(state.getLast_log_date());
@@ -204,8 +204,8 @@ public final class ElasticsearchUtils {
 	 * @param source
 	 * @return the search index state
 	 */
-	public static SearchIndexSyncState deserializeSearchIndexState(Map<String, Object> source) {
-		final SearchIndexSyncState searchIndexState = new SearchIndexSyncState();
+	public static DefaultSearchIndexSyncState deserializeSearchIndexState(Map<String, Object> source) {
+		final DefaultSearchIndexSyncState searchIndexState = new DefaultSearchIndexSyncState();
 		searchIndexState.setLast_tas_id((Integer) source.get(LAST_TAS_KEY));
 		final Long dateAsTime = (Long) source.get(LAST_LOG_DATE_KEY);
 		final Date lastLogDate = new Date(dateAsTime.longValue());
@@ -283,7 +283,7 @@ public final class ElasticsearchUtils {
 	 * @param state
 	 * @return the index data for the state
 	 */
-	public static IndexData buildIndexDataForState(SearchIndexSyncState state) {
+	public static IndexData buildIndexDataForState(DefaultSearchIndexSyncState state) {
 		final IndexData indexData = new IndexData();
 		indexData.setType(ESConstants.SYSTEM_INFO_INDEX_TYPE);
 		indexData.setSource(serializeSearchIndexState(state));
