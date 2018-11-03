@@ -51,6 +51,7 @@ import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
+import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.util.ValidationUtils;
 import org.elasticsearch.index.engine.DocumentMissingException;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -73,18 +74,18 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 	/**
 	 * default constructor
 	 *
-	 * @param systemId
 	 * @param disabledIndexing
 	 * @param updateEnabled
-	 * @param client
 	 * @param generator
+	 * @param client
+	 * @param syncStateConverter
 	 * @param entityInformationProvider
+	 * @param systemId
 	 * @param inputLogic
 	 */
-	public ElasticsearchPublicationManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<P>> generator, EntityInformationProvider<Post<P>> entityInformationProvider, SearchDBInterface<P> inputLogic) {
-		super(systemId, disabledIndexing, updateEnabled, client, generator, entityInformationProvider, inputLogic);
+	public ElasticsearchPublicationManager(boolean disabledIndexing, boolean updateEnabled, ElasticsearchIndexGenerator<Post<P>, DefaultSearchIndexSyncState> generator, ESClient client, Converter syncStateConverter, EntityInformationProvider entityInformationProvider, URI systemId, SearchDBInterface<P> inputLogic) {
+		super(disabledIndexing, updateEnabled, generator, client, syncStateConverter, entityInformationProvider, systemId, inputLogic);
 	}
-
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.management.ElasticSearchManager#updateResourceSpecificProperties(java.lang.String, org.bibsonomy.search.update.SearchIndexState, org.bibsonomy.search.update.SearchIndexState)

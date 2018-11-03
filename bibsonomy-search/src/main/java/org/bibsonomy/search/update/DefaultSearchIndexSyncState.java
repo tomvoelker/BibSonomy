@@ -31,11 +31,11 @@ import java.util.Date;
 import org.apache.commons.lang.ObjectUtils;
 
 /**
- * Stores up to which ids the index has been updated
+ * stores up to which ids the index has been updated
  *
  * @author lutful
  */
-public class DefaultSearchIndexSyncState {
+public class DefaultSearchIndexSyncState extends SearchIndexSyncState {
 	
 	// TODO: rename attribute to lastTASId
 	private Integer last_tas_id;
@@ -46,7 +46,7 @@ public class DefaultSearchIndexSyncState {
 	private Date lastPredictionChangeDate;
 	/** the last content id of normal posts */
 	private long lastPostContentId;
-	private String mappingVersion;
+
 
 	/**
 	 * default constructor
@@ -61,8 +61,8 @@ public class DefaultSearchIndexSyncState {
 		this.last_log_date = state.last_log_date;
 		this.last_tas_id = state.last_tas_id;
 		this.lastPersonChangeId = state.lastPersonChangeId;
-		this.mappingVersion = state.mappingVersion;
 		this.lastPredictionChangeDate = state.lastPredictionChangeDate;
+		this.setMappingVersion(state.getMappingVersion());
 	}
 	
 	/**
@@ -105,20 +105,6 @@ public class DefaultSearchIndexSyncState {
 	 */
 	public void setLastPersonChangeId(long lastPersonChangeId) {
 		this.lastPersonChangeId = lastPersonChangeId;
-	}
-
-	/**
-	 * @return the mappingVersion
-	 */
-	public String getMappingVersion() {
-		return this.mappingVersion;
-	}
-
-	/**
-	 * @param mappingVersion the mappingVersion to set
-	 */
-	public void setMappingVersion(String mappingVersion) {
-		this.mappingVersion = mappingVersion;
 	}
 
 	/**

@@ -5,7 +5,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 
 /**
- * this class provideds methods for resource database managers
+ * this class provides methods for resource database managers
  * @param <R>
  *
  * @author dzo

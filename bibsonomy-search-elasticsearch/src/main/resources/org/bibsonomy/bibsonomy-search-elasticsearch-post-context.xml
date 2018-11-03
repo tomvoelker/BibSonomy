@@ -7,6 +7,11 @@
 						http://www.springframework.org/schema/util
 						http://www.springframework.org/schema/util/spring-util.xsd">
 
+
+	<bean id="postSyncStateConverter" class="org.bibsonomy.search.es.index.converter.util.DefaultSearchIndexSyncStateConverter" />
+
+	<bean id="communitySyncStateConverter" class="org.bibsonomy.search.es.index.converter.util.SearchCommunityIndexSyncStateConverter" />
+
 	<bean id="elasticsearchBookmarkManager" class="org.bibsonomy.search.es.management.post.ElasticsearchPostManager" parent="elasticsearchAbstractIndexManager">
 		<constructor-arg>
 			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator">

@@ -79,7 +79,7 @@ public class PostIndexGenerationLogic<R extends Resource> extends AbstractDataba
 		}
 	}
 
-	@Override
+	// @Override FIXME move
 	public DefaultSearchIndexSyncState getDbState() {
 		final DefaultSearchIndexSyncState newState = new DefaultSearchIndexSyncState();
 		newState.setLast_tas_id(this.getLastTasId());

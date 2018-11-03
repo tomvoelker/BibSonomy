@@ -6,8 +6,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.ESClient;
-import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
+import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
@@ -156,7 +156,7 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public DefaultSearchIndexSyncState getSearchIndexStateForIndex(String indexName, String syncStateForIndexName) {
+	public <S extends SearchIndexSyncState> S getSearchIndexStateForIndex(String indexName, String syncStateForIndexName, Converter<S, Map<String, Object>, Object> converter) {
 		return this.secureCall(() -> {
 			final GetRequest getRequest = new GetRequest();
 			getRequest.id(syncStateForIndexName);
@@ -165,7 +165,7 @@ public class ElasticsearchRESTClient implements ESClient {
 			if (!response.isExists()) {
 				throw new IllegalStateException("no index sync state found for " + indexName);
 			}
-			return ElasticsearchUtils.deserializeSearchIndexState(response.getSourceAsMap());
+			return converter.convert(response.getSourceAsMap(), null);
 		}, null, "error getting search index sync state for index " + syncStateForIndexName);
 	}
 

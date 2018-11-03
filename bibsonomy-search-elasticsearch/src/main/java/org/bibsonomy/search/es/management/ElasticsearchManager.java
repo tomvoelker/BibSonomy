@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.ESClient;
+import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
@@ -18,7 +19,8 @@ import org.bibsonomy.search.management.SearchIndexManager;
 import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.model.SearchIndexStatistics;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
+import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.util.Sets;
 import org.elasticsearch.index.IndexNotFoundException;
 
@@ -39,7 +41,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author dzo
  */
-public abstract class ElasticsearchManager<T> implements SearchIndexManager {
+public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> implements SearchIndexManager {
 	private static final Log LOG = LogFactory.getLog(ElasticsearchManager.class);
 
 
@@ -50,10 +52,11 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 	private final boolean updateEnabled;
 
 	private final ExecutorService executorService = Executors.newFixedThreadPool(1);
-	private final ElasticsearchIndexGenerator<T> generator;
+	private final ElasticsearchIndexGenerator<T, S> generator;
 
 	/** the client to use for all interaction with elasticsearch */
 	protected final ESClient client;
+	protected final Converter<S, Map<String, Object>, Object> syncStateConverter;
 
 	protected final EntityInformationProvider<T> entityInformationProvider;
 	protected final URI systemId;
@@ -62,15 +65,20 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 	 * default constructor
 	 * @param disabledIndexing
 	 * @param updateEnabled
+	 * @param generator
 	 * @param client
+	 * @param syncStateConverter
+	 * @param entityInformationProvider
+	 * @param systemId
 	 */
-	public ElasticsearchManager(final URI systemId, boolean disabledIndexing, final boolean updateEnabled, final ESClient client, final ElasticsearchIndexGenerator<T> generator, final EntityInformationProvider<T> entityInformationProvider) {
-		this.systemId = systemId;
-		this.generator = generator;
-		this.entityInformationProvider = entityInformationProvider;
+	public ElasticsearchManager(boolean disabledIndexing, boolean updateEnabled, ElasticsearchIndexGenerator<T, S> generator, ESClient client, Converter<S, Map<String, Object>, Object> syncStateConverter, EntityInformationProvider<T> entityInformationProvider, URI systemId) {
 		this.disabledIndexing = disabledIndexing;
 		this.updateEnabled = updateEnabled;
+		this.generator = generator;
 		this.client = client;
+		this.syncStateConverter = syncStateConverter;
+		this.entityInformationProvider = entityInformationProvider;
+		this.systemId = systemId;
 	}
 
 	/**
@@ -249,8 +257,10 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 	 * @param indexName
 	 * @param state
 	 */
-	protected void updateIndexState(final String indexName, final DefaultSearchIndexSyncState state) {
-		final IndexData indexData = ElasticsearchUtils.buildIndexDataForState(state);
+	protected void updateIndexState(final String indexName, final S state) {
+		final IndexData indexData = new IndexData();
+		indexData.setType(ESConstants.SYSTEM_INFO_INDEX_TYPE);
+		indexData.setSource(this.syncStateConverter.convert(state));
 		this.client.insertNewDocument(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId), indexName, indexData);
 	}
 
@@ -328,7 +338,7 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 		searchIndexInfo.setId(indexName);
 
 		if (loadSyncState) {
-			searchIndexInfo.setSyncState(this.client.getSearchIndexStateForIndex(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId), indexName));
+			searchIndexInfo.setSyncState(this.client.getSearchIndexStateForIndex(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId), indexName, this.syncStateConverter));
 		}
 
 		final SearchIndexStatistics statistics = new SearchIndexStatistics();

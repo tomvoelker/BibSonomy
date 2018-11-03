@@ -47,21 +47,4 @@ public class CommunityPostIndexGenerationLogic<R extends Resource> extends Resou
 			return (List<Post<R>>) this.queryForList("get" + this.getResourceName() + "ForCommunityIndex", param, session);
 		}
 	}
-
-	// TODO: move
-	@Override
-	public DefaultSearchIndexSyncState getDbState() {
-		try (final DBSession session = this.openSession()) {
-			final DefaultSearchIndexSyncState searchIndexSyncState = new DefaultSearchIndexSyncState();
-			final ConstantID contentType = this.getConstantID();
-			final int contentTypeId = contentType.getId();
-
-			final Date lastLogDate = this.queryForObject("getLastLogDateCommunity", contentTypeId, Date.class, session);
-			searchIndexSyncState.setLast_log_date(lastLogDate);
-
-			final Integer lastContentId = this.queryForObject("getLastContentIdCommunity", contentTypeId, Integer.class, session);
-			searchIndexSyncState.setLast_tas_id(lastContentId);
-			return searchIndexSyncState;
-		}
-	}
 }

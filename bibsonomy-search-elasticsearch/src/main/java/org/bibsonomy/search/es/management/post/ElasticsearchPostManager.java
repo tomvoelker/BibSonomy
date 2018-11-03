@@ -54,6 +54,7 @@ import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
+import org.bibsonomy.search.util.Converter;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHits;
@@ -65,7 +66,7 @@ import org.elasticsearch.search.sort.SortOrder;
  * @author dzo
  * @param <R> 
  */
-public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchManager<Post<R>> {
+public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchManager<Post<R>, DefaultSearchIndexSyncState> {
 	private static final Log log = LogFactory.getLog(ElasticsearchPostManager.class);
 	
 	/** how many posts should be retrieved from the database */
@@ -78,15 +79,17 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	/**
 	 * default constructor
 	 *
-	 * @param systemId
 	 * @param disabledIndexing
 	 * @param updateEnabled
-	 * @param client
 	 * @param generator
+	 * @param client
+	 * @param syncStateConverter
 	 * @param entityInformationProvider
+	 * @param systemId
+	 * @param inputLogic
 	 */
-	public ElasticsearchPostManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<R>> generator, EntityInformationProvider<Post<R>> entityInformationProvider, final SearchDBInterface<R> inputLogic) {
-		super(systemId, disabledIndexing, updateEnabled, client, generator, entityInformationProvider);
+	public ElasticsearchPostManager(boolean disabledIndexing, boolean updateEnabled, ElasticsearchIndexGenerator<Post<R>, DefaultSearchIndexSyncState> generator, ESClient client, Converter syncStateConverter, EntityInformationProvider entityInformationProvider, URI systemId, SearchDBInterface<R> inputLogic) {
+		super(disabledIndexing, updateEnabled, generator, client, syncStateConverter, entityInformationProvider, systemId);
 		this.inputLogic = inputLogic;
 	}
 
@@ -97,7 +100,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	protected void updateIndex(final String indexName) {
 		final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId);
 
-		final DefaultSearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, indexName);
+		final DefaultSearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, indexName, this.syncStateConverter);
 		final DefaultSearchIndexSyncState targetState = this.inputLogic.getDbState();
 		
 		final int oldLastTasId = oldState.getLast_tas_id().intValue();

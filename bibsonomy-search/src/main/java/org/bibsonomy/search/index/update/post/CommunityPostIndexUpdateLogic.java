@@ -54,9 +54,4 @@ public class CommunityPostIndexUpdateLogic<R extends Resource> extends ResourceA
 			return (List<Post<R>>) this.queryForList("getDeleted" + this.getResourceName() + "Posts", lastLogDate, session);
 		}
 	}
-
-	@Override
-	public DefaultSearchIndexSyncState getDbState() {
-		return null;
-	}
 }

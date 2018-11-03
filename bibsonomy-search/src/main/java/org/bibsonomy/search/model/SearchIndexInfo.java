@@ -26,7 +26,7 @@
  */
 package org.bibsonomy.search.model;
 
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
+import org.bibsonomy.search.update.SearchIndexSyncState;
 
 /**
  * infos about a search index
@@ -39,7 +39,7 @@ public class SearchIndexInfo {
 	
 	private SearchIndexState state;
 	
-	private DefaultSearchIndexSyncState syncState;
+	private SearchIndexSyncState syncState;
 	
 	/** statistics */
 	private SearchIndexStatistics statistics;
@@ -117,14 +117,14 @@ public class SearchIndexInfo {
 	/**
 	 * @return the syncState
 	 */
-	public DefaultSearchIndexSyncState getSyncState() {
+	public SearchIndexSyncState getSyncState() {
 		return this.syncState;
 	}
 
 	/**
 	 * @param syncState the syncState to set
 	 */
-	public void setSyncState(DefaultSearchIndexSyncState syncState) {
+	public void setSyncState(SearchIndexSyncState syncState) {
 		this.syncState = syncState;
 	}
 

@@ -5,7 +5,7 @@ package org.bibsonomy.search.update;
  *
  * @author dzo
  */
-public class SearchCommunityIndexSyncState {
+public class SearchCommunityIndexSyncState extends SearchIndexSyncState {
 
 	private DefaultSearchIndexSyncState communitySearchIndexState;
 

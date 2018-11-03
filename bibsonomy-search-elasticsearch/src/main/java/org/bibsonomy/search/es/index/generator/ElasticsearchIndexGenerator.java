@@ -8,17 +8,17 @@ import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
+import org.bibsonomy.search.index.database.DatabaseInformationLogic;
 import org.bibsonomy.search.index.generator.IndexGenerationLogic;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.model.SearchIndexState;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
+import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.util.BasicUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import java.net.URI;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,15 +30,16 @@ import java.util.Map;
  *
  * @author dzo
  */
-public class ElasticsearchIndexGenerator<T> {
+public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 	private static final Log LOG = LogFactory.getLog(ElasticsearchIndexGenerator.class);
 
-
 	private final ESClient client;
-
 	private final URI systemId;
 
 	private final IndexGenerationLogic<T> generationLogic;
+	private final DatabaseInformationLogic<S> databaseInformationLogic;
+
+	private final Converter<S, Map<String, Object>, Object> indexSyncStateConverter;
 
 	protected final EntityInformationProvider<T> entityInformationProvider;
 
@@ -68,17 +69,20 @@ public class ElasticsearchIndexGenerator<T> {
 	}
 
 	/**
-	 * default constructor with all required fields
-	 *
-	 * @param systemId the system id
-	 * @param client the client to use
-	 * @param generationLogic the generation logic to use
-	 * @param entityInformationProvider the entity information provider for this entity index
+	 * default constructor
+	 *  @param client
+	 * @param systemId
+	 * @param generationLogic
+	 * @param databaseInformationLogic
+	 * @param indexSyncStateConverter
+	 * @param entityInformationProvider
 	 */
-	public ElasticsearchIndexGenerator(URI systemId, ESClient client, IndexGenerationLogic<T> generationLogic, EntityInformationProvider<T> entityInformationProvider) {
+	public ElasticsearchIndexGenerator(ESClient client, URI systemId, IndexGenerationLogic<T> generationLogic, DatabaseInformationLogic<S> databaseInformationLogic, Converter<S, Map<String, Object>, Object> indexSyncStateConverter, EntityInformationProvider<T> entityInformationProvider) {
 		this.client = client;
 		this.systemId = systemId;
 		this.generationLogic = generationLogic;
+		this.databaseInformationLogic = databaseInformationLogic;
+		this.indexSyncStateConverter = indexSyncStateConverter;
 		this.entityInformationProvider = entityInformationProvider;
 	}
 
@@ -131,11 +135,8 @@ public class ElasticsearchIndexGenerator<T> {
 
 		// initialize variables
 		// FIXME: introduce a index state for each entity
-		final DefaultSearchIndexSyncState newState = this.generationLogic.getDbState();
+		final S newState = this.databaseInformationLogic.getDbState();
 		newState.setMappingVersion(BasicUtils.VERSION);
-		if (newState.getLast_log_date() == null) {
-			newState.setLast_log_date(new Date(System.currentTimeMillis() - 1000));
-		}
 
 		this.insertDataIntoIndex(indexName);
 		this.writeMetaInfoToIndex(indexName, newState);
@@ -202,8 +203,8 @@ public class ElasticsearchIndexGenerator<T> {
 	/**
 	 * @param newState
 	 */
-	private void writeMetaInfoToIndex(final String indexName, final DefaultSearchIndexSyncState newState) {
-		final Map<String, Object> values = ElasticsearchUtils.serializeSearchIndexState(newState);
+	private void writeMetaInfoToIndex(final String indexName, final S newState) {
+		final Map<String, Object> values = this.indexSyncStateConverter.convert(newState);
 
 		final String systemIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId);
 		final IndexData systemIndexData = new IndexData();

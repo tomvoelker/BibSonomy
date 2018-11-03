@@ -1,7 +1,5 @@
 package org.bibsonomy.search.index.update;
 
-import org.bibsonomy.search.index.database.DatabaseInformationLogic;
-
 import java.util.Date;
 import java.util.List;
 
@@ -9,7 +7,7 @@ import java.util.List;
  * logic interface to get updates from the database
  * @param <E>
  */
-public interface IndexUpdateLogic<E> extends DatabaseInformationLogic {
+public interface IndexUpdateLogic<E> {
 
 	/**
 	 * returns the updated entities

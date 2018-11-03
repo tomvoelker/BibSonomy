@@ -30,7 +30,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -38,9 +37,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.search.es.ESConstants;
-import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.model.SearchIndexState;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -57,14 +54,6 @@ public final class ElasticsearchUtils {
 	
 	private static final DateTimeFormatter DATE_OPTIONAL_TIME_FORMATTER = ISODateTimeFormat.dateOptionalTimeParser();
 	private static final DateTimeFormatter DATE_TIME_FORMATTER = ISODateTimeFormat.dateTime();
-	
-	private static final String LAST_PERSON_CHANGE_ID_KEY = "last_person_change_id";
-	private static final String LAST_LOG_DATE_KEY = "last_log_date";
-	private static final String LAST_TAS_KEY = "last_tas_id";
-	private static final String LAST_DOCUMENT_DATE_KEY = "last_document_date";
-	private static final String LAST_PREDICTION_CHANGE_DATE = "lastPredictionChangeDate";
-	private static final String LAST_POST_CONTENT_ID_KEY = "last_post_content_id";
-	private static final String MAPPING_VERSION = "mapping_version";
 	
 	/** Alias for the inactive index */
 	private static final String INACTIVE_INDEX_ALIAS = "inactiveIndex";
@@ -166,83 +155,6 @@ public final class ElasticsearchUtils {
 	public static String normSystemHome(final URI systemHome) {
 		return (systemHome.getHost() + systemHome.getPath()).replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
 	}
-
-	/**
-	 * @param state
-	 * @return the serialized index state
-	 */
-	public static Map<String, Object> serializeSearchIndexState(DefaultSearchIndexSyncState state) {
-		final Map<String, Object> values = new HashMap<>();
-		values.put(LAST_TAS_KEY, state.getLast_tas_id());
-		final Date lastLogDate = getDateForIndex(state.getLast_log_date());
-		values.put(LAST_LOG_DATE_KEY, Long.valueOf(lastLogDate.getTime()));
-		values.put(LAST_PERSON_CHANGE_ID_KEY, Long.valueOf(state.getLastPersonChangeId()));
-		final Date lastDocumentDate = getDateForIndex(state.getLastDocumentDate());
-		values.put(LAST_DOCUMENT_DATE_KEY, Long.valueOf(lastDocumentDate.getTime()));
-		values.put(MAPPING_VERSION, state.getMappingVersion());
-		final Date lastPredictionDate = state.getLastPredictionChangeDate();
-		if (present(lastPredictionDate)) {
-			values.put(LAST_PREDICTION_CHANGE_DATE, Long.valueOf(lastPredictionDate.getTime()));
-		}
-		final long lastPostContentId = state.getLastPostContentId();
-		values.put(LAST_POST_CONTENT_ID_KEY, lastPostContentId);
-		return values;
-	}
-
-	/**
-	 * @param date the date for the index
-	 * @return
-	 */
-	private static Date getDateForIndex(Date date) {
-		if (!present(date)) {
-			return new Date();
-		}
-		return date;
-	}
-
-	/**
-	 * @param source
-	 * @return the search index state
-	 */
-	public static DefaultSearchIndexSyncState deserializeSearchIndexState(Map<String, Object> source) {
-		final DefaultSearchIndexSyncState searchIndexState = new DefaultSearchIndexSyncState();
-		searchIndexState.setLast_tas_id((Integer) source.get(LAST_TAS_KEY));
-		final Long dateAsTime = (Long) source.get(LAST_LOG_DATE_KEY);
-		final Date lastLogDate = new Date(dateAsTime.longValue());
-		searchIndexState.setLast_log_date(lastLogDate);
-		
-		final Long documentDateAsTime = (Long) source.get(LAST_DOCUMENT_DATE_KEY);
-		final Date lastDocumentDate;
-		if (present(documentDateAsTime)) {
-			lastDocumentDate = new Date(documentDateAsTime.longValue());
-		} else {
-			lastDocumentDate = null;
-		}
-		searchIndexState.setLastDocumentDate(lastDocumentDate);
-		
-		final Long predictionChangeDateAsTime = (Long) source.get(LAST_PREDICTION_CHANGE_DATE);
-		final Date predictionChangeDate;
-		if (present(predictionChangeDateAsTime)) {
-			predictionChangeDate = new Date(predictionChangeDateAsTime.longValue());
-		} else {
-			// the change date was the last log date
-			predictionChangeDate = lastLogDate;
-		}
-		searchIndexState.setLastPredictionChangeDate(predictionChangeDate);
-		// mapping version
-		String mappingVersion = (String) source.get(MAPPING_VERSION);
-		if (mappingVersion == null) {
-			mappingVersion = "unknown";
-		}
-		searchIndexState.setMappingVersion(mappingVersion);
-		
-		searchIndexState.setLastPersonChangeId(((Integer) source.get(LAST_PERSON_CHANGE_ID_KEY)).longValue());
-
-		if (source.containsKey(LAST_POST_CONTENT_ID_KEY)) {
-			searchIndexState.setLastPostContentId((Integer) source.get(LAST_POST_CONTENT_ID_KEY));
-		}
-		return searchIndexState;
-	}
 	
 	/**
 	 * @param date 
@@ -276,18 +188,6 @@ public final class ElasticsearchUtils {
 	 */
 	public static String getSearchIndexStateIndexName(final URI systemURI) {
 		return "." + normSystemHome(systemURI) + "_system_info";
-	}
-
-	/**
-	 * builds a indexData object for the state
-	 * @param state
-	 * @return the index data for the state
-	 */
-	public static IndexData buildIndexDataForState(DefaultSearchIndexSyncState state) {
-		final IndexData indexData = new IndexData();
-		indexData.setType(ESConstants.SYSTEM_INFO_INDEX_TYPE);
-		indexData.setSource(serializeSearchIndexState(state));
-		return indexData;
 	}
 
 	/**

@@ -16,7 +16,7 @@ public final class ElasticSearchIndexRegenerationTask<T> extends AbstractSearchI
 	 * @param newIndexName
 	 * @param toRegenerateIndexName
 	 */
-	public ElasticSearchIndexRegenerationTask(final ElasticsearchManager<T> manager, ElasticsearchIndexGenerator<T> generator, final String newIndexName, final String toRegenerateIndexName) {
+	public ElasticSearchIndexRegenerationTask(final ElasticsearchManager<T, ?> manager, ElasticsearchIndexGenerator<T, ?> generator, final String newIndexName, final String toRegenerateIndexName) {
 		super(manager, generator, newIndexName);
 		this.toRegenerateIndexName = toRegenerateIndexName;
 	}
