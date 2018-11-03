@@ -435,7 +435,7 @@
 				
 				<div id="otherPublications">
 					<c:forEach var="relation" items="${command.otherPubs}">
-						<per:simplePubView relation="${relation}" buttons="true"person="${command.person}"/>
+						<per:simplePubView relation="${relation}" buttons="true" personId="${command.person.personId}"/>
 					</c:forEach>
 				</div>
 				
