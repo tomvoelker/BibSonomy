@@ -11,7 +11,9 @@
 	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<property name="converters">
 			<list>
-				
+				<!-- converts json map strings to maps -->
+				<bean class="org.bibsonomy.web.spring.converter.JsonStringToMapConverter" />
+
 				<!-- strings to a single FavouriteLayout which then has to be placed in the user settings list -->
 				<bean class="org.bibsonomy.web.spring.converter.StringToFavouriteLayoutConverter" />
 				
@@ -184,6 +186,18 @@
 	
 	<bean id="projectTheme" class="java.lang.String">
 		<constructor-arg value="${project.theme}" />
+	</bean>
+	
+	<bean id="projectEmail" class="java.lang.String">
+		<constructor-arg value="${project.email}" />
+	</bean>
+	
+	<bean id="projectNoSpamEmail" class="java.lang.String">
+		<constructor-arg value="${project.noSpamEmail}" />
+	</bean>
+
+	<bean id="projectApiEmail" class="java.lang.String">
+		<constructor-arg value="${project.apiEmail}" />
 	</bean>
 	
 	<!-- handles sending of mails  -->

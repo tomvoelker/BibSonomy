@@ -152,7 +152,11 @@ public class DisambiguationPageController extends SingleResourceListController i
 		 */
 		final PersonResourceRelationType requestedRole = command.getRequestedRole();
 		final int requestedIndex = command.getRequestedIndex().intValue();
-		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byInterhash(command.getPost().getResource().getInterHash()).byRelationType(requestedRole).byAuthorIndex(requestedIndex));
+		final ResourcePersonRelationQueryBuilder personResourceRelationQuery = new ResourcePersonRelationQueryBuilder()
+						.byInterhash(command.getPost().getResource().getInterHash())
+						.byRelationType(requestedRole)
+						.byAuthorIndex(requestedIndex);
+		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations(personResourceRelationQuery);
 		if (present(matchingRelations)) {
 			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingRelations.get(0).getPerson().getPersonId()));
 		}

@@ -297,7 +297,7 @@ INSERT INTO `ids` VALUES
 (14, 3,  'message_id'),
 (15, 4, 'comment_id'),
 (16, 12, 'sync_service_id'),
-(17, 34, 'person_change_id');
+(17, 36, 'person_change_id');
 
 
 --
@@ -751,12 +751,14 @@ INSERT INTO `person` (`person_change_id`, `person_id`, `academic_degree`, `user_
 
 
 INSERT INTO `person_name` VALUES
-(6,'Heinrich Georg','Müller','h.muller',0,'2015-07-06 14:23:05','testuserP'),
-(7,'Henner','Schorsche','h.muller',1,'2015-07-06 14:23:05','testuserP'),
-(31, 'Willi', 'Test', 'w.test.1', 1,'2015-07-06 14:23:05','testuserP'),
-(32, 'Willi', 'Test', 'w.test.2', 1,'2015-07-06 14:23:05','testuserP'), 
-(33, 'Willi', 'Test', 'w.test.3', 1,'2015-07-06 14:23:05','testuserP'), 
-(34, 'Will', 'Test', 'w.test.4', 1,'2015-07-06 14:23:05','testuserP');
+(6, 'Heinrich Georg', 'Müller', 'h.muller', 0, '2015-07-06 14:23:05', 'testuserP'),
+(7, 'Henner', 'Schorsche','h.muller', 1, '2015-07-06 14:23:05', 'testuserP'),
+(31, 'Willi', 'Test', 'w.test.1', 1, '2015-07-06 14:23:05', 'testuserP'),
+(32, 'Willi', 'Test', 'w.test.2', 1, '2015-07-06 14:23:05', 'testuserP'),
+(33, 'Willi', 'Test', 'w.test.3', 1, '2015-07-06 14:23:05', 'testuserP'),
+(34, 'Will', 'Test', 'w.test.4', 1, '2015-07-06 14:23:05', 'testuserP'),
+(35, 'Will', 'Test', 'w.test.1', 0, '2015-07-06 14:25:05', 'testuserP'),
+(36, 'Flash', 'Gordon', 'w.test.4', 0, '2015-07-06 14:25:05', 'testuserP');
 
 INSERT INTO `pub_person` (`person_change_id`, `simhash1`, `simhash2`, `relator_code`, `person_index`, `person_id`, `qualifying`, `log_changed_at`, `log_changed_by`) VALUES
 (3,'0b539e248a02e3edcfe591c64346c7a0','d63038ea59383b94bb52fc4a9b76d1f5','Maut',0,'h.muller',0,'2015-07-06 14:19:55','testuserP'),

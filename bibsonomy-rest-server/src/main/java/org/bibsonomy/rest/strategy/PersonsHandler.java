@@ -26,14 +26,12 @@
  */
 package org.bibsonomy.rest.strategy;
 
+import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
-import org.bibsonomy.rest.strategy.persons.GetPersonStrategy;
-import org.bibsonomy.rest.strategy.persons.GetResourcePersonRelationsStrategy;
-import org.bibsonomy.rest.strategy.persons.PostPersonStrategy;
-import org.bibsonomy.rest.strategy.persons.PostResourcePersonRelationStrategy;
+import org.bibsonomy.rest.strategy.persons.*;
 import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
 
 /**
@@ -72,6 +70,10 @@ public class PersonsHandler implements ContextHandler {
 		switch (httpMethod) {
 			case GET:
 				return new GetPersonStrategy(context, personId);
+			case PUT:
+				final PersonUpdateOperation operation = PersonUpdateOperation.valueOf(
+						context.getStringAttribute("operation", "update_all").toUpperCase());
+				return new UpdatePersonStrategy(context, personId, operation);
 			default:
 				throw new UnsupportedHttpMethodException(httpMethod, "PersonList");
 		}

@@ -15,7 +15,7 @@ public class PersonResourceRelationCommand extends AjaxCommand<Void> {
 
 	private String interhash;
 
-	private int index;
+	private int index = -1;
 
 	/**
 	 * @return the person

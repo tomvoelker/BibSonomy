@@ -61,36 +61,42 @@
 		WHERE person.person_id = #personId#
 	</update>
 	
-	<update id="updateOrcid" parameterClass="person">
+	<update id="updatePersonOrcid" parameterClass="person">
 		UPDATE person
 		SET person_change_id = #personChangeId#, orcid = #orcid#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
 		WHERE person.person_id = #personId#
 	</update>
 
-	<update id="updateAcademicDegree" parameterClass="person">
+	<update id="updatePersonAcademicDegree" parameterClass="person">
 		UPDATE person
 		SET person_change_id = #personChangeId#, academic_degree = #academicDegree#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
 		WHERE person.person_id = #personId#
 	</update>
 	
-	<update id="updateCollege" parameterClass="person">
+	<update id="updatePersonCollege" parameterClass="person">
 		UPDATE person
 		SET person_change_id = #personChangeId#, college = #college#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
 		WHERE person.person_id = #personId#
 	</update>
 	
-	<update id="updateEmail" parameterClass="person">
+	<update id="updatePersonEmail" parameterClass="person">
 		UPDATE person
 		SET person_change_id = #personChangeId#, email = #email#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
 		WHERE person.person_id = #personId#
 	</update>
 
-	<update id="updateHomepage" parameterClass="person">
+	<update id="updatePersonHomepage" parameterClass="person">
 		UPDATE person
 		SET person_change_id = #personChangeId#, homepage = #homepage#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
 		WHERE person.person_id = #personId#
 	</update>
-	
+
+	<update id="updatePersonUser" parameterClass="person">
+		UPDATE person
+		SET person_change_id = #personChangeId#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
+		WHERE person.person_id = #personId#
+	</update>
+
 	<update id="updatePersonName" parameterClass="personName">
 		UPDATE person_name
 		SET is_main = #isMain#
@@ -106,13 +112,26 @@
 		DELETE FROM person_name
 		WHERE person_change_id = #personNameId#
 	</delete>
-	
+
+	<delete id="deletePersonNamesByPersonId" parameterClass="string">
+		DELETE FROM person_name
+		WHERE person_id = #personId#
+	</delete>
+
+	<delete id="deletePersonById" parameterClass="string">
+		DELETE FROM person
+		WHERE person_id = #personId#
+	</delete>
+
 	<select id="getResourcePersonRelationByResourcePersonRelation" resultMap="PersonCommon.lazyLoadingResourcePersonRelation" parameterClass="personResourceRelation">
 		SELECT <include refid="commonResourcePersonRelationColumns" />
 		FROM pub_person
-		WHERE pub_person.simhash1 = #post.resource.interHash#
-		AND pub_person.relator_code = #relationType.relatorCode#
-		AND pub_person.person_index = #personIndex#
+		WHERE simhash1 = #post.resource.interHash#
+		<isNotNull property="person">
+			AND person_id = #person.personId#
+		</isNotNull>
+		AND relator_code = #relationType.relatorCode#
+		AND person_index = #personIndex#
 	</select>
 	
 	<update id="unlinkUser" parameterClass="string">
@@ -190,7 +209,7 @@
 		WHERE p.person_id = #personId#
 		AND p.relator_code = 'Maut'
 	</select>
-	
+
 	<select id="getMatchbyID" parameterClass="int" resultMap="PersonCommon.personMatch">
 		SELECT match_id, person1_id, person2_id, state
 		FROM person_match
@@ -249,7 +268,7 @@
 		WHERE (person1_id = #person1.personId# AND person2_id = #person2.personId#)
 		OR (person1_id = #person2.personId# AND person2_id = #person1.personId#)
 	</select>
-	
+
 	<select id="getHabilForPerson" parameterClass="string" resultMap="GoldStandardPublicationCommon.goldStandardPost">
 		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsDummyRows" />
 		FROM gold_standard b

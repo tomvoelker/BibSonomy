@@ -103,7 +103,8 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 		// create it
 		PERSON_DATABASE_MANAGER.createPerson(newPerson, this.dbSession);
 		// now create the person name FIXME: this should be done in the manager not the dblogic
-		reynolds.setPersonId(newPerson.getPersonId());
+		final String newPersonId= newPerson.getPersonId();
+		reynolds.setPersonId(newPersonId);
 		PERSON_DATABASE_MANAGER.createPersonName(reynolds, this.dbSession);
 		this.updateIndex();
 
@@ -135,7 +136,7 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 
 		assertThat(resourceRelations.size(), is(1));
 
-		PERSON_DATABASE_MANAGER.removeResourceRelation(RESOURCE_INTERHASH, authorIndex, relationType, TESTUSER1, this.dbSession);
+		PERSON_DATABASE_MANAGER.removeResourceRelation(newPersonId, RESOURCE_INTERHASH, authorIndex, relationType, TESTUSER1, this.dbSession);
 
 		this.updateIndex();
 

@@ -86,11 +86,6 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	}
 
 	@Override
-	public void onGoldStandardDelete(final String interhash, final DBSession session) {
-		// noop
-	}
-
-	@Override
 	public void onBookmarkInsert(final Post<? extends Resource> post, User logginUser, final DBSession session) {
 		// noop
 	}
@@ -216,7 +211,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPersonDelete(Person person, DBSession session) {
+	public void onPersonDelete(Person person, User user, DBSession session) {
 		// noop
 	}
 

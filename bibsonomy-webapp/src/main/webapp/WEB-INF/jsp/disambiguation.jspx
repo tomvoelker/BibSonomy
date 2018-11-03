@@ -22,11 +22,7 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<c:set var="title" value="${mtl:cleanBibtex(command.personName)}" />
-	<c:set var="post" value="${command.bibtex.list[0]}" />
-	<c:set var="publication" value="${post.resource}" />
-	<c:set var="excapedRequestPath" value="${fn:escapeXml(requPath)}" />
-			
-	<fmt:message key="navi.person" var="PersonPageTitle" />
+
 	<fmt:message key="disambiguation.addPersonButton" var="textAddPersonButton"/>
 	<fmt:message key="disambiguation.header" var="textHeader">
 		<fmt:param value="${title}" />
@@ -104,6 +100,7 @@
 			 	<h2><fmt:message key="disambiguation.pleaseChooseMsg" /></h2>
 				<p><fmt:message key="disambiguation.listExplanation"/></p>
 				<spring:eval expression="T(org.bibsonomy.model.util.GroupUtils).isPublicGroup(command.post.groups)" var="isPublic" />
+				<c:set var="isPublic" value="${isPublic or empty command.post.groups}" /> <!--TODO: community posts do not have groups :( -->
 				<c:if test="${not isPublic}">
 					<bsold:alert style="danger">
 						<jsp:attribute name="alertBody">
@@ -199,7 +196,7 @@
 						</bs:linkButton>
 					</c:otherwise>
 				</c:choose>
-					
+
 				<!-- show more publications of authors with the same name if there are any -->
 				<div class="clearfix">&#160;</div>
 				<h2><fmt:message key="disambiguation.otherPub" /></h2>

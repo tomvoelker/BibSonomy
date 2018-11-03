@@ -136,11 +136,13 @@ public interface DatabasePlugin {
 	
 	/**
 	 * Called when a gold standard publication is deleted.
-	 * 
-	 * @param interhash
+	 *  @param interhash
+	 * @param loggedinUser
 	 * @param session
 	 */
-	public void onGoldStandardDelete(String interhash, DBSession session);
+	default void onGoldStandardDelete(String interhash, User loggedinUser, DBSession session) {
+		// noop
+	}
 	
 	/**
 	 * Called when a Bookmark is inserted.
@@ -355,9 +357,10 @@ public interface DatabasePlugin {
 	/**
 	 * called when a person will be deleted
 	 * @param person should be set to the old personId and the new modifiedBy and modifiedBy values
+	 * @param user
 	 * @param session
 	 */
-	public void onPersonDelete(final Person person, final DBSession session);
+	public void onPersonDelete(final Person person, User user, final DBSession session);
 	
 	/**
 	 * called when a pubPerson will be deleted

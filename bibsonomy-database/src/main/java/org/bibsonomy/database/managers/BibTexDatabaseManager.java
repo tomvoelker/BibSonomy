@@ -43,8 +43,8 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.params.BibTexParam;
@@ -339,12 +339,12 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * 
 	 */
 	@Override
-	public Post<BibTex> getPostDetails(final String authUser, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final DBSession session) throws ResourceMovedException, ObjectNotFoundException {
+	public Post<BibTex> getPostDetails(final String authUser, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final DBSession session) throws ObjectMovedException, ObjectNotFoundException {
 		final boolean failIfDocumentsNotAccessible = false;
 		return this.getPostDetails(authUser, resourceHash, userName, visibleGroupIDs, failIfDocumentsNotAccessible, session);
 	}
 
-	public Post<BibTex> getPostDetails(final String authUser, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final boolean failIfDocumentsNotAccessible, final DBSession session) throws ResourceMovedException, ObjectNotFoundException {
+	public Post<BibTex> getPostDetails(final String authUser, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final boolean failIfDocumentsNotAccessible, final DBSession session) throws ObjectMovedException, ObjectNotFoundException {
 		// get post from database
 		final Post<BibTex> post = super.getPostDetails(authUser, resourceHash, userName, visibleGroupIDs, session);
 
@@ -400,7 +400,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 			 * infinite loop.
 			 */
 			if (!resourceHash.equals(newIntraHash)) {
-				throw new ResourceMovedException(resourceHash, BibTex.class, newIntraHash, userName, loggedPost.getDate());
+				throw new ObjectMovedException(resourceHash, BibTex.class, newIntraHash, userName, loggedPost.getDate());
 			}
 		}
 

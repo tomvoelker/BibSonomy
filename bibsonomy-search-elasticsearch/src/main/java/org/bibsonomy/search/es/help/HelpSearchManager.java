@@ -138,6 +138,9 @@ public class HelpSearchManager implements HelpSearch {
 	private String projectName;
 	private String projectTheme;
 	private String projectHome;
+	private String projectEmail;
+	private String projectNoSpamEmail;
+	private String projectAPIEmail;
 
 	private URLGenerator urlGenerator;
 	
@@ -180,7 +183,7 @@ public class HelpSearchManager implements HelpSearch {
 				
 				final Map<String, IndexData> jsonDocuments = new HashMap<>();
 				for (final File file : files) {
-					final HelpParser parser = this.factory.createParser(HelpUtils.buildReplacementMap(this.projectName, this.projectTheme, this.projectHome), this.urlGenerator);
+					final HelpParser parser = this.factory.createParser(HelpUtils.buildReplacementMap(this.projectName, this.projectTheme, this.projectHome, this.projectEmail, this.projectNoSpamEmail, this.projectAPIEmail), this.urlGenerator);
 					final String fileName = file.getName().replaceAll(HelpUtils.FILE_SUFFIX, "");
 					try (final BufferedReader helpPage = new BufferedReader(new InputStreamReader(new FileInputStream(file), StringUtils.DEFAULT_CHARSET))) {
 						final String markdown = StringUtils.getStringFromReader(helpPage);
@@ -329,6 +332,27 @@ public class HelpSearchManager implements HelpSearch {
 	 */
 	public void setProjectHome(String projectHome) {
 		this.projectHome = projectHome;
+	}
+	
+	/**
+	 * @param projectEmail the projectEmail to set
+	 */
+	public void setProjectEmail(String projectEmail) {
+		this.projectEmail = projectEmail;
+	}
+	
+	/**
+	 * @param projectNoSpamEmail the projectNoSpamEmail to set
+	 */
+	public void setProjectNoSpamEmail(String projectNoSpamEmail) {
+		this.projectNoSpamEmail = projectNoSpamEmail;
+	}
+	
+	/**
+	 * @param projectAPIEmail the projectAPIEmail to set
+	 */
+	public void setProjectAPIEmail(String projectAPIEmail) {
+		this.projectAPIEmail = projectAPIEmail;
 	}
 
 	/**

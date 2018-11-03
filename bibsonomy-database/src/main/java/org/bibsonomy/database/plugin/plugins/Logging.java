@@ -29,7 +29,6 @@ package org.bibsonomy.database.plugin.plugins;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.BibTexParam;
@@ -139,7 +138,7 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onGoldStandardDelete(final String interhash, final DBSession session) {
+	public void onGoldStandardDelete(final String interhash, User loggedinUser, final DBSession session) {
 		final LoggingParam logParam = new LoggingParam();
 		logParam.setOldHash(interhash);
 		logParam.setNewContentId(0);
@@ -302,9 +301,13 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onPersonDelete(final Person person, final DBSession session) {
-		this.insert("logPersonUpdate", person.getPersonId(), session);
-		person.setPersonChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+	public void onPersonDelete(final Person person, User user, final DBSession session) {
+		final LoggingParam param = new LoggingParam();
+		param.setOldHash(person.getPersonId());
+		param.setPostEditor(user);
+		param.setDate(new Date());
+
+		this.insert("logPersonNames", param, session);
 		this.insert("logPersonDelete", person, session);
 	}
 
