@@ -103,7 +103,7 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 		// create it
 		PERSON_DATABASE_MANAGER.createPerson(newPerson, this.dbSession);
 		// now create the person name FIXME: this should be done in the manager not the dblogic
-		final String newPersonId= newPerson.getPersonId();
+		final String newPersonId = newPerson.getPersonId();
 		reynolds.setPersonId(newPersonId);
 		PERSON_DATABASE_MANAGER.createPersonName(reynolds, this.dbSession);
 		this.updateIndex();

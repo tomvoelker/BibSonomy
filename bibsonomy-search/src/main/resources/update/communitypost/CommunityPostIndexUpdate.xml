@@ -54,8 +54,10 @@
 	<select id="getGoldStandardPublicationPostsForUser" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost" parameterClass="string">
 		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
 		FROM bibtex b
+		LEFT JOIN gold_standard gb USING(simhash1)
 		WHERE b.user_name = #userName#
-		AND b.`group` = 0
+		AND b.`group` = -2147483648 <!-- this query is used after an user is marked as spammer, so we must query for the spam public group -->
+		AND gb.title IS NULL
 	</select>
 
 	<select id="getLatestGoldStandardPublicationPost" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost" parameterClass="string">
@@ -124,8 +126,10 @@
 		SELECT <include refid ="allGoldStandardNormalBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, u.book_url, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
 		FROM bookmark b
 		JOIN urls u USING (book_url_hash)
+		LEFT JOIN gold_standard gb ON (b.book_url_hash = gb.simhash1)
 		WHERE b.user_name = #userName#
-		AND b.`group` = 0
+		AND b.`group` = -2147483648 <!-- see publication select for comment -->
+		AND gb.title IS NULL
 	</select>
 
 	<select id="getLatestGoldStandardBookmarkPost" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost" parameterClass="string">

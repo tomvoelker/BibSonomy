@@ -89,7 +89,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	 * @param inputLogic
 	 */
 	public ElasticsearchPostManager(boolean disabledIndexing, boolean updateEnabled, ElasticsearchIndexGenerator<Post<R>, DefaultSearchIndexSyncState> generator, ESClient client, Converter syncStateConverter, EntityInformationProvider entityInformationProvider, URI systemId, SearchDBInterface<R> inputLogic) {
-		super(disabledIndexing, updateEnabled, generator, client, syncStateConverter, entityInformationProvider, systemId);
+		super(systemId, disabledIndexing, updateEnabled, client, generator, syncStateConverter, entityInformationProvider);
 		this.inputLogic = inputLogic;
 	}
 
@@ -97,10 +97,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	 * @param indexName
 	 */
 	@Override
-	protected void updateIndex(final String indexName) {
-		final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId);
-
-		final DefaultSearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, indexName, this.syncStateConverter);
+	protected void updateIndex(final String indexName, final DefaultSearchIndexSyncState oldState) {
 		final DefaultSearchIndexSyncState targetState = this.inputLogic.getDbState();
 		
 		final int oldLastTasId = oldState.getLast_tas_id().intValue();
@@ -267,23 +264,5 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 		if (present(convertedPosts)) {
 			this.clearQueue(indexName, convertedPosts);
 		}
-	}
-
-	/**
-	 * execute a search
-	 * @param query the query to use
-	 * @param order the order
-	 * @param offset the offset
-	 * @param limit the limit
-	 * @param minScore the min score
-	 * @param fieldsToRetrieve the fields to retrieve
-	 * @return
-	 */
-	public SearchHits search(final QueryBuilder query, final Pair<String, SortOrder> order, int offset, int limit, Float minScore, final Set<String> fieldsToRetrieve) {
-		return this.client.search(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query, null, order, offset, limit, minScore, fieldsToRetrieve);
-	}
-
-	public long getDocumentCount(QueryBuilder query) {
-		return this.client.getDocumentCount(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query);
 	}
 }

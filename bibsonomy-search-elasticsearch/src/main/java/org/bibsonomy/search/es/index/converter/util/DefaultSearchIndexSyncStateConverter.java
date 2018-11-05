@@ -21,7 +21,7 @@ public class DefaultSearchIndexSyncStateConverter implements Converter<DefaultSe
 	private static final String LAST_DOCUMENT_DATE_KEY = "last_document_date";
 	private static final String LAST_PREDICTION_CHANGE_DATE = "lastPredictionChangeDate";
 	private static final String LAST_POST_CONTENT_ID_KEY = "last_post_content_id";
-	private static final String MAPPING_VERSION = "mapping_version";
+	protected static final String MAPPING_VERSION = "mapping_version";
 
 	/**
 	 * @param date the date for the index

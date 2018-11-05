@@ -73,17 +73,16 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 
 	/**
 	 * default constructor
-	 *
+	 * @param systemId
 	 * @param disabledIndexing
 	 * @param updateEnabled
-	 * @param generator
 	 * @param client
+	 * @param generator
 	 * @param syncStateConverter
 	 * @param entityInformationProvider
-	 * @param systemId
 	 * @param inputLogic
 	 */
-	public ElasticsearchPublicationManager(boolean disabledIndexing, boolean updateEnabled, ElasticsearchIndexGenerator<Post<P>, DefaultSearchIndexSyncState> generator, ESClient client, Converter syncStateConverter, EntityInformationProvider entityInformationProvider, URI systemId, SearchDBInterface<P> inputLogic) {
+	public ElasticsearchPublicationManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<P>, DefaultSearchIndexSyncState> generator, Converter syncStateConverter, EntityInformationProvider entityInformationProvider, SearchDBInterface<P> inputLogic) {
 		super(disabledIndexing, updateEnabled, generator, client, syncStateConverter, entityInformationProvider, systemId, inputLogic);
 	}
 

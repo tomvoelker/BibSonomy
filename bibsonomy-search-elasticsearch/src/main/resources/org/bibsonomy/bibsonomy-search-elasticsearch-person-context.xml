@@ -33,14 +33,18 @@
 	<bean id="elasticsearchPersonManager" class="org.bibsonomy.search.es.management.person.ElasticsearchPersonManager" parent="elasticsearchAbstractIndexManager">
 		<constructor-arg>
 			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchOneToManyIndexGenerator">
-				<constructor-arg ref="systemURI" />
 				<constructor-arg ref="esClient" />
+				<constructor-arg ref="systemURI" />
 				<constructor-arg ref="personGenerationDBLogic" />
+				<constructor-arg ref="personDatabaseInformationLogic" />
+				<constructor-arg ref="postSyncStateConverter" />
 				<constructor-arg ref="elasticsearchPersonEntityInformationProvider" />
 			</bean>
 		</constructor-arg>
+		<constructor-arg ref="postSyncStateConverter" />
 		<constructor-arg ref="elasticsearchPersonEntityInformationProvider" />
 		<constructor-arg ref="personAndPersonRelationUpdateLogic" />
+		<constructor-arg ref="personDatabaseInformationLogic" />
 	</bean>
 
 </beans>

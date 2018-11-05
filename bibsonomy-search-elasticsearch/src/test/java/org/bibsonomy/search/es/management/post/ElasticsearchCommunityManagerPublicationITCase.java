@@ -3,17 +3,27 @@ package org.bibsonomy.search.es.management.post;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import org.bibsonomy.database.managers.AdminDatabaseManager;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.factories.ResourceFactory;
+import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
 import org.bibsonomy.search.es.search.post.EsResourceSearch;
 import org.bibsonomy.search.es.testutil.AbstractCommunityPostSearchTest;
+import org.bibsonomy.util.Sets;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +40,8 @@ public class ElasticsearchCommunityManagerPublicationITCase extends AbstractComm
 	private static final GoldStandardPublicationDatabaseManager GOLD_STANDARD_PUBLICATION_DATABASE_MANAGER = testDatabaseContext.getBean(GoldStandardPublicationDatabaseManager.class);
 
 	private static final BibTexDatabaseManager PUBLICATION_DATABASE_MANAGER = testDatabaseContext.getBean(BibTexDatabaseManager.class);
+
+	private static final AdminDatabaseManager ADMIN_DATABASE_MANAGER = testDatabaseContext.getBean(AdminDatabaseManager.class);
 
 	@Test
 	public void testGenerate() {
@@ -50,7 +62,8 @@ public class ElasticsearchCommunityManagerPublicationITCase extends AbstractComm
 
 	@Test
 	public void testUpdate() {
-		final ResultList<Post<GoldStandardPublication>> communityPosts = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, "Wurst aufs Brot", null, null, null, null, null, null, null, null, null, 10, 0);
+		final String searchTerms = "Wurst aufs Brot";
+		final ResultList<Post<GoldStandardPublication>> communityPosts = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, searchTerms, null, null, null, null, null, null, null, null, null, 10, 0);
 
 		assertThat(communityPosts.size(), is(1));
 
@@ -65,9 +78,9 @@ public class ElasticsearchCommunityManagerPublicationITCase extends AbstractComm
 
 		this.updateIndex();
 
-		final List<Post<GoldStandardPublication>> afterCommunityDelete = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, "title1", null, null, null, null, null, null, null, null, null, 10, 0);
+		final List<Post<GoldStandardPublication>> afterCommunityDelete = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, searchTerms, null, null, null, null, null, null, null, null, null, 10, 0);
 
-		// deleting the community post should do nothing, if at least one user has the publication in his her collection
+		// deleting the community post should do nothing, if at least one user has the publication in his/her collection
 		assertThat(afterCommunityDelete.size(), is(1));
 
 		final boolean userPostDeleted = PUBLICATION_DATABASE_MANAGER.deletePost("testuserP", intraHash, loggedinUser, this.dbSession);
@@ -75,25 +88,85 @@ public class ElasticsearchCommunityManagerPublicationITCase extends AbstractComm
 
 		this.updateIndex();
 
-		final List<Post<GoldStandardPublication>> afterNormalPostDelete = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, "title1", null, null, null, null, null, null, null, null, null, 10, 0);
+		final List<Post<GoldStandardPublication>> afterNormalPostDelete = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, searchTerms, null, null, null, null, null, null, null, null, null, 10, 0);
 
 		assertThat(afterNormalPostDelete.size(), is(0));
 
-		// TODO: add tests for updating the index
-
-		// unmark a user
-
-		// delete user (mark as spammer)
-
-		// delete a community post
-
-		// delete a publication
-
 		// insert a new publication
+		final Post<BibTex> publicationPost = generateTestPost(BibTex.class);
+		publicationPost.setUser(loggedinUser);
+		final boolean posted = PUBLICATION_DATABASE_MANAGER.createPost(publicationPost, loggedinUser, this.dbSession);
 
+		assertThat(posted, is(true));
+
+		this.updateIndex();
+
+		final ResultList<Post<GoldStandardPublication>> postsAfterCreating = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, publicationPost.getResource().getTitle(), null, null, null, null, null, null, null, null, null, 10, 0);
+
+		assertThat(postsAfterCreating.size(), is(1));
 		// insert a new communitypost
 
+		final Post<GoldStandardPublication> newGoldstandardPost = generateTestPost(GoldStandardPublication.class);
+		final String publicationAbstract = "abstract";
+		newGoldstandardPost.getResource().setAbstract(publicationAbstract);
 
+		GOLD_STANDARD_PUBLICATION_DATABASE_MANAGER.createPost(newGoldstandardPost, loggedinUser, this.dbSession);
+
+		this.updateIndex();
+
+		final ResultList<Post<GoldStandardPublication>> postsAfterCommunityCreating = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, publicationPost.getResource().getTitle(), null, null, null, null, null, null, null, null, null, 10, 0);
+
+		assertThat(postsAfterCommunityCreating.size(), is(1));
+		assertThat(postsAfterCommunityCreating.get(0).getResource().getAbstract(), is(publicationAbstract));
+
+
+		final ResultList<Post<GoldStandardPublication>> testuser3PostsInIndex = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, "test friend title", null, null, null, null, null, null, null, null, null, 10, 0);
+
+		assertThat(testuser3PostsInIndex.size(), is(1));
+
+		// mark user as spammer
+		final String userToFlag = "testuser3";
+		final User user = new User(userToFlag);
+		user.setSpammer(Boolean.TRUE);
+		user.setAlgorithm("unittest");
+		ADMIN_DATABASE_MANAGER.flagSpammer(user, "admin", this.dbSession);
+
+		this.updateIndex();
+
+		final ResultList<Post<GoldStandardPublication>> testuser3PostsInIndexAfterMarkedAsSpammer = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, "test friend title", null, null, null, null, null, null, null, null, null, 10, 0);
+
+		assertThat(testuser3PostsInIndexAfterMarkedAsSpammer.size(), is(0));
+
+		// unmark a user
+		user.setSpammer(Boolean.FALSE);
+		user.setAlgorithm("admin");
+		user.setPrediction(null); // FIXME: side effects :(
+		ADMIN_DATABASE_MANAGER.flagSpammer(user, "admin", this.dbSession);
+
+		this.updateIndex();
+
+		final ResultList<Post<GoldStandardPublication>> testuser3PostsInIndexAfterUnmarkedAsSpammer = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, "test friend title", null, null, null, null, null, null, null, null, null, 10, 0);
+
+		assertThat(testuser3PostsInIndexAfterUnmarkedAsSpammer.size(), is(1));
+	}
+
+	private static <P extends BibTex> Post<P> generateTestPost(final Class<? extends P> clazz) {
+		final Post<P> publicationPost = new Post<>();
+		final ResourceFactory factory = new ResourceFactory();
+		final P publication = factory.createPublication(clazz);
+		publicationPost.setTags(Sets.asSet(new Tag("test")));
+		publicationPost.setGroups(Sets.asSet(GroupUtils.buildPublicGroup()));
+		publication.setYear("2018");
+		publication.setTitle("Firefly");
+		publication.setBibtexKey(BibTexUtils.generateBibtexKey(publication));
+		publication.setAuthor(Arrays.asList(new PersonName("Book", "Shepherd")));
+		publication.setEntrytype(BibTexUtils.ARTICLE);
+		publication.recalculateHashes();
+		publicationPost.setResource(publication);
+		final Date date = new Date();
+		publicationPost.setDate(date);
+		publicationPost.setChangeDate(date);
+		return publicationPost;
 	}
 
 	@Override

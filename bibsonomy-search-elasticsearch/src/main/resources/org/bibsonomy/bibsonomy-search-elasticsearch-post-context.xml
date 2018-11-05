@@ -10,7 +10,7 @@
 
 	<bean id="postSyncStateConverter" class="org.bibsonomy.search.es.index.converter.util.DefaultSearchIndexSyncStateConverter" />
 
-	<bean id="communitySyncStateConverter" class="org.bibsonomy.search.es.index.converter.util.SearchCommunityIndexSyncStateConverter" />
+	<bean id="communityPostSyncStateConverter" class="org.bibsonomy.search.es.index.converter.util.SearchCommunityIndexSyncStateConverter" />
 
 	<bean id="elasticsearchBookmarkManager" class="org.bibsonomy.search.es.management.post.ElasticsearchPostManager" parent="elasticsearchAbstractIndexManager">
 		<constructor-arg>
@@ -18,9 +18,12 @@
 				<constructor-arg ref="systemURI" />
 				<constructor-arg ref="esClient" />
 				<constructor-arg ref="bookmarkGenerationDBLogic" />
+				<constructor-arg ref="bookmarkSearchDBLogic" />
+				<constructor-arg ref="postSyncStateConverter" />
 				<constructor-arg ref="elasticsearchBookmarkEntityInformationProvider" />
 			</bean>
 		</constructor-arg>
+		<constructor-arg ref="postSyncStateConverter" />
 		<constructor-arg ref="elasticsearchBookmarkEntityInformationProvider" />
 		<constructor-arg ref="bookmarkSearchDBLogic" />
 	</bean>
@@ -31,9 +34,12 @@
 				<constructor-arg ref="systemURI" />
 				<constructor-arg ref="esClient" />
 				<constructor-arg ref="publicationGenerationDBLogic" />
+				<constructor-arg ref="publicationSearchDBLogic" />
+				<constructor-arg ref="postSyncStateConverter" />
 				<constructor-arg ref="elasticsearchPublicationEntityInformationProvider" />
 			</bean>
 		</constructor-arg>
+		<constructor-arg ref="postSyncStateConverter" />
 		<constructor-arg ref="elasticsearchPublicationEntityInformationProvider" />
 		<constructor-arg ref="publicationSearchDBLogic" />
 	</bean>
@@ -49,13 +55,17 @@
 						<ref bean="communityBookmarkGenerationDBLogic" />
 					</list>
 				</constructor-arg>
+				<constructor-arg ref="communityBookmarkDatabaseInformationLogic" />
+				<constructor-arg ref="communityPostSyncStateConverter" />
 				<constructor-arg ref="elasticsearchCommunityBookmarkEntityInformationProvider" />
 			</bean>
 		</constructor-arg>
+		<constructor-arg ref="communityPostSyncStateConverter" />
 		<constructor-arg ref="elasticsearchCommunityBookmarkEntityInformationProvider" />
 		<constructor-arg ref="goldStandardBookmarkSearchDBLogic" />
 		<constructor-arg ref="communityIndexUpdateLogicCommunityBookmark" />
 		<constructor-arg ref="communityIndexUpdateLogicBookmark" />
+		<constructor-arg ref="communityBookmarkDatabaseInformationLogic" />
 	</bean>
 
 	<bean id="elasticsearchCommunityPublicationManager" class="org.bibsonomy.search.es.management.post.ElasticsearchCommunityManager" parent="elasticsearchAbstractIndexManager">
@@ -69,13 +79,17 @@
 						<ref bean="communityPublicationGenerationDBLogic" />
 					</list>
 				</constructor-arg>
+				<constructor-arg ref="communityPublicationDatabaseInformationLogic" />
+				<constructor-arg ref="communityPostSyncStateConverter" />
 				<constructor-arg ref="elasticsearchCommunityPublicationEntityInformationProvider" />
 			</bean>
 		</constructor-arg>
+		<constructor-arg ref="communityPostSyncStateConverter" />
 		<constructor-arg ref="elasticsearchCommunityPublicationEntityInformationProvider" />
 		<constructor-arg ref="goldStandardPublicationSearchDBLogic" />
 		<constructor-arg ref="communityIndexUpdateLogicCommunityPublication" />
 		<constructor-arg ref="communityIndexUpdateLogicPublication" />
+		<constructor-arg ref="communityPublicationDatabaseInformationLogic" />
 	</bean>
 
 	<bean id="elasticsearchBookmarkMappingBuilder" class="org.bibsonomy.search.es.index.mapping.post.BookmarkMappingBuilder">

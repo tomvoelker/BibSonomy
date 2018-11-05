@@ -24,7 +24,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.es.management;
+package org.bibsonomy.search.es.management.post;
 
 import static org.junit.Assert.assertEquals;
 
@@ -37,7 +37,7 @@ import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
-import org.bibsonomy.search.es.management.post.ElasticsearchPostManager;
+import org.bibsonomy.search.es.management.AbstractEsIndexTest;
 import org.bibsonomy.search.es.search.post.ElasticsearchPublicationSearch;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -47,7 +47,7 @@ import org.junit.Test;
  *
  * @author dzo
  */
-public class ElasticsearchManagerITCase extends AbstractEsIndexTest {
+public class ElasticsearchPostManagerPublicationITCase extends AbstractEsIndexTest {
 	
 	private static final AdminDatabaseManager adminDatabaseManager = AdminDatabaseManager.getInstance();
 	private static ElasticsearchPostManager<BibTex> publicationManager;

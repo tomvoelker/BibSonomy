@@ -30,13 +30,11 @@ public class ElasticsearchOneToManyIndexGenerator<T, M, S extends SearchIndexSyn
 	 * @param databaseInformationLogic
 	 * @param indexSyncStateConverter
 	 * @param entityInformationProvider
-	 * @param generatorLogic
-	 * @param entityInformationProvider1
 	 */
-	public ElasticsearchOneToManyIndexGenerator(ESClient client, URI systemId, IndexGenerationLogic<T> generationLogic, DatabaseInformationLogic<S> databaseInformationLogic, Converter<S, Map<String, Object>, Object> indexSyncStateConverter, EntityInformationProvider<T> entityInformationProvider, OneToManyIndexGenerationLogic<T, M> generatorLogic, OneToManyEntityInformationProvider<T, M> entityInformationProvider1) {
+	public ElasticsearchOneToManyIndexGenerator(final ESClient client, URI systemId, OneToManyIndexGenerationLogic<T, M> generationLogic, DatabaseInformationLogic<S> databaseInformationLogic, Converter<S, Map<String, Object>, Object> indexSyncStateConverter, OneToManyEntityInformationProvider<T, M> entityInformationProvider) {
 		super(client, systemId, generationLogic, databaseInformationLogic, indexSyncStateConverter, entityInformationProvider);
-		this.generatorLogic = generatorLogic;
-		this.entityInformationProvider = entityInformationProvider1;
+		this.generatorLogic = generationLogic;
+		this.entityInformationProvider = entityInformationProvider;
 	}
 
 	@Override

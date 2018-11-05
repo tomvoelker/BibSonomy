@@ -9,6 +9,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagement;
+import org.bibsonomy.search.index.database.DatabaseInformationLogic;
 import org.bibsonomy.search.index.generator.IndexGenerationLogic;
 import org.bibsonomy.search.management.database.params.SearchParam;
 import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
@@ -24,7 +25,7 @@ import java.util.Map;
  *
  * @param <R>
  */
-public class PostIndexGenerationLogic<R extends Resource> extends AbstractDatabaseManagerWithSessionManagement implements IndexGenerationLogic<Post<R>> {
+public class PostIndexGenerationLogic<R extends Resource> extends AbstractDatabaseManagerWithSessionManagement implements IndexGenerationLogic<Post<R>>, DatabaseInformationLogic<DefaultSearchIndexSyncState> {
 	protected Class<R> resourceClass;
 	private GeneralDatabaseManager generalDatabaseManager;
 	protected PersonDatabaseManager personDatabaseManager;
@@ -79,7 +80,7 @@ public class PostIndexGenerationLogic<R extends Resource> extends AbstractDataba
 		}
 	}
 
-	// @Override FIXME move
+	@Override
 	public DefaultSearchIndexSyncState getDbState() {
 		final DefaultSearchIndexSyncState newState = new DefaultSearchIndexSyncState();
 		newState.setLast_tas_id(this.getLastTasId());

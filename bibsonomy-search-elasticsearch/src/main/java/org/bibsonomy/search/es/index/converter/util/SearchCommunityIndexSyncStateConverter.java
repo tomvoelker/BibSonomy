@@ -29,6 +29,8 @@ public class SearchCommunityIndexSyncStateConverter implements Converter<SearchC
 		final Map<String, Object> communityState = this.converter.convert(source.getCommunitySearchIndexState());
 		converted.put(COMMUNITY, communityState);
 
+		converted.put(DefaultSearchIndexSyncStateConverter.MAPPING_VERSION, source.getMappingVersion());
+
 		return converted;
 	}
 
@@ -42,7 +44,9 @@ public class SearchCommunityIndexSyncStateConverter implements Converter<SearchC
 
 		final Map<String, Object> communitySource = (Map<String, Object>) source.get(COMMUNITY);
 		final DefaultSearchIndexSyncState commnuityState = this.converter.convert(communitySource, null);
-		state.setNormalSearchIndexState(commnuityState);
+		state.setCommunitySearchIndexState(commnuityState);
+
+		state.setMappingVersion((String) source.get(DefaultSearchIndexSyncStateConverter.MAPPING_VERSION));
 
 		return state;
 	}

@@ -10,7 +10,6 @@ import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.es.index.generator.OneToManyEntityInformationProvider;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
-import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.index.database.person.PersonDatabaseInformationLogic;
 import org.bibsonomy.search.index.update.IndexUpdateLogic;
 import org.bibsonomy.search.index.update.OneToManyIndexUpdateLogic;
@@ -40,29 +39,25 @@ public class ElasticsearchPersonManager extends ElasticsearchManager<Person, Def
 
 	/**
 	 * default constructor
-	 *
+	 *  @param systemId
 	 * @param disabledIndexing
 	 * @param updateEnabled
-	 * @param generator
 	 * @param client
+	 * @param generator
 	 * @param syncStateConverter
 	 * @param entityInformationProvider
-	 * @param systemId
 	 * @param updateIndexLogic
-	 * @param oneToManyEntityInformationProvider
 	 * @param dbInfoLogic
 	 */
-	public ElasticsearchPersonManager(boolean disabledIndexing, boolean updateEnabled, ElasticsearchIndexGenerator<Person, DefaultSearchIndexSyncState> generator, ESClient client, Converter<DefaultSearchIndexSyncState, Map<String, Object>, Object> syncStateConverter, EntityInformationProvider<Person> entityInformationProvider, URI systemId, OneToManyIndexUpdateLogic<Person, ResourcePersonRelation> updateIndexLogic, OneToManyEntityInformationProvider<Person, ResourcePersonRelation> oneToManyEntityInformationProvider, PersonDatabaseInformationLogic dbInfoLogic) {
-		super(disabledIndexing, updateEnabled, generator, client, syncStateConverter, entityInformationProvider, systemId);
+	public ElasticsearchPersonManager(final URI systemId, final boolean disabledIndexing, final boolean updateEnabled, final ESClient client, final ElasticsearchIndexGenerator<Person, DefaultSearchIndexSyncState> generator, final Converter<DefaultSearchIndexSyncState, Map<String, Object>, Object> syncStateConverter, final OneToManyEntityInformationProvider<Person, ResourcePersonRelation> entityInformationProvider, final OneToManyIndexUpdateLogic<Person, ResourcePersonRelation> updateIndexLogic, final PersonDatabaseInformationLogic dbInfoLogic) {
+		super(systemId, disabledIndexing, updateEnabled, client, generator, syncStateConverter, entityInformationProvider);
 		this.updateIndexLogic = updateIndexLogic;
-		this.oneToManyEntityInformationProvider = oneToManyEntityInformationProvider;
+		this.oneToManyEntityInformationProvider = entityInformationProvider;
 		this.dbInfoLogic = dbInfoLogic;
 	}
 
 	@Override
-	protected void updateIndex(String indexName) {
-		final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId);
-		final DefaultSearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, indexName, this.syncStateConverter);
+	protected void updateIndex(String indexName, final DefaultSearchIndexSyncState oldState) {
 		final IndexUpdateLogic<Person> parentUpdateLogic = this.updateIndexLogic.getIndexUpdateLogic();
 		final DefaultSearchIndexSyncState targetState = dbInfoLogic.getDbState();
 

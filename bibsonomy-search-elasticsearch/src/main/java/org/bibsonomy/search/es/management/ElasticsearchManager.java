@@ -19,10 +19,14 @@ import org.bibsonomy.search.management.SearchIndexManager;
 import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.model.SearchIndexStatistics;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.util.Sets;
 import org.elasticsearch.index.IndexNotFoundException;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.sort.SortOrder;
 
 import java.net.URI;
 import java.util.HashSet;
@@ -63,15 +67,15 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 
 	/**
 	 * default constructor
+	 * @param systemId
 	 * @param disabledIndexing
 	 * @param updateEnabled
-	 * @param generator
 	 * @param client
+	 * @param generator
 	 * @param syncStateConverter
 	 * @param entityInformationProvider
-	 * @param systemId
 	 */
-	public ElasticsearchManager(boolean disabledIndexing, boolean updateEnabled, ElasticsearchIndexGenerator<T, S> generator, ESClient client, Converter<S, Map<String, Object>, Object> syncStateConverter, EntityInformationProvider<T> entityInformationProvider, URI systemId) {
+	public ElasticsearchManager(final URI systemId, final boolean disabledIndexing, final boolean updateEnabled, final ESClient client, ElasticsearchIndexGenerator<T, S> generator, final Converter<S, Map<String, Object>, Object> syncStateConverter, final EntityInformationProvider<T> entityInformationProvider) {
 		this.disabledIndexing = disabledIndexing;
 		this.updateEnabled = updateEnabled;
 		this.generator = generator;
@@ -226,7 +230,11 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 				LOG.error("no inactive index found for " + this.entityInformationProvider.getType());
 				return;
 			}
-			this.updateIndex(realIndexName);
+
+			final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId);
+
+			final S oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, realIndexName, this.syncStateConverter);
+			this.updateIndex(realIndexName, oldState);
 			this.switchActiveAndInactiveIndex();
 		} catch (final IndexNotFoundException e) {
 			LOG.error("Can't update " + this.entityInformationProvider.getType() + " index. No inactive index available.");
@@ -235,7 +243,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		}
 	}
 
-	protected abstract void updateIndex(final String indexName);
+	protected abstract void updateIndex(final String indexName, S oldState);
 
 	/**
 	 * @param indexName
@@ -506,6 +514,25 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 	 */
 	public Set<String> getPrivateFields() {
 		return this.entityInformationProvider.getPrivateFields();
+	}
+
+
+	/**
+	 * execute a search
+	 * @param query the query to use
+	 * @param order the order
+	 * @param offset the offset
+	 * @param limit the limit
+	 * @param minScore the min score
+	 * @param fieldsToRetrieve the fields to retrieve
+	 * @return
+	 */
+	public SearchHits search(final QueryBuilder query, final Pair<String, SortOrder> order, int offset, int limit, Float minScore, final Set<String> fieldsToRetrieve) {
+		return this.client.search(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query, null, order, offset, limit, minScore, fieldsToRetrieve);
+	}
+
+	public long getDocumentCount(QueryBuilder query) {
+		return this.client.getDocumentCount(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query);
 	}
 
 	/**

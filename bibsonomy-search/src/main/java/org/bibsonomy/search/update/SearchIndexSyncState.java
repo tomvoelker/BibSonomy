@@ -1,7 +1,7 @@
 package org.bibsonomy.search.update;
 
 /**
- * common interface for all search index sync states
+ * abstract class for all search index sync states
  *
  * @author dzo
  */

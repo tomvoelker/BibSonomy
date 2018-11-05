@@ -30,6 +30,18 @@
 
 	<bean id="personSearchDatabaseManager" class="org.bibsonomy.search.management.database.manager.PersonSearchDatabaseManager" />
 
+	<bean id="communityBookmarkDatabaseInformationLogic" class="org.bibsonomy.search.index.database.post.CommunityPostDatabaseInformationLogic">
+		<constructor-arg ref="goldStandardBookmarkClass" />
+		<constructor-arg ref="bookmarkSearchDBLogic" />
+		<property name="sessionFactory" ref="communityPostGenerationSessionFactory" />
+	</bean>
+
+	<bean id="communityPublicationDatabaseInformationLogic" class="org.bibsonomy.search.index.database.post.CommunityPostDatabaseInformationLogic">
+		<constructor-arg ref="goldStandardPublicationClass" />
+		<constructor-arg ref="publicationSearchDBLogic" />
+		<property name="sessionFactory" ref="communityPostGenerationSessionFactory" />
+	</bean>
+
 	<bean id="generationLogic" class="org.bibsonomy.search.index.generator.post.PostIndexGenerationLogic" abstract="true">
 		<property name="sessionFactory" ref="searchSessionFactory"/>
 		<property name="generalDatabaseManager" ref="generalDatabaseManager" />

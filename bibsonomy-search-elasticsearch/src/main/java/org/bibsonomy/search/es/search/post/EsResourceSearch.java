@@ -71,7 +71,7 @@ import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.index.converter.post.NormalizedEntryTypes;
 import org.bibsonomy.search.es.index.converter.post.ResourceConverter;
-import org.bibsonomy.search.es.management.post.ElasticsearchPostManager;
+import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.util.tokenizer.SimpleTokenizer;
 import org.bibsonomy.services.searcher.PersonSearch;
 import org.bibsonomy.services.searcher.ResourceSearch;
@@ -118,7 +118,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 */
 	private SearchInfoLogic infoLogic;
 	
-	private ElasticsearchPostManager<R> manager;
+	private ElasticsearchManager<R, ?> manager;
 
 	/** the number of person suggestions */
 	// private int suggestionSize = 5;
@@ -934,7 +934,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	/**
 	 * @param manager the manager to set
 	 */
-	public void setManager(ElasticsearchPostManager<R> manager) {
+	public void setManager(ElasticsearchManager<R, ?> manager) {
 		this.manager = manager;
 	}
 	

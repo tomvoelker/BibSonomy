@@ -21,6 +21,10 @@
 		<property name="sessionFactory" ref="personSearchSessionFactory"/>
 	</bean>
 
+	<bean id="personDatabaseInformationLogic" class="org.bibsonomy.search.index.database.person.PersonDatabaseInformationLogic">
+		<property name="sessionFactory" ref="personSearchSessionFactory"/>
+	</bean>
+
 	<bean id="personUpdateSearchSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
 		<property name="dataSource" ref="searchDataSource" />
 		<property name="configLocation" value="classpath:update/person/PersonIndexUpdateSQLMapConig.xml" />
