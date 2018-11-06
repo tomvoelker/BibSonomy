@@ -72,7 +72,8 @@ public class ElasticsearchCommunityManagerPublicationITCase extends AbstractComm
 		final String interHash = publication.getInterHash();
 		final String intraHash = publication.getIntraHash();
 
-		final User loggedinUser = new User("testuser1");
+		final String testuser1 = "testuser1";
+		final User loggedinUser = new User(testuser1);
 		final boolean deleted = GOLD_STANDARD_PUBLICATION_DATABASE_MANAGER.deletePost("", interHash, loggedinUser, this.dbSession);
 		assertThat(deleted, is(true));
 
@@ -92,7 +93,9 @@ public class ElasticsearchCommunityManagerPublicationITCase extends AbstractComm
 
 		assertThat(afterNormalPostDelete.size(), is(0));
 
-		// insert a new publication
+		/*
+		 * insert a new publication
+		 */
 		final Post<BibTex> publicationPost = generateTestPost(BibTex.class);
 		publicationPost.setUser(loggedinUser);
 		final boolean posted = PUBLICATION_DATABASE_MANAGER.createPost(publicationPost, loggedinUser, this.dbSession);
@@ -104,8 +107,10 @@ public class ElasticsearchCommunityManagerPublicationITCase extends AbstractComm
 		final ResultList<Post<GoldStandardPublication>> postsAfterCreating = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, publicationPost.getResource().getTitle(), null, null, null, null, null, null, null, null, null, 10, 0);
 
 		assertThat(postsAfterCreating.size(), is(1));
-		// insert a new communitypost
 
+		/*
+		 * insert a new communitypost
+		 */
 		final Post<GoldStandardPublication> newGoldstandardPost = generateTestPost(GoldStandardPublication.class);
 		final String publicationAbstract = "abstract";
 		newGoldstandardPost.getResource().setAbstract(publicationAbstract);
@@ -118,7 +123,6 @@ public class ElasticsearchCommunityManagerPublicationITCase extends AbstractComm
 
 		assertThat(postsAfterCommunityCreating.size(), is(1));
 		assertThat(postsAfterCommunityCreating.get(0).getResource().getAbstract(), is(publicationAbstract));
-
 
 		final ResultList<Post<GoldStandardPublication>> testuser3PostsInIndex = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, "test friend title", null, null, null, null, null, null, null, null, null, 10, 0);
 
@@ -145,9 +149,29 @@ public class ElasticsearchCommunityManagerPublicationITCase extends AbstractComm
 
 		this.updateIndex();
 
-		final ResultList<Post<GoldStandardPublication>> testuser3PostsInIndexAfterUnmarkedAsSpammer = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, "test friend title", null, null, null, null, null, null, null, null, null, 10, 0);
+		final ResultList<Post<GoldStandardPublication>> testuser3PostsInIndexAfterUnmarkedAsSpammer = COMMUNITY_PUBLICATION_SEARCH.getPosts(userToFlag, null, null, null, null, null, "test friend title", null, null, null, null, null, null, null, null, null, 10, 0);
 
 		assertThat(testuser3PostsInIndexAfterUnmarkedAsSpammer.size(), is(1));
+
+		final Post<GoldStandardPublication> firstResultTestuser3 = testuser3PostsInIndexAfterUnmarkedAsSpammer.get(0);
+
+		final List<User> users = firstResultTestuser3.getUsers();
+		assertThat(users.size(), is(1));
+
+		final ResultList<Post<GoldStandardPublication>> beforeDeleteTestuser1 = COMMUNITY_PUBLICATION_SEARCH.getPosts(testuser1, null, null, null, null, null, "Firefly", null, null, null, null, null, null, null, null, null, 10, 0);
+
+		assertThat(beforeDeleteTestuser1.size(), is(1));
+		assertThat(beforeDeleteTestuser1.get(0).getUsers().size(), is(1));
+
+		final boolean deletedNormalPost = PUBLICATION_DATABASE_MANAGER.deletePost(testuser1, "6ce5d533a44887f2d2730fe7866f8fd0", loggedinUser, this.dbSession);
+		assertThat(deletedNormalPost, is(true));
+
+		this.updateIndex();
+
+		final ResultList<Post<GoldStandardPublication>> afterDeleteTestuser1 = COMMUNITY_PUBLICATION_SEARCH.getPosts(testuser1, null, null, null, null, null, "Firefly", null, null, null, null, null, null, null, null, null, 10, 0);
+
+		assertThat(afterDeleteTestuser1.size(), is(1));
+		assertThat(afterDeleteTestuser1.get(0).getUsers().size(), is(0));
 	}
 
 	private static <P extends BibTex> Post<P> generateTestPost(final Class<? extends P> clazz) {

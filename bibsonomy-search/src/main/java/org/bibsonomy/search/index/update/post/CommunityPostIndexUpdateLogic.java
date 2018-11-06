@@ -41,6 +41,7 @@ public class CommunityPostIndexUpdateLogic<R extends Resource> extends ResourceA
 	public List<Post<R>> getNewerEntities(long lastEntityId, Date lastLogDate, int size, int offset) {
 		try (final DBSession session = this.openSession()) {
 			final SearchParam param = new SearchParam();
+			param.setLastContentId(lastEntityId);
 			param.setLastLogDate(lastLogDate);
 			param.setLimit(size);
 			param.setOffset(offset);

@@ -44,6 +44,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -58,6 +60,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
@@ -271,6 +274,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 					final long count = this.manager.getDocumentCount(QueryBuilders.termQuery(Fields.Resource.INTERHASH, resource.getInterHash()));
 
 					resource.setCount((int) count);
+					final List<User> users = post.getUsers();
+					final Stream<User> filteredUsers = users.stream().filter(user -> user.getName().equals(userName));
+					post.setUsers(filteredUsers.collect(Collectors.toList()));
 					posts.add(post);
 				}
 			}

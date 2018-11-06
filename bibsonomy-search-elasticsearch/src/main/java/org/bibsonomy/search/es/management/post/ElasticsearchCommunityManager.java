@@ -156,6 +156,10 @@ public class ElasticsearchCommunityManager<G extends Resource> extends Elasticse
 							}
 						}
 
+						if (postsToInsert.size() >= ESConstants.BULK_INSERT_SIZE) {
+							this.clearQueue(indexName, postsToInsert);
+						}
+
 						offset += SearchDBInterface.SQL_BLOCKSIZE;
 					} while (userPosts.size() == SearchDBInterface.SQL_BLOCKSIZE);
 					break;
@@ -167,6 +171,10 @@ public class ElasticsearchCommunityManager<G extends Resource> extends Elasticse
 					this.deletePostsFromIndexAndInsertOtherPostInDB(indexName, allPostsOfUser);
 					break;
 			}
+		}
+
+		if (present(postsToInsert)) {
+			this.clearQueue(indexName, postsToInsert);
 		}
 
 		/*
