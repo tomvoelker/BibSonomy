@@ -29,7 +29,9 @@ package org.bibsonomy.search.es.management.post;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,8 +43,10 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
+import org.bibsonomy.search.es.client.AbstractData;
 import org.bibsonomy.search.es.client.DeleteData;
 import org.bibsonomy.search.es.client.IndexData;
+import org.bibsonomy.search.es.client.UpdateData;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
@@ -53,6 +57,8 @@ import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.search.update.SearchCommunityIndexSyncState;
 import org.bibsonomy.search.util.Converter;
+import org.elasticsearch.script.Script;
+import org.elasticsearch.script.ScriptType;
 
 /**
  * special class that manages community posts
@@ -61,6 +67,9 @@ import org.bibsonomy.search.util.Converter;
  * @param <G> the community resource class
  */
 public class ElasticsearchCommunityManager<G extends Resource> extends ElasticsearchManager<Post<G>, SearchCommunityIndexSyncState> {
+
+	private static final String USER_KEY = "user";
+	private static final String UPDATE_SCRIPT = "ctx._source." + ESConstants.Fields.ALL_USERS + ".removeAll(Collections.singleton(params." + USER_KEY + "))";
 
 	private final CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic;
 	private final CommunityPostIndexUpdateLogic<G> postUpdateLogic;
@@ -178,14 +187,56 @@ public class ElasticsearchCommunityManager<G extends Resource> extends Elasticse
 		}
 
 		/*
-		 * TODO: implement
 		 * update the all_users field; add users, and remove users
 		 */
+		this.updateAllUsersField(indexName, oldNormalSearchIndexState);
+
+		this.updateResourceSpecificFields(indexName, oldState, targetState);
 
 		/*
-		 * n step: update the target state
+		 * last step: update the target state
 		 */
 		this.updateIndexState(indexName, targetState);
+	}
+
+	/**
+	 * updates resource specific fields
+	 *
+	 * @param indexName the name of the index
+	 * @param oldState the old state for the update
+	 * @param targetState the target state for the update
+	 */
+	protected void updateResourceSpecificFields(String indexName, SearchCommunityIndexSyncState oldState, SearchCommunityIndexSyncState targetState) {
+		// noop
+	}
+
+	private void updateAllUsersField(String indexName, DefaultSearchIndexSyncState oldNormalSearchIndexState) {
+		int offset = 0;
+		int postSize;
+		final Map<String, UpdateData> updates = new HashMap<>();
+		do {
+			final List<Post<G>> allDeletedNormalPosts = this.communityPostUpdateLogic.getAllDeletedNormalPosts(oldNormalSearchIndexState.getLast_log_date(), ElasticsearchPostManager.SQL_BLOCKSIZE, offset);
+
+			for (final Post<G> deletedPost : allDeletedNormalPosts) {
+
+				final UpdateData updateData = new UpdateData();
+				setupAbstractIndexData(updateData, deletedPost);
+				final Map<String, Object> params = Collections.singletonMap(USER_KEY, deletedPost.getUser().getName());
+				updateData.setScript(new Script(ScriptType.INLINE, Script.DEFAULT_SCRIPT_LANG, UPDATE_SCRIPT, params));
+
+				final String entityId = this.entityInformationProvider.getEntityId(deletedPost);
+				updates.put(entityId, updateData);
+			}
+
+			if (updates.size() >= ESConstants.BULK_INSERT_SIZE) {
+				this.clearUpdateQueue(indexName, updates);
+			}
+
+			postSize = allDeletedNormalPosts.size();
+			offset += ElasticsearchPostManager.SQL_BLOCKSIZE;
+		} while (postSize == ElasticsearchPostManager.SQL_BLOCKSIZE);
+
+		this.clearUpdateQueue(indexName, updates);
 	}
 
 	private void insertNewPosts(String indexName, Integer communityPostLastContentId, Date communityPostLastLogDate, CommunityPostIndexUpdateLogic<G> indexUpdateLogic) {
@@ -247,12 +298,16 @@ public class ElasticsearchCommunityManager<G extends Resource> extends Elasticse
 		this.client.updateOrCreateDocuments(indexName, postsToUpdate);
 	}
 
-	private IndexData buildIndexDataForPost(Post<G> newestPostByInterHash) {
-		final Map<String, Object> source = this.entityInformationProvider.getConverter().convert(newestPostByInterHash);
+	private IndexData buildIndexDataForPost(final Post<G> post) {
+		final Map<String, Object> source = this.entityInformationProvider.getConverter().convert(post);
 		final IndexData indexData = new IndexData();
 		indexData.setSource(source);
-		indexData.setType(this.entityInformationProvider.getType());
-		indexData.setRouting(this.entityInformationProvider.getRouting(newestPostByInterHash));
+		setupAbstractIndexData(indexData, post);
 		return indexData;
+	}
+
+	private void setupAbstractIndexData(final AbstractData abstractData, final Post<G> post) {
+		abstractData.setType(this.entityInformationProvider.getType());
+		abstractData.setRouting(this.entityInformationProvider.getRouting(post));
 	}
 }

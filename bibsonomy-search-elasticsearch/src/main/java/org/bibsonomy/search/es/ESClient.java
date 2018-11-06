@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.client.DeleteData;
 import org.bibsonomy.search.es.client.IndexData;
+import org.bibsonomy.search.es.client.UpdateData;
 import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
@@ -166,6 +167,12 @@ public interface ESClient {
 	 * @return <code>true</code> iff the document was updated
 	 */
 	boolean updateDocument(String indexName, String type, String id, Map<String, Object> jsonDocument);
+
+	/**
+	 * @param indexName the index of the documents to update
+	 * @param updates the update map (key: document id and value is the update to apply)
+	 */
+	boolean updateDocuments(String indexName, Map<String, UpdateData> updates);
 	
 	/**
 	 * @param indexName

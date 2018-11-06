@@ -8,6 +8,7 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.client.IndexData;
+import org.bibsonomy.search.es.client.UpdateData;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.management.generation.AbstractSearchIndexGenerationTask;
@@ -259,6 +260,15 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		 */
 		this.client.updateOrCreateDocuments(indexName, convertedPosts);
 		convertedPosts.clear();
+	}
+
+	protected void clearUpdateQueue(String indexName, Map<String, UpdateData> updates) {
+		if (!present(updates)) {
+			// nothing to update
+			return;
+		}
+
+		this.client.updateDocuments(indexName, updates);
 	}
 
 	/**
@@ -541,5 +551,4 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 	public void shutdown() {
 		this.executorService.shutdownNow();
 	}
-
 }

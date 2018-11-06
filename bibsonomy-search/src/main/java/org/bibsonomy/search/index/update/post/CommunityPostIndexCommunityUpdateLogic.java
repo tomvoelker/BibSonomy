@@ -5,6 +5,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.management.database.params.SearchParam;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -63,4 +64,17 @@ public class CommunityPostIndexCommunityUpdateLogic<R extends Resource> extends 
 		}
 	}
 
+	/**
+	 * @param lastLogDate
+	 * @return all posts that were deleted by the users (for updating the all_users field)
+	 */
+	public List<Post<R>> getAllDeletedNormalPosts(Date lastLogDate, final int limit, final int offset) {
+		try (final DBSession session = this.openSession()) {
+			final SearchParam param = new SearchParam();
+			param.setLimit(limit);
+			param.setOffset(offset);
+			param.setLastLogDate(lastLogDate);
+			return (List<Post<R>>) this.queryForList("get" + this.getResourceName() + "AllDeletedPosts", param, session);
+		}
+	}
 }
