@@ -42,6 +42,7 @@ public class DefaultSearchIndexSyncState extends SearchIndexSyncState {
 	// TODO: rename attribute to lastLogDate
 	private Date last_log_date;
 	private long lastPersonChangeId;
+	private Date lastPersonLogDate;
 	private Date lastDocumentDate;
 	private Date lastPredictionChangeDate;
 	/** the last content id of normal posts */
@@ -147,6 +148,20 @@ public class DefaultSearchIndexSyncState extends SearchIndexSyncState {
 	 */
 	public void setLastPostContentId(long lastPostContentId) {
 		this.lastPostContentId = lastPostContentId;
+	}
+
+	/**
+	 * @return the lastPersonLogDate
+	 */
+	public Date getLastPersonLogDate() {
+		return lastPersonLogDate;
+	}
+
+	/**
+	 * @param lastPersonLogDate the lastPersonLogDate to set
+	 */
+	public void setLastPersonLogDate(Date lastPersonLogDate) {
+		this.lastPersonLogDate = lastPersonLogDate;
 	}
 
 	/* (non-Javadoc)

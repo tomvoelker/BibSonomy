@@ -3,6 +3,15 @@
 
 <sqlMap namespace="SearchPersonCommon">
 
+	<resultMap id="simplePost" class="post" groupBy="contentId">
+		<result property="contentId" column="content_id" />
+		<result property="resource" resultMap="SearchPersonCommon.simplePublication" />
+	</resultMap>
+
+	<resultMap id="simplePublication" class="bibtex" groupBy="interHash">
+		<result property="interHash"	column="interHash"		javaType="string" />
+	</resultMap>
+
 	<resultMap id="simplePerson" class="person" groupBy="personChangeId">
 		<result property="personChangeId"	column="person_change_id"		javaType="int" />
 		<result property="personId"			column="person_id" 			javaType="string" />
@@ -50,9 +59,13 @@
 		<result property="person"				resultMap="SearchPersonCommon.simplePersonWithoutId" />
 	</resultMap>
 
+	<resultMap id="simplePersonResourceRelationWithSimplePost" class="personResourceRelation" extends="simplePersonResourceRelationWithoutPost">
+		<result property="post"		resultMap="SearchPersonCommon.simplePost" />
+	</resultMap>
+
 	<resultMap id="personResourceRelation" class="personResourceRelation" groupBy="personRelChangeId" extends="personResourceRelationWithoutPost">
-		<result property="post" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost" />
-		<result property="person"				resultMap="SearchPersonCommon.simplePerson" />
+		<result property="post"		resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost" />
+		<result property="person"	resultMap="SearchPersonCommon.simplePerson" />
 	</resultMap>
 
 	<sql id="personFields">

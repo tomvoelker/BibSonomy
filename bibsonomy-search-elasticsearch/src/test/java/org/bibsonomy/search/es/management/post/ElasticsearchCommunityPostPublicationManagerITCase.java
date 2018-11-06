@@ -6,10 +6,12 @@ import static org.junit.Assert.assertThat;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager;
+import org.bibsonomy.database.managers.PersonDatabaseManager;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -38,11 +40,14 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 
 	private static final ElasticsearchCommunityPostManager<GoldStandardPublication> MANAGER = EsSpringContextWrapper.getContext().getBean("elasticsearchCommunityPublicationManager", ElasticsearchCommunityPostManager.class);
 
+	/** some db managers to insert and delete data */
 	private static final GoldStandardPublicationDatabaseManager GOLD_STANDARD_PUBLICATION_DATABASE_MANAGER = testDatabaseContext.getBean(GoldStandardPublicationDatabaseManager.class);
-
 	private static final BibTexDatabaseManager PUBLICATION_DATABASE_MANAGER = testDatabaseContext.getBean(BibTexDatabaseManager.class);
-
 	private static final AdminDatabaseManager ADMIN_DATABASE_MANAGER = testDatabaseContext.getBean(AdminDatabaseManager.class);
+	private static final PersonDatabaseManager PERSON_DATABASE_MANAGER = testDatabaseContext.getBean(PersonDatabaseManager.class);
+
+	/** some test constants TODO: move */
+	private static final User LOGGEDIN_USER = new User("testuser1");
 
 	@Test
 	public void testGenerate() {
@@ -184,6 +189,28 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 
 		final ResultList<Post<GoldStandardPublication>> afterReaddedTestuser1 = COMMUNITY_PUBLICATION_SEARCH.getPosts(testuser1, null, null, null, null, null, "Firefly", null, null, null, null, null, null, null, null, null, 10, 0);
 		assertThat(afterReaddedTestuser1.get(0).getUsers().size(), is(1));
+	}
+
+	@Test
+	public void testUpdatePersonResourceRelation() {
+		final String interhash = "0c000000d00000f00cef0c00f000e00a";
+		final List<ResourcePersonRelation> relations = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPersonsByInterhash(interhash, this.dbSession);
+
+		assertThat(relations.size(), is(1));
+
+		final ResourcePersonRelation firstRelation = relations.get(0);
+
+		PERSON_DATABASE_MANAGER.removeResourceRelation(firstRelation.getPerson().getPersonId(), interhash, firstRelation.getPersonIndex(), firstRelation.getRelationType(), LOGGEDIN_USER, this.dbSession);
+
+		// TODO: add tests by quering index
+
+		this.updateIndex();
+
+		firstRelation.setPost(GOLD_STANDARD_PUBLICATION_DATABASE_MANAGER.getPostDetails("", interhash, "", Collections.emptyList(), this.dbSession));
+
+		PERSON_DATABASE_MANAGER.addResourceRelation(firstRelation, LOGGEDIN_USER, this.dbSession);
+
+		this.updateIndex();
 	}
 
 	private static <P extends BibTex> Post<P> generateTestPost(final Class<? extends P> clazz) {

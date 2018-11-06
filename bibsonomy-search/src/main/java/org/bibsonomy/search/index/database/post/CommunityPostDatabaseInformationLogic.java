@@ -1,5 +1,7 @@
 package org.bibsonomy.search.index.database.post;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.ResourceAwareAbstractDatabaseManagerWithSessionManagement;
 import org.bibsonomy.database.common.enums.ConstantID;
@@ -49,6 +51,15 @@ public class CommunityPostDatabaseInformationLogic<R extends Resource> extends R
 
 			final Integer lastContentId = this.queryForObject("getLastContentIdCommunity", contentTypeId, Integer.class, session);
 			searchIndexSyncState.setLast_tas_id(lastContentId);
+
+			final Integer lastPersonChangeId = this.queryForObject("getLastPersonChangeId", Integer.class, session);
+			searchIndexSyncState.setLastPersonChangeId(lastPersonChangeId);
+
+			Date lastPersonLogDate = this.queryForObject("getLastPersonChangeLogDate", Date.class, session);
+			if (!present(lastPersonLogDate)) {
+				lastPersonLogDate = new Date();
+			}
+			searchIndexSyncState.setLastPersonLogDate(lastPersonLogDate);
 			return searchIndexSyncState;
 		}
 	}

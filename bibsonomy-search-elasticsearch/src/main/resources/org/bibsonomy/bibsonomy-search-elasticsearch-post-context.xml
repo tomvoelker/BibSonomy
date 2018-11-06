@@ -68,7 +68,7 @@
 		<constructor-arg ref="communityBookmarkDatabaseInformationLogic" />
 	</bean>
 
-	<bean id="elasticsearchCommunityPublicationManager" class="org.bibsonomy.search.es.management.post.ElasticsearchCommunityPostManager" parent="elasticsearchAbstractIndexManager">
+	<bean id="elasticsearchCommunityPublicationManager" class="org.bibsonomy.search.es.management.post.ElasticsearchCommunityPostPublicationManager" parent="elasticsearchAbstractIndexManager">
 		<constructor-arg>
 			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchIndexGeneratorWithMultipleSources">
 				<constructor-arg ref="systemURI" />
@@ -90,6 +90,7 @@
 		<constructor-arg ref="communityIndexUpdateLogicCommunityPublication" />
 		<constructor-arg ref="communityIndexUpdateLogicPublication" />
 		<constructor-arg ref="communityPublicationDatabaseInformationLogic" />
+		<constructor-arg ref="personResourceRelationDBLogic" />
 	</bean>
 
 	<bean id="elasticsearchBookmarkMappingBuilder" class="org.bibsonomy.search.es.index.mapping.post.BookmarkMappingBuilder">

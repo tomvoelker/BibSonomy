@@ -196,7 +196,7 @@ public final class ESConstants {
 			String AUTHORS = "authors";
 			String EDITORS = "editors";
 			String PERSON_NAME = "name";
-			String PERSON_ID = "id";
+			String PERSON_ID = "person_id";
 			String OTHER_PERSON_RESOURCE_RELATIONS = "other_relations";
 			String PERSON_RELATION_TYPE = "relation_type";
 			

@@ -16,6 +16,7 @@ import java.util.Map;
 public class DefaultSearchIndexSyncStateConverter implements Converter<DefaultSearchIndexSyncState, Map<String, Object>, Object> {
 
 	private static final String LAST_PERSON_CHANGE_ID_KEY = "last_person_change_id";
+	private static final String LAST_PERSON_LOG_DATE = "last_person_log_date";
 	private static final String LAST_LOG_DATE_KEY = "last_log_date";
 	private static final String LAST_TAS_KEY = "last_tas_id";
 	private static final String LAST_DOCUMENT_DATE_KEY = "last_document_date";
@@ -50,6 +51,11 @@ public class DefaultSearchIndexSyncStateConverter implements Converter<DefaultSe
 		}
 		final long lastPostContentId = state.getLastPostContentId();
 		values.put(LAST_POST_CONTENT_ID_KEY, lastPostContentId);
+
+		final Date lastPersonLogDate = state.getLastPersonLogDate();
+		if (present(lastPersonLogDate)) {
+			values.put(LAST_PERSON_LOG_DATE, Long.valueOf(lastPersonLogDate.getTime()));
+		}
 		return values;
 	}
 
@@ -87,6 +93,11 @@ public class DefaultSearchIndexSyncStateConverter implements Converter<DefaultSe
 		searchIndexState.setMappingVersion(mappingVersion);
 
 		searchIndexState.setLastPersonChangeId(((Integer) source.get(LAST_PERSON_CHANGE_ID_KEY)).longValue());
+
+		final Long lastPersonLogDateTime = (Long) source.get(LAST_PERSON_LOG_DATE);
+		if (present(lastPersonLogDateTime)) {
+			searchIndexState.setLastPersonLogDate(new Date(lastPersonLogDateTime.longValue()));
+		}
 
 		if (source.containsKey(LAST_POST_CONTENT_ID_KEY)) {
 			searchIndexState.setLastPostContentId((Integer) source.get(LAST_POST_CONTENT_ID_KEY));
