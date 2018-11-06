@@ -194,7 +194,7 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 		jsonDocument.put(Fields.TAGS, convertTags(post.getTags()));
 		jsonDocument.put(Fields.SYSTEM_URL, this.systemURI.toString());
 		
-		this.convertResourceInternal(jsonDocument, post.getResource());
+		this.convertResourceInternal(jsonDocument, post);
 		this.convertPostInternal(post, jsonDocument);
 		return jsonDocument;
 	}
@@ -245,18 +245,19 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 
 	/**
 	 * @param jsonDocument
-	 * @param resource
+	 * @param post
 	 */
-	protected void convertResourceInternal(Map<String, Object> jsonDocument, R resource) {
+	protected void convertResourceInternal(Map<String, Object> jsonDocument, Post<R> post) {
+		final R resource = post.getResource();
 		jsonDocument.put(Fields.Resource.TITLE, resource.getTitle());
 		jsonDocument.put(Fields.Resource.INTRAHASH, resource.getIntraHash());
 		jsonDocument.put(Fields.Resource.INTERHASH, resource.getInterHash());
-		this.convertResource(jsonDocument, resource);
+		this.convertResource(jsonDocument, post);
 	}
 
 	/**
 	 * @param jsonDocument
-	 * @param resource
+	 * @param post
 	 */
-	protected abstract void convertResource(Map<String, Object> jsonDocument, R resource);
+	protected abstract void convertResource(Map<String, Object> jsonDocument, Post<R> post);
 }
