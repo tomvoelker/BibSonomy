@@ -77,4 +77,21 @@ public class CommunityPostIndexCommunityUpdateLogic<R extends Resource> extends 
 			return (List<Post<R>>) this.queryForList("get" + this.getResourceName() + "AllDeletedPosts", param, session);
 		}
 	}
+
+	/**
+	 * @param lastContentId
+	 * @param limit
+	 * @param offset
+	 * @return all posts that were added by the users (for updating the all_users field)
+	 */
+	public List<Post<R>> getAllNewPosts(Integer lastContentId, int limit, int offset) {
+		try (final DBSession session = this.openSession()) {
+			final SearchParam param = new SearchParam();
+			param.setLimit(limit);
+			param.setOffset(offset);
+			param.setLastContentId(lastContentId);
+
+			return (List<Post<R>>) this.queryForList("get" + this.getResourceName() + "AllNewPosts", param, session);
+		}
+	}
 }

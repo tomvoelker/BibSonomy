@@ -148,10 +148,20 @@
 		JOIN bookmark p ON (bb.interHash = p.book_url_hash) <!-- self join to get all users of the post-->
 	</select>
 
+	<select id="getGoldStandardPublicationAllNewPosts" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
+		FROM bibtex b
+		WHERE b.content_id >= #lastContentId#
+		LIMIT #limit#
+		OFFSET #offset#
+	</select>
+
 	<select id="getGoldStandardPublicationAllDeletedPosts" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
 		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
 		FROM log_bibtex b
 		WHERE b.log_date >= #lastLogDate#
+		LIMIT #limit#
+		OFFSET #offset#
 	</select>
 
 	<!-- "normal" publications -->
@@ -180,11 +190,21 @@
 		LEFT JOIN bibtex p ON (bb.interHash = p.simhash1)
 	</select>
 
+	<select id="getGoldStandardBookmarkAllNewPosts" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
+		SELECT <include refid ="allGoldStandardNormalBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
+		FROM bookmark b
+		WHERE b.content_id >= #lastContentId#
+		LIMIT #limit#
+		OFFSET #offset#
+	</select>
+
 	<select id="getGoldStandardBookmarkAllDeletedPosts" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
 		SELECT <include refid ="allGoldStandardNormalBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
 		FROM log_bookmark b
 		WHERE b.log_date >= #lastLogDate#
 		AND b.new_content_id = 0
+		LIMIT #limit#
+		OFFSET #offset#
 	</select>
 
 	<!-- "normal" bookmarks -->

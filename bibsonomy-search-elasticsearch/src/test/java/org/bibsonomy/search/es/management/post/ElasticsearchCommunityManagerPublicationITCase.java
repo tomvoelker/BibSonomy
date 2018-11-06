@@ -23,6 +23,7 @@ import org.bibsonomy.util.Sets;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -163,7 +164,10 @@ public class ElasticsearchCommunityManagerPublicationITCase extends AbstractComm
 		assertThat(beforeDeleteTestuser1.size(), is(1));
 		assertThat(beforeDeleteTestuser1.get(0).getUsers().size(), is(1));
 
-		final boolean deletedNormalPost = PUBLICATION_DATABASE_MANAGER.deletePost(testuser1, "6ce5d533a44887f2d2730fe7866f8fd0", loggedinUser, this.dbSession);
+		final String normalPostHashToDelete = "6ce5d533a44887f2d2730fe7866f8fd0";
+
+		final Post<BibTex> normalPublicationPost = PUBLICATION_DATABASE_MANAGER.getPostDetails(testuser1, normalPostHashToDelete, testuser1, Collections.emptyList(), this.dbSession);
+		final boolean deletedNormalPost = PUBLICATION_DATABASE_MANAGER.deletePost(testuser1, normalPostHashToDelete, loggedinUser, this.dbSession);
 		assertThat(deletedNormalPost, is(true));
 
 		this.updateIndex();
@@ -172,6 +176,14 @@ public class ElasticsearchCommunityManagerPublicationITCase extends AbstractComm
 
 		assertThat(afterDeleteTestuser1.size(), is(1));
 		assertThat(afterDeleteTestuser1.get(0).getUsers().size(), is(0));
+
+		final boolean normalPostReadded = PUBLICATION_DATABASE_MANAGER.createPost(normalPublicationPost, loggedinUser, this.dbSession);
+		assertThat(normalPostReadded, is(true));
+
+		this.updateIndex();
+
+		final ResultList<Post<GoldStandardPublication>> afterReaddedTestuser1 = COMMUNITY_PUBLICATION_SEARCH.getPosts(testuser1, null, null, null, null, null, "Firefly", null, null, null, null, null, null, null, null, null, 10, 0);
+		assertThat(afterReaddedTestuser1.get(0).getUsers().size(), is(1));
 	}
 
 	private static <P extends BibTex> Post<P> generateTestPost(final Class<? extends P> clazz) {

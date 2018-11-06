@@ -69,7 +69,8 @@ import org.elasticsearch.script.ScriptType;
 public class ElasticsearchCommunityManager<G extends Resource> extends ElasticsearchManager<Post<G>, SearchCommunityIndexSyncState> {
 
 	private static final String USER_KEY = "user";
-	private static final String UPDATE_SCRIPT = "ctx._source." + ESConstants.Fields.ALL_USERS + ".removeAll(Collections.singleton(params." + USER_KEY + "))";
+	private static final String UPDATE_ALL_USERS_REMOVE_SCRIPT = "ctx._source." + ESConstants.Fields.ALL_USERS + ".removeAll(Collections.singleton(params." + USER_KEY + "))";
+	private static final String UPDATE_ALL_USERS_ADD_SCRIPT = "if (!ctx._source." + ESConstants.Fields.ALL_USERS + ".contains(params." + USER_KEY + ")){ ctx._source." + ESConstants.Fields.ALL_USERS + ".add(params." + USER_KEY + ")}";
 
 	private final CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic;
 	private final CommunityPostIndexUpdateLogic<G> postUpdateLogic;
@@ -206,25 +207,46 @@ public class ElasticsearchCommunityManager<G extends Resource> extends Elasticse
 	 * @param oldState the old state for the update
 	 * @param targetState the target state for the update
 	 */
-	protected void updateResourceSpecificFields(String indexName, SearchCommunityIndexSyncState oldState, SearchCommunityIndexSyncState targetState) {
+	protected void updateResourceSpecificFields(final String indexName, final SearchCommunityIndexSyncState oldState, final SearchCommunityIndexSyncState targetState) {
 		// noop
 	}
 
-	private void updateAllUsersField(String indexName, DefaultSearchIndexSyncState oldNormalSearchIndexState) {
+	private void updateAllUsersField(final String indexName, final DefaultSearchIndexSyncState oldNormalSearchIndexState) {
+		/*
+		 * remove deleted posts
+		 */
+		this.loopPosts(indexName, (limit, offset) -> this.communityPostUpdateLogic.getAllDeletedNormalPosts(oldNormalSearchIndexState.getLast_log_date(), limit, offset), () -> UPDATE_ALL_USERS_REMOVE_SCRIPT);
+
+		/*
+		 * now add new posts
+		 */
+		this.loopPosts(indexName, (limit, offset) -> this.communityPostUpdateLogic.getAllNewPosts(oldNormalSearchIndexState.getLast_tas_id(), limit, offset), () -> UPDATE_ALL_USERS_ADD_SCRIPT);
+	}
+
+	@FunctionalInterface
+	interface PostsQueryLogic<R extends Resource> {
+		List<Post<R>> getPosts(int limit, int offset);
+	}
+
+	@FunctionalInterface
+	interface UpdateIndexAction {
+		String getUpdateScript();
+	}
+
+	private void loopPosts(final String indexName, final PostsQueryLogic<G> logic, final UpdateIndexAction updateAction) {
 		int offset = 0;
 		int postSize;
 		final Map<String, UpdateData> updates = new HashMap<>();
 		do {
-			final List<Post<G>> allDeletedNormalPosts = this.communityPostUpdateLogic.getAllDeletedNormalPosts(oldNormalSearchIndexState.getLast_log_date(), ElasticsearchPostManager.SQL_BLOCKSIZE, offset);
+			final List<Post<G>> posts = logic.getPosts(ElasticsearchPostManager.SQL_BLOCKSIZE, offset);
 
-			for (final Post<G> deletedPost : allDeletedNormalPosts) {
-
+			for (final Post<G> post : posts) {
 				final UpdateData updateData = new UpdateData();
-				setupAbstractIndexData(updateData, deletedPost);
-				final Map<String, Object> params = Collections.singletonMap(USER_KEY, deletedPost.getUser().getName());
-				updateData.setScript(new Script(ScriptType.INLINE, Script.DEFAULT_SCRIPT_LANG, UPDATE_SCRIPT, params));
+				setupAbstractIndexData(updateData, post);
+				final Map<String, Object> params = Collections.singletonMap(USER_KEY, post.getUser().getName());
+				updateData.setScript(new Script(ScriptType.INLINE, Script.DEFAULT_SCRIPT_LANG, updateAction.getUpdateScript(), params));
 
-				final String entityId = this.entityInformationProvider.getEntityId(deletedPost);
+				final String entityId = this.entityInformationProvider.getEntityId(post);
 				updates.put(entityId, updateData);
 			}
 
@@ -232,7 +254,7 @@ public class ElasticsearchCommunityManager<G extends Resource> extends Elasticse
 				this.clearUpdateQueue(indexName, updates);
 			}
 
-			postSize = allDeletedNormalPosts.size();
+			postSize = posts.size();
 			offset += ElasticsearchPostManager.SQL_BLOCKSIZE;
 		} while (postSize == ElasticsearchPostManager.SQL_BLOCKSIZE);
 
