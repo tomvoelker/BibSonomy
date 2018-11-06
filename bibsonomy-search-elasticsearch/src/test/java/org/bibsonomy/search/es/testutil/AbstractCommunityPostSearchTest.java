@@ -2,7 +2,7 @@ package org.bibsonomy.search.es.testutil;
 
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.search.es.management.post.ElasticsearchCommunityManager;
+import org.bibsonomy.search.es.management.post.ElasticsearchCommunityPostManager;
 import org.junit.Before;
 
 /**
@@ -12,7 +12,7 @@ import org.junit.Before;
  */
 public abstract class AbstractCommunityPostSearchTest<R extends Resource> extends AbstractDatabaseManagerTest {
 
-	protected abstract ElasticsearchCommunityManager<R> getManager();
+	protected abstract ElasticsearchCommunityPostManager<R> getManager();
 
 	@Before
 	public void createIndices() throws InterruptedException {

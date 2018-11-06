@@ -12,11 +12,11 @@ import org.bibsonomy.search.es.testutil.AbstractCommunityPostSearchTest;
 import org.junit.Test;
 
 /**
- * tests for the {@link ElasticsearchCommunityManager} of the bookmark entries
+ * tests for the {@link ElasticsearchCommunityPostManager} of the bookmark entries
  *
  * @author dzo
  */
-public class ElasticsearchCommunityManagerBookmarkITCase extends AbstractCommunityPostSearchTest<GoldStandardBookmark> {
+public class ElasticsearchCommunityPostBookmarkManagerITCase extends AbstractCommunityPostSearchTest<GoldStandardBookmark> {
 
 	private static final EsResourceSearch<GoldStandardBookmark> COMMUNITY_BOOKMARK_SEARCH = EsSpringContextWrapper.getContext().getBean("elasticsearchCommunityBookmarkSearch", EsResourceSearch.class);
 
@@ -39,9 +39,6 @@ public class ElasticsearchCommunityManagerBookmarkITCase extends AbstractCommuni
 
 	@Test
 	public void testUpdate() {
-
-
-
 		// TODO: add tests for updating the index
 
 		// unmark a user
@@ -55,12 +52,10 @@ public class ElasticsearchCommunityManagerBookmarkITCase extends AbstractCommuni
 		// insert a new publication
 
 		// insert a new communitypost
-
-
 	}
 
 	@Override
-	protected ElasticsearchCommunityManager<GoldStandardBookmark> getManager() {
-		return EsSpringContextWrapper.getContext().getBean("elasticsearchCommunityBookmarkManager", ElasticsearchCommunityManager.class);
+	protected ElasticsearchCommunityPostManager<GoldStandardBookmark> getManager() {
+		return EsSpringContextWrapper.getContext().getBean("elasticsearchCommunityBookmarkManager", ElasticsearchCommunityPostManager.class);
 	}
 }

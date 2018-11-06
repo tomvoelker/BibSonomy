@@ -44,7 +44,7 @@
 		<constructor-arg ref="publicationSearchDBLogic" />
 	</bean>
 
-	<bean id="elasticsearchCommunityBookmarkManager" class="org.bibsonomy.search.es.management.post.ElasticsearchCommunityManager" parent="elasticsearchAbstractIndexManager">
+	<bean id="elasticsearchCommunityBookmarkManager" class="org.bibsonomy.search.es.management.post.ElasticsearchCommunityPostManager" parent="elasticsearchAbstractIndexManager">
 		<constructor-arg>
 			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchIndexGeneratorWithMultipleSources">
 				<constructor-arg ref="systemURI" />
@@ -68,7 +68,7 @@
 		<constructor-arg ref="communityBookmarkDatabaseInformationLogic" />
 	</bean>
 
-	<bean id="elasticsearchCommunityPublicationManager" class="org.bibsonomy.search.es.management.post.ElasticsearchCommunityManager" parent="elasticsearchAbstractIndexManager">
+	<bean id="elasticsearchCommunityPublicationManager" class="org.bibsonomy.search.es.management.post.ElasticsearchCommunityPostManager" parent="elasticsearchAbstractIndexManager">
 		<constructor-arg>
 			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchIndexGeneratorWithMultipleSources">
 				<constructor-arg ref="systemURI" />

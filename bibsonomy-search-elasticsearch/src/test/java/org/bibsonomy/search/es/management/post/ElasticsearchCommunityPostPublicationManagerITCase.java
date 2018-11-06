@@ -28,15 +28,15 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * tests for the {@link ElasticsearchCommunityManager} of the publication entries
+ * tests for the {@link ElasticsearchCommunityPostManager} of the publication entries
  *
  * @author dzo
  */
-public class ElasticsearchCommunityManagerPublicationITCase extends AbstractCommunityPostSearchTest<GoldStandardPublication> {
+public class ElasticsearchCommunityPostPublicationManagerITCase extends AbstractCommunityPostSearchTest<GoldStandardPublication> {
 
 	private static final EsResourceSearch<GoldStandardPublication> COMMUNITY_PUBLICATION_SEARCH = EsSpringContextWrapper.getContext().getBean("elasticsearchCommunityPublicationSearch", EsResourceSearch.class);
 
-	private static final ElasticsearchCommunityManager<GoldStandardPublication> MANAGER = EsSpringContextWrapper.getContext().getBean("elasticsearchCommunityPublicationManager", ElasticsearchCommunityManager.class);
+	private static final ElasticsearchCommunityPostManager<GoldStandardPublication> MANAGER = EsSpringContextWrapper.getContext().getBean("elasticsearchCommunityPublicationManager", ElasticsearchCommunityPostManager.class);
 
 	private static final GoldStandardPublicationDatabaseManager GOLD_STANDARD_PUBLICATION_DATABASE_MANAGER = testDatabaseContext.getBean(GoldStandardPublicationDatabaseManager.class);
 
@@ -206,7 +206,7 @@ public class ElasticsearchCommunityManagerPublicationITCase extends AbstractComm
 	}
 
 	@Override
-	protected ElasticsearchCommunityManager<GoldStandardPublication> getManager() {
+	protected ElasticsearchCommunityPostManager<GoldStandardPublication> getManager() {
 		return MANAGER;
 	}
 }

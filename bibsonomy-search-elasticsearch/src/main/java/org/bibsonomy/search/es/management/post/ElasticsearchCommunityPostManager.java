@@ -66,7 +66,7 @@ import org.elasticsearch.script.ScriptType;
  * @author dzo
  * @param <G> the community resource class
  */
-public class ElasticsearchCommunityManager<G extends Resource> extends ElasticsearchManager<Post<G>, SearchCommunityIndexSyncState> {
+public class ElasticsearchCommunityPostManager<G extends Resource> extends ElasticsearchManager<Post<G>, SearchCommunityIndexSyncState> {
 
 	private static final String USER_KEY = "user";
 	private static final String UPDATE_ALL_USERS_REMOVE_SCRIPT = "ctx._source." + ESConstants.Fields.ALL_USERS + ".removeAll(Collections.singleton(params." + USER_KEY + "))";
@@ -90,7 +90,7 @@ public class ElasticsearchCommunityManager<G extends Resource> extends Elasticse
 	 * @param communityPostUpdateLogic
 	 * @param postUpdateLogic
 	 */
-	public ElasticsearchCommunityManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<G>, SearchCommunityIndexSyncState> generator, Converter syncStateConverter, EntityInformationProvider entityInformationProvider, SearchDBInterface<G> inputLogic, CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic, CommunityPostIndexUpdateLogic<G> postUpdateLogic, final DatabaseInformationLogic<SearchCommunityIndexSyncState> databaseInformationLogic) {
+	public ElasticsearchCommunityPostManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<G>, SearchCommunityIndexSyncState> generator, Converter syncStateConverter, EntityInformationProvider entityInformationProvider, SearchDBInterface<G> inputLogic, CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic, CommunityPostIndexUpdateLogic<G> postUpdateLogic, final DatabaseInformationLogic<SearchCommunityIndexSyncState> databaseInformationLogic) {
 		super(systemId, disabledIndexing, updateEnabled, client, generator, syncStateConverter, entityInformationProvider);
 		this.communityPostUpdateLogic = communityPostUpdateLogic;
 		this.postUpdateLogic = postUpdateLogic;
