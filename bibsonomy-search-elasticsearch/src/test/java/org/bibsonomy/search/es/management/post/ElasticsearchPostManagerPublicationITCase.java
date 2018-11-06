@@ -39,7 +39,6 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
 import org.bibsonomy.search.es.management.AbstractElasticsearchPostIndexTest;
 import org.bibsonomy.search.es.search.post.ElasticsearchPublicationSearch;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
