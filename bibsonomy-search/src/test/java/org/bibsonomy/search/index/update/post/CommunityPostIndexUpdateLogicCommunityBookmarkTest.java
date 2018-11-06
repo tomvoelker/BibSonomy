@@ -56,7 +56,7 @@ public class CommunityPostIndexUpdateLogicCommunityBookmarkTest extends Communit
 	}
 
 	@Override
-	protected void testAllPostsOfUser1(List<Post<GoldStandardBookmark>> testuser1Posts) {
-		assertThat(testuser1Posts.get(0).getResource().getTitle(), is("Google"));
+	protected void testAllPostsOfSpammer1(List<Post<GoldStandardBookmark>> testspammer1Posts) {
+		assertThat(testspammer1Posts.size(), is(0));
 	}
 }

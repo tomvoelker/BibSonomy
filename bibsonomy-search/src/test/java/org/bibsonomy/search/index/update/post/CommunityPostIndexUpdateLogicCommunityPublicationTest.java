@@ -57,7 +57,7 @@ public class CommunityPostIndexUpdateLogicCommunityPublicationTest extends Commu
 	}
 
 	@Override
-	protected void testAllPostsOfUser1(List<Post<GoldStandardPublication>> testuser1Posts) {
-		assertThat(testuser1Posts.size(), is(1));
+	protected void testAllPostsOfSpammer1(List<Post<GoldStandardPublication>> testuser1Posts) {
+		assertThat(testuser1Posts.size(), is(0));
 	}
 }

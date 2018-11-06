@@ -433,16 +433,19 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 */
 	@Override
 	protected void convertPostInternal(final Post<BibTex> post, final Map<String, Object> jsonDocument) {
+		// TODO: TODODZO
 		jsonDocument.put(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, getNormalizedEntryType(post));
-		
-		final List<ResourcePersonRelation> rels = post.getResourcePersonRelations();
-		this.updateDocumentWithPersonRelation(jsonDocument, rels);
+
+		// TODO: remove TODODZO
+		// final List<ResourcePersonRelation> rels = post.getResourcePersonRelations();
+		// this.updateDocumentWithPersonRelation(jsonDocument, rels);
 	}
 
-	/**
+	/** TODO: TODODZO remove!
 	 * @param jsonDocument
 	 * @param rels
-	 */
+   */
+	@Deprecated
 	public void updateDocumentWithPersonRelation(final Map<String, Object> jsonDocument, final List<ResourcePersonRelation> rels) {
 		jsonDocument.put(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME, serializeMainNames(rels, PersonResourceRelationType.AUTHOR));
 		jsonDocument.put(ESConstants.AUTHOR_ENTITY_IDS_FIELD_NAME, serializePersonIds(rels, PersonResourceRelationType.AUTHOR));

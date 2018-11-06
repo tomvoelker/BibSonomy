@@ -46,7 +46,7 @@ import org.springframework.beans.factory.BeanFactory;
  * @author jensi
  * @author dzo
  */
-public abstract class AbstractEsIndexTest extends AbstractDatabaseManagerTest {
+public abstract class AbstractElasticsearchPostIndexTest<R extends Resource> extends AbstractDatabaseManagerTest {
 	
 	/**
 	 * generates the indices
@@ -58,14 +58,14 @@ public abstract class AbstractEsIndexTest extends AbstractDatabaseManagerTest {
 
 		client.indices().delete(new DeleteIndexRequest("_all"), RequestOptions.DEFAULT);
 
-		final Map<Class<? extends Resource>, ElasticsearchPostManager<? extends Resource>> managers = getAllManagers();
-		for (ElasticsearchPostManager<? extends Resource> manager : managers.values()) {
-			manager.regenerateAllIndices();
-		}
+		final ElasticsearchPostManager<R> manager = this.getManager();
+		manager.regenerateAllIndices();
 		
 		// wait a little bit to get all systems ready TODO: remove?
 		Thread.sleep(1000);
 	}
+
+	protected abstract ElasticsearchPostManager<R> getManager();
 
 	/**
 	 * @throws IOException
@@ -76,8 +76,8 @@ public abstract class AbstractEsIndexTest extends AbstractDatabaseManagerTest {
 	}
 
 	private static void closeAllIndices() {
-		final Map<Class<? extends Resource>, ElasticsearchPostManager<? extends Resource>> managers = getAllManagers();
-		for (final ElasticsearchPostManager<?> lrm : managers.values()) {
+		final Map<Class<? extends Resource>, ElasticsearchManager<?, ?>> managers = getAllManagers();
+		for (final ElasticsearchManager<?, ?> lrm : managers.values()) {
 			lrm.shutdown();
 		}
 	}
@@ -86,8 +86,8 @@ public abstract class AbstractEsIndexTest extends AbstractDatabaseManagerTest {
 	 * @return
 	 */
 	@SuppressWarnings({ "unchecked", "resource" })
-	private static Map<Class<? extends Resource>, ElasticsearchPostManager<? extends Resource>> getAllManagers() {
+	private static Map<Class<? extends Resource>, ElasticsearchManager<?, ?>> getAllManagers() {
 		final BeanFactory bf = EsSpringContextWrapper.getContext();
-		return (Map<Class<? extends Resource>, ElasticsearchPostManager<? extends Resource>>) bf.getBean("elasticsearchManagers");
+		return (Map<Class<? extends Resource>, ElasticsearchManager<?, ?>>) bf.getBean("elasticsearchManagers");
 	}
 }

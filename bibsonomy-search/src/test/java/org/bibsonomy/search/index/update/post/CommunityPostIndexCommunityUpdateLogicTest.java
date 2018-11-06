@@ -52,9 +52,9 @@ public abstract class CommunityPostIndexCommunityUpdateLogicTest<R extends Resou
 	 */
 	@Test
 	public void testGetAllPostsOfUser() {
-		final List<Post<R>> testuser1Posts = this.getCommunityUpdateLogic().getAllPostsOfUser("testuser1");
-		this.testAllPostsOfUser1(testuser1Posts);
+		final List<Post<R>> testspammer1Posts = this.getCommunityUpdateLogic().getAllPostsOfUser("testspammer1");
+		this.testAllPostsOfSpammer1(testspammer1Posts);
 	}
 
-	protected abstract void testAllPostsOfUser1(List<Post<R>> testuser1Posts);
+	protected abstract void testAllPostsOfSpammer1(List<Post<R>> testspammer1Posts);
 }

@@ -57,7 +57,7 @@ public class PersonIndexGenerationLogicTest extends AbstractDatabaseManagerTest 
 	@Test
 	public void testGetDbState() {
 		final DefaultSearchIndexSyncState dbState = PERSON_INDEX_GENERATIONLOGIC.getDbState();
-		assertThat(dbState.getLastPersonChangeId(), is(34l));
+		assertThat(dbState.getLastPersonChangeId(), is(36l));
 	}
 
 	/**

@@ -37,7 +37,7 @@ import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
-import org.bibsonomy.search.es.management.AbstractEsIndexTest;
+import org.bibsonomy.search.es.management.AbstractElasticsearchPostIndexTest;
 import org.bibsonomy.search.es.search.post.ElasticsearchPublicationSearch;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -47,21 +47,11 @@ import org.junit.Test;
  *
  * @author dzo
  */
-public class ElasticsearchPostManagerPublicationITCase extends AbstractEsIndexTest {
+public class ElasticsearchPostManagerPublicationITCase extends AbstractElasticsearchPostIndexTest {
 	
-	private static final AdminDatabaseManager adminDatabaseManager = AdminDatabaseManager.getInstance();
-	private static ElasticsearchPostManager<BibTex> publicationManager;
-	private static ElasticsearchPublicationSearch<BibTex> publicationSearch;
-	
-	/**
-	 * inits the manager
-	 */
-	@SuppressWarnings("unchecked")
-	@BeforeClass
-	public static final void initManager() {
-		publicationManager = EsSpringContextWrapper.getContext().getBean("elasticsearchPublicationManager", ElasticsearchPostManager.class);
-		publicationSearch = EsSpringContextWrapper.getContext().getBean("elasticsearchPublicationSearch", ElasticsearchPublicationSearch.class);
-	}
+	private static final AdminDatabaseManager adminDatabaseManager = testDatabaseContext.getBean(AdminDatabaseManager.class);
+	private static ElasticsearchPostManager<BibTex> publicationManager = EsSpringContextWrapper.getContext().getBean("elasticsearchPublicationManager", ElasticsearchPostManager.class);
+	private static ElasticsearchPublicationSearch<BibTex> publicationSearch = EsSpringContextWrapper.getContext().getBean("elasticsearchPublicationSearch", ElasticsearchPublicationSearch.class);
 	
 	/**
 	 * tests {@link ElasticsearchPostManager#updateIndex()}
@@ -90,5 +80,10 @@ public class ElasticsearchPostManagerPublicationITCase extends AbstractEsIndexTe
 		
 		final ResultList<Post<BibTex>> readded = publicationSearch.getPosts(userToFlag, userToFlag, null, null, Collections.<String>emptyList(), null, null, null, null, null, null, null, null, null, null, Order.ADDED, 10, 0);
 		assertEquals(postsBefore.size(), readded.size());
+	}
+
+	@Override
+	protected ElasticsearchPostManager getManager() {
+		return publicationManager;
 	}
 }

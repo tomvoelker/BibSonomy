@@ -157,7 +157,7 @@
 			<dd>
 				<fmt:message var="helpText" key="discussion.resourceLink.help"/>
 				<c:set var="linkText" value="[[publication/${interHashId}${publication.interHash}/${mtl:encodePathSegment(post.user.name)}]]" />
-				<bsform:copyInput id="resource-link" value="${linkText}" onclick="$(this).focus().select();" helpText="${helpText}" noHelp="${false}" />
+				<bsform:copyInput id="resource-link" value="${linkText}" onclick="$(this).focus().filter();" helpText="${helpText}" noHelp="${false}" />
 			</dd>-->
 			<!--+ 
 				|

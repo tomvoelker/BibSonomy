@@ -8,6 +8,10 @@
 		<result property="personId"			column="person_id" 			javaType="string" />
 	</resultMap>
 
+	<resultMap id="simplePersonWithoutId" class="person"  groupBy="personId">
+		<result property="personId"			column="person_id" 			javaType="string" />
+	</resultMap>
+
 	<resultMap id="person" class="person" groupBy="personChangeId" extends="SearchPersonCommon.simplePerson">
 		<result property="academicDegree"	column="academic_degree"	javaType="string" />
 		<result property="orcid"			column="orcid"				javaType="string" />
@@ -32,19 +36,35 @@
 		<result property="person"				resultMap="SearchPersonCommon.simplePerson" />
 	</resultMap>
 
-	<resultMap id="personResourceRelation" class="personResourceRelation" groupBy="personRelChangeId" extends="simplePersonResourceRelation">
+	<resultMap id="personResourceRelationWithoutPost" class="personResourceRelation" groupBy="personRelChangeId" extends="simplePersonResourceRelation">
 		<result property="relationType"			column="relator_code"		javaType="personResourceRelationType" />
 		<result property="changedAt"			column="log_changed_at"		javaType="date" />
 		<result property="personIndex"			column="person_index"		javaType="int" />
-		<result property="post" 				resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost" />
+	</resultMap>
+
+	<resultMap id="simplePersonResourceRelationWithoutPost" class="personResourceRelation" groupBy="personRelChangeId">
+		<result property="personRelChangeId"	column="person_relation_change_id"	javaType="int" />
+		<result property="relationType"			column="relator_code"		javaType="personResourceRelationType" />
+		<result property="changedAt"			column="log_changed_at"		javaType="date" />
+		<result property="personIndex"			column="person_index"		javaType="int" />
+		<result property="person"				resultMap="SearchPersonCommon.simplePersonWithoutId" />
+	</resultMap>
+
+	<resultMap id="personResourceRelation" class="personResourceRelation" groupBy="personRelChangeId" extends="personResourceRelationWithoutPost">
+		<result property="post" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost" />
+		<result property="person"				resultMap="SearchPersonCommon.simplePerson" />
 	</resultMap>
 
 	<sql id="personFields">
 		pn.person_change_id AS person_name_change_id, pn.first_name, pn.last_name, pn.is_main
 	</sql>
 
+	<sql id="personResourceRelationColumns">
+		ppr.person_id, ppr.relator_code, ppr.person_index, ppr.person_change_id AS person_relation_change_id, ppr.log_changed_at
+	</sql>
+
 	<sql id="personResourceRelationWithPostColumns">
-		ppr.person_id, ppr.relator_code, ppr.person_index, ppr.person_change_id AS person_relation_change_id, ppr.log_changed_at, p.person_change_id, <include refid="allGoldStandardPublicationAttributesSearch" />, b.simhash1 AS interHash, b.simhash2 AS intraHash, b.change_date, b.group, 'public' AS group_name, 1 AS count, b.content_id, -1 AS rating, -1 AS number_of_ratings, NULL AS other_user_name
+		<include refid="personResourceRelationColumns" />, p.person_change_id, <include refid="allGoldStandardPublicationAttributesSearch" />, b.simhash1 AS interHash, b.simhash2 AS intraHash, b.change_date, b.group, 'public' AS group_name, 1 AS count, b.content_id, -1 AS rating, -1 AS number_of_ratings, NULL AS other_user_name
 	</sql>
 
 	<!-- FIXME: move to other file -->
