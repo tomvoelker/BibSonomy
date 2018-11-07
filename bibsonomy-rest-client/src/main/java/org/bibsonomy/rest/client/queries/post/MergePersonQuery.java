@@ -21,7 +21,8 @@ public class MergePersonQuery extends AbstractQuery<Boolean> {
         final StringWriter sw = new StringWriter(100);
         this.getRenderer().serializePersonMatch(sw, this.match, null);
         this.downloadedDocument = performRequest(HttpMethod.POST,
-                getUrlRenderer().createUrlBuilderForPersonMatch().asString(),
+                getUrlRenderer().createUrlBuilderForPersonMatch(match.getPerson1().getPersonId(),
+                        match.getPerson2().getPersonId()).asString(),
                 StringUtils.toDefaultCharset(sw.toString()));
     }
 

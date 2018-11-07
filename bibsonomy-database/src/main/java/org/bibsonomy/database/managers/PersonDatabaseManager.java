@@ -913,7 +913,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 			log.error(e);
 		}
 		return edit;
-
 	}
 
 	/**

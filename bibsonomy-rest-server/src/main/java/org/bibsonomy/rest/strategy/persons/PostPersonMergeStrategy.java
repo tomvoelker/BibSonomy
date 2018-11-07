@@ -1,23 +1,18 @@
 package org.bibsonomy.rest.strategy.persons;
 
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.model.BibTex;
+import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.AbstractUpdateStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
 import java.io.Writer;
-import java.util.LinkedList;
-import java.util.List;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
 public class PostPersonMergeStrategy extends AbstractUpdateStrategy {
-    private final static int PUBLICATION_COUNT = 100;
     private final String personIdTarget, personIdSource;
 
     public PostPersonMergeStrategy(Context context, String personIdSource, String personIdTarget) {
@@ -28,19 +23,6 @@ public class PostPersonMergeStrategy extends AbstractUpdateStrategy {
         this.personIdTarget = personIdTarget;
     }
 
-    private List<Post> getAllPostsForPerson(Person person) {
-        LinkedList<Post> result = new LinkedList<>();
-        List<Post<BibTex>> posts;
-        for (int start = 0; ; start += PUBLICATION_COUNT) {
-            posts = this.getLogic().getPosts(BibTex.class, GroupingEntity.USER, person.getUser(), null, null,
-                    null, null, null, null, null, null,
-                    start, start + PUBLICATION_COUNT);
-            result.addAll(posts);
-            if (posts.size() < PUBLICATION_COUNT) break;
-        }
-        return result;
-    }
-
     @Override
     protected void render(Writer writer, String resourceID) {
         this.getRenderer().serializePersonId(writer, resourceID);
@@ -48,23 +30,25 @@ public class PostPersonMergeStrategy extends AbstractUpdateStrategy {
 
     @Override
     protected String update() {
-        final Person person1 = this.getLogic().getPersonById(PersonIdType.PERSON_ID, personIdSource);
-        if (!present(person1)) {
+        final Person personSource = this.getLogic().getPersonById(PersonIdType.PERSON_ID, personIdSource);
+        if (!present(personSource)) {
             throw new BadRequestOrResponseException("No person with id " + personIdSource + " as source.");
         }
-        person1.setPersonId(personIdSource);
-        final Person person2 = this.getLogic().getPersonById(PersonIdType.PERSON_ID, personIdTarget);
-        if (!present(person2)) {
+        personSource.setPersonId(personIdSource);
+        final Person personTarget = this.getLogic().getPersonById(PersonIdType.PERSON_ID, personIdTarget);
+        if (!present(personTarget)) {
             throw new BadRequestOrResponseException("No person with id " + personIdTarget + " as target.");
         }
-        person2.setPersonId(personIdTarget);
-        PersonMatch personMatch = new PersonMatch();
-        personMatch.setPerson1(person1);
-        personMatch.setPerson2(person2);
-        personMatch.setPerson1Posts(getAllPostsForPerson(person1));
-        personMatch.setPerson2Posts(getAllPostsForPerson(person2));
-        personMatch.setState(0);
-        this.getLogic().acceptMerge(personMatch);
-        return person1.getPersonId();
+        personTarget.setPersonId(personIdTarget);
+        //FIXME Should normally be done as a api call
+        personSource.setMainName(personTarget.getMainName());
+        this.getLogic().updatePerson(personSource, PersonUpdateOperation.UPDATE_NAMES);
+        PersonMatch personMatch = this.getLogic().getPersonMatches(personIdTarget).stream().
+                filter(p -> p.getPerson2().getPersonId().equals(personIdSource)).findAny().orElse(null);
+        if (!present(personMatch)) {
+            //FIXME ????????
+            throw new BadRequestOrResponseException("Error in matching....");
+        }
+        return this.getLogic().acceptMerge(personMatch) ? personTarget.getPersonId() : "no.merge";
     }
 }

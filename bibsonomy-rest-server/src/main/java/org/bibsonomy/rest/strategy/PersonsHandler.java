@@ -73,7 +73,7 @@ public class PersonsHandler implements ContextHandler {
 		switch (httpMethod) {
 			case POST:
 				return new PostPersonMergeStrategy(context, personId,
-						context.getStringAttribute("target", ""));
+						context.getStringAttribute("source", ""));
 			default:
 				throw new UnsupportedHttpMethodException(httpMethod, "PersonMerge");
 		}
