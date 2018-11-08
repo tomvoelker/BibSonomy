@@ -34,7 +34,7 @@ import org.bibsonomy.model.enums.ProjectStatus;
  * the project query to retrieve projects from the logic
  * @author dzo
  */
-public class ProjectQuery implements Query {
+public class ProjectQuery extends BasicQuery {
 
 	public static class ProjectQueryBuilder {
 		/** the order of the projects, default {@link ProjectOrder#TITLE} */
@@ -132,12 +132,6 @@ public class ProjectQuery implements Query {
 	/** the project status */
 	private final ProjectStatus projectStatus;
 
-	/** the start */
-	private final int start;
-
-	/** the end */
-	private final int end;
-
 	/**
 	 * the constructor
 	 * @param order
@@ -150,8 +144,8 @@ public class ProjectQuery implements Query {
 		this.order = order;
 		this.sortOrder = sortOrder;
 		this.projectStatus = projectStatus;
-		this.start = start;
-		this.end = end;
+		this.setStart(start);
+		this.setEnd(end);
 	}
 
 	/**
@@ -173,19 +167,5 @@ public class ProjectQuery implements Query {
 	 */
 	public ProjectStatus getProjectStatus() {
 		return projectStatus;
-	}
-
-	/**
-	 * @return the start
-	 */
-	public int getStart() {
-		return start;
-	}
-
-	/**
-	 * @return the end
-	 */
-	public int getEnd() {
-		return end;
 	}
 }

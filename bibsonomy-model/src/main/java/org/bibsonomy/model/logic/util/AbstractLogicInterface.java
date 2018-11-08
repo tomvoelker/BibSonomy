@@ -79,11 +79,10 @@ import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.logic.query.BasicQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
-import org.bibsonomy.model.logic.query.Query;
 import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
-import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -978,7 +977,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	@Override
-	public Statistics getStatistics(Query query) {
+	public Statistics getStatistics(BasicQuery query) {
 		this.doDefaultAction();
 		return null;
 	}

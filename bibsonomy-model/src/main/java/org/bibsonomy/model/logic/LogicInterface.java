@@ -60,7 +60,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.logic.query.Query;
+import org.bibsonomy.model.logic.query.BasicQuery;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.user.remote.RemoteUserId;
@@ -770,5 +770,5 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param query
 	 * @return
 	 */
-	public Statistics getStatistics(final Query query);
+	Statistics getStatistics(final BasicQuery query);
 }

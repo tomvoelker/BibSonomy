@@ -31,7 +31,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -151,8 +150,8 @@ import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.logic.query.BasicQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
-import org.bibsonomy.model.logic.query.Query;
 import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
@@ -193,7 +192,7 @@ public class DBLogic implements LogicInterface {
 	private final Map<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> allDatabaseManagers = new HashMap<>();
 	private final Map<Class<? extends DiscussionItem>, DiscussionItemDatabaseManager<? extends DiscussionItem>> allDiscussionManagers = new HashMap<>();
 
-	private final Map<Class<? extends Query>, StatisticsProvider<? extends Query>> allStatisticDatabaseMangers = new HashMap<>();
+	private final Map<Class<? extends BasicQuery>, StatisticsProvider<? extends BasicQuery>> allStatisticDatabaseMangers = new HashMap<>();
 
 	private final AuthorDatabaseManager authorDBManager;
 	private final DocumentDatabaseManager docDBManager;
@@ -3838,13 +3837,13 @@ public class DBLogic implements LogicInterface {
 	}
 
 	@Override
-	public Statistics getStatistics(final Query query) {
+	public Statistics getStatistics(final BasicQuery query) {
 		try (final DBSession session = this.openSession()) {
 			return this.getStatistics(query, session);
 		}
 	}
 
-	private <Q extends Query> Statistics getStatistics(final Q query, final DBSession session) {
+	private <Q extends BasicQuery> Statistics getStatistics(final Q query, final DBSession session) {
 		// cast is safe
 		final StatisticsProvider<Q> statisticsProvider = (StatisticsProvider<Q>) this.allStatisticDatabaseMangers.get(query.getClass());
 		return statisticsProvider.getStatistics(query, session);
