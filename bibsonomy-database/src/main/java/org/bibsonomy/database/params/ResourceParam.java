@@ -48,7 +48,20 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 	protected T resource;
 	protected GoldStandardRelation relation;
 	protected ResourcePersonRelation personRelation;
-	
+
+	/**
+	 * @return the query
+	 */
+	public PostQuery<T> getQuery() {
+		return query;
+	}
+
+	/**
+	 * @param query the query to set
+	 */
+	public void setQuery(PostQuery<T> query) {
+		this.query = query;
+	}
 
 	/**
 	 * @return the relation between the posts

@@ -153,7 +153,7 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	 */
 	@Test
 	public void getAllConceptsForUser() {
-		final TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, Resource.class, , GroupingEntity.USER, "testuser1", null, null, null, 0, Integer.MAX_VALUE, null, null, null, null, new User());
+		final TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, Resource.class, null, GroupingEntity.USER, "testuser1", null, null, null, 0, Integer.MAX_VALUE, null, null, null, null, new User());
 		final List<Tag> relations = tagRelDb.getAllConceptsForUser(param, this.dbSession);
 		// testuser1 has four concepts 
 		//("linux" and "Linux" are counted as two different concepts in this query!)

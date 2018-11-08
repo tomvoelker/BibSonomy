@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.FirstValuePairComparator;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
@@ -65,6 +65,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
+import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 import org.bibsonomy.model.logic.querybuilder.AbstractSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
@@ -79,6 +80,7 @@ import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.util.tokenizer.SimpleTokenizer;
 import org.bibsonomy.services.searcher.PersonSearch;
 import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.services.searcher.query.PostSearchQuery;
 import org.bibsonomy.util.Sets;
 import org.elasticsearch.ElasticsearchStatusException;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
@@ -151,42 +153,64 @@ public class ElasticsearchPostSearch<R extends Resource> implements PersonSearch
 		return defaultValue;
 	}
 
-	
-	/**
-	 * get tag cloud for given search query for the Shared Resource System
-	 * 
-	 * @param userName
-	 * @param requestedUserName
-	 * @param requestedGroupName
-	 * @param allowedGroups
-	 * @param searchTerms
-	 * @param titleSearchTerms
-	 * @param authorSearchTerms
-	 * @param bibtexkey 
-	 * @param tagIndex
-	 * @param year
-	 * @param firstYear
-	 * @param lastYear
-	 * @param negatedTags
-	 * @param limit
-	 * @param offset
-	 * @return returns the list of tags for the tag cloud
-	 */
 	@Override
-	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexkey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
-		final QueryBuilder query = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, this.getUsersThatShareDocuments(userName), searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
+	public ResultList<Post<R>> getPosts(String loggedinUser, Set<String> allowedGroups, PostSearchQuery<?> postQuery) {
+		final ResultList<Post<R>> postList = callSearch(() -> {
+			final ResultList<Post<R>> posts = new ResultList<>();
+			final Set<String> allowedUsers = getUsersThatShareDocuments(loggedinUser);
+			final QueryBuilder queryBuilder = this.buildQuery(loggedinUser, allowedGroups, allowedUsers, postQuery);
+			if (queryBuilder == null) {
+				return posts;
+			}
+
+			final Pair<String, SortOrder> sortOrder = postQuery.getOrder() == Order.RANK ? null : new Pair<>(Fields.DATE, SortOrder.DESC);
+			final int offset = BasicQueryUtils.calcOffset(postQuery);
+			final int limit = BasicQueryUtils.calcLimit(postQuery);
+			final SearchHits hits = this.manager.search(queryBuilder, sortOrder, offset, limit, null, null);
+
+			if (hits != null) {
+				posts.setTotalCount((int) hits.getTotalHits());
+
+				for (final SearchHit hit : hits) {
+					final Post<R> post = this.resourceConverter.convert(hit.getSourceAsMap(), allowedUsers);
+					final R resource = post.getResource();
+
+					final long count = this.manager.getDocumentCount(QueryBuilders.termQuery(Fields.Resource.INTERHASH, resource.getInterHash()));
+
+					resource.setCount((int) count);
+
+					/*
+					 * remove all other users than the logged in user from the list of users
+					 * that have this resource in their collection
+					 */
+					final List<User> users = post.getUsers();
+					final Stream<User> filteredUsers = users.stream().filter(user -> user.getName().equals(loggedinUser));
+					post.setUsers(filteredUsers.collect(Collectors.toList()));
+					posts.add(post);
+				}
+			}
+
+			return posts;
+		}, new ResultList<>());
+		return postList;
+	}
+
+	@Override
+	public List<Tag> getTags(String loggedinUser, Set<String> allowedGroups, PostSearchQuery<?> postQuery) {
+		final List<String> requestedTags = postQuery.getTags();
+		final QueryBuilder query = this.buildQuery(loggedinUser, allowedGroups, this.getUsersThatShareDocuments(loggedinUser), postQuery);
 		if (query == null) {
 			return new LinkedList<>();
 		}
 
 		final Map<Tag, Integer> tagCounter = callSearch(() -> {
 			final Map<Tag, Integer> tagCounterMap = new HashMap<>();
+			final int offset = BasicQueryUtils.calcOffset(postQuery);
+			final int limit = BasicQueryUtils.calcLimit(postQuery);
 			final SearchHits hits = this.manager.search(query, null, offset, limit, null, Collections.singleton(Fields.TAGS));
 
-			log.debug("Current Search results for '" + searchTerms + "': " + hits.getTotalHits());
-			// TODO: check min TODODZO
 			for (int i = 0; i < Math.min(limit, hits.getTotalHits() - offset); ++i) {
-				SearchHit hit = hits.getAt(i);
+				final SearchHit hit = hits.getAt(i);
 				final Map<String, Object> result = hit.getSourceAsMap();
 				final Set<Tag> tags = this.resourceConverter.onlyConvertTags(result);
 				// set tag count
@@ -196,7 +220,7 @@ public class ElasticsearchPostSearch<R extends Resource> implements PersonSearch
 						 * we remove the requested tags because we assume
 						 * that related tags are requested
 						 */
-						if (present(tagIndex) && tagIndex.contains(tag.getName())) {
+						if (present(requestedTags) && requestedTags.contains(tag.getName())) {
 							continue;
 						}
 						Integer oldCnt = tagCounterMap.get(tag);
@@ -221,70 +245,10 @@ public class ElasticsearchPostSearch<R extends Resource> implements PersonSearch
 			tag.setGlobalcount(count); // FIXME: we set user==global count
 			tags.add(tag);
 		}
-		
+
 		log.debug("Done calculating tag statistics");
 		// all done.
 		return tags;
-	}
-
-	/**
-	 * @param userName
-	 * @param requestedUserName
-	 * @param requestedGroupName
-	 * @param requestedRelationNames
-	 * @param allowedGroups
-	 * @param searchTerms
-	 * @param titleSearchTerms
-	 * @param authorSearchTerms
-	 * @param bibtexKey 
-	 * @param tagIndex
-	 * @param year
-	 * @param firstYear
-	 * @param lastYear
-	 * @param negatedTags
-	 * @param order
-	 * @param limit
-	 * @param offset
-	 * @return returns the list of posts
-	 */
-	@Override
-	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final QueryScope queryScope, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
-
-		final ResultList<Post<R>> postList = callSearch(() -> {
-			final ResultList<Post<R>> posts = new ResultList<>();
-			final Set<String> allowedUsers = getUsersThatShareDocuments(userName);
-			final QueryBuilder queryBuilder = this.buildQuery(userName,
-							requestedUserName, requestedGroupName,
-							requestedRelationNames, allowedGroups, allowedUsers, searchTerms,
-							titleSearchTerms, authorSearchTerms, bibtexKey,
-							tagIndex, year, firstYear, lastYear, negatedTags);
-			if (queryBuilder == null) {
-				return posts;
-			}
-
-			final Pair<String, SortOrder> sortOrder = order == Order.RANK ? null : new Pair<>(Fields.DATE, SortOrder.DESC);
-			final SearchHits hits = this.manager.search(queryBuilder, sortOrder, offset, limit, null, null);
-
-			if (hits != null) {
-				posts.setTotalCount((int) hits.getTotalHits());
-
-				for (final SearchHit hit : hits) {
-					final Post<R> post = this.resourceConverter.convert(hit.getSourceAsMap(), allowedUsers);
-					final R resource = post.getResource();
-
-					final long count = this.manager.getDocumentCount(QueryBuilders.termQuery(Fields.Resource.INTERHASH, resource.getInterHash()));
-
-					resource.setCount((int) count);
-					final List<User> users = post.getUsers();
-					final Stream<User> filteredUsers = users.stream().filter(user -> user.getName().equals(userName));
-					post.setUsers(filteredUsers.collect(Collectors.toList()));
-					posts.add(post);
-				}
-			}
-
-			return posts;
-		}, new ResultList<>());
-		return postList;
 	}
 
 	/**
@@ -671,37 +635,22 @@ public class ElasticsearchPostSearch<R extends Resource> implements PersonSearch
 	/**
 	 * build the overall elasticsearch query term
 	 * 
-	 * @param userName
-	 * @param requestedUserName
-	 *            restrict the resulting posts to those which are owned by this
-	 *            user name
-	 * @param requestedGroupName
-	 *            restrict the resulting posts to those which are owned this
-	 *            group
-	 * @param requestedRelationNames
-	 * 				expand the search in the post of users which are defined by the given 
-	 * 				relation names
+	 * @param loggedinUser
 	 * @param allowedGroups 
 	 * @param usersThatShareDocs all users that the logged in user is allowed to access
-	 * @param searchTerms
-	 * @param titleSearchTerms 
-	 * @param authorSearchTerms 
-	 * @param bibtexKey 
-	 * @param tagIndex 
-	 * @param year 
-	 * @param firstYear 
-	 * @param lastYear 
-	 * @param negatedTags
+	 * @param postQuery the query
 	 * @return overall elasticsearch query
 	 */
-	protected final QueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, Collection<String> allowedGroups, Set<String> usersThatShareDocs, String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
+	protected final QueryBuilder buildQuery(final String loggedinUser, Set<String> allowedGroups, final Set<String> usersThatShareDocs, final PostSearchQuery<?> postQuery) {
 		final BoolQueryBuilder mainQueryBuilder = QueryBuilders.boolQuery();
 		final BoolQueryBuilder mainFilterBuilder = QueryBuilders.boolQuery();
 		// here we exclude the logged in user the docs are already queried using the private fields
 		final Set<String> usersToQueryForDocuments = new HashSet<>(usersThatShareDocs);
-		if (present(userName)) {
-			usersToQueryForDocuments.remove(userName);
+		if (present(loggedinUser)) {
+			usersToQueryForDocuments.remove(loggedinUser);
 		}
+
+		final String searchTerms = postQuery.getSearch();
 		/*
 		 * build the query
 		 * the resulting main query
@@ -717,9 +666,9 @@ public class ElasticsearchPostSearch<R extends Resource> implements PersonSearch
 			 */
 			final QueryBuilder queryBuilder = buildStringQueryForSearchTerms(searchTerms, this.manager.getPublicFields());
 			
-			if (present(userName)) {
+			if (present(loggedinUser)) {
 				// private field
-				final TermQueryBuilder userFilter = QueryBuilders.termQuery(Fields.USER_NAME, userName);
+				final TermQueryBuilder userFilter = QueryBuilders.termQuery(Fields.USER_NAME, loggedinUser);
 				final QueryStringQueryBuilder privateFieldSearchQuery = buildStringQueryForSearchTerms(searchTerms, this.manager.getPrivateFields());
 				final BoolQueryBuilder privateFieldQueryFiltered = QueryBuilders.boolQuery().must(privateFieldSearchQuery).filter(userFilter);
 				
@@ -739,61 +688,75 @@ public class ElasticsearchPostSearch<R extends Resource> implements PersonSearch
 			}
 		}
 
+		final String titleSearchTerms = postQuery.getTitleSearchTerms();
 		if (present(titleSearchTerms)) {
 			// we have search terms for title autocompletion, build a phrase prefix query for the title search terms
 			final QueryBuilder titleSearchQuery = QueryBuilders.matchPhrasePrefixQuery(Fields.Resource.TITLE, titleSearchTerms);
 			mainQueryBuilder.must(titleSearchQuery);
 		}
 		
-		this.buildResourceSpecifiyQuery(mainQueryBuilder, userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, year, firstYear, lastYear);
-		
+		this.buildResourceSpecifiyQuery(mainQueryBuilder, loggedinUser, postQuery);
+
+		final List<String> tags = postQuery.getTags();
 		// Add the requested tags
-		if (present(tagIndex)) {
-			mainFilterBuilder.must(this.buildTagFilter(tagIndex));
+		if (present(tags)) {
+			mainFilterBuilder.must(this.buildTagFilter(tags));
 		}
-		
+
+		final List<String> negatedTags = postQuery.getNegatedTags();
 		if (present(negatedTags)) {
 			mainFilterBuilder.must(buildNegatedTags(negatedTags));
 		}
-		
-		// restrict result to given group
-		if (present(requestedGroupName)) {
-			// by appending a filter for all members of the group
-			final QueryBuilder groupMembersFilter = this.buildGroupMembersFilter(requestedGroupName);
-			if (groupMembersFilter != null) {
-				mainFilterBuilder.must(groupMembersFilter);
-			} else {
-				return null;
-			}
+
+		final GroupingEntity grouping = postQuery.getGrouping();
+		final String groupingName = postQuery.getGroupingName();
+
+		switch (grouping) {
+			case GROUP:
+				// restrict result to given group
+				// by appending a filter for all members of the group
+				final QueryBuilder groupMembersFilter = this.buildGroupMembersFilter(groupingName);
+				if (groupMembersFilter != null) {
+					mainFilterBuilder.must(groupMembersFilter);
+				} else {
+					return null;
+				}
+				break;
+			case USER:
+				// post owned by user
+				// Use this restriction iff there is no user relation
+				final QueryBuilder requestedUserFilter = QueryBuilders.termQuery(Fields.USER_NAME, groupingName);
+				mainFilterBuilder.must(requestedUserFilter);
+				break;
 		}
-		
+
 		// restricting access to posts visible to the user
 		if (!present(allowedGroups)) {
 			allowedGroups = Collections.singleton(GroupUtils.buildPublicGroup().getName());
 		}
 		
 		final BoolQueryBuilder groupFilter = buildGroupFilter(allowedGroups);
-		
-		if (present(userName)) {
+		if (present(loggedinUser)) {
 			final TermQueryBuilder privateGroupFilter = QueryBuilders.termQuery(Fields.GROUPS, GroupUtils.buildPrivateGroup().getName());
-			final TermQueryBuilder userFilter = QueryBuilders.termQuery(Fields.USER_NAME, userName);
+			final TermQueryBuilder userFilter = QueryBuilders.termQuery(Fields.USER_NAME, loggedinUser);
 			groupFilter.should(QueryBuilders.boolQuery().must(userFilter).must(privateGroupFilter));
 		}
 		
 		mainFilterBuilder.must(groupFilter);
-		
-		// post owned by user 
-		// Use this restriction iff there is no user relation
-		if (present(requestedUserName)) {
-			final QueryBuilder requestedUserFilter = QueryBuilders.termQuery(Fields.USER_NAME, requestedUserName);
-			mainFilterBuilder.must(requestedUserFilter);
-		}
-		
-		this.buildResourceSpecifiyFilters(mainFilterBuilder, userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, year, firstYear, lastYear);
+
+		this.buildResourceSpecifiyFilters(mainFilterBuilder, loggedinUser, allowedGroups, postQuery);
 		
 		// all done
 		log.debug("Search query: '" + mainQueryBuilder.toString() + "' and filters: '" + mainFilterBuilder.toString() + "'");
 		return QueryBuilders.boolQuery().must(mainQueryBuilder).filter(mainFilterBuilder);
+	}
+
+	protected void buildResourceSpecifiyFilters(BoolQueryBuilder mainFilterBuilder, String loggedinUser, Set<String> allowedGroups, PostSearchQuery<?> postQuery) {
+		// noop
+	}
+
+	protected void buildResourceSpecifiyQuery(BoolQueryBuilder mainQueryBuilder, String loggedinUser, PostSearchQuery<?> postQuery) {
+		// noop
 	}
 
 	private static QueryStringQueryBuilder buildStringQueryForSearchTerms(String searchTerms, final Set<String> fields) {
@@ -825,44 +788,6 @@ public class ElasticsearchPostSearch<R extends Resource> implements PersonSearch
 			groupFilter.should(QueryBuilders.termQuery(Fields.GROUPS, allowedGroup));
 		}
 		return groupFilter;
-	}
-	
-	/**
-	 * @param mainFilterBuilder
-	 * @param userName
-	 * @param requestedUserName
-	 * @param requestedGroupName
-	 * @param requestedRelationNames
-	 * @param allowedGroups
-	 * @param searchTerms
-	 * @param titleSearchTerms
-	 * @param authorSearchTerms
-	 * @param bibtexKey
-	 * @param year
-	 * @param firstYear
-	 * @param lastYear
-	 */
-	protected void buildResourceSpecifiyFilters(BoolQueryBuilder mainFilterBuilder, String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, String year, String firstYear, String lastYear) {
-		// noop
-	}
-
-	/**
-	 * @param mainQueryBuilder
-	 * @param userName
-	 * @param requestedUserName
-	 * @param requestedGroupName
-	 * @param requestedRelationNames
-	 * @param allowedGroups
-	 * @param searchTerms
-	 * @param titleSearchTerms
-	 * @param authorSearchTerms
-	 * @param bibtexKey
-	 * @param year
-	 * @param firstYear
-	 * @param lastYear
-	 */
-	protected void buildResourceSpecifiyQuery(BoolQueryBuilder mainQueryBuilder, String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, String year, String firstYear, String lastYear) {
-		// noop
 	}
 
 	/**

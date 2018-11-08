@@ -43,7 +43,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.errors.MissingTagsErrorMessage;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -67,10 +66,12 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.services.searcher.query.PostSearchQuery;
 
 /**
  * Used to retrieve tags from the database.
@@ -655,7 +656,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return the tag's details, null else
 	 */
 	public Tag getTagDetails(final User user, final String tagName, final DBSession session) {
-		final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, Resource.class, , null, user.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, null, null, user);
+		final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, Resource.class, null, null, user.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, null, null, user);
 
 		param.setLimit(10000);
 		param.setOffset(0);
@@ -707,48 +708,36 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * returns all tags assigned to posts which are matching the given query
-	 * @param resouceClass 
-	 * 
+	 *
+	 * @param resourceClass
 	 * @param userName
-	 * @param requestedUserName
-	 * @param requestedGroupName
 	 * @param allowedGroups
-	 * @param queryScope
-	 * @param searchTerms
-	 * @param titleSearchTerms
-	 * @param authorSearchTerms
-	 * @param tagIndex
-	 * @param bibtexkey 
-	 * @param year
-	 * @param firstYear
-	 * @param lastYear
-	 * @param negatedTags
-	 * @param limit
-	 * @param offset
+	 * @param query
 	 * @return a list of tags
 	 */
-	public List<Tag> getTagsByResourceSearch(final Class<? extends Resource> resouceClass, final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final QueryScope queryScope, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, String bibtexkey, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
+	public List<Tag> getTagsByResourceSearch(final Class<? extends Resource> resourceClass, final String userName, final Set<String> allowedGroups, final PostSearchQuery<?> query) {
+		final int limit = BasicQueryUtils.calcLimit(query);
 		if (present(this.publicationSearch) && present(this.bookmarkSearch)) {
-			if (Resource.class.equals(resouceClass)) {
-				final List<Tag> bookmarkTags = this.bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
-				final List<Tag> publicationTags = this.publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+			if (Resource.class.equals(resourceClass)) {
+				final List<Tag> bookmarkTags = this.bookmarkSearch.getTags(userName, allowedGroups,  query);
+				final List<Tag> publicationTags = this.publicationSearch.getTags(userName, allowedGroups, query);
 				final List<Tag> retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, Order.POPULAR, Order.POPULAR, limit);
 				return retVal;
 			}
 			
-			if (BibTex.class.equals(resouceClass)) {
-				return this.publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+			if (BibTex.class.equals(resourceClass)) {
+				return this.publicationSearch.getTags(userName, allowedGroups, query);
 			}
 			
-			if (Bookmark.class.equals(resouceClass)) {
-				return this.bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+			if (Bookmark.class.equals(resourceClass)) {
+				return this.bookmarkSearch.getTags(userName, allowedGroups, query);
 			}
 			
 			throw new UnsupportedResourceTypeException();
 		}
 
 		log.error("no resource searcher is set");
-		return new LinkedList<Tag>();
+		return new LinkedList<>();
 	}
 
 	/**

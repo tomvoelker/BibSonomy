@@ -17,11 +17,40 @@ public class PostSearchQuery<R extends Resource> extends PostQuery<R> {
 
 	/**
 	 * default constructor
+	 */
+	public PostSearchQuery() {
+		super(null);
+	}
+
+	/**
+	 * default constructor
 	 *
 	 * @param resourceClass
 	 */
 	public PostSearchQuery(Class<R> resourceClass) {
 		super(resourceClass);
+	}
+
+	/**
+	 * copy constructor for {@link PostQuery}
+	 * @param other
+	 */
+	public PostSearchQuery(PostQuery<R> other) {
+		super(other.getResourceClass());
+		this.setSearch(other.getSearch());
+		this.setScope(other.getScope());
+		this.setGrouping(other.getGrouping());
+		this.setGroupingName(other.getGroupingName());
+		this.setTags(other.getTags());
+		this.setHash(other.getHash());
+		this.setFilters(other.getFilters());
+		this.setOrder(other.getOrder());
+		this.setStartDate(other.getStartDate());
+		this.setEndDate(other.getEndDate());
+		this.setPersonIdSet(other.isPersonIdSet());
+		this.setPersonNames(other.getPersonNames());
+		this.setStart(other.getStart());
+		this.setEnd(other.getEnd());
 	}
 
 	private List<String> requestedRelationNames;

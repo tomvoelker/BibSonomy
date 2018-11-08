@@ -28,12 +28,12 @@ package org.bibsonomy.search.es.search.post;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.lucene.search.join.ScoreMode;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.search.es.ESConstants.Fields;
+import org.bibsonomy.services.searcher.query.PostSearchQuery;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.Operator;
@@ -49,38 +49,38 @@ import org.elasticsearch.index.query.TermQueryBuilder;
  * @param <P> 
  */
 public class ElasticsearchPublicationSearch<P extends BibTex> extends ElasticsearchPostSearch<P> {
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.search.post.ElasticsearchPostSearch#buildResourceSpecifiyQuery(org.elasticsearch.index.query.BoolQueryBuilder, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-	 */
+
 	@Override
-	protected void buildResourceSpecifiyQuery(BoolQueryBuilder mainQueryBuilder, String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, String year, String firstYear, String lastYear) {
-		super.buildResourceSpecifiyQuery(mainQueryBuilder, userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, year, firstYear, lastYear);
-		
+	protected void buildResourceSpecifiyQuery(BoolQueryBuilder mainQueryBuilder, String loggedinUser, PostSearchQuery<?> postQuery) {
+		super.buildResourceSpecifiyQuery(mainQueryBuilder, loggedinUser, postQuery);
+
+		final String authorSearchTerms = postQuery.getAuthorSearchTerms();
 		if (present(authorSearchTerms)) {
 			final QueryBuilder authorSearchQuery = QueryBuilders.matchQuery(Fields.Publication.AUTHORS + "." + Fields.Publication.PERSON_NAME, authorSearchTerms).operator(Operator.AND);
 			final NestedQueryBuilder nestedQuery = QueryBuilders.nestedQuery(Fields.Publication.AUTHORS, authorSearchQuery, ScoreMode.Total);
 			mainQueryBuilder.must(nestedQuery);
 		}
-		
+
+		final String bibtexKey = postQuery.getBibtexKey();
 		if (present(bibtexKey)) {
 			final QueryBuilder bibtexKeyQuery = QueryBuilders.termQuery(Fields.Publication.BIBTEXKEY, bibtexKey);
 			mainQueryBuilder.must(bibtexKeyQuery);
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.search.post.ElasticsearchPostSearch#buildResourceSpecifiyFilters(org.elasticsearch.index.query.BoolFilterBuilder, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-	 */
+
 	@Override
-	protected void buildResourceSpecifiyFilters(BoolQueryBuilder mainFilterBuilder, String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, String year, String firstYear, String lastYear) {
-		super.buildResourceSpecifiyFilters(mainFilterBuilder, userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, year, firstYear, lastYear);
-		
+	protected void buildResourceSpecifiyFilters(BoolQueryBuilder mainFilterBuilder, String loggedinUser, Set<String> allowedGroups, PostSearchQuery<?> postQuery) {
+		super.buildResourceSpecifiyFilters(mainFilterBuilder, loggedinUser, allowedGroups, postQuery);
+
+		final String year = postQuery.getYear();
+		final String lastYear = postQuery.getLastYear();
+		final String firstYear = postQuery.getFirstYear();
+
 		if (present(year)) {
 			final TermQueryBuilder yearQuery = QueryBuilders.termQuery(Fields.Publication.YEAR, year);
 			mainFilterBuilder.must(yearQuery);
 		}
-		
+
 		final boolean presentLastYear = present(lastYear);
 		final boolean presentFirstYear = present(firstYear);
 		if (presentLastYear || presentFirstYear) {
@@ -88,7 +88,7 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 			if (presentFirstYear) {
 				rangeFilter.gte(Integer.parseInt(firstYear));
 			}
-			
+
 			if (presentLastYear) {
 				rangeFilter.lte(Integer.parseInt(lastYear));
 			}
