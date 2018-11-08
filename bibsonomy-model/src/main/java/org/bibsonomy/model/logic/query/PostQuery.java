@@ -39,7 +39,7 @@ public class PostQuery<R extends Resource> extends BasicQuery {
 	private Date endDate;
 
 	/** flag to retrieve posts where the person names are not assigned to a person */
-	private boolean personIdSet = true;
+	private boolean onlyIncludeAuthorsWithoutPersonId = false;
 
 	private List<PersonName> personNames;
 
@@ -192,17 +192,17 @@ public class PostQuery<R extends Resource> extends BasicQuery {
 	}
 
 	/**
-	 * @return the personIdSet
+	 * @return the onlyIncludeAuthorsWithoutPersonId
 	 */
-	public boolean isPersonIdSet() {
-		return personIdSet;
+	public boolean isOnlyIncludeAuthorsWithoutPersonId() {
+		return onlyIncludeAuthorsWithoutPersonId;
 	}
 
 	/**
-	 * @param personIdSet the personIdSet to set
+	 * @param onlyIncludeAuthorsWithoutPersonId the onlyIncludeAuthorsWithoutPersonId to set
 	 */
-	public void setPersonIdSet(boolean personIdSet) {
-		this.personIdSet = personIdSet;
+	public void setOnlyIncludeAuthorsWithoutPersonId(boolean onlyIncludeAuthorsWithoutPersonId) {
+		this.onlyIncludeAuthorsWithoutPersonId = onlyIncludeAuthorsWithoutPersonId;
 	}
 
 	/**

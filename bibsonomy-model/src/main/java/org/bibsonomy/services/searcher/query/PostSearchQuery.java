@@ -47,7 +47,7 @@ public class PostSearchQuery<R extends Resource> extends PostQuery<R> {
 		this.setOrder(other.getOrder());
 		this.setStartDate(other.getStartDate());
 		this.setEndDate(other.getEndDate());
-		this.setPersonIdSet(other.isPersonIdSet());
+		this.setOnlyIncludeAuthorsWithoutPersonId(other.isOnlyIncludeAuthorsWithoutPersonId());
 		this.setPersonNames(other.getPersonNames());
 		this.setStart(other.getStart());
 		this.setEnd(other.getEnd());

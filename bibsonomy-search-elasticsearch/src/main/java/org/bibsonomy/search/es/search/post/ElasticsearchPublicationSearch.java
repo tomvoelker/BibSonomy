@@ -28,13 +28,16 @@ package org.bibsonomy.search.es.search.post;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.List;
 import java.util.Set;
 
 import org.apache.lucene.search.join.ScoreMode;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.services.searcher.query.PostSearchQuery;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -56,7 +59,7 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 
 		final String authorSearchTerms = postQuery.getAuthorSearchTerms();
 		if (present(authorSearchTerms)) {
-			final QueryBuilder authorSearchQuery = QueryBuilders.matchQuery(Fields.Publication.AUTHORS + "." + Fields.Publication.PERSON_NAME, authorSearchTerms).operator(Operator.AND);
+			final QueryBuilder authorSearchQuery = buildPersonNameQuery(authorSearchTerms, false);
 			final NestedQueryBuilder nestedQuery = QueryBuilders.nestedQuery(Fields.Publication.AUTHORS, authorSearchQuery, ScoreMode.Total);
 			mainQueryBuilder.must(nestedQuery);
 		}
@@ -66,7 +69,40 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 			final QueryBuilder bibtexKeyQuery = QueryBuilders.termQuery(Fields.Publication.BIBTEXKEY, bibtexKey);
 			mainQueryBuilder.must(bibtexKeyQuery);
 		}
+
+		/*
+		 * find publications that are not assigned to a person but match one of the person names
+		 */
+		final List<PersonName> personNames = postQuery.getPersonNames();
+		final boolean onlyIncludeAuthorsWithoutPersonId = postQuery.isOnlyIncludeAuthorsWithoutPersonId();
+		if (present(personNames)) {
+			final BoolQueryBuilder personNameQuery = QueryBuilders.boolQuery();
+
+			for (final PersonName personName : personNames) {
+				final QueryBuilder personNameSearchQuery = buildPersonNameQuery(personName.toString(), onlyIncludeAuthorsWithoutPersonId);
+				personNameQuery.should(personNameSearchQuery);
+			}
+
+			final NestedQueryBuilder nestedQuery = QueryBuilders.nestedQuery(Fields.Publication.AUTHORS, personNameQuery, ScoreMode.Total);
+			mainQueryBuilder.must(nestedQuery);
+		}
 	}
+
+	private static QueryBuilder buildPersonNameQuery(String authorName, boolean onlyIncludeAuthorsWithoutPersonId) {
+		final MatchQueryBuilder matchQuery = QueryBuilders.matchQuery(Fields.Publication.AUTHORS + "." + Fields.Publication.PERSON_NAME, authorName).operator(Operator.AND);
+
+		if (!onlyIncludeAuthorsWithoutPersonId) {
+			return matchQuery;
+		}
+
+		final BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+
+		boolQueryBuilder.must(matchQuery);
+		boolQueryBuilder.mustNot(QueryBuilders.existsQuery(Fields.Publication.AUTHORS + "." + Fields.Publication.PERSON_ID));
+
+		return boolQueryBuilder;
+	}
+
 
 	@Override
 	protected void buildResourceSpecifiyFilters(BoolQueryBuilder mainFilterBuilder, String loggedinUser, Set<String> allowedGroups, PostSearchQuery<?> postQuery) {
