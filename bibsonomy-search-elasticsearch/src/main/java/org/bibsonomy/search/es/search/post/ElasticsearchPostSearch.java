@@ -64,7 +64,6 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
-import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
 import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 import org.bibsonomy.model.logic.querybuilder.AbstractSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
@@ -78,7 +77,6 @@ import org.bibsonomy.search.es.index.converter.post.NormalizedEntryTypes;
 import org.bibsonomy.search.es.index.converter.post.ResourceConverter;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.util.tokenizer.SimpleTokenizer;
-import org.bibsonomy.services.searcher.PersonSearch;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.services.searcher.query.PostSearchQuery;
 import org.bibsonomy.util.Sets;
@@ -106,7 +104,7 @@ import org.elasticsearch.search.sort.SortOrder;
  * @author dzo
  * @param <R>
  */
-public class ElasticsearchPostSearch<R extends Resource> implements PersonSearch, ResourceSearch<R> {
+public class ElasticsearchPostSearch<R extends Resource> implements ResourceSearch<R> {
 	private static final Log log = LogFactory.getLog(ElasticsearchPostSearch.class);
 	
 	/** the max offset for suggestions */
@@ -125,9 +123,6 @@ public class ElasticsearchPostSearch<R extends Resource> implements PersonSearch
 	private SearchInfoLogic infoLogic;
 	
 	private ElasticsearchManager<R, ?> manager;
-
-	/** the number of person suggestions */
-	// private int suggestionSize = 5;
 
 	private String genealogyUser;
 
@@ -313,32 +308,6 @@ public class ElasticsearchPostSearch<R extends Resource> implements PersonSearch
 			rVal.add((Post<BibTex>) rel.getPost());
 		}
 		return rVal;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.services.searcher.PersonSearch#getPersonSuggestion(java.lang.String)
-	 */
-	@Override
-	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options) {
-		try {
-			final Set<String> tokenizedQueryString = new HashSet<>();
-			for (String token : new SimpleTokenizer(options.getQuery())) {
-				if (!StringUtils.isBlank(token)) {
-					tokenizedQueryString.add(token.toLowerCase());
-				}
-			}
-			final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter = iterativelyFetchSuggestions(tokenizedQueryString, options);
-			return extractDistinctPersons(relSorter);
-		} catch (final IndexNotFoundException e) {
-			log.error("index not found: " + e);
-		}
-		return new ArrayList<>();
-	}
-
-	@Override
-	public List<Person> getPersonSuggestions(PersonSuggestionQuery query) {
-		throw new UnsupportedOperationException();
 	}
 
 	// TODO: the outcomment calls would be nice but would slow down the query
@@ -617,19 +586,6 @@ public class ElasticsearchPostSearch<R extends Resource> implements PersonSearch
 			}
 		}
 		return minInvertedScore;
-	}
-
-	private List<ResourcePersonRelation> extractDistinctPersons(final SortedSet<Pair<Float, ResourcePersonRelation>> rValSorter) {
-		List<ResourcePersonRelation> rVal = new ArrayList<>();
-		Set<String> foundPersonIds = new HashSet<>();
-		for (Pair<Float,ResourcePersonRelation> scoreAndRpr : rValSorter) {
-			ResourcePersonRelation rpr = scoreAndRpr.getSecond();
-			if ((rpr.getPerson().getPersonId() == null) || (foundPersonIds.add(rpr.getPerson().getPersonId()) == true)) {
-				// we have not seen this personId earlier in the sorted map, so add it to the response list
-				rVal.add(rpr);
-			}
-		}
-		return rVal;
 	}
 	
 	/**
