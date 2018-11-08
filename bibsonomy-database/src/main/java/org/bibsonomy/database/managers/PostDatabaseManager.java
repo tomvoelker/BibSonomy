@@ -46,8 +46,8 @@ import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.IdenticalHashErrorMessage;
@@ -84,6 +84,7 @@ import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.validation.ModelValidator;
 import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.services.searcher.query.PostSearchQuery;
 import org.bibsonomy.util.ReflectionUtils;
 
 /**
@@ -343,38 +344,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		}
 
 		return this.postList("get" + this.resourceClassName + "ByTagNames", param, session);
-	}
-
-	/**
-	 * <em>/tag/EinTag</em>, <em>/viewable/EineGruppe/EinTag</em><br/>
-	 * <br/>
-	 *
-	 * On the <em>/tag</em> page only public entries are shown (groupType must
-	 * be set to public) which have all of the given tags attached. On the
-	 * <em>/viewable/</em> page only posts are shown which are set viewable to
-	 * the given group and which have all of the given tags attached.
-	 *
-	 * @param groupId
-	 * @param tagIndex
-	 * @param searchType
-	 * @param order
-	 * @param limit
-	 * @param offset
-	 * @param session
-	 * @return a list of posts
-	 *
-	 */
-	public List<Post<R>> getPostsByTagNames(final int groupId, final List<TagIndex> tagIndex, final SearchType searchType, final Order order, final int limit, final int offset, final DBSession session) {
-		if(SearchType.FEDERATED == searchType){
-			final List<String> tagIndexNames = new ArrayList<String>();
-			for(final TagIndex tag:tagIndex){
-				tagIndexNames.add(tag.getTagName());
-			}
-			return this.resourceSearch.getPosts(null, null, null, null, null, searchType, null, null, null, null, tagIndexNames, null, null, null, null, order, limit, offset);
-
-		}
-
-		return this.getPostsByTagNames(groupId, tagIndex, order, limit, offset, session);
 	}
 
 	/**
@@ -658,35 +627,13 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 	/**
 	 * get list of posts from resource searcher
-	 * @param userName
-	 * @param requestedUserName
-	 * @param requestedGroupName
-	 * @param requestedRelationName
+	 * @param loggedinUser
 	 * @param allowedGroups
-	 * @param searchType
-	 * @param searchTerms
-	 * @param titleSearchTerms
-	 * @param authorSearchTerms
-	 * @param tagIndex
-	 * @param year
-	 * @param firstYear
-	 * @param lastYear
-	 * @param negatedTags
-	 * @param order
-	 * @param limit
-	 * @param offset
+	 * @param query
 	 * @return a list of posts
 	 */
-	public List<Post<R>> getPostsByResourceSearch(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationName, final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final Order order, final int limit, final int offset) {
-		if (present(this.resourceSearch)) {
-			if (present(searchType)){
-				return this.resourceSearch.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationName, allowedGroups, searchType, searchTerms, titleSearchTerms, authorSearchTerms, null, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
-			}
-			log.error("no search type or resource type is set");
-		}
-
-		log.error("no resource searcher is set");
-		return new LinkedList<Post<R>>();
+	public List<Post<R>> getPostsByResourceSearch(final String loggedinUser, final Set<String> allowedGroups, final PostSearchQuery<R> query) {
+		return this.resourceSearch.getPosts(loggedinUser, allowedGroups, query);
 	}
 
 	/**
@@ -708,12 +655,15 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		if (GroupID.isSpecialGroupId(groupId)) {
 			// show users own posts, which are private, public or for friends;
 			// he as full access to his/her own posts
-			return this.getPostsForUser(loginUserName, loginUserName, HashID.INTER_HASH, groupId, new LinkedList<Integer>(), PostAccess.FULL, null, limit, offset, null, session);
+			return this.getPostsForUser(loginUserName, loginUserName, HashID.INTER_HASH, groupId, new LinkedList<>(), PostAccess.FULL, null, limit, offset, null, session);
 		}
 
 		final P param = this.createParam(loginUserName, null, limit, offset);
-		param.setRequestedGroupName(requestedGroupName); // only set to avoid
-		// the JOIN with the group table and directly show the group name
+		/*
+		 * we only set the group name here to avoid
+		 * the JOIN with the group table and directly show the group name
+		 */
+		param.setRequestedGroupName(requestedGroupName);
 		param.setGroupId(groupId);
 		param.setSimHash(simHash);
 		param.addAllToSystemTags(systemTags);
@@ -743,7 +693,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	public List<Post<R>> getPostsViewableByTag(final String requestedGroupName, final String loginUserName, final List<TagIndex> tagIndex, final int groupId, final Set<Filter> filters, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		if (GroupID.isSpecialGroupId(groupId)) {
 			// show users own posts; has full access to his/her own posts
-			return this.getPostsByTagNamesForUser(loginUserName, loginUserName, tagIndex, groupId, Collections.<Integer>emptyList(), limit, offset, PostAccess.FULL, filters, systemTags, session);
+			return this.getPostsByTagNamesForUser(loginUserName, loginUserName, tagIndex, groupId, Collections.emptyList(), limit, offset, PostAccess.FULL, filters, systemTags, session);
 		}
 
 		final P param = this.createParam(loginUserName, loginUserName, limit, offset);
@@ -763,7 +713,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 *
 	 * @param groupId
 	 * @param visibleGroupIDs
-	 * @param searchType
+	 * @param queryScope
 	 * @param loginUserName
 	 * @param simHash
 	 * @param postAccess
@@ -774,7 +724,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForGroup(final int groupId, final List<Integer> visibleGroupIDs, final SearchType searchType,final String loginUserName, final HashID simHash, final PostAccess postAccess, final Set<Filter> filters, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsForGroup(final int groupId, final List<Integer> visibleGroupIDs, final QueryScope queryScope, final String loginUserName, final HashID simHash, final PostAccess postAccess, final Set<Filter> filters, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		return this.getPostsForGroup(groupId, visibleGroupIDs, loginUserName, simHash, postAccess, filters, limit, offset, systemTags, session);
 	}
 
@@ -926,46 +876,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return this.postList("get" + this.resourceClassName + "ForGroupByTag", param, session);
 	}
 
-	protected List<Post<R>> getPostsForUser(final P param, final DBSession session) {
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
-		return this.postList("get" + this.resourceClassName + "ForUser", param, session);
-	}
-
-	/**
-	 * <em>/user/MaxMustermann</em><br/>
-	 * <br/>
-	 *
-	 * This method prepares queries which retrieve all posts for a given
-	 * user name (requestedUserName). Additionally the group to be shown can be
-	 * restricted. The queries are built in a way, that not only public posts
-	 * are retrieved, but also friends or private or other groups, depending
-	 * upon if userName is allowed to see them.
-	 *
-	 * ATTENTION! in case of a given groupId it is NOT checked if the user
-	 * actually belongs to this group.
-	 *
-	 * @param loginUserName
-	 * @param requestedUserName
-	 * @param searchType
-	 * @param simHash
-	 * @param groupId
-	 * @param visibleGroupIDs
-	 * @param postAccess TODO
-	 * @param filters
-	 * @param limit
-	 * @param offset
-	 * @param systemTags
-	 * @param session
-	 * @return list of posts
-	 */
-	public List<Post<R>> getPostsForUser(final String loginUserName, final String requestedUserName, final SearchType searchType, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final PostAccess postAccess, final Set<Filter> filters, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		if(searchType==SearchType.FEDERATED){
-			return this.resourceSearch.getPosts(loginUserName, requestedUserName, null, null, null, searchType, null, null, null, null, null, null, null, null, null, null, limit, offset);
-		}
-
-		return this.getPostsForUser(loginUserName, requestedUserName, simHash, groupId, visibleGroupIDs, postAccess, filters, limit, offset, systemTags, session);
-	}
-
 	/**
 	 * <em>/user/MaxMustermann</em><br/>
 	 * <br/>
@@ -1002,6 +912,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setPostAccess(postAccess);
 
 		return this.getPostsForUser(param, session);
+	}
+
+	protected List<Post<R>> getPostsForUser(final P param, final DBSession session) {
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		return this.postList("get" + this.resourceClassName + "ForUser", param, session);
 	}
 
 	/**

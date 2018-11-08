@@ -41,7 +41,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
@@ -240,7 +240,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param hash
 				  a resource hash (publication or bookmark)
 	 * @param search - search string
-	 * @param searchType the search type
+	 * @param queryScope the search type
 	 * @param regex
 	 *            a regular expression used to filter the tagnames
 	 * @param relation TODO
@@ -251,7 +251,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param end
 	 * @return a set of tags, an empty list else
 	 */
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end);
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end);
 
 	/**
 	 * retrieves a filterable list of authors.

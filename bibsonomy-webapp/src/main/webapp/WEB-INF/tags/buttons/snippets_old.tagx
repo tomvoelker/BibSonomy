@@ -49,7 +49,7 @@
 					<input
 						type="button"
 						value="${selectCode}"
-						onClick="javascript:this.form.text_area1.focus();this.form.text_area1.select();"
+						onClick="javascript:this.form.text_area1.focus();this.form.text_area1.filter();"
 					/>
 					 -->
 					
@@ -111,7 +111,7 @@
 					<input
 						type="button"
 						value="${selectCode}"
-						onClick="javascript:this.form.text_area2.focus();this.form.text_area2.select();"
+						onClick="javascript:this.form.text_area2.focus();this.form.text_area2.filter();"
 					/>
 					-->
 					

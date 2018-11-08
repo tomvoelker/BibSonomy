@@ -26,53 +26,35 @@
  */
 package org.bibsonomy.testutil;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
-import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.services.searcher.query.PostSearchQuery;
 
 /**
  * @author dzo
  */
-public class DummyResourceSearch implements ResourceSearch<Resource> {
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPosts(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, org.bibsonomy.model.es.SearchType, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.model.enums.Order, int, int)
-	 */
+public class DummyResourceSearch<R extends Resource> implements ResourceSearch<R> {
+
 	@Override
-	public List<Post<Resource>> getPosts(String userName,
-			String requestedUserName, String requestedGroupName,
-			List<String> requestedRelationNames,
-			Collection<String> allowedGroups, SearchType searchType,
-			String searchTerms, String titleSearchTerms,
-			String authorSearchTerms, String bibtexKey, Collection<String> tagIndex, String year,
-			String firstYear, String lastYear, List<String> negatedTags,
-			Order order, int limit, int offset) {
+	public List<Post<R>> getPosts(String loggedinUser, Set<String> allowedGroups, PostSearchQuery<?> postQuery) {
 		return new LinkedList<>();
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPublicationSuggestions(java.lang.String)
-	 */
+
+	@Override
+	public List<Tag> getTags(String loggedinUser, Set<String> allowedGroups, PostSearchQuery<?> postQuery) {
+		return new LinkedList<>();
+	}
+
 	@Override
 	public List<Post<BibTex>> getPublicationSuggestions(PublicationSuggestionQueryBuilder options) {
 		return new LinkedList<>();
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.services.searcher.ResourceSearch#getTags(java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, int, int)
-	 */
-	@Override
-	public List<Tag> getTags(String userName, String requestedUserName, String requestedGroupName, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexkey, Collection<String> tagIndex, String year, String firstYear, String lastYear, List<String> negatedTags, int limit, int offset) {
-		return new LinkedList<>();
-	}
-
 }

@@ -32,6 +32,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -41,10 +42,10 @@ import org.bibsonomy.model.metadata.PostMetaData;
 /**
  * A post connects a given resource with a user and a certain date.
  * 
- * @param <T>
+ * @param <R>
  *            resource type
  */
-public class Post<T extends Resource> implements Linkable, Serializable {
+public class Post<R extends Resource> implements Serializable, Linkable {
 
 	/**
 	 * For persistency (Serializable)
@@ -54,7 +55,7 @@ public class Post<T extends Resource> implements Linkable, Serializable {
 	/**
 	 * This is the {@link Resource} that this post is encapsulating.
 	 */
-	private T resource;
+	private R resource;
 	
 	/**
 	 * for shared resource posts this contains the url of the post
@@ -74,6 +75,9 @@ public class Post<T extends Resource> implements Linkable, Serializable {
 	 * This post belongs to this {@link User}.
 	 */
 	private User user;
+
+	/** contains a list of users that have this post in their collection (based on the interhash of the resource) */
+	private List<User> users = new LinkedList<>();
 
 	/**
 	 * This post belongs to these {@link Group}s.
@@ -160,7 +164,7 @@ public class Post<T extends Resource> implements Linkable, Serializable {
 	/**
 	 * copies the post without the resource
 	 * 
-	 * @param post
+	 * @param post the post to copy
 	 * @param withoutResource XXX: unused for distinguish between 
 	 */
 	public Post(final Post<?> post, final boolean withoutResource) {
@@ -219,7 +223,7 @@ public class Post<T extends Resource> implements Linkable, Serializable {
 	}
 
 	/**
-	 * @param contentId
+	 * @param contentId the contentId to set
 	 */
 	public void setContentId(final Integer contentId) {
 		this.contentId = contentId;
@@ -230,13 +234,13 @@ public class Post<T extends Resource> implements Linkable, Serializable {
 	 */
 	public Set<Group> getGroups() {
 		if (this.groups == null) {
-			this.groups = new HashSet<Group>();
+			this.groups = new HashSet<>();
 		}
 		return this.groups;
 	}
 
 	/**
-	 * @param groups
+	 * @param groups the groups to set
 	 */
 	public void setGroups(final Set<Group> groups) {
 		this.groups = groups;
@@ -257,30 +261,30 @@ public class Post<T extends Resource> implements Linkable, Serializable {
 	}
 
 	/**
-	 * @return postingDate
+	 * @return date of posting
 	 */
 	public Date getDate() {
 		return this.date;
 	}
 
 	/**
-	 * @param postingDate
+	 * @param date the date to set
 	 */
-	public void setDate(final Date postingDate) {
-		this.date = postingDate;
+	public void setDate(final Date date) {
+		this.date = date;
 	}
 
 	/**
 	 * @return resource
 	 */
-	public T getResource() {
+	public R getResource() {
 		return this.resource;
 	}
 
 	/**
 	 * @param resource
 	 */
-	public void setResource(final T resource) {
+	public void setResource(final R resource) {
 		this.resource = resource;
 	}
 
@@ -293,7 +297,7 @@ public class Post<T extends Resource> implements Linkable, Serializable {
 			 * a linked hash set gives predictable iteration order
 			 * (insertion order)
 			 */
-			this.tags = new LinkedHashSet<Tag>();
+			this.tags = new LinkedHashSet<>();
 		}
 		return this.tags;
 	}
@@ -317,6 +321,20 @@ public class Post<T extends Resource> implements Linkable, Serializable {
 	 */
 	public void setUser(final User user) {
 		this.user = user;
+	}
+
+	/**
+	 * @return the users
+	 */
+	public List<User> getUsers() {
+		return users;
+	}
+
+	/**
+	 * @param users the users to set
+	 */
+	public void setUsers(List<User> users) {
+		this.users = users;
 	}
 
 	/**
@@ -368,7 +386,7 @@ public class Post<T extends Resource> implements Linkable, Serializable {
 	}
 
 	/**
-	 * @param copyFrom
+	 * @param copyFrom the copyFrom to set
 	 */
 	public void setCopyFrom(final String copyFrom) {
 		this.copyFrom = copyFrom;
@@ -468,7 +486,7 @@ public class Post<T extends Resource> implements Linkable, Serializable {
 	 */
 	public void addHiddenSystemTag(final Tag tag) {
 		if (!present(this.hiddenSystemTags)) {
-			this.hiddenSystemTags = new HashSet<Tag>();
+			this.hiddenSystemTags = new HashSet<>();
 		}
 		this.hiddenSystemTags.add(tag);
 	}
@@ -492,7 +510,7 @@ public class Post<T extends Resource> implements Linkable, Serializable {
 	 */
 	public void addVisibleTag(final Tag tag) {
 		if (!present(this.visibleTags)) {
-			this.visibleTags = new HashSet<Tag>();
+			this.visibleTags = new HashSet<>();
 		}
 		this.visibleTags.add(tag);
 	}

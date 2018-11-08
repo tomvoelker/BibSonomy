@@ -26,14 +26,14 @@
  */
 package org.bibsonomy.rest.client.worker.impl;
 
-import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.bibsonomy.rest.auth.AuthenticationAccessor;
+import org.apache.http.client.methods.HttpDelete;
+import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
-public final class DeleteWorker extends HttpWorker<DeleteMethod> {
+public final class DeleteWorker extends HttpWorker<HttpDelete> {
 
 	/**
 	 * @param username the user name
@@ -45,9 +45,7 @@ public final class DeleteWorker extends HttpWorker<DeleteMethod> {
 	}
 	
 	@Override
-	protected DeleteMethod getMethod(final String url, final String requestBody) {
-		final DeleteMethod delete = new DeleteMethod(url);
-		delete.setFollowRedirects(true);
-		return delete;
+	protected HttpDelete getMethod(final String url, final String requestBody) {
+		return new HttpDelete(url);
 	}
 }

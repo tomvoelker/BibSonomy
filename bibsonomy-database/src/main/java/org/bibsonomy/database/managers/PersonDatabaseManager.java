@@ -67,6 +67,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.services.searcher.PersonSearch;
@@ -88,7 +89,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	private BibTexDatabaseManager publicationDatabaseManager;
 	private PersonSearch personSearch;
 
-	@Deprecated // TODO: config via spring
+	@Deprecated // use spring config
 	public static PersonDatabaseManager getInstance() {
 		return singleton;
 	}
@@ -408,7 +409,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @param loginUser
 	 * @param session
 	 */
-	protected void removeResourceRelation(String personId, final String interHash, final int index, final PersonResourceRelationType type, final User loginUser, final boolean update, final DBSession session) {
+	private void removeResourceRelation(String personId, final String interHash, final int index, final PersonResourceRelationType type, final User loginUser, final boolean update, final DBSession session) {
 		session.beginTransaction();
 
 		try {
@@ -417,7 +418,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 				// TODO: notify someone
 				return;
 			}
-
 			// inform the plugins (e.g. to log the deleted relation)
 			if (!update) {
 				this.plugins.onPubPersonDelete(resourcePersonRelation, loginUser, session);
@@ -533,7 +533,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(String personId, User loginUser, Class<? extends BibTex> publicationType, DBSession session) {
 
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, BibTex.class, null, null, null, null, null, 0, Integer.MAX_VALUE, null, null, null, null, loginUser);
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, BibTex.class, null, null, null, null, null, null, 0, Integer.MAX_VALUE, null, null, null, null, loginUser);
 		final ResourcePersonRelation personRelation = new ResourcePersonRelation();
 		personRelation.setPerson(new Person());
 		personRelation.getPerson().setPersonId(personId);
@@ -556,11 +556,12 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	}
 
 	/**
-	 * @param options
+	 * based on the query this logic returns all matching persons
+	 * @param query
 	 * @return
 	 */
-	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options) {
-		return this.personSearch.getPersonSuggestion(options);
+	public List<Person> getPersons(final PersonSuggestionQuery query) {
+		return this.personSearch.getPersonSuggestions(query);
 	}
 
 	/**
@@ -595,6 +596,15 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	public List<PersonMatch> getMatches(final DBSession session) {
 		return this.queryForList("getMatches", null, PersonMatch.class, session);
+	}
+
+	/**
+	 *
+	 * @param personID
+	 * @return a list of all matches for a person
+	 */
+	public List<PersonMatch> getMatchesFor(String personID, DBSession session) {
+		return this.queryForList("getMatchesFor", personID, PersonMatch.class, session);
 	}
 
 	/**
@@ -649,8 +659,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	/**
 	 * Person pubs will be redirected to person 1 and the change is logged
 	 *
-	 * @param loggedinUser
 	 * @param match
+	 * @param loggedinUser
 	 * @param session
 	 */
 	private void mergeAllPubs(final PersonMatch match, final User loggedinUser, final DBSession session) {
@@ -853,7 +863,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	/**
 	 * duplicate matches can occur after a merge was performed, because the
 	 * match list is a transitive closure duplicates will be combined
-	 *
 	 * @param personId
 	 * @param loggedInUser
 	 * @param session
@@ -946,15 +955,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	public PersonMatch getMatch(int matchID, DBSession dbSession) {
 		return this.queryForObject("getMatchbyID", matchID, PersonMatch.class, dbSession);
-	}
-
-	/**
-	 *
-	 * @param personID
-	 * @return a list of all matches for a person
-	 */
-	public List<PersonMatch> getMatchesFor(String personID, DBSession session) {
-		return this.queryForList("getMatchesFor", personID, PersonMatch.class, session);
 	}
 
 	/**
@@ -1053,7 +1053,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * set new mainName to person due to a conflict merge
-	 *
 	 * @param person
 	 * @param newName FIXME: why is newName not of type PersonName
 	 * @param session

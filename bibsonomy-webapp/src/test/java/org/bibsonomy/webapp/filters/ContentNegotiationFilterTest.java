@@ -26,27 +26,31 @@
  */
 package org.bibsonomy.webapp.filters;
 
+import static org.bibsonomy.util.ValidationUtils.present;
 import static org.junit.Assert.assertArrayEquals;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Map;
 
 import javax.servlet.DispatcherType;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.bibsonomy.util.StringUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -55,44 +59,46 @@ import org.junit.Test;
 public class ContentNegotiationFilterTest {
 
 	private static final int PORT = 31416;
-	
-	
-	private Server tester;
-	private String baseUrl;
-	private HttpClient client;
+
+
+	private static Server tester;
+	private static String baseUrl;
+	private static HttpClient client;
 
 
 	/**
 	 * start jetty container
-	 * 
+	 *
 	 * @throws Exception
 	 */
-	@Before
-	public void initServletContainer () throws Exception {
+	@BeforeClass
+	public static void initServletContainer () throws Exception {
 		tester = new Server(PORT);
 		final ServletContextHandler handler = new ServletContextHandler();
 		handler.setContextPath("/");
 		handler.addFilter(ContentNegotiationFilter.class, "/*", EnumSet.allOf(DispatcherType.class));
 		handler.addServlet(TestServlet.class, "/*");
-		
+
 		tester.setHandler(handler);
 		baseUrl = "http://localhost:" + PORT;
 		tester.start();
-		client = new HttpClient();
+
+		final HttpClientBuilder builder = HttpClientBuilder.create().disableRedirectHandling();
+		client = builder.build();
 	}
 
 	/**
 	 * stop jetty container
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	@After
-	public void cleanupServletContainer () throws Exception {
+	@AfterClass
+	public static void cleanupServletContainer () throws Exception {
 		tester.stop();
 	}
 
 	/**
 	 * test the doFilter() method
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test
@@ -100,72 +106,74 @@ public class ContentNegotiationFilterTest {
 		/*
 		 * simple cases: here we want redirects
 		 */
-		assertArrayEquals(new String[]{"302", "/burst/user/jaeschke"}, sendHttpGet(baseUrl + "/user/jaeschke", "", "application/rdf+xml"));
-		assertArrayEquals(new String[]{"302", "/json/user/jaeschke"}, sendHttpGet(baseUrl + "/user/jaeschke", "", "application/json"));
-		assertArrayEquals(new String[]{"302", "/csv/user/jaeschke"}, sendHttpGet(baseUrl + "/user/jaeschke", "", "text/csv"));
-		assertArrayEquals(new String[]{"302", "/bib/user/jaeschke"}, sendHttpGet(baseUrl + "/user/jaeschke", "", "text/x-bibtex"));
+		assertArrayEquals(new String[]{"302", "/burst/user/jaeschke"}, sendHttpGet(baseUrl + "/user/jaeschke", null, "application/rdf+xml"));
+		assertArrayEquals(new String[]{"302", "/json/user/jaeschke"}, sendHttpGet(baseUrl + "/user/jaeschke", null, "application/json"));
+		assertArrayEquals(new String[]{"302", "/csv/user/jaeschke"}, sendHttpGet(baseUrl + "/user/jaeschke", null, "text/csv"));
+		assertArrayEquals(new String[]{"302", "/bib/user/jaeschke"}, sendHttpGet(baseUrl + "/user/jaeschke", null, "text/x-bibtex"));
 		/*
 		 * more complicated: priorities
 		 */
-		assertArrayEquals(new String[]{"302", "/burst/user/jaeschke"}, sendHttpGet(baseUrl + "/user/jaeschke", "", "application/rdf+xml,application/xhtml+xml,text/html;q=0.9,*/*;q=0.8;"));
+		assertArrayEquals(new String[]{"302", "/burst/user/jaeschke"}, sendHttpGet(baseUrl + "/user/jaeschke", null, "application/rdf+xml,application/xhtml+xml,text/html;q=0.9,*/*;q=0.8;"));
 
 		/*
-		 * per default, API calls and static resources are ignored 
+		 * per default, API calls and static resources are ignored
 		 */
-		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/resources/css/style.css", "", "application/rdf+xml"));
-		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/api/users", "", "application/rdf+xml"));
-		
+		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/resources/css/style.css", null, "application/rdf+xml"));
+		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/api/users", null, "application/rdf+xml"));
+
 		/*
 		 * no redirect when format is explicitly specified
 		 */
-		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/burst/user/jaeschke", "", "application/rdf+xml"));
-		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/publ/user/jaeschke", "", "application/rdf+xml"));
-		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/user/jaeschke", "format=bib", "application/rdf+xml"));
+		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/burst/user/jaeschke", null, "application/rdf+xml"));
+		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/publ/user/jaeschke", null, "application/rdf+xml"));
+		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/user/jaeschke", Collections.singletonMap("format", "bib"), "application/rdf+xml"));
 
 		/*
 		 * no specific format requested - get HTML page
-		 * (some typical headers sent by web browsers)  
+		 * (some typical headers sent by web browsers)
 		 */
-		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/user/jaeschke", "", "text/xhtml"));
-		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/user/jaeschke", "", "text/css,*/*;q=0.1"));
-		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/user/jaeschke", "", "*/*"));
-		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/user/jaeschke", "", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"));
+		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/user/jaeschke", null, "text/xhtml"));
+		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/user/jaeschke", null, "text/css,*/*;q=0.1"));
+		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/user/jaeschke", null, "*/*"));
+		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/user/jaeschke", null, "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"));
 
 		/*
 		 * specific format requested but not with highest priority
 		 */
-		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/user/jaeschke", "", "text/html,application/xhtml+xml,application/rdf+xml;q=0.9,*/*;q=0.8;"));
-
-
+		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/user/jaeschke", null, "text/html,application/xhtml+xml,application/rdf+xml;q=0.9,*/*;q=0.8;"));
 	}
-	
+
 	/**
 	 * Sends GET requests to the specified URL with the given query string and
-	 * accept header value. 
-	 * 
+	 * accept header value.
+	 *
 	 * @param url
-	 * @param queryString
+	 * @param query
 	 * @param accept
-	 * @return An array containing the HTTP response code as first value. If the 
-	 * code is a redirect (302), the second value contains the location the 
-	 * redirect points to. 
-	 * 
+	 * @return An array containing the HTTP response code as first value. If the
+	 * code is a redirect (302), the second value contains the location the
+	 * redirect points to.
+	 *
 	 * @throws Exception
 	 */
-	private String[] sendHttpGet (final String url, final String queryString, final String accept) throws Exception {
-
+	private String[] sendHttpGet (final String url, final Map<String, String> query, final String accept) throws Exception {
 		try {
-			final GetMethod get = new GetMethod(url);
-			get.setFollowRedirects(false);
-			get.setRequestHeader(new Header("Accept", accept));
-			get.setQueryString(queryString);
-			client.executeMethod(get);
+			final URIBuilder builder = new URIBuilder(url);
+			if (present(query)) {
+				for (Map.Entry<String, String> entry : query.entrySet()) {
+					builder.setParameter(entry.getKey(), entry.getValue());
+				}
+			}
+			final HttpGet get = new HttpGet(builder.build());
+			get.setHeader("Accept", accept);
 
-			final int statusCode = get.getStatusCode();
+			final HttpResponse response = client.execute(get);
+
+			final int statusCode = response.getStatusLine().getStatusCode();
 			final String[] result;
 			switch (statusCode) {
 			case 302:
-				result = new String[]{statusCode + "", stripHost(get.getResponseHeader("Location").getValue())};
+				result = new String[]{statusCode + "", stripHost(response.getFirstHeader("Location").getValue())};
 				break;
 			default:
 				result = new String[]{statusCode + ""};
@@ -174,27 +182,27 @@ public class ContentNegotiationFilterTest {
 			return result;
 		} catch (final Exception e) {
 			throw new Exception("request failed", e);
-		} 
+		}
 	}
 
 	private String stripHost (final String url) {
 		return url.replace(baseUrl, "");
 	}
-	
+
 	/**
 	 * Only for testing purposes - does nothing useful.
-	 * 
+	 *
 	 * @author rja
 	 *
 	 */
 	public static class TestServlet extends HttpServlet {
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 8692283813700271210L;
 
 		@Override
-		protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+		protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
 			new BufferedWriter(new OutputStreamWriter(resp.getOutputStream(), StringUtils.CHARSET_UTF_8)).write("Hello World!");
 		}
 	}

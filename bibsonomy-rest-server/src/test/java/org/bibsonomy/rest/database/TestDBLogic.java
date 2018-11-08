@@ -40,7 +40,7 @@ import java.util.Set;
 
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
@@ -152,14 +152,14 @@ public class TestDBLogic extends AbstractLogicInterface {
 	 */
 	@Override
 	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags_, final String hash, final String search, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
-		return this.getTags(resourceType, grouping, groupingName, tags_, hash, search, SearchType.LOCAL, regex, relation, order, startDate, endDate, start, end);
+		return this.getTags(resourceType, grouping, groupingName, tags_, hash, search, QueryScope.LOCAL, regex, relation, order, startDate, endDate, start, end);
 	}
 
 	/**
 	 * note: the regex is currently not considered
 	 */
 	@Override
-	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags_, final String hash, final String search, final SearchType searchType,final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags_, final String hash, final String search, final QueryScope queryScope, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final List<Tag> tags = new LinkedList<Tag>();
 
 		switch (grouping) {
@@ -196,7 +196,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 	 * @param startDate TODO
 	 * @param endDate TODO*/
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
 		// do grouping stuff
 		switch (grouping) {

@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.model.Post;
@@ -279,7 +279,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			 */
 			final RequestWrapperContext context = command.getContext();
 			final User loggedinUser = context.getLoginUser();
-			final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, SearchType.LOCAL, null, null, null, null, 0, this.maxQuerySize);
+			final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, QueryScope.LOCAL, null, null, null, null, 0, this.maxQuerySize);
 			for (final Post<R> post : allPosts) {
 				final User user = post.getUser();
 				if (user.equals(loggedinUser)) {

@@ -1,6 +1,6 @@
 package org.bibsonomy.rest.client.queries.get;
 
-import org.apache.commons.httpclient.HttpStatus;
+import org.apache.http.HttpStatus;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;

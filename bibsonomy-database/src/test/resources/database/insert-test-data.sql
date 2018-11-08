@@ -159,10 +159,13 @@ INSERT INTO `bibtexurls` (`content_id`, `url`, `text`, `group`, `date`) VALUES
 -- publications
 INSERT INTO `gold_standard` (`content_id`, `journal`, `volume`, `chapter`, `edition`, `month`, `day`, `booktitle`, `howPublished`, `institution`, `organization`, `publisher`, `address`, `school`, `series`, `bibtexKey`, `group`, `date`, `user_name`, `url`, `type`, `description`, `annote`, `note`, `pages`, `bKey`, `number`, `crossref`, `misc`, `bibtexAbstract`, `simhash0`, `simhash1`, `simhash2`, `simhash3`, `entrytype`, `title`, `author`, `editor`, `year`, `privnote`, `scraperid`, `change_date`, `rating`, `content_type`) VALUES
 (1005, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'bibtexKey1', 0, '1815-12-10 00:00:00', 'testuser1',   'http://www.testurl.org',        '2', 'test description', 'test annote', 'test note', 'test pages', 'test bKey', 'test number', 'test crossref', 'misc={test}', 'test bibtexAbstract', '9abf98937435f05aec3d58b214a2ac58', '097248439469d8f5a1e7fad6b02cbfcd', 'b77ddd8087ad8856d77c740c8dc2864a', '', 'test entrytype', 'test title',         'test author',  'test editor', 'test year', 'test privnote', -1, '2008-03-20 16:24:55', 0, 2),
-(1015, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'bibtexKey2', 0, '1815-12-10 00:00:00', 'testuser2',   'http://private.bibtex.url.com', '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'misc={test}', 'test bibtexAbstract', '8711751127efb070ee910a5d145a168b', 'ac6aa3ccb181e61801cefbc1401d409a', '1b298f199d487bc527a62326573892b8', '', 'test entrytype', 'test private title', 'test author',  'test editor', 'test year', 'test privnote', -1, '2008-05-19 14:34:29', 0, 2);
+(1015, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'bibtexKey2', 0, '1815-12-10 00:00:00', 'testuser2',   'http://private.bibtex.url.com', '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'misc={test}', 'test bibtexAbstract', '8711751127efb070ee910a5d145a168b', 'ac6aa3ccb181e61801cefbc1401d409a', '1b298f199d487bc527a62326573892b8', '', 'test entrytype', 'test private title', 'test author',  'test editor', 'test year', 'test privnote', -1, '2008-05-19 14:34:29', 0, 2),
+-- gold standard for the person resource relation
+(1073740827,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'University of Nowhere',NULL,'muller2004wurst',0,'2015-07-06 14:15:12','testuserP',NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,'9132de6d174bcfd8018d0b299642f12d','0b539e248a02e3edcfe591c64346c7a0','d63038ea59383b94bb52fc4a9b76d1f5','','phdthesis','Wurst aufs Brot','Müller, Heinrich Georg',NULL,'2004', NULL, 0,'2015-07-06 12:21:34',0, 2);
+
 -- bookmarks
-INSERT INTO `gold_standard` (`content_id`, `title`, `url`, `description`, `date`, `user_name`, `simhash1`, `content_type`) VALUES
-(1025, 'Universität Kassel', 'http://www.uni-kassel.de', 'Nordhessen', '2011-01-01 00:00:00', 'testuser1', '20592a292e53843965c1bb42bfd51876', 1);
+INSERT INTO `gold_standard` (`content_id`, `title`, `url`, `description`, `date`, `user_name`, `simhash1`, `simhash2`, `content_type`) VALUES
+(1025, 'Universität Kassel', 'http://www.uni-kassel.de', 'Nordhessen', '2011-01-01 00:00:00', 'testuser1', '20592a292e53843965c1bb42bfd51876', '20592a292e53843965c1bb42bfd51876', 1);
 
 -- 
 -- Data for table `gold_standard_relations`
@@ -596,8 +599,7 @@ INSERT INTO `temp_bookmark` (`content_id`, `book_description`, `book_extended`, 
 
 -- 
 -- Data for table `urls`
--- 
-
+--
 INSERT INTO `urls` (`book_url_hash`, `book_url`, `book_url_ctr`) VALUES
 ('108eca7b644e2c5e09853619bc416ed0', 'http://www.google.de', 1),
 ('16dfed76f9d846056a6a3c0d022c3493', 'http://www.finetune.com', 1),
@@ -611,8 +613,13 @@ INSERT INTO `urls` (`book_url_hash`, `book_url`, `book_url_ctr`) VALUES
 ('e9ea2574c49c3778f166e8b4b6ed63dd', 'http://www.apple.com\r\n', 1),
 ('10ab297107e4bb79b345e406b3c2a087', 'http://www.cs.uni-kassel.de', 1),
 ('bbf9b0339a070080a3668c9cb6158ecf', 'http://www.heise.de', 0),
-('2574200000e4bb79b100e406b777a044', 'http://www.wm2010.com', 1);
-
+('2574200000e4bb79b100e406b777a044', 'http://www.wm2010.com', 1),
+-- FIXME: the url to the hash is wrong
+('6232752de0376fb6692917faf2e0a41e', 'https://www.uni-wuerzburg.de', 1),
+('35b3ed178e437da1e93e2cac75333c67', 'https://www.hu-berlin.de/en/', 1),
+('bcf7feb2dd4acba08f79b31991ed51bb', 'https://l3s.de', 1),
+('c7c8d5f682a6f32b7b3be9f3986a1cba', 'https://www.uni-kassel.de/eecs/', 1),
+('c4bb293ee64fecf340db99b39f401008', 'https://www.informatik.uni-wuerzburg.de/startseite/', 1);
 
 
 -- 
@@ -744,11 +751,11 @@ INSERT INTO `grouptas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `conten
 
 
 INSERT INTO `person` (`person_change_id`, `person_id`, `academic_degree`, `user_name`, `post_ctr`, `orcid`, `dnb_person_id`, `gender`, `log_changed_at`, `log_changed_by`, homepage) VALUES
-(5,'h.muller','',NULL,0,'',NULL,NULL,NULL,NULL,''),
-(20, 'w.test.1','',NULL,0,'',NULL,'m',NULL,NULL, "hisPage"),
-(21, 'w.test.2','', null, 0,'',NULL, "m",NULL,NULL,''),
-(22, 'w.test.3','', null, 0, '',NULL,"m",NULL,NULL,''),
-(23, 'w.test.4', '',NULL,0,'',NULL,'F',NULL,NULL,"myPage")
+(5, 'h.muller', '', NULL, 0, '', NULL, NULL, '2015-07-06 14:19:55', NULL, ''),
+(20, 'w.test.1', '', NULL, 0, '', NULL, 'm', '2015-07-06 14:19:55', NULL, "hisPage"),
+(21, 'w.test.2', '', null, 0,'', NULL, 'm', '2015-07-06 16:19:55', NULL, ''),
+(22, 'w.test.3', '', null, 0, '', NULL, 'm', '2015-07-06 18:19:55', NULL, ''),
+(23, 'w.test.4', '', NULL, 0, '', NULL, 'F', '2016-07-06 14:19:55', NULL, "myPage")
 ;
 
 
@@ -790,9 +797,15 @@ INSERT INTO `gold_standard` (content_id, simhash0, simhash1, simhash2, simhash3,
 (40, '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', 'Willi Test and Ted Hansen', 'title7', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP', 2),
 (41, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Willi Test and Johann Hilfe', 'title8', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP', 2);
 
-INSERT INTO `gold_standard` (`content_id`, `journal`, `volume`, `chapter`, `edition`, `month`,      `day`,      `booktitle`,                 `howPublished`,      `institution`,  `organization`, `publisher`, `address`, `school`, `series`, `bibtexKey`, `group`, `date`, `user_name`, `url`, `type`, `description`, `annote`, `note`, `pages`, `bKey`, `number`, `crossref`, `misc`, `bibtexAbstract`, `simhash0`, `simhash1`, `simhash2`, `simhash3`, `entrytype`, `title`, `author`, `editor`, `year`, `privnote`, `scraperid`, `change_date`, `rating`, `content_type`) VALUES
-(1073741857, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'University of Nowhere', NULL, 'muller2004wurst', 0, '2015-07-06 14:15:12', 'testuserP', NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, '9132de6d174bcfd8018d0b299642f12d', '0b539e248a02e3edcfe591c64346c7a0', 'd63038ea59383b94bb52fc4a9b76d1f5', '', 'phdthesis', 'Wurst aufs Brot', 'Müller, Heinrich Georg', NULL, '2004', NULL, 0, '2015-07-06 12:21:34', 0, 2);
-
+INSERT INTO `bibtex` (content_id, simhash0, simhash1, simhash2, simhash3, author, title, change_date, date, user_name) VALUES
+(34, '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', 'Willi Test and Maria Mueller', 'title1', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP'),
+(35, '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', 'Willi Test and Johann Hilfe', 'title2', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP'),
+(36, '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', 'Willi Test', 'same', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP'),
+(37, '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', 'Willi Test and Mario Mueller', 'title4', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP'),
+(38, '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', 'Willi Test and Ted Hansen', 'title5', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP'),
+(39, 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'Willi Test', 'same', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP'),
+(40, '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', 'Willi Test and Ted Hansen', 'title7', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP'),
+(41, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Willi Test and Johann Hilfe', 'title8', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP');
 
 INSERT INTO `bibhash` VALUES ('0c000000d00000f00cef0c00f000e00a', 1, 0),
 ('0c0000cdc00000b000cbe0fe0ab0acd0', 1, 0),

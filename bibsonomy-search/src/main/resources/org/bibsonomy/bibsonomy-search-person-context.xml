@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/util
+						http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<bean id="personSearchSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource" ref="searchDataSource" />
+		<property name="configLocation" value="classpath:generation/person/PersonIndexGenerationSQLMapConfig.xml" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+
+	<bean id="personSearchSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="personSearchSqlMapClient"/>
+	</bean>
+
+	<bean id="personGenerationDBLogic" class="org.bibsonomy.search.index.generator.person.PersonIndexGenerationLogic">
+		<property name="sessionFactory" ref="personSearchSessionFactory"/>
+	</bean>
+
+	<bean id="personDatabaseInformationLogic" class="org.bibsonomy.search.index.database.person.PersonDatabaseInformationLogic">
+		<property name="sessionFactory" ref="personSearchSessionFactory"/>
+	</bean>
+
+	<bean id="personUpdateSearchSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource" ref="searchDataSource" />
+		<property name="configLocation" value="classpath:update/person/PersonIndexUpdateSQLMapConig.xml" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+
+	<bean id="personUpdateSearchSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="personUpdateSearchSqlMapClient"/>
+	</bean>
+
+	<bean id="personUpdateDBLogic" class="org.bibsonomy.search.index.update.person.PersonIndexUpdateLogic">
+		<property name="sessionFactory" ref="personUpdateSearchSessionFactory"/>
+	</bean>
+
+	<bean id="personResourceRelationDBLogic" class="org.bibsonomy.search.index.update.person.PersonResourceRelationUpdateLogic">
+		<property name="sessionFactory" ref="personUpdateSearchSessionFactory"/>
+	</bean>
+
+	<bean id="personAndPersonRelationUpdateLogic" class="org.bibsonomy.search.index.update.OneToManyIndexUpdateLogic">
+		<constructor-arg ref="personUpdateDBLogic" />
+		<constructor-arg ref="personResourceRelationDBLogic" />
+	</bean>
+</beans>

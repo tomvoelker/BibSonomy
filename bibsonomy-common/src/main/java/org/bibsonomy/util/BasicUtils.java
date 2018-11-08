@@ -28,6 +28,7 @@ package org.bibsonomy.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
@@ -67,4 +68,42 @@ public final class BasicUtils {
 		}
 		VERSION = version;
 	}
+
+	/**
+	 * an interface to iterate over a list with limit and offset
+	 * @param <T>
+	 */
+	@FunctionalInterface
+	public interface LimitOffsetIterator<T> {
+		List<T> getItems(int limit, int offset);
+	}
+
+	/**
+	 * an interface that works on the retrieved interfaces
+	 * @param <T>
+	 */
+	@FunctionalInterface
+	public interface ItemWorker<T> {
+		void workOnItems(List<T> items);
+	}
+
+	/**
+	 * iterates over a list which is queried with limit and offset
+	 * @param limitOffsetIterator
+	 * @param limit
+	 * @param <T>
+	 */
+	public static <T> void iterateListWithLimitAndOffset(final LimitOffsetIterator<T> limitOffsetIterator, ItemWorker<T> itemWorker, final int limit) {
+		int size;
+
+		int offset = 0;
+
+		do {
+			final List<T> items = limitOffsetIterator.getItems(limit, offset);
+			itemWorker.workOnItems(items);
+			offset += limit;
+			size = items.size();
+		} while (size == limit);
+	}
+
 }

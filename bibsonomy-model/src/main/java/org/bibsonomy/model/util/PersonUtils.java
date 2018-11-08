@@ -30,10 +30,12 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -87,6 +89,55 @@ public final class PersonUtils {
 		switch(role) {
 			case AUTHOR: return publication.getAuthor();
 			case EDITOR: return publication.getEditor();
+		}
+
+		return null;
+	}
+
+	/**
+	 * finds the top resource relations that should be displayed for the person
+	 *
+	 * @param relations
+	 * @return
+	 */
+	public static ResourcePersonRelation findTopRelation(final List<ResourcePersonRelation> relations) {
+		if (!present(relations)) {
+			return null;
+		}
+
+		// prefer a kind of thesis
+		for (final String type : Arrays.asList(BibTexUtils.PHD_THESIS, BibTexUtils.MASTERS_THESIS, BibTexUtils.THESIS)) {
+			final ResourcePersonRelation relationByType = findRelationByType(type, relations);
+			if (present(relationByType)) {
+				return relationByType;
+			}
+		}
+
+		// prefer authors
+		final ResourcePersonRelation relationByRelationType = findRelationByRelationType(PersonResourceRelationType.AUTHOR, relations);
+		if (present(relationByRelationType)) {
+			return relationByRelationType;
+		}
+
+		// fall back
+		return relations.get(0);
+	}
+
+	private static ResourcePersonRelation findRelationByRelationType(PersonResourceRelationType relationType, List<ResourcePersonRelation> relations) {
+		for (ResourcePersonRelation relation : relations) {
+			if (relationType.equals(relation.getRelationType())) {
+				return relation;
+			}
+		}
+
+		return null;
+	}
+
+	private static ResourcePersonRelation findRelationByType(String type, List<ResourcePersonRelation> relations) {
+		for (ResourcePersonRelation relation : relations) {
+			if (type.equals(relation.getPost().getResource().getType())) {
+				return relation;
+			}
 		}
 
 		return null;

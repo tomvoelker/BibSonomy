@@ -30,6 +30,7 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.model.cris.Linkable;
@@ -74,11 +75,12 @@ public class Person implements Linkable, Serializable {
 	private Gender gender;
 	/** the college of the person */
 	private String college;
-	/** the email address of the person */
+	/** the email of the person */
 	private String email;
 	/** the homepage of the person */
 	private URL homepage;
-
+	private List<ResourcePersonRelation> resourceRelations = new LinkedList<>();
+	
 	/**
 	 * default constructor
 	 */
@@ -366,6 +368,20 @@ public class Person implements Linkable, Serializable {
 	 */
 	public void setHomepage(URL homepage) {
 		this.homepage = homepage;
+	}
+
+	/**
+	 * @return the resourceRelations
+	 */
+	public List<ResourcePersonRelation> getResourceRelations() {
+		return resourceRelations;
+	}
+
+	/**
+	 * @param resourceRelations the resourceRelations to set
+	 */
+	public void setResourceRelations(List<ResourcePersonRelation> resourceRelations) {
+		this.resourceRelations = resourceRelations;
 	}
 
 	@Override

@@ -852,7 +852,7 @@
 						<fmt:message key="person.show.modalLinkPublicationSelect"/> <br/>
 						<label class="item item-select">
 							<select class="form-control" id="addPublicationAuthorSelect">
-								<!-- select will be dynamically filled by addPersonRelationResource.js. Keep me. -->
+								<!-- filter will be dynamically filled by addPersonRelationResource.js. Keep me. -->
 							</select>
 						</label>
 					</div>

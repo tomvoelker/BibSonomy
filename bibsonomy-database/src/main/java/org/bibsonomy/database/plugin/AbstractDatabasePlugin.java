@@ -33,7 +33,6 @@ import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
@@ -48,28 +47,15 @@ import org.bibsonomy.model.enums.GoldStandardRelation;
  * This class should be used by plugins. This way they don't have to implement
  * all methods from the interface DatabasePlugin. Furthermore they have access
  * to some basic database methods.
- * 
+ *
+ * FIXME: use default methods for the DatabasePlugin so this class does not have to implement all methods
+ *
  * @author Jens Illig
  * @author Christian Schenk
  * @author Anton Wilhelm
  * @author Stefan Stützer
  */
 public class AbstractDatabasePlugin extends AbstractDatabaseManager implements DatabasePlugin {
-
-	@Override
-	public void onPublicationInsert(final Post<? extends BibTex> post, User loggedinUser, final DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onPublicationDelete(final int contentId, final DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onPublicationUpdate(final int newContentId, final int contentId, final DBSession session) {
-		// noop
-	}
 	
 	/**
 	 * @param username
@@ -115,7 +101,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	public void onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {
 		// noop
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onBookmarkMassUpdate(java.lang.String, int)
 	 */
@@ -220,7 +206,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	@Override
 	public void onPersonUpdate(Person oldPerson, Person newPerson, DBSession session) {
 		// noop
-		
+
 	}
 
 	/* (non-Javadoc)

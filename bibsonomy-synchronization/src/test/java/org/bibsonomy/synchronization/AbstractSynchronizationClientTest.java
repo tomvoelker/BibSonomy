@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.eclipse.jetty.server.Server;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.DBLogic;
 import org.bibsonomy.database.DBLogicApiInterfaceFactory;
@@ -62,7 +63,6 @@ import org.joda.time.format.DateTimeFormatter;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.mortbay.jetty.Server;
 
 /**
  * @author wla
@@ -145,7 +145,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 		this.serverUser = new User();
 		this.serverUser.setName(SERVER_USER_NAME);
 		this.serverUser.setRole(Role.SYNC);
-		this.serverUser.setGroups(new ArrayList<Group>());
+		this.serverUser.setGroups(new ArrayList<>());
 		this.serverUser.getGroups().add(new Group("jbhj"));
 		this.serverUser.setApiKey(SERVER_USER_APIKEY);
 
@@ -171,7 +171,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 			/*
 			 * create server posts
 			 */
-			final List<Post<?>> serverPosts = new ArrayList<Post<?>>();
+			final List<Post<?>> serverPosts = new ArrayList<>();
 
 			// post 1 "no changes" created and modified before last
 			// synchronization
@@ -202,7 +202,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 			/*
 			 * create client posts
 			 */
-			final List<Post<?>> clientPosts = new ArrayList<Post<?>>();
+			final List<Post<?>> clientPosts = new ArrayList<>();
 
 			// post 1: "post without changes" is the same post as in database
 			clientPosts.add(this.createPost("no changes", "2011-01-10 14:32:00", "2011-01-31 14:32:00", this.clientUser, clazz));
@@ -284,7 +284,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 
 	
 	protected static Map<String, SynchronizationPost> mapFromList(final List<SynchronizationPost> syncPosts) {
-		final Map<String, SynchronizationPost> map = new HashMap<String, SynchronizationPost>();
+		final Map<String, SynchronizationPost> map = new HashMap<>();
 		for (final SynchronizationPost post : syncPosts) {
 			map.put(post.getIntraHash(), post);
 		}

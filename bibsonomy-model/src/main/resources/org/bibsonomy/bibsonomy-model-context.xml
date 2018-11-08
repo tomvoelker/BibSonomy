@@ -52,7 +52,7 @@
 	<bean id="personClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="org.bibsonomy.model.Person" />
 	</bean>
-	
+
 	<bean id="resourceFactory" class="org.bibsonomy.model.factories.ResourceFactory" />
 
 	<!-- validators -->

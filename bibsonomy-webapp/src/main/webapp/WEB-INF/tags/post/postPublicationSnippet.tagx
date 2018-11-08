@@ -42,7 +42,7 @@
 				
 				<!--+
 					|
-					| Dirty hack because spring form's option tag cannot find their parent select field, when invokes in jsp fragment.
+					| Dirty hack because spring form's option tag cannot find their parent filter field, when invokes in jsp fragment.
 					| 
 					+-->
 				<c:set var="labels">' ' (<fmt:message key="delimiters.whitespace"/>)|, (<fmt:message key="delimiters.comma"/>)|; (<fmt:message key="delimiters.semicolon"/>)</c:set>

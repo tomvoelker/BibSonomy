@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/util
+						http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<bean id="newPersonSearch" class="org.bibsonomy.search.es.search.person.ElasticsearchPersonSearch">
+		<constructor-arg ref="elasticsearchPersonManager" />
+		<constructor-arg value="#{elasticsearchPersonEntityInformationProvider.converter}" />
+		<constructor-arg ref="elasticsearchPersonResourceRelationConverter" />
+	</bean>
+
+	<bean id="elasticsearchPersonMappingBuilder" class="org.bibsonomy.search.es.index.mapping.person.PersonMappingBuilder">
+		<constructor-arg ref="elasticsearchCommunityPublicationMappingBuilder" />
+	</bean>
+
+	<bean id="elasticsearchPersonResourceRelationConverter" class="org.bibsonomy.search.es.index.converter.person.PersonResourceRelationConverter">
+		<constructor-arg ref="elasticsearchCommunityPublicationConverter" />
+	</bean>
+
+	<bean id="elasticsearchPersonResourceEntityInformationProvider" class="org.bibsonomy.search.es.index.generator.person.PersonResourceRelationEntityInformationProvider">
+		<constructor-arg ref="elasticsearchPersonResourceRelationConverter" />
+	</bean>
+
+	<bean id="elasticsearchPersonEntityInformationProvider" class="org.bibsonomy.search.es.index.generator.person.PersonEntityInformationProvider">
+		<constructor-arg ref="elasticsearchPersonMappingBuilder" />
+		<constructor-arg ref="elasticsearchPersonResourceEntityInformationProvider" />
+	</bean>
+
+	<bean id="elasticsearchPersonManager" class="org.bibsonomy.search.es.management.person.ElasticsearchPersonManager" parent="elasticsearchAbstractIndexManager">
+		<constructor-arg>
+			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchOneToManyIndexGenerator">
+				<constructor-arg ref="esClient" />
+				<constructor-arg ref="systemURI" />
+				<constructor-arg ref="personGenerationDBLogic" />
+				<constructor-arg ref="personDatabaseInformationLogic" />
+				<constructor-arg ref="postSyncStateConverter" />
+				<constructor-arg ref="elasticsearchPersonEntityInformationProvider" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg ref="postSyncStateConverter" />
+		<constructor-arg ref="elasticsearchPersonEntityInformationProvider" />
+		<constructor-arg ref="personAndPersonRelationUpdateLogic" />
+		<constructor-arg ref="personDatabaseInformationLogic" />
+	</bean>
+
+</beans>

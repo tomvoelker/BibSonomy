@@ -34,7 +34,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>3.8.15-SNAPSHOT</version>
+		<version>3.8.16-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>
@@ -65,7 +65,7 @@
 		<dependency>
 			<groupId>info.bliki.wiki</groupId>
 			<artifactId>bliki-core</artifactId>
-			<version>3.0.19</version>
+			<version>3.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>joda-time</groupId>

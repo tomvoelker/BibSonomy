@@ -28,14 +28,13 @@ package org.bibsonomy.database.managers.chain.goldstandard.get;
 
 import java.util.List;
 
-import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.goldstandard.GoldStandardChainElement;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.services.searcher.query.PostSearchQuery;
 
 /**
  * @author dzo
@@ -47,7 +46,9 @@ public class GetGoldStandardsByResourceSearch<RR extends Resource, R extends Res
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.databaseManager.getSearch().getPosts(param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), null, param.getGroupNames(), param.getSearchType(), param.getSearch(), param.getTitle(), param.getAuthor(), null, null, null, null, null, null, param.getOrder(), param.getLimit(), param.getOffset());
+		final PostSearchQuery<?> searchQuery = new PostSearchQuery<>(param.getQuery());
+		// FIXME: what about authors, …
+		return this.databaseManager.getSearch().getPosts(param.getUserName(), param.getGroupNames(), searchQuery);
 	}
 
 	@Override

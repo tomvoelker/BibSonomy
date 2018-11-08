@@ -1,7 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -36,7 +36,7 @@ public class ReportPageController implements MinimalisticController<ReportComman
 		List<Post<BibTex>> posts = new LinkedList<>();
 		while (running) {
 			int size = posts.size();
-			posts.addAll(this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, null, SearchType.LOCAL, null, null, null, null, currentIndex, currentIndex + 20));
+			posts.addAll(this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, null, QueryScope.LOCAL, null, null, null, null, currentIndex, currentIndex + 20));
 			currentIndex = currentIndex + 20;
 			running = (posts.size() - size) == 20 && currentIndex < limit;
 		}

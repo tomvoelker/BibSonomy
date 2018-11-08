@@ -1,0 +1,23 @@
+package org.bibsonomy.search.es.search.person;
+
+import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.search.es.EsSpringContextWrapper;
+import org.bibsonomy.search.es.management.person.ElasticsearchPersonManager;
+import org.junit.Before;
+
+/**
+ * abstract class to setup person search related it cases
+ *
+ * @author dzo
+ */
+public class AbstractPersonSearchTest extends AbstractDatabaseManagerTest {
+
+	protected static final ElasticsearchPersonManager PERSON_SEARCH_MANAGER = EsSpringContextWrapper.getContext().getBean(ElasticsearchPersonManager.class);
+
+	@Before
+	public void createIndices() throws InterruptedException {
+		PERSON_SEARCH_MANAGER.regenerateAllIndices();
+		// wait for the docs to be indexed by elasticsearch
+		Thread.sleep(2000);
+	}
+}

@@ -30,6 +30,7 @@ import org.bibsonomy.common.enums.RatingAverage;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+import org.bibsonomy.model.logic.query.PostQuery;
 
 /** 
  * Super class for parameter objects that are about resources.
@@ -39,13 +40,28 @@ import org.bibsonomy.model.enums.GoldStandardRelation;
  * @author Jens Illig
  */
 public class ResourceParam<T extends Resource> extends GenericParam {
+
+	private PostQuery<T> query;
 	
 	private RatingAverage ratingAverage = RatingAverage.ARITHMETIC_MEAN;
 
 	protected T resource;
 	protected GoldStandardRelation relation;
 	protected ResourcePersonRelation personRelation;
-	
+
+	/**
+	 * @return the query
+	 */
+	public PostQuery<T> getQuery() {
+		return query;
+	}
+
+	/**
+	 * @param query the query to set
+	 */
+	public void setQuery(PostQuery<T> query) {
+		this.query = query;
+	}
 
 	/**
 	 * @return the relation between the posts
