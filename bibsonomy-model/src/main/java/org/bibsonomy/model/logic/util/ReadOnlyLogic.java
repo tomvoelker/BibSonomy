@@ -77,6 +77,7 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
+import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
@@ -112,6 +113,11 @@ public class ReadOnlyLogic implements LogicInterface {
 	@Override
 	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end) {
 		return this.logicinterface.getPosts(resourceType, grouping, groupingName, tags, hash, search, searchType, filters, order, startDate, endDate, start, end);
+	}
+
+	@Override
+	public <R extends Resource> List<Post<R>> getPosts(PostQuery<R> query) {
+		return this.logicinterface.getPosts(query);
 	}
 
 	/* (non-Javadoc)

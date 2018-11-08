@@ -33,7 +33,6 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -42,26 +41,25 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
-import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
+import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.model.util.PersonMatchUtils;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
 import org.bibsonomy.webapp.command.PersonPageCommand;
@@ -589,10 +587,10 @@ public class PersonPageController extends SingleResourceListController implement
 		 * throws a ObjectMovedException and the wrapper will render the redirect
 		 */
 		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, requestedPersonId);
-		
 		if (!present(person)) {
 			return Views.ERROR404;
 		}
+
 		command.setPerson(person);
 		
 		if (DisambiguationPageController.ACTION_KEY_CREATE_AND_LINK_PERSON.equals(this.requestLogic.getLastAction()) || DisambiguationPageController.ACTION_KEY_LINK_PERSON.equals(this.requestLogic.getLastAction())) {
@@ -636,12 +634,10 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setPersonMatchList(this.logic.getPersonMatches(person.getPersonId()));
 		command.setMergeConflicts(PersonMatchUtils.getMergeConflicts(command.getPersonMatchList()));
 
-
-		final List<Post<BibTex>> similarAuthorPubs = this.getPublicationsOfSimilarAuthor(person);
-
-		List<ResourcePersonRelation> similarAuthorRelations = new ArrayList<>();
-		for (Post<BibTex> post : similarAuthorPubs) {
-			ResourcePersonRelation relation = new ResourcePersonRelation();
+		final List<ResourcePersonRelation> similarAuthorRelations = new ArrayList<>();
+		final List<Post<GoldStandardPublication>> similarAuthorPubs = this.getPublicationsOfSimilarAuthor(person);
+		for (final Post<GoldStandardPublication> post : similarAuthorPubs) {
+			final ResourcePersonRelation relation = new ResourcePersonRelation();
 			relation.setPost(post);
 			relation.setPersonIndex(PersonUtils.findIndexOfPerson(person, post.getResource()));
 			relation.setRelationType(PersonUtils.getRelationType(person, post.getResource()));
@@ -652,14 +648,12 @@ public class PersonPageController extends SingleResourceListController implement
 		return Views.PERSON_SHOW;
 	}
 
-	private List<Post<BibTex>> getPublicationsOfSimilarAuthor(Person person) {
-
-		final PersonName requestedName = person.getMainName();
-		final String name = person.getMainName().toString();
-
-		// TODO: query the logic for all publications with the author but without the already assigned publications
-
-		return new LinkedList<>();
+	private List<Post<GoldStandardPublication>> getPublicationsOfSimilarAuthor(Person person) {
+		final PostQuery<GoldStandardPublication> personNameQuery = new PostQuery<>(GoldStandardPublication.class);
+		personNameQuery.setPersonNames(person.getNames());
+		personNameQuery.setPersonIdSet(false);
+		personNameQuery.setEnd(20); // get 20 "recommendations"
+		return this.logic.getPosts(personNameQuery);
 
 		// FIXME:
 //		PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
