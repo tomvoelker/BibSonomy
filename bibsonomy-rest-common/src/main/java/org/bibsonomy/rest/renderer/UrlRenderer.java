@@ -393,8 +393,9 @@ public class UrlRenderer {
 		return builder;
 	}
 
-	public UrlBuilder createUrlBuilderForPersonMatch() {
-		return createUrlBuilderForPersons().addPathElement(RESTConfig.PERSONS_MERGE_URL);
+	public UrlBuilder createUrlBuilderForPersonMatch(String targetId, String sourceId) {
+		return createUrlBuilderForPersons(targetId).
+				addPathElement(RESTConfig.PERSONS_MERGE_URL).addParameter("source", sourceId);
 	}
 
 	public UrlBuilder createUrlBuilderForPersons(String personId) {
