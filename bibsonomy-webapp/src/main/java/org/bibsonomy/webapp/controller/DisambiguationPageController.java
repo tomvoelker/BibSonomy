@@ -200,7 +200,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 //		 *
 //		 * get at least 50 publications from authors with same name
 //		 */
-//		final List<Post<BibTex>> pubAuthorSearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, name, SearchType.LOCAL, null , Order.ALPH, null, null, 0, 50);
+//		final List<Post<BibTex>> pubAuthorSearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, name, QueryScope.LOCAL, null , Order.ALPH, null, null, 0, 50);
 //
 //		List<Post<BibTex>> pubsWithSameAuthorName = new ArrayList<>(pubAuthorSearch);
 //		for (final Post<BibTex> post : pubAuthorSearch) {

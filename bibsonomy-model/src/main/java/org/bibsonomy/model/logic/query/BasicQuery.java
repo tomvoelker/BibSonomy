@@ -7,9 +7,25 @@ package org.bibsonomy.model.logic.query;
  */
 public class BasicQuery {
 
+	private String search;
+
 	private int start = 0;
 
 	private int end = 10;
+
+	/**
+	 * @return the search
+	 */
+	public String getSearch() {
+		return search;
+	}
+
+	/**
+	 * @param search the search to set
+	 */
+	public void setSearch(String search) {
+		this.search = search;
+	}
 
 	/**
 	 * @return the start

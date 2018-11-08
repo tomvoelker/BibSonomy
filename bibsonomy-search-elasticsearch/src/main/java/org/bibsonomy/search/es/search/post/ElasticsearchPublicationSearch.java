@@ -34,7 +34,6 @@ import java.util.List;
 import org.apache.lucene.search.join.ScoreMode;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.search.es.ESConstants.Fields;
-import org.bibsonomy.search.es.search.post.EsResourceSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.Operator;
@@ -49,10 +48,10 @@ import org.elasticsearch.index.query.TermQueryBuilder;
  * @author dzo
  * @param <P> 
  */
-public class ElasticsearchPublicationSearch<P extends BibTex> extends EsResourceSearch<P> {
+public class ElasticsearchPublicationSearch<P extends BibTex> extends ElasticsearchPostSearch<P> {
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.search.post.EsResourceSearch#buildResourceSpecifiyQuery(org.elasticsearch.index.query.BoolQueryBuilder, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 * @see org.bibsonomy.search.es.search.post.ElasticsearchPostSearch#buildResourceSpecifiyQuery(org.elasticsearch.index.query.BoolQueryBuilder, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	protected void buildResourceSpecifiyQuery(BoolQueryBuilder mainQueryBuilder, String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, String year, String firstYear, String lastYear) {
@@ -71,7 +70,7 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends EsResource
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.search.post.EsResourceSearch#buildResourceSpecifiyFilters(org.elasticsearch.index.query.BoolFilterBuilder, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 * @see org.bibsonomy.search.es.search.post.ElasticsearchPostSearch#buildResourceSpecifiyFilters(org.elasticsearch.index.query.BoolFilterBuilder, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	protected void buildResourceSpecifiyFilters(BoolQueryBuilder mainFilterBuilder, String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, String year, String firstYear, String lastYear) {

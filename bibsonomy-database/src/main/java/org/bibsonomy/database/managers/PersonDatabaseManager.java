@@ -522,7 +522,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(String personId, User loginUser, Class<? extends BibTex> publicationType, DBSession session) {
 
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, BibTex.class, null, null, null, null, null, 0, Integer.MAX_VALUE, null, null, null, null, loginUser);
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, BibTex.class, , null, null, null, null, null, 0, Integer.MAX_VALUE, null, null, null, null, loginUser);
 		final ResourcePersonRelation personRelation = new ResourcePersonRelation();
 		personRelation.setPerson(new Person());
 		personRelation.getPerson().setPersonId(personId);

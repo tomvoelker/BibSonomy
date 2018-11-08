@@ -147,7 +147,7 @@
 		<constructor-arg ref="goldStandardBookmarkClass" />
 	</bean>
 
-	<bean id="elasticsearchBookmarkSearch" class="org.bibsonomy.search.es.search.post.EsResourceSearch">
+	<bean id="elasticsearchBookmarkSearch" class="org.bibsonomy.search.es.search.post.ElasticsearchPostSearch">
 		<property name="manager" ref="elasticsearchBookmarkManager" />
 		<property name="resourceConverter" ref="elasticsearchBookmarkConverter" />
 		<property name="infoLogic" ref="searchInfoLogic" />
@@ -160,7 +160,7 @@
 		<property name="genealogyUser" value="${genealogy.import.user}" />
 	</bean>
 
-	<bean id="elasticsearchCommunityBookmarkSearch" class="org.bibsonomy.search.es.search.post.EsResourceSearch">
+	<bean id="elasticsearchCommunityBookmarkSearch" class="org.bibsonomy.search.es.search.post.ElasticsearchPostSearch">
 		<property name="manager" ref="elasticsearchCommunityBookmarkManager" />
 		<property name="resourceConverter" ref="elasticsearchCommunityBookmarkConverter" />
 		<property name="infoLogic" ref="searchInfoLogic" />

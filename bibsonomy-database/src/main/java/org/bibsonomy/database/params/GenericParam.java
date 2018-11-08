@@ -46,7 +46,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostAccess;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -188,7 +188,7 @@ public abstract class GenericParam {
 	private String search;
 
 	/* search type */
-	private SearchType searchType;
+	private QueryScope queryScope;
 
 	/** This is the current user. */
 	private String userName;
@@ -1143,17 +1143,17 @@ public abstract class GenericParam {
 	}
 
 	/**
-	 * @return the searchType
+	 * @return the queryScope
 	 */
-	public SearchType getSearchType() {
-		return this.searchType;
+	public QueryScope getQueryScope() {
+		return this.queryScope;
 	}
 
 	/**
-	 * @param searchType the searchType to set
+	 * @param queryScope the queryScope to set
 	 */
-	public void setSearchType(final SearchType searchType) {
-		this.searchType = searchType;
+	public void setQueryScope(final QueryScope queryScope) {
+		this.queryScope = queryScope;
 	}
 
 	/**

@@ -65,7 +65,7 @@ public class GetTagsByResourceSearch extends TagChainElement {
 		}
 
 		// FIXME: year restrictions missing
-		return this.db.getTagsByResourceSearch(param.getResourceType(), param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getGroupNames(), param.getSearchType(), param.getSearch(), param.getTitle(), param.getAuthor(), tags, param.getBibtexKey(), null, null, null, negatedTags, param.getLimit(), param.getOffset());
+		return this.db.getTagsByResourceSearch(param.getResourceType(), param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getGroupNames(), param.getQueryScope(), param.getSearch(), param.getTitle(), param.getAuthor(), tags, param.getBibtexKey(), null, null, null, negatedTags, param.getLimit(), param.getOffset());
 	}
 
 	@Override

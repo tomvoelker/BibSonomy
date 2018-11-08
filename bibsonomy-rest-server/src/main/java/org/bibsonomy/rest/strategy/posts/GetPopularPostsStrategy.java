@@ -29,7 +29,7 @@ package org.bibsonomy.rest.strategy.posts;
 import java.util.Collections;
 import java.util.List;
 
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
@@ -61,6 +61,6 @@ public class GetPopularPostsStrategy extends AbstractListOfPostsStrategy {
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
 		final List<String> tag = Collections.singletonList("sys:days:" + String.valueOf(this.periodIndex)); // FIXME: use system tag builder
-		return this.getLogic().getPosts(this.resourceType, this.grouping, this.groupingValue, tag, null, this.search, SearchType.LOCAL, null, Order.POPULAR, null, null, this.getView().getStartValue(), this.getView().getEndValue());
+		return this.getLogic().getPosts(this.resourceType, this.grouping, this.groupingValue, tag, null, this.search, QueryScope.LOCAL, null, Order.POPULAR, null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 }

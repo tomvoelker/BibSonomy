@@ -30,7 +30,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -45,13 +45,13 @@ import org.bibsonomy.services.searcher.ResourceSearch;
 public class DummyResourceSearch implements ResourceSearch<Resource> {
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPosts(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, org.bibsonomy.model.es.SearchType, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.model.enums.Order, int, int)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPosts(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, org.bibsonomy.model.es.QueryScope, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.model.enums.Order, int, int)
 	 */
 	@Override
 	public List<Post<Resource>> getPosts(String userName,
 			String requestedUserName, String requestedGroupName,
 			List<String> requestedRelationNames,
-			Collection<String> allowedGroups, SearchType searchType,
+			Collection<String> allowedGroups, QueryScope queryScope,
 			String searchTerms, String titleSearchTerms,
 			String authorSearchTerms, String bibtexKey, Collection<String> tagIndex, String year,
 			String firstYear, String lastYear, List<String> negatedTags,

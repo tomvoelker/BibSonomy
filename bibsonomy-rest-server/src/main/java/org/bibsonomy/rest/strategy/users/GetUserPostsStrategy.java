@@ -30,7 +30,7 @@ import java.io.Writer;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
@@ -72,7 +72,7 @@ public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
 		// TODO: support other search types
-		return this.getLogic().getPosts(this.resourceType, GroupingEntity.USER, this.userName, this.tags, null, this.search, SearchType.LOCAL, null, null, null, null, this.getView().getStartValue(),
+		return this.getLogic().getPosts(this.resourceType, GroupingEntity.USER, this.userName, this.tags, null, this.search, QueryScope.LOCAL, null, null, null, null, this.getView().getStartValue(),
 				this.getView().getEndValue());
 	}
 

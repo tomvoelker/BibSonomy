@@ -43,7 +43,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.errors.MissingTagsErrorMessage;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -70,7 +70,6 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.TagUtils;
-import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
@@ -656,7 +655,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return the tag's details, null else
 	 */
 	public Tag getTagDetails(final User user, final String tagName, final DBSession session) {
-		final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, Resource.class, null, user.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, null, null, user);
+		final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, Resource.class, , null, user.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, null, null, user);
 
 		param.setLimit(10000);
 		param.setOffset(0);
@@ -714,7 +713,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param requestedUserName
 	 * @param requestedGroupName
 	 * @param allowedGroups
-	 * @param searchType 
+	 * @param queryScope
 	 * @param searchTerms
 	 * @param titleSearchTerms
 	 * @param authorSearchTerms
@@ -728,7 +727,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param offset
 	 * @return a list of tags
 	 */
-	public List<Tag> getTagsByResourceSearch(final Class<? extends Resource> resouceClass, final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms,final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, String bibtexkey, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
+	public List<Tag> getTagsByResourceSearch(final Class<? extends Resource> resouceClass, final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final QueryScope queryScope, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, String bibtexkey, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
 		if (present(this.publicationSearch) && present(this.bookmarkSearch)) {
 			if (Resource.class.equals(resouceClass)) {
 				final List<Tag> bookmarkTags = this.bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);

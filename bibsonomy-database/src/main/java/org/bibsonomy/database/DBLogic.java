@@ -61,7 +61,7 @@ import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.common.enums.TagRelation;
@@ -145,6 +145,7 @@ import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
+import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
@@ -707,7 +708,41 @@ public class DBLogic implements LogicInterface {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	@Deprecated
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+
+		final PostQuery<T> query = new PostQuery<>(resourceType);
+		query.setScope(queryScope);
+		query.setGrouping(grouping);
+		query.setGroupingName(groupingName);
+		query.setTags(tags);
+		query.setHash(hash);
+		query.setSearch(search);
+		query.setFilters(filters);
+		query.setOrder(order);
+		query.setStartDate(startDate);
+		query.setEndDate(endDate);
+		query.setStart(start);
+		query.setEnd(end);
+		// delegating to the new method
+		return this.getPosts(query);
+	}
+
+	@Override
+	public <R extends Resource> List<Post<R>> getPosts(final PostQuery<R> query) {
+		final Class<R> resourceType = query.getResourceClass();
+		final QueryScope queryScope = query.getScope();
+		final String hash = query.getHash();
+		final Order order = query.getOrder();
+		final Date startDate = query.getStartDate();
+		final Date endDate = query.getEndDate();
+		final String search = query.getSearch();
+		final GroupingEntity grouping = query.getGrouping();
+		final String groupingName = query.getGroupingName();
+		final Set<Filter> filters = query.getFilters();
+		final List<String> tags = query.getTags();
+		final int start = query.getStart();
+		final int end = query.getEnd();
 		// check allowed start-/end-values
 		this.permissionDBManager.checkStartEnd(this.loginUser, grouping, start, end, "posts");
 
@@ -715,10 +750,9 @@ public class DBLogic implements LogicInterface {
 
 		// check for systemTags disabling this resourceType
 		if (!systemTagsAllowResourceType(tags, resourceType)) {
-			return new ArrayList<Post<T>>();
+			return new ArrayList<>();
 		}
-		final DBSession session = this.openSession();
-		try {
+		try (final DBSession session = this.openSession()) {
 			/*
 			 * if (resourceType == Resource.class) { yes, this IS unsave and
 			 * indeed it BREAKS restrictions on generic-constraints. it is the
@@ -739,9 +773,7 @@ public class DBLogic implements LogicInterface {
 				this.permissionDBManager.ensureIsAdminOrSelfOrHasGroupRoleOrHigher(this.loginUser, groupingName, GroupRole.USER);
 			}
 			if (resourceType == BibTex.class) {
-				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
-				// sets the search type to ealasticSearch
-				param.setSearchType(searchType);
+				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, queryScope, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
 
 				// check permissions for displaying links to documents
 				final boolean allowedToAccessUsersOrGroupDocuments = this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, session);
@@ -757,42 +789,32 @@ public class DBLogic implements LogicInterface {
 
 				// this is save because of RTTI-check of resourceType argument
 				// which is of class T
-				final List<Post<T>> publications = (List) this.publicationDBManager.getPosts(param, session);
+				final List<Post<R>> publications = (List) this.publicationDBManager.getPosts(param, session);
 				SystemTagsExtractor.handleHiddenSystemTags(publications, this.loginUser.getName());
 				return publications;
 			}
 
 			if (resourceType == Bookmark.class) {
-				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, resourceType, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
-				// sets the search type to ealasticSearch
-				param.setSearchType(searchType);
-				final List<Post<T>> bookmarks = (List) this.bookmarkDBManager.getPosts(param, session);
+				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, resourceType, queryScope, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
+				final List<Post<R>> bookmarks = (List) this.bookmarkDBManager.getPosts(param, session);
 				SystemTagsExtractor.handleHiddenSystemTags(bookmarks, this.loginUser.getName());
 				return bookmarks;
 			}
 
 			if (resourceType == GoldStandardPublication.class) {
-				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
-				// sets the search type to ealasticSearch
-				param.setSearchType(searchType);
-
+				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, queryScope, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
 				return (List) this.goldStandardPublicationDBManager.getPosts(param, session);
 			}
 
 			if (resourceType == GoldStandardBookmark.class) {
-				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, resourceType, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
-				// sets the search type to ealasticSearch
-				param.setSearchType(searchType);
-
+				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, resourceType, queryScope, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
 				return (List) this.goldStandardBookmarkDBManager.getPosts(param, session);
 			}
 
 			throw new UnsupportedResourceTypeException();
 		} catch (final QueryTimeoutException ex) {
 			// if a query times out, we return an empty list
-			return new ArrayList<Post<T>>();
-		} finally {
-			session.close();
+			return new ArrayList<>();
 		}
 	}
 
@@ -968,20 +990,20 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
-		return this.getTags(resourceType, grouping, groupingName, tags, hash, search, SearchType.LOCAL, regex, relation, order, startDate, endDate, start, end);
+		return this.getTags(resourceType, grouping, groupingName, tags, hash, search, QueryScope.LOCAL, regex, relation, order, startDate, endDate, start, end);
 	}
 
 	@Override
-	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		if (GroupingEntity.ALL.equals(grouping)) {
 			this.permissionDBManager.checkStartEnd(this.loginUser, grouping, start, end, "tags");
 		}
 
 		final DBSession session = this.openSession();
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, resourceType, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, null, this.loginUser);
+			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, resourceType, , grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, null, this.loginUser);
 			param.setTagRelationType(relation);
-			param.setSearchType(searchType);
+			param.setQueryScope(queryScope);
 
 			if (resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
 				// this is save because of RTTI-check of resourceType argument
@@ -2142,7 +2164,7 @@ public class DBLogic implements LogicInterface {
 		try {
 			this.handleAdminFilters(filters);
 
-			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, null, groupingEntity, grouping, null, null, null, -1, -1, startDate, endDate, null, filters, this.loginUser);
+			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, null, , groupingEntity, grouping, null, null, null, -1, -1, startDate, endDate, null, filters, this.loginUser);
 			return this.statisticsDBManager.getDocumentStatistics(param, session);
 		} catch (final QueryTimeoutException ex) {
 			// if a query times out, we return 0 (cause we also return empty
@@ -2338,7 +2360,7 @@ public class DBLogic implements LogicInterface {
 		try {
 			this.handleAdminFilters(filters);
 
-			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, resourceType, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
+			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, resourceType, , grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
 			if (resourceType == GoldStandardPublication.class || resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
 				param.setContentTypeByClass(resourceType);
 				return this.statisticsDBManager.getPostStatistics(param, session);
@@ -2367,7 +2389,7 @@ public class DBLogic implements LogicInterface {
 	public List<Tag> getConcepts(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
 		final DBSession session = this.openSession();
 		try {
-			final TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, resourceType, grouping, groupingName, tags, null, null, start, end, null, null, null, null, this.loginUser);
+			final TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, resourceType, , grouping, groupingName, tags, null, null, start, end, null, null, null, null, this.loginUser);
 			param.setConceptStatus(status);
 			return this.tagRelationsDBManager.getConcepts(param, session);
 		} finally {
@@ -2541,7 +2563,7 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public List<User> getUsers(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final UserRelation relation, final String search, final int start, final int end) {
 		// assemble param object
-		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, resourceType, grouping, groupingName, tags, hash, order, start, end, null, null, search, null, this.loginUser);
+		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, resourceType, , grouping, groupingName, tags, hash, order, start, end, null, null, search, null, this.loginUser);
 		param.setUserRelation(relation);
 
 		// check start/end values
@@ -2721,7 +2743,7 @@ public class DBLogic implements LogicInterface {
 	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, final Set<Filter> filters, final Date startDate, final Date endDate, final int start, final int end) {
 		final DBSession session = this.openSession();
 		try {
-			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, resourceType, grouping, groupingName, tags, null, null, start, end, startDate, endDate, null, filters, this.loginUser);
+			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, resourceType, , grouping, groupingName, tags, null, null, start, end, startDate, endDate, null, filters, this.loginUser);
 			if (present(resourceType)) {
 				param.setContentTypeByClass(resourceType);
 			}

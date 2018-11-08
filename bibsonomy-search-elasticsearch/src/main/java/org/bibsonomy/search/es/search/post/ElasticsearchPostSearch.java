@@ -52,6 +52,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.FirstValuePairComparator;
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
@@ -103,8 +104,8 @@ import org.elasticsearch.search.sort.SortOrder;
  * @author dzo
  * @param <R>
  */
-public class EsResourceSearch<R extends Resource> implements PersonSearch, ResourceSearch<R> {
-	private static final Log log = LogFactory.getLog(EsResourceSearch.class);
+public class ElasticsearchPostSearch<R extends Resource> implements PersonSearch, ResourceSearch<R> {
+	private static final Log log = LogFactory.getLog(ElasticsearchPostSearch.class);
 	
 	/** the max offset for suggestions */
 	private static final int MAX_OFFSET = 1024;
@@ -247,7 +248,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @return returns the list of posts
 	 */
 	@Override
-	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final org.bibsonomy.common.enums.SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
+	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final QueryScope queryScope, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
 
 		final ResultList<Post<R>> postList = callSearch(() -> {
 			final ResultList<Post<R>> posts = new ResultList<>();

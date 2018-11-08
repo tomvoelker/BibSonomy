@@ -31,8 +31,7 @@ package org.bibsonomy.common.enums;
  *
  * @author lutful
  */
-@Deprecated // TODO: discuss
-public enum SearchType {
+public enum QueryScope {
 
 	/**
 	 * search public posts of all connected BibSonomy-based systems (including PUMA)

@@ -52,7 +52,7 @@ import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
@@ -619,7 +619,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void getPostsTestBookmarkByTag() {
-		this.getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, SearchType.LOCAL,null,  null /* must be null because order is inferred and not transmitted */, null, null, 7, 1264);
+		this.getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, QueryScope.LOCAL,null,  null /* must be null because order is inferred and not transmitted */, null, null, 7, 1264);
 	}
 	
 	/**
@@ -627,7 +627,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByGroupAndTag() {
-		this.getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null,SearchType.LOCAL, null, null, null, null, 0, 1);
+		this.getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null, QueryScope.LOCAL, null, null, null, null, 0, 1);
 	}
 	
 	/**
@@ -635,7 +635,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByTagWithUmlaut() {
-		this.getPosts(BibTex.class, GroupingEntity.ALL, null, Arrays.asList("blüb"), null, null,SearchType.LOCAL, null, null, null, null, 0, 1);
+		this.getPosts(BibTex.class, GroupingEntity.ALL, null, Arrays.asList("blüb"), null, null, QueryScope.LOCAL, null, null, null, null, 0, 1);
 	}
 	
 	/**
@@ -643,17 +643,17 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByUserAndHash() {
-		this.getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null,SearchType.LOCAL, null, null, null, null, 0, 5);
+		this.getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null, QueryScope.LOCAL, null, null, null, null, 0, 5);
 	}
 	
 	@Test
 	public void getPostsTestWithSearchAndOrder() {
-		this.getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), "search",SearchType.LOCAL, null, Order.FOLKRANK, null, null, 0, 5);
+		this.getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), "search", QueryScope.LOCAL, null, Order.FOLKRANK, null, null, 0, 5);
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final List<Post<T>> expectedPosts = new ArrayList<Post<T>>();
 		expectedPosts.add(ModelUtils.generatePost(resourceType));
 		expectedPosts.get(0).setDescription("erstes");
@@ -663,10 +663,10 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 			expectedPosts.add( (Post) ModelUtils.generatePost(BibTex.class));
 		}
 		
-		EasyMock.expect(this.serverLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search,searchType, filters, order, null, null, start, end)).andReturn(expectedPosts);
+		EasyMock.expect(this.serverLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search, queryScope, filters, order, null, null, start, end)).andReturn(expectedPosts);
 		EasyMock.replay(this.serverLogic);
 
-		final List<Post<T>> returnedPosts = this.clientLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search, searchType, filters, order, null, null, start, end);
+		final List<Post<T>> returnedPosts = this.clientLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search, queryScope, filters, order, null, null, start, end);
 		CommonModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(" + COMMON_USER_PROPERTIES + "|confidence|activationCode|reminderPassword|openID|ldapId|remoteUserIds|prediction|algorithm|mode)|.*\\.date|.*\\.scraperId|.*\\.openURL|.*\\.numberOfRatings|.*\\.rating"));
 		EasyMock.verify(this.serverLogic);
 		assertLogin();
@@ -1003,14 +1003,14 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getTags(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.SearchType, java.lang.String, org.bibsonomy.common.enums.TagSimilarity, org.bibsonomy.model.enums.Order, java.util.Date, java.util.Date, int, int)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getTags(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.QueryScope, java.lang.String, org.bibsonomy.common.enums.TagSimilarity, org.bibsonomy.model.enums.Order, java.util.Date, java.util.Date, int, int)
 	 */
 	@Override
 	public List<Tag> getTags(final Class<? extends Resource> resourceType,
-			final GroupingEntity grouping, final String groupingName, final List<String> tags,
-			final String hash, final String search, final SearchType searchType, final String regex,
-			final TagSimilarity relation, final Order order, final Date startDate, final Date endDate,
-			final int start, final int end) {
+													 final GroupingEntity grouping, final String groupingName, final List<String> tags,
+													 final String hash, final String search, final QueryScope queryScope, final String regex,
+													 final TagSimilarity relation, final Order order, final Date startDate, final Date endDate,
+													 final int start, final int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}

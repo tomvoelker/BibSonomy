@@ -7,7 +7,7 @@ import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
-import org.bibsonomy.search.es.search.post.EsResourceSearch;
+import org.bibsonomy.search.es.search.post.ElasticsearchPostSearch;
 import org.bibsonomy.search.es.testutil.AbstractCommunityPostSearchTest;
 import org.junit.Test;
 
@@ -18,7 +18,7 @@ import org.junit.Test;
  */
 public class ElasticsearchCommunityPostBookmarkManagerITCase extends AbstractCommunityPostSearchTest<GoldStandardBookmark> {
 
-	private static final EsResourceSearch<GoldStandardBookmark> COMMUNITY_BOOKMARK_SEARCH = EsSpringContextWrapper.getContext().getBean("elasticsearchCommunityBookmarkSearch", EsResourceSearch.class);
+	private static final ElasticsearchPostSearch<GoldStandardBookmark> COMMUNITY_BOOKMARK_SEARCH = EsSpringContextWrapper.getContext().getBean("elasticsearchCommunityBookmarkSearch", ElasticsearchPostSearch.class);
 
 	@Test
 	public void testGenerate() {

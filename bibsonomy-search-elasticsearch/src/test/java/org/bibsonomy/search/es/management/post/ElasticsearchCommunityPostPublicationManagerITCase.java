@@ -19,7 +19,7 @@ import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
-import org.bibsonomy.search.es.search.post.EsResourceSearch;
+import org.bibsonomy.search.es.search.post.ElasticsearchPostSearch;
 import org.bibsonomy.search.es.testutil.AbstractCommunityPostSearchTest;
 import org.bibsonomy.util.Sets;
 import org.junit.Test;
@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class ElasticsearchCommunityPostPublicationManagerITCase extends AbstractCommunityPostSearchTest<GoldStandardPublication> {
 
-	private static final EsResourceSearch<GoldStandardPublication> COMMUNITY_PUBLICATION_SEARCH = EsSpringContextWrapper.getContext().getBean("elasticsearchCommunityPublicationSearch", EsResourceSearch.class);
+	private static final ElasticsearchPostSearch<GoldStandardPublication> COMMUNITY_PUBLICATION_SEARCH = EsSpringContextWrapper.getContext().getBean("elasticsearchCommunityPublicationSearch", ElasticsearchPostSearch.class);
 
 	private static final ElasticsearchCommunityPostManager<GoldStandardPublication> MANAGER = EsSpringContextWrapper.getContext().getBean("elasticsearchCommunityPublicationManager", ElasticsearchCommunityPostManager.class);
 

@@ -28,14 +28,16 @@ package org.bibsonomy.services.searcher;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
+import org.bibsonomy.services.searcher.query.PostSearchQuery;
 
 /**
  * Interface for resource search operations
@@ -47,6 +49,23 @@ import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 public interface ResourceSearch<R extends Resource> {
 
 	/**
+	 * @param loggedinUser the logged in user
+	 * @param allowedGroups the groups pf the loggedinUser
+	 * @param postQuery the query with all query parameters
+	 * @return all posts matching the search query
+	 */
+	List<Post<R>> getPosts(final String loggedinUser, Set<String> allowedGroups, final PostSearchQuery<R> postQuery);
+
+	/**
+	 *
+	 * @param loggedinUser
+	 * @param allowedGroups
+	 * @param postQuery
+	 * @return tags that are used for the posts matching the search query
+	 */
+	List<Tag> getTags(final String loggedinUser, Set<String> allowedGroups, final PostSearchQuery<R> postQuery);
+
+	/**
 	 * search for posts using a full text search index
 	 * 
 	 * @param userName
@@ -54,7 +73,7 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param requestedGroupName
 	 * @param requestedRelationNames @Deprecated TODO: (spheres) remove
 	 * @param allowedGroups
-	 * @param searchType 
+	 * @param queryScope
 	 * @param searchTerms
 	 * @param titleSearchTerms
 	 * @param authorSearchTerms
@@ -69,11 +88,12 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param offset
 	 * @return a list of posts containing the search result
 	 */
+	@Deprecated
 	public List<Post<R>> getPosts(
-			final String userName, final String requestedUserName, String requestedGroupName, 
-			final List<String> requestedRelationNames,
-			final Collection<String> allowedGroups,final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, 
-			final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset);
+					final String userName, final String requestedUserName, String requestedGroupName,
+					final List<String> requestedRelationNames,
+					final Collection<String> allowedGroups, final QueryScope queryScope, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey,
+					final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset);
 
 	/**
 	 * @param options options about the search including the querystring
@@ -101,6 +121,7 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param offset
 	 * @return the tag cloud for the given search
 	 */
+	@Deprecated
 	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexkey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset);
 
 }
