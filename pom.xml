@@ -767,5 +767,5 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	<version>3.8.16</version>
+	<version>3.8.17</version>
 </project>
