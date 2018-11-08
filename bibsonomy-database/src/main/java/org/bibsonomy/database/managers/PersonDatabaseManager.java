@@ -545,14 +545,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * @param options
-	 * @return
-	 */
-	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options) {
-		return this.personSearch.getPersonSuggestion(options);
-	}
-
-	/**
 	 * based on the query this logic returns all matching persons
 	 * @param query
 	 * @return

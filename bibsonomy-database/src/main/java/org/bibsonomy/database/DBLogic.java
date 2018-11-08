@@ -146,7 +146,6 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
-import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
@@ -3361,12 +3360,6 @@ public class DBLogic implements LogicInterface {
 			// add public spam group to the groups of the loggedin users
 			this.loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));
 		}
-	}
-
-
-	@Override
-	public List<ResourcePersonRelation> getPersonSuggestion(final PersonSuggestionQueryBuilder builder) {
-		return this.personDBManager.getPersonSuggestion(builder);
 	}
 
 	@Override

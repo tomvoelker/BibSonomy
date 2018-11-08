@@ -841,14 +841,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
-	 */
-	@Override
-	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder builder) {
-		return this.logicinterface.getPersonSuggestion(builder);
-	}
-	
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPublicationSuggestion(java.lang.String)
 	 */
 	@Override

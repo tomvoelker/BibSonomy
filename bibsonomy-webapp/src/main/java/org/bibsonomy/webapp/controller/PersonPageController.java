@@ -105,8 +105,6 @@ public class PersonPageController extends SingleResourceListController implement
 			}
 
 			switch(formAction) {
-				case "conflictMerge": return this.conflictMerge(command);
-				case "getConflict": return this.getConflicts(command);
 				case "update": return this.updateAction(command);
 				case "addName": return this.addNameAction(command);
 				case "deleteName": return this.deleteNameAction(command);
@@ -119,8 +117,10 @@ public class PersonPageController extends SingleResourceListController implement
 				case "link": return this.linkAction(command);
 				case "search": return this.searchAction(command);
 				case "searchPub": return this.searchPubAction(command);
-				case "merge": return this.mergeAction(command);
 				case "searchPubAuthor": return this.searchPubAuthorAction(command);
+				case "merge": return this.mergeAction(command);
+				case "conflictMerge": return this.conflictMerge(command);
+				case "getConflict": return this.getConflicts(command);
 
 				default: return indexAction();
 			}
@@ -266,7 +266,7 @@ public class PersonPageController extends SingleResourceListController implement
 						.withRelationType(PersonResourceRelationType.AUTHOR)
 						.preferUnlinked(true);
 
-		final List<ResourcePersonRelation> suggestionsPerson = this.logic.getPersonSuggestion(builder);
+		final List<ResourcePersonRelation> suggestionsPerson = null; // FIXME: person change: adapt: this.logic.getPersonSuggestion(builder);
 		final List<Post<BibTex>> suggestionsPub = this.logic.getPublicationSuggestion(command.getFormSelectedName());
 		
 		final JSONArray array = new JSONArray();
