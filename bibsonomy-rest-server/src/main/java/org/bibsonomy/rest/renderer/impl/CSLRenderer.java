@@ -27,6 +27,7 @@
 package org.bibsonomy.rest.renderer.impl;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +39,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.layout.csl.CslModelConverter;
 import org.bibsonomy.layout.csl.model.Record;
+import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.ViewModel;
@@ -99,7 +101,7 @@ public class CSLRenderer extends AbstractPostExportRenderer {
 			LOGGER.error(ex);
 		}
 	}
-	
+
 	@Override
 	public void serializeError(final Writer writer, final String errorMessage) {
 		final Map<String, String> errorMsg = new HashMap<String, String>();
