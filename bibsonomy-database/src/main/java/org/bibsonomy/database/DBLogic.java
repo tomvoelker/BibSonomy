@@ -481,11 +481,8 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void createSyncService(final SyncService service, final boolean server) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			this.syncDBManager.createSyncService(service, server, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -499,11 +496,8 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void deleteSyncService(final URI service, final boolean server) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			this.syncDBManager.deleteSyncService(service, server, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -517,11 +511,8 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void createSyncServer(final String userName, final SyncService server) {
 		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			this.syncDBManager.createSyncServerForUser(userName, server, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -535,11 +526,8 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void updateSyncServer(final String userName, final SyncService service, final SyncSettingsUpdateOperation operation) {
 		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			this.syncDBManager.updateSyncServerForUser(userName, service, operation, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -818,11 +806,8 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) throws ObjectMovedException, ObjectNotFoundException {
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			return this.getPostDetails(resourceHash, userName, session);
-		} finally {
-			session.close();
 		}
 	}
 

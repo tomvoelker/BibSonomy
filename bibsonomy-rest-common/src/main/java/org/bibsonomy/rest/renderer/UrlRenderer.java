@@ -101,9 +101,7 @@ public class UrlRenderer {
 	 * @return a urlbuilder for the group url
 	 */
 	protected UrlBuilder getUrlBuilderForGroup(final String name) {
-		final UrlBuilder builder = this.getUrlBuilderForGroups();
-		builder.addPathElement(name);
-		return builder;
+		return this.getUrlBuilderForGroups().addPathElement(name);
 	}
 
 	/** Creates a URL which points to the given resource.
