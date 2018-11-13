@@ -56,9 +56,9 @@ public class PostPersonMergeStrategy extends AbstractUpdateStrategy {
 		}
 
 		// FIXME Should normally be done as a api call
-		personMergeTarget.getMainName().setMain(false);
+		personToMerge.getMainName().setMain(false);
 		personToMerge.setMainName(personMergeTarget.getMainName());
-		this.getLogic().updatePerson(personMergeTarget, PersonUpdateOperation.UPDATE_NAMES);
+		this.getLogic().updatePerson(personToMerge, PersonUpdateOperation.UPDATE_NAMES);
 
 		PersonMatch personMatch = this.getLogic().getPersonMatches(personMergeTargetId).stream().
 						filter(p -> p.getPerson2().getPersonId().equals(personToMergeId)).findAny().orElse(null);
