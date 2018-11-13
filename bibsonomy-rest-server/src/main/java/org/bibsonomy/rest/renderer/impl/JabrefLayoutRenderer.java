@@ -28,7 +28,6 @@ package org.bibsonomy.rest.renderer.impl;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.List;
@@ -191,7 +190,7 @@ public class JabrefLayoutRenderer implements Renderer {
 	}
 
 	@Override
-	public void serializePersonMatch(StringWriter writer, PersonMatch match, ViewModel viewModel) {
+	public void serializePersonMatch(Writer writer, PersonMatch match, ViewModel viewModel) {
 		throw new UnsupportedOperationException();
 	}
 

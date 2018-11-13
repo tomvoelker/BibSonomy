@@ -423,12 +423,12 @@ public class PersonNameUtils {
 	 */
 	public static boolean containsPerson(PersonName person, List<PersonName> persons, boolean normPersonNames) {
 		if (normPersonNames) {
-			person = normalizePersonName(person);
+			person = cleanAndSoftNormalizeName(person, true);
 		}
 		if (present(persons)) {
 			for (PersonName personToCheck : persons) {
 				if (normPersonNames) {
-					personToCheck = normalizePersonName(personToCheck);
+					personToCheck = cleanAndSoftNormalizeName(personToCheck, true);
 				}
 				if (personToCheck.equals(person)) {
 					return true;
@@ -441,19 +441,19 @@ public class PersonNameUtils {
 	/**
 	 * @param person
 	 * @param persons
-	 * @param normPersonNames 
+	 * @param normPersonNames if true the person names are normalized (this also includes calling BibTexUtils.cleanBibTex
 	 * @return all position indices
 	 */
 	public static SortedSet<Integer> getPositionsInPersonList(PersonName person, List<PersonName> persons, boolean normPersonNames) {
 		final SortedSet<Integer> positions = new TreeSet<>();
 		if (normPersonNames) {
-			person = normalizePersonName(person);
+			person = cleanAndSoftNormalizeName(person, true);
 		}
 		if (present(persons)) {
 			int index = 0;
 			for (PersonName personToCheck : persons) {
 				if (normPersonNames) {
-					personToCheck = normalizePersonName(personToCheck);
+					personToCheck = cleanAndSoftNormalizeName(personToCheck, true);
 				}
 				if (personToCheck.equals(person)) {
 					positions.add(Integer.valueOf(index));

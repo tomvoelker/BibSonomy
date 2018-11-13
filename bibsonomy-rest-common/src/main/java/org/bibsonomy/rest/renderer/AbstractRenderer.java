@@ -29,14 +29,19 @@ package org.bibsonomy.rest.renderer;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Reader;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.HashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -654,7 +659,7 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	@Override
-	public void serializePersonMatch(StringWriter writer, PersonMatch match, ViewModel viewModel) {
+	public void serializePersonMatch(Writer writer, PersonMatch match, ViewModel viewModel) {
 		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
 		xmlDoc.setPersonMatch(createXmlPersonMatch(match));
 		serialize(writer, xmlDoc);
