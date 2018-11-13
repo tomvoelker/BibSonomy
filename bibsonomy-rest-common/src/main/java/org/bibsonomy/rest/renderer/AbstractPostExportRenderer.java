@@ -28,7 +28,6 @@ package org.bibsonomy.rest.renderer;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
 import java.util.Set;
@@ -94,7 +93,7 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	 * @see org.bibsonomy.rest.renderer.Renderer#serializePersonMatch(java.io.Writer, org.bibsonomy.model.PersonMatch, org.bibsonomy.rest.ViewModel)
 	 */
 	@Override
-	public void serializePersonMatch(StringWriter writer, PersonMatch match, ViewModel viewModel) {
+	public void serializePersonMatch(Writer writer, PersonMatch match, ViewModel viewModel) {
 		this.handleUnsupportedMediaType();
 	}
 
