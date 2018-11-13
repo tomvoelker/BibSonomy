@@ -51,7 +51,7 @@ import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.GoldStandard;
@@ -629,7 +629,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	protected Post<RESOURCE> getPostDetails(final String intraHash, final String userName) {
 		try {
 			return (Post<RESOURCE>) this.logic.getPostDetails(intraHash, userName);
-		} catch (final ResourceMovedException e) {
+		} catch (final ObjectMovedException e) {
 			/*
 			 * getPostDetails() has a redirect mechanism that checks for posts
 			 * in the log tables. If it find's a post with the given hash there,

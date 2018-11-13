@@ -54,7 +54,7 @@ import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.DuplicatePostInSnippetErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -764,7 +764,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		boolean postExisted = false;
 		try {
 			postExisted = present(this.logic.getPostDetails(intraHash, userName));
-		} catch (final ResourceMovedException ex) {
+		} catch (final ObjectMovedException ex) {
 			log.debug("Object was moved");
 		}
 

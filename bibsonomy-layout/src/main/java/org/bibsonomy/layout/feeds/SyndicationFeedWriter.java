@@ -96,7 +96,7 @@ public class SyndicationFeedWriter<RESOURCE extends Resource> {
 	public SyndFeed createFeed (final String title, final String path, final String description, final List<Post<RESOURCE>> posts) {
 		final SyndFeed feed = createFeed(title, path, description);
 
-		final List<SyndEntry> entries = new LinkedList<SyndEntry>();
+		final List<SyndEntry> entries = new LinkedList<>();
 
 		for (final Post<RESOURCE> post: posts) {
 			final SyndEntry entry = new SyndEntryImpl();
@@ -109,15 +109,15 @@ public class SyndicationFeedWriter<RESOURCE extends Resource> {
 			if (resource instanceof Bookmark) {
 				entry.setLink(((Bookmark) resource).getUrl());
 			} else {
-				entry.setLink(urlGenerator.getPostUrl(post));
+				entry.setLink(this.urlGenerator.getPostUrl(post));
 			}
 			entry.setPublishedDate(post.getDate());
 			entry.setAuthor(post.getUser().getName());
-			entry.setUri(urlGenerator.getPostUrl(post));
+			entry.setUri(this.urlGenerator.getPostUrl(post));
 			/*
 			 * add the tags as categories
 			 */
-			final List<SyndCategory> categories = new LinkedList<SyndCategory>();
+			final List<SyndCategory> categories = new LinkedList<>();
 			for (final Tag tag: post.getTags()) {
 				final SyndCategory category = new SyndCategoryImpl();
 				category.setName(tag.getName());
