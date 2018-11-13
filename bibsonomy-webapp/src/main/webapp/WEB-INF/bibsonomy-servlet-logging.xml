@@ -45,15 +45,16 @@
 		<property name="client" ref="loggingSqlMapClient" />
 	</bean>
 	
-	<bean id="loggingDataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" parent="basicDataSource">
+	<bean id="loggingDataSource" class="${database.datasource.class}" parent="basicDataSource">
 		<property name="driverClassName" value="${database.clicklogger.driverClassName}" />
 		<property name="url" value="${database.clicklogger.url}" />
 		<property name="username" value="${database.clicklogger.username}" />
 		<property name="password" value="${database.clicklogger.password}" />
 		<property name="maxIdle" value="${database.clicklogger.maxIdle}" />
-		<property name="maxActive" value="${database.clicklogger.maxActive}" />
-		<property name="maxWait" value="${database.clicklogger.maxWait}" />
-		<property name="removeAbandoned" value="${database.clicklogger.removeAbandoned}" />
+		<property name="maxTotal" value="${database.clicklogger.maxTotal}" />
+		<property name="maxWaitMillis" value="${database.clicklogger.maxWait}" />
+		<property name="removeAbandonedOnMaintenance" value="${database.clicklogger.removeAbandoned}" />
+		<property name="removeAbandonedOnBorrow" value="${database.clicklogger.removeAbandoned}" />
 		<property name="removeAbandonedTimeout" value="${database.clicklogger.removeAbandonedTimeout}" />
 	</bean>
 </beans>
