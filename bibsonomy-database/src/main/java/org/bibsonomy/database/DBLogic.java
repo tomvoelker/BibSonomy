@@ -149,6 +149,7 @@ import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.Query;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
@@ -898,7 +899,12 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-	
+
+	@Override
+	public List<Group> getGroups(GroupQuery query) {
+		return Collections.emptyList();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getDeletedGroupUsers(int, int)

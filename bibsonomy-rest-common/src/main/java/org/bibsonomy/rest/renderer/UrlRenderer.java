@@ -38,6 +38,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.factories.ResourceFactory;
+import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationStatus;
@@ -505,15 +506,14 @@ public class UrlRenderer {
 		return builder.asString();
 	}
 
-	/**
-	 * @param start
-	 * @param end
-	 * @return the groups overview url
-	 */
-	public String createHrefForGroups(final int start, final int end) {
-		final UrlBuilder builder = this.getUrlBuilderForGroups();
-		applyStartEnd(builder, start, end);
-		return builder.asString();
+	public UrlBuilder createUrlBuilderForGroups(GroupQuery query) {
+		final UrlBuilder urlBuilder = getUrlBuilderForGroups();
+		if (present(query.getExternalId())) {
+			urlBuilder.addParameter("externalId", query.getExternalId());
+		} else {
+			applyStartEnd(urlBuilder, query.getStart(), query.getEnd());
+		}
+		return urlBuilder;
 	}
 
 	/**

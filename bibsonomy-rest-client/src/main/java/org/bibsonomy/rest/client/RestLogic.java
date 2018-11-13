@@ -62,6 +62,9 @@ import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.logic.query.GroupQuery;
+import org.bibsonomy.model.logic.query.Query;
+import org.bibsonomy.model.logic.querybuilder.GroupQueryBuilder;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationData;
@@ -232,7 +235,12 @@ public class RestLogic extends AbstractLogicInterface {
 		if (pending) {
 			throw new UnsupportedOperationException("quering for pending groups not supported");
 		}
-		return execute(new GetGroupListQuery(start, end));
+		return getGroups(new GroupQueryBuilder().setStart(start).setEnd(end).createGroupQuery());
+	}
+
+	@Override
+	public List<Group> getGroups(GroupQuery query) {
+		return execute(new GetGroupListQuery(query));
 	}
 
 	@Override

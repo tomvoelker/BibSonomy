@@ -61,6 +61,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.Query;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.SyncLogicInterface;
@@ -178,6 +179,13 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @return a set of groups, an empty set else
 	 */
 	public List<Group> getGroups(boolean pending, String userName, int start, int end);
+
+	/**
+	 * Returns all groups of the system.
+	 * @param query a query object to select groups
+	 * @return a set of groups, an empty set else
+	 */
+	public List<Group> getGroups(GroupQuery query);
 
 	/**
 	 * Returns a list of all deleted group users of the system.

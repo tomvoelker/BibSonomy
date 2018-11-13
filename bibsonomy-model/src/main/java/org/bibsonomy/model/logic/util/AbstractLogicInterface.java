@@ -78,6 +78,7 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.Query;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
@@ -504,6 +505,15 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public List<Group> getGroups(boolean pending, String userName, int start, int end) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(query)
+	 */
+	@Override
+	public List<Group> getGroups(GroupQuery query) {
 		this.doDefaultAction();
 		return null;
 	}
