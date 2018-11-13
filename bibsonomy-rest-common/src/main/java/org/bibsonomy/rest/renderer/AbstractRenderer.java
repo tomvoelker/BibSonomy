@@ -45,10 +45,8 @@ import java.util.Set;
 import java.util.HashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.Map;
 import java.util.function.Supplier;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -97,6 +95,7 @@ import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
 import org.bibsonomy.rest.renderer.xml.GroupType;
 import org.bibsonomy.rest.renderer.xml.GroupsType;
 import org.bibsonomy.rest.renderer.xml.LinkableType;
+import org.bibsonomy.rest.renderer.xml.PersonMatchType;
 import org.bibsonomy.rest.renderer.xml.PersonNameType;
 import org.bibsonomy.rest.renderer.xml.PersonType;
 import org.bibsonomy.rest.renderer.xml.PostType;
@@ -660,7 +659,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	@Override
 	public void serializePersonMatch(Writer writer, PersonMatch match, ViewModel viewModel) {
-		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
+		final BibsonomyXML xmlDoc = buildEmptyBibsonomyXMLWithOK();
 		xmlDoc.setPersonMatch(createXmlPersonMatch(match));
 		serialize(writer, xmlDoc);
 	}
