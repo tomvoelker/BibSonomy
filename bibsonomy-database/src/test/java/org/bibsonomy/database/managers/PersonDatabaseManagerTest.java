@@ -80,7 +80,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		PUBLICATION_DATABASE_MANAGER = testDatabaseContext.getBean(BibTexDatabaseManager.class);
 		COMMUNITY_DATABASE_MANAGER = testDatabaseContext.getBean(GoldStandardPublicationDatabaseManager.class);
 	}
-	
+
 	/**
 	 * Initializes the test environment for this class
 	 * NOTE: we have to use @Before because we need the DB session to access the database
@@ -131,7 +131,6 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void testGetPersonById() {
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById(PERSON_ID, this.dbSession);
 		assertThat(person.getPersonId(), is(PERSON_ID));
-
 	}
 
 	/**
