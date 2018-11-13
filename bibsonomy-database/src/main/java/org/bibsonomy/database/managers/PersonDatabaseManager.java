@@ -874,7 +874,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		// one copy remains because j is always bigger than i
 		for (int i = 0; i < matches.size() - 1; i++) {
 			for (int j = i + 1; j < matches.size(); j++) {
-				if (matches.get(i).equals(matches.get(j)) == 0) {
+				if (matches.get(i).equals(matches.get(j))) {
 					// both personId's are the same
 					dupes.add(matches.get(i));
 				}
@@ -893,7 +893,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			}
 			// get userDenies without duplicates
 			combinedMerge.setUserDenies(this.queryForList("getDeniesForMatch", combinedMerge.getMatchID(), String.class, session));
-			if (combinedMerge.getUserDenies().size() >= PersonMatch.denieThreshold) {
+			if (combinedMerge.getUserDenies().size() >= PersonMatch.MAX_NUMBER_OF_DENIES) {
 				// deny merge for all if the total user deny count is bigger
 				// than the deny threshold
 				this.delete("denyMatchByID", new DenyMatchParam(combinedMerge.getMatchID(), loggedInUser.getName()), session);
@@ -926,7 +926,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			log.error(e);
 		}
 		return edit;
-
 	}
 
 	/**
@@ -940,7 +939,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	public void denyMatch(PersonMatch match, String userName, DBSession session) {
 		if (!match.getUserDenies().contains(userName)) {
 			DenyMatchParam param = new DenyMatchParam(match.getMatchID(), userName);
-			if (match.getUserDenies().size() == PersonMatch.denieThreshold - 1) {
+			if (match.getUserDenies().size() == PersonMatch.MAX_NUMBER_OF_DENIES - 1) {
 				// deny match for all
 				this.delete("denyMatchByID", param, session);
 			}

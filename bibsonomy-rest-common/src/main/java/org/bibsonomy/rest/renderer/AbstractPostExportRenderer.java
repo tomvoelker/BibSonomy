@@ -38,11 +38,14 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.data.DataAccessor;
@@ -94,7 +97,31 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	 * @see org.bibsonomy.rest.renderer.Renderer#serializePerson(java.io.Writer, org.bibsonomy.model.Person, org.bibsonomy.rest.ViewModel)
 	 */
 	@Override
-	public void serializePerson(Writer writer, Person person, ViewModel viewModel) {handleUnsupportedMediaType();}
+	public void serializePerson(Writer writer, Person person, ViewModel viewModel) {this.handleUnsupportedMediaType();}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#serializePersonMatch(java.io.Writer, org.bibsonomy.model.PersonMatch, org.bibsonomy.rest.ViewModel)
+	 */
+	@Override
+	public void serializePersonMatch(Writer writer, PersonMatch match, ViewModel viewModel) {
+		this.handleUnsupportedMediaType();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#serializeProject(java.io.Writer, org.bibsonomy.model.cris.Project, org.bibsonomy.rest.ViewModel)
+	 */
+	@Override
+	public void serializeProject(Writer writer, Project project, ViewModel viewModel) {
+		handleUnsupportedMediaType();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#serializeCRISLink(java.io.Writer, org.bibsonomy.model.cris.CRISLink, org.bibsonomy.rest.ViewModel)
+	 */
+	@Override
+	public void serializeCRISLink(Writer writer, CRISLink crisLink, ViewModel viewModel) {
+		handleUnsupportedMediaType();
+	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.renderer.Renderer#serializeResourcePersonRelation(java.io.Writer, org.bibsonomy.model.ResourcePersonRelation, org.bibsonomy.rest.ViewModel)
@@ -187,6 +214,25 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 		this.handleUnsupportedMediaType();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#serializeProjectId(java.io.Writer, java.lang.String)
+	 */
+	@Override
+	public void serializeProjectId(Writer writer, String projectId) {
+		handleUnsupportedMediaType();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#serializeCRISLinkId(java.io.Writer, java.lang.String)
+	 */
+	@Override
+	public void serializeCRISLinkId(Writer writer, String linkId) {
+		handleUnsupportedMediaType();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#serializeResourcePersonRelationId(java.io.Writer, java.lang.String)
+	 */
 	@Override
 	public void serializeResourcePersonRelations(Writer writer, List<ResourcePersonRelation> relations) {
 		this.handleUnsupportedMediaType();
@@ -317,6 +363,22 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	 */
 	@Override
 	public Person parsePerson(Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#parseProject(java.io.Reader)
+	 */
+	@Override
+	public Project parseProject(Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#parseCRISLink(java.io.Reader)
+	 */
+	@Override
+	public CRISLink parseCRISLink(Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
 

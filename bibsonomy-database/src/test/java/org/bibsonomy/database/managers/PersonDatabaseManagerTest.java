@@ -291,7 +291,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		newMatches = PERSON_DATABASE_MANAGER.getMatchesForFilterWithUserName(deniedMatch.getPerson1().getPersonId(), loginUser.getName(), this.dbSession);
 		assertThat(newMatches.size(), is(0));
-		for (int i = 2; i < PersonMatch.denieThreshold; i++) {
+		for (int i = 2; i < PersonMatch.MAX_NUMBER_OF_DENIES; i++) {
 			PERSON_DATABASE_MANAGER.denyMatch(deniedMatch, "testuser" + i, this.dbSession);
 		}
 
@@ -300,7 +300,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertThat(matches.size(), is(1));
 
 		deniedMatch = PERSON_DATABASE_MANAGER.getMatch(deniedMatch.getMatchID(), this.dbSession);
-		PERSON_DATABASE_MANAGER.denyMatch(deniedMatch, "testuser" + PersonMatch.denieThreshold, this.dbSession);
+		PERSON_DATABASE_MANAGER.denyMatch(deniedMatch, "testuser" + PersonMatch.MAX_NUMBER_OF_DENIES, this.dbSession);
 		matches = PERSON_DATABASE_MANAGER.getMatches(this.dbSession);
 		assertThat(matches.size(), is(0));
 	}

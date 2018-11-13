@@ -54,16 +54,29 @@ public class PersonsHandler implements ContextHandler {
 			// /persons/[personID]
 			case 1:
 				return createPersonStrategy(context, httpMethod, urlTokens.next());
-			// /persons/[personID]/relations
+			// /persons/[personID]/relations|merge
 			case 2:
 				personId = urlTokens.next();
 				req = urlTokens.next();
 				if (RESTConfig.RELATION_PARAM.equalsIgnoreCase(req)) {
 					return createPersonRelationStrategy(context, httpMethod, personId);
 				}
+				if (RESTConfig.PERSONS_MERGE_URL.equalsIgnoreCase(req)) {
+					return createPersonMergeStrategy(context, httpMethod, personId);
+				}
 				break;
 		}
 		throw new NoSuchResourceException("cannot process url (no strategy available) - please check url syntax");
+	}
+
+	private Strategy createPersonMergeStrategy(Context context, HttpMethod httpMethod, String personId) {
+		switch (httpMethod) {
+			case POST:
+				return new PostPersonMergeStrategy(context, personId,
+						context.getStringAttribute("source", ""));
+			default:
+				throw new UnsupportedHttpMethodException(httpMethod, "PersonMerge");
+		}
 	}
 
 	private Strategy createPersonStrategy(Context context, HttpMethod httpMethod, String personId) {
