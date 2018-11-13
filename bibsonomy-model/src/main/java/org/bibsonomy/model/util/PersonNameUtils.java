@@ -400,6 +400,15 @@ public class PersonNameUtils {
 		return newName;
 	}
 
+	private static PersonName cleanAndSoftNormalizeName(PersonName person, boolean lowercase, boolean normFirstName) {
+		final PersonName personName = cleanAndSoftNormalizeName(person, lowercase);
+		if (normFirstName) {
+			return new PersonName(getFirst(personName.getFirstName()), personName.getLastName());
+		}
+
+		return personName;
+	}
+
 	/**
 	 * @param namePart
 	 * @return
@@ -423,12 +432,12 @@ public class PersonNameUtils {
 	 */
 	public static boolean containsPerson(PersonName person, List<PersonName> persons, boolean normPersonNames) {
 		if (normPersonNames) {
-			person = cleanAndSoftNormalizeName(person, true);
+			person = cleanAndSoftNormalizeName(person, true, true);
 		}
 		if (present(persons)) {
 			for (PersonName personToCheck : persons) {
 				if (normPersonNames) {
-					personToCheck = cleanAndSoftNormalizeName(personToCheck, true);
+					personToCheck = cleanAndSoftNormalizeName(personToCheck, true, true);
 				}
 				if (personToCheck.equals(person)) {
 					return true;
@@ -447,13 +456,13 @@ public class PersonNameUtils {
 	public static SortedSet<Integer> getPositionsInPersonList(PersonName person, List<PersonName> persons, boolean normPersonNames) {
 		final SortedSet<Integer> positions = new TreeSet<>();
 		if (normPersonNames) {
-			person = cleanAndSoftNormalizeName(person, true);
+			person = cleanAndSoftNormalizeName(person, true, true);
 		}
 		if (present(persons)) {
 			int index = 0;
 			for (PersonName personToCheck : persons) {
 				if (normPersonNames) {
-					personToCheck = cleanAndSoftNormalizeName(personToCheck, true);
+					personToCheck = cleanAndSoftNormalizeName(personToCheck, true, true);
 				}
 				if (personToCheck.equals(person)) {
 					positions.add(Integer.valueOf(index));
@@ -464,4 +473,6 @@ public class PersonNameUtils {
 		}
 		return positions;
 	}
+
+
 }
