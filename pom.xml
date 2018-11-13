@@ -772,5 +772,5 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	<version>3.8.15-SNAPSHOT</version>
+	<version>3.8.18</version>
 </project>
