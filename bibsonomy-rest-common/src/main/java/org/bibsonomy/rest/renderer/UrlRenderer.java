@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.GoldStandardRelation;
@@ -392,8 +393,16 @@ public class UrlRenderer {
 		return builder;
 	}
 
+	public UrlBuilder createUrlBuilderForPersons(String personId) {
+		return createUrlBuilderForPersons().addPathElement(personId);
+	}
+
 	public UrlBuilder createUrlBuilderForPersons() {
 		return createUrlBuilderForApi().addPathElement(RESTConfig.PERSONS_URL);
+	}
+
+	public UrlBuilder createUrlBuilderForPersons(String personId, PersonUpdateOperation operation) {
+		return createUrlBuilderForPersons(personId).addParameter("operation", operation.name().toLowerCase());
 	}
 
 	public UrlBuilder createUrlBuilderForProjects(String projectId) {

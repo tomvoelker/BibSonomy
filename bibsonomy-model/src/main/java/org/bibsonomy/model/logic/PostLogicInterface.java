@@ -35,8 +35,8 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -100,13 +100,13 @@ public interface PostLogicInterface {
 	 * @param resourceHash hash value of the corresponding resource
 	 * @param userName name of the post-owner
 	 * @return the post's details, null else
-	 * @throws ResourceMovedException  - when no resource 
+	 * @throws ObjectMovedException  - when no resource
 	 * with that hash exists for that user, but once a resource 
 	 * with that hash existed that has been moved. The new hash 
 	 * is returned inside the exception. 
 	 * @throws ObjectNotFoundException 
 	 */
-	public Post<? extends Resource> getPostDetails(String resourceHash, String userName) throws ResourceMovedException, ObjectNotFoundException;
+	public Post<? extends Resource> getPostDetails(String resourceHash, String userName) throws ObjectMovedException, ObjectNotFoundException;
 
 	/**
 	 * Removes the given posts - identified by the connected resource's hashes -

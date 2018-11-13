@@ -202,7 +202,7 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	 */
 	@Override
 	public void serializePersonId(Writer writer, String personId) {
-		handleUnsupportedMediaType();
+		this.handleUnsupportedMediaType();
 	}
 
 	/* (non-Javadoc)
@@ -225,8 +225,8 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	 * @see org.bibsonomy.rest.renderer.Renderer#serializeResourcePersonRelationId(java.io.Writer, java.lang.String)
 	 */
 	@Override
-	public void serializeResourcePersonRelationId(Writer writer, String resourcePersonRelationId) {
-		handleUnsupportedMediaType();
+	public void serializeResourcePersonRelations(Writer writer, List<ResourcePersonRelation> relations) {
+		this.handleUnsupportedMediaType();
 	}
 
 	/* (non-Javadoc)
@@ -318,14 +318,6 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.Renderer#parseResourcePersonRelationId(java.io.Reader)
-	 */
-	@Override
-	public String parseResourcePersonRelationId(Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.renderer.Renderer#parseGroupId(java.io.Reader)
 	 */
 	@Override
@@ -386,6 +378,11 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	 */
 	@Override
 	public ResourcePersonRelation parseResourcePersonRelation(Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<ResourcePersonRelation> parseResourcePersonRelations(Reader reader) {
 		throw new UnsupportedOperationException();
 	}
 

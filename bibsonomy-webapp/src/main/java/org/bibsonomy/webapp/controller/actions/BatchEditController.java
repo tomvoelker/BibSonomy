@@ -47,8 +47,8 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -715,7 +715,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 								post.setTags(updatedPost.getTags());
 							} catch (final ObjectNotFoundException ex1) {
 								// ignore
-							} catch (final ResourceMovedException ex1) {
+							} catch (final ObjectMovedException ex1) {
 								// ignore
 							}
 						}

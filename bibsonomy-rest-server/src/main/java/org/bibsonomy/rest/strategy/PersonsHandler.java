@@ -26,13 +26,12 @@
  */
 package org.bibsonomy.rest.strategy;
 
+import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
-import org.bibsonomy.rest.strategy.persons.GetPersonStrategy;
-import org.bibsonomy.rest.strategy.persons.PostPersonStrategy;
-import org.bibsonomy.rest.strategy.persons.PostResourcePersonRelationStrategy;
+import org.bibsonomy.rest.strategy.persons.*;
 import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
 
 /**
@@ -52,10 +51,10 @@ public class PersonsHandler implements ContextHandler {
 			// /persons
 			case 0:
 				return createPersonStrategy(context, httpMethod);
-			// /person/[personID]
+			// /persons/[personID]
 			case 1:
 				return createPersonStrategy(context, httpMethod, urlTokens.next());
-			// /persons/[personID]/relation
+			// /persons/[personID]/relations
 			case 2:
 				personId = urlTokens.next();
 				req = urlTokens.next();
@@ -71,6 +70,10 @@ public class PersonsHandler implements ContextHandler {
 		switch (httpMethod) {
 			case GET:
 				return new GetPersonStrategy(context, personId);
+			case PUT:
+				final PersonUpdateOperation operation = PersonUpdateOperation.valueOf(
+						context.getStringAttribute("operation", "update_all").toUpperCase());
+				return new UpdatePersonStrategy(context, personId, operation);
 			default:
 				throw new UnsupportedHttpMethodException(httpMethod, "PersonList");
 		}
@@ -78,6 +81,8 @@ public class PersonsHandler implements ContextHandler {
 
 	private Strategy createPersonRelationStrategy(Context context, HttpMethod httpMethod, String personId) {
 		switch (httpMethod) {
+			case GET:
+				return new GetResourcePersonRelationsStrategy(context, personId);
 			case POST:
 				return new PostResourcePersonRelationStrategy(context, personId);
 			default:

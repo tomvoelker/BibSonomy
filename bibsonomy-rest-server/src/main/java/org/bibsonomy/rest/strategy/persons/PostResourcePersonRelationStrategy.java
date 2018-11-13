@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.rest.strategy.persons;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -53,21 +55,23 @@ public class PostResourcePersonRelationStrategy extends AbstractCreateStrategy {
 
 	@Override
 	protected void render(Writer writer, String relationId) {
-		this.getRenderer().serializeResourcePersonRelationId(writer, relationId);
+		this.getRenderer().serializeResourceHash(writer, relationId);
 	}
 
 	@Override
 	protected String create() {
 		final Person person = this.getLogic().getPersonById(PersonIdType.PERSON_ID, this.personId);
-		if (person.getPersonId() == null) {
+		if (!present(person)) {
 			throw new BadRequestOrResponseException("Person with id " + this.personId + " doesn't exist.");
 		}
 
-		final ResourcePersonRelation resourcePersonRelation = getRenderer().parseResourcePersonRelation(doc);
+		final ResourcePersonRelation resourcePersonRelation = this.getRenderer().parseResourcePersonRelation(this.doc);
+		resourcePersonRelation.setPerson(person);
+
 		try {
 			this.getLogic().createResourceRelation(resourcePersonRelation);
 			final Resource resource = resourcePersonRelation.getPost().getResource();
-			return resource.getInterHash() + "-" + resource.getIntraHash();
+			return resource.getInterHash();
 		} catch (final ResourcePersonAlreadyAssignedException e) {
 			throw new BadRequestOrResponseException(e);
 		}

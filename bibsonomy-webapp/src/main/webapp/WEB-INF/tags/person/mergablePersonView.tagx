@@ -2,19 +2,8 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
-	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
-	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
-	xmlns:per="urn:jsptagdir:/WEB-INF/tags/resources/person"
-	xmlns:tagper="urn:jsptagdir:/WEB-INF/tags/person"
-	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
-	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex">
 
 	<jsp:directive.attribute name="personMatch"
 		type="org.bibsonomy.model.PersonMatch" required="true" />

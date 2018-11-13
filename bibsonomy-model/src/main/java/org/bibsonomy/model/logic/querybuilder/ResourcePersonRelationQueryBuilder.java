@@ -36,7 +36,7 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
  *
  * @author jensi
  */
-public abstract class ResourcePersonRelationQueryBuilder {
+public class ResourcePersonRelationQueryBuilder {
 	private boolean withPersons;
 	private boolean withPosts;
 	private boolean withPersonsOfPosts;
@@ -115,8 +115,6 @@ public abstract class ResourcePersonRelationQueryBuilder {
 	public boolean isWithPersons() {
 		return this.withPersons;
 	}
-	
-	public abstract List<ResourcePersonRelation> getIt();
 
 	public String getInterhash() {
 		return this.interhash;

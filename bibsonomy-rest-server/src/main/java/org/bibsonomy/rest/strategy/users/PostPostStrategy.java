@@ -78,7 +78,7 @@ public class PostPostStrategy extends AbstractCreateStrategy {
 	protected String create() throws InternServerException, BadRequestOrResponseException {
 		final Post<? extends Resource> post = this.parsePost();
 		try {
-			return this.getLogic().createPosts(Arrays.<Post<?>>asList(post)).get(0);
+			return this.getLogic().createPosts(Arrays.asList(post)).get(0);
 		} catch (final DatabaseException de) {
 			for (final String hash: de.getErrorMessages().keySet()) {
 				for (final ErrorMessage em: de.getErrorMessages(hash)) {

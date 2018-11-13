@@ -11,6 +11,7 @@ import org.bibsonomy.model.cris.Project;
 
 /**
  * handles updates regarding cris links
+ *
  * @author dzo
  */
 public class CRISLinkPlugin extends AbstractDatabasePlugin {
@@ -21,7 +22,7 @@ public class CRISLinkPlugin extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onPersonDelete(final Person person, final DBSession session) {
+	public void onPersonDelete(Person person, User user, DBSession session) {
 		this.deleteCRISLinks(person, session);
 	}
 

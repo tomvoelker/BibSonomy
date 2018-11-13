@@ -38,16 +38,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.JobResult;
-import org.bibsonomy.common.enums.ConceptUpdateOperation;
-import org.bibsonomy.common.enums.Filter;
-import org.bibsonomy.common.enums.GroupUpdateOperation;
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.enums.TagRelation;
-import org.bibsonomy.common.enums.TagSimilarity;
-import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.enums.*;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.Document;
@@ -63,7 +54,9 @@ import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -74,6 +67,8 @@ import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.auth.AuthenticationAccessor;
+import org.bibsonomy.rest.client.queries.get.GetPersonByIdQuery;
+import org.bibsonomy.rest.client.queries.get.GetResourcePersonRelationsQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostDocumentQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostQuery;
@@ -83,12 +78,7 @@ import org.bibsonomy.rest.client.queries.delete.RemoveUserFromGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.UnpickClipboardQuery;
 import org.bibsonomy.rest.client.queries.get.*;
 import org.bibsonomy.rest.client.queries.post.*;
-import org.bibsonomy.rest.client.queries.put.ChangeConceptQuery;
-import org.bibsonomy.rest.client.queries.put.ChangeDocumentNameQuery;
-import org.bibsonomy.rest.client.queries.put.ChangeGroupQuery;
-import org.bibsonomy.rest.client.queries.put.ChangePostQuery;
-import org.bibsonomy.rest.client.queries.put.ChangeSyncStatusQuery;
-import org.bibsonomy.rest.client.queries.put.ChangeUserQuery;
+import org.bibsonomy.rest.client.queries.put.*;
 import org.bibsonomy.rest.client.util.FileFactory;
 import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.util.ProgressCallbackFactory;
@@ -156,6 +146,14 @@ public class RestLogic extends AbstractLogicInterface {
 
 		this.authUser = loggedinUser;
 		this.accessor = accessor;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.util.AbstractLogicInterface#doDefaultAction()
+	 */
+	@Override
+	protected void doDefaultAction() {
+		throw new UnsupportedOperationException();
 	}
 
 	private <T> T execute(final AbstractQuery<T> query) {
@@ -504,13 +502,18 @@ public class RestLogic extends AbstractLogicInterface {
 		
 		this.execute(new ChangeDocumentNameQuery(userName, resourceHash, documentName, document));
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.util.AbstractLogicInterface#doDefaultAction()
-	 */
+
 	@Override
-	protected void doDefaultAction() {
-		throw new UnsupportedOperationException();
+	public Person getPersonById(PersonIdType idType, String id) {
+		if (!PersonIdType.PERSON_ID.equals(idType)) {
+			this.doDefaultAction();
+		}
+		return execute(new GetPersonByIdQuery(id));
+	}
+
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(final ResourcePersonRelationQueryBuilder builder) {
+		return this.execute(new GetResourcePersonRelationsQuery(builder.getPersonId()));
 	}
 
 	@Override
@@ -522,6 +525,11 @@ public class RestLogic extends AbstractLogicInterface {
 	@Override
 	public String createPerson(Person person) {
 		return execute(new CreatePersonQuery(person));
+	}
+
+	@Override
+	public void updatePerson(Person person, PersonUpdateOperation operation) {
+		execute(new UpdatePersonQuery(person, operation));
 	}
 
 	@Override
@@ -538,4 +546,5 @@ public class RestLogic extends AbstractLogicInterface {
 	public JobResult createCRISLink(CRISLink link) {
 		return execute(new CreateCRISLinkQuery(link));
 	}
+
 }

@@ -8,11 +8,14 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.MissingObjectErrorMessage;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.enums.CRISEntityType;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.ProjectParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.ProjectOrder;
 import org.bibsonomy.model.enums.ProjectStatus;
@@ -23,6 +26,7 @@ import org.bibsonomy.util.StringUtils;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -34,6 +38,8 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 
 	/** used to get a new project id */
 	private GeneralDatabaseManager generalDatabaseManager;
+
+	private CRISLinkDatabaseManager crisLinkDatabaseManager;
 
 	/** to notify others about project changes */
 	private DatabasePluginRegistry plugins;
@@ -221,6 +227,9 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 			// get the subprojects
 			final List<Project> subProjects = this.getProjectsByParentId(project.getId(), session);
 			project.setSubProjects(subProjects);
+
+			final List<CRISLink> links = this.crisLinkDatabaseManager.loadCRISLinks(project, Collections.singletonList(Person.class), session);
+			project.setCrisLinks(links);
 		}
 
 		return project;
@@ -284,12 +293,22 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 
 	@Override
 	public Integer getIdForLinkable(Project linkable, DBSession session) {
+		final Integer id = linkable.getId();
+		if (present(id)) {
+			return id;
+		}
+
 		final Project project = this.getProjectDetails(linkable.getExternalId(), true, session);
 		if (present(project)) {
 			return project.getId();
 		}
 
 		return null;
+	}
+
+	@Override
+	public List<CRISLink> getLinksForSource(Integer linkId, CRISEntityType crisEntityType, DBSession session) {
+		return new LinkedList<>();
 	}
 
 	/**
@@ -325,5 +344,12 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 	 */
 	public void setStatisticsChain(Chain<Statistics, ProjectQuery> statisticsChain) {
 		this.statisticsChain = statisticsChain;
+	}
+
+	/**
+	 * @param crisLinkDatabaseManager the crisLinkDatabaseManager to set
+	 */
+	public void setCrisLinkDatabaseManager(CRISLinkDatabaseManager crisLinkDatabaseManager) {
+		this.crisLinkDatabaseManager = crisLinkDatabaseManager;
 	}
 }

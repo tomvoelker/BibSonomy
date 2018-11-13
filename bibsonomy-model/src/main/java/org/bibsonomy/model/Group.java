@@ -54,6 +54,11 @@ public class Group implements Serializable {
 	private String name;
 
 	/**
+	 * The parent group.
+	 */
+	private Group parent;
+
+	/**
 	 * The real (long) name of the group.
 	 */
 	private String realname;
@@ -105,11 +110,17 @@ public class Group implements Serializable {
 	/** stores setting regarding publication reporting */
 	private GroupPublicationReportingSettings publicationReportingSettings;
 
+	// (ada) Why does group have a reference to group request!?
 	/** stores information regarding the group request */
 	private GroupRequest groupRequest;
 	
 	private List<GroupMembership> memberships;
 	private List<GroupMembership> pendingMemberships;
+
+	/**
+	 * A list of all subgroups.
+	 */
+	private List<Group> subgroups;
 	
 	/**
 	 * default constructor
@@ -149,7 +160,25 @@ public class Group implements Serializable {
 		this.sharedDocuments = false;
 		this.allowJoin = false;
 	}
-	
+
+	/**
+	 * Gets this groups parent group if it is set.
+	 *
+	 * @return the parent group if set, <code>null</code> otherwise.
+	 */
+	public Group getParent() {
+		return parent;
+	}
+
+	/**
+	 * Sets this groups parent group.
+	 *
+	 * @param parent the parent group.
+	 */
+	public void setParent(Group parent) {
+		this.parent = parent;
+	}
+
 	/**
 	 * @return groupId
 	 */
@@ -323,6 +352,25 @@ public class Group implements Serializable {
 	 */
 	public void setPublicationReportingSettings(GroupPublicationReportingSettings publicationReportingSettings) {
 		this.publicationReportingSettings = publicationReportingSettings;
+	}
+
+	/**
+	 * Gets all direct subgroups for this group.
+	 *
+	 * @return a list of all subgroups for this group.
+	 */
+	public List<Group> getSubgroups() {
+		return subgroups;
+	}
+
+
+	/**
+	 * Sets the subgroups for this group.
+	 *
+	 * @param subgroups a list with subgroups (groups that have this object as a parent).
+	 */
+	public void setSubgroups(List<Group> subgroups) {
+		this.subgroups = subgroups;
 	}
 
 	/**

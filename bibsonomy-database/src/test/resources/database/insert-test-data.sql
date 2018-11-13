@@ -237,17 +237,20 @@ INSERT INTO `friends` VALUES
 -- 
 -- Data for table `groupids`
 -- 
-INSERT INTO `groupids` (`group_name`, `group`, `privlevel`, `sharedDocuments`) VALUES 
-('public',     -2147483648, 1, 0),
-('private',    -2147483647, 1, 0),
-('friends',    -2147483646, 1, 0),
-('public',     0,           1, 0),
-('private',    1,           1, 0),
-('friends',    2,           1, 0),
-('testgroup1', 3,           0, 1),
-('testgroup2', 4,           1, 0),
-('testgroup3', 5,           2, 0),
-('testgroup4', 6,           2, 1);
+INSERT INTO `groupids` (`group_name`, `group`, `parent`, `privlevel`, `sharedDocuments`) VALUES
+('public',          -2147483648, NULL, 1, 0),
+('private',         -2147483647, NULL, 1, 0),
+('friends',         -2147483646, NULL, 1, 0),
+('public',          0,           NULL, 1, 0),
+('private',         1,           NULL, 1, 0),
+('friends',         2,           NULL, 1, 0),
+('testgroup1',      3,           NULL, 0, 1),
+('testgroup2',      4,           NULL, 1, 0),
+('testgroup3',      5,           NULL, 2, 0),
+('testgroup4',      6,           NULL, 2, 1),
+('rootgroup',       9,           NULL, 2, 1),
+('childgroup1',     10,             9, 2, 1),
+('childgroup2',     11,             9, 2, 1);
 
 -- 
 -- Data for table `pending_groupids`
@@ -261,16 +264,19 @@ INSERT INTO `pending_groupids` (`group_name`, `request_user_name`, `request_reas
 -- 
 
 INSERT INTO `group_memberships` VALUES 
-('testuser1', 3, 3, '2007-01-01 01:01:01', 2, 1),
-('testuser2', 3, 3, '2007-01-01 01:01:01', 2, 0),
-('testuser1', 4, 3, '2007-01-01 01:01:01', 2, 1),
-('testuser1', 5, 3, '2007-01-01 01:01:01', 2, 0),
-('testuser1', 6, 3, '2007-01-01 01:01:01', 2, 0),
-('testuser2', 6, 3, '2007-01-01 01:01:01', 2, 0),
-('testgroup1', 3, 3, '2007-01-01 01:01:01', 3, 0),
-('testgroup2', 4, 4, '2007-01-01 01:01:01', 3, 0),
-('testgroup3', 5, 5, '2007-01-01 01:01:01', 3, 0),
-('testgroup3', 6, 6, '2007-01-01 01:01:01', 3, 0);
+('testuser1',   3, 3, '2007-01-01 01:01:01', 2, 1),
+('testuser2',   3, 3, '2007-01-01 01:01:01', 2, 0),
+('testuser1',   4, 3, '2007-01-01 01:01:01', 2, 1),
+('testuser1',   5, 3, '2007-01-01 01:01:01', 2, 0),
+('testuser1',   6, 3, '2007-01-01 01:01:01', 2, 0),
+('testuser2',   6, 3, '2007-01-01 01:01:01', 2, 0),
+('testgroup1',  3, 3, '2007-01-01 01:01:01', 3, 0),
+('testgroup2',  4, 4, '2007-01-01 01:01:01', 3, 0),
+('testgroup3',  5, 5, '2007-01-01 01:01:01', 3, 0),
+('testgroup3',  6, 6, '2007-01-01 01:01:01', 3, 0),
+('rootgroup',   9, 9, '2007-01-01 01:01:01', 3, 0),
+('childgroup1', 10, 10, '2007-01-01 01:01:01', 3, 0),
+('childgroup2', 11, 11, '2007-01-01 01:01:01', 3, 0);
 
 
 
@@ -291,7 +297,7 @@ INSERT INTO `ids` VALUES
 (14, 3,  'message_id'),
 (15, 4, 'comment_id'),
 (16, 12, 'sync_service_id'),
-(17, 7, 'person_change_id'),
+(17, 36, 'person_change_id'),
 (18, 3, 'project_id'),
 (19, 2, 'cris_link_id');
 
@@ -618,6 +624,10 @@ INSERT INTO `user` (`user_name`,`user_email`,`user_password`,`user_password_salt
 ('testgroup2',  'testgroup2@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/testgroup2', 'Test Group 2', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
 ('testgroup3',  'testgroup3@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/testgroup3', 'Test Group 3', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
 ('testgroup4',  'testgroup4@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/testgroup4', 'Test Group 4', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
+('rootgroup',  'rootgroup@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/rootgroup', 'Root Group', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
+
+('childgroup1',  'childgroup1@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/childgroup1', 'Child Group 1', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
+('childgroup2',  'childgroup2@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/childgroup2', 'Child Group 2', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
 ('testspammer', 'testspammer@bibsonomy.org', 'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/',                 'Test Spammer', 1, 'http://sfxserv.rug.ac.be:8888/rug', '2007-02-02 02:02:02', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
 ('testspammer2', 'testspammer@bibsonomy.org', 'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/',                 'Test Spammer', 1, 'http://sfxserv.rug.ac.be:8888/rug', '2007-02-02 02:02:02', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
 ('testuser1',   'testuser1@bibsonomy.org',   'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/user/testuser1',   'Test User 1',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'rja',     '1815-12-10 00:00:00', 0,  'en', 0, 1, 3),
@@ -743,36 +753,46 @@ INSERT INTO `person` (`person_change_id`, `person_id`, `academic_degree`, `user_
 
 
 INSERT INTO `person_name` VALUES
-(6,'Heinrich Georg','Müller','h.muller',0,'2015-07-06 14:23:05','testuserP'),
-(7,'Henner','Schorsche','h.muller',1,'2015-07-06 14:23:05','testuserP'),
-(31, 'Willi', 'Test', 'w.test.1', 1,'2015-07-06 14:23:05','testuserP'),
-(32, 'Willi', 'Test', 'w.test.2', 1,'2015-07-06 14:23:05','testuserP'), 
-(33, 'Willi', 'Test', 'w.test.3', 1,'2015-07-06 14:23:05','testuserP'), 
-(34, 'Will', 'Test', 'w.test.4', 1,'2015-07-06 14:23:05','testuserP');
+(6, 'Heinrich Georg', 'Müller', 'h.muller', 0, '2015-07-06 14:23:05', 'testuserP'),
+(7, 'Henner', 'Schorsche','h.muller', 1, '2015-07-06 14:23:05', 'testuserP'),
+(31, 'Willi', 'Test', 'w.test.1', 1, '2015-07-06 14:23:05', 'testuserP'),
+(32, 'Willi', 'Test', 'w.test.2', 1, '2015-07-06 14:23:05', 'testuserP'),
+(33, 'Willi', 'Test', 'w.test.3', 1, '2015-07-06 14:23:05', 'testuserP'),
+(34, 'Will', 'Test', 'w.test.4', 1, '2015-07-06 14:23:05', 'testuserP'),
+(35, 'Will', 'Test', 'w.test.1', 0, '2015-07-06 14:25:05', 'testuserP'),
+(36, 'Flash', 'Gordon', 'w.test.4', 0, '2015-07-06 14:25:05', 'testuserP');
 
-INSERT INTO `pub_person` VALUES
-(3,'0b539e248a02e3edcfe591c64346c7a0','d63038ea59383b94bb52fc4a9b76d1f5','Maut',0,'h.muller',0,'2015-07-06 14:19:55','testuserP',0),
-(23, '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP', 0),
-(24, '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP', 0),
-(25, '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP', 0),
-(26, '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP', 0),
-(27, '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP', 0),
-(28, 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP', 0),
-(29, '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', 'Maut', 0, 'w.test.3', 0,'2015-07-06 14:19:55','testuserP', 0),
-(30, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Maut', 0, 'w.test.4', 0,'2015-07-06 14:19:55','testuserP', 0);
+INSERT INTO `pub_person` (`person_change_id`, `simhash1`, `simhash2`, `relator_code`, `person_index`, `person_id`, `qualifying`, `log_changed_at`, `log_changed_by`) VALUES
+(3,'0b539e248a02e3edcfe591c64346c7a0','d63038ea59383b94bb52fc4a9b76d1f5','Maut',0,'h.muller',0,'2015-07-06 14:19:55','testuserP'),
+(23, '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP'),
+(24, '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP'),
+(25, '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP'),
+(26, '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP'),
+(27, '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP'),
+(28, 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP'),
+(29, '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', 'Maut', 0, 'w.test.3', 0,'2015-07-06 14:19:55','testuserP'),
+(30, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Maut', 0, 'w.test.4', 0,'2015-07-06 14:19:55','testuserP');
 
-INSERT INTO `person_match` (match_id, person1_id, person2_id, state) VALUES (1, "w.test.1", "w.test.2", 0),
-(2, "w.test.1", "w.test.3", 0), (3, "w.test.2", "w.test.3", 0), (4, "w.test.1", "w.test.4", 0);
+INSERT INTO `person_match` (match_id, person1_id, person2_id, state) VALUES
+(1, "w.test.1", "w.test.2", 0),
+(2, "w.test.1", "w.test.3", 0),
+(3, "w.test.2", "w.test.3", 0),
+(4, "w.test.1", "w.test.4", 0);
 
-INSERT INTO `bibtex` (content_id, simhash0, simhash1, simhash2, simhash3, author, title, change_date,date,user_name) VALUES 
-(34, '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', 'Willi Test and Maria Mueller', 'title1', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP'),
-(35, '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', 'Willi Test and Johann Hilfe', 'title2', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP'),
-(36, '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', 'Willi Test', 'same', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP'),
-(37, '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', 'Willi Test and Mario Mueller', 'title4', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP'),
-(38, '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', 'Willi Test and Ted Hansen', 'title5', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP'),
-(39, 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'Willi Test', 'same', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP'),
-(40, '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', 'Willi Test and Ted Hansen', 'title7', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP'),
-(41, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Willi Test and Johann Hilfe', 'title8', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP');
+-- FIXME: this data is broken
+INSERT INTO `gold_standard` (content_id, simhash0, simhash1, simhash2, simhash3, author, title, change_date, date, user_name, content_type) VALUES
+(34, '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', 'Willi Test and Maria Mueller', 'title1', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP',2),
+(35, '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', 'Willi Test and Johann Hilfe', 'title2', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP',2),
+(36, '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', 'Willi Test', 'same', '2008-01-18 10:20:07', '1815-12-10 00:00:00', 'testuserP', 2),
+(37, '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', 'Willi Test and Mario Mueller', 'title4', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP', 2),
+(38, '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', 'Willi Test and Ted Hansen', 'title5', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP', 2),
+(39, 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'Willi Test', 'same', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP', 2),
+(40, '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', 'Willi Test and Ted Hansen', 'title7', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP', 2),
+(41, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Willi Test and Johann Hilfe', 'title8', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP', 2);
+
+INSERT INTO `gold_standard` (`content_id`, `journal`, `volume`, `chapter`, `edition`, `month`,      `day`,      `booktitle`,                 `howPublished`,      `institution`,  `organization`, `publisher`, `address`, `school`, `series`, `bibtexKey`, `group`, `date`, `user_name`, `url`, `type`, `description`, `annote`, `note`, `pages`, `bKey`, `number`, `crossref`, `misc`, `bibtexAbstract`, `simhash0`, `simhash1`, `simhash2`, `simhash3`, `entrytype`, `title`, `author`, `editor`, `year`, `privnote`, `scraperid`, `change_date`, `rating`, `content_type`) VALUES
+(1073741857, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'University of Nowhere', NULL, 'muller2004wurst', 0, '2015-07-06 14:15:12', 'testuserP', NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, '9132de6d174bcfd8018d0b299642f12d', '0b539e248a02e3edcfe591c64346c7a0', 'd63038ea59383b94bb52fc4a9b76d1f5', '', 'phdthesis', 'Wurst aufs Brot', 'Müller, Heinrich Georg', NULL, '2004', NULL, 0, '2015-07-06 12:21:34', 0, 2);
+
 
 INSERT INTO `bibhash` VALUES ('0c000000d00000f00cef0c00f000e00a', 1, 0),
 ('0c0000cdc00000b000cbe0fe0ab0acd0', 1, 0),
@@ -782,6 +802,7 @@ INSERT INTO `bibhash` VALUES ('0c000000d00000f00cef0c00f000e00a', 1, 0),
 ('eb0000af0a0c00b0b0ac0e0a0a00d0c0', 1, 0),
 ('0e0a00c000000f00d0d000b00eefe00b', 1, 0),
 ('00dc000febca00a0f0f00ce0de000000', 1, 0);
+
 
 INSERT INTO `tas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_type`, `user_name`, `date`, `group`, `change_date`) VALUES
 (50, 'testtag',        'testtag',        34, 1, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-01-18 10:20:07'),

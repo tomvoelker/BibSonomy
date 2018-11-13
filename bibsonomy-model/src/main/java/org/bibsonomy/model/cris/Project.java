@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Model - Java- and JAXB-Model.
+ *
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.model.cris;
 
 import java.net.URL;
@@ -27,9 +53,6 @@ public class Project implements Linkable {
 	/** the subtitle of the project */
 	private String subTitle;
 
-	/** the homepage of the project */
-	private URL homepage;
-
 	/** the description of the project */
 	private String description;
 
@@ -50,6 +73,9 @@ public class Project implements Linkable {
 
 	/** sub projects of the project */
 	private List<Project> subProjects = new LinkedList<>();
+
+	/** cris links that are connected to this project */
+	private List<CRISLink> crisLinks = new LinkedList<>();
 
 	/**
 	 * @return the id
@@ -120,20 +146,6 @@ public class Project implements Linkable {
 	 */
 	public void setSubTitle(String subTitle) {
 		this.subTitle = subTitle;
-	}
-
-	/**
-	 * @return the URL
-	 */
-	public URL getHomepage() {
-		return homepage;
-	}
-
-	/**
-	 * @param homepage the description to set
-	 */
-	public void setHomepage(URL homepage) {
-		this.homepage = homepage;
 	}
 
 	/**
@@ -232,6 +244,20 @@ public class Project implements Linkable {
 	 */
 	public void setSubProjects(List<Project> subProjects) {
 		this.subProjects = subProjects;
+	}
+
+	/**
+	 * @return the crisLinks
+	 */
+	public List<CRISLink> getCrisLinks() {
+		return crisLinks;
+	}
+
+	/**
+	 * @param crisLinks the crisLinks to set
+	 */
+	public void setCrisLinks(List<CRISLink> crisLinks) {
+		this.crisLinks = crisLinks;
 	}
 
 	@Override

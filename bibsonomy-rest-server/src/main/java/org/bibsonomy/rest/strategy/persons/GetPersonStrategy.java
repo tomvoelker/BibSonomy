@@ -26,9 +26,11 @@
  */
 package org.bibsonomy.rest.strategy.persons;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.rest.ViewModel;
@@ -47,17 +49,23 @@ public class GetPersonStrategy extends Strategy {
 
 	private final String personId;
 
+	/**
+	 * default constructor
+	 *
+	 * @param context
+	 * @param personId
+	 */
 	public GetPersonStrategy(Context context, String personId) {
 		super(context);
 		this.personId = personId;
 	}
 
 	@Override
-	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceMovedException, ObjectNotFoundException {
-		final Person person = getLogic().getPersonById(PersonIdType.PERSON_ID, personId);
-		if (person.getPersonId() == null) {
-			throw new NoSuchResourceException("The requested person with id '" + personId + "' does not exist.");
+	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ObjectMovedException, ObjectNotFoundException {
+		final Person person = this.getLogic().getPersonById(PersonIdType.PERSON_ID, this.personId);
+		if (!present(person)) {
+			throw new NoSuchResourceException("The requested person with id '" + this.personId + "' does not exist.");
 		}
-		getRenderer().serializePerson(writer, person, new ViewModel());
+		this.getRenderer().serializePerson(this.writer, person, new ViewModel());
 	}
 }

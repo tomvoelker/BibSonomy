@@ -51,15 +51,22 @@ public final class HelpUtils {
 	 * @param projectName
 	 * @param projectTheme
 	 * @param projectHome
+	 * @param projectEmail
+	 * @param projectNoSpamEmail
+	 * @param projectAPIEmail 
 	 * @return the map
 	 */
-	public static Map<String, String> buildReplacementMap(final String projectName, final String projectTheme, final String projectHome) {
+	public static Map<String, String> buildReplacementMap(final String projectName, final String projectTheme, final String projectHome, final String projectEmail, final String projectNoSpamEmail, final String projectAPIEmail) {
 		final Map<String, String> replacements = new HashMap<>();
 		replacements.put("project.name", projectName);
 		replacements.put("project.theme", projectTheme);
 		replacements.put(PROJECT_HOME, projectHome);
 		replacements.put("project.version", BasicUtils.VERSION);
+		replacements.put("project.email", projectEmail);
+		replacements.put("project.nospamemail", projectNoSpamEmail);
+		replacements.put("project.apiemail", projectAPIEmail);
 		return replacements;
 	}
+
 
 }

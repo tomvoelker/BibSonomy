@@ -456,6 +456,70 @@
 						</property>
 					</bean>
 				</entry>
+                <entry key="/editProject">
+                    <bean parent="controllerBase">
+                        <property name="controllerBeanName" value="editProjectController"/>
+                        <property name="allowedFields">
+                            <list>
+                                <value>projectIdToUpdate</value>
+                                <value>ckey</value>
+                                <value>project.externalId</value>
+                                <value>project.title</value>
+                                <value>project.subTitle</value>
+                                <value>project.description</value>
+                                <value>project.type</value>
+                                <value>project.budget</value>
+                                <value>project.startDate</value>
+                                <value>project.endDate</value>
+                                <value>project.parentProject.externalId</value>
+                            </list>
+                        </property>
+                    </bean>
+                </entry>
+                <entry key="/deleteProject">
+                    <bean parent="controllerBase">
+                        <property name="controllerBeanName" value="deleteProjectController"/>
+                        <property name="allowedFields">
+                            <list>
+                                <value>projectIdToDelete</value>
+                                <value>ckey</value>
+                                <value>project.externalId</value>
+                                <value>project.title</value>
+                            </list>
+                        </property>
+                    </bean>
+                </entry>
+                <entry key="/newProject">
+                    <bean parent="controllerBase">
+                        <property name="controllerBeanName" value="createNewProjectController"/>
+                        <property name="allowedFields">
+                            <list>
+                                <value>ckey</value>
+                                <value>project.title</value>
+                                <value>project.subTitle</value>
+                                <value>project.description</value>
+                                <value>project.type</value>
+                                <value>project.budget</value>
+                                <value>project.startDate</value>
+                                <value>project.endDate</value>
+                                <value>project.parentProject.externalId</value>
+                            </list>
+                        </property>
+                    </bean>
+                </entry>
+                <entry key="/editProjectMember">
+                    <bean parent="controllerBase">
+                        <property name="controllerBeanName" value="editProjectMemberController"/>
+                        <property name="allowedFields">
+                            <list>
+                                <value>projectIdToUpdate</value>
+                                <value>ckey</value>
+                                <value>project.externalId</value>
+                                <value>project.crisLinks</value>
+                            </list>
+                        </property>
+                    </bean>
+                </entry>
 				<entry key="/editGoldStandardPublication">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="editGoldStandardPublicationController"/>
@@ -700,6 +764,22 @@
 						</property>
 					</bean>
 				</entry>
+
+				<!-- person related actions -->
+				<entry key="/deletePersonResourceRelation">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="deletePersonResourceRelationController"/>
+						<property name="allowedFields" ref="personRelationParameters" />
+					</bean>
+				</entry>
+
+				<entry key="/addPersonResourceRelation">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="addPersonResourceRelationController"/>
+						<property name="allowedFields" ref="personRelationParameters" />
+					</bean>
+				</entry>
+
 				<entry key="/autoRegisterSamlAndOAuth">
 					<bean parent="controllerBase">
 						<property name="presenceCondition" ref="samlActivatedCondition" />
@@ -833,6 +913,14 @@
 		
 	</util:list>
 
+	<util:list id="personRelationParameters">
+		<value>ckey</value>
+        <value>person.personId</value>
+		<value>type</value>
+		<value>interhash</value>
+		<value>index</value>
+	</util:list>
+
 	<!--  #################### controller #################### -->
 	<!-- abstract edit post controller -->
 	<bean id="editPostController" class="org.bibsonomy.webapp.controller.actions.EditPostController" scope="request" abstract="true" parent="resourceController">
@@ -853,12 +941,30 @@
 					<property name="alertType" value="warning" /> 
 				</bean>
 			</list>
-			
 		</property>
 	</bean>
-	
-	
-	<!-- Handles the edit publication process -->
+
+    <bean id="editProjectController" class="org.bibsonomy.webapp.controller.actions.EditProjectController" scope="request">
+        <property name="logic" ref="logic" />
+        <property name="urlGenerator" ref="absoluteUrlGenerator"/>
+    </bean>
+
+    <bean id="deleteProjectController" class="org.bibsonomy.webapp.controller.actions.DeleteProjectController" scope="request">
+        <property name="logic" ref="logic" />
+        <property name="urlGenerator" ref="absoluteUrlGenerator"/>
+    </bean>
+
+    <bean id="createNewProjectController" class="org.bibsonomy.webapp.controller.actions.CreateNewProjectController" scope="request">
+        <property name="logic" ref="logic" />
+        <property name="urlGenerator" ref="absoluteUrlGenerator"/>
+    </bean>
+
+    <bean id="editProjectMemberController" class="org.bibsonomy.webapp.controller.actions.EditProjectMemberController" scope="request">
+        <property name="logic" ref="logic" />
+        <property name="urlGenerator" ref="absoluteUrlGenerator"/>
+    </bean>
+
+    <!-- Handles the edit publication process -->
 	<bean id="editPublicationController" class="org.bibsonomy.webapp.controller.actions.EditPublicationController" scope="request" parent="editPostController">
 		<property name="scraper" ref="kdeScraperChain"/>
 		<property name="swordService" ref="swordService"/>
@@ -1327,7 +1433,18 @@
 	<bean id="editTagsPageViewController" class="org.bibsonomy.webapp.controller.actions.EditTagsPageViewController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
-	</bean>	
+	</bean>
+
+	<!-- person actions -->
+	<bean id="deletePersonResourceRelationController" class="org.bibsonomy.webapp.controller.person.relation.DeletePersonResourceRelationController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="urlGenerator" ref="relativeUrlGenerator" />
+	</bean>
+
+	<bean id="addPersonResourceRelationController" class="org.bibsonomy.webapp.controller.person.relation.AddPersonResourceRelationController" scope="request">
+		<property name="logic" ref="logic"/>
+        <property name="urlGenerator" ref="relativeUrlGenerator" />
+	</bean>
 	
 	<bean id="vuFindUserInitController" class="org.bibsonomy.webapp.controller.actions.VuFindUserInitController" scope="request" lazy-init="true">
 		<property name="oaAuthorizeController" ref="oAuthAuthorizeController"/>
@@ -1335,6 +1452,5 @@
 		<property name="adminLogic" ref="adminLogic"/>
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="authenticationManager" ref="samlAuthenticationManager"/>
-	</bean>	
-	
+	</bean>
 </beans>
