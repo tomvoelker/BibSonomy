@@ -15,9 +15,10 @@
 		<property name="password" value="${database.recommender.item.password}" />
 		<property name="driverClassName" value="${database.recommender.item.driverClassName}" />
 		<property name="maxIdle" value="${database.recommender.item.maxIdle}" />
-		<property name="maxActive" value="${database.recommender.item.maxActive}" />
-		<property name="maxWait" value="${database.recommender.item.maxWait}" />
-		<property name="removeAbandoned" value="${database.recommender.item.removeAbandoned}" />
+		<property name="maxTotal" value="${database.recommender.item.maxTotal}" />
+		<property name="maxWaitMillis" value="${database.recommender.item.maxWait}" />
+		<property name="removeAbandonedOnMaintenance" value="${database.recommender.item.removeAbandoned}" />
+		<property name="removeAbandonedOnBorrow" value="${database.recommender.item.removeAbandoned}" />
 		<property name="removeAbandonedTimeout" value="${database.recommender.item.removeAbandonedTimeout}" />
 	</bean>
 	

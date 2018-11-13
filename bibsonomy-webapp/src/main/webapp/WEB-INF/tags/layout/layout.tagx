@@ -57,14 +57,6 @@
 						</p>
 					</noscript>
 				</c:if>
-				<!-- XXX: remove as soon as we redirect all http traffic to https -->
-				<c:if test="${fn:startsWith(properties['project.home'], 'http:') and fn:contains(properties['project.home'], 'bibsonomy.org')}">
-					<div class="alert alert-warning" style="padding-top: 2px; padding-bottom: 2px">
-						<fmt:message key="warnings.https">
-							<fmt:param value="${fn:escapeXml(requPath)}" />
-						</fmt:message>
-					</div>
-				</c:if>
 				<div class="container header">
 					<div id="page-header" class="bib-header">
 						<div class="row">

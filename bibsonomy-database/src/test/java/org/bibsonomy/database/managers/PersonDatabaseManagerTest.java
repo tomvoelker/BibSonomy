@@ -27,10 +27,9 @@
 package org.bibsonomy.database.managers;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -39,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
@@ -49,13 +49,12 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.util.PersonMatchUtils;
 import org.bibsonomy.testutil.TestUtils;
-import org.bibsonomy.util.ValidationUtils;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * 
  * tests for {@link PersonDatabaseManager}
  *
  * @author dzo
@@ -104,10 +103,10 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById("h.muller", this.dbSession);
 		resourcePersonRelation.setPerson(person);
 		resourcePersonRelation.setRelationType(PersonResourceRelationType.AUTHOR);
-		assertTrue(PERSON_DATABASE_MANAGER.addResourceRelation(resourcePersonRelation, this.dbSession));
+		assertThat(PERSON_DATABASE_MANAGER.addResourceRelation(resourcePersonRelation, this.dbSession), is(true));
 		
 		// test inserting of a duplicate
-		assertFalse(PERSON_DATABASE_MANAGER.addResourceRelation(resourcePersonRelation, this.dbSession));
+		assertThat(PERSON_DATABASE_MANAGER.addResourceRelation(resourcePersonRelation, this.dbSession), is(false));
 	}
 
 	/**
@@ -127,7 +126,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.testPerson.setAcademicDegree(scientificDegree);
 		PERSON_DATABASE_MANAGER.updateAcademicDegree(this.testPerson, this.dbSession);
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById(this.testPerson.getPersonId(), this.dbSession);
-		assertEquals(person.getAcademicDegree(), scientificDegree);
+		assertThat(person.getAcademicDegree(), is(scientificDegree));
 	}
 	
 	/**
@@ -139,7 +138,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.testPerson.setOrcid(orcid);
 		PERSON_DATABASE_MANAGER.updateOrcid(this.testPerson, this.dbSession);
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById(this.testPerson.getPersonId(), this.dbSession);
-		assertEquals(person.getOrcid(), orcid);
+		assertThat(person.getOrcid(), is(orcid));
 	}
 
 	/**
@@ -151,7 +150,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.testPerson.setCollege(college);
 		PERSON_DATABASE_MANAGER.updateCollege(this.testPerson, this.dbSession);
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById(this.testPerson.getPersonId(), this.dbSession);
-		assertEquals(person.getCollege(), college);
+		assertThat(person.getCollege(), is(college));
 	}
 	
 	/**
@@ -163,7 +162,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.testPerson.setEmail(email);
 		PERSON_DATABASE_MANAGER.updateEmail(this.testPerson, this.dbSession);
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById(this.testPerson.getPersonId(), this.dbSession);
-		assertEquals(person.getEmail(), email);
+		assertThat(person.getEmail(), is(email));
 	}
 	
 	/**
@@ -176,7 +175,18 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.testPerson.setHomepage(homepage);
 		PERSON_DATABASE_MANAGER.updateHomepage(this.testPerson, this.dbSession);
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById(this.testPerson.getPersonId(), this.dbSession);
-		assertEquals(person.getHomepage(), homepage);
+		assertThat(person.getHomepage(), is(homepage));
+	}
+
+
+	@Test
+	public void testUpdateUserLink() {
+		final String usernameToLink = loginUser.getName();
+		this.testPerson.setUser(usernameToLink);
+		PERSON_DATABASE_MANAGER.updateUserLink(this.testPerson, this.dbSession);
+
+		final Person person = PERSON_DATABASE_MANAGER.getPersonById(this.testPerson.getPersonId(), this.dbSession);
+		assertThat(person.getUser(), is(usernameToLink));
 	}
 
 	@Test
@@ -187,51 +197,83 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		assertThat(personById.getNames().size(), is(1));
 	}
+
+
 	
 	@Test
-	public void testSimilarPerson(){
-		List<PersonMatch> matches = this.PERSON_DATABASE_MANAGER.getMatches(this.dbSession);
-		assertTrue(matches.size() > 0);
+	public void testMergePersons() {
+		List<PersonMatch> matches = PERSON_DATABASE_MANAGER.getMatches(this.dbSession);
+		assertThat(matches.size(), greaterThan(0));
 		
 		// conflict for merge with id 4
-		Map<Integer, PersonMergeFieldConflict[]> mergeConflicts = PersonMatch.getMergeConflicts(matches);
-		assertTrue(mergeConflicts.get(4).length >0);
-		for(PersonMatch match: matches) {
-			if (match.getMatchID() == 4) {
-				// conflict for merge remains
-				assertTrue(!this.PERSON_DATABASE_MANAGER.mergeSimilarPersons(match, loginUser, this.dbSession));
-				Map<String, String> map = new HashMap<>();
-				String newPage = null;
-				for(PersonMergeFieldConflict conflict : mergeConflicts.get(4)) {
-					map.put(conflict.getFieldName(), conflict.getPerson2Value());
-					if (conflict.getFieldName().equals("homepage")) {
-						newPage = conflict.getPerson2Value();
-					}
-				}
-				assertTrue(this.PERSON_DATABASE_MANAGER.conflictMerge(match.getMatchID(), map, loginUser, this.dbSession));
-				Person updatedPerson = this.PERSON_DATABASE_MANAGER.getPersonById(match.getPerson1().getPersonId(), this.dbSession);
-				assertTrue(ValidationUtils.equalsWithNull(updatedPerson.getHomepage(), newPage));
-			} else if (match.getMatchID() == 1) {
-				assertTrue(this.PERSON_DATABASE_MANAGER.mergeSimilarPersons(match, loginUser, this.dbSession));
+		final Map<Integer, PersonMergeFieldConflict[]> mergeConflicts = PersonMatchUtils.getMergeConflicts(matches);
+		final PersonMergeFieldConflict[] mergeConflictsToTest = mergeConflicts.get(4);
+
+		assertThat(mergeConflictsToTest.length, is(2));
+
+		final PersonMatch personMatch4 = getMatchById(matches, 4);
+		// conflict for merge remains
+		final boolean mergeResult = PERSON_DATABASE_MANAGER.mergePersons(personMatch4, loginUser, this.dbSession);
+		assertThat(mergeResult, is(false)); // not mergeable
+
+		final Map<String, String> map = new HashMap<>();
+		for (final PersonMergeFieldConflict conflict : mergeConflictsToTest) {
+			map.put(conflict.getFieldName(), conflict.getPerson2Value());
+		}
+
+		assertThat(PERSON_DATABASE_MANAGER.mergePersonsWithConflicts(personMatch4.getMatchID(), map, loginUser, this.dbSession), is(true));
+		final Person personMergeTarget = personMatch4.getPerson1();
+		// second person should be merged into the first person
+		final Person personToMerge = personMatch4.getPerson2();
+		try {
+			PERSON_DATABASE_MANAGER.getPersonById(personToMerge.getPersonId(), this.dbSession);
+			fail("object moved exception expected");
+		} catch (ObjectMovedException e) {
+			assertThat(e.getNewId(), is(personMergeTarget.getPersonId()));
+		}
+
+		// the person should have a new name and a the gender should be updated
+
+		final Person updatedPerson = PERSON_DATABASE_MANAGER.getPersonById(personMergeTarget.getPersonId(), this.dbSession);
+		assertThat(updatedPerson.getMainName(), is(personToMerge.getMainName()));
+		assertThat(updatedPerson.getGender(), is(personToMerge.getGender()));
+
+		// the new main name is identical but both persons got a different second name (so there must be 3 new names)
+		assertThat(updatedPerson.getNames().size(), is(3));
+
+		final PersonMatch personMatch1 = getMatchById(matches, 1);
+		assertThat(PERSON_DATABASE_MANAGER.mergePersons(personMatch1, loginUser, this.dbSession), is(true));
+
+		List<PersonMatch> newMatches = PERSON_DATABASE_MANAGER.getMatches(this.dbSession);
+		// two merges are performed and one is removed because it is redundant due to transitive dependencies
+		assertThat(matches.size() - 3, is(newMatches.size()));
+		PersonMatch deniedMatch = newMatches.get(0);
+		PERSON_DATABASE_MANAGER.denyMatch(deniedMatch, loginUser.getName(), this.dbSession);
+
+		newMatches = PERSON_DATABASE_MANAGER.getMatchesForFilterWithUserName(deniedMatch.getPerson1().getPersonId(), loginUser.getName(), this.dbSession);
+		assertThat(newMatches.size(), is(0));
+		for (int i = 2; i < PersonMatch.denieThreshold; i++) {
+			PERSON_DATABASE_MANAGER.denyMatch(deniedMatch, "testuser" + i, this.dbSession);
+		}
+
+		// deny match after threshold is reached
+		matches = PERSON_DATABASE_MANAGER.getMatches(this.dbSession);
+		assertThat(matches.size(), is(1));
+
+		deniedMatch = PERSON_DATABASE_MANAGER.getMatch(deniedMatch.getMatchID(), this.dbSession);
+		PERSON_DATABASE_MANAGER.denyMatch(deniedMatch, "testuser" + PersonMatch.denieThreshold, this.dbSession);
+		matches = PERSON_DATABASE_MANAGER.getMatches(this.dbSession);
+		assertThat(matches.size(), is(0));
+	}
+
+	private static PersonMatch getMatchById(List<PersonMatch> matches, int id) {
+		for (PersonMatch match : matches) {
+			if (match.getMatchID() == id) {
+				return match;
 			}
 		}
-		List<PersonMatch> newMatches = this.PERSON_DATABASE_MANAGER.getMatches(this.dbSession);
-		//two merges are performed and one is removed because it is redundant due to transitive dependencies 
-		assertTrue(matches.size() == newMatches.size() + 3);
-		this.PERSON_DATABASE_MANAGER.denyMatch(newMatches.get(0), loginUser.getName(), this.dbSession);
-		PersonMatch deniedMatch = newMatches.get(0);
-		newMatches = this.PERSON_DATABASE_MANAGER.getMatchesForFilterWithUserName(deniedMatch.getPerson1().getPersonId(), loginUser.getName(), this.dbSession);
-		assertTrue(newMatches.size() == 0);
-		for (int i = 2; i < PersonMatch.denieThreshold; i++){
-			this.PERSON_DATABASE_MANAGER.denyMatch(deniedMatch, "testuser" + i, this.dbSession);
-		}
-		//deny match after threshold is reached
-		matches = this.PERSON_DATABASE_MANAGER.getMatches(this.dbSession);
-		assertTrue(matches.size() >0);
-		deniedMatch = this.PERSON_DATABASE_MANAGER.getMatch(deniedMatch.getMatchID(), this.dbSession);
-		this.PERSON_DATABASE_MANAGER.denyMatch(deniedMatch, "testuser" + PersonMatch.denieThreshold, this.dbSession);
-		matches = this.PERSON_DATABASE_MANAGER.getMatches(this.dbSession);
-		assertTrue(matches.size() == 0);
+
+		return null;
 	}
-	
+
 }
