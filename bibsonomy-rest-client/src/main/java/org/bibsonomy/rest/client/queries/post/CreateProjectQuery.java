@@ -19,27 +19,27 @@ import java.util.Collections;
  */
 public class CreateProjectQuery extends AbstractQuery<JobResult> {
 
-    private final Project project;
+	private final Project project;
 
-    public CreateProjectQuery(Project project) {
-        this.project = project;
-    }
+	public CreateProjectQuery(Project project) {
+		this.project = project;
+	}
 
-    @Override
-    protected void doExecute() throws ErrorPerformingRequestException {
-        final StringWriter sw = new StringWriter(100);
-        getRenderer().serializeProject(sw, project, null);
-        downloadedDocument = performRequest(HttpMethod.POST,
-                getUrlRenderer().createUrlBuilderForProjects().asString(),
-                StringUtils.toDefaultCharset(sw.toString()));
-    }
+	@Override
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final StringWriter sw = new StringWriter(100);
+		getRenderer().serializeProject(sw, project, null);
+		downloadedDocument = performRequest(HttpMethod.POST,
+						getUrlRenderer().createUrlBuilderForProjects().asString(),
+						StringUtils.toDefaultCharset(sw.toString()));
+	}
 
-    @Override
-    protected JobResult getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
-        if (!isSuccess()) {
-            return JobResult.buildFailure(Collections.singletonList(new ErrorMessage(getError(),
-                    "projectCreationError")));
-        }
-        return JobResult.buildSuccess();
-    }
+	@Override
+	protected JobResult getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+		if (!isSuccess()) {
+			return JobResult.buildFailure(Collections.singletonList(new ErrorMessage(getError(),
+							"projectCreationError")));
+		}
+		return JobResult.buildSuccess();
+	}
 }

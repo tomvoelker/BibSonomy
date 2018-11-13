@@ -56,7 +56,7 @@ public class PostProjectStrategy extends AbstractCreateStrategy {
     protected String create() {
         final Project project = this.getRenderer().parseProject(this.doc);
         final JobResult jobResult = this.getLogic().createProject(project);
-        if (jobResult.getStatus() == Status.FAIL) {
+        if (Status.FAIL.equals(jobResult.getStatus())) {
             throw new BadRequestOrResponseException(jobResult.getErrors().stream().
                     map(ErrorMessage::getDefaultMessage).collect(Collectors.joining(",")));
         }

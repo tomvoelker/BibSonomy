@@ -1,8 +1,8 @@
 package org.bibsonomy.rest.strategy.projects;
 
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
@@ -26,11 +26,11 @@ public class GetProjectStrategy extends Strategy {
 
     @Override
     public void perform(ByteArrayOutputStream outStream)
-            throws InternServerException, NoSuchResourceException, ResourceMovedException, ObjectNotFoundException {
-        final Project project = getLogic().getProjectDetails(projectId);
+            throws InternServerException, NoSuchResourceException, ObjectMovedException, ObjectNotFoundException {
+        final Project project = this.getLogic().getProjectDetails(projectId);
         if (project == null) {
             throw new NoSuchResourceException("The requested project with id '" + projectId + "' does not exist.");
         }
-        getRenderer().serializeProject(writer, project, new ViewModel());
+        this.getRenderer().serializeProject(writer, project, new ViewModel());
     }
 }

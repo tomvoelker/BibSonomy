@@ -22,15 +22,15 @@ public class PostCRISLinkStrategy extends AbstractCreateStrategy {
     }
 
     @Override
-    protected void render(Writer writer, String linkId) {
+    protected void render(final Writer writer, final String linkId) {
         this.getRenderer().serializeCRISLinkId(writer, linkId);
     }
 
     @Override
     protected String create() {
-        final CRISLink crisLink = getRenderer().parseCRISLink(doc);
-        final JobResult jobResult = getLogic().createCRISLink(crisLink);
-        if (jobResult.getStatus() == Status.FAIL) {
+        final CRISLink crisLink = this.getRenderer().parseCRISLink(this.doc);
+        final JobResult jobResult = this.getLogic().createCRISLink(crisLink);
+        if (Status.FAIL.equals(jobResult.getStatus())) {
             throw new BadRequestOrResponseException(jobResult.getErrors().stream().
                     map(ErrorMessage::getDefaultMessage).collect(Collectors.joining(",")));
         }

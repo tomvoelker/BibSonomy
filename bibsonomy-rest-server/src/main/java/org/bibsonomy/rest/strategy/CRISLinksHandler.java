@@ -12,6 +12,7 @@ import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
  * @author pda
  */
 public class CRISLinksHandler implements ContextHandler{
+
     @Override
     public Strategy createStrategy(Context context, URLDecodingPathTokenizer urlTokens, HttpMethod httpMethod) {
         final int numTokensLeft = urlTokens.countRemainingTokens();
