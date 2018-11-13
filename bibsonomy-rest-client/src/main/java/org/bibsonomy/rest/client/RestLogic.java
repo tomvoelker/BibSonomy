@@ -37,6 +37,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.*;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
@@ -49,12 +50,13 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
-import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationData;
@@ -64,7 +66,16 @@ import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.auth.AuthenticationAccessor;
+import org.bibsonomy.rest.client.queries.get.GetConceptDetailsQuery;
+import org.bibsonomy.rest.client.queries.get.GetFriendsQuery;
+import org.bibsonomy.rest.client.queries.get.GetGroupDetailsQuery;
+import org.bibsonomy.rest.client.queries.get.GetGroupListQuery;
+import org.bibsonomy.rest.client.queries.get.GetLastSyncDataQuery;
 import org.bibsonomy.rest.client.queries.get.GetPersonByIdQuery;
+import org.bibsonomy.rest.client.queries.get.GetPostDetailsQuery;
+import org.bibsonomy.rest.client.queries.get.GetPostDocumentQuery;
+import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
+import org.bibsonomy.rest.client.queries.get.GetProjectDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetResourcePersonRelationsQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostDocumentQuery;
@@ -73,14 +84,6 @@ import org.bibsonomy.rest.client.queries.delete.DeleteSyncDataQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteUserQuery;
 import org.bibsonomy.rest.client.queries.delete.RemoveUserFromGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.UnpickClipboardQuery;
-import org.bibsonomy.rest.client.queries.get.GetConceptDetailsQuery;
-import org.bibsonomy.rest.client.queries.get.GetFriendsQuery;
-import org.bibsonomy.rest.client.queries.get.GetGroupDetailsQuery;
-import org.bibsonomy.rest.client.queries.get.GetGroupListQuery;
-import org.bibsonomy.rest.client.queries.get.GetLastSyncDataQuery;
-import org.bibsonomy.rest.client.queries.get.GetPostDetailsQuery;
-import org.bibsonomy.rest.client.queries.get.GetPostDocumentQuery;
-import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
 import org.bibsonomy.rest.client.queries.get.GetTagDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetTagRelationQuery;
 import org.bibsonomy.rest.client.queries.get.GetTagsQuery;
@@ -88,18 +91,26 @@ import org.bibsonomy.rest.client.queries.get.GetUserDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetUserListOfGroupQuery;
 import org.bibsonomy.rest.client.queries.get.GetUserListQuery;
 import org.bibsonomy.rest.client.queries.post.AddUsersToGroupQuery;
+import org.bibsonomy.rest.client.queries.post.CreateCRISLinkQuery;
 import org.bibsonomy.rest.client.queries.post.CreateConceptQuery;
 import org.bibsonomy.rest.client.queries.post.CreateGroupQuery;
 import org.bibsonomy.rest.client.queries.post.CreatePersonQuery;
 import org.bibsonomy.rest.client.queries.post.CreatePostDocumentQuery;
 import org.bibsonomy.rest.client.queries.post.CreatePostQuery;
+import org.bibsonomy.rest.client.queries.post.CreateProjectQuery;
 import org.bibsonomy.rest.client.queries.post.CreateRelationQuery;
 import org.bibsonomy.rest.client.queries.post.CreateResourcePersonRelationQuery;
 import org.bibsonomy.rest.client.queries.post.CreateSyncPlanQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserRelationshipQuery;
 import org.bibsonomy.rest.client.queries.post.PickPostQuery;
-import org.bibsonomy.rest.client.queries.put.*;
+import org.bibsonomy.rest.client.queries.put.ChangeConceptQuery;
+import org.bibsonomy.rest.client.queries.put.ChangeDocumentNameQuery;
+import org.bibsonomy.rest.client.queries.put.ChangeGroupQuery;
+import org.bibsonomy.rest.client.queries.put.ChangePostQuery;
+import org.bibsonomy.rest.client.queries.put.ChangeSyncStatusQuery;
+import org.bibsonomy.rest.client.queries.put.ChangeUserQuery;
+import org.bibsonomy.rest.client.queries.put.UpdatePersonQuery;
 import org.bibsonomy.rest.client.util.FileFactory;
 import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.util.ProgressCallbackFactory;
@@ -538,18 +549,33 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public void createResourceRelation(ResourcePersonRelation resourcePersonRelation)
-			throws ResourcePersonAlreadyAssignedException {
+	public void createResourceRelation(ResourcePersonRelation resourcePersonRelation) {
 		execute(new CreateResourcePersonRelationQuery(resourcePersonRelation));
 	}
 
 	@Override
 	public String createPerson(Person person) {
-		return this.execute(new CreatePersonQuery(person));
+		return execute(new CreatePersonQuery(person));
 	}
 
 	@Override
 	public void updatePerson(Person person, PersonUpdateOperation operation) {
 		execute(new UpdatePersonQuery(person, operation));
 	}
+
+	@Override
+	public Project getProjectDetails(String projectId) {
+		return execute(new GetProjectDetailsQuery(projectId));
+	}
+
+	@Override
+	public JobResult createProject(Project project) {
+		return execute(new CreateProjectQuery(project));
+	}
+
+	@Override
+	public JobResult createCRISLink(CRISLink link) {
+		return execute(new CreateCRISLinkQuery(link));
+	}
+
 }
