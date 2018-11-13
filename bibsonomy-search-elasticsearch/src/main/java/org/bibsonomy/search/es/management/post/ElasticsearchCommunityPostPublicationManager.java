@@ -23,7 +23,9 @@ import org.elasticsearch.script.ScriptType;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -122,7 +124,7 @@ public class ElasticsearchCommunityPostPublicationManager<G extends BibTex> exte
 		this.clearUpdateQueue(indexName, updateDataMap);
 	}
 
-	private void loop(final String indexName, final Map<String, UpdateData> updateDataMap, final Function<PersonResourceRelationType, String> getScriptFunction, BasicUtils.LimitOffsetIterator<ResourcePersonRelation> relationRetrieveMethod) {
+	private void loop(final String indexName, final Map<String, UpdateData> updateDataMap, final Function<PersonResourceRelationType, String> getScriptFunction, BiFunction<Integer, Integer, List<ResourcePersonRelation>> relationRetrieveMethod) {
 		BasicUtils.iterateListWithLimitAndOffset(relationRetrieveMethod, relations -> {
 			for (final ResourcePersonRelation relation : relations) {
 				final Map<String, Object> params = new HashMap<>();

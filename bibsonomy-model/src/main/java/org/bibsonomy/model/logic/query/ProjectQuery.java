@@ -32,6 +32,7 @@ import org.bibsonomy.model.enums.ProjectStatus;
 
 /**
  * the project query to retrieve projects from the logic
+ *
  * @author dzo
  */
 public class ProjectQuery extends BasicQuery {
@@ -45,6 +46,8 @@ public class ProjectQuery extends BasicQuery {
 
 		/** the project status */
 		private ProjectStatus projectStatus;
+
+		private String type;
 
 		/** the start */
 		private int start;
@@ -108,10 +111,22 @@ public class ProjectQuery extends BasicQuery {
 		}
 
 		/**
+		 * sets the type
+		 *
+		 * @param type
+		 * @return
+		 */
+		public ProjectQueryBuilder type(final String type) {
+			this.type = type;
+			return this;
+		}
+
+
+		/**
 		 * @return the project query
 		 */
 		public ProjectQuery build() {
-			return new ProjectQuery(this.order, this.sortOrder, this.projectStatus, this.start, this.end);
+			return new ProjectQuery(this.order, this.sortOrder, this.projectStatus, this.type, this.start, this.end);
 		}
 	}
 
@@ -132,18 +147,23 @@ public class ProjectQuery extends BasicQuery {
 	/** the project status */
 	private final ProjectStatus projectStatus;
 
+	/** the type of the project */
+	private final String type;
+
 	/**
 	 * the constructor
 	 * @param order
 	 * @param sortOrder
 	 * @param projectStatus
+	 * @param type
 	 * @param start
 	 * @param end
 	 */
-	protected ProjectQuery(ProjectOrder order, SortOrder sortOrder, ProjectStatus projectStatus, int start, int end) {
+	protected ProjectQuery(ProjectOrder order, SortOrder sortOrder, ProjectStatus projectStatus, String type, int start, int end) {
 		this.order = order;
 		this.sortOrder = sortOrder;
 		this.projectStatus = projectStatus;
+		this.type = type;
 		this.setStart(start);
 		this.setEnd(end);
 	}
@@ -167,5 +187,12 @@ public class ProjectQuery extends BasicQuery {
 	 */
 	public ProjectStatus getProjectStatus() {
 		return projectStatus;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
 	}
 }

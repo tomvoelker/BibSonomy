@@ -8,5 +8,45 @@
 						http://www.springframework.org/schema/util/spring-util.xsd">
 
 
+	<bean id="projectSearchGenerationSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource" ref="searchDataSource" />
+		<property name="configLocation" value="classpath:generation/project/ProjectIndexGenerationSQLMapConfig.xml" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
 
+	<bean id="projectSearchGenerationSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="projectSearchGenerationSqlMapClient"/>
+	</bean>
+
+	<bean id="projectGenerationDBLogic" class="org.bibsonomy.search.index.generator.project.ProjectIndexGenerationLogic">
+		<property name="sessionFactory" ref="projectSearchGenerationSessionFactory"/>
+	</bean>
+
+	<bean id="projectSearchInformationSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource" ref="searchDataSource" />
+		<property name="configLocation" value="classpath:information/project/ProjectIndexInformationSQLMapConfig.xml" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+
+	<bean id="projectSearchInformationSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="projectSearchInformationSqlMapClient"/>
+	</bean>
+
+	<bean id="projectDatabaseInformationLogic" class="org.bibsonomy.search.index.database.project.ProjectDatabaseInformationLogic">
+		<property name="sessionFactory" ref="projectSearchInformationSessionFactory"/>
+	</bean>
+
+	<bean id="projectSearchUpdateSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource" ref="searchDataSource" />
+		<property name="configLocation" value="classpath:update/project/ProjectIndexUpdateSQLMapConig.xml" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+
+	<bean id="projectSearchUpdateSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="projectSearchUpdateSqlMapClient"/>
+	</bean>
+
+	<bean id="projectSearchUpdateLogic" class="org.bibsonomy.search.index.update.project.ProjectIndexUpdateLogic">
+		<property name="sessionFactory" ref="projectSearchUpdateSessionFactory"/>
+	</bean>
 </beans>

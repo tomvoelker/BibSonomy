@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SearchProjectCommon">
+
+	<resultMap id="simpleProject" class="project" groupBy="id">
+		<result property="id"			column="id"             javaType="int" />
+		<result property="externalId"	column="project_id"		javaType="string" />
+		<result property="title"	    column="title"		    javaType="string" />
+		<result property="subTitle"	    column="subtitle"	    javaType="string" />
+		<result property="description"	column="description"	javaType="string" />
+		<result property="startDate" 	column="start_date"		javaType="date" />
+		<result property="endDate"	    column="end_date"	    javaType="date" />
+		<result property="type"	        column="type"	        javaType="string" />
+		<result property="budget"	    column="budget"	        javaType="double" />
+	</resultMap>
+
+	<resultMap id="parentProject" class="project">
+		<result property="externalId"	column="parent_project_id"	javaType="string" />
+	</resultMap>
+
+	<resultMap id="fullProject" class="project" groupBy="id" extends="simpleProject">
+		<result property="parentProject" resultMap="SearchProjectCommon.parentProject" />
+	</resultMap>
+
+	<sql id="projectColumns">
+		p.id, p.project_id, p.title, p.subtitle, p.description, p.start_date, p.end_date, p.type, p.budget
+	</sql>
+
+</sqlMap>

@@ -69,19 +69,17 @@ import org.bibsonomy.model.logic.querybuilder.AbstractSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.util.GroupUtils;
-import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.search.SearchInfoLogic;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.index.converter.post.NormalizedEntryTypes;
 import org.bibsonomy.search.es.index.converter.post.ResourceConverter;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
+import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
 import org.bibsonomy.search.es.search.util.tokenizer.SimpleTokenizer;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.services.searcher.query.PostSearchQuery;
 import org.bibsonomy.util.Sets;
-import org.elasticsearch.ElasticsearchStatusException;
-import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
@@ -91,7 +89,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
-import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
@@ -126,31 +123,9 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 
 	private String genealogyUser;
 
-	@FunctionalInterface
-	private interface ElasticsearchSearchCall<T> {
-		T call();
-	}
-
-	private static <T> T callSearch(final ElasticsearchSearchCall<T> call, final T defaultValue) {
-		try {
-			return call.call();
-		} catch (final ElasticsearchStatusException e) {
-			if (!RestStatus.NOT_FOUND.equals(e.status())) {
-				log.error("unknown error while searching", e);
-			} else {
-				log.error("no index found: ", e);
-			}
-		} catch (final SearchPhaseExecutionException e) {
-			log.info("parsing query failed.", e);
-			throw new InvalidSearchRequestException();
-		}
-
-		return defaultValue;
-	}
-
 	@Override
 	public ResultList<Post<R>> getPosts(String loggedinUser, Set<String> allowedGroups, PostSearchQuery<?> postQuery) {
-		final ResultList<Post<R>> postList = callSearch(() -> {
+		final ResultList<Post<R>> postList = ElasticsearchIndexSearchUtils.callSearch(() -> {
 			final ResultList<Post<R>> posts = new ResultList<>();
 			final Set<String> allowedUsers = getUsersThatShareDocuments(loggedinUser);
 			final QueryBuilder queryBuilder = this.buildQuery(loggedinUser, allowedGroups, allowedUsers, postQuery);
@@ -198,7 +173,7 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 			return new LinkedList<>();
 		}
 
-		final Map<Tag, Integer> tagCounter = callSearch(() -> {
+		final Map<Tag, Integer> tagCounter = ElasticsearchIndexSearchUtils.callSearch(() -> {
 			final Map<Tag, Integer> tagCounterMap = new HashMap<>();
 			final int offset = BasicQueryUtils.calcOffset(postQuery);
 			final int limit = BasicQueryUtils.calcLimit(postQuery);

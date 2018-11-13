@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -70,37 +72,19 @@ public final class BasicUtils {
 	}
 
 	/**
-	 * an interface to iterate over a list with limit and offset
-	 * @param <T>
-	 */
-	@FunctionalInterface
-	public interface LimitOffsetIterator<T> {
-		List<T> getItems(int limit, int offset);
-	}
-
-	/**
-	 * an interface that works on the retrieved interfaces
-	 * @param <T>
-	 */
-	@FunctionalInterface
-	public interface ItemWorker<T> {
-		void workOnItems(List<T> items);
-	}
-
-	/**
 	 * iterates over a list which is queried with limit and offset
 	 * @param limitOffsetIterator
 	 * @param limit
 	 * @param <T>
 	 */
-	public static <T> void iterateListWithLimitAndOffset(final LimitOffsetIterator<T> limitOffsetIterator, ItemWorker<T> itemWorker, final int limit) {
+	public static <T> void iterateListWithLimitAndOffset(final BiFunction<Integer, Integer, List<T>> limitOffsetIterator, Consumer<List<T>> itemWorker, final int limit) {
 		int size;
 
 		int offset = 0;
 
 		do {
-			final List<T> items = limitOffsetIterator.getItems(limit, offset);
-			itemWorker.workOnItems(items);
+			final List<T> items = limitOffsetIterator.apply(limit, offset);
+			itemWorker.accept(items);
 			offset += limit;
 			size = items.size();
 		} while (size == limit);

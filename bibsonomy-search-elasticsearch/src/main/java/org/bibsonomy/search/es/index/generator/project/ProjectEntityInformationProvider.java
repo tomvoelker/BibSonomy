@@ -2,11 +2,13 @@ package org.bibsonomy.search.es.index.generator.project;
 
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
+import org.bibsonomy.search.es.index.mapping.project.ProjectMapperBuilder;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.MappingBuilder;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * entity information provider
@@ -37,6 +39,6 @@ public class ProjectEntityInformationProvider extends EntityInformationProvider<
 
 	@Override
 	public String getType() {
-		return null;
+		return ProjectMapperBuilder.PROJECT_DOCUMENT_TYPE;
 	}
 }
