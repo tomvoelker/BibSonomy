@@ -348,9 +348,10 @@ public interface DatabasePlugin {
 	/**
 	 * called when a person will be deleted
 	 * @param person should be set to the old personId and the new modifiedBy and modifiedBy values
+	 * @param user
 	 * @param session
 	 */
-	public void onPersonDelete(final Person person, final DBSession session);
+	public void onPersonDelete(final Person person, User user, final DBSession session);
 	
 	/**
 	 * called when a pubPerson will be deleted

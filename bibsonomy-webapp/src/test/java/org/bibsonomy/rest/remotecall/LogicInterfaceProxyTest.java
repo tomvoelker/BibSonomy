@@ -56,14 +56,13 @@ import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
-import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -580,14 +579,14 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 			EasyMock.expect(this.serverLogic.getPostDetails(resourceHash, userName)).andReturn((Post) expectedPublicationPost);
 		} catch (final ObjectNotFoundException ex) {
 			// ignore
-		} catch (final ResourceMovedException ex) {
+		} catch (final ObjectMovedException ex) {
 			// ignore
 		}
 		try {
 			EasyMock.expect(this.serverLogic.getPostDetails(resourceHash, userName)).andReturn((Post) expectedBookmarkPost);
 		} catch (final ObjectNotFoundException ex) {
 			// ignore
-		} catch (final ResourceMovedException ex) {
+		} catch (final ObjectMovedException ex) {
 			// ignore
 		}
 		EasyMock.replay(this.serverLogic);
@@ -597,7 +596,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 			returnedPublicationPost = this.clientLogic.getPostDetails(resourceHash,userName);
 		} catch (final ObjectNotFoundException ex) {
 			// ignore
-		} catch (final ResourceMovedException ex) {
+		} catch (final ObjectMovedException ex) {
 			// ignore
 		}
 		CommonModelUtils.assertPropertyEquality(expectedPublicationPost, returnedPublicationPost, 5, null, IGNORE3);
@@ -606,7 +605,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 			returnedBookmarkPost = this.clientLogic.getPostDetails(resourceHash,userName);
 		} catch (final ObjectNotFoundException ex) {
 			// ignore
-		} catch (final ResourceMovedException ex) {
+		} catch (final ObjectMovedException ex) {
 			// ignore
 		}
 		CommonModelUtils.assertPropertyEquality(expectedBookmarkPost, returnedBookmarkPost, 5, null, IGNORE3);

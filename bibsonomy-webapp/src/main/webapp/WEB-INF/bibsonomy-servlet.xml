@@ -186,6 +186,18 @@
 		<constructor-arg value="${project.theme}" />
 	</bean>
 	
+	<bean id="projectEmail" class="java.lang.String">
+		<constructor-arg value="${project.email}" />
+	</bean>
+	
+	<bean id="projectNoSpamEmail" class="java.lang.String">
+		<constructor-arg value="${project.noSpamEmail}" />
+	</bean>
+
+	<bean id="projectApiEmail" class="java.lang.String">
+		<constructor-arg value="${project.apiEmail}" />
+	</bean>
+	
 	<!-- handles sending of mails  -->
 	<bean id="mailUtils" class="org.bibsonomy.util.MailUtils" scope="singleton">
 		<property name="projectHome" ref="projectHome" />
@@ -804,6 +816,7 @@
 		<property name="supportedResources" ref="allResources"/>
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="personRoleRenderer" ref="personRoleRenderer"/>
+		<property name="urlGenerator" ref="relativeUrlGenerator" />
 	</bean>
 	
 	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.DisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">
