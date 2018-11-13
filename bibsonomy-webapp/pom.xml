@@ -7,7 +7,7 @@
                                   University of Kassel, Germany
                                   http://www.kde.cs.uni-kassel.de/
                               Data Mining and Information Retrieval Group,
-                                  University of WÃ¼rzburg, Germany
+                                  University of Würzburg, Germany
                                   http://www.is.informatik.uni-wuerzburg.de/en/dmir/
                               L3S Research Center,
                                   Leibniz University Hannover, Germany
@@ -60,7 +60,7 @@
 			<plugin>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>webresource-maven-plugin</artifactId>
-				<version>2.0.0</version>
+				<version>1.5.1</version>
 				<executions>
 					<execution>
 						<id>webresource-compress-aggregation</id>
