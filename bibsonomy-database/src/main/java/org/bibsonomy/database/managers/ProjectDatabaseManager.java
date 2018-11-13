@@ -224,7 +224,7 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 		final Project project = this.queryForObject(statement, externalProjectId, Project.class, session);
 
 		if (present(project)) {
-			// get the subprojects
+			// get the sub projects
 			final List<Project> subProjects = this.getProjectsByParentId(project.getId(), session);
 			project.setSubProjects(subProjects);
 

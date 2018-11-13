@@ -65,6 +65,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
@@ -85,8 +86,12 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	private final GeneralDatabaseManager generalManager;
 	private final DatabasePluginRegistry plugins;
+
 	private GoldStandardPublicationDatabaseManager goldStandardPublicationDatabaseManager;
 	private BibTexDatabaseManager publicationDatabaseManager;
+
+	private CRISLinkDatabaseManager crisLinkDatabaseManager;
+
 	private PersonSearch personSearch;
 
 	@Deprecated // use spring config
@@ -174,20 +179,24 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	}
 
 	/**
-	 * Returns a Person identified by it's unique ID
+	 * returns a Person identified by it's unique ID
 	 *
 	 * @param id
 	 * @param session
 	 * @return Person
 	 */
-	public Person getPersonById(String id, DBSession session) {
+	public Person getPersonById(final String id, final DBSession session) {
 		final Person person = this.queryForObject("getPersonById", id, Person.class, session);
 		if (!present(person)) {
 			final String forwardId = this.getForwardId(id, session);
 			if (present(forwardId)) {
 				throw new ObjectMovedException(id, Person.class, forwardId, null, null);
 			}
+		} else {
+			final List<CRISLink> crisLinks = this.crisLinkDatabaseManager.loadCRISLinks(person, Collections.singletonList(Project.class), session);
+			person.setCrisLinks(crisLinks);
 		}
+
 		return person;
 	}
 
@@ -1177,5 +1186,12 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	public void setPublicationDatabaseManager(BibTexDatabaseManager publicationDatabaseManager) {
 		this.publicationDatabaseManager = publicationDatabaseManager;
+	}
+
+	/**
+	 * @param crisLinkDatabaseManager the crisLinkDatabaseManager to set
+	 */
+	public void setCrisLinkDatabaseManager(CRISLinkDatabaseManager crisLinkDatabaseManager) {
+		this.crisLinkDatabaseManager = crisLinkDatabaseManager;
 	}
 }
