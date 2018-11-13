@@ -3578,7 +3578,7 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/* (non-Javadoc)
+	/* (non-Javadoc)get
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonById(int)
 	 */
 	@Override

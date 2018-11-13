@@ -30,8 +30,10 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
+import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.enums.Gender;
 
@@ -78,6 +80,9 @@ public class Person implements Linkable, Serializable {
 	private String email;
 	/** the homepage of the person */
 	private URL homepage;
+
+	/** cris links that are connected to this project */
+	private List<CRISLink> crisLinks = new LinkedList<>();
 
 	/**
 	 * default constructor
@@ -366,6 +371,20 @@ public class Person implements Linkable, Serializable {
 	 */
 	public void setHomepage(URL homepage) {
 		this.homepage = homepage;
+	}
+
+	/**
+	 * @return the crisLinks
+	 */
+	public List<CRISLink> getCrisLinks() {
+		return crisLinks;
+	}
+
+	/**
+	 * @param crisLinks the crisLinks to set
+	 */
+	public void setCrisLinks(List<CRISLink> crisLinks) {
+		this.crisLinks = crisLinks;
 	}
 
 	@Override

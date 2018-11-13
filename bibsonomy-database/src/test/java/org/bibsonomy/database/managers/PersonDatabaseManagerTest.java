@@ -127,6 +127,13 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertThat(PERSON_DATABASE_MANAGER.addResourceRelation(resourcePersonRelation, loginUser, this.dbSession), is(false));
 	}
 
+	@Test
+	public void testGetPersonById() {
+		final Person person = PERSON_DATABASE_MANAGER.getPersonById(PERSON_ID, this.dbSession);
+		assertThat(person.getPersonId(), is(PERSON_ID));
+
+	}
+
 	/**
 	 * tests {@link PersonDatabaseManager#removeResourceRelation(String, String, int, PersonResourceRelationType, User, DBSession)}
 	 */
