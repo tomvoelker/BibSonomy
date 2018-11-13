@@ -99,7 +99,7 @@ public class CSLRenderer extends AbstractPostExportRenderer {
 			LOGGER.error(ex);
 		}
 	}
-	
+
 	@Override
 	public void serializeError(final Writer writer, final String errorMessage) {
 		final Map<String, String> errorMsg = new HashMap<String, String>();

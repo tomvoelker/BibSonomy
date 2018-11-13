@@ -101,9 +101,7 @@ public class UrlRenderer {
 	 * @return a urlbuilder for the group url
 	 */
 	protected UrlBuilder getUrlBuilderForGroup(final String name) {
-		final UrlBuilder builder = this.getUrlBuilderForGroups();
-		builder.addPathElement(name);
-		return builder;
+		return this.getUrlBuilderForGroups().addPathElement(name);
 	}
 
 	/** Creates a URL which points to the given resource.
@@ -391,6 +389,11 @@ public class UrlRenderer {
 		final UrlBuilder builder = this.createUrlBuilderForApi();
 		builder.addPathElement(RESTConfig.USERS_URL);
 		return builder;
+	}
+
+	public UrlBuilder createUrlBuilderForPersonMatch(String targetId, String sourceId) {
+		return createUrlBuilderForPersons(targetId).
+				addPathElement(RESTConfig.PERSONS_MERGE_URL).addParameter("source", sourceId);
 	}
 
 	public UrlBuilder createUrlBuilderForPersons(String personId) {

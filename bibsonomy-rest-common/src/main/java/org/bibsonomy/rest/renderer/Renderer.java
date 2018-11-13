@@ -27,6 +27,7 @@
 package org.bibsonomy.rest.renderer;
 
 import java.io.Reader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +36,7 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -132,6 +134,18 @@ public interface Renderer {
 	 *
 	 * @param writer
 	 *            a {@link Writer} to use.
+	 * @param match
+	 *            one {@link PersonMatch} object.
+	 * @param viewModel
+	 *            the {@link ViewModel} encapsulates additional information,
+	 */
+	public void serializePersonMatch(StringWriter writer, PersonMatch match, ViewModel viewModel);
+
+	/**
+	 * Serializes one {@link Person}.
+	 *
+	 * @param writer
+	 *            a {@link Writer} to use.
 	 * @param project
 	 *            one {@link Project} object.
 	 * @param viewModel
@@ -168,7 +182,7 @@ public interface Renderer {
 	 * @param writer
 	 * @param relations
 	 */
-	void serializeResourcePersonRelations(Writer writer, List<ResourcePersonRelation> relations);
+	public void serializeResourcePersonRelations(Writer writer, List<ResourcePersonRelation> relations);
 
 	/**
 	 * Serializes a personid

@@ -55,6 +55,7 @@
                 <xsd:element name="resourcePersonRelation" type="ResourcePersonRelationType" />
 				<xsd:element name="project" type="ProjectType" />
 				<xsd:element name="cris_link" type="CRISLinkTypeType" />
+				<xsd:element name="personMatch" type="PersonMatchType" />
 				<!-- error -->
 				<xsd:element name="error" type="xsd:string" />
 				<!-- hashes to return when creating / updating resources -->
@@ -569,5 +570,17 @@
 		</xsd:sequence>
 		<xsd:attribute name="startDate" type="xsd:dateTime" />
 		<xsd:attribute name="endDate" type="xsd:dateTime" />
+	</xsd:complexType>
+
+	<xsd:complexType name="PersonMatchType">
+		<xsd:sequence>
+			<xsd:element name="person1" type="PersonType" />
+			<xsd:element name="person2" type="PersonType" />
+			<xsd:element name="person1Posts" type="PostType" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="person2Posts" type="PostType" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="userDenies" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="state" type="xsd:int" />
+		<xsd:attribute name="matchId" type="xsd:int" />
 	</xsd:complexType>
 </xsd:schema>

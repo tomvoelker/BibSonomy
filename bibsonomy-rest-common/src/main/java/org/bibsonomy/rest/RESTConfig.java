@@ -85,6 +85,8 @@ public final class RESTConfig {
 
 	public static final String CRIS_LINKS_URL = "cris_links";
 
+    public static final String PERSONS_MERGE_URL = "merge";
+
 	public static final String DOCUMENTS_SUB_PATH = "documents";
 
 	public static final String FRIENDS_SUB_PATH = "friends";

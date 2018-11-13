@@ -28,6 +28,7 @@ package org.bibsonomy.rest.renderer;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
 import java.util.Set;
@@ -38,6 +39,7 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -96,7 +98,15 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	 * @see org.bibsonomy.rest.renderer.Renderer#serializePerson(java.io.Writer, org.bibsonomy.model.Person, org.bibsonomy.rest.ViewModel)
 	 */
 	@Override
-	public void serializePerson(Writer writer, Person person, ViewModel viewModel) {handleUnsupportedMediaType();}
+	public void serializePerson(Writer writer, Person person, ViewModel viewModel) {this.handleUnsupportedMediaType();}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#serializePersonMatch(java.io.Writer, org.bibsonomy.model.PersonMatch, org.bibsonomy.rest.ViewModel)
+	 */
+	@Override
+	public void serializePersonMatch(StringWriter writer, PersonMatch match, ViewModel viewModel) {
+		this.handleUnsupportedMediaType();
+	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.renderer.Renderer#serializeProject(java.io.Writer, org.bibsonomy.model.cris.Project, org.bibsonomy.rest.ViewModel)

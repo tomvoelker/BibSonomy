@@ -28,6 +28,7 @@ package org.bibsonomy.rest.renderer.impl;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +43,7 @@ import org.bibsonomy.layout.jabref.JabRefConfig;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -185,6 +187,11 @@ public class JabrefLayoutRenderer implements Renderer {
 
 	@Override
 	public void serializeCRISLink(Writer writer, CRISLink crisLink, ViewModel viewModel) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializePersonMatch(StringWriter writer, PersonMatch match, ViewModel viewModel) {
 		throw new UnsupportedOperationException();
 	}
 
