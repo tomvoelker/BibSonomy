@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers.chain.project;
 
 import org.bibsonomy.database.managers.ProjectDatabaseManager;
 import org.bibsonomy.database.managers.chain.ChainElement;
+import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 
@@ -12,7 +13,7 @@ import java.util.List;
  *
  * @author dzo
  */
-public abstract class ProjectChainElement extends ChainElement<List<Project>, ProjectQuery> {
+public abstract class ProjectChainElement extends ChainElement<List<Project>, QueryAdapter<ProjectQuery>> {
 
 	/** the project database manager */
 	protected ProjectDatabaseManager projectDatabaseManager;
@@ -20,7 +21,7 @@ public abstract class ProjectChainElement extends ChainElement<List<Project>, Pr
 	/**
 	 * @param projectDatabaseManager the projectDatabaseManager to set
 	 */
-	public void setProjectDatabaseManager(ProjectDatabaseManager projectDatabaseManager) {
+	public void setProjectDatabaseManager(final ProjectDatabaseManager projectDatabaseManager) {
 		this.projectDatabaseManager = projectDatabaseManager;
 	}
 }

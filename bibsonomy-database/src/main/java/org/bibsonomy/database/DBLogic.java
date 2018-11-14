@@ -3837,7 +3837,7 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public List<Project> getProjects(final ProjectQuery builder) {
 		try (final DBSession session = this.openSession()) {
-			return this.projectDatabaseManager.getProjects(builder, session);
+			return this.projectDatabaseManager.getProjects(builder, this.loginUser, session);
 		}
 	}
 

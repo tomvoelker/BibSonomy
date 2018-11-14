@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/util
+						http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<bean id="elasticsearchProjectSearch" class="org.bibsonomy.search.es.search.project.ElasticsearchProjectSearch">
+		<constructor-arg ref="elasticsearchProjectManager" />
+		<constructor-arg ref="elasticsearchProjectConverter" />
+	</bean>
+
+	<bean id="elasticsearchProjectMapperBuilder" class="org.bibsonomy.search.es.index.mapping.project.ProjectMapperBuilder" />
+
+	<bean id="elasticsearchProjectConverter" class="org.bibsonomy.search.es.index.converter.project.ProjectConverter" />
+
+	<bean id="elasticsearchProjectEntityInformationProvider" class="org.bibsonomy.search.es.index.generator.project.ProjectEntityInformationProvider">
+		<constructor-arg ref="elasticsearchProjectConverter" />
+		<constructor-arg ref="elasticsearchProjectMapperBuilder" />
+	</bean>
+
+	<bean id="elasticsearchProjectManager" class="org.bibsonomy.search.es.management.project.ElasticsearchProjectManager" parent="elasticsearchProjectManager">
+		<constructor-arg>
+			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator">
+				<constructor-arg ref="esClient" />
+				<constructor-arg ref="systemURI" />
+				<constructor-arg ref="projectGenerationDBLogic" />
+				<constructor-arg ref="projectDatabaseInformationLogic" />
+				<constructor-arg ref="postSyncStateConverter" />
+				<constructor-arg ref="elasticsearchProjectEntityInformationProvider" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg ref="postSyncStateConverter" />
+		<constructor-arg ref="elasticsearchProjectEntityInformationProvider" />
+		<constructor-arg ref="projectUpdateLogic" />
+		<constructor-arg ref="projectDatabaseInformationLogic" />
+	</bean>
+
+</beans>
