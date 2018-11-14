@@ -27,7 +27,8 @@
 package org.bibsonomy.model.cris;
 
 /**
- * an interface that all classes must implement that can be linked to a publication
+ * an interface that all classes must implement that can be linked to another CRIS entry
+ *
  * @author dzo
  */
 public interface Linkable {
@@ -35,7 +36,11 @@ public interface Linkable {
 	/**
 	 * @return the linkable id of the resource
 	 */
-	public String getLinkableId();
+	String getLinkableId();
 
-	public Integer getId();
+	/**
+	 * XXX: should only be accessible in the database
+	 * @return the database id
+	 */
+	Integer getId();
 }

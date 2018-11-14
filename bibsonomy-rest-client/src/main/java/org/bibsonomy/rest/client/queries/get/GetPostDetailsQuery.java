@@ -57,7 +57,6 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post<? extends Reso
 	 *             if userName or resourceHash are null or empty
 	 */
 	public GetPostDetailsQuery(final String username, final String resourceHash) throws IllegalArgumentException {
-		if (!present(username)) throw new IllegalArgumentException("no username given");
 		if (!present(resourceHash)) throw new IllegalArgumentException("no resourceHash given");
 
 		this.username = username;

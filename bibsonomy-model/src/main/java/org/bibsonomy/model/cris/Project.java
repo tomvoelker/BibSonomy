@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.model.cris;
 
-import java.net.URL;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;

@@ -80,7 +80,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		PUBLICATION_DATABASE_MANAGER = testDatabaseContext.getBean(BibTexDatabaseManager.class);
 		COMMUNITY_DATABASE_MANAGER = testDatabaseContext.getBean(GoldStandardPublicationDatabaseManager.class);
 	}
-	
+
 	/**
 	 * Initializes the test environment for this class
 	 * NOTE: we have to use @Before because we need the DB session to access the database
@@ -125,6 +125,12 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		// test inserting of a duplicate
 		assertThat(PERSON_DATABASE_MANAGER.addResourceRelation(resourcePersonRelation, loginUser, this.dbSession), is(false));
+	}
+
+	@Test
+	public void testGetPersonById() {
+		final Person person = PERSON_DATABASE_MANAGER.getPersonById(PERSON_ID, this.dbSession);
+		assertThat(person.getPersonId(), is(PERSON_ID));
 	}
 
 	/**
@@ -291,7 +297,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		newMatches = PERSON_DATABASE_MANAGER.getMatchesForFilterWithUserName(deniedMatch.getPerson1().getPersonId(), loginUser.getName(), this.dbSession);
 		assertThat(newMatches.size(), is(0));
-		for (int i = 2; i < PersonMatch.denieThreshold; i++) {
+		for (int i = 2; i < PersonMatch.MAX_NUMBER_OF_DENIES; i++) {
 			PERSON_DATABASE_MANAGER.denyMatch(deniedMatch, "testuser" + i, this.dbSession);
 		}
 
@@ -300,7 +306,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertThat(matches.size(), is(1));
 
 		deniedMatch = PERSON_DATABASE_MANAGER.getMatch(deniedMatch.getMatchID(), this.dbSession);
-		PERSON_DATABASE_MANAGER.denyMatch(deniedMatch, "testuser" + PersonMatch.denieThreshold, this.dbSession);
+		PERSON_DATABASE_MANAGER.denyMatch(deniedMatch, "testuser" + PersonMatch.MAX_NUMBER_OF_DENIES, this.dbSession);
 		matches = PERSON_DATABASE_MANAGER.getMatches(this.dbSession);
 		assertThat(matches.size(), is(0));
 	}

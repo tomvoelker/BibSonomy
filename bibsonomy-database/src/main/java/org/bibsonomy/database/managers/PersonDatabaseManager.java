@@ -65,6 +65,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
@@ -84,8 +85,12 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	private final GeneralDatabaseManager generalManager;
 	private final DatabasePluginRegistry plugins;
+
 	private GoldStandardPublicationDatabaseManager goldStandardPublicationDatabaseManager;
 	private BibTexDatabaseManager publicationDatabaseManager;
+
+	private CRISLinkDatabaseManager crisLinkDatabaseManager;
+
 	private PersonSearch personSearch;
 
 	@Deprecated // TODO: config via spring
@@ -173,20 +178,24 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	}
 
 	/**
-	 * Returns a Person identified by it's unique ID
+	 * returns a Person identified by it's unique ID
 	 *
 	 * @param id
 	 * @param session
 	 * @return Person
 	 */
-	public Person getPersonById(String id, DBSession session) {
+	public Person getPersonById(final String id, final DBSession session) {
 		final Person person = this.queryForObject("getPersonById", id, Person.class, session);
 		if (!present(person)) {
 			final String forwardId = this.getForwardId(id, session);
 			if (present(forwardId)) {
 				throw new ObjectMovedException(id, Person.class, forwardId, null, null);
 			}
+		} else {
+			final List<CRISLink> crisLinks = this.crisLinkDatabaseManager.loadCRISLinks(person, Collections.singletonList(Project.class), session);
+			person.setCrisLinks(crisLinks);
 		}
+
 		return person;
 	}
 
@@ -865,7 +874,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		// one copy remains because j is always bigger than i
 		for (int i = 0; i < matches.size() - 1; i++) {
 			for (int j = i + 1; j < matches.size(); j++) {
-				if (matches.get(i).equals(matches.get(j)) == 0) {
+				if (matches.get(i).equals(matches.get(j))) {
 					// both personId's are the same
 					dupes.add(matches.get(i));
 				}
@@ -884,7 +893,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			}
 			// get userDenies without duplicates
 			combinedMerge.setUserDenies(this.queryForList("getDeniesForMatch", combinedMerge.getMatchID(), String.class, session));
-			if (combinedMerge.getUserDenies().size() >= PersonMatch.denieThreshold) {
+			if (combinedMerge.getUserDenies().size() >= PersonMatch.MAX_NUMBER_OF_DENIES) {
 				// deny merge for all if the total user deny count is bigger
 				// than the deny threshold
 				this.delete("denyMatchByID", new DenyMatchParam(combinedMerge.getMatchID(), loggedInUser.getName()), session);
@@ -917,7 +926,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			log.error(e);
 		}
 		return edit;
-
 	}
 
 	/**
@@ -931,7 +939,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	public void denyMatch(PersonMatch match, String userName, DBSession session) {
 		if (!match.getUserDenies().contains(userName)) {
 			DenyMatchParam param = new DenyMatchParam(match.getMatchID(), userName);
-			if (match.getUserDenies().size() == PersonMatch.denieThreshold - 1) {
+			if (match.getUserDenies().size() == PersonMatch.MAX_NUMBER_OF_DENIES - 1) {
 				// deny match for all
 				this.delete("denyMatchByID", param, session);
 			}
@@ -1179,5 +1187,12 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	public void setPublicationDatabaseManager(BibTexDatabaseManager publicationDatabaseManager) {
 		this.publicationDatabaseManager = publicationDatabaseManager;
+	}
+
+	/**
+	 * @param crisLinkDatabaseManager the crisLinkDatabaseManager to set
+	 */
+	public void setCrisLinkDatabaseManager(CRISLinkDatabaseManager crisLinkDatabaseManager) {
+		this.crisLinkDatabaseManager = crisLinkDatabaseManager;
 	}
 }

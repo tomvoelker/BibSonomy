@@ -36,6 +36,11 @@ import org.bibsonomy.util.ValidationUtils;
 
 import java.io.StringWriter;
 
+/**
+ * query to create a person
+ *
+ * @author pda
+ */
 public final class CreatePersonQuery extends AbstractQuery<String> {
     private final Person person;
 
