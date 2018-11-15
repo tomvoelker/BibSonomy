@@ -5,24 +5,28 @@
 
     <!-- a simple cris link, which only contains the information and no link source or target -->
     <resultMap id="simpleCrisLink" class="crisLink" groupBy="id">
-        <result property="id"			column="id"             javaType="int" />
-        <result property="linkType"     column="linktype_value" javaType="crisLinkType" />
-        <result property="startDate" 	column="start_date"		javaType="date" />
-        <result property="endDate"	    column="end_date"	    javaType="date" />
-        <result property="dataSource"   column="link_source"    javaType="crisLinkDataSource" />
+        <result property="id"			column="cris_id"              javaType="int" />
+        <result property="linkType"     column="linktype_value"  javaType="crisLinkType" />
+        <result property="startDate" 	column="cris_start_date" javaType="date" />
+        <result property="endDate"	    column="cris_end_date"	 javaType="date" />
+        <result property="dataSource"   column="link_source"     javaType="crisLinkDataSource" />
     </resultMap>
     
     <resultMap id="personCrisLink" class="crisLink" groupBy="id" extends="simpleCrisLink">
         <result property="target"    resultMap="PersonCommon.simplePerson" />
     </resultMap>
 
+    <resultMap id="projectCrisLink" class="crisLink" groupBy="id" extends="simpleCrisLink">
+        <result property="source"   resultMap="ProjectCommon.simpleCrisLinkProject" />
+    </resultMap>
+
     <sql id="allCRISLinkAttributes">
-        id, source_id, source_type, target_id, target_type, start_date, end_date, linktype_type, linktype_value,
-        link_source, updated_by, updated_at
+        c.id AS cris_id, c.source_id, c.source_type, c.target_id, c.target_type, c.start_date AS cris_start_date, c.end_date AS cris_end_date, c.linktype_type, c.linktype_value,
+        c.link_source, c.updated_by, c.updated_at
     </sql>
 
     <sql id="simpleCRISColumns">
-        id, start_date, end_date, linktype_type, linktype_value, link_source
+        c.id AS cris_id, c.start_date AS cris_start_date, c.end_date AS cris_end_date, c.linktype_type, c.linktype_value, c.link_source
     </sql>
 
 </sqlMap>

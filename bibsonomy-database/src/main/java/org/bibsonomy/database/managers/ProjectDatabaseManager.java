@@ -11,6 +11,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.CRISEntityType;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.chain.Chain;
+import org.bibsonomy.database.params.CRISLinkParam;
 import org.bibsonomy.database.params.ProjectParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.Person;
@@ -308,7 +309,10 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 
 	@Override
 	public List<CRISLink> getLinksForSource(Integer linkId, CRISEntityType crisEntityType, DBSession session) {
-		return new LinkedList<>();
+		final CRISLinkParam param = new CRISLinkParam();
+		param.setTargetId(linkId.intValue());
+		param.setTargetType(crisEntityType);
+		return this.queryForList("getProjectCRISLinks", param, CRISLink.class, session);
 	}
 
 	/**
