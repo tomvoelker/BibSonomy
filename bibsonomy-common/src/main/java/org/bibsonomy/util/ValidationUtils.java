@@ -36,6 +36,17 @@ import org.bibsonomy.common.enums.GroupID;
  */
 public class ValidationUtils {
 
+	public static <T> T requirePresent(final T subject) {
+		return requirePresent(subject, null);
+	}
+
+	public static <T> T requirePresent(final T subject, final String message) {
+		if (!present(subject)) {
+			throw new IllegalArgumentException(message);
+		}
+		return subject;
+	}
+
 	/**
 	 * @param string argument to check
 	 * @return false iff the argument is null or has zero trimmed length

@@ -36,6 +36,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.factories.ResourceFactory;
@@ -419,6 +420,10 @@ public class UrlRenderer {
 
 	public UrlBuilder createUrlBuilderForCRISLinks() {
 		return createUrlBuilderForApi().addPathElement(RESTConfig.CRIS_LINKS_URL);
+	}
+
+	public UrlBuilder createUrlBuilderForCRISLinks(String sourceId, String targetId) {
+		return createUrlBuilderForCRISLinks().addParameter("sourceId", sourceId).addParameter("targetId", targetId);
 	}
 
 	public UrlBuilder createUrlBuilderForResourcePersonRelations(String personId) {
