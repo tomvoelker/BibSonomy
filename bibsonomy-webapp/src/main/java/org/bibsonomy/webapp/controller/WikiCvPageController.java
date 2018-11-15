@@ -136,9 +136,10 @@ public class WikiCvPageController extends ResourceListController implements Mini
 		 */
 		if (present(requestedUser)) {
 			final boolean isNoSpammer = !requestedUser.isSpammer();
-			final boolean isClassified = requestedUser.getToClassify() != null && requestedUser.getToClassify() != 1;
+			//final boolean isClassified = requestedUser.getToClassify() != null && requestedUser.getToClassify() != 1;
 			final boolean ownCVPage = requestedUser.equals(command.getContext().getLoginUser());
-			showCV &= ownCVPage || isNoSpammer && isClassified;
+			showCV &= ownCVPage || isNoSpammer;
+					//&& isClassified;
 		}
 		if (showCV) {
 			wikiText = wiki.getWikiText();
