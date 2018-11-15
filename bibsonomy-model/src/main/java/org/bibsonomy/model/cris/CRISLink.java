@@ -27,6 +27,7 @@
 package org.bibsonomy.model.cris;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * this class represents the link of a publication to an Linkable object of the CRIS system
@@ -146,5 +147,24 @@ public class CRISLink {
 	 */
 	public void setDataSource(CRISLinkDataSource dataSource) {
 		this.dataSource = dataSource;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		CRISLink crisLink = (CRISLink) o;
+		return Objects.equals(source, crisLink.source) &&
+						Objects.equals(target, crisLink.target) &&
+						Objects.equals(linkType, crisLink.linkType);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(source, target, linkType);
 	}
 }
