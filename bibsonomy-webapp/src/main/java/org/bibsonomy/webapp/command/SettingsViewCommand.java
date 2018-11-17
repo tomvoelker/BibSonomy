@@ -106,12 +106,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 * list with friends of the current login user
 	 */
 	private List<User> userFriends;
-	
-	/**
-	 * The person that has been claimed by the user
-	 */
-	private Person claimedPerson;
-		
+
 	private String importType;
 	
 	private boolean overwrite;
@@ -963,18 +958,5 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setCslFiles(List<CSLStyle> cslFiles) {
 		this.cslFiles = cslFiles;
-	}
-	/**
-	 * @return the claimedPerson
-	 */
-	public Person getClaimedPerson() {
-		return this.claimedPerson;
-	}
-
-	/**
-	 * @param claimedPerson the claimedPerson to set
-	 */
-	public void setClaimedPerson(Person claimedPerson) {
-		this.claimedPerson = claimedPerson;
 	}
 }

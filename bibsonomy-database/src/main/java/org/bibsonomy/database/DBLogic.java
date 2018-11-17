@@ -306,6 +306,12 @@ public class DBLogic implements LogicInterface {
 			final User user = this.userDBManager.getUserDetails(userName, session);
 
 			/*
+			 * get the claimed person for the user
+			 */
+			final Person claimedPerson = this.personDBManager.getPersonByUser(user.getName(), session);
+			user.setClaimedPerson(claimedPerson);
+
+			/*
 			 * only admin and myself may see which group I'm a member of
 			 * group admins may see the details of the group's dummy user (in
 			 * that case, the group's name is user.getName()
