@@ -162,7 +162,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * get user profile picture from fileLogic
 		 */
-		user.setProfilePicture(new LazyUploadedFile(){
+		user.setProfilePicture(new LazyUploadedFile() {
 
 			@Override
 			protected File requestFile() {
