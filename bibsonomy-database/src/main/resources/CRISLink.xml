@@ -28,15 +28,22 @@
 
     <select id="getCRISLinkDetails" parameterClass="crisLinkParam" resultMap="CRISLinkCommon.simpleCrisLink">
         SELECT <include refid="simpleCRISColumns" />
-          FROM cris_links
+          FROM cris_links c
           WHERE source_id = #sourceId# AND source_type = #sourceType.id# AND target_id = #targetId# AND target_type = #targetType.id#
     </select>
 
     <select id="getPersonCRISLinks" parameterClass="crisLinkParam" resultMap="CRISLinkCommon.personCrisLink">
         SELECT <include refid="simpleCRISColumns" />, p.person_id, p.academic_degree, pn.person_change_id AS person_name_change_id, pn.first_name, pn.last_name
-          FROM cris_links
-            JOIN person p ON(p.person_change_id = target_id)
-            JOIN person_name pn USING(person_id)
-          WHERE source_id = #sourceId# and source_type = #sourceType.id#
+          FROM cris_links c
+            JOIN person p ON (p.person_change_id = c.target_id)
+            JOIN person_name pn USING (person_id)
+          WHERE c.source_id = #sourceId# and c.source_type = #sourceType.id#
+    </select>
+
+    <select id="getProjectCRISLinks" parameterClass="crisLinkParam" resultMap="CRISLinkCommon.projectCrisLink">
+        SELECT <include refid="simpleCRISColumns" />, p.id, p.project_id, p.title, p.subtitle, p.start_date, p.end_date
+        FROM cris_links c
+        JOIN projects p ON (p.id = c.source_id)
+        WHERE c.target_id = #targetId# and c.target_type = #targetType.id#
     </select>
 </sqlMap>

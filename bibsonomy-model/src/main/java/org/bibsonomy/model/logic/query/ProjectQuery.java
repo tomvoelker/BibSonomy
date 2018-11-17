@@ -55,6 +55,20 @@ public class ProjectQuery extends BasicQuery {
 		/** the end */
 		private int end;
 
+		/** the externalId */
+		private String externalId;
+
+		/**
+		 * sets the externalId
+		 *
+		 * @param externalId
+		 * @return
+		 */
+		public ProjectQueryBuilder externalId(final String externalId) {
+			this.externalId = externalId;
+			return this;
+		}
+
 		/**
 		 * sets the start
 		 *
@@ -126,7 +140,8 @@ public class ProjectQuery extends BasicQuery {
 		 * @return the project query
 		 */
 		public ProjectQuery build() {
-			return new ProjectQuery(this.order, this.sortOrder, this.projectStatus, this.type, this.start, this.end);
+			return new ProjectQuery(this.order, this.sortOrder, this.projectStatus,
+					this.type, this.start, this.end, this.externalId);
 		}
 	}
 
@@ -150,6 +165,8 @@ public class ProjectQuery extends BasicQuery {
 	/** the type of the project */
 	private final String type;
 
+	private final String externalId;
+
 	/**
 	 * the constructor
 	 * @param order
@@ -158,14 +175,16 @@ public class ProjectQuery extends BasicQuery {
 	 * @param type
 	 * @param start
 	 * @param end
+	 * @param externalId
 	 */
-	protected ProjectQuery(ProjectOrder order, SortOrder sortOrder, ProjectStatus projectStatus, String type, int start, int end) {
+	protected ProjectQuery(ProjectOrder order, SortOrder sortOrder, ProjectStatus projectStatus, String type, int start, int end, String externalId) {
 		this.order = order;
 		this.sortOrder = sortOrder;
 		this.projectStatus = projectStatus;
 		this.type = type;
 		this.setStart(start);
 		this.setEnd(end);
+		this.externalId = externalId;
 	}
 
 	/**
@@ -194,5 +213,12 @@ public class ProjectQuery extends BasicQuery {
 	 */
 	public String getType() {
 		return type;
+	}
+
+	/**
+	 * @return the externalId
+	 */
+	public String getExternalId() {
+		return externalId;
 	}
 }

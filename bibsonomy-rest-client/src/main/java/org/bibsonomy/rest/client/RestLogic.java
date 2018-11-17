@@ -62,6 +62,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
@@ -78,6 +79,7 @@ import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.queries.get.GetPersonByIdQuery;
+import org.bibsonomy.rest.client.queries.delete.DeleteCRISLinkQuery;
 import org.bibsonomy.rest.client.queries.get.GetConceptDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetFriendsQuery;
 import org.bibsonomy.rest.client.queries.get.GetGroupDetailsQuery;
@@ -122,6 +124,7 @@ import org.bibsonomy.rest.client.queries.put.ChangeGroupQuery;
 import org.bibsonomy.rest.client.queries.put.ChangePostQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeSyncStatusQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeUserQuery;
+import org.bibsonomy.rest.client.queries.put.UpdateCRISLinkQuery;
 import org.bibsonomy.rest.client.queries.put.UpdatePersonQuery;
 import org.bibsonomy.rest.client.util.FileFactory;
 import org.bibsonomy.rest.client.util.ProgressCallback;
@@ -590,6 +593,15 @@ public class RestLogic extends AbstractLogicInterface {
 		return execute(new CreateCRISLinkQuery(link));
 	}
 
+	@Override
+	public JobResult updateCRISLink(CRISLink link) {
+		return execute(new UpdateCRISLinkQuery(link));
+	}
+
+	@Override
+	public JobResult deleteCRISLink(Linkable source, Linkable target) {
+		return execute(new DeleteCRISLinkQuery(source, target));
+	}
 
 	@Override
 	public boolean acceptMerge(PersonMatch match) {

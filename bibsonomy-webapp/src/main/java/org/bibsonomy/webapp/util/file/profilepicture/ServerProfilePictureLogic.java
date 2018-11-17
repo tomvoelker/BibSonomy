@@ -31,7 +31,6 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
-import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.file.UploadedFile;
 import org.bibsonomy.services.filesystem.ProfilePictureLogic;
 import org.bibsonomy.services.filesystem.TempFileLogic;
@@ -42,6 +41,8 @@ import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.util.file.profilepicture.PictureScaler;
 
 /**
+ * the implementation of the {@link ProfilePictureLogic} interface
+ *
  * @author dzo
  */
 public class ServerProfilePictureLogic implements ProfilePictureLogic {
@@ -83,17 +84,22 @@ public class ServerProfilePictureLogic implements ProfilePictureLogic {
 	public File getProfilePictureForUser(String username) {
 		File file = getProfilePicture(username);
 		
-		if (file == null || !file.exists()) {
+		if (!file.exists()) {
 			return this.getDefaultFile();
 		}
 
 		file.setReadOnly(); // never modify files outside the logic!
 		return file;
 	}
-	
 
 	@Override
-	public void saveProfilePictureForUser(String username, UploadedFile pictureFile) throws Exception {
+	public boolean hasProfilePicture(final String username) {
+		final File profilePictureForUser = getProfilePictureForUser(username);
+		return profilePictureForUser.exists();
+	}
+
+	@Override
+	public void saveProfilePictureForUser(final String username, final UploadedFile pictureFile) throws Exception {
 		/*
 		 * temporary store file on file system
 		 */

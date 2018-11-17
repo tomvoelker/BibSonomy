@@ -1262,11 +1262,13 @@
 	<alias name="${project.bean.pingback}" alias="pingback"/>
 	
 	<!-- Handles user's profile picture source -->
-	<bean id="gravatarStdPictureHandlerFactory" class="org.bibsonomy.webapp.util.picture.StandardPictureHandlerFactory" />
+	<bean id="gravatarStdPictureHandlerFactory" class="org.bibsonomy.webapp.util.picture.StandardPictureHandlerFactory">
+		<property name="adminLogic" ref="adminLogic" />
+		<property name="fileLogic" ref="fileLogic" />
+	</bean>
 	
 	<!-- Handles the picture download -->
 	<bean id="pictureController" class="org.bibsonomy.webapp.controller.PictureController" scope="request">
-		<property name="logic" ref="adminLogic" />
 		<property name="requestLogic" ref="requestLogic" />
 		<property name="pictureHandlerFactory" ref="gravatarStdPictureHandlerFactory" />
 	</bean>	

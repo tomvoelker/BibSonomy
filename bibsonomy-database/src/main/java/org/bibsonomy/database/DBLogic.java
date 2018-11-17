@@ -316,7 +316,7 @@ public class DBLogic implements LogicInterface {
 				user.setPendingGroups(this.groupDBManager.getPendingMembershipsForUser(userName, session));
 				// inject the reported spammers.
 				final List<User> reportedSpammersList = this.userDBManager.getUserRelation(user.getName(), UserRelation.SPAMMER, NetworkRelationSystemTag.BibSonomySpammerSystemTag, session);
-				user.setReportedSpammers(new HashSet<User>(reportedSpammersList));
+				user.setReportedSpammers(new HashSet<>(reportedSpammersList));
 				// fill user's spam informations
 				this.adminDBManager.getClassifierUserDetails(user, session);
 				return user;
@@ -2760,7 +2760,7 @@ public class DBLogic implements LogicInterface {
 	 * TODO: the "tag" parameter is currently ignored by this function. As soon
 	 * as tagged relationships are needed, please implement the handling of
 	 * the "tag" parameter from here on (mainly in the UserDBManager)
-	 *ge
+	 *
 	 * @see org.bibsonomy.model.logic.LogicInterface#insertUserRelationship()
 	 */
 	@Override
@@ -3835,9 +3835,9 @@ public class DBLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<Project> getProjects(final ProjectQuery builder) {
+	public List<Project> getProjects(final ProjectQuery query) {
 		try (final DBSession session = this.openSession()) {
-			return this.projectDatabaseManager.getProjects(builder, this.loginUser, session);
+			return this.projectDatabaseManager.getProjects(query, this.loginUser, session);
 		}
 	}
 
