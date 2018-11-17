@@ -65,7 +65,7 @@ public class LogicInterfaceHelperTest extends AbstractDatabaseTest {
 			assertEquals("hash", param.getHash());
 
 			param = LogicInterfaceHelper.buildParam(paramClass, Resource.class, null, null, "", null, "", null, 12, 10, null, null, null, null, new User());
-			assertEquals(QueryDatabaseUtils.DEFAULT_LIST_LIMIT, param.getLimit());
+			assertEquals(LogicInterfaceHelper.DEFAULT_LIST_LIMIT, param.getLimit());
 
 			// hash
 			final String testHash = "11111111111111111111111111111111";

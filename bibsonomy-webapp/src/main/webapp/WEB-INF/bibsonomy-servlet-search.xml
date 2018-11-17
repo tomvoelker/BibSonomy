@@ -24,4 +24,6 @@
 	
 	<alias name="elasticsearchCommunityPublicationSearch" alias="goldStandardPublicationSearch" />
 	<alias name="elasticsearchCommunityBookmarkSearch" alias="goldStandardBookmarkSearch" />
+
+	<alias name="elasticsearchProjectSearch" alias="projectSearch" />
 </beans>

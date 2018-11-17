@@ -21,7 +21,7 @@
 		<constructor-arg ref="elasticsearchProjectMapperBuilder" />
 	</bean>
 
-	<bean id="elasticsearchProjectManager" class="org.bibsonomy.search.es.management.project.ElasticsearchProjectManager" parent="elasticsearchProjectManager">
+	<bean id="elasticsearchProjectManager" class="org.bibsonomy.search.es.management.project.ElasticsearchProjectManager" parent="elasticsearchAbstractIndexManager">
 		<constructor-arg>
 			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator">
 				<constructor-arg ref="esClient" />
@@ -34,7 +34,7 @@
 		</constructor-arg>
 		<constructor-arg ref="postSyncStateConverter" />
 		<constructor-arg ref="elasticsearchProjectEntityInformationProvider" />
-		<constructor-arg ref="projectUpdateLogic" />
+		<constructor-arg ref="projectSearchUpdateLogic" />
 		<constructor-arg ref="projectDatabaseInformationLogic" />
 	</bean>
 
