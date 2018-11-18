@@ -32,11 +32,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.lucene.search.join.ScoreMode;
+import org.bibsonomy.common.enums.Filter;
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.services.searcher.query.PostSearchQuery;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.ExistsQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.Operator;
@@ -54,8 +57,8 @@ import org.elasticsearch.index.query.TermQueryBuilder;
 public class ElasticsearchPublicationSearch<P extends BibTex> extends ElasticsearchPostSearch<P> {
 
 	@Override
-	protected void buildResourceSpecifiyQuery(BoolQueryBuilder mainQueryBuilder, String loggedinUser, PostSearchQuery<?> postQuery) {
-		super.buildResourceSpecifiyQuery(mainQueryBuilder, loggedinUser, postQuery);
+	protected void buildResourceSpecificQuery(BoolQueryBuilder mainQueryBuilder, String loggedinUser, PostSearchQuery<?> postQuery) {
+		super.buildResourceSpecificQuery(mainQueryBuilder, loggedinUser, postQuery);
 
 		final String authorSearchTerms = postQuery.getAuthorSearchTerms();
 		if (present(authorSearchTerms)) {
@@ -105,8 +108,8 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 
 
 	@Override
-	protected void buildResourceSpecifiyFilters(BoolQueryBuilder mainFilterBuilder, String loggedinUser, Set<String> allowedGroups, PostSearchQuery<?> postQuery) {
-		super.buildResourceSpecifiyFilters(mainFilterBuilder, loggedinUser, allowedGroups, postQuery);
+	protected void buildResourceSpecifiyFilters(BoolQueryBuilder mainFilterBuilder, String loggedinUser, Set<String> allowedGroups, Set<String> usersThatShareDocs, PostSearchQuery<?> postQuery) {
+		super.buildResourceSpecifiyFilters(mainFilterBuilder, loggedinUser, allowedGroups, usersThatShareDocs, postQuery);
 
 		final String year = postQuery.getYear();
 		final String lastYear = postQuery.getLastYear();
@@ -129,6 +132,21 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 				rangeFilter.lte(Integer.parseInt(lastYear));
 			}
 			mainFilterBuilder.must(rangeFilter);
+		}
+
+		final Set<Filter> filters = postQuery.getFilters();
+		if (present(filters)) {
+			/*
+			 * only return documents where users attached documents
+			 * but only show posts of users that share documents with the loggedin user
+			 */
+			if (filters.contains(FilterEntity.JUST_PDF)) {
+				final ExistsQueryBuilder docFieldExists = QueryBuilders.existsQuery(Fields.Publication.DOCUMENTS);
+				final BoolQueryBuilder docFilter = QueryBuilders.boolQuery();
+				docFilter.must(docFieldExists);
+				usersThatShareDocs.stream().map(user -> QueryBuilders.matchQuery(Fields.USER_NAME, user)).forEach(docFilter::must);
+				mainFilterBuilder.must(docFilter);
+			}
 		}
 	}
 }

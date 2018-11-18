@@ -152,7 +152,7 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 	public ResultList<Post<R>> getPosts(String loggedinUser, Set<String> allowedGroups, PostSearchQuery<?> postQuery) {
 		final ResultList<Post<R>> postList = callSearch(() -> {
 			final ResultList<Post<R>> posts = new ResultList<>();
-			final Set<String> allowedUsers = getUsersThatShareDocuments(loggedinUser);
+			final Set<String> allowedUsers = this.getUsersThatShareDocuments(loggedinUser);
 			final QueryBuilder queryBuilder = this.buildQuery(loggedinUser, allowedGroups, allowedUsers, postQuery);
 			if (queryBuilder == null) {
 				return posts;
@@ -651,7 +651,7 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 			mainQueryBuilder.must(titleSearchQuery);
 		}
 		
-		this.buildResourceSpecifiyQuery(mainQueryBuilder, loggedinUser, postQuery);
+		this.buildResourceSpecificQuery(mainQueryBuilder, loggedinUser, postQuery);
 
 		final List<String> tags = postQuery.getTags();
 		// Add the requested tags
@@ -700,18 +700,18 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 		
 		mainFilterBuilder.must(groupFilter);
 
-		this.buildResourceSpecifiyFilters(mainFilterBuilder, loggedinUser, allowedGroups, postQuery);
+		this.buildResourceSpecifiyFilters(mainFilterBuilder, loggedinUser, allowedGroups, usersThatShareDocs, postQuery);
 		
 		// all done
 		log.debug("Search query: '" + mainQueryBuilder.toString() + "' and filters: '" + mainFilterBuilder.toString() + "'");
 		return QueryBuilders.boolQuery().must(mainQueryBuilder).filter(mainFilterBuilder);
 	}
 
-	protected void buildResourceSpecifiyFilters(BoolQueryBuilder mainFilterBuilder, String loggedinUser, Set<String> allowedGroups, PostSearchQuery<?> postQuery) {
+	protected void buildResourceSpecifiyFilters(BoolQueryBuilder mainFilterBuilder, String loggedinUser, Set<String> allowedGroups, Set<String> usersThatShareDocs, PostSearchQuery<?> postQuery) {
 		// noop
 	}
 
-	protected void buildResourceSpecifiyQuery(BoolQueryBuilder mainQueryBuilder, String loggedinUser, PostSearchQuery<?> postQuery) {
+	protected void buildResourceSpecificQuery(BoolQueryBuilder mainQueryBuilder, String loggedinUser, PostSearchQuery<?> postQuery) {
 		// noop
 	}
 
