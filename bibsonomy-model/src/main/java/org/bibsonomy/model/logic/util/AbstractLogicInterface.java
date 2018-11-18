@@ -221,7 +221,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PostLogicInterface#createPosts(java.util.List)
 	 */
 	@Override
-	public List<String> createPosts(List<Post<? extends Resource>> posts) {
+	public List<JobResult> createPosts(List<Post<? extends Resource>> posts) {
 		this.doDefaultAction();
 		return null;
 	}

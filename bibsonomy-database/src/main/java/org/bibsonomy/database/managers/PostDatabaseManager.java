@@ -40,6 +40,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupRole;
@@ -1366,7 +1367,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * .model.Post, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	public boolean createPost(final Post<R> post, final User loggedinUser, final DBSession session) {
+	public JobResult createPost(final Post<R> post, final User loggedinUser, final DBSession session) {
 		session.beginTransaction();
 		try {
 			this.checkPost(post, session);
@@ -1389,7 +1390,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			Post<R> postInDB = null;
 			try {
-				postInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<Integer>(), session);
+				postInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<>(), session);
 			} catch(final ObjectMovedException ex) {
 				/*
 				 * getPostDetails() throws a ObjectMovedException for hashes
@@ -1410,7 +1411,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 				session.addError(PostUtils.getKeyForPost(post), errorMessage);
 				log.warn("Added DuplicatePostErrorMessage for post " + post.getResource().getIntraHash());
 				session.commitTransaction();
-				return false;
+				return JobResult.buildFailure(Collections.singletonList(errorMessage));
 			}
 			/*
 			 * ALWAYS get a new contentId
@@ -1434,7 +1435,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		} finally {
 			session.endTransaction();
 		}
-		return true;
+
+		return JobResult.buildSuccess(post.getResource().getIntraHash());
 	}
 
 	/**

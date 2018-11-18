@@ -31,7 +31,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -1524,7 +1523,7 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.model.logic.PostLogicInterface#createPosts(java.util.List)
 	 */
 	@Override
-	public List<String> createPosts(List<Post<?>> posts) {
+	public List<JobResult> createPosts(List<Post<?>> posts) {
 		// TODO: Which of these checks should result in a DatabaseException,
 		this.ensureLoggedIn();
 		/*
@@ -1542,7 +1541,7 @@ public class DBLogic implements LogicInterface {
 		 * insert posts TODO: more efficient implementation (transactions,
 		 * deadlock handling, asynchronous, etc.)
 		 */
-		final List<String> hashes = new LinkedList<String>();
+		final List<JobResult> jobResults = new LinkedList<>();
 		/*
 		 * open session to store all the posts
 		 */
@@ -1551,7 +1550,7 @@ public class DBLogic implements LogicInterface {
 		try {
 			for (final Post<?> post : posts) {
 				try {
-					hashes.add(this.createPost(post, session));
+					jobResults.add(this.createPost(post, session));
 				} catch (final DatabaseException dbex) {
 					collectedException.addErrors(dbex);
 					log.warn("error message due to exception", dbex);
@@ -1570,7 +1569,7 @@ public class DBLogic implements LogicInterface {
 			throw collectedException;
 		}
 
-		return hashes;
+		return jobResults;
 	}
 
 	private List<Post<?>> replaceImportResources(final List<? extends Post<? extends Resource>> posts) {
@@ -1606,7 +1605,7 @@ public class DBLogic implements LogicInterface {
 	/**
 	 * Adds a post in the database.
 	 */
-	private <T extends Resource> String createPost(final Post<T> post, final DBSession session) {
+	private <T extends Resource> JobResult createPost(final Post<T> post, final DBSession session) {
 		final CrudableContent<T, GenericParam> manager = this.getFittingDatabaseManager(post);
 		post.getResource().recalculateHashes();
 
@@ -1625,11 +1624,11 @@ public class DBLogic implements LogicInterface {
 		 */
 		PostUtils.setGroupIds(post, this.loginUser);
 
-		manager.createPost(post, this.loginUser, session);
+		final JobResult jobResult = manager.createPost(post, this.loginUser, session);
 
 		// if we don't get an exception here, we assume the resource has
 		// been successfully created
-		return post.getResource().getIntraHash();
+		return jobResult;
 	}
 
 	/**

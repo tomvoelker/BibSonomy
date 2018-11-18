@@ -33,9 +33,36 @@ public class JobResult {
 		return jobResult;
 	}
 
+	/**
+	 * @param id the of the job
+	 * @return the JobResult with status ok
+	 */
+	public static JobResult buildSuccess(final String id) {
+		final JobResult jobResult = buildSuccess();
+		jobResult.setId(id);
+		return jobResult;
+	}
+
+	/** the id of the entity that was created, updated, deleted, … */
+	private String id;
+
 	private Status status;
 
 	private List<ErrorMessage> errors;
+
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	/**
 	 * @return the status

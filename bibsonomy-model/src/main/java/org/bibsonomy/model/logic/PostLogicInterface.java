@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
@@ -55,10 +56,10 @@ public interface PostLogicInterface {
 	/**
 	 * the number of tags allowed for querying the db
 	 */
-	public static final int MAX_TAG_SIZE = 10;
+	int MAX_TAG_SIZE = 10;
 	
 	/** the maximum number of the most recent posts (global)  */
-	public static final int MAX_RECENT_POSTS = 100000;
+	int MAX_RECENT_POSTS = 100000;
 	
 	/**  
 	 * retrieves a filterable list of posts.
@@ -91,7 +92,7 @@ public interface PostLogicInterface {
 	 * @return A filtered list of posts. may be empty but not null
 	 * @since 3.1
 	 */
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end);
+	<T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end);
 	
 	/**
 	 * Returns details to a post. A post is uniquely identified by a hash of the
@@ -106,7 +107,7 @@ public interface PostLogicInterface {
 	 * is returned inside the exception. 
 	 * @throws ObjectNotFoundException 
 	 */
-	public Post<? extends Resource> getPostDetails(String resourceHash, String userName) throws ObjectMovedException, ObjectNotFoundException;
+	Post<? extends Resource> getPostDetails(String resourceHash, String userName) throws ObjectMovedException, ObjectNotFoundException;
 
 	/**
 	 * Removes the given posts - identified by the connected resource's hashes -
@@ -116,7 +117,7 @@ public interface PostLogicInterface {
 	 * @param resourceHashes
 	 *            hashes of the resources, which is connected to the posts to delete
 	 */
-	public void deletePosts(String userName, List<String> resourceHashes);
+	void deletePosts(String userName, List<String> resourceHashes);
 	
 	/**
 	 * Get the metadata for the post.
@@ -126,14 +127,15 @@ public interface PostLogicInterface {
 	 * @param metaDataPluginKey the kind of meta data
 	 * @return a list of metadata for the specified posts
 	 */
-	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey);
+	List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey);
+
 	/**
 	 * Add the posts to the database.
 	 * 
 	 * @param posts  the posts to add
 	 * @return the resource hashes of the created posts
 	 */
-	public List<String> createPosts(List<Post<? extends Resource>> posts);
+	List<JobResult> createPosts(List<Post<? extends Resource>> posts);
 
 	/**
 	 * Updates the posts in the database.
@@ -142,7 +144,7 @@ public interface PostLogicInterface {
 	 * @param operation  which parts of the posts should be updated
 	 * @return resourceHashes the (new) hashes of the updated resources
 	 */
-	public List<String> updatePosts(List<Post<? extends Resource>> posts, PostUpdateOperation operation);
+	List<String> updatePosts(List<Post<? extends Resource>> posts, PostUpdateOperation operation);
 	
 	/**  
 	 * retrieves the number of posts matching to the given constraints

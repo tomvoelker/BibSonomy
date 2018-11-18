@@ -47,6 +47,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
@@ -387,11 +388,11 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	}
 	
 	@Override
-	public List<String> createPosts(final List<Post<?>> posts) {
+	public List<JobResult> createPosts(final List<Post<?>> posts) {
 		final Post<?> post = posts.get(0);
 		post.getUser().setName(LOGIN_USER_NAME);
 				
-		final List<String> singletonList = Collections.singletonList(post.getResource().getIntraHash());
+		final List<JobResult> singletonList = Collections.singletonList(JobResult.buildSuccess(post.getResource().getIntraHash()));
 
 		EasyMock.expect(this.serverLogic.createPosts(PropertyEqualityArgumentMatcher.eq(posts, IGNORE1))).andReturn(singletonList);
 		EasyMock.replay(this.serverLogic);
@@ -486,7 +487,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	}
 
 	/**
-	 * runs the test defined by {@link #getGroupDetails(String)} with a certain argument
+	 * runs the test defined by {@link #getGroupDetails(String, boolean)} with a certain argument
 	 */
 	@Test
 	public void getGroupDetailsTest() {
@@ -503,7 +504,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 		 */
 		returnedGroupExpectation.setPrivlevel(null); 
 		
-		final List<User> users = new ArrayList<User>();
+		final List<User> users = new ArrayList<>();
 		users.add(ModelUtils.getUser());
 		users.get(0).setName("Nr1");
 		users.add(ModelUtils.getUser());
@@ -534,7 +535,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	
 	@Override
 	public List<Group> getGroups(final boolean pending, String userName, final int start, final int end) {
-		final List<Group> expectedList = new ArrayList<Group>();
+		final List<Group> expectedList = new ArrayList<>();
 		expectedList.add(ModelUtils.getGroup());
 		expectedList.get(0).setName("Group1");
 		expectedList.get(0).setGroupId(42);

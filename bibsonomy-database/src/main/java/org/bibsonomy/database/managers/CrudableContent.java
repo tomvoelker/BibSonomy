@@ -28,6 +28,7 @@ package org.bibsonomy.database.managers;
 
 import java.util.List;
 
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
@@ -93,7 +94,7 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	 * @param session
 	 * @return true if entry was created
 	 */
-	public boolean createPost(Post<T> post, User loggedinUser, DBSession session);
+	JobResult createPost(Post<T> post, User loggedinUser, DBSession session);
 
 	/**
 	 * update

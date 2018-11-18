@@ -316,20 +316,22 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public List<String> createPosts(final List<Post<?>> posts) {
+	public List<JobResult> createPosts(final List<Post<?>> posts) {
 		/*
 		 * FIXME: this iteration should be done on the server, i.e.,
 		 * CreatePostQuery should support several posts ... although it's
 		 * probably not so simple.
 		 */
-		final List<String> resourceHashes = new LinkedList<String>();
+		final List<JobResult> jobResults = new LinkedList<>();
 		for (final Post<?> post : posts) {
 			final String hash = execute(new CreatePostQuery(this.authUser.getName(), post));
 			if (present(hash)) {
-				resourceHashes.add(hash);
+				jobResults.add(JobResult.buildSuccess(hash));
+			} else {
+				jobResults.add(JobResult.buildFailure(Collections.emptyList()));
 			}
 		}
-		return resourceHashes;
+		return jobResults;
 	}
 
 	@Override
@@ -358,7 +360,7 @@ public class RestLogic extends AbstractLogicInterface {
 		 * CreatePostQuery should support several posts ... although it's
 		 * probably not so simple.
 		 */
-		final List<String> resourceHashes = new LinkedList<String>();
+		final List<String> resourceHashes = new LinkedList<>();
 		final DatabaseException collectedException = new DatabaseException();
 		for (final Post<?> post : posts) {
 			final ChangePostQuery query = new ChangePostQuery(this.authUser.getName(), post.getResource().getIntraHash(), post);
