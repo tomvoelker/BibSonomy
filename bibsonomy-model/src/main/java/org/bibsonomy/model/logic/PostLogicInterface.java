@@ -165,7 +165,6 @@ public interface PostLogicInterface {
 	 *            but not null.
 	 * @param search free text search
 	 * @param filters the filters for the retrieved posts
-	 * @param constraints - a possible constraint on the statistics
 	 * @param order a flag indicating the way of sorting
 	 * @param startDate - if given, only posts that have been created after (inclusive) startDate are regarded  
 	 * @param endDate - if given, only posts that have been created before (inclusive) endDate are regarded
@@ -173,7 +172,7 @@ public interface PostLogicInterface {
 	 * @param end exclusive end index of the view window
 	 * @return a filtered list of posts. may be empty but not null
 	 */
-	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end);
+	Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end);
 
 	/**
 	 * @param queryString a query string which may be an arbitrary combination of tokens from title, author, year and school fields
