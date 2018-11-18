@@ -29,6 +29,7 @@ package org.bibsonomy.database.plugin;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bibsonomy.common.information.JobInformation;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.ClipboardParam;
@@ -67,10 +68,13 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	private List<DatabasePlugin> defaultPlugins;
 	
 	@Override
-	public void onPublicationInsert(final Post<? extends BibTex> post, User loggedinUser, final DBSession session) {
+	public List<JobInformation> onPublicationInsert(final Post<? extends BibTex> post, User loggedinUser, final DBSession session) {
+		final List<JobInformation> allInfo = new LinkedList<>();
+
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPublicationInsert(post, loggedinUser, session);
+			allInfo.addAll(plugin.onPublicationInsert(post, loggedinUser, session));
 		}
+		return allInfo;
 	}
 
 	@Override
@@ -123,10 +127,13 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 
 	@Override
-	public void onBookmarkInsert(final Post<? extends Resource> post, User logginUser, final DBSession session) {
+	public List<JobInformation> onBookmarkInsert(final Post<? extends Resource> post, User logginUser, final DBSession session) {
+		final LinkedList<JobInformation> jobInformation = new LinkedList<>();
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onBookmarkInsert(post, logginUser, session);
+			jobInformation.addAll(plugin.onBookmarkInsert(post, logginUser, session));
 		}
+
+		return jobInformation;
 	}
 
 	@Override

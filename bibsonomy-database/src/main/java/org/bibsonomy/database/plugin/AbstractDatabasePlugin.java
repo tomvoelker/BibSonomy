@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.database.plugin;
 
+import org.bibsonomy.common.information.JobInformation;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.ClipboardParam;
@@ -33,7 +34,6 @@ import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
@@ -43,6 +43,8 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+
+import java.util.List;
 
 /**
  * This class should be used by plugins. This way they don't have to implement
@@ -55,11 +57,6 @@ import org.bibsonomy.model.enums.GoldStandardRelation;
  * @author Stefan Stützer
  */
 public class AbstractDatabasePlugin extends AbstractDatabaseManager implements DatabasePlugin {
-
-	@Override
-	public void onPublicationInsert(final Post<? extends BibTex> post, User loggedinUser, final DBSession session) {
-		// noop
-	}
 
 	@Override
 	public void onPublicationDelete(final int contentId, final DBSession session) {
@@ -98,11 +95,6 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 
 	@Override
 	public void onGoldStandardRelationDelete(final String userName, final String interHash_publication, final String interHash_reference, final GoldStandardRelation relation, final DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onBookmarkInsert(final Post<? extends Resource> post, User logginUser, final DBSession session) {
 		// noop
 	}
 

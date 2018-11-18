@@ -1542,15 +1542,16 @@ public class DBLogic implements LogicInterface {
 		 * deadlock handling, asynchronous, etc.)
 		 */
 		final List<JobResult> jobResults = new LinkedList<>();
+
+		final DatabaseException collectedException = new DatabaseException();
 		/*
 		 * open session to store all the posts
 		 */
-		final DBSession session = this.openSession();
-		final DatabaseException collectedException = new DatabaseException();
-		try {
+		try (final DBSession session = this.openSession()) {
 			for (final Post<?> post : posts) {
 				try {
 					jobResults.add(this.createPost(post, session));
+					// FIXME: return these exceptions as jobresults
 				} catch (final DatabaseException dbex) {
 					collectedException.addErrors(dbex);
 					log.warn("error message due to exception", dbex);
@@ -1561,8 +1562,6 @@ public class DBLogic implements LogicInterface {
 					log.warn("'unspecified' error message due to exception", ex);
 				}
 			}
-		} finally {
-			session.close();
 		}
 
 		if (collectedException.hasErrorMessages()) {

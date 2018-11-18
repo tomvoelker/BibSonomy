@@ -64,7 +64,7 @@ public interface ExecutableSystemTag extends SystemTag {
 	 * @param post = a VALID post for which action should be performed
 	 * @param session 
 	 */
-	public <T extends Resource> void performAfterCreate(Post<T> post, final DBSession session);
+	<T extends Resource> void performAfterCreate(Post<T> post, final DBSession session);
 	
 	/**
 	 * Action to perform after the update of a post

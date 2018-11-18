@@ -28,12 +28,14 @@ package org.bibsonomy.database.plugin.plugins;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.information.JobInformation;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.PersonDatabaseManager;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
@@ -48,6 +50,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.services.information.PersonResourceLinkInformationAdded;
 
 /**
  * connects publications with persons when the posting user has his/her account connected to a person
@@ -64,7 +67,8 @@ public class PersonPostConnectorPlugin extends AbstractDatabasePlugin {
 	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onPostInsert(org.bibsonomy.model.Post, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPublicationInsert(final Post<? extends BibTex> post, User loggedinUser, final DBSession session) {
+	public List<JobInformation> onPublicationInsert(final Post<? extends BibTex> post, User loggedinUser, final DBSession session) {
+		final LinkedList<JobInformation> jobInformation = new LinkedList<>();
 		// only link the post with the person of the post user and the post is public
 		if (SystemTagsUtil.containsSystemTag(post.getTags(), MyOwnSystemTag.NAME) && GroupUtils.isPublicGroup(post.getGroups())) {
 			final User user = post.getUser();
@@ -72,11 +76,19 @@ public class PersonPostConnectorPlugin extends AbstractDatabasePlugin {
 				final Person person = this.personDatabaseManager.getPersonByUser(user.getName(), session);
 				if (present(person)) {
 					final BibTex publication = post.getResource();
-					autoInsertPersonResourceRelation(post, person, publication.getAuthor(), PersonResourceRelationType.AUTHOR, loggedinUser, session);
-					autoInsertPersonResourceRelation(post, person, publication.getEditor(), PersonResourceRelationType.EDITOR, loggedinUser, session);
+					final JobInformation authorInfo = autoInsertPersonResourceRelation(post, person, publication.getAuthor(), PersonResourceRelationType.AUTHOR, loggedinUser, session);
+					if (present(authorInfo)) {
+						jobInformation.add(authorInfo);
+					}
+					final JobInformation editorInfo = autoInsertPersonResourceRelation(post, person, publication.getEditor(), PersonResourceRelationType.EDITOR, loggedinUser, session);
+					if (present(editorInfo)) {
+						jobInformation.add(editorInfo);
+					}
 				}
 			}
 		}
+
+		return jobInformation;
 	}
 
 	/**
@@ -87,7 +99,7 @@ public class PersonPostConnectorPlugin extends AbstractDatabasePlugin {
 	 * @param loggedinUser
 	 * @param session
 	 */
-	private void autoInsertPersonResourceRelation(final Post<? extends BibTex> post, final Person person, final List<PersonName> personList, final PersonResourceRelationType relationType, final User loggedinUser, final DBSession session) {
+	private JobInformation autoInsertPersonResourceRelation(final Post<? extends BibTex> post, final Person person, final List<PersonName> personList, final PersonResourceRelationType relationType, final User loggedinUser, final DBSession session) {
 		final List<PersonName> personNames = person.getNames();
 		final SortedSet<Integer> foundPersons = new TreeSet<>();
 		if (present(personNames)) {
@@ -104,10 +116,15 @@ public class PersonPostConnectorPlugin extends AbstractDatabasePlugin {
 			resourcePersonRelation.setRelationType(relationType);
 			resourcePersonRelation.setPersonIndex(foundPersons.iterator().next().intValue());
 
-			this.personDatabaseManager.addResourceRelation(resourcePersonRelation, loggedinUser, session);
+			final boolean added = this.personDatabaseManager.addResourceRelation(resourcePersonRelation, loggedinUser, session);
+			if (added) {
+				return new PersonResourceLinkInformationAdded(resourcePersonRelation);
+			}
 		} else if (foundPersons.size() != 0) {
 			log.warn("found more than one " + relationType.toString().toLowerCase() + " that could be the person " + post.getResource().getInterHash() + " " + PersonNameUtils.serializePersonNames(personNames));
 		}
+
+		return null;
 	}
 
 	/**
