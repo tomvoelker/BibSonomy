@@ -32,8 +32,11 @@
 	<fmt:message key="person.show.TooltipLockedForm" var="formLockedTooltip" />
 	
 	<c:set var="title" value="${mtl:cleanBibtex(command.person.mainName.firstName)} ${mtl:cleanBibtex(command.person.mainName.lastName)}" />
-	
-	<layout:paneLayout pageTitle="${title}" 
+	<c:set var="hasClaimedPerson" value="${not empty command.person.user and not empty command.context.loginUser.name and command.person.user eq command.context.loginUser.name and not command.context.loginUser.spammer}" />
+	<c:set var="isAdmin" value="${command.context.loginUser.role eq 'ADMIN'}" />
+	<c:set var="hasClaimedOrIsAdmin" value="${hasClaimedPerson or isAdmin}" />
+
+	<layout:paneLayout pageTitle="${title}"
 		headerLogoClass="publications" 
 		command="${command}" 
 		requPath="${requPath}"
@@ -67,7 +70,7 @@
 			<!-- Links to the user who claimed this page or buttons to claim it/realease it -->
 			<h4><fmt:message key="person.sidebar.linkedUserTitle" /></h4>
 			<c:choose>
-				<c:when test='${not empty command.person.user and (command.person.user eq command.context.loginUser.name)}'>
+				<c:when test='${hasClaimedPerson}'>
 					<p><fmt:message key="person.sidebar.linkedUserUnlinkText" /></p>
 					<bsform:button size="defaultSize" style="danger" dataTarget="#unlinkPerson" dataToggle="modal" valueKey="person.show.thatsNotMeButton" titleKey="person.show.thatsNotMeButton" />				
 				</c:when>
@@ -95,7 +98,7 @@
 				<input type="hidden" name="ckey" value="${ckey}"/>
 				<input type="hidden" name="personId" value="${command.person.personId}"/>
 				<c:choose>
-					<c:when test='${not empty command.person.user and not empty command.context.loginUser.name and command.person.user eq command.context.loginUser.name}'>
+					<c:when test='${hasClaimedPerson}'>
 						<input type="hidden" id="formThatsMe" name="formThatsMe" value="true"/>
 					</c:when>
 					<c:otherwise>
@@ -152,7 +155,7 @@
 								
 								<div class="col-md-8">
 									<div class="personPageFormPlaceholder">
-										<c:if test="${(not empty command.context.loginUser.name and empty command.person.user) or (not empty command.person.user and (command.person.user eq command.context.loginUser.name)) and not command.context.loginUser.spammer}">
+										<c:if test="${hasClaimedOrIsAdmin}">
 											<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
 										</c:if>
 										<span class="personPageFormFieldContent" id="personPageFormCollegeValue">${command.person.college}</span> 
@@ -177,7 +180,7 @@
 									<div class="personPageFormPlaceholder">
 										<c:choose>
 											<!-- Only visible if the loginUser claimed this person -->
-											<c:when test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
+											<c:when test='${hasClaimedOrIsAdmin}'>
 												<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
 											</c:when>
 											<c:otherwise>
@@ -185,13 +188,13 @@
 											</c:otherwise>
 										</c:choose>
 										
-										<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+										<c:if test="${hasClaimedOrIsAdmin}">
 										<span class="personPageFormFieldContent" id="personPageFormEmailValue">${command.person.email}</span> 
 										</c:if>	
 									</div>
 									
 									<!-- Only visible if te loginUser claimed this person -->
-									<c:if test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
+									<c:if test='${hasClaimedOrIsAdmin}'>
 										<div class="personPageFormField col-md-8">
 											<fmt:message key="person.show.email.placeholder" var="textEmailPlaceholder" />
 											<input class='form-control' type="email" name='person.email' id="formEmail" placeholder="${textEmailPlaceholder}" value="${command.person.email}"/>
@@ -213,7 +216,7 @@
 									<div class="personPageFormPlaceholder">
 										<c:choose>
 											<!-- Only visible if the loginUser claimed this person -->
-											<c:when test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
+											<c:when test='${hasClaimedOrIsAdmin}'>
 												<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
 											</c:when>
 											<c:otherwise>
@@ -234,7 +237,7 @@
 									</div>
 									
 									<!-- Only visible if te loginUser claimed this person -->
-									<c:if test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
+									<c:if test='${hasClaimedOrIsAdmin}'>
 										<div class="personPageFormField col-md-8">										
 											<fmt:message key="person.show.homepage.placeholder" var="textHomepagePlaceholder" />
 											<input class='form-control' type="url" name='person.homepage' id="formHomepage" placeholder="${textHomepagePlaceholder}" value="${command.person.homepage}"/>
@@ -284,7 +287,7 @@
 										</c:otherwise>
 									</c:choose>
 									
-									<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+									<c:if test="${hasClaimedOrIsAdmin}">
 										<bsform:button size="xsmall" value="${textAddAlternateNameButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addName" />
 									</c:if>
 								</div>
@@ -328,7 +331,7 @@
 
 							<div class="col-md-6">
 								<div class="personPageFormPlaceholder">
-									<c:if test="${(not empty command.context.loginUser.name and empty command.person.user) or (not empty command.person.user and (command.person.user eq command.context.loginUser.name)) and not command.context.loginUser.spammer}">
+									<c:if test="${hasClaimedOrIsAdmin}">
 										<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
 									</c:if>
 									<span class="personPageFormFieldContent" id="personPageFormResearcheridValue">

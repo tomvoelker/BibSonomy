@@ -601,6 +601,9 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View showAction(final PersonPageCommand command) {
+		for (PersonResourceRelationType prr : PersonResourceRelationType.values()) {
+			command.getAvailableRoles().add(prr);
+		}
 		final String requestedPersonId = command.getRequestedPersonId();
 		/*
 		 * get the person; if person with the requested id was merged with another person, this method
@@ -619,7 +622,7 @@ public class PersonPageController extends SingleResourceListController implement
 		List<ResourcePersonRelation> authorRelations = new ArrayList<>();
 		List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
 		List<ResourcePersonRelation> otherAuthorRelations = new ArrayList<>();
-		List<ResourcePersonRelation> otherAdvisorRelationss = new ArrayList<>();
+		List<ResourcePersonRelation> otherAdvisorRelations = new ArrayList<>();
 
 		for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
 			final boolean isThesis = resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis");
@@ -634,7 +637,7 @@ public class PersonPageController extends SingleResourceListController implement
 				if (isThesis) {
 					advisorRelations.add(resourcePersonRelation);
 				} else {
-					otherAdvisorRelationss.add(resourcePersonRelation);
+					otherAdvisorRelations.add(resourcePersonRelation);
 				}
 			}
 			
@@ -646,7 +649,7 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setThesis(authorRelations);
 		command.setOtherPubs(otherAuthorRelations);
 		command.setAdvisedThesis(advisorRelations);
-		command.setOtherAdvisedPubs(otherAdvisorRelationss);
+		command.setOtherAdvisedPubs(otherAdvisorRelations);
 		command.setPersonMatchList(this.logic.getPersonMatches(person.getPersonId()));
 		command.setMergeConflicts(PersonMatchUtils.getMergeConflicts(command.getPersonMatchList()));
 
