@@ -36,6 +36,7 @@ import org.bibsonomy.database.managers.chain.ChainUtils;
 import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.database.systemstags.search.EntryTypeSystemTag;
 import org.bibsonomy.database.systemstags.search.NotTagSystemTag;
 import org.bibsonomy.database.systemstags.search.YearSystemTag;
 import org.bibsonomy.database.util.DatabaseUtils;
@@ -66,6 +67,7 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 		String year = null;
 		String firstYear = null;
 		String lastYear = null;
+		String entryType = null;
 		
 		/*
 		 * check system tags for negated and year tags
@@ -81,6 +83,8 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 				lastYear = yearTag.getLastYear();
 			} else if (systemTag instanceof NotTagSystemTag) {
 				negatedTags.add(((NotTagSystemTag) systemTag).getTagName());
+			} else if (systemTag instanceof EntryTypeSystemTag) {
+				entryType = systemTag.getArgument();
 			}
 		}
 
@@ -89,6 +93,7 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 		query.setYear(year);
 		query.setLastYear(lastYear);
 		query.setFirstYear(firstYear);
+		query.setEntryType(entryType);
 		query.setBibtexKey(param.getBibtexKey());
 		query.setTags(tags); // override tags to remove system tags
 

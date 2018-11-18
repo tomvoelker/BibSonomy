@@ -938,8 +938,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setGroupId(groupId);
 		param.setGroups(visibleGroupIDs);
 
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set
-		// groups
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set groups
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "ForUserCount", param, Integer.class, session);
 		return saveConvertToint(result);
 	}
@@ -961,8 +960,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final P param = this.createParam(loginUserName, requestedUserName);
 		param.setGroups(visibleGroupIDs);
 
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set
-		// groups
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set groups
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "WithDiscussionsCount", param, Integer.class, session);
 		return saveConvertToint(result);
 	}
@@ -1267,7 +1265,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 * neither public nor private ... ... get the groups
 			 * from the grouptas table
 			 */
-			post.setGroups(new HashSet<Group>(this.groupDb.getGroupsForContentId(post.getContentId(), session)));
+			post.setGroups(new HashSet<>(this.groupDb.getGroupsForContentId(post.getContentId(), session)));
 		}
 
 		return post;
@@ -1304,7 +1302,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			Post<R> postInDB = null;
 			try {
-				postInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<Integer>(), session);
+				postInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<>(), session);
 			} catch(final ObjectMovedException ex) {
 				/*
 				 * getPostDetails() throws a ObjectMovedException for hashes
@@ -1400,7 +1398,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 			// if yes, check if a post exists with the old intrahash
 			try {
-				oldPost = this.getPostDetails(executingUser, oldHash, postOwner, new ArrayList<Integer>(), session);
+				oldPost = this.getPostDetails(executingUser, oldHash, postOwner, new ArrayList<>(), session);
 			} catch(final ObjectMovedException ex) {
 				/*
 				 * getPostDetails() throws a ObjectMovedException for
@@ -1466,7 +1464,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			Post<R> newPostInDB = null;
 			try {
-				newPostInDB = this.getPostDetails(executingUser, intraHash, postOwner, new ArrayList<Integer>(), session);
+				newPostInDB = this.getPostDetails(executingUser, intraHash, postOwner, new ArrayList<>(), session);
 			} catch (final ObjectMovedException ex) {
 				/*
 				 * getPostDetails() throws a ObjectMovedException for hashes
@@ -1771,7 +1769,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	private boolean validateModel(final Post<R> post, final DBSession session) {
 		final List<ErrorMessage> validationErrors = this.modelValidator.validatePost(post);
 
-		final String errorKey = this.getErrorKeyForPost(post);
+		final String errorKey = getErrorKeyForPost(post);
 		for (final ErrorMessage errorMessage : validationErrors) {
 			session.addError(errorKey, errorMessage);
 		}
