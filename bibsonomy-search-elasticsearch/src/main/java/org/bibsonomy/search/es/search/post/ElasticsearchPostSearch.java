@@ -42,6 +42,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -126,14 +127,9 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 
 	private String genealogyUser;
 
-	@FunctionalInterface
-	private interface ElasticsearchSearchCall<T> {
-		T call();
-	}
-
-	private static <T> T callSearch(final ElasticsearchSearchCall<T> call, final T defaultValue) {
+	private static <T> T callSearch(final Supplier<T> call, final T defaultValue) {
 		try {
-			return call.call();
+			return call.get();
 		} catch (final ElasticsearchStatusException e) {
 			if (!RestStatus.NOT_FOUND.equals(e.status())) {
 				log.error("unknown error while searching", e);
