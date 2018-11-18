@@ -134,6 +134,15 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 			mainFilterBuilder.must(rangeFilter);
 		}
 
+		/*
+		 * entry type filter
+		 */
+		final String entryType = postQuery.getEntryType();
+		if (present(entryType)) {
+			final MatchQueryBuilder entryTypeMatch = QueryBuilders.matchQuery(Fields.Publication.ENTRY_TYPE, entryType);
+			mainFilterBuilder.must(entryTypeMatch);
+		}
+
 		final Set<Filter> filters = postQuery.getFilters();
 		if (present(filters)) {
 			/*

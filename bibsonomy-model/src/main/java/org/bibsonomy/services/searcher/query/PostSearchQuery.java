@@ -70,6 +70,8 @@ public class PostSearchQuery<R extends Resource> extends PostQuery<R> {
 
 	private String lastYear;
 
+	private String entryType;
+
 	private String bibtexKey;
 
 	/**
@@ -168,6 +170,20 @@ public class PostSearchQuery<R extends Resource> extends PostQuery<R> {
 	 */
 	public void setLastYear(String lastYear) {
 		this.lastYear = lastYear;
+	}
+
+	/**
+	 * @return the entryType
+	 */
+	public String getEntryType() {
+		return entryType;
+	}
+
+	/**
+	 * @param entryType the entryType to set
+	 */
+	public void setEntryType(String entryType) {
+		this.entryType = entryType;
 	}
 
 	/**
