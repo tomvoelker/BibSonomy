@@ -37,7 +37,7 @@
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
-		<version>3.8.17</version>
+		<version>3.8.18</version>
 	</parent>
 	<licenses>
 		<license>
@@ -75,6 +75,11 @@
 			<artifactId>bibsonomy-model</artifactId>
 			<scope>test</scope>
 			<type>test-jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-dbcp2</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>

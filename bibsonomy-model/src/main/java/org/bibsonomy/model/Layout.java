@@ -29,7 +29,6 @@ package org.bibsonomy.model;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
  * 
  * @author:  rja
@@ -74,7 +73,7 @@ public abstract class Layout {
 	 */
 	public Layout(final String name) {
 		this.name = name;
-		this.description = new HashMap<String, String>();
+		this.description = new HashMap<>();
 	}
 	
 	/**
