@@ -495,7 +495,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getResourcePersonRelationByResourcePersonRelation", rpr, ResourcePersonRelation.class, session);
 	}
 
-	private ResourcePersonRelation getResourcePersonRelation(String personId, final String interhash, final int index, final PersonResourceRelationType type, DBSession session) {
+	private ResourcePersonRelation getResourcePersonRelation(final String personId, final String interhash, final int index, final PersonResourceRelationType type, final DBSession session) {
 		final ResourcePersonRelation param = new ResourcePersonRelation();
 		param.setPersonIndex(index);
 		param.setRelationType(type);
@@ -755,11 +755,9 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param loggedinUser
 	 * @param session
 	 */
-	private void performMerge(PersonMatch match, User loggedinUser, DBSession session) {
+	private void performMerge(final PersonMatch match, final User loggedinUser, final DBSession session) {
 		/*
-		 * move resourcePersonRelations from person2 to  and log the changes
-		 * Note that persons can have multiple related posts with same simhash
-		 * and that they are will be grouped by their simhash1
+		 * move resourcePersonRelations from person2 to person1 and log the changes
 		 */
 		this.mergeAllPubs(match, loggedinUser, session);
 
