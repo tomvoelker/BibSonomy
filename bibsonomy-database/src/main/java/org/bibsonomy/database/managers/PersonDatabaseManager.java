@@ -593,7 +593,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 			final int oldId = relation.getPersonRelChangeId();
 			final Integer newId = this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
-			relation.setPersonRelChangeId(newId);
 
 			final ResourcePersonRelation newRelation = new ResourcePersonRelation();
 			newRelation.setPost(relation.getPost());
