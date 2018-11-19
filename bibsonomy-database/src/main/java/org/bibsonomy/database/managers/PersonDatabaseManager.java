@@ -446,7 +446,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 		param.setPersonRelation(personRelation);
 
 		if (publicationType == GoldStandardPublication.class) {
-			return this.queryForList("getComunityBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
+			return this.queryForList("getCommunityBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
 		} else {
 			return this.queryForList("getBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
 		}
