@@ -324,48 +324,47 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	public boolean addResourceRelation(final ResourcePersonRelation resourcePersonRelation, User loggedinUser, final DBSession session) {
 		// FIXME: add validator (index)
 		session.beginTransaction();
-		try {
-			/*
-			 * to ensure that the resource is always available even when the user deletes a post
-			 * we create here a community post of the provided post
-			 * FIXME: it is very inefficient to post the complete post e.g. via api
-			 */
-			final Post<? extends BibTex> post = resourcePersonRelation.getPost();
-			final BibTex publication = post.getResource();
+		/*
+		 * to ensure that the resource is always available even when the user deletes a post
+		 * we create here a community post of the provided post
+		 * FIXME: it is very inefficient to post the complete post e.g. via api
+		 */
+		final Post<? extends BibTex> post = resourcePersonRelation.getPost();
+		final BibTex publication = post.getResource();
 
-			final String intraHash = publication.getIntraHash();
-			final String interHash = publication.getInterHash();
-			final Post<GoldStandardPublication> communityPostInDB = this.goldStandardPublicationDatabaseManager.getPostDetails(loggedinUser.getName(), interHash, "", Collections.emptyList(), session);
-			if (!present(communityPostInDB)) {
-				final BibTex resourceToCopy;
-				// FIXME: use a better way to test whether a dummy post was provided or a real post FIXME_CRIS
-				if (!present(publication.getTitle())) {
-					final List<Post<BibTex>> postsByHash = this.publicationDatabaseManager.getPostsByHash("", intraHash, HashID.SIM_HASH2, GroupID.PUBLIC.getId(), Collections.emptyList(), 1, 0, session);
-					if (present(postsByHash)) {
-						resourceToCopy = postsByHash.get(0).getResource();
-					} else {
-						throw new RuntimeException("can't create community post");
-					}
+		final String intraHash = publication.getIntraHash();
+		final String interHash = publication.getInterHash();
+		final Post<GoldStandardPublication> communityPostInDB = this.goldStandardPublicationDatabaseManager.getPostDetails(loggedinUser.getName(), interHash, "", Collections.emptyList(), session);
+		if (!present(communityPostInDB)) {
+			final BibTex resourceToCopy;
+			// FIXME: use a better way to test whether a dummy post was provided or a real post FIXME_CRIS
+			if (!present(publication.getTitle())) {
+				final List<Post<BibTex>> postsByHash = this.publicationDatabaseManager.getPostsByHash("", intraHash, HashID.SIM_HASH2, GroupID.PUBLIC.getId(), Collections.emptyList(), 1, 0, session);
+				if (present(postsByHash)) {
+					resourceToCopy = postsByHash.get(0).getResource();
 				} else {
-					resourceToCopy = publication;
+					throw new RuntimeException("can't create community post");
 				}
-
-				/*
-				 * create a new post and setup it with user and date information
-				 */
-				final Post<GoldStandardPublication> communityPost = new Post<>();
-				final Date postingDate = new Date();
-				communityPost.setDate(postingDate);
-				communityPost.setChangeDate(postingDate);
-				communityPost.setUser(loggedinUser);
-
-				final GoldStandardPublication goldPublication = new GoldStandardPublication();
-				ObjectUtils.copyPropertyValues(resourceToCopy, goldPublication);
-				communityPost.setResource(goldPublication);
-				goldPublication.recalculateHashes();
-				this.goldStandardPublicationDatabaseManager.createPost(communityPost, loggedinUser, session);
+			} else {
+				resourceToCopy = publication;
 			}
 
+			/*
+			 * create a new post and setup it with user and date information
+			 */
+			final Post<GoldStandardPublication> communityPost = new Post<>();
+			final Date postingDate = new Date();
+			communityPost.setDate(postingDate);
+			communityPost.setChangeDate(postingDate);
+			communityPost.setUser(loggedinUser);
+
+			final GoldStandardPublication goldPublication = new GoldStandardPublication();
+			ObjectUtils.copyPropertyValues(resourceToCopy, goldPublication);
+			communityPost.setResource(goldPublication);
+			goldPublication.recalculateHashes();
+			this.goldStandardPublicationDatabaseManager.createPost(communityPost, loggedinUser, session);
+		}
+		try {
 			resourcePersonRelation.setPersonRelChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("addResourceRelation", resourcePersonRelation, session);
 			session.commitTransaction();
