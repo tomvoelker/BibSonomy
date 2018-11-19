@@ -675,7 +675,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 			session.beginTransaction();
 
 			final Integer newId = this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
-			relation.setPersonRelChangeId(newId);
 
 			final ResourcePersonRelation newRelation = new ResourcePersonRelation();
 			newRelation.setPost(relation.getPost());
