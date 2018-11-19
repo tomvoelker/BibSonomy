@@ -136,13 +136,12 @@
 				<div id="personInfo" class="row">
 					<div class="col-md-6">
 				
-						<!-- Picture -->	
-						<div id="userImg" class="col-md-4 personPageVcardLeft">
-							<c:if test="${not empty command.person.user and command.hasPicture}">
+						<!-- Picture -->
+						<c:if test="${not empty command.person.user and command.hasPicture}">
+							<div id="userImg" class="col-md-4 personPageVcardLeft">
 								<img class="person-image" src="${relativeUrlGenerator.getUserPictureUrlByUsername(command.person.user)}" />
-							</c:if>
-						</div>
-
+							</div>
+						</c:if>
 
 						<div class="col-md-8 col-nopadding">
 							
@@ -357,14 +356,52 @@
 			<!-- Thesis block -->
 			<div id="thesisBlock">
 				<ul class="nav nav-tabs" role="tablist">
-					<li class="active"><a href="#ownThesis" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.ownPubTab" /></strong></a></li>
+					<c:choose>
+						<c:when test="${command.showProjects}" >
+							<li class="active"><a href="#researchProjects" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.projects" /></strong></a></li>
+							<li><a href="#ownThesis" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.ownPubTab" /></strong></a></li>
+						</c:when>
+						<c:otherwise>
+							<li class="active"><a href="#ownThesis" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.ownPubTab" /></strong></a></li>
+						</c:otherwise>
+					</c:choose>
 					<li><a href="#relatedThesis" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.rolePubTab" /></strong></a></li>
 				</ul>
 				
 				<div class='tab-content pub-person-tab-content' >
-				
-					<!-- Own Thesis tab content-->
-					<div id='ownThesis' class='tab-pane active'>						
+					<!-- Research Projects tab -->
+					<c:if test="${command.showProjects}">
+						<div id='researchProjects' class='tab-pane active'>
+							<c:choose>
+								<c:when test="${fn:length(command.projects) gt 0}">
+									<c:forEach var="project" items="${command.projects}">
+										<!-- todo show project -->
+										Wurst
+										<div class="personThesisSeperator"><!-- KEEP ME --></div>
+									</c:forEach>
+								</c:when>
+								<c:otherwise>
+									<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
+								</c:otherwise>
+							</c:choose>
+							<!-- todo add project modal
+							<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+                            <bsform:button className="pull-right" size="defaultSize" value="${textAddProjectButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addThesis" valueKey="person.show.addThesisButton" titleKey="person.show.addThesisButton" />
+                        </c:if>	-->
+                    </div>
+                </c:if>
+
+                <!-- Own Thesis tab content-->
+					<c:set var="setOwnThesisActive" />
+					<c:choose>
+						<c:when test="${command.showProjects}">
+							<c:set var="setOwnThesisActive" value="tab-pane" />
+						</c:when>
+						<c:otherwise>
+							<c:set var="setOwnThesisActive" value="tab-pane active" />
+						</c:otherwise>
+					</c:choose>
+					<div id='ownThesis' class="${setOwnThesisActive}">
 						<c:choose>
 							<c:when test="${fn:length(command.thesis) gt 0}">
 								<c:forEach var="relation" items="${command.thesis}">

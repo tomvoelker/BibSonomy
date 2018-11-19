@@ -39,6 +39,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
 
@@ -100,6 +101,8 @@ public class PersonPageCommand extends BaseCommand {
 	private boolean hasPicture;
 
 	private boolean showProjects;
+
+	private List<Project> projects;
 	
 	private String formAction;
 	
@@ -662,5 +665,19 @@ public class PersonPageCommand extends BaseCommand {
 	 */
 	public void setShowProjects(boolean showProjects) {
 		this.showProjects = showProjects;
+	}
+
+	/**
+	 * @return
+	 */
+	public List<Project> getProjects() {
+		return projects;
+	}
+
+	/**
+	 * @param projects
+	 */
+	public void setProjects(List<Project> projects) {
+		this.projects = projects;
 	}
 }

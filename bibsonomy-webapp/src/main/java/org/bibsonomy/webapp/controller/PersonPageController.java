@@ -50,6 +50,8 @@ import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
@@ -69,6 +71,7 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.picture.PictureHandler;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.json.simple.JSONArray;
@@ -601,6 +604,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View showAction(final PersonPageCommand command) {
+		command.setShowProjects(true);
 		final String requestedPersonId = command.getRequestedPersonId();
 		/*
 		 * get the person; if person with the requested id was merged with another person, this method
@@ -620,6 +624,12 @@ public class PersonPageController extends SingleResourceListController implement
 		List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
 		List<ResourcePersonRelation> otherAuthorRelations = new ArrayList<>();
 		List<ResourcePersonRelation> otherAdvisorRelationss = new ArrayList<>();
+
+		// get picture
+		// final PictureHandler handler = this.pictureHandlerFactory.getPictureHandler(person);
+		// return handler.getProfilePictureView(requestedUser, command);
+
+		// final List<Project> projects = this.logic.getProjects();
 
 		for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
 			final boolean isThesis = resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis");
