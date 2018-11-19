@@ -1,20 +1,21 @@
 <?xml version="1.0" ?>
 
 <jsp:root version="2.0"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-    xmlns:form="http://www.springframework.org/tags/form"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
-	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-	xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
-	xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"
-	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"> 
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+		  xmlns:form="http://www.springframework.org/tags/form"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+		  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+		  xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
+		  xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"
+		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+		  xmlns:clear="http://java.sun.com/jsp/jstl/core">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
@@ -351,31 +352,29 @@
 					</div>
 				</div>
 			</form>
-			
-						
+
 			<!-- Thesis block -->
 			<div id="thesisBlock">
 				<ul class="nav nav-tabs" role="tablist">
 					<c:choose>
-						<c:when test="${command.showProjects}" >
-							<li class="active"><a href="#researchProjects" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.projects" /></strong></a></li>
-							<li><a href="#ownThesis" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.ownPubTab" /></strong></a></li>
+						<c:when test="${properties['system.cris'] eq 'true'}" >
+							<li class="active"><a href="#projects" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.projects" /></strong></a></li>
+							<li><a href="#publications" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.publications" /></strong></a></li>
 						</c:when>
 						<c:otherwise>
 							<li class="active"><a href="#ownThesis" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.ownPubTab" /></strong></a></li>
+							<li><a href="#relatedThesis" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.rolePubTab" /></strong></a></li>
 						</c:otherwise>
 					</c:choose>
-					<li><a href="#relatedThesis" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.rolePubTab" /></strong></a></li>
 				</ul>
-				
-				<div class='tab-content pub-person-tab-content' >
-					<!-- Research Projects tab -->
-					<c:if test="${command.showProjects}">
-						<div id='researchProjects' class='tab-pane active'>
+
+				<c:choose>
+					<c:when test="${properties['system.cris'] eq 'true'}" >
+						<!-- Projects tab content-->
+						<div id='projects' class="tab-pane active">
 							<c:choose>
-								<c:when test="${fn:length(command.projects) gt 0}">
-									<c:forEach var="project" items="${command.projects}">
-										<!-- todo show project -->
+								<c:when test="${fn:length(command.person.crisLinks) gt 0}">
+									<c:forEach var="links" items="${command.person.crisLinks}">
 										Wurst
 										<div class="personThesisSeperator"><!-- KEEP ME --></div>
 									</c:forEach>
@@ -384,69 +383,86 @@
 									<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
 								</c:otherwise>
 							</c:choose>
-							<!-- todo add project modal
+						</div>
+						<div id='publications' class="tab-pane">
+							<c:choose>
+								<c:when test="{fn:length(command.otherPubs) gt 0}">
+									<div style="clear: both;">
+										<h3 class="list-headline">
+											<fmt:message key="person.show.otherPub" />
+											<div class="pull-right btn-group dropdown-align-right all-resources-menu">
+												<div class="btn-group">
+													<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
+													<ul class="dropdown-menu">
+														<li class="dropdown-header"><fmt:message key="post.meta.sort.criterion" /></li>
+														<li class="enabled"><span data-div="otherPublications" data-sort="year" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="clock-o" spaceAfter="5" /><fmt:message key="post.resource.year"/></span></li>
+														<li><span data-div="otherPublications" data-sort="title" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.title"/></span></li>
+														<li><span data-div="otherPublications" data-sort="author" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.author"/></span></li>
+													</ul>
+												</div>
+											</div>
+										</h3>
+										<div id="otherPublicationsTab">
+											<c:forEach var="relation" items="${command.otherPubs}">
+												<per:simplePubView relation="${relation}" buttons="true" personId="${command.person.personId}"/>
+											</c:forEach>
+										</div>
+									</div>
+								</c:when>
+								<c:otherwise>
+									<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
+								</c:otherwise>
+							</c:choose>
+						</div>
+					</c:when>
+					<c:otherwise>
+						<!-- Own Thesis tab content-->
+						<div id='ownThesis' class="tab-pane active">
+							<c:choose>
+								<c:when test="${fn:length(command.thesis) gt 0}">
+									<c:forEach var="relation" items="${command.thesis}">
+										<per:pubWithRoles post="${relation.post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
+										<div class="personThesisSeperator"><!-- KEEP ME --></div>
+									</c:forEach>
+								</c:when>
+								<c:otherwise>
+									<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
+								</c:otherwise>
+							</c:choose>
+
+							<!--Open Add Thesis dialog button -->
 							<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-                            <bsform:button className="pull-right" size="defaultSize" value="${textAddProjectButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addThesis" valueKey="person.show.addThesisButton" titleKey="person.show.addThesisButton" />
-                        </c:if>	-->
-                    </div>
-                </c:if>
+								<bsform:button className="pull-right" size="defaultSize" value="${textAddThesisButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addThesis" valueKey="person.show.addThesisButton" titleKey="person.show.addThesisButton" />
+							</c:if>
+						</div>
 
-                <!-- Own Thesis tab content-->
-					<c:set var="setOwnThesisActive" />
-					<c:choose>
-						<c:when test="${command.showProjects}">
-							<c:set var="setOwnThesisActive" value="tab-pane" />
-						</c:when>
-						<c:otherwise>
-							<c:set var="setOwnThesisActive" value="tab-pane active" />
-						</c:otherwise>
-					</c:choose>
-					<div id='ownThesis' class="${setOwnThesisActive}">
-						<c:choose>
-							<c:when test="${fn:length(command.thesis) gt 0}">
-								<c:forEach var="relation" items="${command.thesis}">
-									<per:pubWithRoles post="${relation.post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
-									<div class="personThesisSeperator"><!-- KEEP ME --></div>
-								</c:forEach>
-							</c:when>
-							<c:otherwise>
-								<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
-							</c:otherwise>
-						</c:choose>
-						
-						<!--Open Add Thesis dialog button -->
-						<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-							<bsform:button className="pull-right" size="defaultSize" value="${textAddThesisButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addThesis" valueKey="person.show.addThesisButton" titleKey="person.show.addThesisButton" />	
-						</c:if>	
-					</div>
-					
-					
-					<!-- Related Thesis tab content -->
-					<div id="relatedThesis" class="tab-pane">						
-						<c:choose>
-							<c:when test="${fn:length(command.advisedThesis) gt 0}">
-								<c:forEach var="relation" items="${command.advisedThesis}">
-									<per:pubWithRoles post="${relation.post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
-									<div class="personThesisSeperator"><!-- KEEP ME --></div>
-								</c:forEach>
-							</c:when>
-							<c:otherwise>
-								<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
-							</c:otherwise>
-						</c:choose>
-						
-						<!--Open Add Thesis dialog button-->
-						<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-							<bsform:button className="pull-right" size="defaultSize" style="defaultStyle" dataTarget="#addSupervisedThesis" dataToggle="modal" valueKey="person.show.addThesisButton" titleKey="person.show.addThesisButton" />
-						</c:if>
-					</div>
 
-				</div>
+						<!-- Related Thesis tab content -->
+						<div id="relatedThesis" class="tab-pane">
+							<c:choose>
+								<c:when test="${fn:length(command.advisedThesis) gt 0}">
+									<c:forEach var="relation" items="${command.advisedThesis}">
+										<per:pubWithRoles post="${relation.post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
+										<div class="personThesisSeperator"><!-- KEEP ME --></div>
+									</c:forEach>
+								</c:when>
+								<c:otherwise>
+									<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
+								</c:otherwise>
+							</c:choose>
+
+							<!--Open Add Thesis dialog button-->
+							<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+								<bsform:button className="pull-right" size="defaultSize" style="defaultStyle" dataTarget="#addSupervisedThesis" dataToggle="modal" valueKey="person.show.addThesisButton" titleKey="person.show.addThesisButton" />
+							</c:if>
+						</div>
+					</c:otherwise>
+				</c:choose>
 			</div>
 			
 			
 			<!-- Other publications -->
-			<c:if test="${fn:length(command.otherPubs) gt 0}">
+			<c:if test="${fn:length(command.otherPubs) gt 0 and not properties['system.cris'] eq 'true'}">
 			<div style="clear: both;">
 				<h3 class="list-headline">
 					<fmt:message key="person.show.otherPub" />
@@ -475,7 +491,7 @@
 
 			
 			<!-- Other publications of similar authors -->
-			<c:if test="${fn:length(command.similarAuthorPubs) gt 0}">
+			<c:if test="${fn:length(command.similarAuthorPubs) gt 0 and not properties['system.cris'] eq 'true'}">
 			<div style="clear: both;">
 				<h3 class="list-headline">
 					<fmt:message key="person.show.otherPubOfSimilarAuthor" />
@@ -503,7 +519,7 @@
 
 
 			<!-- similar persons, that one could merge -->
-			<c:if test="${fn:length(command.personMatchList) gt 0}">
+			<c:if test="${fn:length(command.personMatchList) gt 0 and not properties['system.cris'] eq 'true'}">
 			<div style="clear: both;">
 				<h3 class="list-headline">
 					<fmt:message key="person.show.similarPersonMatchList" />

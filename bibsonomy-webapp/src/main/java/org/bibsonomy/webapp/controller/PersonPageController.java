@@ -72,6 +72,7 @@ import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.picture.PictureHandler;
+import org.bibsonomy.webapp.util.picture.PictureHandlerFactory;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.json.simple.JSONArray;
@@ -95,6 +96,7 @@ public class PersonPageController extends SingleResourceListController implement
 	private RequestLogic requestLogic;
 	private PersonRoleRenderer personRoleRenderer;
 	private Errors errors;
+	private PictureHandlerFactory pictureHandlerFactory;
 
 	@Override
 	public PersonPageCommand instantiateCommand() {
@@ -625,9 +627,7 @@ public class PersonPageController extends SingleResourceListController implement
 		List<ResourcePersonRelation> otherAuthorRelations = new ArrayList<>();
 		List<ResourcePersonRelation> otherAdvisorRelationss = new ArrayList<>();
 
-		// get picture
-		// final PictureHandler handler = this.pictureHandlerFactory.getPictureHandler(person);
-		// return handler.getProfilePictureView(requestedUser, command);
+		command.setHasPicture(pictureHandlerFactory.hasVisibleProfilePicture(person.getUser(), command.getContext().getLoginUser()));
 
 		// final List<Project> projects = this.logic.getProjects();
 
@@ -772,6 +772,16 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	public void setUrlGenerator(URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
+	}
+
+
+	/**
+	 * Sets this controller's {@link PictureHandlerFactory} instance.
+	 *
+	 * @param factory
+	 */
+	public void setPictureHandlerFactory(final PictureHandlerFactory factory) {
+		this.pictureHandlerFactory = factory;
 	}
 }
 
