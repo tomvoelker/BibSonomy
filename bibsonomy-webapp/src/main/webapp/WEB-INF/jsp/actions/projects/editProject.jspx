@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+          xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+          xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+          xmlns:action="urn:jsptagdir:/WEB-INF/tags/actions/edit/project">
+
+    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+    <c:set var="projectEditor" value="${command.context.loginUser}" />
+    <c:set var="project" value="${command.project}" />
+    <layout:paneLayout command="${command}" requPath="${requPath}" showPageOptions="${true}" noSidebar="${true}" activeTab="project" pageTitle="${title}">
+        <jsp:attribute name="headerExt">
+               <script type="text/javascript" src="${resdir}/javascript/actions/editProjects.js"><!-- keep me --></script>
+        </jsp:attribute>
+
+        <jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.project" formAction="${relativeUrlGenerator.getProjectUrlByProject(project)}" formInputName="tag">
+				<jsp:attribute name="pathPart">
+					<a href="${relativeUrlGenerator.getProjectUrlByProject(project)}"><c:out value='${project.title}'/></a>
+				</jsp:attribute>
+			</parts:search>
+		</jsp:attribute>
+
+        <jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:projectcrumb project="${project}" active="${true}"/>
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+
+
+        <jsp:attribute name="content">
+            <action:editProjectContent project="${command.project}" />
+        </jsp:attribute>
+    </layout:paneLayout>
+
+</jsp:root>

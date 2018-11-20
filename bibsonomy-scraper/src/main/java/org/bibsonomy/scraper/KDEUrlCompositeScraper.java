@@ -163,6 +163,7 @@ import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
 import org.bibsonomy.scraper.url.kde.worldscientific.WorldScientificScraper;
 import org.bibsonomy.scraper.url.kde.wormbase.WormbaseScraper;
 import org.bibsonomy.scraper.url.kde.zenodo.ZenodoScraper;
+import org.bibsonomy.scraper.url.researchgate.ResearchGateScraper;
 
 /**
  * Contains all active UrlScrapers.
@@ -333,6 +334,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new BaseScraper());
 		addScraper(new UmanisticaDigitaleScraper());
 		addScraper(new ZfdGScraper());
+		addScraper(new ResearchGateScraper());
 		//addScraper(new AkademiaiScraper()); error = 404
 	}
 

@@ -34,6 +34,7 @@ import java.util.Set;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.information.JobInformation;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
@@ -86,8 +87,8 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	}
 
 	@Override
-	protected void onPostInsert(final Post<Bookmark> post, final User loggedinUser, final DBSession session) {
-		this.plugins.onBookmarkInsert(post, loggedinUser, session);
+	protected List<JobInformation> onPostInsert(final Post<Bookmark> post, final User loggedinUser, final DBSession session) {
+		return this.plugins.onBookmarkInsert(post, loggedinUser, session);
 	}
 
 	/*

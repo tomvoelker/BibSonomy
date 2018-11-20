@@ -29,7 +29,7 @@ package org.bibsonomy.rest.strategy.users;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Writer;
-import java.util.Arrays;
+import java.util.Collections;
 
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
@@ -78,7 +78,7 @@ public class PostPostStrategy extends AbstractCreateStrategy {
 	protected String create() throws InternServerException, BadRequestOrResponseException {
 		final Post<? extends Resource> post = this.parsePost();
 		try {
-			return this.getLogic().createPosts(Arrays.<Post<?>>asList(post)).get(0);
+			return this.getLogic().createPosts(Collections.singletonList(post)).get(0).getId();
 		} catch (final DatabaseException de) {
 			for (final String hash: de.getErrorMessages().keySet()) {
 				for (final ErrorMessage em: de.getErrorMessages(hash)) {

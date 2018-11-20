@@ -51,7 +51,7 @@
 		      WHERE <include refid="tagWhereQuery"/>
 			        AND t1.content_type = #contentType#
 			        AND t1.group = #groupId#
-		      ORDER BY t1.date DESC
+		      ORDER BY t1.date DESC, t1.content_id DESC
 		      LIMIT #limit# OFFSET #offset#) AS tt
 		WHERE b.content_id = tt.content_id
 		      AND t.content_id = tt.content_id 
@@ -98,7 +98,7 @@
 						<include refid="restrictToGroups"/>
 						AND t1.content_type = #contentType#
 						AND t1.user_name = #requestedUserName#
-					ORDER BY t1.date DESC
+					ORDER BY t1.date DESC, t1.content_id DESC
 					LIMIT #limit# OFFSET #offset#
 			   ) AS tt
 		JOIN bibtex b USING (content_id)
@@ -121,7 +121,7 @@
 					<include refid="restrictToGroups"/>
 					AND t1.content_type = #contentType#
 					AND t1.user_name = #requestedUserName#
-				ORDER BY t1.date DESC
+				ORDER BY t1.date DESC, t1.content_id DESC <!-- maybe there are posts with the same date, to prevent mysql to return other -->
 				LIMIT #limit# OFFSET #offset#
 			) AS tt
 			LEFT JOIN document d USING(content_id) 
@@ -144,7 +144,7 @@
 					AND t1.content_type = #contentType#
 					AND t1.user_name = #requestedUserName#
 					AND d.content_id = t1.content_id
-				ORDER BY t1.date DESC
+				ORDER BY t1.date DESC, t1.content_id DESC
 				LIMIT #limit# OFFSET #offset#) AS tt
 		WHERE tt.content_id=b.content_id
 			AND tt.content_id=t.content_id

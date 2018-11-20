@@ -33,8 +33,10 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.factories.ResourceFactory;
@@ -101,9 +103,7 @@ public class UrlRenderer {
 	 * @return a urlbuilder for the group url
 	 */
 	protected UrlBuilder getUrlBuilderForGroup(final String name) {
-		final UrlBuilder builder = this.getUrlBuilderForGroups();
-		builder.addPathElement(name);
-		return builder;
+		return this.getUrlBuilderForGroups().addPathElement(name);
 	}
 
 	/** Creates a URL which points to the given resource.
@@ -393,8 +393,38 @@ public class UrlRenderer {
 		return builder;
 	}
 
+	public UrlBuilder createUrlBuilderForPersonMatch(String targetId, String sourceId) {
+		return createUrlBuilderForPersons(targetId).
+				addPathElement(RESTConfig.PERSONS_MERGE_URL).addParameter("source", sourceId);
+	}
+
+	public UrlBuilder createUrlBuilderForPersons(String personId) {
+		return createUrlBuilderForPersons().addPathElement(personId);
+	}
+
 	public UrlBuilder createUrlBuilderForPersons() {
 		return createUrlBuilderForApi().addPathElement(RESTConfig.PERSONS_URL);
+	}
+
+	public UrlBuilder createUrlBuilderForPersons(String personId, PersonUpdateOperation operation) {
+		return createUrlBuilderForPersons(personId).addParameter("operation", operation.name().toLowerCase());
+	}
+
+	public UrlBuilder createUrlBuilderForProjects(String projectId) {
+		return createUrlBuilderForApi().addPathElement(RESTConfig.PROJECTS_URL).
+				addPathElement(projectId);
+	}
+
+	public UrlBuilder createUrlBuilderForProjects() {
+		return createUrlBuilderForApi().addPathElement(RESTConfig.PROJECTS_URL);
+	}
+
+	public UrlBuilder createUrlBuilderForCRISLinks() {
+		return createUrlBuilderForApi().addPathElement(RESTConfig.CRIS_LINKS_URL);
+	}
+
+	public UrlBuilder createUrlBuilderForCRISLinks(String sourceId, String targetId) {
+		return createUrlBuilderForCRISLinks().addParameter("sourceId", sourceId).addParameter("targetId", targetId);
 	}
 
 	public UrlBuilder createUrlBuilderForResourcePersonRelations(String personId) {

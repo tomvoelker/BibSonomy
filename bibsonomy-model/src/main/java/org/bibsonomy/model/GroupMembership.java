@@ -26,10 +26,9 @@
  */
 package org.bibsonomy.model;
 
-import java.util.Date;
-
 import org.bibsonomy.common.enums.GroupRole;
-import org.bibsonomy.model.util.data.Data;
+
+import java.util.Date;
 
 /**
  * Represents a membership of a user in a specific group and the role she

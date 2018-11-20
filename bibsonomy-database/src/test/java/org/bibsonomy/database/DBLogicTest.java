@@ -44,6 +44,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.*;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -63,7 +64,6 @@ import org.bibsonomy.util.Sets;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-
 
 /**
  * @author Jens Illig
@@ -88,7 +88,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	private static final Set<String> DEFAULT_USERNAME_SET = new HashSet<String>(Arrays.asList(TEST_USER_NAME));
 
 	private static final DBLogic ADMIN_LOGIC = testDatabaseContext.getBean("dbLogicPrototype", DBLogic.class);
-	
+
 	private static UserDatabaseManager userDb;
 	
 	/**
@@ -390,7 +390,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		final LogicInterface srcLogic  = this.getDbLogic(srcUser.getName(), null);
 		final LogicInterface dstLogic  = this.getDbLogic(dstUser1.getName(), null);
 		final LogicInterface dst2Logic = this.getDbLogic(dstUser2.getName(), null);
-		
+
 		//--------------------------------------------------------------------
 		// srcUser creates tagged relations
 		//--------------------------------------------------------------------
@@ -422,13 +422,13 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		btPost2.getResource().recalculateHashes();
 		btPosts.add(btPost2);
 
-		List<String> createPosts = dstLogic.createPosts(btPosts);
+		List<JobResult> createPosts = dstLogic.createPosts(btPosts);
 		assertEquals(2, createPosts.size());
 
 		//--------------------------------------------------------------------
 		// dstUser2 creates two posts (bookmarks)
 		//--------------------------------------------------------------------
-		final List<Post<?>> bmPosts = new LinkedList<Post<?>>();
+		final List<Post<?>> bmPosts = new LinkedList<>();
 		final Post<Bookmark> bmPost1 = ModelUtils.generatePost(Bookmark.class);
 		// add tags
 		ModelUtils.addToTagSet(bmPost1.getTags(), "bmPost1Tag", sharedTag1);
@@ -792,10 +792,9 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	 * @throws Exception 
 	 */
 	@Test
-	public void testPostUpdateTagOnlyOperationPublication() throws Exception {
+	public void testPostUpdateTagOnlyOperationPublication() {
 		final LogicInterface dbl = this.getDbLogic(TEST_USER_1);
 		final User user = dbl.getUserDetails(TEST_USER_1);
-
 		/*
 		 *  create a post (a publication)
 		 */
@@ -806,12 +805,13 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		
 		post.getUser().setName(TEST_USER_1);
 
-		final List<Post<?>> posts = new LinkedList<Post<?>>();
+		final List<Post<?>> posts = new LinkedList<>();
 		posts.add(post);
-		final List<String> createPosts = dbl.createPosts(posts);
+		final List<JobResult> createPosts = dbl.createPosts(posts);
 		assertEquals(1, createPosts.size());
-		
-		final Post<? extends Resource> savedPost = dbl.getPostDetails(createPosts.get(0), TEST_USER_1);
+
+		final String hash = createPosts.get(0).getId();
+		final Post<? extends Resource> savedPost = dbl.getPostDetails(hash, TEST_USER_1);
 		assertNotNull(savedPost);
 		
 		// get the contentId if more than tags were updated the contentId changes
@@ -831,7 +831,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		/*
 		 * update the post
 		 */
-		final List<Post<?>> updates = new LinkedList<Post<?>>();
+		final List<Post<?>> updates = new LinkedList<>();
 		updates.add(savedPost);
 		
 		final List<String> updatedPosts = dbl.updatePosts(updates, PostUpdateOperation.UPDATE_TAGS);
@@ -840,7 +840,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		/*
 		 * check if only tags were updated
 		 */
-		final Post<? extends Resource> updatedResource = dbl.getPostDetails(createPosts.get(0), TEST_USER_1);
+		final Post<? extends Resource> updatedResource = dbl.getPostDetails(hash, TEST_USER_1);
 		assertNotNull(updatedResource);
 		
 		// check content id
@@ -858,10 +858,9 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	 * @throws Exception 
 	 */
 	@Test
-	public void testPostUpdateTagOnlyOperationBookmark() throws Exception {
+	public void testPostUpdateTagOnlyOperationBookmark() {
 		final LogicInterface dbl = this.getDbLogic(TEST_USER_1);
 		final User user = dbl.getUserDetails(TEST_USER_1);
-
 		/*
 		 *  create a post (a bookmark)
 		 */
@@ -874,10 +873,11 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		final Bookmark bookmarkB = post.getResource();
 		final String url = bookmarkB.getUrl();
 		
-		final List<String> createPosts = dbl.createPosts(Collections.<Post<?>>singletonList(post));
+		final List<JobResult> createPosts = dbl.createPosts(Collections.singletonList(post));
 		assertEquals(1, createPosts.size());
-		
-		final Post<? extends Resource> savedPost = dbl.getPostDetails(createPosts.get(0), TEST_USER_1);
+
+		final String hash = createPosts.get(0).getId();
+		final Post<? extends Resource> savedPost = dbl.getPostDetails(hash, TEST_USER_1);
 		
 		// get the contentId if more than tags were updated the contentId changes
 		final int contentId = savedPost.getContentId();
@@ -896,7 +896,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		/*
 		 * update the post
 		 */
-		final List<Post<?>> updates = new LinkedList<Post<?>>();
+		final List<Post<?>> updates = new LinkedList<>();
 		updates.add(savedPost);
 		
 		final List<String> updatedPosts = dbl.updatePosts(updates, PostUpdateOperation.UPDATE_TAGS);
@@ -905,7 +905,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		/*
 		 * check if only tags were updated
 		 */
-		final Post<? extends Resource> updatedResource = dbl.getPostDetails(createPosts.get(0), TEST_USER_1);
+		final Post<? extends Resource> updatedResource = dbl.getPostDetails(hash, TEST_USER_1);
 		assertNotNull(updatedResource);
 		
 		// check content id
@@ -947,9 +947,9 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		
 		post.getUser().setName(userName);
 		post.setGroups(Collections.singleton(group));
-		final List<String> createPosts = dbl.createPosts(Collections.<Post<?>>singletonList(post));
+		final List<JobResult> createPosts = dbl.createPosts(Collections.singletonList(post));
 		assertEquals(1, createPosts.size());
-		String hash = createPosts.get(0);
+		final String hash = createPosts.get(0).getId();
 		
 		final Post<? extends Resource> savedPost = dbl.getPostDetails(hash, userName);
 		assertEquals(1, savedPost.getGroups().size());
@@ -1000,11 +1000,10 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	}
 	
 	/**
-	 * tests the {@link PostUpdateOperation#UPDATE_ALL}	
-	 * @throws Exception 
+	 * tests the {@link PostUpdateOperation#UPDATE_ALL}
 	 */
 	@Test
-	public void updateOperationAll() throws Exception {
+	public void updateOperationAll() {
 		final LogicInterface dbl = this.getDbLogic(TEST_USER_1);
 
 		final User user = dbl.getUserDetails(TEST_USER_1);
@@ -1013,17 +1012,17 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		post.getResource().setUrl("http://www.notest.org");
 		post.getResource().recalculateHashes();
 
-		final List<String> createdPosts = dbl.createPosts(Collections.<Post<?>>singletonList(post));
+		final List<JobResult> createdPosts = dbl.createPosts(Collections.singletonList(post));
 		assertEquals(1, createdPosts.size());
 		
-		final Post<?> createdPost = dbl.getPostDetails(createdPosts.get(0), TEST_USER_1);
+		final Post<?> createdPost = dbl.getPostDetails(createdPosts.get(0).getId(), TEST_USER_1);
 		
 		final Bookmark createdBookmark = (Bookmark) createdPost.getResource();
 		
 		final String newURL = "http://www.testAll2.com";
 		createdBookmark.setUrl(newURL);
 		
-		final List<String> updatedPosts = dbl.updatePosts(Collections.<Post<?>>singletonList(createdPost), PostUpdateOperation.UPDATE_ALL);
+		final List<String> updatedPosts = dbl.updatePosts(Collections.singletonList(createdPost), PostUpdateOperation.UPDATE_ALL);
 		assertEquals(1, updatedPosts.size());
 		
 		final Post<?> updatedPost  = dbl.getPostDetails(updatedPosts.get(0), TEST_USER_1);
@@ -1046,18 +1045,18 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		post.getResource().setTitle("PostUpdateOperation#UPDATE_REPOSITORY");
 		post.getResource().recalculateHashes();
 		
-		final List<String> createdPosts = dbl.createPosts(Collections.<Post<?>>singletonList(post));
+		final List<JobResult> createdPosts = dbl.createPosts(Collections.singletonList(post));
 		assertEquals(1, createdPosts.size());
 		
-		final Post<?> createdPost = dbl.getPostDetails(createdPosts.get(0), TEST_REQUEST_USER_NAME);
-		final List<Repository> repositorys = new ArrayList<Repository>();
-		
+		final Post<?> createdPost = dbl.getPostDetails(createdPosts.get(0).getId(), TEST_REQUEST_USER_NAME);
+		final List<Repository> repositorys = new ArrayList<>();
+
 		Repository repo = new Repository();
 		repo.setId("TEST_REPOSITORY_1");
 		repositorys.add(repo );
 		createdPost.setRepositorys(repositorys );
 
-		List<String> updatedPosts = dbl.updatePosts(Collections.<Post<?>>singletonList(createdPost), PostUpdateOperation.UPDATE_REPOSITORY);
+		List<String> updatedPosts = dbl.updatePosts(Collections.singletonList(createdPost), PostUpdateOperation.UPDATE_REPOSITORY);
 		assertEquals(1, updatedPosts.size());
 
 		repositorys.clear();
@@ -1067,10 +1066,10 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		repositorys.add(repo );
 		createdPost.setRepositorys(repositorys );
 		
-		updatedPosts = dbl.updatePosts(Collections.<Post<?>>singletonList(createdPost), PostUpdateOperation.UPDATE_REPOSITORY);
+		updatedPosts = dbl.updatePosts(Collections.singletonList(createdPost), PostUpdateOperation.UPDATE_REPOSITORY);
 		assertEquals(1, updatedPosts.size());
 		
-		final List<Post<BibTex>> posts = dbl.getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, null, "36a19ee7b7923b062a99a6065fe07792", null, SearchType.LOCAL, Sets.<Filter>asSet(FilterEntity.POSTS_WITH_REPOSITORY), null, null, null, 0, Integer.MAX_VALUE);
+		final List<Post<BibTex>> posts = dbl.getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, null, "36a19ee7b7923b062a99a6065fe07792", null, SearchType.LOCAL, Sets.asSet(FilterEntity.POSTS_WITH_REPOSITORY), null, null, null, 0, Integer.MAX_VALUE);
 		assertEquals(3, posts.size());
 		
 		Post<BibTex> b = posts.get(0);

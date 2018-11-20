@@ -29,6 +29,12 @@
 	<typeAlias alias="discussionItem"		type="org.bibsonomy.model.DiscussionItem" />
 	<typeAlias alias="comment"				type="org.bibsonomy.model.Comment" />
 	<typeAlias alias="review"				type="org.bibsonomy.model.Review" />
+
+	<typeAlias alias="person"					type="org.bibsonomy.model.Person" />
+	<typeAlias alias="personName"				type="org.bibsonomy.model.PersonName" />
+	<typeAlias alias="resourcePersonRelation"	type="org.bibsonomy.model.ResourcePersonRelation" />
+	<typeAlias alias="gender"					type="org.bibsonomy.model.enums.Gender" />
+
 	<typeAlias alias="statisticsValues" type="org.bibsonomy.model.statistics.StatisticsValues" />
 	<typeAlias alias="statistics"				type="org.bibsonomy.model.statistics.Statistics" />
 	<typeAlias alias="postMetaData"				type="org.bibsonomy.model.metadata.PostMetaData" />
@@ -44,7 +50,13 @@
 	<typeAlias alias="projectPersonLinkType"	type="org.bibsonomy.model.cris.ProjectPersonLinkType" />
 	<typeAlias alias="crisLinkType"				type="org.bibsonomy.model.cris.CRISLinkType" />
 	<typeAlias alias="crisLinkDataSource"		type="org.bibsonomy.model.cris.CRISLinkDataSource" />
-	
+
+	<typeAlias alias="person"						type="org.bibsonomy.model.Person" />
+	<typeAlias alias="personName"					type="org.bibsonomy.model.PersonName" />
+	<typeAlias alias="personResourceRelation"		type="org.bibsonomy.model.ResourcePersonRelation" />
+	<typeAlias alias="personResourceRelationType"	type="org.bibsonomy.model.enums.PersonResourceRelationType" />
+	<typeAlias alias="personMatch"					type="org.bibsonomy.model.PersonMatch" />
+
 	<!-- Synchronization -->
 	<typeAlias alias="syncResource"		  type="org.bibsonomy.model.sync.SynchronizationResource" />
 	<typeAlias alias="syncPost"			  type="org.bibsonomy.model.sync.SynchronizationPost" />	
@@ -91,7 +103,7 @@
 
 	<typeAlias alias="projectParam"         type="org.bibsonomy.database.params.ProjectParam" />
 	<typeAlias alias="crisLinkParam"        type="org.bibsonomy.database.params.CRISLinkParam" />
-	
+
 	<!-- Java types  -->
 	<typeAlias alias="resourceTypeClass"	type="java.lang.Class" />
 	<typeAlias alias="url"					type="java.net.URL" />

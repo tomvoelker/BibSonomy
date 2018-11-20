@@ -49,6 +49,14 @@ public enum CRISEntityType {
 			return CLASS_CRIS_ENTITY_TYPE_MAP.get(clazz);
 		}
 
+		// second try
+		// FIXME: only for the lacy loading classes in the person mapping :(
+		for (Map.Entry<Class<? extends Linkable>, CRISEntityType> entry : CLASS_CRIS_ENTITY_TYPE_MAP.entrySet()) {
+			if (entry.getKey().isAssignableFrom(clazz)) {
+				return entry.getValue();
+			}
+		}
+
 		throw new IllegalArgumentException("cris type not supported");
 	}
 }

@@ -59,7 +59,7 @@ public class ResourceViewCommand extends BaseCommand {
 	private Date endDate;
 	
 	private String requestedUser;
-	private Set<Class<? extends Resource>> resourcetype = new HashSet<Class<? extends Resource>>();
+	private Set<Class<? extends Resource>> resourcetype = new HashSet<>();
 	
 	private TagsType tagstype; // for queries for specific kinds of tags
 	

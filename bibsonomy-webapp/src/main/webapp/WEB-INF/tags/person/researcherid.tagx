@@ -10,10 +10,11 @@
         <c:set var="formattedId" value="${fn:substring(researcherid, 0, 1)}-${fn:substring(researcherid, 1, 5)}-${fn:substring(researcherid, 5, 9)}" />
         <c:choose>
             <c:when test="${returnUrl}">
-                <!-- TODO: add schema.org -->
-                <a href="https://researcherid.com/rid/${formattedId}">
-                    <c:out value="${formattedId}" />
-                </a>
+                <div itemscope="itemscope" itemtype="http://schema.org/Person">
+                    <a itemprop="sameAs" content="https://researcherid.com/rid/${formattedId}" href="https://researcherid.com/rid/${formattedId}">
+                        <c:out value="${formattedId}" />
+                    </a>
+                </div>
             </c:when>
             <c:otherwise>
                 <c:out value="${formattedId}" />

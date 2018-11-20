@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.exception.LogicException;
 
@@ -59,7 +60,12 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 * Has the logged in user added the requested user to his friend list?
 	 */
 	private boolean ofFriendUser = false;
-	
+
+	/**
+	 * The claimed person of the user
+	 */
+	private Person claimedPerson = null;
+
 	/**
 	 * defines the similarity measure by which the related users are computed  
 	 * (default is folkrank)
@@ -147,6 +153,13 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	}
 
 	/**
+	 * @return returning the claimed person
+	 */
+	public Person getClaimedPerson() {
+		return this.claimedPerson;
+	}
+
+	/**
 	 * @param friendOfUser
 	 */
 	public void setFriendOfUser(boolean friendOfUser) {
@@ -172,5 +185,12 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 */
 	public void setSharedGroups(List<Group> sharedGroups) {
 		this.sharedGroups = sharedGroups;
+	}
+
+	/**
+	 * @param claimedPerson the person claimed by the user
+	 */
+	public void setClaimedPerson(Person claimedPerson) {
+		this.claimedPerson = claimedPerson;
 	}
 }

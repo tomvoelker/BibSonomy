@@ -76,10 +76,11 @@ public interface DBSession extends AutoCloseable {
 	public void executeBatch();
 
 	/**
-	 * we do not throw exceptions
+	 * MUST be called to release the db-connection
+	 * overwriting {@link AutoCloseable#close()} without throwing an exception
 	 */
 	@Override
-	public void close();
+	void close();
 
 	/**
 	 * adds a error message to the provided key

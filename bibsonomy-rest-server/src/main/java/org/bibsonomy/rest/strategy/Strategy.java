@@ -36,8 +36,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.RESTUtils;
@@ -98,9 +98,9 @@ public abstract class Strategy {
 	 * @throws InternServerException
 	 * @throws NoSuchResourceException
 	 * @throws ResourceNotFoundException 
-	 * @throws ResourceMovedException 
+	 * @throws ObjectMovedException
 	 */
-	public abstract void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceMovedException, ObjectNotFoundException;
+	public abstract void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ObjectMovedException, ObjectNotFoundException;
 
 	/**
 	 * @param userAgent

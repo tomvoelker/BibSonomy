@@ -31,7 +31,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.Serializable;
 import java.util.Date;
 
-
 /**
  * The name of a person.
  * 

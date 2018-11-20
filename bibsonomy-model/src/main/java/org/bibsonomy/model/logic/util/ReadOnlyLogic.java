@@ -53,9 +53,9 @@ import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ReadOnlyDatabaseException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
@@ -77,6 +77,7 @@ import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.GroupQuery;
@@ -123,7 +124,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPostDetails(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Post<? extends Resource> getPostDetails(String resourceHash, String userName) throws ResourceMovedException, ObjectNotFoundException {
+	public Post<? extends Resource> getPostDetails(String resourceHash, String userName) throws ObjectMovedException, ObjectNotFoundException {
 		return this.logicinterface.getPostDetails(resourceHash, userName);
 	}
 
@@ -147,7 +148,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PostLogicInterface#createPosts(java.util.List)
 	 */
 	@Override
-	public List<String> createPosts(List<Post<? extends Resource>> posts) {
+	public List<JobResult> createPosts(List<Post<? extends Resource>> posts) {
 		throwReadOnlyException();
 		return null;
 	}
@@ -851,8 +852,8 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
 	 */
 	@Override
-	public PersonSuggestionQueryBuilder getPersonSuggestion(String queryString) {
-		return this.logicinterface.getPersonSuggestion(queryString);
+	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder builder) {
+		return this.logicinterface.getPersonSuggestion(builder);
 	}
 	
 	/* (non-Javadoc)
@@ -867,8 +868,8 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations()
 	 */
 	@Override
-	public ResourcePersonRelationQueryBuilder getResourceRelations() {
-		return this.logicinterface.getResourceRelations();
+	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQueryBuilder builder) {
+		return this.logicinterface.getResourceRelations(builder);
 	}
 	
 	/* (non-Javadoc)
@@ -878,15 +879,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end) {
 		return this.logicinterface.getTags(resourceType, grouping, groupingName, tags, hash, search, searchType, regex, relation, order, startDate, endDate, start, end);
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#linkUser(java.lang.String)
-	 */
-	@Override
-	public void linkUser(String personId) {
-		throwReadOnlyException();
-	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(java.lang.Integer)
 	 */
@@ -899,7 +892,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removeResourceRelation(int)
 	 */
 	@Override
-	public void removeResourceRelation(int resourceRelationId) {
+	public void removeResourceRelation(String personId, String interHash, int index, PersonResourceRelationType type) {
 		throwReadOnlyException();
 	}
 	
@@ -958,14 +951,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	 */
 	@Override
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getForwardId(java.lang.String)
-	 */
-	@Override
-	public String getForwardId(String personId) {
 		return null;
 	}
 

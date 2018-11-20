@@ -32,6 +32,7 @@ import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
@@ -73,16 +74,20 @@ public interface PersonLogicInterface {
 	/**
 	 * FIXME: remove database id
 	 * removes a resource relation
-	 * @param resourceRelationId
+	 *
+	 * @param personId
+	 * @param interHash
+	 * @param index
+	 * @param type
 	 */
-	public void removeResourceRelation(int resourceRelationId);
+	void removeResourceRelation(String personId, String interHash, int index, PersonResourceRelationType type);
 
 	/**
 	 * @param withPersonId
 	 */
 	@Deprecated // use update person
 	public void createPersonName(PersonName withPersonId);
-	
+
 	/**
 	 * FIXME: remove database id TODO_PERSONS
 	 * removes a person name from a specific person
@@ -90,23 +95,19 @@ public interface PersonLogicInterface {
 	 */
 	@Deprecated // use update person
 	public void removePersonName(Integer personNameId);
-	
-	/**
-	 * @param queryString a search string coming from an autocomplete field. Planned but not yet implemented: May contain an incomplete word, which will be internally autocompleted before searching persons
-	 * @return a builder object fo optional parameters
-	 */
-	public PersonSuggestionQueryBuilder getPersonSuggestion(String queryString);
 
 	/**
+	 *
+	 * @param builder the builder
+	 * @return
+	 */
+	List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder builder);
+
+	/**
+	 * @param builder the builder
 	 * @return a querybuilder object by which options for the query can be specified
 	 */
-	public ResourcePersonRelationQueryBuilder getResourceRelations();
-
-	/**
-	 * @param personId
-	 */
-	@Deprecated // FIXME: add to update person logic
-	public void linkUser(String personId);
+	List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQueryBuilder builder);
 
 	/**
 	 * @param username
@@ -128,13 +129,4 @@ public interface PersonLogicInterface {
 	 * @return
 	 */
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map);
-
-	/**
-	 *
-	 * @param personId
-	 * @return returns the updated personId, if the person was merged to an other person
-	 */
-	@Deprecated // FIXME: remove; move to get person logic
-	public String getForwardId(String personId);
-	
 }

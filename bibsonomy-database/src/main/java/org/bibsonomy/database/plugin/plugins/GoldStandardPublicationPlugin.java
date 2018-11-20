@@ -30,6 +30,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.GoldStandardReferenceParam;
 import org.bibsonomy.database.params.LoggingParam;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
+import org.bibsonomy.model.User;
 
 /**
  * handles updates that are necessary when the interhash changes when a community publication is updated
@@ -42,11 +43,12 @@ import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 public class GoldStandardPublicationPlugin extends AbstractDatabasePlugin {
 
 	@Override
-	public void onGoldStandardDelete(final String interhash, final DBSession session) {
+	public void onGoldStandardDelete(final String interhash, User loggedinUser, final DBSession session) {
 		// delete all references of the post
 		final GoldStandardReferenceParam param = new GoldStandardReferenceParam();
 		param.setHash(interhash);
 		param.setRefHash(interhash);
+		param.setUsername(loggedinUser.getName());
 
 		// delete the references, but before log it
 		this.insert("logDeletedRelationsGoldStandardPublication", param, session);

@@ -1,19 +1,21 @@
 <?xml version="1.0" ?>
 
 <jsp:root version="2.0"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
-	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-	xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
-	xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"
-	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"> 
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+		  xmlns:form="http://www.springframework.org/tags/form"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+		  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+		  xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
+		  xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"
+		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+		  xmlns:clear="http://java.sun.com/jsp/jstl/core">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
@@ -31,8 +33,11 @@
 	<fmt:message key="person.show.TooltipLockedForm" var="formLockedTooltip" />
 	
 	<c:set var="title" value="${mtl:cleanBibtex(command.person.mainName.firstName)} ${mtl:cleanBibtex(command.person.mainName.lastName)}" />
-	
-	<layout:paneLayout pageTitle="${title}" 
+	<c:set var="hasClaimedPerson" value="${not empty command.person.user and not empty command.context.loginUser.name and command.person.user eq command.context.loginUser.name and not command.context.loginUser.spammer}" />
+	<c:set var="isAdmin" value="${command.context.loginUser.role eq 'ADMIN'}" />
+	<c:set var="hasClaimedOrIsAdmin" value="${hasClaimedPerson or isAdmin}" />
+
+	<layout:paneLayout pageTitle="${title}"
 		headerLogoClass="publications" 
 		command="${command}" 
 		requPath="${requPath}"
@@ -49,6 +54,9 @@
 			<script type='text/javascript' src='/resources/javascript/person/roles.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/titleAutocomplete.js'><!-- keep me --></script>
 
+            <script type='text/javascript' src='/resources/javascript/person/deletePersonRelationResource.js'><!-- keep me --></script>
+            <script type='text/javascript' src='/resources/javascript/person/addPersonRelationResource.js'><!-- keep me --></script>
+
 			<script type='text/javascript' src='/resources/jquery/plugins/jquery.maskedinput.js'><!-- keep me --></script>
 
 			<script type='text/javascript' src='/resources/javascript/person/personPage.js'><!-- keep me --></script>
@@ -63,7 +71,7 @@
 			<!-- Links to the user who claimed this page or buttons to claim it/realease it -->
 			<h4><fmt:message key="person.sidebar.linkedUserTitle" /></h4>
 			<c:choose>
-				<c:when test='${not empty command.person.user and (command.person.user eq command.context.loginUser.name)}'>
+				<c:when test='${hasClaimedPerson}'>
 					<p><fmt:message key="person.sidebar.linkedUserUnlinkText" /></p>
 					<bsform:button size="defaultSize" style="danger" dataTarget="#unlinkPerson" dataToggle="modal" valueKey="person.show.thatsNotMeButton" titleKey="person.show.thatsNotMeButton" />				
 				</c:when>
@@ -91,7 +99,7 @@
 				<input type="hidden" name="ckey" value="${ckey}"/>
 				<input type="hidden" name="personId" value="${command.person.personId}"/>
 				<c:choose>
-					<c:when test='${not empty command.person.user and not empty command.context.loginUser.name and command.person.user eq command.context.loginUser.name}'>
+					<c:when test='${hasClaimedPerson}'>
 						<input type="hidden" id="formThatsMe" name="formThatsMe" value="true"/>
 					</c:when>
 					<c:otherwise>
@@ -132,19 +140,12 @@
 				<div id="personInfo" class="row">
 					<div class="col-md-6">
 				
-						<!-- Picture -->	
-						<div id="userImg" class="col-md-4 personPageVcardLeft">
-							<c:choose>
-								<c:when test="${not empty command.person.user}">
-									<img class="person-image" src="${relativeUrlGenerator.getUserPictureUrlByUsername(command.person.user)}" />
-								</c:when>
-								<c:otherwise>
-									<!-- FIXME: use message property. AND REMOVE HARD CODED USERNAME GENEALOGIE-->
-									<img class="person-image" src="${relativeUrlGenerator.getUserPictureUrlByUsername('genealogie')}" />
-								</c:otherwise>
-							</c:choose>
-						</div>
-
+						<!-- Picture -->
+						<c:if test="${not empty command.person.user and command.hasPicture}">
+							<div id="userImg" class="col-md-4 personPageVcardLeft">
+								<img class="person-image" src="${relativeUrlGenerator.getUserPictureUrlByUsername(command.person.user)}" />
+							</div>
+						</c:if>
 
 						<div class="col-md-8 col-nopadding">
 							
@@ -154,7 +155,7 @@
 								
 								<div class="col-md-8">
 									<div class="personPageFormPlaceholder">
-										<c:if test="${(not empty command.context.loginUser.name and empty command.person.user) or (not empty command.person.user and (command.person.user eq command.context.loginUser.name)) and not command.context.loginUser.spammer}">
+										<c:if test="${hasClaimedOrIsAdmin}">
 											<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
 										</c:if>
 										<span class="personPageFormFieldContent" id="personPageFormCollegeValue">${command.person.college}</span> 
@@ -179,7 +180,7 @@
 									<div class="personPageFormPlaceholder">
 										<c:choose>
 											<!-- Only visible if the loginUser claimed this person -->
-											<c:when test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
+											<c:when test='${hasClaimedOrIsAdmin}'>
 												<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
 											</c:when>
 											<c:otherwise>
@@ -187,13 +188,13 @@
 											</c:otherwise>
 										</c:choose>
 										
-										<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+										<c:if test="${hasClaimedOrIsAdmin}">
 										<span class="personPageFormFieldContent" id="personPageFormEmailValue">${command.person.email}</span> 
 										</c:if>	
 									</div>
 									
 									<!-- Only visible if te loginUser claimed this person -->
-									<c:if test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
+									<c:if test='${hasClaimedOrIsAdmin}'>
 										<div class="personPageFormField col-md-8">
 											<fmt:message key="person.show.email.placeholder" var="textEmailPlaceholder" />
 											<input class='form-control' type="email" name='person.email' id="formEmail" placeholder="${textEmailPlaceholder}" value="${command.person.email}"/>
@@ -215,7 +216,7 @@
 									<div class="personPageFormPlaceholder">
 										<c:choose>
 											<!-- Only visible if the loginUser claimed this person -->
-											<c:when test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
+											<c:when test='${hasClaimedOrIsAdmin}'>
 												<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
 											</c:when>
 											<c:otherwise>
@@ -236,7 +237,7 @@
 									</div>
 									
 									<!-- Only visible if te loginUser claimed this person -->
-									<c:if test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
+									<c:if test='${hasClaimedOrIsAdmin}'>
 										<div class="personPageFormField col-md-8">										
 											<fmt:message key="person.show.homepage.placeholder" var="textHomepagePlaceholder" />
 											<input class='form-control' type="url" name='person.homepage' id="formHomepage" placeholder="${textHomepagePlaceholder}" value="${command.person.homepage}"/>
@@ -286,7 +287,7 @@
 										</c:otherwise>
 									</c:choose>
 									
-									<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+									<c:if test="${hasClaimedOrIsAdmin}">
 										<bsform:button size="xsmall" value="${textAddAlternateNameButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addName" />
 									</c:if>
 								</div>
@@ -330,7 +331,7 @@
 
 							<div class="col-md-6">
 								<div class="personPageFormPlaceholder">
-									<c:if test="${(not empty command.context.loginUser.name and empty command.person.user) or (not empty command.person.user and (command.person.user eq command.context.loginUser.name)) and not command.context.loginUser.spammer}">
+									<c:if test="${hasClaimedOrIsAdmin}">
 										<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
 									</c:if>
 									<span class="personPageFormFieldContent" id="personPageFormResearcheridValue">
@@ -354,64 +355,117 @@
 					</div>
 				</div>
 			</form>
-			
-						
+
 			<!-- Thesis block -->
 			<div id="thesisBlock">
 				<ul class="nav nav-tabs" role="tablist">
-					<li class="active"><a href="#ownThesis" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.ownPubTab" /></strong></a></li>
-					<li><a href="#relatedThesis" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.rolePubTab" /></strong></a></li>
+					<c:choose>
+						<c:when test="${properties['system.cris'] eq 'true'}" >
+							<li class="active"><a href="#projects" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.projects" /></strong></a></li>
+							<li><a href="#publications" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.publications" /></strong></a></li>
+						</c:when>
+						<c:otherwise>
+							<li class="active"><a href="#ownThesis" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.ownPubTab" /></strong></a></li>
+							<li><a href="#relatedThesis" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.rolePubTab" /></strong></a></li>
+						</c:otherwise>
+					</c:choose>
 				</ul>
-				
-				<div class='tab-content pub-person-tab-content' >
-				
-					<!-- Own Thesis tab content-->
-					<div id='ownThesis' class='tab-pane active'>						
-						<c:choose>
-							<c:when test="${fn:length(command.thesis) gt 0}">
-								<c:forEach var="post" items="${command.thesis}">
-									<per:pubWithRoles post="${post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
-									<div class="personThesisSeperator"><!-- KEEP ME --></div>
-								</c:forEach>
-							</c:when>
-							<c:otherwise>
-								<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
-							</c:otherwise>
-						</c:choose>
-						
-						<!--Open Add Thesis dialog button -->
-						<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-							<bsform:button className="pull-right" size="defaultSize" value="${textAddThesisButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addThesis" valueKey="person.show.addThesisButton" titleKey="person.show.addThesisButton" />	
-						</c:if>	
-					</div>
-					
-					
-					<!-- Related Thesis tab content -->
-					<div id="relatedThesis" class="tab-pane">						
-						<c:choose>
-							<c:when test="${fn:length(command.advisedThesis) gt 0}">
-								<c:forEach var="post" items="${command.advisedThesis}">
-									<per:pubWithRoles post="${post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
-									<div class="personThesisSeperator"><!-- KEEP ME --></div>
-								</c:forEach>
-							</c:when>
-							<c:otherwise>
-								<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
-							</c:otherwise>
-						</c:choose>
-						
-						<!--Open Add Thesis dialog button-->
-						<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-							<bsform:button className="pull-right" size="defaultSize" style="defaultStyle" dataTarget="#addSupervisedThesis" dataToggle="modal" valueKey="person.show.addThesisButton" titleKey="person.show.addThesisButton" />
-						</c:if>
-					</div>
 
-				</div>
+				<c:choose>
+					<c:when test="${properties['system.cris'] eq 'true'}" >
+						<!-- Projects tab content-->
+						<div id='projects' class="tab-pane active">
+							<c:choose>
+								<c:when test="${fn:length(command.person.crisLinks) gt 0}">
+									<c:forEach var="links" items="${command.person.crisLinks}">
+										Wurst
+										<div class="personThesisSeperator"><!-- KEEP ME --></div>
+									</c:forEach>
+								</c:when>
+								<c:otherwise>
+									<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
+								</c:otherwise>
+							</c:choose>
+						</div>
+						<div id='publications' class="tab-pane">
+							<c:choose>
+								<c:when test="{fn:length(command.otherPubs) gt 0}">
+									<div style="clear: both;">
+										<h3 class="list-headline">
+											<fmt:message key="person.show.otherPub" />
+											<div class="pull-right btn-group dropdown-align-right all-resources-menu">
+												<div class="btn-group">
+													<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
+													<ul class="dropdown-menu">
+														<li class="dropdown-header"><fmt:message key="post.meta.sort.criterion" /></li>
+														<li class="enabled"><span data-div="otherPublications" data-sort="year" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="clock-o" spaceAfter="5" /><fmt:message key="post.resource.year"/></span></li>
+														<li><span data-div="otherPublications" data-sort="title" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.title"/></span></li>
+														<li><span data-div="otherPublications" data-sort="author" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.author"/></span></li>
+													</ul>
+												</div>
+											</div>
+										</h3>
+										<div id="otherPublicationsTab">
+											<c:forEach var="relation" items="${command.otherPubs}">
+												<per:simplePubView relation="${relation}" buttons="true" personId="${command.person.personId}"/>
+											</c:forEach>
+										</div>
+									</div>
+								</c:when>
+								<c:otherwise>
+									<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
+								</c:otherwise>
+							</c:choose>
+						</div>
+					</c:when>
+					<c:otherwise>
+						<!-- Own Thesis tab content-->
+						<div id='ownThesis' class="tab-pane active">
+							<c:choose>
+								<c:when test="${fn:length(command.thesis) gt 0}">
+									<c:forEach var="relation" items="${command.thesis}">
+										<per:pubWithRoles post="${relation.post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
+										<div class="personThesisSeperator"><!-- KEEP ME --></div>
+									</c:forEach>
+								</c:when>
+								<c:otherwise>
+									<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
+								</c:otherwise>
+							</c:choose>
+
+							<!--Open Add Thesis dialog button -->
+							<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+								<bsform:button className="pull-right" size="defaultSize" value="${textAddThesisButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addThesis" valueKey="person.show.addThesisButton" titleKey="person.show.addThesisButton" />
+							</c:if>
+						</div>
+
+
+						<!-- Related Thesis tab content -->
+						<div id="relatedThesis" class="tab-pane">
+							<c:choose>
+								<c:when test="${fn:length(command.advisedThesis) gt 0}">
+									<c:forEach var="relation" items="${command.advisedThesis}">
+										<per:pubWithRoles post="${relation.post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
+										<div class="personThesisSeperator"><!-- KEEP ME --></div>
+									</c:forEach>
+								</c:when>
+								<c:otherwise>
+									<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
+								</c:otherwise>
+							</c:choose>
+
+							<!--Open Add Thesis dialog button-->
+							<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+								<bsform:button className="pull-right" size="defaultSize" style="defaultStyle" dataTarget="#addSupervisedThesis" dataToggle="modal" valueKey="person.show.addThesisButton" titleKey="person.show.addThesisButton" />
+							</c:if>
+						</div>
+					</c:otherwise>
+				</c:choose>
 			</div>
 			
 			
 			<!-- Other publications -->
-			<c:if test="${fn:length(command.otherPubs) gt 0}">
+			<c:if test="${fn:length(command.otherPubs) gt 0 and not properties['system.cris'] eq 'true'}">
 			<div style="clear: both;">
 				<h3 class="list-headline">
 					<fmt:message key="person.show.otherPub" />
@@ -430,8 +484,8 @@
 				</h3>
 				
 				<div id="otherPublications">
-					<c:forEach var="post" items="${command.otherPubs}">
-						<per:simplePubView post="${post}" />
+					<c:forEach var="relation" items="${command.otherPubs}">
+						<per:simplePubView relation="${relation}" buttons="true" personId="${command.person.personId}"/>
 					</c:forEach>
 				</div>
 				
@@ -440,7 +494,7 @@
 
 			
 			<!-- Other publications of similar authors -->
-			<c:if test="${fn:length(command.similarAuthorPubs) gt 0}">
+			<c:if test="${fn:length(command.similarAuthorPubs) gt 0 and not properties['system.cris'] eq 'true'}">
 			<div style="clear: both;">
 				<h3 class="list-headline">
 					<fmt:message key="person.show.otherPubOfSimilarAuthor" />
@@ -450,17 +504,17 @@
 							<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
 							<ul class="dropdown-menu">
 								<li class="dropdown-header"><fmt:message key="post.meta.sort.criterion" /></li>
-								<li class="enabled"><span data-div="otherPublicationsOfSimialrAuthor" data-sort="year" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="clock-o" spaceAfter="5" /><fmt:message key="post.resource.year"/></span></li>
-								<li><span data-div="otherPublicationsOfSimialrAuthor" data-sort="title" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.title"/></span></li>
-								<li><span data-div="otherPublicationsOfSimialrAuthor" data-sort="author" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.author"/></span></li>
+								<li class="enabled"><span data-div="otherPublicationsOfSimilarAuthor" data-sort="year" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="clock-o" spaceAfter="5" /><fmt:message key="post.resource.year"/></span></li>
+								<li><span data-div="otherPublicationsOfSimilarAuthor" data-sort="title" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.title"/></span></li>
+								<li><span data-div="otherPublicationsOfSimilarAuthor" data-sort="author" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.author"/></span></li>
 							</ul>
 						</div>
 					</div>
 				</h3>
 				
-				<div id="otherPublicationsOfSimialrAuthor">
-					<c:forEach var="post" items="${command.similarAuthorPubs}">
-						<per:simplePubView post="${post}" />
+				<div id="otherPublicationsOfSimilarAuthor">
+					<c:forEach var="relation" items="${command.similarAuthorPubs}">
+						<per:simplePubView relation="${relation}" buttons="true" addPub="true" personId="${command.person.personId}"/>
 					</c:forEach>
 				</div>
 			</div>
@@ -468,7 +522,7 @@
 
 
 			<!-- similar persons, that one could merge -->
-			<c:if test="${fn:length(command.personMatchList) gt 0}">
+			<c:if test="${fn:length(command.personMatchList) gt 0 and not properties['system.cris'] eq 'true'}">
 			<div style="clear: both;">
 				<h3 class="list-headline">
 					<fmt:message key="person.show.similarPersonMatchList" />
@@ -805,7 +859,7 @@
 			</div>
 
 			<!-- The Modal -->
-			<div id="conflictModal" class="modal fade" role="dialog" tabindex="-1">
+			<div id="conflictModal" class="modal fade" role="dialog" tabindex="-1" aria-labelledby="confict" aria-hidden="true">
 				<fmt:message key="person.show.modal.addSupervisedThesis.header" var="denyMsg" />
 				<div class="modal-dialog">
 					<!-- Modal content -->
@@ -820,18 +874,75 @@
 						</div>
 						<div class="modal-footer">
 
-							<div class="btn-group pull-right">
-								<button id="conflictModalAccept" type="button" class="btn btn-success btn-sm mergeConflictButton"
-										data-operation="MERGE_ACCEPT"
-										title="accept merge" data-dismiss="modal">&#10004;</button>
-								<button id="conflictModalDeny" type="button" class="btn btn-danger btn-sm mergeButton"
-										data-operation="MERGE_DENIED"
-										title="${denyMsg}" data-dismiss="modal">&#10006;</button>
-							</div>
-
+						<div class="btn-group pull-right">
+							<button id="conflictModalAccept" type="button" class="btn btn-success btn-sm mergeConflictButton"
+								data-operation="MERGE_ACCEPT"
+								title="accept merge" data-dismiss="modal">&#10004;</button>
+							<button id="conflictModalDeny" type="button" class="btn btn-danger btn-sm mergeButton"
+								data-operation="MERGE_DENIED"
+								title="${denyMsg}" data-dismiss="modal">&#10006;</button>
 						</div>
+
 					</div>
 				</div>
+			</div>
+		</div>
+
+		<!-- Link publication -->
+		<div class="modal fade" id="linkPublication" tabindex="-1" role="dialog" aria-labelledby="linkPublicationLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
+						<h4 class="modal-title"><fmt:message key="person.show.modalLinkPublicationHeader" /></h4>
+					</div>
+					<div class="modal-body">
+						<fmt:message key="person.show.modalLinkPublicationBody" /> <br/>
+						<strong id="modalLinkPublicationContentText">&#160;</strong> <br/> <br/>
+						<fmt:message key="person.show.modalLinkPublicationSelect"/> <br/>
+						<label class="item item-select">
+							<select class="form-control" id="addPublicationAuthorSelect">
+								<!-- select will be dynamically filled by addPersonRelationResource.js. Keep me. -->
+							</select>
+						</label>
+					</div>
+					<div class="modal-footer">
+						<form:form action="/addPersonResourceRelation?ckey=${ckey}" method="post" id="addPersonResourceRelationForm">
+							<form:hidden path="index" />
+							<form:hidden path="person.personId"/>
+							<form:hidden path="interhash"/>
+							<form:hidden path="type"/>
+							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
+							<fmt:message key="friends.button.add" var="add"/>
+							<input type="submit" class="btn btn-primary" value="${add}"/>
+						</form:form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="unlinkPublication" class="modal fade" role="dialog" tabindex="-1" aria-labelledby="unlinkPublicationLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title"><fmt:message key="delete.confirm.personResourceRelation" /></h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-footer">
+						<form:form action="/deletePersonResourceRelation?ckey=${ckey}" method="post" id="deletePersonResourceRelationForm">
+							<form:hidden path="person.personId"/>
+							<form:hidden path="type"/>
+							<form:hidden path="interhash"/>
+							<form:hidden path="index"/>
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">${textClose}</button>
+							<fmt:message key="delete" var="delete" />
+							<input type="submit" class="btn btn-primary" value="${delete}"/>
+						</form:form>
+					</div>
+				</div>
+			</div>
 			</div>
 		</jsp:attribute>
 	</layout:paneLayout>

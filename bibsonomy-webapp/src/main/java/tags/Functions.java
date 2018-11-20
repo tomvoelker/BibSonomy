@@ -928,7 +928,7 @@ public class Functions {
 	public static <T extends Enum<T>> T convertToEnum(final String className, final String value) throws ClassNotFoundException {
 		@SuppressWarnings("unchecked")
 		final Class<T> enumClass = (Class<T>) Class.forName(className);
-		return new StringToEnumConverter<T>(enumClass).convert(value);
+		return new StringToEnumConverter<>(enumClass).convert(value);
 	}
 
 	/**

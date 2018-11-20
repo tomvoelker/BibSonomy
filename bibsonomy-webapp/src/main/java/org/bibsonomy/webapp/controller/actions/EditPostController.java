@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -51,7 +50,7 @@ import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.GoldStandard;
@@ -131,19 +130,19 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * initialize lists
 		 */
 		GroupingCommandUtils.initGroupingCommand(command);
-		command.setRelevantGroups(new ArrayList<String>());
-		command.setRelevantTagSets(new HashMap<String, Map<String, List<String>>>());
-		command.setRecommendedTags(new TreeSet<RecommendedTag>());
-		command.setCopytags(new ArrayList<Tag>());
-		command.setFileName(new ArrayList<String>());
+		command.setRelevantGroups(new ArrayList<>());
+		command.setRelevantTagSets(new HashMap<>());
+		command.setRecommendedTags(new TreeSet<>());
+		command.setCopytags(new ArrayList<>());
+		command.setFileName(new ArrayList<>());
 		/*
 		 * initialize post & resource
 		 */
-		command.setPost(new Post<RESOURCE>());
+		command.setPost(new Post<>());
 		command.getPost().setResource(this.instantiateResource());
 
 		// history
-		command.setDifferentEntryKeys(new ArrayList<String>());
+		command.setDifferentEntryKeys(new ArrayList<>());
 
 		/*
 		 * set default values.
@@ -241,9 +240,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		this.initPost(command, post, postOwner);
 
-		if (present(command.getIntraHashToUpdate())) {
+		final String intraHashToUpdate = command.getIntraHashToUpdate();
+		if (present(intraHashToUpdate)) {
 			log.debug("intra hash to update found -> handling update of existing post");
-			return this.handleUpdatePost(command, context, postOwner, post, command.getIntraHashToUpdate());
+			return this.handleUpdatePost(command, context, postOwner, post, intraHashToUpdate);
 		}
 
 		log.debug("no intra hash given -> new post");
@@ -305,7 +305,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * and must compare each post against the given user name.
 		 */
 
-		final List<Post<RESOURCE>> dbPosts = new LinkedList<Post<RESOURCE>>();
+		final List<Post<RESOURCE>> dbPosts = new LinkedList<>();
 		List<Post<RESOURCE>> tmp;
 		int startCount = 0;
 
@@ -470,7 +470,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				// comparePost is the history revision which will be restored.
 				final int compareVersion = command.getCompareVersion();
 				@SuppressWarnings("unchecked")
-				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(postOwner), null, intraHashToUpdate, null, SearchType.LOCAL, Sets.<Filter>asSet(FilterEntity.HISTORY), null, null, null, compareVersion, compareVersion + 1).get(0);
+				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(postOwner), null, intraHashToUpdate, null, SearchType.LOCAL, Sets.asSet(FilterEntity.HISTORY), null, null, null, compareVersion, compareVersion + 1).get(0);
 
 				// TODO: why don't we set the dbPost = comparePost? why do we
 				// have to restore all fields by hand?
@@ -528,7 +528,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			/*
 			 * update post in DB
 			 */
-			updatePosts = this.logic.updatePosts(Collections.<Post<?>> singletonList(post), PostUpdateOperation.UPDATE_ALL);
+			updatePosts = this.logic.updatePosts(Collections.singletonList(post), PostUpdateOperation.UPDATE_ALL);
 		} catch (final DatabaseException ex) {
 			return this.handleDatabaseException(command, postOwner, post, ex, "update");
 		}
@@ -549,7 +549,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		/*
 		 * send final redirect
 		 */
-		return this.finalRedirect(command, post, postOwnerName);
+		return this.finalRedirect(command, post, postOwnerName, true);
 	}
 
 	/**
@@ -629,7 +629,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	protected Post<RESOURCE> getPostDetails(final String intraHash, final String userName) {
 		try {
 			return (Post<RESOURCE>) this.logic.getPostDetails(intraHash, userName);
-		} catch (final ResourceMovedException e) {
+		} catch (final ObjectMovedException e) {
 			/*
 			 * getPostDetails() has a redirect mechanism that checks for posts
 			 * in the log tables. If it find's a post with the given hash there,
@@ -743,13 +743,14 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * Create the final redirect after successful creating / updating a post. We
 	 * redirect to the URL the user was initially coming from. If we don't have
 	 * that URL (for whatever reason), we redirect to the user's page.
-	 * @param userName	the logged in user?
-	 * @param post		the saved post
+	 * @param userName  the logged in user?
+	 * @param post    the saved post
 	 * @param referer
 	 *            - the URL of the page the user is initially coming from
+	 * @param update
 	 * @return the redirect view
 	 */
-	protected View finalRedirect(final String userName, final Post<RESOURCE> post, final String referer) {
+	protected View finalRedirect(final String userName, final Post<RESOURCE> post, final String referer, boolean update) {
 		/*
 		 * If there is no referer URL given, or if we come from a
 		 * postBookmark/postPublication page, redirect to the user's home page.
@@ -831,7 +832,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			}
 
 			log.debug("finally: creating a new post in the DB");
-			final String createdPost = this.logic.createPosts(Collections.<Post<?>> singletonList(post)).get(0);
+			final String createdPost = this.logic.createPosts(Collections.singletonList(post)).get(0).getId();
 
 			/*
 			 * store intraHash for some later changes (file upload)
@@ -846,10 +847,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		this.createOrUpdateSuccess(command, loginUser, post);
 
-		return this.finalRedirect(command, post, loginUserName);
+		return this.finalRedirect(command, post, loginUserName, false);
 	}
 
-	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, final String postOwnerName) {
+	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, final String postOwnerName, boolean update) {
 		if (present(command.getSaveAndRate())) {
 			final String ratingUrl = this.urlGenerator.getCommunityRatingUrl(post);
 			return new ExtendedRedirectView(ratingUrl);
@@ -859,10 +860,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		if (present(command.getPost().getResourcePersonRelations())) {
 			final ResourcePersonRelation resourcePersonRelation = post.getResourcePersonRelations().get(post.getResourcePersonRelations().size() - 1);
-			// FIXME: cache url generator!
-			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(resourcePersonRelation.getPerson().getPersonId()));
+			return new ExtendedRedirectView(this.urlGenerator.getPersonUrl(resourcePersonRelation.getPerson().getPersonId()));
 		}
-		return this.finalRedirect(postOwnerName, post, command.getReferer());
+		return this.finalRedirect(postOwnerName, post, command.getReferer(), update);
 	}
 
 	/**
@@ -937,7 +937,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 */
 	private void initCommandRelevantForGroups(final EditPostCommand<RESOURCE> command, final Set<Tag> tags) {
 		if (!present(command.getRelevantGroups())) {
-			command.setRelevantGroups(new ArrayList<String>());
+			command.setRelevantGroups(new ArrayList<>());
 		}
 		final List<String> relevantGroups = command.getRelevantGroups();
 
@@ -1087,7 +1087,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * is member of.
 		 */
 		final List<Group> usersGroups = postOwner.getGroups();
-		final List<Group> groupsWithTagSets = new ArrayList<Group>();
+		final List<Group> groupsWithTagSets = new ArrayList<>();
 		for (final Group group : usersGroups) {
 			if (group.getName() != null) {
 				groupsWithTagSets.add(this.logic.getGroupDetails(group.getName(), false));
@@ -1103,7 +1103,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * Returns the userName. Override in GoldStandard Controllers
 	 *
 	 * @param requestedUser
-	 * @param post
 	 * @return
 	 */
 	protected String getGrouping(final User requestedUser) {

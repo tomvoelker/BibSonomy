@@ -34,9 +34,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
@@ -131,8 +133,8 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 			return Views.IMPORT;
 		}
 
-		List<Post<Bookmark>> posts = new LinkedList<Post<Bookmark>>();
-		List<Tag> relations = new LinkedList<Tag>();
+		List<Post<Bookmark>> posts = new LinkedList<>();
+		List<Tag> relations = new LinkedList<>();
 		
 		try {
 			if (isDelicous) {
@@ -205,7 +207,7 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 	 * @param command
 	 */
 	private void storeRelations(final List<Tag> relations, final ImportCommand command) {
-		command.setStoredConcepts(new LinkedList<String>());
+		command.setStoredConcepts(new LinkedList<>());
 		for (final Tag tag : relations) {
 			final String conceptName = this.logic.createConcept(tag, GroupingEntity.USER, command.getContext().getLoginUser().getName());
 			command.getStoredConcepts().add(conceptName);
@@ -220,13 +222,13 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 	 */
 	private void storePosts(final ImportCommand command, final List<Post<Bookmark>> posts) {
 		// stores all newly added bookmarks
-		final Map<String, String> newBookmarkEntries = new HashMap<String, String>();
+		final Map<String, String> newBookmarkEntries = new HashMap<>();
 
 		// stores all the updated bookmarks
-		final Map<String, String> updatedBookmarkEntries = new HashMap<String, String>();
+		final Map<String, String> updatedBookmarkEntries = new HashMap<>();
 
 		// stores all the non imported bookmarks
-		final Map<String, String> nonCreatedBookmarkEntries = new HashMap<String, String>();
+		final Map<String, String> nonCreatedBookmarkEntries = new HashMap<>();
 		
 		// store the posts one by one
 		for (final Post<Bookmark> post : posts) {
@@ -235,12 +237,12 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 				post.setUser(command.getContext().getLoginUser());
 			}
 			
-			final List<Post<?>> singletonList = Collections.<Post<?>>singletonList(post);
+			final List<Post<?>> singletonList = Collections.singletonList(post);
 			final String title = post.getResource().getTitle();
 			try {
 				// throws an exception if the bookmark already exists in the
 				// system
-				final List<String> createdPostHash = logic.createPosts(singletonList);
+				final List<String> createdPostHash = logic.createPosts(singletonList).stream().map(JobResult::getId).collect(Collectors.toList());
 				newBookmarkEntries.put(createdPostHash.get(0), title);
 			} catch (final DatabaseException de) {
 				// an error occured: handle duplicates throw all other 

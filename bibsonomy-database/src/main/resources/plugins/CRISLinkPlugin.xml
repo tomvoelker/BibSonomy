@@ -15,9 +15,9 @@
     </update>
 
     <insert id="logCRISLinkDelete" parameterClass="crisLinkParam">
-        INSERT INTO log_cris_links (<include refid="allCRISLinkAttributes" />, new_id, log_date, log_user)
+        INSERT INTO log_cris_links (<include refid="allCRISLinkAttributesLog" />, new_id, log_date, log_user)
         SELECT <include refid="allCRISLinkAttributes" />, -1, CURRENT_TIMESTAMP, 'on_delete'
-        FROM cris_links
+        FROM cris_links c
         WHERE (source_id = #sourceId# AND source_type = #sourceType.id#) OR
         (target_id = #targetId# AND target_type = #targetType.id#)
     </insert>

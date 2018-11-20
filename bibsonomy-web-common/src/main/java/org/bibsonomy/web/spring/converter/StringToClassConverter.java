@@ -34,6 +34,8 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.util.ClassUtils;
 
 /**
+ * converts strings to class objects with special handling for our resource classes
+ *
  * @author dzo
  */
 public class StringToClassConverter implements Converter<String, Class<?>> {

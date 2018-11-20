@@ -35,9 +35,6 @@ import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
@@ -85,16 +82,6 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 
 	@Override
 	public void onGoldStandardRelationDelete(final String userName, final String interHash_publication, final String interHash_reference, final GoldStandardRelation relation, final DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onGoldStandardDelete(final String interhash, final DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onBookmarkInsert(final Post<? extends Resource> post, User logginUser, final DBSession session) {
 		// noop
 	}
 
@@ -207,14 +194,6 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
-	 */
-	@Override
-	public void onPersonNameDelete(PersonName personName, DBSession session) {
-		// noop
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonUpdate(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
@@ -227,7 +206,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPersonDelete(Person person, DBSession session) {
+	public void onPersonDelete(Person person, User user, DBSession session) {
 		// noop
 	}
 
@@ -235,7 +214,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPubPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPubPersonDelete(ResourcePersonRelation rel, DBSession session) {
+	public void onPubPersonDelete(ResourcePersonRelation rel, User loginUser, DBSession session) {
 		// noop
 	}
 
@@ -244,14 +223,6 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	 */
 	@Override
 	public void onPersonUpdateByUserName(String userName, DBSession session) {
-		// noop
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onUpdatePersonName(java.lang.Integer, org.bibsonomy.database.common.DBSession)
-	 */
-	@Override
-	public void onPersonNameUpdate(Integer personChangeId, DBSession session) {
 		// noop
 	}
 

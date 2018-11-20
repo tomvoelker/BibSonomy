@@ -26,20 +26,25 @@
  */
 package org.bibsonomy.database.managers;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Collections;
 import java.util.Date;
 
+import org.bibsonomy.common.JobResult;
+import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.Test;
@@ -55,7 +60,7 @@ public class GoldStandardBookmarkDatabaseManagerTest extends AbstractDatabaseMan
 	
 	@Test
 	public void getGoldStandardBookmark() {
-		final Post<GoldStandardBookmark> post = manager.getPostDetails("", GOLD_BOOKMARK_INTERHASH, "", Collections.<Integer>emptyList(), this.dbSession);
+		final Post<GoldStandardBookmark> post = manager.getPostDetails("", GOLD_BOOKMARK_INTERHASH, "", Collections.emptyList(), this.dbSession);
 		final GoldStandardBookmark bookmark = post.getResource();
 		assertEquals("http://www.uni-kassel.de", bookmark.getUrl());
 		assertEquals(1025, post.getContentId().intValue());
@@ -63,53 +68,50 @@ public class GoldStandardBookmarkDatabaseManagerTest extends AbstractDatabaseMan
 	
 	@Test
 	public void createBookmark() {
-		final String interhash = this.createGoldStandardBookmark();
-		// clear database
-		this.deletePost(interhash);
+		this.createGoldStandardBookmark();
 	}
 	
 	@Test
 	public void createDuplicate() {
-		final String interhash = this.createGoldStandardBookmark();
+		this.createGoldStandardBookmark();
 		try {
 			this.createGoldStandardBookmark();
 			fail("duplicate missing database exception");
 		} catch (final DatabaseException ex) {
 			// ignore
 		}
-		
-		this.deletePost(interhash);
 	}
 
-	protected String createGoldStandardBookmark() {
+	protected void createGoldStandardBookmark() {
 		this.pluginMock.reset();
 		assertFalse(this.pluginMock.isOnGoldStandardCreate());
 		
 		// create post
 		final Post<GoldStandardBookmark> post = this.generateGoldBookmark();
-		assertTrue(manager.createPost(post, null, this.dbSession));
+		final JobResult jobResult = manager.createPost(post, null, this.dbSession);
+		assertThat(jobResult.getStatus(), is(Status.OK));
 		
 		final String interhash = post.getResource().getInterHash();
 		assertNotNull(manager.getPostDetails("", interhash, "", null, this.dbSession).getResource());
 		
 		assertTrue(this.pluginMock.isOnGoldStandardCreate());
-		return interhash;
 	}
-	
-	private void deletePost(final String interhash) {
+
+	@Test
+	public void testDeletePost() {
 		this.pluginMock.reset();
 		assertFalse(this.pluginMock.isOnGoldStandardDelete());
 		
 		// delete post
-		manager.deletePost("", interhash, null, this.dbSession);
-		assertNull(manager.getPostDetails("", interhash, "", null, this.dbSession));
+		manager.deletePost("", GOLD_BOOKMARK_INTERHASH, new User("testuser1"), this.dbSession);
+		assertNull(manager.getPostDetails("", GOLD_BOOKMARK_INTERHASH, "", null, this.dbSession));
 		
 		assertTrue(this.pluginMock.isOnGoldStandardDelete());
 	}
 	
 	// TODO: add a builder for posts!
 	private Post<GoldStandardBookmark> generateGoldBookmark() {
-		final Post<GoldStandardBookmark> post = new Post<GoldStandardBookmark>();
+		final Post<GoldStandardBookmark> post = new Post<>();
 
 		// groups
 		final Group group = GroupUtils.buildPublicGroup();

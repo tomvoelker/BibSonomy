@@ -3,7 +3,6 @@ package org.bibsonomy.webapp.command.actions;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.webapp.command.BaseCommand;
 
-import java.util.List;
 
 public class EditProjectCommand extends BaseCommand {
 
@@ -11,7 +10,9 @@ public class EditProjectCommand extends BaseCommand {
 
 	private Project project;
 
-	private List<Project> projects;
+	private String save;
+
+	private String delete;
 
 	/**
 	 * @return the projectIdToUpdate
@@ -42,16 +43,37 @@ public class EditProjectCommand extends BaseCommand {
 	}
 
 	/**
-	 * @return the projects
+	 * @return
 	 */
-	public List<Project> getProjects() {
-		return projects;
+	public String getSave() {
+		return save;
 	}
 
 	/**
-	 * @param projects the projects to set
+	 * @param save
 	 */
-	public void setProjects(List<Project> projects) {
-		this.projects = projects;
+	public void setSave(String save) {
+		this.save = save;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getDelete() {
+		return delete;
+	}
+
+	/**
+	 * @param delete
+	 */
+	public void setDelete(String delete) {
+		this.delete = delete;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getUrl() {
+		return "/editProject?projectIdToUpdate=" + this.projectIdToUpdate;
 	}
 }

@@ -40,6 +40,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupRole;
@@ -52,8 +53,9 @@ import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.IdenticalHashErrorMessage;
 import org.bibsonomy.common.errors.UpdatePostErrorMessage;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.information.JobInformation;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
@@ -1331,7 +1333,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	public Post<R> getPostDetails(final String loginUserName, final String resourceHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session) throws ResourceMovedException, ObjectNotFoundException {
+	public Post<R> getPostDetails(final String loginUserName, final String resourceHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session) throws ObjectMovedException, ObjectNotFoundException {
 		final List<Post<R>> list = this.getPostsByHashForUser(loginUserName, resourceHash, requestedUserName, visibleGroupIDs, HashID.INTRA_HASH, session);
 
 		if (list.isEmpty()) {
@@ -1367,7 +1369,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * .model.Post, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	public boolean createPost(final Post<R> post, final User loggedinUser, final DBSession session) {
+	public JobResult createPost(final Post<R> post, final User loggedinUser, final DBSession session) {
 		session.beginTransaction();
 		try {
 			this.checkPost(post, session);
@@ -1390,10 +1392,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			Post<R> postInDB = null;
 			try {
-				postInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<Integer>(), session);
-			} catch(final ResourceMovedException ex) {
+				postInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<>(), session);
+			} catch(final ObjectMovedException ex) {
 				/*
-				 * getPostDetails() throws a ResourceMovedException for hashes
+				 * getPostDetails() throws a ObjectMovedException for hashes
 				 * for which
 				 * no actual post exists, but an old post has existed with that
 				 * hash.
@@ -1411,31 +1413,41 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 				session.addError(PostUtils.getKeyForPost(post), errorMessage);
 				log.warn("Added DuplicatePostErrorMessage for post " + post.getResource().getIntraHash());
 				session.commitTransaction();
-				return false;
+				return JobResult.buildFailure(Collections.singletonList(errorMessage));
 			}
+
+			/*
+			 * the job results containing all information
+			 */
+			final JobResult jobResult = JobResult.buildSuccess(post.getResource().getIntraHash());
+
 			/*
 			 * ALWAYS get a new contentId
 			 */
 			post.setContentId(this.generalDb.getNewId(ConstantID.IDS_CONTENT_ID, session));
+
 			/*
-			 * on update, do a delete first ...
+			 * insert the post
 			 */
-			this.insertPost(post, loggedinUser, false, session);
+			final List<JobInformation> jobInformation = this.insertPost(post, loggedinUser, false, session);
+			jobResult.setInfo(jobInformation);
+
 			// add the tags
 			this.tagDb.insertTags(post, session);
 
 			this.createdPost(post, session);
+
 			/*
 			 * systemTags perform after create
 			 */
-			for (final ExecutableSystemTag systemTag: systemTags) {
+			for (final ExecutableSystemTag systemTag : systemTags) {
 				systemTag.performAfterCreate(post, session);
 			}
 			session.commitTransaction();
+			return jobResult;
 		} finally {
 			session.endTransaction();
 		}
-		return true;
 	}
 
 	/**
@@ -1487,9 +1499,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			// if yes, check if a post exists with the old intrahash
 			try {
 				oldPost = this.getPostDetails(executingUser, oldHash, postOwner, new ArrayList<Integer>(), session);
-			} catch(final ResourceMovedException ex) {
+			} catch(final ObjectMovedException ex) {
 				/*
-				 * getPostDetails() throws a ResourceMovedException for
+				 * getPostDetails() throws a ObjectMovedException for
 				 * hashes for which
 				 * no actual post exists, but an old post has existed with
 				 * that hash.
@@ -1553,9 +1565,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			Post<R> newPostInDB = null;
 			try {
 				newPostInDB = this.getPostDetails(executingUser, intraHash, postOwner, new ArrayList<Integer>(), session);
-			} catch (final ResourceMovedException ex) {
+			} catch (final ObjectMovedException ex) {
 				/*
-				 * getPostDetails() throws a ResourceMovedException for hashes
+				 * getPostDetails() throws a ObjectMovedException for hashes
 				 * for which
 				 * no actual post exists, but an old post has existed with that
 				 * hash.
@@ -1820,24 +1832,27 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param isUpdate flag iff the post is created while a post is actually updated
 	 * @param session the session
 	 */
-	private void insertPost(final Post<R> post, final User loggedinUser, boolean isUpdate, final DBSession session) {
+	private List<JobInformation> insertPost(final Post<R> post, final User loggedinUser, boolean isUpdate, final DBSession session) {
+		final LinkedList<JobInformation> jobInformation = new LinkedList<>();
 		if (session.hasErrorsForKey(PostUtils.getKeyForPost(post))) {
 			// one or more errors occurred in this method
 			// => we don't want to go deeper into the process with these kinds
 			// of errors
 			log.error("Added MissingFieldErrorMessage for post " + post.getResource().getIntraHash());
-			return;
+			return jobInformation;
 		}
 
 		final P param = this.createInsertParam(post);
 
 		if (!isUpdate) {
 			// inform the plugins
-			this.onPostInsert(post, loggedinUser, session);
+			final List<JobInformation> pluginJobInfo = this.onPostInsert(post, loggedinUser, session);
+			jobInformation.addAll(pluginJobInfo);
 		}
 
 		// insert
 		this.insertPost(param, session);
+		return jobInformation;
 	}
 
 	/**
@@ -1846,8 +1861,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param post
 	 * @param loggedinUser
 	 * @param session
+	 *
+	 * @return the job informations generated by the plugins
 	 */
-	protected abstract void onPostInsert(final Post<R> post, final User loggedinUser, final DBSession session);
+	protected abstract List<JobInformation> onPostInsert(final Post<R> post, final User loggedinUser, final DBSession session);
 
 	/**
 	 * @param post
@@ -1857,7 +1874,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	private boolean validateModel(final Post<R> post, final DBSession session) {
 		final List<ErrorMessage> validationErrors = this.modelValidator.validatePost(post);
 
-		final String errorKey = this.getErrorKeyForPost(post);
+		final String errorKey = getErrorKeyForPost(post);
 		for (final ErrorMessage errorMessage : validationErrors) {
 			session.addError(errorKey, errorMessage);
 		}
@@ -1976,7 +1993,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		Post<R> post = null;
 		try {
 			post = this.getPostDetails(userName, resourceHash, userName, new ArrayList<Integer>(), session);
-		} catch (final ResourceMovedException ex) {
+		} catch (final ObjectMovedException ex) {
 			// ignore
 		} catch (final ObjectNotFoundException ex) {
 			// ignore

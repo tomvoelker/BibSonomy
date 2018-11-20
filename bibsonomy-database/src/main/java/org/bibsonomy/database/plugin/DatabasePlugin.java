@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.database.plugin;
 
+import org.bibsonomy.common.information.JobInformation;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.ClipboardParam;
 import org.bibsonomy.database.params.BibTexExtraParam;
@@ -43,6 +44,9 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This interface supplies hooks which can be implemented by plugins. This way
@@ -64,8 +68,8 @@ public interface DatabasePlugin {
 	 * @param loggedinUser
 	 * @param session
 	 */
-	default void onPublicationInsert(Post<? extends BibTex> post, User loggedinUser, DBSession session) {
-		// noop
+	default List<JobInformation> onPublicationInsert(Post<? extends BibTex> post, User loggedinUser, DBSession session) {
+		return Collections.emptyList();
 	}
 
 	/**
@@ -137,19 +141,23 @@ public interface DatabasePlugin {
 	
 	/**
 	 * Called when a gold standard publication is deleted.
-	 * 
-	 * @param interhash
+	 *  @param interhash
+	 * @param loggedinUser
 	 * @param session
 	 */
-	public void onGoldStandardDelete(String interhash, DBSession session);
+	default void onGoldStandardDelete(String interhash, User loggedinUser, DBSession session) {
+		// noop
+	}
 	
 	/**
 	 * Called when a Bookmark is inserted.
-	 *  @param post
+	 * @param post
 	 * @param logginUser
 	 * @param session
 	 */
-	public void onBookmarkInsert(Post<? extends Resource> post, User logginUser, DBSession session);
+	default List<JobInformation> onBookmarkInsert(Post<? extends Resource> post, User logginUser, DBSession session) {
+		return Collections.emptyList();
+	}
 
 	/**
 	 * Called when a Bookmark is deleted.
@@ -332,9 +340,12 @@ public interface DatabasePlugin {
 	/**
 	 * called when a personName will be deleted
 	 * @param personName should be set to the old personNameChangeId and the new modifiedBy and modifiedBy values
+	 * @param loggedInUser the user that deleted the person name
 	 * @param session
 	 */
-	public void onPersonNameDelete(final PersonName personName, final DBSession session);
+	default void onPersonNameDelete(final PersonName personName, User loggedInUser, final DBSession session) {
+		// noop
+	}
 	
 	/**
 	 * called when a person will be updated
@@ -354,23 +365,38 @@ public interface DatabasePlugin {
 	/**
 	 * called when a person will be deleted
 	 * @param person should be set to the old personId and the new modifiedBy and modifiedBy values
+	 * @param user
 	 * @param session
 	 */
-	public void onPersonDelete(final Person person, final DBSession session);
+	public void onPersonDelete(final Person person, User user, final DBSession session);
 	
 	/**
 	 * called when a pubPerson will be deleted
 	 * @param rel the relation to be deleted updated with the deleting user and the date of the deletion
+	 * @param loginUser
 	 * @param session
 	 */
-	public void onPubPersonDelete(final ResourcePersonRelation rel, final DBSession session);
+	public void onPubPersonDelete(final ResourcePersonRelation rel, User loginUser, final DBSession session);
 
 	/**
-	 * @param personChangeId
+	 * @param oldPerson
+	 * @param loggedinUser
 	 * @param session
 	 */
-	public void onPersonNameUpdate(Integer personChangeId, DBSession session);
+	default void onPersonNameUpdate(PersonName oldPerson, User loggedinUser, DBSession session) {
+		// noop
+	}
 
+	/**
+	 * called before a relation is updated (currently the oldRelation is deleted the new relation is inserted)
+	 * @param oldRelation
+	 * @param newRelation
+	 * @param loggedinUser
+	 * @param session
+	 */
+	default void onPersonResourceRelationUpdate(ResourcePersonRelation oldRelation, ResourcePersonRelation newRelation, User loggedinUser, DBSession session) {
+		// noop
+	}
 	/**
 	 * called before a project is inserted into the database
 	 * @param project

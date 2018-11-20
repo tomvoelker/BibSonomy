@@ -29,6 +29,7 @@ package org.bibsonomy.database.plugin;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bibsonomy.common.information.JobInformation;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.ClipboardParam;
@@ -67,10 +68,13 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	private List<DatabasePlugin> defaultPlugins;
 	
 	@Override
-	public void onPublicationInsert(final Post<? extends BibTex> post, User loggedinUser, final DBSession session) {
+	public List<JobInformation> onPublicationInsert(final Post<? extends BibTex> post, User loggedinUser, final DBSession session) {
+		final List<JobInformation> allInfo = new LinkedList<>();
+
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPublicationInsert(post, loggedinUser, session);
+			allInfo.addAll(plugin.onPublicationInsert(post, loggedinUser, session));
 		}
+		return allInfo;
 	}
 
 	@Override
@@ -95,9 +99,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 
 	@Override
-	public void onGoldStandardDelete(final String interhash, final DBSession session) {
+	public void onGoldStandardDelete(final String interhash, User loggedinUser, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onGoldStandardDelete(interhash, session);
+			plugin.onGoldStandardDelete(interhash, loggedinUser, session);
 		}
 	}
 
@@ -123,10 +127,13 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 
 	@Override
-	public void onBookmarkInsert(final Post<? extends Resource> post, User logginUser, final DBSession session) {
+	public List<JobInformation> onBookmarkInsert(final Post<? extends Resource> post, User logginUser, final DBSession session) {
+		final LinkedList<JobInformation> jobInformation = new LinkedList<>();
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onBookmarkInsert(post, logginUser, session);
+			jobInformation.addAll(plugin.onBookmarkInsert(post, logginUser, session));
 		}
+
+		return jobInformation;
 	}
 
 	@Override
@@ -299,9 +306,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonDelete(org.bibsonomy.model.Person, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPersonNameDelete(PersonName personName, DBSession session) {
+	public void onPersonNameDelete(PersonName personName, User loggedInUser, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPersonNameDelete(personName, session);
+			plugin.onPersonNameDelete(personName, loggedInUser, session);
 		}
 	}
 
@@ -320,9 +327,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPersonDelete(Person person, DBSession session) {
+	public void onPersonDelete(Person person, User user, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPersonDelete(person, session);
+			plugin.onPersonDelete(person, user, session);
 		}
 	}
 
@@ -330,9 +337,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPubPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPubPersonDelete(ResourcePersonRelation rel, DBSession session) {
+	public void onPubPersonDelete(ResourcePersonRelation rel, User loginUser, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPubPersonDelete(rel, session);
+			plugin.onPubPersonDelete(rel, loginUser, session);
 		}
 	}
 
@@ -350,9 +357,16 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onUpdatePersonName(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPersonNameUpdate(Integer personChangeId, DBSession session) {
+	public void onPersonNameUpdate(PersonName oldPerson, User loggedinUser, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPersonNameUpdate(personChangeId, session);
+			plugin.onPersonNameUpdate(oldPerson, loggedinUser, session);
+		}
+	}
+
+	@Override
+	public void onPersonResourceRelationUpdate(ResourcePersonRelation oldRelation, ResourcePersonRelation newRelation, User loggedinUser, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins) {
+			plugin.onPersonResourceRelationUpdate(oldRelation, newRelation, loggedinUser, session);
 		}
 	}
 

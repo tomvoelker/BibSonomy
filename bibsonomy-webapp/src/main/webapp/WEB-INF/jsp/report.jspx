@@ -1,0 +1,97 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+          xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+          xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex">
+
+    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+    <fmt:message var="pageTitle" key="navi.search" />
+
+    <c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
+
+    <layout:paneLayout requPath="${requPath}" headerMessageKey="navi.projects" command="${command}" pageTitle="${pageTitle}" activeTab="home">
+        <jsp:attribute name="headerExt">
+            <script type="text/javascript" src="${resdir}/javascript/report.js"><!-- keep me --></script>
+        </jsp:attribute>
+
+        <!--+
+            | heading
+            +-->
+        <jsp:attribute name="heading">
+                <parts:search pathMessageKey="navi.posts" formAction="/posts/" formInputName="post"/>
+            </jsp:attribute>
+
+        <jsp:attribute name="breadcrumbs">
+            <nav:breadcrumbs>
+                <jsp:attribute name="crumbs">
+                    <fmt:message key="navi.home" var="home" />
+                    <nav:crumb name="${home}" active="true" />
+                </jsp:attribute>
+            </nav:breadcrumbs>
+        </jsp:attribute>
+
+        <!--+
+             | content
+             +-->
+        <jsp:attribute name="content">
+
+            <h1 class="content-heading"><fmt:message key="report.head" /></h1>
+            <div class="text-right form-inline">
+                <div class="col-sm-3">
+                    <fmt:message key="report.filter.author" var="authorFilter"/>
+                    <input type="text" class="form-control" id="search-author" placeholder="${authorFilter}" onkeyup="filterAuthor()"/>
+                </div>
+                <div class="col-sm-3">
+                    <fmt:message key="report.filter.project" var="projectFilter"/>
+                    <input type="text" class="form-control" id="search-project" placeholder="${projectFilter}" onkeyup="filterProject()"/>
+                </div>
+                <div class="col-sm-3">
+                    <fmt:message key="report.filter.year" var="yearFilter"/>
+                    <input type="text" class="form-control" id="search-year" placeholder="${yearFilter}" onkeyup="filterYear()"/>
+                </div><div class="col-sm-3">
+                    <fmt:message key="report.search" var="search"/>
+                    <input type="text" class="form-control" id="search" placeholder="${search}" onkeyup="search()"/>
+                </div>
+            </div>
+
+            <div class="text-info">
+                <dl>
+                    <dt>
+                        <fmt:message key="project.amountprojects"/>
+                    </dt>
+                    <dd id="amount-post">
+                        <c:out value="0"/>
+                    </dd>
+                </dl>
+                <hr/>
+            </div>
+
+            <div id="posts">
+				<ul class="list-group" id="all-posts">
+                    <c:forEach var="post" items="${command.posts}">
+                        <li class="list-group-item post-item">
+                            <div>
+                                <div class="ptitle">
+                                    <bib:title post="${post}"/>
+                                </div>
+                                <div class="pdesc">
+                                    <bib:desc publication="${post.resource}"/>
+                                </div>
+                            </div>
+                        </li>
+                    </c:forEach>
+				</ul>
+			</div>
+            <nav aria-label="Page navigation example">
+                <p class="info" id="show-amount"/><br/>
+                <ul class="pagination" id="pagin"/>
+            </nav>
+
+        </jsp:attribute>
+    </layout:paneLayout>
+</jsp:root>
