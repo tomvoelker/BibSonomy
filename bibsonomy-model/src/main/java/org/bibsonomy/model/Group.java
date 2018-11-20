@@ -36,11 +36,12 @@ import java.util.Set;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.Privlevel;
+import org.bibsonomy.model.cris.Linkable;
 
 /**
  * A group groups users.
  */
-public class Group implements Serializable {
+public class Group implements Linkable, Serializable {
 	private static final long serialVersionUID = -4364391580208670647L;
 
 	/** The internal id of this group. */
@@ -405,6 +406,16 @@ public class Group implements Serializable {
 	 */
 	public void setExternalId(String externalId) {
 		this.externalId = externalId;
+	}
+
+	@Override
+	public String getLinkableId() {
+		return this.name;
+	}
+
+	@Override
+	public Integer getId() {
+		return this.groupId;
 	}
 
 	/**

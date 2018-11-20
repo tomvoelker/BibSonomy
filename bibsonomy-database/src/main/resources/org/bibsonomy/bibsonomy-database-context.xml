@@ -343,11 +343,13 @@
 			<map>
 				<entry key-ref="projectClass" value-ref="projectDatabaseManager" />
 				<entry key-ref="personClass" value-ref="personDatabaseManager" />
+				<entry key-ref="groupClass" value-ref="groupDatabaseManager" />
 			</map>
 		</property>
 		<property name="checkers">
 			<list>
 				<bean class="org.bibsonomy.database.managers.util.cris.ProjectPersonLinkDirectionChecker" />
+				<bean class="org.bibsonomy.database.managers.util.cris.GroupPersonLinkDirectionChecker" />
 			</list>
 		</property>
 		<property name="plugins" ref="databasePluginManager" />

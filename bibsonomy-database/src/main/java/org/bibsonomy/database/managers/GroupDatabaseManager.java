@@ -45,6 +45,7 @@ import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.enums.CRISEntityType;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagSetParam;
@@ -59,6 +60,7 @@ import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.TagSet;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
@@ -71,10 +73,11 @@ import org.bibsonomy.wiki.TemplateManager;
  * @author Christian Schenk
  * @author Thomas Niebler
  */
-public class GroupDatabaseManager extends AbstractDatabaseManager {
+public class GroupDatabaseManager extends AbstractDatabaseManager implements LinkableDatabaseManager<Group> {
 	private static final Log log = LogFactory.getLog(GroupDatabaseManager.class);
 
 	private final static GroupDatabaseManager singleton = new GroupDatabaseManager();
+	public static final String STATEMENT_GROUP_WITH_MEMBERSHIPS = "getGroupWithMemberships";
 
 	/**
 	 * @return GroupDatabaseManager
@@ -212,28 +215,23 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		}
 		if ("public".equals(groupname)) {
 			group = GroupUtils.buildPublicGroup();
-			group.setMemberships(Collections.<GroupMembership> emptyList());
+			group.setMemberships(Collections.emptyList());
 			return group;
 		}
 		if ("private".equals(groupname)) {
 			group = GroupUtils.buildPrivateGroup();
-			group.setMemberships(Collections.<GroupMembership> emptyList());
+			group.setMemberships(Collections.emptyList());
 			return group;
 		}
 
-		final String statement;
-		if (getPermissions) {
-			statement = "getGroupWithMembershipsAndPermissions";
-		} else {
-			statement = "getGroupWithMemberships";
-		}
+		final String statement = getPermissions ? "getGroupWithMembershipsAndPermissions" : STATEMENT_GROUP_WITH_MEMBERSHIPS;
 
 		group = this.queryForObject(statement, groupname, Group.class, session);
 		// the group has no members. At least the dummy user should exist.
 		if (!present(group)) {
 			log.debug("group " + groupname + " does not exist");
 			group = GroupUtils.buildInvalidGroup();
-			group.setMemberships(Collections.<GroupMembership> emptyList());
+			group.setMemberships(Collections.emptyList());
 			return group;
 		}
 
@@ -1158,11 +1156,22 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		}
 	}
 
+	@Override
+	public Integer getIdForLinkable(Group linkable, DBSession session) {
+		final String groupName = linkable.getName();
+		final Group group = this.queryForObject(STATEMENT_GROUP_WITH_MEMBERSHIPS, groupName, Group.class, session);
+		return group.getId();
+	}
+
+	@Override
+	public List<CRISLink> getLinksForSource(Integer linkId, CRISEntityType crisEntityType, DBSession session) {
+		throw new UnsupportedOperationException("not implemented (yet)");
+	}
+
 	/**
 	 * @param userDb the userDb to set
 	 */
 	public void setUserDb(final UserDatabaseManager userDb) {
 		this.userDb = userDb;
 	}
-	
 }

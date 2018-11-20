@@ -22,5 +22,12 @@ public interface LinkableDatabaseManager<L extends Linkable> {
 	 */
 	Integer getIdForLinkable(final L linkable, final DBSession session);
 
+	/**
+	 * returns the cris links for the provided linkable
+	 * @param linkId
+	 * @param crisEntityType
+	 * @param session
+	 * @return
+	 */
 	List<CRISLink> getLinksForSource(Integer linkId, CRISEntityType crisEntityType, DBSession session);
 }
