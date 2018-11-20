@@ -45,6 +45,8 @@ import org.springframework.orm.ibatis.SqlMapClientFactoryBean;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapSession;
 
+import java.util.List;
+
 /**
  * @author dzo
  */
@@ -256,6 +258,22 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 		final DBSession session = this.createDBSession();
 		try {			
 			return this.queryForObject("inboxLogCount", receiverName, Integer.class, session);
+		} finally {
+			session.close();
+		}
+	}
+
+	/**
+	 * Retrieves the ids of all parents that have been recorded in the group_hierarchy table.
+	 *
+	 * @param groupId id of the group.
+	 *
+	 * @return a list of all parent ids.
+	 */
+	public List<Integer> getAllParents(final int groupId) {
+		final DBSession session = this.createDBSession();
+		try {
+			return this.queryForList("getAllParents", groupId, Integer.class, session);
 		} finally {
 			session.close();
 		}

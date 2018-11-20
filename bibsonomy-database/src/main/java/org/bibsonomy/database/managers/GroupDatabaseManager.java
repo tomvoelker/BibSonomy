@@ -45,9 +45,12 @@ import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagSetParam;
 import org.bibsonomy.database.params.WikiParam;
+import org.bibsonomy.database.params.group.GetParentGroupIdsRecursively;
+import org.bibsonomy.database.params.group.InsertParentRelations;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Group;
@@ -83,11 +86,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	private UserDatabaseManager userDb;
 	private final AdminDatabaseManager adminDatabaseManager;
+	private final GeneralDatabaseManager generalDatabaseManager;
 	private final DatabasePluginRegistry plugins;
 
 	private GroupDatabaseManager() {
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.adminDatabaseManager = AdminDatabaseManager.getInstance();
+		this.generalDatabaseManager = GeneralDatabaseManager.getInstance();
 	}
 
 	/**
@@ -506,10 +511,28 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * Recursively finds all parents of <code>groupName</code> that the user <code>username</code> is a member of.
+	 *
+	 * This excludes the group <code>groupName</code> itself!
+	 *
+	 * @param groupName name of the group.
+	 * @param username name of the user.
+	 * @param session a db session.
+	 *
+	 * @return the ids of all parent groups the user is a member of. Or an empy list, if none are found.
+	 */
+	public List<Integer> getParentGroupsWhereUserIsMember(final String groupName, final String username, final DBSession session) {
+	    return this.queryForList("getParentGroupsWhereUserIsMember", new GetParentGroupIdsRecursively(username, groupName), Integer.class, session);
+    }
+
+
+	/**
 	 * Activates a group.
 	 *
-	 * @param groupName
-	 * @param session
+	 * After activation parent relation entries are created.
+	 *
+	 * @param groupName a pending group name.
+	 * @param session a database session.
 	 */
 	public void activateGroup(final String groupName, final DBSession session) {
 		// get the group
@@ -538,18 +561,31 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			// add the requesting user to the group with level ADMINISTRATOR
 			this.addUserToGroup(groupName, groupRequest.getUserName(), false, GroupRole.ADMINISTRATOR, session);
 
+			// add entries to the group_hierarchy table
+
+			Group parent = group.getParent();
+			if (present(parent)) {
+				this.insert(
+						"insertParentRelations",
+						new InsertParentRelations(parent.getGroupId(), group.getGroupId()),
+						session
+				);
+			}
+
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
 	}
 
+
 	/**
-	 * Returns a specific pending group
+	 * Returns a specific pending group. Additionally loads the parent group if it is set.
 	 *
-	 * @param groupname
-	 * @param requestingUser
-	 * @param session
+	 * @param groupname a group name.
+	 * @param requestingUser the requesting user.
+	 * @param session a database session.
+	 *
 	 * @return Returns a {@link Group} object if the group exists otherwise
 	 *         null.
 	 */
@@ -562,14 +598,15 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		final GroupParam groupParam = new GroupParam();
 		groupParam.setUserName(requestingUser);
 		groupParam.setRequestedGroupName(normedGroupName);
+
 		return this.queryForObject("getPendingGroup", groupParam, Group.class, session);
 	}
 
 	/**
 	 * Creates a group in the database.
 	 *
-	 * @param group
-	 * @param session
+	 * @param group a group.
+	 * @param session a database session.
 	 */
 	public void createGroup(final Group group, final DBSession session) {
 		final String groupName = group.getName();
@@ -641,7 +678,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Inserts a group into the pending groups table.
 	 */
 	private void insertGroup(final Group group, final DBSession session) {
-		final int newGroupId = this.getNewGroupId(session);
+		final int newGroupId = this.generalDatabaseManager.getNewId(ConstantID.GROUP_ID, session);
 		group.setGroupId(newGroupId);
 		this.insert("insertPendingGroup", group, session);
 		this.insertDefaultWiki(group, session);
@@ -729,13 +766,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		param.setSetName(setName);
 		param.setGroupId(group.getGroupId());
 		this.delete("deleteTagSet", param, session);
-	}
-
-	/**
-	 * Returns a new groupId.
-	 */
-	private int getNewGroupId(final DBSession session) {
-		return this.queryForObject("getNewGroupId", null, Integer.class, session).intValue();
 	}
 
 	/**

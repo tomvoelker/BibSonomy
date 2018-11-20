@@ -74,6 +74,12 @@
 		<result property="groupRequest"                  resultMap="GroupCommon.groupRequest" />
 	</resultMap>
 
+	<resultMap id="groupWithParent" class="group" extends="group_extended" groupBy="name">
+		<result property="publicationReportingSettings"  resultMap="GroupCommon.publReportingSettings" />
+		<result property="groupRequest"                  resultMap="GroupCommon.groupRequest" />
+		<result property="parent" 						 resultMap="GroupCommon.group_parent" />
+	</resultMap>
+
 	<resultMap id="groupWithMemberships" class="group" extends="group_extended" groupBy="name">
 		<result property="memberships" resultMap="GroupCommon.groupMembership" />
 	</resultMap>

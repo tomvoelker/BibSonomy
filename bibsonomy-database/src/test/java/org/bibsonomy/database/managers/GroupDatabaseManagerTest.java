@@ -29,6 +29,7 @@ package org.bibsonomy.database.managers;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -49,6 +50,7 @@ import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.ParamUtils;
+import org.bibsonomy.testutil.TestDatabaseManager;
 import org.bibsonomy.util.Sets;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -64,11 +66,13 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	private static GroupDatabaseManager groupDb;
 	private static UserDatabaseManager userDb;
+	private static TestDatabaseManager testDb;
 
 	//FIXME (ada) use fixtures for all group tests.
 	private ExtendedGroupFixture rootGroupFixture;
 	private ExtendedGroupFixture childGroup1Fixture;
 	private ExtendedGroupFixture childGroup2Fixture;
+	private ExtendedGroupFixture childGroup3Depth2Fixture;
 
 	/**
 	 * sets up the manager
@@ -77,6 +81,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public static void setupManager() {
 		groupDb = GroupDatabaseManager.getInstance();
 		userDb = UserDatabaseManager.getInstance();
+		testDb = new TestDatabaseManager();
 	}
 
 	@Before
@@ -87,6 +92,8 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				true, null, false,"Child Group 1", "http://www.bibsonomy.org/group/childgroup1");
 		this.childGroup2Fixture = new ExtendedGroupFixture(11, "childgroup2", Privlevel.MEMBERS, true,
 				true, null, false, "Child Group 2", "http://www.bibsonomy.org/group/childgroup2");
+		this.childGroup3Depth2Fixture = new ExtendedGroupFixture(12,  "childgroup3depth2", Privlevel.MEMBERS, true,
+				true, null, false, "Child Group 3 Depth 2", "http://www.bibsonomy.org/group/childgroup3depth2");
 	}
 
 	/**
@@ -109,7 +116,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getAllGroups() {
 		final List<Group> allGroups = groupDb.getAllGroups(0, 100, this.dbSession);
-		assertEquals(7, allGroups.size());
+		assertEquals(8, allGroups.size());
 
 		for (final Group group : allGroups) {
 			if (group.getName().startsWith("testgroup")) {
@@ -629,6 +636,46 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertGroupContainsMembers(newGroupTest, Sets.asSet(groupName, requestedUser));
 		assertGroupHasBasicProperties(newGroupTest.getParent(), parentGroupName, expectedParentGroupid, expectedParentIsSharedDocuments);
 
+		List<Integer> parentIds = testDb.getAllParents(newGroupTest.getGroupId());
+		assertThat(parentIds.size(), equalTo(1));
+		assertThat(parentIds, hasItems(9));
+
+		// check that the group and all members are gone
+		groupDb.deleteGroup(groupName, false, this.dbSession);
+		assertNull(groupDb.getGroupByName(groupName, this.dbSession));
+	}
+
+	@Test
+	public void testCreateGroupWithParentDeep() {
+		final String parentGroupName = this.childGroup3Depth2Fixture.getName();
+		Group parentGroup = groupDb.getGroup(parentGroupName, parentGroupName, false, false, this.dbSession);
+
+		final Group newGroup = new Group();
+		final String groupName = "newchildgroup";
+
+		newGroup.setName(groupName.toUpperCase());
+		newGroup.setParent(parentGroup);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		final String requestedUser = "testrequestuser1";
+
+		groupRequest.setUserName(requestedUser);
+		groupRequest.setReason("testrequestreason1");
+		newGroup.setGroupRequest(groupRequest);
+
+		groupDb.createGroup(newGroup, this.dbSession);
+		groupDb.activateGroup(newGroup.getName(), this.dbSession);
+
+		final Group newGroupTest = groupDb.getGroup(groupName, groupName, false, false, this.dbSession);
+
+		assertEquals(groupName, newGroupTest.getName());
+		assertGroupContainsMembers(newGroupTest, Sets.asSet(groupName, requestedUser));
+		assertGroupHasBasicProperties(newGroupTest.getParent(), parentGroupName, this.childGroup3Depth2Fixture.getGroupId(), this.childGroup3Depth2Fixture.isSharedDocuments());
+
+		List<Integer> parentIds = testDb.getAllParents(newGroupTest.getGroupId());
+		assertThat(parentIds.size(), equalTo(3));
+		assertThat(parentIds, hasItems(9, 10, 12));
+
 		// check that the group and all members are gone
 		groupDb.deleteGroup(groupName, false, this.dbSession);
 		assertNull(groupDb.getGroupByName(groupName, this.dbSession));
@@ -750,6 +797,28 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 	}
 
+	@Test
+	public void testGetParentGroupsWhereUserIsMember() {
+		String groupName = this.childGroup1Fixture.getName();
+		String userName = this.rootGroupFixture.getName();
+		Integer parentId = this.rootGroupFixture.getGroupId();
 
+		List<Integer> results = groupDb.getParentGroupsWhereUserIsMember(groupName, userName, dbSession);
+		assertThat(results.size(), equalTo(1));
+		assertThat(results, hasItems(parentId));
+
+		groupName = this.childGroup3Depth2Fixture.getName();
+		results = groupDb.getParentGroupsWhereUserIsMember(groupName, userName, dbSession);
+		assertThat(results.size(), equalTo(1));
+		assertThat(results, hasItems(parentId));
+
+		userName = this.childGroup1Fixture.getName();
+		parentId = this.childGroup1Fixture.getGroupId();
+
+		results = groupDb.getParentGroupsWhereUserIsMember(groupName, userName, dbSession);
+		assertThat(results.size(), equalTo(1));
+		assertThat(results, hasItems(parentId));
+
+	}
 
 }
