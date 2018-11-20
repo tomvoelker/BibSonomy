@@ -28,15 +28,14 @@ package org.bibsonomy.scraper.url.kde.springer;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
  * Scraper URL tests #58 for SpringerScraper
- * @author tst
  *
+ * @author tst
  */
 @Category(RemoteTest.class)
 public class SpringerScraperTest {

@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.scraper.url.kde.acs;
 
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

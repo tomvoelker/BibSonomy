@@ -28,7 +28,7 @@ package org.bibsonomy.scraper.url.kde.acs;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -61,15 +61,14 @@ public class ACSScraper extends AbstractUrlScraper {
 	
 	private static final Pattern pathPatternAbstract = Pattern.compile(ACS_PATH + ".*");
 	private static final Pattern pathPatternBibtex = Pattern.compile(ACS_BIBTEX_PATH + ".*");
+	private static final Pattern HOST_PATTERN = Pattern.compile(".*" + "pubs.acs.org");
 	
-	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
+	private static final List<Pair<Pattern, Pattern>> patterns = Arrays.asList(
+					new Pair<>(HOST_PATTERN, pathPatternBibtex),
+					new Pair<>(HOST_PATTERN, pathPatternAbstract)
+	);
+
 	private static final Pattern URL_PATTERN_FOR_URL = Pattern.compile("URL = \\{ \n        (.*)\n    \n\\}");
-	
-	static {
-		final Pattern hostPattern = Pattern.compile(".*" + "pubs.acs.org");
-		patterns.add(new Pair<Pattern, Pattern>(hostPattern, pathPatternBibtex));
-		patterns.add(new Pair<Pattern, Pattern>(hostPattern, pathPatternAbstract));
-	}
 
 	@Override
 	public String getInfo() {

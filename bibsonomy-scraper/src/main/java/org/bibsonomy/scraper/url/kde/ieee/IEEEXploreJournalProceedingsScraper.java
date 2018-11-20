@@ -282,7 +282,7 @@ public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
 
 			return b.toString();
 
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw new InternalFailureException(e);
 		}
 	}

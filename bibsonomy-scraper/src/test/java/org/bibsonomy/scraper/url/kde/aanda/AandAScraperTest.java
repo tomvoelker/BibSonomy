@@ -43,11 +43,12 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class AandAScraperTest {
+
 	/**
 	 * starts URL test with id url_181
 	 */
 	@Test
-	public void url1TestRun(){
+	public void url1TestRun() {
 		final String url = "https://www.aanda.org/articles/aa/abs/2006/01/aa3694-05/aa3694-05.html";
 		final String resultFile = "AandAScraperUnitURLTest.bib";
 		assertScraperResult(url, null, AandAScraper.class, resultFile);
@@ -57,13 +58,14 @@ public class AandAScraperTest {
 	 * starts URL test with id url_182
 	 */
 	@Test
-	public void url2TestRun(){
+	public void url2TestRun() {
 		final String url = "https://www.aanda.org/articles/aa/abs/2010/05/aa14294-10/aa14294-10.html";
 		final String resultFile = "AandAScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, AandAScraper.class, resultFile);
 	}
+
 	@Test
-	public void testReferences() throws Exception{
+	public void testReferences() throws Exception {
 		final ScrapingContext sc = new ScrapingContext(new URL("https://www.aanda.org/articles/aa/abs/2010/05/aa14294-10/aa14294-10.html"));
 		
 		AandAScraper aas = new AandAScraper();

@@ -29,7 +29,7 @@ package org.bibsonomy.scraper.url.kde.springer;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -57,11 +57,10 @@ public class SpringerScraper extends AbstractUrlScraper {
 	private static final String HOST = "springer.com";
 	private static final String SPRINGER_CITATION_HOST = "link.springer.com/book";
 
-	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
-	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SPRINGER_CITATION_HOST), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST + "$"), AbstractUrlScraper.EMPTY_PATTERN));
-	}
+	private static final List<Pair<Pattern, Pattern>> patterns = Arrays.asList(
+					new Pair<>(Pattern.compile(".*" + SPRINGER_CITATION_HOST), AbstractUrlScraper.EMPTY_PATTERN),
+					new Pair<>(Pattern.compile(".*" + HOST + "$"), AbstractUrlScraper.EMPTY_PATTERN)
+	);
 	
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
