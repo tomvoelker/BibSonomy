@@ -367,7 +367,9 @@
 				<bean class="org.bibsonomy.database.plugin.plugins.GoldStandardPublicationPlugin" />
 				<bean class="org.bibsonomy.database.plugin.plugins.MetaDataPlugin" />
 				<bean class="org.bibsonomy.database.plugin.plugins.PersonPostConnectorPlugin">
-					<property name="personDatabaseManager" ref="personDatabaseManager" />
+					<constructor-arg ref="personDatabaseManager" />
+					<constructor-arg ref="groupDatabaseManager" />
+					<constructor-arg ref="crisLinkDatabaseManger" />
 				</bean>
 				<bean class="org.bibsonomy.database.plugin.plugins.ProjectPlugin" />
 				<bean class="org.bibsonomy.database.plugin.plugins.CRISLinkPlugin">
