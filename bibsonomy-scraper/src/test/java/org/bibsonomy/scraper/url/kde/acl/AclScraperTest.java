@@ -28,7 +28,6 @@ package org.bibsonomy.scraper.url.kde.acl;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.bibsonomy.scraper.url.kde.aanda.AandAScraper;
 import org.junit.Test;
@@ -40,9 +39,6 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class AclScraperTest {
-
-	
-	//acl server currently under maintenance
 	
 	/**
 	 * starts URL test with id url_108
