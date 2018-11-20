@@ -50,6 +50,8 @@ import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
@@ -69,6 +71,8 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.picture.PictureHandler;
+import org.bibsonomy.webapp.util.picture.PictureHandlerFactory;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.json.simple.JSONArray;
@@ -92,6 +96,7 @@ public class PersonPageController extends SingleResourceListController implement
 	private RequestLogic requestLogic;
 	private PersonRoleRenderer personRoleRenderer;
 	private Errors errors;
+	private PictureHandlerFactory pictureHandlerFactory;
 
 	@Override
 	public PersonPageCommand instantiateCommand() {
@@ -604,6 +609,7 @@ public class PersonPageController extends SingleResourceListController implement
 		for (PersonResourceRelationType prr : PersonResourceRelationType.values()) {
 			command.getAvailableRoles().add(prr);
 		}
+		command.setShowProjects(true);
 		final String requestedPersonId = command.getRequestedPersonId();
 		/*
 		 * get the person; if person with the requested id was merged with another person, this method
@@ -623,6 +629,10 @@ public class PersonPageController extends SingleResourceListController implement
 		List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
 		List<ResourcePersonRelation> otherAuthorRelations = new ArrayList<>();
 		List<ResourcePersonRelation> otherAdvisorRelations = new ArrayList<>();
+
+		command.setHasPicture(pictureHandlerFactory.hasVisibleProfilePicture(person.getUser(), command.getContext().getLoginUser()));
+
+		// final List<Project> projects = this.logic.getProjects();
 
 		for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
 			final boolean isThesis = resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis");
@@ -765,6 +775,16 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	public void setUrlGenerator(URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
+	}
+
+
+	/**
+	 * Sets this controller's {@link PictureHandlerFactory} instance.
+	 *
+	 * @param factory
+	 */
+	public void setPictureHandlerFactory(final PictureHandlerFactory factory) {
+		this.pictureHandlerFactory = factory;
 	}
 }
 
