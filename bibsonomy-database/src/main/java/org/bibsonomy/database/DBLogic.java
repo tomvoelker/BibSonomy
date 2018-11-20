@@ -1314,7 +1314,7 @@ public class DBLogic implements LogicInterface {
 			this.groupDBManager.createGroup(group, session);
 
 			/*
-			 * activate the group immediately if it's an organization
+			 * activate the group immediately if it's an organizationu
 			 */
 			if (isOrganization)  {
 				this.groupDBManager.activateGroup(group.getName(), session);
@@ -1414,16 +1414,18 @@ public class DBLogic implements LogicInterface {
 				// we need to query the groupMembership, since the group object
 				// might not contain the memberships if the loginUser is not
 				// allowed to see them
-				final GroupMembership groupMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(requestedUserName, group.getName(), session);
+				GroupMembership groupMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(requestedUserName, group.getName(), session);
 
 				// We need to be careful with the exception, since it reveals
 				// information about pending memberships
 				if (!present(groupMembership)) {
-					if (this.permissionDBManager.isAdminOrSelf(this.loginUser, requestedUserName)) {
+					if (this.permissionDBManager.isAdmin(this.loginUser)) {
+						// create a pending membership to activate it later
+						this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, userSharedDocuments, GroupRole.REQUESTED, session);
+						groupMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(requestedUserName, groupName, session);
+					} else {
 						throw new AccessDeniedException("You have not been invited to this group");
 					}
-					this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR);
-					throw new AccessDeniedException("The user can not be added to the group since they did not request to become a member.");
 				}
 
 				switch (groupMembership.getGroupRole()) {
@@ -1434,7 +1436,7 @@ public class DBLogic implements LogicInterface {
 					break;
 				case REQUESTED:
 					// only mods or admins can accept requests
-					this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR);
+					this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR);
 					this.groupDBManager.addUserToGroup(group.getName(), requestedUserName, groupMembership.isUserSharedDocuments(), GroupRole.USER, session);
 					break;
 				default:
