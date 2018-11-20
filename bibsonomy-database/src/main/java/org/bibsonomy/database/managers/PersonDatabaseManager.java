@@ -686,6 +686,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		try {
 			session.beginTransaction();
 
+			log.debug("moving relation " + relation.getPersonRelChangeId() + " to person with id " + person.getPersonId() + " (" + relation + ")");
+
 			final Integer newId = this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
 
 			final ResourcePersonRelation newRelation = new ResourcePersonRelation();
