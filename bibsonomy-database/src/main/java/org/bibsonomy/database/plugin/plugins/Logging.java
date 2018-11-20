@@ -42,6 +42,7 @@ import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.params.discussion.DiscussionItemParam;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -220,9 +221,9 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onChangeUserMembershipInGroup(final String userName, final int groupId, final DBSession session) {
+	public void onChangeUserMembershipInGroup(Group group, String userName, User loggedinUser, final DBSession session) {
 		final GroupParam groupParam = new GroupParam();
-		groupParam.setGroupId(groupId);
+		groupParam.setGroupId(group.getGroupId());
 		groupParam.setUserName(userName);
 		this.insert("logChangeUserMembershipInGroup", groupParam, session);
 	}

@@ -532,7 +532,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	 * @param groupName a pending group name.
 	 * @param session a database session.
 	 */
-	public void activateGroup(final String groupName, final DBSession session) {
+	public void activateGroup(final String groupName, final User loggedinUser, final DBSession session) {
 		// get the group
 		final Group group = this.getPendingGroup(groupName, null, session);
 
@@ -554,10 +554,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 			this.deletePendingGroup(groupName, session);
 
 			// add the group user to the group
-			this.addUserToGroup(groupName, groupName, false, GroupRole.DUMMY, session);
+			this.addUserToGroup(groupName, groupName, false, GroupRole.DUMMY, loggedinUser, session);
 
 			// add the requesting user to the group with level ADMINISTRATOR
-			this.addUserToGroup(groupName, groupRequest.getUserName(), false, GroupRole.ADMINISTRATOR, session);
+			this.addUserToGroup(groupName, groupRequest.getUserName(), false, GroupRole.ADMINISTRATOR, loggedinUser, session);
 
 			// add entries to the group_hierarchy table
 
@@ -769,12 +769,12 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	/**
 	 * Delete a group from the database. The group must only contain the group
 	 * user at this point.
-	 *
-	 * @param groupname
-	 * @param quickDelete 
+	 *  @param groupname
+	 * @param quickDelete
+	 * @param loggedinUser
 	 * @param session
 	 */
-	public void deleteGroup(final String groupname, final boolean quickDelete, final DBSession session) {
+	public void deleteGroup(final String groupname, final boolean quickDelete, final User loggedinUser, final DBSession session) {
 		// make sure that the group exists
 		final Group group = this.getGroup(groupname, groupname, false, false, session);
 
@@ -800,7 +800,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 		// consistency issues. After this step, the group will be completely
 		// empty (this also removes the group user)
 		for (final GroupMembership ms : group.getMemberships()) {
-			this.removeUserFromGroup(groupname, ms.getUser().getName(), true, session);
+			this.removeUserFromGroup(groupname, ms.getUser().getName(), true, loggedinUser, session);
 		}
 
 		final Integer groupId = Integer.valueOf(group.getGroupId());
@@ -822,7 +822,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	 * @param role
 	 * @param session
 	 */
-	public void addUserToGroup(final String groupname, final String username, final boolean userSharedDocuments, final GroupRole role, final DBSession session) {
+	public void addUserToGroup(final String groupname, final String username, final boolean userSharedDocuments, final GroupRole role, final User loggedinUser, final DBSession session) {
 		try {
 			session.beginTransaction();
 			// check if a user exists with that name
@@ -854,9 +854,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 			 * TODO: shares documents setting must be changed if we allow users
 			 * to specify shared documents in the join request
 			 */
-			param.setMembership(new GroupMembership(user, role, userSharedDocuments));
+			final GroupMembership membership = new GroupMembership(user, role, userSharedDocuments);
+			param.setMembership(membership);
 
 			this.insert("addUserToGroup", param, session);
+
+			this.plugins.onAddedGroupMembership(group, membership, loggedinUser, session);
+
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -865,15 +869,15 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 
 	/**
 	 * Removes a user from a group.
-	 *
 	 * @param groupname
 	 * @param username
 	 * @param force
-	 *            if true, the user is removed from the group, regardless of
-	 *            consistency issues.
+*            if true, the user is removed from the group, regardless of
+*            consistency issues.
+	 * @param loggedinUser
 	 * @param session
 	 */
-	public void removeUserFromGroup(final String groupname, final String username, final boolean force, final DBSession session) {
+	public void removeUserFromGroup(final String groupname, final String username, final boolean force, final User loggedinUser, final DBSession session) {
 		// make sure that the group exists
 		final Group group = this.getGroupByName(groupname, session);
 		if (!present(group)) {
@@ -897,20 +901,20 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 		param.setUserName(username);
 		param.setGroupId(group.getGroupId());
 
-		this.plugins.onChangeUserMembershipInGroup(param.getUserName(), param.getGroupId(), session);
+		this.plugins.onChangeUserMembershipInGroup(group, username, loggedinUser, session);
 		this.delete("removeUserFromGroup", param, session);
+		this.plugins.onRemovedGroupMembership(group, username, loggedinUser, session);
 	}
 
 	/**
 	 * Updates the users role.
-	 *
-	 * @param loginUser
-	 * @param groupname
+	 *  @param groupname
 	 * @param username
 	 * @param newGroupRole
+	 * @param loggedinUser
 	 * @param session
 	 */
-	public void updateGroupRole(final User loginUser, final String groupname, final String username, final GroupRole newGroupRole, final DBSession session) {
+	public void updateGroupRole(final String groupname, final String username, final GroupRole newGroupRole, final User loggedinUser, final DBSession session) {
 		// make sure that the group exists
 		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
@@ -939,7 +943,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 		oldMembership.setGroupRole(newGroupRole);
 		param.setMembership(oldMembership);
 
-		this.plugins.onChangeUserMembershipInGroup(param.getUserName(), param.getGroupId(), session);
+		this.plugins.onChangeUserMembershipInGroup(group, username, loggedinUser, session);
 		this.update("updateGroupRole", param, session);
 	}
 
@@ -972,7 +976,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 		return this.queryForObject("getPendingMembershipsForGroup", groupname, Group.class, session);
 	}
 
-	public void addPendingMembership(final String groupname, final String username, final boolean userSharedDocuments, final GroupRole pendingGroupRole, final DBSession session) {
+	public void addPendingMembership(final String groupname, final String username, final boolean userSharedDocuments, final GroupRole pendingGroupRole, final User loggedinUser, final DBSession session) {
 		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't remove join request/invite from nonexistent group");
@@ -1005,12 +1009,12 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 				switch (pendingMembership.getGroupRole()) {
 				case INVITED:
 					if (GroupRole.REQUESTED.equals(pendingGroupRole)) {
-						this.addUserToGroup(groupname, username, pendingMembership.isUserSharedDocuments(), GroupRole.USER, session);
+						this.addUserToGroup(groupname, username, pendingMembership.isUserSharedDocuments(), GroupRole.USER, loggedinUser, session);
 					}
 					break;
 				case REQUESTED:
 					if (GroupRole.INVITED.equals(pendingGroupRole)) {
-						this.addUserToGroup(groupname, username, pendingMembership.isUserSharedDocuments(), GroupRole.USER, session);
+						this.addUserToGroup(groupname, username, pendingMembership.isUserSharedDocuments(), GroupRole.USER, loggedinUser, session);
 					}
 					break;
 				default:
@@ -1051,14 +1055,15 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	 *
 	 * @param group
 	 * @param membership
+	 * @param loggedinUser
 	 * @param session
 	 */
-	public void updateUserSharedDocuments(final Group group, final GroupMembership membership, final DBSession session) {
+	public void updateUserSharedDocuments(final Group group, final GroupMembership membership, final User loggedinUser, final DBSession session) {
 		final GroupParam param = new GroupParam();
 		param.setMembership(membership);
 		param.setRequestedGroupName(group.getName());
 
-		this.plugins.onChangeUserMembershipInGroup(param.getMembership().getUser().getName(), group.getGroupId(), session);
+		this.plugins.onChangeUserMembershipInGroup(group, param.getMembership().getUser().getName(), loggedinUser, session);
 		this.update("updateUserSharedDocuments", param, session);
 	}
 
@@ -1071,8 +1076,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	public void updateGroupPublicationReportingSettings(final Group group, final DBSession session) {
 		this.update("updateGroupPublicationReportingSettings", group, session);
 	}
-
-
 
 	/**
 	 * @param loginUserName
@@ -1117,7 +1120,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	 * @param group
 	 * @param session
 	 */
-	public void restoreGroup(final Group group, final DBSession session) {
+	public void restoreGroup(final Group group, final User loggedinUser, final DBSession session) {
 		if (!present(group)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Given Group is not set.");
 		}
@@ -1145,10 +1148,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 			this.deletePendingGroup(groupName, session);
 
 			// add the group user to the group
-			this.addUserToGroup(groupName, groupName, false, GroupRole.DUMMY, session);
+			this.addUserToGroup(groupName, groupName, false, GroupRole.DUMMY, loggedinUser, session);
 
 			// add the requesting user to the group with level ADMINISTRATOR
-			this.addUserToGroup(groupName, groupRequest.getUserName(), false, GroupRole.ADMINISTRATOR, session);
+			this.addUserToGroup(groupName, groupRequest.getUserName(), false, GroupRole.ADMINISTRATOR, loggedinUser, session);
 
 			session.commitTransaction();
 		} finally {
