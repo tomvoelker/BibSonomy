@@ -40,6 +40,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletRequest;
@@ -242,6 +243,10 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 			throw new RuntimeException(ex);
 		}
 	}
+
+	private static List<String> convertToHashes(List<JobResult> list) {
+		return list.stream().map(JobResult::getId).collect(Collectors.toList());
+	}
 	
 	private static void assertLogin() {
 		assertEquals(LOGIN_USER_NAME, MockLogicFactory.getRequestedLoginName());
@@ -373,7 +378,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void createPostTestBookmark() {
-		final List<Post<?>> posts = new LinkedList<Post<?>>();
+		final List<Post<?>> posts = new LinkedList<>();
 		posts.add(ModelUtils.generatePost(Bookmark.class));
 		this.createPosts(posts);
 	}
@@ -382,7 +387,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void createPostTestPublication() {
-		final List<Post<?>> posts = new LinkedList<Post<?>>();
+		final List<Post<?>> posts = new LinkedList<>();
 		posts.add(ModelUtils.generatePost(BibTex.class));
 		this.createPosts(posts);
 	}
@@ -396,12 +401,13 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 
 		EasyMock.expect(this.serverLogic.createPosts(PropertyEqualityArgumentMatcher.eq(posts, IGNORE1))).andReturn(singletonList);
 		EasyMock.replay(this.serverLogic);
-		assertEquals(singletonList, this.clientLogic.createPosts(posts));
+		final List<JobResult> clientList = this.clientLogic.createPosts(posts);
+		assertEquals(convertToHashes(singletonList), convertToHashes(clientList));
 		EasyMock.verify(this.serverLogic);
 		assertLogin();
 		return null;
 	}
-	
+
 	/**
 	 * runs the test defined by {@link #createUser(User)} with a certain argument
 	 */
