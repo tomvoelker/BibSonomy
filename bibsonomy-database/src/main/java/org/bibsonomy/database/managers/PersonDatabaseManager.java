@@ -340,7 +340,11 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @param session
 	 * @return <code>true</code> iff the relation was added
 	 */
-	public boolean addResourceRelation(final ResourcePersonRelation resourcePersonRelation, User loggedinUser, final DBSession session) {
+	public boolean addResourceRelation(final ResourcePersonRelation resourcePersonRelation, final User loggedinUser, final DBSession session) {
+		return this.addResourceRelation(resourcePersonRelation, true, loggedinUser, session);
+	}
+
+	private boolean addResourceRelation(final ResourcePersonRelation resourcePersonRelation, boolean generatedId, final User loggedinUser, final DBSession session) {
 		// FIXME: add validator (index)
 		session.beginTransaction();
 		/*
@@ -358,7 +362,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			final BibTex resourceToCopy;
 			// FIXME: use a better way to test whether a dummy post was provided or a real post FIXME_CRIS
 			if (!present(publication.getTitle())) {
-				final List<Post<BibTex>> postsByHash = this.publicationDatabaseManager.getPostsByHash("", intraHash, HashID.SIM_HASH2, GroupID.PUBLIC.getId(), Collections.emptyList(), 1, 0, session);
+				final List<Post<BibTex>> postsByHash = this.publicationDatabaseManager.getPostsByHash(loggedinUser.getName(), intraHash, HashID.SIM_HASH2, GroupID.PUBLIC.getId(), Collections.emptyList(), 1, 0, session);
 				if (present(postsByHash)) {
 					resourceToCopy = postsByHash.get(0).getResource();
 				} else {
@@ -383,8 +387,14 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			goldPublication.recalculateHashes();
 			this.goldStandardPublicationDatabaseManager.createPost(communityPost, loggedinUser, session);
 		}
+
 		try {
-			resourcePersonRelation.setPersonRelChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			if (generatedId) {
+				resourcePersonRelation.setPersonRelChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			} else if (resourcePersonRelation.getPersonRelChangeId() == 0) {
+				throw new IllegalStateException("person resource relation id not set");
+			}
+
 			this.insert("insertResourceRelation", resourcePersonRelation, session);
 			session.commitTransaction();
 			return true;
@@ -695,6 +705,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			newRelation.setPerson(person);
 			newRelation.setPersonRelChangeId(newId);
 			newRelation.setRelationType(relation.getRelationType());
+			newRelation.setPersonIndex(relation.getPersonIndex());
 			newRelation.setChangedBy(loggedinUser.getName());
 			newRelation.setChangedAt(new Date());
 
@@ -702,7 +713,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 			// remove it from the person
 			this.removeResourceRelation(relation.getPerson().getPersonId(), relation.getPost().getResource().getInterHash(), relation.getPersonIndex(), relation.getRelationType(), loggedinUser, true, session);
-			this.addResourceRelation(newRelation, loggedinUser, session);
+			this.addResourceRelation(newRelation, false, loggedinUser, session);
 
 			session.commitTransaction();
 		} finally {
