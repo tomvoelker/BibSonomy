@@ -4,9 +4,11 @@ import static org.bibsonomy.search.es.ESConstants.IndexSettings.DATE_TIME_FORMAT
 import static org.bibsonomy.search.es.ESConstants.IndexSettings.DATE_TYPE;
 import static org.bibsonomy.search.es.ESConstants.IndexSettings.ENABLED;
 import static org.bibsonomy.search.es.ESConstants.IndexSettings.FORMAT_FIELD;
+import static org.bibsonomy.search.es.ESConstants.IndexSettings.JOIN_TYPE;
 import static org.bibsonomy.search.es.ESConstants.IndexSettings.KEYWORD_TYPE;
 import static org.bibsonomy.search.es.ESConstants.IndexSettings.NESTED_TYPE;
 import static org.bibsonomy.search.es.ESConstants.IndexSettings.NOT_INDEXED;
+import static org.bibsonomy.search.es.ESConstants.IndexSettings.RELATION_FIELD;
 import static org.bibsonomy.search.es.ESConstants.IndexSettings.TEXT_TYPE;
 import static org.bibsonomy.search.es.ESConstants.IndexSettings.TYPE_FIELD;
 
@@ -102,8 +104,8 @@ public class PersonMappingBuilder implements MappingBuilder<XContentBuilder> {
 										.endObject()
 									.endObject()
 									.startObject(PersonFields.JOIN_FIELD)
-										.field(TYPE_FIELD, "join")
-										.startObject("relations")
+										.field(TYPE_FIELD, JOIN_TYPE)
+										.startObject(RELATION_FIELD)
 											.field(PersonFields.TYPE_PERSON, PersonFields.TYPE_RELATION)
 										.endObject()
 									.endObject()

@@ -106,6 +106,8 @@ public final class ESConstants {
 		String COPY_TO = "copy_to";
 		/** boost the field (search in _all field) */
 		String BOOST_FIELD = "boost";
+		/** relation field */
+		String RELATION_FIELD = "relations";
 		/** type text */
 		String TEXT_TYPE = "text";
 		/** type keyword used only for filtering */
@@ -114,6 +116,8 @@ public final class ESConstants {
 		String NESTED_TYPE = "nested";
 		/** date type */
 		String DATE_TYPE = "date";
+		/** join type */
+		String JOIN_TYPE = "join";
 		/** the type field */
 		String TYPE_FIELD = "type";
 		/** the index field */
