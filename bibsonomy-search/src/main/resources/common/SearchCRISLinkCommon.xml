@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SearchCRISLinkCommon">
+
+	<resultMap id="fullCRISLink" class="crisLink" groupBy="id">
+		<result property="id" 			column="cris_link_id" 	 javaType="int"/>
+		<result property="linkType"     column="linktype_value"  javaType="crisLinkType" />
+		<result property="startDate" 	column="cris_start_date" javaType="date" />
+		<result property="endDate"	    column="cris_end_date"	 javaType="date" />
+
+		<result property="source" resultMap="SearchCRISLinkCommon.simpleCRISLinkProject" />
+		<result property="target" resultMap="SearchCRISLinkCommon.simpleCRISLinkPerson" />
+	</resultMap>
+
+	<resultMap id="simpleCRISLinkProject" class="project" groupBy="id">
+		<result property="id" 			column="project_database_id" javaType="int" />
+		<result property="externalId"	column="project_id"		javaType="string" />
+	</resultMap>
+
+	<resultMap id="simpleCRISLinkPerson" class="person" groupBy="personChangeId" extends="SearchPersonCommon.simplePerson">
+		<result property="names"			resultMap="SearchPersonCommon.personName"/>
+	</resultMap>
+
+	<resultMap id="personName" class="personName" groupBy="personNameChangeId">
+		<result property="personNameChangeId" column="person_name_change_id" javaType="int" />
+		<result property="firstName"		column="first_name"			javaType="string" />
+		<result property="lastName"			column="last_name"			javaType="string" />
+		<result property="isMain"			column="is_main"			javaType="boolean" />
+	</resultMap>
+
+	<sql id="crisLinkColumns">
+		cl.id AS cris_link_id, cl.start_date AS cris_start_date, cl.end_date AS cris_end_date, cl.linktype_type, cl.linktype_value
+	</sql>
+
+	<sql id="crisProjectColumns">
+		p.project_id AS project_id, p.id AS project_database_id
+	</sql>
+
+	<sql id="crisPersonColumns">
+		pp.person_change_id, pp.person_id AS person_id, <include refid="personFields" />
+	</sql>
+
+</sqlMap>
