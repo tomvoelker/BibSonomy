@@ -4,7 +4,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagemen
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.search.index.update.IndexUpdateLogic;
-import org.bibsonomy.search.index.update.util.IndexUpdateUtils;
+import org.bibsonomy.search.index.utils.SearchParamUtils;
 import org.bibsonomy.search.management.database.params.SearchParam;
 
 import java.util.Date;
@@ -22,7 +22,7 @@ public class ProjectIndexUpdateLogic extends AbstractDatabaseManagerWithSessionM
 	@Override
 	public List<Project> getNewerEntities(long lastEntityId, Date lastLogDate, int size, int offset) {
 		try (final DBSession session = this.openSession()) {
-			final SearchParam param = IndexUpdateUtils.buildSeachParam(lastEntityId, lastLogDate, size, offset);
+			final SearchParam param = SearchParamUtils.buildSeachParam(lastEntityId, lastLogDate, size, offset);
 
 			return this.queryForList("getUpdatedAndNewProjects", param, Project.class, session);
 		}

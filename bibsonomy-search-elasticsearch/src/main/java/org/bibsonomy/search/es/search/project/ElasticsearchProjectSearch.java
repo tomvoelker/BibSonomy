@@ -30,7 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * elasticsearch implementation of the {@link ProjectSearch}
+ * elasticsearch implementation of the {@link ProjectSearch} interface
  *
  * @author dzo
  */
