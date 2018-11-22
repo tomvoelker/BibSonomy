@@ -28,6 +28,7 @@ public class ProjectIndexGenerationLogic extends AbstractDatabaseManagerWithSess
 			final SearchParam param = new SearchParam();
 			param.setLastContentId(lastContenId);
 			param.setLimit(limit);
+
 			return this.queryForList("getProjects", param, Project.class, session);
 		}
 	}

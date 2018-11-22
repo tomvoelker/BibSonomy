@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.search.management.database.params;
 
+import org.bibsonomy.database.common.enums.CRISEntityType;
+
 import java.util.Date;
 
 /**
@@ -58,6 +60,10 @@ public class SearchParam {
 	private Date lastDocumentDate;
 	
 	private String userRelation;
+
+	private CRISEntityType sourceType;
+
+	private CRISEntityType targetType;
 
 	/**
 	 * @return the lastTasId
@@ -197,5 +203,33 @@ public class SearchParam {
 	 */
 	public void setLastDocumentDate(Date lastDocumentDate) {
 		this.lastDocumentDate = lastDocumentDate;
+	}
+
+	/**
+	 * @return the sourceType
+	 */
+	public CRISEntityType getSourceType() {
+		return sourceType;
+	}
+
+	/**
+	 * @param sourceType the sourceType to set
+	 */
+	public void setSourceType(CRISEntityType sourceType) {
+		this.sourceType = sourceType;
+	}
+
+	/**
+	 * @return the targetType
+	 */
+	public CRISEntityType getTargetType() {
+		return targetType;
+	}
+
+	/**
+	 * @param targetType the targetType to set
+	 */
+	public void setTargetType(CRISEntityType targetType) {
+		this.targetType = targetType;
 	}
 }

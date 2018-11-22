@@ -1,10 +1,9 @@
 package org.bibsonomy.search.index.generator.person;
 
+import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagement;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.Person;
-import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.search.index.database.person.PersonDatabaseInformationLogic;
-import org.bibsonomy.search.index.generator.OneToManyIndexGenerationLogic;
+import org.bibsonomy.search.index.generator.IndexGenerationLogic;
 import org.bibsonomy.search.management.database.params.SearchParam;
 
 import java.util.List;
@@ -14,9 +13,9 @@ import java.util.List;
  *
  * @author dzo
  */
-public class PersonIndexGenerationLogic extends PersonDatabaseInformationLogic implements OneToManyIndexGenerationLogic<Person, ResourcePersonRelation> {
+public class PersonIndexGenerationLogic extends AbstractDatabaseManagerWithSessionManagement implements IndexGenerationLogic<Person> {
 
-	private static SearchParam buildParam(int lastPersonId, int limit) {
+	protected static SearchParam buildParam(int lastPersonId, int limit) {
 		final SearchParam param = new SearchParam();
 		param.setLastContentId(lastPersonId);
 		param.setLimit(limit);
@@ -35,21 +34,6 @@ public class PersonIndexGenerationLogic extends PersonDatabaseInformationLogic i
 		try (final DBSession session = this.openSession()) {
 			final SearchParam param = buildParam(lastPersonId, limit);
 			return this.queryForList("getPersons", param, Person.class, session);
-		}
-	}
-
-	@Override
-	public List<ResourcePersonRelation> getToManyEntities(int lastContentId, int limit) {
-		try (final DBSession session = this.openSession()) {
-			final SearchParam param = buildParam(lastContentId, limit);
-			return this.queryForList("getResourceRelations", param, ResourcePersonRelation.class, session);
-		}
-	}
-
-	@Override
-	public int getNumberOfToManyEntities() {
-		try (final DBSession session = this.openSession()) {
-			return this.queryForObject("getPersonRelationsCount", Integer.class, session);
 		}
 	}
 }

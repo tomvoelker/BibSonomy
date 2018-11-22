@@ -20,8 +20,8 @@ import java.util.List;
  *
  * @author dzo
  */
-public class PersonIndexGenerationLogicTest extends AbstractDatabaseManagerTest {
-	private static final PersonIndexGenerationLogic PERSON_INDEX_GENERATIONLOGIC = SearchSpringContextWrapper.getBeanFactory().getBean(PersonIndexGenerationLogic.class);
+public class PersonResourcePersonRelationIndexGeneationLogicTest extends AbstractDatabaseManagerTest {
+	private static final PersonResourcePersonRelationIndexGeneationLogic PERSON_INDEX_GENERATIONLOGIC = SearchSpringContextWrapper.getBeanFactory().getBean(PersonResourcePersonRelationIndexGeneationLogic.class);
 
 	/**
 	 * test {@link PersonIndexGenerationLogic#getEntites(int, int)}
@@ -61,7 +61,7 @@ public class PersonIndexGenerationLogicTest extends AbstractDatabaseManagerTest 
 	}
 
 	/**
-	 * tests {@link PersonIndexGenerationLogic#getToManyEntities(int, int)}
+	 * tests {@link PersonResourcePersonRelationIndexGeneationLogic#getToManyEntities(int, int)}
 	 */
 	@Test
 	public void testGetToManyEntities() {
@@ -77,7 +77,7 @@ public class PersonIndexGenerationLogicTest extends AbstractDatabaseManagerTest 
 	}
 
 	/**
-	 * tests {@link PersonIndexGenerationLogic#getNumberOfToManyEntities()}
+	 * tests {@link PersonResourcePersonRelationIndexGeneationLogic#getNumberOfToManyEntities()}
 	 */
 	@Test
 	public void testGetNumberOfToManyEntities() {
