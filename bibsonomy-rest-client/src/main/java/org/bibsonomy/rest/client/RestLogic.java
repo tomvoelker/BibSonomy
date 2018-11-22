@@ -44,6 +44,7 @@ import org.bibsonomy.model.*;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
@@ -55,6 +56,7 @@ import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.auth.AuthenticationAccessor;
+import org.bibsonomy.rest.client.queries.delete.DeleteResourcePersonRelationQuery;
 import org.bibsonomy.rest.client.queries.get.GetResourcePersonRelationsQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostDocumentQuery;
@@ -511,6 +513,11 @@ public class RestLogic extends AbstractLogicInterface {
 	@Override
 	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) {
 		execute(new CreateResourcePersonRelationQuery(resourcePersonRelation));
+	}
+
+	@Override
+	public void removeResourceRelation(String personId, String interHash, int index, PersonResourceRelationType type) {
+		this.execute(new DeleteResourcePersonRelationQuery(personId, interHash, index, type));
 	}
 
 	@Override
