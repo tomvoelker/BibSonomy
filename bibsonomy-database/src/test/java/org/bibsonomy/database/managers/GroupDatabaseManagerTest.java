@@ -821,4 +821,17 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	}
 
+	private void queryGroupByExternalIdAndValidateWithGroupname(String externalId, String groupName) {
+		Group group = groupDb.getGroupByExternalId(externalId, this.dbSession);
+		assertThat(group.getName(), equalTo(groupName));
+	}
+
+
+	@Test
+	public void testGetGroupByExternalId() {
+		queryGroupByExternalIdAndValidateWithGroupname("extid1", "testgroup1");
+		queryGroupByExternalIdAndValidateWithGroupname("extid2", "testgroup2");
+		queryGroupByExternalIdAndValidateWithGroupname("extid3", "testgroup3");
+	}
+
 }

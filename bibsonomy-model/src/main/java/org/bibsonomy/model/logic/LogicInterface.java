@@ -176,15 +176,21 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param start
 	 * @param end
 	 * @return a set of groups, an empty set else
+	 *
+	 * @deprecated use {@link #getGroups(GroupQuery)} instead.
 	 */
 	public List<Group> getGroups(boolean pending, String userName, int start, int end);
 
+
 	/**
-	 * Returns all groups of the system.
-	 * @param query a query object to select groups
-	 * @return a set of groups, an empty set else
+	 * Returns all groups in the system. The request is handled differently depending on the query details provided in <code>query</code>.
+	 *
+	 * @param query a query object with a specification to select groups.
+	 *
+	 * @return a set of groups, or an empty set if no group in accordance with the specification could be found.
 	 */
-	public List<Group> getGroups(GroupQuery query);
+	List<Group> getGroups(GroupQuery query);
+
 
 	/**
 	 * Returns a list of all deleted group users of the system.

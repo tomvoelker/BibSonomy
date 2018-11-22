@@ -274,13 +274,22 @@
 	</delete>
 
 	<select id="getSubgroupsFor" resultMap="GroupCommon.group_extended_with_parent" parameterClass="int">
-		SELECT <include refid="basicColumns" />, u.user_realname, u.user_homepage, <include refid="parentColumns" /> FROM groupids i
-		<!-- LEFT JOIN is necessary because groups are empty at the point of creation. -->
-		LEFT JOIN user u ON (u.user_name = i.group_name)
-		LEFT JOIN groupids pt ON (i.parent = pt.group) <!-- join with parent -->
-		LEFT JOIN user upt ON (upt.user_name = pt.group_name)
-		WHERE i.parent = #groupId#
-		ORDER BY i.group_name
+		SELECT <include refid="basicColumns" />, u.user_realname, u.user_homepage, <include refid="parentColumns" />
+			FROM groupids i
+				<!-- LEFT JOIN is necessary because groups are empty at the point of creation. -->
+				LEFT JOIN user u ON (u.user_name = i.group_name)
+				LEFT JOIN groupids pt ON (i.parent = pt.group) <!-- join with parent -->
+				LEFT JOIN user upt ON (upt.user_name = pt.group_name)
+			WHERE i.parent = #groupId#
+			ORDER BY i.group_name
+	</select>
+
+	<select id="getGroupByExternalId" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="org.bibsonomy.database.params.group.GetByExternalId">
+		SELECT <include refid="basicColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date
+			FROM groupids i
+				JOIN group_memberships g USING (`group`)
+				JOIN user u ON (i.group_name = u.user_name)
+			WHERE i.external_id = #externalId#
 	</select>
 
 	<!--

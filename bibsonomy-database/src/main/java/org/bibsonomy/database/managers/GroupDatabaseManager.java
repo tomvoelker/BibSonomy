@@ -28,12 +28,7 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
@@ -46,9 +41,11 @@ import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
+import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagSetParam;
 import org.bibsonomy.database.params.WikiParam;
+import org.bibsonomy.database.params.group.GetByExternalId;
 import org.bibsonomy.database.params.group.GetParentGroupIdsRecursively;
 import org.bibsonomy.database.params.group.InsertParentRelations;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
@@ -60,6 +57,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.TagSet;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.ExceptionUtils;
@@ -89,10 +87,25 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	private final GeneralDatabaseManager generalDatabaseManager;
 	private final DatabasePluginRegistry plugins;
 
+	/*
+	 * Needs to be set by spring!
+	 */
+	private Chain<List<Group>, GroupQuery> chain;
+
+
 	private GroupDatabaseManager() {
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.adminDatabaseManager = AdminDatabaseManager.getInstance();
 		this.generalDatabaseManager = GeneralDatabaseManager.getInstance();
+	}
+
+	/**
+	 * Sets the group chain.
+	 *
+	 * @param chain a chain.
+	 */
+	public void setChain(Chain<List<Group>, GroupQuery> chain) {
+		this.chain = chain;
 	}
 
 	/**
@@ -108,12 +121,33 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getAllGroups", param, Group.class, session);
 	}
 
+
+	/**
+	 * Returns a list of all groups as specified by the query object, without membership information.
+	 *
+	 * @param param the query.
+	 * @param session a session.
+	 *
+	 * @return a list of groups as specified by the query.
+	 */
+	public List<Group> queryGroups(final GroupQuery param, final DBSession session) {
+		return this.chain.perform(param, session);
+	}
+
+
 	/**
 	 * Returns pending groups.
-	 * @param userName TODO
-	 * @param start
-	 * @param end
-	 * @param session
+	 *
+	 * TODO (AD) This method handles two cases:
+	 *   1) if a username is set, only pending groups for this user are retrieved.
+	 *   2) if username is set to null, all pending groups will be retrieved.
+	 *   => This should be refactored into two separate methods
+	 *
+	 *
+	 * @param userName a valid username. If set to <code>null</code>, all pending groups will be retrieved, otherwise only pending groups for the supplied user are retrieved.
+	 * @param start start index within the result set.
+	 * @param end end index within the result set.
+	 * @param session a database session.
 	 *
 	 * @return list of all pending groups
 	 */
@@ -1158,11 +1192,28 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		}
 	}
 
+
 	/**
 	 * @param userDb the userDb to set
 	 */
 	public void setUserDb(final UserDatabaseManager userDb) {
 		this.userDb = userDb;
 	}
-	
+
+
+	/**
+	 * Retrieves a list of all groups with a given external id.
+	 *
+	 * Although this is a one-to-one relationship a list is provided since it will be part of a larger chain.
+	 *
+	 * @param externalId an external id.
+	 * @param session a database session.
+	 *
+	 * @return a list of groups with the external id.
+	 */
+	public Group getGroupByExternalId(String externalId, DBSession session) {
+		GetByExternalId params = new GetByExternalId(externalId);
+
+		return this.queryForObject("getGroupByExternalId", params, Group.class, session);
+	}
 }

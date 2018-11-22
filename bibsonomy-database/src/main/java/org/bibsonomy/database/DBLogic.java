@@ -851,6 +851,7 @@ public class DBLogic implements LogicInterface {
 		return null;
 	}
 
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -858,26 +859,32 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<Group> getGroups(final boolean pending, final String userName, final int start, final int end) {
+		return this.getGroups(new GroupQuery(pending, userName, start, end, null));
+	}
+
+
+	@Override
+	public List<Group> getGroups(GroupQuery query) {
 		final DBSession session = this.openSession();
 		try {
-			if (pending) {
-				if (present(userName)) {
-					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-					return this.groupDBManager.getPendingGroups(userName, start, end, session);
+			/*
+			 * (AD)
+			 * Perform security checks for the different cases. This is pretty strange, since there is no easy way
+			 * to find out which security check applies to a certain chain element. IMHO this should be
+			 * implemented as some kind of facade around the chain elements.
+			 */
+			if (query.isPending()) {
+				if (present(query.getUserName())) {
+					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, query.getUserName());
 				}
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
-				return this.groupDBManager.getPendingGroups(null, start, end, session);
 			}
-			return this.groupDBManager.getAllGroups(start, end, session);
+			return this.groupDBManager.queryGroups(query, session);
 		} finally {
 			session.close();
 		}
 	}
 
-	@Override
-	public List<Group> getGroups(GroupQuery query) {
-		return Collections.emptyList();
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -1055,6 +1062,8 @@ public class DBLogic implements LogicInterface {
 	public void deleteGroup(final String groupName, final boolean pending, final boolean quickDelete) {
 		// needs login.
 		this.ensureLoggedIn();
+
+		// TODO call onGroupDeletion on plugin registry
 
 		final DBSession session = this.openSession();
 

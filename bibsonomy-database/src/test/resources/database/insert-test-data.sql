@@ -237,21 +237,21 @@ INSERT INTO `friends` VALUES
 -- 
 -- Data for table `groupids`
 -- 
-INSERT INTO `groupids` (`group_name`, `group`, `parent`, `privlevel`, `sharedDocuments`) VALUES
-('public',          -2147483648, NULL,  1, 0),
-('private',         -2147483647, NULL,  1, 0),
-('friends',         -2147483646, NULL,  1, 0),
-('public',          0,           NULL,  1, 0),
-('private',         1,           NULL,  1, 0),
-('friends',         2,           NULL,  1, 0),
-('testgroup1',      3,           NULL,  0, 1),
-('testgroup2',      4,           NULL,  1, 0),
-('testgroup3',      5,           NULL,  2, 0),
-('testgroup4',      6,           NULL,  2, 1),
-('rootgroup',       9,           NULL,  2, 1),
-('childgroup1',     10,             9,  2, 1),
-('childgroup2',     11,             9,  2, 1),
-('childgroup3depth2', 12,           10, 2, 1);
+INSERT INTO `groupids` (`group_name`, `group`, `parent`, `privlevel`, `sharedDocuments`, `external_id`) VALUES
+('public',          -2147483648, NULL,  1, 0, NULL),
+('private',         -2147483647, NULL,  1, 0, NULL),
+('friends',         -2147483646, NULL,  1, 0, NULL),
+('public',          0,           NULL,  1, 0, NULL),
+('private',         1,           NULL,  1, 0, NULL),
+('friends',         2,           NULL,  1, 0, NULL),
+('testgroup1',      3,           NULL,  0, 1, 'extid1'),
+('testgroup2',      4,           NULL,  1, 0, 'extid2'),
+('testgroup3',      5,           NULL,  2, 0, 'extid3'),
+('testgroup4',      6,           NULL,  2, 1, NULL),
+('rootgroup',       9,           NULL,  2, 1, NULL),
+('childgroup1',     10,             9,  2, 1, NULL),
+('childgroup2',     11,             9,  2, 1, NULL),
+('childgroup3depth2', 12,           10, 2, 1, NULL);
 
 -- 
 -- Data for table `pending_groupids`

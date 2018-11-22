@@ -202,7 +202,7 @@
 			</list>
 		</property>
 	</bean>
-	
+
 	<!-- document statistic chain -->
 	<bean id="documentStatisticsChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
@@ -212,7 +212,24 @@
 			</list>
 		</property>
 	</bean>
-	
+
+	<!-- get groups chain -->
+	<bean id="queryGroupsChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.group.get.GetGroupsByExternalId">
+						<constructor-arg ref="groupDatabaseManager" />
+				</bean>
+				<bean class="org.bibsonomy.database.managers.chain.group.get.GetPendingGroups">
+					<constructor-arg ref="groupDatabaseManager" />
+				</bean>
+				<bean class="org.bibsonomy.database.managers.chain.group.get.GetAllGroups">
+					<constructor-arg ref="groupDatabaseManager" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
 	<bean id="databaseValidator" class="org.bibsonomy.database.validation.DatabaseModelValidator">
 		<property name="databaseSchemaInformation" ref="dbSchemaInformation" />
 	</bean>
@@ -253,6 +270,7 @@
 	
 	<bean id="groupDatabaseManager" class="org.bibsonomy.database.managers.GroupDatabaseManager" factory-method="getInstance">
 		<property name="userDb" ref="userDatabaseManager" />
+		<property name="chain" ref="queryGroupsChain" />
 	</bean>
 	
 	<bean id="postDatabaseManager" class="org.bibsonomy.database.managers.PostDatabaseManager" abstract="true">
