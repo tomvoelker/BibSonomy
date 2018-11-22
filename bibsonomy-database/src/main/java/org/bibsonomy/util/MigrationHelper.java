@@ -28,8 +28,6 @@ package org.bibsonomy.util;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -114,7 +112,7 @@ public class MigrationHelper {
 		final Version sourceVersion;
 		final Version targetVersion;
 		if (args.length == 1) {
-			sourceVersion = null;
+			sourceVersion = new Version(0, 0, 0);
 			targetVersion = Version.parseVersion(args[0]);
 		} else {
 			sourceVersion = Version.parseVersion(args[0]);
@@ -138,13 +136,7 @@ public class MigrationHelper {
 		final URL resource = MigrationHelper.class.getClassLoader().getResource(MIGRATION_PATH);
 		final File file = new File(resource.toURI());
 		final TreeSet<Version> versions = new TreeSet<>();
-		for (final File subDir : file.listFiles(new FileFilter() {
-			
-			@Override
-			public boolean accept(File pathname) {
-				return pathname.isDirectory();
-			}
-		})) {
+		for (final File subDir : file.listFiles(pathname -> pathname.isDirectory())) {
 			versions.add(Version.parseVersion(subDir.getName()));
 		}
 		
@@ -156,13 +148,7 @@ public class MigrationHelper {
 			
 			final File versionFolder = new File(file, versionString);
 			
-			final File[] sqlFiles = versionFolder.listFiles(new FilenameFilter() {
-				
-				@Override
-				public boolean accept(File dir, String name) {
-					return name.endsWith(".sql");
-				}
-			});
+			final File[] sqlFiles = versionFolder.listFiles((dir, name) -> name.endsWith(".sql"));
 			
 			for (final File sqlFile : sqlFiles) {
 				builder.append("-- ").append(sqlFile.getName()).append("\n");

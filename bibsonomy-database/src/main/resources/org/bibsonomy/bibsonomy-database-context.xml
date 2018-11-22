@@ -361,11 +361,13 @@
 			<map>
 				<entry key-ref="projectClass" value-ref="projectDatabaseManager" />
 				<entry key-ref="personClass" value-ref="personDatabaseManager" />
+				<entry key-ref="groupClass" value-ref="groupDatabaseManager" />
 			</map>
 		</property>
 		<property name="checkers">
 			<list>
 				<bean class="org.bibsonomy.database.managers.util.cris.ProjectPersonLinkDirectionChecker" />
+				<bean class="org.bibsonomy.database.managers.util.cris.GroupPersonLinkDirectionChecker" />
 			</list>
 		</property>
 		<property name="plugins" ref="databasePluginManager" />
@@ -383,10 +385,16 @@
 				<bean class="org.bibsonomy.database.plugin.plugins.GoldStandardPublicationPlugin" />
 				<bean class="org.bibsonomy.database.plugin.plugins.MetaDataPlugin" />
 				<bean class="org.bibsonomy.database.plugin.plugins.PersonPostConnectorPlugin">
-					<property name="personDatabaseManager" ref="personDatabaseManager" />
+					<constructor-arg ref="personDatabaseManager" />
+					<constructor-arg ref="groupDatabaseManager" />
+					<constructor-arg ref="crisLinkDatabaseManger" />
 				</bean>
 				<bean class="org.bibsonomy.database.plugin.plugins.ProjectPlugin" />
-				<bean class="org.bibsonomy.database.plugin.plugins.CRISLinkPlugin" />
+				<bean class="org.bibsonomy.database.plugin.plugins.CRISLinkPlugin">
+					<constructor-arg value="${system.cris}" />
+					<constructor-arg ref="personDatabaseManager" />
+					<constructor-arg ref="crisLinkDatabaseManger" />
+				</bean>
 			</list>
 		</property>
 	</bean>

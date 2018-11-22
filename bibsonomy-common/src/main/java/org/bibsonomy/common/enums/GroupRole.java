@@ -52,7 +52,7 @@ public enum GroupRole {
 	/** dummy */
 	DUMMY(3),
 
-	/** user invited by an admin or moderator */
+	/** user invited by an admin or moderator of the group */
 	INVITED(4),
 
 	/** request to join the group */
@@ -68,7 +68,7 @@ public enum GroupRole {
 	private final Set<GroupRole> impliedRoles;
 	
 	private GroupRole(final int role) {
-		this(role, Collections.<GroupRole>emptySet());
+		this(role, Collections.emptySet());
 	}
 
 	private GroupRole(final int role, final Set<GroupRole> impliedRoles) {

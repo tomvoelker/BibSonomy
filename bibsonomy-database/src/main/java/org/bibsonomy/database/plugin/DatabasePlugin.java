@@ -35,6 +35,8 @@ import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -236,12 +238,14 @@ public interface DatabasePlugin {
 
 	/**
 	 * Called when a user is removed from a group.
-	 * 
+	 *  @param group
 	 * @param userName
-	 * @param groupId
+	 * @param loggedinUser
 	 * @param session
 	 */
-	public void onChangeUserMembershipInGroup(String userName, int groupId, DBSession session);
+	default void onChangeUserMembershipInGroup(Group group, String userName, User loggedinUser, DBSession session) {
+		// noop
+	}
 	
 	/**
 	 * Called when a fellowship will be deleted
@@ -437,4 +441,26 @@ public interface DatabasePlugin {
 	 * @param session
 	 */
 	public void onCRISLinkDelete(CRISLink crisLink, User loginUser, DBSession session);
+
+	/**
+	 * called after a user is added to a group
+	 * @param group
+	 * @param membership
+	 * @param loggedinUser
+	 * @param session
+	 */
+	default void onAddedGroupMembership(final Group group, final GroupMembership membership, User loggedinUser, final DBSession session) {
+		// noop
+	}
+
+	/**
+	 * called after a user was removed from a group
+	 * @param group
+	 * @param username
+	 * @param loggedinUser
+	 * @param session
+	 */
+	default void onRemovedGroupMembership(Group group, String username, User loggedinUser, DBSession session) {
+		// noop
+	}
 }

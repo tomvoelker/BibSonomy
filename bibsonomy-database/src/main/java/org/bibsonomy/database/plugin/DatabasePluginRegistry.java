@@ -28,6 +28,7 @@ package org.bibsonomy.database.plugin;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.bibsonomy.common.information.JobInformation;
 import org.bibsonomy.database.common.DBSession;
@@ -38,6 +39,8 @@ import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -66,6 +69,10 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	
 	private List<DatabasePlugin> plugins;
 	private List<DatabasePlugin> defaultPlugins;
+
+	private void callAllPlugins(Consumer<DatabasePlugin> consumer) {
+		this.plugins.forEach(consumer);
+	}
 	
 	@Override
 	public List<JobInformation> onPublicationInsert(final Post<? extends BibTex> post, User loggedinUser, final DBSession session) {
@@ -79,51 +86,37 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 
 	@Override
 	public void onPublicationDelete(final int contentId, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPublicationDelete(contentId, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onPublicationDelete(contentId, session));
 	}
 
 	@Override
 	public void onPublicationUpdate(final int oldContentId, final int newContentId, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPublicationUpdate(newContentId, oldContentId, session); // new and old contentId are not swapped!
-		}
+		this.callAllPlugins(plugin -> plugin.onPublicationUpdate(newContentId, oldContentId, session)); // new and old contentId are not swapped!
 	}
 	
 	@Override
 	public void onGoldStandardCreate(final String interhash, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onGoldStandardCreate(interhash, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onGoldStandardCreate(interhash, session));
 	}
 
 	@Override
 	public void onGoldStandardDelete(final String interhash, User loggedinUser, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onGoldStandardDelete(interhash, loggedinUser, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onGoldStandardDelete(interhash, loggedinUser, session));
 	}
 
 	@Override
 	public void onGoldStandardUpdate(final int oldContentId, final int newContentId, final String newInterhash, final String interhash, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onGoldStandardUpdate(oldContentId, newContentId, newInterhash, interhash, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onGoldStandardUpdate(oldContentId, newContentId, newInterhash, interhash, session));
 	}
 	
 	@Override
 	public void onGoldStandardPublicationReferenceCreate(final String userName, final String interHashPublication, final String interHashReference, final String interHashRelation) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onGoldStandardPublicationReferenceCreate(userName, interHashPublication, interHashReference, interHashRelation);
-		}
+		this.callAllPlugins(plugin -> plugin.onGoldStandardPublicationReferenceCreate(userName, interHashPublication, interHashReference, interHashRelation));
 	}
 
 	@Override
 	public void onGoldStandardRelationDelete(final String userName, final String interHashPublication, final String interHashReference, final GoldStandardRelation interHashRelation, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onGoldStandardRelationDelete(userName, interHashPublication, interHashReference, interHashRelation, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onGoldStandardRelationDelete(userName, interHashPublication, interHashReference, interHashRelation, session));
 	}
 
 	@Override
@@ -138,16 +131,12 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 
 	@Override
 	public void onBookmarkDelete(final int contentId, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onBookmarkDelete(contentId, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onBookmarkDelete(contentId, session));
 	}
 
 	@Override
 	public void onBookmarkUpdate(final int oldContentId, final int newContentId, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onBookmarkUpdate(newContentId, oldContentId, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onBookmarkUpdate(newContentId, oldContentId, session));
 	}
 	
 	/* (non-Javadoc)
@@ -155,151 +144,112 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 */
 	@Override
 	public void onBookmarkMassUpdate(String userName, int groupId, DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onBookmarkMassUpdate(userName, groupId, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onBookmarkMassUpdate(userName, groupId, session));
 	}
 
 	@Override
 	public void onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onTagRelationDelete(upperTagName, lowerTagName, userName, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onTagRelationDelete(upperTagName, lowerTagName, userName, session));
 	}
 	
 	@Override
 	public void onConceptDelete(final String conceptName, final String userName, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onConceptDelete(conceptName, userName, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onConceptDelete(conceptName, userName, session));
 	}
 
 	@Override
 	public void onTagDelete(final int contentId, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onTagDelete(contentId, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onTagDelete(contentId, session));
 	}
 
 	@Override
-	public void onChangeUserMembershipInGroup(final String username, final int groupId, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onChangeUserMembershipInGroup(username, groupId, session);
-		}
+	public void onAddedGroupMembership(Group group, GroupMembership membership, User loggedinUser, DBSession session) {
+		callAllPlugins(plugin -> plugin.onAddedGroupMembership(group, membership, loggedinUser, session));
+	}
+
+	@Override
+	public void onRemovedGroupMembership(Group group, String username, User loggedinUser, DBSession session) {
+		callAllPlugins(plugin -> plugin.onRemovedGroupMembership(group, username, loggedinUser, session));
+	}
+
+	@Override
+	public void onChangeUserMembershipInGroup(Group group, String userName, User loggedinUser, final DBSession session) {
+		this.callAllPlugins(plugin -> plugin.onChangeUserMembershipInGroup(group, userName, loggedinUser, session));
 	}
 	
 	@Override
 	public void onUserDelete(final String userName, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onUserDelete(userName, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onUserDelete(userName, session));
 	}
 
 	@Override
 	public void onUserInsert(final String userName, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onUserInsert(userName, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onUserInsert(userName, session));
 	}
 
 	@Override
 	public void onUserUpdate(final String userName, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onUserUpdate(userName, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onUserUpdate(userName, session));
 	}
 	
 	@Override
 	public void onDeleteFellowship(final UserParam param, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onDeleteFellowship(param, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onDeleteFellowship(param, session));
 	}
 	
 	@Override
 	public void onDeleteFriendship(final UserParam param,final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onDeleteFriendship(param, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onDeleteFriendship(param, session));
 	}
 	
 	@Override
-	public void onDeleteClipboardItem(final ClipboardParam param, final DBSession session){
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onDeleteClipboardItem(param, session);
-		}
+	public void onDeleteClipboardItem(final ClipboardParam param, final DBSession session) {
+		this.callAllPlugins(plugin -> plugin.onDeleteClipboardItem(param, session));
 	}
 	
 	@Override
-	public void onDeleteAllClipboardItems(final String userName, final DBSession session){
-		for (final DatabasePlugin plugin : this.plugins){
-			plugin.onDeleteAllClipboardItems(userName, session);
-		}
+	public void onDeleteAllClipboardItems(final String userName, final DBSession session) {
+		this.callAllPlugins(plugin -> plugin.onDeleteAllClipboardItems(userName, session));
 	}
 
 	@Override
 	public void onDiscussionUpdate(final String interHash, final DiscussionItem discussionItem, final DiscussionItem oldDiscussionItem, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins){
-			plugin.onDiscussionUpdate(interHash, discussionItem, oldDiscussionItem, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onDiscussionUpdate(interHash, discussionItem, oldDiscussionItem, session));
 	}
 	
 	@Override
 	public void onDiscussionItemDelete(final String interHash, final DiscussionItem deletedDiscussionItem, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins){
-			plugin.onDiscussionItemDelete(interHash, deletedDiscussionItem, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onDiscussionItemDelete(interHash, deletedDiscussionItem, session));
 	}
 
 	@Override
 	public void onDocumentDelete(final DocumentParam deletedDocumentParam, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins){
-			plugin.onDocumentDelete(deletedDocumentParam, session);
-		}	
+		this.callAllPlugins(plugin -> plugin.onDocumentDelete(deletedDocumentParam, session));
 	}
 	
 	@Override
 	public void onDocumentUpdate(DocumentParam updatedDocumentParam, DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins){
-			plugin.onDocumentUpdate(updatedDocumentParam, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onDocumentUpdate(updatedDocumentParam, session));
 	}
 
 	@Override
 	public void onInboxMailDelete(final InboxParam deletedInboxMessageParam, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins){
-			plugin.onInboxMailDelete(deletedInboxMessageParam, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onInboxMailDelete(deletedInboxMessageParam, session));
 	}
 
-	
-	/**
-	 * @author MarcelM
-	 */
 	@Override
 	public void onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins){
-			plugin.onBibTexExtraDelete(deletedBibTexExtraParam, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onBibTexExtraDelete(deletedBibTexExtraParam, session));
 	}
 
-	/**
-	 * @param username
-	 * @param groupId
-	 * @param session
-	 */
 	@Override
 	public void onPublicationMassUpdate(String username, int groupId, DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins){
-			plugin.onPublicationMassUpdate(username, groupId, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onPublicationMassUpdate(username, groupId, session));
 	}
 
 	@Override
 	public void onDiscussionMassUpdate(String username, int groupId, DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onDiscussionMassUpdate(username, groupId, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onDiscussionMassUpdate(username, groupId, session));
 	}
 
 	/* (non-Javadoc)
@@ -307,9 +257,7 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 */
 	@Override
 	public void onPersonNameDelete(PersonName personName, User loggedInUser, DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPersonNameDelete(personName, loggedInUser, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onPersonNameDelete(personName, loggedInUser, session));
 	}
 
 	/* (non-Javadoc)
@@ -317,10 +265,7 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 */
 	@Override
 	public void onPersonUpdate(Person oldPerson, Person newPerson, DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPersonUpdate(oldPerson, newPerson, session);
-		}	
-		
+		this.callAllPlugins(plugin -> plugin.onPersonUpdate(oldPerson, newPerson, session));
 	}
 
 	/* (non-Javadoc)
@@ -328,9 +273,7 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 */
 	@Override
 	public void onPersonDelete(Person person, User user, DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPersonDelete(person, user, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onPersonDelete(person, user, session));
 	}
 
 	/* (non-Javadoc)
@@ -338,9 +281,7 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 */
 	@Override
 	public void onPubPersonDelete(ResourcePersonRelation rel, User loginUser, DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPubPersonDelete(rel, loginUser, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onPubPersonDelete(rel, loginUser, session));
 	}
 
 	/* (non-Javadoc)
@@ -348,9 +289,7 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 */
 	@Override
 	public void onPersonUpdateByUserName(String userName, DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPersonUpdateByUserName(userName, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onPersonUpdateByUserName(userName, session));
 	}
 
 	/* (non-Javadoc)
@@ -358,51 +297,37 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 */
 	@Override
 	public void onPersonNameUpdate(PersonName oldPerson, User loggedinUser, DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPersonNameUpdate(oldPerson, loggedinUser, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onPersonNameUpdate(oldPerson, loggedinUser, session));
 	}
 
 	@Override
 	public void onPersonResourceRelationUpdate(ResourcePersonRelation oldRelation, ResourcePersonRelation newRelation, User loggedinUser, DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPersonResourceRelationUpdate(oldRelation, newRelation, loggedinUser, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onPersonResourceRelationUpdate(oldRelation, newRelation, loggedinUser, session));
 	}
 
 	@Override
 	public void onProjectInsert(final Project project, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onProjectInsert(project, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onProjectInsert(project, session));
 	}
 
 	@Override
 	public void onProjectUpdate(final Project oldProject, final Project newProject, User loggedinUser, DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onProjectUpdate(oldProject, newProject, loggedinUser, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onProjectUpdate(oldProject, newProject, loggedinUser, session));
 	}
 
 	@Override
 	public void onProjectDelete(final Project project, final User loggedinUser, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onProjectDelete(project, loggedinUser, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onProjectDelete(project, loggedinUser, session));
 	}
 
 	@Override
 	public void onCRISLinkUpdate(CRISLink oldCRISLink, CRISLink link, User loginUser, DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onCRISLinkUpdate(oldCRISLink, link, loginUser, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onCRISLinkUpdate(oldCRISLink, link, loginUser, session));
 	}
 
 	@Override
 	public void onCRISLinkDelete(CRISLink crisLink, User loginUser, DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onCRISLinkDelete(crisLink, loginUser, session);
-		}
+		this.callAllPlugins(plugin -> plugin.onCRISLinkDelete(crisLink, loginUser, session));
 	}
 
 	/**

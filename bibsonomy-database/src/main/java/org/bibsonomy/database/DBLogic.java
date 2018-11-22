@@ -1046,7 +1046,7 @@ public class DBLogic implements LogicInterface {
 			 * only an admin or the user himself may delete the account
 			 */
 			this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-			this.userDBManager.deleteUser(userName, session);
+			this.userDBManager.deleteUser(userName, this.loginUser, session);
 		} finally {
 			session.close();
 		}
@@ -1120,7 +1120,7 @@ public class DBLogic implements LogicInterface {
 				this.updateUserItemsForLeavingGroup(group, membership.getUser().getName(), session);
 			}
 
-			this.groupDBManager.deleteGroup(groupName, quickDelete, session);
+			this.groupDBManager.deleteGroup(groupName, quickDelete, this.loginUser, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -1323,10 +1323,10 @@ public class DBLogic implements LogicInterface {
 			this.groupDBManager.createGroup(group, session);
 
 			/*
-			 * activate the group immediately if it's an organization
+			 * activate the group immediately if it's an organizationu
 			 */
 			if (isOrganization)  {
-				this.groupDBManager.activateGroup(group.getName(), session);
+				this.groupDBManager.activateGroup(group.getName(), this.loginUser, session);
 			}
 
 			return group.getName();
@@ -1337,12 +1337,13 @@ public class DBLogic implements LogicInterface {
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#restoreGroup(org.bibsonomy.model.Group)
 	 */
+	@Override
 	public String restoreGroup(final Group group) {
 		// check admin permissions
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 
 		try (final DBSession session = this.openSession()) {
-			this.groupDBManager.restoreGroup(group, session);
+			this.groupDBManager.restoreGroup(group, this.loginUser, session);
 			return group.getName();
 		}
 	}
@@ -1417,34 +1418,36 @@ public class DBLogic implements LogicInterface {
 					}
 				}
 
-				this.groupDBManager.updateGroupRole(this.loginUser, group.getName(), requestedUserName, requestedGroupRole, session);
+				this.groupDBManager.updateGroupRole(group.getName(), requestedUserName, requestedGroupRole, this.loginUser, session);
 				break;
 			case ADD_MEMBER:
 				// we need to query the groupMembership, since the group object
 				// might not contain the memberships if the loginUser is not
 				// allowed to see them
-				final GroupMembership groupMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(requestedUserName, group.getName(), session);
+				GroupMembership groupMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(requestedUserName, group.getName(), session);
 
 				// We need to be careful with the exception, since it reveals
 				// information about pending memberships
 				if (!present(groupMembership)) {
-					if (this.permissionDBManager.isAdminOrSelf(this.loginUser, requestedUserName)) {
+					if (this.permissionDBManager.isAdmin(this.loginUser)) {
+						// create a pending membership to activate it later
+						this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, userSharedDocuments, GroupRole.REQUESTED, this.loginUser, session);
+						groupMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(requestedUserName, groupName, session);
+					} else {
 						throw new AccessDeniedException("You have not been invited to this group");
 					}
-					this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR);
-					throw new AccessDeniedException("The user can not be added to the group since they did not request to become a member.");
 				}
 
 				switch (groupMembership.getGroupRole()) {
 				case INVITED:
 					// only the user themselves can accept an invitation
 					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, requestedUserName);
-					this.groupDBManager.addUserToGroup(group.getName(), requestedUserName, userSharedDocuments, GroupRole.USER, session);
+					this.groupDBManager.addUserToGroup(group.getName(), requestedUserName, userSharedDocuments, GroupRole.USER, this.loginUser, session);
 					break;
 				case REQUESTED:
 					// only mods or admins can accept requests
-					this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR);
-					this.groupDBManager.addUserToGroup(group.getName(), requestedUserName, groupMembership.isUserSharedDocuments(), GroupRole.USER, session);
+					this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR);
+					this.groupDBManager.addUserToGroup(group.getName(), requestedUserName, groupMembership.isUserSharedDocuments(), GroupRole.USER, this.loginUser, session);
 					break;
 				default:
 					throw new AccessDeniedException("Can't add this member to the group");
@@ -1468,12 +1471,12 @@ public class DBLogic implements LogicInterface {
 					}
 				}
 
-				this.groupDBManager.removeUserFromGroup(group.getName(), requestedUserName, false, session);
+				this.groupDBManager.removeUserFromGroup(group.getName(), requestedUserName, false, this.loginUser, session);
 				this.updateUserItemsForLeavingGroup(group, requestedUserName, session);
 				break;
 			case UPDATE_USER_SHARED_DOCUMENTS:
 				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, requestedUserName);
-				this.groupDBManager.updateUserSharedDocuments(paramGroup, membership, session);
+				this.groupDBManager.updateUserSharedDocuments(paramGroup, membership, this.loginUser, session);
 				break;
 			case UPDATE_GROUP_REPORTING_SETTINGS:
 				this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.ADMINISTRATOR);
@@ -1482,7 +1485,7 @@ public class DBLogic implements LogicInterface {
 			case ACTIVATE:
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
 				// Use paramGroup since group is unretrievable from the database.
-				this.groupDBManager.activateGroup(groupName, session);
+				this.groupDBManager.activateGroup(groupName, this.loginUser, session);
 				break;
 			case DELETE_GROUP_REQUEST:
 				final Group requestedGroup = this.groupDBManager.getPendingGroup(groupName, this.loginUser.getName(), session);
@@ -1494,7 +1497,7 @@ public class DBLogic implements LogicInterface {
 				break;
 			case ADD_INVITED:
 				this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR);
-				this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, userSharedDocuments, GroupRole.INVITED, session);
+				this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, userSharedDocuments, GroupRole.INVITED, this.loginUser, session);
 				break;
 			case ADD_REQUESTED:
 				// TODO: check for banned users in this group
@@ -1502,7 +1505,7 @@ public class DBLogic implements LogicInterface {
 				if (!group.isAllowJoin()) {
 					throw new AccessDeniedException("The group does not allow join group requests.");
 				}
-				this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, userSharedDocuments, GroupRole.REQUESTED, session);
+				this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, userSharedDocuments, GroupRole.REQUESTED, this.loginUser, session);
 				break;
 				// TODO: Refactor to one GroupUpdateOperation
 			case REMOVE_INVITED:
