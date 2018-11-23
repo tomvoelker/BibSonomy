@@ -76,7 +76,7 @@ public class PersonsHandler implements ContextHandler {
 				}
 				break;
 			// /persons/[personID]/relations/[interhash]/[type]/[index]
-			case 4:
+			case 5:
 				personId = urlTokens.next();
 				final String relationsPath = urlTokens.next();
 				if (RESTConfig.RELATION_PARAM.equals(relationsPath)) {
