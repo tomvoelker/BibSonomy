@@ -80,22 +80,22 @@ public class PersonsHandler implements ContextHandler {
 				personId = urlTokens.next();
 				final String relationsPath = urlTokens.next();
 				if (RESTConfig.RELATION_PARAM.equals(relationsPath)) {
-					break;
-				}
-				final String interHash = urlTokens.next();
-				final String type = urlTokens.next();
-				final String index = urlTokens.next();
+					final String interHash = urlTokens.next();
+					final String type = urlTokens.next();
+					final String index = urlTokens.next();
 
-				if (HttpMethod.DELETE.equals(httpMethod)) {
-					try {
-						return new DeletePersonResourceRelationStrategy(context, personId, interHash, Integer.parseInt(index), PersonResourceRelationType.valueOf(type.toUpperCase()));
-					} catch (final IllegalArgumentException e) {
-						throw new BadRequestOrResponseException(e);
+					if (HttpMethod.DELETE.equals(httpMethod)) {
+						try {
+							return new DeletePersonResourceRelationStrategy(context, personId, interHash, Integer.parseInt(index), PersonResourceRelationType.valueOf(type.toUpperCase()));
+						} catch (final IllegalArgumentException e) {
+							throw new BadRequestOrResponseException(e);
+						}
 					}
 				}
 
 				break;
 		}
+
 		throw new NoSuchResourceException(ERROR_MESSAGE);
 	}
 
