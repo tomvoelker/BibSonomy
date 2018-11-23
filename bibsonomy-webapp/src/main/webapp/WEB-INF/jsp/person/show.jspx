@@ -37,6 +37,9 @@
 	<c:set var="isAdmin" value="${command.context.loginUser.role eq 'ADMIN'}" />
 	<c:set var="hasClaimedOrIsAdmin" value="${hasClaimedPerson or isAdmin}" />
 
+	<!--<c:set var="useCRISView" value="${properties['system.cris'] eq 'true'}" />-->
+	<c:set var="useCRISView" value="${false}" />
+
 	<layout:paneLayout pageTitle="${title}"
 		headerLogoClass="publications" 
 		command="${command}" 
@@ -238,7 +241,7 @@
 									
 									<!-- Only visible if te loginUser claimed this person -->
 									<c:if test='${hasClaimedOrIsAdmin}'>
-										<div class="personPageFormField col-md-8">										
+										<div class="personPageFormField col-md-8">
 											<fmt:message key="person.show.homepage.placeholder" var="textHomepagePlaceholder" />
 											<input class='form-control' type="url" name='person.homepage' id="formHomepage" placeholder="${textHomepagePlaceholder}" value="${command.person.homepage}"/>
 										</div>
@@ -360,7 +363,7 @@
 			<div id="thesisBlock">
 				<ul class="nav nav-tabs" role="tablist">
 					<c:choose>
-						<c:when test="${properties['system.cris'] eq 'true'}" >
+						<c:when test="${showCRISView}" >
 							<li class="active"><a href="#projects" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.projects" /></strong></a></li>
 							<li><a href="#publications" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.publications" /></strong></a></li>
 						</c:when>
@@ -372,7 +375,7 @@
 				</ul>
 
 				<c:choose>
-					<c:when test="${properties['system.cris'] eq 'true'}" >
+					<c:when test="${useCRISView}" >
 						<!-- Projects tab content-->
 						<div id='projects' class="tab-pane active">
 							<c:choose>
@@ -465,7 +468,7 @@
 			
 			
 			<!-- Other publications -->
-			<c:if test="${fn:length(command.otherPubs) gt 0 and not properties['system.cris'] eq 'true'}">
+			<c:if test="${fn:length(command.otherPubs) gt 0 and not useCRISView}">
 			<div style="clear: both;">
 				<h3 class="list-headline">
 					<fmt:message key="person.show.otherPub" />
@@ -494,7 +497,7 @@
 
 			
 			<!-- Other publications of similar authors -->
-			<c:if test="${fn:length(command.similarAuthorPubs) gt 0 and not properties['system.cris'] eq 'true'}">
+			<c:if test="${fn:length(command.similarAuthorPubs) gt 0 and not useCRISView}">
 			<div style="clear: both;">
 				<h3 class="list-headline">
 					<fmt:message key="person.show.otherPubOfSimilarAuthor" />
@@ -522,7 +525,7 @@
 
 
 			<!-- similar persons, that one could merge -->
-			<c:if test="${fn:length(command.personMatchList) gt 0 and not properties['system.cris'] eq 'true'}">
+			<c:if test="${fn:length(command.personMatchList) gt 0 and not useCRISView}">
 			<div style="clear: both;">
 				<h3 class="list-headline">
 					<fmt:message key="person.show.similarPersonMatchList" />
