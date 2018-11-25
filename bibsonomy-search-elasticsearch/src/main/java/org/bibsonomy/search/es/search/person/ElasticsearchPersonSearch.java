@@ -10,7 +10,7 @@ import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.index.converter.person.PersonConverter;
 import org.bibsonomy.search.es.index.converter.person.PersonFields;
 import org.bibsonomy.search.es.index.converter.person.PersonResourceRelationConverter;
-import org.bibsonomy.search.es.management.person.ElasticsearchPersonManager;
+import org.bibsonomy.search.es.management.ElasticsearchOneToManyManager;
 import org.bibsonomy.services.searcher.PersonSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.InnerHitBuilder;
@@ -35,7 +35,7 @@ import java.util.Map;
  */
 public class ElasticsearchPersonSearch implements PersonSearch {
 
-	private ElasticsearchPersonManager manager;
+	private ElasticsearchOneToManyManager<Person, ResourcePersonRelation> manager;
 	private PersonConverter converter;
 	private PersonResourceRelationConverter personResourceRelationConverter;
 
@@ -46,7 +46,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 	 * @param converter
 	 * @param personResourceRelationConverter
 	 */
-	public ElasticsearchPersonSearch(ElasticsearchPersonManager manager, PersonConverter converter, PersonResourceRelationConverter personResourceRelationConverter) {
+	public ElasticsearchPersonSearch(ElasticsearchOneToManyManager<Person, ResourcePersonRelation> manager, PersonConverter converter, PersonResourceRelationConverter personResourceRelationConverter) {
 		this.manager = manager;
 		this.converter = converter;
 		this.personResourceRelationConverter = personResourceRelationConverter;

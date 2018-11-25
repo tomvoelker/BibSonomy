@@ -73,4 +73,15 @@ public class ElasticsearchProjectManagerITCase extends AbstractProjectSearchTest
 		final List<Project> projectsAfterDelete = PROJECT_SEARCH.getProjects("", pragmatikQuery);
 		assertThat(projectsAfterDelete.size(), is(0));
 	}
+
+	private static void updateIndex() {
+		PROJECT_MANAGER.updateIndex();
+		PROJECT_MANAGER.updateIndex();
+
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// ignore
+		}
+	}
 }

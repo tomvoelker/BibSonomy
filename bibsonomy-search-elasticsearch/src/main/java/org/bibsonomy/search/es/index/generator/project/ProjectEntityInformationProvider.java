@@ -1,45 +1,48 @@
 package org.bibsonomy.search.es.index.generator.project;
 
+import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
+import org.bibsonomy.search.es.index.converter.project.ProjectFields;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
-import org.bibsonomy.search.es.index.mapping.project.ProjectMapperBuilder;
+import org.bibsonomy.search.es.index.generator.OneToManyEntityInformationProvider;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.MappingBuilder;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * entity information provider
  *
  * @author dzo
  */
-public class ProjectEntityInformationProvider extends EntityInformationProvider<Project> {
+public class ProjectEntityInformationProvider extends OneToManyEntityInformationProvider<Project, CRISLink> {
+
 
 	/**
 	 * the entity information provider
 	 *
 	 * @param converter
 	 * @param mappingBuilder
+	 * @param toManyEntityInformationProvider
 	 */
-	protected ProjectEntityInformationProvider(Converter<Project, Map<String, Object>, ?> converter, MappingBuilder<XContentBuilder> mappingBuilder) {
-		super(converter, mappingBuilder);
+	public ProjectEntityInformationProvider(Converter<Project, Map<String, Object>, ?> converter, MappingBuilder<XContentBuilder> mappingBuilder, EntityInformationProvider<CRISLink> toManyEntityInformationProvider) {
+		super(converter, mappingBuilder, toManyEntityInformationProvider);
 	}
 
 	@Override
-	public int getContentId(Project project) {
+	public int getContentId(final Project project) {
 		return project.getId();
 	}
 
 	@Override
-	public String getEntityId(Project entity) {
+	public String getEntityId(final Project entity) {
 		return entity.getExternalId();
 	}
 
 	@Override
 	public String getType() {
-		return ProjectMapperBuilder.PROJECT_DOCUMENT_TYPE;
+		return ProjectFields.PROJECT_DOCUMENT_TYPE;
 	}
 
 	@Override

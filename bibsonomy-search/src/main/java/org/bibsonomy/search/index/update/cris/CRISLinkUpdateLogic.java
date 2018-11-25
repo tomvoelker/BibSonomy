@@ -46,7 +46,7 @@ public class CRISLinkUpdateLogic extends AbstractDatabaseManagerWithSessionManag
 		try (final DBSession session = this.openSession()) {
 			final SearchParam param = SearchParamUtils.buildParam(this.sourceType, this.targetType);
 			param.setLastLogDate(lastLogDate);
-			return this.queryForList("getDeletedCRISLinks", param, CRISLink.class, session);
+			return this.queryForList("getDeletedCRISLinks" + SearchParamUtils.buildResultMapID(this.sourceType, this.targetType), param, CRISLink.class, session);
 		}
 	}
 }

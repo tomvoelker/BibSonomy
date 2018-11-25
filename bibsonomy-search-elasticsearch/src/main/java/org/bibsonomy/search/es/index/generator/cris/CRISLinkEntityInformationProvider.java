@@ -1,10 +1,9 @@
 package org.bibsonomy.search.es.index.generator.cris;
 
 import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.search.es.index.converter.project.ProjectFields;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.util.Converter;
-import org.bibsonomy.search.util.MappingBuilder;
-import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import java.util.Map;
 
@@ -14,16 +13,14 @@ import java.util.Map;
  * @author dzo
  */
 public class CRISLinkEntityInformationProvider extends EntityInformationProvider<CRISLink> {
-	public static final String CRISLINK_TYPE = "CRISLink";
 
 	/**
 	 * the entity information provider
 	 *
 	 * @param converter
-	 * @param mappingBuilder
 	 */
-	protected CRISLinkEntityInformationProvider(Converter<CRISLink, Map<String, Object>, ?> converter, MappingBuilder<XContentBuilder> mappingBuilder) {
-		super(converter, mappingBuilder);
+	protected CRISLinkEntityInformationProvider(Converter<CRISLink, Map<String, Object>, ?> converter) {
+		super(converter, null);
 	}
 
 	@Override
@@ -38,7 +35,7 @@ public class CRISLinkEntityInformationProvider extends EntityInformationProvider
 
 	@Override
 	public String getType() {
-		return CRISLINK_TYPE;
+		return ProjectFields.PROJECT_DOCUMENT_TYPE;
 	}
 
 	@Override

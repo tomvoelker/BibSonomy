@@ -1,8 +1,10 @@
 package org.bibsonomy.search.es.search.project;
 
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
-import org.bibsonomy.search.es.management.project.ElasticsearchProjectManager;
+import org.bibsonomy.search.es.management.ElasticsearchOneToManyManager;
 import org.junit.Before;
 
 /**
@@ -12,23 +14,14 @@ import org.junit.Before;
  */
 public abstract class AbstractProjectSearchTest extends AbstractDatabaseManagerTest {
 
-	protected static final ElasticsearchProjectManager PROJECT_MANAGER = EsSpringContextWrapper.getContext().getBean(ElasticsearchProjectManager.class);
+	protected static final ElasticsearchOneToManyManager<Project, Person> PROJECT_MANAGER = (ElasticsearchOneToManyManager<Project, Person>) EsSpringContextWrapper.getContext().getBean("elasticsearchProjectManager");
 
 	protected static final ElasticsearchProjectSearch PROJECT_SEARCH = EsSpringContextWrapper.getContext().getBean(ElasticsearchProjectSearch.class);
 
 	@Before
-	public void resetAndRegenerateIndex() {
+	public void resetAndRegenerateIndex() throws InterruptedException {
 		PROJECT_MANAGER.regenerateAllIndices();
-	}
 
-	protected void updateIndex() {
-		PROJECT_MANAGER.updateIndex();
-		PROJECT_MANAGER.updateIndex();
-
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// ignore
-		}
+		Thread.sleep(2000);
 	}
 }

@@ -14,6 +14,7 @@ import java.util.Map;
 public abstract class OneToManyEntityInformationProvider<T, M> extends EntityInformationProvider<T> {
 
 	private EntityInformationProvider<M> toManyEntityInformationProvider;
+
 	/**
 	 * the entity information provider
 	 *

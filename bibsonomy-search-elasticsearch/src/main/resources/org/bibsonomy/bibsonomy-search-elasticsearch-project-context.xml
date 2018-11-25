@@ -16,26 +16,60 @@
 
 	<bean id="elasticsearchProjectConverter" class="org.bibsonomy.search.es.index.converter.project.ProjectConverter" />
 
+
+	<bean id="elasticsearchCRISLinkConverterProjectPerson" class="org.bibsonomy.search.es.index.converter.cris.CRISLinkConverter">
+		<constructor-arg>
+			<list>
+				<bean class="org.bibsonomy.search.es.index.converter.cris.CRISSourceProjectConverter" />
+			</list>
+		</constructor-arg>
+		<constructor-arg>
+			<list>
+				<bean class="org.bibsonomy.search.es.index.converter.cris.CRISTargetPersonConverter" />
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<bean id="elasticsearchCRISLinkEntityInformationProviderProjectPerson" class="org.bibsonomy.search.es.index.generator.cris.CRISLinkEntityInformationProvider">
+		<constructor-arg ref="elasticsearchCRISLinkConverterProjectPerson" />
+	</bean>
+
 	<bean id="elasticsearchProjectEntityInformationProvider" class="org.bibsonomy.search.es.index.generator.project.ProjectEntityInformationProvider">
 		<constructor-arg ref="elasticsearchProjectConverter" />
 		<constructor-arg ref="elasticsearchProjectMapperBuilder" />
+		<constructor-arg ref="elasticsearchCRISLinkEntityInformationProviderProjectPerson" />
 	</bean>
 
-	<bean id="elasticsearchProjectManager" class="org.bibsonomy.search.es.management.project.ElasticsearchProjectManager" parent="elasticsearchAbstractIndexManager">
+	<bean id="elasticsearchProjectPersonGenerationDBLogic" class="org.bibsonomy.search.index.generator.OneToManyIndexGenerationLogicAdapter">
+		<constructor-arg ref="projectGenerationDBLogic" />
+		<constructor-arg ref="crisLinkProjectPersonGenerationLogic" />
+	</bean>
+
+	<bean id="elasticsearchProjectPersonDatabaseInformationLogic" class="org.bibsonomy.search.index.database.OneToManyDatabaseInformationLogic">
+		<constructor-arg ref="projectDatabaseInformationLogic" />
+		<constructor-arg ref="crisLinkDatabaseInformationLogic" />
+	</bean>
+
+	<bean id="elasticsearchProjectPersonUpdateLogic" class="org.bibsonomy.search.index.update.OneToManyIndexUpdateLogic">
+		<constructor-arg ref="projectSearchUpdateLogic" />
+		<constructor-arg ref="crisLinkProjectPersonSearchUpdateLogic" />
+	</bean>
+
+	<bean id="elasticsearchProjectManager" class="org.bibsonomy.search.es.management.ElasticsearchOneToManyManager" parent="elasticsearchAbstractIndexManager">
 		<constructor-arg>
-			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator">
+			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchOneToManyIndexGenerator">
 				<constructor-arg ref="esClient" />
 				<constructor-arg ref="systemURI" />
-				<constructor-arg ref="projectGenerationDBLogic" />
-				<constructor-arg ref="projectDatabaseInformationLogic" />
-				<constructor-arg ref="postSyncStateConverter" />
+				<constructor-arg ref="elasticsearchProjectPersonGenerationDBLogic" />
+				<constructor-arg ref="elasticsearchProjectPersonDatabaseInformationLogic" />
+				<constructor-arg ref="dualSyncStateConverter" />
 				<constructor-arg ref="elasticsearchProjectEntityInformationProvider" />
 			</bean>
 		</constructor-arg>
-		<constructor-arg ref="postSyncStateConverter" />
+		<constructor-arg ref="dualSyncStateConverter" />
 		<constructor-arg ref="elasticsearchProjectEntityInformationProvider" />
-		<constructor-arg ref="projectSearchUpdateLogic" />
-		<constructor-arg ref="projectDatabaseInformationLogic" />
+		<constructor-arg ref="elasticsearchProjectPersonUpdateLogic" />
+		<constructor-arg ref="elasticsearchProjectPersonDatabaseInformationLogic" />
 	</bean>
 
 </beans>

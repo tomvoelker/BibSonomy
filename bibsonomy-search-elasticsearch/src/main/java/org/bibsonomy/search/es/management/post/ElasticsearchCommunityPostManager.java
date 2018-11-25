@@ -55,7 +55,7 @@ import org.bibsonomy.search.index.update.post.CommunityPostIndexCommunityUpdateL
 import org.bibsonomy.search.index.update.post.CommunityPostIndexUpdateLogic;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
-import org.bibsonomy.search.update.SearchCommunityIndexSyncState;
+import org.bibsonomy.search.update.SearchIndexDualSyncState;
 import org.bibsonomy.search.util.Converter;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.script.ScriptType;
@@ -66,7 +66,7 @@ import org.elasticsearch.script.ScriptType;
  * @author dzo
  * @param <G> the community resource class
  */
-public class ElasticsearchCommunityPostManager<G extends Resource> extends ElasticsearchManager<Post<G>, SearchCommunityIndexSyncState> {
+public class ElasticsearchCommunityPostManager<G extends Resource> extends ElasticsearchManager<Post<G>, SearchIndexDualSyncState> {
 
 	private static final String USER_KEY = "user";
 	private static final String UPDATE_ALL_USERS_REMOVE_SCRIPT = "ctx._source." + ESConstants.Fields.ALL_USERS + ".removeAll(Collections.singleton(params." + USER_KEY + "))";
@@ -75,7 +75,7 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 	private final CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic;
 	private final CommunityPostIndexUpdateLogic<G> postUpdateLogic;
 	private final SearchDBInterface<G> inputLogic;
-	private final DatabaseInformationLogic<SearchCommunityIndexSyncState> databaseInformationLogic;
+	private final DatabaseInformationLogic<SearchIndexDualSyncState> databaseInformationLogic;
 
 	/**
 	 * default constructor
@@ -90,7 +90,7 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 	 * @param communityPostUpdateLogic
 	 * @param postUpdateLogic
 	 */
-	public ElasticsearchCommunityPostManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<G>, SearchCommunityIndexSyncState> generator, Converter syncStateConverter, EntityInformationProvider entityInformationProvider, SearchDBInterface<G> inputLogic, CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic, CommunityPostIndexUpdateLogic<G> postUpdateLogic, final DatabaseInformationLogic<SearchCommunityIndexSyncState> databaseInformationLogic) {
+	public ElasticsearchCommunityPostManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<G>, SearchIndexDualSyncState> generator, Converter syncStateConverter, EntityInformationProvider entityInformationProvider, SearchDBInterface<G> inputLogic, CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic, CommunityPostIndexUpdateLogic<G> postUpdateLogic, final DatabaseInformationLogic<SearchIndexDualSyncState> databaseInformationLogic) {
 		super(systemId, disabledIndexing, updateEnabled, client, generator, syncStateConverter, entityInformationProvider);
 		this.communityPostUpdateLogic = communityPostUpdateLogic;
 		this.postUpdateLogic = postUpdateLogic;
@@ -99,16 +99,16 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 	}
 
 	@Override
-	protected void updateIndex(final String indexName, SearchCommunityIndexSyncState oldState) {
-		final DefaultSearchIndexSyncState oldNormalSearchIndexState = oldState.getNormalSearchIndexState();
-		final DefaultSearchIndexSyncState oldCommunitySearchIndexState = oldState.getCommunitySearchIndexState();
+	protected void updateIndex(final String indexName, SearchIndexDualSyncState oldState) {
+		final DefaultSearchIndexSyncState oldNormalSearchIndexState = oldState.getSecondState();
+		final DefaultSearchIndexSyncState oldCommunitySearchIndexState = oldState.getFirstState();
 
 		final Integer communityPostLastContentId = oldCommunitySearchIndexState.getLast_tas_id();
 		final Integer postLastContentId = oldNormalSearchIndexState.getLast_tas_id();
 		final Date communityPostLastLogDate = oldCommunitySearchIndexState.getLast_log_date();
 		final Date postLastLogDate = oldNormalSearchIndexState.getLast_log_date();
 
-		final SearchCommunityIndexSyncState targetState = this.databaseInformationLogic.getDbState();
+		final SearchIndexDualSyncState targetState = this.databaseInformationLogic.getDbState();
 
 		/*
 		 * 1. step: get only deleted entries, not updated
@@ -144,7 +144,7 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 		 * user unflagged as spammer: the post in the index must be updated iff there is no community post in the database
 		 * and the post is newer than the post in the index
 		 */
-		final List<User> users = this.inputLogic.getPredictionForTimeRange(oldNormalSearchIndexState.getLastPredictionChangeDate(), targetState.getNormalSearchIndexState().getLastPredictionChangeDate());
+		final List<User> users = this.inputLogic.getPredictionForTimeRange(oldNormalSearchIndexState.getLastPredictionChangeDate(), targetState.getSecondState().getLastPredictionChangeDate());
 		final Map<String, IndexData> postsToInsert = new LinkedHashMap<>();
 		for (final User user : users) {
 			final String userName = user.getName();
@@ -207,7 +207,7 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 	 * @param oldState the old state for the update
 	 * @param targetState the target state for the update
 	 */
-	protected void updateResourceSpecificFields(final String indexName, final SearchCommunityIndexSyncState oldState, final SearchCommunityIndexSyncState targetState) {
+	protected void updateResourceSpecificFields(final String indexName, final SearchIndexDualSyncState oldState, final SearchIndexDualSyncState targetState) {
 		// noop
 	}
 

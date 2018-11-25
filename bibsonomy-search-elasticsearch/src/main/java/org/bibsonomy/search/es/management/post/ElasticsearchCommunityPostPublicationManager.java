@@ -15,7 +15,7 @@ import org.bibsonomy.search.index.update.post.CommunityPostIndexCommunityUpdateL
 import org.bibsonomy.search.index.update.post.CommunityPostIndexUpdateLogic;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
-import org.bibsonomy.search.update.SearchCommunityIndexSyncState;
+import org.bibsonomy.search.update.SearchIndexDualSyncState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.util.BasicUtils;
 import org.elasticsearch.script.Script;
@@ -101,14 +101,14 @@ public class ElasticsearchCommunityPostPublicationManager<G extends BibTex> exte
 	 * @param databaseInformationLogic
 	 * @param personResourceRelationUpdateLogic
 	 */
-	public ElasticsearchCommunityPostPublicationManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<G>, SearchCommunityIndexSyncState> generator, Converter syncStateConverter, EntityInformationProvider entityInformationProvider, SearchDBInterface<G> inputLogic, CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic, CommunityPostIndexUpdateLogic<G> postUpdateLogic, DatabaseInformationLogic<SearchCommunityIndexSyncState> databaseInformationLogic, PersonResourceRelationUpdateLogic personResourceRelationUpdateLogic) {
+	public ElasticsearchCommunityPostPublicationManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<G>, SearchIndexDualSyncState> generator, Converter syncStateConverter, EntityInformationProvider entityInformationProvider, SearchDBInterface<G> inputLogic, CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic, CommunityPostIndexUpdateLogic<G> postUpdateLogic, DatabaseInformationLogic<SearchIndexDualSyncState> databaseInformationLogic, PersonResourceRelationUpdateLogic personResourceRelationUpdateLogic) {
 		super(systemId, disabledIndexing, updateEnabled, client, generator, syncStateConverter, entityInformationProvider, inputLogic, communityPostUpdateLogic, postUpdateLogic, databaseInformationLogic);
 		this.personResourceRelationUpdateLogic = personResourceRelationUpdateLogic;
 	}
 
 	@Override
-	protected void updateResourceSpecificFields(final String indexName, final SearchCommunityIndexSyncState oldState, final SearchCommunityIndexSyncState targetState) {
-		final DefaultSearchIndexSyncState communitySearchIndexState = oldState.getCommunitySearchIndexState();
+	protected void updateResourceSpecificFields(final String indexName, final SearchIndexDualSyncState oldState, final SearchIndexDualSyncState targetState) {
+		final DefaultSearchIndexSyncState communitySearchIndexState = oldState.getFirstState();
 
 		final Map<String, UpdateData> updateDataMap = new HashMap<>();
 		/*

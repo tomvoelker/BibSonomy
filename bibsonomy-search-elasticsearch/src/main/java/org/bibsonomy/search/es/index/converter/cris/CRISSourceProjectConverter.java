@@ -2,6 +2,8 @@ package org.bibsonomy.search.es.index.converter.cris;
 
 import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
+import org.bibsonomy.search.es.index.converter.person.PersonFields;
+import org.bibsonomy.search.es.index.converter.project.ProjectFields;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +23,10 @@ public class CRISSourceProjectConverter implements CRISEntityConverter<Project, 
 	@Override
 	public Map<String, Object> convert(Project source) {
 		final Map<String, Object> document = new HashMap<>();
+		final Map<Object, Object> relation = new HashMap<>();
+		relation.put("name", PersonFields.TYPE_PERSON);
+		relation.put("parent", source.getExternalId());
+		document.put(ProjectFields.JOIN_FIELD, relation);
 		return document;
 	}
 

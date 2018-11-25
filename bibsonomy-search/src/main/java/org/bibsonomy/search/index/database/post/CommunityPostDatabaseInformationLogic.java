@@ -8,7 +8,7 @@ import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.index.database.DatabaseInformationLogic;
 import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
-import org.bibsonomy.search.update.SearchCommunityIndexSyncState;
+import org.bibsonomy.search.update.SearchIndexDualSyncState;
 
 import java.util.Date;
 
@@ -17,7 +17,7 @@ import java.util.Date;
  *
  * @author dzo
  */
-public class CommunityPostDatabaseInformationLogic<R extends Resource> extends ResourceAwareAbstractDatabaseManagerWithSessionManagement<R> implements DatabaseInformationLogic<SearchCommunityIndexSyncState> {
+public class CommunityPostDatabaseInformationLogic<R extends Resource> extends ResourceAwareAbstractDatabaseManagerWithSessionManagement<R> implements DatabaseInformationLogic<SearchIndexDualSyncState> {
 
 	private final DatabaseInformationLogic<DefaultSearchIndexSyncState> normalPostDatabaseInformationLogic;
 
@@ -33,11 +33,11 @@ public class CommunityPostDatabaseInformationLogic<R extends Resource> extends R
 	}
 
 	@Override
-	public SearchCommunityIndexSyncState getDbState() {
-		final SearchCommunityIndexSyncState searchCommunityIndexSyncState = new SearchCommunityIndexSyncState();
-		searchCommunityIndexSyncState.setNormalSearchIndexState(this.normalPostDatabaseInformationLogic.getDbState());
-		searchCommunityIndexSyncState.setCommunitySearchIndexState(this.queryForCommunitySearchIndexState());
-		return searchCommunityIndexSyncState;
+	public SearchIndexDualSyncState getDbState() {
+		final SearchIndexDualSyncState searchIndexDualSyncState = new SearchIndexDualSyncState();
+		searchIndexDualSyncState.setSecondState(this.normalPostDatabaseInformationLogic.getDbState());
+		searchIndexDualSyncState.setFirstState(this.queryForCommunitySearchIndexState());
+		return searchIndexDualSyncState;
 	}
 
 	private DefaultSearchIndexSyncState queryForCommunitySearchIndexState() {

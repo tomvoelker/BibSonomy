@@ -10,6 +10,11 @@
 		<result property="endDate"	    column="cris_end_date"	 javaType="date" />
 	</resultMap>
 
+	<resultMap id="simpleCRISLinkWithProject" class="crisLink" groupBy="id">
+		<result property="id" 			column="cris_link_id" 	 javaType="int"/>
+		<result property="source" resultMap="SearchCRISLinkCommon.simpleCRISLinkProject" />
+	</resultMap>
+
 	<resultMap id="fullCRISLinkProjectPerson" class="crisLink" groupBy="id" extends="simpleCRISLink">
 		<result property="source" resultMap="SearchCRISLinkCommon.simpleCRISLinkProject" />
 		<result property="target" resultMap="SearchCRISLinkCommon.simpleCRISLinkPerson" />

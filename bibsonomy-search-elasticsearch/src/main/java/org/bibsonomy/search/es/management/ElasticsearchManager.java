@@ -541,6 +541,18 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		return this.client.search(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query, null, order, offset, limit, minScore, fieldsToRetrieve);
 	}
 
+	/**
+	 * executes the query against the active index
+	 *
+	 * @param query
+	 * @param limit
+	 * @param offset
+	 * @return
+	 */
+	public SearchHits search(final QueryBuilder query, int limit, int offset) {
+		return this.search(query, null, offset, limit, null, null);
+	}
+
 	public long getDocumentCount(QueryBuilder query) {
 		return this.client.getDocumentCount(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query);
 	}

@@ -37,6 +37,8 @@
 		<constructor-arg value="${search.es.systemId}" />
 	</bean>
 
+	<bean id="dualSyncStateConverter" class="org.bibsonomy.search.es.index.converter.util.SearchIndexDualSyncStateConverter" />
+
 	<bean id="elasticsearchAbstractIndexManager" class="org.bibsonomy.search.es.management.ElasticsearchManager" abstract="true" destroy-method="shutdown">
 		<constructor-arg ref="systemURI" />
 		<constructor-arg value="#{!isValidESConnection}" />

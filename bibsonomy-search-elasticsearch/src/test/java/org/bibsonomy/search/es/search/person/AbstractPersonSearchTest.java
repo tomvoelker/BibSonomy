@@ -1,8 +1,10 @@
 package org.bibsonomy.search.es.search.person;
 
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
-import org.bibsonomy.search.es.management.person.ElasticsearchPersonManager;
+import org.bibsonomy.search.es.management.ElasticsearchOneToManyManager;
 import org.junit.Before;
 
 /**
@@ -12,7 +14,10 @@ import org.junit.Before;
  */
 public class AbstractPersonSearchTest extends AbstractDatabaseManagerTest {
 
-	protected static final ElasticsearchPersonManager PERSON_SEARCH_MANAGER = EsSpringContextWrapper.getContext().getBean(ElasticsearchPersonManager.class);
+	protected static final ElasticsearchOneToManyManager<Person, ResourcePersonRelation> PERSON_SEARCH_MANAGER = (ElasticsearchOneToManyManager<Person, ResourcePersonRelation>) EsSpringContextWrapper.getContext().getBean("elasticsearchPersonManager");
+
+	/** for checking the update */
+	protected static final ElasticsearchPersonSearch PERSON_SEARCH = EsSpringContextWrapper.getContext().getBean(ElasticsearchPersonSearch.class);
 
 	@Before
 	public void createIndices() throws InterruptedException {

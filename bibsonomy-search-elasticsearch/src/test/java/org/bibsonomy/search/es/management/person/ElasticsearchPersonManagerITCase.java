@@ -13,9 +13,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
-import org.bibsonomy.search.es.EsSpringContextWrapper;
 import org.bibsonomy.search.es.search.person.AbstractPersonSearchTest;
-import org.bibsonomy.search.es.search.person.ElasticsearchPersonSearch;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -23,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * integration tests for {@link org.bibsonomy.search.es.management.person.ElasticsearchPersonManager}
+ * integration tests for {@link org.bibsonomy.search.es.management.ElasticsearchOneToManyManager} for {@link Person}s
  *
  * @author dzo
  */
@@ -31,9 +29,6 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 
 	/** for changing person related things */
 	private static final PersonDatabaseManager PERSON_DATABASE_MANAGER = testDatabaseContext.getBean(PersonDatabaseManager.class);
-
-	/** for checking the update */
-	private static final ElasticsearchPersonSearch PERSON_SEARCH = EsSpringContextWrapper.getContext().getBean(ElasticsearchPersonSearch.class);
 
 	/** for creating personResourceRelations */
 	private static final BibTexDatabaseManager PUBLICATION_DATABASE_MANAGER = testDatabaseContext.getBean(BibTexDatabaseManager.class);
@@ -45,7 +40,7 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 	private static final User TESTUSER1 = new User("testuser1");
 
 	/**
-	 * tests {@link ElasticsearchPersonManager#updateIndex()}
+	 * tests {@link org.bibsonomy.search.es.management.ElasticsearchOneToManyManager#updateIndex()}
 	 * TODO: split test into multiple tests
 	 */
 	@Test

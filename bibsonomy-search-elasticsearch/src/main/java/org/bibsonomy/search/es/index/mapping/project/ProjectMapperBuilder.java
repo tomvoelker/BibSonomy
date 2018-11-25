@@ -23,8 +23,6 @@ import java.io.IOException;
  * @author dzo
  */
 public class ProjectMapperBuilder implements MappingBuilder<XContentBuilder> {
-	/*+ the person mapping type */
-	public static final String PROJECT_DOCUMENT_TYPE = "project";
 
 	@Override
 	public Mapping<XContentBuilder> getMapping() {
@@ -90,7 +88,7 @@ public class ProjectMapperBuilder implements MappingBuilder<XContentBuilder> {
 				.endObject();
 			final Mapping<XContentBuilder> mapping = new Mapping<>();
 			mapping.setMappingInfo(projectMapping);
-			mapping.setType(PROJECT_DOCUMENT_TYPE);
+			mapping.setType(ProjectFields.PROJECT_DOCUMENT_TYPE);
 			return mapping;
 		} catch (final IOException e) {
 			throw new RuntimeException(e);

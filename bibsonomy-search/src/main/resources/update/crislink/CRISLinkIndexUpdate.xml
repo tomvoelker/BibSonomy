@@ -19,9 +19,11 @@
 		LEFT JOIN projects p ON (cl.source_id = p.id)
 	</select>
 
-	<select id="getDeletedCRISLinks" resultMap="SearchCRISLinkCommon.simpleCRISLink" parameterClass="searchParam">
-		SELECT <include refid="crisLinkColumns" />
+	<select id="getDeletedCRISLinksPROJECT_PERSON" resultMap="SearchCRISLinkCommon.simpleCRISLinkWithProject" parameterClass="searchParam">
+		SELECT <include refid="crisLinkColumns" />, COALESCE(p.id, lp.id) AS project_database_id, COALESCE(p.project_id, lp.project_id) AS project_id
 		FROM log_cris_links cl
+		LEFT JOIN projects p ON (cl.source_id = p.id)
+		LEFT JOIN log_projects lp ON (cl.source_id = lp.id)
 		WHERE cl.log_date >= #lastLogDate#
 		AND cl.source_type = #sourceType.id#
 		AND cl.target_type = #targetType.id#
