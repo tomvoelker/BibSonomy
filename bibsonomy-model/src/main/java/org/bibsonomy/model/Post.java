@@ -291,7 +291,7 @@ public class Post<T extends Resource> implements Serializable {
 			 * a linked hash set gives predictable iteration order
 			 * (insertion order)
 			 */
-			this.tags = new LinkedHashSet<Tag>();
+			this.tags = new LinkedHashSet<>();
 		}
 		return this.tags;
 	}
@@ -466,7 +466,7 @@ public class Post<T extends Resource> implements Serializable {
 	 */
 	public void addHiddenSystemTag(final Tag tag) {
 		if (!present(this.hiddenSystemTags)) {
-			this.hiddenSystemTags = new HashSet<Tag>();
+			this.hiddenSystemTags = new HashSet<>();
 		}
 		this.hiddenSystemTags.add(tag);
 	}
@@ -490,7 +490,7 @@ public class Post<T extends Resource> implements Serializable {
 	 */
 	public void addVisibleTag(final Tag tag) {
 		if (!present(this.visibleTags)) {
-			this.visibleTags = new HashSet<Tag>();
+			this.visibleTags = new HashSet<>();
 		}
 		this.visibleTags.add(tag);
 	}

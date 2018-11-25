@@ -166,7 +166,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 	 */
 	public List<Post<? extends Resource>> getPosts() {
 		if (this.posts == null) {
-			this.posts = new LinkedList<Post<? extends Resource>>();
+			this.posts = new LinkedList<>();
 		}
 		return this.posts;
 	}
@@ -183,7 +183,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 	 */
 	public List<Tag> getSubTags() {
 		if (this.subTags == null) {
-			this.subTags = new LinkedList<Tag>();
+			this.subTags = new LinkedList<>();
 		}
 		return this.subTags;
 	}
@@ -194,7 +194,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 	 */
 	public void addSubTag(final Tag subTag) {
 		if (this.subTags == null) {
-			this.subTags = new LinkedList<Tag>();
+			this.subTags = new LinkedList<>();
 		}
 		
 		this.subTags.add(subTag);
@@ -213,7 +213,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 	 */
 	public void addSuperTag(final Tag superTag) {
 		if (this.superTags == null) {
-			this.superTags = new LinkedList<Tag>();
+			this.superTags = new LinkedList<>();
 		}
 		
 		this.superTags.add(superTag);
@@ -224,7 +224,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 	 */
 	public List<Tag> getSuperTags() {
 		if (this.superTags == null) {
-			this.superTags = new LinkedList<Tag>();
+			this.superTags = new LinkedList<>();
 		}
 		return this.superTags;
 	}
