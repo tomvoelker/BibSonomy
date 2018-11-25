@@ -3368,12 +3368,6 @@ public class DBLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<Post<BibTex>> getPublicationSuggestion(final String queryString) {
-		final PublicationSuggestionQueryBuilder options = new PublicationSuggestionQueryBuilder(queryString).withNonEntityPersons(true);
-		return this.publicationDBManager.getPublicationSuggestion(options);
-	}
-
-	@Override
 	public void addResourceRelation(final ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException {
 		this.ensureLoggedInAndNoSpammer();
 		ValidationUtils.assertNotNull(resourcePersonRelation.getPerson());

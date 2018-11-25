@@ -239,15 +239,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPublicationSuggestion(java.lang.String)
-	 */
-	@Override
-	public List<Post<BibTex>> getPublicationSuggestion(String queryString) {
-		this.doDefaultAction();
-		return null;
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#createRelations(java.lang.String, java.util.Set, org.bibsonomy.model.enums.GoldStandardRelation)
 	 */
 	@Override

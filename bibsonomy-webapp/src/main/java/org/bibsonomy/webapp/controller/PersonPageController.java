@@ -222,17 +222,19 @@ public class PersonPageController extends SingleResourceListController implement
 	
 	/** 
 	 * This is a helper function adds to an JSONarray Publications form a sugesstions list.  
-	 * @param suggestions
-	 * @param array
+	 * @param posts
 	 * @return
 	 */	
-	private void buildupPubResponseArray(final List<Post<BibTex>> suggestions, JSONArray array) {
-		for (final Post<BibTex> pub : suggestions) {
-			JSONObject jsonPersonName = new JSONObject();
-			jsonPersonName.put("interhash", pub.getResource().getInterHash());
-			jsonPersonName.put("extendedPublicationName", this.personRoleRenderer.getExtendedPublicationName(pub.getResource(), this.requestLogic.getLocale(), false));
+	private JSONArray buildupPubResponseArray(final List<Post<GoldStandardPublication>> posts) {
+		final JSONArray array = new JSONArray();
+		for (final Post<GoldStandardPublication> post : posts) {
+			final JSONObject jsonPersonName = new JSONObject();
+			final BibTex publication = post.getResource();
+			jsonPersonName.put("interhash", publication.getInterHash());
+			jsonPersonName.put("extendedPublicationName", this.personRoleRenderer.getExtendedPublicationName(publication, this.requestLogic.getLocale(), false));
 			array.add(jsonPersonName);
 		}
+		return array;
 	}
 
 	/**
@@ -240,18 +242,18 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View searchPubAction(PersonPageCommand command) { 
-		final List<Post<BibTex>> suggestions = this.logic.getPublicationSuggestion(command.getFormSelectedName());
-		
-		JSONArray array = new JSONArray();
-		for (final Post<BibTex> pub : suggestions) {
-			JSONObject jsonPersonName = new JSONObject();
-			jsonPersonName.put("interhash", pub.getResource().getInterHash());
-			jsonPersonName.put("extendedPublicationName", this.personRoleRenderer.getExtendedPublicationName(pub.getResource(), this.requestLogic.getLocale(), false));
-			array.add(jsonPersonName);
-		}
+		final List<Post<GoldStandardPublication>> suggestions = this.getSuggestionPub(command.getFormSelectedName());
+		final JSONArray array = this.buildupPubResponseArray(suggestions);
 		command.setResponseString(array.toJSONString());
 		
 		return Views.AJAX_JSON;
+	}
+
+	private List<Post<GoldStandardPublication>> getSuggestionPub(final String search) {
+		// FIXME: adapt
+		final PostQuery<GoldStandardPublication> postQuery = new PostQuery<>(GoldStandardPublication.class);
+		// FIXME: was this.logic.getPublicationSuggestion(command.getFormSelectedName());
+		return this.logic.getPosts(postQuery);
 	}
 
 	/**
@@ -263,15 +265,16 @@ public class PersonPageController extends SingleResourceListController implement
 	private View searchPubAuthorAction(final PersonPageCommand command) {
 		final PersonSuggestionQueryBuilder builder = new PersonSuggestionQueryBuilder(command.getFormSelectedName())
 						.withEntityPersons(true).withNonEntityPersons(true)
-						.withRelationType(PersonResourceRelationType.AUTHOR)
+						.withRelationType(PersonResourceRelationType.AUTHOR) // FIXME: why this?
 						.preferUnlinked(true);
 
-		final List<ResourcePersonRelation> suggestionsPerson = null; // FIXME: person change: adapt: this.logic.getPersonSuggestion(builder);
-		final List<Post<BibTex>> suggestionsPub = this.logic.getPublicationSuggestion(command.getFormSelectedName());
+		final List<ResourcePersonRelation> suggestionsPerson = null; // FIXME: person change: adapt: this.logic.getPersons(builder);
+		final List<Post<GoldStandardPublication>> suggestionsPub = this.getSuggestionPub(command.getFormSelectedName());
 		
 		final JSONArray array = new JSONArray();
+
 		buildupAuthorResponseArray(suggestionsPerson, array); // Person(with publication) oriented search return 
-		buildupPubResponseArray(suggestionsPub, array);  // Publications(not associated to Persons) oriented search return
+		array.addAll(buildupPubResponseArray(suggestionsPub));  // Publications(not associated to Persons) oriented search return
 		command.setResponseString(array.toJSONString());
 		
 		return Views.AJAX_JSON;
@@ -296,7 +299,9 @@ public class PersonPageController extends SingleResourceListController implement
 			array.add(jsonPersonName);
 		}
 
-		/* final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName()).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values()).doIt();
+		/* FIXME: was
+
+		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName()).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values()).doIt();
 
 
 		for (ResourcePersonRelation rel : suggestions) {
@@ -326,7 +331,7 @@ public class PersonPageController extends SingleResourceListController implement
 		return Views.AJAX_TEXT;
 	}
 	
-	private View linkAction(PersonPageCommand command) {
+	private View linkAction(final PersonPageCommand command) {
 		final Person person = new Person();
 		person.setPersonId(command.getFormPersonId());
 		person.setUser(command.getContext().getLoginUser().getName());
@@ -508,7 +513,7 @@ public class PersonPageController extends SingleResourceListController implement
 			}
 		}
 		
-		try {			
+		try {
 			this.logic.createPersonName(personName);
 		} catch (Exception e) {
 			jsonResponse.put("status", false);

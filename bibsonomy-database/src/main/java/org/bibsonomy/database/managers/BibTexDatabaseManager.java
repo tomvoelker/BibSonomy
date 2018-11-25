@@ -87,8 +87,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	public static BibTexDatabaseManager getInstance() {
 		return singleton;
 	}
-	
-	private ResourceSearch<BibTex> publicationSearch;
 
 	/** database manager */
 	private UserDatabaseManager userDb;
@@ -672,7 +670,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 
 	protected void performUpdateRepositorys(final Post<BibTex> post, final Post<BibTex> oldPost, final DBSession session) {
 		final RepositoryParam param = new RepositoryParam();
-
 		param.setUserName(post.getUser().getName());
 		param.setInterHash(post.getResource().getInterHash());
 		param.setIntraHash(post.getResource().getIntraHash());
@@ -687,25 +684,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		param.setRepositoryName(post.getRepositorys().get(0).getId());
 
 		this.insert("insertRepository", param, session);
-	}
-
-	/**
-	 * @param options
-	 * @return
-	 */
-	public List<Post<BibTex>> getPublicationSuggestion(PublicationSuggestionQueryBuilder options) {
-		if (this.publicationSearch != null) {
-			return this.publicationSearch.getPublicationSuggestions(options);
-		}
-		log.warn("no publicationSearch available for publication suggestions");
-		return new ArrayList<>();
-	}
-	/**
-	 *
-	 * @param publicationSearch the publicationSearch to set
-	 */
-	public void setPublicationSearch(ResourceSearch<BibTex> publicationSearch) {
-		this.publicationSearch = publicationSearch;
 	}
 
 	/**
