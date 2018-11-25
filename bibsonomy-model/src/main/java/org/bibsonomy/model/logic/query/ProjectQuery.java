@@ -50,13 +50,16 @@ public class ProjectQuery extends BasicQuery {
 		private String type;
 
 		/** the start */
-		private int start;
+		private int start = 0;
 
 		/** the end */
-		private int end;
+		private int end = 10 ;
 
 		/** the externalId */
 		private String externalId;
+
+		/** the search **/
+		private String search;
 
 		/**
 		 * sets the externalId
@@ -135,12 +138,16 @@ public class ProjectQuery extends BasicQuery {
 			return this;
 		}
 
+		public ProjectQueryBuilder search(final String search) {
+			this.search = search;
+			return this;
+		}
 
 		/**
 		 * @return the project query
 		 */
 		public ProjectQuery build() {
-			return new ProjectQuery(this.order, this.sortOrder, this.projectStatus,
+			return new ProjectQuery(this.search, this.order, this.sortOrder, this.projectStatus,
 					this.type, this.start, this.end, this.externalId);
 		}
 	}
@@ -177,7 +184,8 @@ public class ProjectQuery extends BasicQuery {
 	 * @param end
 	 * @param externalId
 	 */
-	protected ProjectQuery(ProjectOrder order, SortOrder sortOrder, ProjectStatus projectStatus, String type, int start, int end, String externalId) {
+	protected ProjectQuery(final String search, final ProjectOrder order, SortOrder sortOrder, ProjectStatus projectStatus, String type, int start, int end, String externalId) {
+		this.setSearch(search);
 		this.order = order;
 		this.sortOrder = sortOrder;
 		this.projectStatus = projectStatus;

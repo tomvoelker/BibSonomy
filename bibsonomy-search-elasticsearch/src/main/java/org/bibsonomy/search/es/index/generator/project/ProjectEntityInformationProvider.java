@@ -41,4 +41,9 @@ public class ProjectEntityInformationProvider extends EntityInformationProvider<
 	public String getType() {
 		return ProjectMapperBuilder.PROJECT_DOCUMENT_TYPE;
 	}
+
+	@Override
+	public String getRouting(final Project entity) {
+		return entity.getExternalId();
+	}
 }

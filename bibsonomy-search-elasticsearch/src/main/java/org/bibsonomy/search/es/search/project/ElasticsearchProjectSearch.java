@@ -9,7 +9,6 @@ import org.bibsonomy.model.enums.ProjectOrder;
 import org.bibsonomy.model.enums.ProjectStatus;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
-import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.index.converter.project.ProjectConverter;
 import org.bibsonomy.search.es.index.converter.project.ProjectFields;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
@@ -17,11 +16,11 @@ import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.services.searcher.ProjectSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
@@ -59,18 +58,20 @@ public class ElasticsearchProjectSearch implements ProjectSearch {
 			}
 
 			final SortOrder sortOrderQuery = ElasticsearchIndexSearchUtils.convertSortOrder(query.getSortOrder());
-			final Pair<String, SortOrder> sortOrder = query.getOrder() == ProjectOrder.START_DATE ? new Pair<>(ProjectFields.TITLE, sortOrderQuery) : new Pair<>(ESConstants.Fields.DATE, sortOrderQuery);
+			final Pair<String, SortOrder> sortOrder = query.getOrder() == ProjectOrder.START_DATE ? new Pair<>(ProjectFields.START_DATE, sortOrderQuery) : new Pair<>(ProjectFields.TITLE + "." + ProjectFields.TITLE_SORT, sortOrderQuery);
 			final int offset = BasicQueryUtils.calcOffset(query);
 			final int limit = BasicQueryUtils.calcLimit(query);
 			final SearchHits hits = this.manager.search(queryBuilder, sortOrder, offset, limit, null, null);
 
-			if (hits != null) {
-				projects.setTotalCount((int) hits.getTotalHits());
+			if (hits == null) {
+				return projects;
+			}
 
-				for (final SearchHit hit : hits) {
-					final Project project = this.converter.convert(hit.getSourceAsMap(), null);
-					projects.add(project);
-				}
+			projects.setTotalCount((int) hits.getTotalHits());
+
+			for (final SearchHit hit : hits) {
+				final Project project = this.converter.convert(hit.getSourceAsMap(), null);
+				projects.add(project);
 			}
 
 			return projects;
@@ -89,8 +90,8 @@ public class ElasticsearchProjectSearch implements ProjectSearch {
 
 		final String type = query.getType();
 		if (present(type)) {
-			final MatchQueryBuilder matchQuery = QueryBuilders.matchQuery(ProjectFields.TYPE, type);
-			mainQuery.must(matchQuery);
+			final TermQueryBuilder typeQuery = QueryBuilders.termQuery(ProjectFields.TYPE, type);
+			mainQuery.must(typeQuery);
 		}
 
 		final ProjectStatus projectStatus = query.getProjectStatus();
@@ -108,7 +109,7 @@ public class ElasticsearchProjectSearch implements ProjectSearch {
 					mainQuery.must(projectFinishedRange);
 					break;
 				default:
-					throw new IllegalArgumentException("project status " + projectStatus + " not supportd");
+					throw new IllegalArgumentException("project status " + projectStatus + " not supported");
 			}
 		}
 

@@ -7,7 +7,7 @@
 						http://www.springframework.org/schema/util
 						http://www.springframework.org/schema/util/spring-util.xsd">
 
-	<bean id="newPersonSearch" class="org.bibsonomy.search.es.search.person.ElasticsearchPersonSearch">
+	<bean id="elasticsearchPersonSearch" class="org.bibsonomy.search.es.search.person.ElasticsearchPersonSearch">
 		<constructor-arg ref="elasticsearchPersonManager" />
 		<constructor-arg value="#{elasticsearchPersonEntityInformationProvider.converter}" />
 		<constructor-arg ref="elasticsearchPersonResourceRelationConverter" />

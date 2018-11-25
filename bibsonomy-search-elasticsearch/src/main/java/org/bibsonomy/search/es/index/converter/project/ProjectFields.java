@@ -9,6 +9,8 @@ public interface ProjectFields {
 	String EXTERNAL_ID = "external_id";
 	/** the title */
 	String TITLE = "title";
+	/** title for sorting */
+	String TITLE_SORT = "title_sort";
 	/** the subtitle */
 	String SUB_TITLE = "sub_title";
 	/** the description */
@@ -23,5 +25,8 @@ public interface ProjectFields {
 	String END_DATE = "end_date";
 	/** the id of the parent */
 	String PARENT = "parent_id";
-
+	/** the join field for the person field */
+	String JOIN_FIELD = "persons";
+	/** the type of a {@link org.bibsonomy.model.cris.Project} */
+	String TYPE_PROJECT = "project";
 }

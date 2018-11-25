@@ -3,9 +3,11 @@ package org.bibsonomy.search.es.index.converter.project;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.model.cris.Project;
+import org.bibsonomy.search.es.index.converter.person.PersonFields;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.util.Converter;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +34,8 @@ public class ProjectConverter implements Converter<Project, Map<String, Object>,
 			converted.put(ProjectFields.PARENT, parentProject.getExternalId());
 		}
 
+		converted.put(ProjectFields.JOIN_FIELD, Collections.singletonMap("name", ProjectFields.TYPE_PROJECT));
+
 		return converted;
 	}
 
@@ -39,7 +43,7 @@ public class ProjectConverter implements Converter<Project, Map<String, Object>,
 	public Project convert(Map<String, Object> source, Object options) {
 		final Project project = new Project();
 		project.setExternalId((String) source.get(ProjectFields.EXTERNAL_ID));
-		project.setBudget((Float) source.get(ProjectFields.BUDGET));
+		project.setBudget(((Double) source.get(ProjectFields.BUDGET)).floatValue());
 		project.setTitle((String) source.get(ProjectFields.TITLE));
 		project.setSubTitle((String) source.get(ProjectFields.SUB_TITLE));
 		project.setDescription((String) source.get(ProjectFields.DESCRIPTION));

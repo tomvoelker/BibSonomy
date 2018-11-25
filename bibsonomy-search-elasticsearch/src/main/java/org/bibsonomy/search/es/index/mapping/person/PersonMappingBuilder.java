@@ -44,7 +44,7 @@ public class PersonMappingBuilder implements MappingBuilder<XContentBuilder> {
 	@Override
 	public Mapping<XContentBuilder> getMapping() {
 		try {
-			XContentBuilder personMapping = XContentFactory.jsonBuilder()
+			final XContentBuilder personMappingWithOutNames = XContentFactory.jsonBuilder()
 							.startObject()
 								.field("date_detection", false)
 								.startObject(ESConstants.IndexSettings.PROPERTIES)
@@ -90,19 +90,11 @@ public class PersonMappingBuilder implements MappingBuilder<XContentBuilder> {
 									.endObject()
 									// change data
 									.startObject(PersonFields.CHANGE_DATE)
-									.field(TYPE_FIELD, DATE_TYPE)
-									.field(FORMAT_FIELD, DATE_TIME_FORMAT)
-									.endObject()
-									// names
-									.startObject(PersonFields.NAMES)
-										.field(TYPE_FIELD, NESTED_TYPE)
-										.startObject(ESConstants.IndexSettings.PROPERTIES)
-											.startObject(PersonFields.NAME)
-												.field(ESConstants.IndexSettings.TYPE_FIELD, TEXT_TYPE)
-												.array(ESConstants.IndexSettings.COPY_TO, PersonFields.ALL_NAMES)
-											.endObject()
-										.endObject()
-									.endObject()
+										.field(TYPE_FIELD, DATE_TYPE)
+										.field(FORMAT_FIELD, DATE_TIME_FORMAT)
+									.endObject();
+			final XContentBuilder personMapping = buildNameMapping(personMappingWithOutNames)
+									// join field
 									.startObject(PersonFields.JOIN_FIELD)
 										.field(TYPE_FIELD, JOIN_TYPE)
 										.startObject(RELATION_FIELD)
@@ -129,5 +121,24 @@ public class PersonMappingBuilder implements MappingBuilder<XContentBuilder> {
 		} catch (final IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	/**
+	 * builds the name mappings
+	 * @param builder
+	 * @return
+	 * @throws IOException
+	 */
+	public static XContentBuilder buildNameMapping(XContentBuilder builder) throws IOException {
+		return builder
+						.startObject(PersonFields.NAMES)
+						.field(TYPE_FIELD, NESTED_TYPE)
+						.startObject(ESConstants.IndexSettings.PROPERTIES)
+						.startObject(PersonFields.NAME)
+						.field(ESConstants.IndexSettings.TYPE_FIELD, TEXT_TYPE)
+						.array(ESConstants.IndexSettings.COPY_TO, PersonFields.ALL_NAMES)
+						.endObject()
+						.endObject()
+						.endObject();
 	}
 }
