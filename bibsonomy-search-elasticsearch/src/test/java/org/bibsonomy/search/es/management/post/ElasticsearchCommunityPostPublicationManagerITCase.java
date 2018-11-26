@@ -227,6 +227,20 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 		this.updateIndex();
 	}
 
+	@Test
+	public void testSearchInDifferentFields() {
+		final Post<GoldStandardPublication> goldStandardPublicationPost = this.generateTestPost(GoldStandardPublication.class);
+		GOLD_STANDARD_PUBLICATION_DATABASE_MANAGER.createPost(goldStandardPublicationPost, new User("testuser1"), this.dbSession);
+
+		this.updateIndex();
+
+		final GoldStandardPublication resource = goldStandardPublicationPost.getResource();
+		final PostSearchQuery<?> query = buildQuery(resource.getTitle() + " " + resource.getAuthor().get(0).getLastName());
+
+		final ResultList<Post<GoldStandardPublication>> posts = COMMUNITY_PUBLICATION_SEARCH.getPosts("", null, query);
+		assertThat(posts.size(), is(1));
+	}
+
 	private static <P extends BibTex> Post<P> generateTestPost(final Class<? extends P> clazz) {
 		final Post<P> publicationPost = new Post<>();
 		final ResourceFactory factory = new ResourceFactory();

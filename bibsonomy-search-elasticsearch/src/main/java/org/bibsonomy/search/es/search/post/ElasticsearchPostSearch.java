@@ -373,7 +373,7 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 	}
 
 	private static QueryStringQueryBuilder buildStringQueryForSearchTerms(String searchTerms, final Set<String> fields) {
-		final QueryStringQueryBuilder builder = QueryBuilders.queryStringQuery(searchTerms).defaultOperator(Operator.AND).tieBreaker(1f);
+		final QueryStringQueryBuilder builder = QueryBuilders.queryStringQuery(searchTerms).tieBreaker(1f);
 		// set the fields where the string query should search for the string
 		fields.stream().forEach(builder::field);
 		return builder;
