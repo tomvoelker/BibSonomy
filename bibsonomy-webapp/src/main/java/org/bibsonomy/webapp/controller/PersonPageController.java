@@ -27,16 +27,6 @@
 package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,12 +44,12 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
-import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.PersonMatchUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonUtils;
-import org.bibsonomy.model.util.PersonMatchUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
 import org.bibsonomy.webapp.command.PersonPageCommand;
@@ -74,6 +64,15 @@ import org.bibsonomy.webapp.view.Views;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.validation.Errors;
+
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
  * @author Christian Pfeiffer
@@ -250,9 +249,9 @@ public class PersonPageController extends SingleResourceListController implement
 	}
 
 	private List<Post<GoldStandardPublication>> getSuggestionPub(final String search) {
-		// FIXME: adapt
-		final PostQuery<GoldStandardPublication> postQuery = new PostQuery<>(GoldStandardPublication.class);
-		// FIXME: was this.logic.getPublicationSuggestion(command.getFormSelectedName());
+		final PostQuery<GoldStandardPublication> postQuery = new PostQueryBuilder().setSearch(search).
+						createPostQuery(GoldStandardPublication.class);
+		//TODO limit searches to thesis
 		return this.logic.getPosts(postQuery);
 	}
 
@@ -263,17 +262,10 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View searchPubAuthorAction(final PersonPageCommand command) {
-		final PersonSuggestionQueryBuilder builder = new PersonSuggestionQueryBuilder(command.getFormSelectedName())
-						.withEntityPersons(true).withNonEntityPersons(true)
-						.withRelationType(PersonResourceRelationType.AUTHOR) // FIXME: why this?
-						.preferUnlinked(true);
-
-		final List<ResourcePersonRelation> suggestionsPerson = null; // FIXME: person change: adapt: this.logic.getPersons(builder);
 		final List<Post<GoldStandardPublication>> suggestionsPub = this.getSuggestionPub(command.getFormSelectedName());
 		
 		final JSONArray array = new JSONArray();
 
-		buildupAuthorResponseArray(suggestionsPerson, array); // Person(with publication) oriented search return 
 		array.addAll(buildupPubResponseArray(suggestionsPub));  // Publications(not associated to Persons) oriented search return
 		command.setResponseString(array.toJSONString());
 		
@@ -654,10 +646,11 @@ public class PersonPageController extends SingleResourceListController implement
 	}
 
 	private List<Post<GoldStandardPublication>> getPublicationsOfSimilarAuthor(Person person) {
-		final PostQuery<GoldStandardPublication> personNameQuery = new PostQuery<>(GoldStandardPublication.class);
-		personNameQuery.setPersonNames(person.getNames());
-		personNameQuery.setOnlyIncludeAuthorsWithoutPersonId(true);
-		personNameQuery.setEnd(20); // get 20 "recommendations"
+		final PostQuery<GoldStandardPublication> personNameQuery = new PostQueryBuilder().
+						setPersonNames(person.getNames()).
+						setOnlyIncludeAuthorsWithoutPersonId(true).
+						setEnd(20) // get 20 "recommendations"
+						.createPostQuery(GoldStandardPublication.class);
 		return this.logic.getPosts(personNameQuery);
 	}
 
