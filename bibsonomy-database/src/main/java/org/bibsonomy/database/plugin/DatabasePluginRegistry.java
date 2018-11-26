@@ -173,6 +173,16 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 
 	@Override
+	public void beforeRemoveGroup(Group group, User loggedInUser, DBSession session) {
+		callAllPlugins(plugin -> plugin.beforeRemoveGroup(group, loggedInUser, session));
+	}
+
+	@Override
+	public void beforeRemoveGroupMembership(Group group, String username, User loggedInUser, DBSession session) {
+		callAllPlugins(plugin -> plugin.beforeRemoveGroupMembership(group, username, loggedInUser, session));
+	}
+
+	@Override
 	public void onChangeUserMembershipInGroup(Group group, String userName, User loggedinUser, final DBSession session) {
 		this.callAllPlugins(plugin -> plugin.onChangeUserMembershipInGroup(group, userName, loggedinUser, session));
 	}

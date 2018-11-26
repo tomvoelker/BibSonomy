@@ -26,9 +26,7 @@
  */
 package org.bibsonomy.database.managers;
 
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -824,6 +822,24 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		queryGroupByExternalIdAndValidateWithGroupname("extid1", "testgroup1");
 		queryGroupByExternalIdAndValidateWithGroupname("extid2", "testgroup2");
 		queryGroupByExternalIdAndValidateWithGroupname("extid3", "testgroup3");
+	}
+
+
+	/**
+	 * Tests whether the plugins log group and group membership information upon group deletion.
+	 */
+	@Test
+	public void testDeletedGroupsAreLogged() {
+		groupDb.deleteGroup("testgroup1", true, USER_TESTUSER_1, dbSession);
+
+		List<Integer> loggedGroupIds = testDb.getLoggedGroupIds();
+
+		assertThat(loggedGroupIds.size(), equalTo(1));
+		assertThat(loggedGroupIds, contains(3));
+
+		int numberOfLoggedUsers = testDb.getCountOfLoggedGroupMemberships();
+
+		assertThat(numberOfLoggedUsers, equalTo(3));
 	}
 
 }

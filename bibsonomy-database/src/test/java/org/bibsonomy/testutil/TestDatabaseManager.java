@@ -38,6 +38,7 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
+import org.bibsonomy.model.Group;
 import org.junit.Ignore;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.orm.ibatis.SqlMapClientFactoryBean;
@@ -45,6 +46,7 @@ import org.springframework.orm.ibatis.SqlMapClientFactoryBean;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapSession;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -276,6 +278,30 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 			return this.queryForList("getAllParents", groupId, Integer.class, session);
 		} finally {
 			session.close();
+		}
+	}
+
+
+	/**
+	 * Retrieves a list with ids for all groups that have been logged.
+	 *
+	 * @return a list of group ids that have been logged.
+	 */
+	public List<Integer> getLoggedGroupIds() {
+		try (DBSession session = this.createDBSession()) {
+			return this.queryForList("getLoggedGroupIds", new HashMap<String, Object>(), Integer.class, session);
+		}
+	}
+
+
+	/**
+	 * Retrieves the number of group memberships recorded in the log.
+	 *
+	 * @return the number of group memberships recorded in the log.
+	 */
+	public int getCountOfLoggedGroupMemberships() {
+		try (DBSession session = this.createDBSession()) {
+			return this.queryForObject("countOfLoggedGroupMemberships", new HashMap<String, Object>(), Integer.class, session);
 		}
 	}
 }

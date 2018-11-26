@@ -1063,8 +1063,6 @@ public class DBLogic implements LogicInterface {
 		// needs login.
 		this.ensureLoggedIn();
 
-		// TODO call onGroupDeletion on plugin registry
-
 		final DBSession session = this.openSession();
 
 		if (pending) {

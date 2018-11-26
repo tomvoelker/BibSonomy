@@ -1915,7 +1915,7 @@ CREATE TABLE `log_cris_links` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+DROP TABLE IF EXISTS `log_groupids`;
 CREATE TABLE `log_groupids` (
   `group_name` varchar(30) NOT NULL default '',
   `group` int(10) NOT NULL default '0',
@@ -1934,7 +1934,7 @@ CREATE TABLE `log_groupids` (
   PRIMARY KEY  (`group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+DROP TABLE IF EXISTS `log_group_memberships`;
 CREATE TABLE `log_group_memberships` (
   `user_name` varchar(30) NOT NULL default '',
   `group` int(10) default '0',

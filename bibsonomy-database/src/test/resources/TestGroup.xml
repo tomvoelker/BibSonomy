@@ -5,4 +5,12 @@
 	<select id="getAllParents" resultClass="int" parameterClass="int">
 		SELECT parent_group_id FROM `group_hierarchy` WHERE child_group_id = #groupId#
 	</select>
+
+	<select id="getLoggedGroupIds" resultClass="int" parameterClass="java.util.Map">
+		SELECT `group` FROM log_groupids
+	</select>
+
+	<select id="countOfLoggedGroupMemberships" resultClass="int" parameterClass="java.util.Map">
+		SELECT COUNT(*) FROM log_group_memberships
+	</select>
 </sqlMap>

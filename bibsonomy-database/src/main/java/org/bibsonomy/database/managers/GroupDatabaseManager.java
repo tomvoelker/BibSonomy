@@ -838,6 +838,9 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 		}
 
 		final Integer groupId = Integer.valueOf(group.getGroupId());
+
+		// signal group removal before deletion
+		this.plugins.beforeRemoveGroup(group, loggedinUser, session);
 		this.delete("deleteGroup", groupId, session);
 		
 		// get the group user and flag him as spammer

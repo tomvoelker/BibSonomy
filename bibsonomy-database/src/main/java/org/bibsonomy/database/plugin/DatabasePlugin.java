@@ -463,4 +463,31 @@ public interface DatabasePlugin {
 	default void onRemovedGroupMembership(Group group, String username, User loggedinUser, DBSession session) {
 		// noop
 	}
+
+
+	/**
+	 * Called before a group is removed.
+	 *
+	 * @param group the group that will be removed.
+	 * @param loggedInUser the user that is currently logged in.
+	 * @param session a database session.
+	 */
+	default void beforeRemoveGroup(Group group, User loggedInUser, DBSession session) {
+		// noop
+	}
+
+
+	/**
+	 * Called before a user is removed from a group.
+	 *
+	 * @param group the group.
+	 * @param username the name of the user that will be removed from the group.
+	 * @param loggedInUser the user that is currently logged in.
+	 * @param session a database session.
+	 */
+	default void beforeRemoveGroupMembership(Group group, String username, User loggedInUser, DBSession session) {
+		// noop
+	}
+
+
 }
