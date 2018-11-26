@@ -630,8 +630,9 @@ public class PersonPageController extends SingleResourceListController implement
 			final Post<? extends BibTex> post = resourcePersonRelation.getPost();
 			final BibTex publication = post.getResource();
 			final boolean isThesis = publication.getEntrytype().toLowerCase().endsWith("thesis");
-			
-			if (PUBLICATION_RELATED_RELATION_TYPES.contains(resourcePersonRelation.getRelationType())) {
+			final boolean isAuthorEditorRelation = PUBLICATION_RELATED_RELATION_TYPES.contains(resourcePersonRelation.getRelationType());
+
+			if (isAuthorEditorRelation) {
 				if (isThesis) {
 					authorRelations.add(resourcePersonRelation);
 				} else {
