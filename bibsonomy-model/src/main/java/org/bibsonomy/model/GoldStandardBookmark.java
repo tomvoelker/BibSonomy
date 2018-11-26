@@ -49,13 +49,13 @@ public class GoldStandardBookmark extends Bookmark implements GoldStandard<Bookm
 	
 	private void lacyLoadReferences() {
 		if (this.references == null) {
-			this.references = new HashSet<Bookmark>();
+			this.references = new HashSet<>();
 		}
 	}
 	
 	private void lacyLoadReferencedBy() {
 		if (this.referencedBy == null) {
-			this.referencedBy = new HashSet<Bookmark>();
+			this.referencedBy = new HashSet<>();
 		}
 	}
 	
@@ -104,7 +104,7 @@ public class GoldStandardBookmark extends Bookmark implements GoldStandard<Bookm
 	 */
 	@Override
 	public boolean removeAllFromReferences(final Set<? extends Bookmark> resources) {
-		return this.references == null ? false : this.references.removeAll(resources);
+		return this.references != null && this.references.removeAll(resources);
 	}
 	
 	/*
@@ -147,7 +147,7 @@ public class GoldStandardBookmark extends Bookmark implements GoldStandard<Bookm
 	 */
 	@Override
 	public boolean removeAllFromReferencedBy(final Set<? extends Bookmark> resources) {
-		return this.referencedBy == null ? false : this.referencedBy.removeAll(resources);
+		return this.referencedBy != null && this.referencedBy.removeAll(resources);
 	}
 
 	/*
@@ -156,7 +156,7 @@ public class GoldStandardBookmark extends Bookmark implements GoldStandard<Bookm
 	 */
 	@Override
 	public boolean removeFromReferencedBy(final Bookmark resource) {
-		return this.referencedBy == null ? false : this.referencedBy.remove(resource);
+		return this.referencedBy != null && this.referencedBy.remove(resource);
 	}
 	
 	@Override

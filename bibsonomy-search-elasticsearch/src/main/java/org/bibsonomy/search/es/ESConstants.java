@@ -53,12 +53,22 @@ public final class ESConstants {
 
 	/** settings of each created index */
 	public static final String SETTINGS;
-	
+
+	/** the registered lowercase normalizer */
+	public static final String LOWERCASE_NORMALIZER = "lowercase_normalizer";
+
 	static {
 		try {
 			SETTINGS = Strings.toString(XContentFactory.jsonBuilder()
 					.startObject()
 						.startObject("analysis")
+							.startObject("normalizer")
+								.startObject(LOWERCASE_NORMALIZER)
+									.field("type", "custom")
+									.array("char_filter")
+									.array("filter", "lowercase")
+								.endObject()
+							.endObject()
 							.startObject("char_filter")
 								.startObject(BIBTEX_MAPPING)
 									.field("type", "mapping")
@@ -69,7 +79,7 @@ public final class ESConstants {
 									.field("pattern", TexDecode.CURLY_BRACKETS)
 									.field("replacement", "")
 								.endObject()
-								.startObject(BRACKETS_CHAR_FILTER_NAME)
+									.startObject(BRACKETS_CHAR_FILTER_NAME)
 									.field("type", "pattern_replace")
 									.field("pattern", TexDecode.BRACKETS)
 									.field("replacement", "")
@@ -199,7 +209,7 @@ public final class ESConstants {
 			String PERSON_ID = "person_id";
 			String OTHER_PERSON_RESOURCE_RELATIONS = "other_relations";
 			String PERSON_RELATION_TYPE = "relation_type";
-			
+
 			String SCHOOL = "school";
 			/** the publication's year */
 			String YEAR = "year";

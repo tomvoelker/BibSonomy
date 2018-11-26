@@ -47,7 +47,7 @@ import org.springframework.beans.factory.BeanFactory;
  * @author dzo
  */
 public abstract class AbstractElasticsearchPostIndexTest<R extends Resource> extends AbstractDatabaseManagerTest {
-	
+
 	/**
 	 * generates the indices
 	 * @throws Exception
@@ -60,7 +60,7 @@ public abstract class AbstractElasticsearchPostIndexTest<R extends Resource> ext
 
 		final ElasticsearchPostManager<R> manager = this.getManager();
 		manager.regenerateAllIndices();
-		
+
 		// wait a little bit to get all systems ready TODO: remove?
 		Thread.sleep(1000);
 	}
