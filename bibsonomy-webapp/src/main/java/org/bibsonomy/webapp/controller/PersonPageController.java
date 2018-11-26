@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -62,6 +63,7 @@ import org.bibsonomy.model.util.PersonMatchUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.command.PersonPageCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -80,6 +82,8 @@ import org.springframework.validation.Errors;
  */
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(PersonMatch.class);
+
+	private static final Set<PersonResourceRelationType> OTHER_PUBLICATION_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
 
 	private URLGenerator urlGenerator;
 	private RequestLogic requestLogic;
@@ -619,8 +623,9 @@ public class PersonPageController extends SingleResourceListController implement
 
 		for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
 			final boolean isThesis = resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis");
-			
-			if (resourcePersonRelation.getRelationType().equals(PersonResourceRelationType.AUTHOR)) {
+			final boolean isAuthorEditorRelation = OTHER_PUBLICATION_TYPES.contains(resourcePersonRelation.getRelationType());
+
+			if (isAuthorEditorRelation) {
 				if (isThesis) {
 					authorRelations.add(resourcePersonRelation);
 				} else {
