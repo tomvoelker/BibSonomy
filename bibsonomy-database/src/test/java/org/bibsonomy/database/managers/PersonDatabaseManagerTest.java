@@ -68,7 +68,8 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	private static final BibTexDatabaseManager PUBLICATION_DATABASE_MANAGER = BibTexDatabaseManager.getInstance();
 	private static final GoldStandardPublicationDatabaseManager COMMUNITY_DATABASE_MANAGER = GoldStandardPublicationDatabaseManager.getInstance();
 
-	private static final User loginUser = new User("testuser1");
+	private static final User loginUser = new User("jaeschke");
+	private static final String intraHash = "15a1bdcbff44431651957f45097dc4f4";
 	private static final String PERSON_ID = "h.muller";
 
 	private Person testPerson;
@@ -101,9 +102,12 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void testAddResourceRelation() {
-		final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
-		final String intraHash = "b77ddd8087ad8856d77c740c8dc2864a";
 		final Post<? extends BibTex> post = PUBLICATION_DATABASE_MANAGER.getPostDetails(loginUser.getName(), intraHash, loginUser.getName(), Collections.singletonList(Integer.valueOf(PUBLIC_GROUP_ID)), this.dbSession);
+		this.addTestRelationForPost(post);
+	}
+
+	private void addTestRelationForPost(Post<? extends BibTex> post) {
+		final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
 		resourcePersonRelation.setPost(post);
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById(PERSON_ID, this.dbSession);
 		resourcePersonRelation.setPerson(person);
@@ -117,6 +121,16 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		// test inserting of a duplicate
 		assertThat(PERSON_DATABASE_MANAGER.addResourceRelation(resourcePersonRelation, loginUser, this.dbSession), is(false));
+	}
+
+	@Test
+	public void testAddResourceRelationWithLookupPost() {
+		final Post<BibTex> publicationPost = new Post<>();
+		final BibTex publication = new BibTex();
+		publication.setIntraHash(intraHash);
+		publication.setInterHash("a5936835f9eeab91eb09d84948306178");
+		publicationPost.setResource(publication);
+		this.addTestRelationForPost(publicationPost);
 	}
 
 	/**
