@@ -38,7 +38,7 @@
 	<c:set var="hasClaimedOrIsAdmin" value="${hasClaimedPerson or isAdmin}" />
 
 	<!--<c:set var="useCRISView" value="${properties['system.cris'] eq 'true'}" /> -->
-	<c:set var="useCRISView" value="${not properties['system.cris'] eq 'true'}" />
+	<c:set var="useCRISView" value="${properties['system.cris'] eq 'true'}" />
 
 	<layout:paneLayout pageTitle="${title}"
 		headerLogoClass="publications" 
@@ -376,15 +376,12 @@
 
 				<c:choose>
 					<c:when test="${useCRISView}" >
-						<div class="tab-content" >
+						<div class="tab-content pub-person-tab-content" >
 							<!-- Projects tab content-->
 							<div id='projects' class="tab-pane active">
 								<c:choose>
 									<c:when test="${fn:length(command.person.crisLinks) gt 0}">
-										<c:forEach var="links" items="${command.person.crisLinks}">
-											<per:simpleProjectView project="${links.source}" />
-											<div class="personThesisSeperator"><!-- KEEP ME --></div>
-										</c:forEach>
+										<per:projects command="${command}" />
 									</c:when>
 									<c:otherwise>
 										<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
@@ -393,7 +390,7 @@
 							</div>
 							<div id='publications' class="tab-pane">
 								<c:choose>
-									<c:when test="{fn:length(command.otherPubs) gt 0}">
+									<c:when test="${fn:length(command.otherPubs) gt 0}">
 										<div style="clear: both;">
 											<h3 class="list-headline">
 												<fmt:message key="person.show.otherPub" />
@@ -429,19 +426,6 @@
 							<div id='ownThesis' class="tab-pane active">
 								<c:choose>
 									<c:when test="${fn:length(command.thesis) gt 0}">
-										<!-- fixme is not displayed -->
-										<div class="personThesisEntry row">
-											<div class="col-md-3">
-												<fmt:message key="project.time" />
-											</div>
-											<div class="col-md-5">
-												<fmt:message key="project.title" />
-											</div>
-											<div class="col-md-4">
-												<fmt:message key="project.type" />
-											</div>
-										</div>
-										<div class="personThesisSeperator"><!-- KEEP ME --></div>
 										<c:forEach var="relation" items="${command.thesis}">
 											<per:pubWithRoles post="${relation.post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
 											<div class="personThesisSeperator"><!-- KEEP ME --></div>

@@ -34,12 +34,12 @@
         <br />
         <c:if test="${not empty project.startDate}">
             <small class="start-date">
-                <fmt:formatDate value="${project.startDate}" pattern="dd.MM.yy" />
-            </small><c:out value=" --> "/>
+                <fmt:formatDate value="${project.startDate}" pattern="dd.MM.yyyy" />
+            </small><c:out value=" - "/>
         </c:if>
         <c:if test="${not empty project.endDate}">
             <small class="end-date">
-                <fmt:formatDate value="${project.endDate}" pattern="dd.MM.yy" />
+                <fmt:formatDate value="${project.endDate}" pattern="dd.MM.yyyy" />
             </small>
         </c:if>
     </li>

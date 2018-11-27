@@ -4,24 +4,27 @@
           xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
 
     <jsp:directive.attribute name="project" type="org.bibsonomy.model.cris.Project" required="true"/>
+    <jsp:directive.attribute name="sizeFirstCol" type="java.lang.String" required="true"/>
+    <jsp:directive.attribute name="sizeSecondCol" type="java.lang.String" required="true"/>
+    <jsp:directive.attribute name="sizeThirdCol" type="java.lang.String" required="true"/>
 
     <div class="personThesisEntry row">
-        <div class="col-md-3">
+        <div class="col-md-${sizeFirstCol}">
             <span class="start-date">
-                <fmt:formatDate value="${project.startDate}" pattern="dd.MM.yy" />
-            </span><c:out value=" --> "/>
+                <fmt:formatDate value="${project.startDate}" pattern="dd.MM.yyyy" />
+            </span><c:out value=" - "/>
             <span class="end-date">
-                <fmt:formatDate value="${project.endDate}" pattern="dd.MM.yy" />
+                <fmt:formatDate value="${project.endDate}" pattern="dd.MM.yyyy" />
             </span>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-${sizeSecondCol}">
             <a href="${relativeUrlGenerator.getProjectUrlByProject(project)}">
                 <c:out value="${project.title}"/>
                 <c:out value=" - " />
                 <c:out value="${project.subTitle}"/>
             </a>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-${sizeThirdCol}">
             <c:out value="${project.type}" />
         </div>
     </div>
