@@ -29,6 +29,8 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
@@ -435,14 +437,15 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 		final List<Group> groupsForUser = this.queryForList("getGroupsForUser", userName, Group.class, session);
 
 		if (retrieveTransitiveGroups) {
-			final LinkedList<Group> subgroups = new LinkedList<>();
+			final List<Integer> groupids = groupsForUser.stream().map(Group::getGroupId).collect(Collectors.toList());
 
-			for (Group group: groupsForUser) {
-				List<Group> sg = this.queryForList("getSubgroupsTransitively", group.getGroupId(), Group.class, session);
-				subgroups.addAll(sg);
+			List<Group> subgroups = this.queryForList("getSubgroupsTransitively", groupids, Group.class, session);
+
+			for(Group subgroup: subgroups) {
+				if (groupsForUser.stream().noneMatch(group -> group.getGroupId() == subgroup.getGroupId())) {
+					groupsForUser.add(subgroup);
+				}
 			}
-
-			groupsForUser.addAll(subgroups);
 		}
 
 		if (!removeSpecialGroups) {
@@ -514,6 +517,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 		return this.queryForList("getGroupsForContentId", contentId, Group.class, session);
 	}
 
+
 	/**
 	 * Gets all the groupIds of the given users groups.
 	 *
@@ -531,13 +535,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 		List<Integer> groupIds = this.queryForList("getGroupIdsForUser", userName, Integer.class, session);
 
 		if (retrieveTransitiveSubgroups) {
-			List<Integer> subgroupIds = new LinkedList<>();
+			List<Integer> subgroups = this.queryForList("getSubgroupIdsTransitively", groupIds, Integer.class, session);
 
-			for (int groupId: groupIds) {
-				subgroupIds.addAll(this.queryForList("getSubgroupIdsTransitively", groupId, Integer.class, session));
+			for (Integer groupId: subgroups) {
+				if (!groupIds.contains(groupId)) {
+					groupIds.add(groupId);
+				}
 			}
-
-			groupIds.addAll(subgroupIds);
 		}
 
 		return groupIds;

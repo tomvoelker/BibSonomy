@@ -278,7 +278,12 @@ INSERT INTO `group_memberships` VALUES
 ('rootgroup',   9, 9, '2007-01-01 01:01:01', 3, 0),
 ('childgroup1', 10, 10, '2007-01-01 01:01:01', 3, 0),
 ('childgroup2', 11, 11, '2007-01-01 01:01:01', 3, 0),
-('childgroup3depth2', 12, 12, '2007-01-01 01:01:01', 3, 0);
+('childgroup3depth2', 12, 12, '2007-01-01 01:01:01', 3, 0),
+('testuser4', 9, 9, '2007-01-01 01:01:01', 3, 0),
+('testuser4', 3, 9, '2007-01-01 01:01:01', 3, 0),
+('testuser4', 10, 9, '2007-01-01 01:01:01', 3, 0);
+
+
 
 
 INSERT INTO `group_hierarchy` VALUES

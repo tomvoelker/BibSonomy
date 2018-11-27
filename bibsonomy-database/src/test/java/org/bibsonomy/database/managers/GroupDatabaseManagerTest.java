@@ -256,6 +256,9 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		groups = groupDb.getGroupsForUser("rootgroup", true, true, this.dbSession);
 		assertThat(groups.size(), equalTo(4));
+
+		groups = groupDb.getGroupsForUser("testuser4", true, true, this.dbSession);
+		assertThat(groups.size(), equalTo(1));
 	}
 
 
@@ -457,6 +460,11 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		List<Integer> groupIds = groupDb.getGroupIdsForUser("rootgroup", true, this.dbSession);
 		assertThat(groupIds.size(), equalTo(4));
 		assertThat(groupIds, hasItems(9, 10, 11, 12));
+
+		groupIds = groupDb.getGroupIdsForUser("testuser4", true, this.dbSession);
+		assertThat(groupIds, hasItems(9, 10, 11, 12));
+		assertThat(groupIds.size(), equalTo(5));
+
 	}
 
 	/**
