@@ -445,14 +445,18 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getGroupIdsForUser() {
 		// testuser1 is a member of 4 groups
-		assertEquals(4, groupDb.getGroupIdsForUser("testuser1", this.dbSession).size());
+		assertEquals(4, groupDb.getGroupIdsForUser("testuser1", false, this.dbSession).size());
 		// testuser2 a member of 2 group
-		assertEquals(2, groupDb.getGroupIdsForUser("testuser2", this.dbSession).size());
+		assertEquals(2, groupDb.getGroupIdsForUser("testuser2", false, this.dbSession).size());
 
 		// invalid users or testuser3 arent't members of any group
 		for (final String userName : new String[] { "", " ", null, "testuser3", ParamUtils.NOUSER_NAME }) {
-			assertEquals(0, groupDb.getGroupIdsForUser(userName, this.dbSession).size());
+			assertEquals(0, groupDb.getGroupIdsForUser(userName, false, this.dbSession).size());
 		}
+
+		List<Integer> groupIds = groupDb.getGroupIdsForUser("rootgroup", true, this.dbSession);
+		assertThat(groupIds.size(), equalTo(4));
+		assertThat(groupIds, hasItems(9, 10, 11, 12));
 	}
 
 	/**

@@ -299,6 +299,11 @@
 		ORDER BY i.group_name
 	</select>
 
+	<select id="getSubgroupIdsTransitively" resultClass="int" parameterClass="int">
+		SELECT gh.child_group_id FROM group_hierarchy gh WHERE gh.parent_group_id = #groupId#
+	</select>
+
+
 
 	<select id="getGroupByExternalId" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="org.bibsonomy.database.params.group.GetByExternalId">
 		SELECT <include refid="basicColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date

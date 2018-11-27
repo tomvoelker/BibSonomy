@@ -1220,7 +1220,7 @@ public class DBLogic implements LogicInterface {
 			/*
 			 * retrieve the user's groups
 			 */
-			final Set<Integer> groupIds = new HashSet<>(this.groupDBManager.getGroupIdsForUser(user.getName(), session));
+			final Set<Integer> groupIds = new HashSet<>(this.groupDBManager.getGroupIdsForUser(user.getName(), true, session));
 			/*
 			 * add "friends" group
 			 */

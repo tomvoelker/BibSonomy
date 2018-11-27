@@ -518,15 +518,31 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	 * Gets all the groupIds of the given users groups.
 	 *
 	 * @param userName userName to get the groupids for
+	 * @param retrieveTransitiveSubgroups if <code>true</code> all transitive subgroup ids will be retrieved, otherwise only group ids where the user is a member are retrieved.
 	 * @param session a db session
-	 * @return A list of groupids
+	 *
+	 * @return a list of groupids
 	 */
-	public List<Integer> getGroupIdsForUser(final String userName, final DBSession session) {
+	public List<Integer> getGroupIdsForUser(final String userName, boolean retrieveTransitiveSubgroups, final DBSession session) {
 		if (!present(userName)) {
 			return new ArrayList<>();
 		}
-		return this.queryForList("getGroupIdsForUser", userName, Integer.class, session);
+
+		List<Integer> groupIds = this.queryForList("getGroupIdsForUser", userName, Integer.class, session);
+
+		if (retrieveTransitiveSubgroups) {
+			List<Integer> subgroupIds = new LinkedList<>();
+
+			for (int groupId: groupIds) {
+				subgroupIds.addAll(this.queryForList("getSubgroupIdsTransitively", groupId, Integer.class, session));
+			}
+
+			groupIds.addAll(subgroupIds);
+		}
+
+		return groupIds;
 	}
+
 
 	/**
 	 * Checks if group exists.
