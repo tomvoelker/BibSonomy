@@ -37,8 +37,7 @@
 	<c:set var="isAdmin" value="${command.context.loginUser.role eq 'ADMIN'}" />
 	<c:set var="hasClaimedOrIsAdmin" value="${hasClaimedPerson or isAdmin}" />
 
-	<!--<c:set var="useCRISView" value="${properties['system.cris'] eq 'true'}" />-->
-	<c:set var="useCRISView" value="${false}" />
+	<c:set var="useCRISView" value="${properties['system.cris'] eq 'false'}" />
 
 	<layout:paneLayout pageTitle="${title}"
 		headerLogoClass="publications" 
@@ -363,7 +362,7 @@
 			<div id="thesisBlock">
 				<ul class="nav nav-tabs" role="tablist">
 					<c:choose>
-						<c:when test="${showCRISView}" >
+						<c:when test="${useCRISView}" >
 							<li class="active"><a href="#projects" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.projects" /></strong></a></li>
 							<li><a href="#publications" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.publications" /></strong></a></li>
 						</c:when>
