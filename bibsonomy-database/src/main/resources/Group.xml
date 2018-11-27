@@ -284,6 +284,22 @@
 			ORDER BY i.group_name
 	</select>
 
+
+	<!--
+	 	Efficiently selects all transitive subgroups for a group, by leveraging the group_hierarchy table.
+	 -->
+	<select id="getSubgroupsTransitively" resultMap="GroupCommon.group_extended_with_parent" parameterClass="int">
+		SELECT <include refid="basicColumns" />, u.user_realname, u.user_homepage, <include refid="parentColumns" />
+			FROM group_hierarchy gh
+			LEFT JOIN groupids i ON (gh.child_group_id = i.group)
+			LEFT JOIN user u ON (u.user_name = i.group_name)
+			LEFT JOIN groupids pt ON (i.parent = pt.group)
+			LEFT JOIN user upt ON (upt.user_name = pt.group_name)
+		WHERE gh.parent_group_id = #groupId#
+		ORDER BY i.group_name
+	</select>
+
+
 	<select id="getGroupByExternalId" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="org.bibsonomy.database.params.group.GetByExternalId">
 		SELECT <include refid="basicColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date
 			FROM groupids i

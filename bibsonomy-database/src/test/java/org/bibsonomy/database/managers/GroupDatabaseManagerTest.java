@@ -252,7 +252,13 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// without special groups
 		groups = groupDb.getGroupsForUser("testuser1", true, this.dbSession);
 		assertEquals(4, groups.size());
+
+
+		groups = groupDb.getGroupsForUser("rootgroup", true, true, this.dbSession);
+		assertThat(groups.size(), equalTo(4));
 	}
+
+
 
 	/**
 	 * tests storeGroup

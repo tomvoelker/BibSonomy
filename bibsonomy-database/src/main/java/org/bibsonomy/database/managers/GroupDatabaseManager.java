@@ -394,26 +394,57 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	}
 
 	/**
-	 * Returns a a list of groups for a given user
+	 * Returns a list with all groups where the user is a member. No special groups will be retrieved.
 	 *
-	 * @param username
-	 * @param session
-	 * @return a list of groups
+	 * @param username a username.
+	 * @param session a database session.
+	 * @return a list of all groups where the user is a member.
 	 */
 	public List<Group> getGroupsForUser(final String username, final DBSession session) {
 		return this.getGroupsForUser(username, false, session);
 	}
 
+
 	/**
-	 * Get all groups a user is a member of, with or without special groups.
+	 * Returns a list with all groups, where the user is a member.
+	 * Allows to decide whether special groups should be retrieved.
 	 *
-	 * @param userName
-	 * @param removeSpecialGroups
-	 * @param session
-	 * @return a list of groups the user is member of
+	 * @param userName a username.
+	 * @param removeSpecialGroups if <code>true</code> special groups will be retrieved, otherwise only real groups will be considered.
+	 * @param session a database session.
+	 *
+	 * @return a list of groups where the user is a member.
 	 */
 	public List<Group> getGroupsForUser(final String userName, final boolean removeSpecialGroups, final DBSession session) {
+		return this.getGroupsForUser(userName, removeSpecialGroups, false, session);
+	}
+
+	/**
+	 * Get all groups a user belongs to. If <code>retrieveTransitiveGroups</code> is set to <code>true</code> this method will also
+	 * transitively retrieve all child groups within the hierarchy.
+	 *
+	 * @param userName a username.
+	 * @param removeSpecialGroups if <code>true</code> special groups will be retrieved, otherwise only real groups will be considered.
+	 * @param retrieveTransitiveGroups if <code>true</code> all child groups will be retrieved, otherwise only groups where the user is a member will be retrieved.
+	 * @param session a database session.
+	 *
+	 * @return a list of groups the user belongs to.
+	 */
+	public List<Group> getGroupsForUser(final String userName, final boolean removeSpecialGroups, final boolean retrieveTransitiveGroups, final DBSession session) {
+
 		final List<Group> groupsForUser = this.queryForList("getGroupsForUser", userName, Group.class, session);
+
+		if (retrieveTransitiveGroups) {
+			final LinkedList<Group> subgroups = new LinkedList<>();
+
+			for (Group group: groupsForUser) {
+				List<Group> sg = this.queryForList("getSubgroupsTransitively", group.getGroupId(), Group.class, session);
+				subgroups.addAll(sg);
+			}
+
+			groupsForUser.addAll(subgroups);
+		}
+
 		if (!removeSpecialGroups) {
 			groupsForUser.addAll(this.queryForList("getSpecialGroupsForUser", userName, Group.class, session));
 		}

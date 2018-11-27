@@ -318,7 +318,7 @@ public class DBLogic implements LogicInterface {
 			 */
 			if (this.permissionDBManager.isAdminOrSelf(this.loginUser, user.getName())
 							|| this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, user.getName(), GroupRole.ADMINISTRATOR)) {
-				user.setGroups(this.groupDBManager.getGroupsForUser(user.getName(), true, session));
+				user.setGroups(this.groupDBManager.getGroupsForUser(user.getName(), true, true, session));
 				user.setPendingGroups(this.groupDBManager.getPendingMembershipsForUser(userName, session));
 				// inject the reported spammers.
 				final List<User> reportedSpammersList = this.userDBManager.getUserRelation(user.getName(), UserRelation.SPAMMER, NetworkRelationSystemTag.BibSonomySpammerSystemTag, session);
