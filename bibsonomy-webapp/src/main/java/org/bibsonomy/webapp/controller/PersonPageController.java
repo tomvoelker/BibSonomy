@@ -781,7 +781,9 @@ public class PersonPageController extends SingleResourceListController implement
 		this.urlGenerator = urlGenerator;
 	}
 
-	public void setPictureHandlerFactory(PictureHandlerFactory) { this.pictureHandlerFactory = pictureHandlerFactory; }
+	public void setPictureHandlerFactory(PictureHandlerFactory pictureHandlerFactory) {
+		this.pictureHandlerFactory = pictureHandlerFactory;
+	}
 }
 
 
