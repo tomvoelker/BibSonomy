@@ -324,23 +324,25 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 		final GroupingEntity grouping = postQuery.getGrouping();
 		final String groupingName = postQuery.getGroupingName();
 
-		switch (grouping) {
-			case GROUP:
-				// restrict result to given group
-				// by appending a filter for all members of the group
-				final QueryBuilder groupMembersFilter = this.buildGroupMembersFilter(groupingName);
-				if (groupMembersFilter != null) {
-					mainFilterBuilder.must(groupMembersFilter);
-				} else {
-					return null;
-				}
-				break;
-			case USER:
-				// post owned by user
-				// Use this restriction iff there is no user relation
-				final QueryBuilder requestedUserFilter = QueryBuilders.termQuery(Fields.USER_NAME, groupingName);
-				mainFilterBuilder.must(requestedUserFilter);
-				break;
+		if (present(grouping)) {
+			switch (grouping) {
+				case GROUP:
+					// restrict result to given group
+					// by appending a filter for all members of the group
+					final QueryBuilder groupMembersFilter = this.buildGroupMembersFilter(groupingName);
+					if (groupMembersFilter != null) {
+						mainFilterBuilder.must(groupMembersFilter);
+					} else {
+						return null;
+					}
+					break;
+				case USER:
+					// post owned by user
+					// Use this restriction iff there is no user relation
+					final QueryBuilder requestedUserFilter = QueryBuilders.termQuery(Fields.USER_NAME, groupingName);
+					mainFilterBuilder.must(requestedUserFilter);
+					break;
+			}
 		}
 
 		// restricting access to posts visible to the user
