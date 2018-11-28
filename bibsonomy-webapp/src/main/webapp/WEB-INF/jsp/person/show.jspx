@@ -148,19 +148,17 @@
 					<div class="col-md-6">
 				
 						<!-- Picture -->
-						<c:if test="${command.hasPicture}">
-							<div id="userImg" class="col-md-4 personPageVcardLeft">
-								<c:choose>
-									<c:when test="${not empty command.person.user}">
-										<img class="person-image" src="${relativeUrlGenerator.getUserPictureUrlByUsername(command.person.user)}" />
-									</c:when>
-									<c:otherwise>
-										<!-- FIXME: use message property. AND REMOVE HARD CODED USERNAME GENEALOGIE-->
-										<img class="person-image" src="${relativeUrlGenerator.getUserPictureUrlByUsername('genealogie')}" />
-									</c:otherwise>
-								</c:choose>
-							</div>
-						</c:if>
+						<div id="userImg" class="col-md-4 personPageVcardLeft">
+							<c:choose>
+								<c:when test="${not empty command.person.user}">
+									<img class="person-image" src="${relativeUrlGenerator.getUserPictureUrlByUsername(command.person.user)}" />
+								</c:when>
+								<c:otherwise>
+									<!-- FIXME: use message property. AND REMOVE HARD CODED USERNAME GENEALOGIE-->
+									<img class="person-image" src="${relativeUrlGenerator.getUserPictureUrlByUsername('genealogie')}" />
+								</c:otherwise>
+							</c:choose>
+						</div>
 
 
 						<div class="col-md-8 col-nopadding">

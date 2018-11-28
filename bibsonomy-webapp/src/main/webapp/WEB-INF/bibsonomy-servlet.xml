@@ -817,9 +817,8 @@
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="personRoleRenderer" ref="personRoleRenderer"/>
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
-		<property name="pictureHandlerFactory" ref="gravatarStdPictureHandlerFactory" />
 	</bean>
-	
+
 	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.DisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
 		<property name="requestLogic" ref="requestLogic"/>

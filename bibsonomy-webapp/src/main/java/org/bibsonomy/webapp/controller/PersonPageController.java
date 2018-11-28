@@ -90,7 +90,6 @@ public class PersonPageController extends SingleResourceListController implement
 	private RequestLogic requestLogic;
 	private PersonRoleRenderer personRoleRenderer;
 	private Errors errors;
-	private PictureHandlerFactory pictureHandlerFactory;
 
 	@Override
 	public PersonPageCommand instantiateCommand() {
@@ -615,7 +614,6 @@ public class PersonPageController extends SingleResourceListController implement
 		}
 
 		command.setPerson(person);
-		// fixme command.setHasPicture(this.pictureHandlerFactory.isPictureVisible());
 		
 		if (DisambiguationPageController.ACTION_KEY_CREATE_AND_LINK_PERSON.equals(this.requestLogic.getLastAction()) || DisambiguationPageController.ACTION_KEY_LINK_PERSON.equals(this.requestLogic.getLastAction())) {
 			command.setOkHintKey(this.requestLogic.getLastAction());
@@ -779,10 +777,6 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	public void setUrlGenerator(URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
-	}
-
-	public void setPictureHandlerFactory(PictureHandlerFactory pictureHandlerFactory) {
-		this.pictureHandlerFactory = pictureHandlerFactory;
 	}
 }
 
