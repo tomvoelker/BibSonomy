@@ -95,7 +95,8 @@ public class PersonPageCommand extends BaseCommand {
 	private int formMatchId;
 	private String formResponseString;
 	
-	
+	private boolean hasPicture;
+
 	private String formAction;
 	
 	private Person person;
@@ -645,5 +646,19 @@ public class PersonPageCommand extends BaseCommand {
 	 */
 	public void setIndex(String index) {
 		this.index = index;
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean isHasPicture() {
+		return hasPicture;
+	}
+
+	/**
+	 * @param hasPicture
+	 */
+	public void setHasPicture(boolean hasPicture) {
+		this.hasPicture = hasPicture;
 	}
 }
