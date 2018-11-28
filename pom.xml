@@ -257,6 +257,7 @@
 		<module>bibsonomy-webapp</module>
 		<module>bibsonomy-wiki</module>
 		<module>bibsonomy-recommender</module>
+		<module>bibsonomy-exporter</module>
 	</modules>
 	<build>
 		<pluginManagement>

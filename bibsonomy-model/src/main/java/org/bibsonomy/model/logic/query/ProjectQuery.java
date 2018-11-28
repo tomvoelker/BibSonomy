@@ -1,26 +1,26 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
- *
+ * <p>
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
- *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
- *                           L3S Research Center,
- *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
- *
+ * University of Kassel, Germany
+ * http://www.kde.cs.uni-kassel.de/
+ * Data Mining and Information Retrieval Group,
+ * University of Würzburg, Germany
+ * http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ * L3S Research Center,
+ * Leibniz University Hannover, Germany
+ * http://www.l3s.de/
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -30,6 +30,8 @@ import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.enums.ProjectOrder;
 import org.bibsonomy.model.enums.ProjectStatus;
 
+import java.util.Date;
+
 /**
  * the project query to retrieve projects from the logic
  *
@@ -37,29 +39,162 @@ import org.bibsonomy.model.enums.ProjectStatus;
  */
 public class ProjectQuery extends BasicQuery {
 
+	/**
+	 * the order of the projects
+	 */
+	private final ProjectOrder order;
+	/**
+	 * the sort order of the order
+	 */
+	private final SortOrder sortOrder;
+	/**
+	 * the project status
+	 */
+	private final ProjectStatus projectStatus;
+	/**
+	 * the type of the project
+	 */
+	private final String type;
+	private final String externalId;
+	private final Date startDate;
+	private final Date endDate;
+
+	/**
+	 * the constructor
+	 *
+	 * @param order
+	 * @param sortOrder
+	 * @param projectStatus
+	 * @param type
+	 * @param start
+	 * @param end
+	 * @param externalId
+	 * @param startDate
+	 * @param endDate
+	 */
+	protected ProjectQuery(final String search, final ProjectOrder order, SortOrder sortOrder, ProjectStatus projectStatus,
+												 String type, int start, int end, String externalId, Date startDate, Date endDate) {
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.setSearch(search);
+		this.order = order;
+		this.sortOrder = sortOrder;
+		this.projectStatus = projectStatus;
+		this.type = type;
+		this.setStart(start);
+		this.setEnd(end);
+		this.externalId = externalId;
+	}
+
+	/**
+	 * @return creates a new builder
+	 */
+	public static ProjectQueryBuilder createBuilder() {
+		return new ProjectQueryBuilder();
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	/**
+	 * @return the order
+	 */
+	public ProjectOrder getOrder() {
+		return order;
+	}
+
+	/**
+	 * @return the sortOrder
+	 */
+	public SortOrder getSortOrder() {
+		return sortOrder;
+	}
+
+	/**
+	 * @return the projectStatus
+	 */
+	public ProjectStatus getProjectStatus() {
+		return projectStatus;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * @return the externalId
+	 */
+	public String getExternalId() {
+		return externalId;
+	}
+
 	public static class ProjectQueryBuilder {
-		/** the order of the projects, default {@link ProjectOrder#TITLE} */
+		/**
+		 * the order of the projects, default {@link ProjectOrder#TITLE}
+		 */
 		private ProjectOrder order = ProjectOrder.TITLE;
 
-		/** the sort order of the order */
+		/**
+		 * the sort order of the order
+		 */
 		private SortOrder sortOrder = SortOrder.ASC;
 
-		/** the project status */
+		/**
+		 * the project status
+		 */
 		private ProjectStatus projectStatus;
 
 		private String type;
 
-		/** the start */
+		/**
+		 * the start
+		 */
 		private int start = 0;
 
-		/** the end */
-		private int end = 10 ;
+		/**
+		 * the end
+		 */
+		private int end = 10;
 
-		/** the externalId */
+		/**
+		 * the externalId
+		 */
 		private String externalId;
 
-		/** the search **/
+		/**
+		 * the search
+		 **/
 		private String search;
+
+		private Date startDate;
+
+		private Date endDate;
+
+		/**
+		 * @param startDate
+		 * @return
+		 */
+		public ProjectQueryBuilder startDate(final Date startDate) {
+			this.startDate = startDate;
+			return this;
+		}
+
+		/**
+		 * @param endDate
+		 * @return
+		 */
+		public ProjectQueryBuilder endDate(final Date endDate) {
+			this.endDate = endDate;
+			return this;
+		}
 
 		/**
 		 * sets the externalId
@@ -138,6 +273,11 @@ public class ProjectQuery extends BasicQuery {
 			return this;
 		}
 
+		/**
+		 *
+		 * @param search
+		 * @return
+		 */
 		public ProjectQueryBuilder search(final String search) {
 			this.search = search;
 			return this;
@@ -148,85 +288,7 @@ public class ProjectQuery extends BasicQuery {
 		 */
 		public ProjectQuery build() {
 			return new ProjectQuery(this.search, this.order, this.sortOrder, this.projectStatus,
-					this.type, this.start, this.end, this.externalId);
+							this.type, this.start, this.end, this.externalId, startDate, endDate);
 		}
-	}
-
-	/**
-	 * @return creates a new builder
-	 */
-	public static ProjectQueryBuilder createBuilder() {
-		return new ProjectQueryBuilder();
-	}
-
-
-	/** the order of the projects */
-	private final ProjectOrder order;
-
-	/** the sort order of the order */
-	private final SortOrder sortOrder;
-
-	/** the project status */
-	private final ProjectStatus projectStatus;
-
-	/** the type of the project */
-	private final String type;
-
-	private final String externalId;
-
-	/**
-	 * the constructor
-	 * @param order
-	 * @param sortOrder
-	 * @param projectStatus
-	 * @param type
-	 * @param start
-	 * @param end
-	 * @param externalId
-	 */
-	protected ProjectQuery(final String search, final ProjectOrder order, SortOrder sortOrder, ProjectStatus projectStatus, String type, int start, int end, String externalId) {
-		this.setSearch(search);
-		this.order = order;
-		this.sortOrder = sortOrder;
-		this.projectStatus = projectStatus;
-		this.type = type;
-		this.setStart(start);
-		this.setEnd(end);
-		this.externalId = externalId;
-	}
-
-	/**
-	 * @return the order
-	 */
-	public ProjectOrder getOrder() {
-		return order;
-	}
-
-	/**
-	 * @return the sortOrder
-	 */
-	public SortOrder getSortOrder() {
-		return sortOrder;
-	}
-
-	/**
-	 * @return the projectStatus
-	 */
-	public ProjectStatus getProjectStatus() {
-		return projectStatus;
-	}
-
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * @return the externalId
-	 */
-	public String getExternalId() {
-		return externalId;
 	}
 }

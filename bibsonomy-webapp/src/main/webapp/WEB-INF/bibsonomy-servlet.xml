@@ -557,9 +557,9 @@
 						<property name="controllerBeanName" value="groupPageController"/>
 					</bean>
 				</entry>
-				<entry key="/reporting">
+				<entry key="/reporting/projects">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="groupReportingPageController"/>
+						<property name="controllerBeanName" value="projectReportingPageController"/>
 						<property name="allowedFields">
 							<list>
 								<value>requestedGroup</value>
@@ -973,7 +973,7 @@
 		<property name="supportedResources" ref="allResources"/>
 	</bean>
 	
-	<bean id="groupReportingPageController" class="org.bibsonomy.webapp.controller.reporting.GroupReportingPageController" scope="request">
+	<bean id="projectReportingPageController" class="org.bibsonomy.webapp.controller.reporting.ProjectReportingPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="maxQuerySize" value="${database.maxQuerySize}" />
 	</bean>	
