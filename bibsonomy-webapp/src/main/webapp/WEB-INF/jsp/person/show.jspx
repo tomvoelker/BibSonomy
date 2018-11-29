@@ -119,7 +119,7 @@
 					<div class="form-group">
 						<h1>
 							<div class="personPageFormPlaceholder">
-								<c:if test="${empty command.person.user or (not empty command.person.user and (command.person.user eq command.context.loginUser.name)) and not command.context.loginUser.spammer}">
+								<c:if test="${hasClaimedOrIsAdmin}">
 									<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
 								</c:if>
 								<span class="personPageFormFieldContent" id="personPageFormAcademicDegreeValue">${command.person.academicDegree}</span>
@@ -181,16 +181,14 @@
 								
 								<div class="col-md-8">
 									<div class="personPageFormPlaceholder">
-										<c:choose>
-											<!-- Only visible if the loginUser claimed this person -->
-											<c:when test='${hasClaimedOrIsAdmin}'>
-												<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
-											</c:when>
-											<c:otherwise>
+										<!-- Only visible if the loginUser claimed this person -->
+										<c:if test='${hasClaimedOrIsAdmin}'>
+											<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
+										</c:if>
+										<c:if test="${command.context.userLoggedIn}" >
 												<span data-toggle="tooltip" title="${formLockedTooltip}" class="personPageLockedForm fa fa-info-circle"><!--  --></span>
-											</c:otherwise>
-										</c:choose>
-										
+										</c:if>
+
 										<c:if test="${hasClaimedOrIsAdmin}">
 										<span class="personPageFormFieldContent" id="personPageFormEmailValue">${command.person.email}</span> 
 										</c:if>	
@@ -217,15 +215,13 @@
 								
 								<div class="col-md-8">
 									<div class="personPageFormPlaceholder">
-										<c:choose>
-											<!-- Only visible if the loginUser claimed this person -->
-											<c:when test='${hasClaimedOrIsAdmin}'>
-												<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
-											</c:when>
-											<c:otherwise>
-												<span data-toggle="tooltip" title="${formLockedTooltip}" class="personPageLockedForm fa fa-info-circle"><!--  --></span>
-											</c:otherwise>
-										</c:choose>
+										<!-- Only visible if the loginUser claimed this person -->
+										<c:if test='${hasClaimedOrIsAdmin}'>
+											<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
+										</c:if>
+										<c:if test="${command.context.userLoggedIn}">
+											<span data-toggle="tooltip" title="${formLockedTooltip}" class="personPageLockedForm fa fa-info-circle"><!--  --></span>
+										</c:if>
 
 
 										<c:choose>

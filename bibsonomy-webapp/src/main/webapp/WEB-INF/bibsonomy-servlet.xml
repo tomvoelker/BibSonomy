@@ -329,7 +329,7 @@
 		<lookup-method name="buildLogic" bean="dbLogicPrototype" />
 		<property name="dbSessionFactory" ref="dbSessionFactory" />
 	</bean>
-	
+
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="interceptors">
 			<list>
@@ -847,7 +847,7 @@
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
 		<property name="pictureHandlerFactory" ref="gravatarStdPictureHandlerFactory" />
 	</bean>
-	
+
 	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.PersonDisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
 		<property name="personRoleRenderer" ref="personRoleRenderer"/>
