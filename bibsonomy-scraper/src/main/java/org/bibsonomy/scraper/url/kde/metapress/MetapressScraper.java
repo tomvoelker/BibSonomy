@@ -27,13 +27,13 @@
 package org.bibsonomy.scraper.url.kde.metapress;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.HttpClient;
+import org.apache.http.HttpException;
+import org.apache.http.client.HttpClient;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -62,7 +62,7 @@ public class MetapressScraper extends AbstractUrlScraper {
 
 	private static final Pattern patternHref = Pattern.compile("content/([^/]*)/");
 
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	@Override
 	public String getInfo() {
@@ -106,9 +106,7 @@ public class MetapressScraper extends AbstractUrlScraper {
 					throw new ScrapingFailureException("convert to bibtex failed");
 				}
 				throw new ScrapingFailureException("ris download failed");
-			} catch (MalformedURLException ex) {
-				throw new InternalFailureException(ex);
-			} catch (IOException ex) {
+			} catch (IOException | HttpException ex) {
 				throw new InternalFailureException(ex);
 			}
 		}

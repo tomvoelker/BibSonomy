@@ -452,7 +452,7 @@ public class Group implements Serializable {
 	
 	public Set<GroupLevelPermission> getGroupLevelPermissions() {
 		if (this.groupLevelPermissions == null) {
-			this.groupLevelPermissions = new HashSet<GroupLevelPermission>();
+			this.groupLevelPermissions = new HashSet<>();
 		}
 		return this.groupLevelPermissions;
 	}
@@ -465,7 +465,7 @@ public class Group implements Serializable {
 	}
 
 	/**
-	 * @param communityPostInspection
+	 * @param groupLevelPermission
 	 */
 	public void addGroupLevelPermission(GroupLevelPermission groupLevelPermission) {
 		this.getGroupLevelPermissions().add(groupLevelPermission);

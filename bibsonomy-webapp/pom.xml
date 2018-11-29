@@ -410,13 +410,8 @@
 			<version>1.6.3</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.3.3</version>
 		</dependency>
 		<dependency>
 			<groupId>dom4j</groupId>
@@ -681,7 +676,6 @@
 			<artifactId>nekohtml</artifactId>
 			<version>1.9.21</version>
 		</dependency>
-		
 		<!-- TODO: shinding not compatible with newer version -->
 		<dependency>
 			<groupId>com.google.guava</groupId>

@@ -34,6 +34,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.search.es.ESConstants;
+import org.bibsonomy.search.es.index.converter.post.PublicationConverter;
 import org.bibsonomy.search.index.utils.SimpleFileContentExtractorService;
 import org.bibsonomy.testutil.TestUtils;
 import org.junit.Test;

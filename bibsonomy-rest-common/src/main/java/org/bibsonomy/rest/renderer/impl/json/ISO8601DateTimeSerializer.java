@@ -30,7 +30,6 @@ import java.io.IOException;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
@@ -48,7 +47,7 @@ public class ISO8601DateTimeSerializer extends StdSerializer<XMLGregorianCalenda
 	}
 	
 	@Override
-	public void serialize(final XMLGregorianCalendar value, final JsonGenerator jgen, final SerializerProvider provider) throws IOException, JsonGenerationException {
+	public void serialize(final XMLGregorianCalendar value, final JsonGenerator jgen, final SerializerProvider provider) throws IOException {
 		jgen.writeString(value.toXMLFormat());
 	}
 

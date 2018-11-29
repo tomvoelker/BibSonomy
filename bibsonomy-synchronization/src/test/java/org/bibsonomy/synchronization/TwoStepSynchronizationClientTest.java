@@ -78,7 +78,7 @@ public class TwoStepSynchronizationClientTest extends AbstractSynchronizationCli
 		"3d6ec7b6695976eeec379dcc55ae9cb1"  // no changes
 	};
 
-	private static final Map<Class<? extends Resource>, String[]> KEYS = new HashMap<Class<? extends Resource>, String[]>(2);
+	private static final Map<Class<? extends Resource>, String[]> KEYS = new HashMap<>(2);
 	static {
 		KEYS.put(Bookmark.class, MODIFIED_BOOKMARK_KEYS);
 		KEYS.put(BibTex.class, MODIFIED_PUBLICATION_KEYS);

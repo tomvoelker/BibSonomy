@@ -46,7 +46,9 @@ import org.bibsonomy.model.enums.GoldStandardRelation;
  * This class should be used by plugins. This way they don't have to implement
  * all methods from the interface DatabasePlugin. Furthermore they have access
  * to some basic database methods.
- * 
+ *
+ * FIXME: use default methods for the DatabasePlugin so this class does not have to implement all methods
+ *
  * @author Jens Illig
  * @author Christian Schenk
  * @author Anton Wilhelm
@@ -54,21 +56,6 @@ import org.bibsonomy.model.enums.GoldStandardRelation;
  */
 public class AbstractDatabasePlugin extends AbstractDatabaseManager implements DatabasePlugin {
 
-	@Override
-	public void onPublicationInsert(final Post<? extends BibTex> post, final DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onPublicationDelete(final int contentId, final DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onPublicationUpdate(final int newContentId, final int contentId, final DBSession session) {
-		// noop
-	}
-	
 	/**
 	 * @param username
 	 * @param groupId
@@ -118,7 +105,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	public void onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {
 		// noop
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onBookmarkMassUpdate(java.lang.String, int)
 	 */
@@ -223,7 +210,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	@Override
 	public void onPersonUpdate(String personId, DBSession session) {
 		// noop
-		
+
 	}
 
 	/* (non-Javadoc)

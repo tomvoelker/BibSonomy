@@ -32,12 +32,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -55,10 +51,7 @@ public class DeGruyterScraper extends AbstractUrlScraper {
 	private static final String SITE_URL = "http://www.degruyter.com/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	
-	private static final Pattern TAC = Pattern.compile("<input value=\"(.*)\" name=\"t:ac\" type=\"hidden\"/>");
-	private static final Pattern TFORMDATA = Pattern.compile("<input value=\"(H.*=)\" name=\"t:formdata\" type=\"hidden\"/>");
-	
-	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "degruyter.com"), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<>(Pattern.compile(".*" + "degruyter.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
