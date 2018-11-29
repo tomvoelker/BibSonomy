@@ -46,7 +46,7 @@
 			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator">
 				<constructor-arg ref="systemURI" />
 				<constructor-arg ref="esClient" />
-				<constructor-arg ref="goldStandardPublicationGenerationDBLogic" />
+				<constructor-arg ref="goldStandardBookmarkGenerationDBLogic" />
 				<constructor-arg ref="elasticsearchCommunityBookmarkEntityInformationProvider" />
 			</bean>
 		</constructor-arg>
