@@ -23,6 +23,7 @@ import java.util.Map;
 public class ReportDownloadView extends AbstractView {
 
 	private void exportProjects(ProjectReportingCommand command, OutputStream outputStream) throws IOException {
+		final ReportDownloadViewUtils utils = ReportDownloadViewUtils.INSTANCE;
 		final Exporter<Project> exporter;
 		switch (command.getFormat()) {
 			case "excel":
@@ -31,7 +32,8 @@ public class ReportDownloadView extends AbstractView {
 			default:
 				throw new UnsupportedFormatException(command.getFormat());
 		}
-		exporter.save(command.getProjects(), outputStream, null);
+		//TODO use subset of mappings?
+		exporter.save(command.getProjects(), outputStream, utils.getProjectMappings());
 	}
 
 	private void setResponseValues(ReportingCommand reportingCommand,

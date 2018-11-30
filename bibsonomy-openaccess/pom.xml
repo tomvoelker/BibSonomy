@@ -89,7 +89,7 @@
 		<dependency>
 			<groupId>org.swordapp</groupId>
 			<artifactId>sword-common</artifactId>
-			<version>1.2.0-SNAPSHOT</version>
+			<version>1.2.0</version>
 			<exclusions>
 				<!-- xmlParserAPIs is an old jar file name from xerces (cf http://stackoverflow.com/questions/11677572/dealing-with-xerces-hell-in-java-maven ) -->
 				<exclusion>
