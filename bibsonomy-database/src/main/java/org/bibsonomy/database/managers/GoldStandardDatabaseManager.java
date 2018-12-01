@@ -29,12 +29,14 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
@@ -148,28 +150,28 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	protected Set<RR> getRefencedByForPost(final String resourceHash, final DBSession session) {
 		final P param = this.createResourceParam(resourceHash);
 		param.setRelation(GoldStandardRelation.REFERENCE);
-		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRelatedBy", param, session));
+		return new HashSet<>((Collection<? extends RR>) this.queryForList("getGoldStandardRelatedBy", param, session));
 	}
 
 	@SuppressWarnings("unchecked")
 	protected Set<RR> getReferencePartOfThisPublication(final String resourceHash, final DBSession session) {
 		final P param = this.createResourceParam(resourceHash);
 		param.setRelation(GoldStandardRelation.PART_OF);
-		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRelatedBy", param, session));
+		return new HashSet<>((Collection<? extends RR>) this.queryForList("getGoldStandardRelatedBy", param, session));
 	}
 
 	@SuppressWarnings("unchecked")
 	private Set<RR> getReferenceThisPublicationIsPublishedIn(final String resourceHash, final DBSession session) {
 		final P param = this.createResourceParam(resourceHash);
 		param.setRelation(GoldStandardRelation.PART_OF);
-		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRelated", param, session));
+		return new HashSet<>((Collection<? extends RR>) this.queryForList("getGoldStandardRelated", param, session));
 	}
 
 	@SuppressWarnings("unchecked")
 	protected Set<RR> getReferencesForPost(final String interHash, final DBSession session) {
 		final P param = this.createResourceParam(interHash);
 		param.setRelation(GoldStandardRelation.REFERENCE);
-		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRelated", param, session));
+		return new HashSet<>((Collection<? extends RR>) this.queryForList("getGoldStandardRelated", param, session));
 	}
 
 	@Override
@@ -185,7 +187,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	}
 
 	@Override
-	public boolean createPost(final Post<R> post, final User loggedinUser, final DBSession session) {
+	public JobResult createPost(final Post<R> post, final User loggedinUser, final DBSession session) {
 		session.beginTransaction();
 		try {
 			final String resourceHash = post.getResource().getInterHash();
@@ -197,7 +199,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 				final ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, resourceHash);
 				session.addError(PostUtils.getKeyForCommunityPost(post), errorMessage);
 				session.commitTransaction();
-				return false;
+				return JobResult.buildFailure(Collections.singletonList(errorMessage));
 			}
 
 			post.setContentId(this.generalManager.getNewId(ConstantID.IDS_CONTENT_ID, session));
@@ -210,7 +212,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			session.endTransaction();
 		}
 
-		return true;
+		return JobResult.buildSuccess(post.getResource().getInterHash());
 	}
 
 	protected void insertPost(final Post<R> post, final DBSession session) {

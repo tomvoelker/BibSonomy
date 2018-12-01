@@ -26,10 +26,10 @@
  */
 package org.bibsonomy.scraper.url.kde.ieee;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.Scraper;
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.bibsonomy.scraper.junit.RemoteTestAssert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -50,7 +50,7 @@ public class IEEEXploreJournalProceedingsScraperTest {
 		final String selection = null;
 		final Class<? extends Scraper> scraperClass = org.bibsonomy.scraper.url.kde.ieee.IEEEXploreJournalProceedingsScraper.class;
 		final String resultFile = "IEEEXploreJournalProceedingsScraperUnitURLTest1.bib";
-		RemoteTestAssert.assertScraperResult(url, selection, scraperClass, resultFile);
+		assertScraperResult(url, selection, scraperClass, resultFile);
 	}
 
 	/**
@@ -62,6 +62,18 @@ public class IEEEXploreJournalProceedingsScraperTest {
 		final String selection = null;
 		final Class<? extends Scraper> scraperClass = org.bibsonomy.scraper.url.kde.ieee.IEEEXploreJournalProceedingsScraper.class;
 		final String resultFile = "IEEEXploreJournalProceedingsScraperUnitURLTest2.bib";
-		RemoteTestAssert.assertScraperResult(url, selection, scraperClass, resultFile);
+		assertScraperResult(url, selection, scraperClass, resultFile);
+	}
+	
+	/**
+	 * starts URL test 3
+	 */
+	@Test
+	public void urlTestRun3() {
+		final String url = "https://ieeexplore.ieee.org/document/6189346";
+		final String selection = null;
+		final Class<? extends Scraper> scraperClass = org.bibsonomy.scraper.url.kde.ieee.IEEEXploreJournalProceedingsScraper.class;
+		final String resultFile = "IEEEXploreJournalProceedingsScraperUnitURLTest3.bib";
+		assertScraperResult(url, selection, scraperClass, resultFile);
 	}
 }

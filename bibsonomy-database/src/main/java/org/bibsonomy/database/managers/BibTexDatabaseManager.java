@@ -45,6 +45,7 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
+import org.bibsonomy.common.information.JobInformation;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.params.BibTexParam;
@@ -513,8 +514,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	@Override
-	protected void onPostInsert(final Post<BibTex> post, final User loggedinUser, final DBSession session) {
-		this.plugins.onPublicationInsert(post, loggedinUser, session);
+	protected List<JobInformation> onPostInsert(final Post<BibTex> post, final User loggedinUser, final DBSession session) {
+		return this.plugins.onPublicationInsert(post, loggedinUser, session);
 	}
 
 	/*

@@ -67,6 +67,7 @@ import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
@@ -79,6 +80,7 @@ import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.queries.get.GetPersonByIdQuery;
+import org.bibsonomy.rest.client.queries.delete.DeleteResourcePersonRelationQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteCRISLinkQuery;
 import org.bibsonomy.rest.client.queries.get.GetConceptDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetFriendsQuery;
@@ -316,20 +318,22 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public List<String> createPosts(final List<Post<?>> posts) {
+	public List<JobResult> createPosts(final List<Post<?>> posts) {
 		/*
 		 * FIXME: this iteration should be done on the server, i.e.,
 		 * CreatePostQuery should support several posts ... although it's
 		 * probably not so simple.
 		 */
-		final List<String> resourceHashes = new LinkedList<String>();
+		final List<JobResult> jobResults = new LinkedList<>();
 		for (final Post<?> post : posts) {
 			final String hash = execute(new CreatePostQuery(this.authUser.getName(), post));
 			if (present(hash)) {
-				resourceHashes.add(hash);
+				jobResults.add(JobResult.buildSuccess(hash));
+			} else {
+				jobResults.add(JobResult.buildFailure(Collections.emptyList()));
 			}
 		}
-		return resourceHashes;
+		return jobResults;
 	}
 
 	@Override
@@ -358,7 +362,7 @@ public class RestLogic extends AbstractLogicInterface {
 		 * CreatePostQuery should support several posts ... although it's
 		 * probably not so simple.
 		 */
-		final List<String> resourceHashes = new LinkedList<String>();
+		final List<String> resourceHashes = new LinkedList<>();
 		final DatabaseException collectedException = new DatabaseException();
 		for (final Post<?> post : posts) {
 			final ChangePostQuery query = new ChangePostQuery(this.authUser.getName(), post.getResource().getIntraHash(), post);
@@ -566,6 +570,11 @@ public class RestLogic extends AbstractLogicInterface {
 	@Override
 	public void createResourceRelation(ResourcePersonRelation resourcePersonRelation) {
 		execute(new CreateResourcePersonRelationQuery(resourcePersonRelation));
+	}
+
+	@Override
+	public void removeResourceRelation(String personId, String interHash, int index, PersonResourceRelationType type) {
+		this.execute(new DeleteResourcePersonRelationQuery(personId, interHash, index, type));
 	}
 
 	@Override

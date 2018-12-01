@@ -27,11 +27,19 @@
 package org.bibsonomy.rest.strategy;
 
 import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
-import org.bibsonomy.rest.strategy.persons.*;
+import org.bibsonomy.rest.strategy.persons.DeletePersonResourceRelationStrategy;
+import org.bibsonomy.rest.strategy.persons.GetPersonStrategy;
+import org.bibsonomy.rest.strategy.persons.GetResourcePersonRelationsStrategy;
+import org.bibsonomy.rest.strategy.persons.PostPersonMergeStrategy;
+import org.bibsonomy.rest.strategy.persons.PostPersonStrategy;
+import org.bibsonomy.rest.strategy.persons.PostResourcePersonRelationStrategy;
+import org.bibsonomy.rest.strategy.persons.UpdatePersonStrategy;
 import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
 
 /**
@@ -40,6 +48,8 @@ import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
  * @author pda
  */
 public class PersonsHandler implements ContextHandler {
+
+	public static final String ERROR_MESSAGE = "cannot process url (no strategy available) - please check url syntax";
 
 	@Override
 	public Strategy createStrategy(Context context, URLDecodingPathTokenizer urlTokens, HttpMethod httpMethod) {
@@ -65,8 +75,28 @@ public class PersonsHandler implements ContextHandler {
 					return createPersonMergeStrategy(context, httpMethod, personId);
 				}
 				break;
+			// /persons/[personID]/relations/[interhash]/[type]/[index]
+			case 5:
+				personId = urlTokens.next();
+				final String relationsPath = urlTokens.next();
+				if (RESTConfig.RELATION_PARAM.equals(relationsPath)) {
+					final String interHash = urlTokens.next();
+					final String type = urlTokens.next();
+					final String index = urlTokens.next();
+
+					if (HttpMethod.DELETE.equals(httpMethod)) {
+						try {
+							return new DeletePersonResourceRelationStrategy(context, personId, interHash, Integer.parseInt(index), PersonResourceRelationType.valueOf(type.toUpperCase()));
+						} catch (final IllegalArgumentException e) {
+							throw new BadRequestOrResponseException(e);
+						}
+					}
+				}
+
+				break;
 		}
-		throw new NoSuchResourceException("cannot process url (no strategy available) - please check url syntax");
+
+		throw new NoSuchResourceException(ERROR_MESSAGE);
 	}
 
 	private Strategy createPersonMergeStrategy(Context context, HttpMethod httpMethod, String personId) {

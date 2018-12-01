@@ -2,6 +2,7 @@ package org.bibsonomy.common;
 
 import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.information.JobInformation;
 
 import java.util.List;
 
@@ -33,9 +34,39 @@ public class JobResult {
 		return jobResult;
 	}
 
+	/**
+	 * @param id the of the job
+	 * @return the JobResult with status ok
+	 */
+	public static JobResult buildSuccess(final String id) {
+		final JobResult jobResult = buildSuccess();
+		jobResult.setId(id);
+		return jobResult;
+	}
+
+	/** the id of the entity that was created, updated, deleted, … */
+	private String id;
+
 	private Status status;
 
 	private List<ErrorMessage> errors;
+
+	/** job information */
+	private List<JobInformation> info;
+
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	/**
 	 * @return the status
@@ -63,5 +94,19 @@ public class JobResult {
 	 */
 	public void setErrors(List<ErrorMessage> errors) {
 		this.errors = errors;
+	}
+
+	/**
+	 * @return the info
+	 */
+	public List<JobInformation> getInfo() {
+		return info;
+	}
+
+	/**
+	 * @param info the info to set
+	 */
+	public void setInfo(List<JobInformation> info) {
+		this.info = info;
 	}
 }

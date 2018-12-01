@@ -831,7 +831,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			}
 
 			log.debug("finally: creating a new post in the DB");
-			final String createdPost = this.logic.createPosts(Collections.singletonList(post)).get(0);
+			final String createdPost = this.logic.createPosts(Collections.singletonList(post)).get(0).getId();
 
 			/*
 			 * store intraHash for some later changes (file upload)

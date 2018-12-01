@@ -44,7 +44,7 @@ public class AmazonScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		final String url = "http://www.amazon.com/Semantic-Primer-Cooperative-Information-Systems/dp/0262012103/ref=pd_bbs_sr_1?ie=UTF8&amp;s=books&amp;qid=1200485020&amp;sr=1-1";
+		final String url = "https://www.amazon.com/Semantic-Primer-Cooperative-Information-Systems/dp/0262012103/ref=pd_bbs_sr_1?ie=UTF8&amp&s=books&amp&qid=1200485020&amp&sr=1-1";
 		final String resultFile = "AmazonScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, AmazonScraper.class, resultFile);
 	}

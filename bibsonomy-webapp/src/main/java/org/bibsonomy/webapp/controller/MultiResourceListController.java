@@ -31,7 +31,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.QueryScope;
@@ -71,7 +70,6 @@ public abstract class MultiResourceListController extends ResourceListController
 	 * retrieve a list of posts from the database logic and add them to the command object
 	 * 
 	 * @param <T> extends Resource
-	 * @param <V> extends ResourceViewComand
 	 * @param cmd the command object
 	 * @param resourceType the resource type
 	 * @param groupingEntity the grouping entity
@@ -85,10 +83,10 @@ public abstract class MultiResourceListController extends ResourceListController
 	 */
 	protected <T extends Resource> void addList(final MultiResourceViewCommand cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, String search, int itemsPerPage) {
 		// new list command to put result list into
-		final ListCommand<Post<T>> listCommand = new ListCommand<Post<T>>(cmd);
+		final ListCommand<Post<T>> listCommand = new ListCommand<>(cmd);
 		// retrieve posts		
 		log.debug("getPosts " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
-		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, QueryScope.LOCAL, Sets.<Filter>asSet(filter), order, null, null, listCommand.getStart(), listCommand.getStart() + itemsPerPage) );
+		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, QueryScope.LOCAL, Sets.asSet(filter), order, null, null, listCommand.getStart(), listCommand.getStart() + itemsPerPage));
 		cmd.getListCommand(resourceType).add(listCommand);
 
 		// list settings

@@ -306,6 +306,12 @@ public class DBLogic implements LogicInterface {
 			final User user = this.userDBManager.getUserDetails(userName, session);
 
 			/*
+			 * get the claimed person for the user
+			 */
+			final Person claimedPerson = this.personDBManager.getPersonByUser(user.getName(), session);
+			user.setClaimedPerson(claimedPerson);
+
+			/*
 			 * only admin and myself may see which group I'm a member of
 			 * group admins may see the details of the group's dummy user (in
 			 * that case, the group's name is user.getName()
@@ -1544,7 +1550,7 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.model.logic.PostLogicInterface#createPosts(java.util.List)
 	 */
 	@Override
-	public List<String> createPosts(List<Post<?>> posts) {
+	public List<JobResult> createPosts(List<Post<?>> posts) {
 		// TODO: Which of these checks should result in a DatabaseException,
 		this.ensureLoggedIn();
 		/*
@@ -1562,16 +1568,17 @@ public class DBLogic implements LogicInterface {
 		 * insert posts TODO: more efficient implementation (transactions,
 		 * deadlock handling, asynchronous, etc.)
 		 */
-		final List<String> hashes = new LinkedList<String>();
+		final List<JobResult> jobResults = new LinkedList<>();
+
+		final DatabaseException collectedException = new DatabaseException();
 		/*
 		 * open session to store all the posts
 		 */
-		final DBSession session = this.openSession();
-		final DatabaseException collectedException = new DatabaseException();
-		try {
+		try (final DBSession session = this.openSession()) {
 			for (final Post<?> post : posts) {
 				try {
-					hashes.add(this.createPost(post, session));
+					jobResults.add(this.createPost(post, session));
+					// FIXME: return these exceptions as jobresults
 				} catch (final DatabaseException dbex) {
 					collectedException.addErrors(dbex);
 					log.warn("error message due to exception", dbex);
@@ -1582,15 +1589,13 @@ public class DBLogic implements LogicInterface {
 					log.warn("'unspecified' error message due to exception", ex);
 				}
 			}
-		} finally {
-			session.close();
 		}
 
 		if (collectedException.hasErrorMessages()) {
 			throw collectedException;
 		}
 
-		return hashes;
+		return jobResults;
 	}
 
 	private List<Post<?>> replaceImportResources(final List<? extends Post<? extends Resource>> posts) {
@@ -1626,7 +1631,7 @@ public class DBLogic implements LogicInterface {
 	/**
 	 * Adds a post in the database.
 	 */
-	private <T extends Resource> String createPost(final Post<T> post, final DBSession session) {
+	private <T extends Resource> JobResult createPost(final Post<T> post, final DBSession session) {
 		final CrudableContent<T, GenericParam> manager = this.getFittingDatabaseManager(post);
 		post.getResource().recalculateHashes();
 
@@ -1645,11 +1650,11 @@ public class DBLogic implements LogicInterface {
 		 */
 		PostUtils.setGroupIds(post, this.loginUser);
 
-		manager.createPost(post, this.loginUser, session);
+		final JobResult jobResult = manager.createPost(post, this.loginUser, session);
 
 		// if we don't get an exception here, we assume the resource has
 		// been successfully created
-		return post.getResource().getIntraHash();
+		return jobResult;
 	}
 
 	/**

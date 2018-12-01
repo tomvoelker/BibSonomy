@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.database.plugin;
 
+import org.bibsonomy.common.information.JobInformation;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.ClipboardParam;
 import org.bibsonomy.database.params.BibTexExtraParam;
@@ -43,6 +44,9 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This interface supplies hooks which can be implemented by plugins. This way
@@ -65,8 +69,8 @@ public interface DatabasePlugin {
 	 * @param loggedinUser
 	 * @param session
 	 */
-	default void onPublicationInsert(Post<? extends BibTex> post, User loggedinUser, DBSession session) {
-		// noop
+	default List<JobInformation> onPublicationInsert(Post<? extends BibTex> post, User loggedinUser, DBSession session) {
+		return Collections.emptyList();
 	}
 
 	/**
@@ -148,11 +152,13 @@ public interface DatabasePlugin {
 	
 	/**
 	 * Called when a Bookmark is inserted.
-	 *  @param post
+	 * @param post
 	 * @param logginUser
 	 * @param session
 	 */
-	public void onBookmarkInsert(Post<? extends Resource> post, User logginUser, DBSession session);
+	default List<JobInformation> onBookmarkInsert(Post<? extends Resource> post, User logginUser, DBSession session) {
+		return Collections.emptyList();
+	}
 
 	/**
 	 * Called when a Bookmark is deleted.

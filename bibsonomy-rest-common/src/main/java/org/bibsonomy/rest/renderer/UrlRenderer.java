@@ -39,6 +39,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationDirection;
@@ -429,6 +430,22 @@ public class UrlRenderer {
 	public UrlBuilder createUrlBuilderForResourcePersonRelations(String personId) {
 		return createUrlBuilderForApi().addPathElement(RESTConfig.PERSONS_URL)
 				.addPathElement(personId).addPathElement(RESTConfig.RELATION_PARAM);
+	}
+
+	/**
+	 * creates a url builder for a person resource relation
+	 * @param personId
+	 * @param interHash
+	 * @param index
+	 * @param type
+	 * @return
+	 */
+	public UrlBuilder createUrlBuilderForPersonResourceRelation(String personId, String interHash, int index, PersonResourceRelationType type) {
+		final UrlBuilder builder = this.createUrlBuilderForResourcePersonRelations(personId);
+		builder.addPathElement(interHash);
+		builder.addPathElement(type.toString());
+		builder.addPathElement(String.valueOf(index));
+		return builder;
 	}
 
 	/**

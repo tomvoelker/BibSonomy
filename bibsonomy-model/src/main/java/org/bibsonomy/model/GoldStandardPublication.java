@@ -50,25 +50,25 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	
 	private void lacyLoadReferences() {
 		if (this.references == null) {
-			this.references = new HashSet<BibTex>();
+			this.references = new HashSet<>();
 		}
 	}
 	
 	private void lacyLoadReferencedBy() {
 		if (this.referencedBy == null) {
-			this.referencedBy = new HashSet<BibTex>();
+			this.referencedBy = new HashSet<>();
 		}
 	}
 	
 	private void lacyLoadreferencePartOfThisPublication() {
 		if (this.referencePartOfThisPublication == null) {
-			this.referencePartOfThisPublication = new HashSet<BibTex>();
+			this.referencePartOfThisPublication = new HashSet<>();
 		}
 	}
 	
 	private void lacyLoadReferenceThisPublicationIsPublishedIn() {
 		if (this.referenceThisPublicationIsPublishedIn == null) {
-			this.referenceThisPublicationIsPublishedIn = new HashSet<BibTex>();
+			this.referenceThisPublicationIsPublishedIn = new HashSet<>();
 		}
 	}
 	
@@ -108,7 +108,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	 */
 	@Override
 	public boolean removeFromReferenceThisPublicationIsPublishedIn(final BibTex publication) {
-		return this.referenceThisPublicationIsPublishedIn == null ? false : this.referenceThisPublicationIsPublishedIn.remove(publication);
+		return this.referenceThisPublicationIsPublishedIn != null && this.referenceThisPublicationIsPublishedIn.remove(publication);
 	}
 
 	/*
@@ -117,7 +117,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	 */
 	@Override
 	public boolean removeAllFromReferenceThisPublicationIsPublishedIn(final Set<? extends BibTex> publications) {
-		return this.referenceThisPublicationIsPublishedIn == null ? false : this.referenceThisPublicationIsPublishedIn.removeAll(publications);
+		return this.referenceThisPublicationIsPublishedIn != null && this.referenceThisPublicationIsPublishedIn.removeAll(publications);
 	}
 	
 	/* (non-Javadoc)
@@ -156,7 +156,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	 */
 	@Override
 	public boolean removeFromReferencePartOfThisPublication(final BibTex publication) {
-		return this.referencePartOfThisPublication == null ? false : this.referencePartOfThisPublication.remove(publication);
+		return this.referencePartOfThisPublication != null && this.referencePartOfThisPublication.remove(publication);
 	}
 
 	/*
@@ -165,7 +165,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	 */
 	@Override
 	public boolean removeAllFromReferencePartOfThisPublication(final Set<? extends BibTex> publications) {
-		return this.referencePartOfThisPublication == null ? false : this.referencePartOfThisPublication.removeAll(publications);
+		return this.referencePartOfThisPublication != null && this.referencePartOfThisPublication.removeAll(publications);
 	}
 	
 	/* (non-Javadoc)
@@ -204,7 +204,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	 */
 	@Override
 	public boolean removeFromReferences(final BibTex publication) {
-		return this.references == null ? false : this.references.remove(publication);
+		return this.references != null && this.references.remove(publication);
 	}
 
 	/*
@@ -213,7 +213,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	 */
 	@Override
 	public boolean removeAllFromReferences(final Set<? extends BibTex> publications) {
-		return this.references == null ? false : this.references.removeAll(publications);
+		return this.references != null && this.references.removeAll(publications);
 	}
 	
 	/*
@@ -256,7 +256,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	 */
 	@Override
 	public boolean removeAllFromReferencedBy(Set<? extends BibTex> resources) {
-		return this.referencedBy == null ? false : this.referencedBy.removeAll(resources);
+		return this.referencedBy != null && this.referencedBy.removeAll(resources);
 	}
 
 	/*
@@ -265,7 +265,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	 */
 	@Override
 	public boolean removeFromReferencedBy(BibTex resource) {
-		return this.referencedBy == null ? false : this.referencedBy.remove(resource);
+		return this.referencedBy != null && this.referencedBy.remove(resource);
 	}
 	
 	@Override

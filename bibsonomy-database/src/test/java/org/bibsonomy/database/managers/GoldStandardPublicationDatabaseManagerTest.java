@@ -26,20 +26,23 @@
  */
 package org.bibsonomy.database.managers;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.BibTex;
@@ -96,7 +99,8 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 
         // create post
         final Post<GoldStandardPublication> post = this.generateGoldPublication();
-        assertTrue(goldPubManager.createPost(post, null, this.dbSession));
+        final JobResult jobResult = goldPubManager.createPost(post, null, this.dbSession);
+        assertThat(jobResult.getStatus(), is(Status.OK));
 
         final String interhash = post.getResource().getInterHash();
         assertNotNull(goldPubManager.getPostDetails("", interhash, "", VISIBLE_GROUPS, this.dbSession).getResource());
