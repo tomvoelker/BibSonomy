@@ -12,8 +12,7 @@ CREATE TABLE `log_groupids` (
   `organization` BOOLEAN DEFAULT FALSE,
   `external_id` VARCHAR(255) DEFAULT NULL,
   `log_date` timestamp NULL DEFAULT NULL,
-  `log_user` varchar(30) DEFAULT NULL,
-                              PRIMARY KEY  (`group`)
+  `log_user` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -25,6 +24,5 @@ CREATE TABLE `log_group_memberships` (
   `group_role` int(10) NOT NULL default '2',
   `user_shared_documents` tinyint(1) default '0',
   `log_date` timestamp NULL DEFAULT NULL,
-  `log_user` varchar(30) DEFAULT NULL,
-  PRIMARY KEY (`group`,`user_name`)
+  `log_user` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
