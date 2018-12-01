@@ -99,7 +99,6 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 		query.setTags(tags); // override tags to remove system tags
 
 		// query the resource searcher
-		//TODO (dzo) full text search does not yet support filter for pdf only -> IMPLEMENT
 		//TODO (dzo) Do we really need the hashId in GetResourcesForGroup?
 
 		return this.databaseManager.getPostsByResourceSearch(param.getUserName(), param.getGroupNames(), query);
