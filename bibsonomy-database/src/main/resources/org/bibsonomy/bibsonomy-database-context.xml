@@ -33,15 +33,12 @@
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHashForUser" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHash" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTagNamesAndUser" parent="publicationChainElement" />
-				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForGroup" parent="publicationChainElement" />
-				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForGroupAndTag" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesViewable" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForUser" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesOfFriendsByUser" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesOfFriendsByTags" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFriends" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFollowedUsers" parent="publicationChainElement" />
-				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForGroup" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromClipboardForUser" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesFromInbox" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTaggedUserRelation" parent="publicationChainElement" />
@@ -67,15 +64,12 @@
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHashForUser" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHash" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTagNamesAndUser" parent="bookmarkChainElement" />
-				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForGroup" parent="bookmarkChainElement" />
-				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForGroupAndTag" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesViewable" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForUser" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesOfFriendsByUser" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesOfFriendsByTags" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFriends" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFollowedUsers" parent="bookmarkChainElement" />
-				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForGroup" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesFromInbox" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTaggedUserRelation" parent="bookmarkChainElement" />
 			</list>
@@ -108,14 +102,12 @@
 			<list>
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByResourceSearch" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByUser" />
-				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByGroup" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByFriendOfUser" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetAllTags" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetSimilarTags" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetRelatedTags" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsViewable" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByExpression" />
-				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetRelatedTagsForGroup" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByHash" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByHashForUser" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetPopularTags" />
@@ -209,7 +201,7 @@
 			</list>
 		</property>
 	</bean>
-	
+
 	<!-- document statistic chain -->
 	<bean id="documentStatisticsChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
@@ -219,7 +211,24 @@
 			</list>
 		</property>
 	</bean>
-	
+
+	<!-- get groups chain -->
+	<bean id="queryGroupsChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.group.get.GetGroupsByExternalId">
+						<constructor-arg ref="groupDatabaseManager" />
+				</bean>
+				<bean class="org.bibsonomy.database.managers.chain.group.get.GetPendingGroups">
+					<constructor-arg ref="groupDatabaseManager" />
+				</bean>
+				<bean class="org.bibsonomy.database.managers.chain.group.get.GetAllGroups">
+					<constructor-arg ref="groupDatabaseManager" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
 	<bean id="databaseValidator" class="org.bibsonomy.database.validation.DatabaseModelValidator">
 		<property name="databaseSchemaInformation" ref="dbSchemaInformation" />
 	</bean>
@@ -260,6 +269,7 @@
 	
 	<bean id="groupDatabaseManager" class="org.bibsonomy.database.managers.GroupDatabaseManager" factory-method="getInstance">
 		<property name="userDb" ref="userDatabaseManager" />
+		<property name="chain" ref="queryGroupsChain" />
 	</bean>
 	
 	<bean id="postDatabaseManager" class="org.bibsonomy.database.managers.PostDatabaseManager" abstract="true">
@@ -351,11 +361,13 @@
 			<map>
 				<entry key-ref="projectClass" value-ref="projectDatabaseManager" />
 				<entry key-ref="personClass" value-ref="personDatabaseManager" />
+				<entry key-ref="groupClass" value-ref="groupDatabaseManager" />
 			</map>
 		</property>
 		<property name="checkers">
 			<list>
 				<bean class="org.bibsonomy.database.managers.util.cris.ProjectPersonLinkDirectionChecker" />
+				<bean class="org.bibsonomy.database.managers.util.cris.GroupPersonLinkDirectionChecker" />
 			</list>
 		</property>
 		<property name="plugins" ref="databasePluginManager" />
@@ -373,10 +385,16 @@
 				<bean class="org.bibsonomy.database.plugin.plugins.GoldStandardPublicationPlugin" />
 				<bean class="org.bibsonomy.database.plugin.plugins.MetaDataPlugin" />
 				<bean class="org.bibsonomy.database.plugin.plugins.PersonPostConnectorPlugin">
-					<property name="personDatabaseManager" ref="personDatabaseManager" />
+					<constructor-arg ref="personDatabaseManager" />
+					<constructor-arg ref="groupDatabaseManager" />
+					<constructor-arg ref="crisLinkDatabaseManger" />
 				</bean>
 				<bean class="org.bibsonomy.database.plugin.plugins.ProjectPlugin" />
-				<bean class="org.bibsonomy.database.plugin.plugins.CRISLinkPlugin" />
+				<bean class="org.bibsonomy.database.plugin.plugins.CRISLinkPlugin">
+					<constructor-arg value="${system.cris}" />
+					<constructor-arg ref="personDatabaseManager" />
+					<constructor-arg ref="crisLinkDatabaseManger" />
+				</bean>
 			</list>
 		</property>
 	</bean>

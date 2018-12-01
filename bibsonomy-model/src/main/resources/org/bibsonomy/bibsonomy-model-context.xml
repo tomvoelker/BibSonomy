@@ -45,6 +45,10 @@
 		<constructor-arg value="org.bibsonomy.model.GoldStandardPublication" />
 	</bean>
 
+	<bean id="groupClass" class="java.lang.Class" factory-method="forName">
+		<constructor-arg value="org.bibsonomy.model.Group" />
+	</bean>
+
 	<bean id="projectClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="org.bibsonomy.model.cris.Project" />
 	</bean>

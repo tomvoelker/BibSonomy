@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TestLogging">
+	<select id="getAllParents" resultClass="int" parameterClass="int">
+		SELECT parent_group_id FROM `group_hierarchy` WHERE child_group_id = #groupId#
+	</select>
+
+	<select id="getLoggedGroupIds" resultClass="int" parameterClass="java.util.Map">
+		SELECT `group` FROM log_groupids
+	</select>
+
+	<select id="countOfLoggedGroupMemberships" resultClass="int" parameterClass="java.util.Map">
+		SELECT COUNT(*) FROM log_group_memberships
+	</select>
+</sqlMap>

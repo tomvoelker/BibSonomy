@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.database.plugin;
 
-import org.bibsonomy.common.information.JobInformation;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.ClipboardParam;
@@ -36,15 +35,11 @@ import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Person;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
-
-import java.util.List;
 
 /**
  * This class should be used by plugins. This way they don't have to implement
@@ -59,7 +54,7 @@ import java.util.List;
  * @author Stefan Stützer
  */
 public class AbstractDatabasePlugin extends AbstractDatabaseManager implements DatabasePlugin {
-	
+
 	/**
 	 * @param username
 	 * @param groupId
@@ -135,11 +130,6 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 
 	@Override
 	public void onUserUpdate(final String userName, final DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onChangeUserMembershipInGroup(final String userName, final int groupId, final DBSession session) {
 		// noop
 	}
 

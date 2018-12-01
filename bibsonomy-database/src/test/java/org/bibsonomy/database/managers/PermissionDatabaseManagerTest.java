@@ -308,4 +308,21 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		testUser1.addGroup(group);
 		permissionDb.ensureHasGroupLevelPermission(testUser1, GroupLevelPermission.COMMUNITY_POST_INSPECTION);
 	}
+
+	@Test
+	public void testIsMemberOfGroup() {
+
+		// user is a member of the group
+		assertTrue(permissionDb.isMemberOfGroup("rootgroup", "rootgroup", this.dbSession));
+
+		// user is member of a parent group
+		assertTrue(permissionDb.isMemberOfGroup("rootgroup", "childgroup1", this.dbSession));
+		assertTrue(permissionDb.isMemberOfGroup("rootgroup", "childgroup2", this.dbSession));
+		assertTrue(permissionDb.isMemberOfGroup("rootgroup", "childgroup3depth2", this.dbSession));
+		assertTrue(permissionDb.isMemberOfGroup("childgroup1", "childgroup3depth2", this.dbSession));
+
+		// user is neither a member of the group or one of the parent groups
+		assertFalse(permissionDb.isMemberOfGroup("childgroup2", "childgroup3depth2", this.dbSession));
+		assertFalse(permissionDb.isMemberOfGroup("childgroup3depth2", "rootgroup", this.dbSession));
+	}
 }

@@ -49,6 +49,7 @@ import org.bibsonomy.services.searcher.query.PostSearchQuery;
  * @param <R>  the resource
  * @param <P>  the param
  */
+//TODO (AD) Remove all group specific database handlers and be sure that everything points here!
 public abstract class GetResourcesByResourceSearch<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override
@@ -68,7 +69,7 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 		String firstYear = null;
 		String lastYear = null;
 		String entryType = null;
-		
+
 		/*
 		 * check system tags for negated and year tags
 		 */
@@ -98,6 +99,9 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 		query.setTags(tags); // override tags to remove system tags
 
 		// query the resource searcher
+		//TODO (dzo) full text search does not yet support filter for pdf only -> IMPLEMENT
+		//TODO (dzo) Do we really need the hashId in GetResourcesForGroup?
+
 		return this.databaseManager.getPostsByResourceSearch(param.getUserName(), param.getGroupNames(), query);
 	}
 }

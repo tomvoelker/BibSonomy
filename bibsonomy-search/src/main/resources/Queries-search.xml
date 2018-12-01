@@ -18,10 +18,14 @@
 	
 	<!-- get given group's members -->
 	<select id="getGroupMembersByGroupName" resultClass="string" parameterClass="string">
-		SELECT g.user_name 
-		FROM group_memberships g 
-		JOIN groupids gn USING (`group`)
-		WHERE gn.group_name = #groupName#
+		SELECT gm.user_name FROM `groupids` g
+		   JOIN `group_hierarchy` gh ON (gh.parent_group_id = g.group)
+		   JOIN `group_memberships` gm ON (gm.group = gh.child_group_id)
+	    WHERE g.group_name = #groupName#
+	    UNION
+	    SELECT g.user_name FROM group_memberships g
+	       JOIN  groupids gn USING (`group`)
+	    WHERE gn.group_name = #groupName#
 	</select>
 	
 	<!-- get all friends of the given user -->

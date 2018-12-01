@@ -111,7 +111,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.ResourceConverter#createNewResource()
+	 * @see org.bibsonomy.search.es.index.converter.post.ResourceConverter#createNewResource()
 	 */
 	@Override
 	protected BibTex createNewResource() {
@@ -120,7 +120,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertResourceInternal(org.bibsonomy.model.Resource, java.util.Map, boolean)
+	 * @see org.bibsonomy.search.es.index.converter.post.ResourceConverter#convertResourceInternal(org.bibsonomy.model.Resource, java.util.Map, boolean)
 	 */
 	@Override
 	protected void convertResourceInternal(final Post<BibTex> post, Map<String, Object> source, final boolean loadDocuments) {
@@ -221,7 +221,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertPostInternal(java.util.Map, org.bibsonomy.model.Post)
+	 * @see org.bibsonomy.search.es.index.converter.post.ResourceConverter#convertPostInternal(java.util.Map, org.bibsonomy.model.Post)
 	 */
 	@Override
 	protected void convertPostInternal(final Map<String, Object> source, Post<BibTex> post) {
@@ -279,28 +279,6 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 			}
 		}
 
-		jsonDocument.put(Fields.Publication.MONTH, resource.getMonth());
-		jsonDocument.put(Fields.Publication.NOTE, resource.getNote());
-		jsonDocument.put(Fields.Publication.NUMBER, resource.getNumber());
-		jsonDocument.put(Fields.Publication.ORGANIZATION, resource.getOrganization());
-		jsonDocument.put(Fields.Publication.PAGES, resource.getPages());
-		
-		jsonDocument.put(Fields.Publication.PRIVNOTE, resource.getPrivnote());
-		jsonDocument.put(Fields.Publication.PUBLISHER, resource.getPublisher());
-		jsonDocument.put(Fields.Publication.SCHOOL, resource.getSchool());
-		jsonDocument.put(Fields.Publication.SERIES, resource.getSeries());
-		
-		jsonDocument.put(Fields.Publication.TYPE, resource.getType());
-		jsonDocument.put(Fields.Publication.URL, resource.getUrl());
-		jsonDocument.put(Fields.Publication.VOLUME, resource.getVolume());
-		
-		jsonDocument.put(Fields.Publication.YEAR, resource.getYear());
-
-		/*
-		 * handle documents
-		 */
-		jsonDocument.put(Fields.Publication.DOCUMENTS, convertDocuments(resource.getDocuments()));
-
 		/*
 		 * handle the misc field
 		 */
@@ -330,24 +308,24 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 			jsonDocument.put(Fields.Publication.MISC_FIELDS, miscFields);
 		}
 
-		/*
-		 * handle person resource relations
-		 */
-		if (present(personResourceRelations)) {
-			final List<ResourcePersonRelation> otherResourcePersonRelations = filterPersonResourceRelations(personResourceRelations, buildPersonResourceRelationByTypesFilter(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR).negate());
+		jsonDocument.put(Fields.Publication.MONTH, resource.getMonth());
+		jsonDocument.put(Fields.Publication.NOTE, resource.getNote());
+		jsonDocument.put(Fields.Publication.NUMBER, resource.getNumber());
+		jsonDocument.put(Fields.Publication.ORGANIZATION, resource.getOrganization());
+		jsonDocument.put(Fields.Publication.PAGES, resource.getPages());
+		
+		jsonDocument.put(Fields.Publication.PRIVNOTE, resource.getPrivnote());
+		jsonDocument.put(Fields.Publication.PUBLISHER, resource.getPublisher());
+		jsonDocument.put(Fields.Publication.SCHOOL, resource.getSchool());
+		jsonDocument.put(Fields.Publication.SERIES, resource.getSeries());
+		
+		jsonDocument.put(Fields.Publication.TYPE, resource.getType());
+		jsonDocument.put(Fields.Publication.URL, resource.getUrl());
+		jsonDocument.put(Fields.Publication.VOLUME, resource.getVolume());
+		
+		jsonDocument.put(Fields.Publication.YEAR, resource.getYear());
 
-			final List<Map<String, String>> convertedOtherPersonResourceRelations = new LinkedList<>();
-
-			for (ResourcePersonRelation otherResourcePersonRelation : otherResourcePersonRelations) {
-				final Map<String, String> convertedOterPersonResourceRelation = new HashMap<>();
-				convertedOterPersonResourceRelation.put(Fields.Publication.PERSON_ID, otherResourcePersonRelation.getPerson().getPersonId());
-				convertedOterPersonResourceRelation.put(Fields.Publication.PERSON_RELATION_TYPE, otherResourcePersonRelation.getRelationType().getRelatorCode());
-
-				convertedOtherPersonResourceRelations.add(convertedOterPersonResourceRelation);
-			}
-
-			jsonDocument.put(Fields.Publication.OTHER_PERSON_RESOURCE_RELATIONS, convertedOtherPersonResourceRelations);
-		}
+		jsonDocument.put(Fields.Publication.DOCUMENTS, convertDocuments(resource.getDocuments()));
 	}
 
 	private static String getSpecialMiscFieldValue(Map<String, String> miscField, String key) {
@@ -422,7 +400,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertPostInternal(java.util.Map, org.bibsonomy.model.Post)
+	 * @see org.bibsonomy.search.es.index.converter.post.ResourceConverter#convertPostInternal(java.util.Map, org.bibsonomy.model.Post)
 	 */
 	@Override
 	protected void convertPostInternal(final Post<BibTex> post, final Map<String, Object> jsonDocument) {
