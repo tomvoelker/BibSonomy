@@ -20,12 +20,12 @@ public class PostIndexGenerationLogicTest extends AbstractDatabaseManagerTest {
 	private static final PostIndexGenerationLogic<BibTex> INDEX_GENERATION_LOGIC = (PostIndexGenerationLogic<BibTex>) SearchSpringContextWrapper.getBeanFactory().getBean("publicationGenerationDBLogic");
 
 	/**
-	 * tests {@link PostIndexGenerationLogic#getEntites(int, int)}
+	 * tests {@link PostIndexGenerationLogic#getEntities(int, int)}
 	 * @throws Exception
 	 */
 	@Test
 	public void testGetPostEntries() throws Exception {
-		final List<Post<BibTex>> posts = INDEX_GENERATION_LOGIC.getEntites(0, 100);
+		final List<Post<BibTex>> posts = INDEX_GENERATION_LOGIC.getEntities(0, 100);
 		assertEquals(22, posts.size());
 		// check for documents
 		for (final Post<BibTex> searchPost : posts) {

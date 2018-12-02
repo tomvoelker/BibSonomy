@@ -3,6 +3,8 @@ package org.bibsonomy.search.es.management.post;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import org.bibsonomy.common.JobResult;
+import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager;
@@ -116,9 +118,9 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 		 */
 		final Post<BibTex> publicationPost = generateTestPost(BibTex.class);
 		publicationPost.setUser(loggedinUser);
-		final boolean posted = PUBLICATION_DATABASE_MANAGER.createPost(publicationPost, loggedinUser, this.dbSession);
+		final JobResult jobResult = PUBLICATION_DATABASE_MANAGER.createPost(publicationPost, loggedinUser, this.dbSession);
 
-		assertThat(posted, is(true));
+		assertThat(jobResult.getStatus(), is(Status.OK));
 
 		this.updateIndex();
 
@@ -196,8 +198,8 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 		assertThat(afterDeleteTestuser1.size(), is(1));
 		assertThat(afterDeleteTestuser1.get(0).getUsers().size(), is(0));
 
-		final boolean normalPostReadded = PUBLICATION_DATABASE_MANAGER.createPost(normalPublicationPost, loggedinUser, this.dbSession);
-		assertThat(normalPostReadded, is(true));
+		final JobResult normalPostReaddedJobResult = PUBLICATION_DATABASE_MANAGER.createPost(normalPublicationPost, loggedinUser, this.dbSession);
+		assertThat(normalPostReaddedJobResult.getStatus(), is(Status.OK));
 
 		this.updateIndex();
 

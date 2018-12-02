@@ -9,12 +9,12 @@
 			<!-- check for new persons -->
 			(SELECT person_id
 			FROM person
-				WHERE person_change_id > #lastContentId#
+				WHERE person_change_id >= #lastContentId#
 			UNION
 			<!-- check for new person names -->
 			SELECT person_id
 			FROM person_name
-				WHERE person_change_id > #lastContentId#
+				WHERE person_change_id >= #lastContentId#
 			UNION
 			<!-- find persons where the person name was updated/deleted -->
 			SELECT person_id
@@ -38,7 +38,7 @@
 			(
 				SELECT *
 				FROM pub_person
-					WHERE person_change_id > #lastContentId#
+					WHERE person_change_id >= #lastContentId#
 				LIMIT #limit#
 				OFFSET #offset#
 			) AS ppr

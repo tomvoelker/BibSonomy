@@ -123,4 +123,7 @@
 	<typeAlias alias="GroupLevelPermission"	type="org.bibsonomy.common.enums.GroupLevelPermission" />
 	
 	<typeAlias alias="LayoutSettings"    type="org.bibsonomy.model.user.settings.LayoutSettings" />
+
+	<!-- database specific stuff -->
+	<typeAlias alias="logReason"		 type="org.bibsonomy.database.common.enums.LogReason" />
 </sqlMap>

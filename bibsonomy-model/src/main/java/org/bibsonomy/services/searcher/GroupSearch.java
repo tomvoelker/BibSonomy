@@ -1,0 +1,21 @@
+package org.bibsonomy.services.searcher;
+
+import java.util.List;
+
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.logic.query.GroupQuery;
+
+/**
+ * interface for group search
+ *
+ * @author dzo
+ */
+public interface GroupSearch {
+
+	/**
+	 * @param loggedinUser the loggedin user
+	 * @param query the query to filter the projects
+	 * @return all matching groups
+	 */
+	List<Group> getGroups(final String loggedinUser, final GroupQuery query);
+}

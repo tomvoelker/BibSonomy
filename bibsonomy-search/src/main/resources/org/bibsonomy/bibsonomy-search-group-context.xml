@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/util
+						http://www.springframework.org/schema/util/spring-util.xsd">
+
+
+	<bean id="groupSearchGenerationSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource" ref="searchDataSource" />
+		<property name="configLocation" value="classpath:generation/group/GroupIndexGenerationSQLMapConfig.xml" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+
+	<bean id="groupSearchGenerationSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="groupSearchGenerationSqlMapClient"/>
+	</bean>
+
+	<bean id="groupGenerationDBLogic" class="org.bibsonomy.search.index.generator.GeneralIndexGenerationLogic">
+		<constructor-arg ref="groupClass" />
+		<property name="sessionFactory" ref="groupSearchGenerationSessionFactory"/>
+	</bean>
+
+	<bean id="groupSearchInformationSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource" ref="searchDataSource" />
+		<property name="configLocation" value="classpath:information/group/GroupIndexInformationSQLMapConfig.xml" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+
+	<bean id="groupSearchInformationSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="groupSearchInformationSqlMapClient"/>
+	</bean>
+
+	<bean id="groupDatabaseInformationLogic" class="org.bibsonomy.search.index.database.group.GroupDatabaseInformationLogic">
+		<property name="sessionFactory" ref="groupSearchInformationSessionFactory"/>
+	</bean>
+
+	<bean id="groupSearchUpdateSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource" ref="searchDataSource" />
+		<property name="configLocation" value="classpath:update/group/GroupIndexUpdateSQLMapConig.xml" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+
+	<bean id="groupSearchUpdateSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="groupSearchUpdateSqlMapClient"/>
+	</bean>
+
+	<bean id="groupSearchUpdateLogic" class="org.bibsonomy.search.index.update.GeneralIndexUpdateLogic">
+		<constructor-arg ref="groupClass" />
+		<property name="sessionFactory" ref="groupSearchUpdateSessionFactory"/>
+	</bean>
+</beans>

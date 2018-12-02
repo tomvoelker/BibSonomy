@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="GroupGeneration">
+
+	<select id="getGroups" resultMap="SearchGroupCommon.fullGroup">
+		SELECT <include refid="groupColumns" />, gg.group_name AS parent_group_name
+		FROM
+			(
+				SELECT * FROM groupids g
+				WHERE g.`group` > #lastContentId#
+				ORDER BY g.`group` ASC
+				LIMIT #limit#
+			) AS g
+		LEFT JOIN groupids gg ON (g.parent = gg.`group`)
+		LEFT JOIN user u ON (u.user_name = g.group_name)
+	</select>
+
+	<select id="getGroupsCount" resultClass="int">
+		SELECT count(*) - 6 FROM groupids g <!-- 6 is the number of special groups in the table -->
+	</select>
+</sqlMap>

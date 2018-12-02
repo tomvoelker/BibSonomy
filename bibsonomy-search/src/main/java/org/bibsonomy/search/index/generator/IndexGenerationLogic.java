@@ -5,6 +5,8 @@ import java.util.List;
 /**
  * interface for retrieving all necessary information for generating an index
  * @param <T>
+ *
+ * @author dzo
  */
 public interface IndexGenerationLogic<T> {
 
@@ -20,5 +22,5 @@ public interface IndexGenerationLogic<T> {
 	 * @param limit
 	 * @return limit entities starting with last contetn id creater than the provided
 	 */
-	List<T> getEntites(int lastContenId, int limit);
+	List<T> getEntities(int lastContenId, int limit);
 }

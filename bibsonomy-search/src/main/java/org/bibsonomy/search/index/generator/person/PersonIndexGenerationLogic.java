@@ -30,7 +30,7 @@ public class PersonIndexGenerationLogic extends PersonDatabaseInformationLogic i
 	}
 
 	@Override
-	public List<Person> getEntites(int lastPersonId, int limit) {
+	public List<Person> getEntities(int lastPersonId, int limit) {
 		try (final DBSession session = this.openSession()) {
 			final SearchParam param = buildParam(lastPersonId, limit);
 			return this.queryForList("getPersons", param, Person.class, session);

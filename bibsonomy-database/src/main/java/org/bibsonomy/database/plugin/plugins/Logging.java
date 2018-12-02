@@ -27,6 +27,7 @@
 package org.bibsonomy.database.plugin.plugins;
 
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.enums.LogReason;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
@@ -363,13 +364,13 @@ public class Logging extends AbstractDatabasePlugin {
 
 	@Override
 	public void beforeRemoveGroupMembership(Group group, String username, User loggedInUser, DBSession session) {
-		final InsertGroupMembershipLog param = new InsertGroupMembershipLog(loggedInUser, username, group);
+		final InsertGroupMembershipLog param = new InsertGroupMembershipLog(loggedInUser, username, group, LogReason.DELETED);
 		this.insert("logGroupMembership", param, session);
 	}
 
 	@Override
 	public void beforeRemoveGroup(Group group, User loggedInUser, DBSession session) {
-		final InsertGroupLog param = new InsertGroupLog(loggedInUser, group);
+		final InsertGroupLog param = new InsertGroupLog(loggedInUser, group, LogReason.DELETED);
 		this.insert("logGroup", param, session);
 	}
 }

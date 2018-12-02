@@ -24,11 +24,11 @@ public class PersonResourcePersonRelationIndexGeneationLogicTest extends Abstrac
 	private static final PersonResourcePersonRelationIndexGeneationLogic PERSON_INDEX_GENERATIONLOGIC = SearchSpringContextWrapper.getBeanFactory().getBean(PersonResourcePersonRelationIndexGeneationLogic.class);
 
 	/**
-	 * test {@link PersonIndexGenerationLogic#getEntites(int, int)}
+	 * test {@link PersonIndexGenerationLogic#getEntities(int, int)}
 	 */
 	@Test
 	public void testGetEntities() {
-		final List<Person> entites = PERSON_INDEX_GENERATIONLOGIC.getEntites(0, 100);
+		final List<Person> entites = PERSON_INDEX_GENERATIONLOGIC.getEntities(0, 100);
 		assertThat(entites.size(), is(5));
 
 		final Person testPerson = entites.get(0);

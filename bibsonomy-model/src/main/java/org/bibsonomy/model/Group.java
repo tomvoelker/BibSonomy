@@ -53,11 +53,6 @@ public class Group implements Linkable, Serializable {
 	private String name;
 
 	/**
-	 * The parent group.
-	 */
-	private Group parent;
-
-	/**
 	 * The real (long) name of the group.
 	 */
 	private String realname;
@@ -115,6 +110,11 @@ public class Group implements Linkable, Serializable {
 	
 	private List<GroupMembership> memberships;
 	private List<GroupMembership> pendingMemberships;
+
+	/**
+	 * The parent group.
+	 */
+	private Group parent;
 
 	/** a list of all subgroups. */
 	private List<Group> subgroups;

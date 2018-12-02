@@ -31,7 +31,7 @@ public class CRISLinkIndexGenerationLogicProjectPersonTest extends AbstractDatab
 
 	@Test
 	public void testGetEntities() {
-		final List<CRISLink> entities = GENERATION_LOGIC.getEntites(0, 10);
+		final List<CRISLink> entities = GENERATION_LOGIC.getEntities(0, 10);
 
 		assertThat(entities.size(), is(1));
 

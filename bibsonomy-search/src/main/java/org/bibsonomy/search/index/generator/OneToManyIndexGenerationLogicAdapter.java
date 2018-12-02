@@ -24,7 +24,7 @@ public class OneToManyIndexGenerationLogicAdapter<E, M> implements OneToManyInde
 
 	@Override
 	public List<M> getToManyEntities(int lastContentId, int limit) {
-		return this.toManyGenerationLogic.getEntites(lastContentId, limit);
+		return this.toManyGenerationLogic.getEntities(lastContentId, limit);
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class OneToManyIndexGenerationLogicAdapter<E, M> implements OneToManyInde
 	}
 
 	@Override
-	public List<E> getEntites(int lastContenId, int limit) {
-		return this.entityGenerationLogic.getEntites(lastContenId, limit);
+	public List<E> getEntities(int lastContenId, int limit) {
+		return this.entityGenerationLogic.getEntities(lastContenId, limit);
 	}
 }
