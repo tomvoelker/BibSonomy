@@ -943,7 +943,7 @@
 					</div>
 				</div>
 			</div>
-			</div>
+		</div>
 		</jsp:attribute>
 	</layout:paneLayout>
 </jsp:root>

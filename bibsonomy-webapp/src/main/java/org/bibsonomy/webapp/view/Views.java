@@ -59,6 +59,8 @@ public enum Views implements View {
 	PERSON_SHOW("person/show"),
 	DISAMBIGUATION("disambiguation"),
 
+	AUTOLINK("person/autolink"),
+
 	/**
 	 * the page where a user can change his personal settings
 	 */

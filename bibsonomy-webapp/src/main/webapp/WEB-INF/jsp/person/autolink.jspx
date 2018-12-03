@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns="http://www.w3.org/1999/xhtml" version="2.0"
+          xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form">
+
+    <c:set var="title" value="${mtl:cleanBibtex(command.person.mainName.firstName)} ${mtl:cleanBibtex(command.person.mainName.lastName)}" />
+    <c:set var="hasClaimedPerson" value="${not empty command.person.user and not empty command.context.loginUser.name and command.person.user eq command.context.loginUser.name and not command.context.loginUser.spammer}" />
+    <c:set var="isAdmin" value="${command.context.loginUser.role eq 'ADMIN'}" />
+    <c:set var="hasClaimedOrIsAdmin" value="${hasClaimedPerson or isAdmin}" />
+
+    <layout:paneLayout pageTitle="${title}"
+                       headerLogoClass="publications"
+                       command="${command}"
+                       requPath="${requPath}">
+        <jsp:attribute name="heading">Wurst</jsp:attribute>
+        <jsp:attribute name="sidebar">
+			<!-- Links to the user who claimed this page or buttons to claim it/realease it -->
+            <h4><fmt:message key="person.sidebar.linkedUserTitle" /></h4>
+            <c:choose>
+                <c:when test='${hasClaimedPerson}'>
+                    <p><fmt:message key="person.sidebar.linkedUserUnlinkText" /></p>
+                    <bsform:button size="defaultSize" style="danger" dataTarget="#unlinkPerson" dataToggle="modal" valueKey="person.show.thatsNotMeButton" titleKey="person.show.thatsNotMeButton" />
+                </c:when>
+
+                <c:when test='${not empty command.person.user}'>
+                    <p><fmt:message key="person.sidebar.linkedUserClaimedText" /></p>
+                    <a href="${absoluteUrlGenerator.getUserUrlByUserName(command.person.user)}"><c:out value="${command.person.user}"/></a>
+                </c:when>
+
+                <c:when test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+                    <p><fmt:message key="person.sidebar.linkedUserClaimText" /></p>
+                    <bsform:button size="defaultSize" style="primary" dataTarget="#linkPerson" dataToggle="modal" valueKey="person.show.thatsMeButton" titleKey="person.show.thatsMeButton" />
+                </c:when>
+
+                <c:otherwise>
+                    <p><fmt:message key="person.sidebar.linkedUserDefaultInfoText" /></p>
+                </c:otherwise>
+                </c:choose>
+        </jsp:attribute>
+
+
+        <jsp:attribute name="content">
+            <div>
+                <h1>WURST</h1>
+            </div>
+        </jsp:attribute>
+    </layout:paneLayout>
+</jsp:root>
