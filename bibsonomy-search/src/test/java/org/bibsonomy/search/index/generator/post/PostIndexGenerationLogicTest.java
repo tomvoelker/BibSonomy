@@ -50,9 +50,9 @@ public class PostIndexGenerationLogicTest extends AbstractDatabaseManagerTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void testGetPostEntries() throws Exception {
+	public void testGetPostEntries() {
 		final List<Post<BibTex>> posts = INDEX_GENERATION_LOGIC.getEntites(0, 100);
-		assertEquals(22, posts.size());
+		assertEquals(14, posts.size());
 		// check for documents
 		for (final Post<BibTex> searchPost : posts) {
 			final BibTex publication = searchPost.getResource();
