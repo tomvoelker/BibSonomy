@@ -31,7 +31,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.util.EnumResolver;
@@ -46,22 +45,22 @@ public class EnumDeserializer extends com.fasterxml.jackson.databind.deser.std.E
 	 * default constructor
 	 * @param enumResolver 
 	 */
-	public EnumDeserializer(final EnumResolver<?> enumResolver) {
+	public EnumDeserializer(final EnumResolver enumResolver) {
 		super(enumResolver);
 	}
 
 	@Override
-	public Enum<?> deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+	public Object deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
 		final JsonToken curr = jp.getCurrentToken();
 		if (curr == JsonToken.VALUE_STRING || curr == JsonToken.FIELD_NAME) {
 			final String name = jp.getText().toUpperCase();
-			
-			final Enum<?> result = this._resolver.findEnum(name);
+
+			final Object result = this._lookupByName.find(name);
 			if (present(result)) {
 				return result;
 			}
 		}
-		
+
 		return super.deserialize(jp, ctxt);
 	}
 }

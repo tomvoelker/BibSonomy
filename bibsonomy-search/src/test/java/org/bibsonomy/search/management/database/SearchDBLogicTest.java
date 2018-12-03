@@ -57,7 +57,6 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
-import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.search.testutils.SearchSpringContextWrapper;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.junit.BeforeClass;
@@ -116,7 +115,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		final int groupId = -1;
 		final List<Integer> groups = new ArrayList<>();
 
-		List<SearchPost<BibTex>> posts = searchBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
+		List<Post<BibTex>> posts = searchBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
 		List<Post<BibTex>> postsRef = publicationDatabaseManager.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
 		int docCount = 0;
 		for (Post<BibTex> post : postsRef) {
@@ -204,8 +203,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 
 	/**
 	 * tests whether all posts whithin a given time range are retrieved
-	 * 
-	 * FIXME: fails too often - please fix! 
+	 *
 	 * @throws PersonListParserException 
 	 */
 	@Test
@@ -244,7 +242,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		final int groupId = -1;
 		final List<Integer> groups = new ArrayList<>();
 
-		List<SearchPost<Bookmark>> posts;
+		List<Post<Bookmark>> posts;
 		List<Post<Bookmark>> postsRef;
 
 		posts = searchBookmarkLogic.getPostsForUser(requestedUserName, 10, 0);
@@ -319,23 +317,6 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 	 */
 	private static String getTitleForId(int id) {
 		return "title "+ String.valueOf(id) + " " + SEARCH_MAGIC_TITLE;
-	}
-	
-	/**
-	 * tests {@link SearchDBLogic#getPostEntries(int, int)}
-	 * @throws Exception
-	 */
-	@Test
-	public void testGetPostEntries() throws Exception {
-		final List<SearchPost<BibTex>> posts = searchBibTexLogic.getPostEntries(0, 100);
-		assertEquals(14, posts.size());
-		// check for documents
-		for (final SearchPost<BibTex> searchPost : posts) {
-			final BibTex publication = searchPost.getResource();
-			if ("b77ddd8087ad8856d77c740c8dc2864a".equals(publication.getIntraHash()) && "testuser1".equals(searchPost.getUser().getName())) {
-				assertEquals(2, publication.getDocuments().size());
-			}
-		}
 	}
 	
 	/**

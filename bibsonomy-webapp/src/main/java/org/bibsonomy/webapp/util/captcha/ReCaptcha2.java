@@ -34,7 +34,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.ParseException;
@@ -131,8 +130,6 @@ public class ReCaptcha2 implements Captcha {
 			return new ReCaptcha2Response(success, extractErrorMessage(errorCodes));
 		} catch (final UnsupportedEncodingException e) {
 			return new ReCaptcha2Response(false, "Unsupported Encoding! Did not send a request.");
-		} catch (final HttpException e) {
-			return new ReCaptcha2Response(false, "HttpException: " + e.getStackTrace());
 		} catch (final IOException e) {
 			return new ReCaptcha2Response(false, "IOException: " + e.getStackTrace());
 		} catch (final ParseException e) {

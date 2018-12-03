@@ -80,10 +80,56 @@ public final class ElasticsearchUtils {
 	 * @param resourceType
 	 * @return returns the indexName based on the parameters
 	 */
+	@Deprecated
 	public static String getIndexNameWithTime(URI systemHome, Class<? extends Resource> resourceType) {
 		final String indexName = getIndexName(systemHome, resourceType);
 		long timeStamp = System.currentTimeMillis();
 		return indexName + "-" + timeStamp;
+	}
+
+	/**
+	 * returns the index name based on the home url and resource type
+	 * Index Name: systemurl + ResourceType + Unix time stamp
+	 * @param type
+	 * @param type
+	 * @return returns the indexName based on the parameters
+	 */
+	public static String getIndexNameWithTime(URI systemHome, final String type) {
+		final String indexName = getIndexName(systemHome, type);
+		long timeStamp = System.currentTimeMillis();
+		return indexName + "-" + timeStamp;
+	}
+
+	public static String getLocalAliasForType(final String type, final URI systemHome, final SearchIndexState state) {
+		final String prefix = getPrefixForState(state);
+
+		return prefix + "-" + getIndexName(systemHome, type);
+	}
+
+	private static final String getIndexName(final URI systemHome, final String type) {
+		final String hostname = normSystemHome(systemHome);
+		return hostname + "_" + type;
+	}
+
+	private static String getPrefixForState(SearchIndexState state) {
+		final String prefix;
+		switch (state) {
+			case ACTIVE:
+				prefix = ACTIVE_INDEX_ALIAS;
+				break;
+			case INACTIVE:
+				prefix = INACTIVE_INDEX_ALIAS;
+				break;
+			case STANDBY:
+				prefix = STANDBY_INDEX_ALIAS;
+				break;
+			case GENERATING:
+				prefix = ESConstants.TEMP_INDEX_PREFIX;
+				break;
+			default:
+				throw new IllegalArgumentException(state + " not supported");
+		}
+		return prefix;
 	}
 
 	/**
@@ -94,25 +140,10 @@ public final class ElasticsearchUtils {
 	 * @param state
 	 * @return returns the alias name
 	 */
+	@Deprecated
 	public static String getLocalAliasForResource(final Class<? extends Resource> resourceType, final URI systemHome, final SearchIndexState state) {
-		final String prefix;
-		switch (state) {
-		case ACTIVE:
-			prefix = ACTIVE_INDEX_ALIAS;
-			break;
-		case INACTIVE:
-			prefix = INACTIVE_INDEX_ALIAS;
-			break;
-		case STANDBY:
-			prefix = STANDBY_INDEX_ALIAS;
-			break;
-		case GENERATING:
-			prefix = ESConstants.TEMP_INDEX_PREFIX;
-			break;
-		default:
-			throw new IllegalArgumentException(state + " not supported");
-		}
-		
+		final String prefix = getPrefixForState(state);
+
 		return prefix + "-" + getIndexName(systemHome, resourceType);
 	}
 
@@ -163,7 +194,7 @@ public final class ElasticsearchUtils {
 	}
 
 	/**
-	 * @param state
+	 * @param date the date for the index
 	 * @return
 	 */
 	private static Date getDateForIndex(Date date) {
@@ -236,5 +267,14 @@ public final class ElasticsearchUtils {
 		}
 		
 		return null;
+	}
+
+	/**
+	 * the index used for saving the index sync states
+	 * @param systemURI the uri of the system (maybe more than one system is sharing a elasticsearch instance)
+	 * @return
+	 */
+	public static String getSearchIndexStateIndexName(final URI systemURI) {
+		return "." + normSystemHome(systemURI) + "_system_info";
 	}
 }

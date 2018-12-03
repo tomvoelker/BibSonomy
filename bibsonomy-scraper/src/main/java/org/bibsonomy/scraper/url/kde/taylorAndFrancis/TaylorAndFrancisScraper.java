@@ -35,14 +35,15 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.http.HttpException;
+import org.apache.http.client.HttpClient;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.id.DOIUtils;
 
@@ -56,7 +57,9 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper implements Refer
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 	
 	private static final String TANDF_HOST_NAME = "tandfonline.com";
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + TANDF_HOST_NAME), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + TANDF_HOST_NAME), AbstractUrlScraper.EMPTY_PATTERN)
+	);
 	
 	private static final String TANDF_BIBTEX_DOWNLOAD_PATH = "/action/downloadCitation";
 	private static final String DOWNLOADFILENAME = "tandf_rajp2080_124";
@@ -66,13 +69,8 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper implements Refer
 
 	private final static Pattern REF_PATTERN = Pattern.compile("(?s)<ul class=\"references\">(.*)</ul></div></div>");
 	
-	private static PostMethod setupPostMethod(PostMethod method, String doi) {
-		method.addParameter("doi", doi);
-		method.addParameter("downloadFileName", DOWNLOADFILENAME);
-		method.addParameter("format", "bibtex");
-		method.addParameter("direct", "true");
-		method.addParameter("include", "abs");
-		return method;
+	private static String setupPostMethod(String doi) {
+		return "doi=" + UrlUtils.safeURIEncode(doi) + "&downloadFileName=" + DOWNLOADFILENAME + "&format=bibtex&direct=true&include=abs";
 	}
 	
 	@Override
@@ -110,10 +108,8 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper implements Refer
 			
 			// TODO: document why we request the page, cookies?
 			WebUtils.getContentAsString(client, url.toExternalForm());
-			//post to receive the BibTeX file
-			final PostMethod method = new PostMethod(HTTP + url.getHost().toString() + TANDF_BIBTEX_DOWNLOAD_PATH);
-			
-			String bibtexEntry = WebUtils.getPostContentAsString(client, setupPostMethod(method, doi));
+
+			String bibtexEntry = WebUtils.getContentAsString(HTTP + url.getHost(), null, setupPostMethod(doi), null);
 			if (present(bibtexEntry)) {
 				/*
 				* clean the BibTeX for better format
@@ -126,7 +122,7 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper implements Refer
 				return true;
 			}
 			throw new ScrapingFailureException("getting BibTeX failed");
-		} catch (IOException ex) {
+		} catch (IOException | HttpException ex) {
 			throw new ScrapingException(ex);
 		}
 	}

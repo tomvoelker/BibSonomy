@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.database.plugin;
 
-import org.bibsonomy.common.information.JobInformation;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.ClipboardParam;
@@ -36,21 +35,17 @@ import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Person;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.cris.CRISLink;
-import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
-
-import java.util.List;
 
 /**
  * This class should be used by plugins. This way they don't have to implement
  * all methods from the interface DatabasePlugin. Furthermore they have access
  * to some basic database methods.
- * 
+ *
+ * FIXME: use default methods for the DatabasePlugin so this class does not have to implement all methods
+ *
  * @author Jens Illig
  * @author Christian Schenk
  * @author Anton Wilhelm
@@ -58,16 +53,6 @@ import java.util.List;
  */
 public class AbstractDatabasePlugin extends AbstractDatabaseManager implements DatabasePlugin {
 
-	@Override
-	public void onPublicationDelete(final int contentId, final DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onPublicationUpdate(final int newContentId, final int contentId, final DBSession session) {
-		// noop
-	}
-	
 	/**
 	 * @param username
 	 * @param groupId
@@ -107,7 +92,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	public void onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {
 		// noop
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onBookmarkMassUpdate(java.lang.String, int)
 	 */
@@ -212,7 +197,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	@Override
 	public void onPersonUpdate(Person oldPerson, Person newPerson, DBSession session) {
 		// noop
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -239,28 +224,4 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 		// noop
 	}
 
-	@Override
-	public void onProjectInsert(Project project, DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onProjectUpdate(Project oldProject, Project newProject, User loggedinUser, DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onProjectDelete(Project project, User loggedinUser, DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onCRISLinkUpdate(CRISLink oldCRISLink, CRISLink link, User loginUser, DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onCRISLinkDelete(CRISLink crisLink, User loginUser, DBSession session) {
-		// noop
-	}
 }

@@ -36,9 +36,8 @@ import org.bibsonomy.search.model.SearchIndexInfo;
  * general interface for all search index manager
  * 
  * @author dzo
- * @param <R> 
  */
-public interface SearchIndexManager<R extends Resource> {
+public interface SearchIndexManager {
 	
 	/**
 	 * delete the specified index

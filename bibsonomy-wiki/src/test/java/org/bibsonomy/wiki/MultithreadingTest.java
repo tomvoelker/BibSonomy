@@ -26,15 +26,20 @@
  */
 package org.bibsonomy.wiki;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
 import org.bibsonomy.model.User;
-import org.bibsonomy.wiki.CVWikiModel;
 import org.junit.Ignore;
 import org.junit.Test;
 
-
+/**
+ * FIXME: cleanup test
+ * @author tni
+ */
 public class MultithreadingTest extends Thread {
 	
 	private int count = 0;
@@ -59,8 +64,8 @@ public class MultithreadingTest extends Thread {
 			count++;
 			System.out.println(count);
 			final String rendered = model.render("<name/>");
-			org.junit.Assert.assertEquals("Rendered Realname was not the expected realname!", expected, rendered);
-	    }
+			assertEquals("Rendered Realname was not the expected realname!", expected, rendered);
+		}
 	//  the single tags are not thread-safe, since their constructor is called only once!  
 	   
     }

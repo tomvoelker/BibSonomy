@@ -127,7 +127,7 @@ public class ExtendedSyncClientTest extends AbstractSynchronizationClientTest {
 		book.setTitle("changed-hash");
 		wait(1);
 		post.setChangeDate(new Date());
-		clientLogic.updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_ALL);
+		clientLogic.updatePosts(Collections.singletonList(post), PostUpdateOperation.UPDATE_ALL);
 		/*
 		 * new hash: 6ca4e7931a99a90d3157fdb7318507fd
 		 */
@@ -144,7 +144,7 @@ public class ExtendedSyncClientTest extends AbstractSynchronizationClientTest {
 		book.setTitle("changed-again");
 		book.setUrl("http://www.changed-again.com");
 		post.setChangeDate(new Date());
-		serverLogic.updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_ALL);
+		serverLogic.updatePosts(Collections.singletonList(post), PostUpdateOperation.UPDATE_ALL);
 		/*
 		 * new hash: b33ad42e584f8bc3d73ad18332a62b26
 		 */
@@ -158,12 +158,12 @@ public class ExtendedSyncClientTest extends AbstractSynchronizationClientTest {
 		Date date = new Date();
 		Post<? extends Resource> post = earlier.getPostDetails(PUBLICATION_KEYS[pos], earlier.getAuthenticatedUser().getName());
 		post.setChangeDate(date);
-		earlier.updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_ALL);
+		earlier.updatePosts(Collections.singletonList(post), PostUpdateOperation.UPDATE_ALL);
 		wait(1);
 		date = new Date();
 		post = later.getPostDetails(PUBLICATION_KEYS[pos], later.getAuthenticatedUser().getName());
 		post.setChangeDate(date);
-		later.updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_ALL);
+		later.updatePosts(Collections.singletonList(post), PostUpdateOperation.UPDATE_ALL);
 	}
 	
 	private void updateServer(final ConflictResolutionStrategy strategy) {
@@ -178,7 +178,7 @@ public class ExtendedSyncClientTest extends AbstractSynchronizationClientTest {
 
 	private void changeLeftSyncAndCheck(final URI syncServer, final String leftHost, final User leftUser, final LogicInterface leftLogic, final String rightHost, final User rightUser, final LogicInterface rightLogic, final String deleteHash) {
 		final DateTime now = new DateTime();
-		final List<Post<?>> posts = new ArrayList<Post<?>>();
+		final List<Post<?>> posts = new ArrayList<>();
 		/*
 		 * add a post
 		 */
