@@ -635,6 +635,24 @@
 		<to type="redirect" last="true">/group/$1</to>
 	</rule>
 
+	<!-- /organizations -->
+	<rule>
+		<name>redirect /organizations</name>
+		<from>^/+organizations$</from>
+		<to type="redirect" last="true">/groups</to>
+	</rule>
+	<rule>
+		<name>redirect /organization/ORGANIZATION</name>
+		<from>^/+organization/+([^/]+)$</from>
+		<set type="parameter" name="requestedOrganization">${unescapePath:$1}</set>
+		<to last="true">/organization</to>
+	</rule>
+	<rule>
+		<name>redirect group/GROUP/</name>
+		<from>^/+group/+([^/]+)/$</from>
+		<to type="redirect" last="true">/group/$1</to>
+	</rule>
+
 	<!-- redirect for tag formular on /relevantfor/group/GROUP/TAG page -->
 	<rule>
 		<name>redirect /relevantfor/group/GROUP/TAG</name>
