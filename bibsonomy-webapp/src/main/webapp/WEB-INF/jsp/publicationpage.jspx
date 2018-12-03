@@ -47,8 +47,8 @@
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<nav:crumb nameKey="publications" leadingIcon="book" />
-					<nav:crumb name="${mtl:shorten(title, 50)}" active="true" />
+					<nav:crumb nameKey="publications" leadingIcon="fa-book" />
+					<nav:crumb name="${mtl:shorten(title, 75)}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
