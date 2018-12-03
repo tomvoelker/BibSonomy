@@ -3,9 +3,14 @@ package org.bibsonomy.webapp.view;
 import org.bibsonomy.common.exceptions.UnsupportedFormatException;
 import org.bibsonomy.export.ExcelExporter;
 import org.bibsonomy.export.Exporter;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.webapp.command.reporting.PersonReportingCommand;
 import org.bibsonomy.webapp.command.reporting.ProjectReportingCommand;
+import org.bibsonomy.webapp.command.reporting.PublicationReportingCommand;
 import org.bibsonomy.webapp.command.reporting.ReportingCommand;
 import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
@@ -36,6 +41,34 @@ public class ReportDownloadView extends AbstractView {
 		exporter.save(command.getProjects(), outputStream, utils.getProjectMappings());
 	}
 
+	private void exportPublications(PublicationReportingCommand command, OutputStream outputStream) throws IOException {
+		final ReportDownloadViewUtils utils = ReportDownloadViewUtils.INSTANCE;
+		final Exporter<Post<BibTex>> exporter;
+		switch (command.getFormat()) {
+			case "excel":
+				exporter = new ExcelExporter<>();
+				break;
+			default:
+				throw new UnsupportedFormatException(command.getFormat());
+		}
+		//TODO use subset of mappings?
+		exporter.save(command.getPublications(), outputStream, utils.getPublicationMappings());
+	}
+
+	private void exportPersons(PersonReportingCommand command, OutputStream outputStream) throws IOException {
+		final ReportDownloadViewUtils utils = ReportDownloadViewUtils.INSTANCE;
+		final Exporter<Person> exporter;
+		switch (command.getFormat()) {
+			case "excel":
+				exporter = new ExcelExporter<>();
+				break;
+			default:
+				throw new UnsupportedFormatException(command.getFormat());
+		}
+		//TODO use subset of mappings?
+		exporter.save(command.getPersonList(), outputStream, utils.getPersonMappings());
+	}
+
 	private void setResponseValues(ReportingCommand reportingCommand,
 																 HttpServletResponse response) throws UnsupportedEncodingException {
 		response.setHeader("Content-Disposition", "inline; filename*='" + StringUtils.CHARSET_UTF_8.toLowerCase() + "'" +
@@ -54,6 +87,20 @@ public class ReportDownloadView extends AbstractView {
 			setResponseValues(command, response);
 			response.setContentLength((int) document.length());
 			exportProjects(command, output);
+		}
+		if (object instanceof PersonReportingCommand) {
+			final PersonReportingCommand command = (PersonReportingCommand) object;
+			final File document = new File(command.getPathToFile());
+			setResponseValues(command, response);
+			response.setContentLength((int) document.length());
+			exportPersons(command, output);
+		}
+		if (object instanceof PublicationReportingCommand) {
+			final PublicationReportingCommand command = (PublicationReportingCommand) object;
+			final File document = new File(command.getPathToFile());
+			setResponseValues(command, response);
+			response.setContentLength((int) document.length());
+			exportPublications(command, output);
 		}
 		output.close();
 	}

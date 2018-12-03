@@ -269,6 +269,16 @@ public enum Views implements View {
 	 */
 	PROJECTS_REPORTING("reporting/projects"),
 
+	/**
+	 * publication reporting
+	 */
+	PUBLICATIONS_REPORTING("reporting/publications"),
+
+	/**
+	 * person reporting
+	 */
+	PERSONS_REPORTING("reporting/persons"),
+
 	/* *****************************************************
 	 * OpenSocial Views ****************************************************
 	 */

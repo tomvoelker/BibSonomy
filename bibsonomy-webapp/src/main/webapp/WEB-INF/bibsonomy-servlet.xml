@@ -562,9 +562,41 @@
 						<property name="controllerBeanName" value="projectReportingPageController"/>
 						<property name="allowedFields">
 							<list>
-								<value>requestedGroup</value>
-								<value>transposeMatrix</value>
-								<value>requestedTags</value>
+								<value>format</value>
+								<value>fieldKeys</value>
+								<value>search</value>
+								<value>type</value>
+								<value>startDate</value>
+								<value>endDate</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/reporting/publications">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="publicationReportingPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>format</value>
+								<value>fieldKeys</value>
+								<value>search</value>
+								<value>startDate</value>
+								<value>endDate</value>
+								<value>order</value>
+								<value>groupingName</value>
+								<value>filters</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/reporting/persons">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="personReportingPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>format</value>
+								<value>fieldKeys</value>
+								<value>search</value>
 							</list>
 						</property>
 					</bean>
@@ -975,9 +1007,16 @@
 	
 	<bean id="projectReportingPageController" class="org.bibsonomy.webapp.controller.reporting.ProjectReportingPageController" scope="request">
 		<property name="logic" ref="logic"/>
-		<property name="maxQuerySize" value="${database.maxQuerySize}" />
-	</bean>	
-	
+	</bean>
+
+	<bean id="publicationReportingPageController" class="org.bibsonomy.webapp.controller.reporting.PublicationReportingPageController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+
+	<bean id="personReportingPageController" class="org.bibsonomy.webapp.controller.reporting.PersonReportingPageController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+
 	<bean id="groupsPageController" class="org.bibsonomy.webapp.controller.GroupsPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>

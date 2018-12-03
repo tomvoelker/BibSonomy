@@ -1,7 +1,10 @@
 package org.bibsonomy.webapp.view;
 
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.cris.Project;
 
 import java.text.SimpleDateFormat;
@@ -19,6 +22,7 @@ public enum ReportDownloadViewUtils {
 
 	private final static HashMap<String, Function<Project, String>> PROJECT_FIELD_MAPPINGS = new HashMap<>();
 	private final static HashMap<String, Function<Person, String>> PERSON_FIELD_MAPPINGS = new HashMap<>();
+	private final static HashMap<String, Function<Post<BibTex>, String>> PUBLICATION_FIELD_MAPPINGS = new HashMap<>();
 
 	static {
 		PROJECT_FIELD_MAPPINGS.put("title", Project::getTitle);
@@ -45,6 +49,14 @@ public enum ReportDownloadViewUtils {
 		//TODO add cris links
 	}
 
+	static {
+		PUBLICATION_FIELD_MAPPINGS.put("description", Post::getDescription);
+		PUBLICATION_FIELD_MAPPINGS.put("tags", p -> p.getTags().stream().map(Tag::getName).
+						collect(Collectors.joining(" ")));
+		PUBLICATION_FIELD_MAPPINGS.put("date", p -> formatDate(p.getDate()));
+		//TODO what to include from posts?
+	}
+
 	private static String formatDate(Date date) {
 		return new SimpleDateFormat(DATE_FORMAT).format(date);
 	}
@@ -55,6 +67,10 @@ public enum ReportDownloadViewUtils {
 
 	public Map<String, Function<Person, String>> getPersonMappings() {
 		return PERSON_FIELD_MAPPINGS;
+	}
+
+	public Map<String, Function<Post<BibTex>, String>> getPublicationMappings() {
+		return PUBLICATION_FIELD_MAPPINGS;
 	}
 
 	public Map<String, Function<?, String>> getSubMap(Map<String, Function<?, String>> fullMap,
