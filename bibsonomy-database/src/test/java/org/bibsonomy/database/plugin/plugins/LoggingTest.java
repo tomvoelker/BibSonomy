@@ -50,6 +50,7 @@ import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.ParamUtils;
@@ -147,7 +148,8 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void removeUserFromGroup() {
 		testDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID);
-		pluginRegistry.onChangeUserMembershipInGroup("username", 1, this.dbSession);
+		final Group testgroup1 = groupDb.getGroup("", "testgroup1", false, false, this.dbSession);
+		pluginRegistry.onChangeUserMembershipInGroup(testgroup1, "username", USER_TESTUSER_1, this.dbSession);
 	}
 
 	/**
@@ -308,9 +310,9 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void onTagRelationDeleteSQL() {
-		final List<TagIndex> tagIndex = new ArrayList<TagIndex>();
+		final List<TagIndex> tagIndex = new ArrayList<>();
 		final String user = "jaeschke", lower = "shannon", upper = "researcher";
-		final List<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		final List<Integer> visibleGroupIDs = new ArrayList<>();
 		tagIndex.add(new TagIndex("researcher", 1));
 		final int countBefore = publicationDb.getPostsByConceptForUser(user, user, visibleGroupIDs, tagIndex, false, 100, 0, null, this.dbSession).size();
 		final TagRelationParam trp = new TagRelationParam();
@@ -338,7 +340,8 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 
 		int result = testDb.countGroup(param);
 		assertEquals(0, result);
-		groupDb.removeUserFromGroup(groupname, user, false, this.dbSession);
+
+		groupDb.removeUserFromGroup(groupname, user, false, USER_TESTUSER_1, this.dbSession);
 		result = testDb.countGroup(param);
 		assertEquals(1, result);
 	}

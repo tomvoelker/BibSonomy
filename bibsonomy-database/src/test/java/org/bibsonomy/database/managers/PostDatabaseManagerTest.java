@@ -78,6 +78,7 @@ public abstract class PostDatabaseManagerTest<R extends Resource> extends Abstra
 	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostsByConceptForGroup(java.lang.String, java.util.List, java.lang.String, java.util.List, int, int, java.util.Collection, org.bibsonomy.database.common.DBSession)}.
 	 */
 	@Test
+	@Ignore // group posts are requested using the full text search
 	public abstract void testGetPostsByConceptForGroup();
 
 	/**

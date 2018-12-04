@@ -30,6 +30,8 @@ import java.io.Writer;
 import java.util.List;
 
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.logic.query.GroupQuery;
+import org.bibsonomy.model.logic.querybuilder.GroupQueryBuilder;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.UrlBuilder;
@@ -38,12 +40,14 @@ import org.bibsonomy.util.UrlBuilder;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
 public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>> {
+	private final String externalId;
 	
 	/**
 	 * @param context
 	 */
 	public GetListOfGroupsStrategy(final Context context) {
 		super(context);
+		externalId = context.getStringAttribute("externalId", null);
 	}
 
 	@Override
@@ -58,7 +62,10 @@ public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>
 
 	@Override
 	protected List<Group> getList() {
-		return this.getLogic().getGroups(false, null, getView().getStartValue(), getView().getEndValue());
+		final GroupQuery groupQuery = new GroupQueryBuilder().setStart(this.getView().
+				getStartValue()).setEnd(this.getView().getEndValue()).setPending(false).
+				setExternalId(externalId).createGroupQuery();
+		return this.getLogic().getGroups(groupQuery);
 	}
 
 	@Override

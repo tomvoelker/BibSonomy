@@ -1,5 +1,6 @@
 package org.bibsonomy.database.common.enums;
 
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.cris.Linkable;
@@ -19,7 +20,9 @@ public enum CRISEntityType {
 
 	PERSON(2),
 
-	PROJECT(3);
+	PROJECT(3),
+
+	GROUP(4);
 
 	private final int id;
 
@@ -41,6 +44,7 @@ public enum CRISEntityType {
 		CLASS_CRIS_ENTITY_TYPE_MAP.put(Project.class, PROJECT);
 		CLASS_CRIS_ENTITY_TYPE_MAP.put(Post.class, PUBLICATION);
 		CLASS_CRIS_ENTITY_TYPE_MAP.put(Person.class, PERSON);
+		CLASS_CRIS_ENTITY_TYPE_MAP.put(Group.class, GROUP);
 	}
 
 

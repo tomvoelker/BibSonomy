@@ -47,6 +47,7 @@ import org.bibsonomy.model.Resource;
  * @param <R>  the resource
  * @param <P>  the param
  */
+//TODO (AD) Remove all group specific database handlers and be sure that everything points here!
 public abstract class GetResourcesByResourceSearch<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override
@@ -83,6 +84,9 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 			}
 		}
 		// query the resource searcher
+		//TODO (dzo) full text search does not yet support filter for pdf only -> IMPLEMENT
+		//TODO (dzo) Do we really need the hashId in GetResourcesForGroup?
+
 		return this.databaseManager.getPostsByResourceSearch(param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getRelationTags(), param.getGroupNames(),param.getSearchType(), param.getSearch(), param.getTitle(), param.getAuthor(), tagIndex, year, firstYear, lastYear, negatedTags, param.getOrder(), param.getLimit(), param.getOffset());
 	}
 }

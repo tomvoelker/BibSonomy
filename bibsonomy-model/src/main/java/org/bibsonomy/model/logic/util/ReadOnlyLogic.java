@@ -80,6 +80,7 @@ import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.Query;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
@@ -407,6 +408,14 @@ public class ReadOnlyLogic implements LogicInterface {
 	@Override
 	public List<Group> getGroups(boolean pending, String userName, int start, int end) {
 		return this.logicinterface.getGroups(pending, null, start, end);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(query)
+	 */
+	@Override
+	public List<Group> getGroups(GroupQuery query) {
+		return this.logicinterface.getGroups(query);
 	}
 
 	/* (non-Javadoc)

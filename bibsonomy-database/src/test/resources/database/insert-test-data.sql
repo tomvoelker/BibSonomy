@@ -237,20 +237,21 @@ INSERT INTO `friends` VALUES
 -- 
 -- Data for table `groupids`
 -- 
-INSERT INTO `groupids` (`group_name`, `group`, `parent`, `privlevel`, `sharedDocuments`) VALUES
-('public',          -2147483648, NULL, 1, 0),
-('private',         -2147483647, NULL, 1, 0),
-('friends',         -2147483646, NULL, 1, 0),
-('public',          0,           NULL, 1, 0),
-('private',         1,           NULL, 1, 0),
-('friends',         2,           NULL, 1, 0),
-('testgroup1',      3,           NULL, 0, 1),
-('testgroup2',      4,           NULL, 1, 0),
-('testgroup3',      5,           NULL, 2, 0),
-('testgroup4',      6,           NULL, 2, 1),
-('rootgroup',       9,           NULL, 2, 1),
-('childgroup1',     10,             9, 2, 1),
-('childgroup2',     11,             9, 2, 1);
+INSERT INTO `groupids` (`group_name`, `group`, `parent`, `privlevel`, `sharedDocuments`, `external_id`) VALUES
+('public',          -2147483648, NULL,  1, 0, NULL),
+('private',         -2147483647, NULL,  1, 0, NULL),
+('friends',         -2147483646, NULL,  1, 0, NULL),
+('public',          0,           NULL,  1, 0, NULL),
+('private',         1,           NULL,  1, 0, NULL),
+('friends',         2,           NULL,  1, 0, NULL),
+('testgroup1',      3,           NULL,  0, 1, 'extid1'),
+('testgroup2',      4,           NULL,  1, 0, 'extid2'),
+('testgroup3',      5,           NULL,  2, 0, 'extid3'),
+('testgroup4',      6,           NULL,  2, 1, NULL),
+('rootgroup',       9,           NULL,  2, 1, NULL),
+('childgroup1',     10,             9,  2, 1, NULL),
+('childgroup2',     11,             9,  2, 1, NULL),
+('childgroup3depth2', 12,           10, 2, 1, NULL);
 
 -- 
 -- Data for table `pending_groupids`
@@ -276,10 +277,20 @@ INSERT INTO `group_memberships` VALUES
 ('testgroup3',  6, 6, '2007-01-01 01:01:01', 3, 0),
 ('rootgroup',   9, 9, '2007-01-01 01:01:01', 3, 0),
 ('childgroup1', 10, 10, '2007-01-01 01:01:01', 3, 0),
-('childgroup2', 11, 11, '2007-01-01 01:01:01', 3, 0);
+('childgroup2', 11, 11, '2007-01-01 01:01:01', 3, 0),
+('childgroup3depth2', 12, 12, '2007-01-01 01:01:01', 3, 0),
+('testuser4', 9, 9, '2007-01-01 01:01:01', 3, 0),
+('testuser4', 3, 9, '2007-01-01 01:01:01', 3, 0),
+('testuser4', 10, 9, '2007-01-01 01:01:01', 3, 0);
 
 
 
+
+INSERT INTO `group_hierarchy` VALUES
+(10,  9),
+(11,  9),
+(12, 10),
+(12,  9);
 
 -- 
 -- Data for table `ids`
@@ -299,7 +310,8 @@ INSERT INTO `ids` VALUES
 (16, 12, 'sync_service_id'),
 (17, 36, 'person_change_id'),
 (18, 3, 'project_id'),
-(19, 2, 'cris_link_id');
+(19, 2, 'cris_link_id'),
+(20,12, 'group_id');
 
 
 --
@@ -628,6 +640,7 @@ INSERT INTO `user` (`user_name`,`user_email`,`user_password`,`user_password_salt
 
 ('childgroup1',  'childgroup1@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/childgroup1', 'Child Group 1', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
 ('childgroup2',  'childgroup2@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/childgroup2', 'Child Group 2', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
+('childgroup3depth2',  'childgroup3depth2@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/childgroup3depth2', 'Child Group 3 Depth 2', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
 ('testspammer', 'testspammer@bibsonomy.org', 'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/',                 'Test Spammer', 1, 'http://sfxserv.rug.ac.be:8888/rug', '2007-02-02 02:02:02', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
 ('testspammer2', 'testspammer@bibsonomy.org', 'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/',                 'Test Spammer', 1, 'http://sfxserv.rug.ac.be:8888/rug', '2007-02-02 02:02:02', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
 ('testuser1',   'testuser1@bibsonomy.org',   'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/user/testuser1',   'Test User 1',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'rja',     '1815-12-10 00:00:00', 0,  'en', 0, 1, 3),

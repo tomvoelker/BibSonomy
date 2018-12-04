@@ -146,7 +146,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		return defaultValue;
 	}
 
-	
+
 	/**
 	 * get tag cloud for given search query for the Shared Resource System
 	 * 

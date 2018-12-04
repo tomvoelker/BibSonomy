@@ -27,7 +27,7 @@
 package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.testutil.Assert.assertTagsByName;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -384,11 +384,11 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		 * testuser1 is also member of group 4
 		 */
 		// get all posts of testuser1 (and testuser2) which are public or friends + private posts of testuser1
-		final List<Integer> visibleGroupIDsUser2 = new LinkedList<Integer>();
+		final List<Integer> visibleGroupIDsUser2 = new LinkedList<>();
 		visibleGroupIDsUser2.add(PUBLIC_GROUP_ID);
 		visibleGroupIDsUser2.add(TESTGROUP1_ID); // both users are members of group 3
 		
-		final List<Integer> visibleGroupIDsUser1 = new LinkedList<Integer>(visibleGroupIDsUser2);
+		final List<Integer> visibleGroupIDsUser1 = new LinkedList<>(visibleGroupIDsUser2);
 		visibleGroupIDsUser1.add(TESTGROUP2_ID); // user 1 is also member of group 4
 		
 		final List<Post<Bookmark>> posts = bookmarkDb.getPostsForGroup(TESTGROUP1_ID, visibleGroupIDsUser1, TESTUSER1_NAME, HashID.INTRA_HASH, null, null, 20, 0, null, this.dbSession);
@@ -608,7 +608,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	 */
 	@Test
 	public void getContentIDForBookmark() {
-		assertThat(bookmarkDb.getContentIdForPost("20592a292e53843965c1bb42bfd51876", TESTUSER2_NAME, this.dbSession), equalTo(6));
+		assertThat(bookmarkDb.getContentIdForPost("20592a292e53843965c1bb42bfd51876", TESTUSER2_NAME, this.dbSession), is(6));
 	}
 	
 	/**
@@ -636,7 +636,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	}
 
 	/**
-	 * tests testGetPostssByConceptForGroup
+	 * tests testGetPostsByConceptForGroup
 	 * 
 	 * visibleGroupIDs must only be set, if ( groupId == -1 && userName != null ) && userName != requestedUserName
 	 * requestedUserName must be set
