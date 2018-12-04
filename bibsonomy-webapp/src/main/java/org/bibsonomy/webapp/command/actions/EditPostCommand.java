@@ -102,6 +102,8 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 
 	private List<JobResult> jobResults;
 
+	private List<Post<RESOURCE>> abstractPosts;
+
 	/**
 	 * stores an id, e.g. for mapping recommendations to posts
 	 */
@@ -559,5 +561,19 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 */
 	public void setJobResults(List<JobResult> jobResults) {
 		this.jobResults = jobResults;
+	}
+
+	/**
+	 * @return
+	 */
+	public List<Post<RESOURCE>> getAbstractPosts() {
+		return abstractPosts;
+	}
+
+	/**
+	 * @param abstractPosts
+	 */
+	public void setAbstractPosts(List<Post<RESOURCE>> abstractPosts) {
+		this.abstractPosts= abstractPosts;
 	}
 }
