@@ -108,8 +108,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	private static final float GENEALOGY_USER_PREFERENCE_FACTOR = 1.1f;
 	private static final Pattern YEAR_PATTERN = Pattern.compile("[12][0-9]{3}");
 
-	private Class<R> resourceType;
-
 	/** post model converter */
 	private ResourceConverter<R> resourceConverter;
 
@@ -209,7 +207,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			return tagCounterMap;
 		}, Collections.emptyMap());
 
-		final List<Tag> tags = new LinkedList<Tag>();
+		final List<Tag> tags = new LinkedList<>();
 		// extract all tags
 		for (final Map.Entry<Tag, Integer> entry : tagCounter.entrySet()) {
 			final Tag tag = entry.getKey();
@@ -792,8 +790,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		
 		// all done
 		log.debug("Search query: '" + mainQueryBuilder.toString() + "' and filters: '" + mainFilterBuilder.toString() + "'");
-
-
 		return QueryBuilders.boolQuery().must(mainQueryBuilder).filter(mainFilterBuilder);
 	}
 
@@ -930,13 +926,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 */
 	public void setResourceConverter(final ResourceConverter<R> resourceConverter) {
 		this.resourceConverter = resourceConverter;
-	}
-
-	/**
-	 * @param resourceType the resourceType to set
-	 */
-	public void setResourceType(final Class<R> resourceType) {
-		this.resourceType = resourceType;
 	}
 
 	/**

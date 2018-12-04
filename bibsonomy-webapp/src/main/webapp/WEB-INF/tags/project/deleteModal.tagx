@@ -3,7 +3,6 @@
 
     <jsp:directive.attribute name="project" type="org.bibsonomy.model.cris.Project" required="true" />
 
-
     <div class="modal fade" id="deleteProjectModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -16,7 +15,7 @@
                     </button>
                 </div>
                 <div class="modal-footer">
-                    <a class="btn btn-primary" href="${absoluteUrlGenerator.getProjectDeleteUrl(project.externalId)}" role="button">
+                    <a class="btn btn-primary" href="${relativeUrlGenerator.getProjectDeleteUrl(project.externalId)}" role="button">
                         <fmt:message key="project.delete" />
                     </a>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

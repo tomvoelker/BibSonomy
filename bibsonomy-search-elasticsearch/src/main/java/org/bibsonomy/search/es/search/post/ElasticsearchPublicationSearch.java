@@ -34,7 +34,6 @@ import java.util.List;
 import org.apache.lucene.search.join.ScoreMode;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.search.es.ESConstants.Fields;
-import org.bibsonomy.search.es.search.post.EsResourceSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.Operator;

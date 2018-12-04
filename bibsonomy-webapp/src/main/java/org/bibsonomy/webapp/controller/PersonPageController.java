@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -64,6 +65,7 @@ import org.bibsonomy.model.util.PersonMatchUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.command.PersonPageCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -91,6 +93,8 @@ import org.springframework.validation.Errors;
  */
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(PersonMatch.class);
+
+	private static final Set<PersonResourceRelationType> PUBLICATION_RELATED_RELATION_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
 
 	private URLGenerator urlGenerator;
 	private RequestLogic requestLogic;
@@ -606,17 +610,19 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View showAction(final PersonPageCommand command) {
+		// TODO: remove initialization
 		for (PersonResourceRelationType prr : PersonResourceRelationType.values()) {
 			command.getAvailableRoles().add(prr);
 		}
+
 		command.setShowProjects(true);
+
 		final String requestedPersonId = command.getRequestedPersonId();
 		/*
 		 * get the person; if person with the requested id was merged with another person, this method
 		 * throws a ObjectMovedException and the wrapper will render the redirect
 		 */
 		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, requestedPersonId);
-		
 		if (!present(person)) {
 			return Views.ERROR404;
 		}
@@ -624,20 +630,23 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setPerson(person);
 
 		// maybe this should be done in the view?
-		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear));
-		List<ResourcePersonRelation> authorRelations = new ArrayList<>();
-		List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
-		List<ResourcePersonRelation> otherAuthorRelations = new ArrayList<>();
-		List<ResourcePersonRelation> otherAdvisorRelations = new ArrayList<>();
+		final List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear));
+		final List<ResourcePersonRelation> authorRelations = new ArrayList<>();
+		final List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
+		final List<ResourcePersonRelation> otherAuthorRelations = new ArrayList<>();
+		final List<ResourcePersonRelation> otherAdvisorRelations = new ArrayList<>();
 
 		command.setHasPicture(pictureHandlerFactory.hasVisibleProfilePicture(person.getUser(), command.getContext().getLoginUser()));
 
 		// final List<Project> projects = this.logic.getProjects();
 
 		for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
-			final boolean isThesis = resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis");
-			
-			if (resourcePersonRelation.getRelationType().equals(PersonResourceRelationType.AUTHOR)) {
+			final Post<? extends BibTex> post = resourcePersonRelation.getPost();
+			final BibTex publication = post.getResource();
+			final boolean isThesis = publication.getEntrytype().toLowerCase().endsWith("thesis");
+			final boolean isAuthorEditorRelation = PUBLICATION_RELATED_RELATION_TYPES.contains(resourcePersonRelation.getRelationType());
+
+			if (isAuthorEditorRelation) {
 				if (isThesis) {
 					authorRelations.add(resourcePersonRelation);
 				} else {
@@ -652,21 +661,26 @@ public class PersonPageController extends SingleResourceListController implement
 			}
 			
 			// we explicitly do not want ratings on the person pages because this might cause users of the genealogy feature to hesitate putting in their dissertations
-			resourcePersonRelation.getPost().getResource().setRating(null);
-			resourcePersonRelation.getPost().getResource().setNumberOfRatings(null);
+			publication.setRating(null);
+			publication.setNumberOfRatings(null);
 		}
 		
 		command.setThesis(authorRelations);
 		command.setOtherPubs(otherAuthorRelations);
 		command.setAdvisedThesis(advisorRelations);
+		// FIXME: not used in the view!!
 		command.setOtherAdvisedPubs(otherAdvisorRelations);
-		command.setPersonMatchList(this.logic.getPersonMatches(person.getPersonId()));
-		command.setMergeConflicts(PersonMatchUtils.getMergeConflicts(command.getPersonMatchList()));
 
+		final List<PersonMatch> personMatches = this.logic.getPersonMatches(person.getPersonId());
+		command.setPersonMatchList(personMatches);
+		command.setMergeConflicts(PersonMatchUtils.getMergeConflicts(personMatches));
 
+		/*
+		 * get a list of post that could be also be written by the requested person
+		 */
 		final List<Post<BibTex>> similarAuthorPubs = this.getPublicationsOfSimilarAuthor(person);
 
-		List<ResourcePersonRelation> similarAuthorRelations = new ArrayList<>();
+		final List<ResourcePersonRelation> similarAuthorRelations = new ArrayList<>();
 		for (Post<BibTex> post : similarAuthorPubs) {
 			ResourcePersonRelation relation = new ResourcePersonRelation();
 			relation.setPost(post);
@@ -674,6 +688,7 @@ public class PersonPageController extends SingleResourceListController implement
 			relation.setRelationType(PersonUtils.getRelationType(person, post.getResource()));
 			similarAuthorRelations.add(relation);
 		}
+
 		command.setSimilarAuthorPubs(similarAuthorRelations);
 
 		return Views.PERSON_SHOW;

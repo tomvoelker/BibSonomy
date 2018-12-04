@@ -39,8 +39,8 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.ConceptStatus;
-import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -771,6 +771,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 	private View handleCreatePost(final COMMAND command, final RequestWrapperContext context, final User loginUser, final Post<RESOURCE> post) {
 		final String loginUserName = loginUser.getName();
+		command.setUser(loginUserName);
 
 		/*
 		 * no intra hash given --> user posts a new entry (which might already
@@ -832,8 +833,14 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			}
 
 			log.debug("finally: creating a new post in the DB");
-			final String createdPost = this.logic.createPosts(Collections.singletonList(post)).get(0).getId();
-
+			final List<JobResult> results = this.logic.createPosts(Collections.singletonList(post));
+			command.setJobResults(results);
+			final List<Post<RESOURCE>> posts = new LinkedList<>();
+			for (JobResult j : results) {
+				posts.add(this.getPostDetails(j.getId(), loginUserName));
+			}
+			command.setAbstractPosts(posts);
+			final String createdPost = results.get(0).getId();
 			/*
 			 * store intraHash for some later changes (file upload)
 			 */
@@ -854,6 +861,12 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		if (present(command.getSaveAndRate())) {
 			final String ratingUrl = this.urlGenerator.getCommunityRatingUrl(post);
 			return new ExtendedRedirectView(ratingUrl);
+		}
+		/*
+		 * If the user added an own thesis with myown tag, he should be redirected to his overview page
+		 */
+		if (present(command.getJobResults())) {
+			return Views.AUTOLINK;
 		}
 		/*
 		 * if the user is adding a new thesis to a person's page, he should be redirected to that person's page

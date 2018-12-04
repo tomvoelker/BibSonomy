@@ -10,5 +10,5 @@
     <c:set var="projectsMain" value="${relativeUrlGenerator.getProjectsUrl()}"/>
     <nav:crumb nameKey="navi.project" href="${projectsMain}" active="${active}"/>
     <c:set var="projectLink" value="${relativeUrlGenerator.getProjectUrlByProject(project)}" />
-    <nav:crumb name="${project.title}" href="${projectLink}" leadingIcon="fa-group" active="${active}"/>
+    <nav:crumb name="${project.title}" leadingIcon="fa-group" active="${active}"/>
 </jsp:root>

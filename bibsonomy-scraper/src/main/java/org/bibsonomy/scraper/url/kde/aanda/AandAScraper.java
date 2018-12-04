@@ -54,12 +54,12 @@ import org.w3c.dom.NodeList;
 public class AandAScraper extends AbstractUrlScraper implements ReferencesScraper{
 	
 	private static final String SITE_NAME = "Astronomy and Astrophysics";
-	private static final String SITE_URL = "http://www.aanda.org/";
+	private static final String SITE_URL = "https://www.aanda.org/";
 	private static final String INFO = "Scraper for references from " + href(SITE_URL, SITE_NAME)+".";
 	
 	private static final Pattern hostPattern = Pattern.compile(".*" + "aanda.org");
 	private static final String downloadUrl = SITE_URL + "component/makeref/?task=output&type=bibtex&doi=";
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(hostPattern, AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<>(hostPattern, AbstractUrlScraper.EMPTY_PATTERN));
 	
 	private static final Pattern pat_references = Pattern.compile("(?s)<ul class=\"references\">(.*)</div>");
 	private static final Pattern pat_references_1 = Pattern.compile("(?s)<HR><b>References(.*)</UL>");

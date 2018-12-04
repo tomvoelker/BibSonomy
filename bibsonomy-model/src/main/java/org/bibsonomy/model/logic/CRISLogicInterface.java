@@ -47,21 +47,21 @@ public interface CRISLogicInterface {
 	 * @param query
 	 * @return
 	 */
-	public List<Project> getProjects(ProjectQuery query);
+	List<Project> getProjects(ProjectQuery query);
 
 	/**
 	 * Returns details to a project. A project is uniquely identified by the external project id.
 	 * @param projectId
 	 * @return
 	 */
-	public Project getProjectDetails(final String projectId);
+	Project getProjectDetails(final String projectId);
 
 	/**
 	 * creates a new project
 	 * @param project
 	 * @return
 	 */
-	public JobResult createProject(final Project project);
+	JobResult createProject(final Project project);
 
 	/**
 	 * updates a project identified by it's external project id
@@ -69,28 +69,28 @@ public interface CRISLogicInterface {
 	 * @param project
 	 * @return
 	 */
-	public JobResult updateProject(final String projectId, final Project project);
+	JobResult updateProject(final String projectId, final Project project);
 
 	/**
 	 * deletes a project identified by it's external project id
 	 * @param projectId
 	 * @return
 	 */
-	public JobResult deleteProject(final String projectId);
+	JobResult deleteProject(final String projectId);
 
 	/**
 	 * creates a link between cris entries
 	 * @param link
 	 * @return
 	 */
-	public JobResult createCRISLink(final CRISLink link);
+	JobResult createCRISLink(final CRISLink link);
 
 	/**
 	 * updates the link between the two linkable cris entities
 	 * @param link
 	 * @return the result
 	 */
-	public JobResult updateCRISLink(final CRISLink link);
+	JobResult updateCRISLink(final CRISLink link);
 
 	/**
 	 * deletes the link between the two linkable cris entities
@@ -98,6 +98,6 @@ public interface CRISLogicInterface {
 	 * @param target
 	 * @return
 	 */
-	public JobResult deleteCRISLink(final Linkable source, final Linkable target);
+	JobResult deleteCRISLink(final Linkable source, final Linkable target);
 }
 

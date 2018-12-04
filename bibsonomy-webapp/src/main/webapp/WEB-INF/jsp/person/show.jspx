@@ -37,6 +37,9 @@
 	<c:set var="isAdmin" value="${command.context.loginUser.role eq 'ADMIN'}" />
 	<c:set var="hasClaimedOrIsAdmin" value="${hasClaimedPerson or isAdmin}" />
 
+	<!--<c:set var="useCRISView" value="${properties['system.cris'] eq 'true'}" /> -->
+	<c:set var="useCRISView" value="${properties['system.cris'] eq 'true'}" />
+
 	<layout:paneLayout pageTitle="${title}"
 		headerLogoClass="publications" 
 		command="${command}" 
@@ -116,7 +119,7 @@
 					<div class="form-group">
 						<h1>
 							<div class="personPageFormPlaceholder">
-								<c:if test="${empty command.person.user or (not empty command.person.user and (command.person.user eq command.context.loginUser.name)) and not command.context.loginUser.spammer}">
+								<c:if test="${hasClaimedOrIsAdmin}">
 									<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
 								</c:if>
 								<span class="personPageFormFieldContent" id="personPageFormAcademicDegreeValue">${command.person.academicDegree}</span>
@@ -178,16 +181,14 @@
 								
 								<div class="col-md-8">
 									<div class="personPageFormPlaceholder">
-										<c:choose>
-											<!-- Only visible if the loginUser claimed this person -->
-											<c:when test='${hasClaimedOrIsAdmin}'>
-												<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
-											</c:when>
-											<c:otherwise>
+										<!-- Only visible if the loginUser claimed this person -->
+										<c:if test='${hasClaimedOrIsAdmin}'>
+											<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
+										</c:if>
+										<c:if test="${command.context.userLoggedIn}" >
 												<span data-toggle="tooltip" title="${formLockedTooltip}" class="personPageLockedForm fa fa-info-circle"><!--  --></span>
-											</c:otherwise>
-										</c:choose>
-										
+										</c:if>
+
 										<c:if test="${hasClaimedOrIsAdmin}">
 										<span class="personPageFormFieldContent" id="personPageFormEmailValue">${command.person.email}</span> 
 										</c:if>	
@@ -214,15 +215,13 @@
 								
 								<div class="col-md-8">
 									<div class="personPageFormPlaceholder">
-										<c:choose>
-											<!-- Only visible if the loginUser claimed this person -->
-											<c:when test='${hasClaimedOrIsAdmin}'>
-												<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
-											</c:when>
-											<c:otherwise>
-												<span data-toggle="tooltip" title="${formLockedTooltip}" class="personPageLockedForm fa fa-info-circle"><!--  --></span>
-											</c:otherwise>
-										</c:choose>
+										<!-- Only visible if the loginUser claimed this person -->
+										<c:if test='${hasClaimedOrIsAdmin}'>
+											<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
+										</c:if>
+										<c:if test="${command.context.userLoggedIn}">
+											<span data-toggle="tooltip" title="${formLockedTooltip}" class="personPageLockedForm fa fa-info-circle"><!--  --></span>
+										</c:if>
 
 
 										<c:choose>
@@ -238,7 +237,7 @@
 									
 									<!-- Only visible if te loginUser claimed this person -->
 									<c:if test='${hasClaimedOrIsAdmin}'>
-										<div class="personPageFormField col-md-8">										
+										<div class="personPageFormField col-md-8">
 											<fmt:message key="person.show.homepage.placeholder" var="textHomepagePlaceholder" />
 											<input class='form-control' type="url" name='person.homepage' id="formHomepage" placeholder="${textHomepagePlaceholder}" value="${command.person.homepage}"/>
 										</div>
@@ -360,7 +359,7 @@
 			<div id="thesisBlock">
 				<ul class="nav nav-tabs" role="tablist">
 					<c:choose>
-						<c:when test="${properties['system.cris'] eq 'true'}" >
+						<c:when test="${useCRISView}" >
 							<li class="active"><a href="#projects" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.projects" /></strong></a></li>
 							<li><a href="#publications" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.publications" /></strong></a></li>
 						</c:when>
@@ -372,92 +371,93 @@
 				</ul>
 
 				<c:choose>
-					<c:when test="${properties['system.cris'] eq 'true'}" >
-						<!-- Projects tab content-->
-						<div id='projects' class="tab-pane active">
-							<c:choose>
-								<c:when test="${fn:length(command.person.crisLinks) gt 0}">
-									<c:forEach var="links" items="${command.person.crisLinks}">
-										Wurst
-										<div class="personThesisSeperator"><!-- KEEP ME --></div>
-									</c:forEach>
-								</c:when>
-								<c:otherwise>
-									<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
-								</c:otherwise>
-							</c:choose>
-						</div>
-						<div id='publications' class="tab-pane">
-							<c:choose>
-								<c:when test="{fn:length(command.otherPubs) gt 0}">
-									<div style="clear: both;">
-										<h3 class="list-headline">
-											<fmt:message key="person.show.otherPub" />
-											<div class="pull-right btn-group dropdown-align-right all-resources-menu">
-												<div class="btn-group">
-													<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
-													<ul class="dropdown-menu">
-														<li class="dropdown-header"><fmt:message key="post.meta.sort.criterion" /></li>
-														<li class="enabled"><span data-div="otherPublications" data-sort="year" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="clock-o" spaceAfter="5" /><fmt:message key="post.resource.year"/></span></li>
-														<li><span data-div="otherPublications" data-sort="title" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.title"/></span></li>
-														<li><span data-div="otherPublications" data-sort="author" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.author"/></span></li>
-													</ul>
+					<c:when test="${useCRISView}" >
+						<div class="tab-content pub-person-tab-content" >
+							<!-- Projects tab content-->
+							<div id='projects' class="tab-pane active">
+								<c:choose>
+									<c:when test="${fn:length(command.person.crisLinks) gt 0}">
+										<per:projects command="${command}" />
+									</c:when>
+									<c:otherwise>
+										<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
+									</c:otherwise>
+								</c:choose>
+							</div>
+							<div id='publications' class="tab-pane">
+								<c:choose>
+									<c:when test="${fn:length(command.otherPubs) gt 0}">
+										<div style="clear: both;">
+											<h3 class="list-headline">
+												<fmt:message key="person.show.otherPub" />
+												<div class="pull-right btn-group dropdown-align-right all-resources-menu">
+													<div class="btn-group">
+														<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
+														<ul class="dropdown-menu">
+															<li class="dropdown-header"><fmt:message key="post.meta.sort.criterion" /></li>
+															<li class="enabled"><span data-div="otherPublications" data-sort="year" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="clock-o" spaceAfter="5" /><fmt:message key="post.resource.year"/></span></li>
+															<li><span data-div="otherPublications" data-sort="title" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.title"/></span></li>
+															<li><span data-div="otherPublications" data-sort="author" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.author"/></span></li>
+														</ul>
+													</div>
 												</div>
+											</h3>
+											<div id="otherPublicationsTab">
+												<c:forEach var="relation" items="${command.otherPubs}">
+													<per:simplePubView relation="${relation}" buttons="true" personId="${command.person.personId}"/>
+												</c:forEach>
 											</div>
-										</h3>
-										<div id="otherPublicationsTab">
-											<c:forEach var="relation" items="${command.otherPubs}">
-												<per:simplePubView relation="${relation}" buttons="true" personId="${command.person.personId}"/>
-											</c:forEach>
 										</div>
-									</div>
-								</c:when>
-								<c:otherwise>
-									<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
-								</c:otherwise>
-							</c:choose>
+									</c:when>
+									<c:otherwise>
+										<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
+									</c:otherwise>
+								</c:choose>
+							</div>
 						</div>
 					</c:when>
 					<c:otherwise>
-						<!-- Own Thesis tab content-->
-						<div id='ownThesis' class="tab-pane active">
-							<c:choose>
-								<c:when test="${fn:length(command.thesis) gt 0}">
-									<c:forEach var="relation" items="${command.thesis}">
-										<per:pubWithRoles post="${relation.post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
-										<div class="personThesisSeperator"><!-- KEEP ME --></div>
-									</c:forEach>
-								</c:when>
-								<c:otherwise>
-									<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
-								</c:otherwise>
-							</c:choose>
+						<div class="tab-content pub-person-tab-content" >
+							<!-- Own Thesis tab content-->
+							<div id='ownThesis' class="tab-pane active">
+								<c:choose>
+									<c:when test="${fn:length(command.thesis) gt 0}">
+										<c:forEach var="relation" items="${command.thesis}">
+											<per:pubWithRoles post="${relation.post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
+											<div class="personThesisSeperator"><!-- KEEP ME --></div>
+										</c:forEach>
+									</c:when>
+									<c:otherwise>
+										<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
+									</c:otherwise>
+								</c:choose>
 
-							<!--Open Add Thesis dialog button -->
-							<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-								<bsform:button className="pull-right" size="defaultSize" value="${textAddThesisButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addThesis" valueKey="person.show.addThesisButton" titleKey="person.show.addThesisButton" />
-							</c:if>
-						</div>
+								<!--Open Add Thesis dialog button -->
+								<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+									<bsform:button className="pull-right" size="defaultSize" value="${textAddThesisButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addThesis" valueKey="person.show.addThesisButton" titleKey="person.show.addThesisButton" />
+								</c:if>
+							</div>
 
 
-						<!-- Related Thesis tab content -->
-						<div id="relatedThesis" class="tab-pane">
-							<c:choose>
-								<c:when test="${fn:length(command.advisedThesis) gt 0}">
-									<c:forEach var="relation" items="${command.advisedThesis}">
-										<per:pubWithRoles post="${relation.post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
-										<div class="personThesisSeperator"><!-- KEEP ME --></div>
-									</c:forEach>
-								</c:when>
-								<c:otherwise>
-									<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
-								</c:otherwise>
-							</c:choose>
+							<!-- Related Thesis tab content -->
+							<div id="relatedThesis" class="tab-pane">
+								<c:choose>
+									<c:when test="${fn:length(command.advisedThesis) gt 0}">
+										<c:forEach var="relation" items="${command.advisedThesis}">
+											<per:pubWithRoles post="${relation.post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
+											<div class="personThesisSeperator"><!-- KEEP ME --></div>
+										</c:forEach>
+									</c:when>
+									<c:otherwise>
+										<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
+									</c:otherwise>
+								</c:choose>
 
-							<!--Open Add Thesis dialog button-->
-							<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-								<bsform:button className="pull-right" size="defaultSize" style="defaultStyle" dataTarget="#addSupervisedThesis" dataToggle="modal" valueKey="person.show.addThesisButton" titleKey="person.show.addThesisButton" />
-							</c:if>
+								<!--Open Add Thesis dialog button-->
+								<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+									<bsform:button className="pull-right" size="defaultSize" style="defaultStyle" dataTarget="#addSupervisedThesis" dataToggle="modal" valueKey="person.show.addThesisButton" titleKey="person.show.addThesisButton" />
+								</c:if>
+							</div>
 						</div>
 					</c:otherwise>
 				</c:choose>
@@ -465,7 +465,7 @@
 			
 			
 			<!-- Other publications -->
-			<c:if test="${fn:length(command.otherPubs) gt 0 and not properties['system.cris'] eq 'true'}">
+			<c:if test="${fn:length(command.otherPubs) gt 0 and not useCRISView}">
 			<div style="clear: both;">
 				<h3 class="list-headline">
 					<fmt:message key="person.show.otherPub" />
@@ -494,7 +494,7 @@
 
 			
 			<!-- Other publications of similar authors -->
-			<c:if test="${fn:length(command.similarAuthorPubs) gt 0 and not properties['system.cris'] eq 'true'}">
+			<c:if test="${fn:length(command.similarAuthorPubs) gt 0 and not useCRISView}">
 			<div style="clear: both;">
 				<h3 class="list-headline">
 					<fmt:message key="person.show.otherPubOfSimilarAuthor" />
@@ -522,7 +522,7 @@
 
 
 			<!-- similar persons, that one could merge -->
-			<c:if test="${fn:length(command.personMatchList) gt 0 and not properties['system.cris'] eq 'true'}">
+			<c:if test="${fn:length(command.personMatchList) gt 0 and not useCRISView}">
 			<div style="clear: both;">
 				<h3 class="list-headline">
 					<fmt:message key="person.show.similarPersonMatchList" />
@@ -943,7 +943,7 @@
 					</div>
 				</div>
 			</div>
-			</div>
+		</div>
 		</jsp:attribute>
 	</layout:paneLayout>
 </jsp:root>

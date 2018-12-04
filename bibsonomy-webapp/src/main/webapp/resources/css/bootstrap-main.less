@@ -89,7 +89,7 @@ ul.dropdown-menu.list-options > li > span {
 .container {
 	border-color: @border-color;
 	border-width: 1px;
-	border-style: solid;
+	border-style: @border-style;
 	border-bottom: none;
 	background-color: #FFFFFF;
 }
@@ -99,15 +99,15 @@ ul.dropdown-menu.list-options > li > span {
 	border-top: none;
 	border-bottom: none;
 	margin-top: 30px;
-	-webkit-box-shadow: 2px 2px 30px 6px @border-color;
-	box-shadow: 2px 2px 30px 6px @border-color;
+	-webkit-box-shadow: @container-shadow;
+	box-shadow: @container-shadow;;
 }
 
 .container.main {
 	padding: 20px 30px 0 30px;
 	border-top: none;
-	-webkit-box-shadow: 2px 2px 30px 6px @border-color;
-	box-shadow: 2px 2px 30px 6px @border-color;
+	-webkit-box-shadow: @container-shadow;
+	box-shadow: @container-shadow;
 }
 
 .container .wrapper {
@@ -201,7 +201,7 @@ a, .btn-link {
  * NAVBAR
  */
 .navbar-bibsonomy {
-	background-color: @main-color;
+	background-color: @navbar-color;
 	border: none;
 	border-radius: 0;
 	margin-bottom: 0;
@@ -209,8 +209,8 @@ a, .btn-link {
 
 .container.navi {
 	padding-left: 0;
-	border-left: 1px @container-navi-border solid;
-	border-right: 1px @container-navi-border solid;
+	border-left: 1px @container-navi-border @border-style;
+	border-right: 1px @container-navi-border @border-style;
 }
 
 .navbar-bibsonomy a {
@@ -1032,17 +1032,17 @@ fieldset.collapsible > legend {
 
 .container.footer {
 	padding: 30px 30px;
-	border-top: none;
 	border: none;
-	background: transparent;
+	background: @footer-background-color;
 
+  	color: @footer-color;
 	margin-bottom: 10px;
 	font-family: Arial, Tahoma, sans-serif;	
 	font-size: 90%;
 }
 
 .container.footer a:not(.btn) {
-	color: #333;
+	color: @footer-color;
 }
 
 
@@ -1050,10 +1050,6 @@ fieldset.collapsible > legend {
 .container.footer a:not(.btn):hover,
 .container.footer a:not(.btn):active {
 	text-decoration: underline;
-}
-
-.container.footer dl {
-	/* line-height: 150%; */
 }
 
 .container.footer dt {

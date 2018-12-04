@@ -8,19 +8,22 @@
         <result property="externalId"	column="project_id"		javaType="string" />
         <result property="title"	    column="title"		    javaType="string" />
         <result property="subTitle"	    column="subtitle"	    javaType="string" />
+        <result property="type"	        column="type"	        javaType="string" />
         <result property="startDate" 	column="start_date"		javaType="date" />
         <result property="endDate"	    column="end_date"	    javaType="date" />
     </resultMap>
 
     <resultMap id="simpleProject" class="project" groupBy="id" extends="simpleCrisLinkProject">
         <result property="description"	column="description"	javaType="string" />
-        <result property="type"	        column="type"	        javaType="string" />
     </resultMap>
 
-    <resultMap id="fullProject" class="project" groupBy="id" extends="simpleProject">
+    <resultMap id="project" class="project" groupBy="id" extends="simpleProject">
         <result property="internalId"	column="internal_id"	javaType="string" />
         <result property="parentProject" resultMap="ProjectCommon.parentProject" />
-        <result property="budget"	    column="budget"	        javaType="double" />
+    </resultMap>
+
+    <resultMap id="fullProject" class="project" groupBy="id" extends="project">
+        <result property="budget"	    column="budget"	        javaType="float" />
     </resultMap>
 
     <resultMap id="parentProject" class="project" groupBy="id">
@@ -34,8 +37,12 @@
     </sql>
 
     <sql id="fullProjectAttributes">
+        <include refid="projectColumns" />, p.budget
+    </sql>
+
+    <sql id="projectColumns">
         p.id, p.project_id, p.internal_id, p.title, p.subtitle, p.description, p.start_date, p.end_date,
-        p.type, p.budget
+        p.type
     </sql>
 
     <sql id="parentSimpleProjectAttributes">

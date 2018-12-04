@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+
+<jsp:root version="2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+          xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+          xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex">
+
+    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+    <c:set var="title" value="${mtl:cleanBibtex(command.person.mainName.firstName)} ${mtl:cleanBibtex(command.person.mainName.lastName)}" />
+    <c:set var="hasClaimedPerson" value="${not empty command.claimedPerson and not command.context.loginUser.spammer}" />
+    <c:set var="isAdmin" value="${command.context.loginUser.role eq 'ADMIN'}" />
+    <c:set var="hasClaimedOrIsAdmin" value="${hasClaimedPerson or isAdmin}" />
+
+    <layout:paneLayout pageTitle="${title}" headerLogoClass="publications" command="${command}" requPath="${requPath}" showPageOptions="${true}">
+        <jsp:attribute name="heading"></jsp:attribute>
+
+        <jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+                    <fmt:message var="breadcrumbName" key="navi.publications.autolink" />
+					<nav:crumb nameKey="${breadcrumbName}" leadingIcon="fa-book" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+
+        <jsp:attribute name="content">
+            <h1 class="content-heading">
+                <fmt:message key="navi.publications.autolink" />
+            </h1>
+
+            <div id="publications">
+                <ul class="list-group" id="all-projects">
+                    <c:forEach var="post" items="${command.abstractPosts}">
+                        <li class="list-group-item">
+                            <c:set var="publication" value="${post.resource}" />
+                            <div id="${publication.interHash}" itemscope="itemscope" itemprop="citation" class="related">
+		                        <strong><a class="title" href="${relativeUrlGenerator.getPublicationUrl(publication)}" itemprop="headline"><c:out value="${mtl:cleanBibtex(publication.title)}" /></a></strong> <br/>
+                                <bib:desc publication="${publication}"/>
+                            </div>
+                        </li>
+                    </c:forEach>
+				</ul>
+            </div>
+        </jsp:attribute>
+    </layout:paneLayout>
+</jsp:root>

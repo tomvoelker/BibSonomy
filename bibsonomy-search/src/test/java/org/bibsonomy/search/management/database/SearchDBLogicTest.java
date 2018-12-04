@@ -57,7 +57,6 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
-import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.search.testutils.SearchSpringContextWrapper;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.junit.BeforeClass;
