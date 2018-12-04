@@ -46,7 +46,6 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.Wiki;
-import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.util.UserUtils;
@@ -123,7 +122,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		final String loggedInUserName = loginUser.getName();
 		command.setUserFriends(this.logic.getUserRelationship(loggedInUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
 		command.setFriendsOfUser(this.logic.getUserRelationship(loggedInUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
-		command.setClaimedPerson(this.logic.getPersonById(PersonIdType.USER, loggedInUserName));
 		
 		/*
 		 * show sync tab only for non-spammers
@@ -251,8 +249,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		 * calculate the expiration time and issue time
 		 */
 		for (final OAuthUserInfo userInfo : oauthUserInfos) {
-			userInfo.calculateExpirationTime(); // TODO: can ibatis do that for
-												// us?
+			userInfo.calculateExpirationTime(); // TODO: can ibatis do that for us
 		}
 
 		command.setOauthUserInfo(oauthUserInfos);

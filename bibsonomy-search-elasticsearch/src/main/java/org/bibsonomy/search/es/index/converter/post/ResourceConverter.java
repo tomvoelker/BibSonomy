@@ -190,7 +190,7 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 			final List<String> userNames = users.stream().map(User::getName).collect(Collectors.toList());
 			jsonDocument.put(Fields.ALL_USERS, userNames);
 		}
-		
+
 		jsonDocument.put(Fields.TAGS, convertTags(post.getTags()));
 		jsonDocument.put(Fields.SYSTEM_URL, this.systemURI.toString());
 		

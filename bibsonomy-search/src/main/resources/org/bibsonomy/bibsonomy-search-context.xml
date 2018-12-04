@@ -55,4 +55,5 @@
 	<import resource="classpath:org/bibsonomy/bibsonomy-search-post-context.xml" />
 	<import resource="classpath:org/bibsonomy/bibsonomy-search-person-context.xml" />
 	<import resource="classpath:org/bibsonomy/bibsonomy-search-project-context.xml" />
+	<import resource="classpath:org/bibsonomy/bibsonomy-search-group-context.xml" />
 </beans>

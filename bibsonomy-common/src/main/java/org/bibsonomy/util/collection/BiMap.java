@@ -13,5 +13,5 @@ public interface BiMap<K, V> extends Map<K, V> {
 	 * @param value
 	 * @return the key for the value
 	 */
-	public K getKeyByValue(V value);
+	K getKeyByValue(V value);
 }

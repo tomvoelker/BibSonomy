@@ -245,5 +245,12 @@
 		FROM cris_links c
 		WHERE c.id = #oldContentId#
 	</insert>
-	
+
+	<insert id="logGroup" parameterClass="org.bibsonomy.database.params.logging.InsertGroupLog">
+		INSERT INTO log_groupids (group_name, `group`, privlevel, sharedDocuments, allow_join, shortDescription, organization, external_id, log_reason, log_date, log_user)
+		SELECT group_name, `group`, privlevel, sharedDocuments, allow_join, shortDescription, organization, external_id, #logReason#, #loggedTimestamp#, #loggedUser.name#
+		FROM groupids
+		WHERE `group` = #group.groupId#
+	</insert>
+
 </sqlMap>

@@ -564,6 +564,13 @@
 			</dependency>
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-web-common</artifactId>
+				<version>${project.version}</version>
+				<scope>test</scope>
+				<type>test-jar</type>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-wiki</artifactId>
 				<version>${project.version}</version>
 			</dependency>

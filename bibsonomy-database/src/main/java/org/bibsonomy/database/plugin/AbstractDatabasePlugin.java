@@ -35,8 +35,6 @@ import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Person;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
@@ -56,7 +54,7 @@ import org.bibsonomy.model.enums.GoldStandardRelation;
  * @author Stefan Stützer
  */
 public class AbstractDatabasePlugin extends AbstractDatabaseManager implements DatabasePlugin {
-	
+
 	/**
 	 * @param username
 	 * @param groupId
@@ -84,11 +82,6 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 
 	@Override
 	public void onGoldStandardRelationDelete(final String userName, final String interHash_publication, final String interHash_reference, final GoldStandardRelation relation, final DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onBookmarkInsert(final Post<? extends Resource> post, User logginUser, final DBSession session) {
 		// noop
 	}
 
@@ -137,11 +130,6 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 
 	@Override
 	public void onUserUpdate(final String userName, final DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onChangeUserMembershipInGroup(final String userName, final int groupId, final DBSession session) {
 		// noop
 	}
 

@@ -38,7 +38,7 @@ public class PostIndexGenerationLogic<R extends Resource> extends AbstractDataba
 	}
 
 	@Override
-	public List<Post<R>> getEntites(final int lastContentId, final int max) {
+	public List<Post<R>> getEntities(final int lastContentId, final int max) {
 		final SearchParam param = new SearchParam();
 		param.setLastContentId(lastContentId);
 		param.setLimit(max);

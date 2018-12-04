@@ -2,7 +2,10 @@ package org.bibsonomy.database.common.typehandler;
 
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 import com.ibatis.sqlmap.client.extensions.ResultGetter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.common.typehandler.crislinktype.CRISLinkTypeTypeHandlerCallbackDelegate;
+import org.bibsonomy.database.common.typehandler.crislinktype.GroupPersonLinktypeDelegate;
 import org.bibsonomy.database.common.typehandler.crislinktype.ProjectPersonLinkTypeDelegate;
 
 import java.sql.SQLException;
@@ -15,8 +18,9 @@ import java.util.List;
  * @author dzo
  */
 public class CRISLinkTypeTypeHandlerCallback extends AbstractTypeHandlerCallback {
+	private static final Log LOG = LogFactory.getLog(CRISLinkTypeTypeHandlerCallback.class);
 
-	private List<CRISLinkTypeTypeHandlerCallbackDelegate> delegates = Arrays.asList(new ProjectPersonLinkTypeDelegate());
+	private List<CRISLinkTypeTypeHandlerCallbackDelegate> delegates = Arrays.asList(new ProjectPersonLinkTypeDelegate(), new GroupPersonLinktypeDelegate());
 
 	@Override
 	public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {
@@ -45,7 +49,7 @@ public class CRISLinkTypeTypeHandlerCallback extends AbstractTypeHandlerCallback
 			final CRISLinkTypeTypeHandlerCallbackDelegate delegate = this.getDelegate(clazz);
 			return delegate.getParameter(Integer.parseInt(getter.getString()));
 		} catch (final NumberFormatException e) {
-			// ignore
+			LOG.error("error converting crislinktype", e);
 		}
 
 		return null;

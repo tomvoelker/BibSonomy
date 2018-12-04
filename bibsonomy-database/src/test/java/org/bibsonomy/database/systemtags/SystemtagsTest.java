@@ -76,7 +76,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
-import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.ModelUtils;
@@ -111,7 +110,6 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		bibTexDb = BibTexDatabaseManager.getInstance();
 	}
 
-
 	/**
 	 * Test Functionality of the SystemTagFactory
 	 */
@@ -128,12 +126,9 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		assertFalse(sysTagFactory.isExecutableSystemTag("send"));
 	}
 
-
-
 	/**
 	 * Test Search SystemTags
 	 */
-
 	@Test
 	public void testAuthor() {
 		final String systemtag = "sys:author:greatAuthor";
@@ -332,14 +327,14 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		final Group testGroup1 = this.createTestGroup("forgroup1");
 		final Group testGroup2 = this.createTestGroup("forgroup2");
 
-		groupDb.addPendingMembership(testGroup1.getName(), testUser1.getName(), false, GroupRole.INVITED, this.dbSession);
-		groupDb.addPendingMembership(testGroup1.getName(), testUser2.getName(), false, GroupRole.REQUESTED, this.dbSession);
-		groupDb.addPendingMembership(testGroup2.getName(), testUser2.getName(), false, GroupRole.REQUESTED, this.dbSession);
+		groupDb.addPendingMembership(testGroup1.getName(), testUser1.getName(), false, GroupRole.INVITED, USER_TESTUSER_1, this.dbSession);
+		groupDb.addPendingMembership(testGroup1.getName(), testUser2.getName(), false, GroupRole.REQUESTED, USER_TESTUSER_1, this.dbSession);
+		groupDb.addPendingMembership(testGroup2.getName(), testUser2.getName(), false, GroupRole.REQUESTED, USER_TESTUSER_1, this.dbSession);
 
 		// add users to groups
-		groupDb.addUserToGroup("forgroup1", "forgroupuser1", false, GroupRole.USER, this.dbSession);
-		groupDb.addUserToGroup("forgroup1", "forgroupuser2", false, GroupRole.USER, this.dbSession);
-		groupDb.addUserToGroup("forgroup2", "forgroupuser2", false, GroupRole.USER, this.dbSession);
+		groupDb.addUserToGroup("forgroup1", "forgroupuser1", false, GroupRole.USER, USER_TESTUSER_1, this.dbSession);
+		groupDb.addUserToGroup("forgroup1", "forgroupuser2", false, GroupRole.USER, USER_TESTUSER_1, this.dbSession);
+		groupDb.addUserToGroup("forgroup2", "forgroupuser2", false, GroupRole.USER, USER_TESTUSER_1, this.dbSession);
 
 		// update users
 		testUser1.setGroups(groupDb.getGroupsForUser(testUser1.getName(), this.dbSession));
@@ -651,7 +646,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 	private Group createTestGroup( final String name ) {
 		Group group = groupDb.getGroupByName(name, this.dbSession);
 		if (group != null) {
-			groupDb.deleteGroup(name, false, this.dbSession);
+			groupDb.deleteGroup(name, false, USER_TESTUSER_1, this.dbSession);
 		}
 		group = new Group();
 		group.setName(name);
@@ -660,7 +655,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		groupRequest.setReason("testrequestreason1");
 		group.setGroupRequest(groupRequest);
 		groupDb.createGroup(group, this.dbSession);
-		groupDb.activateGroup(name, this.dbSession);
+		groupDb.activateGroup(name, USER_TESTUSER_1, this.dbSession);
 
 		return group;
 	}
@@ -676,7 +671,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 	 */
 	private static <T extends Resource> List<Post<T>> lookupGroupPost(final Post<?> post, final LogicInterface logic, final String groupName ) {
 		final GroupingEntity groupingEntity = GroupingEntity.USER;
-		final List<String> tags = new LinkedList<String>();
+		final List<String> tags = new LinkedList<>();
 		// FIXME: why does GetPostsForGroup chain element not allow
 		// hash-selection?
 		final List<Post<T>> groupPosts = logic.getPosts(

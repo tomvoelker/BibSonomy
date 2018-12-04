@@ -29,9 +29,13 @@ package org.bibsonomy.rest.client.queries.get;
 import java.util.List;
 
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.UrlBuilder;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Use this Class to receive an ordered list of all groups bibsonomy has.
@@ -40,30 +44,16 @@ import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
  */
 public final class GetGroupListQuery extends AbstractQuery<List<Group>> {
 
-	private final int start;
-	private final int end;
-
-	/**
-	 * Gets bibsonomy's group list
-	 */
-	public GetGroupListQuery() {
-		this(0, 19);
-	}
+	private final GroupQuery groupQuery;
 
 	/**
 	 * Gets bibsonomy's group list.
 	 * 
-	 * @param start
-	 *            start of the list
-	 * @param end
-	 *            end of the list
+	 * @param groupQuery
 	 */
-	public GetGroupListQuery(int start, int end) {
-		if (start < 0) start = 0;
-		if (end < start) end = start;
-
-		this.start = start;
-		this.end = end;
+	public GetGroupListQuery(GroupQuery groupQuery) {
+		if (!present(groupQuery)) throw new IllegalArgumentException("No group query given.");
+		this.groupQuery = groupQuery;
 	}
 
 	@Override
@@ -73,7 +63,7 @@ public final class GetGroupListQuery extends AbstractQuery<List<Group>> {
 
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException {
-		final String groupsUrl = this.getUrlRenderer().createHrefForGroups(this.start, this.end);
-		this.downloadedDocument = performGetRequest(groupsUrl);
+		final UrlBuilder groupsUrlBuilder = this.getUrlRenderer().createUrlBuilderForGroups(groupQuery);
+		this.downloadedDocument = performGetRequest(groupsUrlBuilder.asString());
 	}
 }

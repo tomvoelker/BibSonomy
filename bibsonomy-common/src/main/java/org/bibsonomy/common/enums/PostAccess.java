@@ -40,5 +40,5 @@ public enum PostAccess {
 	/**
 	 * user can only access the post
 	 */
-	POST_ONLY;
+	POST_ONLY
 }

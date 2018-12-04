@@ -46,7 +46,7 @@ public abstract class CommunityPostIndexGenerationLogicTest<R extends Resource> 
 
 	@Test
 	public void testGetEntities() {
-		final List<Post<R>> entities = this.getLogic().getEntites(0, this.getNumberOfEntites());
+		final List<Post<R>> entities = this.getLogic().getEntities(0, this.getNumberOfEntites());
 		assertThat(entities.size(), is(this.getNumberOfEntites()));
 		this.testEntities(entities);
 	}

@@ -39,7 +39,7 @@ public class CommunityPostIndexGenerationLogic<R extends Resource> extends Resou
 	}
 
 	@Override
-	public List<Post<R>> getEntites(int lastContenId, int limit) {
+	public List<Post<R>> getEntities(int lastContenId, int limit) {
 		try (final DBSession session = this.openSession()) {
 			final SearchParam param = new SearchParam();
 			param.setLimit(limit);

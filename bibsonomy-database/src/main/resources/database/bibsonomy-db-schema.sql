@@ -523,6 +523,8 @@ CREATE TABLE `groupids` (
   `publ_reporting_mail` varchar(255) DEFAULT NULL,
   `publ_reporting_mail_template` text,
   `publ_reporting_external_url` varchar(255) DEFAULT NULL,
+  `organization` BOOLEAN DEFAULT FALSE,
+  `external_id` VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY  (`group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -542,6 +544,19 @@ CREATE TABLE `group_memberships` (
   `group_role` int(10) NOT NULL default '2',
   `user_shared_documents` tinyint(1) default '0',
   PRIMARY KEY (`group`,`user_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `group_hierarchy`
+-- The table contains ONLY parent-child relations, no self relations, e.g. (1, 1)
+--
+DROP TABLE IF EXISTS `group_hierarchy`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `group_hierarchy` (
+  `child_group_id` int(10) NOT NULL,
+  `parent_group_id` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
@@ -1035,6 +1050,8 @@ CREATE TABLE `pending_groupids` (
   `publ_reporting_mail` varchar(255) DEFAULT NULL,
   `publ_reporting_mail_template` text,
   `publ_reporting_external_url` varchar(255) DEFAULT NULL,
+  `organization` BOOLEAN DEFAULT FALSE,
+  `external_id` VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY  (`group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -1896,6 +1913,40 @@ CREATE TABLE `log_cris_links` (
   `log_date` timestamp NULL DEFAULT NULL,
   `log_user` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `log_groupids`;
+CREATE TABLE `log_groupids` (
+  `group_name` varchar(30) NOT NULL default '',
+  `group` int(10) NOT NULL default '0',
+  `parent` int(10) DEFAULT NULL,
+  `privlevel` tinyint(3) unsigned default '1',
+  `sharedDocuments` tinyint(1) default '0',
+  `allow_join` TINYINT(1) NULL DEFAULT '1',
+  `shortDescription` TEXT NULL,
+  `publ_reporting_mail` varchar(255) DEFAULT NULL,
+  `publ_reporting_mail_template` text,
+  `publ_reporting_external_url` varchar(255) DEFAULT NULL,
+  `organization` BOOLEAN DEFAULT FALSE,
+  `external_id` VARCHAR(255) DEFAULT NULL,
+  `log_reason` int(2) DEFAULT NULL,
+  `log_date` timestamp NULL DEFAULT NULL,
+  `log_user` varchar(30) DEFAULT NULL,
+  PRIMARY KEY  (`group`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `log_group_memberships`;
+CREATE TABLE `log_group_memberships` (
+  `user_name` varchar(30) NOT NULL default '',
+  `group` int(10) default '0',
+  `defaultgroup` int(10) default '0',
+  `start_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `group_role` int(10) NOT NULL default '2',
+  `user_shared_documents` tinyint(1) default '0',
+  `log_reason` int(2) DEFAULT NULL,
+  `log_date` timestamp NULL DEFAULT NULL,
+  `log_user` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`group`,`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

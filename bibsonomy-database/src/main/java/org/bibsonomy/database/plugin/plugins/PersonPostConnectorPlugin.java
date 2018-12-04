@@ -28,26 +28,38 @@ package org.bibsonomy.database.plugin.plugins;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.information.JobInformation;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.managers.CRISLinkDatabaseManager;
+import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.PersonDatabaseManager;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.services.information.PersonResourceLinkInformationAdded;
 
 /**
  * connects publications with persons when the posting user has his/her account connected to a person
@@ -58,25 +70,75 @@ import org.bibsonomy.model.util.PersonNameUtils;
 public class PersonPostConnectorPlugin extends AbstractDatabasePlugin {
 	private static final Log log = LogFactory.getLog(PersonPostConnectorPlugin.class);
 	
-	private PersonDatabaseManager personDatabaseManager;
-	
+	private final PersonDatabaseManager personDatabaseManager;
+	private final GroupDatabaseManager groupDatabaseManager;
+	private final CRISLinkDatabaseManager crisLinkDatabaseManager;
+
+	/**
+	 * constructor with all required fields
+	 *
+	 * @param personDatabaseManager
+	 * @param groupDatabaseManager
+	 * @param crisLinkDatabaseManager
+	 */
+	public PersonPostConnectorPlugin(final PersonDatabaseManager personDatabaseManager, final GroupDatabaseManager groupDatabaseManager, final CRISLinkDatabaseManager crisLinkDatabaseManager) {
+		this.personDatabaseManager = personDatabaseManager;
+		this.groupDatabaseManager = groupDatabaseManager;
+		this.crisLinkDatabaseManager = crisLinkDatabaseManager;
+	}
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onPostInsert(org.bibsonomy.model.Post, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPublicationInsert(final Post<? extends BibTex> post, User loggedinUser, final DBSession session) {
+	public List<JobInformation> onPublicationInsert(final Post<? extends BibTex> post, User loggedinUser, final DBSession session) {
+		final LinkedList<JobInformation> jobInformation = new LinkedList<>();
 		// only link the post with the person of the post user and the post is public
 		if (SystemTagsUtil.containsSystemTag(post.getTags(), MyOwnSystemTag.NAME) && GroupUtils.isPublicGroup(post.getGroups())) {
 			final User user = post.getUser();
+
 			if (present(user)) {
-				final Person person = this.personDatabaseManager.getPersonByUser(user.getName(), session);
-				if (present(person)) {
+				/*
+				 * get all persons that are connected to groups where the user is a member of
+				 */
+				final Set<Person> persons = this.getAllPersonsByUserGroups(user, session);
+
+				for (final Person person : persons) {
 					final BibTex publication = post.getResource();
-					autoInsertPersonResourceRelation(post, person, publication.getAuthor(), PersonResourceRelationType.AUTHOR, loggedinUser, session);
-					autoInsertPersonResourceRelation(post, person, publication.getEditor(), PersonResourceRelationType.EDITOR, loggedinUser, session);
+					final JobInformation authorInfo = this.autoInsertPersonResourceRelation(post, person, publication.getAuthor(), PersonResourceRelationType.AUTHOR, loggedinUser, session);
+					if (present(authorInfo)) {
+						jobInformation.add(authorInfo);
+					}
+
+					final JobInformation editorInfo = this.autoInsertPersonResourceRelation(post, person, publication.getEditor(), PersonResourceRelationType.EDITOR, loggedinUser, session);
+					if (present(editorInfo)) {
+						jobInformation.add(editorInfo);
+					}
 				}
 			}
 		}
+
+		return jobInformation;
+	}
+
+	private Set<Person> getAllPersonsByUserGroups(final User user, final DBSession session) {
+		final Set<Person> persons = new HashSet<>();
+
+		final String userName = user.getName();
+		final Person personByUser = this.personDatabaseManager.getPersonByUser(userName, session);
+		persons.add(personByUser);
+
+		final List<Group> groupsForUser = this.groupDatabaseManager.getGroupsForUser(userName, true, session);
+
+		/*
+		 * load all persons linked with a group in common
+		 */
+		final Stream<CRISLink> crisList = groupsForUser.stream().map(group -> this.crisLinkDatabaseManager.loadCRISLinks(group, Collections.singletonList(Person.class), session)).flatMap(List::stream);
+
+		final Stream<Person> groupPersons = crisList.map(CRISLink::getTarget).filter(Person.class::isInstance).map(Person.class::cast);
+		persons.addAll(groupPersons.collect(Collectors.toList()));
+
+		return persons;
 	}
 
 	/**
@@ -87,7 +149,7 @@ public class PersonPostConnectorPlugin extends AbstractDatabasePlugin {
 	 * @param loggedinUser
 	 * @param session
 	 */
-	private void autoInsertPersonResourceRelation(final Post<? extends BibTex> post, final Person person, final List<PersonName> personList, final PersonResourceRelationType relationType, final User loggedinUser, final DBSession session) {
+	private JobInformation autoInsertPersonResourceRelation(final Post<? extends BibTex> post, final Person person, final List<PersonName> personList, final PersonResourceRelationType relationType, final User loggedinUser, final DBSession session) {
 		final List<PersonName> personNames = person.getNames();
 		final SortedSet<Integer> foundPersons = new TreeSet<>();
 		if (present(personNames)) {
@@ -104,16 +166,14 @@ public class PersonPostConnectorPlugin extends AbstractDatabasePlugin {
 			resourcePersonRelation.setRelationType(relationType);
 			resourcePersonRelation.setPersonIndex(foundPersons.iterator().next().intValue());
 
-			this.personDatabaseManager.addResourceRelation(resourcePersonRelation, loggedinUser, session);
+			final boolean added = this.personDatabaseManager.addResourceRelation(resourcePersonRelation, loggedinUser, session);
+			if (added) {
+				return new PersonResourceLinkInformationAdded(resourcePersonRelation);
+			}
 		} else if (foundPersons.size() != 0) {
 			log.warn("found more than one " + relationType.toString().toLowerCase() + " that could be the person " + post.getResource().getInterHash() + " " + PersonNameUtils.serializePersonNames(personNames));
 		}
-	}
 
-	/**
-	 * @param personDatabaseManager the personDatabaseManager to set
-	 */
-	public void setPersonDatabaseManager(PersonDatabaseManager personDatabaseManager) {
-		this.personDatabaseManager = personDatabaseManager;
+		return null;
 	}
 }

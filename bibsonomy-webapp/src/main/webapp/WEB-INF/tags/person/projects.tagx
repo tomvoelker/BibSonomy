@@ -1,0 +1,29 @@
+<jsp:root version="2.0"
+          xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:per="urn:jsptagdir:/WEB-INF/tags/person">
+
+    <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true"/>
+    <c:set var="firstCol" value="3" />
+    <c:set var="secondCol" value="7" />
+    <c:set var="thirdCol" value="2" />
+
+    <div class="personThesisEntry row">
+        <div class="col-md-${firstCol}">
+            <fmt:message key="project.time" />
+        </div>
+        <div class="col-md-${secondCol}">
+            <fmt:message key="project.title" />
+        </div>
+        <div class="col-md-${thirdCol}">
+            <fmt:message key="project.type" />
+        </div>
+    </div>
+    <div class="personThesisSeperator"><!-- KEEP ME --></div>
+    <c:forEach var="links" items="${command.person.crisLinks}">
+        <per:simpleProjectView project="${links.source}" sizeFirstCol="${firstCol}" sizeSecondCol="${secondCol}" sizeThirdCol="${thirdCol}" />
+        <div class="personThesisSeperator"><!-- KEEP ME --></div>
+    </c:forEach>
+</jsp:root>

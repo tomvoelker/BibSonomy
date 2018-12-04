@@ -23,7 +23,7 @@ public class ProjectIndexGenerationLogic extends AbstractDatabaseManagerWithSess
 	}
 
 	@Override
-	public List<Project> getEntites(int lastContenId, int limit) {
+	public List<Project> getEntities(int lastContenId, int limit) {
 		try (final DBSession session = this.openSession()) {
 			final SearchParam param = new SearchParam();
 			param.setLastContentId(lastContenId);

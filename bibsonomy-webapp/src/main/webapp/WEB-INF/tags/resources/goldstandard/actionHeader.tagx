@@ -17,7 +17,7 @@
 	<jsp:directive.attribute name="showEditOnly" type="java.lang.Boolean" required="true"/>
 	
 	<div class="row">
-		<div class="col-md-11 col-md-offset-1">
+		<div class="col-md-12">
 			<buttons:communityPostActions post="${post}" resourceType="${resourceType}" communityPostExists="${communityPostExists}"/>
 			<c:choose>
 				<c:when test="${not empty postOfLoggedInUser}">

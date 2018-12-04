@@ -38,7 +38,7 @@ public class CRISLinkIndexGenerationLogic extends AbstractDatabaseManagerWithSes
 	}
 
 	@Override
-	public List<CRISLink> getEntites(int lastContenId, int limit) {
+	public List<CRISLink> getEntities(int lastContenId, int limit) {
 		try (final DBSession session = this.openSession()) {
 			final SearchParam param = SearchParamUtils.buildParam(this.sourceType, this.targetType);
 			param.setLastContentId(lastContenId);

@@ -40,7 +40,7 @@ public class ElasticsearchIndexGeneratorWithMultipleSources<E, S extends SearchI
 	@Override
 	public void insertDataIntoIndex(String indexName) {
 		for (final IndexGenerationLogic<E> generationLogic : this.generationLogics) {
-			this.insertDataIntoIndex(indexName, (lastContenId, limit) -> generationLogic.getEntites(lastContenId, limit), this.entityInformationProvider, new IndexVoter<E>());
+			this.insertDataIntoIndex(indexName, (lastContenId, limit) -> generationLogic.getEntities(lastContenId, limit), this.entityInformationProvider, new IndexVoter<E>());
 		}
 	}
 }

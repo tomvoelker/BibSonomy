@@ -9,8 +9,10 @@
 		<result property="name"               column="group_name"        javaType="string" />
 		<result property="privlevel"          column="privlevel"         javaType="Privlevel"/>
 		<result property="sharedDocuments"    column="sharedDocuments"   javaType="boolean"/>
-		<result property="allowJoin"    	  column="allow_join"   	 javaType="boolean"/>	
-		<result property="description"    	  column="shortDescription"  javaType="string"/>	
+		<result property="allowJoin"    	  column="allow_join"   	 javaType="boolean"/>
+		<result property="description"    	  column="shortDescription"  javaType="string"/>
+		<result property="organization"		  column="organization"      javaType="boolean" />
+		<result property="externalId"		  column="external_id"       javaType="string" />
 	</resultMap>
 
 	<!-- +
@@ -48,6 +50,7 @@
 		<result property="sharedDocuments"    column="pt_sharedDocuments"   javaType="boolean"/>
 		<result property="allowJoin"    	  column="pt_allow_join"   	 javaType="boolean"/>
 		<result property="description"    	  column="pt_shortDescription"  javaType="string"/>
+		<result property="organization"       column="pt_organization"       javaType="boolean" />
 		<result property="realname"           column="upt_user_realname"     javaType="string" />
 		<result property="homepage"			  column="upt_user_homepage"     javaType="url" />
 	</resultMap>
@@ -69,6 +72,12 @@
 	<resultMap id="group" class="group" extends="group_extended" groupBy="name">
 		<result property="publicationReportingSettings"  resultMap="GroupCommon.publReportingSettings" />
 		<result property="groupRequest"                  resultMap="GroupCommon.groupRequest" />
+	</resultMap>
+
+	<resultMap id="groupWithParent" class="group" extends="group_extended" groupBy="name">
+		<result property="publicationReportingSettings"  resultMap="GroupCommon.publReportingSettings" />
+		<result property="groupRequest"                  resultMap="GroupCommon.groupRequest" />
+		<result property="parent" 						 resultMap="GroupCommon.group_parent" />
 	</resultMap>
 
 	<resultMap id="groupWithMemberships" class="group" extends="group_extended" groupBy="name">
@@ -100,6 +109,10 @@
 		<result property="tags"         resultMap="Common.tag" />
 	</resultMap>
 
+	<sql id="basicColumns">
+		i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, i.organization, i.external_id
+	</sql>
+
 	<sql id="requestColumns">
 		i.request_user_name, i.request_reason, i.request_submission_date
 	</sql>
@@ -109,6 +122,6 @@
 	</sql>
 
 	<sql id="parentColumns">
-		pt.group_name as pt_group_name, pt.group as pt_group, pt.privlevel as pt_privlevel, pt.sharedDocuments as pt_sharedDocuments, pt.allow_join as pt_allow_join, pt.shortDescription as pt_shortDescription, upt.user_realname as upt_user_realname, upt.user_homepage as upt_user_homepage
+		pt.group_name as pt_group_name, pt.group as pt_group, pt.privlevel as pt_privlevel, pt.sharedDocuments as pt_sharedDocuments, pt.allow_join as pt_allow_join, pt.shortDescription as pt_shortDescription, pt.organization as pt_organization, upt.user_realname as upt_user_realname, upt.user_homepage as upt_user_homepage
 	</sql>
 </sqlMap>

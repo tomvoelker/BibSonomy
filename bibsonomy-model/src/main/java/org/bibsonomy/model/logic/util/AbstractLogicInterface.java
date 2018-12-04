@@ -80,6 +80,7 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.BasicQuery;
+import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
@@ -225,7 +226,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PostLogicInterface#createPosts(java.util.List)
 	 */
 	@Override
-	public List<String> createPosts(List<Post<? extends Resource>> posts) {
+	public List<JobResult> createPosts(List<Post<? extends Resource>> posts) {
 		this.doDefaultAction();
 		return null;
 	}
@@ -509,6 +510,15 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public List<Group> getGroups(boolean pending, String userName, int start, int end) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(query)
+	 */
+	@Override
+	public List<Group> getGroups(GroupQuery query) {
 		this.doDefaultAction();
 		return null;
 	}
