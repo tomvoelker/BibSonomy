@@ -23,7 +23,7 @@
     </resultMap>
 
     <resultMap id="fullProject" class="project" groupBy="id" extends="project">
-        <result property="budget"	    column="budget"	        javaType="double" />
+        <result property="budget"	    column="budget"	        javaType="float" />
     </resultMap>
 
     <resultMap id="parentProject" class="project" groupBy="id">
