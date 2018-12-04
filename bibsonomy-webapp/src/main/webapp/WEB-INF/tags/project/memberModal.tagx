@@ -20,7 +20,8 @@
                     <input class='form-control typeahead' id='searchMemberAutocomplete' type='text' name='searchMemberAutocomplete' autocomplete="off" />
                 </div>
                 <div class="modal-footer">
-                    <c:set value="/editProjectMember?projectToUpdate=${project.externalId}" />
+                    <!--TODO: use url generator -->
+                    <c:set var="test" value="/editProjectMember?projectToUpdate=${project.externalId}" />
                     <button type="button" class="btn btn-primary">Save changes</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
