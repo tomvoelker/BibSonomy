@@ -3,7 +3,6 @@
 
     <jsp:directive.attribute name="project" type="org.bibsonomy.model.cris.Project" required="true" />
 
-
     <div class="modal fade" id="deleteProjectModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">

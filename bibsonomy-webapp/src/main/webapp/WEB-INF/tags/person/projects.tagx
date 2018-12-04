@@ -12,7 +12,7 @@
 
     <div class="personThesisEntry row">
         <div class="col-md-${firstCol}">
-            <fmt:message key="project.time" />
+            <fmt:message key="project.duration" />
         </div>
         <div class="col-md-${secondCol}">
             <fmt:message key="project.title" />

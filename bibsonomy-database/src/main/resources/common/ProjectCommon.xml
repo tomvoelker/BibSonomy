@@ -8,13 +8,13 @@
         <result property="externalId"	column="project_id"		javaType="string" />
         <result property="title"	    column="title"		    javaType="string" />
         <result property="subTitle"	    column="subtitle"	    javaType="string" />
+        <result property="type"	        column="type"	        javaType="string" />
         <result property="startDate" 	column="start_date"		javaType="date" />
         <result property="endDate"	    column="end_date"	    javaType="date" />
     </resultMap>
 
     <resultMap id="simpleProject" class="project" groupBy="id" extends="simpleCrisLinkProject">
         <result property="description"	column="description"	javaType="string" />
-        <result property="type"	        column="type"	        javaType="string" />
     </resultMap>
 
     <resultMap id="project" class="project" groupBy="id" extends="simpleProject">
