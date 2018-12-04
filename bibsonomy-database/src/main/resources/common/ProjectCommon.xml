@@ -17,9 +17,12 @@
         <result property="type"	        column="type"	        javaType="string" />
     </resultMap>
 
-    <resultMap id="fullProject" class="project" groupBy="id" extends="simpleProject">
+    <resultMap id="project" class="project" groupBy="id" extends="simpleProject">
         <result property="internalId"	column="internal_id"	javaType="string" />
         <result property="parentProject" resultMap="ProjectCommon.parentProject" />
+    </resultMap>
+
+    <resultMap id="fullProject" class="project" groupBy="id" extends="project">
         <result property="budget"	    column="budget"	        javaType="double" />
     </resultMap>
 
@@ -34,8 +37,12 @@
     </sql>
 
     <sql id="fullProjectAttributes">
+        <include refid="projectColumns" />, p.budget
+    </sql>
+
+    <sql id="projectColumns">
         p.id, p.project_id, p.internal_id, p.title, p.subtitle, p.description, p.start_date, p.end_date,
-        p.type, p.budget
+        p.type
     </sql>
 
     <sql id="parentSimpleProjectAttributes">
