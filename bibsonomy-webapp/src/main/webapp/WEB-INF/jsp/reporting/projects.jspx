@@ -1,147 +1,100 @@
 <?xml version="1.0" ?>
+<jsp:root version="2.0"
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
+		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+		  xmlns:project="urn:jsptagdir:/WEB-INF/tags/resources/project">
 
-<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page"
-          xmlns:c="http://java.sun.com/jsp/jstl/core"
-          xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-          xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-          xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
-          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-          xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
-          xmlns:project="urn:jsptagdir:/WEB-INF/tags/project">
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
 
-    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-    <c:set var="project" value="${command.project}" />
+	<fmt:message var="pageTitle" key="navi.search"/>
 
-    <layout:paneLayout pageTitle="${title}" command="${command}" requPath="${requPath}" showPageOptions="${true}" noSidebar="${true}">
+	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 
-        <jsp:attribute name="headerExt">
-            <link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
-            <script type="text/javascript" src="${resdir}/typeahead.js/js/typeahead.bundle.js"><!-- keep me --></script>
-            <script type="text/javascript" src="${resdir}/javascript/project.js"><!-- keep me --></script>
-            <script type="text/javascript" src="${resdir}/javascript/person/personAutocomplete.js"><!-- keep me --></script>
+	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.projects" command="${command}"
+					   pageTitle="${pageTitle}" activeTab="projects">
+		 <jsp:attribute name="headerExt">
+            <script type="text/javascript" src="${resdir}/javascript/projects.js"><!-- keep me --></script>
         </jsp:attribute>
-        <jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.project" formAction="${relativeUrlGenerator.getProjectUrlByProject(project)}" formInputName="tag">
-				<jsp:attribute name="pathPart">
-					<a href="${relativeUrlGenerator.getProjectUrlByProject(project)}"><c:out value='${project.title}'/></a>
-				</jsp:attribute>
-			</parts:search>
+
+		<!--+
+			  | heading
+			  +-->
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.projects" formAction="/project/" formInputName="project"/>
 		</jsp:attribute>
 
-        <jsp:attribute name="breadcrumbs">
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<nav:projectcrumb project="${project}" active="${true}"/>
-                    <c:if test="${command.context.loginUser.role eq 'ADMIN'}" >
-                        <span style="float: right;">
-                            <div class="edit-media-buttons btn-group btn-group-xs dropdown dropdown-align-right">
-                                <buttons:editProjectButton project="${project}" buttonClasses="btn btn-default btn-xs"/>
-                                <buttons:deleteProjectButton project="${project}" buttonClasses="btn btn-default btn-xs"/>
-                            </div>
-                        </span>
-                    </c:if>
+					<fmt:message key="navi.projects" var="projects"/>
+					<nav:crumb name="${projects}" active="true"/>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
 
-        <jsp:attribute name="content">
-			<div id="projectContent" class="row">
-                <div class="page-header">
-					<h1 class="project-title">
-						<c:out value="${project.title}"/>
-                        <!-- <buttons:projectActions project="${project}" loginUserName="${command.context.loginUser.name}"/> -->
-					</h1>
-                    <c:if test="${not empty project.subTitle}">
-						<small class="project-subtitle">
-							<c:out value="${project.subTitle}" />
-						</small>
-					</c:if>
+		<!--+
+		 	| content
+		 	+-->
+		<jsp:attribute name="content">
 
-                    <!-- show member -->
-                    <div class="project-authors">
-                        <c:choose>
-                            <c:when test="${not empty project.crisLinks}" >
-                                <project:memberList project="${project}" showManagerOnly="${true}"/>
-                            </c:when>
-                            <c:otherwise>
-                                <fmt:message key="project.noMembers" />
-                            </c:otherwise>
-                        </c:choose>
-                        <span style="float: right;">
-                            <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#addMember">
-                                <span class="fa fa-plus" />
-                            </button>
-                        </span>
-                    </div>
-                </div>
+			<h1 class="content-heading">
+                <fmt:message key="navi.projects.all"/>
+                <c:if test="${command.context.loginUser.role eq 'ADMIN'}">
+                    <span style="float: right;">
+                        <buttons:createNewProjectButton/>
+                    </span>
+                </c:if>
+            </h1>
+            <div class="text-right btn-toolbar">
+                <button class="btn btn-primary btn-sm" id="sort-title" onclick="sortList('title')">
+                    <fmt:message key="project.sort.title"/>
+                </button>
+                <button class="btn btn-primary btn-sm" id="sort-start-date" onclick="sortList('start-date')">
+                    <fmt:message key="project.sort.startdate"/>
+                </button>
+                <button class="btn btn-primary btn-sm" id="sort-end-date" onclick="sortList('end-date')">
+                    <fmt:message key="project.sort.enddate"/>
+                </button>
+                <c:set var="searchPlaceholder">
+                    <fmt:message key="project.search"/>
+                </c:set>
+                <input id="search-project-input" placeholder="${searchPlaceholder}" onkeyup="displaySearch()"/>
+            </div>
+
+            <div class="text-info">
+                <dl class="group-list">
+                    <dt>
+                        <fmt:message key="project.amountprojects"/>
+                    </dt>
+                    <dd id="amount-projects">
+                        <c:out value="0"/>
+                    </dd>
+                    <dt>
+                        <fmt:message key="project.totalbudget"/>
+                    </dt>
+                    <dd id="total-budget">
+                        <c:out value="0"/>
+                    </dd>
+                </dl>
+                <hr/>
+            </div>
+            <div id="projects">
+				<ul class="list-group" id="all-projects">
+                    <c:forEach var="project" items="${command.projects}">
+                        <project:listview project="${project}"/>
+                    </c:forEach>
+				</ul>
 			</div>
-
-			<c:if test="${not empty project.description}">
-				<div class="contentContainer row">
-					<div class="col-md-12">
-						<h2 class="project-subheadlines"><fmt:message key="project.description"/></h2>
-						<c:out value="${project.description}"/>
-					</div>
-				</div>
-			</c:if>
-            <hr/>
-
-			<div class="row">
-				<div class="col-md-12">
-					<h2 class="project-subheadlines">
-                        <fmt:message key="project.information"/>
-                        <c:out value=": "/>
-                    </h2>
-					<dl class="dl-horizontal">
-						<c:if test="${not empty project.startDate}">
-							<dt><fmt:message key="project.startDate"/></dt>
-							<dd><fmt:formatDate value="${project.startDate}" pattern="dd.MM.yy" /></dd>
-						</c:if>
-						<c:if test="${not empty project.endDate}">
-							<dt><fmt:message key="project.endDate"/></dt>
-							<dd><fmt:formatDate value="${project.endDate}" pattern="dd.MM.yy" /></dd>
-						</c:if>
-						<c:set var="parentProject" value="${project.parentProject}" />
-						<c:if test="${not empty parentProject}">
-							<dt><fmt:message key="project.parentProject"/></dt>
-							<dd>
-								<a href="${relativeUrlGenerator.getProjectUrlByProject(parentProject)}">
-									<c:out value="${parentProject.title}" />
-								</a>
-							</dd>
-						</c:if>
-						<c:if test="${not empty project.subProjects}">
-							<dt><fmt:message key="project.subProjects"/></dt>
-							<c:forEach var='subproject' items="${project.subProjects}">
-								<c:set var="projectLink" value="${relativeUrlGenerator.getProjectUrlByProject(subproject)}" />
-								<dd>
-									<a href="${projectLink}">
-										<c:out value="${subproject.title}" />
-									</a>
-								</dd>
-							</c:forEach>
-						</c:if>
-                        <c:if test="${not empty project.budget}">
-							<dt><fmt:message key="project.budget"/></dt>
-							<dd><fmt:formatNumber value="${project.budget}" pattern="#,##0.00"/> €</dd>
-						</c:if>
-                        <c:if test="${not empty project.type}">
-                            <dt><fmt:message key="project.type"/></dt>
-                            <dd><c:out value="${project.type}"/></dd>
-                        </c:if>
-                        <c:if test="${not empty project.crisLinks}">
-                            <dt><fmt:message key="project.crisLinks" /></dt>
-                            <dd>
-                                <project:memberList project="${project}"/>
-                            </dd>
-                        </c:if>
-					</dl>
-				</div>
-			</div>
-            <!-- add delete modal -->
-            <project:deleteModal project="${project}" />
-            <!-- add member modal -->
-            <project:memberModal project="${project}" />
+            <nav aria-label="Page navigation example">
+                <p class="info" id="show-amount"/><br/>
+                <ul class="pagination" id="pagin"/>
+            </nav>
 		</jsp:attribute>
-    </layout:paneLayout>
+	</layout:paneLayout>
 </jsp:root>
