@@ -444,11 +444,6 @@ public enum Views implements View {
 	EDIT_PROJECT("actions/projects/editProject"),
 
 	/**
-	 * the dialog to create a new project
-	 */
-	NEW_PROJECT("actions/projects/createNewProject"),
-
-	/**
 	 * The dialog to enter a URL for posting (small dialog).
 	 */
 	POST_BOOKMARK("actions/post/postBookmark"),

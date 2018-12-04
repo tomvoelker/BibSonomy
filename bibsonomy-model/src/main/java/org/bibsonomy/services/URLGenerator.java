@@ -751,11 +751,25 @@ public class URLGenerator {
 	 * @return the url of the provided project
 	 */
 	public String getProjectUrlByProject(final Project project) {
-		final String url = this.projectHome + PROJECT_PREFIX + "/" + UrlUtils.encodePathSegment(project.getExternalId());
+		return this.getProjectUrlByProjectId(project.getExternalId());
+	}
+
+	/**
+	 * the project url by the project id
+	 * @param projectId
+	 * @return
+	 */
+	public String getProjectUrlByProjectId(final String projectId) {
+		final String url = this.projectHome + PROJECT_PREFIX + "/" + UrlUtils.encodePathSegment(projectId);
 
 		return this.getUrl(url);
 	}
 
+	/**
+	 * return the url
+	 * @param projectId
+	 * @return
+	 */
 	public String getProjectDeleteUrl(final String projectId) {
 		final String url = this.projectHome + "/deleteProject?projectIdToDelete=" + UrlUtils.encodePathSegment(projectId);
 
