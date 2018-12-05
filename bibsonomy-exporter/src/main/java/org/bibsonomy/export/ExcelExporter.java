@@ -12,6 +12,7 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 
 public class ExcelExporter<T> implements Exporter<T> {
+	private final static String CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
 	private void fillHeaderRow(Row row, Collection<String> headers) {
 		int idx = 0;
@@ -41,5 +42,15 @@ public class ExcelExporter<T> implements Exporter<T> {
 		IntStream.range(0, mappings.size()).forEach(sheet::autoSizeColumn);
 		workbook.write(outputStream);
 		workbook.close();
+	}
+
+	@Override
+	public String getContentType() {
+		return CONTENT_TYPE;
+	}
+
+	@Override
+	public String getFileExtension() {
+		return ".xlxs";
 	}
 }

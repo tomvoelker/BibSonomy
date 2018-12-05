@@ -49,4 +49,9 @@ public class ProjectReportingCommand extends ReportingCommand {
 	public void setProjects(Collection<Project> projects) {
 		this.projects = projects;
 	}
+
+	@Override
+	public String getFilename() {
+		return "projects";
+	}
 }

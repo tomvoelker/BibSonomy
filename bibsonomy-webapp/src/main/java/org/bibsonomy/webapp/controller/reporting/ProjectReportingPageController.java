@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.controller.reporting;
 
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.ProjectQuery;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.reporting.ProjectReportingCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -28,6 +29,9 @@ public class ProjectReportingPageController implements MinimalisticController<Pr
 		final ProjectQuery projectQuery = ProjectQuery.createBuilder().search(command.getSearch()).
 						startDate(command.getStartDate()).endDate(command.getEndDate()).type(command.getType()).build();
 		command.setProjects(logic.getProjects(projectQuery));
+		if (ValidationUtils.present(command.getFormat())) {
+			return Views.REPORTING_DOWNLOAD;
+		}
 		return Views.PROJECTS_REPORTING;
 	}
 }

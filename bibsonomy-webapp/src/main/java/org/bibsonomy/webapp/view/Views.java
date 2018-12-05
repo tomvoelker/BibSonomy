@@ -265,6 +265,11 @@ public enum Views implements View {
 	REPORTING("reporting"),
 
 	/**
+	 * reporting download
+	 */
+	REPORTING_DOWNLOAD("reportDownloadView"),
+
+	/**
 	 * projects reporting
 	 */
 	PROJECTS_REPORTING("reporting/projects"),

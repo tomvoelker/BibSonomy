@@ -63,4 +63,9 @@ public class PublicationReportingCommand extends ReportingCommand {
 	public void setFilters(Set<Filter> filters) {
 		this.filters = filters;
 	}
+
+	@Override
+	public String getFilename() {
+		return "publications";
+	}
 }

@@ -5,7 +5,10 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
+import org.bibsonomy.model.cris.ProjectPersonLinkType;
+import org.bibsonomy.model.util.PersonNameUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -33,7 +36,10 @@ public enum ReportDownloadViewUtils {
 		PROJECT_FIELD_MAPPINGS.put("budget", p -> Float.toString(p.getBudget()));
 		PROJECT_FIELD_MAPPINGS.put("startDate", p -> formatDate(p.getStartDate()));
 		PROJECT_FIELD_MAPPINGS.put("endDate", p -> formatDate(p.getEndDate()));
-		//TODO add cris links
+		PROJECT_FIELD_MAPPINGS.put("projectLeader", p -> p.getCrisLinks().stream().
+						filter(l -> l.getLinkType().equals(ProjectPersonLinkType.MANAGER)).map(CRISLink::getTarget).
+						filter(Person.class::isInstance).map(Person.class::cast).map(Person::getMainName).
+						map(PersonNameUtils::serializePersonName).collect(Collectors.joining(";")));
 	}
 
 	static {

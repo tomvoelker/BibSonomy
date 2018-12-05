@@ -23,4 +23,9 @@ public class PersonReportingCommand extends ReportingCommand {
 	public void setQuery(String query) {
 		this.query = query;
 	}
+
+	@Override
+	public String getFilename() {
+		return "persons";
+	}
 }

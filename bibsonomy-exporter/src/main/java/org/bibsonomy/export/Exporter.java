@@ -13,4 +13,8 @@ public interface Exporter<T> {
 
 	void save(Collection<T> entities, OutputStream outputStream,
 						Map<String, Function<T, String>> mappings) throws IOException;
+
+	String getContentType();
+
+	String getFileExtension();
 }
