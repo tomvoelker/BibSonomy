@@ -66,6 +66,8 @@ import org.bibsonomy.util.UrlUtils;
  */
 public class URLGenerator {
 
+	private static final String SLASH = "/";
+
 	/**
 	 * Provides page names.
 	 * 
@@ -712,7 +714,7 @@ public class URLGenerator {
 	 *         tagName
 	 */
 	public String getGroupUrlByGroupNameAndTagName(final String groupName, final String tagName) {
-		final String url = this.getGroupUrlString(groupName) + "/" + UrlUtils.encodePathSegment(tagName);
+		final String url = this.getGroupUrlString(groupName) + SLASH + UrlUtils.encodePathSegment(tagName);
 		return this.getUrl(url);
 	}
 
@@ -732,7 +734,7 @@ public class URLGenerator {
 	 * @return the url pointing to the organization page
 	 */
 	public String getOrganizationUrlByName(final String organizationName) {
-		final String url = this.projectHome + ORGANIZATION_PREFIX + UrlUtils.encodePathSegment(organizationName);
+		final String url = this.projectHome + ORGANIZATION_PREFIX + "/" + UrlUtils.encodePathSegment(organizationName);
 		return this.getUrl(url);
 	}
 

@@ -46,4 +46,12 @@
         JOIN projects p ON (p.id = c.source_id)
         WHERE c.target_id = #targetId# and c.target_type = #targetType.id#
     </select>
+
+    <select id="getGroupCRISLinks" parameterClass="crisLinkParam" resultMap="CRISLinkCommon.groupCrisLink">
+        SELECT <include refid="simpleCRISColumns" />, g.`group`, g.group_name, u.user_realname AS group_realname
+        FROM cris_links c
+        JOIN groupids g ON (g.`group` = c.source_id)
+        JOIN user u ON (g.group_name = u.user_name)
+        WHERE c.target_id = #targetId# and c.target_type = #targetType.id#
+    </select>
 </sqlMap>

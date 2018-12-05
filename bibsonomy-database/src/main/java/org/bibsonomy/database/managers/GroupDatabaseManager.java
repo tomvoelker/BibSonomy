@@ -45,6 +45,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.CRISEntityType;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.chain.Chain;
+import org.bibsonomy.database.params.CRISLinkParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagSetParam;
 import org.bibsonomy.database.params.WikiParam;
@@ -1259,7 +1260,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 
 	@Override
 	public List<CRISLink> getLinksForSource(Integer linkId, CRISEntityType crisEntityType, DBSession session) {
-		throw new UnsupportedOperationException("not implemented (yet)");
+		final CRISLinkParam param = new CRISLinkParam();
+		param.setTargetId(linkId.intValue());
+		param.setTargetType(crisEntityType);
+		return this.queryForList("getGroupCRISLinks", param, CRISLink.class, session);
 	}
 
 	/**

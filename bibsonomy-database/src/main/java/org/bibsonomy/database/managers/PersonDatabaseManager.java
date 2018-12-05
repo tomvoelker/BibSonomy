@@ -31,6 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -58,6 +59,7 @@ import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonName;
@@ -193,7 +195,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 				throw new ObjectMovedException(id, Person.class, forwardId, null, null);
 			}
 		} else {
-			final List<CRISLink> crisLinks = this.crisLinkDatabaseManager.loadCRISLinks(person, Collections.singletonList(Project.class), session);
+			final List<CRISLink> crisLinks = this.crisLinkDatabaseManager.loadCRISLinks(person, Arrays.asList(Project.class, Group.class), session);
 			person.setCrisLinks(crisLinks);
 		}
 
