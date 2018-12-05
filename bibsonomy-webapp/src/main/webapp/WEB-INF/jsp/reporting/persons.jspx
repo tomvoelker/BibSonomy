@@ -8,7 +8,7 @@
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
 		  xmlns:person="urn:jsptagdir:/WEB-INF/tags/resources/person"
-		  xmlns:reporting="urn:jsptagdir:/WEB-INF/tags/reporting"
+		  xmlns:reporting="urn:jsptagdir:/WEB-INF/tags/reporting" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 >
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
@@ -54,7 +54,7 @@
                 <c:set var="searchPlaceholder">
                     <fmt:message key="person.search"/>
                 </c:set>
-                <input id="search-person-input" placeholder="${searchPlaceholder}" onkeyup="displaySearch()"/>
+                <input id="search-person-input" placeholder="${searchPlaceholder}" />
             </div>
 
 			<reporting:export requPathAndQuery="${requPathAndQuery}"/>
@@ -65,7 +65,7 @@
 						<fmt:message key="person.amountpersons"/>
 					</dt>
 					<dd id="amount-persons">
-						<c:out value="0"/>
+						<c:out value="${fn:length(command.personList)}"/>
 					</dd>
 				</dl>
 				<hr/>
