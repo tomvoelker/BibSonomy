@@ -5,10 +5,10 @@
 		  xmlns:c="http://java.sun.com/jsp/jstl/core"
 		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
-		  xmlns:publication="urn:jsptagdir:/WEB-INF/tags/resources/publication">
+		  xmlns:publication="urn:jsptagdir:/WEB-INF/tags/resources/publication"
+		  xmlns:spring="http://www.springframework.org/tags">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
 
@@ -51,12 +51,20 @@
                     <fmt:message key="post_publication.search"/>
                 </c:set>
                 <input id="search-publication-input" placeholder="${searchPlaceholder}" onkeyup="displaySearch()"/>
+				<c:out value="Export as:"/>
+				<!-- TODO how to call exporter? -->
+				<select id="export-publication-dropdown" title="Export">
+					<spring:eval var="exportValues" expression="T(org.bibsonomy.export.Exporter).EXPORT_FORMATS"/>
+					<c:forEach var="m_form" items="${exportValues}">
+						<option value="${m_form}">${m_form}</option>
+					</c:forEach>
+				</select>
             </div>
 
             <div class="text-info">
                 <dl class="group-list">
                     <dt>
-                        <fmt:message key="publication.amountpublications"/>
+                        <fmt:message key="publications.amountpublications"/>
                     </dt>
                     <dd id="amount-publications">
                         <c:out value="0"/>

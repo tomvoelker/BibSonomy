@@ -24,13 +24,6 @@
                 <fmt:formatNumber value="${project.budget}" pattern="#,##0.00"/> €
             </small>
         </c:if>
-<!--        <c:if test="${not empty project.type}">
-            <small class="type">
-                <fmt:message key="project.type"/>
-                <c:out value=": "/>
-                <c:out value="${project.type}"/>
-            </small>
-        </c:if>-->
         <br />
         <c:if test="${not empty project.startDate}">
             <small class="start-date">
