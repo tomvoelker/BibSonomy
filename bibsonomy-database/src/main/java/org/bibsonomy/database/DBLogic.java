@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.database;
 
+import static org.bibsonomy.util.ValidationUtils.assertNotNull;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.InetAddress;
@@ -1375,18 +1376,42 @@ public class DBLogic implements LogicInterface {
 		try (final DBSession session = this.openSession()) {
 			session.beginTransaction();
 
+			boolean hasAdminPrivileges = this.permissionDBManager.isAdmin(this.loginUser);
+
 			// check the groups existence and retrieve the current group
-			final Group group = this.groupDBManager.getGroup(this.loginUser.getName(), groupName, false, this.permissionDBManager.isAdmin(this.loginUser), session);
+			final Group group = this.groupDBManager.getGroup(this.loginUser.getName(), groupName, false, hasAdminPrivileges, session);
 			if (!GroupUtils.isValidGroup(group) && !(GroupUpdateOperation.ACTIVATE.equals(operation) || GroupUpdateOperation.DELETE_GROUP_REQUEST.equals(operation))) {
 				throw new IllegalArgumentException("Group does not exist");
 			}
 			final GroupMembership currentGroupMembership = group.getGroupMembershipForUser(requestedUserName);
 
-			/*
-			 * only administrator can update organizations
-			 */
-			if (group.isOrganization() && !GroupUpdateOperation.UPDATE_USER_SHARED_DOCUMENTS.equals(operation)) {
-				this.permissionDBManager.ensureAdminAccess(this.loginUser);
+			// organization related access roles
+			if (group.isOrganization()) {
+				if(!hasAdminPrivileges) {
+					if (GroupUpdateOperation.ADD_INVITED.equals(operation)) {
+						assertNotNull(membership);
+
+						// only members of a group may be able to modify something
+						GroupMembership loggedInUserMembership = group.getGroupMembershipForUser(this.loginUser.getName());
+
+						if (!present(loggedInUserMembership)) {
+							throw new AccessDeniedException("Only members and system admins can invite users to an organization.");
+						}
+
+						GroupRole loggedInUserRole = loggedInUserMembership.getGroupRole();
+
+						if (!(GroupRole.MODERATOR.equals(loggedInUserRole) || GroupRole.ADMINISTRATOR.equals(loggedInUserRole))) {
+							throw new AccessDeniedException("Only group members with roles: MODERATOR and ADMINISTRATOR can invite users.");
+						}
+					} else if (GroupUpdateOperation.ADD_MEMBER.equals(operation)) {
+						// ADD_MEMBER contains further logic for checking. Here we just make sure that its callable.
+					} else {
+						throw new AccessDeniedException("Insufficient privileges for modifying an organization.");
+					}
+					// 2) system admin can perform any op
+				} else if (!GroupUpdateOperation.UPDATE_USER_SHARED_DOCUMENTS.equals(operation)) {
+					this.permissionDBManager.ensureAdminAccess(this.loginUser);
+				}
 			}
 
 			// perform actual operation
