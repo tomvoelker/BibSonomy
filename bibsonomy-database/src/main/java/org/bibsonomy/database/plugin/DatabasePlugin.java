@@ -407,7 +407,9 @@ public interface DatabasePlugin {
 	 * @param project
 	 * @param session
 	 */
-	public void onProjectInsert(final Project project, DBSession session);
+	default void onProjectInsert(final Project project, DBSession session) {
+		// noop
+	}
 
 	/**
 	 * called before a project is updated
@@ -416,7 +418,9 @@ public interface DatabasePlugin {
 	 * @param loggedinUser
 	 * @param session
 	 */
-	public void onProjectUpdate(final Project oldProject, final Project newProject, User loggedinUser, final DBSession session);
+	default void onProjectUpdate(final Project oldProject, final Project newProject, User loggedinUser, final DBSession session) {
+		// noop
+	}
 
 	/**
 	 * called before a project is deleted
@@ -424,7 +428,9 @@ public interface DatabasePlugin {
 	 * @param loggedinUser
 	 * @param session
 	 */
-	public void onProjectDelete(Project project, User loggedinUser, DBSession session);
+	default void onProjectDelete(Project project, User loggedinUser, DBSession session) {
+		// noop
+	}
 
 	/**
 	 * called before a cris link is updated
@@ -433,15 +439,9 @@ public interface DatabasePlugin {
 	 * @param loginUser
 	 * @param session
 	 */
-	public void onCRISLinkUpdate(CRISLink oldCRISLink, CRISLink link, User loginUser, DBSession session);
-
-	/**
-	 * called before a cris link is deleted
-	 * @param crisLink
-	 * @param loginUser
-	 * @param session
-	 */
-	public void onCRISLinkDelete(CRISLink crisLink, User loginUser, DBSession session);
+	default void onCRISLinkUpdate(CRISLink oldCRISLink, CRISLink link, User loginUser, DBSession session) {
+		// noop
+	}
 
 	/**
 	 * called after a user is added to a group
@@ -491,4 +491,7 @@ public interface DatabasePlugin {
 	}
 
 
+	default void onCRISLinkDelete(CRISLink crisLink, User loginUser, DBSession session) {
+		// noop
+	}
 }

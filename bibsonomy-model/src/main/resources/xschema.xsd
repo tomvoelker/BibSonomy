@@ -146,6 +146,14 @@
 	<!--
 		a group
 	-->
+	<xsd:simpleType name="lboolean">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="true"/>
+			<xsd:enumeration value="false"/>
+			<xsd:enumeration value=""/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
 	<xsd:complexType name="GroupType">
 		<xsd:sequence>
 			<xsd:element maxOccurs="unbounded" minOccurs="0" name="user" type="UserType" />
@@ -157,7 +165,7 @@
 		<xsd:attribute name="description" type="xsd:string" />
 		<!-- link to details page -->
 		<xsd:attribute name="href" type="xsd:anyURI" />
-		<xsd:attribute name="organization" type="xsd:boolean" default="false" />
+		<xsd:attribute name="organization" type="lboolean" />
 		<xsd:attribute name="externalId" type="xsd:string" />
 	</xsd:complexType>
 

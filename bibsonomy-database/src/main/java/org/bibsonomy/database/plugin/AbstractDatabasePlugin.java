@@ -37,8 +37,6 @@ import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.cris.CRISLink;
-import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
@@ -221,28 +219,4 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 		// noop
 	}
 
-	@Override
-	public void onProjectInsert(Project project, DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onProjectUpdate(Project oldProject, Project newProject, User loggedinUser, DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onProjectDelete(Project project, User loggedinUser, DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onCRISLinkUpdate(CRISLink oldCRISLink, CRISLink link, User loginUser, DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onCRISLinkDelete(CRISLink crisLink, User loginUser, DBSession session) {
-		// noop
-	}
 }

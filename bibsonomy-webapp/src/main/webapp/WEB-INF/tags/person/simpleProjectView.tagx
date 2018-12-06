@@ -12,7 +12,10 @@
         <div class="col-md-${sizeFirstCol}">
             <span class="start-date">
                 <fmt:formatDate value="${project.startDate}" pattern="dd.MM.yyyy" />
-            </span><c:out value=" - "/>
+            </span>
+            <c:out value=" " />
+            &amp;ndash;
+            <c:out value=" " />
             <span class="end-date">
                 <fmt:formatDate value="${project.endDate}" pattern="dd.MM.yyyy" />
             </span>

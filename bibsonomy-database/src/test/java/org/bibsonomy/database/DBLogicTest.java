@@ -45,9 +45,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.JobResult;
-import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PostUpdateOperation;
@@ -82,6 +82,7 @@ import org.junit.Test;
 public class DBLogicTest extends AbstractDatabaseManagerTest {
 	private static final String TEST_USER_1 = "testuser1";
 	private static final String TEST_USER_2 = "testuser2";
+	private static final String TEST_USER_3 = "testuser3";
 	private static final String TEST_USER_NAME = "jaeschke";
 	private static final String TEST_SPAMMER_NAME = "testspammer2";
 	private static final String TEST_LIMITED_USER_NAME = "testlimited";
@@ -89,13 +90,13 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	private static final String TEST_SPAMMER_ALGORITHM = "testlogging";
 	private static final int    TEST_SPAMMER_PREDICTION = 1;
 	private static final double TEST_SPAMMER_CONFIDENCE = 0.42;
-	
+
 	private static final String TEST_REQUEST_USER_NAME = "jaeschke";
 	private static final String TEST_REQUEST_HASH = "7d85e1092613fd7c91d6ba5dfcf4a044";
-	
+
 	private static final List<String> DEFAULT_TAG_LIST = new LinkedList<String>(Arrays.asList("semantic"));
 	private static final Set<String> DEFAULT_TAG_SET = new HashSet<String>(DEFAULT_TAG_LIST);
-	
+
 	private static final Set<String> DEFAULT_USERNAME_SET = new HashSet<String>(Arrays.asList(TEST_USER_NAME));
 
 	private static final DBLogic ADMIN_LOGIC = testDatabaseContext.getBean("dbLogicPrototype", DBLogic.class);
@@ -475,13 +476,13 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		//
 		//
 		
-		final List<String> tags1 = new ArrayList<String>();
+		final List<String> tags1 = new ArrayList<>();
 		tags1.add(relationTag1);
 		
 		List<Post<BibTex>> bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags1, null, null, QueryScope.LOCAL, null, Order.ADDED, null, null, 0, 19);
 		assertEquals(2, bibTexPostsList.size());
 		
-		final List<String> tags2 = new ArrayList<String>();
+		final List<String> tags2 = new ArrayList<>();
 		tags2.add(relationTag2);
 		
 		List<Post<Bookmark>> bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null, QueryScope.LOCAL, null, Order.ADDED, null, null, 0, 19);
@@ -944,7 +945,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	 * @throws Exception 
 	 */
 	@Test
-	public void testLimitedUserPosts() throws Exception {
+	public void testLimitedUserPosts() {
 		this.postAndAssertGroup(GroupUtils.buildPublicGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, BibTex.class);
 		this.postAndAssertGroup(GroupUtils.buildPublicGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, Bookmark.class);
 		this.postAndAssertGroup(GroupUtils.buildFriendsGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, BibTex.class);
@@ -1337,7 +1338,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 
 
 	@Test
-	public void testDeleteOrganizationAsAdminUser() {
+	public void testAddMemberToOrganizationAsAdminUser() {
 		final String groupName = "my organization";
 
 		final Group organization = new Group(groupName);
@@ -1352,6 +1353,184 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 
 		organization.setGroupRequest(groupRequest);
 
+		LogicInterface adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+
+		/*
+		 * organizations are automatically activated, so pending is set to false.
+		 */
+		adminDbLogic.createGroup(organization);
+
+		Group retrievedGroup = adminDbLogic.getGroupDetails(groupName, false);
+		GroupMembership membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_2), GroupRole.MODERATOR, false);
+
+		adminDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_MEMBER, membership);
+	}
+
+	@Test
+	public void testUserJoinsOrganisationAfterInviteByModerator() {
+		final String groupName = "my organization";
+
+		final Group organization = new Group(groupName);
+
+		organization.setDescription("This is an organization");
+		organization.setAllowJoin(true);
+		organization.setOrganization(true);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName(DBLogicTest.TEST_USER_1);
+		groupRequest.setReason("no real reason");
+
+		organization.setGroupRequest(groupRequest);
+
+		LogicInterface adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+
+		/*
+		 * organizations are automatically activated, so pending is set to false.
+		 */
+		adminDbLogic.createGroup(organization);
+
+		adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+		Group retrievedGroup = adminDbLogic.getGroupDetails(groupName, false);
+
+		// If a user is added to a group he always gets the USER role first, so we have to adjust it later
+		// add a user to a group
+		GroupMembership membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_2), GroupRole.USER, false);
+		adminDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_MEMBER, membership);
+
+		// retrieve the updated group object
+		retrievedGroup = adminDbLogic.getGroupDetails(groupName, false);
+		membership = retrievedGroup.getGroupMembershipForUser(DBLogicTest.TEST_USER_2);
+
+		// update the role
+		membership.setGroupRole(GroupRole.MODERATOR);
+		adminDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.UPDATE_GROUPROLE, membership);
+
+		// switch to the user that now has the assigned role
+		LogicInterface moderatorDbLogic = this.getDbLogic(DBLogicTest.TEST_USER_2);
+		retrievedGroup = moderatorDbLogic.getGroupDetails(groupName, false);
+		membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_3), GroupRole.USER, false);
+
+		// invite user to join the group
+		moderatorDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_INVITED, membership);
+
+		LogicInterface userDbLogic = this.getDbLogic(DBLogicTest.TEST_USER_3);
+		Group g = userDbLogic.getGroupDetails(groupName, false);
+		GroupMembership m = new GroupMembership(userDbLogic.getUserDetails(DBLogicTest.TEST_USER_3), GroupRole.USER, false);
+
+		userDbLogic.updateGroup(g, GroupUpdateOperation.ADD_MEMBER, m);
+	}
+
+	@Test
+	public void testUserJoinsOrganisationAfterInviteByAdministrator() {
+		final String groupName = "my organization";
+
+		final Group organization = new Group(groupName);
+
+		organization.setDescription("This is an organization");
+		organization.setAllowJoin(true);
+		organization.setOrganization(true);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName(DBLogicTest.TEST_USER_1);
+		groupRequest.setReason("no real reason");
+
+		organization.setGroupRequest(groupRequest);
+
+		LogicInterface adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+
+		/*
+		 * organizations are automatically activated, so pending is set to false.
+		 */
+		adminDbLogic.createGroup(organization);
+
+		adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+		Group retrievedGroup = adminDbLogic.getGroupDetails(groupName, false);
+
+		// If a user is added to a group he always gets the USER role first, so we have to adjust it later
+		// add a user to a group
+		GroupMembership membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_2), GroupRole.USER, false);
+		adminDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_MEMBER, membership);
+
+		// retrieve the updated group object
+		retrievedGroup = adminDbLogic.getGroupDetails(groupName, false);
+		membership = retrievedGroup.getGroupMembershipForUser(DBLogicTest.TEST_USER_2);
+
+		// update the role
+		membership.setGroupRole(GroupRole.ADMINISTRATOR);
+		adminDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.UPDATE_GROUPROLE, membership);
+
+		// switch to the user that now has the assigned role
+		LogicInterface moderatorDbLogic = this.getDbLogic(DBLogicTest.TEST_USER_2);
+		retrievedGroup = moderatorDbLogic.getGroupDetails(groupName, false);
+		membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_3), GroupRole.USER, false);
+
+		// invite user to join the group
+		moderatorDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_INVITED, membership);
+
+		LogicInterface userDbLogic = this.getDbLogic(DBLogicTest.TEST_USER_3);
+		Group g = userDbLogic.getGroupDetails(groupName, false);
+		GroupMembership m = new GroupMembership(userDbLogic.getUserDetails(DBLogicTest.TEST_USER_3), GroupRole.USER, false);
+
+		userDbLogic.updateGroup(g, GroupUpdateOperation.ADD_MEMBER, m);
+	}
+
+
+	@Test(expected=AccessDeniedException.class)
+	public void testUserJoinsOrganisationAfterInviteByUser() {
+		final String groupName = "my organization";
+
+		final Group organization = new Group(groupName);
+
+		organization.setDescription("This is an organization");
+		organization.setAllowJoin(true);
+		organization.setOrganization(true);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName(DBLogicTest.TEST_USER_1);
+		groupRequest.setReason("no real reason");
+
+		organization.setGroupRequest(groupRequest);
+
+		LogicInterface adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+
+		/*
+		 * organizations are automatically activated, so pending is set to false.
+		 */
+		adminDbLogic.createGroup(organization);
+
+		adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+		Group retrievedGroup = adminDbLogic.getGroupDetails(groupName, false);
+
+		// If a user is added to a group he always gets the USER role first, so we have to adjust it later
+		// add a user to a group
+		GroupMembership membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_2), GroupRole.USER, false);
+		adminDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_MEMBER, membership);
+
+		// switch to the user that now has the assigned role
+		LogicInterface moderatorDbLogic = this.getDbLogic(DBLogicTest.TEST_USER_2);
+		retrievedGroup = moderatorDbLogic.getGroupDetails(groupName, false);
+		membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_3), GroupRole.USER, false);
+
+		// invite user to join the group
+		moderatorDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_INVITED, membership);
+	}
+
+
+	@Test
+	public void testDeleteOrganizationAsAdminUser() {
+		final String groupName = "my organization";
+
+		final Group organization = new Group(groupName);
+
+		organization.setDescription("This is an organization");
+		organization.setAllowJoin(true);
+		organization.setOrganization(true);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName(DBLogicTest.TEST_USER_1);
+		groupRequest.setReason("no real reason");
+
+		organization.setGroupRequest(groupRequest);
 		LogicInterface adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
 
 		/*
@@ -1400,7 +1579,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void testGetAllGroups() {
 		LogicInterface logic = this.getDbLogic(DBLogicTest.TEST_USER_1);
 
-		GroupQuery query = new GroupQuery(false, DBLogicTest.TEST_USER_1, 0, 100, null);
+		GroupQuery query = new GroupQuery(false, DBLogicTest.TEST_USER_1, null, 0, 100);
 		List<Group> groups = logic.getGroups(query);
 
 		assertThat(groups.size(), equalTo(8));
@@ -1411,7 +1590,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void testGetGroupByExternalId() {
 		LogicInterface logic = this.getDbLogic(DBLogicTest.TEST_USER_1);
 
-		GroupQuery query = new GroupQuery(false, DBLogicTest.TEST_USER_1, 0, 100, "extid1");
+		GroupQuery query = new GroupQuery(false, DBLogicTest.TEST_USER_1, "extid1", 0, 100);
 		List<Group> groups = logic.getGroups(query);
 
 		assertThat(groups.size(), equalTo(1));
@@ -1426,7 +1605,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void testGetAllPendingGroups() {
 		LogicInterface logic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
 
-		GroupQuery query = new GroupQuery(true, null, 0, 100, null);
+		GroupQuery query = new GroupQuery(true, null, null, 0, 100);
 		List<Group> groups = logic.getGroups(query);
 
 		assertThat(groups.size(), equalTo(2));
@@ -1438,7 +1617,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void testGetPendingGroupsForUser() {
 		LogicInterface logic = this.getAdminDbLogic("testrequestuser1");
 
-		GroupQuery query = new GroupQuery(true, "testrequestuser1", 0, 100, null);
+		GroupQuery query = new GroupQuery(true, "testrequestuser1", null, 0, 100);
 		List<Group> groups = logic.getGroups(query);
 
 		assertThat(groups.size(), equalTo(1));

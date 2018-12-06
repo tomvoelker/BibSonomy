@@ -230,15 +230,39 @@ public class EditPublicationCommand extends EditPostCommand<BibTex> {
 		this.person = person;
 	}
 
+	/**
+	 * @return
+	 */
 	public Person getPerson() {
 		return this.person;
 	}
 
+	/**
+	 * @return
+	 */
 	public PersonResourceRelationType getPersonRole() {
 		return this.personRole;
 	}
 
+	/**
+	 * @param personRole
+	 */
 	public void setPersonRole(PersonResourceRelationType personRole) {
 		this.personRole = personRole;
-	}}
+	}
+
+	/**
+	 * @return
+	 */
+	public List<User> getUserFriends() {
+		return userFriends;
+	}
+
+	/**
+	 * @return
+	 */
+	public Person getClaimedPerson() {
+		return claimedPerson;
+	}
+}
 

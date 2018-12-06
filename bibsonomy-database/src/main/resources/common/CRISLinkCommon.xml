@@ -20,6 +20,10 @@
         <result property="source"   resultMap="ProjectCommon.simpleCrisLinkProject" />
     </resultMap>
 
+    <resultMap id="groupCrisLink" class="crisLink" groupBy="id" extends="simpleCrisLink">
+        <result property="source"   resultMap="GroupCommon.simpleCrisLinkGroup" />
+    </resultMap>
+
     <sql id="allCRISLinkAttributes">
         c.id AS cris_id, c.source_id, c.source_type, c.target_id, c.target_type, c.start_date AS cris_start_date, c.end_date AS cris_end_date, c.linktype_type, c.linktype_value, c.link_source, c.updated_by, c.updated_at
     </sql>

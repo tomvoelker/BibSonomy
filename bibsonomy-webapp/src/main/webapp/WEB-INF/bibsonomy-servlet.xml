@@ -557,6 +557,11 @@
 						<property name="controllerBeanName" value="groupPageController"/>
 					</bean>
 				</entry>
+				<entry key="/organization">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="organizationPageController"/>
+					</bean>
+				</entry>
 				<entry key="/reporting/projects">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="projectReportingPageController"/>
@@ -1022,7 +1027,11 @@
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>	
-	
+
+	<bean id="organizationPageController" class="org.bibsonomy.webapp.controller.cris.OrganizationPageController" scope="request">
+		<property name="logic" ref="logic" />
+	</bean>
+
 	<bean id="viewablePageController" class="org.bibsonomy.webapp.controller.ViewablePageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
 	</bean>

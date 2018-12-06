@@ -5,7 +5,15 @@
 
     <select id="getFullProjectDetails" parameterClass="string" resultMap="ProjectCommon.fullProject">
         SELECT <include refid="fullProjectAttributes" />, <include refid="parentSimpleProjectAttributes" />
-          FROM projects p LEFT JOIN projects pp ON p.parent_id = pp.id
+        FROM projects p
+        LEFT JOIN projects pp ON (p.parent_id = pp.id)
+        WHERE p.project_id = #project_id#
+    </select>
+
+    <select id="getProjectDetails" parameterClass="string" resultMap="ProjectCommon.project">
+        SELECT <include refid="projectColumns" />, <include refid="parentSimpleProjectAttributes" />
+        FROM projects p
+        LEFT JOIN projects pp ON (p.parent_id = pp.id)
         WHERE p.project_id = #project_id#
     </select>
 

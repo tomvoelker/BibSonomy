@@ -55,14 +55,17 @@ import org.elasticsearch.index.query.TermQueryBuilder;
  * @param <P> 
  */
 public class ElasticsearchPublicationSearch<P extends BibTex> extends ElasticsearchPostSearch<P> {
-
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.search.post.EsResourceSearch#buildResourceSpecifiyQuery(org.elasticsearch.index.query.BoolQueryBuilder, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	protected void buildResourceSpecificQuery(BoolQueryBuilder mainQueryBuilder, String loggedinUser, PostSearchQuery<?> postQuery) {
 		super.buildResourceSpecificQuery(mainQueryBuilder, loggedinUser, postQuery);
 
 		final String authorSearchTerms = postQuery.getAuthorSearchTerms();
 		if (present(authorSearchTerms)) {
-			final QueryBuilder authorSearchQuery = buildPersonNameQuery(authorSearchTerms, false);
+			final QueryBuilder authorSearchQuery = QueryBuilders.matchQuery(Fields.Publication.AUTHORS + "." + Fields.Publication.PERSON_NAME, authorSearchTerms).operator(Operator.AND);
 			final NestedQueryBuilder nestedQuery = QueryBuilders.nestedQuery(Fields.Publication.AUTHORS, authorSearchQuery, ScoreMode.Total);
 			mainQueryBuilder.must(nestedQuery);
 		}
@@ -90,6 +93,10 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 			mainQueryBuilder.must(nestedQuery);
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.search.post.EsResourceSearch#buildResourceSpecifiyFilters(org.elasticsearch.index.query.BoolFilterBuilder, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
 
 	private static QueryBuilder buildPersonNameQuery(String authorName, boolean onlyIncludeAuthorsWithoutPersonId) {
 		final MatchQueryBuilder matchQuery = QueryBuilders.matchQuery(Fields.Publication.AUTHORS + "." + Fields.Publication.PERSON_NAME, authorName).operator(Operator.AND);

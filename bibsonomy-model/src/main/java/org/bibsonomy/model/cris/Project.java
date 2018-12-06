@@ -59,7 +59,7 @@ public class Project implements Linkable {
 	private String type;
 
 	/** the funding */
-	private float budget;
+	private Float budget;
 
 	/** the start date */
 	private Date startDate;
@@ -178,14 +178,14 @@ public class Project implements Linkable {
 	/**
 	 * @return the budget
 	 */
-	public float getBudget() {
+	public Float getBudget() {
 		return budget;
 	}
 
 	/**
 	 * @param budget the budget to set
 	 */
-	public void setBudget(float budget) {
+	public void setBudget(Float budget) {
 		this.budget = budget;
 	}
 

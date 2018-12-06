@@ -45,6 +45,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.CRISEntityType;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.chain.Chain;
+import org.bibsonomy.database.params.CRISLinkParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagSetParam;
 import org.bibsonomy.database.params.WikiParam;
@@ -439,11 +440,14 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 		if (retrieveTransitiveGroups) {
 			final List<Integer> groupids = groupsForUser.stream().map(Group::getGroupId).collect(Collectors.toList());
 
-			List<Group> subgroups = this.queryForList("getSubgroupsTransitively", groupids, Group.class, session);
+			if (present(groupids)) {
+				List<Group> subgroups = this.queryForList("getSubgroupsTransitively", groupids, Group.class, session);
 
-			for(Group subgroup: subgroups) {
-				if (groupsForUser.stream().noneMatch(group -> group.getGroupId() == subgroup.getGroupId())) {
-					groupsForUser.add(subgroup);
+
+				for (Group subgroup : subgroups) {
+					if (groupsForUser.stream().noneMatch(group -> group.getGroupId() == subgroup.getGroupId())) {
+						groupsForUser.add(subgroup);
+					}
 				}
 			}
 		}
@@ -532,9 +536,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 			return new ArrayList<>();
 		}
 
-		List<Integer> groupIds = this.queryForList("getGroupIdsForUser", userName, Integer.class, session);
-
-		if (retrieveTransitiveSubgroups) {
+		final List<Integer> groupIds = this.queryForList("getGroupIdsForUser", userName, Integer.class, session);
+		if (retrieveTransitiveSubgroups && present(groupIds)) {
 			List<Integer> subgroups = this.queryForList("getSubgroupIdsTransitively", groupIds, Integer.class, session);
 
 			for (Integer groupId: subgroups) {
@@ -1257,7 +1260,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 
 	@Override
 	public List<CRISLink> getLinksForSource(Integer linkId, CRISEntityType crisEntityType, DBSession session) {
-		throw new UnsupportedOperationException("not implemented (yet)");
+		final CRISLinkParam param = new CRISLinkParam();
+		param.setTargetId(linkId.intValue());
+		param.setTargetType(crisEntityType);
+		return this.queryForList("getGroupCRISLinks", param, CRISLink.class, session);
 	}
 
 	/**

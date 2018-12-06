@@ -59,14 +59,14 @@ import org.bibsonomy.util.UrlBuilder;
 import org.bibsonomy.util.UrlUtils;
 
 /**
- * FIXME: introduce a factory for the url generator and remove all *AndSysUrl methods
- * 
  * TODO: Unify URL constructions for various cases (history, community posts,
  * regular posts) Generates the URLs used by the web application.
  * 
  * @author rja
  */
 public class URLGenerator {
+
+	private static final String SLASH = "/";
 
 	/**
 	 * Provides page names.
@@ -115,6 +115,8 @@ public class URLGenerator {
 	private static final String FRIEND_PREFIX = "friend";
 	private static final String GROUPS = "groups";
 	private static final String GROUP_PREFIX = "group";
+	private static final String ORGANIZATIONS = "organizations";
+	private static final String ORGANIZATION_PREFIX = "organization";
 	private static final String PROJECTS = "projects";
 	private static final String PROJECT_PREFIX = "project";
 	private static final String LOGIN_PREFIX = "login";
@@ -712,7 +714,27 @@ public class URLGenerator {
 	 *         tagName
 	 */
 	public String getGroupUrlByGroupNameAndTagName(final String groupName, final String tagName) {
-		final String url = this.getGroupUrlString(groupName) + "/" + UrlUtils.encodePathSegment(tagName);
+		final String url = this.getGroupUrlString(groupName) + SLASH + UrlUtils.encodePathSegment(tagName);
+		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL for the organizations page
+	 *
+	 * @return URL pointing to the organizations page
+	 */
+	public String getOrganizationsUrl() {
+		final String url = this.projectHome + ORGANIZATIONS;
+		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL for a specific organization page
+	 * @param organizationName
+	 * @return the url pointing to the organization page
+	 */
+	public String getOrganizationUrlByName(final String organizationName) {
+		final String url = this.projectHome + ORGANIZATION_PREFIX + "/" + UrlUtils.encodePathSegment(organizationName);
 		return this.getUrl(url);
 	}
 
@@ -721,7 +743,6 @@ public class URLGenerator {
 	 *
 	 * @return URL pointing to the projects page
 	 */
-
 	public String getProjectsUrl() {
 		final String url = this.projectHome + PROJECTS;
 		return this.getUrl(url);
@@ -732,11 +753,25 @@ public class URLGenerator {
 	 * @return the url of the provided project
 	 */
 	public String getProjectUrlByProject(final Project project) {
-		final String url = this.projectHome + PROJECT_PREFIX + "/" + UrlUtils.encodePathSegment(project.getExternalId());
+		return this.getProjectUrlByProjectId(project.getExternalId());
+	}
+
+	/**
+	 * the project url by the project id
+	 * @param projectId
+	 * @return
+	 */
+	public String getProjectUrlByProjectId(final String projectId) {
+		final String url = this.projectHome + PROJECT_PREFIX + "/" + UrlUtils.encodePathSegment(projectId);
 
 		return this.getUrl(url);
 	}
 
+	/**
+	 * return the url
+	 * @param projectId
+	 * @return
+	 */
 	public String getProjectDeleteUrl(final String projectId) {
 		final String url = this.projectHome + "/deleteProject?projectIdToDelete=" + UrlUtils.encodePathSegment(projectId);
 

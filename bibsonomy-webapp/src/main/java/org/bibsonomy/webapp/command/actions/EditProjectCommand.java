@@ -3,16 +3,14 @@ package org.bibsonomy.webapp.command.actions;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.webapp.command.BaseCommand;
 
-
+/**
+ * @author tko
+ */
 public class EditProjectCommand extends BaseCommand {
 
 	private String projectIdToUpdate;
 
 	private Project project;
-
-	private String save;
-
-	private String delete;
 
 	/**
 	 * @return the projectIdToUpdate
@@ -40,40 +38,5 @@ public class EditProjectCommand extends BaseCommand {
 	 */
 	public void setProject(Project project) {
 		this.project = project;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getSave() {
-		return save;
-	}
-
-	/**
-	 * @param save
-	 */
-	public void setSave(String save) {
-		this.save = save;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getDelete() {
-		return delete;
-	}
-
-	/**
-	 * @param delete
-	 */
-	public void setDelete(String delete) {
-		this.delete = delete;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getUrl() {
-		return "/editProject?projectIdToUpdate=" + this.projectIdToUpdate;
 	}
 }

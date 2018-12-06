@@ -84,6 +84,7 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.queries.get.GetPersonByIdQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteResourcePersonRelationQuery;
+import org.bibsonomy.rest.client.queries.delete.DeleteResourcePersonRelationQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteCRISLinkQuery;
 import org.bibsonomy.rest.client.queries.get.GetConceptDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetFriendsQuery;

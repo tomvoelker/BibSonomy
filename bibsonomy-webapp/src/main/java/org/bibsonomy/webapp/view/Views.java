@@ -59,6 +59,8 @@ public enum Views implements View {
 	PERSON_SHOW("person/show"),
 	DISAMBIGUATION("disambiguation"),
 
+	AUTOLINK("person/autolink"),
+
 	/**
 	 * the page where a user can change his personal settings
 	 */
@@ -460,11 +462,6 @@ public enum Views implements View {
 	 * the dialog to edit a project
 	 */
 	EDIT_PROJECT("actions/projects/editProject"),
-
-	/**
-	 * the dialog to create a new project
-	 */
-	NEW_PROJECT("actions/projects/createNewProject"),
 
 	/**
 	 * The dialog to enter a URL for posting (small dialog).

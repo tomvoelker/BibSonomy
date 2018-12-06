@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -98,7 +99,11 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 * field for the friends or groups dropdowns
 	 */
 	private String friendsOrGroups;
-	
+
+	private List<JobResult> jobResults;
+
+	private List<Post<RESOURCE>> abstractPosts;
+
 	/**
 	 * stores an id, e.g. for mapping recommendations to posts
 	 */
@@ -544,4 +549,31 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 		this.groupUser = groupUser;
 	}
 
+	/**
+	 * @return
+	 */
+	public List<JobResult> getJobResults() {
+		return jobResults;
+	}
+
+	/**
+	 * @param jobResults
+	 */
+	public void setJobResults(List<JobResult> jobResults) {
+		this.jobResults = jobResults;
+	}
+
+	/**
+	 * @return
+	 */
+	public List<Post<RESOURCE>> getAbstractPosts() {
+		return abstractPosts;
+	}
+
+	/**
+	 * @param abstractPosts
+	 */
+	public void setAbstractPosts(List<Post<RESOURCE>> abstractPosts) {
+		this.abstractPosts= abstractPosts;
+	}
 }

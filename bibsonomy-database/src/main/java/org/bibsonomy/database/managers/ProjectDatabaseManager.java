@@ -90,11 +90,11 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 			this.plugins.onProjectInsert(project, session);
 			this.insert("insertProject", projectParam, session);
 			session.commitTransaction();
+
+			return JobResult.buildSuccess(projectId);
 		} finally {
 			session.endTransaction();
 		}
-
-		return JobResult.buildSuccess();
 	}
 
 	private ProjectParam buildParam(final Project project, final DBSession session) {

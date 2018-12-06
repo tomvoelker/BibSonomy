@@ -3,6 +3,12 @@
 
 <sqlMap namespace="GroupCommon">
 
+	<resultMap id="simpleCrisLinkGroup" class="group" groupBy="groupId">
+		<result property="groupId"            column="group"             javaType="int" />
+		<result property="name"               column="group_name"        javaType="string" />
+		<result property="realname"           column="group_realname"    javaType="string" />
+	</resultMap>
+
 	<!-- The basics of every group -->
 	<resultMap id="group_basic" class="group">
 		<result property="groupId"            column="group"             javaType="int" />
