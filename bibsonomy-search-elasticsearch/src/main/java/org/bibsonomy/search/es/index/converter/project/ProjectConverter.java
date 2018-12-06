@@ -3,7 +3,6 @@ package org.bibsonomy.search.es.index.converter.project;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.model.cris.Project;
-import org.bibsonomy.search.es.index.converter.person.PersonFields;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.util.Converter;
 
@@ -15,14 +14,16 @@ import java.util.Map;
  * convertes a {@link Project} for elasticsearch
  * @author dzo
  */
-public class ProjectConverter implements Converter<Project, Map<String, Object>, Object> {
+public class ProjectConverter implements Converter<Project, Map<String, Object>, Boolean> {
 
 	@Override
 	public Map<String, Object> convert(final Project source) {
 		final Map<String, Object> converted = new HashMap<>();
 
 		converted.put(ProjectFields.EXTERNAL_ID, source.getExternalId());
-		converted.put(ProjectFields.TITLE, source.getTitle());
+		final String title = source.getTitle();
+		converted.put(ProjectFields.TITLE, title);
+		converted.put(ProjectFields.TITLE_LOWERCASE, title.toLowerCase());
 		converted.put(ProjectFields.SUB_TITLE, source.getSubTitle());
 		converted.put(ProjectFields.DESCRIPTION, source.getDescription());
 		converted.put(ProjectFields.TYPE, source.getType());
@@ -40,10 +41,15 @@ public class ProjectConverter implements Converter<Project, Map<String, Object>,
 	}
 
 	@Override
-	public Project convert(Map<String, Object> source, Object options) {
+	public Project convert(Map<String, Object> source, Boolean fullDetails) {
 		final Project project = new Project();
 		project.setExternalId((String) source.get(ProjectFields.EXTERNAL_ID));
-		project.setBudget(((Double) source.get(ProjectFields.BUDGET)).floatValue());
+
+		// only set full details about the project when the user is allowed to see them
+		if (fullDetails) {
+			project.setBudget(((Double) source.get(ProjectFields.BUDGET)).floatValue());
+		}
+
 		project.setTitle((String) source.get(ProjectFields.TITLE));
 		project.setSubTitle((String) source.get(ProjectFields.SUB_TITLE));
 		project.setDescription((String) source.get(ProjectFields.DESCRIPTION));

@@ -63,10 +63,21 @@ import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.UserRelationSystemTag;
-import org.bibsonomy.model.*;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Document;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.GroupRequest;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Repository;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.query.GroupQuery;
+import org.bibsonomy.model.logic.querybuilder.GroupQueryBuilder;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
@@ -1579,8 +1590,9 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void testGetAllGroups() {
 		LogicInterface logic = this.getDbLogic(DBLogicTest.TEST_USER_1);
 
-		GroupQuery query = new GroupQuery(false, DBLogicTest.TEST_USER_1, null, 0, 100);
-		List<Group> groups = logic.getGroups(query);
+		final GroupQueryBuilder queryBuilder = new GroupQueryBuilder();
+		queryBuilder.setPending(false).setUserName(DBLogicTest.TEST_USER_1).setStart(0).setEnd(100);
+		final List<Group> groups = logic.getGroups(queryBuilder.createGroupQuery());
 
 		assertThat(groups.size(), equalTo(8));
 	}
@@ -1589,9 +1601,9 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void testGetGroupByExternalId() {
 		LogicInterface logic = this.getDbLogic(DBLogicTest.TEST_USER_1);
-
-		GroupQuery query = new GroupQuery(false, DBLogicTest.TEST_USER_1, "extid1", 0, 100);
-		List<Group> groups = logic.getGroups(query);
+		final GroupQueryBuilder queryBuilder = new GroupQueryBuilder();
+		queryBuilder.setPending(false).setUserName(DBLogicTest.TEST_USER_1).setStart(0).setEnd(100).setExternalId("extid1");
+		List<Group> groups = logic.getGroups(queryBuilder.createGroupQuery());
 
 		assertThat(groups.size(), equalTo(1));
 
@@ -1604,9 +1616,9 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void testGetAllPendingGroups() {
 		LogicInterface logic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
-
-		GroupQuery query = new GroupQuery(true, null, null, 0, 100);
-		List<Group> groups = logic.getGroups(query);
+		final GroupQueryBuilder queryBuilder = new GroupQueryBuilder();
+		queryBuilder.setPending(true).setStart(0).setEnd(100);
+		List<Group> groups = logic.getGroups(queryBuilder.createGroupQuery());
 
 		assertThat(groups.size(), equalTo(2));
 
@@ -1616,9 +1628,9 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void testGetPendingGroupsForUser() {
 		LogicInterface logic = this.getAdminDbLogic("testrequestuser1");
-
-		GroupQuery query = new GroupQuery(true, "testrequestuser1", null, 0, 100);
-		List<Group> groups = logic.getGroups(query);
+		final GroupQueryBuilder queryBuilder = new GroupQueryBuilder();
+		queryBuilder.setPending(true).setUserName("testrequestuser1").setStart(0).setEnd(100);
+		List<Group> groups = logic.getGroups(queryBuilder.createGroupQuery());
 
 		assertThat(groups.size(), equalTo(1));
 	}

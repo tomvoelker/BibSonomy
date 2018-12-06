@@ -14,6 +14,8 @@ public interface ProjectFields {
 	String TITLE = "title";
 	/** title for sorting */
 	String TITLE_SORT = "title_sort";
+	/** the lowercase title for prefix match */
+	String TITLE_LOWERCASE = "title_lowercase";
 	/** the subtitle */
 	String SUB_TITLE = "sub_title";
 	/** the description */

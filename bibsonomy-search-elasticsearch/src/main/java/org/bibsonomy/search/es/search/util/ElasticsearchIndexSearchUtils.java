@@ -4,10 +4,13 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.search.InvalidSearchRequestException;
 import org.elasticsearch.ElasticsearchStatusException;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.sort.SortOrder;
 
@@ -24,6 +27,23 @@ public class ElasticsearchIndexSearchUtils {
 
 	private ElasticsearchIndexSearchUtils() {
 		// noop
+	}
+
+	/**
+	 * builds the prefix filter for the specified prefix
+	 * @param prefix the prefix to filter
+	 * @param fieldName the name of the field to filter with the prefix
+	 * @return
+	 */
+	public static QueryBuilder buildPrefixFilter(final Prefix prefix, final String fieldName) {
+		switch (prefix) {
+			case NUMBER:
+				return QueryBuilders.regexpQuery(fieldName, "[0-9]*");
+			case OTHER:
+				return QueryBuilders.regexpQuery(fieldName, "[^0-9a-z]");
+			default:
+				return QueryBuilders.prefixQuery(fieldName, prefix.toString().toLowerCase());
+		}
 	}
 
 	/**

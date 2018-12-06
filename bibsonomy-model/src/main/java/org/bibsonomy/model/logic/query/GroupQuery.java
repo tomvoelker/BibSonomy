@@ -1,18 +1,19 @@
 package org.bibsonomy.model.logic.query;
 
+import org.bibsonomy.common.enums.Prefix;
+
 /**
  * Specifies a group query.
  *
  * Depending on the settings, the query will be handled differently.
  * @author ada, pda
  */
-public class GroupQuery implements Query {
+public class GroupQuery extends BasicQuery {
 
 	private final boolean pending;
 	private final String userName;
-	private final int start;
-	private final int end;
 	private final String externalId;
+	private final Prefix prefix;
 
 	/**
 	 * Creates a group query.
@@ -22,11 +23,13 @@ public class GroupQuery implements Query {
 	 * @param start      start index of the retrieved result set.
 	 * @param end        end index of the retrieved result set.
 	 */
-	public GroupQuery(final boolean pending, final String userName, final String externalId, int start, int end) {
+	public GroupQuery(final String search, final Prefix prefix, final boolean pending, final String userName, final String externalId, int start, int end) {
+		this.setSearch(search);
+		this.setStart(start);
+		this.setEnd(end);
+		this.prefix = prefix;
 		this.pending = pending;
 		this.userName = userName;
-		this.start = start;
-		this.end = end;
 		this.externalId = externalId;
 	}
 
@@ -45,23 +48,16 @@ public class GroupQuery implements Query {
 	}
 
 	/**
-	 * @return the start
-	 */
-	public int getStart() {
-		return start;
-	}
-
-	/**
-	 * @return the end
-	 */
-	public int getEnd() {
-		return end;
-	}
-
-	/**
 	 * @return the externalId
 	 */
 	public String getExternalId() {
 		return externalId;
+	}
+
+	/**
+	 * @return the prefix
+	 */
+	public Prefix getPrefix() {
+		return prefix;
 	}
 }

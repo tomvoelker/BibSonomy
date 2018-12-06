@@ -1,5 +1,6 @@
 package org.bibsonomy.model.logic.querybuilder;
 
+import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.model.logic.query.GroupQuery;
 
 /**
@@ -8,11 +9,23 @@ import org.bibsonomy.model.logic.query.GroupQuery;
  * @author pda
  */
 public class GroupQueryBuilder {
+	private String search;
+	private Prefix prefix;
 	private boolean pending;
 	private String userName;
-	private int start = -1;
-	private int end = -1;
+	private int start = 0;
+	private int end = 10;
 	private String externalId;
+
+	public GroupQueryBuilder setSearch(final String search) {
+		this.search = search;
+		return this;
+	}
+
+	public GroupQueryBuilder setPrefix(final Prefix prefix) {
+		this.prefix = prefix;
+		return this;
+	}
 
 	public GroupQueryBuilder setPending(boolean pending) {
 		this.pending = pending;
@@ -40,6 +53,6 @@ public class GroupQueryBuilder {
 	}
 
 	public GroupQuery createGroupQuery() {
-		return new GroupQuery(pending, userName, externalId, start, end);
+		return new GroupQuery(this.search, this.prefix, this.pending, this.userName, this.externalId, this.start, this.end);
 	}
 }

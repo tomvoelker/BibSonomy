@@ -156,6 +156,7 @@ import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.querybuilder.GroupQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
@@ -887,7 +888,9 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<Group> getGroups(final boolean pending, final String userName, final int start, final int end) {
-		return this.getGroups(new GroupQuery(pending, userName, null, start, end));
+		final GroupQueryBuilder builder = new GroupQueryBuilder();
+		builder.setEnd(end).setStart(start).setPending(pending).setUserName(userName);
+		return this.getGroups(builder.createGroupQuery());
 	}
 
 

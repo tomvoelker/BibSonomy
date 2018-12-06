@@ -272,12 +272,12 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 
 	/**
 	 * retrieves projects using the configured {@link ProjectSearch}
-	 * @param userName
+	 * @param loggedinUser
 	 * @param query
 	 * @return all projects matching the query
 	 */
-	public List<Project> getProjectsBySearch(final String userName, final ProjectQuery query) {
-		return this.search.getProjects(userName, query);
+	public List<Project> getProjectsBySearch(final User loggedinUser, final ProjectQuery query) {
+		return this.search.getProjects(loggedinUser, query);
 	}
 
 	/**

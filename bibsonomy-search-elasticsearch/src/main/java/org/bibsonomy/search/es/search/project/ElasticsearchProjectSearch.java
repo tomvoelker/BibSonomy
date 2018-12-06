@@ -3,7 +3,10 @@ package org.bibsonomy.search.es.search.project;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.common.enums.Prefix;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.ResultList;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.ProjectOrder;
 import org.bibsonomy.model.enums.ProjectStatus;
@@ -49,7 +52,7 @@ public class ElasticsearchProjectSearch implements ProjectSearch {
 	}
 
 	@Override
-	public List<Project> getProjects(final String loggedinUser, ProjectQuery query) {
+	public List<Project> getProjects(final User loggedinUser, ProjectQuery query) {
 		final ResultList<Project> postList = ElasticsearchIndexSearchUtils.callSearch(() -> {
 			final ResultList<Project> projects = new ResultList<>();
 			final QueryBuilder queryBuilder = this.buildQuery(loggedinUser, query);
@@ -59,6 +62,7 @@ public class ElasticsearchProjectSearch implements ProjectSearch {
 
 			final SortOrder sortOrderQuery = ElasticsearchIndexSearchUtils.convertSortOrder(query.getSortOrder());
 			final Pair<String, SortOrder> sortOrder = query.getOrder() == ProjectOrder.START_DATE ? new Pair<>(ProjectFields.START_DATE, sortOrderQuery) : new Pair<>(ProjectFields.TITLE + "." + ProjectFields.TITLE_SORT, sortOrderQuery);
+
 			final int offset = BasicQueryUtils.calcOffset(query);
 			final int limit = BasicQueryUtils.calcLimit(query);
 			final SearchHits hits = this.manager.search(queryBuilder, sortOrder, offset, limit, null, null);
@@ -70,7 +74,7 @@ public class ElasticsearchProjectSearch implements ProjectSearch {
 			projects.setTotalCount((int) hits.getTotalHits());
 
 			for (final SearchHit hit : hits) {
-				final Project project = this.converter.convert(hit.getSourceAsMap(), null);
+				final Project project = this.converter.convert(hit.getSourceAsMap(), Role.ADMIN.equals(loggedinUser.getRole()));
 				projects.add(project);
 			}
 
@@ -79,8 +83,9 @@ public class ElasticsearchProjectSearch implements ProjectSearch {
 		return postList;
 	}
 
-	private QueryBuilder buildQuery(final String loggedinUser, final ProjectQuery query) {
+	private QueryBuilder buildQuery(final User loggedinUser, final ProjectQuery query) {
 		final BoolQueryBuilder mainQuery = QueryBuilders.boolQuery();
+		final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery();
 		final String search = query.getSearch();
 		if (present(search)) {
 			final QueryStringQueryBuilder queryStringQueryBuilder = QueryBuilders.queryStringQuery(search);
@@ -91,7 +96,7 @@ public class ElasticsearchProjectSearch implements ProjectSearch {
 		final String type = query.getType();
 		if (present(type)) {
 			final TermQueryBuilder typeQuery = QueryBuilders.termQuery(ProjectFields.TYPE, type);
-			mainQuery.must(typeQuery);
+			filterQuery.must(typeQuery);
 		}
 
 		final ProjectStatus projectStatus = query.getProjectStatus();
@@ -101,18 +106,23 @@ public class ElasticsearchProjectSearch implements ProjectSearch {
 				case RUNNING:
 					final RangeQueryBuilder endDateGreaterQuery = QueryBuilders.rangeQuery(ProjectFields.END_DATE);
 					endDateGreaterQuery.gt(now);
-					mainQuery.must(endDateGreaterQuery);
+					filterQuery.must(endDateGreaterQuery);
 					break;
 				case FINISHED:
 					final RangeQueryBuilder projectFinishedRange = QueryBuilders.rangeQuery(ProjectFields.END_DATE);
 					projectFinishedRange.lte(now);
-					mainQuery.must(projectFinishedRange);
+					filterQuery.must(projectFinishedRange);
 					break;
 				default:
 					throw new IllegalArgumentException("project status " + projectStatus + " not supported");
 			}
 		}
 
-		return mainQuery;
+		final Prefix prefix = query.getPrefix();
+		if (present(prefix)) {
+			filterQuery.must(ElasticsearchIndexSearchUtils.buildPrefixFilter(prefix, ProjectFields.TITLE + "." + ProjectFields.TITLE_LOWERCASE));
+		}
+
+		return mainQuery.filter(filterQuery);
 	}
 }

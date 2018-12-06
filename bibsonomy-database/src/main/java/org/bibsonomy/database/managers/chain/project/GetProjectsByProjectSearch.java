@@ -17,12 +17,12 @@ import java.util.List;
 public class GetProjectsByProjectSearch extends ProjectChainElement {
 
 	@Override
-	protected List<Project> handle(QueryAdapter<ProjectQuery> param, DBSession session) {
-		return this.projectDatabaseManager.getProjectsBySearch(param.getLoggedinUser().getName(), param.getQuery());
+	protected List<Project> handle(final QueryAdapter<ProjectQuery> param, final DBSession session) {
+		return this.projectDatabaseManager.getProjectsBySearch(param.getLoggedinUser(), param.getQuery());
 	}
 
 	@Override
-	protected boolean canHandle(QueryAdapter<ProjectQuery> param) {
+	protected boolean canHandle(final QueryAdapter<ProjectQuery> param) {
 		final ProjectQuery query = param.getQuery();
 		return present(query.getType());
 	}

@@ -23,11 +23,13 @@ public class ElasticsearchProjectManagerITCase extends AbstractProjectSearchTest
 
 	private static final ProjectDatabaseManager PROJECT_DATABASE_MANAGER = testDatabaseContext.getBean(ProjectDatabaseManager.class);
 
+	private static final User NOT_LOGGEDIN_USER = new User();
+
 	@Test
 	public void testGenerated() {
 		final ProjectQuery.ProjectQueryBuilder projectQueryBuilder = new ProjectQuery.ProjectQueryBuilder();
 		projectQueryBuilder.type("DFG");
-		final List<Project> projects = PROJECT_SEARCH.getProjects("", projectQueryBuilder.build());
+		final List<Project> projects = PROJECT_SEARCH.getProjects(NOT_LOGGEDIN_USER, projectQueryBuilder.build());
 
 		assertThat(projects.size(), is(2));
 	}
@@ -46,7 +48,7 @@ public class ElasticsearchProjectManagerITCase extends AbstractProjectSearchTest
 
 		final ProjectQuery.ProjectQueryBuilder projectQueryBuilder = new ProjectQuery.ProjectQueryBuilder();
 		projectQueryBuilder.search("DeepScan");
-		final List<Project> projects = PROJECT_SEARCH.getProjects("", projectQueryBuilder.build());
+		final List<Project> projects = PROJECT_SEARCH.getProjects(NOT_LOGGEDIN_USER, projectQueryBuilder.build());
 
 		assertThat(projects.size(), is(1));
 
@@ -63,14 +65,14 @@ public class ElasticsearchProjectManagerITCase extends AbstractProjectSearchTest
 
 		projectQueryBuilder.search("Pragmatik");
 		final ProjectQuery pragmatikQuery = projectQueryBuilder.build();
-		final List<Project> projectAfterUpdate = PROJECT_SEARCH.getProjects("", pragmatikQuery);
+		final List<Project> projectAfterUpdate = PROJECT_SEARCH.getProjects(NOT_LOGGEDIN_USER, pragmatikQuery);
 		assertThat(projectAfterUpdate.size(), is(1));
 
 		PROJECT_DATABASE_MANAGER.deleteProject(projectId, new User("testuser1"), this.dbSession);
 
 		this.updateIndex();
 
-		final List<Project> projectsAfterDelete = PROJECT_SEARCH.getProjects("", pragmatikQuery);
+		final List<Project> projectsAfterDelete = PROJECT_SEARCH.getProjects(NOT_LOGGEDIN_USER, pragmatikQuery);
 		assertThat(projectsAfterDelete.size(), is(0));
 	}
 

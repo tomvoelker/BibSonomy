@@ -1,6 +1,6 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
- * <p>
+ *
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  * University of Kassel, Germany
  * http://www.kde.cs.uni-kassel.de/
@@ -10,22 +10,23 @@
  * L3S Research Center,
  * Leibniz University Hannover, Germany
  * http://www.l3s.de/
- * <p>
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * <p>
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * <p>
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.bibsonomy.model.logic.query;
 
+import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.enums.ProjectOrder;
 import org.bibsonomy.model.enums.ProjectStatus;
@@ -38,6 +39,8 @@ import java.util.Date;
  * @author dzo
  */
 public class ProjectQuery extends BasicQuery {
+
+	private final Prefix prefix;
 
 	/**
 	 * the order of the projects
@@ -72,17 +75,19 @@ public class ProjectQuery extends BasicQuery {
 	 * @param startDate
 	 * @param endDate
 	 */
-	protected ProjectQuery(final String search, final ProjectOrder order, SortOrder sortOrder, ProjectStatus projectStatus,
+	protected ProjectQuery(final String search, final Prefix prefix, final ProjectOrder order, SortOrder sortOrder, ProjectStatus projectStatus,
 												 String type, int start, int end, String externalId, Date startDate, Date endDate) {
+		this.setSearch(search);
+		this.setStart(start);
+		this.setEnd(end);
+
+		this.prefix = prefix;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.setSearch(search);
 		this.order = order;
 		this.sortOrder = sortOrder;
 		this.projectStatus = projectStatus;
 		this.type = type;
-		this.setStart(start);
-		this.setEnd(end);
 		this.externalId = externalId;
 	}
 
@@ -130,6 +135,13 @@ public class ProjectQuery extends BasicQuery {
 	}
 
 	/**
+	 * @return the prefix
+	 */
+	public Prefix getPrefix() {
+		return prefix;
+	}
+
+	/**
 	 * @return the externalId
 	 */
 	public String getExternalId() {
@@ -146,6 +158,8 @@ public class ProjectQuery extends BasicQuery {
 		 * the sort order of the order
 		 */
 		private SortOrder sortOrder = SortOrder.ASC;
+
+		private Prefix prefix;
 
 		/**
 		 * the project status
@@ -177,6 +191,15 @@ public class ProjectQuery extends BasicQuery {
 		private Date startDate;
 
 		private Date endDate;
+
+		/**
+		 * @param prefix the prefix to query
+		 * @return the builder
+		 */
+		public ProjectQueryBuilder prefix(final Prefix prefix) {
+			this.prefix = prefix;
+			return this;
+		}
 
 		/**
 		 * @param startDate
@@ -287,7 +310,7 @@ public class ProjectQuery extends BasicQuery {
 		 * @return the project query
 		 */
 		public ProjectQuery build() {
-			return new ProjectQuery(this.search, this.order, this.sortOrder, this.projectStatus,
+			return new ProjectQuery(this.search, this.prefix, this.order, this.sortOrder, this.projectStatus,
 							this.type, this.start, this.end, this.externalId, startDate, endDate);
 		}
 	}
