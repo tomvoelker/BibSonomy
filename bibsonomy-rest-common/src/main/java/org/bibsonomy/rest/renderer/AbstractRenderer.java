@@ -874,7 +874,9 @@ public abstract class AbstractRenderer implements Renderer {
 		if (present(group.getParent())) {
 			xmlGroup.setParent(createXmlGroup(group.getParent()));
 		}
-		xmlGroup.setOrganization(group.isOrganization());
+		if (group.isOrganization()) {
+			xmlGroup.setOrganization(Boolean.TRUE.toString());
+		}
 		if (present(group.getExternalId())) {
 			xmlGroup.setExternalId(group.getExternalId());
 		}
@@ -1557,7 +1559,10 @@ public abstract class AbstractRenderer implements Renderer {
 				group.getMemberships().add(membership);
 			}
 		}
-		group.setOrganization(xmlGroup.isOrganization());
+		final String organization = xmlGroup.getOrganization();
+		if (present(organization)) {
+			group.setOrganization(Boolean.parseBoolean(organization));
+		}
 
 		if (present(xmlGroup.getExternalId())) {
 			group.setExternalId(xmlGroup.getExternalId());

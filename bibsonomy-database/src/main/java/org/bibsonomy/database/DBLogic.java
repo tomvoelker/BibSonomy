@@ -1726,7 +1726,7 @@ public class DBLogic implements LogicInterface {
 			this.permissionDBManager.ensureApprovalStatusAllowed(post, this.loginUser);
 		}
 
-		final List<String> hashes = new LinkedList<String>();
+		final List<String> hashes = new LinkedList<>();
 		/*
 		 * open session
 		 */

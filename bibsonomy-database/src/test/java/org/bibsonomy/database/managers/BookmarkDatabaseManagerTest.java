@@ -339,7 +339,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	public void testGetPostsByHashForUser() {
 		// This bookmark is a private bookmark of testuser1
 		final String requBibtex = "294a9e1d594297e7bb9da9e11229c5d7";
-		final List<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		final List<Integer> visibleGroupIDs = new ArrayList<>();
 		List<Post<Bookmark>> post = bookmarkDb.getPostsByHashForUser(null, requBibtex, TESTUSER2_NAME, visibleGroupIDs, null, this.dbSession);
 		assertEquals(0, post.size());
 		
@@ -392,7 +392,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		visibleGroupIDsUser1.add(TESTGROUP2_ID); // user 1 is also member of group 4
 		
 		final List<Post<Bookmark>> posts = bookmarkDb.getPostsForGroup(TESTGROUP1_ID, visibleGroupIDsUser1, TESTUSER1_NAME, HashID.INTRA_HASH, null, null, 20, 0, null, this.dbSession);
-		assertEquals(10, posts.size());
+		assertEquals(11, posts.size());
 
 		// get all posts of testuser1 (and testuser2) which are public or friends + private posts of testuser1
 		final List<Post<Bookmark>> posts2 = bookmarkDb.getPostsForGroup(TESTGROUP2_ID, visibleGroupIDsUser1, TESTUSER1_NAME, HashID.INTRA_HASH, null, null, 10, 0, null, this.dbSession);
@@ -400,7 +400,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 
 		// get all posts of testuser2 (and testuser1) which are public or friends or group posts of testuser1
 		final List<Post<Bookmark>> posts3 = bookmarkDb.getPostsForGroup(TESTGROUP1_ID, visibleGroupIDsUser2, TESTUSER2_NAME, HashID.INTRA_HASH, null, null, 10, 0, null, this.dbSession);
-		assertEquals(7, posts3.size());
+		assertEquals(8, posts3.size());
 
 		// get all posts by testuser1, testuser2, which are public or friends no group posts
 		final List<Post<Bookmark>> posts4 = bookmarkDb.getPostsForGroup(TESTGROUP2_ID, visibleGroupIDsUser2, TESTUSER2_NAME, HashID.INTRA_HASH, null, null, 10, 0, null, this.dbSession);
@@ -422,7 +422,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		//approximated number of bookmarks, users own private/friends bookmarks are not included
 		final String requestedUserName = "";
 		final String loginUserName = "";
-		final List<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		final List<Integer> visibleGroupIDs = new ArrayList<>();
 		
 		final int count1 = bookmarkDb.getPostsForGroupCount(requestedUserName, loginUserName, TESTGROUP1_ID, visibleGroupIDs, this.dbSession);
 		assertEquals(3, count1);

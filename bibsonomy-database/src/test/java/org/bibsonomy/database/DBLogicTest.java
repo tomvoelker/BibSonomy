@@ -466,13 +466,13 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		//
 		//
 		
-		final List<String> tags1 = new ArrayList<String>();
+		final List<String> tags1 = new ArrayList<>();
 		tags1.add(relationTag1);
 		
 		List<Post<BibTex>> bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags1, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
 		assertEquals(2, bibTexPostsList.size());
 		
-		final List<String> tags2 = new ArrayList<String>();
+		final List<String> tags2 = new ArrayList<>();
 		tags2.add(relationTag2);
 		
 		List<Post<Bookmark>> bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
@@ -935,7 +935,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	 * @throws Exception 
 	 */
 	@Test
-	public void testLimitedUserPosts() throws Exception {
+	public void testLimitedUserPosts() {
 		this.postAndAssertGroup(GroupUtils.buildPublicGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, BibTex.class);
 		this.postAndAssertGroup(GroupUtils.buildPublicGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, Bookmark.class);
 		this.postAndAssertGroup(GroupUtils.buildFriendsGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, BibTex.class);
