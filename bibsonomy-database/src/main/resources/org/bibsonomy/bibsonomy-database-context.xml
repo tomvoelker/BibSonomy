@@ -151,6 +151,18 @@
 		</property>
 	</bean>
 
+	<bean id="abstractProjectStatisticsChainElement" class="org.bibsonomy.database.managers.chain.statistic.project.ProjectStatisticsChainElement" abstract="true">
+		<property name="projectDatabaseManager" ref="projectDatabaseManager" />
+	</bean>
+
+	<bean id="projectStatisticsChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.statistic.project.GetAllProjectsCount" parent="abstractProjectStatisticsChainElement" />
+			</list>
+		</property>
+	</bean>
+
 	<!-- post statistic chain -->
 	<bean id="postStatisticChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
@@ -352,6 +364,7 @@
 		<property name="plugins" ref="databasePluginManager" />
 		<property name="validator" ref="projectValidator" />
 		<property name="chain" ref="projectChain" />
+		<property name="statisticsChain" ref="projectStatisticsChain" />
 		<property name="search" ref="projectSearch" />
 	</bean>
 

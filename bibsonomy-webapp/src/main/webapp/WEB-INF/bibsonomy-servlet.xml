@@ -829,6 +829,15 @@
 				<entry key="/projects">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="projectsController"/>
+						<property name="allowedFields">
+							<list>
+								<value>search</value>
+								<value>prefix</value>
+								<value>projectOrder</value>
+								<value>projectStatus</value>
+								<value>sortOrder</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/project">

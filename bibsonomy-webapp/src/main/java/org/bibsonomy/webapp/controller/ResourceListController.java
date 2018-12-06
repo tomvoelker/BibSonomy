@@ -83,7 +83,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 			return Collections.emptySet();
 		}
 		
-		final Set<T> set = new HashSet<T>(col1);
+		final Set<T> set = new HashSet<>(col1);
 		set.retainAll(col2);
 		return set;
 	}
@@ -334,7 +334,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 		// retrieve posts
 		log.debug("getPosts " + resourceType + " " + queryScope + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
 		final int start = listCommand.getStart();
-		final Set<Filter> filters = new HashSet<Filter>();
+		final Set<Filter> filters = new HashSet<>();
 		if (present(filter)) {
 			filters.add(filter);
 		}
@@ -351,7 +351,6 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param resourceType the resource type
 	 * @param groupingEntity the grouping entity
 	 * @param groupingName the grouping name
-	 * @param constraint
 	 * @param itemsPerPage number of items to be displayed on each page
 	 */
 	protected <T extends Resource> void setTotalCount(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int itemsPerPage) {
@@ -362,7 +361,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 		}
 		log.debug("getPostStatistics " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
 		final int start = listCommand.getStart();
-		final int totalCount = this.logic.getPostStatistics(resourceType, groupingEntity, groupingName, tags, hash, search, Sets.<Filter>asSet(filter), order, startDate, endDate, start, start + itemsPerPage).getCount();
+		final int totalCount = this.logic.getPostStatistics(resourceType, groupingEntity, groupingName, tags, hash, search, Sets.asSet(filter), order, startDate, endDate, start, start + itemsPerPage).getCount();
 		listCommand.setTotalCount(totalCount);
 	}
 	
@@ -412,7 +411,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 		}
 		if (Bookmark.class.equals(resourceType)) {
 			cmd.getBookmark().setList(cmd.getBookmark().getList().subList(startIndex, endIndex));
-		}				
+		}
 	}
 
 	/**

@@ -86,7 +86,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		final List<String> sysTags = SystemTagsExtractor.extractSearchSystemTagsFromString(authorQuery, " ");
 		if (sysTags.size() > 0) {
 			// remove them from the query
-			authorQuery = this.removeSystemtagsFromQuery(authorQuery, sysTags);
+			authorQuery = removeSystemtagsFromQuery(authorQuery, sysTags);
 			// add them to the tags list
 			requTags.addAll(sysTags);
 		}
