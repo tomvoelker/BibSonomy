@@ -860,7 +860,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<Group> getGroups(final boolean pending, final String userName, final int start, final int end) {
-		return this.getGroups(new GroupQuery(pending, userName, start, end, null));
+		return this.getGroups(new GroupQuery(pending, userName, null, start, end));
 	}
 
 

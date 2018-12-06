@@ -1569,7 +1569,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void testGetAllGroups() {
 		LogicInterface logic = this.getDbLogic(DBLogicTest.TEST_USER_1);
 
-		GroupQuery query = new GroupQuery(false, DBLogicTest.TEST_USER_1, 0, 100, null);
+		GroupQuery query = new GroupQuery(false, DBLogicTest.TEST_USER_1, null, 0, 100);
 		List<Group> groups = logic.getGroups(query);
 
 		assertThat(groups.size(), equalTo(8));
@@ -1580,7 +1580,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void testGetGroupByExternalId() {
 		LogicInterface logic = this.getDbLogic(DBLogicTest.TEST_USER_1);
 
-		GroupQuery query = new GroupQuery(false, DBLogicTest.TEST_USER_1, 0, 100, "extid1");
+		GroupQuery query = new GroupQuery(false, DBLogicTest.TEST_USER_1, "extid1", 0, 100);
 		List<Group> groups = logic.getGroups(query);
 
 		assertThat(groups.size(), equalTo(1));
@@ -1595,7 +1595,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void testGetAllPendingGroups() {
 		LogicInterface logic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
 
-		GroupQuery query = new GroupQuery(true, null, 0, 100, null);
+		GroupQuery query = new GroupQuery(true, null, null, 0, 100);
 		List<Group> groups = logic.getGroups(query);
 
 		assertThat(groups.size(), equalTo(2));
@@ -1607,7 +1607,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void testGetPendingGroupsForUser() {
 		LogicInterface logic = this.getAdminDbLogic("testrequestuser1");
 
-		GroupQuery query = new GroupQuery(true, "testrequestuser1", 0, 100, null);
+		GroupQuery query = new GroupQuery(true, "testrequestuser1", null, 0, 100);
 		List<Group> groups = logic.getGroups(query);
 
 		assertThat(groups.size(), equalTo(1));
