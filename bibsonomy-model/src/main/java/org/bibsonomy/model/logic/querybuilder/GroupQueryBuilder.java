@@ -16,9 +16,15 @@ public class GroupQueryBuilder {
 	private int start = 0;
 	private int end = 10;
 	private String externalId;
+	private Boolean organization;
 
 	public GroupQueryBuilder setSearch(final String search) {
 		this.search = search;
+		return this;
+	}
+
+	public GroupQueryBuilder setOrganization(final Boolean organization) {
+		this.organization = organization;
 		return this;
 	}
 
@@ -53,6 +59,6 @@ public class GroupQueryBuilder {
 	}
 
 	public GroupQuery createGroupQuery() {
-		return new GroupQuery(this.search, this.prefix, this.pending, this.userName, this.externalId, this.start, this.end);
+		return new GroupQuery(this.search, this.prefix, this.pending, this.userName, this.externalId, this.organization, this.start, this.end);
 	}
 }

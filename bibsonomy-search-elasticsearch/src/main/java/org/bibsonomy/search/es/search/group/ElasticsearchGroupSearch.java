@@ -49,6 +49,11 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 			filterQuery.must(ElasticsearchIndexSearchUtils.buildPrefixFilter(prefix, GroupFields.REALNAME_LOWERCASE));
 		}
 
+		final Boolean organization = query.getOrganization();
+		if (present(organization)) {
+			filterQuery.must(QueryBuilders.termQuery(GroupFields.ORGANIZATION, organization));
+		}
+
 		return filterQuery;
 	}
 }

@@ -14,16 +14,19 @@ public class GroupQuery extends BasicQuery {
 	private final String userName;
 	private final String externalId;
 	private final Prefix prefix;
+	private final Boolean organization;
 
 	/**
 	 * Creates a group query.
-	 *  @param pending    if set to <code>true</code> this query will retrieve pending groups, otherwise only activated groups will be retrieved.
+	 *
+	 * @param pending    if set to <code>true</code> this query will retrieve pending groups, otherwise only activated groups will be retrieved.
 	 * @param userName   if set the query is restricted to groups created by the user (applies only to pending groups).
 	 * @param externalId if a valid non-empty string is supplied, the query will lookup the group with the supplied external id.
+	 * @param organization if set only organizations or non organizations should be returned
 	 * @param start      start index of the retrieved result set.
 	 * @param end        end index of the retrieved result set.
 	 */
-	public GroupQuery(final String search, final Prefix prefix, final boolean pending, final String userName, final String externalId, int start, int end) {
+	public GroupQuery(final String search, final Prefix prefix, final boolean pending, final String userName, final String externalId, final Boolean organization, int start, int end) {
 		this.setSearch(search);
 		this.setStart(start);
 		this.setEnd(end);
@@ -31,6 +34,7 @@ public class GroupQuery extends BasicQuery {
 		this.pending = pending;
 		this.userName = userName;
 		this.externalId = externalId;
+		this.organization = organization;
 	}
 
 	/**
@@ -59,5 +63,12 @@ public class GroupQuery extends BasicQuery {
 	 */
 	public Prefix getPrefix() {
 		return prefix;
+	}
+
+	/**
+	 * @return the organization
+	 */
+	public Boolean getOrganization() {
+		return organization;
 	}
 }

@@ -10,6 +10,7 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
+import org.bibsonomy.model.enums.ProjectOrder;
 import org.bibsonomy.model.enums.ProjectStatus;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.search.es.index.converter.project.ProjectFields;
@@ -49,13 +50,8 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 
 	@Override
 	protected Pair<String, SortOrder> getSortOrder(ProjectQuery query) {
-		return null;
-	}
-
-
-	@Override
-	protected BoolQueryBuilder buildMainQuery(User loggedinUser, ProjectQuery query) {
-		return QueryBuilders.boolQuery();
+		final SortOrder sortOrderQuery = ElasticsearchIndexSearchUtils.convertSortOrder(query.getSortOrder());
+		return query.getOrder() == ProjectOrder.START_DATE ? new Pair<>(ProjectFields.START_DATE, sortOrderQuery) : new Pair<>(ProjectFields.TITLE + "." + ProjectFields.TITLE_SORT, sortOrderQuery);
 	}
 
 	@Override
