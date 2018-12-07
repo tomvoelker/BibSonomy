@@ -3,6 +3,7 @@ package org.bibsonomy.services.searcher;
 import java.util.List;
 
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.query.GroupQuery;
 
 /**
@@ -17,5 +18,5 @@ public interface GroupSearch {
 	 * @param query the query to filter the projects
 	 * @return all matching groups
 	 */
-	List<Group> getGroups(final String loggedinUser, final GroupQuery query);
+	List<Group> getGroups(final User loggedinUser, final GroupQuery query);
 }

@@ -439,7 +439,7 @@ public class PersonPageController extends SingleResourceListController implement
 		boolean result = true;
 		if (command.getUpdateOperation() == PersonUpdateOperation.MERGE_ACCEPT) {
 			result = this.logic.acceptMerge(match);
-		} else if(command.getUpdateOperation() == PersonUpdateOperation.MERGE_DENIED) {
+		} else if (command.getUpdateOperation() == PersonUpdateOperation.MERGE_DENIED) {
 			this.logic.denieMerge(match);
 		}
 		jsonResponse.put("status", result);

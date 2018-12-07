@@ -910,7 +910,7 @@ public class DBLogic implements LogicInterface {
 				}
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
 			}
-			return this.groupDBManager.queryGroups(query, session);
+			return this.groupDBManager.queryGroups(query, this.loginUser, session);
 		} finally {
 			session.close();
 		}

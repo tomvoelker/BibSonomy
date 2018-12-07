@@ -23,7 +23,7 @@ public class ElasticsearchPersonSearchITCase extends AbstractPersonSearchTest {
 	private static final String PERSON_ID = "h.muller";
 
 	/**
-	 * tests {@link ElasticsearchPersonSearch#getPersonSuggestions(PersonSuggestionQuery)}
+	 * tests {@link ElasticsearchPersonSearch#getPersons(PersonSuggestionQuery)}
 	 */
 	@Test
 	public void testGetPersonSuggestions() {
@@ -40,7 +40,7 @@ public class ElasticsearchPersonSearchITCase extends AbstractPersonSearchTest {
 	}
 
 	private void assertPersonSuggestion(final String query) {
-		final List<Person> personSuggestions = PERSON_SEARCH.getPersonSuggestions(new PersonSuggestionQuery(query));
+		final List<Person> personSuggestions = PERSON_SEARCH.getPersons(new PersonSuggestionQuery(query));
 		assertThat(personSuggestions.size(), is(1));
 
 		final Person person = personSuggestions.get(0);

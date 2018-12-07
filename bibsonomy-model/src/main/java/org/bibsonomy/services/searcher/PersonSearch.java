@@ -43,5 +43,5 @@ public interface PersonSearch {
 	 * @param query contains a query with some mixture of parts of a name, parts of the title or the university name
 	 * @return a list of {@link Person}s. Each {@link Person} object is further initialized with a main name.
 	 */
-	List<Person> getPersonSuggestions(final PersonSuggestionQuery query);
+	List<Person> getPersons(final PersonSuggestionQuery query);
 }

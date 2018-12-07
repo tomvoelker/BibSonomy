@@ -8,7 +8,7 @@
 		FROM
 			(
 				SELECT * FROM groupids g
-				WHERE g.`group` > #lastContentId#
+				WHERE g.`group` > #lastContentId# AND g.`group` >= 3
 				ORDER BY g.`group` ASC
 				LIMIT #limit#
 			) AS g

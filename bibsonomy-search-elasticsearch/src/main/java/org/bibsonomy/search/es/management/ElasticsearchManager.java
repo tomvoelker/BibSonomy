@@ -33,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
+import org.bibsonomy.search.es.client.DeleteData;
 import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.client.UpdateData;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
@@ -40,8 +41,10 @@ import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.management.generation.AbstractSearchIndexGenerationTask;
 import org.bibsonomy.search.es.management.generation.ElasticSearchIndexGenerationTask;
 import org.bibsonomy.search.es.management.generation.ElasticSearchIndexRegenerationTask;
+import org.bibsonomy.search.es.management.post.ElasticsearchPostManager;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.exceptions.IndexAlreadyGeneratingException;
+import org.bibsonomy.search.index.update.IndexUpdateLogic;
 import org.bibsonomy.search.management.SearchIndexManager;
 import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.search.model.SearchIndexState;
@@ -49,6 +52,7 @@ import org.bibsonomy.search.model.SearchIndexStatistics;
 import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
+import org.bibsonomy.util.BasicUtils;
 import org.bibsonomy.util.Sets;
 import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -56,6 +60,8 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
 
 import java.net.URI;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -65,6 +71,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * manager that manages the indices for the specified type
@@ -271,6 +278,51 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 	}
 
 	protected abstract void updateIndex(final String indexName, S oldState);
+
+	protected <E> void updateEntity(final String indexName, final DefaultSearchIndexSyncState oldState, final IndexUpdateLogic<E> updateIndexLogic, final EntityInformationProvider<E> entityInformationProvider) {
+		final long lastContentId = oldState.getLastPostContentId();
+		final Date lastLogDate = oldState.getLast_log_date();
+		final String entityType = entityInformationProvider.getType();
+
+		/*
+		 * delete old entities
+		 */
+		final List<E> deletedEntities = updateIndexLogic.getDeletedEntities(lastLogDate);
+
+		// convert the entities to the list of delete data
+		final List<DeleteData> idsToDelete = deletedEntities.stream().map(entity -> {
+			final DeleteData deleteData = new DeleteData();
+			deleteData.setType(entityType);
+			deleteData.setId(entityInformationProvider.getEntityId(entity));
+			deleteData.setRouting(entityInformationProvider.getRouting(entity));
+			return deleteData;
+		}).collect(Collectors.toList());
+
+		this.client.deleteDocuments(indexName, idsToDelete);
+
+		/*
+		 * insert new or updated entities
+		 */
+		final Map<String, IndexData> indexDataMap = new HashMap<>();
+
+		BasicUtils.iterateListWithLimitAndOffset((limit, offset) -> updateIndexLogic.getNewerEntities(lastContentId, lastLogDate, limit, offset), entities -> {
+			for (final E entity : entities) {
+				final IndexData indexData = new IndexData();
+				indexData.setRouting(entityInformationProvider.getRouting(entity));
+				indexData.setType(entityInformationProvider.getType());
+				indexData.setSource(entityInformationProvider.getConverter().convert(entity));
+
+				final String entityId = entityInformationProvider.getEntityId(entity);
+				indexDataMap.put(entityId, indexData);
+
+				if (indexDataMap.size() >= ESConstants.BULK_INSERT_SIZE) {
+					this.clearQueue(indexName, indexDataMap);
+				}
+			}
+		}, ElasticsearchPostManager.SQL_BLOCKSIZE);
+
+		this.clearQueue(indexName, indexDataMap);
+	}
 
 	/**
 	 * @param indexName

@@ -30,7 +30,12 @@ public class GroupConverter implements Converter<Group, Map<String, Object>, Obj
 		}
 
 		document.put(GroupFields.NAME, group.getName());
-		document.put(GroupFields.REALNAME, group.getRealname());
+		final String realname = group.getRealname();
+		document.put(GroupFields.REALNAME, realname);
+		if (present(realname)) {
+			document.put(GroupFields.REALNAME_LOWERCASE, realname.toLowerCase());
+		}
+
 		document.put(GroupFields.EXTERNAL_ID, group.getExternalId());
 		document.put(GroupFields.ORGANIZATION, group.isOrganization());
 

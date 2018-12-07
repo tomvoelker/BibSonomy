@@ -52,7 +52,7 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 
 		PERSON_DATABASE_MANAGER.updateAcademicDegree(person, this.dbSession);
 		this.updateIndex();
-		final List<Person> personSuggestionsAfterAttributeUpdate = PERSON_SEARCH.getPersonSuggestions(new PersonSuggestionQuery("Müller"));
+		final List<Person> personSuggestionsAfterAttributeUpdate = PERSON_SEARCH.getPersons(new PersonSuggestionQuery("Müller"));
 		assertThat(personSuggestionsAfterAttributeUpdate.size(), is(1));
 		final Person person1 = personSuggestionsAfterAttributeUpdate.get(0);
 		assertThat(person1.getAcademicDegree(), is(newAcademicDegree));
@@ -63,7 +63,7 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 		personName.setLastName("Doe");
 
 		final PersonSuggestionQuery personQuery = new PersonSuggestionQuery(personName.toString());
-		final List<Person> personSuggestions = PERSON_SEARCH.getPersonSuggestions(personQuery);
+		final List<Person> personSuggestions = PERSON_SEARCH.getPersons(personQuery);
 		assertThat(personSuggestions.size(), is(0));
 
 		personName.setPerson(person);
@@ -71,14 +71,14 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 		PERSON_DATABASE_MANAGER.createPersonName(personName, this.dbSession);
 		this.updateIndex();
 
-		final List<Person> personSuggestionsAfterUpdate = PERSON_SEARCH.getPersonSuggestions(personQuery);
+		final List<Person> personSuggestionsAfterUpdate = PERSON_SEARCH.getPersons(personQuery);
 		assertThat(personSuggestionsAfterUpdate.size(), is(1));
 
 		// test if the index is updated when a person name was removed
 		PERSON_DATABASE_MANAGER.removePersonName(personName.getPersonNameChangeId(), TESTUSER1, this.dbSession);
 		this.updateIndex();
 
-		final List<Person> personSuggestionsAfterPersonNameDelete = PERSON_SEARCH.getPersonSuggestions(personQuery);
+		final List<Person> personSuggestionsAfterPersonNameDelete = PERSON_SEARCH.getPersons(personQuery);
 		assertThat(personSuggestionsAfterPersonNameDelete.size(), is(0));
 
 		// test if the index is also updated when a new person is created
@@ -92,7 +92,7 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 		// check that the person is not in the index
 		final PersonSuggestionQuery newPersonQuery = new PersonSuggestionQuery(reynolds.toString());
 
-		final List<Person> newPersonSuggestion = PERSON_SEARCH.getPersonSuggestions(newPersonQuery);
+		final List<Person> newPersonSuggestion = PERSON_SEARCH.getPersons(newPersonQuery);
 		assertThat(newPersonSuggestion.size(), is(0));
 
 		// create it
@@ -104,7 +104,7 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 		this.updateIndex();
 
 		// check that the new person is indexed by the system
-		final List<Person> newPersonSuggestionAfterUpdate = PERSON_SEARCH.getPersonSuggestions(newPersonQuery);
+		final List<Person> newPersonSuggestionAfterUpdate = PERSON_SEARCH.getPersons(newPersonQuery);
 		assertThat(newPersonSuggestionAfterUpdate.size(), is(1));
 
 		/*
@@ -126,7 +126,7 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 
 		this.updateIndex();
 
-		final List<Person> personAfterRelationAdded = PERSON_SEARCH.getPersonSuggestions(newPersonQuery);
+		final List<Person> personAfterRelationAdded = PERSON_SEARCH.getPersons(newPersonQuery);
 		final List<ResourcePersonRelation> resourceRelations = personAfterRelationAdded.get(0).getResourceRelations();
 
 		assertThat(resourceRelations.size(), is(1));
@@ -135,7 +135,7 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 
 		this.updateIndex();
 
-		final List<Person> personsAfterRelationDelete = PERSON_SEARCH.getPersonSuggestions(newPersonQuery);
+		final List<Person> personsAfterRelationDelete = PERSON_SEARCH.getPersons(newPersonQuery);
 		assertThat(personsAfterRelationDelete.get(0).getResourceRelations().size(), is(0));
 	}
 

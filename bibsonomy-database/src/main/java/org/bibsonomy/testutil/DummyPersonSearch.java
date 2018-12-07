@@ -40,7 +40,7 @@ import org.bibsonomy.services.searcher.PersonSearch;
 public class DummyPersonSearch implements PersonSearch {
 
 	@Override
-	public List<Person> getPersonSuggestions(PersonSuggestionQuery query) {
+	public List<Person> getPersons(PersonSuggestionQuery query) {
 		return null;
 	}
 

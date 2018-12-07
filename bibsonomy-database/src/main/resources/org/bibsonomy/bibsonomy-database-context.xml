@@ -234,6 +234,9 @@
 				<bean class="org.bibsonomy.database.managers.chain.group.get.GetPendingGroups">
 					<constructor-arg ref="groupDatabaseManager" />
 				</bean>
+				<bean class="org.bibsonomy.database.managers.chain.group.get.GetGroupsBySearch">
+					<constructor-arg ref="groupDatabaseManager" />
+				</bean>
 				<bean class="org.bibsonomy.database.managers.chain.group.get.GetAllGroups">
 					<constructor-arg ref="groupDatabaseManager" />
 				</bean>
@@ -282,6 +285,7 @@
 	<bean id="groupDatabaseManager" class="org.bibsonomy.database.managers.GroupDatabaseManager" factory-method="getInstance">
 		<property name="userDb" ref="userDatabaseManager" />
 		<property name="chain" ref="queryGroupsChain" />
+		<property name="groupSearch" ref="groupSearch" />
 	</bean>
 	
 	<bean id="postDatabaseManager" class="org.bibsonomy.database.managers.PostDatabaseManager" abstract="true">

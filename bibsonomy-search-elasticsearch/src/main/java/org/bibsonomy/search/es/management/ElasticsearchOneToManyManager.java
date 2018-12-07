@@ -68,49 +68,4 @@ public class ElasticsearchOneToManyManager<T, M> extends ElasticsearchManager<T,
 
 		this.updateIndexState(indexName, targetState);
 	}
-
-	private <E> void updateEntity(final String indexName, final DefaultSearchIndexSyncState oldState, final IndexUpdateLogic<E> updateIndexLogic, final EntityInformationProvider<E> entityInformationProvider) {
-		final long lastContentId = oldState.getLastPostContentId();
-		final Date lastLogDate = oldState.getLast_log_date();
-		final String entityType = entityInformationProvider.getType();
-
-		/*
-		 * delete old entities
-		 */
-		final List<E> deletedEntities = updateIndexLogic.getDeletedEntities(lastLogDate);
-
-		// convert the entities to the list of delete data
-		final List<DeleteData> idsToDelete = deletedEntities.stream().map(entity -> {
-			final DeleteData deleteData = new DeleteData();
-			deleteData.setType(entityType);
-			deleteData.setId(entityInformationProvider.getEntityId(entity));
-			deleteData.setRouting(entityInformationProvider.getRouting(entity));
-			return deleteData;
-		}).collect(Collectors.toList());
-
-		this.client.deleteDocuments(indexName, idsToDelete);
-
-		/*
-		 * insert new or updated entities
-		 */
-		final Map<String, IndexData> indexDataMap = new HashMap<>();
-
-		BasicUtils.iterateListWithLimitAndOffset((limit, offset) -> updateIndexLogic.getNewerEntities(lastContentId, lastLogDate, limit, offset), entities -> {
-			for (final E entity : entities) {
-				final IndexData indexData = new IndexData();
-				indexData.setRouting(entityInformationProvider.getRouting(entity));
-				indexData.setType(entityInformationProvider.getType());
-				indexData.setSource(entityInformationProvider.getConverter().convert(entity));
-
-				final String entityId = entityInformationProvider.getEntityId(entity);
-				indexDataMap.put(entityId, indexData);
-
-				if (indexDataMap.size() >= ESConstants.BULK_INSERT_SIZE) {
-					this.clearQueue(indexName, indexDataMap);
-				}
-			}
-		}, ElasticsearchPostManager.SQL_BLOCKSIZE);
-
-		this.clearQueue(indexName, indexDataMap);
-	}
 }

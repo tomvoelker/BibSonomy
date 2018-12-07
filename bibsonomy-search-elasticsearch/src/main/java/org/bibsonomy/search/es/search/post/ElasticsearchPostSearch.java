@@ -42,7 +42,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -126,7 +125,7 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 
 	@Override
 	public ResultList<Post<R>> getPosts(String loggedinUser, Set<String> allowedGroups, PostSearchQuery<?> postQuery) {
-		final ResultList<Post<R>> postList = ElasticsearchIndexSearchUtils.callSearch(() -> {
+		return ElasticsearchIndexSearchUtils.callSearch(() -> {
 			final ResultList<Post<R>> posts = new ResultList<>();
 			final Set<String> allowedUsers = this.getUsersThatShareDocuments(loggedinUser);
 			final QueryBuilder queryBuilder = this.buildQuery(loggedinUser, allowedGroups, allowedUsers, postQuery);
@@ -163,7 +162,6 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 
 			return posts;
 		}, new ResultList<>());
-		return postList;
 	}
 
 	@Override

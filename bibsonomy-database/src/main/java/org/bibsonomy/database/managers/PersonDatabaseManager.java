@@ -71,7 +71,6 @@ import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
-import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.services.searcher.PersonSearch;
@@ -586,7 +585,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @return
 	 */
 	public List<Person> getPersons(final PersonSuggestionQuery query) {
-		return this.personSearch.getPersonSuggestions(query);
+		return this.personSearch.getPersons(query);
 	}
 
 	/**

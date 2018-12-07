@@ -23,7 +23,7 @@ public class ProjectConverter implements Converter<Project, Map<String, Object>,
 		converted.put(ProjectFields.EXTERNAL_ID, source.getExternalId());
 		final String title = source.getTitle();
 		converted.put(ProjectFields.TITLE, title);
-		converted.put(ProjectFields.TITLE_LOWERCASE, title.toLowerCase());
+		converted.put(ProjectFields.TITLE + "." + ProjectFields.TITLE_LOWERCASE, title.toLowerCase());
 		converted.put(ProjectFields.SUB_TITLE, source.getSubTitle());
 		converted.put(ProjectFields.DESCRIPTION, source.getDescription());
 		converted.put(ProjectFields.TYPE, source.getType());

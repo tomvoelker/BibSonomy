@@ -13,6 +13,9 @@ public interface GroupFields {
 	/** the real name of the group */
 	String REALNAME = "realname";
 
+	/** the real name (lower case for prefix matching) */
+	String REALNAME_LOWERCASE = "realname_lowercase";
+
 	/** the external id of the group */
 	String EXTERNAL_ID = "external_id";
 

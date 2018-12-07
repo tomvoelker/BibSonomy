@@ -22,7 +22,7 @@ import org.elasticsearch.common.xcontent.XContentFactory;
  */
 public class GroupMappingBuilder implements MappingBuilder<XContentBuilder> {
 
-	static final String GROUP_DOCUMENT_TYPE = "group";
+	public static final String GROUP_DOCUMENT_TYPE = "group";
 
 	@Override
 	public Mapping<XContentBuilder> getMapping() {
@@ -39,12 +39,15 @@ public class GroupMappingBuilder implements MappingBuilder<XContentBuilder> {
 							.startObject(GroupFields.REALNAME)
 								.field(TYPE_FIELD, TEXT_TYPE)
 							.endObject()
+							.startObject(GroupFields.REALNAME_LOWERCASE)
+								.field(TYPE_FIELD, TEXT_TYPE)
+							.endObject()
 							// external id
 							.startObject(GroupFields.EXTERNAL_ID)
 								.field(TYPE_FIELD, KEYWORD_TYPE)
 							.endObject()
-							// external id
-							.startObject(GroupFields.EXTERNAL_ID)
+							// organization
+							.startObject(GroupFields.ORGANIZATION)
 								.field(TYPE_FIELD, "boolean")
 							.endObject()
 							// homepage

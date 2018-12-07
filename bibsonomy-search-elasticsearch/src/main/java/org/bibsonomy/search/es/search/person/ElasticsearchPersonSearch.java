@@ -53,7 +53,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 	}
 
 	@Override
-	public List<Person> getPersonSuggestions(final PersonSuggestionQuery query) {
+	public List<Person> getPersons(final PersonSuggestionQuery query) {
 		final String personQuery = query.getQuery();
 
 		final BoolQueryBuilder mainQuery = QueryBuilders.boolQuery();
