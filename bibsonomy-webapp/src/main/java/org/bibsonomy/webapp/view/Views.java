@@ -757,6 +757,11 @@ public enum Views implements View {
 	PROJECT_PAGE("projects"),
 
 	/**
+	 * detail page for organizations
+	 */
+	ORGANIZATION_PAGE("organizationdetails"),
+
+	/**
 	 * page displaying all project details
 	 */
 	PROJECT_DETAILS_PAGE("projects/details");
