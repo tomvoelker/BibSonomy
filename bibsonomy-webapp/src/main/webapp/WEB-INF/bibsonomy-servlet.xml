@@ -560,6 +560,11 @@
 				<entry key="/organization">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="organizationPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedOrganizationName</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/reporting">

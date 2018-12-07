@@ -66,7 +66,7 @@ public class PublicationPageController extends AbstractResourcePageController<Bi
 		
 		if ("html".equals(command.getFormat()) && !present(title) && GroupingEntity.ALL.equals(groupingEntity)) {
 			this.setList(command, this.getResourceClass(), groupingEntity, requUser, null, longHash, null, command.getFilter(), null, null, null, 1);
-			final List<Post<BibTex>> posts = command.getListCommand(this.getResourceClass()).getList();
+			final List<Post<BibTex>> posts = command.getBibtex(this.getResourceClass()).getList();
 			if (present(posts)) {
 				final Post<BibTex> firstPost = posts.get(0);
 				final BibTex publication = firstPost.getResource();
