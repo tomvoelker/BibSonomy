@@ -72,6 +72,7 @@ import org.junit.Test;
 public class DBLogicTest extends AbstractDatabaseManagerTest {
 	private static final String TEST_USER_1 = "testuser1";
 	private static final String TEST_USER_2 = "testuser2";
+	private static final String TEST_USER_3 = "testuser3";
 	private static final String TEST_USER_NAME = "jaeschke";
 	private static final String TEST_SPAMMER_NAME = "testspammer2";
 	private static final String TEST_LIMITED_USER_NAME = "testlimited";
@@ -79,13 +80,13 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	private static final String TEST_SPAMMER_ALGORITHM = "testlogging";
 	private static final int    TEST_SPAMMER_PREDICTION = 1;
 	private static final double TEST_SPAMMER_CONFIDENCE = 0.42;
-	
+
 	private static final String TEST_REQUEST_USER_NAME = "jaeschke";
 	private static final String TEST_REQUEST_HASH = "7d85e1092613fd7c91d6ba5dfcf4a044";
-	
+
 	private static final List<String> DEFAULT_TAG_LIST = new LinkedList<String>(Arrays.asList("semantic"));
 	private static final Set<String> DEFAULT_TAG_SET = new HashSet<String>(DEFAULT_TAG_LIST);
-	
+
 	private static final Set<String> DEFAULT_USERNAME_SET = new HashSet<String>(Arrays.asList(TEST_USER_NAME));
 
 	private static final DBLogic ADMIN_LOGIC = testDatabaseContext.getBean("dbLogicPrototype", DBLogic.class);
@@ -1327,7 +1328,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 
 
 	@Test
-	public void testDeleteOrganizationAsAdminUser() {
+	public void testAddMemberToOrganizationAsAdminUser() {
 		final String groupName = "my organization";
 
 		final Group organization = new Group(groupName);
@@ -1342,6 +1343,184 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 
 		organization.setGroupRequest(groupRequest);
 
+		LogicInterface adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+
+		/*
+		 * organizations are automatically activated, so pending is set to false.
+		 */
+		adminDbLogic.createGroup(organization);
+
+		Group retrievedGroup = adminDbLogic.getGroupDetails(groupName, false);
+		GroupMembership membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_2), GroupRole.MODERATOR, false);
+
+		adminDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_MEMBER, membership);
+	}
+
+	@Test
+	public void testUserJoinsOrganisationAfterInviteByModerator() {
+		final String groupName = "my organization";
+
+		final Group organization = new Group(groupName);
+
+		organization.setDescription("This is an organization");
+		organization.setAllowJoin(true);
+		organization.setOrganization(true);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName(DBLogicTest.TEST_USER_1);
+		groupRequest.setReason("no real reason");
+
+		organization.setGroupRequest(groupRequest);
+
+		LogicInterface adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+
+		/*
+		 * organizations are automatically activated, so pending is set to false.
+		 */
+		adminDbLogic.createGroup(organization);
+
+		adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+		Group retrievedGroup = adminDbLogic.getGroupDetails(groupName, false);
+
+		// If a user is added to a group he always gets the USER role first, so we have to adjust it later
+		// add a user to a group
+		GroupMembership membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_2), GroupRole.USER, false);
+		adminDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_MEMBER, membership);
+
+		// retrieve the updated group object
+		retrievedGroup = adminDbLogic.getGroupDetails(groupName, false);
+		membership = retrievedGroup.getGroupMembershipForUser(DBLogicTest.TEST_USER_2);
+
+		// update the role
+		membership.setGroupRole(GroupRole.MODERATOR);
+		adminDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.UPDATE_GROUPROLE, membership);
+
+		// switch to the user that now has the assigned role
+		LogicInterface moderatorDbLogic = this.getDbLogic(DBLogicTest.TEST_USER_2);
+		retrievedGroup = moderatorDbLogic.getGroupDetails(groupName, false);
+		membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_3), GroupRole.USER, false);
+
+		// invite user to join the group
+		moderatorDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_INVITED, membership);
+
+		LogicInterface userDbLogic = this.getDbLogic(DBLogicTest.TEST_USER_3);
+		Group g = userDbLogic.getGroupDetails(groupName, false);
+		GroupMembership m = new GroupMembership(userDbLogic.getUserDetails(DBLogicTest.TEST_USER_3), GroupRole.USER, false);
+
+		userDbLogic.updateGroup(g, GroupUpdateOperation.ADD_MEMBER, m);
+	}
+
+	@Test
+	public void testUserJoinsOrganisationAfterInviteByAdministrator() {
+		final String groupName = "my organization";
+
+		final Group organization = new Group(groupName);
+
+		organization.setDescription("This is an organization");
+		organization.setAllowJoin(true);
+		organization.setOrganization(true);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName(DBLogicTest.TEST_USER_1);
+		groupRequest.setReason("no real reason");
+
+		organization.setGroupRequest(groupRequest);
+
+		LogicInterface adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+
+		/*
+		 * organizations are automatically activated, so pending is set to false.
+		 */
+		adminDbLogic.createGroup(organization);
+
+		adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+		Group retrievedGroup = adminDbLogic.getGroupDetails(groupName, false);
+
+		// If a user is added to a group he always gets the USER role first, so we have to adjust it later
+		// add a user to a group
+		GroupMembership membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_2), GroupRole.USER, false);
+		adminDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_MEMBER, membership);
+
+		// retrieve the updated group object
+		retrievedGroup = adminDbLogic.getGroupDetails(groupName, false);
+		membership = retrievedGroup.getGroupMembershipForUser(DBLogicTest.TEST_USER_2);
+
+		// update the role
+		membership.setGroupRole(GroupRole.ADMINISTRATOR);
+		adminDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.UPDATE_GROUPROLE, membership);
+
+		// switch to the user that now has the assigned role
+		LogicInterface moderatorDbLogic = this.getDbLogic(DBLogicTest.TEST_USER_2);
+		retrievedGroup = moderatorDbLogic.getGroupDetails(groupName, false);
+		membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_3), GroupRole.USER, false);
+
+		// invite user to join the group
+		moderatorDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_INVITED, membership);
+
+		LogicInterface userDbLogic = this.getDbLogic(DBLogicTest.TEST_USER_3);
+		Group g = userDbLogic.getGroupDetails(groupName, false);
+		GroupMembership m = new GroupMembership(userDbLogic.getUserDetails(DBLogicTest.TEST_USER_3), GroupRole.USER, false);
+
+		userDbLogic.updateGroup(g, GroupUpdateOperation.ADD_MEMBER, m);
+	}
+
+
+	@Test(expected=AccessDeniedException.class)
+	public void testUserJoinsOrganisationAfterInviteByUser() {
+		final String groupName = "my organization";
+
+		final Group organization = new Group(groupName);
+
+		organization.setDescription("This is an organization");
+		organization.setAllowJoin(true);
+		organization.setOrganization(true);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName(DBLogicTest.TEST_USER_1);
+		groupRequest.setReason("no real reason");
+
+		organization.setGroupRequest(groupRequest);
+
+		LogicInterface adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+
+		/*
+		 * organizations are automatically activated, so pending is set to false.
+		 */
+		adminDbLogic.createGroup(organization);
+
+		adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+		Group retrievedGroup = adminDbLogic.getGroupDetails(groupName, false);
+
+		// If a user is added to a group he always gets the USER role first, so we have to adjust it later
+		// add a user to a group
+		GroupMembership membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_2), GroupRole.USER, false);
+		adminDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_MEMBER, membership);
+
+		// switch to the user that now has the assigned role
+		LogicInterface moderatorDbLogic = this.getDbLogic(DBLogicTest.TEST_USER_2);
+		retrievedGroup = moderatorDbLogic.getGroupDetails(groupName, false);
+		membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_3), GroupRole.USER, false);
+
+		// invite user to join the group
+		moderatorDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_INVITED, membership);
+	}
+
+
+	@Test
+	public void testDeleteOrganizationAsAdminUser() {
+		final String groupName = "my organization";
+
+		final Group organization = new Group(groupName);
+
+		organization.setDescription("This is an organization");
+		organization.setAllowJoin(true);
+		organization.setOrganization(true);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName(DBLogicTest.TEST_USER_1);
+		groupRequest.setReason("no real reason");
+
+		organization.setGroupRequest(groupRequest);
 		LogicInterface adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
 
 		/*
