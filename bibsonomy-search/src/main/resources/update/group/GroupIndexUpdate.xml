@@ -9,7 +9,7 @@
 			<!-- check for new persons -->
 			(SELECT `group`
 			FROM groupids
-				WHERE `group >= #lastContentId#
+				WHERE `group` >= #lastContentId#
 			UNION
 			<!-- check for new person names -->
 			SELECT `group`
@@ -18,7 +18,7 @@
 					AND log_reason != 1
 			LIMIT #limit#
 			OFFSET #offset#) AS lg
-		JOIN groupids g USING (lg.`group` = g.`group`)
+		JOIN groupids g USING (`group`)
 		LEFT JOIN groupids gg ON (g.parent = gg.`group`)
 		LEFT JOIN user u ON (u.user_name = g.group_name)
 	</select>

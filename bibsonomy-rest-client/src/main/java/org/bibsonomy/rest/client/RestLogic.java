@@ -256,15 +256,11 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public List<Group> getGroups(boolean pending, String userName, final int start, final int end) {
-		if (pending) {
+	public List<Group> getGroups(GroupQuery query) {
+		if (query.isPending()) {
 			throw new UnsupportedOperationException("quering for pending groups not supported");
 		}
-		return getGroups(new GroupQueryBuilder().setStart(start).setEnd(end).createGroupQuery());
-	}
 
-	@Override
-	public List<Group> getGroups(GroupQuery query) {
 		return execute(new GetGroupListQuery(query));
 	}
 

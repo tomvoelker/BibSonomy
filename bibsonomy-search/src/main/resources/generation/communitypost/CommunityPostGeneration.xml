@@ -81,7 +81,7 @@
 
 	<!-- get list of all commuity publication posts -->
 	<select id="getGoldStandardPublicationForCommunityIndex" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPostWithRelations">
-		SELECT bb.*, <include refid="goldStandardOtherFields" />, <include refid="personResourceRelationColumns" />
+		SELECT bb.*, <include refid="goldStandardOtherFields" />, <include refid="personResourceRelationExtendedColumns" />
 		FROM
 		(
 			SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group
@@ -93,6 +93,7 @@
 		) AS bb
 		LEFT JOIN bibtex p ON (bb.interHash = p.simhash1)
 		LEFT JOIN pub_person ppr ON (bb.interHash = ppr.simhash1)
+		LEFT JOIN person per USING (person_id)
 	</select>
 
 	<select id="getGoldStandardBookmarkForCommunityIndex" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">

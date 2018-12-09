@@ -39,7 +39,6 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -51,14 +50,10 @@ import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
-import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.sort.SortOrder;
 
 /**
  * manager for Elasticsearch
@@ -137,13 +132,8 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 		do {
 			newPosts = this.inputLogic.getNewPosts(oldLastTasId, SearchDBInterface.SQL_BLOCKSIZE, offset);
 			for (final Post<R> post : newPosts) {
-				final Map<String, Object> convertedPost = this.entityInformationProvider.getConverter().convert(post);
-				
-				final Integer contentId = post.getContentId();
 				final String id = this.entityInformationProvider.getEntityId(post);
-				final IndexData indexData = new IndexData();
-				indexData.setType(this.entityInformationProvider.getType());
-				indexData.setSource(convertedPost);
+				final IndexData indexData = createIndexData(post);
 				convertedPosts.put(id, indexData);
 			}
 			
@@ -235,13 +225,10 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 						// insert new records into index
 						if (present(userPosts)) {
 							for (final Post<R> post : userPosts) {
-								final Map<String, Object> convertedPost = this.entityInformationProvider.getConverter().convert(post);
 								final String id = this.entityInformationProvider.getEntityId(post);
-								final IndexData indexData = new IndexData();
-								indexData.setType(this.entityInformationProvider.getType());
-								indexData.setSource(convertedPost);
+								final IndexData indexData = createIndexData(post);
 								convertedPosts.put(id, indexData);
-								
+
 								if (convertedPosts.size() >= SearchDBInterface.SQL_BLOCKSIZE / 2) {
 									this.clearQueue(indexName, convertedPosts);
 								}
@@ -264,5 +251,13 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 		if (present(convertedPosts)) {
 			this.clearQueue(indexName, convertedPosts);
 		}
+	}
+
+	private IndexData createIndexData(Post<R> post) {
+		final Map<String, Object> convertedPost = this.entityInformationProvider.getConverter().convert(post);
+		final IndexData indexData = new IndexData();
+		indexData.setType(this.entityInformationProvider.getType());
+		indexData.setSource(convertedPost);
+		return indexData;
 	}
 }

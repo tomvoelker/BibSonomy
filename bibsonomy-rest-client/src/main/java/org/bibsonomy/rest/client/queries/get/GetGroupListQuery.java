@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.rest.client.queries.get;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.bibsonomy.model.Group;
@@ -35,10 +37,8 @@ import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.util.UrlBuilder;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 /**
- * Use this Class to receive an ordered list of all groups bibsonomy has.
+ * query to retrieve groups from the server
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
@@ -47,12 +47,15 @@ public final class GetGroupListQuery extends AbstractQuery<List<Group>> {
 	private final GroupQuery groupQuery;
 
 	/**
-	 * Gets bibsonomy's group list.
+	 * inits this group list query with the specified query
 	 * 
 	 * @param groupQuery
 	 */
-	public GetGroupListQuery(GroupQuery groupQuery) {
-		if (!present(groupQuery)) throw new IllegalArgumentException("No group query given.");
+	public GetGroupListQuery(final GroupQuery groupQuery) {
+		if (!present(groupQuery)) {
+			throw new IllegalArgumentException("No group query given.");
+		}
+
 		this.groupQuery = groupQuery;
 	}
 
@@ -63,7 +66,7 @@ public final class GetGroupListQuery extends AbstractQuery<List<Group>> {
 
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException {
-		final UrlBuilder groupsUrlBuilder = this.getUrlRenderer().createUrlBuilderForGroups(groupQuery);
+		final UrlBuilder groupsUrlBuilder = this.getUrlRenderer().createUrlBuilderForGroups(this.groupQuery);
 		this.downloadedDocument = performGetRequest(groupsUrlBuilder.asString());
 	}
 }

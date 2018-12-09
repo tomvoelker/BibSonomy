@@ -1,6 +1,7 @@
 package org.bibsonomy.model.logic.querybuilder;
 
 import org.bibsonomy.common.enums.Prefix;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.enums.GroupOrder;
 import org.bibsonomy.model.logic.query.GroupQuery;
 
@@ -15,6 +16,7 @@ public class GroupQueryBuilder {
 	private int end = 10;
 
 	private GroupOrder groupOrder = GroupOrder.GROUP_NAME;
+	private SortOrder sortOrder = SortOrder.ASC;
 	private Prefix prefix;
 	private boolean pending;
 	private String userName;
@@ -24,6 +26,11 @@ public class GroupQueryBuilder {
 
 	public GroupQueryBuilder order(final GroupOrder order) {
 		this.groupOrder = order;
+		return this;
+	}
+
+	public GroupQueryBuilder sortOrder(final SortOrder sortOrder) {
+		this.sortOrder = sortOrder;
 		return this;
 	}
 
@@ -68,6 +75,6 @@ public class GroupQueryBuilder {
 	}
 
 	public GroupQuery createGroupQuery() {
-		return new GroupQuery(this.search, this.groupOrder, this.prefix, this.pending, this.userName, this.externalId, this.organization, this.start, this.end);
+		return new GroupQuery(this.search, this.groupOrder, this.sortOrder, this.prefix, this.pending, this.userName, this.externalId, this.organization, this.start, this.end);
 	}
 }

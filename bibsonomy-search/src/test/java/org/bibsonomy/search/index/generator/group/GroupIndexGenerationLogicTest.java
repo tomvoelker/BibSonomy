@@ -29,9 +29,9 @@ public class GroupIndexGenerationLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void testGetEntities() {
 		final List<Group> entities = GROUP_INDEX_GENERATION_LOGIC.getEntities(0, 10);
-		assertThat(entities.size(), is(10));
+		assertThat(entities.size(), is(8));
 
 		final Group group = entities.get(2);
-		assertThat(group.getName(), is("testgroup1"));
+		assertThat(group.getName(), is("testgroup3"));
 	}
 }

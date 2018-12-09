@@ -33,7 +33,6 @@ public class GeneralIndexUpdateLogic<T> extends AbstractDatabaseManagerWithSessi
 	public List<T> getNewerEntities(final long lastEntityId, final Date lastLogDate, final int size, final int offset) {
 		try (final DBSession session = this.openSession()) {
 			final SearchParam param = SearchParamUtils.buildSeachParam(lastEntityId, lastLogDate, size, offset);
-
 			return this.queryForList("getUpdatedAndNew" + this.getEntityName() + "s", param, this.entityClass, session);
 		}
 	}

@@ -21,8 +21,8 @@ public class PersonDatabaseInformationLogic extends AbstractDatabaseManagerWithS
 	public SearchIndexDualSyncState getDbState() {
 		try (final DBSession session = this.openSession()) {
 			final DefaultSearchIndexSyncState searchIndexSyncState = new DefaultSearchIndexSyncState();
-			final Integer lastId = this.queryForObject("getLastPersonChangeId", Integer.class, session);
-			searchIndexSyncState.setLast_tas_id(lastId);
+			final Integer personChangeId = this.queryForObject("getLastPersonChangeId", Integer.class, session);
+			searchIndexSyncState.setLastPostContentId(personChangeId);
 			Date logDate = this.queryForObject("getLastPersonChangeLogDate", Date.class, session);
 			// if there is no log entry return the current date time as last log date
 			if (!present(logDate)) {

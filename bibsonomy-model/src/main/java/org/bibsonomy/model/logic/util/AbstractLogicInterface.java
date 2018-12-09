@@ -506,15 +506,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(boolean, int, int)
-	 */
-	@Override
-	public List<Group> getGroups(boolean pending, String userName, int start, int end) {
-		this.doDefaultAction();
-		return null;
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(query)
 	 */
 	@Override

@@ -4,7 +4,7 @@
 <sqlMap namespace="GroupGeneration">
 
 	<select id="getGroups" resultMap="SearchGroupCommon.fullGroup">
-		SELECT <include refid="groupColumns" />, gg.group_name AS parent_group_name
+		SELECT <include refid="groupColumns" />
 		FROM
 			(
 				SELECT * FROM groupids g

@@ -21,7 +21,7 @@
 	</resultMap>
 
 	<sql id="groupColumns">
-		g.`group`, g.group_name, u.user_homepage AS homepage, g.organization, g.external_id, u.user_realname AS real_name
+		g.`group`, g.group_name, u.user_homepage AS homepage, g.organization, g.external_id, u.user_realname AS real_name, gg.group_name AS parent_group_name
 	</sql>
 
 </sqlMap>

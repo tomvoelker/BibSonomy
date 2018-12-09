@@ -12,7 +12,7 @@
 		<result property="startDate" 	column="start_date"		javaType="date" />
 		<result property="endDate"	    column="end_date"	    javaType="date" />
 		<result property="type"	        column="type"	        javaType="string" />
-		<result property="budget"	    column="budget"	        javaType="double" />
+		<result property="budget"	    column="budget"	        javaType="float" />
 	</resultMap>
 
 	<resultMap id="parentProject" class="project">

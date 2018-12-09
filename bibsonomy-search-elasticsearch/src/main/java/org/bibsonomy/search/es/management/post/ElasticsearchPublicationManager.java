@@ -186,7 +186,7 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 	}
 
 	private void applyChangesInPubPersonRelationsToIndex(final String indexName, DefaultSearchIndexSyncState oldState, DefaultSearchIndexSyncState targetState, final LRUMap updatedInterhashes) {
-		for (long minPersonChangeId = oldState.getLastPersonChangeId() + 1; minPersonChangeId < targetState.getLastPersonChangeId(); minPersonChangeId += SQL_BLOCKSIZE) {
+		for (long minPersonChangeId = oldState.getLastPersonChangeId(); minPersonChangeId < targetState.getLastPersonChangeId(); minPersonChangeId += SQL_BLOCKSIZE) {
 			final List<ResourcePersonRelationLogStub> relChanges = this.inputLogic.getPubPersonRelationsByChangeIdRange(minPersonChangeId, minPersonChangeId + SQL_BLOCKSIZE);
 			if (log.isDebugEnabled() || ValidationUtils.present(relChanges)) {
 				log.info("found " + relChanges.size() + " relation changes to update");

@@ -28,7 +28,7 @@ public class GroupIndexUpdateLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void testGetNewerEntities() {
 		final List<Group> newerEntities = INDEX_UPDATE_LOGIC.getNewerEntities(12, new Date(), 10, 0);
-		assertThat(newerEntities.size(), is(12));
+		assertThat(newerEntities.size(), is(1));
 	}
 
 	@Test

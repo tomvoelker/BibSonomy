@@ -21,7 +21,6 @@ public class CommunityPostIndexGenerationLogicPublicationTest extends CommunityP
 
 	private static final CommunityPostIndexGenerationLogic<GoldStandardPublication> GENERATION_LOGIC = (CommunityPostIndexGenerationLogic<GoldStandardPublication>) SearchSpringContextWrapper.getBeanFactory().getBean("communityPublicationGenerationDBLogic");
 
-
 	@Override
 	protected CommunityPostIndexGenerationLogic<GoldStandardPublication> getLogic() {
 		return GENERATION_LOGIC;
@@ -39,7 +38,4 @@ public class CommunityPostIndexGenerationLogicPublicationTest extends CommunityP
 		assertThat(usersOfPost.size(), is(1));
 		assertThat(usersOfPost, contains(equalTo(new User("testuser2"))));
 	}
-
-
-
 }

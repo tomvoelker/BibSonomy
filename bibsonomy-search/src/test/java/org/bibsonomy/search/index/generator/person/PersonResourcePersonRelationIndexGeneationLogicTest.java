@@ -57,7 +57,7 @@ public class PersonResourcePersonRelationIndexGeneationLogicTest extends Abstrac
 	@Test
 	public void testGetDbState() {
 		final SearchIndexDualSyncState dbState = PERSON_INDEX_GENERATIONLOGIC.getDbState();
-		assertThat(dbState.getFirstState().getLastPersonChangeId(), is(36l));
+		assertThat(dbState.getFirstState().getLastPostContentId(), is(36l));
 	}
 
 	/**

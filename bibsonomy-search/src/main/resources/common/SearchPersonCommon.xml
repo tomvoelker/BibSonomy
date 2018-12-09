@@ -19,6 +19,7 @@
 
 	<resultMap id="simplePersonWithoutId" class="person"  groupBy="personId">
 		<result property="personId"			column="person_id" 			javaType="string" />
+		<result property="college"			column="college"			javaType="string" />
 	</resultMap>
 
 	<resultMap id="person" class="person" groupBy="personChangeId" extends="SearchPersonCommon.simplePerson">
@@ -74,6 +75,10 @@
 
 	<sql id="personResourceRelationColumns">
 		ppr.person_id, ppr.relator_code, ppr.person_index, ppr.person_change_id AS person_relation_change_id, ppr.log_changed_at
+	</sql>
+
+	<sql id="personResourceRelationExtendedColumns">
+		<include refid="personResourceRelationColumns" />, per.college AS college
 	</sql>
 
 	<sql id="personResourceRelationWithPostColumns">
