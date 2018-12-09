@@ -54,6 +54,7 @@ import org.bibsonomy.common.FirstValuePairComparator;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -69,6 +70,7 @@ import org.bibsonomy.model.logic.querybuilder.AbstractSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.search.SearchInfoLogic;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
@@ -124,11 +126,11 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 	private String genealogyUser;
 
 	@Override
-	public ResultList<Post<R>> getPosts(String loggedinUser, Set<String> allowedGroups, PostSearchQuery<?> postQuery) {
+	public ResultList<Post<R>> getPosts(final User loggedinUser, PostSearchQuery<?> postQuery) {
 		return ElasticsearchIndexSearchUtils.callSearch(() -> {
 			final ResultList<Post<R>> posts = new ResultList<>();
-			final Set<String> allowedUsers = this.getUsersThatShareDocuments(loggedinUser);
-			final QueryBuilder queryBuilder = this.buildQuery(loggedinUser, allowedGroups, allowedUsers, postQuery);
+			final Set<String> allowedUsers = this.getUsersThatShareDocuments(loggedinUser.getName());
+			final QueryBuilder queryBuilder = this.buildQuery(loggedinUser, allowedUsers, postQuery);
 			if (queryBuilder == null) {
 				return posts;
 			}
@@ -154,7 +156,7 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 					 * that have this resource in their collection
 					 */
 					final List<User> users = post.getUsers();
-					final Stream<User> filteredUsers = users.stream().filter(user -> user.getName().equals(loggedinUser));
+					final Stream<User> filteredUsers = users.stream().filter(user -> user.equals(loggedinUser));
 					post.setUsers(filteredUsers.collect(Collectors.toList()));
 					posts.add(post);
 				}
@@ -165,9 +167,9 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 	}
 
 	@Override
-	public List<Tag> getTags(String loggedinUser, Set<String> allowedGroups, PostSearchQuery<?> postQuery) {
+	public List<Tag> getTags(User loggedinUser, PostSearchQuery<?> postQuery) {
 		final List<String> requestedTags = postQuery.getTags();
-		final QueryBuilder query = this.buildQuery(loggedinUser, allowedGroups, this.getUsersThatShareDocuments(loggedinUser), postQuery);
+		final QueryBuilder query = this.buildQuery(loggedinUser, this.getUsersThatShareDocuments(loggedinUser.getName()), postQuery);
 		if (query == null) {
 			return new LinkedList<>();
 		}
@@ -538,7 +540,7 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 	 * @param queryString
 	 * @return
 	 */
-	private static QueryBuilder addYearFilterIfYearInQuery(QueryBuilder filterBuilder, String queryString) {
+	private static QueryBuilder addYearFilterIfYearInQuery(final QueryBuilder filterBuilder, final String queryString) {
 		final Matcher m = YEAR_PATTERN.matcher(queryString);
 		if (!m.find()) {
 			return filterBuilder;
@@ -566,21 +568,25 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 	 * build the overall elasticsearch query term
 	 * 
 	 * @param loggedinUser
-	 * @param allowedGroups 
 	 * @param usersThatShareDocs all users that the logged in user is allowed to access
 	 * @param postQuery the query
 	 * @return overall elasticsearch query
 	 */
-	protected final QueryBuilder buildQuery(final String loggedinUser, Set<String> allowedGroups, final Set<String> usersThatShareDocs, final PostSearchQuery<?> postQuery) {
+	protected final QueryBuilder buildQuery(final User loggedinUser, final Set<String> usersThatShareDocs, final PostSearchQuery<?> postQuery) {
 		final BoolQueryBuilder mainQueryBuilder = QueryBuilders.boolQuery();
 		final BoolQueryBuilder mainFilterBuilder = QueryBuilders.boolQuery();
-		// here we exclude the logged in user the docs are already queried using the private fields
+
+		final String loggedinUserName = loggedinUser.getName();
+		Set<String> allowedGroups = UserUtils.getListOfGroups(loggedinUser).stream().map(Group::getName).collect(Collectors.toSet());
+
+		// here we exclude the logged in user; the docs are already queried using the private fields
 		final Set<String> usersToQueryForDocuments = new HashSet<>(usersThatShareDocs);
-		if (present(loggedinUser)) {
-			usersToQueryForDocuments.remove(loggedinUser);
+		if (present(loggedinUserName)) {
+			usersToQueryForDocuments.remove(loggedinUserName);
 		}
 
 		final String searchTerms = postQuery.getSearch();
+
 		/*
 		 * build the query
 		 * the resulting main query
@@ -596,9 +602,9 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 			 */
 			final QueryBuilder queryBuilder = buildStringQueryForSearchTerms(searchTerms, this.manager.getPublicFields());
 			
-			if (present(loggedinUser)) {
+			if (present(loggedinUserName)) {
 				// private field
-				final TermQueryBuilder userFilter = QueryBuilders.termQuery(Fields.USER_NAME, loggedinUser);
+				final TermQueryBuilder userFilter = QueryBuilders.termQuery(Fields.USER_NAME, loggedinUserName);
 				final QueryStringQueryBuilder privateFieldSearchQuery = buildStringQueryForSearchTerms(searchTerms, this.manager.getPrivateFields());
 				final BoolQueryBuilder privateFieldQueryFiltered = QueryBuilders.boolQuery().must(privateFieldSearchQuery).filter(userFilter);
 				
@@ -625,7 +631,7 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 			mainQueryBuilder.must(titleSearchQuery);
 		}
 		
-		this.buildResourceSpecificQuery(mainQueryBuilder, loggedinUser, postQuery);
+		this.buildResourceSpecificQuery(mainQueryBuilder, loggedinUserName, postQuery);
 
 		final List<String> tags = postQuery.getTags();
 		// Add the requested tags
@@ -661,20 +667,15 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 		}
 
 		// restricting access to posts visible to the user
-		if (!present(allowedGroups)) {
-			allowedGroups = Collections.singleton(GroupUtils.buildPublicGroup().getName());
-		}
-		
 		final BoolQueryBuilder groupFilter = buildGroupFilter(allowedGroups);
-		if (present(loggedinUser)) {
+		if (present(loggedinUserName)) {
 			final TermQueryBuilder privateGroupFilter = QueryBuilders.termQuery(Fields.GROUPS, GroupUtils.buildPrivateGroup().getName());
-			final TermQueryBuilder userFilter = QueryBuilders.termQuery(Fields.USER_NAME, loggedinUser);
+			final TermQueryBuilder userFilter = QueryBuilders.termQuery(Fields.USER_NAME, loggedinUserName);
 			groupFilter.should(QueryBuilders.boolQuery().must(userFilter).must(privateGroupFilter));
 		}
-		
 		mainFilterBuilder.must(groupFilter);
 
-		this.buildResourceSpecifiyFilters(mainFilterBuilder, loggedinUser, allowedGroups, usersThatShareDocs, postQuery);
+		this.buildResourceSpecifiyFilters(mainFilterBuilder, loggedinUserName, allowedGroups, usersThatShareDocs, postQuery);
 		
 		// all done
 		log.debug("Search query: '" + mainQueryBuilder.toString() + "' and filters: '" + mainFilterBuilder.toString() + "'");

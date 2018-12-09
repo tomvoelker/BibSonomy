@@ -81,7 +81,7 @@ public class GetTagsByResourceSearch extends TagChainElement {
 
 		BasicQueryUtils.setStartAndEnd(query, param.getLimit(), param.getOffset());
 
-		return this.db.getTagsByResourceSearch(param.getResourceType(), param.getUserName(), param.getGroupNames(), query);
+		return this.db.getTagsByResourceSearch(param.getResourceType(), param.getLoggedinUser(), query);
 	}
 
 	private static GroupingEntity getGroupingEntity(TagParam param) {

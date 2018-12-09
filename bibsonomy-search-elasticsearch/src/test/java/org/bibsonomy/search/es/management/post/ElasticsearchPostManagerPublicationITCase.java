@@ -29,16 +29,12 @@ package org.bibsonomy.search.es.management.post;
 import static org.bibsonomy.search.es.management.post.ElasticsearchCommunityPostPublicationManagerITCase.buildQuery;
 import static org.junit.Assert.assertEquals;
 
-import java.util.Collections;
-
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
 import org.bibsonomy.search.es.management.AbstractElasticsearchPostIndexTest;
 import org.bibsonomy.search.es.search.post.ElasticsearchPublicationSearch;
@@ -55,26 +51,26 @@ public class ElasticsearchPostManagerPublicationITCase extends AbstractElasticse
 	private static final AdminDatabaseManager adminDatabaseManager = testDatabaseContext.getBean(AdminDatabaseManager.class);
 	private static ElasticsearchPostManager<BibTex> publicationManager = EsSpringContextWrapper.getContext().getBean("elasticsearchPublicationManager", ElasticsearchPostManager.class);
 	private static ElasticsearchPublicationSearch<BibTex> publicationSearch = EsSpringContextWrapper.getContext().getBean("elasticsearchPublicationSearch", ElasticsearchPublicationSearch.class);
-	
+
 	/**
 	 * tests {@link ElasticsearchPostManager#updateIndex()}
 	 */
 	@Test
 	public void testUpdateIndexWithSpammer() {
 		final String userToFlag = "testuser3";
+		final User user = new User(userToFlag);
 		final PostSearchQuery<?> query = buildQuery("test");
 		query.setGrouping(GroupingEntity.USER);
 		query.setGroupingName(userToFlag);
-		final ResultList<Post<BibTex>> postsBefore = publicationSearch.getPosts(userToFlag, Collections.emptySet(), query);
+		final ResultList<Post<BibTex>> postsBefore = publicationSearch.getPosts(user, query);
 		assertEquals(1, postsBefore.size());
 
-		final User user = new User(userToFlag);
 		user.setSpammer(Boolean.TRUE);
 		user.setAlgorithm("unittest");
 		adminDatabaseManager.flagSpammer(user, "admin", this.dbSession);
 		publicationManager.updateIndex();
 		
-		final ResultList<Post<BibTex>> posts = publicationSearch.getPosts(userToFlag, Collections.emptySet(), query);
+		final ResultList<Post<BibTex>> posts = publicationSearch.getPosts(user, query);
 		assertEquals(0, posts.size());
 		
 		user.setSpammer(Boolean.FALSE);
@@ -84,7 +80,7 @@ public class ElasticsearchPostManagerPublicationITCase extends AbstractElasticse
 		
 		publicationManager.updateIndex();
 		
-		final ResultList<Post<BibTex>> readded = publicationSearch.getPosts(userToFlag, Collections.emptySet(), query);
+		final ResultList<Post<BibTex>> readded = publicationSearch.getPosts(user, query);
 		assertEquals(postsBefore.size(), readded.size());
 	}
 

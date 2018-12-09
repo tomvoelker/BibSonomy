@@ -47,6 +47,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.chain.Chain;
+import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.database.params.GoldStandardReferenceParam;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
@@ -55,6 +56,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.ReflectionUtils;
@@ -80,7 +82,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 
 	private ResourceSearch<R> search;
 
-	private Chain<List<Post<R>>, P> chain;
+	private Chain<List<Post<R>>, QueryAdapter<PostQuery<R>>> chain;
 
 	protected GoldStandardDatabaseManager() {
 		this.resourceClassName = this.getResourceClassName();
@@ -176,14 +178,19 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 
 	@Override
 	public List<Post<R>> getPosts(final P param, final DBSession session) {
-		return this.chain.perform(param, session);
+		throw new UnsupportedOperationException("use new query method");
 	}
 
 	/**
-	 * @param chain the chain to set
+	 * queries the database or fulltext search for all posts matching the specified query parameters
+	 *
+	 * @param query
+	 * @param loggedinUser
+	 * @param session
+	 * @return
 	 */
-	public void setChain(final Chain<List<Post<R>>, P> chain) {
-		this.chain = chain;
+	public List<Post<R>> getPosts(final PostQuery<R> query, final User loggedinUser, final DBSession session) {
+		return this.chain.perform(new QueryAdapter<>(query, loggedinUser), session);
 	}
 
 	@Override
@@ -452,4 +459,11 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	 * @param session
 	 */
 	protected abstract void onGoldStandardRelationDelete(final String userName, final String interHash, final String interHashRef, final GoldStandardRelation interHashRelation, final DBSession session);
+
+	/**
+	 * @param chain the chain to set
+	 */
+	public void setChain(Chain<List<Post<R>>, QueryAdapter<PostQuery<R>>> chain) {
+		this.chain = chain;
+	}
 }

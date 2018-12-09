@@ -51,6 +51,7 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 
 	/** some test constants TODO: move */
 	private static final User LOGGEDIN_USER = new User("testuser1");
+	private static final User anonymUser = new User();
 
 	// TODO: move
 	public static PostSearchQuery<?> buildQuery(final String searchTerms) {
@@ -67,12 +68,12 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 		query.setSearch("test title");
 
 		// check if gold standard publications are indexed
-		final List<Post<GoldStandardPublication>> communityResults = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, query);
+		final List<Post<GoldStandardPublication>> communityResults = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, query);
 		assertThat(communityResults.size(), is(3));
 
 		// check if also normal posts are indexed
 		query.setSearch("ontologies");
-		final ResultList<Post<GoldStandardPublication>> normalPosts = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, query);
+		final ResultList<Post<GoldStandardPublication>> normalPosts = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, query);
 		assertThat(normalPosts.size(), is(1));
 		assertThat(normalPosts.getTotalCount(), is(1));
 
@@ -82,8 +83,10 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 
 	@Test
 	public void testUpdate() {
+		final String testuser1 = "testuser1";
+		final User loggedinUser = new User(testuser1);
 		final PostSearchQuery<?> query = buildQuery("Wurst aufs Brot");
-		final List<Post<GoldStandardPublication>> communityPosts = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, query);
+		final List<Post<GoldStandardPublication>> communityPosts = COMMUNITY_PUBLICATION_SEARCH.getPosts(anonymUser, query);
 
 		assertThat(communityPosts.size(), is(1));
 
@@ -92,14 +95,13 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 		final String interHash = publication.getInterHash();
 		final String intraHash = publication.getIntraHash();
 
-		final String testuser1 = "testuser1";
-		final User loggedinUser = new User(testuser1);
+
 		final boolean deleted = GOLD_STANDARD_PUBLICATION_DATABASE_MANAGER.deletePost("", interHash, loggedinUser, this.dbSession);
 		assertThat(deleted, is(true));
 
 		this.updateIndex();
 
-		final List<Post<GoldStandardPublication>> afterCommunityDelete = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, query);
+		final List<Post<GoldStandardPublication>> afterCommunityDelete = COMMUNITY_PUBLICATION_SEARCH.getPosts(anonymUser, query);
 
 		// deleting the community post should do nothing, if at least one user has the publication in his/her collection
 		assertThat(afterCommunityDelete.size(), is(1));
@@ -109,7 +111,7 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 
 		this.updateIndex();
 
-		final List<Post<GoldStandardPublication>> afterNormalPostDelete = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, query);
+		final List<Post<GoldStandardPublication>> afterNormalPostDelete = COMMUNITY_PUBLICATION_SEARCH.getPosts(anonymUser, query);
 
 		assertThat(afterNormalPostDelete.size(), is(0));
 
@@ -126,7 +128,7 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 
 		final PostSearchQuery<?> query2 = buildQuery(publicationPost.getResource().getTitle());
 
-		final List<Post<GoldStandardPublication>> postsAfterCreating = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, query2);
+		final List<Post<GoldStandardPublication>> postsAfterCreating = COMMUNITY_PUBLICATION_SEARCH.getPosts(anonymUser, query2);
 
 		assertThat(postsAfterCreating.size(), is(1));
 
@@ -141,12 +143,12 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 
 		this.updateIndex();
 
-		final ResultList<Post<GoldStandardPublication>> postsAfterCommunityCreating = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, query2);
+		final ResultList<Post<GoldStandardPublication>> postsAfterCommunityCreating = COMMUNITY_PUBLICATION_SEARCH.getPosts(anonymUser, query2);
 
 		assertThat(postsAfterCommunityCreating.size(), is(1));
 		assertThat(postsAfterCommunityCreating.get(0).getResource().getAbstract(), is(publicationAbstract));
 		final PostSearchQuery<?> query3 = buildQuery("test friend title");
-		final ResultList<Post<GoldStandardPublication>> testuser3PostsInIndex = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, query3);
+		final ResultList<Post<GoldStandardPublication>> testuser3PostsInIndex = COMMUNITY_PUBLICATION_SEARCH.getPosts(anonymUser, query3);
 
 		assertThat(testuser3PostsInIndex.size(), is(1));
 
@@ -159,7 +161,7 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 
 		this.updateIndex();
 
-		final ResultList<Post<GoldStandardPublication>> testuser3PostsInIndexAfterMarkedAsSpammer = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, null, query3);
+		final ResultList<Post<GoldStandardPublication>> testuser3PostsInIndexAfterMarkedAsSpammer = COMMUNITY_PUBLICATION_SEARCH.getPosts(anonymUser, query3);
 
 		assertThat(testuser3PostsInIndexAfterMarkedAsSpammer.size(), is(0));
 
@@ -171,7 +173,7 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 
 		this.updateIndex();
 
-		final ResultList<Post<GoldStandardPublication>> testuser3PostsInIndexAfterUnmarkedAsSpammer = COMMUNITY_PUBLICATION_SEARCH.getPosts(userToFlag, null, query3);
+		final ResultList<Post<GoldStandardPublication>> testuser3PostsInIndexAfterUnmarkedAsSpammer = COMMUNITY_PUBLICATION_SEARCH.getPosts(new User(userToFlag), query3);
 
 		assertThat(testuser3PostsInIndexAfterUnmarkedAsSpammer.size(), is(1));
 
@@ -180,7 +182,7 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 		final List<User> users = firstResultTestuser3.getUsers();
 		assertThat(users.size(), is(1));
 
-		final ResultList<Post<GoldStandardPublication>> beforeDeleteTestuser1 = COMMUNITY_PUBLICATION_SEARCH.getPosts(testuser1, null, query2);
+		final ResultList<Post<GoldStandardPublication>> beforeDeleteTestuser1 = COMMUNITY_PUBLICATION_SEARCH.getPosts(loggedinUser, query2);
 
 		assertThat(beforeDeleteTestuser1.size(), is(1));
 		assertThat(beforeDeleteTestuser1.get(0).getUsers().size(), is(1));
@@ -193,7 +195,7 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 
 		this.updateIndex();
 
-		final ResultList<Post<GoldStandardPublication>> afterDeleteTestuser1 = COMMUNITY_PUBLICATION_SEARCH.getPosts(testuser1, null, query2);
+		final ResultList<Post<GoldStandardPublication>> afterDeleteTestuser1 = COMMUNITY_PUBLICATION_SEARCH.getPosts(loggedinUser, query2);
 
 		assertThat(afterDeleteTestuser1.size(), is(1));
 		assertThat(afterDeleteTestuser1.get(0).getUsers().size(), is(0));
@@ -203,7 +205,7 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 
 		this.updateIndex();
 
-		final ResultList<Post<GoldStandardPublication>> afterReaddedTestuser1 = COMMUNITY_PUBLICATION_SEARCH.getPosts(testuser1, null, query2);
+		final ResultList<Post<GoldStandardPublication>> afterReaddedTestuser1 = COMMUNITY_PUBLICATION_SEARCH.getPosts(loggedinUser, query2);
 		assertThat(afterReaddedTestuser1.get(0).getUsers().size(), is(1));
 	}
 
@@ -220,7 +222,7 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 		query.setPersonNames(Collections.singletonList(new PersonName("Test", "Willi")));
 		query.setOnlyIncludeAuthorsWithoutPersonId(true);
 
-		final ResultList<Post<GoldStandardPublication>> postsBeforeDelete = COMMUNITY_PUBLICATION_SEARCH.getPosts("", null, query);
+		final ResultList<Post<GoldStandardPublication>> postsBeforeDelete = COMMUNITY_PUBLICATION_SEARCH.getPosts(anonymUser, query);
 		assertThat(postsBeforeDelete.size(), is(0));
 
 		PERSON_DATABASE_MANAGER.removeResourceRelation(firstRelation.getPerson().getPersonId(), interhash, firstRelation.getPersonIndex(), firstRelation.getRelationType(), LOGGEDIN_USER, this.dbSession);
@@ -228,7 +230,7 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 		this.updateIndex();
 
 		// after the relation is deleted there should be one post with the specified author and without assigned to a person
-		final ResultList<Post<GoldStandardPublication>> posts = COMMUNITY_PUBLICATION_SEARCH.getPosts("", null, query);
+		final ResultList<Post<GoldStandardPublication>> posts = COMMUNITY_PUBLICATION_SEARCH.getPosts(anonymUser, query);
 		assertThat(posts.size(), is(1));
 
 		firstRelation.setPost(GOLD_STANDARD_PUBLICATION_DATABASE_MANAGER.getPostDetails("", interhash, "", Collections.emptyList(), this.dbSession));
@@ -237,7 +239,7 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 
 		this.updateIndex();
 
-		final ResultList<Post<GoldStandardPublication>> postsAfterReadd = COMMUNITY_PUBLICATION_SEARCH.getPosts("", null, query);
+		final ResultList<Post<GoldStandardPublication>> postsAfterReadd = COMMUNITY_PUBLICATION_SEARCH.getPosts(anonymUser, query);
 		assertThat(postsAfterReadd.size(), is(0));
 	}
 

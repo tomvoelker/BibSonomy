@@ -809,15 +809,11 @@ public class DBLogic implements LogicInterface {
 			}
 
 			if (resourceType == GoldStandardPublication.class) {
-				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, queryScope, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
-				param.setQuery((PostQuery<BibTex>) query);
-				return (List) this.goldStandardPublicationDBManager.getPosts(param, session);
+				return (List) this.goldStandardPublicationDBManager.getPosts((PostQuery<GoldStandardPublication>) query, this.loginUser, session);
 			}
 
 			if (resourceType == GoldStandardBookmark.class) {
-				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, resourceType, queryScope, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
-				param.setQuery((PostQuery<Bookmark>) query);
-				return (List) this.goldStandardBookmarkDBManager.getPosts(param, session);
+				return (List) this.goldStandardBookmarkDBManager.getPosts((PostQuery<GoldStandardBookmark>) query, this.loginUser, session);
 			}
 
 			throw new UnsupportedResourceTypeException();

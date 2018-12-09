@@ -704,33 +704,30 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getTagsByUser", param, Tag.class, session);
 	}
 
-
-
 	/**
 	 * returns all tags assigned to posts which are matching the given query
 	 *
 	 * @param resourceClass
-	 * @param userName
-	 * @param allowedGroups
+	 * @param loggedinUser
 	 * @param query
 	 * @return a list of tags
 	 */
-	public List<Tag> getTagsByResourceSearch(final Class<? extends Resource> resourceClass, final String userName, final Set<String> allowedGroups, final PostSearchQuery<?> query) {
+	public List<Tag> getTagsByResourceSearch(final Class<? extends Resource> resourceClass, User loggedinUser, final PostSearchQuery<?> query) {
 		final int limit = BasicQueryUtils.calcLimit(query);
 		if (present(this.publicationSearch) && present(this.bookmarkSearch)) {
 			if (Resource.class.equals(resourceClass)) {
-				final List<Tag> bookmarkTags = this.bookmarkSearch.getTags(userName, allowedGroups,  query);
-				final List<Tag> publicationTags = this.publicationSearch.getTags(userName, allowedGroups, query);
+				final List<Tag> bookmarkTags = this.bookmarkSearch.getTags(loggedinUser,  query);
+				final List<Tag> publicationTags = this.publicationSearch.getTags(loggedinUser, query);
 				final List<Tag> retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, Order.POPULAR, Order.POPULAR, limit);
 				return retVal;
 			}
 			
 			if (BibTex.class.equals(resourceClass)) {
-				return this.publicationSearch.getTags(userName, allowedGroups, query);
+				return this.publicationSearch.getTags(loggedinUser, query);
 			}
 			
 			if (Bookmark.class.equals(resourceClass)) {
-				return this.bookmarkSearch.getTags(userName, allowedGroups, query);
+				return this.bookmarkSearch.getTags(loggedinUser, query);
 			}
 			
 			throw new UnsupportedResourceTypeException();

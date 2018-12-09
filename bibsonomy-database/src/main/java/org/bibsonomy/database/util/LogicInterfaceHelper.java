@@ -97,7 +97,8 @@ public class LogicInterfaceHelper {
 	
 	/**
 	 * Builds a param object for the given parameters from the LogicInterface.
-	 *  @param <T> the type of param object to be build
+	 *
+	 * @param <T> the type of param object to be build
 	 * @param type the type of param object to be build
 	 * @param resourceType the type of the resource
 	 * @param queryScope
@@ -143,6 +144,7 @@ public class LogicInterfaceHelper {
 		param.setEndDate(endDate);
 		
 		param.setUserName(loginUser.getName());
+		param.setLoggedinUser(loginUser);
 		param.setGrouping(grouping);
 		
 		// default search searches over all possible fields

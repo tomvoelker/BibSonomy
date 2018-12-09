@@ -630,12 +630,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/**
 	 * get list of posts from resource searcher
 	 * @param loggedinUser
-	 * @param allowedGroups
 	 * @param query
 	 * @return a list of posts
 	 */
-	public List<Post<R>> getPostsByResourceSearch(final String loggedinUser, final Set<String> allowedGroups, final PostSearchQuery<R> query) {
-		return this.resourceSearch.getPosts(loggedinUser, allowedGroups, query);
+	public List<Post<R>> getPostsByResourceSearch(final User loggedinUser, final PostSearchQuery<R> query) {
+		return this.resourceSearch.getPosts(loggedinUser, query);
 	}
 
 	/**

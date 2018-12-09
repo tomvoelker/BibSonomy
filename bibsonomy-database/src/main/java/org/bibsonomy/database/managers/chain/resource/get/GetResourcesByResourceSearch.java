@@ -101,6 +101,6 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 		// query the resource searcher
 		//TODO (dzo) Do we really need the hashId in GetResourcesForGroup?
 
-		return this.databaseManager.getPostsByResourceSearch(param.getUserName(), param.getGroupNames(), query);
+		return this.databaseManager.getPostsByResourceSearch(param.getLoggedinUser(), query);
 	}
 }

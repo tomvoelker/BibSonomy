@@ -43,6 +43,9 @@ public class PostQuery<R extends Resource> extends BasicQuery {
 
 	private List<PersonName> personNames;
 
+	/** get all publications assigned to persons of the specified college */
+	private String college;
+
 	/**
 	 * default constructor
 	 * @param resourceClass
@@ -217,5 +220,19 @@ public class PostQuery<R extends Resource> extends BasicQuery {
 	 */
 	public void setPersonNames(List<PersonName> personNames) {
 		this.personNames = personNames;
+	}
+
+	/**
+	 * @return the college
+	 */
+	public String getCollege() {
+		return college;
+	}
+
+	/**
+	 * @param college the college to set
+	 */
+	public void setCollege(String college) {
+		this.college = college;
 	}
 }

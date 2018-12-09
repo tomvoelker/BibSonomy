@@ -27,12 +27,12 @@
 package org.bibsonomy.services.searcher;
 
 import java.util.List;
-import java.util.Set;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.services.searcher.query.PostSearchQuery;
 
@@ -49,21 +49,19 @@ public interface ResourceSearch<R extends Resource> {
 	 * search for posts using a full text search index
 	 *
 	 * @param loggedinUser the logged in user
-	 * @param allowedGroups the groups pf the loggedinUser
 	 * @param postQuery the query with all query parameters
 	 * @return all posts matching the search query
 	 */
-	List<Post<R>> getPosts(final String loggedinUser, Set<String> allowedGroups, final PostSearchQuery<?> postQuery);
+	List<Post<R>> getPosts(final User loggedinUser, final PostSearchQuery<?> postQuery);
 
 	/**
 	 * get tag cloud for given search query
 	 *
 	 * @param loggedinUser
-	 * @param allowedGroups
 	 * @param postQuery
 	 * @return tags that are used for the posts matching the search query
 	 */
-	List<Tag> getTags(final String loggedinUser, Set<String> allowedGroups, final PostSearchQuery<?> postQuery);
+	List<Tag> getTags(final User loggedinUser, final PostSearchQuery<?> postQuery);
 
 	/**
 	 * @param options options about the search including the querystring
