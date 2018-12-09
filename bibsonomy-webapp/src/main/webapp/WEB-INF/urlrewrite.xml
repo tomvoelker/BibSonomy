@@ -639,7 +639,7 @@
 	<rule>
 		<name>redirect /organizations</name>
 		<from>^/+organizations$</from>
-		<to type="redirect" last="true">/groups</to>
+		<to last="true">/groups?organizations=true</to>
 	</rule>
 	<rule>
 		<name>redirect /organization/ORGANIZATION</name>

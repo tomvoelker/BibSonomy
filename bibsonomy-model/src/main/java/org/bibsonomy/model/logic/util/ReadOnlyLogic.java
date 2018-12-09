@@ -409,14 +409,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(boolean, int, int)
-	 */
-	@Override
-	public List<Group> getGroups(boolean pending, String userName, int start, int end) {
-		return this.logicinterface.getGroups(pending, null, start, end);
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(query)
 	 */
 	@Override

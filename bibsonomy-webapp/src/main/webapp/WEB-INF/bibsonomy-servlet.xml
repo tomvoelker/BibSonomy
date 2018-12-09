@@ -555,6 +555,12 @@
 				<entry key="/groups">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="groupsPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>format</value>
+								<value>organizations</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/group">

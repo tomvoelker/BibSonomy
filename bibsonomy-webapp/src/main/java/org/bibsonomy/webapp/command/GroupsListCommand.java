@@ -32,7 +32,6 @@ import java.util.List;
 
 import org.bibsonomy.model.Group;
 
-
 /**
  * Bean for list of groups.
  * 
@@ -50,7 +49,13 @@ public class GroupsListCommand extends BaseCommand {
 	
 	/** callback function for JSON outputs */
 	private String callback = "";
-		
+
+	/** stores the data if a new group is requested. */
+	private Group requestedGroup;
+
+	/** filter for only showing organizations */
+	private Boolean organizations;
+
 	/**
 	 * @return the callback
 	 */
@@ -76,7 +81,7 @@ public class GroupsListCommand extends BaseCommand {
 		
 		/*
 		 * the default is html
-		 * */
+		 */
 		return "html";
 	}
 	
@@ -87,10 +92,7 @@ public class GroupsListCommand extends BaseCommand {
 		this.format = format;
 	}
 	
-	/**
-	 * stores the data if a new group is requested.
-	 */
-	private Group requestedGroup;
+
 
 	/**
 	 * @return the alphabet
@@ -131,5 +133,19 @@ public class GroupsListCommand extends BaseCommand {
 	 */
 	public void setRequestedGroup(Group requestedGroup) {
 		this.requestedGroup = requestedGroup;
-	}	
+	}
+
+	/**
+	 * @return the organizations
+	 */
+	public Boolean getOrganizations() {
+		return organizations;
+	}
+
+	/**
+	 * @param organizations the organizations to set
+	 */
+	public void setOrganizations(Boolean organizations) {
+		this.organizations = organizations;
+	}
 }

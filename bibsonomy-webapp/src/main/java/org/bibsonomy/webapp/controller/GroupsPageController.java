@@ -29,6 +29,7 @@
  */
 package org.bibsonomy.webapp.controller;
 
+import org.bibsonomy.model.logic.querybuilder.GroupQueryBuilder;
 import org.bibsonomy.webapp.command.GroupsListCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -47,19 +48,20 @@ public class GroupsPageController extends SingleResourceListController implement
 	 */
 	@Override
 	public View workOn(final GroupsListCommand command) {
-		
-		//return Views.GROUPSPAGE;
 		final String format = command.getFormat();
+
 		/*
 		 * get all groups from db; Integer#MAX_VALUE should be enough
 		 */
 		if ("html".equals(format)) {
-			command.setList(logic.getGroups(false, null, 0, Integer.MAX_VALUE));
+			final GroupQueryBuilder builder = new GroupQueryBuilder();
+			builder.setPending(false).setStart(0).setEnd(Integer.MAX_VALUE).setOrganization(command.getOrganizations());
+			command.setList(this.logic.getGroups(builder.createGroupQuery()));
 		} else if ("json".equals(format)) {
+			// FIXME:  why does changing the format change the result of the controller?
 			command.setList(command.getContext().getLoginUser().getGroups());
 		}
-		
-		
+
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			this.endTiming();

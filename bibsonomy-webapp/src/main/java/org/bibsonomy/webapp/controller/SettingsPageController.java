@@ -29,7 +29,6 @@ package org.bibsonomy.webapp.controller;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -47,6 +46,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.querybuilder.GroupQueryBuilder;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.opensocial.oauth.database.OAuthLogic;
@@ -137,7 +137,9 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		/*
 		 * Get pending requested groups
 		 */
-		command.setPendingRequestedgroups(this.logic.getGroups(true, loginUser.getName(), 0, Integer.MAX_VALUE));
+		final GroupQueryBuilder builder = new GroupQueryBuilder();
+		builder.setEnd(Integer.MAX_VALUE).setUserName(loggedInUserName).setPending(true);
+		command.setPendingRequestedgroups(this.logic.getGroups(builder.createGroupQuery()));
 		
 		if (!present(selectedTab) || selectedTab.intValue() < SettingsViewCommand.MY_PROFILE_IDX || selectedTab.intValue() > SettingsViewCommand.OAUTH_IDX) {
 			this.errors.reject("error.settings.tab");
@@ -200,7 +202,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 * @param command
 	 */
 	private void checkInstalledCSLLayout(final SettingsViewCommand command) {
-		final String loggedInUserName = command.getContext().getLoginUser().getName();		
+		final String loggedInUserName = command.getContext().getLoginUser().getName();
 
 		/*
 		 * load all uploaded csl files
@@ -238,12 +240,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		 */
 		final List<OAuthUserInfo> oauthUserInfos = this.oauthLogic.getOAuthUserApplication(command.getContext().getLoginUser().getName());
 		if (present(this.invisibleOAuthConsumers)) {
-			for (final Iterator<OAuthUserInfo> iterator = oauthUserInfos.iterator(); iterator.hasNext();) {
-				final OAuthUserInfo oAuthUserInfo = iterator.next();
-				if (this.invisibleOAuthConsumers.contains(oAuthUserInfo.getConsumerKey())) {
-					iterator.remove();
-				}
-			}
+			oauthUserInfos.removeIf(oAuthUserInfo -> this.invisibleOAuthConsumers.contains(oAuthUserInfo.getConsumerKey()));
 		}
 		/*
 		 * calculate the expiration time and issue time
@@ -359,7 +356,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	/**
 	 * Handles the cv page request
 	 * @param command
-	 * @param reqGroup
+	 * @param requestedUser
+	 * @param requestedGroup
 	 */
 	private void handleCV(final SettingsViewCommand command, final User requestedUser, final Group requestedGroup) {
 		final String wikiUserName;

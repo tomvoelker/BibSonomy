@@ -72,6 +72,8 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
+import org.bibsonomy.model.logic.query.GroupQuery;
+import org.bibsonomy.model.logic.querybuilder.GroupQueryBuilder;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.rest.AuthenticationHandler;
 import org.bibsonomy.rest.BasicAuthenticationHandler;
@@ -532,42 +534,44 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	}
 	
 	/**
-	 * runs the test defined by {@link #getGroups(boolean, String, int, int)} with certain arguments
+	 * runs the test defined by {@link #getGroups(GroupQuery)} with certain arguments
 	 */
 	@Test
 	public void getGroupsTest() {
-		this.getGroups(false, null, 64, 129);
+		final GroupQueryBuilder builder = new GroupQueryBuilder();
+		builder.setEnd(219).setStart(64);
+		this.getGroups(builder.createGroupQuery());
 	}
-	
+
 	@Override
-	public List<Group> getGroups(final boolean pending, String userName, final int start, final int end) {
+	public List<Group> getGroups(GroupQuery query) {
 		final List<Group> expectedList = new ArrayList<>();
 		expectedList.add(ModelUtils.getGroup());
 		expectedList.get(0).setName("Group1");
 		expectedList.get(0).setGroupId(42);
 		/*
-		 * FIXME: remove this line. It is here only, because privlevel is not included 
+		 * FIXME: remove this line. It is here only, because privlevel is not included
 		 * in the XML and hence not transported to the serverLogic.
 		 */
-		expectedList.get(0).setPrivlevel(null); 
+		expectedList.get(0).setPrivlevel(null);
 		expectedList.add(ModelUtils.getGroup());
 		expectedList.get(1).setName("Group2");
 		expectedList.get(0).setGroupId(23);
 		/*
-		 * FIXME: remove this line. It is here only, because privlevel is not included 
+		 * FIXME: remove this line. It is here only, because privlevel is not included
 		 * in the XML and hence not transported to the serverLogic.
 		 */
 		expectedList.get(1).setPrivlevel(null);
-		
-		EasyMock.expect(this.serverLogic.getGroups(false, null, start, end)).andReturn(expectedList);
+
+		EasyMock.expect(this.serverLogic.getGroups(query)).andReturn(expectedList);
 		EasyMock.replay(this.serverLogic);
-		final List<Group> returnedGroups = this.clientLogic.getGroups(false,null, start, end);
+		final List<Group> returnedGroups = this.clientLogic.getGroups(query);
 		CommonModelUtils.assertPropertyEquality(expectedList, returnedGroups, 3, Pattern.compile(".*\\.groupId"));
 		EasyMock.verify(this.serverLogic);
 		assertLogin();
 		return returnedGroups;
 	}
-	
+
 	/**
 	 * runs the test defined by {@link #getPostDetails(String, String)} with certain arguments
 	 */

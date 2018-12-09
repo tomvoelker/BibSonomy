@@ -876,24 +876,9 @@ public class DBLogic implements LogicInterface {
 		return null;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(int, int)
-	 */
 	@Override
-	public List<Group> getGroups(final boolean pending, final String userName, final int start, final int end) {
-		final GroupQueryBuilder builder = new GroupQueryBuilder();
-		builder.setEnd(end).setStart(start).setPending(pending).setUserName(userName);
-		return this.getGroups(builder.createGroupQuery());
-	}
-
-
-	@Override
-	public List<Group> getGroups(GroupQuery query) {
-		final DBSession session = this.openSession();
-		try {
+	public List<Group> getGroups(final GroupQuery query) {
+		try (final DBSession session = this.openSession()) {
 			/*
 			 * (AD)
 			 * Perform security checks for the different cases. This is pretty strange, since there is no easy way
@@ -906,24 +891,20 @@ public class DBLogic implements LogicInterface {
 				}
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
 			}
+
 			return this.groupDBManager.queryGroups(query, this.loginUser, session);
-		} finally {
-			session.close();
 		}
 	}
-
 
 	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getDeletedGroupUsers(int, int)
 	 */
+	@Override
 	public List<User> getDeletedGroupUsers(int start, int end) {
-		final DBSession session = this.openSession();
-		try {
+		try (final DBSession session = this.openSession()) {
 			this.permissionDBManager.ensureAdminAccess(this.loginUser);
 			return this.userDBManager.getDeletedGroupUsers(start, end, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -934,11 +915,8 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<SyncService> getAutoSyncServer() {
-		final DBSession session = this.openSession();
-		try {
+		try (final DBSession session = this.openSession()) {
 			return this.syncDBManager.getAutoSyncServer(session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -949,11 +927,8 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<SyncService> getSyncServices(final boolean server, final String sslDn) {
-		final DBSession session = this.openSession();
-		try {
+		try (final DBSession session = this.openSession()) {
 			return this.syncDBManager.getSyncServices(server, sslDn, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -966,8 +941,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public Group getGroupDetails(final String groupName, final boolean pending) {
-		final DBSession session = this.openSession();
-		try {
+		try (final DBSession session = this.openSession()) {
 			if (pending) {
 				final String requestingUser;
 				if (this.permissionDBManager.isAdmin(this.loginUser)) {
@@ -990,8 +964,6 @@ public class DBLogic implements LogicInterface {
 				}
 			}
 			return myGroup;
-		} finally {
-			session.close();
 		}
 	}
 
@@ -1049,11 +1021,8 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public Tag getTagDetails(final String tagName) {
-		final DBSession session = this.openSession();
-		try {
+		try (final DBSession session = this.openSession()) {
 			return this.tagDBManager.getTagDetails(this.loginUser, tagName, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -1065,8 +1034,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void deleteUser(final String userName) {
-		final DBSession session = this.openSession();
-		try {
+		try (final DBSession session = this.openSession()) {
 			// TODO: take care of toLowerCase()!
 			this.ensureLoggedIn();
 			/*
@@ -1074,8 +1042,6 @@ public class DBLogic implements LogicInterface {
 			 */
 			this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
 			this.userDBManager.deleteUser(userName, this.loginUser, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -1348,7 +1314,7 @@ public class DBLogic implements LogicInterface {
 			this.groupDBManager.createGroup(group, session);
 
 			/*
-			 * activate the group immediately if it's an organizationu
+			 * activate the group immediately if it's an organization
 			 */
 			if (isOrganization)  {
 				this.groupDBManager.activateGroup(group.getName(), this.loginUser, session);

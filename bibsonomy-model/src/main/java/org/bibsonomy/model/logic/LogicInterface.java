@@ -168,20 +168,6 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 */
 	public void updateWiki(String userName, Wiki wiki);
 
-
-	/**
-	 * Returns all groups of the system.
-	 * @param pending
-	 * @param userName if pending equals <code>true</code> restrict pending groups to this user
-	 * @param start
-	 * @param end
-	 * @return a set of groups, an empty set else
-	 *
-	 * @deprecated use {@link #getGroups(GroupQuery)} instead.
-	 */
-	public List<Group> getGroups(boolean pending, String userName, int start, int end);
-
-
 	/**
 	 * Returns all groups in the system. The request is handled differently depending on the query details provided in <code>query</code>.
 	 *
@@ -191,13 +177,13 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 */
 	List<Group> getGroups(GroupQuery query);
 
-
 	/**
 	 * Returns a list of all deleted group users of the system.
 	 * @param start
 	 * @param end
 	 * @return a set of users, an empty set else
 	 */
+	@Deprecated // use getUsers method
 	public List<User> getDeletedGroupUsers(int start, int end);
 
 	/**
