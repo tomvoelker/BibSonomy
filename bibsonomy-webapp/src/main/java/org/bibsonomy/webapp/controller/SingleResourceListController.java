@@ -71,7 +71,7 @@ public abstract class SingleResourceListController extends ResourceListControlle
 	 * FIXME: cmd unused
 	 */
 	protected List<Tag> getConceptsForSidebar(final SimpleResourceViewCommand cmd, final GroupingEntity groupingEntity, final String groupingName, final List<String> requTags) {
-		final List<Tag> concepts = new ArrayList<Tag>();
+		final List<Tag> concepts = new ArrayList<>();
 		for (final String requTag : requTags) {
 			final Tag conceptDetails = this.logic.getConceptDetails(requTag, groupingEntity, groupingName);
 			if (present(conceptDetails)) {

@@ -547,6 +547,11 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/publications">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="publicationsController"/>
+					</bean>
+				</entry>
 				<entry key="/groups">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="groupsPageController"/>
@@ -1030,6 +1035,11 @@
 
 	<bean id="personReportingPageController" class="org.bibsonomy.webapp.controller.reporting.PersonReportingPageController" scope="request">
 		<property name="logic" ref="logic"/>
+	</bean>
+
+	<bean id="publicationsController" class="org.bibsonomy.webapp.controller.cris.PublicationsPageController" scope="request">
+		<property name="logic" ref="logic" />
+		<property name="college" value="${system.cris.college}" />
 	</bean>
 
 	<bean id="groupsPageController" class="org.bibsonomy.webapp.controller.GroupsPageController" scope="request">

@@ -176,6 +176,11 @@ public enum Views implements View {
 	URLPAGE("url"),
 
 	/**
+	 * publications overview page
+	 */
+	PUBLICATIONS_OVERVIEW("publications"),
+
+	/**
 	 * publication page shows all publications with the given inter-/intrahash
 	 */
 	PUBLICATIONPAGE("publicationpage"),

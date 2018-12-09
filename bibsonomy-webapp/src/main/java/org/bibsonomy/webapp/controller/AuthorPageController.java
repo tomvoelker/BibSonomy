@@ -54,7 +54,7 @@ import org.bibsonomy.webapp.view.Views;
  * 
  * @author daill
  */
-public class AuthorPageController extends SingleResourceListControllerWithTags implements MinimalisticController<AuthorResourceCommand>{
+public class AuthorPageController extends SingleResourceListControllerWithTags implements MinimalisticController<AuthorResourceCommand> {
 	private static final Log log = LogFactory.getLog(AuthorPageController.class);
 
 	@Override
