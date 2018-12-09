@@ -4,8 +4,8 @@ import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagemen
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.search.index.update.IndexUpdateLogic;
+import org.bibsonomy.search.index.utils.SearchParamUtils;
 import org.bibsonomy.search.management.database.params.SearchParam;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 
 import java.util.Date;
 import java.util.List;
@@ -20,11 +20,7 @@ public class PersonResourceRelationUpdateLogic extends AbstractDatabaseManagerWi
 	@Override
 	public List<ResourcePersonRelation> getNewerEntities(long lastEntityId, Date lastLogDate, int size, int offset) {
 		try (final DBSession session = this.openSession()) {
-			final SearchParam param = new SearchParam();
-			param.setLastContentId(lastEntityId);
-			param.setLastLogDate(lastLogDate);
-			param.setLimit(size);
-			param.setOffset(offset);
+			final SearchParam param = SearchParamUtils.buildSeachParam(lastEntityId, lastLogDate, size, offset);
 			return this.queryForList("getUpdatedOrNewPersonRelations", param, ResourcePersonRelation.class, session);
 		}
 	}

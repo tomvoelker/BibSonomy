@@ -763,12 +763,12 @@ INSERT INTO `grouptas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `conten
 (24, 'testbibtex',    'testbibtex',    12, 2, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-03-20 20:35:21');
 
 
-INSERT INTO `person` (`person_change_id`, `person_id`, `academic_degree`, `user_name`, `post_ctr`, `orcid`, `dnb_person_id`, `gender`, `log_changed_at`, `log_changed_by`, homepage) VALUES
-(5, 'h.muller', '', NULL, 0, '', NULL, NULL, '2015-07-06 14:19:55', NULL, ''),
-(20, 'w.test.1', '', NULL, 0, '', NULL, 'm', '2015-07-06 14:19:55', NULL, "hisPage"),
-(21, 'w.test.2', '', null, 0,'', NULL, 'm', '2015-07-06 16:19:55', NULL, ''),
-(22, 'w.test.3', '', null, 0, '', NULL, 'm', '2015-07-06 18:19:55', NULL, ''),
-(23, 'w.test.4', '', NULL, 0, '', NULL, 'F', '2016-07-06 14:19:55', NULL, "myPage")
+INSERT INTO `person` (`person_change_id`, `person_id`, `academic_degree`, `user_name`, `post_ctr`, `orcid`, `dnb_person_id`, `gender`, `log_changed_at`, `log_changed_by`, `college`, `homepage`) VALUES
+(5, 'h.muller', '', NULL, 0, '', NULL, NULL, '2015-07-06 14:19:55', NULL, 'Test College', ''),
+(20, 'w.test.1', '', NULL, 0, '', NULL, 'm', '2015-07-06 14:19:55', NULL, 'Test College', 'hisPage'),
+(21, 'w.test.2', '', null, 0,'', NULL, 'm', '2015-07-06 16:19:55', NULL, 'Other College', ''),
+(22, 'w.test.3', '', null, 0, '', NULL, 'm', '2015-07-06 18:19:55', NULL, 'Test College 2', ''),
+(23, 'w.test.4', '', NULL, 0, '', NULL, 'F', '2016-07-06 14:19:55', NULL, 'College', 'myPage')
 ;
 
 

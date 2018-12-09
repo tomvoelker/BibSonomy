@@ -216,17 +216,29 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 
 		final ResourcePersonRelation firstRelation = relations.get(0);
 
+		final PostSearchQuery<?> query = new PostSearchQuery<>();
+		query.setPersonNames(Collections.singletonList(new PersonName("Test", "Willi")));
+		query.setOnlyIncludeAuthorsWithoutPersonId(true);
+
+		final ResultList<Post<GoldStandardPublication>> postsBeforeDelete = COMMUNITY_PUBLICATION_SEARCH.getPosts("", null, query);
+		assertThat(postsBeforeDelete.size(), is(0));
+
 		PERSON_DATABASE_MANAGER.removeResourceRelation(firstRelation.getPerson().getPersonId(), interhash, firstRelation.getPersonIndex(), firstRelation.getRelationType(), LOGGEDIN_USER, this.dbSession);
 
-		// TODO: add tests by quering index
-
 		this.updateIndex();
+
+		// after the relation is deleted there should be one post with the specified author and without assigned to a person
+		final ResultList<Post<GoldStandardPublication>> posts = COMMUNITY_PUBLICATION_SEARCH.getPosts("", null, query);
+		assertThat(posts.size(), is(1));
 
 		firstRelation.setPost(GOLD_STANDARD_PUBLICATION_DATABASE_MANAGER.getPostDetails("", interhash, "", Collections.emptyList(), this.dbSession));
 
 		PERSON_DATABASE_MANAGER.addResourceRelation(firstRelation, LOGGEDIN_USER, this.dbSession);
 
 		this.updateIndex();
+
+		final ResultList<Post<GoldStandardPublication>> postsAfterReadd = COMMUNITY_PUBLICATION_SEARCH.getPosts("", null, query);
+		assertThat(postsAfterReadd.size(), is(0));
 	}
 
 	private static <P extends BibTex> Post<P> generateTestPost(final Class<? extends P> clazz) {
