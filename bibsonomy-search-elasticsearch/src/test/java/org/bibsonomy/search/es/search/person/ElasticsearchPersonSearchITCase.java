@@ -5,7 +5,7 @@ import static org.hamcrest.CoreMatchers.is;
 
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
+import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
 import org.junit.Test;
 
@@ -23,7 +23,7 @@ public class ElasticsearchPersonSearchITCase extends AbstractPersonSearchTest {
 	private static final String PERSON_ID = "h.muller";
 
 	/**
-	 * tests {@link ElasticsearchPersonSearch#getPersons(PersonSuggestionQuery)}
+	 * tests {@link ElasticsearchPersonSearch#getPersons(PersonQuery)}
 	 */
 	@Test
 	public void testGetPersonSuggestions() {
@@ -40,7 +40,7 @@ public class ElasticsearchPersonSearchITCase extends AbstractPersonSearchTest {
 	}
 
 	private void assertPersonSuggestion(final String query) {
-		final List<Person> personSuggestions = PERSON_SEARCH.getPersons(new PersonSuggestionQuery(query));
+		final List<Person> personSuggestions = PERSON_SEARCH.getPersons(new PersonQuery(query));
 		assertThat(personSuggestions.size(), is(1));
 
 		final Person person = personSuggestions.get(0);

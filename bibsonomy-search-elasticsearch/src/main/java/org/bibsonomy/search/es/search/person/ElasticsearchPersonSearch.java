@@ -5,7 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.lucene.search.join.ScoreMode;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
+import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.index.converter.person.PersonConverter;
 import org.bibsonomy.search.es.index.converter.person.PersonFields;
@@ -19,6 +19,7 @@ import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.join.query.HasChildQueryBuilder;
 import org.elasticsearch.join.query.JoinQueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -53,10 +54,11 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 	}
 
 	@Override
-	public List<Person> getPersons(final PersonSuggestionQuery query) {
+	public List<Person> getPersons(final PersonQuery query) {
 		final String personQuery = query.getQuery();
 
 		final BoolQueryBuilder mainQuery = QueryBuilders.boolQuery();
+		final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery();
 
 		/*
 		 * maybe some of tokens of the query contain the title of a publication of the author
@@ -87,6 +89,19 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 
 		mainQuery.must(mainSearchQuery);
 		mainQuery.should(childQuery);
+
+		/*
+		 * add filters
+		 */
+		final String college = query.getCollege();
+		if (present(college)) {
+			final TermQueryBuilder collegeTermQuery = QueryBuilders.termQuery(PersonFields.COLLEGE, college);
+			filterQuery.must(collegeTermQuery);
+		}
+
+		if (filterQuery.hasClauses()) {
+			mainQuery.filter(filterQuery);
+		}
 
 		final SearchHits searchHits = this.manager.search(mainQuery, 5, 0);// TODO: set limit
 		final LinkedList<Person> persons = new LinkedList<>();

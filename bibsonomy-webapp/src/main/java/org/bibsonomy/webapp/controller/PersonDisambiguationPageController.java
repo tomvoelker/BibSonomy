@@ -41,7 +41,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
-import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
+import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
@@ -138,7 +138,7 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 
 		// FIXME: move escape to es module
 		final String name = QueryParser.escape(BibTexUtils.cleanBibTex(requestedName.toString()));
-		final List<Person> persons = this.logic.getPersons(new PersonSuggestionQuery(name));
+		final List<Person> persons = this.logic.getPersons(new PersonQuery(name));
 
 		command.setPersonSuggestions(persons);
 

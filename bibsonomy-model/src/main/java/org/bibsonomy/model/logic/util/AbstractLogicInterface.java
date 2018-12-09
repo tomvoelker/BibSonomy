@@ -82,7 +82,7 @@ import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedExceptio
 import org.bibsonomy.model.logic.query.BasicQuery;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
-import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
+import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
@@ -167,7 +167,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	@Override
-	public List<Person> getPersons(PersonSuggestionQuery query) {
+	public List<Person> getPersons(PersonQuery query) {
 		this.doDefaultAction();
 		return null;
 	}

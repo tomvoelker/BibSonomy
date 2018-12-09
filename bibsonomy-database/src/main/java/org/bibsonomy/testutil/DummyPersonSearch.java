@@ -29,7 +29,7 @@ package org.bibsonomy.testutil;
 import java.util.List;
 
 import org.bibsonomy.model.Person;
-import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
+import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.services.searcher.PersonSearch;
 
 /**
@@ -40,7 +40,7 @@ import org.bibsonomy.services.searcher.PersonSearch;
 public class DummyPersonSearch implements PersonSearch {
 
 	@Override
-	public List<Person> getPersons(PersonSuggestionQuery query) {
+	public List<Person> getPersons(PersonQuery query) {
 		return null;
 	}
 

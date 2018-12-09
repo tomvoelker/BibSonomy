@@ -12,7 +12,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
-import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
+import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.search.es.search.person.AbstractPersonSearchTest;
 import org.junit.Test;
 
@@ -52,7 +52,7 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 
 		PERSON_DATABASE_MANAGER.updateAcademicDegree(person, this.dbSession);
 		this.updateIndex();
-		final List<Person> personSuggestionsAfterAttributeUpdate = PERSON_SEARCH.getPersons(new PersonSuggestionQuery("Müller"));
+		final List<Person> personSuggestionsAfterAttributeUpdate = PERSON_SEARCH.getPersons(new PersonQuery("Müller"));
 		assertThat(personSuggestionsAfterAttributeUpdate.size(), is(1));
 		final Person person1 = personSuggestionsAfterAttributeUpdate.get(0);
 		assertThat(person1.getAcademicDegree(), is(newAcademicDegree));
@@ -62,7 +62,7 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 		personName.setFirstName("John");
 		personName.setLastName("Doe");
 
-		final PersonSuggestionQuery personQuery = new PersonSuggestionQuery(personName.toString());
+		final PersonQuery personQuery = new PersonQuery(personName.toString());
 		final List<Person> personSuggestions = PERSON_SEARCH.getPersons(personQuery);
 		assertThat(personSuggestions.size(), is(0));
 
@@ -90,7 +90,7 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 		newPerson.setChangeDate(new Date()); // FIXME: move to database manager?
 
 		// check that the person is not in the index
-		final PersonSuggestionQuery newPersonQuery = new PersonSuggestionQuery(reynolds.toString());
+		final PersonQuery newPersonQuery = new PersonQuery(reynolds.toString());
 
 		final List<Person> newPersonSuggestion = PERSON_SEARCH.getPersons(newPersonQuery);
 		assertThat(newPersonSuggestion.size(), is(0));

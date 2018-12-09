@@ -34,7 +34,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
-import org.bibsonomy.model.logic.query.PersonSuggestionQuery;
+import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 
 import java.util.List;
@@ -102,7 +102,7 @@ public interface PersonLogicInterface {
 	 * @param query
 	 * @return
 	 */
-	List<Person> getPersons(final PersonSuggestionQuery query);
+	List<Person> getPersons(final PersonQuery query);
 
 	/**
 	 * @param builder the builder
