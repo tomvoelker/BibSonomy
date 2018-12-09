@@ -33,5 +33,5 @@ public enum Prefix {
 	Y,
 	Z,
 	NUMBER,
-	OTHER;
+	OTHER
 }

@@ -84,7 +84,7 @@ public class ElasticsearchIndexSearchUtils {
 	 * @param sortOrder
 	 * @return the converted order, default desc
 	 */
-	public static SortOrder convertSortOrder(org.bibsonomy.common.enums.SortOrder sortOrder) {
+	public static SortOrder convertSortOrder(final org.bibsonomy.common.enums.SortOrder sortOrder) {
 		if (present(sortOrder)) {
 			switch (sortOrder) {
 				case ASC:

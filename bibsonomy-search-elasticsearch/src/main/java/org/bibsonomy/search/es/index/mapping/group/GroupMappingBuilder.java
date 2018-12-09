@@ -38,6 +38,11 @@ public class GroupMappingBuilder implements MappingBuilder<XContentBuilder> {
 							// real name
 							.startObject(GroupFields.REALNAME)
 								.field(TYPE_FIELD, TEXT_TYPE)
+								.startObject("fields")
+									.startObject(GroupFields.REALNAME_SORT)
+										.field(TYPE_FIELD, KEYWORD_TYPE)
+									.endObject()
+								.endObject()
 							.endObject()
 							.startObject(GroupFields.REALNAME_LOWERCASE)
 								.field(TYPE_FIELD, TEXT_TYPE)

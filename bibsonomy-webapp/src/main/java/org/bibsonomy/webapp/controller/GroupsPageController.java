@@ -55,7 +55,10 @@ public class GroupsPageController extends SingleResourceListController implement
 		 */
 		if ("html".equals(format)) {
 			final GroupQueryBuilder builder = new GroupQueryBuilder();
-			builder.setPending(false).setStart(0).setEnd(Integer.MAX_VALUE).setOrganization(command.getOrganizations());
+			builder.setPending(false)
+							.setStart(0).setEnd(Integer.MAX_VALUE)
+							.setOrganization(command.getOrganizations())
+							.setPrefix(command.getPrefix());
 			command.setList(this.logic.getGroups(builder.createGroupQuery()));
 		} else if ("json".equals(format)) {
 			// FIXME:  why does changing the format change the result of the controller?

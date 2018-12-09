@@ -13,6 +13,9 @@ public interface GroupFields {
 	/** the real name of the group */
 	String REALNAME = "realname";
 
+	/** the real name for sorting */
+	String REALNAME_SORT = "sort";
+
 	/** the real name (lower case for prefix matching) */
 	String REALNAME_LOWERCASE = "realname_lowercase";
 

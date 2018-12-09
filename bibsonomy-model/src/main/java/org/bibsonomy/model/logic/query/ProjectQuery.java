@@ -42,21 +42,15 @@ public class ProjectQuery extends BasicQuery {
 
 	private final Prefix prefix;
 
-	/**
-	 * the order of the projects
-	 */
+	/** the order of the projects */
 	private final ProjectOrder order;
-	/**
-	 * the sort order of the order
-	 */
+	/** the sort order of the order */
 	private final SortOrder sortOrder;
-	/**
-	 * the project status
-	 */
+
+	/** the project status */
 	private final ProjectStatus projectStatus;
-	/**
-	 * the type of the project
-	 */
+
+	/** the type of the project */
 	private final String type;
 	private final String externalId;
 	private final Date startDate;
