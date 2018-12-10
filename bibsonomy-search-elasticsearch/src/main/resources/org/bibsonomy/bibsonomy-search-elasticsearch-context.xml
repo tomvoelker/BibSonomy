@@ -55,7 +55,7 @@
 		<entry key-ref="goldStandardBookmarkClass" value-ref="elasticsearchCommunityBookmarkManager" />
 		<entry key-ref="goldStandardPublicationClass" value-ref="elasticsearchCommunityPublicationManager" />
 		<entry key-ref="personClass" value-ref="elasticsearchPersonManager" />
-		<entry key-ref="projectClass" value="elasticsearchProjectManager" />
-		<entry key-ref="groupClass" value="elasticsearchGroupManager" />
+		<entry key-ref="projectClass" value-ref="elasticsearchProjectManager" />
+		<entry key-ref="groupClass" value-ref="elasticsearchGroupManager" />
 	</util:map>
 </beans>
