@@ -644,7 +644,7 @@
 	<rule>
 		<name>redirect /organization/ORGANIZATION</name>
 		<from>^/+organization/+([^/]+)$</from>
-		<set type="parameter" name="requestedOrganization">${unescapePath:$1}</set>
+		<set type="parameter" name="requestedOrganizationName">${unescapePath:$1}</set>
 		<to last="true">/organization</to>
 	</rule>
 	<rule>
