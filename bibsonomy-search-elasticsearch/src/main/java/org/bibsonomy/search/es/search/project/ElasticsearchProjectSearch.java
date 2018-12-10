@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Prefix;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.ProjectOrder;
@@ -52,6 +53,11 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 	protected Pair<String, SortOrder> getSortOrder(ProjectQuery query) {
 		final SortOrder sortOrderQuery = ElasticsearchIndexSearchUtils.convertSortOrder(query.getSortOrder());
 		return query.getOrder() == ProjectOrder.START_DATE ? new Pair<>(ProjectFields.START_DATE, sortOrderQuery) : new Pair<>(ProjectFields.TITLE + "." + ProjectFields.TITLE_SORT, sortOrderQuery);
+	}
+
+	@Override
+	protected Boolean getConversionOptions(final User loggedinUser) {
+		return Role.ADMIN.equals(loggedinUser.getRole());
 	}
 
 	@Override
