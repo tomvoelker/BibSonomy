@@ -38,11 +38,18 @@
 			(
 				SELECT *
 				FROM pub_person
-					WHERE person_change_id >= #lastContentId#
+				WHERE person_change_id >= #lastContentId#
+				<isEqual property="includeRelatedEntityUpdates" compareValue="true">
+					UNION
+					SELECT ppr_pu.*
+					FROM pub_person ppr_pu
+					JOIN person pu USING (person_id)
+					WHERE pu.person_change_id >= #lastContentId#
+				</isEqual>
 				LIMIT #limit#
 				OFFSET #offset#
 			) AS ppr
 		JOIN gold_standard b USING (simhash1)
-		JOIN person p USING (person_id)
+		JOIN person per USING (person_id)
 	</select>
 </sqlMap>

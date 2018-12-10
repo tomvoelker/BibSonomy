@@ -95,7 +95,7 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.search.post.EsResourceSearch#buildResourceSpecifiyFilters(org.elasticsearch.index.query.BoolFilterBuilder, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 * @see org.bibsonomy.search.es.search.post.EsResourceSearch#buildResourceSpecificFilters(org.elasticsearch.index.query.BoolFilterBuilder, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 
 	private static QueryBuilder buildPersonNameQuery(String authorName, boolean onlyIncludeAuthorsWithoutPersonId) {
@@ -113,10 +113,9 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 		return boolQueryBuilder;
 	}
 
-
 	@Override
-	protected void buildResourceSpecifiyFilters(BoolQueryBuilder mainFilterBuilder, String loggedinUser, Set<String> allowedGroups, Set<String> usersThatShareDocs, PostSearchQuery<?> postQuery) {
-		super.buildResourceSpecifiyFilters(mainFilterBuilder, loggedinUser, allowedGroups, usersThatShareDocs, postQuery);
+	protected void buildResourceSpecificFilters(BoolQueryBuilder mainFilterBuilder, String loggedinUser, Set<String> allowedGroups, Set<String> usersThatShareDocs, PostSearchQuery<?> postQuery) {
+		super.buildResourceSpecificFilters(mainFilterBuilder, loggedinUser, allowedGroups, usersThatShareDocs, postQuery);
 
 		final String year = postQuery.getYear();
 		final String lastYear = postQuery.getLastYear();
@@ -164,5 +163,18 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 				mainFilterBuilder.must(docFilter);
 			}
 		}
+
+		final String college = postQuery.getCollege();
+		if (present(college)) {
+			final BoolQueryBuilder collegeFilter = QueryBuilders.boolQuery();
+			final QueryBuilder collegeAuthorFilter = buildCollegeTermFilter(Fields.Publication.AUTHORS, college);
+			final QueryBuilder collegeEditorFilter = buildCollegeTermFilter(Fields.Publication.EDITORS, college);
+			collegeFilter.should(collegeAuthorFilter).should(collegeEditorFilter);
+			mainFilterBuilder.must(collegeFilter);
+		}
+	}
+
+	private static QueryBuilder buildCollegeTermFilter(final String field, final String college) {
+		return QueryBuilders.nestedQuery(field, QueryBuilders.termQuery(field + "." + Fields.Publication.PERSON_COLLEGE, college), ScoreMode.None);
 	}
 }

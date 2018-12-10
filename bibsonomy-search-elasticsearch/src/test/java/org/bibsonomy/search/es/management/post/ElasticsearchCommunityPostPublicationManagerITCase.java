@@ -11,6 +11,7 @@ import org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager;
 import org.bibsonomy.database.managers.PersonDatabaseManager;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -68,12 +69,12 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 		query.setSearch("test title");
 
 		// check if gold standard publications are indexed
-		final List<Post<GoldStandardPublication>> communityResults = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, query);
+		final List<Post<GoldStandardPublication>> communityResults = COMMUNITY_PUBLICATION_SEARCH.getPosts(anonymUser, query);
 		assertThat(communityResults.size(), is(3));
 
 		// check if also normal posts are indexed
 		query.setSearch("ontologies");
-		final ResultList<Post<GoldStandardPublication>> normalPosts = COMMUNITY_PUBLICATION_SEARCH.getPosts(null, query);
+		final ResultList<Post<GoldStandardPublication>> normalPosts = COMMUNITY_PUBLICATION_SEARCH.getPosts(anonymUser, query);
 		assertThat(normalPosts.size(), is(1));
 		assertThat(normalPosts.getTotalCount(), is(1));
 
@@ -241,6 +242,25 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 
 		final ResultList<Post<GoldStandardPublication>> postsAfterReadd = COMMUNITY_PUBLICATION_SEARCH.getPosts(anonymUser, query);
 		assertThat(postsAfterReadd.size(), is(0));
+	}
+
+	@Test
+	public void testGetPostsByCollegeFilter() {
+		final PostSearchQuery<?> query = new PostSearchQuery<>();
+		final String college = "Test College";
+		query.setCollege(college);
+
+		final ResultList<Post<GoldStandardPublication>> posts = COMMUNITY_PUBLICATION_SEARCH.getPosts(anonymUser, query);
+		assertThat(posts.size(), is(4));
+
+		final Person person = PERSON_DATABASE_MANAGER.getPersonById("w.test.4", this.dbSession);
+		person.setCollege(college);
+		PERSON_DATABASE_MANAGER.updateCollege(person, this.dbSession);
+
+		this.updateIndex();
+
+		final ResultList<Post<GoldStandardPublication>> afterUpdate = COMMUNITY_PUBLICATION_SEARCH.getPosts(anonymUser, query);
+		assertThat(afterUpdate.size(), is(5));
 	}
 
 	private static <P extends BibTex> Post<P> generateTestPost(final Class<? extends P> clazz) {

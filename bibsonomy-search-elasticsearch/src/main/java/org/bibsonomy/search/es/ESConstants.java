@@ -211,6 +211,7 @@ public final class ESConstants {
 			String EDITORS = "editors";
 			String PERSON_NAME = "name";
 			String PERSON_ID = "person_id";
+			String PERSON_COLLEGE = "person_college";
 			String OTHER_PERSON_RESOURCE_RELATIONS = "other_relations";
 			String PERSON_RELATION_TYPE = "relation_type";
 
@@ -264,6 +265,7 @@ public final class ESConstants {
 			String LANGUAGE = "language";
 			/** a list of special misc fields */
 			Set<String> SPECIAL_MISC_FIELDS = Sets.asSet(DOI, ISSN, ISBN, LANGUAGE);
+
 			/** the document */
 			interface Document {
 				String NAME = "name";

@@ -85,7 +85,7 @@
 		<constructor-arg ref="communityIndexUpdateLogicCommunityPublication" />
 		<constructor-arg ref="communityIndexUpdateLogicPublication" />
 		<constructor-arg ref="communityPublicationDatabaseInformationLogic" />
-		<constructor-arg ref="personResourceRelationDBLogic" />
+		<constructor-arg ref="personResourceRelationUpdateDBLogicWithPersonUpdates" />
 	</bean>
 
 	<bean id="elasticsearchBookmarkMappingBuilder" class="org.bibsonomy.search.es.index.mapping.post.BookmarkMappingBuilder">

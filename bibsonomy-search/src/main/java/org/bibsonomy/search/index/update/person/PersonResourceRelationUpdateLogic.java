@@ -17,10 +17,21 @@ import java.util.List;
  */
 public class PersonResourceRelationUpdateLogic extends AbstractDatabaseManagerWithSessionManagement implements IndexUpdateLogic<ResourcePersonRelation> {
 
+	private final boolean includeRelatedEntityUpdates;
+
+	/**
+	 * constructor that sets if the related entity updates should be considered by returning new entities
+	 * @param includeRelatedEntityUpdates
+	 */
+	public PersonResourceRelationUpdateLogic(final boolean includeRelatedEntityUpdates) {
+		this.includeRelatedEntityUpdates = includeRelatedEntityUpdates;
+	}
+
 	@Override
 	public List<ResourcePersonRelation> getNewerEntities(long lastEntityId, Date lastLogDate, int size, int offset) {
 		try (final DBSession session = this.openSession()) {
 			final SearchParam param = SearchParamUtils.buildSeachParam(lastEntityId, lastLogDate, size, offset);
+			param.setIncludeRelatedEntityUpdates(this.includeRelatedEntityUpdates);
 			return this.queryForList("getUpdatedOrNewPersonRelations", param, ResourcePersonRelation.class, session);
 		}
 	}

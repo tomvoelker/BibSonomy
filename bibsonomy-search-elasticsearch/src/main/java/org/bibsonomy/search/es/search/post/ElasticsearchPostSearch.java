@@ -675,14 +675,14 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 		}
 		mainFilterBuilder.must(groupFilter);
 
-		this.buildResourceSpecifiyFilters(mainFilterBuilder, loggedinUserName, allowedGroups, usersThatShareDocs, postQuery);
+		this.buildResourceSpecificFilters(mainFilterBuilder, loggedinUserName, allowedGroups, usersThatShareDocs, postQuery);
 		
 		// all done
 		log.debug("Search query: '" + mainQueryBuilder.toString() + "' and filters: '" + mainFilterBuilder.toString() + "'");
 		return QueryBuilders.boolQuery().must(mainQueryBuilder).filter(mainFilterBuilder);
 	}
 
-	protected void buildResourceSpecifiyFilters(BoolQueryBuilder mainFilterBuilder, String loggedinUser, Set<String> allowedGroups, Set<String> usersThatShareDocs, PostSearchQuery<?> postQuery) {
+	protected void buildResourceSpecificFilters(BoolQueryBuilder mainFilterBuilder, String loggedinUser, Set<String> allowedGroups, Set<String> usersThatShareDocs, PostSearchQuery<?> postQuery) {
 		// noop
 	}
 

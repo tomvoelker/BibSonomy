@@ -461,7 +461,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		}
 
 		final String newIndexName = ElasticsearchUtils.getIndexNameWithTime(this.systemId, this.entityInformationProvider.getType());
-		final ElasticSearchIndexRegenerationTask task = new ElasticSearchIndexRegenerationTask(this, this.generator, newIndexName, indexNameToReplace);
+		final ElasticSearchIndexRegenerationTask<T> task = new ElasticSearchIndexRegenerationTask<>(this, this.generator, newIndexName, indexNameToReplace);
 		this.executeTask(async, task);
 	}
 
@@ -536,7 +536,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 			throw new IndexAlreadyGeneratingException();
 		}
 		final String newIndexName = ElasticsearchUtils.getIndexNameWithTime(this.systemId, this.entityInformationProvider.getType());
-		final ElasticSearchIndexGenerationTask task = new ElasticSearchIndexGenerationTask(this, this.generator, newIndexName, activeIndexAfterGeneration);
+		final ElasticSearchIndexGenerationTask<T> task = new ElasticSearchIndexGenerationTask<>(this, this.generator, newIndexName, activeIndexAfterGeneration);
 		this.executeTask(async, task);
 	}
 

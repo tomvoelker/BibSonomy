@@ -48,11 +48,11 @@ public class DefaultSearchIndexSyncState extends SearchIndexSyncState {
 	/** the last content id of normal posts */
 	private long lastPostContentId;
 
-
 	/**
 	 * default constructor
 	 */
 	public DefaultSearchIndexSyncState() {
+		// noop
 	}
 	
 	/**

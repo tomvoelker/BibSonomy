@@ -40,6 +40,12 @@
 	</bean>
 
 	<bean id="personResourceRelationDBLogic" class="org.bibsonomy.search.index.update.person.PersonResourceRelationUpdateLogic">
+		<constructor-arg value="false" />
+		<property name="sessionFactory" ref="personUpdateSearchSessionFactory"/>
+	</bean>
+
+	<bean id="personResourceRelationUpdateDBLogicWithPersonUpdates" class="org.bibsonomy.search.index.update.person.PersonResourceRelationUpdateLogic">
+		<constructor-arg value="true" />
 		<property name="sessionFactory" ref="personUpdateSearchSessionFactory"/>
 	</bean>
 

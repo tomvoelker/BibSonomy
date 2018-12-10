@@ -386,10 +386,15 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 			final Map<String, String> convertedPerson = new HashMap<>();
 			convertedPerson.put(Fields.Publication.PERSON_NAME, PersonNameUtils.serializePersonName(person));
 
-			// it there is a person resource relation at the current index add the person id to the nested field
+			/*
+			 * if there is a person resource relation at the current index add the person id
+			 * and the college of the person to the nested field
+			 */
 			final Integer key = Integer.valueOf(index);
 			if (personIndexRelationMap.containsKey(key)) {
-				convertedPerson.put(Fields.Publication.PERSON_ID, personIndexRelationMap.get(key).getPerson().getPersonId());
+				final Person claimedPerson = personIndexRelationMap.get(key).getPerson();
+				convertedPerson.put(Fields.Publication.PERSON_ID, claimedPerson.getPersonId());
+				convertedPerson.put(Fields.Publication.PERSON_COLLEGE, claimedPerson.getCollege());
 			}
 
 			serializedPersonNames.add(convertedPerson);

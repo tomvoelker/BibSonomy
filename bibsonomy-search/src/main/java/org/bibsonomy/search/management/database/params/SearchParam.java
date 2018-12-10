@@ -61,6 +61,8 @@ public class SearchParam {
 	
 	private String userRelation;
 
+	private boolean includeRelatedEntityUpdates;
+
 	private CRISEntityType sourceType;
 
 	private CRISEntityType targetType;
@@ -189,6 +191,20 @@ public class SearchParam {
 	 */
 	public void setUserRelation(String userRelation) {
 		this.userRelation = userRelation;
+	}
+
+	/**
+	 * @return the includeRelatedEntityUpdates
+	 */
+	public boolean isIncludeRelatedEntityUpdates() {
+		return includeRelatedEntityUpdates;
+	}
+
+	/**
+	 * @param includeRelatedEntityUpdates the includeRelatedEntityUpdates to set
+	 */
+	public void setIncludeRelatedEntityUpdates(boolean includeRelatedEntityUpdates) {
+		this.includeRelatedEntityUpdates = includeRelatedEntityUpdates;
 	}
 
 	/**
