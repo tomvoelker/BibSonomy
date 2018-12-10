@@ -84,7 +84,7 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 	/**
 	 * an entity is added to the index iff the provided index voter votes for the entity
 	 *
-	 * (maybe an implementation wants to check the already added
+	 * (maybe an implementation wants to check that the entity was already added)
 	 *
 	 * @param <E>
 	 */
@@ -123,9 +123,16 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 		this.indexCreated(indexName);
 
 		// reset info fields
+		this.reset();
+	}
+
+	/**
+	 * resets the index, e.g. after success or after failture
+	 */
+	public void reset() {
 		this.indexName = null;
-		this.writtenEntities = 0;
 		this.numberOfEntities = 0;
+		this.writtenEntities = 0;
 		this.generating = false;
 	}
 
@@ -243,10 +250,10 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 		final boolean inserted = this.client.insertNewDocument(systemIndexName, indexName, systemIndexData);
 
 		if (!inserted) {
-			throw new RuntimeException("failed to save systeminformation for index " + indexName);
+			throw new RuntimeException("failed to save system information for index " + indexName);
 		}
 
-		LOG.info("updated systeminformation of index " + indexName + " to " + values);
+		LOG.info("updated system information of index " + indexName + " to " + values);
 	}
 
 	/**
@@ -254,7 +261,6 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 	 */
 	private void indexCreated(final String indexName) {
 		this.client.deleteAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.GENERATING));
-
 		this.client.createAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.STANDBY));
 	}
 
