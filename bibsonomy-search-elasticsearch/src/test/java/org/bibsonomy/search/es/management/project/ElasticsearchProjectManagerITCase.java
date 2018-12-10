@@ -44,7 +44,7 @@ public class ElasticsearchProjectManagerITCase extends AbstractProjectSearchTest
 
 		PROJECT_DATABASE_MANAGER.createProject(project, new User("testuser1"), this.dbSession);
 
-		this.updateIndex();
+		updateIndex();
 
 		final ProjectQuery.ProjectQueryBuilder projectQueryBuilder = new ProjectQuery.ProjectQueryBuilder();
 		projectQueryBuilder.search("DeepScan");
@@ -61,7 +61,7 @@ public class ElasticsearchProjectManagerITCase extends AbstractProjectSearchTest
 
 		assertThat(updateResult.getStatus(), is(Status.OK));
 
-		this.updateIndex();
+		updateIndex();
 
 		projectQueryBuilder.search("Pragmatik");
 		final ProjectQuery pragmatikQuery = projectQueryBuilder.build();
@@ -70,7 +70,7 @@ public class ElasticsearchProjectManagerITCase extends AbstractProjectSearchTest
 
 		PROJECT_DATABASE_MANAGER.deleteProject(projectId, new User("testuser1"), this.dbSession);
 
-		this.updateIndex();
+		updateIndex();
 
 		final List<Project> projectsAfterDelete = PROJECT_SEARCH.getProjects(NOT_LOGGEDIN_USER, pragmatikQuery);
 		assertThat(projectsAfterDelete.size(), is(0));

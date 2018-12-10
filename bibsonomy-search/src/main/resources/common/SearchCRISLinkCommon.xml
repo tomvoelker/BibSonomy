@@ -45,7 +45,7 @@
 	</sql>
 
 	<sql id="crisPersonColumns">
-		pp.person_change_id, pp.person_id AS person_id, <include refid="personFields" />
+		per.person_change_id, per.person_id AS person_id, per.college AS college, <include refid="personFields" />
 	</sql>
 
 </sqlMap>

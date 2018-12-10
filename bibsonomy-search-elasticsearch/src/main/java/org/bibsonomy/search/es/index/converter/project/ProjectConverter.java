@@ -23,10 +23,11 @@ public class ProjectConverter implements Converter<Project, Map<String, Object>,
 		converted.put(ProjectFields.EXTERNAL_ID, source.getExternalId());
 		final String title = source.getTitle();
 		converted.put(ProjectFields.TITLE, title);
-		converted.put(ProjectFields.TITLE + "." + ProjectFields.TITLE_LOWERCASE, title.toLowerCase());
+		converted.put(ProjectFields.TITLE_LOWERCASE, title.toLowerCase());
 		converted.put(ProjectFields.SUB_TITLE, source.getSubTitle());
 		converted.put(ProjectFields.DESCRIPTION, source.getDescription());
 		converted.put(ProjectFields.TYPE, source.getType());
+		converted.put(ProjectFields.SPONSOR, source.getSponsor());
 		converted.put(ProjectFields.BUDGET, source.getBudget());
 		converted.put(ProjectFields.START_DATE, ElasticsearchUtils.dateToString(source.getStartDate()));
 		converted.put(ProjectFields.END_DATE, ElasticsearchUtils.dateToString(source.getEndDate()));
@@ -54,6 +55,7 @@ public class ProjectConverter implements Converter<Project, Map<String, Object>,
 		project.setSubTitle((String) source.get(ProjectFields.SUB_TITLE));
 		project.setDescription((String) source.get(ProjectFields.DESCRIPTION));
 		project.setType((String) source.get(ProjectFields.TYPE));
+		project.setSponsor((String) source.get(ProjectFields.SPONSOR));
 		if (source.containsKey(ProjectFields.PARENT)) {
 			final Project parentProject = new Project();
 			parentProject.setExternalId((String) source.get(ProjectFields.PARENT));

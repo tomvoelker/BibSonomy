@@ -22,6 +22,8 @@ public interface ProjectFields {
 	String DESCRIPTION = "description";
 	/** type */
 	String TYPE = "type";
+	/** sponsor */
+	String SPONSOR = "sponsor";
 	/** budget */
 	String BUDGET = "budget";
 	/** the start date of the project */

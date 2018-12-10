@@ -44,6 +44,10 @@ public class ProjectMapperBuilder implements MappingBuilder<XContentBuilder> {
 								.endObject()
 							.endObject()
 						.endObject()
+						// lower case variant of the title
+						.startObject(ProjectFields.TITLE_LOWERCASE)
+							.field(TYPE_FIELD, TEXT_TYPE)
+						.endObject()
 						// subtitle
 						.startObject(ProjectFields.SUB_TITLE)
 							.field(TYPE_FIELD, TEXT_TYPE)
@@ -52,9 +56,13 @@ public class ProjectMapperBuilder implements MappingBuilder<XContentBuilder> {
 						.startObject(ProjectFields.TYPE)
 							.field(TYPE_FIELD, KEYWORD_TYPE)
 						.endObject()
-							// type
+						// sponsor
+						.startObject(ProjectFields.SPONSOR)
+							.field(TYPE_FIELD, KEYWORD_TYPE)
+						.endObject()
+							// budget
 						.startObject(ProjectFields.BUDGET)
-							.field(TYPE_FIELD, "double")
+							.field(TYPE_FIELD, "float")
 						.endObject()
 						// parent
 						.startObject(ProjectFields.PARENT)

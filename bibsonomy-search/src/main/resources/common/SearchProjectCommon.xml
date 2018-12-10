@@ -12,6 +12,7 @@
 		<result property="startDate" 	column="start_date"		javaType="date" />
 		<result property="endDate"	    column="end_date"	    javaType="date" />
 		<result property="type"	        column="type"	        javaType="string" />
+		<result property="sponsor"		column="sponsor"		javaType="string" />
 		<result property="budget"	    column="budget"	        javaType="float" />
 	</resultMap>
 
@@ -24,7 +25,7 @@
 	</resultMap>
 
 	<sql id="projectColumns">
-		p.id, p.project_id, p.title, p.subtitle, p.description, p.start_date, p.end_date, p.type, p.budget
+		p.id, p.project_id, p.title, p.subtitle, p.description, p.start_date, p.end_date, p.type, p.sponsor, p.budget
 	</sql>
 
 </sqlMap>

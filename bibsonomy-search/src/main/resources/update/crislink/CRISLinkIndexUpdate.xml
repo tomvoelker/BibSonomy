@@ -14,7 +14,7 @@
 			LIMIT #limit#
 			OFFSET #offset#
 		) AS cl
-		LEFT JOIN person pp ON (cl.target_id = pp.person_change_id)
+		LEFT JOIN person per ON (cl.target_id = per.person_change_id)
 		LEFT JOIN person_name pn USING (person_id)
 		LEFT JOIN projects p ON (cl.source_id = p.id)
 	</select>
