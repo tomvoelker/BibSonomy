@@ -35,9 +35,10 @@ import java.util.Map.Entry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.search.exceptions.IndexAlreadyGeneratingException;
 import org.bibsonomy.search.management.SearchIndexManager;
@@ -124,8 +125,13 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 	}
 
 	private static Class<?> getEntityClass(final String entity) {
-		if ("person".equalsIgnoreCase(entity)) {
-			return Person.class;
+		// TODO: move to some model factory
+		if (present(entity)) {
+			switch (entity) {
+				case "Person": return Person.class;
+				case "Group": return Group.class;
+				case "Project" : return Project.class;
+			}
 		}
 
 		return ResourceFactory.getResourceClass(entity);

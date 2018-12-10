@@ -44,17 +44,29 @@
 				<c:set var="searchIndexInfosSize" value="${fn:length(searchIndexInfos)}" />
 				<c:choose>
 					<c:when test="${searchIndexInfosSize > 0 }">
+						<c:set var="dualSyncState" value="${searchIndexInfos[0].syncState['class'].simpleName eq 'SearchIndexDualSyncState'}" />
 						<table class="table table-condensed">
 							<thead>
 								<tr>
 									<th>Index Name</th>
 									<th>State</th>
 									<th>Version</th>
-									<th># Docs</th>
-									<th>Last tas id</th>
-									<th>Last log date</th>
-									<th>Last Doc date</th>
-									<th>Last p. id</th>
+									<c:choose>
+										<c:when test="${dualSyncState}">
+											<th>first last id</th>
+											<th>first last log date</th>
+											<th>second last id</th>
+											<th>second last log date</th>
+										</c:when>
+										<c:otherwise>
+											<th># Docs</th>
+											<th>Last tas id</th>
+											<th>Last log date</th>
+											<th>Last Doc date</th>
+											<th>Last p. id</th>
+										</c:otherwise>
+									</c:choose>
+
 									<th>Actions</th>
 								</tr>
 							</thead>
@@ -66,12 +78,25 @@
 									
 									<c:choose>
 										<c:when test="${searchIndexInfo.state != 'GENERATING' }">
-											<td><c:out value="${searchIndexInfo.syncState.mappingVersion}" /></td>
-											<td><c:out value="${searchIndexInfo.statistics.numberOfDocuments}" /></td>
-											<td><c:out value="${searchIndexInfo.syncState.last_tas_id}" /></td>
-											<td><c:out value="${searchIndexInfo.syncState.last_log_date}" /></td>
-											<td><c:out value="${searchIndexInfo.syncState.lastDocumentDate}" /></td>
-											<td><c:out value="${searchIndexInfo.syncState.lastPersonChangeId}" /></td>
+											<c:choose>
+												<c:when test="${dualSyncState}">
+													<c:set var="firstState" value="${searchIndexInfo.syncState.firstState}" />
+													<c:set var="secondState" value="${searchIndexInfo.syncState.secondState}" />
+													<td><c:out value="${searchIndexInfo.syncState.firstState.mappingVersion}" /></td>
+													<td><c:out value="${firstState.lastPostContentId}" /></td>
+													<td><c:out value="${firstState.last_log_date}" /></td>
+													<td><c:out value="${secondState.lastPostContentId}" /></td>
+													<td><c:out value="${secondState.last_log_date}" /></td>
+												</c:when>
+												<c:otherwise>
+													<td><c:out value="${searchIndexInfo.syncState.mappingVersion}" /></td>
+													<td><c:out value="${searchIndexInfo.statistics.numberOfDocuments}" /></td>
+													<td><c:out value="${searchIndexInfo.syncState.last_tas_id}" /></td>
+													<td><c:out value="${searchIndexInfo.syncState.last_log_date}" /></td>
+													<td><c:out value="${searchIndexInfo.syncState.lastDocumentDate}" /></td>
+													<td><c:out value="${searchIndexInfo.syncState.lastPersonChangeId}" /></td>
+												</c:otherwise>
+											</c:choose>
 											<td>
 												<div class="btn-group">
 													<c:if test="${searchIndexInfo.state eq 'STANDBY'}">
