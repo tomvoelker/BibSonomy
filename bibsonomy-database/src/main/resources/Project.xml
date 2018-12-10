@@ -33,6 +33,7 @@
             start_date = #project.startDate#,
             end_date = #project.endDate#,
             type = #project.type#,
+            sponsor = #project.sponsor#,
             budget = #project.budget#,
             parent_id = #parentProjectId#,
             updated_at = #updatedAt#,
