@@ -153,7 +153,7 @@ public class ProjectQuery implements Query {
 	/** the end */
 	private final int end;
 
-	private final String externalId;
+	private final String internalId;
 
 	/**
 	 * the constructor
@@ -162,15 +162,15 @@ public class ProjectQuery implements Query {
 	 * @param projectStatus
 	 * @param start
 	 * @param end
-	 * @param externalId
+	 * @param internalId
 	 */
-	protected ProjectQuery(ProjectOrder order, SortOrder sortOrder, ProjectStatus projectStatus, int start, int end, String externalId) {
+	protected ProjectQuery(ProjectOrder order, SortOrder sortOrder, ProjectStatus projectStatus, int start, int end, String internalId) {
 		this.order = order;
 		this.sortOrder = sortOrder;
 		this.projectStatus = projectStatus;
 		this.start = start;
 		this.end = end;
-		this.externalId = externalId;
+		this.internalId = internalId;
 	}
 
 	/**
@@ -211,7 +211,7 @@ public class ProjectQuery implements Query {
 	/**
 	 * @return the internalId
 	 */
-	public String getExternalId() {
-		return externalId;
+	public String getInternalId() {
+		return internalId;
 	}
 }

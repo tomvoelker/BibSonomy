@@ -27,7 +27,6 @@ import org.bibsonomy.util.StringUtils;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -274,6 +273,16 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 	 */
 	public List<Project> getProjectsByParentId(final int projectId, final DBSession session) {
 		return this.queryForList("getProjectsByParentId", projectId, Project.class, session);
+	}
+
+	/**
+	 * retrieves a list of projects by internal id
+	 * @param internalId
+	 * @param session
+	 * @return
+	 */
+	public List<Project> getProjectsByInternalId(final String internalId, final DBSession session) {
+		return this.queryForList("getProjectsByInternalId", internalId, Project.class, session);
 	}
 
 	@Override

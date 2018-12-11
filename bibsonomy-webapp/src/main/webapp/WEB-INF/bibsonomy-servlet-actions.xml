@@ -470,7 +470,7 @@
                                 <value>project.budget</value>
                                 <value>project.startDate</value>
                                 <value>project.endDate</value>
-                                <value>project.parentProject.externalId</value>
+                                <value>project.parentProject.internalId</value>
                             </list>
                         </property>
                     </bean>
@@ -482,7 +482,7 @@
                             <list>
                                 <value>projectIdToDelete</value>
                                 <value>ckey</value>
-                                <value>project.externalId</value>
+                                <value>project.internalId</value>
                                 <value>project.title</value>
                             </list>
                         </property>
@@ -495,7 +495,7 @@
                             <list>
                                 <value>projectIdToUpdate</value>
                                 <value>ckey</value>
-                                <value>project.externalId</value>
+                                <value>project.internalId</value>
                                 <value>project.crisLinks</value>
                             </list>
                         </property>

@@ -1,9 +1,11 @@
 package org.bibsonomy.database.managers;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.SortOrder;
@@ -194,5 +196,14 @@ public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final Statistics allProjectsCounts = PROJECT_DATABASE_MANAGER.getAllProjectsCounts(null, this.dbSession);
 
 		assertEquals(2, allProjectsCounts.getCount());
+	}
+
+	@Test
+	public void testGetProjectsByInternalId() {
+		final List<Project> projects = PROJECT_DATABASE_MANAGER.getProjectsByInternalId("122323-2323", this.dbSession);
+		assertThat(projects.size(), is(1));
+
+		final Project project = projects.get(0);
+		assertThat(project.getExternalId(), is(PROJECT_ID));
 	}
 }

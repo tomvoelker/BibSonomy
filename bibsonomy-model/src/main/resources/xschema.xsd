@@ -166,7 +166,7 @@
 		<!-- link to details page -->
 		<xsd:attribute name="href" type="xsd:anyURI" />
 		<xsd:attribute name="organization" type="lboolean" />
-		<xsd:attribute name="externalId" type="xsd:string" />
+		<xsd:attribute name="internalId" type="xsd:string" />
 	</xsd:complexType>
 
 	<!--
