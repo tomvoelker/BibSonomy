@@ -1,0 +1,23 @@
+<jsp:root version="2.0"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+
+    <jsp:directive.attribute name="organizations" type="java.util.List" required="true" />
+
+    <div class='form-group'>
+        <label class="control-label col-md-4 col-smallpadding"><fmt:message key="person.show.organizations" /></label>
+        <div class="col-md-8">
+            <div class="personPageFormPlaceholder">
+                <!--FIXME: allow multiple organizations -->
+                <c:set value="${organizations[0].source}" var="orga" />
+                <span class="personPageFormFieldContent" id="personPageFormOrganizationValue">
+													<!--FIXME: add method getOrganizationUrlByGroup() -->
+                    <a href="${relativeUrlGenerator.getOrganizationUrlByName(orga.name)}">
+														<c:out value="${orga.realname}"/>
+													</a>
+												</span>
+            </div>
+        </div>
+    </div>
+</jsp:root>

@@ -12,7 +12,6 @@
 		  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-		  xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 		  xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"
 		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 		  xmlns:clear="http://java.sun.com/jsp/jstl/core" xmlns:spring="http://www.springframework.org/tags">
@@ -132,28 +131,14 @@
 
 						<div class="col-md-8 col-nopadding">
 							<spring:eval var="organizations" expression="T(org.bibsonomy.model.util.cris.CRISLinkUtils).filterCRISLinksBySourceType(T(java.lang.Class).forName('org.bibsonomy.model.Group'), command.person.crisLinks)" />
-								<c:choose>
-									<c:when test="${empty organizations}">
-										<!-- College -->
-										<per:personProperty hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" type="college" value="${command.person.college}"/>
-									</c:when>
-									<c:otherwise>
-									<div class='form-group'>
-									<label class="control-label col-md-4 col-smallpadding"><fmt:message key="person.show.organizations" /></label>
-
-									<div class="col-md-8">
-										<div class="personPageFormPlaceholder">
-											<!--FIXME: allow multiple organizations -->
-											<c:set value="${organizations[0].source}" var="orga" />
-											<span class="personPageFormFieldContent" id="personPageFormOrganizationValue">
-												<!--FIXME: add method getOrganizationUrlByGroup() -->
-												<a href="${relativeUrlGenerator.getOrganizationUrlByName(orga.name)}">
-													<c:out value="${orga.realname}"/>
-												</a>
-											</span>
-										</div>
-									</div>
-								</div>
+							<c:choose>
+								<c:when test="${empty organizations}">
+									<!-- College -->
+									<per:personProperty hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" type="college" value="${command.person.college}"/>
+								</c:when>
+								<c:otherwise>
+									<!-- Organisations -->
+									<per:organisations organizations="${organizations}" />
 								</c:otherwise>
 							</c:choose>
 							<!-- Email -->
@@ -164,46 +149,9 @@
 					</div>
 					<div class="col-md-6">
 						<!-- Alternative Names -->
-						<div class='form-group'>
-							<label class="control-label col-md-4 col-smallpadding"><fmt:message key="person.show.personAlternateNames" /></label>
-							<div class="col-md-6">
-								<div class="personPageFormPlaceholder">
-									<c:choose>
-										<c:when test="${fn:length(command.person.names) gt 1}">
-											<ul id="personPageAlternativeNameList" class="list-unstyled">
-												<c:forEach var='name' items="${command.person.names}">
-													<c:if test="${!name.main}">
-														<li id="personPageAlternativeNameID_${name.personNameChangeId}">
-															<span data-person-name-id='${name.personNameChangeId}' data-firstName='${name.firstName}' 
-																  data-lastName='${name.lastName}' data-toggle='modal' data-target='#setMainName' 
-																  id='personPageAlternativeNameID_${name.personNameChangeId}' class='personPageAlternativeName'>
-																	${name.firstName} ${name.lastName} 
-															</span>
-															<span data-person-name-id='${name.personNameChangeId}' data-firstName='${name.firstName}' 
-																  data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' 
-																  id='removeName_${name.personNameChangeId}' class='removeName fa fa-remove'>
-															</span>
-														</li>	
-													</c:if>
-												</c:forEach>
-											</ul>
-										</c:when>
-										<c:otherwise>
-											<ul id="personPageAlternativeNameList" class="hidden list-unstyled"><!--  --></ul>
-											<p id="personPageAlternativeNamePlaceholder"><fmt:message key="person.show.noNamesFound" /></p>
-										</c:otherwise>
-									</c:choose>
-									
-									<c:if test="${hasClaimedOrIsAdmin}">
-										<bsform:button size="xsmall" value="${textAddAlternateNameButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addName" />
-									</c:if>
-								</div>
-							</div>
-						</div>
-
+						<per:alternativeNames hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" />
 						<!-- ORCID -->
 						<per:personProperty hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" type="orcid" value="${command.person.orcid}" />
-
 						<!-- RESEARCHER ID -->
 						<per:personProperty hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" type="researcherid" value="${command.person.researcherid}" />
 					</div>
