@@ -45,7 +45,7 @@
 				</div>
 				<div class="col-md-9">
 				<form:form cssClass="form-horizontal" method="post" action="/editProject?ckey=${ckey}">
-					<!-- edit externalId -->
+					<!-- edit internalId -->
 					<input type="hidden" name="projectIdToUpdate" value="${command.projectIdToUpdate}" />
 
 					<!-- edit title -->

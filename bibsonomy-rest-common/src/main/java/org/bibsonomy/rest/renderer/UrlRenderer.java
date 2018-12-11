@@ -556,7 +556,7 @@ public class UrlRenderer {
 	public UrlBuilder createUrlBuilderForGroups(GroupQuery query) {
 		final UrlBuilder urlBuilder = getUrlBuilderForGroups();
 		if (present(query.getExternalId())) {
-			urlBuilder.addParameter("externalId", query.getExternalId());
+			urlBuilder.addParameter("internalId", query.getExternalId());
 		} else {
 			applyStartEnd(urlBuilder, query.getStart(), query.getEnd());
 		}
