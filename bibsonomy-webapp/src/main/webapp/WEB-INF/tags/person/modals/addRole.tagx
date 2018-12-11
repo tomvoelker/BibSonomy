@@ -1,0 +1,35 @@
+<jsp:root version="2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+
+    <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true" />
+    <fmt:message key="person.show.close" var="textClose" />
+
+    <div class="modal fade" id="addRole" tabindex="-1" role="dialog" aria-labelledby="addRoleLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">&amp;times;</button>
+                    <h4 class="modal-title"><fmt:message key="person.show.modalAddRoleHeader" /></h4>
+                </div>
+                <div class="modal-body">
+                    <fieldset>
+                        <div id="person-scroll-menu" class="form-group person-search">
+                            <label for='addRoleAuto' class="control-label col-md-3"><fmt:message key="person.show.person" /></label>
+                            <fmt:message key="person.show.modal.addRole.placeholder" var="textModalAddRolePlaceholder" />
+                            <input class='form-control typeahead' id='addRoleAuto' type='text' name='addRoleAuto' autocomplete="off" placeholder="${textModalAddRolePlaceholder}"/>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <form action="" method="post" id='addRoleForm' class='form-horizontal'>
+                        <input type="hidden" name="ckey" value="${ckey}"/>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+                        <button type="button" class="btn btn-primary" id='btnAddRoleSubmit'><fmt:message key="person.show.addRoleButton" /></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</jsp:root>
