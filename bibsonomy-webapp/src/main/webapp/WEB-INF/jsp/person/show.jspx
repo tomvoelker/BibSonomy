@@ -27,8 +27,8 @@
 	<fmt:message key="person.show.formLastName" var="textFormLastName" />
 	<fmt:message key="person.show.newThesisButton" var="textNewThesisButton" />
 	<fmt:message key="person.show.noResourcesFound" var="textNoResourcesFound" />
-	<fmt:message key="person.show.orcidId" var="textOrcidId" />
-	<fmt:message key="person.show.researcherId" var="textResearcherId" />
+	<fmt:message key="person.show.orcid" var="textOrcidId" />
+	<fmt:message key="person.show.researcherid" var="textResearcherId" />
 	<fmt:message key="person.show.saveButton" var="textSaveButton" />
 	<fmt:message key="person.show.TooltipLockedForm" var="formLockedTooltip" />
 	
@@ -115,28 +115,8 @@
 					<div class="alert alert-danger" id="personPageAjaxError">
 						<span id="personPageAjaxErrorDefaultMessage"><fmt:message key="error.500" /></span>
 					</div>
-				
-					<div class="form-group">
-						<h1>
-							<div class="personPageFormPlaceholder">
-								<c:if test="${hasClaimedOrIsAdmin}">
-									<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
-								</c:if>
-								<span class="personPageFormFieldContent" id="personPageFormAcademicDegreeValue">${command.person.academicDegree}</span>
-							</div>
-							<div class="personPageFormField">
-								<input class='form-control' type="text" name='person.academicDegree' id='formAcademicDegree' placeholder="Dr." autocomplete="off" value="${command.person.academicDegree}" />
-							</div>
-							
-							<!-- TODO: REMOVE INLINE CSS -->
-							<div style="margin:8px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField">
-								<actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_ACADEMIC_DEGREE"></actionbuttons:personPageupdateButton>
-							</div>
-							
-							<c:out value=" "/>
-							<c:out value="${title}"/>
-						</h1>
-					</div>
+
+					<per:personTitle hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" title="${title}" />
 				</div>
 
 				<!-- VCard -->
@@ -151,113 +131,18 @@
 						</c:if>
 
 						<div class="col-md-8 col-nopadding">
-							
-							<!-- College -->						
-							<div class='form-group'>
-								<label class="control-label col-md-4 col-smallpadding" for='formCollege'><fmt:message key="person.show.college" /></label>
-								
-								<div class="col-md-8">
-									<div class="personPageFormPlaceholder">
-										<c:if test="${hasClaimedOrIsAdmin}">
-											<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
-										</c:if>
-										<span class="personPageFormFieldContent" id="personPageFormCollegeValue">${command.person.college}</span> 
-									</div>
-									
-									<div class="personPageFormField col-md-8">
-										<input class='form-control' type="text" name='person.college' id="formCollege" value="${command.person.college}"/>
-									</div>
-									
-									<!-- TODO: REMOVE INLINE CSS -->
-									<div style="margin:12px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
-										<actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_COLLEGE"></actionbuttons:personPageupdateButton>
-									</div>
-								</div>
-							</div>
-							
-							<!-- Email -->						
-							<div class='form-group'>
-								<label class="control-label col-md-4 col-smallpadding" for='formEmail'><fmt:message key="person.show.email" /></label>
-								
-								<div class="col-md-8">
-									<div class="personPageFormPlaceholder">
-										<!-- Only visible if the loginUser claimed this person -->
-										<c:if test='${hasClaimedOrIsAdmin}'>
-											<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
-										</c:if>
-										<c:if test="${command.context.userLoggedIn}" >
-												<span data-toggle="tooltip" title="${formLockedTooltip}" class="personPageLockedForm fa fa-info-circle"><!--  --></span>
-										</c:if>
-
-										<c:if test="${hasClaimedOrIsAdmin}">
-										<span class="personPageFormFieldContent" id="personPageFormEmailValue">${command.person.email}</span> 
-										</c:if>	
-									</div>
-									
-									<!-- Only visible if te loginUser claimed this person -->
-									<c:if test='${hasClaimedOrIsAdmin}'>
-										<div class="personPageFormField col-md-8">
-											<fmt:message key="person.show.email.placeholder" var="textEmailPlaceholder" />
-											<input class='form-control' type="email" name='person.email' id="formEmail" placeholder="${textEmailPlaceholder}" value="${command.person.email}"/>
-										</div>
-										
-										<!-- TODO: REMOVE INLINE CSS -->
-										<div style="margin:12px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
-											<actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_EMAIL"></actionbuttons:personPageupdateButton>
-										</div>
-									</c:if>
-								</div>
-							</div>
-							
+							<!-- College -->
+							<per:personProperty hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" type="college" value="${command.person.college}"/>
+							<!-- Email -->
+							<per:personProperty hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" type="email" value="${command.person.email}" />
 							<!-- Homepage -->						
-							<div class='form-group'>
-								<label class="control-label col-md-4 col-smallpadding" for='formHomepage'><fmt:message key="person.show.homepage" /></label>
-								
-								<div class="col-md-8">
-									<div class="personPageFormPlaceholder">
-										<!-- Only visible if the loginUser claimed this person -->
-										<c:if test='${hasClaimedOrIsAdmin}'>
-											<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
-										</c:if>
-										<c:if test="${command.context.userLoggedIn}">
-											<span data-toggle="tooltip" title="${formLockedTooltip}" class="personPageLockedForm fa fa-info-circle"><!--  --></span>
-										</c:if>
-
-
-										<c:choose>
-											<c:when test='${not empty command.person.homepage}'>
-												<a class="personPageFormFieldContent" id="personPageFormHomepageValue" rel="external nofollow" href="${fn:escapeXml(command.person.homepage)}" itemprop="url"><c:out value="${command.person.homepage}"/></a>									
-											</c:when>
-											<c:otherwise>
-												<span class="personPageFormFieldContent" id="personPageFormHomepageValue"><c:out value=" " /></span> 
-											</c:otherwise>
-										</c:choose>
-
-									</div>
-									
-									<!-- Only visible if te loginUser claimed this person -->
-									<c:if test='${hasClaimedOrIsAdmin}'>
-										<div class="personPageFormField col-md-8">
-											<fmt:message key="person.show.homepage.placeholder" var="textHomepagePlaceholder" />
-											<input class='form-control' type="url" name='person.homepage' id="formHomepage" placeholder="${textHomepagePlaceholder}" value="${command.person.homepage}"/>
-										</div>
-										
-										<!-- TODO: REMOVE INLINE CSS -->
-										<div style="margin:12px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
-											<actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_HOMEPAGE"></actionbuttons:personPageupdateButton>
-										</div>
-									</c:if>
-								</div>
-							</div>
-							
+							<per:personProperty hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" type="homepage" value="${command.person.homepage}" />
 						</div>
-			
 					</div>
 					<div class="col-md-6">
-						
 						<!-- Alternative Names -->
 						<div class='form-group'>
-							<label class="control-label col-md-6"><fmt:message key="person.show.personAlternateNames" /></label>
+							<label class="control-label col-md-4 col-smallpadding"><fmt:message key="person.show.personAlternateNames" /></label>
 							<div class="col-md-6">
 								<div class="personPageFormPlaceholder">
 									<c:choose>
@@ -292,65 +177,12 @@
 								</div>
 							</div>
 						</div>
-							
 
 						<!-- ORCID -->
-						<div class='form-group'>
-							<label class="control-label col-md-6" for='formOrcid'>${textOrcidId}</label>
-
-							<div class="col-md-6">
-								<div class="personPageFormPlaceholder">
-									<c:if test="${(not empty command.context.loginUser.name and empty command.person.user) or (not empty command.person.user and (command.person.user eq command.context.loginUser.name)) and not command.context.loginUser.spammer}">
-										<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
-									</c:if>
-									<span class="personPageFormFieldContent" id="personPageFormOrcidValue">
-										<per:orcid orcid="${command.person.orcid}" returnUrl="${true}" />
-                                    </span>
-								</div>
-								<div class="personPageFormField col-md-8">
-									<c:set var="beautifiedOrcid">
-										<per:orcid orcid="${command.person.orcid}"/>
-									</c:set>
-
-									<input class='form-control' type="text" name='person.orcid' id='formOrcid' placeholder="${textOrcidId}" value="${beautifiedOrcid}"/>
-								</div>
-
-								<!-- TODO: REMOVE INLINE CSS -->
-								<div style="margin:12px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
-									<actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_ORCID"></actionbuttons:personPageupdateButton>
-
-								</div>
-							</div>
-						</div>
-
+						<per:personProperty hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" type="orcid" value="${command.person.orcid}" />
 
 						<!-- RESEARCHER ID -->
-						<div class='form-group'>
-							<label class="control-label col-md-6" for='formResearcherid'>${textResearcherId}</label>
-
-							<div class="col-md-6">
-								<div class="personPageFormPlaceholder">
-									<c:if test="${hasClaimedOrIsAdmin}">
-										<span class="personPageEnableForm fa fa-pencil"><!--  --></span>
-									</c:if>
-									<span class="personPageFormFieldContent" id="personPageFormResearcheridValue">
-										<per:researcherid researcherid="${comand.person.researcherid}" returnUrl="${true}"/>
-									</span>
-								</div>
-								<div class="personPageFormField col-md-8">
-									<c:set var="beautifiedResearcherid">
-										<per:researcherid researcherid="comand.person.researcherid"/>
-									</c:set>
-									<input class='form-control' type="text" name='person.researcherid' id='formResearcherid' placeholder="${textResearcherId}" value="${beautifiedResearcherid}"/>
-								</div>
-
-								<!-- TODO: REMOVE INLINE CSS -->
-								<div style="margin:12px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
-									<actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_RESEARCHERID"></actionbuttons:personPageupdateButton>
-								</div>
-							</div>
-						</div>
-
+						<per:personProperty hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" type="researcherid" value="${command.person.researcherid}" />
 					</div>
 				</div>
 			</form>
