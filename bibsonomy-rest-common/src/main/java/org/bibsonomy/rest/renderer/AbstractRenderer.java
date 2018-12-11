@@ -880,8 +880,8 @@ public abstract class AbstractRenderer implements Renderer {
 		if (group.isOrganization()) {
 			xmlGroup.setOrganization(Boolean.TRUE.toString());
 		}
-		if (present(group.getExternalId())) {
-			xmlGroup.setExternalId(group.getExternalId());
+		if (present(group.getInternalId())) {
+			xmlGroup.setInternalId(group.getInternalId());
 		}
 		return xmlGroup;
 	}
@@ -1568,8 +1568,9 @@ public abstract class AbstractRenderer implements Renderer {
 			group.setOrganization(Boolean.parseBoolean(organization));
 		}
 
-		if (present(xmlGroup.getExternalId())) {
-			group.setExternalId(xmlGroup.getExternalId());
+		final String internalId = xmlGroup.getInternalId();
+		if (present(internalId)) {
+			group.setInternalId(internalId);
 		}
 
 		if (present(xmlGroup.getParent())) {

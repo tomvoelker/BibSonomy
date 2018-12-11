@@ -1587,7 +1587,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 
 		Group g = groups.get(0);
 
-		assertThat(g.getExternalId(), equalTo("extid1"));
+		assertThat(g.getInternalId(), equalTo("extid1"));
 	}
 
 

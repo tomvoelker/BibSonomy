@@ -1313,7 +1313,7 @@ public class DBLogic implements LogicInterface {
 		 * only allow administrators to create new organizations
 		 */
 		final boolean isOrganization = group.isOrganization();
-		final String externalGroupId = group.getExternalId();
+		final String externalGroupId = group.getInternalId();
 		if (present(externalGroupId) || isOrganization) {
 			this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		}

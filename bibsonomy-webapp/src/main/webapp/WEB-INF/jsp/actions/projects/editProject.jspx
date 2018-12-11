@@ -65,7 +65,7 @@
 					<bsform:input path="project.budget" labelColSpan="3" inputColSpan="9" noHelp="${true}" />
 
 					<!-- TODO autocomplete for project -->
-					<bsform:input path="project.parentProject.externalId" labelColSpan="3" inputColSpan="9" />
+					<bsform:input path="project.parentProject.internalId" labelColSpan="3" inputColSpan="9" />
 
 					<p class="clearfix"><!--  --></p>
 					<div class="col-sm-offset-3 ">
