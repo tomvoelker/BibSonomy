@@ -641,6 +641,9 @@ public abstract class AbstractRenderer implements Renderer {
 		if (present(project.getParentProject())) {
 			projectType.setParentProject(project.getParentProject().getExternalId());
 		}
+		if (present(project.getSponsor())) {
+			projectType.setSponsor(project.getSponsor());
+		}
 		if (present(project.getSubProjects())) {
 			project.getSubProjects().stream().map(Project::getExternalId).
 					forEach(eid -> projectType.getSubProjects().add(eid));
@@ -1143,6 +1146,7 @@ public abstract class AbstractRenderer implements Renderer {
 		project.setInternalId(projectType.getInternalId());
 		project.setStartDate(createDate(projectType.getStartDate()));
 		project.setEndDate(createDate(projectType.getEndDate()));
+		project.setSponsor(projectType.getSponsor());
 		return project;
 	}
 
