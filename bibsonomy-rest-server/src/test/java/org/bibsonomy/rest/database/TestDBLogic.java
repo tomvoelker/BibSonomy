@@ -55,6 +55,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
+import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.statistics.Statistics;
 import org.junit.Ignore;
@@ -136,8 +137,8 @@ public class TestDBLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public List<Group> getGroups(boolean pending, String userName, final int start, final int end) {
-		final List<Group> groups = new LinkedList<Group>();
+	public List<Group> getGroups(GroupQuery query) {
+		final List<Group> groups = new LinkedList<>();
 		groups.addAll(this.dbGroups.values());
 		return groups;
 	}

@@ -42,8 +42,7 @@
     </sql>
 
     <sql id="projectColumns">
-        p.id, p.project_id, p.internal_id, p.title, p.subtitle, p.description, p.start_date, p.end_date,
-        p.type, p.sponsor
+        p.id, p.project_id, p.internal_id, p.title, p.subtitle, p.description, p.start_date, p.end_date, p.type, p.sponsor
     </sql>
 
     <sql id="parentSimpleProjectAttributes">
@@ -55,7 +54,7 @@
     </sql>
 
     <sql id="insertProjectAttributes">
-        #project.id#, #project.internalId#, #project.internalId#,  #project.title#, #project.subTitle#, #project.description#, #project.startDate#, #project.endDate#, #project.type#, #project.sponsor#, #project.budget#, #parentProjectId#, #updatedAt#, #updatedBy#
+        #project.id#, #project.externalId#, #project.internalId#,  #project.title#, #project.subTitle#, #project.description#, #project.startDate#, #project.endDate#, #project.type#, #project.sponsor#, #project.budget#, #parentProjectId#, #updatedAt#, #updatedBy#
     </sql>
 
     <sql id="projectStatusFilter">
