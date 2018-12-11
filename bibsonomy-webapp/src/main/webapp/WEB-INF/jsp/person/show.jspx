@@ -6,7 +6,6 @@
 		  xmlns:c="http://java.sun.com/jsp/jstl/core"
 		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-		  xmlns:form="http://www.springframework.org/tags/form"
 		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 		  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
@@ -30,7 +29,7 @@
 	<c:set var="isAdmin" value="${command.context.loginUser.role eq 'ADMIN'}" />
 	<c:set var="hasClaimedOrIsAdmin" value="${hasClaimedPerson or isAdmin}" />
 
-	<c:set var="useCRISView" value="${properties['system.cris'] eq 'false'}" />
+	<c:set var="useCRISView" value="${properties['system.cris'] eq 'true'}" />
 
 	<layout:paneLayout pageTitle="${title}"
 		headerLogoClass="publications" 
