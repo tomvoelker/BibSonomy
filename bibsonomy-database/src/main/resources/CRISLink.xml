@@ -41,7 +41,7 @@
     </select>
 
     <select id="getProjectCRISLinks" parameterClass="crisLinkParam" resultMap="CRISLinkCommon.projectCrisLink">
-        SELECT <include refid="simpleCRISColumns" />, p.id, p.project_id, p.title, p.subtitle, p.type, p.start_date, p.end_date
+        SELECT <include refid="simpleCRISColumns" />, <include refid="projectColumns" />
         FROM cris_links c
         JOIN projects p ON (p.id = c.source_id)
         WHERE c.target_id = #targetId# and c.target_type = #targetType.id#
