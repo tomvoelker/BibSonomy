@@ -63,7 +63,7 @@ public class GroupQuery extends BasicQuery {
 	}
 
 	/**
-	 * @return the externalId
+	 * @return the internalId
 	 */
 	public String getExternalId() {
 		return externalId;

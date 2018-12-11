@@ -18,7 +18,7 @@
 		<result property="allowJoin"    	  column="allow_join"   	 javaType="boolean"/>
 		<result property="description"    	  column="shortDescription"  javaType="string"/>
 		<result property="organization"		  column="organization"      javaType="boolean" />
-		<result property="externalId"		  column="external_id"       javaType="string" />
+		<result property="internalId"		  column="internal_id"       javaType="string" />
 	</resultMap>
 
 	<!-- +
@@ -116,7 +116,7 @@
 	</resultMap>
 
 	<sql id="basicColumns">
-		i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, i.organization, i.external_id
+		i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, i.organization, i.internal_id
 	</sql>
 
 	<sql id="requestColumns">

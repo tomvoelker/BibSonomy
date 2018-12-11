@@ -62,7 +62,7 @@ public class ProjectValidator {
 		}
 
 		if (!present(project.getExternalId())) {
-			errorMessages.add(new MissingFieldErrorMessage("externalId"));
+			errorMessages.add(new MissingFieldErrorMessage("internalId"));
 		}
 
 		return errorMessages;

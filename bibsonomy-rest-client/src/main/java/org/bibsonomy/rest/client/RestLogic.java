@@ -260,7 +260,6 @@ public class RestLogic extends AbstractLogicInterface {
 		if (query.isPending()) {
 			throw new UnsupportedOperationException("quering for pending groups not supported");
 		}
-
 		return execute(new GetGroupListQuery(query));
 	}
 

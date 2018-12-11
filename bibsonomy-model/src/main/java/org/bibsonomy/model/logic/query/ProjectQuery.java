@@ -2,14 +2,14 @@
  * BibSonomy-Model - Java- and JAXB-Model.
  *
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- * University of Kassel, Germany
- * http://www.kde.cs.uni-kassel.de/
- * Data Mining and Information Retrieval Group,
- * University of Würzburg, Germany
- * http://www.is.informatik.uni-wuerzburg.de/en/dmir/
- * L3S Research Center,
- * Leibniz University Hannover, Germany
- * http://www.l3s.de/
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -40,106 +40,11 @@ import java.util.Date;
  */
 public class ProjectQuery extends BasicQuery {
 
-	private final Prefix prefix;
-
-	/** the order of the projects */
-	private final ProjectOrder order;
-	/** the sort order of the order */
-	private final SortOrder sortOrder;
-
-	/** the project status */
-	private final ProjectStatus projectStatus;
-
-	/** the type of the project */
-	private final String type;
-	private final String externalId;
-	private final Date startDate;
-	private final Date endDate;
-
-	/**
-	 * the constructor
-	 *
-	 * @param order
-	 * @param sortOrder
-	 * @param projectStatus
-	 * @param type
-	 * @param start
-	 * @param end
-	 * @param externalId
-	 * @param startDate
-	 * @param endDate
-	 */
-	protected ProjectQuery(final String search, final Prefix prefix, final ProjectOrder order, SortOrder sortOrder, ProjectStatus projectStatus,
-												 String type, int start, int end, String externalId, Date startDate, Date endDate) {
-		this.setSearch(search);
-		this.setStart(start);
-		this.setEnd(end);
-
-		this.prefix = prefix;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.order = order;
-		this.sortOrder = sortOrder;
-		this.projectStatus = projectStatus;
-		this.type = type;
-		this.externalId = externalId;
-	}
-
 	/**
 	 * @return creates a new builder
 	 */
 	public static ProjectQueryBuilder createBuilder() {
 		return new ProjectQueryBuilder();
-	}
-
-	public Date getStartDate() {
-		return startDate;
-	}
-
-	public Date getEndDate() {
-		return endDate;
-	}
-
-	/**
-	 * @return the order
-	 */
-	public ProjectOrder getOrder() {
-		return order;
-	}
-
-	/**
-	 * @return the sortOrder
-	 */
-	public SortOrder getSortOrder() {
-		return sortOrder;
-	}
-
-	/**
-	 * @return the projectStatus
-	 */
-	public ProjectStatus getProjectStatus() {
-		return projectStatus;
-	}
-
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * @return the prefix
-	 */
-	public Prefix getPrefix() {
-		return prefix;
-	}
-
-	/**
-	 * @return the externalId
-	 */
-	public String getExternalId() {
-		return externalId;
 	}
 
 	public static class ProjectQueryBuilder {
@@ -162,24 +67,16 @@ public class ProjectQuery extends BasicQuery {
 
 		private String type;
 
-		/**
-		 * the start
-		 */
+		/** the start */
 		private int start = 0;
 
-		/**
-		 * the end
-		 */
+		/** the end */
 		private int end = 10;
 
-		/**
-		 * the externalId
-		 */
-		private String externalId;
+		/** the internalId */
+		private String internalId;
 
-		/**
-		 * the search
-		 **/
+		/** the search **/
 		private String search;
 
 		private Date startDate;
@@ -214,13 +111,13 @@ public class ProjectQuery extends BasicQuery {
 		}
 
 		/**
-		 * sets the externalId
+		 * sets the internalId
 		 *
-		 * @param externalId
+		 * @param internalId
 		 * @return
 		 */
-		public ProjectQueryBuilder externalId(final String externalId) {
-			this.externalId = externalId;
+		public ProjectQueryBuilder internalId(final String internalId) {
+			this.internalId = internalId;
 			return this;
 		}
 
@@ -305,7 +202,101 @@ public class ProjectQuery extends BasicQuery {
 		 */
 		public ProjectQuery build() {
 			return new ProjectQuery(this.search, this.prefix, this.order, this.sortOrder, this.projectStatus,
-							this.type, this.start, this.end, this.externalId, startDate, endDate);
+							this.type, this.start, this.end, this.internalId, startDate, endDate);
 		}
+	}
+
+	private final Prefix prefix;
+
+	/** the order of the projects */
+	private final ProjectOrder order;
+	/** the sort order of the order */
+	private final SortOrder sortOrder;
+
+	/** the project status */
+	private final ProjectStatus projectStatus;
+
+	/** the type of the project */
+	private final String type;
+	private final String internalId;
+	private final Date startDate;
+	private final Date endDate;
+
+	/**
+	 * the constructor
+	 *
+	 * @param order
+	 * @param sortOrder
+	 * @param projectStatus
+	 * @param type
+	 * @param start
+	 * @param end
+	 * @param externalId
+	 * @param startDate
+	 * @param endDate
+	 */
+	protected ProjectQuery(final String search, final Prefix prefix, final ProjectOrder order, SortOrder sortOrder, ProjectStatus projectStatus, String type, int start, int end, String externalId, Date startDate, Date endDate) {
+		this.setSearch(search);
+		this.setStart(start);
+		this.setEnd(end);
+
+		this.prefix = prefix;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.order = order;
+		this.sortOrder = sortOrder;
+		this.projectStatus = projectStatus;
+		this.type = type;
+		this.internalId = externalId;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	/**
+	 * @return the order
+	 */
+	public ProjectOrder getOrder() {
+		return order;
+	}
+
+	/**
+	 * @return the sortOrder
+	 */
+	public SortOrder getSortOrder() {
+		return sortOrder;
+	}
+
+	/**
+	 * @return the projectStatus
+	 */
+	public ProjectStatus getProjectStatus() {
+		return projectStatus;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * @return the prefix
+	 */
+	public Prefix getPrefix() {
+		return prefix;
+	}
+
+	/**
+	 * @return the internalId
+	 */
+	public String getInternalId() {
+		return internalId;
 	}
 }

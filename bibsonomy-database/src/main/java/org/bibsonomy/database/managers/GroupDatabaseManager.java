@@ -54,7 +54,6 @@ import org.bibsonomy.database.params.CRISLinkParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagSetParam;
 import org.bibsonomy.database.params.WikiParam;
-import org.bibsonomy.database.params.group.GetByExternalId;
 import org.bibsonomy.database.params.group.GetParentGroupIdsRecursively;
 import org.bibsonomy.database.params.group.InsertParentRelations;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
@@ -1269,9 +1268,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	 * @return a list of groups with the external id.
 	 */
 	public Group getGroupByExternalId(String externalId, DBSession session) {
-		GetByExternalId params = new GetByExternalId(externalId);
-
-		return this.queryForObject("getGroupByExternalId", params, Group.class, session);
+		return this.queryForObject("getGroupByExternalId", externalId, Group.class, session);
 	}
 
 	@Override

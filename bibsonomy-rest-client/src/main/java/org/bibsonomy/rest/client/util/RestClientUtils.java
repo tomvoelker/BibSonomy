@@ -54,10 +54,10 @@ public class RestClientUtils {
 	public static final String CONTENT_CHARSET = StringUtils.CHARSET_UTF_8;
 
 	/** the connection timeout */
-	private static final int CONNECTION_TIMEOUT = 5 * 1000;
+	private static final int CONNECTION_TIMEOUT = 500000 * 1000;
 
 	/** the read timeout */
-	private static final int READ_TIMEOUT = 5 * 1000;
+	private static final int READ_TIMEOUT = 500000 * 1000;
 
 	/** thread safe pooling connection manager */
 	private static final PoolingHttpClientConnectionManager CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();

@@ -42,8 +42,7 @@
     </sql>
 
     <sql id="projectColumns">
-        p.id, p.project_id, p.internal_id, p.title, p.subtitle, p.description, p.start_date, p.end_date,
-        p.type, p.sponsor
+        p.id, p.project_id, p.internal_id, p.title, p.subtitle, p.description, p.start_date, p.end_date, p.type, p.sponsor
     </sql>
 
     <sql id="parentSimpleProjectAttributes">

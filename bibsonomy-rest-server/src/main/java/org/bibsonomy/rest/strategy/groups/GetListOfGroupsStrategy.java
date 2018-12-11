@@ -32,6 +32,7 @@ import java.util.List;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.querybuilder.GroupQueryBuilder;
+import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.UrlBuilder;
@@ -40,14 +41,14 @@ import org.bibsonomy.util.UrlBuilder;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
 public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>> {
-	private final String externalId;
+	private final String internalId;
 	
 	/**
 	 * @param context
 	 */
 	public GetListOfGroupsStrategy(final Context context) {
 		super(context);
-		externalId = context.getStringAttribute("externalId", null);
+		internalId = context.getStringAttribute("internalId", null);
 	}
 
 	@Override
@@ -62,9 +63,10 @@ public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>
 
 	@Override
 	protected List<Group> getList() {
-		final GroupQuery groupQuery = new GroupQueryBuilder().setStart(this.getView().
-				getStartValue()).setEnd(this.getView().getEndValue()).setPending(false).
-				setExternalId(externalId).createGroupQuery();
+		final ViewModel view = this.getView();
+		final GroupQuery groupQuery = new GroupQueryBuilder().setStart(view.
+				getStartValue()).setEnd(view.getEndValue()).setPending(false).
+				setExternalId(this.internalId).createGroupQuery();
 		return this.getLogic().getGroups(groupQuery);
 	}
 

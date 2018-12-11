@@ -146,7 +146,8 @@
 		<property name="elements">
 			<list>
 				<bean class="org.bibsonomy.database.managers.chain.project.GetProjectsByProjectSearch" parent="abstractProjectChainElement" />
-				<bean class="org.bibsonomy.database.managers.chain.project.GetAllProjects" parent="abstractProjectChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.project.GetProjectsByInternalId" parent="abstractProjectChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.project.GetAllProjects" parent="abstractProjectChainElement"/>
 			</list>
 		</property>
 	</bean>

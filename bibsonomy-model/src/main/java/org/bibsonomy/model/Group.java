@@ -123,7 +123,7 @@ public class Group implements Linkable, Serializable {
 	private boolean organization;
 
 	/** the id of the group in an external source (e.g. the database of the university) */
-	private String externalId;
+	private String internalId;
 
 	/**
 	 * default constructor
@@ -395,17 +395,17 @@ public class Group implements Linkable, Serializable {
 	}
 
 	/**
-	 * @return the externalId
+	 * @return the internalId
 	 */
-	public String getExternalId() {
-		return externalId;
+	public String getInternalId() {
+		return internalId;
 	}
 
 	/**
-	 * @param externalId the externalId to set
+	 * @param internalId the internalId to set
 	 */
-	public void setExternalId(String externalId) {
-		this.externalId = externalId;
+	public void setInternalId(String internalId) {
+		this.internalId = internalId;
 	}
 
 	@Override

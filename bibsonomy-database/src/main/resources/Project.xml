@@ -71,4 +71,10 @@
         WHERE parent_id = #id#
           ORDER BY title
     </select>
+
+    <select id="getProjectsByInternalId" resultMap="ProjectCommon.simpleProject" parameterClass="string">
+        SELECT <include refid="simpleProjectAttributes" />
+        FROM projects
+        WHERE internal_id = #id#
+    </select>
 </sqlMap>

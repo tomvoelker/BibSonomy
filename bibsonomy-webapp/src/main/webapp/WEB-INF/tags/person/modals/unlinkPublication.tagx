@@ -1,0 +1,32 @@
+<jsp:root version="2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true" />
+    <fmt:message key="person.show.close" var="textClose" />
+
+    <div id="unlinkPublication" class="modal fade" role="dialog" tabindex="-1" aria-labelledby="unlinkPublicationLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><fmt:message key="delete.confirm.personResourceRelation" /></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <form:form action="/deletePersonResourceRelation?ckey=${ckey}" method="post" id="deletePersonResourceRelationForm">
+                        <form:hidden path="person.personId"/>
+                        <form:hidden path="type"/>
+                        <form:hidden path="interhash"/>
+                        <form:hidden path="index"/>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">${textClose}</button>
+                        <fmt:message key="delete" var="delete" />
+                        <input type="submit" class="btn btn-primary" value="${delete}"/>
+                    </form:form>
+                </div>
+            </div>
+        </div>
+    </div>
+</jsp:root>

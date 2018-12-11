@@ -900,6 +900,7 @@
 		<property name="supportedResources" ref="allResources"/>
 		<property name="newsGroup" value="${news.group}"/>
 		<property name="newsTag" value="${news.tag}"/>
+		<property name="crisEnabled" value="${system.cris}" />
 	</bean>
 	
 	<bean id="personPageController" class="org.bibsonomy.webapp.controller.PersonPageController" scope="request" parent="multiResourceListControllerWithTags">

@@ -1,9 +1,13 @@
 package org.bibsonomy.database.managers;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.closeTo;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.SortOrder;
@@ -93,22 +97,25 @@ public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		project.setEndDate(endDate);
 		final String projectTitle = "REGIO";
 		project.setTitle(projectTitle);
-		final String projectType = "BMBF";
+		final String projectType = "Bund";
 		project.setType(projectType);
+		final String sponsor = "BMBF";
+		project.setSponsor(sponsor);
 		final String internalId = "122323-2323";
 		project.setInternalId(internalId);
 
-		PROJECT_DATABASE_MANAGER.createProject(project, new User(TESTUSER_1_NAME), this.dbSession);
+		final JobResult createResult = PROJECT_DATABASE_MANAGER.createProject(project, new User(TESTUSER_1_NAME), this.dbSession);
+		assertThat(createResult.getStatus(), is(Status.OK));
 
 		final Project projectDetails = PROJECT_DATABASE_MANAGER.getProjectDetails(project.getExternalId(), true, this.dbSession);
 
-		assertNotNull(projectDetails);
-		assertEquals(budget, projectDetails.getBudget(), 0.001);
-		assertEquals(projectTitle, projectDetails.getTitle());
-		assertEquals(projectType, projectDetails.getType());
-		assertEquals(startDate, projectDetails.getStartDate());
-		assertEquals(endDate, projectDetails.getEndDate());
-		assertEquals("regio", projectDetails.getExternalId());
+		assertThat(projectDetails, is(notNullValue()));
+		assertThat(projectDetails.getBudget().doubleValue(), closeTo((double) budget, 0.0001));
+		assertThat(projectDetails.getTitle(), is(projectTitle));
+		assertThat(projectDetails.getType(), is(projectType));
+		assertThat(projectDetails.getStartDate(), is(startDate));
+		assertThat(projectDetails.getEndDate(), is(endDate));
+		assertThat(projectDetails.getExternalId(), is("regio"));
 	}
 
 	/**
@@ -122,13 +129,12 @@ public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final int dbId = posts.getId();
 
 		final JobResult result = PROJECT_DATABASE_MANAGER.updateProject(posts.getExternalId(), posts, new User(TESTUSER_1_NAME), this.dbSession);
-
 		assertEquals(Status.OK, result.getStatus());
 
 		final Project postsAfterUpdate = PROJECT_DATABASE_MANAGER.getProjectDetails(PROJECT_ID, true, this.dbSession);
 
 		assertEquals(newBuget, postsAfterUpdate.getBudget(), 0.001);
-		assertNotEquals(dbId, postsAfterUpdate.getId().intValue()); // check for id change
+		assertThat(dbId, is(not(postsAfterUpdate.getId().intValue()))); // check for id change
 	}
 
 	@Test
@@ -194,5 +200,14 @@ public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final Statistics allProjectsCounts = PROJECT_DATABASE_MANAGER.getAllProjectsCounts(null, this.dbSession);
 
 		assertEquals(2, allProjectsCounts.getCount());
+	}
+
+	@Test
+	public void testGetProjectsByInternalId() {
+		final List<Project> projects = PROJECT_DATABASE_MANAGER.getProjectsByInternalId("122323-2323", this.dbSession);
+		assertThat(projects.size(), is(1));
+
+		final Project project = projects.get(0);
+		assertThat(project.getExternalId(), is(PROJECT_ID));
 	}
 }
