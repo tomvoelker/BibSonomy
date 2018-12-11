@@ -85,6 +85,8 @@ public enum ConstantID {
 	PROJECT_ID(18),
 	/** id of the linkable */
 	LINKABLE_ID(19),
+	/** id of groups */
+	GROUP_ID(20),
 	
 	/* other ids (not related to SQL tables! */
 	/** marks that no special content type has yet been assigned */

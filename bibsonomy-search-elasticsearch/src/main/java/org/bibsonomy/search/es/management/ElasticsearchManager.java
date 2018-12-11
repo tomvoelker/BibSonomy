@@ -296,6 +296,7 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 		if (this.generator.isGenerating()) {
 			try {
 				final SearchIndexInfo searchIndexInfoGeneratingIndex = new SearchIndexInfo();
+				searchIndexInfoGeneratingIndex.setState(SearchIndexState.GENERATING);
 				searchIndexInfoGeneratingIndex.setIndexGenerationProgress(this.generator.getProgress());
 				searchIndexInfoGeneratingIndex.setId(this.generator.getIndexName());
 				infos.add(searchIndexInfoGeneratingIndex);

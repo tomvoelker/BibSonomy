@@ -733,12 +733,13 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 *
 	 * @param userName
 	 * 			- the name of the user to be deleteed
+	 * @param loggedinUser
 	 * @param session
 	 * 			- DB session
 	 * @throws UnsupportedOperationException
 	 * 			- when this user is a group, he cannot be deleted
 	 */
-	public void deleteUser(final String userName, final DBSession session) {
+	public void deleteUser(final String userName, final User loggedinUser, final DBSession session) {
 		session.beginTransaction();
 		try {
 			if (!present(userName)) {
@@ -792,7 +793,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			 * check, if we can delete the user from the corresponding group.
 			 */
 			for (final Group group: groups) {
-				groupDBManager.removeUserFromGroup(group.getName(), userName, false, session);
+				groupDBManager.removeUserFromGroup(group.getName(), userName, false, loggedinUser, session);
 			}
 
 			/*

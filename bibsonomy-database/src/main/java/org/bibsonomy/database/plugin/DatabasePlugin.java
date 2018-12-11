@@ -35,6 +35,8 @@ import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -237,12 +239,14 @@ public interface DatabasePlugin {
 
 	/**
 	 * Called when a user is removed from a group.
-	 * 
+	 *  @param group
 	 * @param userName
-	 * @param groupId
+	 * @param loggedinUser
 	 * @param session
 	 */
-	public void onChangeUserMembershipInGroup(String userName, int groupId, DBSession session);
+	default void onChangeUserMembershipInGroup(Group group, String userName, User loggedinUser, DBSession session) {
+		// noop
+	}
 	
 	/**
 	 * Called when a fellowship will be deleted
@@ -440,11 +444,53 @@ public interface DatabasePlugin {
 	}
 
 	/**
-	 * called before a cris link is deleted
-	 * @param crisLink
-	 * @param loginUser
+	 * called after a user is added to a group
+	 * @param group
+	 * @param membership
+	 * @param loggedinUser
 	 * @param session
 	 */
+	default void onAddedGroupMembership(final Group group, final GroupMembership membership, User loggedinUser, final DBSession session) {
+		// noop
+	}
+
+	/**
+	 * called after a user was removed from a group
+	 * @param group
+	 * @param username
+	 * @param loggedinUser
+	 * @param session
+	 */
+	default void onRemovedGroupMembership(Group group, String username, User loggedinUser, DBSession session) {
+		// noop
+	}
+
+
+	/**
+	 * Called before a group is removed.
+	 *
+	 * @param group the group that will be removed.
+	 * @param loggedInUser the user that is currently logged in.
+	 * @param session a database session.
+	 */
+	default void beforeRemoveGroup(Group group, User loggedInUser, DBSession session) {
+		// noop
+	}
+
+
+	/**
+	 * Called before a user is removed from a group.
+	 *
+	 * @param group the group.
+	 * @param username the name of the user that will be removed from the group.
+	 * @param loggedInUser the user that is currently logged in.
+	 * @param session a database session.
+	 */
+	default void beforeRemoveGroupMembership(Group group, String username, User loggedInUser, DBSession session) {
+		// noop
+	}
+
+
 	default void onCRISLinkDelete(CRISLink crisLink, User loginUser, DBSession session) {
 		// noop
 	}

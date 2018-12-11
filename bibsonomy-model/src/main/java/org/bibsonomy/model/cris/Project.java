@@ -58,8 +58,10 @@ public class Project implements Linkable {
 	/** the type of the project */
 	private String type;
 
+	private String sponsor;
+
 	/** the funding */
-	private float budget;
+	private Float budget;
 
 	/** the start date */
 	private Date startDate;
@@ -176,16 +178,30 @@ public class Project implements Linkable {
 	}
 
 	/**
+	 * @return the sponsor
+	 */
+	public String getSponsor() {
+		return sponsor;
+	}
+
+	/**
+	 * @param sponsor the sponsor to set
+	 */
+	public void setSponsor(String sponsor) {
+		this.sponsor = sponsor;
+	}
+
+	/**
 	 * @return the budget
 	 */
-	public float getBudget() {
+	public Float getBudget() {
 		return budget;
 	}
 
 	/**
 	 * @param budget the budget to set
 	 */
-	public void setBudget(float budget) {
+	public void setBudget(Float budget) {
 		this.budget = budget;
 	}
 

@@ -340,7 +340,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// this method is overloaded so you have one method with a String
 		// parameter
 		// and the new one with a User object parameter
-		userDb.deleteUser(user.getName(), this.dbSession);
+		userDb.deleteUser(user.getName(), USER_TESTUSER_1, this.dbSession);
 
 		// get the old user details out of the testdb
 		final User newTestuser = userDb.getUserDetails(user.getName(), this.dbSession);
@@ -365,7 +365,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final int groupid = Integer.MAX_VALUE + 1;
 
 		// get posts for this user
-		final List<Post<BibTex>> posts = bibTexDb.getPostsForUser(user.getName(), user.getName(), HashID.INTER_HASH, groupid, new ArrayList<Integer>(), null, null, 10, 0, null, this.dbSession);
+		final List<Post<BibTex>> posts = bibTexDb.getPostsForUser(user.getName(), user.getName(), HashID.INTER_HASH, groupid, new ArrayList<>(), null, null, 10, 0, null, this.dbSession);
 
 		// there should be at least more then one post with that negative group
 		// id
@@ -378,7 +378,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final User testUserIsGroup = new User("testgroup1");
 		// if anybody tries to delete a user which is a group should get an
 		// exception
-		userDb.deleteUser(testUserIsGroup.getName(), this.dbSession);
+		userDb.deleteUser(testUserIsGroup.getName(), USER_TESTUSER_1, this.dbSession);
 	}
 
 	/**

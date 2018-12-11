@@ -255,7 +255,7 @@ public class User implements Serializable {
 	private String ldapId;
 	
 	/** userids of remote authentication systems such as saml, ldap, and openid */
-	private final Map<RemoteUserNameSpace, RemoteUserId> remoteUserIds = new HashMap<RemoteUserNameSpace, RemoteUserId>(2);
+	private final Map<RemoteUserNameSpace, RemoteUserId> remoteUserIds = new HashMap<>(2);
 	/**
 	 * The temporary password the user can request when asking for a password reminder.
 	 */

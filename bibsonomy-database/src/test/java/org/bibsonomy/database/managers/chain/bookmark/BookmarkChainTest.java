@@ -179,7 +179,7 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 		this.bookmarkParam.setNumTransitiveConcepts(0);
 		this.bookmarkParam.setHash(null);
 		
-		assertEquals(GetResourcesByConceptForGroup.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
+		assertEquals(GetBookmarksByResourceSearch.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 		this.bookmarkParam.setOrder(null);
 		this.bookmarkParam.setTagIndex(null);
 		this.bookmarkParam.setRequestedUserName(null);
-		assertEquals(GetResourcesForGroup.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
+		assertEquals(GetBookmarksByResourceSearch.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
 	}
 
 	/**
@@ -204,7 +204,7 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 		this.bookmarkParam.setHash(null);
 		this.bookmarkParam.setOrder(null);
 		this.bookmarkParam.setRequestedUserName(null);
-		assertEquals(GetResourcesForGroupAndTag.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
+		assertEquals(GetBookmarksByResourceSearch.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
 	}
 
 	/**

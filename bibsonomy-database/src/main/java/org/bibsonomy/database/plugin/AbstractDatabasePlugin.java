@@ -132,11 +132,6 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	}
 
 	@Override
-	public void onChangeUserMembershipInGroup(final String userName, final int groupId, final DBSession session) {
-		// noop
-	}
-
-	@Override
 	public void onDeleteFellowship(final UserParam param, final DBSession session) {
 		// noop
 	}

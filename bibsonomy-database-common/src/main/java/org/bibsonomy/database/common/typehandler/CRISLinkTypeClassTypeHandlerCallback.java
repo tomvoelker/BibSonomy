@@ -2,6 +2,7 @@ package org.bibsonomy.database.common.typehandler;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
+import org.bibsonomy.model.cris.GroupPersonLinkType;
 import org.bibsonomy.model.cris.ProjectPersonLinkType;
 import org.bibsonomy.util.collection.BiHashMap;
 import org.bibsonomy.util.collection.BiMap;
@@ -19,6 +20,7 @@ public class CRISLinkTypeClassTypeHandlerCallback extends AbstractTypeHandlerCal
 
 	static {
 		LINK_TYPE_CLASS_ID_MAP.put(ProjectPersonLinkType.class, Integer.valueOf(1));
+		LINK_TYPE_CLASS_ID_MAP.put(GroupPersonLinkType.class, Integer.valueOf(2));
 	}
 
 	@Override

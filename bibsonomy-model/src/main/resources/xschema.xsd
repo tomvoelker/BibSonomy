@@ -97,7 +97,7 @@
 	-->
 	<xsd:complexType name="UserType">
 		<xsd:sequence>
-			<xsd:element name="groups" type="GroupsType" minOccurs="0" maxOccurs="1">
+			<xsd:element name="groups" type="GroupsType" minOccurs="0" >
 				<xsd:annotation>
 					<xsd:documentation>
 						The groups, the user is a member of, excluding
@@ -106,6 +106,7 @@
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="remoteUserId" minOccurs="0" maxOccurs="unbounded" type="RemoteUserIdType" />
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="required" />
 		<xsd:attribute name="realname" type="xsd:string" />
@@ -124,6 +125,12 @@
 		<xsd:attribute name="confidence" type="xsd:double" />
 	</xsd:complexType>
 
+
+	<xsd:complexType name="RemoteUserIdType">
+		<xsd:attribute name="userId" type="xsd:string" />
+		<xsd:attribute name="identityProvider" type="xsd:string" />
+	</xsd:complexType>
+
 	<!--
 		this type encapsulates a list of groups
 	-->
@@ -139,9 +146,18 @@
 	<!--
 		a group
 	-->
+	<xsd:simpleType name="lboolean">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="true"/>
+			<xsd:enumeration value="false"/>
+			<xsd:enumeration value=""/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
 	<xsd:complexType name="GroupType">
 		<xsd:sequence>
 			<xsd:element maxOccurs="unbounded" minOccurs="0" name="user" type="UserType" />
+			<xsd:element name="parent" type="GroupType" minOccurs="0" />
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="required" />
 		<xsd:attribute name="realname" type="xsd:string" />
@@ -149,6 +165,8 @@
 		<xsd:attribute name="description" type="xsd:string" />
 		<!-- link to details page -->
 		<xsd:attribute name="href" type="xsd:anyURI" />
+		<xsd:attribute name="organization" type="lboolean" />
+		<xsd:attribute name="externalId" type="xsd:string" />
 	</xsd:complexType>
 
 	<!--
@@ -541,6 +559,7 @@
 				<xsd:attribute name="startDate" type="xsd:dateTime" />
 				<xsd:attribute name="endDate" type="xsd:dateTime" />
 				<xsd:attribute name="parentProject" type="xsd:string" />
+				<xsd:attribute name="sponsor" type="xsd:string" />
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>

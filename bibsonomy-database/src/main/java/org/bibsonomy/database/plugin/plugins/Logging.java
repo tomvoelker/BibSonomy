@@ -40,8 +40,11 @@ import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.params.discussion.DiscussionItemParam;
+import org.bibsonomy.database.params.logging.InsertGroupLog;
+import org.bibsonomy.database.params.logging.InsertGroupMembershipLog;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -220,9 +223,9 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onChangeUserMembershipInGroup(final String userName, final int groupId, final DBSession session) {
+	public void onChangeUserMembershipInGroup(Group group, String userName, User loggedinUser, final DBSession session) {
 		final GroupParam groupParam = new GroupParam();
-		groupParam.setGroupId(groupId);
+		groupParam.setGroupId(group.getGroupId());
 		groupParam.setUserName(userName);
 		this.insert("logChangeUserMembershipInGroup", groupParam, session);
 	}
@@ -347,6 +350,7 @@ public class Logging extends AbstractDatabasePlugin {
 	public void onCRISLinkDelete(CRISLink crisLink, User loginUser, DBSession session) {
 		this.logUpdate("logCRISLinkUpdate", crisLink.getId(), -1, loginUser, session);
 	}
+
 	private void logPersonResourceRelation(Integer oldRelationId, Integer newRelationId, final User loggedinUser, final DBSession session) {
 		final LoggingParam param = new LoggingParam();
 		param.setOldContentId(oldRelationId);
@@ -355,5 +359,17 @@ public class Logging extends AbstractDatabasePlugin {
 		param.setPostEditor(loggedinUser); // FIXME: rename field of param
 
 		this.insert("logPubPerson", param, session);
+	}
+
+	@Override
+	public void beforeRemoveGroupMembership(Group group, String username, User loggedInUser, DBSession session) {
+		final InsertGroupMembershipLog param = new InsertGroupMembershipLog(loggedInUser, username, group);
+		this.insert("logGroupMembership", param, session);
+	}
+
+	@Override
+	public void beforeRemoveGroup(Group group, User loggedInUser, DBSession session) {
+		final InsertGroupLog param = new InsertGroupLog(loggedInUser, group);
+		this.insert("logGroup", param, session);
 	}
 }

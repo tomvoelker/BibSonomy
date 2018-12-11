@@ -100,7 +100,11 @@ public class ElasticsearchIndexGenerator<T> {
 		this.createNewIndex(indexName);
 		this.fillIndexWithData(indexName);
 		this.indexCreated(indexName);
+
+		// reset info fields
 		this.indexName = null;
+		this.writtenEntities = 0;
+		this.numberOfEntities = 0;
 		this.generating = false;
 	}
 

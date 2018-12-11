@@ -26,9 +26,6 @@
  */
 package org.bibsonomy.model.logic.querybuilder;
 
-import java.util.List;
-
-import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 
 /**

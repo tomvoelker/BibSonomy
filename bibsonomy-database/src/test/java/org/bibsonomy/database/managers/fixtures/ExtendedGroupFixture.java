@@ -17,10 +17,11 @@ public class ExtendedGroupFixture extends BasicGroupFixture {
                                 boolean sharedDocuments,
                                 boolean allowjoin,
                                 String description,
+                                boolean organization,
                                 String realName,
                                 String homepage) {
 
-        super(id, name, privlevel, sharedDocuments, allowjoin, description);
+        super(id, name, privlevel, sharedDocuments, allowjoin, description, organization);
 
         this.realName = realName;
         this.homepage = homepage;

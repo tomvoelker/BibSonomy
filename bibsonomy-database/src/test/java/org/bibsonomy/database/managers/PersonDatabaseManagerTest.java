@@ -55,7 +55,6 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.util.PersonMatchUtils;
 import org.bibsonomy.testutil.TestUtils;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
