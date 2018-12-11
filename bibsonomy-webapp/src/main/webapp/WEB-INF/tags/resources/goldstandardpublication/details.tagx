@@ -30,6 +30,11 @@
 	<jsp:directive.attribute name="postIsPublic" type="java.lang.Boolean" required="true"/>
 	
 	<c:set var="isAdmin" value="${loginUser.role eq 'ADMIN'}" />
+	<c:set var="showFolkSonomyLinks" value="${true}"/>
+	<!-- in cris mode only show folksonomy links to loggedin users -->
+	<c:if test="${properties['system.cris'] eq 'true'}">
+		<c:set var="showFolkSonomyLinks" value="${not empty loginUser.name}" />
+	</c:if>
 	
 	<c:set var="goldstandard" value="${post.resource}" />
 	
@@ -77,12 +82,13 @@
 			<!--+
 				| abstract
 				+-->
-			<c:set var="abstractPresent" value="${not empty goldstandard['abstract']}" />
+			<c:set var="publicationAbstract" value="${goldstandard['abstract']}" />
+			<c:set var="abstractPresent" value="${not empty publicationAbstract}" />
 			<c:choose>
 				<c:when test="${abstractPresent}">
 					<div id="abstract">
 						<div class="show-more" itemprop="description">
-							<span class="contentContainer"><c:out value="${mtl:cleanBibtex(goldstandard['abstract'])}" /></span>
+							<span class="contentContainer"><c:out value="${mtl:cleanBibtex(publicationAbstract)}" /></span>
 						</div>
 					</div>
 				</c:when>
@@ -142,13 +148,15 @@
 					<dd><pub2:externalSearchPublication loggedinUser="${loginUser}" publication="${goldstandard}" /></dd>
 				</dl>
 			</div>
-			
-			<!-- tags -->
-			<goldstandard:tags tagCloudCommand="${command.tagcloud}" tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
-			
-			<!-- users that have this resource in their collection -->
-			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}" interHash="${goldstandard.interHash}"/>
-			
+
+			<c:if test="${showFolkSonomyLinks}">
+				<!-- tags -->
+				<goldstandard:tags tagCloudCommand="${command.tagcloud}" tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
+
+				<!-- users that have this resource in their collection -->
+				<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}" interHash="${goldstandard.interHash}"/>
+			</c:if>
+
 			<c:if test="${hasRelatedPublication or (isAdmin and isRealGoldstandard)}">
 				<div id="related-publications">
 					<div id="related-publications-references" class="related-publications-container">
@@ -189,24 +197,26 @@
 					</div>
 				</div>
 			</c:if>
-			
-			<!--+
-				| discussion and rating
-				+-->
-			<div id="discussion-section">
-				<h2 class="page-header">
-					<fmt:message key="publications.discussion.headline"/>
-				</h2>
 
-				<!-- Aggregated RatingInfo -->
-				<review:reviewRatingsInfo resource="${post.resource}" />
-		
-				<!-- Publication reference link -->
-				<!-- TODO: discuss this feature: <discussion:linkBox resource="${post.resource}"/> TODODZO -->
-				
-				<!-- discussion -->
-				<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}" postIsPublic="${postIsPublic}" />
-			</div>
+			<c:if test="${showFolkSonomyLinks}">
+				<!--+
+					| discussion and rating
+					+-->
+				<div id="discussion-section">
+					<h2 class="page-header">
+						<fmt:message key="publications.discussion.headline"/>
+					</h2>
+
+					<!-- Aggregated RatingInfo -->
+					<review:reviewRatingsInfo resource="${post.resource}" />
+
+					<!-- Publication reference link -->
+					<!-- TODO: discuss this feature: <discussion:linkBox resource="${post.resource}"/> TODODZO -->
+
+					<!-- discussion -->
+					<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}" postIsPublic="${postIsPublic}" />
+				</div>
+			</c:if>
 			<!-- citation box -->
 			<h2 class="page-header" id="export">
 				<fmt:message key="publications.citations.headline" />
@@ -229,24 +239,28 @@
 					<li>
 						<a href="#linksresources"><fmt:message key="publications.resource.headline" /></a>
 					</li>
-					<c:if test="${not empty command.tagcloud.tags}">
-						<li>
-							<a href="#tags">Tags</a>
-						</li>
-					</c:if>
-					<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
-						<li>
-							<a href="#users"><span class="capitalize"><fmt:message key="users"/></span></a>
-						</li>
+					<c:if test="${showFolkSonomyLinks}">
+						<c:if test="${not empty command.tagcloud.tags}">
+							<li>
+								<a href="#tags">Tags</a>
+							</li>
+						</c:if>
+						<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
+							<li>
+								<a href="#users"><span class="capitalize"><fmt:message key="users"/></span></a>
+							</li>
+						</c:if>
 					</c:if>
 					<c:if test="${hasRelatedPublication}">
 						<li>
 							<a href="#related-publications">Related Publications</a> <!-- TODO: i18n -->
 						</li>
 					</c:if>
-					<li>
-						<a href="#discussion-section"><fmt:message key="publications.discussion.headline"/></a>
-					</li>
+					<c:if test="${showFolkSonomyLinks}">
+						<li>
+							<a href="#discussion-section"><fmt:message key="publications.discussion.headline"/></a>
+						</li>
+					</c:if>
 					<li>
 						<a href="#export"><fmt:message key="publications.citations.headline" /></a>
 					</li>
