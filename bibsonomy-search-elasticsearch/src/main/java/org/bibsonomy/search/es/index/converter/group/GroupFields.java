@@ -20,7 +20,7 @@ public interface GroupFields {
 	String REALNAME_LOWERCASE = "realname_lowercase";
 
 	/** the external id of the group */
-	String EXTERNAL_ID = "external_id";
+	String INTERNAL_ID = "internal_id";
 
 	/** flag if the group is a organization */
 	String ORGANIZATION = "organization";

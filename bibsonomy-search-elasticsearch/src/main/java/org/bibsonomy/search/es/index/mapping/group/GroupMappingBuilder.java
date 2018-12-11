@@ -48,7 +48,7 @@ public class GroupMappingBuilder implements MappingBuilder<XContentBuilder> {
 								.field(TYPE_FIELD, TEXT_TYPE)
 							.endObject()
 							// external id
-							.startObject(GroupFields.EXTERNAL_ID)
+							.startObject(GroupFields.INTERNAL_ID)
 								.field(TYPE_FIELD, KEYWORD_TYPE)
 							.endObject()
 							// organization

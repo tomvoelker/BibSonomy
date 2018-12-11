@@ -36,7 +36,7 @@ public class GroupConverter implements Converter<Group, Map<String, Object>, Obj
 			document.put(GroupFields.REALNAME_LOWERCASE, realname.toLowerCase());
 		}
 
-		document.put(GroupFields.EXTERNAL_ID, group.getExternalId());
+		document.put(GroupFields.INTERNAL_ID, group.getInternalId());
 		document.put(GroupFields.ORGANIZATION, group.isOrganization());
 
 		final Group parentGroup = group.getParent();
@@ -53,7 +53,7 @@ public class GroupConverter implements Converter<Group, Map<String, Object>, Obj
 
 		group.setRealname((String) source.get(GroupFields.REALNAME));
 		group.setName((String) source.get(GroupFields.NAME));
-		group.setExternalId((String) source.get(GroupFields.EXTERNAL_ID));
+		group.setInternalId((String) source.get(GroupFields.INTERNAL_ID));
 		group.setOrganization((Boolean) source.get(GroupFields.ORGANIZATION));
 
 		final Object homepage = source.get(GroupFields.HOMEPAGE);
