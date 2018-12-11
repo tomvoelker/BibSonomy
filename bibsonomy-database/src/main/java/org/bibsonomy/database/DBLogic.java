@@ -3740,6 +3740,7 @@ public class DBLogic implements LogicInterface {
 			if (!builder.isWithPosts() && builder.isWithPersonsOfPosts()) {
 				throw new IllegalArgumentException("need to fetch posts to retrieve persons of posts");
 			}
+
 			if (present(builder.getInterhash())) {
 				if (!builder.isWithPosts() && !present(builder.getAuthorIndex()) && !present(builder.getPersonId()) && !present(builder.getRelationType())) {
 					return this.personDBManager.getResourcePersonRelationsWithPersonsByInterhash(builder.getInterhash(), session);
