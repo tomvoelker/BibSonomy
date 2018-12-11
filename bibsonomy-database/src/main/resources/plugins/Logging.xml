@@ -247,8 +247,8 @@
 	</insert>
 
 	<insert id="logGroup" parameterClass="org.bibsonomy.database.params.logging.InsertGroupLog">
-		INSERT INTO log_groupids (group_name, `group`, privlevel, sharedDocuments, allow_join, shortDescription, organization, external_id, log_date, log_user)
-		SELECT group_name, `group`, privlevel, sharedDocuments, allow_join, shortDescription, organization, external_id, #loggedTimestamp#, #loggedUser.name#
+		INSERT INTO log_groupids (group_name, `group`, privlevel, sharedDocuments, allow_join, shortDescription, organization, internal_id, log_date, log_user)
+		SELECT group_name, `group`, privlevel, sharedDocuments, allow_join, shortDescription, organization, internal_idlogGroup, #loggedTimestamp#, #loggedUser.name#
 		FROM groupids
 		WHERE `group` = #group.groupId#
 	</insert>
