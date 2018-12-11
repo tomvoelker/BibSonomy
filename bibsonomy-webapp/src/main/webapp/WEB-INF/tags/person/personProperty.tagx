@@ -1,0 +1,64 @@
+<jsp:root version="2.0"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:per="urn:jsptagdir:/WEB-INF/tags/person">
+
+    <jsp:directive.attribute name="hasClaimedOrIsAdmin" type="java.lang.Boolean" required="true" />
+    <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true" />
+    <jsp:directive.attribute name="type" type="java.lang.String" required="true" />
+    <jsp:directive.attribute name="value" type="java.lang.String" required="true" />
+
+    <fmt:message key="person.show.saveButton" var="textSaveButton" />
+    <fmt:message key="person.show.TooltipLockedForm" var="formLockedTooltip" />
+    <c:set value="${fn:toUpperCase(type.substring(0, 1))}${type.substring(1)}" var="typeUpper"/>
+
+    <div class='form-group'>
+        <label class="control-label col-md-4 col-smallpadding" for='form${typeUpper}'><fmt:message key="person.show.${type}" /></label>
+
+        <div class="col-md-8">
+            <div class="personPageFormPlaceholder">
+                <c:if test="${hasClaimedOrIsAdmin}">
+                    <span class="personPageEnableForm fa fa-pencil"><!--  --></span>
+                </c:if>
+                <c:if test="${not hasClaimedOrIsAdmin and command.context.userLoggedIn}" >
+                    <span data-toggle="tooltip" title="${formLockedTooltip}" class="personPageLockedForm fa fa-info-circle"><!--  --></span>
+                </c:if>
+
+                <c:if test="${hasClaimedOrIsAdmin}">
+                    <c:choose>
+                        <c:when test="${type eq 'homepage'}" >
+                            <a class="personPageFormFieldContent" id="personPageForm${typeUpper}Value" rel="external nofollow" href="${fn:escapeXml(value)}" itemprop="url"><c:out value="${value}"/></a>
+                        </c:when>
+                        <c:otherwise>
+                            <span class="personPageFormFieldContent" id="personPageForm${typeUpper}Value">${value}</span>
+                        </c:otherwise>
+                    </c:choose>
+                </c:if>
+            </div>
+
+            <c:if test='${hasClaimedOrIsAdmin}'>
+                <div class="personPageFormField col-md-8">
+                    <fmt:message key="person.show.${type}.placeholder" var="textPlaceholder" />
+                    <c:if test="${type eq 'researcherid'}">
+                        <c:set var="value">
+                            <per:researcherid researcherid="${value}" returnUrl="${true}"/>
+                        </c:set>
+                    </c:if>
+                    <c:if test="${type eq 'orcid'}" >
+                        <c:set var="value">
+                            <per:orcid orcid="${value}"/>
+                        </c:set>
+                    </c:if>
+                    <input class='form-control' type="text" name='person.${type}' id="form${typeUpper}" placeholder="${textPlaceholder}" value="${value}"/>
+                </div>
+
+                <!-- TODO: REMOVE INLINE CSS -->
+                <div style="margin:12px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
+                    <actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_${fn:toUpperCase(type)}"></actionbuttons:personPageupdateButton>
+                </div>
+            </c:if>
+        </div>
+    </div>
+</jsp:root>
