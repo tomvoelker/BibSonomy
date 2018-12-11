@@ -3722,6 +3722,7 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+
 	@Override
 	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQueryBuilder builder) {
 		final List<ResourcePersonRelation> rVal = this.queryResourceRelations(builder);

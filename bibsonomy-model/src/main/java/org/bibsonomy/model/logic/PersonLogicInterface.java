@@ -104,8 +104,11 @@ public interface PersonLogicInterface {
 	List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder builder);
 
 	/**
-	 * @param builder the builder
-	 * @return a querybuilder object by which options for the query can be specified
+	 * Retrieves a list with resources according to the query.
+	 *
+	 * @param builder a query builder object with the query options.
+	 *
+	 * @return a list of resources according to the query.
 	 */
 	List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQueryBuilder builder);
 
