@@ -395,14 +395,14 @@ public class Group implements Linkable, Serializable {
 	}
 
 	/**
-	 * @return the externalId
+	 * @return the internalId
 	 */
 	public String getExternalId() {
 		return externalId;
 	}
 
 	/**
-	 * @param externalId the externalId to set
+	 * @param externalId the internalId to set
 	 */
 	public void setExternalId(String externalId) {
 		this.externalId = externalId;

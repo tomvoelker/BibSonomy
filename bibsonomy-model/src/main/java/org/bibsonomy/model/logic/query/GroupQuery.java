@@ -59,7 +59,7 @@ public class GroupQuery implements Query {
 	}
 
 	/**
-	 * @return the externalId
+	 * @return the internalId
 	 */
 	public String getExternalId() {
 		return externalId;

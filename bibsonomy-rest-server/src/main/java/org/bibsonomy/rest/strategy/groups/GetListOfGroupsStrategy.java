@@ -47,7 +47,7 @@ public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>
 	 */
 	public GetListOfGroupsStrategy(final Context context) {
 		super(context);
-		externalId = context.getStringAttribute("externalId", null);
+		externalId = context.getStringAttribute("internalId", null);
 	}
 
 	@Override

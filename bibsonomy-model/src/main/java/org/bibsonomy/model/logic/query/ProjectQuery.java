@@ -52,17 +52,17 @@ public class ProjectQuery implements Query {
 		/** the end */
 		private int end;
 
-		/** the externalId */
-		private String externalId;
+		/** the internalId */
+		private String internalId;
 
 		/**
-		 * sets the externalId
+		 * sets the internalId
 		 *
-		 * @param externalId
+		 * @param internalId
 		 * @return
 		 */
-		public ProjectQueryBuilder externalId(final String externalId) {
-			this.externalId = externalId;
+		public ProjectQueryBuilder internalId(final String internalId) {
+			this.internalId = internalId;
 			return this;
 		}
 
@@ -126,7 +126,7 @@ public class ProjectQuery implements Query {
 		 */
 		public ProjectQuery build() {
 			return new ProjectQuery(this.order, this.sortOrder, this.projectStatus,
-					this.start, this.end, this.externalId);
+					this.start, this.end, this.internalId);
 		}
 	}
 
@@ -209,7 +209,7 @@ public class ProjectQuery implements Query {
 	}
 
 	/**
-	 * @return the externalId
+	 * @return the internalId
 	 */
 	public String getExternalId() {
 		return externalId;
