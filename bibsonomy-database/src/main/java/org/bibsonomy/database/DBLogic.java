@@ -61,8 +61,8 @@ import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.common.enums.TagRelation;
@@ -156,7 +156,7 @@ import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
-import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -175,6 +175,21 @@ import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.ValidationUtils;
+
+import java.net.InetAddress;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * Database Implementation of the LogicInterface
@@ -712,21 +727,25 @@ public class DBLogic implements LogicInterface {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	@Deprecated
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping,
+																										 final String groupingName, final List<String> tags, final String hash,
+																										 final String search, final QueryScope queryScope, final Set<Filter> filters,
+																										 final Order order, final Date startDate, final Date endDate,
+																										 final int start, final int end) {
 
-		final PostQuery<T> query = new PostQuery<>(resourceType);
-		query.setScope(queryScope);
-		query.setGrouping(grouping);
-		query.setGroupingName(groupingName);
-		query.setTags(tags);
-		query.setHash(hash);
-		query.setSearch(search);
-		query.setFilters(filters);
-		query.setOrder(order);
-		query.setStartDate(startDate);
-		query.setEndDate(endDate);
-		query.setStart(start);
-		query.setEnd(end);
+		final PostQuery<T> query = new PostQueryBuilder().
+						setScope(queryScope).
+						setGrouping(grouping).
+						setGroupingName(groupingName).
+						setTags(tags).
+						setHash(hash).
+						setSearch(search).
+						setFilters(filters).
+						setOrder(order).
+						setStartDate(startDate).
+						setEndDate(endDate).
+						setStart(start).
+						setEnd(end).createPostQuery(resourceType);
 		// delegating to the new method
 		return this.getPosts(query);
 	}
@@ -3397,12 +3416,6 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public List<Person> getPersons(PersonQuery query) {
 		return this.personDBManager.getPersons(query);
-	}
-
-	@Override
-	public List<Post<BibTex>> getPublicationSuggestion(final String queryString) {
-		final PublicationSuggestionQueryBuilder options = new PublicationSuggestionQueryBuilder(queryString).withNonEntityPersons(true);
-		return this.publicationDBManager.getPublicationSuggestion(options);
 	}
 
 	@Override

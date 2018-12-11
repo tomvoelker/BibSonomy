@@ -1,0 +1,119 @@
+package org.bibsonomy.model.logic.querybuilder;
+
+import org.bibsonomy.common.enums.Filter;
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.logic.query.PostQuery;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+public class PostQueryBuilder {
+	private QueryScope scope;
+	private GroupingEntity grouping;
+	private String groupingName;
+	private List<String> tags;
+	private String hash;
+	private Set<Filter> filters;
+	private Order order;
+	private Date startDate;
+	private Date endDate;
+	private boolean onlyIncludeAuthorsWithoutPersonId;
+	private List<PersonName> personNames;
+	private String search;
+	private int start;
+	private int end;
+
+	public <R extends Resource> PostQuery<R> createPostQuery(Class<R> resourceClass) {
+		final PostQuery<R> postQuery = new PostQuery<>(resourceClass);
+		postQuery.setSearch(search);
+		postQuery.setScope(scope);
+		postQuery.setGrouping(grouping);
+		postQuery.setGroupingName(groupingName);
+		postQuery.setTags(tags);
+		postQuery.setHash(hash);
+		postQuery.setFilters(filters);
+		postQuery.setOrder(order);
+		postQuery.setStartDate(startDate);
+		postQuery.setEndDate(endDate);
+		postQuery.setPersonNames(personNames);
+		postQuery.setOnlyIncludeAuthorsWithoutPersonId(onlyIncludeAuthorsWithoutPersonId);
+		postQuery.setStart(start);
+		postQuery.setEnd(end);
+		return postQuery;
+	}
+
+	public PostQueryBuilder setEnd(int end) {
+		this.end = end;
+		return this;
+	}
+
+	public PostQueryBuilder setStart(int start) {
+		this.start = start;
+		return this;
+	}
+
+	public PostQueryBuilder setSearch(String search) {
+		this.search = search;
+		return this;
+	}
+
+	public PostQueryBuilder setScope(QueryScope scope) {
+		this.scope = scope;
+		return this;
+	}
+
+	public PostQueryBuilder setGrouping(GroupingEntity grouping) {
+		this.grouping = grouping;
+		return this;
+	}
+
+	public PostQueryBuilder setGroupingName(String groupingName) {
+		this.groupingName = groupingName;
+		return this;
+	}
+
+	public PostQueryBuilder setTags(List<String> tags) {
+		this.tags = tags;
+		return this;
+	}
+
+	public PostQueryBuilder setHash(String hash) {
+		this.hash = hash;
+		return this;
+	}
+
+	public PostQueryBuilder setFilters(Set<Filter> filters) {
+		this.filters = filters;
+		return this;
+	}
+
+	public PostQueryBuilder setOrder(Order order) {
+		this.order = order;
+		return this;
+	}
+
+	public PostQueryBuilder setStartDate(Date startDate) {
+		this.startDate = startDate;
+		return this;
+	}
+
+	public PostQueryBuilder setEndDate(Date endDate) {
+		this.endDate = endDate;
+		return this;
+	}
+
+	public PostQueryBuilder setOnlyIncludeAuthorsWithoutPersonId(boolean onlyIncludeAuthorsWithoutPersonId) {
+		this.onlyIncludeAuthorsWithoutPersonId = onlyIncludeAuthorsWithoutPersonId;
+		return this;
+	}
+
+	public PostQueryBuilder setPersonNames(List<PersonName> personNames) {
+		this.personNames = personNames;
+		return this;
+	}
+}

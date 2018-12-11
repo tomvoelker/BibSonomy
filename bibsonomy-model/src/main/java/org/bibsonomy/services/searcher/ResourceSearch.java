@@ -28,12 +28,10 @@ package org.bibsonomy.services.searcher;
 
 import java.util.List;
 
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.services.searcher.query.PostSearchQuery;
 
 /**
@@ -62,11 +60,4 @@ public interface ResourceSearch<R extends Resource> {
 	 * @return tags that are used for the posts matching the search query
 	 */
 	List<Tag> getTags(final User loggedinUser, final PostSearchQuery<?> postQuery);
-
-	/**
-	 * @param options options about the search including the querystring
-	 * @return a ranked list of (more-or-less) matching publications. Each resource is contained in a post of some user.
-	 */
-	List<Post<BibTex>> getPublicationSuggestions(PublicationSuggestionQueryBuilder options);
-
 }

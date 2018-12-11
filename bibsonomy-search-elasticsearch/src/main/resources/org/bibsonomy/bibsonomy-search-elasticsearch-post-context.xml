@@ -152,7 +152,6 @@
 		<property name="manager" ref="elasticsearchPublicationManager" />
 		<property name="resourceConverter" ref="elasticsearchPublicationConverter" />
 		<property name="infoLogic" ref="searchInfoLogic" />
-		<property name="genealogyUser" value="${genealogy.import.user}" />
 	</bean>
 
 	<bean id="elasticsearchCommunityBookmarkSearch" class="org.bibsonomy.search.es.search.post.ElasticsearchPostSearch">
@@ -165,8 +164,5 @@
 		<property name="manager" ref="elasticsearchCommunityPublicationManager" />
 		<property name="resourceConverter" ref="elasticsearchCommunityPublicationConverter" />
 		<property name="infoLogic" ref="searchInfoLogic" />
-		<property name="genealogyUser" value="${genealogy.import.user}" />
 	</bean>
-
-
 </beans>

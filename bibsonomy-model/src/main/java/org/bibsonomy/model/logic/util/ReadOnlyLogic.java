@@ -847,14 +847,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPublicationSuggestion(java.lang.String)
-	 */
-	@Override
-	public List<Post<BibTex>> getPublicationSuggestion(String queryString) {
-		return this.logicinterface.getPublicationSuggestion(queryString);
-	}
-	
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations()
 	 */
 	@Override

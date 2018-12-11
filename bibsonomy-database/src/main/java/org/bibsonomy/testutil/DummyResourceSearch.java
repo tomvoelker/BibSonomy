@@ -29,12 +29,10 @@ package org.bibsonomy.testutil;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.services.searcher.query.PostSearchQuery;
 
@@ -50,11 +48,6 @@ public class DummyResourceSearch<R extends Resource> implements ResourceSearch<R
 
 	@Override
 	public List<Tag> getTags(User loggedinUser, PostSearchQuery<?> postQuery) {
-		return new LinkedList<>();
-	}
-
-	@Override
-	public List<Post<BibTex>> getPublicationSuggestions(PublicationSuggestionQueryBuilder options) {
 		return new LinkedList<>();
 	}
 }

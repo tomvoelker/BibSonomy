@@ -10,6 +10,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.search.testutils.SearchSpringContextWrapper;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.search.update.SearchIndexDualSyncState;
 import org.junit.Test;
 
@@ -20,8 +21,8 @@ import java.util.List;
  *
  * @author dzo
  */
-public class PersonResourcePersonRelationIndexGeneationLogicTest extends AbstractDatabaseManagerTest {
-	private static final PersonResourcePersonRelationIndexGeneationLogic PERSON_INDEX_GENERATIONLOGIC = SearchSpringContextWrapper.getBeanFactory().getBean(PersonResourcePersonRelationIndexGeneationLogic.class);
+public class PersonIndexGenerationLogicTest extends AbstractDatabaseManagerTest {
+	private static final PersonIndexGenerationLogic PERSON_INDEX_GENERATIONLOGIC = SearchSpringContextWrapper.getBeanFactory().getBean(PersonIndexGenerationLogic.class);
 
 	/**
 	 * test {@link PersonIndexGenerationLogic#getEntities(int, int)}
@@ -52,27 +53,11 @@ public class PersonResourcePersonRelationIndexGeneationLogicTest extends Abstrac
 	}
 
 	/**
-	 * tests {@link PersonResourcePersonRelationIndexGeneationLogic#getToManyEntities(int, int)}
+	 * tests {@link PersonIndexGenerationLogic#getDbState()}
 	 */
 	@Test
-	public void testGetToManyEntities() {
-		final List<ResourcePersonRelation> toManyEntities = PERSON_INDEX_GENERATIONLOGIC.getToManyEntities(0, 100);
-		assertThat(toManyEntities.size(), is(9));
-
-		final ResourcePersonRelation relation = toManyEntities.get(0);
-		assertThat(relation.getRelationType(), is(PersonResourceRelationType.AUTHOR));
-		assertThat(relation.getPersonIndex(), is(0));
-		assertThat(relation.getPerson().getPersonId(), is("h.muller"));
-		assertThat(relation.getPerson().getPersonChangeId(), is(5));
-		assertThat(relation.getPost().getResource().getTitle(), is("Wurst aufs Brot"));
-	}
-
-	/**
-	 * tests {@link PersonResourcePersonRelationIndexGeneationLogic#getNumberOfToManyEntities()}
-	 */
-	@Test
-	public void testGetNumberOfToManyEntities() {
-		final int numberOfToManyEntities = PERSON_INDEX_GENERATIONLOGIC.getNumberOfToManyEntities();
-		assertThat(numberOfToManyEntities, is(9));
+	public void testGetDbState() {
+		final SearchIndexDualSyncState dbState = PERSON_INDEX_GENERATIONLOGIC.getDbState();
+		assertThat(dbState.getFirstState().getLastPostContentId(), is(36l));
 	}
 }
