@@ -90,16 +90,18 @@
 
 				<!-- VCard -->
 				<div id="personInfo" class="row">
-					<div class="col-md-6">
-				
+					<div class="col-md-7">
+
+						<c:set value="12" var="colSize"/>
 						<!-- Picture -->
 						<c:if test="${not empty command.person.user and command.hasPicture}">
+							<c:set value="8" var="colSize" />
 							<div id="userImg" class="col-md-4 personPageVcardLeft">
 								<img class="person-image" src="${relativeUrlGenerator.getUserPictureUrlByUsername(command.person.user)}" />
 							</div>
 						</c:if>
 
-						<div class="col-md-8 col-nopadding">
+						<div class="col-md-${colSize} col-nopadding">
 							<spring:eval var="organizations" expression="T(org.bibsonomy.model.util.cris.CRISLinkUtils).filterCRISLinksBySourceType(T(java.lang.Class).forName('org.bibsonomy.model.Group'), command.person.crisLinks)" />
 							<c:choose>
 								<c:when test="${empty organizations}">
@@ -117,7 +119,7 @@
 							<per:personProperty hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" type="homepage" value="${command.person.homepage}" />
 						</div>
 					</div>
-					<div class="col-md-6">
+					<div class="col-md-5">
 						<!-- Alternative Names -->
 						<per:alternativeNames hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" />
 						<!-- ORCID -->
