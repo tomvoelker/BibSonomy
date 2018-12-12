@@ -73,7 +73,6 @@
 	<resultMap id="resourcePersonRelationLogStub" class="org.bibsonomy.model.ResourcePersonRelationLogStub" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
 		<result property="personId"        column="person_id"       javaType="java.lang.String" />
 		<result property="postInterhash"   column="simhash1"        javaType="java.lang.String" />
-		<result property="deleted"         column="deleted"         javaType="boolean" />
 	</resultMap>
 	
 	<resultMap id="preFilledResourcePersonRelation" class="resourcePersonRelation" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
