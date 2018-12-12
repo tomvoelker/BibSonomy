@@ -61,7 +61,7 @@ public abstract class AbstractDatabaseManager {
 	protected <T> List<T> queryForList(final String query, final Object param, final Class<T> type, final DBSession session) {
 		@SuppressWarnings("unchecked")
 		final List<T> list = (List<T>) session.queryForList(query, param);
-		return list != null ? list : new LinkedList<T>();
+		return list != null ? list : new LinkedList<>();
 	}
 	
 	/**

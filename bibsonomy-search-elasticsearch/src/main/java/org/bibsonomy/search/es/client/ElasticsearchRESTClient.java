@@ -32,8 +32,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.ESClient;
-import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
@@ -81,6 +81,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -141,29 +142,30 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public boolean insertNewDocument(String indexName, String type, String id, Map<String, Object> jsonDocument) {
+	public boolean insertNewDocument(String indexName, String id, IndexData indexData) {
 		return this.secureCall(() -> {
-			final IndexRequest indexRequest = buildIndexRequest(indexName, type, id, jsonDocument);
+			final IndexRequest indexRequest = buildIndexRequest(indexName, id, indexData);
 			final IndexResponse response = this.client.index(indexRequest, this.buildRequestOptions());
 			return response.getResult() == DocWriteResponse.Result.CREATED;
 		}, false, "error while inserting new document");
 	}
 
-	private static IndexRequest buildIndexRequest(String indexName, String type, String id, Map<String, Object> jsonDocument) {
+	private static IndexRequest buildIndexRequest(String indexName, String id, IndexData indexData) {
 		final IndexRequest indexRequest = new IndexRequest();
-		indexRequest.index(indexName);
-		indexRequest.type(type); // TODO: remove with es 7
-		indexRequest.id(id);
-		indexRequest.source(jsonDocument);
-		return indexRequest;
+		return indexRequest.index(indexName)
+								.routing(indexData.getRouting())
+								.type(indexData.getType()) // TODO: remove with es 7
+								.id(id)
+								.source(indexData.getSource());
 	}
 
 	@Override
-	public boolean insertNewDocuments(String indexName, String type, Map<String, Map<String, Object>> jsonDocuments) {
+	public boolean insertNewDocuments(String indexName, Map<String, IndexData> jsonDocuments) {
 		return this.secureCall(() -> {
 			final BulkRequest bulkRequest = new BulkRequest();
 			// convert each document to a indexrequest object and add all to the request
-			final Stream<IndexRequest> indexRequests = jsonDocuments.entrySet().stream().map(entity -> buildIndexRequest(indexName, type, entity.getKey(), entity.getValue()));
+			final Stream<IndexRequest> indexRequests = jsonDocuments.entrySet().stream().map(entity -> buildIndexRequest(indexName,entity.getKey(), entity.getValue()));
+
 			indexRequests.forEach(bulkRequest::add);
 
 			final BulkResponse bulkResponse = this.client.bulk(bulkRequest, this.buildRequestOptions());
@@ -181,7 +183,7 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public SearchIndexSyncState getSearchIndexStateForIndex(String indexName, String syncStateForIndexName) {
+	public <S extends SearchIndexSyncState> S getSearchIndexStateForIndex(String indexName, String syncStateForIndexName, Converter<S, Map<String, Object>, Object> converter) {
 		return this.secureCall(() -> {
 			final GetRequest getRequest = new GetRequest();
 			getRequest.id(syncStateForIndexName);
@@ -190,7 +192,7 @@ public class ElasticsearchRESTClient implements ESClient {
 			if (!response.isExists()) {
 				throw new IllegalStateException("no index sync state found for " + indexName);
 			}
-			return ElasticsearchUtils.deserializeSearchIndexState(response.getSourceAsMap());
+			return converter.convert(response.getSourceAsMap(), null);
 		}, null, "error getting search index sync state for index " + syncStateForIndexName);
 	}
 
@@ -270,6 +272,26 @@ public class ElasticsearchRESTClient implements ESClient {
 			final UpdateResponse updateResponse = this.client.update(updateRequest, this.buildRequestOptions());
 			return updateResponse.getResult() == DocWriteResponse.Result.UPDATED;
 		}, false, "error while updating document " + id);
+	}
+
+	@Override
+	public boolean updateDocuments(String indexName, List<Pair<String, UpdateData>> updates) {
+		return this.secureCall(() -> {
+			final BulkRequest bulkRequest = new BulkRequest();
+
+			final Stream<UpdateRequest> updateRequestStream = updates.stream().map(entry -> buildUpdateRequest(indexName, entry.getFirst(), entry.getSecond()));
+			updateRequestStream.forEach(bulkRequest::add);
+
+			final BulkResponse bulkResponse = this.client.bulk(bulkRequest, this.buildRequestOptions());
+			return !bulkResponse.hasFailures();
+		}, false, "error while updating documents " + updates.stream().map(Pair::getFirst).collect(Collectors.joining(", ")));
+	}
+
+	private UpdateRequest buildUpdateRequest(final String index, String id, UpdateData updateData) {
+		final UpdateRequest updateRequest = new UpdateRequest(index, updateData.getType(), id);
+		updateRequest.routing(updateData.getRouting());
+		updateRequest.script(updateData.getScript());
+		return updateRequest;
 	}
 
 	@Override
@@ -357,15 +379,16 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public boolean deleteDocuments(String indexName, String type, Set<String> idsToDelete) {
-		if (!present(idsToDelete)) {
+	public boolean deleteDocuments(String indexName, List<DeleteData> documentsToDelete) {
+		if (!present(documentsToDelete)) {
 			// nothing to delete
 			return true;
 		}
+
 		return this.secureCall(() -> {
 			final BulkRequest bulkRequest = new BulkRequest();
 
-			final Stream<DeleteRequest> deleteRequestsStream = idsToDelete.stream().map(id -> new DeleteRequest().id(id).type(type).index(indexName));
+			final Stream<DeleteRequest> deleteRequestsStream = documentsToDelete.stream().map(deleteData -> new DeleteRequest().id(deleteData.getId()).type(deleteData.getType()).routing(deleteData.getRouting()).index(indexName));
 			deleteRequestsStream.forEach(bulkRequest::add);
 
 			final BulkResponse bulkResponse = this.client.bulk(bulkRequest, this.buildRequestOptions());

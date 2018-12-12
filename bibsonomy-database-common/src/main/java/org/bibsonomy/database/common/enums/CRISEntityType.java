@@ -47,7 +47,11 @@ public enum CRISEntityType {
 		CLASS_CRIS_ENTITY_TYPE_MAP.put(Group.class, GROUP);
 	}
 
-
+	/**
+	 * returns the cris entry type based on the class of the linkable
+	 * @param clazz
+	 * @return
+	 */
 	public static CRISEntityType getCRISEntityType(final Class<? extends Linkable> clazz) {
 		if (CLASS_CRIS_ENTITY_TYPE_MAP.containsKey(clazz)) {
 			return CLASS_CRIS_ENTITY_TYPE_MAP.get(clazz);

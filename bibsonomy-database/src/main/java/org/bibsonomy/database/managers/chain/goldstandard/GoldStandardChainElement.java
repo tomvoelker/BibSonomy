@@ -30,25 +30,25 @@ import java.util.List;
 
 import org.bibsonomy.database.managers.GoldStandardDatabaseManager;
 import org.bibsonomy.database.managers.chain.ChainElement;
-import org.bibsonomy.database.params.ResourceParam;
+import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.logic.query.PostQuery;
 
 /**
  * @author dzo
  * @param <RR> 
- * @param <R> 
- * @param <P> 
+ * @param <R>
  */
-public abstract class GoldStandardChainElement<RR extends Resource, R extends Resource & GoldStandard<RR>, P extends ResourceParam<RR>> extends ChainElement<List<Post<R>>, P> {
+public abstract class GoldStandardChainElement<RR extends Resource, R extends Resource & GoldStandard<RR>> extends ChainElement<List<Post<R>>, QueryAdapter<PostQuery<R>>> {
 	
-	protected GoldStandardDatabaseManager<RR, R, P> databaseManager;
+	protected GoldStandardDatabaseManager<RR, R, ?> databaseManager;
 
 	/**
 	 * @param databaseManager the databaseManager to set
 	 */
-	public void setDatabaseManager(final GoldStandardDatabaseManager<RR, R, P> databaseManager) {
+	public void setDatabaseManager(final GoldStandardDatabaseManager<RR, R, ?> databaseManager) {
 		this.databaseManager = databaseManager;
 	}
 }

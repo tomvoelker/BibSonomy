@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 
@@ -44,7 +44,7 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	/**
 	 * the selected search type such as 'group', 'search', 'sharedResourceSearch'  
 	 */
-	private SearchType scope = SearchType.LOCAL;
+	private QueryScope scope = QueryScope.LOCAL;
 	
 	/** tags to search for */
 	private String requestedTags = "";
@@ -297,14 +297,14 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	/**
 	 * @return the selected search type such as 'group', 'search', 'sharedResourceSearch'
 	 */
-	public SearchType getScope() {
+	public QueryScope getScope() {
 		return this.scope;
 	}
 
 	/**
 	 * @param selectedSearchScope the selected search type such as 'group', 'search', 'sharedResourceSearch'
 	 */
-	public void setScope(SearchType scope) {
+	public void setScope(QueryScope scope) {
 		this.scope = scope;
 	}
 }

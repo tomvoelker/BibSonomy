@@ -75,7 +75,7 @@ function setupPersonAutocomplete(inputFieldSelector, formAction, displayKey, sel
 
 var printResults = function (context) {
 	var responseText = "";	
-	if (context.suggestions.length < resultLimit)	
+	if (context.suggestions.length < resultLimit)
 		responseText = getString('persons.intro.search.result', [context.suggestions.length]);
 	else
 		responseText = getString('persons.intro.search.resultMax', [context.suggestions.length]);

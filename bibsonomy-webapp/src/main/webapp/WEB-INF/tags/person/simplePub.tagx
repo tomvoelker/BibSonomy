@@ -5,9 +5,7 @@
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 
-	<div class="col-md-12">		
-		<span class="ptitle"><bib:title post="${post}" /></span>
-		<span class="personPdesc pdesc"><bib:desc post="${post}" publication="${post.resource}"/></span><br/>
-	</div>
+	<span class="ptitle"><bib:title post="${post}" /></span>
+	<span class="personPdesc pdesc"><bib:desc post="${post}" publication="${post.resource}"/></span>
 
 </jsp:root>

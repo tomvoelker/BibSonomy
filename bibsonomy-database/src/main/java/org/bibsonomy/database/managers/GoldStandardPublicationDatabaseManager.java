@@ -86,5 +86,4 @@ public final class GoldStandardPublicationDatabaseManager extends GoldStandardDa
 	protected BibTexParam createNewParam() {
 		return new BibTexParam();
 	}
-
 }

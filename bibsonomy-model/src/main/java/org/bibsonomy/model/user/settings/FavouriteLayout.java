@@ -29,7 +29,6 @@ package org.bibsonomy.model.user.settings;
 import org.bibsonomy.model.enums.FavouriteLayoutSource;
 import org.bibsonomy.model.enums.SimpleExportLayout;
 
-
 /**
  * @author jp
  */
@@ -47,6 +46,7 @@ public class FavouriteLayout {
 	public FavouriteLayout(String source, String style) {
 		this(FavouriteLayoutSource.valueOf(source), style);
 	}
+
 	/**
 	 * @param source
 	 * @param style
@@ -63,10 +63,7 @@ public class FavouriteLayout {
 		} else if (SimpleExportLayout.ENDNOTE.getDisplayName().equalsIgnoreCase(style)) {
 			displayName = SimpleExportLayout.ENDNOTE.getDisplayName();
 		} else if (FavouriteLayoutSource.CSL.equals(source)) {
-
-
-
-			if(style.toLowerCase().endsWith(".csl")){
+			if (style.toLowerCase().endsWith(".csl")) {
 				this.style = style;
 				this.displayName = style.substring(style.indexOf('_', style.indexOf('_')+1)+1, style.toLowerCase().indexOf(".csl")).trim();
 			}

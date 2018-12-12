@@ -11,6 +11,12 @@
 
 	<!-- for post indices -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-search-elasticsearch-post-context.xml" />
+	<!-- for person indices -->
+	<import resource="classpath:org/bibsonomy/bibsonomy-search-elasticsearch-person-context.xml" />
+	<!-- for project indices -->
+	<import resource="classpath:org/bibsonomy/bibsonomy-search-elasticsearch-project-context.xml" />
+	<!-- for group indices -->
+	<import resource="classpath:org/bibsonomy/bibsonomy-search-elasticsearch-group-context.xml" />
 
 	<!-- we use a rest client -->
 	<bean id="elasticsearchClient" class="org.bibsonomy.search.es.util.spring.ElasticsearchRESTClientFactoryBean">
@@ -33,10 +39,23 @@
 		<constructor-arg value="${search.es.systemId}" />
 	</bean>
 
+	<bean id="postSyncStateConverter" class="org.bibsonomy.search.es.index.converter.util.DefaultSearchIndexSyncStateConverter" />
+	<bean id="dualSyncStateConverter" class="org.bibsonomy.search.es.index.converter.util.SearchIndexDualSyncStateConverter" />
+
+	<bean id="elasticsearchAbstractIndexManager" class="org.bibsonomy.search.es.management.ElasticsearchManager" abstract="true" destroy-method="shutdown">
+		<constructor-arg ref="systemURI" />
+		<constructor-arg value="#{!isValidESConnection}" />
+		<constructor-arg value="#{isIndexingUpdateEnabled and isValidESConnection}" />
+		<constructor-arg ref="esClient" />
+	</bean>
+
 	<util:map id="elasticsearchManagers">
 		<entry key-ref="bookmarkClass" value-ref="elasticsearchBookmarkManager" />
 		<entry key-ref="publicationClass" value-ref="elasticsearchPublicationManager" />
 		<entry key-ref="goldStandardBookmarkClass" value-ref="elasticsearchCommunityBookmarkManager" />
 		<entry key-ref="goldStandardPublicationClass" value-ref="elasticsearchCommunityPublicationManager" />
+		<entry key-ref="personClass" value-ref="elasticsearchPersonManager" />
+		<entry key-ref="projectClass" value-ref="elasticsearchProjectManager" />
+		<entry key-ref="groupClass" value-ref="elasticsearchGroupManager" />
 	</util:map>
 </beans>

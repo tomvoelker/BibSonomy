@@ -1,5 +1,8 @@
 package org.bibsonomy.model.logic.querybuilder;
 
+import org.bibsonomy.common.enums.Prefix;
+import org.bibsonomy.common.enums.SortOrder;
+import org.bibsonomy.model.enums.GroupOrder;
 import org.bibsonomy.model.logic.query.GroupQuery;
 
 /**
@@ -8,11 +11,43 @@ import org.bibsonomy.model.logic.query.GroupQuery;
  * @author pda
  */
 public class GroupQueryBuilder {
+	private String search;
+	private int start = 0;
+	private int end = 10;
+
+	private GroupOrder groupOrder = GroupOrder.GROUP_NAME;
+	private SortOrder sortOrder = SortOrder.ASC;
+	private Prefix prefix;
 	private boolean pending;
 	private String userName;
-	private int start = -1;
-	private int end = -1;
+
 	private String externalId;
+	private Boolean organization;
+
+	public GroupQueryBuilder order(final GroupOrder order) {
+		this.groupOrder = order;
+		return this;
+	}
+
+	public GroupQueryBuilder sortOrder(final SortOrder sortOrder) {
+		this.sortOrder = sortOrder;
+		return this;
+	}
+
+	public GroupQueryBuilder setSearch(final String search) {
+		this.search = search;
+		return this;
+	}
+
+	public GroupQueryBuilder setOrganization(final Boolean organization) {
+		this.organization = organization;
+		return this;
+	}
+
+	public GroupQueryBuilder setPrefix(final Prefix prefix) {
+		this.prefix = prefix;
+		return this;
+	}
 
 	public GroupQueryBuilder setPending(boolean pending) {
 		this.pending = pending;
@@ -40,6 +75,6 @@ public class GroupQueryBuilder {
 	}
 
 	public GroupQuery createGroupQuery() {
-		return new GroupQuery(pending, userName, externalId, start, end);
+		return new GroupQuery(this.search, this.groupOrder, this.sortOrder, this.prefix, this.pending, this.userName, this.externalId, this.organization, this.start, this.end);
 	}
 }

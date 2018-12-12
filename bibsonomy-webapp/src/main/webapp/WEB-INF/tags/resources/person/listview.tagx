@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+>
+
+	<jsp:directive.attribute name="person" type="org.bibsonomy.model.Person" required="true"/>
+
+	<li class="show-person list-group-item">
+        <span class="name">
+            <a href="${relativeUrlGenerator.getPersonUrl(person)}">
+                <c:out value="${person.mainName}"/>
+            </a>
+        </span>
+		<br/>
+		<c:if test="${not empty person.names}">
+			<small class="names">
+				<c:forEach var="name" items="${person.names}">
+					<c:out value="${name}"/>
+					<br/>
+				</c:forEach>
+			</small>
+		</c:if>
+		<c:if test="${not empty person.academicDegree}">
+			<small class="academic-degree">
+				<c:out value="${person.academicDegree}"/>
+			</small>
+			<c:out value=" "/>
+		</c:if>
+		<c:if test="${not empty person.college}">
+			<small class="college">
+				<c:out value="${person.college}"/>
+			</small>
+		</c:if>
+	</li>
+</jsp:root>

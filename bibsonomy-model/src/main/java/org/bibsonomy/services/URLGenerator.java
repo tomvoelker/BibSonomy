@@ -32,7 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.exceptions.UnsupportedFormatException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.Author;
@@ -1249,9 +1249,9 @@ public class URLGenerator {
 	 * @param order
 	 * @return URL pointing to the results of the search.
 	 */
-	public String getSearchUrl(final String toSearch, SearchType searchScope, Order order) {
+	public String getSearchUrl(final String toSearch, QueryScope searchScope, Order order) {
 		UrlBuilder ub = new UrlBuilder(this.projectHome).addPathElement(SEARCH_PREFIX).addPathElement(toSearch);
-		if (searchScope != SearchType.LOCAL) {
+		if (searchScope != QueryScope.LOCAL) {
 			ub.addParameter("scope", searchScope.name());
 		}
 		if ((order != null) && (order != Order.RANK)) {
@@ -1267,7 +1267,7 @@ public class URLGenerator {
 	 * @return URL pointing to the results of the search.
 	 */
 	public String getSearchUrl(final String toSearch) {
-		return getSearchUrl(toSearch, SearchType.LOCAL, Order.RANK);
+		return getSearchUrl(toSearch, QueryScope.LOCAL, Order.RANK);
 	}
 
 	/**

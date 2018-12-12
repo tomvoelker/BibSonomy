@@ -138,7 +138,6 @@
 	</bean>
 
 	<!-- project chain -->
-
 	<bean id="abstractProjectChainElement" class="org.bibsonomy.database.managers.chain.project.ProjectChainElement" abstract="true">
 		<property name="projectDatabaseManager"	ref="projectDatabaseManager" />
 	</bean>
@@ -146,12 +145,24 @@
 	<bean id="projectChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
 			<list>
+				<bean class="org.bibsonomy.database.managers.chain.project.GetProjectsByProjectSearch" parent="abstractProjectChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.project.GetProjectsByInternalId" parent="abstractProjectChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.project.GetAllProjects" parent="abstractProjectChainElement"/>
 			</list>
 		</property>
 	</bean>
 
+	<bean id="abstractProjectStatisticsChainElement" class="org.bibsonomy.database.managers.chain.statistic.project.ProjectStatisticsChainElement" abstract="true">
+		<property name="projectDatabaseManager" ref="projectDatabaseManager" />
+	</bean>
+
+	<bean id="projectStatisticsChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.statistic.project.GetAllProjectsCount" parent="abstractProjectStatisticsChainElement" />
+			</list>
+		</property>
+	</bean>
 
 	<!-- post statistic chain -->
 	<bean id="postStatisticChain" class="org.bibsonomy.database.managers.chain.Chain">
@@ -224,6 +235,9 @@
 				<bean class="org.bibsonomy.database.managers.chain.group.get.GetPendingGroups">
 					<constructor-arg ref="groupDatabaseManager" />
 				</bean>
+				<bean class="org.bibsonomy.database.managers.chain.group.get.GetGroupsBySearch">
+					<constructor-arg ref="groupDatabaseManager" />
+				</bean>
 				<bean class="org.bibsonomy.database.managers.chain.group.get.GetAllGroups">
 					<constructor-arg ref="groupDatabaseManager" />
 				</bean>
@@ -272,6 +286,7 @@
 	<bean id="groupDatabaseManager" class="org.bibsonomy.database.managers.GroupDatabaseManager" factory-method="getInstance">
 		<property name="userDb" ref="userDatabaseManager" />
 		<property name="chain" ref="queryGroupsChain" />
+		<property name="groupSearch" ref="groupSearch" />
 	</bean>
 	
 	<bean id="postDatabaseManager" class="org.bibsonomy.database.managers.PostDatabaseManager" abstract="true">
@@ -289,7 +304,6 @@
  		<property name="resourceSearch" ref="publicationSearch" />
 		<property name="chain" ref="publicationChain" />
 		<property name="fileLogic" ref="fileLogic" />
-		<property name="publicationSearch" ref="publicationSearch" />
 	</bean>
 	
 	<bean id="tagRelationDatabaseManager" class="org.bibsonomy.database.managers.TagRelationDatabaseManager" factory-method="getInstance">
@@ -354,6 +368,8 @@
 		<property name="plugins" ref="databasePluginManager" />
 		<property name="validator" ref="projectValidator" />
 		<property name="chain" ref="projectChain" />
+		<property name="statisticsChain" ref="projectStatisticsChain" />
+		<property name="search" ref="projectSearch" />
 	</bean>
 
 	<bean id="crisLinkDatabaseManger" class="org.bibsonomy.database.managers.CRISLinkDatabaseManager">

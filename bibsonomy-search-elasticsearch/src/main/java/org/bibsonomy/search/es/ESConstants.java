@@ -116,6 +116,8 @@ public final class ESConstants {
 		String COPY_TO = "copy_to";
 		/** boost the field (search in _all field) */
 		String BOOST_FIELD = "boost";
+		/** relation field */
+		String RELATION_FIELD = "relations";
 		/** type text */
 		String TEXT_TYPE = "text";
 		/** type keyword used only for filtering */
@@ -124,6 +126,8 @@ public final class ESConstants {
 		String NESTED_TYPE = "nested";
 		/** date type */
 		String DATE_TYPE = "date";
+		/** join type */
+		String JOIN_TYPE = "join";
 		/** the type field */
 		String TYPE_FIELD = "type";
 		/** the index field */
@@ -162,9 +166,11 @@ public final class ESConstants {
 	public static final int BULK_INSERT_SIZE = 1000;
 
 	/** contains all field information */
-	public static final class Fields {
+	public interface Fields {
 		/** the name of the user of the post */
 		public static final String USER_NAME = "user_name";
+		/** list of all users that posted this post (with the same interhash) */
+		String ALL_USERS = "all_users";
 		/** the groups of the post */
 		public static final String GROUPS = "groups";
 		/** the tags of the post */
@@ -204,7 +210,11 @@ public final class ESConstants {
 			String AUTHORS = "authors";
 			String EDITORS = "editors";
 			String PERSON_NAME = "name";
-			
+			String PERSON_ID = "person_id";
+			String PERSON_COLLEGE = "person_college";
+			String OTHER_PERSON_RESOURCE_RELATIONS = "other_relations";
+			String PERSON_RELATION_TYPE = "relation_type";
+
 			String SCHOOL = "school";
 			/** the publication's year */
 			String YEAR = "year";
@@ -255,6 +265,7 @@ public final class ESConstants {
 			String LANGUAGE = "language";
 			/** a list of special misc fields */
 			Set<String> SPECIAL_MISC_FIELDS = Sets.asSet(DOI, ISSN, ISBN, LANGUAGE);
+
 			/** the document */
 			interface Document {
 				String NAME = "name";

@@ -28,7 +28,12 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -44,6 +49,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.CRISEntityType;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.chain.Chain;
+import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.database.params.CRISLinkParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagSetParam;
@@ -63,6 +69,7 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.services.searcher.GroupSearch;
 import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.wiki.TemplateManager;
 
@@ -94,22 +101,14 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	/*
 	 * Needs to be set by spring!
 	 */
-	private Chain<List<Group>, GroupQuery> chain;
+	private Chain<List<Group>, QueryAdapter<GroupQuery>> chain;
 
+	private GroupSearch groupSearch;
 
 	private GroupDatabaseManager() {
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.adminDatabaseManager = AdminDatabaseManager.getInstance();
 		this.generalDatabaseManager = GeneralDatabaseManager.getInstance();
-	}
-
-	/**
-	 * Sets the group chain.
-	 *
-	 * @param chain a chain.
-	 */
-	public void setChain(Chain<List<Group>, GroupQuery> chain) {
-		this.chain = chain;
 	}
 
 	/**
@@ -130,14 +129,14 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	 * Returns a list of all groups as specified by the query object, without membership information.
 	 *
 	 * @param param the query.
+	 * @param loggedinUser the logged in user
 	 * @param session a session.
 	 *
 	 * @return a list of groups as specified by the query.
 	 */
-	public List<Group> queryGroups(final GroupQuery param, final DBSession session) {
-		return this.chain.perform(param, session);
+	public List<Group> queryGroups(final GroupQuery param, final User loggedinUser, final DBSession session) {
+		return this.chain.perform(new QueryAdapter<>(param, loggedinUser), session);
 	}
-
 
 	/**
 	 * Returns pending groups.
@@ -1248,6 +1247,29 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 		}
 	}
 
+	/**
+	 *
+	 * @param loggedinUser
+	 * @param query
+	 * @return a list of all groups
+	 */
+	public List<Group> getGroupsBySearch(final User loggedinUser, final GroupQuery query) {
+		return this.groupSearch.getGroups(loggedinUser, query);
+	}
+
+	/**
+	 * Retrieves a list of all groups with a given external id.
+	 *
+	 * Although this is a one-to-one relationship a list is provided since it will be part of a larger chain.
+	 *
+	 * @param externalId an external id.
+	 * @param session a database session.
+	 *
+	 * @return a list of groups with the external id.
+	 */
+	public Group getGroupByExternalId(String externalId, DBSession session) {
+		return this.queryForObject("getGroupByExternalId", externalId, Group.class, session);
+	}
 
 	@Override
 	public Integer getIdForLinkable(Group linkable, DBSession session) {
@@ -1271,18 +1293,19 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 		this.userDb = userDb;
 	}
 
+	/**
+	 * Sets the group chain.
+	 *
+	 * @param chain a chain.
+	 */
+	public void setChain(Chain<List<Group>, QueryAdapter<GroupQuery>> chain) {
+		this.chain = chain;
+	}
 
 	/**
-	 * Retrieves a list of all groups with a given external id.
-	 *
-	 * Although this is a one-to-one relationship a list is provided since it will be part of a larger chain.
-	 *
-	 * @param externalId an external id.
-	 * @param session a database session.
-	 *
-	 * @return a list of groups with the external id.
+	 * @param groupSearch the groupSearch to set
 	 */
-	public Group getGroupByExternalId(String externalId, DBSession session) {
-		return this.queryForObject("getGroupByExternalId", externalId, Group.class, session);
+	public void setGroupSearch(GroupSearch groupSearch) {
+		this.groupSearch = groupSearch;
 	}
 }

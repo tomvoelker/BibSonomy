@@ -1,42 +1,39 @@
 package org.bibsonomy.database.params.logging;
 
+import org.bibsonomy.database.common.enums.LogReason;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 
 import java.util.Date;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
+/**
+ * parameter class for logging a group membership
+ *
+ * @author ada
+ */
 public class InsertGroupMembershipLog extends LoggingInfoTrait {
 
-    private final String username;
-    private final Group group;
+	private final String username;
+	private final Group group;
 
-    public InsertGroupMembershipLog(User loggedUser, Date loggedTimestamp, String username, Group group) {
-        super(loggedUser, loggedTimestamp);
+	public InsertGroupMembershipLog(User loggedUser, Date loggedTimestamp, String username, Group group, LogReason logReason) {
+		super(loggedUser, loggedTimestamp, logReason);
 
-        present(group);
-        this.group = group;
+		this.group = group;
+		this.username = username;
+	}
 
-        present(username);
-        this.username = username;
-    }
+	public InsertGroupMembershipLog(User loggedUser, String username, Group group, LogReason logReason) {
+		super(loggedUser, logReason);
+		this.group = group;
+		this.username = username;
+	}
 
-    public InsertGroupMembershipLog(User loggedUser, String username, Group group) {
-        super(loggedUser);
+	public String getUsername() {
+		return username;
+	}
 
-        present(group);
-        this.group = group;
-
-        present(username);
-        this.username = username;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public Group getGroup() {
-        return group;
-    }
+	public Group getGroup() {
+		return group;
+	}
 }

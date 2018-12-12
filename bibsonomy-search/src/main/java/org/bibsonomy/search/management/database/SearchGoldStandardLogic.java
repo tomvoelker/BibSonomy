@@ -34,6 +34,7 @@ import org.bibsonomy.search.management.database.manager.PersonSearchDatabaseMana
  * TODO: change Generic
  * @author dzo
  */
+@Deprecated // TODO: remove TODO_REWORK_SEARCH
 public class SearchGoldStandardLogic extends SearchDBLogic<GoldStandardPublication> {
 
 	/**

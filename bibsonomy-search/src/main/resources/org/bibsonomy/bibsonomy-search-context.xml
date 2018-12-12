@@ -28,6 +28,10 @@
 		<property name="removeAbandonedOnBorrow" value="${database.search.removeAbandoned}" />
 		<property name="removeAbandonedTimeout" value="${database.search.removeAbandonedTimeout}" />
 	</bean>
+
+	<bean id="searchSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="searchSqlMapClient"/>
+	</bean>
 	
 	<bean id="searchInfoLogic" class="org.bibsonomy.search.SearchInfoDBLogic">
 		<property name="sessionFactory" ref="searchSessionFactory" />
@@ -49,4 +53,7 @@
 	</bean>
 
 	<import resource="classpath:org/bibsonomy/bibsonomy-search-post-context.xml" />
+	<import resource="classpath:org/bibsonomy/bibsonomy-search-person-context.xml" />
+	<import resource="classpath:org/bibsonomy/bibsonomy-search-project-context.xml" />
+	<import resource="classpath:org/bibsonomy/bibsonomy-search-group-context.xml" />
 </beans>

@@ -181,6 +181,11 @@ public enum Views implements View {
 	URLPAGE("url"),
 
 	/**
+	 * publications overview page
+	 */
+	PUBLICATIONS_OVERVIEW("publications"),
+
+	/**
 	 * publication page shows all publications with the given inter-/intrahash
 	 */
 	PUBLICATIONPAGE("publicationpage"),
@@ -270,6 +275,26 @@ public enum Views implements View {
 	 * reporting
 	 */
 	REPORTING("reporting"),
+
+	/**
+	 * reporting download
+	 */
+	REPORTING_DOWNLOAD("reportDownloadView"),
+
+	/**
+	 * projects reporting
+	 */
+	PROJECTS_REPORTING("reporting/projects"),
+
+	/**
+	 * publication reporting
+	 */
+	PUBLICATIONS_REPORTING("reporting/publications"),
+
+	/**
+	 * person reporting
+	 */
+	PERSONS_REPORTING("reporting/persons"),
 
 	/* *****************************************************
 	 * OpenSocial Views ****************************************************

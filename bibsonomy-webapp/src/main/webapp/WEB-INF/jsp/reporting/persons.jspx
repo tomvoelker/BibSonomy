@@ -1,0 +1,87 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+		  xmlns:person="urn:jsptagdir:/WEB-INF/tags/resources/person"
+		  xmlns:reporting="urn:jsptagdir:/WEB-INF/tags/reporting" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+>
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
+
+	<fmt:message var="pageTitle" key="navi.search"/>
+
+	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
+
+	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.persons" command="${command}"
+					   pageTitle="${pageTitle}" activeTab="persons">
+		 <jsp:attribute name="headerExt">
+            <script type="text/javascript" src="${resdir}/javascript/persons.js"><!-- keep me --></script>
+        </jsp:attribute>
+
+		<!--+
+			  | heading
+			  +-->
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.persons" formAction="/persons/" formInputName="person"/>
+		</jsp:attribute>
+
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<fmt:message key="navi.persons" var="persons"/>
+					<nav:crumb name="${persons}" active="true"/>
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+
+		<!--+
+		 	| content
+		 	+-->
+		<jsp:attribute name="content">
+
+            <div class="text-right btn-toolbar">
+                <button class="btn btn-primary btn-sm" id="sort-firstName" onclick="sortList('firstName')">
+                    <fmt:message key="person.sort.firstName"/>
+                </button>
+				<button class="btn btn-primary btn-sm" id="sort-lastName" onclick="sortList('lastName')">
+                    <fmt:message key="person.sort.lastName"/>
+                </button>
+                <c:set var="searchPlaceholder">
+                    <fmt:message key="person.search"/>
+                </c:set>
+                <input id="search-person-input" placeholder="${searchPlaceholder}" />
+            </div>
+
+			<reporting:export requPathAndQuery="${requPathAndQuery}"/>
+
+			<div class="text-info">
+				<dl class="group-list">
+					<dt>
+						<fmt:message key="person.amountpersons"/>
+					</dt>
+					<dd id="amount-persons">
+						<c:out value="${fn:length(command.personList)}"/>
+					</dd>
+				</dl>
+				<hr/>
+			</div>
+
+            <div id="persons">
+				<ul class="list-group" id="all-persons">
+                    <c:forEach var="person" items="${command.personList}">
+                        <person:listview person="${person}"/>
+                    </c:forEach>
+				</ul>
+			</div>
+            <nav aria-label="Page navigation example">
+                <p class="info" id="show-amount"/><br/>
+                <ul class="pagination" id="pagin"/>
+            </nav>
+		</jsp:attribute>
+	</layout:paneLayout>
+</jsp:root>

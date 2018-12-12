@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CommunityPostUpdate">
+
+	<!-- community publication -->
+	<select id="getNewGoldStandardPublicationPosts" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
+		SELECT bb.*, <include refid="goldStandardOtherFields" />, <include refid="personResourceRelationExtendedColumns" />
+		FROM
+		(
+			SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group
+			FROM gold_standard b
+			WHERE b.content_id > #lastContentId#
+			AND b.content_type = 2
+			ORDER BY b.content_id DESC
+			LIMIT #limit#
+			OFFSET #offset#
+		) AS bb
+		LEFT JOIN bibtex p ON (bb.interHash = p.simhash1)
+		LEFT JOIN pub_person ppr ON (bb.interHash = ppr.simhash1)
+		LEFT JOIN person per USING(person_id)
+	</select>
+
+	<!-- XXX: this query should only use one subselect, but there is no fitting index for this, so we use these two subselects -->
+	<select id="getGoldStandardPublicationPostsForUserWithoutCommunityPost" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost" parameterClass="searchParam">
+		SELECT bb.*, <include refid="goldStandardOtherFields" />
+		FROM
+		(
+			SELECT tb.* FROM
+			(
+				SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group
+				FROM bibtex b
+				LEFT JOIN gold_standard gb USING (simhash1) <!-- select only posts that do not have a corresponding gold standard -->
+				WHERE b.user_name = #userName#
+				AND b.`group` = 0
+				AND gb.title IS NULL
+				ORDER BY b.content_id DESC
+
+			) AS tb
+			LEFT JOIN bibtex nb ON (tb.interHash = nb.simhash1 AND tb.content_id != nb.content_id) <!-- select the post only if there is not a newer post with the same interhash -->
+			WHERE tb.date > nb.date
+			OR nb.date IS NULL
+			LIMIT #limit#
+			OFFSET #offset#
+		) AS bb
+		LEFT JOIN bibtex p ON (bb.interHash = p.simhash1)
+	</select>
+
+	<select id="getDeletedGoldStandardPublicationPosts" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
+		FROM log_gold_standard b
+		WHERE log_date >= #lastLogDate#
+		AND content_type = 2
+	</select>
+
+	<select id="getGoldStandardPublicationPostsForUser" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost" parameterClass="string">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
+		FROM bibtex b
+		LEFT JOIN gold_standard gb USING(simhash1)
+		WHERE b.user_name = #userName#
+		AND b.`group` = -2147483648 <!-- this query is used after an user is marked as spammer, so we must query for the spam public group -->
+		AND gb.title IS NULL
+	</select>
+
+	<select id="getLatestGoldStandardPublicationPost" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost" parameterClass="string">
+		SELECT bb.*, <include refid="goldStandardOtherFields" />
+		FROM
+		(
+			SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group
+			FROM bibtex b
+			WHERE b.simhash1 = #simhash1#
+			AND b.`group` = 0
+			ORDER BY b.date DESC
+			LIMIT 1
+		) AS bb
+		LEFT JOIN bibtex p ON (bb.interHash = p.simhash1)
+	</select>
+
+	<!-- community bookmark -->
+	<select id="getNewGoldStandardBookmarkPosts" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
+		SELECT bb.*, <include refid="goldStandardOtherFields" />
+		FROM
+		(
+			SELECT <include refid ="allGoldStandardBookmarkAttributesNoChangeDate"/>, b.change_date, b.group
+			FROM gold_standard b
+			WHERE b.content_id > #lastContentId#
+			AND b.content_type = 1
+			ORDER BY b.content_id DESC
+			LIMIT #limit#
+			OFFSET #offset#
+		) AS bb
+		LEFT JOIN bookmark p ON (bb.interHash = p.book_url_hash)
+	</select>
+
+	<!-- XXX: this query should only use one subselect, but there is no fitting index for this, so we use these two subselects -->
+	<select id="getGoldStandardBookmarkPostsForUserWithoutCommunityPost" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost" parameterClass="searchParam">
+		SELECT bb.*, <include refid="goldStandardOtherFields" />, u.book_url
+		FROM
+		(
+			SELECT tb.* FROM
+			(
+				SELECT <include refid ="allGoldStandardNormalBookmarkAttributesNoChangeDate"/>, b.change_date, b.group
+				FROM bookmark b
+				LEFT JOIN gold_standard gb on (b.book_url_hash = gb.simhash1) <!-- select only posts that do not have a corresponding gold standard -->
+				WHERE b.user_name = #userName#
+				AND b.`group` = 0
+				AND gb.title IS NULL
+				ORDER BY b.content_id DESC
+			) AS tb
+			LEFT JOIN bookmark nb ON (tb.interHash = nb.book_url_hash AND tb.content_id != nb.content_id) <!-- select the post only if there is not a newer post with the same interhash -->
+			WHERE tb.date > nb.date
+			OR nb.date IS NULL
+			LIMIT #limit#
+			OFFSET #offset#
+			) AS bb
+		JOIN urls u ON (u.book_url_hash = bb.interHash)
+		LEFT JOIN bookmark p ON (bb.interHash = p.book_url_hash)
+	</select>
+
+	<select id="getDeletedGoldStandardBookmarkPosts" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
+		SELECT <include refid ="allGoldStandardBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
+		FROM log_gold_standard b
+		WHERE log_date >= #lastLogDate#
+		AND content_type = 1
+	</select>
+
+	<select id="getGoldStandardBookmarkPostsForUser" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost" parameterClass="string">
+		SELECT <include refid ="allGoldStandardNormalBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, u.book_url, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
+		FROM bookmark b
+		JOIN urls u USING (book_url_hash)
+		LEFT JOIN gold_standard gb ON (b.book_url_hash = gb.simhash1)
+		WHERE b.user_name = #userName#
+		AND b.`group` = -2147483648 <!-- see publication select for comment -->
+		AND gb.title IS NULL
+	</select>
+
+	<select id="getLatestGoldStandardBookmarkPost" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost" parameterClass="string">
+		SELECT bb.*, <include refid="goldStandardOtherFields" />, u.book_url
+		FROM
+			(
+			SELECT <include refid ="allGoldStandardNormalBookmarkAttributesNoChangeDate"/>, b.change_date, b.group
+			FROM bookmark b
+			JOIN urls u USING (book_url_hash)
+			WHERE b.book_url_hash = #simhash1#
+			AND b.`group` = 0
+			ORDER BY b.date DESC
+			LIMIT 1
+		) AS bb
+		JOIN urls u ON (u.book_url_hash = bb.interHash)
+		JOIN bookmark p ON (bb.interHash = p.book_url_hash) <!-- self join to get all users of the post-->
+	</select>
+
+	<select id="getGoldStandardPublicationAllNewPosts" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
+		FROM bibtex b
+		WHERE b.content_id >= #lastContentId#
+		LIMIT #limit#
+		OFFSET #offset#
+	</select>
+
+	<select id="getGoldStandardPublicationAllDeletedPosts" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
+		FROM log_bibtex b
+		WHERE b.log_date >= #lastLogDate#
+		LIMIT #limit#
+		OFFSET #offset#
+	</select>
+
+	<!-- "normal" publications -->
+	<select id="getDeletedBibTexPosts" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
+		FROM log_bibtex b
+		LEFT JOIN gold_standard gb USING(simhash1)
+		WHERE b.log_date >= #lastLogDate#
+		AND b.new_content_id = 0
+		AND gb.title IS NULL <!-- only select publications without a community post -->
+	</select>
+
+	<select id="getNewBibTexPosts" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
+		SELECT bb.*, <include refid="goldStandardOtherFields" />
+		FROM
+		(
+			SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group
+			FROM bibtex b
+			LEFT JOIN gold_standard gp USING(simhash1)
+			WHERE b.content_id >= #lastContentId#
+			AND gp.title IS NULL
+			ORDER BY b.content_id DESC
+			LIMIT #limit#
+			OFFSET #offset#
+		) AS bb
+		LEFT JOIN bibtex p ON (bb.interHash = p.simhash1)
+	</select>
+
+	<select id="getGoldStandardBookmarkAllNewPosts" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
+		SELECT <include refid ="allGoldStandardNormalBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
+		FROM bookmark b
+		WHERE b.content_id >= #lastContentId#
+		LIMIT #limit#
+		OFFSET #offset#
+	</select>
+
+	<select id="getGoldStandardBookmarkAllDeletedPosts" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
+		SELECT <include refid ="allGoldStandardNormalBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
+		FROM log_bookmark b
+		WHERE b.log_date >= #lastLogDate#
+		AND b.new_content_id = 0
+		LIMIT #limit#
+		OFFSET #offset#
+	</select>
+
+	<!-- "normal" bookmarks -->
+	<select id="getDeletedBookmarkPosts" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
+		SELECT <include refid ="allGoldStandardNormalBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
+		FROM log_bookmark b
+		LEFT JOIN gold_standard gb ON (b.book_url_hash = gb.simhash1)
+		WHERE b.log_date >= #lastLogDate#
+		AND b.new_content_id = 0
+		AND gb.title IS NULL <!-- only select bookmarks without a community post -->
+	</select>
+
+	<select id="getNewBookmarkPosts" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
+		SELECT bb.*, <include refid="goldStandardOtherFields" />, u.book_url
+		FROM
+		(
+			SELECT <include refid ="allGoldStandardNormalBookmarkAttributesNoChangeDate"/>, b.change_date, b.group
+			FROM bookmark b
+			LEFT JOIN gold_standard gb ON (b.book_url_hash = gb.simhash1)
+			WHERE b.content_id >= #lastContentId#
+			AND gb.title IS NULL
+			ORDER BY b.content_id DESC
+			LIMIT #limit#
+			OFFSET #offset#
+		) AS bb
+		JOIN urls u ON (u.book_url_hash = bb.interHash)
+		LEFT JOIN bookmark p ON (bb.interHash = p.book_url_hash)
+	</select>
+
+</sqlMap>

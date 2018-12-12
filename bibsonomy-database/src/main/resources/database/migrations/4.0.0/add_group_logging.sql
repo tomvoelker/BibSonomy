@@ -11,9 +11,9 @@ CREATE TABLE `log_groupids` (
   `publ_reporting_external_url` varchar(255) DEFAULT NULL,
   `organization` BOOLEAN DEFAULT FALSE,
   `external_id` VARCHAR(255) DEFAULT NULL,
+  `log_reason` int(2) DEFAULT NULL,
   `log_date` timestamp NULL DEFAULT NULL,
-  `log_user` varchar(30) DEFAULT NULL,
-                              PRIMARY KEY  (`group`)
+  `log_user` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -24,7 +24,7 @@ CREATE TABLE `log_group_memberships` (
   `start_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `group_role` int(10) NOT NULL default '2',
   `user_shared_documents` tinyint(1) default '0',
+  `log_reason` int(2) DEFAULT NULL,
   `log_date` timestamp NULL DEFAULT NULL,
-  `log_user` varchar(30) DEFAULT NULL,
-  PRIMARY KEY (`group`,`user_name`)
+  `log_user` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

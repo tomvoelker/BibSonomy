@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.search.management.database.params;
 
+import org.bibsonomy.database.common.enums.CRISEntityType;
+
 import java.util.Date;
 
 /**
@@ -46,7 +48,7 @@ public class SearchParam {
 	/** newest tas_id during last index update */
 	private Integer lastTasId;
 	
-	private int lastContentId;
+	private long lastContentId;
 	
 	private int lastOffset; // TODO or just use offset?
 
@@ -58,6 +60,12 @@ public class SearchParam {
 	private Date lastDocumentDate;
 	
 	private String userRelation;
+
+	private boolean includeRelatedEntityUpdates;
+
+	private CRISEntityType sourceType;
+
+	private CRISEntityType targetType;
 
 	/**
 	 * @return the lastTasId
@@ -146,14 +154,14 @@ public class SearchParam {
 	/**
 	 * @return the lastContentId
 	 */
-	public int getLastContentId() {
+	public long getLastContentId() {
 		return lastContentId;
 	}
 
 	/**
 	 * @param lastContentId the lastContentId to set
 	 */
-	public void setLastContentId(final int lastContentId) {
+	public void setLastContentId(final long lastContentId) {
 		this.lastContentId = lastContentId;
 	}
 	
@@ -186,6 +194,20 @@ public class SearchParam {
 	}
 
 	/**
+	 * @return the includeRelatedEntityUpdates
+	 */
+	public boolean isIncludeRelatedEntityUpdates() {
+		return includeRelatedEntityUpdates;
+	}
+
+	/**
+	 * @param includeRelatedEntityUpdates the includeRelatedEntityUpdates to set
+	 */
+	public void setIncludeRelatedEntityUpdates(boolean includeRelatedEntityUpdates) {
+		this.includeRelatedEntityUpdates = includeRelatedEntityUpdates;
+	}
+
+	/**
 	 * @return the lastDocumentDate
 	 */
 	public Date getLastDocumentDate() {
@@ -197,5 +219,33 @@ public class SearchParam {
 	 */
 	public void setLastDocumentDate(Date lastDocumentDate) {
 		this.lastDocumentDate = lastDocumentDate;
+	}
+
+	/**
+	 * @return the sourceType
+	 */
+	public CRISEntityType getSourceType() {
+		return sourceType;
+	}
+
+	/**
+	 * @param sourceType the sourceType to set
+	 */
+	public void setSourceType(CRISEntityType sourceType) {
+		this.sourceType = sourceType;
+	}
+
+	/**
+	 * @return the targetType
+	 */
+	public CRISEntityType getTargetType() {
+		return targetType;
+	}
+
+	/**
+	 * @param targetType the targetType to set
+	 */
+	public void setTargetType(CRISEntityType targetType) {
+		this.targetType = targetType;
 	}
 }

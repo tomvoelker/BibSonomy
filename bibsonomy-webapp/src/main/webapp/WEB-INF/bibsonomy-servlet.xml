@@ -547,9 +547,20 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/publications">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="publicationsController"/>
+					</bean>
+				</entry>
 				<entry key="/groups">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="groupsPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>format</value>
+								<value>organizations</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/group">
@@ -567,14 +578,46 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/reporting">
+				<entry key="/reporting/projects">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="groupReportingPageController"/>
+						<property name="controllerBeanName" value="projectReportingPageController"/>
 						<property name="allowedFields">
 							<list>
-								<value>requestedGroup</value>
-								<value>transposeMatrix</value>
-								<value>requestedTags</value>
+								<value>format</value>
+								<value>fieldKeys</value>
+								<value>search</value>
+								<value>type</value>
+								<value>startDate</value>
+								<value>endDate</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/reporting/publications">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="publicationReportingPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>format</value>
+								<value>fieldKeys</value>
+								<value>search</value>
+								<value>startDate</value>
+								<value>endDate</value>
+								<value>order</value>
+								<value>groupingName</value>
+								<value>filters</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/reporting/persons">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="personReportingPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>format</value>
+								<value>fieldKeys</value>
+								<value>search</value>
 							</list>
 						</property>
 					</bean>
@@ -802,6 +845,15 @@
 				<entry key="/projects">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="projectsController"/>
+						<property name="allowedFields">
+							<list>
+								<value>search</value>
+								<value>prefix</value>
+								<value>projectOrder</value>
+								<value>projectStatus</value>
+								<value>sortOrder</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/project">
@@ -985,11 +1037,23 @@
 		<property name="supportedResources" ref="allResources"/>
 	</bean>
 	
-	<bean id="groupReportingPageController" class="org.bibsonomy.webapp.controller.reporting.GroupReportingPageController" scope="request">
+	<bean id="projectReportingPageController" class="org.bibsonomy.webapp.controller.reporting.ProjectReportingPageController" scope="request">
 		<property name="logic" ref="logic"/>
-		<property name="maxQuerySize" value="${database.maxQuerySize}" />
-	</bean>	
-	
+	</bean>
+
+	<bean id="publicationReportingPageController" class="org.bibsonomy.webapp.controller.reporting.PublicationReportingPageController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+
+	<bean id="personReportingPageController" class="org.bibsonomy.webapp.controller.reporting.PersonReportingPageController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+
+	<bean id="publicationsController" class="org.bibsonomy.webapp.controller.cris.PublicationsPageController" scope="request">
+		<property name="logic" ref="logic" />
+		<property name="college" value="${system.cris.college}" />
+	</bean>
+
 	<bean id="groupsPageController" class="org.bibsonomy.webapp.controller.GroupsPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>

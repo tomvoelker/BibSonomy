@@ -17,11 +17,15 @@
 	<alias name="elasticsearchCommunityBookmarkManager" alias="searchCommunityBookmarkManager" />
 	<alias name="elasticsearchCommunityPublicationManager" alias="searchCommunityPublicationManager" />
 	
-	<alias name="elasticsearchPublicationSearch" alias="personSearch" />
+	<alias name="elasticsearchPersonSearch" alias="personSearch" />
 	
 	<alias name="elasticsearchBookmarkSearch" alias="bookmarkSearch" />
 	<alias name="elasticsearchPublicationSearch" alias="publicationSearch" />
 	
 	<alias name="elasticsearchCommunityPublicationSearch" alias="goldStandardPublicationSearch" />
 	<alias name="elasticsearchCommunityBookmarkSearch" alias="goldStandardBookmarkSearch" />
+
+	<alias name="elasticsearchProjectSearch" alias="projectSearch" />
+
+	<alias name="elasticsearchGroupSearch" alias="groupSearch" />
 </beans>

@@ -80,6 +80,7 @@ public class ListCommand<T> {
 	public List<T> getList() {
 		return this.list;
 	}
+
 	/**
 	 * @param list the sublistlist on the current page
 	 */
@@ -96,6 +97,7 @@ public class ListCommand<T> {
 	public int getStart() {
 		return this.curPage.getStart();
 	}
+
 	/**
 	 * @param start inclusive start index of the current page
 	 */
@@ -255,6 +257,8 @@ public class ListCommand<T> {
 	}
 	
 	/**
+	 * FIXME: this list command can contain also non posts; please move this method
+	 *
 	 * @return the resource type of the posts in the list
 	 */
 	public String getResourcetype() {

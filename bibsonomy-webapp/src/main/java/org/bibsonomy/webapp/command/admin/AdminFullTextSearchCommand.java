@@ -65,7 +65,7 @@ public class AdminFullTextSearchCommand extends BaseCommand {
 	private String id;
 	
 	/** the resource class to handle */
-	private Class<? extends Resource> resource;
+	private String entity;
 	
 	private final Map<String, List<SearchIndexInfo>> searchIndexInfo = new HashMap<>();
 	
@@ -96,19 +96,19 @@ public class AdminFullTextSearchCommand extends BaseCommand {
 	public void setAction(final AdminFullTextAction action) {
 		this.action = action;
 	}
-	
+
 	/**
-	 * @return the resource
+	 * @return the entity
 	 */
-	public Class<? extends Resource> getResource() {
-		return this.resource;
+	public String getEntity() {
+		return entity;
 	}
 
 	/**
-	 * @param resource the resource to set
+	 * @param entity the entity to set
 	 */
-	public void setResource(Class<? extends Resource> resource) {
-		this.resource = resource;
+	public void setEntity(String entity) {
+		this.entity = entity;
 	}
 
 	/**

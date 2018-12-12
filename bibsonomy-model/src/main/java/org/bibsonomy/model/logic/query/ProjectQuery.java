@@ -26,34 +26,89 @@
  */
 package org.bibsonomy.model.logic.query;
 
+import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.enums.ProjectOrder;
 import org.bibsonomy.model.enums.ProjectStatus;
 
+import java.util.Date;
+
 /**
  * the project query to retrieve projects from the logic
+ *
  * @author dzo
  */
-public class ProjectQuery implements Query {
+public class ProjectQuery extends BasicQuery {
+
+	/**
+	 * @return creates a new builder
+	 */
+	public static ProjectQueryBuilder createBuilder() {
+		return new ProjectQueryBuilder();
+	}
 
 	public static class ProjectQueryBuilder {
-		/** the order of the projects, default {@link ProjectOrder#TITLE} */
+		/**
+		 * the order of the projects, default {@link ProjectOrder#TITLE}
+		 */
 		private ProjectOrder order = ProjectOrder.TITLE;
 
-		/** the sort order of the order */
+		/**
+		 * the sort order of the order
+		 */
 		private SortOrder sortOrder = SortOrder.ASC;
 
-		/** the project status */
+		private Prefix prefix;
+
+		/**
+		 * the project status
+		 */
 		private ProjectStatus projectStatus;
 
+		private String type;
+
 		/** the start */
-		private int start;
+		private int start = 0;
 
 		/** the end */
-		private int end;
+		private int end = 10;
 
 		/** the internalId */
 		private String internalId;
+
+		/** the search **/
+		private String search;
+
+		private Date startDate;
+
+		private Date endDate;
+
+		/**
+		 * @param prefix the prefix to query
+		 * @return the builder
+		 */
+		public ProjectQueryBuilder prefix(final Prefix prefix) {
+			this.prefix = prefix;
+			return this;
+		}
+
+		/**
+		 * @param startDate
+		 * @return
+		 */
+		public ProjectQueryBuilder startDate(final Date startDate) {
+			this.startDate = startDate;
+			return this;
+		}
+
+		/**
+		 * @param endDate
+		 * @return
+		 */
+		public ProjectQueryBuilder endDate(final Date endDate) {
+			this.endDate = endDate;
+			return this;
+		}
 
 		/**
 		 * sets the internalId
@@ -122,55 +177,85 @@ public class ProjectQuery implements Query {
 		}
 
 		/**
+		 * sets the type
+		 *
+		 * @param type
+		 * @return
+		 */
+		public ProjectQueryBuilder type(final String type) {
+			this.type = type;
+			return this;
+		}
+
+		/**
+		 *
+		 * @param search
+		 * @return
+		 */
+		public ProjectQueryBuilder search(final String search) {
+			this.search = search;
+			return this;
+		}
+
+		/**
 		 * @return the project query
 		 */
 		public ProjectQuery build() {
-			return new ProjectQuery(this.order, this.sortOrder, this.projectStatus,
-					this.start, this.end, this.internalId);
+			return new ProjectQuery(this.search, this.prefix, this.order, this.sortOrder, this.projectStatus,
+							this.type, this.start, this.end, this.internalId, startDate, endDate);
 		}
 	}
 
-	/**
-	 * @return creates a new builder
-	 */
-	public static ProjectQueryBuilder createBuilder() {
-		return new ProjectQueryBuilder();
-	}
-
+	private final Prefix prefix;
 
 	/** the order of the projects */
 	private final ProjectOrder order;
-
 	/** the sort order of the order */
 	private final SortOrder sortOrder;
 
 	/** the project status */
 	private final ProjectStatus projectStatus;
 
-	/** the start */
-	private final int start;
-
-	/** the end */
-	private final int end;
-
+	/** the type of the project */
+	private final String type;
 	private final String internalId;
+	private final Date startDate;
+	private final Date endDate;
 
 	/**
 	 * the constructor
+	 *
 	 * @param order
 	 * @param sortOrder
 	 * @param projectStatus
+	 * @param type
 	 * @param start
 	 * @param end
-	 * @param internalId
+	 * @param externalId
+	 * @param startDate
+	 * @param endDate
 	 */
-	protected ProjectQuery(ProjectOrder order, SortOrder sortOrder, ProjectStatus projectStatus, int start, int end, String internalId) {
+	protected ProjectQuery(final String search, final Prefix prefix, final ProjectOrder order, SortOrder sortOrder, ProjectStatus projectStatus, String type, int start, int end, String externalId, Date startDate, Date endDate) {
+		this.setSearch(search);
+		this.setStart(start);
+		this.setEnd(end);
+
+		this.prefix = prefix;
+		this.startDate = startDate;
+		this.endDate = endDate;
 		this.order = order;
 		this.sortOrder = sortOrder;
 		this.projectStatus = projectStatus;
-		this.start = start;
-		this.end = end;
-		this.internalId = internalId;
+		this.type = type;
+		this.internalId = externalId;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
 	}
 
 	/**
@@ -195,17 +280,17 @@ public class ProjectQuery implements Query {
 	}
 
 	/**
-	 * @return the start
+	 * @return the type
 	 */
-	public int getStart() {
-		return start;
+	public String getType() {
+		return type;
 	}
 
 	/**
-	 * @return the end
+	 * @return the prefix
 	 */
-	public int getEnd() {
-		return end;
+	public Prefix getPrefix() {
+		return prefix;
 	}
 
 	/**
