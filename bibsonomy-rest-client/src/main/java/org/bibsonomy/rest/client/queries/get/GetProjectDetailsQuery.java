@@ -23,7 +23,7 @@ public class GetProjectDetailsQuery extends AbstractQuery<Project> {
 
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performGetRequest(getUrlRenderer().createUrlBuilderForProjects(this.projectId).asString());
+		this.downloadedDocument = performGetRequest(getUrlRenderer().createUrlBuilderForProjectsExternalId(this.projectId).asString());
 	}
 
 	@Override

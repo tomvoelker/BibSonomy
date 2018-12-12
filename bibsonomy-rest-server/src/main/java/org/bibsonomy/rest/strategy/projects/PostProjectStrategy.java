@@ -60,6 +60,6 @@ public class PostProjectStrategy extends AbstractCreateStrategy {
             throw new BadRequestOrResponseException(jobResult.getErrors().stream().
                     map(ErrorMessage::getDefaultMessage).collect(Collectors.joining(",")));
         }
-        return project.getExternalId();
+        return jobResult.getId();
     }
 }

@@ -40,6 +40,6 @@ public class CreateProjectQuery extends AbstractQuery<JobResult> {
 			return JobResult.buildFailure(Collections.singletonList(new ErrorMessage(getError(),
 							"projectCreationError")));
 		}
-		return JobResult.buildSuccess();
+		return JobResult.buildSuccess(getRenderer().parseProjectId(downloadedDocument));
 	}
 }

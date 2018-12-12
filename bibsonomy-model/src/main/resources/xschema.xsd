@@ -567,7 +567,7 @@
 
 	<xsd:complexType name="ProjectsType">
 		<xsd:sequence>
-			<xsd:element maxOccurs="unbounded" minOccurs="0" name="projects" type="ProjectType" />
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="project" type="ProjectType" />
 		</xsd:sequence>
 	</xsd:complexType>
 
