@@ -172,7 +172,7 @@ public interface ESClient {
 	 * @param indexName the index of the documents to update
 	 * @param updates the update map (key: document id and value is the update to apply)
 	 */
-	boolean updateDocuments(String indexName, Map<String, UpdateData> updates);
+	boolean updateDocuments(String indexName, List<Pair<String, UpdateData>> updates);
 	
 	/**
 	 * @param indexName

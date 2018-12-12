@@ -81,6 +81,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -274,16 +275,16 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public boolean updateDocuments(String indexName, Map<String, UpdateData> updates) {
+	public boolean updateDocuments(String indexName, List<Pair<String, UpdateData>> updates) {
 		return this.secureCall(() -> {
 			final BulkRequest bulkRequest = new BulkRequest();
 
-			final Stream<UpdateRequest> updateRequestStream = updates.entrySet().stream().map(entry -> buildUpdateRequest(indexName, entry.getKey(), entry.getValue()));
+			final Stream<UpdateRequest> updateRequestStream = updates.stream().map(entry -> buildUpdateRequest(indexName, entry.getFirst(), entry.getSecond()));
 			updateRequestStream.forEach(bulkRequest::add);
 
 			final BulkResponse bulkResponse = this.client.bulk(bulkRequest, this.buildRequestOptions());
 			return !bulkResponse.hasFailures();
-		}, false, "error while updating documents " + updates.keySet());
+		}, false, "error while updating documents " + updates.stream().map(Pair::getFirst).collect(Collectors.joining(", ")));
 	}
 
 	private UpdateRequest buildUpdateRequest(final String index, String id, UpdateData updateData) {

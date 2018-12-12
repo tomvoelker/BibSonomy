@@ -1,5 +1,6 @@
 package org.bibsonomy.search.es.management.post;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
@@ -24,6 +25,7 @@ import org.elasticsearch.script.ScriptType;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -120,7 +122,7 @@ public class ElasticsearchCommunityPostPublicationManager<G extends BibTex> exte
 	protected void updateResourceSpecificFields(final String indexName, final SearchIndexDualSyncState oldState, final SearchIndexDualSyncState targetState) {
 		final DefaultSearchIndexSyncState communitySearchIndexState = oldState.getFirstState();
 
-		final Map<String, UpdateData> updateDataMap = new HashMap<>();
+		final List<Pair<String, UpdateData>> updateDataMap = new LinkedList<>();
 		/*
 		 * add new resource relations
 		 */
@@ -134,7 +136,7 @@ public class ElasticsearchCommunityPostPublicationManager<G extends BibTex> exte
 		this.clearUpdateQueue(indexName, updateDataMap);
 	}
 
-	private void loop(final String indexName, final Map<String, UpdateData> updateDataMap, final Function<PersonResourceRelationType, String> scriptFunction, BiFunction<Integer, Integer, List<ResourcePersonRelation>> relationRetrieveMethod) {
+	private void loop(final String indexName, final List<Pair<String, UpdateData>> updateDataMap, final Function<PersonResourceRelationType, String> scriptFunction, BiFunction<Integer, Integer, List<ResourcePersonRelation>> relationRetrieveMethod) {
 		BasicUtils.iterateListWithLimitAndOffset(relationRetrieveMethod, relations -> {
 			for (final ResourcePersonRelation relation : relations) {
 				final Map<String, Object> params = new HashMap<>();
@@ -159,7 +161,7 @@ public class ElasticsearchCommunityPostPublicationManager<G extends BibTex> exte
 				updateData.setRouting(this.entityInformationProvider.getRouting(post));
 				updateData.setType(this.entityInformationProvider.getType());
 				final String entityId = this.entityInformationProvider.getEntityId(post);
-				updateDataMap.put(entityId, updateData);
+				updateDataMap.add(new Pair<>(entityId, updateData));
 
 				if (updateDataMap.size() >= ESConstants.BULK_INSERT_SIZE) {
 					this.clearUpdateQueue(indexName, updateDataMap);

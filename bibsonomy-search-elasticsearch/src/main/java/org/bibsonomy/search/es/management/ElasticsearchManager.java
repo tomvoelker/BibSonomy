@@ -340,7 +340,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		convertedPosts.clear();
 	}
 
-	protected void clearUpdateQueue(String indexName, Map<String, UpdateData> updates) {
+	protected void clearUpdateQueue(String indexName, List<Pair<String, UpdateData>> updates) {
 		if (!present(updates)) {
 			// nothing to update
 			return;

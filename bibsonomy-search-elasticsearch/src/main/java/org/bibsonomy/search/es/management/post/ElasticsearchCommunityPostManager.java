@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -236,7 +237,7 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 	private void loopPosts(final String indexName, final PostsQueryLogic<G> logic, final UpdateIndexAction updateAction) {
 		int offset = 0;
 		int postSize;
-		final Map<String, UpdateData> updates = new HashMap<>();
+		final List<Pair<String, UpdateData>> updates = new LinkedList<>();
 		do {
 			final List<Post<G>> posts = logic.getPosts(ElasticsearchPostManager.SQL_BLOCKSIZE, offset);
 
@@ -247,7 +248,7 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 				updateData.setScript(new Script(ScriptType.INLINE, Script.DEFAULT_SCRIPT_LANG, updateAction.getUpdateScript(), params));
 
 				final String entityId = this.entityInformationProvider.getEntityId(post);
-				updates.put(entityId, updateData);
+				updates.add(new Pair<>(entityId, updateData));
 			}
 
 			if (updates.size() >= ESConstants.BULK_INSERT_SIZE) {
