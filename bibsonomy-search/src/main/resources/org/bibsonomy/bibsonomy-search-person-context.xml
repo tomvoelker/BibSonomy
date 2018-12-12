@@ -17,7 +17,7 @@
 		<property name="client" ref="personSearchSqlMapClient"/>
 	</bean>
 
-	<bean id="personGenerationDBLogic" class="org.bibsonomy.search.index.generator.person.PersonResourcePersonRelationIndexGeneationLogic">
+	<bean id="personGenerationDBLogic" class="org.bibsonomy.search.index.generator.person.PersonResourcePersonRelationIndexGenerationLogic">
 		<property name="sessionFactory" ref="personSearchSessionFactory"/>
 	</bean>
 

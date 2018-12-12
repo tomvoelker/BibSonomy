@@ -26,7 +26,7 @@
 				LIMIT #limit#
 			) AS ppr
 		JOIN gold_standard b USING(simhash1)
-		JOIN person p USING(person_id)
+		JOIN person per USING(person_id)
 	</select>
 
 	<select id="getPersonsCount" resultClass="int">

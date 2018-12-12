@@ -70,7 +70,7 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 
 		// check if gold standard publications are indexed
 		final List<Post<GoldStandardPublication>> communityResults = COMMUNITY_PUBLICATION_SEARCH.getPosts(anonymUser, query);
-		assertThat(communityResults.size(), is(3));
+		assertThat(communityResults.size(), is(10));
 
 		// check if also normal posts are indexed
 		query.setSearch("ontologies");
@@ -148,7 +148,7 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 
 		assertThat(postsAfterCommunityCreating.size(), is(1));
 		assertThat(postsAfterCommunityCreating.get(0).getResource().getAbstract(), is(publicationAbstract));
-		final PostSearchQuery<?> query3 = buildQuery("test friend title");
+		final PostSearchQuery<?> query3 = buildQuery("\"test friend title\"");
 		final ResultList<Post<GoldStandardPublication>> testuser3PostsInIndex = COMMUNITY_PUBLICATION_SEARCH.getPosts(anonymUser, query3);
 
 		assertThat(testuser3PostsInIndex.size(), is(1));
@@ -235,7 +235,7 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 		assertThat(posts.size(), is(1));
 
 		firstRelation.setPost(GOLD_STANDARD_PUBLICATION_DATABASE_MANAGER.getPostDetails("", interhash, "", Collections.emptyList(), this.dbSession));
-
+		firstRelation.setChangedAt(new Date()); // set new date
 		PERSON_DATABASE_MANAGER.addResourceRelation(firstRelation, LOGGEDIN_USER, this.dbSession);
 
 		this.updateIndex();
@@ -251,7 +251,8 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 		query.setCollege(college);
 
 		final ResultList<Post<GoldStandardPublication>> posts = COMMUNITY_PUBLICATION_SEARCH.getPosts(anonymUser, query);
-		assertThat(posts.size(), is(4));
+		final int numberOfPostsForTestCollege = 8;
+		assertThat(posts.size(), is(numberOfPostsForTestCollege));
 
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById("w.test.4", this.dbSession);
 		person.setCollege(college);
@@ -260,7 +261,7 @@ public class ElasticsearchCommunityPostPublicationManagerITCase extends Abstract
 		this.updateIndex();
 
 		final ResultList<Post<GoldStandardPublication>> afterUpdate = COMMUNITY_PUBLICATION_SEARCH.getPosts(anonymUser, query);
-		assertThat(afterUpdate.size(), is(5));
+		assertThat(afterUpdate.size(), is(numberOfPostsForTestCollege + 1));
 	}
 
 	@Test

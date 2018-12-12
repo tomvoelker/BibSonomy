@@ -10,7 +10,7 @@
 
 	<resultMap id="fullGroup" class="group" groupBy="groupId" extends="simpleGroup">
 		<result property="organization"		column="organization"	javaType="boolean" />
-		<result property="externalId"		column="external_id"	javaType="string" />
+		<result property="internalId"		column="internal_id"	javaType="string" />
 		<result property="homepage"			column="homepage"		javaType="url" />
 		<result property="realname"			column="real_name"		javaType="string" />
 		<result property="parent" resultMap="SearchGroupCommon.parentGroup" />
@@ -21,7 +21,7 @@
 	</resultMap>
 
 	<sql id="groupColumns">
-		g.`group`, g.group_name, u.user_homepage AS homepage, g.organization, g.external_id, u.user_realname AS real_name, gg.group_name AS parent_group_name
+		g.`group`, g.group_name, u.user_homepage AS homepage, g.organization, g.internal_id, u.user_realname AS real_name, gg.group_name AS parent_group_name
 	</sql>
 
 </sqlMap>

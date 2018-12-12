@@ -254,7 +254,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final Map<Integer, PersonMergeFieldConflict[]> mergeConflicts = PersonMatchUtils.getMergeConflicts(matches);
 		final PersonMergeFieldConflict[] mergeConflictsToTest = mergeConflicts.get(4);
 
-		assertThat(mergeConflictsToTest.length, is(2));
+		assertThat(mergeConflictsToTest.length, is(3));
 
 		final PersonMatch personMatch4 = getMatchById(matches, 4);
 		// conflict for merge remains

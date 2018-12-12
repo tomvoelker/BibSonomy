@@ -27,9 +27,9 @@
 	</select>
 
 	<select id="getDeletedPersonResourceRelations" resultMap="SearchPersonCommon.simplePersonResourceRelationWithSimplePost" parameterClass="date">
-		SELECT <include refid="personResourceRelationColumns" />, ppr.simhash1 AS interHash, -1 AS content_id
+		SELECT <include refid="personResourceRelationColumns" />, ppr.simhash1 AS interHash, -1 AS content_id, NULL AS college
 		FROM log_pub_person ppr
-		WHERE log_date >= #lastLogDate#
+		WHERE log_date > #lastLogDate#
 	</select>
 
 	<select id="getUpdatedOrNewPersonRelations" resultMap="SearchPersonCommon.personResourceRelation">

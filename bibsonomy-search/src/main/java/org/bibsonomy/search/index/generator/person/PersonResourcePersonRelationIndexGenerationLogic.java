@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author dzo
  */
-public class PersonResourcePersonRelationIndexGeneationLogic extends PersonIndexGenerationLogic implements OneToManyIndexGenerationLogic<Person, ResourcePersonRelation> {
+public class PersonResourcePersonRelationIndexGenerationLogic extends PersonIndexGenerationLogic implements OneToManyIndexGenerationLogic<Person, ResourcePersonRelation> {
 
 	@Override
 	public List<ResourcePersonRelation> getToManyEntities(int lastContentId, int limit) {

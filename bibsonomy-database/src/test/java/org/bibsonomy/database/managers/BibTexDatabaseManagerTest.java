@@ -27,10 +27,12 @@
 package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.testutil.Assert.assertByTagNames;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -407,7 +409,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	@Override
 	public void testGetPostsForHomepage() {
 		final List<Post<BibTex>> post = publicationDb.getPostsForHomepage(null, null, null, 10, 0, null, this.dbSession);
-		assertEquals(4, post.size());
+		assertThat(post.size(), is(3));
 	}
 
 	/**

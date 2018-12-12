@@ -10,7 +10,6 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.search.testutils.SearchSpringContextWrapper;
-import org.bibsonomy.search.update.SearchIndexDualSyncState;
 import org.junit.Test;
 
 import java.util.List;
@@ -20,8 +19,8 @@ import java.util.List;
  *
  * @author dzo
  */
-public class PersonResourcePersonRelationIndexGeneationLogicTest extends AbstractDatabaseManagerTest {
-	private static final PersonResourcePersonRelationIndexGeneationLogic PERSON_INDEX_GENERATIONLOGIC = SearchSpringContextWrapper.getBeanFactory().getBean(PersonResourcePersonRelationIndexGeneationLogic.class);
+public class PersonResourcePersonRelationIndexGenerationLogicTest extends AbstractDatabaseManagerTest {
+	private static final PersonResourcePersonRelationIndexGenerationLogic PERSON_INDEX_GENERATIONLOGIC = SearchSpringContextWrapper.getBeanFactory().getBean(PersonResourcePersonRelationIndexGenerationLogic.class);
 
 	/**
 	 * test {@link PersonIndexGenerationLogic#getEntities(int, int)}
@@ -52,7 +51,7 @@ public class PersonResourcePersonRelationIndexGeneationLogicTest extends Abstrac
 	}
 
 	/**
-	 * tests {@link PersonResourcePersonRelationIndexGeneationLogic#getToManyEntities(int, int)}
+	 * tests {@link PersonResourcePersonRelationIndexGenerationLogic#getToManyEntities(int, int)}
 	 */
 	@Test
 	public void testGetToManyEntities() {
@@ -68,7 +67,7 @@ public class PersonResourcePersonRelationIndexGeneationLogicTest extends Abstrac
 	}
 
 	/**
-	 * tests {@link PersonResourcePersonRelationIndexGeneationLogic#getNumberOfToManyEntities()}
+	 * tests {@link PersonResourcePersonRelationIndexGenerationLogic#getNumberOfToManyEntities()}
 	 */
 	@Test
 	public void testGetNumberOfToManyEntities() {
