@@ -68,6 +68,13 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post<? extends Reso
 		if (this.getHttpStatusCode() == HttpStatus.SC_NOT_FOUND) {
 			return null;
 		}
+
+		// no user name set we assume a community post
+		if (!present(this.username)) {
+			return this.getRenderer().parseCommunityPost(this.downloadedDocument);
+		}
+
+		// else it is a normal post
 		return this.getRenderer().parsePost(this.downloadedDocument, NoDataAccessor.getInstance());
 	}
 

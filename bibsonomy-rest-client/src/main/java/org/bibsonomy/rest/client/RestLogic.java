@@ -52,6 +52,7 @@ import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.Document;
+import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Person;
@@ -370,7 +371,16 @@ public class RestLogic extends AbstractLogicInterface {
 		final List<String> resourceHashes = new LinkedList<>();
 		final DatabaseException collectedException = new DatabaseException();
 		for (final Post<?> post : posts) {
-			final ChangePostQuery query = new ChangePostQuery(this.authUser.getName(), post.getResource().getIntraHash(), post);
+			final Resource resource = post.getResource();
+			String hashToUpdate = resource.getIntraHash();
+			String postUser = post.getUser().getName();
+
+			if (resource instanceof GoldStandard<?>) {
+				postUser = "";
+				hashToUpdate = resource.getInterHash();
+			}
+
+			final ChangePostQuery query = new ChangePostQuery(postUser, hashToUpdate, post);
 			final String hash = execute(query);
 			if (!query.isSuccess()) {
 				collectedException.addToErrorMessages(PostUtils.getKeyForPost(post), new ErrorMessage(hash, hash));
