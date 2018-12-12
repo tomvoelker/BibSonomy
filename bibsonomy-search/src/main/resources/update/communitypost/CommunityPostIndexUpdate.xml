@@ -201,8 +201,9 @@
 	</select>
 
 	<select id="getGoldStandardBookmarkAllDeletedPosts" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
-		SELECT <include refid ="allGoldStandardNormalBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
+		SELECT <include refid ="allGoldStandardNormalBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />, u.book_url
 		FROM log_bookmark b
+		LEFT JOIN urls u USING (book_url_hash)
 		WHERE b.log_date >= #lastLogDate#
 		AND b.new_content_id = 0
 		LIMIT #limit#
@@ -211,9 +212,10 @@
 
 	<!-- "normal" bookmarks -->
 	<select id="getDeletedBookmarkPosts" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
-		SELECT <include refid ="allGoldStandardNormalBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
+		SELECT <include refid ="allGoldStandardNormalBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />, u.book_url
 		FROM log_bookmark b
 		LEFT JOIN gold_standard gb ON (b.book_url_hash = gb.simhash1)
+		LEFT JOIN urls u USING (book_url_hash)
 		WHERE b.log_date >= #lastLogDate#
 		AND b.new_content_id = 0
 		AND gb.title IS NULL <!-- only select bookmarks without a community post -->
