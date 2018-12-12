@@ -9,7 +9,7 @@
     <jsp:directive.attribute name="title" type="java.lang.String" required="true" />
     <fmt:message key="person.show.saveButton" var="textSaveButton" />
 
-    <div class="page-header">
+    <div>
         <div class="alert alert-danger" id="personPageAjaxError">
             <span id="personPageAjaxErrorDefaultMessage"><fmt:message key="error.500" /></span>
         </div>
