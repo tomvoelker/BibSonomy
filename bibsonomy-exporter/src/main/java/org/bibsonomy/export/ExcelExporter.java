@@ -11,6 +11,12 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
+/**
+ * exports entities into a spreadsheeet
+ *
+ * @author pda
+ * @param <T>
+ */
 public class ExcelExporter<T> implements Exporter<T> {
 	private final static String CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
@@ -29,8 +35,7 @@ public class ExcelExporter<T> implements Exporter<T> {
 	}
 
 	@Override
-	public void save(Collection<T> entities, OutputStream outputStream,
-									 Map<String, Function<T, String>> mappings) throws IOException {
+	public void save(Collection<T> entities, OutputStream outputStream, Map<String, Function<T, String>> mappings) throws IOException {
 		final XSSFWorkbook workbook = new XSSFWorkbook();
 		final Sheet sheet = workbook.createSheet();
 		fillHeaderRow(sheet.createRow(0), mappings.keySet());
@@ -38,7 +43,7 @@ public class ExcelExporter<T> implements Exporter<T> {
 		for (T entity : entities) {
 			fillRow(sheet.createRow(row++), entity, mappings.values());
 		}
-		//Auto size columns
+		// auto size columns
 		IntStream.range(0, mappings.size()).forEach(sheet::autoSizeColumn);
 		workbook.write(outputStream);
 		workbook.close();
