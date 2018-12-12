@@ -50,7 +50,9 @@
 								<tr>
 									<th>Index Name</th>
 									<th>State</th>
+									<th># Docs</th>
 									<th>Version</th>
+
 									<c:choose>
 										<c:when test="${dualSyncState}">
 											<th>first last id</th>
@@ -59,7 +61,6 @@
 											<th>second last log date</th>
 										</c:when>
 										<c:otherwise>
-											<th># Docs</th>
 											<th>Last tas id</th>
 											<th>Last log date</th>
 											<th>Last Doc date</th>
@@ -75,7 +76,7 @@
 								<tr>
 									<td><c:out value="${searchIndexInfo.id}" /></td>
 									<td><c:out value="${searchIndexInfo.state}" /></td>
-									
+									<td><c:out value="${searchIndexInfo.statistics.numberOfDocuments}" /></td>
 									<c:choose>
 										<c:when test="${searchIndexInfo.state != 'GENERATING' }">
 											<c:choose>
@@ -90,7 +91,6 @@
 												</c:when>
 												<c:otherwise>
 													<td><c:out value="${searchIndexInfo.syncState.mappingVersion}" /></td>
-													<td><c:out value="${searchIndexInfo.statistics.numberOfDocuments}" /></td>
 													<td><c:out value="${searchIndexInfo.syncState.last_tas_id}" /></td>
 													<td><c:out value="${searchIndexInfo.syncState.last_log_date}" /></td>
 													<td><c:out value="${searchIndexInfo.syncState.lastDocumentDate}" /></td>
