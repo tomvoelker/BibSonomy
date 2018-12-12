@@ -7,13 +7,12 @@
     <jsp:directive.attribute name="hasClaimedOrIsAdmin" type="java.lang.Boolean" required="true" />
     <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true" />
     <jsp:directive.attribute name="title" type="java.lang.String" required="true" />
+    <fmt:message key="person.show.saveButton" var="textSaveButton" />
 
     <div class="page-header">
-
         <div class="alert alert-danger" id="personPageAjaxError">
             <span id="personPageAjaxErrorDefaultMessage"><fmt:message key="error.500" /></span>
         </div>
-
         <div class="form-group">
             <h1>
                 <div class="personPageFormPlaceholder">
@@ -30,7 +29,6 @@
                 <div style="margin:8px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField">
                     <actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_ACADEMIC_DEGREE"></actionbuttons:personPageupdateButton>
                 </div>
-
                 <c:out value=" "/>
                 <c:out value="${title}"/>
             </h1>

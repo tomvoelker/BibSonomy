@@ -68,12 +68,12 @@ public class SearchInfoDBLogicTest extends AbstractDatabaseManagerTest {
 	public void testGetGroupMembersByGroupName() {
 		List<String> users = LOGIC.getGroupMembersByGroupName("rootgroup");
 
-		assertThat(users.size(), CoreMatchers.equalTo(4));
+		assertThat(users.size(), CoreMatchers.equalTo(5));
 		assertThat(users, CoreMatchers.hasItems("childgroup1", "childgroup2", "childgroup3depth2", "rootgroup"));
 
 		users = LOGIC.getGroupMembersByGroupName("childgroup1");
 
-		assertThat(users.size(), CoreMatchers.equalTo(2));
+		assertThat(users.size(), CoreMatchers.equalTo(3));
 		assertThat(users, CoreMatchers.hasItems("childgroup1", "childgroup3depth2"));
 
 	}
