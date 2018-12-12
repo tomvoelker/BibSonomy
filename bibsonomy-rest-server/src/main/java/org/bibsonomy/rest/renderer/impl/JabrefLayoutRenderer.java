@@ -170,6 +170,11 @@ public class JabrefLayoutRenderer implements Renderer {
 	}
 
 	@Override
+	public List<Project> parseProjects(Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public CRISLink parseCRISLink(Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}

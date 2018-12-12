@@ -69,6 +69,7 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.Query;
@@ -94,6 +95,7 @@ import org.bibsonomy.rest.client.queries.get.GetPostDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostDocumentQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
 import org.bibsonomy.rest.client.queries.get.GetProjectDetailsQuery;
+import org.bibsonomy.rest.client.queries.get.GetProjectsQuery;
 import org.bibsonomy.rest.client.queries.get.GetResourcePersonRelationsQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostDocumentQuery;
@@ -618,5 +620,10 @@ public class RestLogic extends AbstractLogicInterface {
 	@Override
 	public boolean acceptMerge(PersonMatch match) {
 		return execute(new MergePersonQuery(match));
+	}
+
+	@Override
+	public List<Project> getProjects(ProjectQuery query) {
+		return execute(new GetProjectsQuery(query));
 	}
 }

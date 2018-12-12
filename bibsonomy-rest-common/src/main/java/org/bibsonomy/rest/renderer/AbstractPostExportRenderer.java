@@ -375,6 +375,14 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	}
 
 	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#parseProjects(java.io.Reader)
+	 */
+	@Override
+	public List<Project> parseProjects(Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.renderer.Renderer#parseCRISLink(java.io.Reader)
 	 */
 	@Override
