@@ -7,10 +7,11 @@
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+		  xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 		  xmlns:project="urn:jsptagdir:/WEB-INF/tags/resources/project"
 		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 		  xmlns:spring="http://www.springframework.org/tags"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
@@ -27,7 +28,7 @@
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.projects" formAction="/project/" formInputName="project"/>
 		</jsp:attribute>
-
+		<!--
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
@@ -35,13 +36,13 @@
 					<nav:crumb name="${projects}" active="true"/>
 				</jsp:attribute>
 			</nav:breadcrumbs>
-		</jsp:attribute>
+		</jsp:attribute> -->
 
 		<!--+
 		 	| content
 		 	+-->
 		<jsp:attribute name="content">
-
+			<!--
 			<h1 class="content-heading">
                 <fmt:message key="navi.projects.all"/>
                 <c:if test="${command.context.loginUser.role eq 'ADMIN'}">
@@ -50,7 +51,7 @@
                     </span>
                 </c:if>
             </h1>
-
+			-->
 			<div class="row">
 				<div class="col-md-12">
 					<fmt:message key="project.search" var="searchPlaceholder" />
@@ -86,10 +87,11 @@
 					</div>
 				</div>
 			</div>
+			<c:set var="projectListCommand" value="${command.projects}" />
+			<c:set var="totalNumberOfProjects" value="${projectListCommand.totalCount}" />
 			<div class="row">
-				<div class="col-md-7">
-					<spring:eval var="projectStatusValues"
-								 expression="T(org.bibsonomy.model.enums.ProjectStatus).values()"/>
+				<div class="col-md-6 vcenter">
+					<spring:eval var="projectStatusValues" expression="T(org.bibsonomy.model.enums.ProjectStatus).values()"/>
 					<fmt:message key="filterBy"/>:
 					<div class="btn-group" role="group" aria-label="...">
 						<!-- FIXME i18n -->
@@ -104,7 +106,22 @@
 						</c:forEach>
 					</div>
 				</div>
-				<div class="col-md-5">
+				<div class="col-md-3 vcenter">
+					<c:if test="${totalNumberOfProjects gt 0}">
+						<c:set var="startIndex" value="${projectListCommand.start * projectListCommand.entriesPerPage + 1}" />
+						<c:set var="endIndex" value="${startIndex + projectListCommand.entriesPerPage}" />
+						<c:set var="endIndex" value="${endIndex ge totalNumberOfProjects ? totalNumberOfProjects : endIndex}" />
+						<div class="text-muted">
+							<fmt:message key="projects.results.description">
+								<fmt:param value="${startIndex}" />
+								<fmt:param value="${endIndex}" />
+								<fmt:param value="${totalNumberOfProjects}" />
+							</fmt:message>
+						</div>
+					</c:if>
+
+				</div>
+				<div class="col-md-3 text-right vcenter">
 					<div class="btn-group">
 						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
 								aria-haspopup="true"
@@ -124,18 +141,28 @@
 					</div>
 				</div>
 			</div>
+			<hr class="option-result-divider"/>
+            <div class="row" >
+				<div class="col-md-12">
+					<c:choose>
+						<c:when test="${fn:length(projectListCommand.list) gt 0}">
+							<ul class="list-unstyled" id="projects">
+								<c:forEach var="project" items="${projectListCommand.list}">
+									<project:listview project="${project}"/>
+								</c:forEach>
+							</ul>
+						</c:when>
+						<c:otherwise>
+							<div class="no-items-found">
+								<fmt:message key="projects.noResult" />
+							</div>
+						</c:otherwise>
+					</c:choose>
 
-            <div id="projects">
-				<ul class="list-group" id="all-projects">
-                    <c:forEach var="project" items="${command.projects.list}">
-                        <project:listview project="${project}"/>
-                    </c:forEach>
-				</ul>
+
+					<rc:nextprev listView="${command.projects}" listViewStartParamName="projects.start"/>
+				</div>
 			</div>
-            <nav aria-label="Page navigation example">
-                <p class="info" id="show-amount"/><br/>
-                <ul class="pagination" id="pagin"/>
-            </nav>
 		</jsp:attribute>
 	</layout:paneLayout>
 </jsp:root>

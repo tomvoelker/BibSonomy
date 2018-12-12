@@ -852,6 +852,7 @@
 								<value>projectOrder</value>
 								<value>projectStatus</value>
 								<value>sortOrder</value>
+								<value>projects.start</value>
 							</list>
 						</property>
 					</bean>

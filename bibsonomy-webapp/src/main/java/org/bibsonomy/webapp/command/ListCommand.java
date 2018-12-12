@@ -155,7 +155,7 @@ public class ListCommand<T> {
 	 */
 	public List<PageCommand> getPreviousPages() {
 		if (this.previousPages == null) {
-			this.previousPages = new ArrayList<PageCommand>();
+			this.previousPages = new ArrayList<>();
 			for (int i = (this.numPreviousPages >= this.getCurPage().getNumber()) ? 1 : this.getCurPage().getNumber() - this.numPreviousPages; i < this.getCurPage().getNumber(); ++i) {
 				final int start = (i - 1) * this.entriesPerPage;
 				this.previousPages.add(new PageCommand(i, start));
@@ -171,7 +171,7 @@ public class ListCommand<T> {
 	 */
 	public List<PageCommand> getNextPages() {
 		if (this.nextPages == null) {
-			this.nextPages = new ArrayList<PageCommand>();
+			this.nextPages = new ArrayList<>();
 			for (int i = 1; i <= this.numNextPages; ++i) {
 				final int start = this.curPage.getStart() + (i * this.entriesPerPage);
 				if ((start < this.getTotalCount()) || (this.getTotalCount() == 0)) {
