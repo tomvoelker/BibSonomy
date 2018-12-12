@@ -455,7 +455,7 @@ public interface Renderer {
 	public Person parsePerson(Reader reader) throws BadRequestOrResponseException;
 
 	/**
-	 * Reads one {@link Person} from a {@link Reader}.
+	 * Reads one {@link Project} from a {@link Reader}.
 	 *
 	 * @param reader
 	 *            the {@link Reader} to use.
@@ -464,6 +464,17 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public Project parseProject(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads a list of {@link Project} from a {@link Reader}.
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return a list of {@link Project} object.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public List<Project> parseProjects(Reader reader) throws BadRequestOrResponseException;
 
 	/**
 	 * Reads one {@link Person} from a {@link Reader}.

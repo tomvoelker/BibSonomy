@@ -1107,14 +1107,22 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	@Override
+	public List<Project> parseProjects(Reader reader) throws BadRequestOrResponseException {
+		final BibsonomyXML xmlDoc = parse(reader);
+		if (xmlDoc.getProjects() != null) {
+			return xmlDoc.getProjects().getProjects().stream().parallel().map(this::createProject).collect(Collectors.toList());
+		}
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no projects defined.");
+	}
+
+	@Override
 	public Project parseProject(Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = parse(reader);
 		if (xmlDoc.getProject() != null) {
-			try {
-				return createProject(xmlDoc.getProject());
-			} catch (MalformedURLException e) {
-				throw new BadRequestOrResponseException(e);
-			}
+			return createProject(xmlDoc.getProject());
 		}
 		if (xmlDoc.getError() != null) {
 			throw new BadRequestOrResponseException(xmlDoc.getError());
@@ -1122,7 +1130,7 @@ public abstract class AbstractRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no project defined.");
 	}
 
-	private Project createProject(ProjectType projectType) throws MalformedURLException {
+	private Project createProject(ProjectType projectType) {
 		final Project project = new Project();
 		if (present(projectType.getParentProject())) {
 			final Project parentProject = new Project();
