@@ -279,22 +279,22 @@
 						<c:when test="${not empty loginUserName}" >
 							<li class="visible-md visible-lg"><user:username user="${loginUser}" /></li>
 							<li class="dropdown ${activeTab eq 'myprofile' ? 'active' : ''}">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<span class="fa fa-user"><!-- KEEP ME --></span>
-							<c:if test="${(loginUser.inbox.numPosts + loginUser.clipboard.numPosts) == 0}">
-								<c:set var="counterStyle" value="display: none;" />
-							</c:if>
-							<b class="navi-info">
-								<span id="inbox-clipboard-counter" style="${counterStyle}"><c:out value="${(loginUser.inbox.numPosts + loginUser.clipboard.numPosts)}"/></span>
-							</b>
-							<b class="caret">&amp;nbsp;</b></a>
-						<ul class="dropdown-menu items-with-icons">
-							<menu:userDropdown loginUser="${loginUser}" />
-						</ul>
-					</li>
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+								<span class="fa fa-user"><!-- KEEP ME --></span>
+									<c:if test="${(loginUser.inbox.numPosts + loginUser.clipboard.numPosts) == 0}">
+										<c:set var="counterStyle" value="display: none;" />
+									</c:if>
+									<b class="navi-info">
+										<span id="inbox-clipboard-counter" style="${counterStyle}"><c:out value="${(loginUser.inbox.numPosts + loginUser.clipboard.numPosts)}"/></span>
+									</b>
+									<b class="caret">&amp;nbsp;</b></a>
+								<ul class="dropdown-menu items-with-icons">
+									<menu:userDropdown loginUser="${loginUser}" />
+								</ul>
+							</li>
 						</c:when>
 						<c:otherwise>
-							<menu:registerSignUpButtons></menu:registerSignUpButtons>
+							<menu:registerSignUpButtons />
 						</c:otherwise>
 					</c:choose>
 				</ul>
