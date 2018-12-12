@@ -439,6 +439,10 @@ public class UrlRenderer {
 	}
 
 	public UrlBuilder createUrlBuilderForProjects(String projectId) {
+		return createUrlBuilderForProjects().addParameter("internalId", projectId);
+	}
+
+	public UrlBuilder createUrlBuilderForProjectsExternalId(String projectId) {
 		return createUrlBuilderForProjects().addPathElement(projectId);
 	}
 

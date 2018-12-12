@@ -30,7 +30,9 @@ import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
 import org.bibsonomy.rest.strategy.projects.GetProjectStrategy;
+import org.bibsonomy.rest.strategy.projects.GetProjectsStrategy;
 import org.bibsonomy.rest.strategy.projects.PostProjectStrategy;
+import org.bibsonomy.rest.strategy.projects.UpdateProjectStrategy;
 import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
 
 /**
@@ -39,37 +41,41 @@ import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
  * @author pda
  */
 public class ProjectsHandler implements ContextHandler {
-    @Override
-    public Strategy createStrategy(Context context, URLDecodingPathTokenizer urlTokens, HttpMethod httpMethod) {
-        final int numTokensLeft = urlTokens.countRemainingTokens();
+	@Override
+	public Strategy createStrategy(Context context, URLDecodingPathTokenizer urlTokens, HttpMethod httpMethod) {
+		final int numTokensLeft = urlTokens.countRemainingTokens();
 
-        switch (numTokensLeft) {
-            // /projects
-            case 0:
-                return createProjectStrategy(context, httpMethod);
-            // /projects/[projectID]
-            case 1:
-                return createProjectStrategy(context, httpMethod, urlTokens.next());
-            default:
-                throw new NoSuchResourceException("cannot process url (no strategy available) - please check url syntax");
-        }
-    }
+		switch (numTokensLeft) {
+			// /projects
+			case 0:
+				return createProjectStrategy(context, httpMethod);
+			// /projects/[projectID]
+			case 1:
+				return createProjectStrategy(context, httpMethod, urlTokens.next());
+			default:
+				throw new NoSuchResourceException("cannot process url (no strategy available) - please check url syntax");
+		}
+	}
 
-    private Strategy createProjectStrategy(Context context, HttpMethod httpMethod, String projectId) {
-        switch (httpMethod) {
-            case GET:
-                return new GetProjectStrategy(context, projectId);
-            default:
-                throw new UnsupportedHttpMethodException(httpMethod, "Project");
-        }
-    }
+	private Strategy createProjectStrategy(Context context, HttpMethod httpMethod, String projectId) {
+		switch (httpMethod) {
+			case GET:
+				return new GetProjectStrategy(context, projectId);
+			case PUT:
+				return new UpdateProjectStrategy(context, projectId);
+			default:
+				throw new UnsupportedHttpMethodException(httpMethod, "Project");
+		}
+	}
 
-    private Strategy createProjectStrategy(Context context, HttpMethod httpMethod) {
-        switch (httpMethod) {
-            case POST:
-                return new PostProjectStrategy(context);
-            default:
-                throw new UnsupportedHttpMethodException(httpMethod, "Project");
-        }
-    }
+	private Strategy createProjectStrategy(Context context, HttpMethod httpMethod) {
+		switch (httpMethod) {
+			case GET:
+				return new GetProjectsStrategy(context);
+			case POST:
+				return new PostProjectStrategy(context);
+			default:
+				throw new UnsupportedHttpMethodException(httpMethod, "Project");
+		}
+	}
 }

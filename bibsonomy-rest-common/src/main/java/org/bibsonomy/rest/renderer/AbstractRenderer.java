@@ -605,6 +605,20 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	@Override
+	public void serializeProjects(Writer writer, List<Project> projects, ViewModel viewModel) {
+		final BibsonomyXML xmlDoc = buildEmptyBibsonomyXMLWithOK();
+		xmlDoc.setProjects(createXmlCRISProjects(projects));
+		serialize(writer, xmlDoc);
+	}
+
+	private ProjectsType createXmlCRISProjects(List<Project> projects) {
+		ProjectsType projectsType = new ProjectsType();
+		projectsType.getProject().addAll(projects.stream().parallel().
+						map(this::createXmlCRISProject).collect(Collectors.toList()));
+		return projectsType;
+	}
+
+	@Override
 	public void serializeProject(Writer writer, Project project, ViewModel viewModel) {
 		final BibsonomyXML xmlDoc = buildEmptyBibsonomyXMLWithOK();
 		xmlDoc.setProject(createXmlCRISProject(project));
@@ -1110,7 +1124,7 @@ public abstract class AbstractRenderer implements Renderer {
 	public List<Project> parseProjects(Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = parse(reader);
 		if (xmlDoc.getProjects() != null) {
-			return xmlDoc.getProjects().getProjects().stream().parallel().map(this::createProject).collect(Collectors.toList());
+			return xmlDoc.getProjects().getProject().stream().parallel().map(this::createProject).collect(Collectors.toList());
 		}
 		if (xmlDoc.getError() != null) {
 			throw new BadRequestOrResponseException(xmlDoc.getError());
@@ -1486,15 +1500,27 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	@Override
+	public String parseProjectId(Reader reader) throws BadRequestOrResponseException {
+		final BibsonomyXML xmlDoc = this.parse(reader);
+		if (present(xmlDoc.getProjectid())) {
+			return xmlDoc.getProjectid();
+		}
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no project id defined.");
+	}
+
+	@Override
 	public String parsePersonId(Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
-		if (xmlDoc.getPersonid()!= null) {
+		if (present(xmlDoc.getPersonid())) {
 			return xmlDoc.getPersonid();
 		}
 		if (xmlDoc.getError() != null) {
 			throw new BadRequestOrResponseException(xmlDoc.getError());
 		}
-		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no user id defined.");
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no person id defined.");
 	}
 	
 	/**

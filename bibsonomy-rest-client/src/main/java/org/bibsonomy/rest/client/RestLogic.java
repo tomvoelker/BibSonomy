@@ -132,6 +132,7 @@ import org.bibsonomy.rest.client.queries.put.ChangeSyncStatusQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeUserQuery;
 import org.bibsonomy.rest.client.queries.put.UpdateCRISLinkQuery;
 import org.bibsonomy.rest.client.queries.put.UpdatePersonQuery;
+import org.bibsonomy.rest.client.queries.put.UpdateProjectQuery;
 import org.bibsonomy.rest.client.util.FileFactory;
 import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.util.ProgressCallbackFactory;
@@ -624,5 +625,10 @@ public class RestLogic extends AbstractLogicInterface {
 	@Override
 	public List<Project> getProjects(ProjectQuery query) {
 		return execute(new GetProjectsQuery(query));
+	}
+
+	@Override
+	public JobResult updateProject(String projectId, Project project) {
+		return execute(new UpdateProjectQuery(projectId, project));
 	}
 }
