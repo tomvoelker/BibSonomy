@@ -28,6 +28,12 @@
 	<c:set var="title" value="${mtl:cleanBibtex(publication.title)}" />
 	
 	<fmt:message key="navi.publication" var="pageTitle"/>
+
+	<c:set var="publicationOverviewLink" value="" />
+	<c:set var="isCRISSystem" value="${properties['system.cris'] eq 'true'}" />
+	<c:if test="${isCRISSystem}">
+		<c:set var="publicationOverviewLink" value="${relativeUrlGenerator.getPublicationsUrl()}" />
+	</c:if>
 	
 	<layout:layout pageTitle="${title}" loginUser="${command.context.loginUser}" requPath="${requPath}" noSidebar="${true}">
 		<jsp:attribute name="headerExt">
@@ -47,7 +53,7 @@
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<nav:crumb nameKey="publications" leadingIcon="fa-book" />
+					<nav:crumb nameKey="publications" leadingIcon="fa-book" href="${publicationOverviewLink}" />
 					<nav:crumb name="${mtl:shorten(title, 75)}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
