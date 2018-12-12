@@ -69,6 +69,7 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.Query;
@@ -94,6 +95,7 @@ import org.bibsonomy.rest.client.queries.get.GetPostDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostDocumentQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
 import org.bibsonomy.rest.client.queries.get.GetProjectDetailsQuery;
+import org.bibsonomy.rest.client.queries.get.GetProjectsQuery;
 import org.bibsonomy.rest.client.queries.get.GetResourcePersonRelationsQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostDocumentQuery;
@@ -131,6 +133,7 @@ import org.bibsonomy.rest.client.queries.put.ChangeSyncStatusQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeUserQuery;
 import org.bibsonomy.rest.client.queries.put.UpdateCRISLinkQuery;
 import org.bibsonomy.rest.client.queries.put.UpdatePersonQuery;
+import org.bibsonomy.rest.client.queries.put.UpdateProjectQuery;
 import org.bibsonomy.rest.client.util.FileFactory;
 import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.util.ProgressCallbackFactory;
@@ -618,5 +621,15 @@ public class RestLogic extends AbstractLogicInterface {
 	@Override
 	public boolean acceptMerge(PersonMatch match) {
 		return execute(new MergePersonQuery(match));
+	}
+
+	@Override
+	public List<Project> getProjects(ProjectQuery query) {
+		return execute(new GetProjectsQuery(query));
+	}
+
+	@Override
+	public JobResult updateProject(String projectId, Project project) {
+		return execute(new UpdateProjectQuery(projectId, project));
 	}
 }

@@ -132,6 +132,7 @@ public class URLGenerator {
 	private static final String MYSEARCH_PREFIX = "mySearch";
 	private static final String PICTURE_PREFIX = "picture";
 	private static final String PERSON_PREFIX = "person";
+	private static final String PUBLICATIONS_URL = "publications";
 	private static final String PUBLICATION_PREFIX = "bibtex";
 	private static final String RELEVANTFOR_PREFIX = "relevantfor";
 	private static final String SEARCH_PREFIX = "search";
@@ -1022,6 +1023,15 @@ public class URLGenerator {
 	public String getResourceUrl(final Post<? extends Resource> post) {
 		final Resource resource = post.getResource();
 		return getResourceUrl(resource, post);
+	}
+
+	/**
+	 * the publications overview page (e.g. for a CRIS system)
+	 * @return
+	 */
+	public String getPublicationsUrl() {
+		final String url = this.projectHome + PUBLICATIONS_URL;
+		return this.getUrl(url);
 	}
 	
 	/**

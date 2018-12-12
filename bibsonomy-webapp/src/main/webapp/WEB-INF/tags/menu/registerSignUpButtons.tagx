@@ -8,13 +8,25 @@
 	xmlns:login="urn:jsptagdir:/WEB-INF/tags/actions/login"
 	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
-		
-	<li>
-		<a href="#" data-toggle="modal" data-target="#loginModal">
-			<fontawesome:icon icon="sign-in" /><c:out value=" " /> <!-- TODO: remove whitespace -->
-			<fmt:message key="navi.login" />
-		</a>
-	</li>
+
+	<c:set var="preferredLogin" value="${properties['auth.preferred.login']}" />
+	<c:choose>
+		<c:when test="${not empty preferredLogin}">
+			<li>
+				<a href="/login_${preferredLogin}?rememberMe=true">
+					<fontawesome:icon icon="sign-in" />&amp;nbsp;<fmt:message key="navi.login" />
+				</a>
+			</li>
+		</c:when>
+		<c:otherwise>
+			<li>
+				<a href="#" data-toggle="modal" data-target="#loginModal">
+					<fontawesome:icon icon="sign-in" /><c:out value=" " /> <!-- TODO: remove whitespace -->
+					<fmt:message key="navi.login" />
+				</a>
+			</li>
+		</c:otherwise>
+	</c:choose>
 	
 	<c:if test="${mtl:contains(authConfig, mtl:convertToEnum('org.bibsonomy.common.enums.AuthMethod', 'INTERNAL')) and not properties['auth.register.disabled'] eq 'true'}">
 		<li> 

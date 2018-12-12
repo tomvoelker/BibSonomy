@@ -140,7 +140,7 @@ public interface Renderer {
 	void serializePersonMatch(Writer writer, PersonMatch match, ViewModel viewModel);
 
 	/**
-	 * Serializes one {@link Person}.
+	 * Serializes one {@link Project}.
 	 *
 	 * @param writer
 	 *            a {@link Writer} to use.
@@ -150,6 +150,18 @@ public interface Renderer {
 	 *            the {@link ViewModel} encapsulates additional information,
 	 */
 	public void serializeProject(Writer writer, Project project, ViewModel viewModel);
+
+
+	/**
+	 * Serializes a list of {@link Project}
+	 * @param writer
+	 *            a {@link Writer} to use.
+	 * @param projects
+	 *            list of {@link Project} object.
+	 * @param viewModel
+	 *            the {@link ViewModel} encapsulates additional information,
+	 */
+	public void serializeProjects(Writer writer, List<Project> projects, ViewModel viewModel);
 
 	/**
 	 * Serializes one {@link Person}.
@@ -393,11 +405,22 @@ public interface Renderer {
 	 *
 	 * @param reader
 	 *            the {@link Reader} to use.
-	 * @return an resource hash
+	 * @return a resource hash
 	 * @throws BadRequestOrResponseException
 	 *             if the document within the reader is errorenous.
 	 */
 	public String parsePersonId(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads a project id from a {@link Reader}
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return a resource hash
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public String parseProjectId(Reader reader) throws BadRequestOrResponseException;
 
 	/**
 	 * Reads a group id from a {@link Reader}
@@ -455,7 +478,7 @@ public interface Renderer {
 	public Person parsePerson(Reader reader) throws BadRequestOrResponseException;
 
 	/**
-	 * Reads one {@link Person} from a {@link Reader}.
+	 * Reads one {@link Project} from a {@link Reader}.
 	 *
 	 * @param reader
 	 *            the {@link Reader} to use.
@@ -464,6 +487,17 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public Project parseProject(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads a list of {@link Project} from a {@link Reader}.
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return a list of {@link Project} object.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public List<Project> parseProjects(Reader reader) throws BadRequestOrResponseException;
 
 	/**
 	 * Reads one {@link Person} from a {@link Reader}.
