@@ -28,13 +28,22 @@ package org.bibsonomy.search.es.management;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.net.URI;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.es.ESClient;
-import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
+import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.es.management.generation.AbstractSearchIndexGenerationTask;
 import org.bibsonomy.search.es.management.generation.ElasticSearchIndexGenerationTask;
 import org.bibsonomy.search.es.management.generation.ElasticSearchIndexRegenerationTask;
@@ -46,16 +55,6 @@ import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.model.SearchIndexStatistics;
 import org.bibsonomy.util.Sets;
 import org.elasticsearch.index.IndexNotFoundException;
-
-import java.net.URI;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 
 /**
  * manager that manages the indices for the specified type
