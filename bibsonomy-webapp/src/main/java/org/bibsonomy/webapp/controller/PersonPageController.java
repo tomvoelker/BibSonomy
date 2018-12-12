@@ -597,7 +597,7 @@ public class PersonPageController extends SingleResourceListController implement
 		for (PersonResourceRelationType prr : PersonResourceRelationType.values()) {
 			command.getAvailableRoles().add(prr);
 		}
-
+		// FIXME: remove? TODO_CRIS
 		command.setShowProjects(true);
 
 		final String requestedPersonId = command.getRequestedPersonId();

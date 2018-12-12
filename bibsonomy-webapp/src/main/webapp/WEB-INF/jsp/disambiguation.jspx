@@ -9,7 +9,8 @@
           xmlns:fn="http://java.sun.com/jsp/jstl/functions"
           xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
           xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
-          xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"xmlns:spring="http://www.springframework.org/tags"
+          xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+		  xmlns:spring="http://www.springframework.org/tags"
           xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
           xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
           xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
@@ -203,11 +204,9 @@
 				<div class="clearfix">&#160;</div>
 				<h2><fmt:message key="disambiguation.otherPub" /></h2>
 				<div id="otherAuthorPublications" class="simplePub">
-					FIXME
-					<!--
 					<c:forEach var="post" items="${command.suggestedPosts}">
 						<per:simplePub post="${post}" />
-					</c:forEach>-->
+					</c:forEach>
 				</div>
 			</div>
 			<!-- create new person for this publication -->

@@ -27,9 +27,9 @@
 package org.bibsonomy.webapp.command;
 
 import java.util.List;
-import java.util.Map;
 
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -52,7 +52,7 @@ public class DisambiguationPageCommand extends BaseCommand {
 
 	private PersonName personName;
 	private Post<? extends BibTex> post;
-	private List<Post<BibTex>> suggestedPosts;
+	private List<Post<GoldStandardPublication>> suggestedPosts;
 	private List<Person> personSuggestions;
 
 	/**
@@ -178,14 +178,14 @@ public class DisambiguationPageCommand extends BaseCommand {
 	/**
 	 * @return the suggestedPosts
 	 */
-	public List<Post<BibTex>> getSuggestedPosts() {
+	public List<Post<GoldStandardPublication>> getSuggestedPosts() {
 		return this.suggestedPosts;
 	}
 
 	/**
 	 * @param otherAdvisorPosts the suggestedPosts to set
 	 */
-	public void setSuggestedPosts(List<Post<BibTex>> otherAdvisorPosts) {
+	public void setSuggestedPosts(List<Post<GoldStandardPublication>> otherAdvisorPosts) {
 		this.suggestedPosts = otherAdvisorPosts;
 	}
 }
