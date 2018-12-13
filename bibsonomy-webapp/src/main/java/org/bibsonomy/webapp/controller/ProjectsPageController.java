@@ -33,6 +33,8 @@ public class ProjectsPageController implements MinimalisticController<ProjectsPa
 	@Override
 	public View workOn(final ProjectsPageCommand command) {
 		final ListCommand<Project> projectListCommand = command.getProjects();
+
+		// build the query based on the commands
 		final ProjectQuery.ProjectQueryBuilder builder = ProjectQuery.createBuilder();
 		final int start = projectListCommand.getStart();
 		builder.projectStatus(command.getProjectStatus())
@@ -42,10 +44,12 @@ public class ProjectsPageController implements MinimalisticController<ProjectsPa
 						.prefix(command.getPrefix())
 						.order(command.getProjectOrder())
 						.sortOrder(command.getSortOrder());
+
+		// query the logic for matching projects
 		final ProjectQuery projectQuery = builder.build();
 		final List<Project> projects = this.logic.getProjects(projectQuery);
-
 		projectListCommand.setList(projects);
+
 		if (!present(projectListCommand.getTotalCountAsInteger())) {
 			final Statistics stats = this.logic.getStatistics(projectQuery);
 			projectListCommand.setTotalCount(stats.getCount());
