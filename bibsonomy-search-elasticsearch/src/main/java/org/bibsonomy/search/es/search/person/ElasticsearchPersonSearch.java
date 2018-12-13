@@ -14,6 +14,7 @@ import org.bibsonomy.search.es.management.ElasticsearchOneToManyManager;
 import org.bibsonomy.services.searcher.PersonSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.InnerHitBuilder;
+import org.elasticsearch.index.query.MatchPhrasePrefixQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.NestedQueryBuilder;
@@ -76,7 +77,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 		final InnerHitBuilder innerHit = new InnerHitBuilder();
 		childQuery.innerHit(innerHit);
 
-		final MatchQueryBuilder nameQuery = QueryBuilders.matchQuery(PersonFields.NAMES + "." + PersonFields.NAME, personQuery);
+		final MatchPhrasePrefixQueryBuilder nameQuery = QueryBuilders.matchPhrasePrefixQuery(PersonFields.NAMES + "." + PersonFields.NAME, personQuery);
 		final NestedQueryBuilder nestedNamesQuery = QueryBuilders.nestedQuery(PersonFields.NAMES, nameQuery, ScoreMode.Max);
 		nestedNamesQuery.boost(2.7f);
 
