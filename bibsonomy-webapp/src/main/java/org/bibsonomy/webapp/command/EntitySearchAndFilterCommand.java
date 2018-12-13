@@ -8,7 +8,7 @@ import org.bibsonomy.common.enums.SortOrder;
  *
  * @author dzo
  */
-public abstract class EntitySearchAndFilterCommand extends BaseCommand {
+public abstract class EntitySearchAndFilterCommand extends ResourceViewCommand {
 	private String search;
 
 	private Prefix prefix;

@@ -32,10 +32,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.lucene.search.join.ScoreMode;
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.services.searcher.query.PostSearchQuery;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -47,6 +49,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 
 /**
  * handles publication relevant search
@@ -55,7 +58,16 @@ import org.elasticsearch.index.query.TermQueryBuilder;
  * @param <P> 
  */
 public class ElasticsearchPublicationSearch<P extends BibTex> extends ElasticsearchPostSearch<P> {
-	
+
+	@Override
+	protected Pair<String, SortOrder> getSortOrder(PostSearchQuery<?> postQuery) {
+		if (Order.YEAR.equals(postQuery.getOrder())) {
+			return new Pair<>(Fields.Publication.YEAR, SortOrder.DESC);
+		}
+
+		return super.getSortOrder(postQuery);
+	}
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.search.post.EsResourceSearch#buildResourceSpecifiyQuery(org.elasticsearch.index.query.BoolQueryBuilder, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
