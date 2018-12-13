@@ -28,16 +28,7 @@ package org.bibsonomy.rest.database;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -45,18 +36,11 @@ import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.GroupMembership;
-import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.logic.query.GroupQuery;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.statistics.Statistics;
 import org.junit.Ignore;
@@ -725,5 +709,10 @@ public class TestDBLogic extends AbstractLogicInterface {
 	@Override
 	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end) {
 		return new Statistics(0);
+	}
+
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query) {
+		return new ArrayList<>(); //FIXME (AD) provide stubs
 	}
 }

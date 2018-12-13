@@ -71,6 +71,7 @@ import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.ProjectQuery;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.querybuilder.GroupQueryBuilder;
@@ -580,6 +581,11 @@ public class RestLogic extends AbstractLogicInterface {
 	@Override
 	public List<ResourcePersonRelation> getResourceRelations(final ResourcePersonRelationQueryBuilder builder) {
 		return this.execute(new GetResourcePersonRelationsQuery(builder.getPersonId()));
+	}
+
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query) {
+		return this.execute(new GetResourcePersonRelationsQuery(query.getPersonId()));
 	}
 
 	@Override

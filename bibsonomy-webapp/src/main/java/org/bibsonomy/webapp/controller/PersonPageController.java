@@ -614,7 +614,7 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setPerson(person);
 
 		// TODO: maybe this should be done in the view?
-		final List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear));
+		final List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.PublicationYear));
 		final List<ResourcePersonRelation> authorRelations = new ArrayList<>();
 		final List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
 		final List<ResourcePersonRelation> otherAuthorRelations = new ArrayList<>();
