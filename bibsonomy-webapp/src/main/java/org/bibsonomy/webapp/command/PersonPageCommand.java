@@ -100,6 +100,9 @@ public class PersonPageCommand extends BaseCommand {
 
 	private boolean hasPicture;
 
+	/** if true only persons of the configured cris system are displayed */
+	private boolean limitResultsToCRISCollege;
+
 	private boolean showProjects;
 
 	private List<Project> projects;
@@ -679,5 +682,19 @@ public class PersonPageCommand extends BaseCommand {
 	 */
 	public void setProjects(List<Project> projects) {
 		this.projects = projects;
+	}
+
+	/**
+	 * @return the limitResultsToCRISCollege
+	 */
+	public boolean isLimitResultsToCRISCollege() {
+		return limitResultsToCRISCollege;
+	}
+
+	/**
+	 * @param limitResultsToCRISCollege the limitResultsToCRISCollege to set
+	 */
+	public void setLimitResultsToCRISCollege(boolean limitResultsToCRISCollege) {
+		this.limitResultsToCRISCollege = limitResultsToCRISCollege;
 	}
 }

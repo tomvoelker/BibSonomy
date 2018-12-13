@@ -354,12 +354,6 @@
 						<property name="allowedFields">
 							<list>
 								<value>requestedPersonId</value>
-								
-								<!-- <value>requestedAction</value>  -->
-								<!-- <value>requestedHash</value>  -->
-								<!--  <value>requestedUser</value> -->
-								<!-- <value>requestedRole</value> -->
-								<!-- <value>requestedIndex</value>  -->
 								<value>formResponseString</value>
 								<value>formMatchId</value>
 								<value>formAction</value>
@@ -369,19 +363,12 @@
 								<value>formInterHash</value>
 								<value>formIntraHash</value>
 								<value>formResourceHash</value>
-								<!-- <value>formUser</value> -->
 								<value>formThatsMe</value>
-								<!-- <value>formOrcid</value> -->
 								<value>formPersonNameId</value>
 								<value>formFirstName</value>
 								<value>formMiddleName</value>
 								<value>formLastName</value>
 								<value>formSelectedName</value>
-								<!-- <value>formAcademicDegree</value>
-								<value>formCollege</value>
-								<value>formEmail</value>
-								<value>formHomepage</value>-->
-								<!-- <value>formThesisId</value>  -->
 								<value>formResourcePersonRelationId</value>
 								
 								<value>formPersonIndex</value>
@@ -401,6 +388,8 @@
 								
 								<value>newName.firstName</value>
 								<value>newName.lastName</value>
+
+								<value>limitResultsToCRISCollege</value>
 							</list>
 						</property>
 					</bean>
@@ -910,6 +899,7 @@
 		<property name="personRoleRenderer" ref="personRoleRenderer"/>
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
 		<property name="pictureHandlerFactory" ref="gravatarStdPictureHandlerFactory" />
+		<property name="crisCollege" value="${system.cris.college}" />
 	</bean>
 
 	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.PersonDisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">
@@ -1200,30 +1190,39 @@
 	<bean id="personIntroPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="PERSON_INTRO"/>
 	</bean>
+
 	<bean id="buttonPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="BUTTONS"/>
 	</bean>
+
 	<bean id="gettingStartedPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="GETTINGSTARTED"/>
 	</bean>
+
 	<bean id="error403PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="ERROR403"/>
 	</bean>
+
 	<bean id="error404PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="ERROR404"/>
 	</bean>
+
 	<bean id="error405PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="ERROR405"/>
 	</bean>
+
 	<bean id="error500PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="ERROR500"/>
 	</bean>
+
 	<bean id="error503PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="ERROR503"/>
 	</bean>
+
 	<bean id="useNotAllowedPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="USE_NOT_ALLOWED"/>
 	</bean>
+
 	<bean id="contextPathFilter" class="org.bibsonomy.webapp.filters.ContextPathFilter">
 		<property name="projectHomeUrl" ref="projectHome"/>
 	</bean>
