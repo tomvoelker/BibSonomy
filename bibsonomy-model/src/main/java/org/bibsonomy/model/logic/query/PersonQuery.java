@@ -10,22 +10,13 @@ import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
  */
 public class PersonQuery extends PersonSuggestionQueryBuilder {
 
-	private final String college;
+	private String college;
 
 	/**
 	 * @param query any combination of title, author-name
 	 */
 	public PersonQuery(String query) {
-		this(query, null);
-	}
-
-	/**
-	 * @param query
-	 * @param college
-	 */
-	public PersonQuery(String query, String college) {
 		super(query);
-		this.college = college;
 	}
 
 	/**
@@ -33,5 +24,12 @@ public class PersonQuery extends PersonSuggestionQueryBuilder {
 	 */
 	public String getCollege() {
 		return college;
+	}
+
+	/**
+	 * @param college the college to set
+	 */
+	public void setCollege(String college) {
+		this.college = college;
 	}
 }
