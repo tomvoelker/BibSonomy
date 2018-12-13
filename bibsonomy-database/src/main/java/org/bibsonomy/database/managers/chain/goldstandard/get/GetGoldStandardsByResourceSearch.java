@@ -28,30 +28,32 @@ package org.bibsonomy.database.managers.chain.goldstandard.get;
 
 import java.util.List;
 
-import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.goldstandard.GoldStandardChainElement;
-import org.bibsonomy.database.params.ResourceParam;
+import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.services.searcher.query.PostSearchQuery;
 
 /**
  * @author dzo
  * @param <RR> 
- * @param <R> 
- * @param <P> 
+ * @param <R>
  */
-public class GetGoldStandardsByResourceSearch<RR extends Resource, R extends Resource & GoldStandard<RR>, P extends ResourceParam<RR>> extends GoldStandardChainElement<RR, R, P> {
+public class GetGoldStandardsByResourceSearch<RR extends Resource, R extends Resource & GoldStandard<RR>> extends GoldStandardChainElement<RR, R> {
 
 	@Override
-	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.databaseManager.getSearch().getPosts(param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), null, param.getGroupNames(), param.getSearchType(), param.getSearch(), param.getTitle(), param.getAuthor(), null, null, null, null, null, null, param.getOrder(), param.getLimit(), param.getOffset());
+	protected List<Post<R>> handle(final QueryAdapter<PostQuery<R>> param, final DBSession session) {
+		final PostSearchQuery<?> searchQuery = new PostSearchQuery<>(param.getQuery());
+		final User loggedinUser = param.getLoggedinUser();
+		return this.databaseManager.getSearch().getPosts(loggedinUser, searchQuery);
 	}
 
 	@Override
-	protected boolean canHandle(final P param) {
-		return true; // TODO: adapt
+	protected boolean canHandle(QueryAdapter<PostQuery<R>> param) {
+		return true;
 	}
 }

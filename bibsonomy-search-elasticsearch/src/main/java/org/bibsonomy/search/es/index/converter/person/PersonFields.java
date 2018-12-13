@@ -32,6 +32,10 @@ package org.bibsonomy.search.es.index.converter.person;
  * @author dzo
  */
 public interface PersonFields {
+
+	/** the field containing the database id (person_change_id) */
+	String PERSON_DATABASE_ID = "database_id";
+
 	/** the person id field */
 	String PERSON_ID = "person_id";
 
@@ -73,4 +77,24 @@ public interface PersonFields {
 
 	/** the change date of the person */
 	String CHANGE_DATE = "change_date";
+
+	/** the joined field */
+	String JOIN_FIELD = "resource_relations";
+
+	/** the person type */
+	String TYPE_PERSON = "person";
+
+	/** the relation type */
+	String TYPE_RELATION = "relation";
+
+	interface RelationFields {
+		/** the author index */
+		String INDEX = "index";
+
+		/** the relation type */
+		String RELATION_TYPE = "relation_type";
+
+		/** the post belonging to the relation */
+		String POST = "post";
+	}
 }

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PersonUpdate">
+
+	<select id="getUpdatedAndNewPersons" resultMap="SearchPersonCommon.person">
+		SELECT p.*, <include refid="personFields" />
+		FROM
+			<!-- check for new persons -->
+			(SELECT person_id
+			FROM person
+				WHERE person_change_id >= #lastContentId#
+			UNION
+			<!-- check for new person names -->
+			SELECT person_id
+			FROM person_name
+				WHERE person_change_id >= #lastContentId#
+			UNION
+			<!-- find persons where the person name was updated/deleted -->
+			SELECT person_id
+			FROM log_person_name
+				WHERE log_date >= #lastLogDate#
+			LIMIT #limit#
+			OFFSET #offset#) AS pp
+		JOIN person p USING (person_id)
+		JOIN person_name pn USING (person_id)
+	</select>
+
+	<select id="getDeletedPersonResourceRelations" resultMap="SearchPersonCommon.simplePersonResourceRelationWithSimplePost" parameterClass="date">
+		SELECT <include refid="personResourceRelationColumns" />, ppr.simhash1 AS interHash, -1 AS content_id, NULL AS college
+		FROM log_pub_person ppr
+		WHERE log_date > #lastLogDate#
+	</select>
+
+	<select id="getUpdatedOrNewPersonRelations" resultMap="SearchPersonCommon.personResourceRelation">
+		SELECT <include refid="personResourceRelationWithPostColumns" />
+			FROM
+			(
+				SELECT *
+				FROM pub_person
+				WHERE person_change_id >= #lastContentId#
+				<isEqual property="includeRelatedEntityUpdates" compareValue="true">
+					UNION
+					SELECT ppr_pu.*
+					FROM pub_person ppr_pu
+					JOIN person pu USING (person_id)
+					WHERE pu.person_change_id >= #lastContentId#
+				</isEqual>
+				LIMIT #limit#
+				OFFSET #offset#
+			) AS ppr
+		JOIN gold_standard b USING (simhash1)
+		JOIN person per USING (person_id)
+	</select>
+</sqlMap>

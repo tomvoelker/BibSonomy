@@ -24,7 +24,15 @@
                            noSidebar="${true}">
 
         <jsp:attribute name="content">
-			TODO
+			<h1><fmt:message key="cris.home.header" /></h1>
+			<img src="/resources_puma/image/cris_home_header.jpg" id="cris-home-logo" />
+			<div class="row">
+				<div class="col-md-10">
+					<p class="lead">
+						<fmt:message key="cris.home.description" />
+					</p>
+				</div>
+			</div>
 		</jsp:attribute>
 
         <jsp:attribute name="heading">

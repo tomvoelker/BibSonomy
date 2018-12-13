@@ -125,18 +125,28 @@
 								</c:otherwise>
 							</c:choose>
 							<!-- Email -->
-							<per:personProperty hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" type="email" value="${command.person.email}" />
-							<!-- Homepage -->						
-							<per:personProperty hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" type="homepage" value="${command.person.homepage}" />
+							<c:if test="${not empty command.context.loginUser.name or not empty command.person.email}" >
+								<per:personProperty hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" type="email" value="${command.person.email}" />
+							</c:if>
+							<!-- Homepage -->
+							<c:if test="${not empty command.context.loginUser.name or not empty command.person.homepage}" >
+								<per:personProperty hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" type="homepage" value="${command.person.homepage}" />
+							</c:if>
 						</div>
 					</div>
 					<div class="col-md-6">
 						<!-- Alternative Names -->
-						<per:alternativeNames hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" />
+						<c:if test="${not empty command.context.loginUser.name or fn:length(command.person.names) gt 1}" >
+							<per:alternativeNames hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" />
+						</c:if>
 						<!-- ORCID -->
-						<per:personProperty hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" type="orcid" value="${command.person.orcid}" />
+						<c:if test="${not empty command.context.loginUser.name or not empty command.person.orcid}" >
+							<per:personProperty hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" type="orcid" value="${command.person.orcid}" />
+						</c:if>
 						<!-- RESEARCHER ID -->
-						<per:personProperty hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" type="researcherid" value="${command.person.researcherid}" />
+						<c:if test="${not empty command.context.loginUser.name or not empty command.person.researcherid}" >
+							<per:personProperty hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" type="researcherid" value="${command.person.researcherid}" />
+						</c:if>
 					</div>
 				</div>
 			</form>

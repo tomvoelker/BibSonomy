@@ -242,9 +242,9 @@ public class UrlUtils {
 	 */
 	public static String setParam(final String urlString, final String paramName, final String paramValue) {
 		if (paramName == null) return urlString;
-		if (urlString.matches(".*([&\\?])" + paramName + "\\=[^&#$]+.*")) {
+		if (urlString.matches(".*([&\\?])" + paramName + "\\=[^&#$]*.*")) {
 			// parameter is already present - replace its value
-			return urlString.replaceAll("([&\\?])" + paramName + "\\=[^&#$]+", "$1" + paramName + "=" + paramValue);
+			return urlString.replaceAll("([&\\?])" + paramName + "\\=[^&#$]*", "$1" + paramName + "=" + paramValue);
 		}
 
 		if (urlString.matches(".*\\?.*")) {

@@ -28,13 +28,19 @@ package org.bibsonomy.search.es.search.post;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.lucene.search.join.ScoreMode;
+import org.bibsonomy.common.enums.Filter;
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.search.es.ESConstants.Fields;
+import org.bibsonomy.services.searcher.query.PostSearchQuery;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.ExistsQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -48,39 +54,78 @@ import org.elasticsearch.index.query.TermQueryBuilder;
  * @author dzo
  * @param <P> 
  */
-public class ElasticsearchPublicationSearch<P extends BibTex> extends EsResourceSearch<P> {
+public class ElasticsearchPublicationSearch<P extends BibTex> extends ElasticsearchPostSearch<P> {
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.search.post.EsResourceSearch#buildResourceSpecifiyQuery(org.elasticsearch.index.query.BoolQueryBuilder, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	protected void buildResourceSpecifiyQuery(BoolQueryBuilder mainQueryBuilder, String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, String year, String firstYear, String lastYear) {
-		super.buildResourceSpecifiyQuery(mainQueryBuilder, userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, year, firstYear, lastYear);
-		
+	protected void buildResourceSpecificQuery(BoolQueryBuilder mainQueryBuilder, String loggedinUser, PostSearchQuery<?> postQuery) {
+		super.buildResourceSpecificQuery(mainQueryBuilder, loggedinUser, postQuery);
+
+		final String authorSearchTerms = postQuery.getAuthorSearchTerms();
 		if (present(authorSearchTerms)) {
 			final QueryBuilder authorSearchQuery = QueryBuilders.matchQuery(Fields.Publication.AUTHORS + "." + Fields.Publication.PERSON_NAME, authorSearchTerms).operator(Operator.AND);
 			final NestedQueryBuilder nestedQuery = QueryBuilders.nestedQuery(Fields.Publication.AUTHORS, authorSearchQuery, ScoreMode.Total);
 			mainQueryBuilder.must(nestedQuery);
 		}
-		
+
+		final String bibtexKey = postQuery.getBibtexKey();
 		if (present(bibtexKey)) {
 			final QueryBuilder bibtexKeyQuery = QueryBuilders.termQuery(Fields.Publication.BIBTEXKEY, bibtexKey);
 			mainQueryBuilder.must(bibtexKeyQuery);
 		}
+
+		/*
+		 * find publications that are not assigned to a person but match one of the person names
+		 */
+		final List<PersonName> personNames = postQuery.getPersonNames();
+		final boolean onlyIncludeAuthorsWithoutPersonId = postQuery.isOnlyIncludeAuthorsWithoutPersonId();
+		if (present(personNames)) {
+			final BoolQueryBuilder personNameQuery = QueryBuilders.boolQuery();
+
+			for (final PersonName personName : personNames) {
+				final QueryBuilder personNameSearchQuery = buildPersonNameQuery(personName.toString(), onlyIncludeAuthorsWithoutPersonId);
+				personNameQuery.should(personNameSearchQuery);
+			}
+
+			final NestedQueryBuilder nestedQuery = QueryBuilders.nestedQuery(Fields.Publication.AUTHORS, personNameQuery, ScoreMode.Total);
+			mainQueryBuilder.must(nestedQuery);
+		}
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.search.post.EsResourceSearch#buildResourceSpecifiyFilters(org.elasticsearch.index.query.BoolFilterBuilder, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 * @see org.bibsonomy.search.es.search.post.EsResourceSearch#buildResourceSpecificFilters(org.elasticsearch.index.query.BoolFilterBuilder, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
+
+	private static QueryBuilder buildPersonNameQuery(String authorName, boolean onlyIncludeAuthorsWithoutPersonId) {
+		final MatchQueryBuilder matchQuery = QueryBuilders.matchQuery(Fields.Publication.AUTHORS + "." + Fields.Publication.PERSON_NAME, authorName).operator(Operator.AND);
+
+		if (!onlyIncludeAuthorsWithoutPersonId) {
+			return matchQuery;
+		}
+
+		final BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+
+		boolQueryBuilder.must(matchQuery);
+		boolQueryBuilder.mustNot(QueryBuilders.existsQuery(Fields.Publication.AUTHORS + "." + Fields.Publication.PERSON_ID));
+
+		return boolQueryBuilder;
+	}
+
 	@Override
-	protected void buildResourceSpecifiyFilters(BoolQueryBuilder mainFilterBuilder, String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, String year, String firstYear, String lastYear) {
-		super.buildResourceSpecifiyFilters(mainFilterBuilder, userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, year, firstYear, lastYear);
-		
+	protected void buildResourceSpecificFilters(BoolQueryBuilder mainFilterBuilder, String loggedinUser, Set<String> allowedGroups, Set<String> usersThatShareDocs, PostSearchQuery<?> postQuery) {
+		super.buildResourceSpecificFilters(mainFilterBuilder, loggedinUser, allowedGroups, usersThatShareDocs, postQuery);
+
+		final String year = postQuery.getYear();
+		final String lastYear = postQuery.getLastYear();
+		final String firstYear = postQuery.getFirstYear();
+
 		if (present(year)) {
 			final TermQueryBuilder yearQuery = QueryBuilders.termQuery(Fields.Publication.YEAR, year);
 			mainFilterBuilder.must(yearQuery);
 		}
-		
+
 		final boolean presentLastYear = present(lastYear);
 		final boolean presentFirstYear = present(firstYear);
 		if (presentLastYear || presentFirstYear) {
@@ -88,11 +133,48 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends EsResource
 			if (presentFirstYear) {
 				rangeFilter.gte(Integer.parseInt(firstYear));
 			}
-			
+
 			if (presentLastYear) {
 				rangeFilter.lte(Integer.parseInt(lastYear));
 			}
 			mainFilterBuilder.must(rangeFilter);
 		}
+
+		/*
+		 * entry type filter
+		 */
+		final String entryType = postQuery.getEntryType();
+		if (present(entryType)) {
+			final MatchQueryBuilder entryTypeMatch = QueryBuilders.matchQuery(Fields.Publication.ENTRY_TYPE, entryType);
+			mainFilterBuilder.must(entryTypeMatch);
+		}
+
+		final Set<Filter> filters = postQuery.getFilters();
+		if (present(filters)) {
+			/*
+			 * only return documents where users attached documents
+			 * but only show posts of users that share documents with the loggedin user
+			 */
+			if (filters.contains(FilterEntity.JUST_PDF)) {
+				final ExistsQueryBuilder docFieldExists = QueryBuilders.existsQuery(Fields.Publication.DOCUMENTS);
+				final BoolQueryBuilder docFilter = QueryBuilders.boolQuery();
+				docFilter.must(docFieldExists);
+				usersThatShareDocs.stream().map(user -> QueryBuilders.matchQuery(Fields.USER_NAME, user)).forEach(docFilter::must);
+				mainFilterBuilder.must(docFilter);
+			}
+		}
+
+		final String college = postQuery.getCollege();
+		if (present(college)) {
+			final BoolQueryBuilder collegeFilter = QueryBuilders.boolQuery();
+			final QueryBuilder collegeAuthorFilter = buildCollegeTermFilter(Fields.Publication.AUTHORS, college);
+			final QueryBuilder collegeEditorFilter = buildCollegeTermFilter(Fields.Publication.EDITORS, college);
+			collegeFilter.should(collegeAuthorFilter).should(collegeEditorFilter);
+			mainFilterBuilder.must(collegeFilter);
+		}
+	}
+
+	private static QueryBuilder buildCollegeTermFilter(final String field, final String college) {
+		return QueryBuilders.nestedQuery(field, QueryBuilders.termQuery(field + "." + Fields.Publication.PERSON_COLLEGE, college), ScoreMode.None);
 	}
 }

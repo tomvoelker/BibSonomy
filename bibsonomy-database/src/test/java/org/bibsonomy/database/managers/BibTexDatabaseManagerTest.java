@@ -27,10 +27,12 @@
 package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.testutil.Assert.assertByTagNames;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -407,7 +409,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	@Override
 	public void testGetPostsForHomepage() {
 		final List<Post<BibTex>> post = publicationDb.getPostsForHomepage(null, null, null, 10, 0, null, this.dbSession);
-		assertEquals(4, post.size());
+		assertThat(post.size(), is(3));
 	}
 
 	/**
@@ -811,7 +813,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 
 		publicationDb.createPost(toInsert, null, this.dbSession);
 		
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, BibTex.class, GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList("tag1", "tag2"), "", null, 0, 50, null, null, null, null, toInsert.getUser());
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, BibTex.class, null, GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList("tag1", "tag2"), "", null, 0, 50, null, null, null, null, toInsert.getUser());
 		param.setSimHash(HashID.INTRA_HASH);
 		final List<Post<BibTex>> posts = publicationDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
@@ -873,7 +875,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		final Group group = GroupUtils.buildPrivateGroup();
 		toInsert.getGroups().add(group);
 		
-		final BibTexParam postParam = LogicInterfaceHelper.buildParam(BibTexParam.class, BibTex.class, GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList("tag1", "tag2"), "", null, 0, 50, null, null, null, null, toInsert.getUser());
+		final BibTexParam postParam = LogicInterfaceHelper.buildParam(BibTexParam.class, BibTex.class, null, GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList("tag1", "tag2"), "", null, 0, 50, null, null, null, null, toInsert.getUser());
 		List<Post<BibTex>> post2 = publicationDb.getPosts(postParam, this.dbSession);
 		posts = publicationDb.getPostsByHashForUser(username, hash, requestedUserName, new ArrayList<>(), HashID.INTRA_HASH, this.dbSession);
 		assertEquals(0, posts.size());

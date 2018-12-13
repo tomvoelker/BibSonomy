@@ -41,7 +41,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
@@ -61,7 +61,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.query.GroupQuery;
-import org.bibsonomy.model.logic.query.Query;
+import org.bibsonomy.model.logic.query.BasicQuery;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.user.remote.RemoteUserId;
@@ -168,20 +168,6 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 */
 	public void updateWiki(String userName, Wiki wiki);
 
-
-	/**
-	 * Returns all groups of the system.
-	 * @param pending
-	 * @param userName if pending equals <code>true</code> restrict pending groups to this user
-	 * @param start
-	 * @param end
-	 * @return a set of groups, an empty set else
-	 *
-	 * @deprecated use {@link #getGroups(GroupQuery)} instead.
-	 */
-	public List<Group> getGroups(boolean pending, String userName, int start, int end);
-
-
 	/**
 	 * Returns all groups in the system. The request is handled differently depending on the query details provided in <code>query</code>.
 	 *
@@ -191,13 +177,13 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 */
 	List<Group> getGroups(GroupQuery query);
 
-
 	/**
 	 * Returns a list of all deleted group users of the system.
 	 * @param start
 	 * @param end
 	 * @return a set of users, an empty set else
 	 */
+	@Deprecated // use getUsers method
 	public List<User> getDeletedGroupUsers(int start, int end);
 
 	/**
@@ -254,7 +240,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param hash
 				  a resource hash (publication or bookmark)
 	 * @param search - search string
-	 * @param searchType the search type
+	 * @param queryScope the search type
 	 * @param regex
 	 *            a regular expression used to filter the tagnames
 	 * @param relation TODO
@@ -265,7 +251,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param end
 	 * @return a set of tags, an empty list else
 	 */
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end);
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end);
 
 	/**
 	 * retrieves a filterable list of authors.
@@ -784,5 +770,5 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param query
 	 * @return
 	 */
-	public Statistics getStatistics(final Query query);
+	Statistics getStatistics(final BasicQuery query);
 }

@@ -73,7 +73,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	private static final String PERSON_ID = "h.muller";
 
 	private Person testPerson;
-	
+
 	/**
 	 * Initializes the test environment for this class
 	 * NOTE: we have to use @Before because we need the DB session to access the database
@@ -262,7 +262,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final Map<Integer, PersonMergeFieldConflict[]> mergeConflicts = PersonMatchUtils.getMergeConflicts(matches);
 		final PersonMergeFieldConflict[] mergeConflictsToTest = mergeConflicts.get(4);
 
-		assertThat(mergeConflictsToTest.length, is(2));
+		assertThat(mergeConflictsToTest.length, is(3));
 
 		final PersonMatch personMatch4 = getMatchById(matches, 4);
 		// conflict for merge remains

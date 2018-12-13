@@ -45,7 +45,17 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.JobResult;
-import org.bibsonomy.common.enums.*;
+import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupRole;
+import org.bibsonomy.common.enums.GroupUpdateOperation;
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.ProfilePrivlevel;
+import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.common.DBSession;
@@ -53,10 +63,21 @@ import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.UserRelationSystemTag;
-import org.bibsonomy.model.*;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Document;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.GroupRequest;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Repository;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.query.GroupQuery;
+import org.bibsonomy.model.logic.querybuilder.GroupQueryBuilder;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
@@ -174,12 +195,12 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Ignore
 	public void getPostsByTagName() {
 		LogicInterface anonymousAccess = this.getDbLogic(null, null);
-		List<Post<BibTex>> bibTexPostsList = anonymousAccess.getPosts(BibTex.class, GroupingEntity.ALL, "", DEFAULT_TAG_LIST, "", null,SearchType.LOCAL, null, null, null, null, 0, 5);
+		List<Post<BibTex>> bibTexPostsList = anonymousAccess.getPosts(BibTex.class, GroupingEntity.ALL, "", DEFAULT_TAG_LIST, "", null, QueryScope.LOCAL, null, null, null, null, 0, 5);
 		assertEquals(5, bibTexPostsList.size());
 		assertList(bibTexPostsList, null, null, DEFAULT_TAG_SET, null, null, null);
 		
 		anonymousAccess = this.getDbLogic("", null);
-		bibTexPostsList = anonymousAccess.getPosts(BibTex.class, GroupingEntity.ALL, "", DEFAULT_TAG_LIST, null, null, SearchType.LOCAL,null, null, null, null, 5, 9);
+		bibTexPostsList = anonymousAccess.getPosts(BibTex.class, GroupingEntity.ALL, "", DEFAULT_TAG_LIST, null, null, QueryScope.LOCAL,null, null, null, null, 5, 9);
 		assertEquals(4, bibTexPostsList.size());
 		assertList(bibTexPostsList, null, null, DEFAULT_TAG_SET, null, null, null);
 	}
@@ -191,11 +212,11 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Ignore
 	public void getPostsByConceptForUser() {
 		final List<String> taglist = Arrays.asList("->researcher");
-		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, taglist, "", null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 2);
+		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, taglist, "", null, QueryScope.LOCAL, null, Order.ADDED, null, null, 0, 2);
 		assertEquals(2, bibTexPostsList.size());
 		assertList(bibTexPostsList, DEFAULT_USERNAME_SET, Order.ADDED, null, null, null, null);
 		
-		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, taglist, null, null, SearchType.LOCAL,null, Order.ADDED, null, null, 2, 10);
+		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, taglist, null, null, QueryScope.LOCAL,null, Order.ADDED, null, null, 2, 10);
 		assertEquals(1, bibTexPostsList.size());
 		assertList(bibTexPostsList, DEFAULT_USERNAME_SET, Order.ADDED, null, null, null, null);
 	}
@@ -206,11 +227,11 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getPostsForUser() {
-		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, null, "", null,SearchType.LOCAL, null, null, null, null, 0, 10);
+		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, null, "", null, QueryScope.LOCAL, null, null, null, null, 0, 10);
 		assertEquals(10, bibTexPostsList.size());
 		assertList(bibTexPostsList, DEFAULT_USERNAME_SET, null, null, null, null, null);
 		
-		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, new ArrayList<String>(), null, null, SearchType.LOCAL,null, null, null, null, 10, 19);
+		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, new ArrayList<String>(), null, null, QueryScope.LOCAL,null, null, null, null, 10, 19);
 		assertEquals(9, bibTexPostsList.size());
 		assertList(bibTexPostsList, DEFAULT_USERNAME_SET, null, null, null, null, null);
 	}
@@ -221,14 +242,14 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getPostsByHashBibtex() {
-		final List<Post<BibTex>> listBibtex = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", new ArrayList<String>(), "d9eea4aa159d70ecfabafa0c91bbc9f0", null, SearchType.LOCAL,null, null, null, null, 0, 5);
+		final List<Post<BibTex>> listBibtex = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", new ArrayList<String>(), "d9eea4aa159d70ecfabafa0c91bbc9f0", null, QueryScope.LOCAL,null, null, null, null, 0, 5);
 		assertEquals(1, listBibtex.size());
 		assertEquals(1, listBibtex.get(0).getGroups().size());
 		for (final Group g : listBibtex.get(0).getGroups()){
 			assertEquals("public", g.getName());
 		}
 		
-		final List<Post<Bookmark>> listBookmark = this.getDbLogic().getPosts(Bookmark.class, GroupingEntity.ALL, "", new ArrayList<String>(), "85ab919107e4cc79b345e996b3c0b097", null,SearchType.LOCAL, null, null, null, null, 0, 5);
+		final List<Post<Bookmark>> listBookmark = this.getDbLogic().getPosts(Bookmark.class, GroupingEntity.ALL, "", new ArrayList<String>(), "85ab919107e4cc79b345e996b3c0b097", null, QueryScope.LOCAL, null, null, null, null, 0, 5);
 		assertEquals(1, listBookmark.size());
 		assertEquals(1, listBookmark.get(0).getGroups().size());
 		for (final Group g : listBookmark.get(0).getGroups()){
@@ -242,7 +263,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getPostsByHashForUser() {
-		final List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, new ArrayList<String>(), TEST_REQUEST_HASH, null,SearchType.LOCAL, null, null, null, null, 0, 19);
+		final List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, new ArrayList<String>(), TEST_REQUEST_HASH, null, QueryScope.LOCAL, null, null, null, null, 0, 19);
 		assertEquals(1, bibTexPostsList.size());
 		assertEquals(1, bibTexPostsList.get(0).getGroups().size());
 		assertNull(bibTexPostsList.get(0).getResource().getDocuments());
@@ -259,11 +280,11 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		usersInGroup.addAll(getUserNamesByGroupId(TESTGROUP1_ID, this.dbSession));
 		mustGroupIds.add(TESTGROUP1_ID);
 		
-		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.VIEWABLE, "kde", new ArrayList<String>(), "", null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 3);
+		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.VIEWABLE, "kde", new ArrayList<String>(), "", null, QueryScope.LOCAL, null, Order.ADDED, null, null, 0, 3);
 		assertEquals(0, bibTexPostsList.size());
 		assertList(bibTexPostsList, usersInGroup, Order.ADDED, null, null, mustGroupIds, null);
 		
-		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.VIEWABLE, "kde", new ArrayList<String>(), "", null,SearchType.LOCAL, null, Order.ADDED, null, null, 3, 100);
+		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.VIEWABLE, "kde", new ArrayList<String>(), "", null, QueryScope.LOCAL, null, Order.ADDED, null, null, 3, 100);
 		assertEquals(0, bibTexPostsList.size());
 		assertList(bibTexPostsList, usersInGroup, Order.ADDED, null, null, mustGroupIds, null);
 	}
@@ -276,11 +297,11 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void getPostsForUsersInGroup() {
 		final Set<String> usersInGroup = new HashSet<String>();
 		usersInGroup.addAll(getUserNamesByGroupId(TESTGROUP1_ID, this.dbSession) );
-		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.GROUP, "kde", null, "", null,SearchType.LOCAL, null, null, null, null, 0, 10);
+		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.GROUP, "kde", null, "", null, QueryScope.LOCAL, null, null, null, null, 0, 10);
 		assertEquals(10, bibTexPostsList.size());
 		assertList(bibTexPostsList, usersInGroup, null, null, null, null, null);
 		
-		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.GROUP, "kde", null, "", null,SearchType.LOCAL, null, null, null, null, 10, 19);
+		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.GROUP, "kde", null, "", null, QueryScope.LOCAL, null, null, null, null, 10, 19);
 		assertEquals(9, bibTexPostsList.size());
 		assertList(bibTexPostsList, usersInGroup, null, null, null, null, null);
 	}
@@ -295,11 +316,11 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		final Set<String> usersInGroup = new HashSet<String>();
 		usersInGroup.addAll(getUserNamesByGroupId(TESTGROUP1_ID, this.dbSession) );
 		
-		List<Post<BibTex>> bibTexPostsList = anonymousAccess.getPosts(BibTex.class, GroupingEntity.GROUP, "kde", DEFAULT_TAG_LIST, "", null,SearchType.LOCAL, null, null, null, null, 0, 9);
+		List<Post<BibTex>> bibTexPostsList = anonymousAccess.getPosts(BibTex.class, GroupingEntity.GROUP, "kde", DEFAULT_TAG_LIST, "", null, QueryScope.LOCAL, null, null, null, null, 0, 9);
 		assertEquals(9, bibTexPostsList.size());
 		assertList(bibTexPostsList, usersInGroup, null, DEFAULT_TAG_SET, null, null, null);
 		
-		bibTexPostsList = anonymousAccess.getPosts(BibTex.class, GroupingEntity.GROUP, "kde", DEFAULT_TAG_LIST, "", null,SearchType.LOCAL, null, null, null, null, 9, 19);
+		bibTexPostsList = anonymousAccess.getPosts(BibTex.class, GroupingEntity.GROUP, "kde", DEFAULT_TAG_LIST, "", null, QueryScope.LOCAL, null, null, null, null, 9, 19);
 		assertEquals(10, bibTexPostsList.size());
 		assertList(bibTexPostsList, usersInGroup, null, DEFAULT_TAG_SET, null, null, null);
 	}
@@ -312,7 +333,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void getBibtexOfFriendByTags() {
 		final LogicInterface buzzsAccess = this.getDbLogic("buzz", null);
 		final List<String> tags = Arrays.asList("java");
-		List<Post<BibTex>> bibTexPostsList = buzzsAccess.getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", tags, null, null, SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		List<Post<BibTex>> bibTexPostsList = buzzsAccess.getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", tags, null, null, QueryScope.LOCAL, null, Order.ADDED, null, null, 0, 19);
 		assertEquals(1, bibTexPostsList.size());
 		final Set<String> tagsSet = new HashSet<String>();
 		tagsSet.addAll(tags);
@@ -327,7 +348,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		mustNotGroups.add(PUBLIC_GROUP_ID);
 		assertList(bibTexPostsList, userSet, Order.ADDED, tagsSet, null, mustGroupIds, mustNotGroups);
 
-		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", tags, null, null, SearchType.LOCAL,null, null, null, null, 0, 19);
+		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", tags, null, null, QueryScope.LOCAL,null, null, null, null, 0, 19);
 		assertEquals(0, bibTexPostsList.size());
 	}
 
@@ -346,11 +367,11 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		final Set<String> userSet = new HashSet<String>();
 		userSet.add("apo");
 		
-		List<Post<BibTex>> bibTexPostsList = buzzsAccess.getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", new ArrayList<String>(0), null, null, SearchType.LOCAL,null, Order.ADDED, null, null, 0, 19);
+		List<Post<BibTex>> bibTexPostsList = buzzsAccess.getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", new ArrayList<String>(0), null, null, QueryScope.LOCAL,null, Order.ADDED, null, null, 0, 19);
 		assertEquals(2, bibTexPostsList.size());
 		assertList(bibTexPostsList, userSet, Order.ADDED, null, null, mustGroupIds, mustNotGroups);
 		
-		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", new ArrayList<String>(0), null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", new ArrayList<String>(0), null, null, QueryScope.LOCAL, null, Order.ADDED, null, null, 0, 19);
 		assertEquals(0, bibTexPostsList.size());
 	}
 
@@ -469,40 +490,40 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		final List<String> tags1 = new ArrayList<>();
 		tags1.add(relationTag1);
 		
-		List<Post<BibTex>> bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags1, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		List<Post<BibTex>> bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags1, null, null, QueryScope.LOCAL, null, Order.ADDED, null, null, 0, 19);
 		assertEquals(2, bibTexPostsList.size());
 		
 		final List<String> tags2 = new ArrayList<>();
 		tags2.add(relationTag2);
 		
-		List<Post<Bookmark>> bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		List<Post<Bookmark>> bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null, QueryScope.LOCAL, null, Order.ADDED, null, null, 0, 19);
 		assertEquals(2, bookmarkPostsList.size());
 		
 		tags2.add(relationTag1);
-		bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null, QueryScope.LOCAL, null, Order.ADDED, null, null, 0, 19);
 		assertEquals(0, bookmarkPostsList.size());
-		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null, QueryScope.LOCAL, null, Order.ADDED, null, null, 0, 19);
 		assertEquals(2, bibTexPostsList.size());
 		
 		tags2.add(relationTag3);
-		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null, QueryScope.LOCAL, null, Order.ADDED, null, null, 0, 19);
 		assertEquals(0, bibTexPostsList.size());
 		
 		// retrieve posts restricted by relation tag and 'normal' tag
 		tags2.clear();
 		tags2.add(relationTag2);
 		tags2.add(sharedTag2);
-		bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null, QueryScope.LOCAL, null, Order.ADDED, null, null, 0, 19);
 		assertEquals(1, bookmarkPostsList.size());
-		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null, QueryScope.LOCAL, null, Order.ADDED, null, null, 0, 19);
 		assertEquals(1, bibTexPostsList.size());
 
 		tags2.clear();
 		tags2.add(relationTag2);
 		tags2.add(sharedTag1);
-		bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null, QueryScope.LOCAL, null, Order.ADDED, null, null, 0, 19);
 		assertEquals(2, bookmarkPostsList.size());
-		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null, QueryScope.LOCAL, null, Order.ADDED, null, null, 0, 19);
 		assertEquals(2, bibTexPostsList.size());
 
 		// retrieve tag cloud
@@ -545,11 +566,11 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		mustNotGroups.add(PRIVATE_GROUP_ID);
 		mustNotGroups.add(PUBLIC_GROUP_ID);
 		
-		List<Post<BibTex>> bibTexPostsList = mwkustersAccess.getPosts(BibTex.class, GroupingEntity.FRIEND, null, null, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		List<Post<BibTex>> bibTexPostsList = mwkustersAccess.getPosts(BibTex.class, GroupingEntity.FRIEND, null, null, null, null, QueryScope.LOCAL, null, Order.ADDED, null, null, 0, 19);
 		assertEquals(19, bibTexPostsList.size());
 		assertList(bibTexPostsList, null, Order.ADDED, null, null, mustGroups, mustNotGroups);
 		
-		bibTexPostsList = mwkustersAccess.getPosts(BibTex.class, GroupingEntity.FRIEND, null, null, null, null, SearchType.LOCAL,null, Order.ADDED, null, null, 100, 200);
+		bibTexPostsList = mwkustersAccess.getPosts(BibTex.class, GroupingEntity.FRIEND, null, null, null, null, QueryScope.LOCAL,null, Order.ADDED, null, null, 100, 200);
 		assertEquals(10, bibTexPostsList.size());
 		assertList(bibTexPostsList, null, Order.ADDED, null, null, mustGroups, mustNotGroups);
 	}
@@ -560,11 +581,11 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getPostsPopular() {
-		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", null, null, null,SearchType.LOCAL, null, Order.POPULAR, null, null, 0, 10);
+		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", null, null, null, QueryScope.LOCAL, null, Order.POPULAR, null, null, 0, 10);
 		assertEquals(10, bibTexPostsList.size());
 		assertList(bibTexPostsList, null, Order.POPULAR, null, null, null, null);
 		
-		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", new ArrayList<String>(), null, null,SearchType.LOCAL, null, Order.POPULAR, null, null, 10, 19);
+		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", new ArrayList<String>(), null, null, QueryScope.LOCAL, null, Order.POPULAR, null, null, 10, 19);
 		assertEquals(9, bibTexPostsList.size());
 		assertList(bibTexPostsList, null, Order.POPULAR, null, null, null, null);
 	}
@@ -575,7 +596,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getPostsHome() {
-		final List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, TEST_REQUEST_USER_NAME, DEFAULT_TAG_LIST, null, null, SearchType.LOCAL,null, null, null, null, 0, 15);
+		final List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, TEST_REQUEST_USER_NAME, DEFAULT_TAG_LIST, null, null, QueryScope.LOCAL,null, null, null, null, 0, 15);
 		assertEquals(15, bibTexPostsList.size());
 	}
 
@@ -611,10 +632,10 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		post.setGroups(Collections.singleton(group));
 
 		final LogicInterface testClassAccess = this.getDbLogic(testUserName);
-		assertEquals(1, testClassAccess.getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null,SearchType.LOCAL, null, null, null, null, 0, 100).size());
+		assertEquals(1, testClassAccess.getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, QueryScope.LOCAL, null, null, null, null, 0, 100).size());
 		testClassAccess.createPosts(Collections.<Post<?>>singletonList(post));
-		assertEquals(1, testClassAccess.getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null,SearchType.LOCAL, null, null, null, null, 0, 100).size());
-		assertEquals(0, this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null,SearchType.LOCAL, null, null, null, null, 0, 100).size());
+		assertEquals(1, testClassAccess.getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, QueryScope.LOCAL, null, null, null, null, 0, 100).size());
+		assertEquals(0, this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, QueryScope.LOCAL, null, null, null, null, 0, 100).size());
 	}
 
 	/**
@@ -1071,7 +1092,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		updatedPosts = dbl.updatePosts(Collections.singletonList(createdPost), PostUpdateOperation.UPDATE_REPOSITORY);
 		assertEquals(1, updatedPosts.size());
 		
-		final List<Post<BibTex>> posts = dbl.getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, null, "36a19ee7b7923b062a99a6065fe07792", null, SearchType.LOCAL, Sets.asSet(FilterEntity.POSTS_WITH_REPOSITORY), null, null, null, 0, Integer.MAX_VALUE);
+		final List<Post<BibTex>> posts = dbl.getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, null, "36a19ee7b7923b062a99a6065fe07792", null, QueryScope.LOCAL, Sets.asSet(FilterEntity.POSTS_WITH_REPOSITORY), null, null, null, 0, Integer.MAX_VALUE);
 		assertEquals(3, posts.size());
 		
 		Post<BibTex> b = posts.get(0);
@@ -1569,8 +1590,9 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void testGetAllGroups() {
 		LogicInterface logic = this.getDbLogic(DBLogicTest.TEST_USER_1);
 
-		GroupQuery query = new GroupQuery(false, DBLogicTest.TEST_USER_1, null, 0, 100);
-		List<Group> groups = logic.getGroups(query);
+		final GroupQueryBuilder queryBuilder = new GroupQueryBuilder();
+		queryBuilder.setPending(false).setUserName(DBLogicTest.TEST_USER_1).setStart(0).setEnd(100);
+		final List<Group> groups = logic.getGroups(queryBuilder.createGroupQuery());
 
 		assertThat(groups.size(), equalTo(8));
 	}
@@ -1579,9 +1601,9 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void testGetGroupByExternalId() {
 		LogicInterface logic = this.getDbLogic(DBLogicTest.TEST_USER_1);
-
-		GroupQuery query = new GroupQuery(false, DBLogicTest.TEST_USER_1, "extid1", 0, 100);
-		List<Group> groups = logic.getGroups(query);
+		final GroupQueryBuilder queryBuilder = new GroupQueryBuilder();
+		queryBuilder.setPending(false).setUserName(DBLogicTest.TEST_USER_1).setStart(0).setEnd(100).setExternalId("extid1");
+		List<Group> groups = logic.getGroups(queryBuilder.createGroupQuery());
 
 		assertThat(groups.size(), equalTo(1));
 
@@ -1594,9 +1616,9 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void testGetAllPendingGroups() {
 		LogicInterface logic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
-
-		GroupQuery query = new GroupQuery(true, null, null, 0, 100);
-		List<Group> groups = logic.getGroups(query);
+		final GroupQueryBuilder queryBuilder = new GroupQueryBuilder();
+		queryBuilder.setPending(true).setStart(0).setEnd(100);
+		List<Group> groups = logic.getGroups(queryBuilder.createGroupQuery());
 
 		assertThat(groups.size(), equalTo(2));
 
@@ -1606,9 +1628,9 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void testGetPendingGroupsForUser() {
 		LogicInterface logic = this.getAdminDbLogic("testrequestuser1");
-
-		GroupQuery query = new GroupQuery(true, "testrequestuser1", null, 0, 100);
-		List<Group> groups = logic.getGroups(query);
+		final GroupQueryBuilder queryBuilder = new GroupQueryBuilder();
+		queryBuilder.setPending(true).setUserName("testrequestuser1").setStart(0).setEnd(100);
+		List<Group> groups = logic.getGroups(queryBuilder.createGroupQuery());
 
 		assertThat(groups.size(), equalTo(1));
 	}

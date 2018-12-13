@@ -257,6 +257,7 @@
 		<module>bibsonomy-webapp</module>
 		<module>bibsonomy-wiki</module>
 		<module>bibsonomy-recommender</module>
+		<module>bibsonomy-exporter</module>
 	</modules>
 	<build>
 		<pluginManagement>
@@ -553,6 +554,13 @@
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-web-common</artifactId>
 				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-web-common</artifactId>
+				<version>${project.version}</version>
+				<scope>test</scope>
+				<type>test-jar</type>
 			</dependency>
 			<dependency>
 				<groupId>org.bibsonomy</groupId>

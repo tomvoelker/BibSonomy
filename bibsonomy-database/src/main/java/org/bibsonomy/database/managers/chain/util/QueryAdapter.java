@@ -1,7 +1,6 @@
 package org.bibsonomy.database.managers.chain.util;
 
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.logic.query.BasicQuery;
 import org.bibsonomy.model.logic.query.Query;
 
 /**

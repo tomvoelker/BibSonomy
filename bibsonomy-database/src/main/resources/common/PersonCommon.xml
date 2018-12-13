@@ -51,7 +51,7 @@
 		<result property="firstName"       column="first_name"        javaType="java.lang.String" />
 		<result property="lastName"        column="last_name"         javaType="java.lang.String" />
 	</resultMap>
-	
+
 	<resultMap id="abstractResourcePersonRelation" class="resourcePersonRelation">
 		<result property="personRelChangeId" column="r_person_change_id" javaType="int" />
 		<result property="qualifying"        column="qualifying"       javaType="int" />
@@ -66,14 +66,13 @@
 		<result property="post"            column="simhash1"        javaType="bibtex"       select="getPosts"/>
 	</resultMap>
 	
-	<resultMap id="resourcePersonRelationWithPersonPrefilled" class="resourcePersonRelation" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
+	<resultMap id="resourcePersonRelationWithPersonPrefilled" class="personResourceRelation" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
 		<result property="person"          resultMap="PersonCommon.personWithNamesPrefilled" />
 	</resultMap>
 	
 	<resultMap id="resourcePersonRelationLogStub" class="org.bibsonomy.model.ResourcePersonRelationLogStub" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
 		<result property="personId"        column="person_id"       javaType="java.lang.String" />
 		<result property="postInterhash"   column="simhash1"        javaType="java.lang.String" />
-		<result property="deleted"         column="deleted"         javaType="boolean" />
 	</resultMap>
 	
 	<resultMap id="preFilledResourcePersonRelation" class="resourcePersonRelation" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
@@ -131,10 +130,6 @@
 	
 	<sql id="commonResourcePersonRelationColumns2">
 		b2.person_change_id as r_person_change_id, b2.simhash1, b2.simhash2, b2.qualifying, b2.person_id, b2.relator_code, b2.log_changed_by, b2.log_changed_at, b2.person_index
-	</sql>
-
-	<sql id="allPubPersonRelationLogAttributes">
-		person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by
 	</sql>
 
 	<sql id="allPubPersonRelationAttributes">

@@ -46,7 +46,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostAccess;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -54,6 +54,7 @@ import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 
 /**
@@ -69,6 +70,10 @@ import org.bibsonomy.model.enums.Order;
  * @author Christian Schenk
  */
 public abstract class GenericParam {
+
+	/** the current loggedin user */
+	private User loggedinUser;
+
 	/**
 	 * A set of tags
 	 */
@@ -188,9 +193,10 @@ public abstract class GenericParam {
 	private String search;
 
 	/* search type */
-	private SearchType searchType;
+	private QueryScope queryScope;
 
-	/** This is the current user. */
+	/** This is the current loggedin user. */
+	@Deprecated // use the loggedinuser field!
 	private String userName;
 	private String description;
 	private String extension;
@@ -254,7 +260,7 @@ public abstract class GenericParam {
 	 * sets default values
 	 */
 	public GenericParam() {
-		this.tagIndex = new ArrayList<TagIndex>();
+		this.tagIndex = new ArrayList<>();
 		this.numSimpleTags = 0;
 		this.numSimpleConcepts = 0;
 		this.numTransitiveConcepts = 0;
@@ -274,15 +280,29 @@ public abstract class GenericParam {
 
 		this.grouping = GroupingEntity.ALL;
 
-		this.groups = new HashSet<Integer>();
-		this.groupNames = new HashSet<String>();
+		this.groups = new HashSet<>();
+		this.groupNames = new HashSet<>();
 		// when using this field the value of days must be greater 0
 		this.days = -1;
 
-		this.systemTags = new LinkedList<SystemTag>();
+		this.systemTags = new LinkedList<>();
 
-		this.relationTags = new ArrayList<String>();
-		this.relationTagIndex = new ArrayList<TagIndex>();
+		this.relationTags = new ArrayList<>();
+		this.relationTagIndex = new ArrayList<>();
+	}
+
+	/**
+	 * @return the loggedinUser
+	 */
+	public User getLoggedinUser() {
+		return loggedinUser;
+	}
+
+	/**
+	 * @param loggedinUser the loggedinUser to set
+	 */
+	public void setLoggedinUser(final User loggedinUser) {
+		this.loggedinUser = loggedinUser;
 	}
 
 	/**
@@ -1143,17 +1163,17 @@ public abstract class GenericParam {
 	}
 
 	/**
-	 * @return the searchType
+	 * @return the queryScope
 	 */
-	public SearchType getSearchType() {
-		return this.searchType;
+	public QueryScope getQueryScope() {
+		return this.queryScope;
 	}
 
 	/**
-	 * @param searchType the searchType to set
+	 * @param queryScope the queryScope to set
 	 */
-	public void setSearchType(final SearchType searchType) {
-		this.searchType = searchType;
+	public void setQueryScope(final QueryScope queryScope) {
+		this.queryScope = queryScope;
 	}
 
 	/**

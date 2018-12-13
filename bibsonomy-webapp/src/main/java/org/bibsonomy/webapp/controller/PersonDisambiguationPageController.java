@@ -28,25 +28,23 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
-import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.model.logic.query.PersonQuery;
+import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
@@ -118,6 +116,8 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 	}
 
 	private View disambiguateAction(final Post<BibTex> post, final DisambiguationPageCommand command) {
+		command.setPost(post);
+
 		final PersonResourceRelationType requestedRole = command.getRequestedRole();
 		final int requestedIndex = command.getRequestedIndex().intValue();
 
@@ -132,92 +132,30 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 		}
 
 		final BibTex res = publication;
-		final List<PersonName> persons = PersonUtils.getPersonsByRoleWithFallback(res, requestedRole);
+		final List<PersonName> personNames = PersonUtils.getPersonsByRoleWithFallback(res, requestedRole);
 
-		if (!present(persons) || requestedIndex < 0 || requestedIndex >= persons.size()) {
+		if (!present(personNames) || requestedIndex < 0 || requestedIndex >= personNames.size()) {
 			throw new ObjectNotFoundException(requestedRole + " for " + res.getInterHash());
 		}
 
-		final PersonName requestedName = persons.get(requestedIndex);
+		final PersonName requestedName = personNames.get(requestedIndex);
 		command.setPersonName(requestedName);
 
 		// FIXME: move escape to es module
+		/*
+		 * get candidate persons with the name of the author/editor
+		 */
 		final String name = QueryParser.escape(BibTexUtils.cleanBibTex(requestedName.toString()));
-
-		final List<ResourcePersonRelation> suggestedPersons = this.logic.getPersonSuggestion(new PersonSuggestionQueryBuilder(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values()));
+		final List<Person> persons = this.logic.getPersons(new PersonQuery(name));
+		command.setPersonSuggestions(persons);
 
 		/*
-		 * FIXME: introduce a person system tag that searches for the exact person
-		 * @see bibsonomy.database.managers.PostDatabaseManager.#getPostsByResourceSearch()
-		 *
-		 * get at least 50 publications from authors with same name
+		 * get other publications of the author
 		 */
-		final List<Post<BibTex>> pubAuthorSearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, name, SearchType.LOCAL, null , Order.ALPH, null, null, 0, 50);
-		final List<Post<BibTex>> pubsWithSameAuthorName = new ArrayList<>(pubAuthorSearch);
-		for (final Post<BibTex> authorPost : pubAuthorSearch) {
-			try {
-				// FIXME: can also be the editor!
-				// remove post from search if the author has not exactly the same sur- and last-name
-				if (!authorPost.getResource().getAuthor().contains(requestedName)) {
-					pubsWithSameAuthorName.remove(post);
-				}
-			} catch (final Exception ex) {
-				// remove the post
-				pubsWithSameAuthorName.remove(post);
-			}
-		}
-
-		final List<Post<?>> postsOfSuggestedPersons = new ArrayList<>();
-		final Map<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts = new HashMap<>();
-
-		// get all persons with same name
-		for (final ResourcePersonRelation suggestedPerson : suggestedPersons) {
-			// discard theses from authors with a different name
-			if (!suggestedPerson.getPerson().getMainName().toString().equals(name))
-				continue;
-
-			List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(suggestedPerson.getPerson().getPersonId()).orderBy(ResourcePersonRelationQueryBuilder.Order.PublicationYear));
-			final List<Post<?>> personPosts = new ArrayList<>();
-
-			for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
-				// escape thesis of person
-				final boolean isThesis = resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis");
-				if (isThesis)
-					continue;
-
-				// get pub from the known person
-				if (resourcePersonRelation.getRelationType().equals(PersonResourceRelationType.AUTHOR)) {
-					personPosts.add(resourcePersonRelation.getPost());
-					postsOfSuggestedPersons.add(resourcePersonRelation.getPost());
-				}
-			}
-			suggestedPersonPosts.put(suggestedPerson, personPosts);
-		}
-
-		// update the post-list from the search result
-		// FIXME: this should be redone once the author-parameter is used
-		List<Post<BibTex>> noPersonRelPubList = new ArrayList<>(pubsWithSameAuthorName);
-		for (final Post<BibTex> authorPost : pubsWithSameAuthorName) {
-			final String currentPostInterHash = publication.getInterHash();
-
-			// remove the derivated post from the list
-			if (currentPostInterHash.equals(publication.getInterHash())) {
-				noPersonRelPubList.remove(authorPost);
-				continue;
-			}
-
-			// remove post if it's already related to a person
-			for (final Post<?> personPost : postsOfSuggestedPersons) {
-				if (currentPostInterHash.equals(personPost.getResource().getInterHash())) {
-					noPersonRelPubList.remove(post);
-					break;
-				}
-			}
-		}
-
-		command.setSuggestedPersonPosts(suggestedPersonPosts);
-		command.setSuggestedPosts(noPersonRelPubList);
-		command.setPost(post);
+		final PostQuery<GoldStandardPublication> query = new PostQuery<>(GoldStandardPublication.class);
+		query.setPersonNames(Collections.singletonList(requestedName));
+		final List<Post<GoldStandardPublication>> posts = this.logic.getPosts(query);
+		command.setSuggestedPosts(posts);
 
 		return Views.DISAMBIGUATION;
 	}
@@ -263,7 +201,6 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 		person.setMainName(mainName);
 
 		this.logic.createPerson(person);
-		command.setPerson(person);
 		return person;
 	}
 

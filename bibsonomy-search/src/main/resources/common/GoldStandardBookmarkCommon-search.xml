@@ -11,9 +11,19 @@
 		<result property="resource"    resultMap="SearchGoldStandardBookmarkCommon.goldStandardBookmark" />
 		<!-- this is intended misuse - it would be better to call lastTasId lastResoucePostId or so -->
 		<result property="lastTasId"   column="content_id" />
+		<result property="users"		resultMap="SearchCommon.simpleUser" />
 	</resultMap>
-	
-	<sql id="allGoldStandardBookmarkAttributesNoChangeDate">
-		b.content_id, b.title, b.url AS book_url, b.content_type, b.approved, b.simhash1 AS interHash, b.simhash2 AS intraHash, b.user_name, b.description, b.date
+
+	<sql id="allGoldStandardNormalBookmarkAttributesNoChangeDate">
+		<include refid="allCommonGoldStandardBookmarkAttributesNoChangeDate" />, b.book_description AS title, b.book_extended AS description, b.book_url_hash AS intraHash, b.book_url_hash AS interHash
 	</sql>
+	
+	<sql id="allCommonGoldStandardBookmarkAttributesNoChangeDate">
+		b.content_id, 0 AS approved, b.user_name, b.date
+	</sql>
+
+	<sql id="allGoldStandardBookmarkAttributesNoChangeDate">
+		<include refid="allCommonGoldStandardBookmarkAttributesNoChangeDate" />, b.title, b.description, b.url AS book_url, b.simhash1 AS interHash, b.simhash2 AS intraHash
+	</sql>
+
 </sqlMap>

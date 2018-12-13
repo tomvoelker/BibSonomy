@@ -1,9 +1,10 @@
 package org.bibsonomy.database.managers.chain.project;
 
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.util.QueryDatabaseUtils;
+import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.logic.query.ProjectQuery;
+import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 
 import java.util.List;
 
@@ -14,12 +15,13 @@ import java.util.List;
 public class GetAllProjects extends ProjectChainElement {
 
 	@Override
-	protected List<Project> handle(final ProjectQuery param, final DBSession session) {
-		return this.projectDatabaseManager.getAllProjects(param.getProjectStatus(), param.getOrder(), param.getSortOrder(), QueryDatabaseUtils.calulateLimit(param), QueryDatabaseUtils.calulateOffset(param), session);
+	protected List<Project> handle(final QueryAdapter<ProjectQuery> param, final DBSession session) {
+		final ProjectQuery query = param.getQuery();
+		return this.projectDatabaseManager.getAllProjects(query.getProjectStatus(), query.getOrder(), query.getSortOrder(), BasicQueryUtils.calcLimit(query), BasicQueryUtils.calcOffset(query), session);
 	}
 
 	@Override
-	protected boolean canHandle(ProjectQuery param) {
+	protected boolean canHandle(QueryAdapter<ProjectQuery> param) {
 		return true;
 	}
 }

@@ -18,7 +18,7 @@
 	<jsp:directive.attribute name="formInputValue" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="formExtra" fragment="true" required="false" description="Any extra form input fields you want to add."/>
 	
-	<jsp:directive.attribute name="scope" type="org.bibsonomy.common.enums.SearchType" required="false" description="whether to search locally or federated"/>
+	<jsp:directive.attribute name="scope" type="org.bibsonomy.common.enums.QueryScope" required="false" description="whether to search locally or federated"/>
 	
 	<div id="search">
 		<div class="${empty formAction ? 'hidden' : ''}">

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SearchGroupCommon">
+
+	<resultMap id="simpleGroup" class="group" groupBy="groupId">
+		<result property="groupId"			column="group"			javaType="int" />
+		<result property="name"				column="group_name"		javaType="string" />
+	</resultMap>
+
+	<resultMap id="fullGroup" class="group" groupBy="groupId" extends="simpleGroup">
+		<result property="organization"		column="organization"	javaType="boolean" />
+		<result property="internalId"		column="internal_id"	javaType="string" />
+		<result property="homepage"			column="homepage"		javaType="url" />
+		<result property="realname"			column="real_name"		javaType="string" />
+		<result property="parent" resultMap="SearchGroupCommon.parentGroup" />
+	</resultMap>
+
+	<resultMap id="parentGroup" class="group">
+		<result property="name" column="parent_group_name" />
+	</resultMap>
+
+	<sql id="groupColumns">
+		g.`group`, g.group_name, u.user_homepage AS homepage, g.organization, g.internal_id, u.user_realname AS real_name, gg.group_name AS parent_group_name
+	</sql>
+
+</sqlMap>

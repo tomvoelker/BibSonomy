@@ -38,6 +38,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -58,6 +60,7 @@ import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.index.utils.FileContentExtractorService;
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
@@ -71,7 +74,31 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	
 	private static final String PERSON_DELIMITER = " & ";
 	private static final String NAME_PART_DELIMITER = " ; ";
-	
+
+	private static final Predicate<ResourcePersonRelation> buildPersonResourceRelationByTypesFilter(final PersonResourceRelationType ... types) {
+		return (relation -> Sets.asSet(types).contains(relation.getRelationType()));
+	}
+
+	private static Map<Integer, ResourcePersonRelation> getPersonResourceRelationsByTypeIndexedByPersonIndex(final List<ResourcePersonRelation> personRelations, final Predicate<ResourcePersonRelation> selector) {
+		if (!present(personRelations)) {
+			return Collections.emptyMap();
+		}
+
+		final Map<Integer, ResourcePersonRelation> result = new HashMap<>();
+
+		for (ResourcePersonRelation relation : personRelations) {
+			if (selector.test(relation)) {
+				result.put(relation.getPersonIndex(), relation);
+			}
+		}
+
+		return result;
+	}
+
+	private static List<ResourcePersonRelation> filterPersonResourceRelations(final List<ResourcePersonRelation> relations, final Predicate<ResourcePersonRelation> selector) {
+		return relations.stream().filter(selector).collect(Collectors.toList());
+	}
+
 	private FileContentExtractorService fileContentExtractorService;
 	
 	/**
@@ -208,7 +235,8 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 * @see org.bibsonomy.search.es.index.converter.post.ResourceConverter#convertResource(java.util.Map, org.bibsonomy.model.Resource)
 	 */
 	@Override
-	protected void convertResource(final Map<String, Object> jsonDocument, BibTex resource) {
+	protected void convertResource(final Map<String, Object> jsonDocument, Post<BibTex> post) {
+		final BibTex resource = post.getResource();
 		jsonDocument.put(Fields.Publication.ADDRESS, resource.getAddress());
 		jsonDocument.put(Fields.Publication.ANNOTE, resource.getAnnote());
 		jsonDocument.put(Fields.Publication.KEY, resource.getKey());
@@ -219,15 +247,17 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		jsonDocument.put(Fields.Publication.CROSSREF, resource.getCrossref());
 		jsonDocument.put(Fields.Publication.DAY, resource.getDay());
 		jsonDocument.put(Fields.Publication.EDITION, resource.getEdition());
-		
+
+		final List<ResourcePersonRelation> personResourceRelations = post.getResourcePersonRelations();
+
 		final List<PersonName> editors = resource.getEditor();
 		if (present(editors)) {
-			jsonDocument.put(Fields.Publication.EDITORS, convertPersonNames(editors));
+			jsonDocument.put(Fields.Publication.EDITORS, convertPersonNames(editors, personResourceRelations, PersonResourceRelationType.EDITOR));
 		}
 		
 		final List<PersonName> authors = resource.getAuthor();
 		if (present(authors)) {
-			jsonDocument.put(Fields.Publication.AUTHORS, convertPersonNames(authors));
+			jsonDocument.put(Fields.Publication.AUTHORS, convertPersonNames(authors, personResourceRelations, PersonResourceRelationType.AUTHOR));
 		}
 		
 		jsonDocument.put(Fields.Publication.ENTRY_TYPE, resource.getEntrytype());
@@ -294,7 +324,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		jsonDocument.put(Fields.Publication.VOLUME, resource.getVolume());
 		
 		jsonDocument.put(Fields.Publication.YEAR, resource.getYear());
-		
+
 		jsonDocument.put(Fields.Publication.DOCUMENTS, convertDocuments(resource.getDocuments()));
 	}
 
@@ -346,11 +376,29 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 * @param persons
 	 * @return
 	 */
-	private static List<Map<String, String>> convertPersonNames(List<PersonName> persons) {
+	private static List<Map<String, String>> convertPersonNames(final List<PersonName> persons, final List<ResourcePersonRelation> personRelations, final PersonResourceRelationType requiredType) {
+		final Map<Integer, ResourcePersonRelation> personIndexRelationMap = getPersonResourceRelationsByTypeIndexedByPersonIndex(personRelations, buildPersonResourceRelationByTypesFilter(requiredType));
 		final List<Map<String, String>> serializedPersonNames = new LinkedList<>();
-		
+
+		// XXX: zipWithIndex would be great here
+		int index = 0;
 		for (final PersonName person : persons) {
-			serializedPersonNames.add(Collections.singletonMap(Fields.Publication.PERSON_NAME, PersonNameUtils.serializePersonName(person)));
+			final Map<String, String> convertedPerson = new HashMap<>();
+			convertedPerson.put(Fields.Publication.PERSON_NAME, PersonNameUtils.serializePersonName(person));
+
+			/*
+			 * if there is a person resource relation at the current index add the person id
+			 * and the college of the person to the nested field
+			 */
+			final Integer key = Integer.valueOf(index);
+			if (personIndexRelationMap.containsKey(key)) {
+				final Person claimedPerson = personIndexRelationMap.get(key).getPerson();
+				convertedPerson.put(Fields.Publication.PERSON_ID, claimedPerson.getPersonId());
+				convertedPerson.put(Fields.Publication.PERSON_COLLEGE, claimedPerson.getCollege());
+			}
+
+			serializedPersonNames.add(convertedPerson);
+			index++;
 		}
 		
 		return serializedPersonNames;
@@ -361,16 +409,19 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 */
 	@Override
 	protected void convertPostInternal(final Post<BibTex> post, final Map<String, Object> jsonDocument) {
+		// TODO: TODODZO
 		jsonDocument.put(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, getNormalizedEntryType(post));
-		
-		final List<ResourcePersonRelation> rels = post.getResourcePersonRelations();
-		this.updateDocumentWithPersonRelation(jsonDocument, rels);
+
+		// TODO: remove TODODZO
+		// final List<ResourcePersonRelation> rels = post.getResourcePersonRelations();
+		// this.updateDocumentWithPersonRelation(jsonDocument, rels);
 	}
 
-	/**
+	/** TODO: TODODZO remove!
 	 * @param jsonDocument
 	 * @param rels
-	 */
+   */
+	@Deprecated
 	public void updateDocumentWithPersonRelation(final Map<String, Object> jsonDocument, final List<ResourcePersonRelation> rels) {
 		jsonDocument.put(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME, serializeMainNames(rels, PersonResourceRelationType.AUTHOR));
 		jsonDocument.put(ESConstants.AUTHOR_ENTITY_IDS_FIELD_NAME, serializePersonIds(rels, PersonResourceRelationType.AUTHOR));

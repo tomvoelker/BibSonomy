@@ -41,7 +41,7 @@ import org.bibsonomy.common.enums.Duplicates;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.common.enums.TagCloudStyle;
 import org.bibsonomy.common.enums.TagsType;
@@ -83,7 +83,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 			return Collections.emptySet();
 		}
 		
-		final Set<T> set = new HashSet<T>(col1);
+		final Set<T> set = new HashSet<>(col1);
 		set.retainAll(col2);
 		return set;
 	}
@@ -122,7 +122,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param end end parameter
 	 */
 	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, Order order, final List<String> tags, final String hash, final int max, final String search) {
-		this.setTags(cmd, resourceType, groupingEntity, groupingName, regex, order, tags, hash, max, search, SearchType.LOCAL);
+		this.setTags(cmd, resourceType, groupingEntity, groupingName, regex, order, tags, hash, max, search, QueryScope.LOCAL);
 	}
 	
 	/**
@@ -138,11 +138,11 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param hash 
 	 * @param max 
 	 * @param search 
-	 * @param searchType 
+	 * @param queryScope
 	 * @param start start parameter
 	 * @param end end parameter
 	 */
-	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, Order order, final List<String> tags, final String hash, final int max, final String search, final SearchType searchType) {
+	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, Order order, final List<String> tags, final String hash, final int max, final String search, final QueryScope queryScope) {
 		final TagCloudCommand tagCloudCommand = cmd.getTagcloud();
 		// retrieve tags
 		log.debug("getTags " + " " + groupingEntity + " " + groupingName);
@@ -180,7 +180,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 			tagOrder = order;
 		}
 		
-		tagCloudCommand.setTags(this.logic.getTags(resourceType, groupingEntity, groupingName, tags, hash, search, searchType,regex, null, tagOrder, cmd.getStartDate(), cmd.getEndDate(), 0, tagMax));
+		tagCloudCommand.setTags(this.logic.getTags(resourceType, groupingEntity, groupingName, tags, hash, search, queryScope,regex, null, tagOrder, cmd.getStartDate(), cmd.getEndDate(), 0, tagMax));
 		// retrieve tag cloud settings
 		tagCloudCommand.setStyle(TagCloudStyle.getStyle(this.userSettings.getTagboxStyle()));
 		tagCloudCommand.setSort(TagCloudSort.getSort(this.userSettings.getTagboxSort()));
@@ -308,7 +308,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param itemsPerPage number of items to be displayed on each page
 	 */
 	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int itemsPerPage) {
-		this.setList(cmd, resourceType, groupingEntity, groupingName, tags, hash, search, SearchType.LOCAL, filter, order, startDate, endDate, itemsPerPage);
+		this.setList(cmd, resourceType, groupingEntity, groupingName, tags, hash, search, QueryScope.LOCAL, filter, order, startDate, endDate, itemsPerPage);
 	}
 	
 	/**
@@ -322,23 +322,23 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param tags 
 	 * @param hash 
 	 * @param search 
-	 * @param searchType 
+	 * @param queryScope
 	 * @param filter 
 	 * @param order 
 	 * @param startDate 
 	 * @param endDate 
 	 * @param itemsPerPage number of items to be displayed on each page
 	 */
-	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int itemsPerPage) {
+	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int itemsPerPage) {
 		final ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType);
 		// retrieve posts
-		log.debug("getPosts " + resourceType + " " + searchType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
+		log.debug("getPosts " + resourceType + " " + queryScope + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
 		final int start = listCommand.getStart();
-		final Set<Filter> filters = new HashSet<Filter>();
+		final Set<Filter> filters = new HashSet<>();
 		if (present(filter)) {
 			filters.add(filter);
 		}
-		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, searchType, filters, order, startDate, endDate, start, start + itemsPerPage));
+		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, queryScope, filters, order, startDate, endDate, start, start + itemsPerPage));
 		// list settings
 		listCommand.setEntriesPerPage(itemsPerPage);
 	}
@@ -351,7 +351,6 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param resourceType the resource type
 	 * @param groupingEntity the grouping entity
 	 * @param groupingName the grouping name
-	 * @param constraint
 	 * @param itemsPerPage number of items to be displayed on each page
 	 */
 	protected <T extends Resource> void setTotalCount(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int itemsPerPage) {
@@ -362,7 +361,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 		}
 		log.debug("getPostStatistics " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
 		final int start = listCommand.getStart();
-		final int totalCount = this.logic.getPostStatistics(resourceType, groupingEntity, groupingName, tags, hash, search, Sets.<Filter>asSet(filter), order, startDate, endDate, start, start + itemsPerPage).getCount();
+		final int totalCount = this.logic.getPostStatistics(resourceType, groupingEntity, groupingName, tags, hash, search, Sets.asSet(filter), order, startDate, endDate, start, start + itemsPerPage).getCount();
 		listCommand.setTotalCount(totalCount);
 	}
 	
@@ -412,7 +411,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 		}
 		if (Bookmark.class.equals(resourceType)) {
 			cmd.getBookmark().setList(cmd.getBookmark().getList().subList(startIndex, endIndex));
-		}				
+		}
 	}
 
 	/**

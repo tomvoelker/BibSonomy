@@ -26,13 +26,21 @@
  */
 package org.bibsonomy.search.es;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.search.es.client.DeleteData;
+import org.bibsonomy.search.es.client.IndexData;
+import org.bibsonomy.search.es.client.UpdateData;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -84,23 +92,15 @@ public interface ESClient {
 	 */
 	public List<String> getIndexNamesForAlias(String aliasName);
 
-	/**
-	 * @param indexName
-	 * @param type
-	 * @param id
-	 * @param jsonDocument
-	 * @return <code>true</code> iff the document was inserted successfully
-	 */
-	public boolean insertNewDocument(String indexName, String type, String id, Map<String, Object> jsonDocument);
-	
+	boolean insertNewDocument(String indexName, String id, IndexData indexData);
+
 	/**
 	 * 
 	 * @param indexName
-	 * @param type
 	 * @param jsonDocuments
 	 * @return <code>true</code> iff all documents were inserted successfully
 	 */
-	public boolean insertNewDocuments(String indexName, String type, Map<String, Map<String, Object>> jsonDocuments);
+	boolean insertNewDocuments(String indexName, Map<String, IndexData> jsonDocuments);
 	
 	/**
 	 * @param indexName
@@ -113,7 +113,7 @@ public interface ESClient {
 	 * @param syncStateForIndexName the index name of the index
 	 * @return
 	 */
-	SearchIndexSyncState getSearchIndexStateForIndex(String indexName, String syncStateForIndexName);
+	<S extends SearchIndexSyncState> S getSearchIndexStateForIndex(String indexName, String syncStateForIndexName, Converter<S, Map<String, Object>, Object> converter);
 	
 	/**
 	 * @param indexName the name of the index
@@ -142,10 +142,20 @@ public interface ESClient {
 	 */
 	boolean updateAliases(Set<Pair<String, String>> aliasesToAdd, Set<Pair<String, String>> aliasesToRemove);
 	
-	default boolean updateOrCreateDocuments(String indexName, String type, Map<String, Map<String, Object>> jsonDocuments) {
-		final Set<String> idsToDelete = jsonDocuments.keySet();
-		this.deleteDocuments(indexName, type, idsToDelete);
-		return this.insertNewDocuments(indexName, type, jsonDocuments);
+	default boolean updateOrCreateDocuments(String indexName, Map<String, IndexData> jsonDocuments) {
+		if (!present(jsonDocuments)) {
+			return true;
+		}
+		final List<DeleteData> deleteData = jsonDocuments.entrySet().stream().map(entry -> {
+			final DeleteData delete = new DeleteData();
+			final IndexData indexData = entry.getValue();
+			delete.setType(indexData.getType());
+			delete.setId(entry.getKey());
+			delete.setRouting(indexData.getRouting());
+			return delete;
+		}).collect(Collectors.toList());
+		this.deleteDocuments(indexName, deleteData);
+		return this.insertNewDocuments(indexName, jsonDocuments);
 	}
 
 	/**
@@ -157,6 +167,12 @@ public interface ESClient {
 	 * @return <code>true</code> iff the document was updated
 	 */
 	boolean updateDocument(String indexName, String type, String id, Map<String, Object> jsonDocument);
+
+	/**
+	 * @param indexName the index of the documents to update
+	 * @param updates the update map (key: document id and value is the update to apply)
+	 */
+	boolean updateDocuments(String indexName, List<Pair<String, UpdateData>> updates);
 	
 	/**
 	 * @param indexName
@@ -193,15 +209,14 @@ public interface ESClient {
 	 * @param type
 	 * @param query
 	 */
-	public void deleteDocuments(String indexName, String type, QueryBuilder query);
+	void deleteDocuments(String indexName, String type, QueryBuilder query);
 	
 	/**
 	 * @param indexName
-	 * @param type
-	 * @param idsToDelete
+	 * @param documentsToDelete
 	 * @return 
 	 */
-	public boolean deleteDocuments(String indexName, String type, Set<String> idsToDelete);
+	boolean deleteDocuments(String indexName, List<DeleteData> documentsToDelete);
 
 	/**
 	 * checks if the client can connect to the es instance

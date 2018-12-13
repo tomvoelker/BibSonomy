@@ -34,8 +34,8 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
-import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 
 import java.util.List;
@@ -97,12 +97,13 @@ public interface PersonLogicInterface {
 	@Deprecated // use update person
 	public void removePersonName(Integer personNameId);
 
+
 	/**
-	 *
-	 * @param builder the builder
+	 * retrieves persons from the database
+	 * @param query
 	 * @return
 	 */
-	List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder builder);
+	List<Person> getPersons(final PersonQuery query);
 
 
 	/**

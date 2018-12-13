@@ -36,5 +36,8 @@ public enum ProjectStatus {
 	RUNNING,
 
 	/** all finished projects */
-	FINISHED;
+	FINISHED,
+
+	/** projects that start later than the current date */
+	UPCOMING
 }

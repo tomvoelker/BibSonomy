@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/util
+						http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<bean id="elasticsearchGroupSearch" class="org.bibsonomy.search.es.search.group.ElasticsearchGroupSearch">
+		<constructor-arg ref="elasticsearchGroupManager" />
+		<constructor-arg ref="elasticsearchGroupConverter" />
+	</bean>
+
+	<bean id="elasticsearchGroupMappingBuilder" class="org.bibsonomy.search.es.index.mapping.group.GroupMappingBuilder" />
+
+	<bean id="elasticsearchGroupConverter" class="org.bibsonomy.search.es.index.converter.group.GroupConverter" />
+
+	<bean id="elasticsearchGroupEntityInformationProvider" class="org.bibsonomy.search.es.index.generator.group.GroupEntityInformationProvider">
+		<constructor-arg ref="elasticsearchGroupConverter" />
+		<constructor-arg ref="elasticsearchGroupMappingBuilder" />
+	</bean>
+
+	<bean id="elasticsearchGroupManager" class="org.bibsonomy.search.es.management.ElasticsearchEntityManager" parent="elasticsearchAbstractIndexManager">
+		<constructor-arg>
+			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator">
+				<constructor-arg ref="esClient" />
+				<constructor-arg ref="systemURI" />
+				<constructor-arg ref="groupGenerationDBLogic" />
+				<constructor-arg ref="groupDatabaseInformationLogic" />
+				<constructor-arg ref="postSyncStateConverter" />
+				<constructor-arg ref="elasticsearchGroupEntityInformationProvider" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg ref="postSyncStateConverter" />
+		<constructor-arg ref="elasticsearchGroupEntityInformationProvider" />
+		<constructor-arg ref="groupSearchUpdateLogic" />
+		<constructor-arg ref="groupDatabaseInformationLogic" />
+	</bean>
+
+</beans>

@@ -12,6 +12,7 @@ import org.bibsonomy.database.common.enums.CRISEntityType;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.CRISLinkParam;
+import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.database.params.ProjectParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.Person;
@@ -23,6 +24,7 @@ import org.bibsonomy.model.enums.ProjectStatus;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.validation.ProjectValidator;
+import org.bibsonomy.services.searcher.ProjectSearch;
 import org.bibsonomy.util.StringUtils;
 
 import java.util.Collections;
@@ -30,7 +32,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * database manager for creating, updating and queriying {@link Project}s
+ * database manager for creating, updating and querying {@link Project}s
  *
  * @author dzo
  */
@@ -47,7 +49,9 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 	/** used to validate a project */
 	private ProjectValidator validator;
 
-	private Chain<List<Project>, ProjectQuery> chain;
+	private ProjectSearch search;
+
+	private Chain<List<Project>, QueryAdapter<ProjectQuery>> chain;
 
 	private Chain<Statistics, ProjectQuery> statisticsChain;
 
@@ -240,8 +244,8 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 	 * @param session
 	 * @return all projects that match the query
 	 */
-	public List<Project> getProjects(final ProjectQuery query, final DBSession session) {
-		return this.chain.perform(query, session);
+	public List<Project> getProjects(final ProjectQuery query, final User loggedinUser, final DBSession session) {
+		return this.chain.perform(new QueryAdapter<>(query, loggedinUser), session);
 	}
 
 	/**
@@ -263,6 +267,16 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 		param.setLimit(limit);
 		param.setOffset(offset);
 		return this.queryForList("getAllProjects", param, Project.class, session);
+	}
+
+	/**
+	 * retrieves projects using the configured {@link ProjectSearch}
+	 * @param loggedinUser
+	 * @param query
+	 * @return all projects matching the query
+	 */
+	public List<Project> getProjectsBySearch(final User loggedinUser, final ProjectQuery query) {
+		return this.search.getProjects(loggedinUser, query);
 	}
 
 	/**
@@ -348,7 +362,7 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 	/**
 	 * @param chain the chain to set
 	 */
-	public void setChain(Chain<List<Project>, ProjectQuery> chain) {
+	public void setChain(Chain<List<Project>, QueryAdapter<ProjectQuery>> chain) {
 		this.chain = chain;
 	}
 
@@ -364,5 +378,12 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 	 */
 	public void setCrisLinkDatabaseManager(CRISLinkDatabaseManager crisLinkDatabaseManager) {
 		this.crisLinkDatabaseManager = crisLinkDatabaseManager;
+	}
+
+	/**
+	 * @param search the search to set
+	 */
+	public void setSearch(ProjectSearch search) {
+		this.search = search;
 	}
 }
