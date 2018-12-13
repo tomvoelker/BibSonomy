@@ -1,57 +1,32 @@
 package org.bibsonomy.model.logic.query;
 
+
 /**
- * a basic query containing all basic
+ * A basic query that supports pagination and searching.
  *
  * @author dzo
  */
-public class BasicQuery {
+public class BasicQuery extends BasicPaginatedQuery implements SearchQuery, Query {
 
-	private String search;
+    private String search;
 
-	private int start = 0;
+    /**
+     * Gets the search string.
+     *
+     * @return the search string.
+     */
+    public String getSearch() {
+        return search;
+    }
 
-	private int end = 10;
 
-	/**
-	 * @return the search
-	 */
-	public String getSearch() {
-		return search;
-	}
+    /**
+     * Sets the search string.
+     *
+     * @param search the search string to set.
+     */
+    public void setSearch(String search) {
+        this.search = search;
+    }
 
-	/**
-	 * @param search the search to set
-	 */
-	public void setSearch(String search) {
-		this.search = search;
-	}
-
-	/**
-	 * @return the start
-	 */
-	public int getStart() {
-		return start;
-	}
-
-	/**
-	 * @param start the start to set
-	 */
-	public void setStart(int start) {
-		this.start = start;
-	}
-
-	/**
-	 * @return the end
-	 */
-	public int getEnd() {
-		return end;
-	}
-
-	/**
-	 * @param end the end to set
-	 */
-	public void setEnd(int end) {
-		this.end = end;
-	}
 }

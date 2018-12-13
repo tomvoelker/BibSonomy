@@ -35,6 +35,7 @@ import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.PersonQuery;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 
 import java.util.List;
@@ -104,11 +105,27 @@ public interface PersonLogicInterface {
 	 */
 	List<Person> getPersons(final PersonQuery query);
 
+
 	/**
-	 * @param builder the builder
-	 * @return a querybuilder object by which options for the query can be specified
+	 * Retrieves a list with resources according to the query.
+	 *
+	 * @param builder a query builder object with the query options.
+	 *
+	 * @return a list of resources according to the query.
 	 */
+	@Deprecated
 	List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQueryBuilder builder);
+
+
+	/**
+	 * Retrieves a list with resource - person relations according to the query.
+	 *
+	 * @param query the query.
+	 *
+	 * @return a list of resource - person relations.
+	 */
+	List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query);
+
 
 	/**
 	 * @param username

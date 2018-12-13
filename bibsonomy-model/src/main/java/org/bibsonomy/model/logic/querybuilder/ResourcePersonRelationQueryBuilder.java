@@ -30,10 +30,11 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 
 /**
  * TODO: add documentation to this class
- *
+ * FIXME: (AD) refactor into separate builder and query object classes, add a build method with validation and move validation checks from DBLogic implementations into the build method!
  * @author jensi
  */
 public class ResourcePersonRelationQueryBuilder {
+
 	private boolean withPersons;
 	private boolean withPosts;
 	private boolean withPersonsOfPosts;
@@ -43,10 +44,14 @@ public class ResourcePersonRelationQueryBuilder {
 	private String personId;
 	private Order order;
 	private boolean groupByInterhash;
+
+	private boolean paginated;
+	private int start;
+	private int end;
 	
 	
 	public static enum Order {
-		publicationYear
+		PublicationYear
 	}
 	
 	/**
@@ -105,6 +110,32 @@ public class ResourcePersonRelationQueryBuilder {
 		this.groupByInterhash = groupByInterhash;
 		return this;
 	}
+
+
+	/**
+	 * Retrieve only resources from [<code>start</code>; <code>end</code>).
+	 *
+	 * @param start index of the first item.
+	 * @param end index of the last item.
+	 *
+	 * @return the builder.
+	 */
+	public ResourcePersonRelationQueryBuilder fromTo(int start, int end) {
+		if (start < 0 || end < 0) {
+			throw new IllegalArgumentException(String.format("Indices must be >= 0. start=%d, end=%d", start, end));
+		}
+
+		if (start > end) {
+			throw new IllegalArgumentException(String.format("start must be <= end: %d > %d", start, end));
+		}
+
+		this.paginated = true;
+		this.start = start;
+		this.end = end;
+
+		return this;
+	}
+
 	
 	/**
 	 * @return the withPersons
@@ -158,5 +189,35 @@ public class ResourcePersonRelationQueryBuilder {
 
 	public boolean isWithPersonsOfPosts() {
 		return this.withPersonsOfPosts;
+	}
+
+
+	/**
+	 * Tells whether the query should be paginated.
+	 *
+	 * @return <code>true</code> if a paginated query should be performed, <code>false</code> otherwise.
+	 */
+	public boolean isPaginated() {
+		return paginated;
+	}
+
+
+	/**
+	 * Gets the start index of the page.
+	 *
+	 * @return the start index.
+	 */
+	public int getStart() {
+		return start;
+	}
+
+
+	/**
+	 * Gets the end index of the page.
+	 *
+	 * @return the end index.
+	 */
+	public int getEnd() {
+		return end;
 	}
 }
