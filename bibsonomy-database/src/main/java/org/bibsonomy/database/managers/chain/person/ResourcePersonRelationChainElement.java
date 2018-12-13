@@ -2,7 +2,9 @@ package org.bibsonomy.database.managers.chain.person;
 
 import org.bibsonomy.database.managers.PersonDatabaseManager;
 import org.bibsonomy.database.managers.chain.ChainElement;
+import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 
 import java.util.List;
@@ -10,7 +12,7 @@ import java.util.List;
 /**
  * An abstract element of the chain handling ResourcePersonRelation queries.
  */
-public abstract class ResourcePersonRelationChainElement extends ChainElement<List<ResourcePersonRelation>, ResourcePersonRelationQueryBuilder> {
+public abstract class ResourcePersonRelationChainElement extends ChainElement<List<ResourcePersonRelation>, QueryAdapter<ResourcePersonRelationQuery>> {
 
     private final PersonDatabaseManager personDatabaseManager;
 

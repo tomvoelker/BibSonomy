@@ -2,8 +2,10 @@ package org.bibsonomy.database.managers.chain.person;
 
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.PersonDatabaseManager;
+import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 
 import java.util.List;
@@ -22,30 +24,36 @@ public class GetResourcePersonRelationsWithPosts extends ResourcePersonRelationC
     }
 
     @Override
-    protected List<ResourcePersonRelation> handle(ResourcePersonRelationQueryBuilder param, DBSession session) {
-        final List<ResourcePersonRelation> rVal = this.getPersonDatabaseManager().getResourcePersonRelationsWithPosts(
-                param.getPersonId(), this.loginUser, GoldStandardPublication.class, session); //TODO use Adapter that will magically appear after tonight
+    protected List<ResourcePersonRelation> handle(QueryAdapter<ResourcePersonRelationQuery> adapter, DBSession session) {
 
-        if (param.isWithPersonsOfPosts()) {
-            for (final ResourcePersonRelation resourcePersonRelation : rVal) {
+        final ResourcePersonRelationQuery query = adapter.getQuery();
+
+        final List<ResourcePersonRelation> relations = this.getPersonDatabaseManager().getResourcePersonRelationsWithPosts(
+                query.getPersonId(), adapter.getLoggedinUser(), GoldStandardPublication.class, session);
+
+        //FIXME use a join to retrieve the necessary information
+        if (query.isWithPersonsOfPosts()) {
+            for (final ResourcePersonRelation resourcePersonRelation : relations) {
                 final String interHash = resourcePersonRelation.getPost().getResource().getInterHash();
                 final ResourcePersonRelationQueryBuilder relsBuilder = new ResourcePersonRelationQueryBuilder()
                         .byInterhash(interHash)
                         .withPersons(true);
 
-                final List<ResourcePersonRelation> relsOfPub = this.getPersonDatabaseManager().getResourcePersonRelationsWithPersonsByInterhash(relsBuilder.getInterhash(), session);
+                final List<ResourcePersonRelation> relsOfPub = this.getPersonDatabaseManager()
+                        .getResourcePersonRelationsWithPersonsByInterhash(relsBuilder.getInterhash(), session);
+
                 resourcePersonRelation.getPost().setResourcePersonRelations(relsOfPub);
             }
         }
 
-        return rVal;
+        return relations;
     }
 
     @Override
-    protected boolean canHandle(ResourcePersonRelationQueryBuilder param) {
-        return present(param.getPersonId()) &&
-                !param.isWithPersons() &&
-                !present(param.getAuthorIndex()) &&
-                !present(param.getRelationType());
+    protected boolean canHandle(QueryAdapter<ResourcePersonRelationQuery> adapter) {
+        return present(adapter.getQuery().getPersonId()) &&
+                !adapter.getQuery().isWithPersons() &&
+                !present(adapter.getQuery().getAuthorIndex()) &&
+                !present(adapter.getQuery().getRelationType());
     }
 }

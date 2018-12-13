@@ -2,7 +2,9 @@ package org.bibsonomy.database.managers.chain.person;
 
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.PersonDatabaseManager;
+import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 
 import java.util.List;
@@ -22,16 +24,16 @@ public class GetResourcePersonRelationsWithPersonsByInterhash extends ResourcePe
     }
 
     @Override
-    protected List<ResourcePersonRelation> handle(ResourcePersonRelationQueryBuilder param, DBSession session) {
-        return this.getPersonDatabaseManager().getResourcePersonRelationsWithPersonsByInterhash(param.getInterhash(), session);
+    protected List<ResourcePersonRelation> handle(QueryAdapter<ResourcePersonRelationQuery> adapter, DBSession session) {
+        return this.getPersonDatabaseManager().getResourcePersonRelationsWithPersonsByInterhash(adapter.getQuery().getInterhash(), session);
     }
 
     @Override
-    protected boolean canHandle(ResourcePersonRelationQueryBuilder param) {
-        return present(param.getInterhash()) &&
-               !param.isWithPosts() &&
-               !present(param.getAuthorIndex()) &&
-               !present(param.getPersonId()) &&
-               !present(param.getRelationType());
+    protected boolean canHandle(QueryAdapter<ResourcePersonRelationQuery> adapter) {
+        return present(adapter.getQuery().getInterhash()) &&
+               !adapter.getQuery().isWithPosts() &&
+               !present(adapter.getQuery().getAuthorIndex()) &&
+               !present(adapter.getQuery().getPersonId()) &&
+               !present(adapter.getQuery().getRelationType());
     }
 }

@@ -51,6 +51,8 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.CRISEntityType;
 import org.bibsonomy.database.common.enums.ConstantID;
+import org.bibsonomy.database.managers.chain.Chain;
+import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.CRISLinkParam;
 import org.bibsonomy.database.params.DNBAliasParam;
@@ -70,6 +72,7 @@ import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.model.util.UserUtils;
@@ -96,6 +99,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	private PersonSearch personSearch;
 
+	private Chain<List<ResourcePersonRelation>, QueryAdapter<ResourcePersonRelationQuery>> chain;
+
 	@Deprecated // TODO: config via spring
 	public static PersonDatabaseManager getInstance() {
 		return singleton;
@@ -104,6 +109,10 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	private PersonDatabaseManager() {
 		this.generalManager = GeneralDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
+	}
+
+	public void setChain(Chain<List<ResourcePersonRelation>, QueryAdapter<ResourcePersonRelationQuery>> chain) {
+		this.chain = chain;
 	}
 
 	/**
@@ -504,6 +513,20 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			session.endTransaction();
 		}
 	}
+
+
+	/**
+	 * Retrieves a list of resource person relations according to the query. The request is handled by the configured chain of responsibility.
+	 *
+	 * @param queryAdapter a query.
+	 * @param session a database session.
+	 *
+	 * @return a list of resource person relations.
+	 */
+	public List<ResourcePersonRelation> queryForResourcePersonRelations(final QueryAdapter<ResourcePersonRelationQuery> queryAdapter, final DBSession session) {
+		return this.chain.perform(queryAdapter, session);
+	}
+
 
 	/**
 	 * @param interhash

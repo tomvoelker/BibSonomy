@@ -176,7 +176,7 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 			if (!suggestedPerson.getPerson().getMainName().toString().equals(name))
 				continue;
 
-			List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(suggestedPerson.getPerson().getPersonId()).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear));
+			List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(suggestedPerson.getPerson().getPersonId()).orderBy(ResourcePersonRelationQueryBuilder.Order.PublicationYear));
 			final List<Post<?>> personPosts = new ArrayList<>();
 
 			for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {

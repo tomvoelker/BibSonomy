@@ -34,6 +34,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 
@@ -103,6 +104,7 @@ public interface PersonLogicInterface {
 	 */
 	List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder builder);
 
+
 	/**
 	 * Retrieves a list with resources according to the query.
 	 *
@@ -110,7 +112,19 @@ public interface PersonLogicInterface {
 	 *
 	 * @return a list of resources according to the query.
 	 */
+	@Deprecated
 	List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQueryBuilder builder);
+
+
+	/**
+	 * Retrieves a list with resource - person relations according to the query.
+	 *
+	 * @param query the query.
+	 *
+	 * @return a list of resource - person relations.
+	 */
+	List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query);
+
 
 	/**
 	 * @param username

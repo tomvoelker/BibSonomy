@@ -103,6 +103,7 @@ import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.managers.TagRelationDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.database.managers.WikiDatabaseManager;
+import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.database.managers.discussion.CommentDatabaseManager;
 import org.bibsonomy.database.managers.discussion.DiscussionDatabaseManager;
 import org.bibsonomy.database.managers.discussion.DiscussionItemDatabaseManager;
@@ -154,6 +155,7 @@ import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedExceptio
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.Query;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
@@ -3723,77 +3725,35 @@ public class DBLogic implements LogicInterface {
 	}
 
 
+	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query) {
+		try(final DBSession session = this.openSession()) {
+			return this.personDBManager.queryForResourcePersonRelations(new QueryAdapter<>(query, this.loginUser), session);
+		}
+	}
+
+
+	@Deprecated
 	@Override
-	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQueryBuilder builder) {
-		final List<ResourcePersonRelation> rVal = this.queryResourceRelations(builder);
-		if (rVal != null) {
-			this.postProcessResourceRelation(rVal, builder);
-			return rVal;
-		}
+	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQueryBuilder queryBuilder) {
+		ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder builder = new ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder();
 
-		throw new UnsupportedOperationException(this.toString());
+		builder.setAuthorIndex(queryBuilder.getAuthorIndex())
+				.setEnd(queryBuilder.getEnd())
+				.setGroupByInterhash(queryBuilder.isGroupByInterhash())
+				.setInterhash(queryBuilder.getInterhash())
+				.setOrder(ResourcePersonRelationQuery.Order.valueOf(queryBuilder.getOrder().name()))
+				.setPersonId(queryBuilder.getPersonId())
+				.setRelationType(queryBuilder.getRelationType())
+				.setStart(queryBuilder.getStart())
+				.setWithPersons(queryBuilder.isWithPersons())
+				.setWithPersonsOfPosts(queryBuilder.isWithPersonsOfPosts())
+				.setWithPosts(queryBuilder.isWithPosts());
+
+		ResourcePersonRelationQuery query = builder.build();
+
+		return this.getResourceRelations(query);
 	}
 
-	private List<ResourcePersonRelation> queryResourceRelations(ResourcePersonRelationQueryBuilder builder) {
-		final DBSession session = this.openSession();
-		try {
-			if (!builder.isWithPosts() && builder.isWithPersonsOfPosts()) {
-				throw new IllegalArgumentException("need to fetch posts to retrieve persons of posts");
-			}
-
-			if (present(builder.getInterhash())) {
-				if (!builder.isWithPosts() && !present(builder.getAuthorIndex()) && !present(builder.getPersonId()) && !present(builder.getRelationType())) {
-					return this.personDBManager.getResourcePersonRelationsWithPersonsByInterhash(builder.getInterhash(), session);
-				} else if (present(builder.getAuthorIndex()) && present(builder.getRelationType()) && !builder.isWithPosts() && !builder.isWithPersons() && !present(builder.getPersonId())) {
-					return this.personDBManager.getResourcePersonRelations(builder.getInterhash(), builder.getAuthorIndex(), builder.getRelationType(), session);
-				}
-			} else if (present(builder.getPersonId()) && !builder.isWithPersons() && !present(builder.getAuthorIndex()) && !present(builder.getRelationType())) {
-				final List<ResourcePersonRelation> rVal = this.personDBManager.getResourcePersonRelationsWithPosts(builder.getPersonId(), this.loginUser, GoldStandardPublication.class, session);
-				for (final ResourcePersonRelation rpr : rVal) {
-					SystemTagsExtractor.handleHiddenSystemTags(rpr.getPost(), this.loginUser.getName());
-				}
-				if (builder.isWithPersonsOfPosts()) {
-					for (final ResourcePersonRelation resourcePersonRelation : rVal) {
-						final String interHash = resourcePersonRelation.getPost().getResource().getInterHash();
-						final ResourcePersonRelationQueryBuilder relsBuilder = new ResourcePersonRelationQueryBuilder()
-										.byInterhash(interHash)
-										.withPersons(true);
-						final List<ResourcePersonRelation> relsOfPub = this.getResourceRelations(relsBuilder);
-						resourcePersonRelation.getPost().setResourcePersonRelations(relsOfPub);
-					}
-				}
-				return rVal;
-			}
-			return null;
-		} finally {
-			session.close();
-		}
-	}
-
-	private void postProcessResourceRelation(final List<ResourcePersonRelation> rVal, final ResourcePersonRelationQueryBuilder builder) {
-		if (builder.isGroupByInterhash()) {
-			final Map<String, ResourcePersonRelation> byInterHash = new HashMap<>();
-			addToMapIfNotPresent(byInterHash, rVal);
-			rVal.clear();
-			rVal.addAll(byInterHash.values());
-		}
-		if (builder.getOrder() == ResourcePersonRelationQueryBuilder.Order.publicationYear) {
-			Collections.sort(rVal, (o1, o2) -> {
-				try {
-					final int year1 = Integer.parseInt(o1.getPost().getResource().getYear().trim());
-					final int year2 = Integer.parseInt(o2.getPost().getResource().getYear().trim());
-					if (year1 != year2) {
-						return year2 - year1;
-					}
-				} catch (final Exception e) {
-					log.warn(e);
-				}
-				return System.identityHashCode(o1) - System.identityHashCode(o2);
-			});
-		} else if (builder.getOrder() != null) {
-			throw new UnsupportedOperationException();
-		}
-	}
 
 	/**
 	 * 

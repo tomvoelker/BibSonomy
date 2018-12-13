@@ -231,6 +231,22 @@
 		</property>
 	</bean>
 
+	<bean id="personRelationChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.person.GetResourcePersonRelationsByInterhash">
+					<constructor-arg ref="personDatabaseManager" />
+				</bean>
+				<bean class="org.bibsonomy.database.managers.chain.person.GetResourcePersonRelationsWithPersonsByInterhash">
+					<constructor-arg ref="personDatabaseManager" />
+				</bean>
+				<bean class="org.bibsonomy.database.managers.chain.person.GetResourcePersonRelationsWithPosts">
+					<constructor-arg ref="personDatabaseManager" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
 	<bean id="databaseValidator" class="org.bibsonomy.database.validation.DatabaseModelValidator">
 		<property name="databaseSchemaInformation" ref="dbSchemaInformation" />
 	</bean>
@@ -344,6 +360,7 @@
 		<property name="goldStandardPublicationDatabaseManager" ref="goldStandardPublicationDatabaseManager" />
 		<property name="publicationDatabaseManager" ref="publicationDatabaseManager" />
 		<property name="crisLinkDatabaseManager" ref="crisLinkDatabaseManger" />
+		<property name="chain" ref="personRelationChain" />
 	</bean>
 	
 	<bean id="clipboardDatabaseManager" class="org.bibsonomy.database.managers.ClipboardDatabaseManager" factory-method="getInstance" />

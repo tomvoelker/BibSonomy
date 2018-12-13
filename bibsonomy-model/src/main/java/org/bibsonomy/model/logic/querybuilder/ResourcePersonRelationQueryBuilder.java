@@ -51,7 +51,7 @@ public class ResourcePersonRelationQueryBuilder {
 	
 	
 	public static enum Order {
-		publicationYear
+		PublicationYear
 	}
 	
 	/**
