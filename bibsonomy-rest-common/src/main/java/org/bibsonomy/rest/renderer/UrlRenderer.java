@@ -148,6 +148,9 @@ public class UrlRenderer {
 	 * @return A URL which points to the given resource.
 	 */
 	public String createHrefForResource(final String userName, final String intraHash) {
+		if (!present(userName)) {
+			return this.createHrefForCommunityPost(intraHash);
+		}
 		return this.getUrlBuilderForUserPost(userName, intraHash).asString();
 	}
 
