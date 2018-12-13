@@ -4,7 +4,7 @@
     <jsp:directive.attribute name="project" type="org.bibsonomy.model.cris.Project" required="true" />
     <jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true"/>
 
-    <c:set var="url" value="/editProject?projectIdToUpdate=${project.internalId}"/>
+    <c:set var="url" value="/editProject?projectIdToUpdate=${project.externalId}"/>
     <c:set var="editTitle" value="project"/>
 
     <a class="${buttonClasses}" href="${url}">

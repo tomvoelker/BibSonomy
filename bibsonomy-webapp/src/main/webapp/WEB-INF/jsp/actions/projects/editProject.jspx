@@ -61,6 +61,9 @@
 					<bsform:dateInput path="project.endDate" value="${project.endDate}" labelColSpan="3" inputColSpan="9" noHelp="${true}" required="${true}" />
 					<!-- edit type/founding -->
 					<bsform:input path="project.type" labelColSpan="3" inputColSpan="9" noHelp="${true}" />
+
+					<bsform:input path="project.sponsor" labelColSpan="3" inputColSpan="9" noHelp="${true}" />
+
 					<!-- edit budget-->
 					<bsform:input path="project.budget" labelColSpan="3" inputColSpan="9" noHelp="${true}" />
 
