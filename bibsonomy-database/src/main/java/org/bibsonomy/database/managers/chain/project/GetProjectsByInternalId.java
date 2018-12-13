@@ -17,7 +17,7 @@ import org.bibsonomy.model.logic.query.ProjectQuery;
 public class GetProjectsByInternalId extends ProjectChainElement {
 
 	@Override
-	protected List<Project> handle(final QueryAdapter<ProjectQuery> param, DBSession session) {
+	protected List<Project> handle(final QueryAdapter<ProjectQuery> param, final DBSession session) {
 		return this.projectDatabaseManager.getProjectsByInternalId(param.getQuery().getInternalId(), session);
 	}
 
