@@ -40,17 +40,17 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 	 * @param manager
 	 * @param converter
 	 */
-	public ElasticsearchProjectSearch(ElasticsearchManager<Project, SearchIndexSyncState> manager, Converter<Project, Map<String, Object>, Boolean> converter) {
+	public ElasticsearchProjectSearch(final ElasticsearchManager<Project, SearchIndexSyncState> manager, final Converter<Project, Map<String, Object>, Boolean> converter) {
 		super(manager, converter);
 	}
 
 	@Override
-	public List<Project> getProjects(final User loggedinUser, ProjectQuery query) {
+	public List<Project> getProjects(final User loggedinUser, final ProjectQuery query) {
 		return this.searchEntities(loggedinUser, query);
 	}
 
 	@Override
-	protected Pair<String, SortOrder> getSortOrder(ProjectQuery query) {
+	protected Pair<String, SortOrder> getSortOrder(final ProjectQuery query) {
 		final SortOrder sortOrderQuery = ElasticsearchIndexSearchUtils.convertSortOrder(query.getSortOrder());
 		return query.getOrder() == ProjectOrder.START_DATE ? new Pair<>(ProjectFields.START_DATE, sortOrderQuery) : new Pair<>(ProjectFields.TITLE + "." + ProjectFields.TITLE_SORT, sortOrderQuery);
 	}

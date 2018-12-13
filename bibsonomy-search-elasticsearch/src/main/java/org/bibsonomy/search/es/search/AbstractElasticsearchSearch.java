@@ -15,6 +15,7 @@ import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
@@ -94,6 +95,7 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 		if (present(search)) {
 			final QueryStringQueryBuilder queryStringQueryBuilder = QueryBuilders.queryStringQuery(search);
 			this.manager.getPublicFields().stream().forEach(queryStringQueryBuilder::field);
+			queryStringQueryBuilder.type(MultiMatchQueryBuilder.Type.PHRASE_PREFIX);
 			mainQuery.must(queryStringQueryBuilder);
 		}
 
