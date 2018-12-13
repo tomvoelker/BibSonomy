@@ -46,7 +46,7 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.common.enums.TagRelation;
@@ -80,10 +80,11 @@ import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.logic.query.BasicQuery;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
-import org.bibsonomy.model.logic.query.Query;
-import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.model.logic.query.PersonQuery;
+import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -113,11 +114,16 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.SearchType, java.util.Set, org.bibsonomy.model.enums.Order, java.util.Date, java.util.Date, int, int)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.QueryScope, java.util.Set, org.bibsonomy.model.enums.Order, java.util.Date, java.util.Date, int, int)
 	 */
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end) {
-		return this.logicinterface.getPosts(resourceType, grouping, groupingName, tags, hash, search, searchType, filters, order, startDate, endDate, start, end);
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end) {
+		return this.logicinterface.getPosts(resourceType, grouping, groupingName, tags, hash, search, queryScope, filters, order, startDate, endDate, start, end);
+	}
+
+	@Override
+	public <R extends Resource> List<Post<R>> getPosts(PostQuery<R> query) {
+		return this.logicinterface.getPosts(query);
 	}
 
 	/* (non-Javadoc)
@@ -400,14 +406,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	@Override
 	public void updateWiki(String userName, Wiki wiki) {
 		throwReadOnlyException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(boolean, int, int)
-	 */
-	@Override
-	public List<Group> getGroups(boolean pending, String userName, int start, int end) {
-		return this.logicinterface.getGroups(pending, null, start, end);
 	}
 
 	/* (non-Javadoc)
@@ -849,22 +847,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
-	 */
-	@Override
-	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder builder) {
-		return this.logicinterface.getPersonSuggestion(builder);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPublicationSuggestion(java.lang.String)
-	 */
-	@Override
-	public List<Post<BibTex>> getPublicationSuggestion(String queryString) {
-		return this.logicinterface.getPublicationSuggestion(queryString);
-	}
-	
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations()
 	 */
 	@Override
@@ -873,11 +855,11 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getTags(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.SearchType, java.lang.String, org.bibsonomy.common.enums.TagSimilarity, org.bibsonomy.model.enums.Order, java.util.Date, java.util.Date, int, int)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getTags(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.QueryScope, java.lang.String, org.bibsonomy.common.enums.TagSimilarity, org.bibsonomy.model.enums.Order, java.util.Date, java.util.Date, int, int)
 	 */
 	@Override
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end) {
-		return this.logicinterface.getTags(resourceType, grouping, groupingName, tags, hash, search, searchType, regex, relation, order, startDate, endDate, start, end);
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end) {
+		return this.logicinterface.getTags(resourceType, grouping, groupingName, tags, hash, search, queryScope, regex, relation, order, startDate, endDate, start, end);
 	}
 
 	/* (non-Javadoc)
@@ -935,7 +917,12 @@ public class ReadOnlyLogic implements LogicInterface {
 	public void denieMerge(PersonMatch match) {
 
 	}
-	
+
+	@Override
+	public List<Person> getPersons(PersonQuery query) {
+		return this.logicinterface.getPersons(query);
+	}
+
 	@Override
 	public boolean acceptMerge(PersonMatch match) {
 		return false;
@@ -955,7 +942,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	@Override
-	public Statistics getStatistics(final Query query) {
+	public Statistics getStatistics(final BasicQuery query) {
 		return this.logicinterface.getStatistics(query);
 	}
 

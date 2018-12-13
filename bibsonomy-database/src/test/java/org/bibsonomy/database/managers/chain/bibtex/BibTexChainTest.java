@@ -51,6 +51,7 @@ import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -361,7 +362,7 @@ public class BibTexChainTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getBibtexByFollowedUsers() {
 		this.bibtexParam.setGrouping(GroupingEntity.FOLLOWER);
-		this.bibtexParam.addGroups(new ArrayList<Integer>(0));
+		this.bibtexParam.addGroups(new ArrayList<>(0));
 		this.bibtexParam.setUserName("testuser2");
 		assertEquals(GetResourcesByFollowedUsers.class, bibtexChain.getChainElement(this.bibtexParam).getClass());		
 	}
@@ -371,11 +372,12 @@ public class BibTexChainTest extends AbstractDatabaseManagerTest {
 	 * @author rja
 	 */
 	@Test
+	@Ignore // TODO: remove uses old group queries that use the database instead of the fulltext search
 	public void getBibtexForGroupAndTag2() {
 		final BibTexParam p = new BibTexParam();
 
-		final Set<Tag> tags = new HashSet<Tag>();
-		final List<TagIndex> tagIndex = new LinkedList<TagIndex>();
+		final Set<Tag> tags = new HashSet<>();
+		final List<TagIndex> tagIndex = new LinkedList<>();
 
 		/*
 		 * change number of requested tags here

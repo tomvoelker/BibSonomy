@@ -47,6 +47,7 @@ import org.bibsonomy.model.User;
  * @author Christian Schenk
  */
 public interface CrudableContent<T extends Resource, P extends GenericParam> {
+
 	/**
 	 * Read
 	 *
@@ -54,7 +55,7 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<T>> getPosts(P param, DBSession session);
+	List<Post<T>> getPosts(P param, DBSession session);
 
 	/**
 	 * Read

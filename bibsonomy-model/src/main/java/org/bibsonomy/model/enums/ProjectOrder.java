@@ -37,5 +37,5 @@ public enum ProjectOrder {
 	TITLE,
 
 	/** start date of a {@link org.bibsonomy.model.cris.Project} */
-	START_DATE;
+	START_DATE
 }

@@ -26,7 +26,9 @@
  */
 package org.bibsonomy.search.index.generator.post;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.model.BibTex;
@@ -43,16 +45,16 @@ import java.util.List;
  */
 public class PostIndexGenerationLogicTest extends AbstractDatabaseManagerTest {
 
-	private static final PostIndexGenerationLogic<BibTex> INDEX_GENERATION_LOGIC = (PostIndexGenerationLogic<BibTex>) SearchSpringContextWrapper.getBeanFactory().getBean("publicationGenerationDBLogic");
+	private static final PostIndexGenerationLogic<BibTex> INDEX_GENERATION_LOGIC = SearchSpringContextWrapper.getBeanFactory().getBean("publicationGenerationDBLogic", PostIndexGenerationLogic.class);
 
 	/**
-	 * tests {@link PostIndexGenerationLogic#getEntites(int, int)}
+	 * tests {@link PostIndexGenerationLogic#getEntities(int, int)}
 	 * @throws Exception
 	 */
 	@Test
 	public void testGetPostEntries() {
-		final List<Post<BibTex>> posts = INDEX_GENERATION_LOGIC.getEntites(0, 100);
-		assertEquals(14, posts.size());
+		final List<Post<BibTex>> posts = INDEX_GENERATION_LOGIC.getEntities(0, 100);
+		assertThat(posts.size(), is(22));
 		// check for documents
 		for (final Post<BibTex> searchPost : posts) {
 			final BibTex publication = searchPost.getResource();

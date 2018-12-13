@@ -51,10 +51,12 @@
 	<typeAlias alias="crisLinkType"				type="org.bibsonomy.model.cris.CRISLinkType" />
 	<typeAlias alias="crisLinkDataSource"		type="org.bibsonomy.model.cris.CRISLinkDataSource" />
 
+	<!-- person related classes -->
 	<typeAlias alias="person"						type="org.bibsonomy.model.Person" />
 	<typeAlias alias="personName"					type="org.bibsonomy.model.PersonName" />
-	<typeAlias alias="personResourceRelation"		type="org.bibsonomy.model.ResourcePersonRelation" />
-	<typeAlias alias="personResourceRelationType"	type="org.bibsonomy.model.enums.PersonResourceRelationType" />
+	<typeAlias alias="gender"						type="org.bibsonomy.model.enums.Gender" />
+	<typeAlias alias="personResourceRelation" 		type="org.bibsonomy.model.ResourcePersonRelation" />
+	<typeAlias alias="personResourceRelationType" 	type="org.bibsonomy.model.enums.PersonResourceRelationType" />
 	<typeAlias alias="personMatch"					type="org.bibsonomy.model.PersonMatch" />
 
 	<!-- Synchronization -->
@@ -121,4 +123,7 @@
 	<typeAlias alias="GroupLevelPermission"	type="org.bibsonomy.common.enums.GroupLevelPermission" />
 	
 	<typeAlias alias="LayoutSettings"    type="org.bibsonomy.model.user.settings.LayoutSettings" />
+
+	<!-- database specific stuff -->
+	<typeAlias alias="logReason"		 type="org.bibsonomy.database.common.enums.LogReason" />
 </sqlMap>

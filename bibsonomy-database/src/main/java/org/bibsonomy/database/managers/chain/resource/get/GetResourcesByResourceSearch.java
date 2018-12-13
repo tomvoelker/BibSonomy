@@ -36,11 +36,13 @@ import org.bibsonomy.database.managers.chain.ChainUtils;
 import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.database.systemstags.search.EntryTypeSystemTag;
 import org.bibsonomy.database.systemstags.search.NotTagSystemTag;
 import org.bibsonomy.database.systemstags.search.YearSystemTag;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.services.searcher.query.PostSearchQuery;
 
 /**
  * @author claus
@@ -58,7 +60,7 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
 		// convert tag index to tag list
-		final List<String> tagIndex = present(param.getTagIndex()) ? DatabaseUtils.extractTagNames(param) : null;
+		final List<String> tags = present(param.getTagIndex()) ? DatabaseUtils.extractTagNames(param) : null;
 
 		/*
 		 * extract first-, last- and year from the system tag if present
@@ -66,11 +68,12 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 		String year = null;
 		String firstYear = null;
 		String lastYear = null;
-		
+		String entryType = null;
+
 		/*
-		 * Check Systen tags for negated and year tags
+		 * check system tags for negated and year tags
 		 */
-		final List<String> negatedTags = new LinkedList<String>();
+		final List<String> negatedTags = new LinkedList<>();
 
 		for (final SystemTag systemTag : param.getSystemTags()) {
 			if (systemTag instanceof YearSystemTag) {
@@ -81,12 +84,23 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 				lastYear = yearTag.getLastYear();
 			} else if (systemTag instanceof NotTagSystemTag) {
 				negatedTags.add(((NotTagSystemTag) systemTag).getTagName());
+			} else if (systemTag instanceof EntryTypeSystemTag) {
+				entryType = systemTag.getArgument();
 			}
 		}
+
+		final PostSearchQuery<R> query = new PostSearchQuery<>(param.getQuery());
+		query.setNegatedTags(negatedTags);
+		query.setYear(year);
+		query.setLastYear(lastYear);
+		query.setFirstYear(firstYear);
+		query.setEntryType(entryType);
+		query.setBibtexKey(param.getBibtexKey());
+		query.setTags(tags); // override tags to remove system tags
+
 		// query the resource searcher
-		//TODO (dzo) full text search does not yet support filter for pdf only -> IMPLEMENT
 		//TODO (dzo) Do we really need the hashId in GetResourcesForGroup?
 
-		return this.databaseManager.getPostsByResourceSearch(param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getRelationTags(), param.getGroupNames(),param.getSearchType(), param.getSearch(), param.getTitle(), param.getAuthor(), tagIndex, year, firstYear, lastYear, negatedTags, param.getOrder(), param.getLimit(), param.getOffset());
+		return this.databaseManager.getPostsByResourceSearch(param.getLoggedinUser(), query);
 	}
 }

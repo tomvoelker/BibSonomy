@@ -44,8 +44,6 @@ body {
    padding-right: 5px !important;
 }
 
-
-
 /** FIX for right dropdown alignment */
 
 .dropdown-align-right .dropdown-menu {
@@ -1645,4 +1643,71 @@ pre.export {
 
 .citation-box ul li a {
 	padding: 5px 10px;
+}
+
+.form-search {
+  background-color: #ffffff;
+  border-radius: 5px;
+  padding: 3px 5px 5px 5px;
+
+  .input-group-addon {
+	background-color: transparent;
+	border: none;
+  }
+
+  input {
+	margin-top: 5px;
+	font-size: 150%;
+  }
+
+  .form-control-borderless, .form-control-borderless:hover, .form-control-borderless:active, .form-control-borderless:focus {
+	border: none;
+	outline: none;
+	box-shadow: none;
+  }
+}
+
+ul.prefix-list {
+  margin: 20px 0px 0px 0px;
+  padding: 0px;
+
+  li {
+	display: inline;
+	padding: 5px;
+  }
+}
+
+.jumbotron {
+  ul.prefix-list > li.active {
+	background-color: #ffffff;
+	border-radius: 4px;
+  }
+}
+
+.jumbotron.search {
+  padding: 10px 30px 20px;
+}
+
+#cris-home-logo {
+  max-width: 1110px;
+  padding-bottom: 15px;
+}
+
+div.no-items-found {
+  text-align: center;
+  font-weight: 600;
+  font-size: 150%;
+  color: grey;
+  padding-top: 20px;
+}
+
+hr.option-result-divider {
+  border-color: #ccc;
+}
+
+// TODO: remove with bootstrap 4
+.vcenter {
+  display: inline-block;
+  vertical-align: middle;
+  float: none;
 }

@@ -44,7 +44,7 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -52,6 +52,7 @@ import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.Document;
+import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Person;
@@ -72,7 +73,6 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.logic.query.GroupQuery;
-import org.bibsonomy.model.logic.query.Query;
 import org.bibsonomy.model.logic.querybuilder.GroupQueryBuilder;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -83,6 +83,7 @@ import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
+import org.bibsonomy.rest.client.queries.get.GetPersonByIdQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteResourcePersonRelationQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteCRISLinkQuery;
 import org.bibsonomy.rest.client.queries.get.GetConceptDetailsQuery;
@@ -90,7 +91,6 @@ import org.bibsonomy.rest.client.queries.get.GetFriendsQuery;
 import org.bibsonomy.rest.client.queries.get.GetGroupDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetGroupListQuery;
 import org.bibsonomy.rest.client.queries.get.GetLastSyncDataQuery;
-import org.bibsonomy.rest.client.queries.get.GetPersonByIdQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostDocumentQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
@@ -133,6 +133,7 @@ import org.bibsonomy.rest.client.queries.put.ChangeSyncStatusQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeUserQuery;
 import org.bibsonomy.rest.client.queries.put.UpdateCRISLinkQuery;
 import org.bibsonomy.rest.client.queries.put.UpdatePersonQuery;
+import org.bibsonomy.rest.client.queries.put.UpdateProjectQuery;
 import org.bibsonomy.rest.client.util.FileFactory;
 import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.util.ProgressCallbackFactory;
@@ -273,7 +274,7 @@ public class RestLogic extends AbstractLogicInterface {
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		// TODO: properly implement searchtype in query and rest-server
 		// TODO: clientside chain of responsibility
 		final GetPostsQuery query = new GetPostsQuery(start, end);
@@ -299,11 +300,11 @@ public class RestLogic extends AbstractLogicInterface {
 
 	@Override
 	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
-		return this.getTags(resourceType, grouping, groupingName, tags, hash, search, SearchType.LOCAL, regex, relation, order, startDate, endDate, start, end);
+		return this.getTags(resourceType, grouping, groupingName, tags, hash, search, QueryScope.LOCAL, regex, relation, order, startDate, endDate, start, end);
 	}
 	
 	@Override
-	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType,final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final GetTagsQuery query = new GetTagsQuery(start, end);
 		query.setResourceType(resourceType);
 		query.setGrouping(grouping, groupingName);
@@ -370,7 +371,16 @@ public class RestLogic extends AbstractLogicInterface {
 		final List<String> resourceHashes = new LinkedList<>();
 		final DatabaseException collectedException = new DatabaseException();
 		for (final Post<?> post : posts) {
-			final ChangePostQuery query = new ChangePostQuery(this.authUser.getName(), post.getResource().getIntraHash(), post);
+			final Resource resource = post.getResource();
+			String hashToUpdate = resource.getIntraHash();
+			String postUser = post.getUser().getName();
+
+			if (resource instanceof GoldStandard<?>) {
+				postUser = "";
+				hashToUpdate = resource.getInterHash();
+			}
+
+			final ChangePostQuery query = new ChangePostQuery(postUser, hashToUpdate, post);
 			final String hash = execute(query);
 			if (!query.isSuccess()) {
 				collectedException.addToErrorMessages(PostUtils.getKeyForPost(post), new ErrorMessage(hash, hash));
@@ -625,5 +635,10 @@ public class RestLogic extends AbstractLogicInterface {
 	@Override
 	public List<Project> getProjects(ProjectQuery query) {
 		return execute(new GetProjectsQuery(query));
+	}
+
+	@Override
+	public JobResult updateProject(String projectId, Project project) {
+		return execute(new UpdateProjectQuery(projectId, project));
 	}
 }

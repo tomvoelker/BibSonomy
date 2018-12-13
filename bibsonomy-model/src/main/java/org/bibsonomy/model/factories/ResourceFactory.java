@@ -184,13 +184,13 @@ public class ResourceFactory {
 	 * @param clazz
 	 * @return a new Publication instance of the clazz
 	 */
-	public BibTex createPublication(final Class<? extends BibTex> clazz) {
+	public <P extends BibTex> P createPublication(final Class<? extends P> clazz) {
 		if (BibTex.class.equals(clazz)) {
-			return this.createPublication();
+			return (P) this.createPublication();
 		}
 		
 		if (GoldStandardPublication.class.equals(clazz)) {
-			return this.createGoldStandardPublication();
+			return (P) this.createGoldStandardPublication();
 		}
 		
 		throw new UnsupportedResourceTypeException("resource " + clazz + " not supported");
@@ -216,7 +216,15 @@ public class ResourceFactory {
 	 * @return the superior resource class
 	 */
 	public static Class<? extends Resource> findSuperiorResourceClass(final Resource resource) {
-		return RESOURCE_CLASSES_SUPERIOR_MAP.get(resource.getClass());
+		return findSuperiorResourceClass(resource.getClass());
+	}
+
+	/**
+	 * @param resourceClass
+	 * @return the superior resoruce class
+	 */
+	public static Class<? extends Resource> findSuperiorResourceClass(final Class<? extends Resource> resourceClass) {
+		return RESOURCE_CLASSES_SUPERIOR_MAP.get(resourceClass);
 	}
 
 	/**

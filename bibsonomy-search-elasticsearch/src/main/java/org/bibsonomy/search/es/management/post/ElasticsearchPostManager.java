@@ -32,29 +32,28 @@ import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
+import org.bibsonomy.search.es.client.DeleteData;
+import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
-import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.management.database.SearchDBInterface;
-import org.bibsonomy.search.update.SearchIndexSyncState;
-import org.elasticsearch.index.query.QueryBuilder;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
+import org.bibsonomy.search.util.Converter;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.sort.SortOrder;
 
 /**
  * manager for Elasticsearch
@@ -62,7 +61,7 @@ import org.elasticsearch.search.sort.SortOrder;
  * @author dzo
  * @param <R> 
  */
-public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchManager<Post<R>> {
+public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchManager<Post<R>, DefaultSearchIndexSyncState> {
 	private static final Log log = LogFactory.getLog(ElasticsearchPostManager.class);
 	
 	/** how many posts should be retrieved from the database */
@@ -75,15 +74,17 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	/**
 	 * default constructor
 	 *
-	 * @param systemId
 	 * @param disabledIndexing
 	 * @param updateEnabled
-	 * @param client
 	 * @param generator
+	 * @param client
+	 * @param syncStateConverter
 	 * @param entityInformationProvider
+	 * @param systemId
+	 * @param inputLogic
 	 */
-	public ElasticsearchPostManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<R>> generator, EntityInformationProvider<Post<R>> entityInformationProvider, final SearchDBInterface<R> inputLogic) {
-		super(systemId, disabledIndexing, updateEnabled, client, generator, entityInformationProvider);
+	public ElasticsearchPostManager(boolean disabledIndexing, boolean updateEnabled, ElasticsearchIndexGenerator<Post<R>, DefaultSearchIndexSyncState> generator, ESClient client, Converter syncStateConverter, EntityInformationProvider entityInformationProvider, URI systemId, SearchDBInterface<R> inputLogic) {
+		super(systemId, disabledIndexing, updateEnabled, client, generator, syncStateConverter, entityInformationProvider);
 		this.inputLogic = inputLogic;
 	}
 
@@ -91,11 +92,8 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	 * @param indexName
 	 */
 	@Override
-	protected void updateIndex(final String indexName) {
-		final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId);
-
-		final SearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, indexName);
-		final SearchIndexSyncState targetState = this.inputLogic.getDbState();
+	protected void updateIndex(final String indexName, final DefaultSearchIndexSyncState oldState) {
+		final DefaultSearchIndexSyncState targetState = this.inputLogic.getDbState();
 		
 		final int oldLastTasId = oldState.getLast_tas_id().intValue();
 		
@@ -111,31 +109,32 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 			final List<Integer> contentIdsToDelete = this.inputLogic.getContentIdsToDelete(new Date(oldState.getLast_log_date().getTime() - QUERY_TIME_OFFSET_MS));
 			
 			
-			final Set<String> idsToDelete = new HashSet<>();
+			final List<DeleteData> idsToDelete = new LinkedList<>();
 			for (final Integer contentId : contentIdsToDelete) {
-				final String indexID = ElasticsearchUtils.createElasticSearchId(contentId.intValue());
-				idsToDelete.add(indexID);
+				final String indexID = String.valueOf(contentId.intValue());
+				final DeleteData deleteData = new DeleteData();
+				deleteData.setType(this.entityInformationProvider.getType());
+				deleteData.setId(indexID);
+				idsToDelete.add(deleteData);
 			}
 			
-			this.client.deleteDocuments(indexName, this.entityInformationProvider.getType(), idsToDelete);
+			this.client.deleteDocuments(indexName, idsToDelete);
 		}
 
 		/*
 		 * 3) add new and updated posts to the index
 		 */
 		log.debug("inserting new/updated posts into " + indexName);
-		final Map<String, Map<String, Object>> convertedPosts = new HashMap<>();
+		final Map<String, IndexData> convertedPosts = new HashMap<>();
 		List<Post<R>> newPosts;
 		int offset = 0;
 		int totalCountNewPosts = 0;
 		do {
 			newPosts = this.inputLogic.getNewPosts(oldLastTasId, SearchDBInterface.SQL_BLOCKSIZE, offset);
 			for (final Post<R> post : newPosts) {
-				final Map<String, Object> convertedPost = this.entityInformationProvider.getConverter().convert(post);
-				
-				final Integer contentId = post.getContentId();
-				final String id = ElasticsearchUtils.createElasticSearchId(contentId.intValue());
-				convertedPosts.put(id, convertedPost);
+				final String id = this.entityInformationProvider.getEntityId(post);
+				final IndexData indexData = createIndexData(post);
+				convertedPosts.put(id, indexData);
 			}
 			
 			if (convertedPosts.size() >= ESConstants.BULK_INSERT_SIZE) {
@@ -156,7 +155,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 		
 		// 4) update the index state
 		try {
-			final SearchIndexSyncState newState = new SearchIndexSyncState(oldState);
+			final DefaultSearchIndexSyncState newState = new DefaultSearchIndexSyncState(oldState);
 			newState.setLast_log_date(targetState.getLast_log_date());
 			newState.setLast_tas_id(targetState.getLast_tas_id());
 			newState.setLastPersonChangeId(targetState.getLastPersonChangeId());
@@ -176,33 +175,11 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	}
 
 	/**
-	 * @param localInactiveAlias
-	 * @param convertedPosts
-	 */
-	private void clearQueue(final String localInactiveAlias, final Map<String, Map<String, Object>> convertedPosts) {
-		/*
-		 * maybe we are updating an updated post in es
-		 */
-		this.client.updateOrCreateDocuments(localInactiveAlias, this.entityInformationProvider.getType(), convertedPosts);
-		convertedPosts.clear();
-	}
-
-	/**
-	 * @param indexName
-	 * @param state
-	 */
-	private void updateIndexState(final String indexName, final SearchIndexSyncState state) {
-		final Map<String, Object> values = ElasticsearchUtils.serializeSearchIndexState(state);
-		
-		this.client.insertNewDocument(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId), ESConstants.SYSTEM_INFO_INDEX_TYPE, indexName, values);
-	}
-
-	/**
 	 * @param oldState
 	 * @param targetState
 	 * @param indexName
 	 */
-	protected void updateResourceSpecificProperties(final String indexName, final SearchIndexSyncState oldState, SearchIndexSyncState targetState) {
+	protected void updateResourceSpecificProperties(final String indexName, final DefaultSearchIndexSyncState oldState, DefaultSearchIndexSyncState targetState) {
 		// noop
 	}
 	
@@ -227,8 +204,8 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 		// the prediction table holds up to two entries per user
 		// - the first entry is the one to consider (ordered descending by date)
 		// we keep track of users which appear twice via this set
-		final Set<String> alreadyUpdated = new HashSet<String>();
-		final Map<String, Map<String, Object>> convertedPosts = new HashMap<>();
+		final Set<String> alreadyUpdated = new HashSet<>();
+		final Map<String, IndexData> convertedPosts = new HashMap<>();
 		for (final User user : predictedUsers) {
 			final String userName = user.getName();
 			final boolean unknowUser = alreadyUpdated.add(userName);
@@ -239,7 +216,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 				log.debug("updating spammer status for user " + userName);
 				switch (user.getPrediction().intValue()) {
 				case 0:
-					log.debug("user " + userName + " flaged as non-spammer");
+					log.debug("user " + userName + " flagged as non-spammer");
 					
 					int offset = 0;
 					List<Post<R>> userPosts;
@@ -248,11 +225,10 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 						// insert new records into index
 						if (present(userPosts)) {
 							for (final Post<R> post : userPosts) {
-								final Map<String, Object> convertedPost = this.entityInformationProvider.getConverter().convert(post);
-								final String id = ElasticsearchUtils.createElasticSearchId(post.getContentId().intValue());
-								
-								convertedPosts.put(id, convertedPost);
-								
+								final String id = this.entityInformationProvider.getEntityId(post);
+								final IndexData indexData = createIndexData(post);
+								convertedPosts.put(id, indexData);
+
 								if (convertedPosts.size() >= SearchDBInterface.SQL_BLOCKSIZE / 2) {
 									this.clearQueue(indexName, convertedPosts);
 								}
@@ -277,21 +253,11 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 		}
 	}
 
-	/**
-	 * execute a search
-	 * @param query the query to use
-	 * @param order the order
-	 * @param offset the offset
-	 * @param limit the limit
-	 * @param minScore the min score
-	 * @param fieldsToRetrieve the fields to retrieve
-	 * @return
-	 */
-	public SearchHits search(final QueryBuilder query, final Pair<String, SortOrder> order, int offset, int limit, Float minScore, final Set<String> fieldsToRetrieve) {
-		return this.client.search(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query, null, order, offset, limit, minScore, fieldsToRetrieve);
-	}
-
-	public long getDocumentCount(QueryBuilder query) {
-		return this.client.getDocumentCount(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query);
+	private IndexData createIndexData(Post<R> post) {
+		final Map<String, Object> convertedPost = this.entityInformationProvider.getConverter().convert(post);
+		final IndexData indexData = new IndexData();
+		indexData.setType(this.entityInformationProvider.getType());
+		indexData.setSource(convertedPost);
+		return indexData;
 	}
 }

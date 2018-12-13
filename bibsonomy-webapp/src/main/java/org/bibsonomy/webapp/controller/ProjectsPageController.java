@@ -1,9 +1,12 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.model.cris.Project;
-import org.bibsonomy.model.enums.ProjectStatus;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.ProjectQuery;
+import org.bibsonomy.model.statistics.Statistics;
+import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.ProjectsPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -15,6 +18,7 @@ import java.util.List;
  * controller for displaying a list of projects
  * paths:
  *    - /projects
+ *
  * @author dzo
  */
 public class ProjectsPageController implements MinimalisticController<ProjectsPageCommand> {
@@ -28,8 +32,24 @@ public class ProjectsPageController implements MinimalisticController<ProjectsPa
 
 	@Override
 	public View workOn(final ProjectsPageCommand command) {
-		final List<Project> projects = this.logic.getProjects(ProjectQuery.createBuilder().projectStatus(ProjectStatus.RUNNING).end(100).build());
-		command.setProjects(projects);
+		final ListCommand<Project> projectListCommand = command.getProjects();
+		final ProjectQuery.ProjectQueryBuilder builder = ProjectQuery.createBuilder();
+		final int start = projectListCommand.getStart();
+		builder.projectStatus(command.getProjectStatus())
+						.start(start)
+						.end(start + projectListCommand.getEntriesPerPage())
+						.search(command.getSearch())
+						.prefix(command.getPrefix())
+						.order(command.getProjectOrder())
+						.sortOrder(command.getSortOrder());
+		final ProjectQuery projectQuery = builder.build();
+		final List<Project> projects = this.logic.getProjects(projectQuery);
+
+		projectListCommand.setList(projects);
+		if (!present(projectListCommand.getTotalCountAsInteger())) {
+			final Statistics stats = this.logic.getStatistics(projectQuery);
+			projectListCommand.setTotalCount(stats.getCount());
+		}
 
 		return Views.PROJECT_PAGE;
 	}

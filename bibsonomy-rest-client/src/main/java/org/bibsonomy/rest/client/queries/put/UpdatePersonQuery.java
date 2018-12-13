@@ -10,28 +10,28 @@ import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import java.io.StringWriter;
 
 public class UpdatePersonQuery extends AbstractQuery<String> {
-    private final Person person;
-    private final PersonUpdateOperation operation;
+	private final Person person;
+	private final PersonUpdateOperation operation;
 
-    public UpdatePersonQuery(Person person, PersonUpdateOperation operation) {
-        this.person = person;
-        this.operation = operation;
-    }
+	public UpdatePersonQuery(Person person, PersonUpdateOperation operation) {
+		this.person = person;
+		this.operation = operation;
+	}
 
-    @Override
-    protected void doExecute() throws ErrorPerformingRequestException {
-        final StringWriter sw = new StringWriter(100);
-        this.getRenderer().serializePerson(sw, this.person, null);
-        final String personUrl = this.getUrlRenderer().
-                createUrlBuilderForPersons(person.getPersonId(), operation).asString();
-        this.downloadedDocument = performRequest(HttpMethod.PUT, personUrl, sw.toString());
-    }
+	@Override
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final StringWriter sw = new StringWriter(100);
+		this.getRenderer().serializePerson(sw, this.person, null);
+		final String personUrl = this.getUrlRenderer().
+						createUrlBuilderForPersons(person.getPersonId(), operation).asString();
+		this.downloadedDocument = performRequest(HttpMethod.PUT, personUrl, sw.toString());
+	}
 
-    @Override
-    protected String getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
-        if (this.isSuccess()) {
-            return this.getRenderer().parsePersonId(this.downloadedDocument);
-        }
-        return this.getError();
-    }
+	@Override
+	protected String getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+		if (this.isSuccess()) {
+			return this.getRenderer().parsePersonId(this.downloadedDocument);
+		}
+		return this.getError();
+	}
 }

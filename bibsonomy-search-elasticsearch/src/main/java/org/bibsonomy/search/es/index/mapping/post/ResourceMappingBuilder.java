@@ -64,56 +64,11 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 	public Mapping<XContentBuilder> getMapping() {
 		try {
 			final String documentType = this.getDocumentType();
-			XContentBuilder commonPostResourceFields = XContentFactory.jsonBuilder()
-					.startObject()
-							/*
-							 * set the date detection to false: we load the misc
-							 * fields as field = value into es (=> dynamic mapping)
-							 */
-							.field("date_detection", false)
-							.startObject(ESConstants.IndexSettings.PROPERTIES)
-								.startObject(ESConstants.Fields.Resource.INTRAHASH)
-									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
-								.endObject()
-								.startObject(ESConstants.Fields.Resource.INTERHASH)
-									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
-								.endObject()
-								.startObject(ESConstants.Fields.TAGS)
-									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
-									.field("normalizer", ESConstants.LOWERCASE_NORMALIZER)
-								.endObject()
-								.startObject(ESConstants.Fields.USER_NAME)
-									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
-								.endObject()
-								.startObject(ESConstants.Fields.GROUPS)
-									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
-								.endObject()
-								/*
-								 * NOTE: we order our search requests by date
-								 * => this field must be analyzed by es 
-								 */
-								.startObject(ESConstants.Fields.DATE)
-									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.DATE_TYPE)
-									.field(ESConstants.IndexSettings.FORMAT_FIELD, ESConstants.IndexSettings.DATE_TIME_FORMAT)
-								.endObject()
-								.startObject(ESConstants.Fields.CHANGE_DATE)
-									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.DATE_TYPE)
-									.field(ESConstants.IndexSettings.INDEX_FIELD, ESConstants.IndexSettings.NOT_INDEXED)
-									.field(ESConstants.IndexSettings.FORMAT_FIELD, ESConstants.IndexSettings.DATE_TIME_FORMAT)
-								.endObject()
-								.startObject(Fields.SYSTEM_URL)
-									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
-								.endObject()
-								.startObject(ESConstants.Fields.Resource.TITLE)
-									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.TEXT_TYPE)
-									.field(ESConstants.IndexSettings.BOOST_FIELD, 2)
-								.endObject();
-			
-			this.doResourceSpecificMapping(commonPostResourceFields);
-			
-			final XContentBuilder finalObject = commonPostResourceFields
-							.endObject()
-					.endObject();
+			final XContentBuilder resourceMapping = this.buildMapping(XContentFactory.jsonBuilder()
+							.startObject()
+							.field("date_detection", false));
+			final XContentBuilder finalObject = resourceMapping
+							.endObject();
 			final Mapping<XContentBuilder> mapping = new Mapping<>();
 			mapping.setMappingInfo(finalObject);
 			mapping.setType(documentType);
@@ -121,6 +76,52 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 		} catch (final IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public XContentBuilder buildMapping(XContentBuilder builder) throws IOException {
+		builder.startObject(ESConstants.IndexSettings.PROPERTIES)
+						.startObject(ESConstants.Fields.Resource.INTRAHASH)
+							.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
+						.endObject()
+						.startObject(ESConstants.Fields.Resource.INTERHASH)
+							.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
+						.endObject()
+						.startObject(ESConstants.Fields.TAGS)
+							.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
+							.field("normalizer", ESConstants.LOWERCASE_NORMALIZER)
+						.endObject()
+						.startObject(ESConstants.Fields.USER_NAME)
+							.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
+						.endObject()
+						.startObject(Fields.ALL_USERS)
+							.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
+						.endObject()
+							.startObject(ESConstants.Fields.GROUPS)
+							.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
+						.endObject()
+						/*
+						 * NOTE: we order our search requests by date
+						 * => this field must be analyzed by es
+						 */
+						.startObject(ESConstants.Fields.DATE)
+							.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.DATE_TYPE)
+							.field(ESConstants.IndexSettings.FORMAT_FIELD, ESConstants.IndexSettings.DATE_TIME_FORMAT)
+						.endObject()
+						.startObject(ESConstants.Fields.CHANGE_DATE)
+							.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.DATE_TYPE)
+							.field(ESConstants.IndexSettings.INDEX_FIELD, ESConstants.IndexSettings.NOT_INDEXED)
+							.field(ESConstants.IndexSettings.FORMAT_FIELD, ESConstants.IndexSettings.DATE_TIME_FORMAT)
+						.endObject()
+						.startObject(Fields.SYSTEM_URL)
+							.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
+						.endObject()
+						.startObject(ESConstants.Fields.Resource.TITLE)
+							.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.TEXT_TYPE)
+							.field(ESConstants.IndexSettings.BOOST_FIELD, 2)
+						.endObject();
+
+		this.doResourceSpecificMapping(builder);
+		return builder.endObject();
 	}
 
 	/**

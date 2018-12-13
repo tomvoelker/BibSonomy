@@ -34,7 +34,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.search.InvalidSearchRequestException;
@@ -133,13 +133,13 @@ public class SearchPageController extends SingleResourceListController implement
 				maximumTags = 1000;
 			}
 			
-			final SearchType searchType = command.getScope();
+			final QueryScope queryScope = command.getScope();
 			final List<String> requestedTags = command.getRequestedTagsList();
 	
 			// retrieve and set the requested resource lists
 			for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 	
-				this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, searchType, null, command.getOrder(), command.getStartDate(), command.getEndDate(), command
+				this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, queryScope, null, command.getOrder(), command.getStartDate(), command.getEndDate(), command
 						.getListCommand(resourceType).getEntriesPerPage());
 	
 				this.postProcessAndSortList(command, resourceType);
@@ -147,7 +147,7 @@ public class SearchPageController extends SingleResourceListController implement
 			// html format - retrieve tags and return HTML view
 			if ("html".equals(format)) {
 				// fill the tag cloud with all tag assignments of the relevant documents
-				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, maximumTags, search, searchType);
+				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, maximumTags, search, queryScope);
 				this.endTiming();
 				return Views.SEARCHPAGE;
 			}

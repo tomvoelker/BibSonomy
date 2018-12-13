@@ -190,6 +190,11 @@ public class JabrefLayoutRenderer implements Renderer {
 	}
 
 	@Override
+	public void serializeProjects(Writer writer, List<Project> projects, ViewModel viewModel) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public void serializeCRISLink(Writer writer, CRISLink crisLink, ViewModel viewModel) {
 		throw new UnsupportedOperationException();
 	}
@@ -241,6 +246,11 @@ public class JabrefLayoutRenderer implements Renderer {
 
 	@Override
 	public String parsePersonId(final Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String parseProjectId(Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
 

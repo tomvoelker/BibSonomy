@@ -35,13 +35,13 @@ import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
 
@@ -82,7 +82,7 @@ public interface PostLogicInterface {
 	 *            all posts belonging to a given resource. if unused, its empty
 	 *            but not null.
 	 * @param search - free text search
-	 * @param searchType - whether to search locally or using an index shared by several systems
+	 * @param queryScope - whether to search locally or using an index shared by several systems
 	 * @param filters - filter for the retrieved posts
 	 * @param order - a flag indicating the way of sorting
 	 * @param startDate - if given, only posts that have been created after (inclusive) startDate are returned  
@@ -92,7 +92,10 @@ public interface PostLogicInterface {
 	 * @return A filtered list of posts. may be empty but not null
 	 * @since 3.1
 	 */
-	<T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end);
+	@Deprecated // in favour of getPosts(PostQuery)
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end);
+
+	<R extends Resource> List<Post<R>> getPosts(final PostQuery<R> query);
 	
 	/**
 	 * Returns details to a post. A post is uniquely identified by a hash of the
@@ -175,11 +178,4 @@ public interface PostLogicInterface {
 	 * @return a filtered list of posts. may be empty but not null
 	 */
 	Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end);
-
-	/**
-	 * @param queryString a query string which may be an arbitrary combination of tokens from title, author, year and school fields
-	 * @return a ranked list of publication posts matching the query. Only one post of the same {@link Resource} is contained in the list
-	 */
-	@Deprecated // TODO: merge into getPosts
-	public List<Post<BibTex>> getPublicationSuggestion(String queryString);
 }

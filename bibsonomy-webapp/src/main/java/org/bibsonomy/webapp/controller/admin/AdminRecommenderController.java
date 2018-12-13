@@ -146,7 +146,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	private static void handleRemoveRecommender(final AdminRecommenderViewCommand command, final MultiplexingRecommender<?, ?> recommender) {
 		final Long selectedRecommender = command.getRecommenderId();
 		if (!present(selectedRecommender)) {
-			command.setAdminResponse("Please select a recommender first!");
+			command.setAdminResponse("Please filter a recommender first!");
 		} else {
 			if (recommender.removeRecommender(selectedRecommender)) {
 				command.setAdminResponse("Successfully removed recommender.");

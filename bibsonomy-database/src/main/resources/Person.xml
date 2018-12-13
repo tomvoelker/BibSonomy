@@ -50,9 +50,9 @@
 	</select>
 
 	<select id="getPersonNameById" resultMap="PersonCommon.personName" parameterClass="int">
-		SELECT <include refid="commonPersonNameColumns"/>
+		SELECT <include refid='commonPersonNameColumns'/>
 		FROM person_name
-		WHERE person_change_id = #personChangeId#
+			WHERE person_change_id = #personChangeId#
 	</select>
 
 	<update id="updatePerson" parameterClass="person">
@@ -72,7 +72,7 @@
 		SET researcherid = #researcherid#, person_change_id = #personChangeId#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
 		WHERE person_id = #personId#
 	</update>
-	
+
 	<update id="updatePersonAcademicDegree" parameterClass="person">
 		UPDATE person
 		SET person_change_id = #personChangeId#, academic_degree = #academicDegree#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
@@ -102,7 +102,7 @@
 		SET person_change_id = #personChangeId#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
 		WHERE person.person_id = #personId#
 	</update>
-	
+
 	<update id="updatePersonName" parameterClass="personName">
 		UPDATE person_name
 		SET is_main = #isMain#
@@ -206,7 +206,16 @@
 		FROM person_match
 		WHERE state = 0
 	</select>
-	
+
+	<!-- FIXME: merge this into the getMatches Query -->
+	<select id="getPostsForPerson" parameterClass="string" resultMap="GoldStandardPublicationCommon.goldStandardPost">
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsDummyRows" />
+		FROM gold_standard b
+		JOIN pub_person p (simhash1)
+		WHERE p.person_id = #personId#
+		AND p.relator_code = 'Maut'
+	</select>
+
 	<select id="getMatchbyID" parameterClass="int" resultMap="PersonCommon.personMatch">
 		SELECT match_id, person1_id, person2_id, state
 		FROM person_match
@@ -266,19 +275,6 @@
 		OR (person1_id = #person2.personId# AND person2_id = #person1.personId#)
 	</select>
 
-	<select id="getPostsForPerson" parameterClass="java.lang.String" resultMap="BibTexCommon.bibtexPost">
-		SELECT b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
-		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
-		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
-		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype,
-		IF("hansii" = b.user_name, b.privnote, NULL) AS privnote , b.scraperid, t1.change_date, b.simhash1 AS interHash, b.simhash2 AS intraHash, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsDummyRows" />
-		FROM tas t1, bibhash h, bibtex b, pub_person p
-		WHERE b.content_id = t1.content_id
-		AND b.simhash1 = h.hash	AND h.type=1 AND p.person_id=#personId# AND p.relator_code = 'Maut'
-		AND b.simhash1=p.simhash1
-		GROUP BY interHash ORDER BY b.date DESC
-	</select>
-	
 	<select id="getHabilForPerson" parameterClass="string" resultMap="GoldStandardPublicationCommon.goldStandardPost">
 		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsDummyRows" />
 		FROM gold_standard b

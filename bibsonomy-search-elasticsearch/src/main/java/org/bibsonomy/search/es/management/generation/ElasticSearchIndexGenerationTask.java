@@ -42,7 +42,7 @@ public class ElasticSearchIndexGenerationTask<T> extends AbstractSearchIndexGene
 	 * @param newIndex
 	 * @param activateIndexAfterGeneration
 	 */
-	public ElasticSearchIndexGenerationTask(final ElasticsearchManager<T> manager, ElasticsearchIndexGenerator<T> generator, String newIndex, boolean activateIndexAfterGeneration) {
+	public ElasticSearchIndexGenerationTask(final ElasticsearchManager<T, ?> manager, ElasticsearchIndexGenerator<T, ?> generator, String newIndex, boolean activateIndexAfterGeneration) {
 		super(manager, generator, newIndex);
 		this.activateIndexAfterGeneration = activateIndexAfterGeneration;
 	}

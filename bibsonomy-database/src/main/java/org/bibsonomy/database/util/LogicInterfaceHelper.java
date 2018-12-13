@@ -37,6 +37,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
@@ -60,8 +61,11 @@ import org.bibsonomy.model.util.UserUtils;
  * @author Jens Illig
  * @author Christian Schenk
  */
-public class LogicInterfaceHelper {	
+public class LogicInterfaceHelper {
 	private static final Log logger = LogFactory.getLog(LogicInterfaceHelper.class);
+
+	/** the default list limit */
+	protected static final int DEFAULT_LIST_LIMIT = 20;
 
 	/**
 	 * 
@@ -83,7 +87,7 @@ public class LogicInterfaceHelper {
 		param.setOrder(order);
 		param.setOffset(start);
 		if (end - start < 0) {
-			param.setLimit(QueryDatabaseUtils.DEFAULT_LIST_LIMIT);
+			param.setLimit(DEFAULT_LIST_LIMIT);
 		} else {
 			param.setLimit(end - start);
 		}
@@ -93,10 +97,11 @@ public class LogicInterfaceHelper {
 	
 	/**
 	 * Builds a param object for the given parameters from the LogicInterface.
-	 * 
+	 *
 	 * @param <T> the type of param object to be build
 	 * @param type the type of param object to be build
 	 * @param resourceType the type of the resource
+	 * @param queryScope
 	 * @param grouping as specified for {@link PostLogicInterface#getPosts}
 	 * @param groupingName as specified for {@link PostLogicInterface#getPosts}
 	 * @param tags as specified for {@link PostLogicInterface#getPosts}
@@ -110,7 +115,7 @@ public class LogicInterfaceHelper {
 	 * @param filters as specified for {@link PostLogicInterface#getPosts}
 	 * @param loginUser logged in user as specified for {@link PostLogicInterface#getPosts}         @return the fresh param object
 	 */
-	public static <T extends GenericParam> T buildParam(final Class<T> type, Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, final Date startDate, final Date endDate, final String search, final Set<Filter> filters, final User loginUser) {
+	public static <T extends GenericParam> T buildParam(final Class<T> type, Class<? extends Resource> resourceType, QueryScope queryScope, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, final Date startDate, final Date endDate, final String search, final Set<Filter> filters, final User loginUser) {
 		/*
 		 * delegate to simpler method
 		 */
@@ -139,6 +144,7 @@ public class LogicInterfaceHelper {
 		param.setEndDate(endDate);
 		
 		param.setUserName(loginUser.getName());
+		param.setLoggedinUser(loginUser);
 		param.setGrouping(grouping);
 		
 		// default search searches over all possible fields
@@ -250,6 +256,7 @@ public class LogicInterfaceHelper {
 			logger.debug("input tags are null");
 		}
 
+		param.setQueryScope(queryScope);
 		return param;
 	}
 

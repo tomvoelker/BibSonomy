@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CRISLinkUpdate">
+
+	<select id="getUpdatedAndNewCRISLinksPROJECT_PERSON" resultMap="SearchCRISLinkCommon.fullCRISLinkProjectPerson">
+		SELECT <include refid="crisLinkColumns" />, <include refid="crisProjectColumns" />, <include refid="crisPersonColumns" />
+		FROM
+		(
+			SELECT * FROM cris_links cl
+			WHERE cl.id >= #lastContentId#
+			AND cl.source_type = #sourceType.id#
+			AND cl.target_type = #targetType.id#
+			LIMIT #limit#
+			OFFSET #offset#
+		) AS cl
+		LEFT JOIN person per ON (cl.target_id = per.person_change_id)
+		LEFT JOIN person_name pn USING (person_id)
+		LEFT JOIN projects p ON (cl.source_id = p.id)
+	</select>
+
+	<select id="getDeletedCRISLinksPROJECT_PERSON" resultMap="SearchCRISLinkCommon.simpleCRISLinkWithProject" parameterClass="searchParam">
+		SELECT <include refid="crisLinkColumns" />, COALESCE(p.id, lp.id) AS project_database_id, COALESCE(p.project_id, lp.project_id) AS project_id
+		FROM log_cris_links cl
+		LEFT JOIN projects p ON (cl.source_id = p.id)
+		LEFT JOIN log_projects lp ON (cl.source_id = lp.id)
+		WHERE cl.log_date >= #lastLogDate#
+		AND cl.source_type = #sourceType.id#
+		AND cl.target_type = #targetType.id#
+	</select>
+
+</sqlMap>

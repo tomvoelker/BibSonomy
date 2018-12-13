@@ -30,11 +30,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.model.Group;
 
-
 /**
- * Bean for list of groups.
+ * command for list of groups.
  * 
  * @author Folke Eisterlehner
  */
@@ -43,14 +43,24 @@ public class GroupsListCommand extends BaseCommand {
 	
 	// TODO: (bootstrap) remove strAlphabet and alphabet (only used in old layout)
 	// dirty hack: alphabet for direct access in group list
+	@Deprecated // use prefix enum
 	private String strAlphabet = "#ABCDEFGHIJKLMNOPQRSTUVWXYZα"; 
+	@Deprecated
 	private char[] alphabet = strAlphabet.toCharArray();
 	
 	private String format = "html";
 	
 	/** callback function for JSON outputs */
 	private String callback = "";
-		
+
+	private Prefix prefix;
+
+	/** stores the data if a new group is requested. */
+	private Group requestedGroup;
+
+	/** filter for only showing organizations */
+	private Boolean organizations;
+
 	/**
 	 * @return the callback
 	 */
@@ -76,7 +86,7 @@ public class GroupsListCommand extends BaseCommand {
 		
 		/*
 		 * the default is html
-		 * */
+		 */
 		return "html";
 	}
 	
@@ -87,10 +97,7 @@ public class GroupsListCommand extends BaseCommand {
 		this.format = format;
 	}
 	
-	/**
-	 * stores the data if a new group is requested.
-	 */
-	private Group requestedGroup;
+
 
 	/**
 	 * @return the alphabet
@@ -131,5 +138,33 @@ public class GroupsListCommand extends BaseCommand {
 	 */
 	public void setRequestedGroup(Group requestedGroup) {
 		this.requestedGroup = requestedGroup;
-	}	
+	}
+
+	/**
+	 * @return the prefix
+	 */
+	public Prefix getPrefix() {
+		return prefix;
+	}
+
+	/**
+	 * @param prefix the prefix to set
+	 */
+	public void setPrefix(Prefix prefix) {
+		this.prefix = prefix;
+	}
+
+	/**
+	 * @return the organizations
+	 */
+	public Boolean getOrganizations() {
+		return organizations;
+	}
+
+	/**
+	 * @param organizations the organizations to set
+	 */
+	public void setOrganizations(Boolean organizations) {
+		this.organizations = organizations;
+	}
 }

@@ -13,7 +13,7 @@
 	<!-- 
         Shows form fields to choose group(s) the post should be viewable for.
         Consists of three radio buttons: public, private, other
-        and a select box which contains the group "friends" plus other possible groups.     
+        and a filter box which contains the group "friends" plus other possible groups.
     
      -->
     <jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
@@ -79,7 +79,7 @@
 	</div>
 			<script type="text/javascript">
 			<![CDATA[
-				/* this script controls the visibility of the group select field. if the 'other' radio button is checked or hovered show the select field, otherwise hide it
+				/* this script controls the visibility of the group filter field. if the 'other' radio button is checked or hovered show the filter field, otherwise hide it
 				*/
 		
 				$(document).ready(function() {

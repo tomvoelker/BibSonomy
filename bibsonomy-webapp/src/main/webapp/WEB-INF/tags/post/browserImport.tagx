@@ -18,7 +18,7 @@
 	<form:form class="form-horizontal" action="/import/browser?ckey=${ckey}" method="post" enctype="multipart/form-data">
 		<fieldset>
 			<legend><fmt:message key="settings.browser.header" /></legend>
-			<!-- select your file -->
+			<!-- filter your file -->
 			<div class="form-group">
 				<form:label cssClass="col-sm-3 control-label" path="file">
 					<fmt:message key="settings.browser.fileselect"/>

@@ -47,6 +47,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
+import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.services.URLGenerator;
@@ -180,7 +181,7 @@ public class HelpSearchManager implements HelpSearch {
 				
 				final File[] files = languageFolder.listFiles((dir, name) -> name.endsWith(HelpUtils.FILE_SUFFIX));
 				
-				final Map<String, Map<String, Object>> jsonDocuments = new HashMap<>();
+				final Map<String, IndexData> jsonDocuments = new HashMap<>();
 				for (final File file : files) {
 					final HelpParser parser = this.factory.createParser(HelpUtils.buildReplacementMap(this.projectName, this.projectTheme, this.projectHome, this.projectEmail, this.projectNoSpamEmail, this.projectAPIEmail), this.urlGenerator);
 					final String fileName = file.getName().replaceAll(HelpUtils.FILE_SUFFIX, "");
@@ -191,7 +192,10 @@ public class HelpSearchManager implements HelpSearch {
 							final Map<String, Object> doc = new HashMap<>();
 							doc.put(HEADER_FIELD, fileName);
 							doc.put(CONTENT_FIELD, content);
-							jsonDocuments.put(fileName, doc);
+							final IndexData value = new IndexData();
+							value.setType(HELP_PAGE_TYPE);
+							value.setSource(doc);
+							jsonDocuments.put(fileName, value);
 						}
 					} catch (final Exception e) {
 						log.error("cannot parse file " + fileName, e);
@@ -199,7 +203,7 @@ public class HelpSearchManager implements HelpSearch {
 				}
 				
 				this.client.deleteDocuments(indexName, HELP_PAGE_TYPE, (QueryBuilder) null);
-				this.client.insertNewDocuments(indexName, HELP_PAGE_TYPE, jsonDocuments);
+				this.client.insertNewDocuments(indexName, jsonDocuments);
 			}
 		} finally {
 			this.updateLock.release();

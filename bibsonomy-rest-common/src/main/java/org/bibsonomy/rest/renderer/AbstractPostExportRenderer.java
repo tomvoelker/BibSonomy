@@ -116,6 +116,14 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	}
 
 	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#serializeProjects(java.io.Writer, java.util.List<org.bibsonomy.model.cris.Project>, org.bibsonomy.rest.ViewModel)
+	 */
+	@Override
+	public void serializeProjects(Writer writer, List<Project> projects, ViewModel viewModel) {
+		handleUnsupportedMediaType();
+	}
+
+	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.renderer.Renderer#serializeCRISLink(java.io.Writer, org.bibsonomy.model.cris.CRISLink, org.bibsonomy.rest.ViewModel)
 	 */
 	@Override
@@ -323,6 +331,14 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	 */
 	@Override
 	public String parsePersonId(Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#parseProjectId(java.io.Reader)
+	 */
+	@Override
+	public String parseProjectId(Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
 

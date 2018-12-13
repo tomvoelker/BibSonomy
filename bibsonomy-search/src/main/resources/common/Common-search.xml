@@ -9,4 +9,8 @@
 		<result property="prediction" column="prediction" javaType="integer" />
 		<result property="updatedAt"  column="updated_at" javaType="date" />
 	</resultMap>
+
+	<resultMap id="simpleUser" class="user" groupBy="name">
+		<result property="name"		column="other_user_name" javaType="string" />
+	</resultMap>
 </sqlMap>
