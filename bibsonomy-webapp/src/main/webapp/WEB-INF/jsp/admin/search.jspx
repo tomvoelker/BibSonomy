@@ -77,20 +77,19 @@
 									<td><c:out value="${searchIndexInfo.id}" /></td>
 									<td><c:out value="${searchIndexInfo.state}" /></td>
 									<td><c:out value="${searchIndexInfo.statistics.numberOfDocuments}" /></td>
+									<td><c:out value="${searchIndexInfo.syncState.mappingVersion}" /></td>
 									<c:choose>
 										<c:when test="${searchIndexInfo.state != 'GENERATING' }">
 											<c:choose>
 												<c:when test="${dualSyncState}">
 													<c:set var="firstState" value="${searchIndexInfo.syncState.firstState}" />
 													<c:set var="secondState" value="${searchIndexInfo.syncState.secondState}" />
-													<td><c:out value="${searchIndexInfo.syncState.firstState.mappingVersion}" /></td>
 													<td><c:out value="${firstState.lastPostContentId}" /></td>
 													<td><c:out value="${firstState.last_log_date}" /></td>
 													<td><c:out value="${secondState.lastPostContentId}" /></td>
 													<td><c:out value="${secondState.last_log_date}" /></td>
 												</c:when>
 												<c:otherwise>
-													<td><c:out value="${searchIndexInfo.syncState.mappingVersion}" /></td>
 													<td><c:out value="${searchIndexInfo.syncState.last_tas_id}" /></td>
 													<td><c:out value="${searchIndexInfo.syncState.last_log_date}" /></td>
 													<td><c:out value="${searchIndexInfo.syncState.lastDocumentDate}" /></td>
