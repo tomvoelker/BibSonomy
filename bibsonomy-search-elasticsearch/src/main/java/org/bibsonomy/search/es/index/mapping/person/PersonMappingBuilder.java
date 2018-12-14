@@ -158,13 +158,14 @@ public class PersonMappingBuilder implements MappingBuilder<XContentBuilder> {
 	public static XContentBuilder buildNameMapping(XContentBuilder builder) throws IOException {
 		return builder
 						.startObject(PersonFields.NAMES)
-						.field(TYPE_FIELD, NESTED_TYPE)
-						.startObject(ESConstants.IndexSettings.PROPERTIES)
-						.startObject(PersonFields.NAME)
-						.field(ESConstants.IndexSettings.TYPE_FIELD, TEXT_TYPE)
-						.array(ESConstants.IndexSettings.COPY_TO, PersonFields.ALL_NAMES)
-						.endObject()
-						.endObject()
+							.field(TYPE_FIELD, NESTED_TYPE)
+							.startObject(ESConstants.IndexSettings.PROPERTIES)
+								.startObject(PersonFields.NAME)
+									.field(ESConstants.IndexSettings.TYPE_FIELD, TEXT_TYPE)
+									.field(ESConstants.IndexSettings.ANALYZER, ESConstants.NGRAM_ANALYSER)
+									.array(ESConstants.IndexSettings.COPY_TO, PersonFields.ALL_NAMES)
+								.endObject()
+							.endObject()
 						.endObject();
 	}
 }

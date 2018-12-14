@@ -337,9 +337,9 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 	private static QueryStringQueryBuilder buildStringQueryForSearchTerms(String searchTerms, final Set<String> fields) {
 		final QueryStringQueryBuilder builder = QueryBuilders.queryStringQuery(searchTerms).tieBreaker(1f);
 		// set the fields where the string query should search for the string
-		fields.stream().forEach(builder::field);
+		fields.forEach(builder::field);
 		// set the type to phrase prefix match
-		builder.type(Type.PHRASE_PREFIX);
+		builder.analyzeWildcard(true);
 		return builder;
 	}
 
