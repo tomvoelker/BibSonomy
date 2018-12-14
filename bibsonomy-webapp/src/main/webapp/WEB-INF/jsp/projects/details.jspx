@@ -96,10 +96,11 @@
                         <fmt:message key="project.information"/>
                     </h2>
 					<dl class="dl-horizontal">
-						<c:if test="${not empty project.startDate}">
+						<c:set var="startDate" value="${project.startDate}" />
+						<c:if test="${not empty startDate}">
 							<dt><fmt:message key="project.duration"/></dt>
 							<dd>
-								<fmt:formatDate value="${project.startDate}" pattern="dd.MM.yyyy" />
+								<fmt:formatDate value="${startDate}" pattern="dd.MM.yyyy" />
 								<c:if test="${not empty project.endDate}">
 									&amp;ndash;
 									<fmt:formatDate value="${project.endDate}" pattern="dd.MM.yyyy" />
@@ -130,9 +131,13 @@
 							<dt><fmt:message key="project.budget"/></dt>
 							<dd><fmt:formatNumber value="${project.budget}" pattern="#,##0.00"/> €</dd>
 						</c:if>
-                        <c:if test="${not empty project.type}">
+						<c:if test="${not empty project.type}">
                             <dt><fmt:message key="project.type"/></dt>
                             <dd><c:out value="${project.type}"/></dd>
+                        </c:if>
+                        <c:if test="${not empty project.sponsor}">
+                            <dt><fmt:message key="project.sponsor"/></dt>
+                            <dd><c:out value="${project.sponsor}"/></dd>
                         </c:if>
 					</dl>
 				</div>

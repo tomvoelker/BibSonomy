@@ -77,7 +77,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 		final InnerHitBuilder innerHit = new InnerHitBuilder();
 		childQuery.innerHit(innerHit);
 
-		final MatchPhrasePrefixQueryBuilder nameQuery = QueryBuilders.matchPhrasePrefixQuery(PersonFields.NAMES + "." + PersonFields.NAME, personQuery);
+		final MatchQueryBuilder nameQuery = QueryBuilders.matchQuery(PersonFields.NAMES + "." + PersonFields.NAME, personQuery);
 		final NestedQueryBuilder nestedNamesQuery = QueryBuilders.nestedQuery(PersonFields.NAMES, nameQuery, ScoreMode.Max);
 		nestedNamesQuery.boost(2.7f);
 

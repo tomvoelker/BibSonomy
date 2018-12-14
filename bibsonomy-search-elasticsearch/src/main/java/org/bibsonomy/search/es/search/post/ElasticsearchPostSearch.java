@@ -28,65 +28,42 @@ package org.bibsonomy.search.es.search.post;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.FirstValuePairComparator;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
-import org.bibsonomy.model.logic.querybuilder.AbstractSuggestionQueryBuilder;
-import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
-import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.search.SearchInfoLogic;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
-import org.bibsonomy.search.es.index.converter.post.NormalizedEntryTypes;
 import org.bibsonomy.search.es.index.converter.post.ResourceConverter;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
-import org.bibsonomy.search.es.search.util.tokenizer.SimpleTokenizer;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.services.searcher.query.PostSearchQuery;
 import org.bibsonomy.util.Sets;
-import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder.Type;
-import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
@@ -127,7 +104,7 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 				return posts;
 			}
 
-			final Pair<String, SortOrder> sortOrder = postQuery.getOrder() == Order.RANK ? null : new Pair<>(Fields.DATE, SortOrder.DESC);
+			final Pair<String, SortOrder> sortOrder = getSortOrder(postQuery);
 			final int offset = BasicQueryUtils.calcOffset(postQuery);
 			final int limit = BasicQueryUtils.calcLimit(postQuery);
 			final SearchHits hits = this.manager.search(queryBuilder, sortOrder, offset, limit, null, null);
@@ -156,6 +133,10 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 
 			return posts;
 		}, new ResultList<>());
+	}
+
+	protected Pair<String, SortOrder> getSortOrder(PostSearchQuery<?> postQuery) {
+		return postQuery.getOrder() == Order.RANK ? null : new Pair<>(Fields.DATE, SortOrder.DESC);
 	}
 
 	@Override
@@ -356,7 +337,9 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 	private static QueryStringQueryBuilder buildStringQueryForSearchTerms(String searchTerms, final Set<String> fields) {
 		final QueryStringQueryBuilder builder = QueryBuilders.queryStringQuery(searchTerms).tieBreaker(1f);
 		// set the fields where the string query should search for the string
-		fields.stream().forEach(builder::field);
+		fields.forEach(builder::field);
+		// set the type to phrase prefix match
+		builder.analyzeWildcard(true);
 		return builder;
 	}
 

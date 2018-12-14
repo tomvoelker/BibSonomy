@@ -106,12 +106,13 @@
 						</li>
 					</c:if>
 					<!--+
-						| researchers (cris system)
+						| persons (cris system)
+						| only to reorder the menu and to rename the tab to persons
 						+-->
 					<c:if test="${showCRISNavBar}">
 						<li class="${activeTab eq 'person' ? 'active' : ''}">
 							<a href="${relativeUrlGenerator.getPersonsUrl()}">
-								<fmt:message key="researchers"/>
+								<fmt:message key="persons"/>
 							</a>
 						</li>
 					</c:if>

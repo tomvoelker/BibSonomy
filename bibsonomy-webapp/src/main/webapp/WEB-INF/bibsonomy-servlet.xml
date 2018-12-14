@@ -539,6 +539,12 @@
 				<entry key="/publications">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="publicationsController"/>
+						<property name="allowedFields">
+							<list>
+								<value>publications.start</value>
+								<value>search</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/groups">

@@ -189,7 +189,7 @@ public enum Views implements View {
 	/**
 	 * publications overview page
 	 */
-	PUBLICATIONS_OVERVIEW("publications"),
+	PUBLICATIONS_OVERVIEW("cris/publications"),
 
 	/**
 	 * publication page shows all publications with the given inter-/intrahash

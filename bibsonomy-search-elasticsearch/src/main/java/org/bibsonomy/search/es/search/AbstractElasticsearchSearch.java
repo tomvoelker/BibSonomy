@@ -94,8 +94,8 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 		final String search = query.getSearch();
 		if (present(search)) {
 			final QueryStringQueryBuilder queryStringQueryBuilder = QueryBuilders.queryStringQuery(search);
-			this.manager.getPublicFields().stream().forEach(queryStringQueryBuilder::field);
-			queryStringQueryBuilder.type(MultiMatchQueryBuilder.Type.PHRASE_PREFIX);
+			this.manager.getPublicFields().forEach(queryStringQueryBuilder::field);
+			queryStringQueryBuilder.analyzeWildcard(true);
 			mainQuery.must(queryStringQueryBuilder);
 		}
 
