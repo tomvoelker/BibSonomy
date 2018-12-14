@@ -272,6 +272,7 @@
 				<xsd:sequence>
 					<xsd:element name="mainName" type="PersonNameType" />
 					<xsd:element name="names" type="PersonNameType" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="user" type="UserType" minOccurs="0" />
 				</xsd:sequence>
 				<xsd:attribute name="college" type="xsd:string" />
 				<xsd:attribute name="academicDegree" type="xsd:string" />
@@ -547,8 +548,9 @@
 		<xsd:complexContent>
 			<xsd:extension base="LinkableType">
 				<xsd:sequence>
-					<xsd:element name="subProjects" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="subProjects" type="ProjectType" minOccurs="0" maxOccurs="unbounded" />
 					<xsd:element name="crisLinks" type="CRISLinkTypeType" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="parentProject" type="ProjectType" minOccurs="0" />
 				</xsd:sequence>
 				<xsd:attribute name="externalId" type="xsd:string" />
 				<xsd:attribute name="internalId" type="xsd:string" />
@@ -560,7 +562,6 @@
 				<xsd:attribute name="budget" type="xsd:float" />
 				<xsd:attribute name="startDate" type="xsd:dateTime" />
 				<xsd:attribute name="endDate" type="xsd:dateTime" />
-				<xsd:attribute name="parentProject" type="xsd:string" />
 				<xsd:attribute name="sponsor" type="xsd:string" />
 			</xsd:extension>
 		</xsd:complexContent>
