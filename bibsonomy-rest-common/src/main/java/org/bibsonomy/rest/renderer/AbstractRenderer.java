@@ -233,12 +233,12 @@ public abstract class AbstractRenderer implements Renderer {
 
 	/**
 	 * Helper method to create a date when parsing a post. Two situations may occur:
-	 *
+	 * <p>
 	 * 1/ The post is parsed on client side. Then the date is the one as sent by
-	 *    the BibSonomy API.
-	 *
+	 * the BibSonomy API.
+	 * <p>
 	 * 2/ The post is parsed on server side; the date is overwritten in order to prevent malicious users
-	 *    from posting posts with faked dates (e.g. from the future)
+	 * from posting posts with faked dates (e.g. from the future)
 	 *
 	 * @param date - the date of the XML post
 	 * @return a date for this post
@@ -690,44 +690,24 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private ProjectType createXmlCRISProject(Project project) {
 		final ProjectType projectType = new ProjectType();
-		projectType.setExternalId(project.getExternalId());
-		if (present(project.getBudget())) {
-			projectType.setBudget(project.getBudget());
-		}
-		if (present(project.getDescription())) {
-			projectType.setDescription(project.getDescription());
-		}
-		if (present(project.getSubTitle())) {
-			projectType.setSubTitle(project.getSubTitle());
-		}
-		if (present(project.getInternalId())) {
-			projectType.setInternalId(project.getInternalId());
-		}
-		if (present(project.getType())) {
-			projectType.setType(project.getType());
-		}
-		if (present(project.getTitle())) {
-			projectType.setTitle(project.getTitle());
-		}
-		if (present(project.getStartDate())) {
-			projectType.setStartDate(createXmlCalendar(project.getStartDate()));
-		}
-		if (present(project.getEndDate())) {
-			projectType.setEndDate(createXmlCalendar(project.getEndDate()));
-		}
-		if (present(project.getParentProject())) {
-			projectType.setParentProject(project.getParentProject().getExternalId());
-		}
-		if (present(project.getSponsor())) {
-			projectType.setSponsor(project.getSponsor());
-		}
+		setValue(projectType::setExternalId, project::getExternalId);
+		setValue(projectType::setBudget, project::getBudget);
+		setValue(projectType::setDescription, project::getDescription);
+		setValue(projectType::setSubTitle, project::getSubTitle);
+		setValue(projectType::setInternalId, project::getInternalId);
+		setValue(projectType::setType, project::getType);
+		setValue(projectType::setTitle, project::getTitle);
+		setValue(projectType::setStartDate, project::getStartDate, this::createXmlCalendar);
+		setValue(projectType::setEndDate, project::getEndDate, this::createXmlCalendar);
+		setValue(projectType::setSponsor, project::getSponsor);
+		setValue(projectType::setParentProject, project::getParentProject, this::createXmlCRISProject);
 		if (present(project.getCrisLinks())) {
 			projectType.getCrisLinks().addAll(
 							project.getCrisLinks().stream().map(this::createXmlCRISLink).collect(Collectors.toList()));
 		}
 		if (present(project.getSubProjects())) {
-			project.getSubProjects().stream().map(Project::getExternalId).
-							forEach(eid -> projectType.getSubProjects().add(eid));
+			projectType.getSubProjects().addAll(
+							project.getSubProjects().stream().map(this::createXmlCRISProject).collect(Collectors.toList()));
 		}
 		return projectType;
 	}
@@ -779,7 +759,13 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(xmlPerson::setGender, person::getGender, p -> GenderType.valueOf(p.name().toUpperCase()));
 		setValue(xmlPerson::setMainName, person::getMainName, this::createXmlPersonName);
 		if (present(person.getNames())) {
-			person.getNames().stream().map(this::createXmlPersonName).forEach(xmlPerson.getNames()::add);
+			xmlPerson.getNames().addAll(
+							person.getNames().stream().map(this::createXmlPersonName).collect(Collectors.toList()));
+		}
+		if (present(person.getUser())) {
+			UserType userType = new UserType();
+			userType.setName(person.getUser());
+			xmlPerson.setUser(userType);
 		}
 		return xmlPerson;
 	}
@@ -1203,32 +1189,23 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private Project createProject(ProjectType projectType) {
 		final Project project = new Project();
-		if (present(projectType.getParentProject())) {
-			final Project parentProject = new Project();
-			parentProject.setExternalId(projectType.getParentProject());
-			project.setParentProject(parentProject);
-		}
+		setValue(project::setParentProject, projectType::getParentProject, this::createProject);
 		if (present(projectType.getSubProjects())) {
-			final LinkedList<Project> subProjects = new LinkedList<>();
-			for (String s : projectType.getSubProjects()) {
-				final Project subProject = new Project();
-				subProject.setExternalId(s);
-				subProjects.add(subProject);
-			}
-			project.setSubProjects(subProjects);
+			project.setSubProjects(
+							projectType.getSubProjects().stream().map(this::createProject).collect(Collectors.toList()));
 		}
 		if (present(projectType.getCrisLinks())) {
 			project.setCrisLinks(projectType.getCrisLinks().stream().map(this::createCRISLink).collect(Collectors.toList()));
 		}
-		project.setBudget(projectType.getBudget());
-		project.setTitle(projectType.getTitle());
-		project.setSubTitle(projectType.getSubTitle());
-		project.setDescription(projectType.getDescription());
-		project.setExternalId(projectType.getExternalId());
-		project.setInternalId(projectType.getInternalId());
-		project.setStartDate(createDate(projectType.getStartDate()));
-		project.setEndDate(createDate(projectType.getEndDate()));
-		project.setSponsor(projectType.getSponsor());
+		setValue(project::setBudget, projectType::getBudget);
+		setValue(project::setTitle, projectType::getTitle);
+		setValue(project::setSubTitle, projectType::getSubTitle);
+		setValue(project::setDescription, projectType::getDescription);
+		setValue(project::setExternalId, projectType::getExternalId);
+		setValue(project::setInternalId, projectType::getInternalId);
+		setValue(project::setStartDate, projectType::getStartDate, AbstractRenderer::createDate);
+		setValue(project::setEndDate, projectType::getEndDate, AbstractRenderer::createDate);
+		setValue(project::setSponsor, projectType::getSponsor);
 		return project;
 	}
 
@@ -1246,18 +1223,10 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private Person createPerson(PersonType personType) {
 		final Person person = new Person();
-		if (present(personType.getMainName())) {
-			person.setMainName(createPersonName(personType.getMainName()));
-		}
-		if (present(personType.getCollege())) {
-			person.setCollege(personType.getCollege());
-		}
-		if (present(personType.getAcademicDegree())) {
-			person.setAcademicDegree(personType.getAcademicDegree());
-		}
-		if (present(personType.getEmail())) {
-			person.setEmail(personType.getEmail());
-		}
+		setValue(person::setMainName, personType::getMainName, this::createPersonName);
+		setValue(person::setAcademicDegree, personType::getAcademicDegree);
+		setValue(person::setCollege, personType::getCollege);
+		setValue(person::setEmail, personType::getEmail);
 		if (present(personType.getHomepage())) {
 			try {
 				final URL url = new URL(personType.getHomepage());
@@ -1266,18 +1235,13 @@ public abstract class AbstractRenderer implements Renderer {
 				person.setHomepage(null);
 			}
 		}
-		if (present(personType.getGender())) {
-			person.setGender(Gender.valueOf(personType.getGender().name()));
-		}
-		if (present(personType.getOrcid())) {
-			person.setOrcid(personType.getOrcid());
-		}
+		setValue(person::setGender, personType::getGender, g -> Gender.valueOf(g.name()));
+		setValue(person::setOrcid, personType::getOrcid);
 		if (present(personType.getNames())) {
 			person.setNames(personType.getNames().stream().map(this::createPersonName).collect(Collectors.toList()));
 		}
-		if (present(personType.getPersonId())) {
-			person.setPersonId(personType.getPersonId());
-		}
+		setValue(person::setPersonId, personType::getPersonId);
+		setValue(person::setUser, personType::getUser, UserType::getName);
 		return person;
 	}
 
@@ -1880,6 +1844,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	/**
 	 * Creates a {@link SynchronizationPost} from its xml representation
+	 *
 	 * @param xmlSyncPost
 	 * @return synchronization post
 	 */
@@ -1914,6 +1879,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	/**
 	 * Creates a {@link SynchronizationData} from xml representation
+	 *
 	 * @param xmlSyncData
 	 * @return synchronization data
 	 */
