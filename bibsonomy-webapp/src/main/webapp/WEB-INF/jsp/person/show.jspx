@@ -12,7 +12,8 @@
 		  xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"
 		  xmlns:mod="urn:jsptagdir:/WEB-INF/tags/person/modals"
 		  xmlns:clear="http://java.sun.com/jsp/jstl/core"
-		  xmlns:spring="http://www.springframework.org/tags" xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
+		  xmlns:spring="http://www.springframework.org/tags"
+          xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
@@ -67,7 +68,12 @@
 				<jsp:attribute name="crumbs">
 					<c:set var="groupsMain" value="${relativeUrlGenerator.getPersonsUrl()}"/>
 					<nav:crumb nameKey="navi.person" href="${groupsMain}" active="${active}"/>
-					<nav:crumb name="${command.person.mainName}" leadingIcon="fa-user" active="${active}"/>
+                    <c:set var="degTitle">
+                        <c:out value="${command.person.academicDegree}" />
+                        <c:out value=" " />
+                        <c:out value="${title}" />
+                    </c:set>
+					<nav:crumb name="${degTitle}" leadingIcon="fa-user" active="${active}"/>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>

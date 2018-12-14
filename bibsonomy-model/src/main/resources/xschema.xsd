@@ -548,6 +548,7 @@
 			<xsd:extension base="LinkableType">
 				<xsd:sequence>
 					<xsd:element name="subProjects" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="crisLinks" type="CRISLinkTypeType" minOccurs="0" maxOccurs="unbounded" />
 				</xsd:sequence>
 				<xsd:attribute name="externalId" type="xsd:string" />
 				<xsd:attribute name="internalId" type="xsd:string" />
