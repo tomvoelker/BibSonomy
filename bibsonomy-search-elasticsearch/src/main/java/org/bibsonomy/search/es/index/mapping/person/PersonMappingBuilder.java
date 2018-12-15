@@ -82,6 +82,14 @@ public class PersonMappingBuilder implements MappingBuilder<XContentBuilder> {
 									.startObject(PersonFields.PERSON_ID)
 										.field(TYPE_FIELD, KEYWORD_TYPE)
 									.endObject()
+									// the main name for sorting
+									.startObject(PersonFields.MAIN_NAME)
+										.field(TYPE_FIELD, KEYWORD_TYPE)
+									.endObject()
+									// the main name lowercase for prefix filter
+									.startObject(PersonFields.MAIN_NAME_LOWERCASE)
+										.field(TYPE_FIELD, KEYWORD_TYPE)
+									.endObject()
 									// academic degree
 									.startObject(PersonFields.ACADEMIC_DEGREE)
 										.field(TYPE_FIELD, KEYWORD_TYPE)

@@ -8,19 +8,25 @@
 		  xmlns:persons="urn:jsptagdir:/WEB-INF/tags/person">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	
-	<fmt:message key="persons.intro.head.title" var="personIntroTitle">
-		<fmt:param value="${properties['project.name']}" />
-	</fmt:message>
-	<fmt:message key="person.index.placeholder" var="placeholderText"/>
-	<fmt:message key="person.index.searchInfo" var="searchInfo"/>
 
-	<c:set var="pumaSystem" value="${properties['project.theme'] eq 'bibsonomy'}" />
+	<c:set var="bibsonomySystem" value="${properties['project.theme'] eq 'bibsonomy'}" />
+	<c:choose>
+		<c:when test="${bibsonomySystem}">
+			<fmt:message key="persons.intro.head.title" var="personIntroTitle">
+				<fmt:param value="${properties['project.name']}" />
+			</fmt:message>
+		</c:when>
+		<c:otherwise>
+			<fmt:message key="persons" var="personIntroTitle" />
+		</c:otherwise>
+	</c:choose>
 
 	<layout:paneLayout pageTitle="${personIntroTitle}" headerMessageKey="gettingStarted.headline" command="${command}" requPath="${requPath}" noSidebar="${true}" activeTab="persons">
 
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.persons" formAction="/search" formInputName="search"/>
+			<c:if test="${bibsonomySystem}">
+				<parts:search pathMessageKey="navi.persons" formAction="/search" formInputName="search"/>
+			</c:if>
 		</jsp:attribute>
 
 		<jsp:attribute name="headerExt">
@@ -36,11 +42,11 @@
 		
 		<jsp:attribute name="content">
 			<c:choose>
-				<c:when test="${pumaSystem}">
-					TODO
+				<c:when test="${bibsonomySystem}">
+					<persons:bmbfPersons title="${personIntroTitle}" command="${command}" />
 				</c:when>
 				<c:otherwise>
-					<persons:bmbfPersons title="${personIntroTitle}" command="${command}" />
+					<persons:personsOverview command="${command}" />
 				</c:otherwise>
 			</c:choose>
 		</jsp:attribute>

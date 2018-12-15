@@ -11,7 +11,8 @@
 		  xmlns:spring="http://www.springframework.org/tags"
 		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
+		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+		  xmlns:lists="urn:jsptagdir:/WEB-INF/tags/layout/parts/lists">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
 
@@ -56,19 +57,7 @@
 					</div>
 				</div>
 				<div class="col-md-3 vcenter">
-					<c:if test="${totalNumberOfProjects gt 0}">
-						<c:set var="startIndex" value="${projectListCommand.start * projectListCommand.entriesPerPage + 1}" />
-						<c:set var="endIndex" value="${startIndex + projectListCommand.entriesPerPage}" />
-						<c:set var="endIndex" value="${endIndex ge totalNumberOfProjects ? totalNumberOfProjects : endIndex}" />
-						<div class="text-muted">
-							<fmt:message key="projects.results.description">
-								<fmt:param value="${startIndex}" />
-								<fmt:param value="${endIndex}" />
-								<fmt:param value="${totalNumberOfProjects}" />
-							</fmt:message>
-						</div>
-					</c:if>
-
+					<lists:listResultInfo listCommand="${personListCommand}" messageKey="projects.results.description" />
 				</div>
 				<div class="col-md-3 text-right vcenter">
 					<div class="btn-group">

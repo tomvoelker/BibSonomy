@@ -32,6 +32,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.enums.Gender;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.search.es.index.converter.cris.CRISTargetPersonConverter;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 
@@ -52,6 +53,9 @@ public class PersonConverter extends CRISTargetPersonConverter {
 	public Map<String, Object> convert(final Person person) {
 		final Map<String, Object> mapping = super.convert(person);
 
+		final String mainName = PersonNameUtils.serializePersonName(person.getMainName());
+		mapping.put(PersonFields.MAIN_NAME, mainName);
+		mapping.put(PersonFields.MAIN_NAME_LOWERCASE, mainName.toLowerCase());
 		mapping.put(PersonFields.PERSON_DATABASE_ID, person.getPersonChangeId());
 
 		mapping.put(PersonFields.ACADEMIC_DEGREE, person.getAcademicDegree());

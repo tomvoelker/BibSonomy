@@ -1,6 +1,7 @@
 package org.bibsonomy.model.logic.query.util;
 
 import org.bibsonomy.model.logic.query.BasicQuery;
+import org.bibsonomy.model.logic.query.PaginatedQuery;
 
 /**
  * common util methods for a {@link BasicQuery}
@@ -18,7 +19,7 @@ public class BasicQueryUtils {
 	 * @param query
 	 * @return
 	 */
-	public static int calcOffset(final BasicQuery query) {
+	public static int calcOffset(final PaginatedQuery query) {
 		return query.getStart();
 	}
 
@@ -27,7 +28,7 @@ public class BasicQueryUtils {
 	 * @param query
 	 * @return
 	 */
-	public static int calcLimit(final BasicQuery query) {
+	public static int calcLimit(final PaginatedQuery query) {
 		return query.getEnd() - query.getStart();
 	}
 

@@ -330,6 +330,10 @@
 		<property name="dbSessionFactory" ref="dbSessionFactory" />
 	</bean>
 
+	<bean id="crisSystem" class="java.lang.Boolean">
+		<constructor-arg value="${system.cris}" />
+	</bean>
+
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="interceptors">
 			<list>
@@ -613,6 +617,7 @@
 								<value>format</value>
 								<value>fieldKeys</value>
 								<value>search</value>
+
 							</list>
 						</property>
 					</bean>
@@ -834,7 +839,15 @@
 				</entry>
 				<entry key="/persons">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="personIntroPageController"/>
+						<property name="controllerBeanName" value="#{crisSystem ? 'personsPageController' : 'personIntroPageController'}"/>
+						<property name="allowedFields">
+							<list>
+								<value>search</value>
+								<value>prefix</value>
+								<value>showAllPersons</value>
+								<value>persons.start</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/projects">
@@ -1190,6 +1203,11 @@
 				</bean>
 			</list>
 		</property>
+	</bean>
+
+	<bean id="personsPageController" class="org.bibsonomy.webapp.controller.cris.PersonsPageController" scope="request">
+		<property name="logicInterface" ref="logic" />
+		<property name="crisCollege" value="${system.cris.college}" />
 	</bean>
 	
 	<!--  #################### static views #################### -->

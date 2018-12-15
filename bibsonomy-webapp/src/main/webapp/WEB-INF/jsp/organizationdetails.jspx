@@ -8,6 +8,7 @@
 		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
 		  xmlns:fmt="http://java.sun.com/jsp/jstl/functions"
 		  xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
+		  xmlns:person="urn:jsptagdir:/WEB-INF/tags/person"
 		  xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 		  xmlns:organization="urn:jsptagdir:/WEB-INF/tags/organization"
@@ -115,22 +116,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div id="organization-persons" class="col-md-12">
-					<c:forEach var="i" begin="0" end="${fmt:length(command.persons.list)-1}" step="3">
-						<div class="row">
-							<c:set var="person" value="${command.persons.list[i]}"/>
-							<organization:personView person="${person}"/>
-							<c:if test="${i+1 lt fmt:length(command.persons.list)}">
-								<c:set var="person" value="${command.persons.list[i+1]}"/>
-								<organization:personView person="${person}"/>
-							</c:if>
-							<c:if test="${i+2 lt fmt:length(command.persons.list)}">
-								<c:set var="person" value="${command.persons.list[i+2]}"/>
-								<organization:personView person="${person}"/>
-							</c:if>
-						</div>
-					</c:forEach>
-				</div>
+				<person:personList command="${command.persons}" />
 			</div>
 
 			<div class="row">
