@@ -1,9 +1,7 @@
 <jsp:root version="2.0" 
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:jsp="http://java.sun.com/JSP/Page">
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group">
 	
 	<jsp:directive.attribute name="group" type="org.bibsonomy.model.Group" required="true" />
 	<jsp:directive.attribute name="noLink" type="java.lang.Boolean" required="false" />
@@ -11,7 +9,7 @@
 	
 	<c:set var="groupname" value="${group.name}" />
 	
-	<!-- show real name of group + homepage (if exists) -->
+	<!-- show real name of group -->
 	<c:if test="${empty noLink}">
 		<c:set var="noLink" value="${false}" />
 	</c:if>
@@ -21,13 +19,12 @@
 	
 	<c:choose>
 		<c:when test="${not noLink}">
-			<a href="${relativeUrlGenerator.getGroupUrlByGroupName(groupname)}"><c:out value="${group.name}" /></a>
+			<a href="${relativeUrlGenerator.getGroupUrlByGroupName(groupname)}">
+				<group:groupRealName group="${group}" showRealname="${showRealname}" />
+			</a>
 		</c:when>
 		<c:otherwise>
-			<c:out value="${group.name}" />
+			<group:groupRealName group="${group}" showRealname="${showRealname}" />
 		</c:otherwise>
 	</c:choose>
-	<c:if test="${showRealname and not empty group.realname}">
-		&amp;nbsp;(<c:out value="${group.realname}" />)
-	</c:if>
 </jsp:root>

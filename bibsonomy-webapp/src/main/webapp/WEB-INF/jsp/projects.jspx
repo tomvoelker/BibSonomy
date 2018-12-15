@@ -22,8 +22,8 @@
 	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.projects" command="${command}"
 					   pageTitle="${pageTitle}" activeTab="projects">
 		<!--+
-			  | heading
-			  +-->
+			| heading
+			+-->
 		<jsp:attribute name="heading">
 			<!-- nothing to show -->
 		</jsp:attribute>
@@ -96,7 +96,6 @@
 							</div>
 						</c:otherwise>
 					</c:choose>
-
 
 					<rc:nextprev listView="${command.projects}" listViewStartParamName="projects.start"/>
 				</div>

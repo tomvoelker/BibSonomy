@@ -2,8 +2,6 @@
           xmlns:c="http://java.sun.com/jsp/jstl/core"
           xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-          xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-          xmlns:spring="http://www.springframework.org/tags"
           xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
           xmlns:lists="urn:jsptagdir:/WEB-INF/tags/layout/parts/lists"
           xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
@@ -41,7 +39,7 @@
                             Only persons of this university
                         </c:otherwise>
                     </c:choose>
-                    <span class="caret"></span>
+                    <span class="caret"><!-- keep me --></span>
                 </button>
                 <ul class="dropdown-menu">
                     <li class="${not command.showAllPersons ? '' : 'disabled'}">
