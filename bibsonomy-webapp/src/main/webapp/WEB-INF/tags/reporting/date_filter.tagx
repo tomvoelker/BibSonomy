@@ -1,0 +1,27 @@
+<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:form="http://www.springframework.org/tags/form"
+>
+
+	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="filterName" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="filterField" type="java.lang.String" required="true" />
+
+	<div class="btn-group">
+		<button type="button" class="btn btn-default dropdown-toggle"
+				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<c:out value="${filterName}"/>
+			<span class="caret" />
+		</button>
+		<div class="dropdown-menu">
+			<form:form method="get">
+				<div class="input-group date dropdown-item" id="${filterField}-id" data-date-format="dd.mm.yyyy"
+					 data-date-viewMode="days" data-date="17.12.2018">
+					<input type="text" class="form-control" value="17.12.2018" name="${filterField}"/>
+					<span class="input-group-addon"><i class="far fa-calendar-alt"><!-- --></i></span>
+				</div>
+				<input type="submit" value="OK" class="dropdown-item"/>
+			</form:form>
+		</div>
+	</div>
+</jsp:root>

@@ -6,33 +6,8 @@ import java.util.Collection;
 import java.util.Date;
 
 public class ProjectReportingCommand extends ReportingCommand {
-	private String search, type;
-	private Date startDate, endDate;
+	private String type;
 	private Collection<Project> projects;
-
-	public String getSearch() {
-		return search;
-	}
-
-	public void setSearch(String search) {
-		this.search = search;
-	}
-
-	public Date getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-	}
-
-	public Date getStartDate() {
-		return startDate;
-	}
-
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
 
 	public String getType() {
 		return type;

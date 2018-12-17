@@ -10,10 +10,12 @@ import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.cris.ProjectPersonLinkType;
 import org.bibsonomy.model.util.PersonNameUtils;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -33,7 +35,7 @@ public enum ReportDownloadViewUtils {
 		PROJECT_FIELD_MAPPINGS.put("type", Project::getType);
 		PROJECT_FIELD_MAPPINGS.put("description", Project::getDescription);
 		PROJECT_FIELD_MAPPINGS.put("externalId", Project::getExternalId);
-		PROJECT_FIELD_MAPPINGS.put("budget", p -> Float.toString(p.getBudget()));
+		PROJECT_FIELD_MAPPINGS.put("budget", p -> formatNumber(p.getBudget()));
 		PROJECT_FIELD_MAPPINGS.put("startDate", p -> formatDate(p.getStartDate()));
 		PROJECT_FIELD_MAPPINGS.put("endDate", p -> formatDate(p.getEndDate()));
 		PROJECT_FIELD_MAPPINGS.put("projectLeader", p -> p.getCrisLinks().stream().
@@ -61,6 +63,13 @@ public enum ReportDownloadViewUtils {
 						collect(Collectors.joining(" ")));
 		PUBLICATION_FIELD_MAPPINGS.put("date", p -> formatDate(p.getDate()));
 		//TODO what to include from posts?
+	}
+
+	private static String formatNumber(Float number) {
+		if (number == null) {
+			return "NaN";
+		}
+		return NumberFormat.getCurrencyInstance(Locale.GERMANY).format(number);
 	}
 
 	private static String formatDate(Date date) {
