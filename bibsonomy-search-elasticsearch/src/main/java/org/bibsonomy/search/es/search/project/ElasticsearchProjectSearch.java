@@ -88,6 +88,23 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 			}
 		}
 
+		/*
+		 * start date and end date filter
+		 */
+		final Date startDate = query.getStartDate();
+		if (present(startDate)) {
+			final RangeQueryBuilder startDateFilter = QueryBuilders.rangeQuery(ProjectFields.START_DATE);
+			startDateFilter.gte(startDate);
+			filterQuery.must(startDateFilter);
+		}
+
+		final Date endDate = query.getEndDate();
+		if (present(endDate)) {
+			final RangeQueryBuilder endDateFilter = QueryBuilders.rangeQuery(ProjectFields.END_DATE);
+			endDateFilter.lte(endDate);
+			filterQuery.must(endDateFilter);
+		}
+
 		final Prefix prefix = query.getPrefix();
 		if (present(prefix)) {
 			filterQuery.must(ElasticsearchIndexSearchUtils.buildPrefixFilter(prefix, ProjectFields.TITLE_LOWERCASE));
