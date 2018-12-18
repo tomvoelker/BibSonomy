@@ -38,6 +38,7 @@ import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
@@ -84,6 +85,7 @@ import org.bibsonomy.rest.renderer.xml.ExtraUrlType;
 import org.bibsonomy.rest.renderer.xml.ExtraUrlsType;
 import org.bibsonomy.rest.renderer.xml.GenderType;
 import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
+import org.bibsonomy.rest.renderer.xml.GroupRequestType;
 import org.bibsonomy.rest.renderer.xml.GroupType;
 import org.bibsonomy.rest.renderer.xml.GroupsType;
 import org.bibsonomy.rest.renderer.xml.LinkableType;
@@ -128,6 +130,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -263,8 +266,19 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private static <T, E> void setValue(Consumer<T> consumer, Supplier<E> supplier, Function<E, T> transformer) {
 		final E value = supplier.get();
-		if (present(value)) {
-			consumer.accept(transformer.apply(value));
+		if (!present(value)) {
+			return;
+		}
+		final T transformedValue = transformer.apply(value);
+		if (present(transformedValue)) {
+			consumer.accept(transformedValue);
+		}
+	}
+
+	private static <T, E> void setCollectionValue(Collection<T> consumer, Collection<E> producer,
+																								Function<E, T> transformer) {
+		if (present(producer)) {
+			consumer.addAll(producer.stream().map(transformer).collect(Collectors.toList()));
 		}
 	}
 
@@ -571,31 +585,22 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private UserType createXmlUser(final User user) throws InternServerException {
 		final UserType xmlUser = new UserType();
-		xmlUser.setEmail(user.getEmail());
-		if (user.getHomepage() != null) {
-			xmlUser.setHomepage(user.getHomepage().toString());
-		}
-		xmlUser.setName(user.getName());
-		xmlUser.setRealname(user.getRealname());
-		xmlUser.setHref(this.urlRenderer.createHrefForUser(user.getName()));
-		if (user.getSpammer() != null) {
-			xmlUser.setSpammer(user.getSpammer());
-		}
+		setValue(xmlUser::setEmail, user::getEmail);
+		setValue(xmlUser::setHomepage, user::getHomepage, URL::toString);
+		setValue(xmlUser::setName, user::getName);
+		setValue(xmlUser::setRealname, user::getRealname);
+		setValue(xmlUser::setHref, user::getName, urlRenderer::createHrefForUser);
+		setValue(xmlUser::setSpammer, user::getSpammer);
+		setValue(xmlUser::setConfidence, user::getConfidence);
+		setValue(xmlUser::setAlgorithm, user::getAlgorithm);
+		setValue(xmlUser::setClassifierMode, user::getMode);
 		if (user.getPrediction() != null) {
 			xmlUser.setPrediction(BigInteger.valueOf(user.getPrediction()));
 		}
-		if (user.getConfidence() != null) {
-			xmlUser.setConfidence(user.getConfidence());
-		}
-		xmlUser.setAlgorithm(user.getAlgorithm());
-		xmlUser.setClassifierMode(user.getMode());
 		if (user.getToClassify() != null) {
 			xmlUser.setToClassify(BigInteger.valueOf(user.getToClassify()));
 		}
-		if (present(user.getRemoteUserIds())) {
-			user.getRemoteUserIds().stream().map(this::createXmlRemoteUserIdType).
-							forEach(xmlUser.getRemoteUserId()::add);
-		}
+		setCollectionValue(xmlUser.getRemoteUserId(), user.getRemoteUserIds(), this::createXmlRemoteUserIdType);
 
 		/*
 		 * copy groups
@@ -672,8 +677,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private ProjectsType createXmlCRISProjects(List<Project> projects) {
 		ProjectsType projectsType = new ProjectsType();
-		projectsType.getProject().addAll(projects.stream().parallel().
-						map(this::createXmlCRISProject).collect(Collectors.toList()));
+		setCollectionValue(projectsType.getProject(), projects, this::createXmlCRISProject);
 		return projectsType;
 	}
 
@@ -697,14 +701,8 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(projectType::setEndDate, project::getEndDate, this::createXmlCalendar);
 		setValue(projectType::setSponsor, project::getSponsor);
 		setValue(projectType::setParentProject, project::getParentProject, this::createXmlCRISProject);
-		if (present(project.getCrisLinks())) {
-			projectType.getCrisLinks().addAll(
-							project.getCrisLinks().stream().map(this::createXmlCRISLink).collect(Collectors.toList()));
-		}
-		if (present(project.getSubProjects())) {
-			projectType.getSubProjects().addAll(
-							project.getSubProjects().stream().map(this::createXmlCRISProject).collect(Collectors.toList()));
-		}
+		setCollectionValue(projectType.getCrisLinks(), project.getCrisLinks(), this::createXmlCRISLink);
+		setCollectionValue(projectType.getSubProjects(), project.getSubProjects(), this::createXmlCRISProject);
 		return projectType;
 	}
 
@@ -721,16 +719,8 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(xmlPersonMatch::setPerson1, match::getPerson1, this::createXmlPerson);
 		setValue(xmlPersonMatch::setPerson2, match::getPerson2, this::createXmlPerson);
 		setValue(xmlPersonMatch::setState, match::getState);
-		if (present(match.getPerson1Posts())) {
-			for (Post post : match.getPerson1Posts()) {
-				xmlPersonMatch.getPerson1Posts().add(createXmlPost(post));
-			}
-		}
-		if (present(match.getPerson2Posts())) {
-			for (Post post : match.getPerson2Posts()) {
-				xmlPersonMatch.getPerson2Posts().add(createXmlPost(post));
-			}
-		}
+		setCollectionValue(xmlPersonMatch.getPerson1Posts(), match.getPerson1Posts(), this::createXmlPost);
+		setCollectionValue(xmlPersonMatch.getPerson2Posts(), match.getPerson2Posts(), this::createXmlPost);
 		setValue(xmlPersonMatch::setMatchId, match::getMatchID);
 		setValue(xmlPersonMatch::setState, match::getState);
 		setValue(xmlPersonMatch.getUserDenies()::addAll, match::getUserDenies);
@@ -744,6 +734,12 @@ public abstract class AbstractRenderer implements Renderer {
 		serialize(writer, xmlDoc);
 	}
 
+	private UserType createXmlUser(String userName) {
+		UserType userType = new UserType();
+		userType.setName(userName);
+		return userType;
+	}
+
 	private PersonType createXmlPerson(Person person) throws InternServerException {
 		final PersonType xmlPerson = new PersonType();
 		setValue(xmlPerson::setAcademicDegree, person::getAcademicDegree);
@@ -754,15 +750,8 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(xmlPerson::setOrcid, person::getOrcid);
 		setValue(xmlPerson::setGender, person::getGender, p -> GenderType.valueOf(p.name().toUpperCase()));
 		setValue(xmlPerson::setMainName, person::getMainName, this::createXmlPersonName);
-		if (present(person.getNames())) {
-			xmlPerson.getNames().addAll(
-							person.getNames().stream().map(this::createXmlPersonName).collect(Collectors.toList()));
-		}
-		if (present(person.getUser())) {
-			UserType userType = new UserType();
-			userType.setName(person.getUser());
-			xmlPerson.setUser(userType);
-		}
+		setCollectionValue(xmlPerson.getNames(), person.getNames(), this::createXmlPersonName);
+		setValue(xmlPerson::setUser, person::getUser, this::createXmlUser);
 		return xmlPerson;
 	}
 
@@ -794,7 +783,7 @@ public abstract class AbstractRenderer implements Renderer {
 		final BibsonomyXML xmlDoc = buildEmptyBibsonomyXMLWithOK();
 
 		final ResourcePersonRelationsType listWrapper = new ResourcePersonRelationsType();
-		relations.stream().map(this::createXmlResourcePersonRelation).forEach(listWrapper.getResourcePersonRelation()::add);
+		setCollectionValue(listWrapper.getResourcePersonRelation(), relations, this::createXmlResourcePersonRelation);
 
 		xmlDoc.setResourcePersonRelations(listWrapper);
 		serialize(writer, xmlDoc);
@@ -806,8 +795,8 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private ResourceLinkType createXmlResourceLink(Post<? extends BibTex> post) {
 		final ResourceLinkType xmlLinkType = new ResourceLinkType();
-		xmlLinkType.setInterHash(post.getResource().getInterHash());
-		xmlLinkType.setIntraHash(post.getResource().getIntraHash());
+		setValue(xmlLinkType::setInterHash, post::getResource, Resource::getInterHash);
+		setValue(xmlLinkType::setIntraHash, post::getResource, Resource::getIntraHash);
 		return xmlLinkType;
 	}
 
@@ -921,14 +910,20 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(xmlGroup::setInternalId, group::getInternalId);
 		setValue(xmlGroup::setParent, group::getParent, this::createXmlGroup);
 		setValue(xmlGroup::setHref, group::getName, urlRenderer::createHrefForGroup);
-		if (present(group.getMemberships())) {
-			xmlGroup.getUser().addAll(group.getMemberships().stream().map(GroupMembership::getUser).
-							map(this::createXmlUser).collect(Collectors.toList()));
-		}
+		setValue(xmlGroup::setGroupRequest, group::getGroupRequest, this::createXmlGroupRequest);
+		setCollectionValue(xmlGroup.getUser(), group.getMemberships(), g -> createXmlUser(g.getUser()));
 		if (group.isOrganization()) {
 			xmlGroup.setOrganization(Boolean.TRUE.toString());
 		}
 		return xmlGroup;
+	}
+
+	private GroupRequestType createXmlGroupRequest(final GroupRequest groupRequest) {
+		final GroupRequestType groupRequestType = new GroupRequestType();
+		setValue(groupRequestType::setReason, groupRequest::getReason);
+		setValue(groupRequestType::setSubmissionDate, groupRequest::getSubmissionDate, this::createXmlCalendar);
+		setValue(groupRequestType::setRequestedUser, groupRequest::getUserName, this::createXmlUser);
+		return groupRequestType;
 	}
 
 	@Override
@@ -1003,10 +998,7 @@ public abstract class AbstractRenderer implements Renderer {
 	public void serializeSynchronizationPosts(final Writer writer, final List<? extends SynchronizationPost> posts) {
 		final BibsonomyXML xmlDoc = buildEmptyBibsonomyXMLWithOK();
 		final SyncPostsType xmlSyncPosts = new SyncPostsType();
-		for (final SynchronizationPost post : posts) {
-			final SyncPostType xmlSyncPost = this.createXmlSyncPost(post);
-			xmlSyncPosts.getSyncPost().add(xmlSyncPost);
-		}
+		setCollectionValue(xmlSyncPosts.getSyncPost(), posts, this::createXmlSyncPost);
 		xmlDoc.setSyncPosts(xmlSyncPosts);
 		this.serialize(writer, xmlDoc);
 	}
@@ -1123,20 +1115,12 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private CRISLink createCRISLink(CRISLinkTypeType crisLinkType) {
 		final CRISLink crisLink = new CRISLink();
-		if (present(crisLinkType.getEndDate())) {
-			crisLink.setEndDate(createDate(crisLinkType.getEndDate()));
-		}
-		if (present(crisLinkType.getStartDate())) {
-			crisLink.setStartDate(createDate(crisLinkType.getStartDate()));
-		}
-		if (present(crisLinkType.getDataSource())) {
-			crisLink.setDataSource(createCRISLinkDataSource(crisLinkType.getDataSource()));
-		}
-		if (present(crisLinkType.getLinkType())) {
-			crisLink.setLinkType(createCRISLinkType(crisLinkType.getLinkType()));
-		}
-		crisLink.setSource(createCRISLinkable(crisLinkType.getSource()));
-		crisLink.setTarget(createCRISLinkable(crisLinkType.getTarget()));
+		setValue(crisLink::setEndDate, crisLinkType::getEndDate, AbstractRenderer::createDate);
+		setValue(crisLink::setStartDate, crisLinkType::getStartDate, AbstractRenderer::createDate);
+		setValue(crisLink::setDataSource, crisLinkType::getDataSource, this::createCRISLinkDataSource);
+		setValue(crisLink::setLinkType, crisLinkType::getLinkType, this::createCRISLinkType);
+		setValue(crisLink::setSource, crisLinkType::getSource, this::createCRISLinkable);
+		setValue(crisLink::setTarget, crisLinkType::getTarget, this::createCRISLinkable);
 		return crisLink;
 	}
 
@@ -1179,13 +1163,8 @@ public abstract class AbstractRenderer implements Renderer {
 	private Project createProject(ProjectType projectType) {
 		final Project project = new Project();
 		setValue(project::setParentProject, projectType::getParentProject, this::createProject);
-		if (present(projectType.getSubProjects())) {
-			project.setSubProjects(
-							projectType.getSubProjects().stream().map(this::createProject).collect(Collectors.toList()));
-		}
-		if (present(projectType.getCrisLinks())) {
-			project.setCrisLinks(projectType.getCrisLinks().stream().map(this::createCRISLink).collect(Collectors.toList()));
-		}
+		setCollectionValue(project.getSubProjects(), projectType.getSubProjects(), this::createProject);
+		setCollectionValue(project.getCrisLinks(), projectType.getCrisLinks(), this::createCRISLink);
 		setValue(project::setBudget, projectType::getBudget);
 		setValue(project::setTitle, projectType::getTitle);
 		setValue(project::setSubTitle, projectType::getSubTitle);
@@ -1216,19 +1195,10 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(person::setAcademicDegree, personType::getAcademicDegree);
 		setValue(person::setCollege, personType::getCollege);
 		setValue(person::setEmail, personType::getEmail);
-		if (present(personType.getHomepage())) {
-			try {
-				final URL url = new URL(personType.getHomepage());
-				person.setHomepage(url);
-			} catch (MalformedURLException e) {
-				person.setHomepage(null);
-			}
-		}
+		setValue(person::setHomepage, personType::getHomepage, AbstractRenderer::createURL);
 		setValue(person::setGender, personType::getGender, g -> Gender.valueOf(g.name()));
 		setValue(person::setOrcid, personType::getOrcid);
-		if (present(personType.getNames())) {
-			person.setNames(personType.getNames().stream().map(this::createPersonName).collect(Collectors.toList()));
-		}
+		setCollectionValue(person.getNames(), personType.getNames(), this::createPersonName);
 		setValue(person::setPersonId, personType::getPersonId);
 		setValue(person::setUser, personType::getUser, UserType::getName);
 		return person;
@@ -1546,38 +1516,19 @@ public abstract class AbstractRenderer implements Renderer {
 		this.xmlModelValidator.checkUser(xmlUser);
 
 		final User user = new User();
-		user.setEmail(xmlUser.getEmail());
-		user.setHomepage(createURL(xmlUser.getHomepage()));
-		user.setName(xmlUser.getName());
-		user.setRealname(xmlUser.getRealname());
-		user.setPassword(xmlUser.getPassword());
-		if (xmlUser.isSpammer() != null) {
-			user.setSpammer(xmlUser.isSpammer());
-		}
-		if (xmlUser.getPrediction() != null) {
-			user.setPrediction(xmlUser.getPrediction().intValue());
-		}
-		if (xmlUser.getConfidence() != null) {
-			user.setConfidence(xmlUser.getConfidence());
-		}
-		user.setAlgorithm(xmlUser.getAlgorithm());
-		user.setMode(xmlUser.getClassifierMode());
-		if (xmlUser.getToClassify() != null) {
-			user.setToClassify(xmlUser.getToClassify().intValue());
-		}
-		if (present(xmlUser.getRemoteUserId())) {
-			xmlUser.getRemoteUserId().stream().map(this::createRemoteUserId).forEach(user::setRemoteUserId);
-		}
-		/*
-		 * copy groups
-		 */
-		final GroupsType groups = xmlUser.getGroups();
-		if (groups != null) {
-			final List<Group> groups2 = user.getGroups();
-			for (final GroupType xmlGroup : groups.getGroup()) {
-				groups2.add(this.createGroup(xmlGroup));
-			}
-		}
+		setValue(user::setEmail, xmlUser::getEmail);
+		setValue(user::setHomepage, xmlUser::getHomepage, AbstractRenderer::createURL);
+		setValue(user::setName, xmlUser::getName);
+		setValue(user::setRealname, xmlUser::getRealname);
+		setValue(user::setPassword, xmlUser::getPassword);
+		setValue(user::setSpammer, xmlUser::isSpammer);
+		setValue(user::setPrediction, xmlUser::getPrediction, BigInteger::intValue);
+		setValue(user::setConfidence, xmlUser::getConfidence);
+		setValue(user::setAlgorithm, xmlUser::getAlgorithm);
+		setValue(user::setMode, xmlUser::getClassifierMode);
+		setValue(user::setToClassify, xmlUser::getToClassify, BigInteger::intValue);
+		setCollectionValue(user.getRemoteUserIds(), xmlUser.getRemoteUserId(), this::createRemoteUserId);
+		setCollectionValue(user.getGroups(), xmlUser.getGroups().getGroup(), this::createGroup);
 		return user;
 	}
 
@@ -1598,32 +1549,20 @@ public abstract class AbstractRenderer implements Renderer {
 		this.xmlModelValidator.checkGroup(xmlGroup);
 
 		final Group group = new Group();
-		group.setName(xmlGroup.getName());
-		group.setDescription(xmlGroup.getDescription());
-		group.setRealname(xmlGroup.getRealname());
-		group.setHomepage(createURL(xmlGroup.getHomepage()));
-		if (xmlGroup.getUser().size() > 0) {
-			for (final UserType xmlUser : xmlGroup.getUser()) {
-				final User user = this.createUser(xmlUser);
+		setValue(group::setName, xmlGroup::getName);
+		setValue(group::setDescription, xmlGroup::getDescription);
+		setValue(group::setRealname, xmlGroup::getRealname);
+		setValue(group::setHomepage, xmlGroup::getHomepage, AbstractRenderer::createURL);
+		if (present(xmlGroup.getUser())) {
+			group.getMemberships().addAll(xmlGroup.getUser().stream().map(this::createUser).map(user -> {
 				final GroupMembership membership = new GroupMembership();
 				membership.setUser(user);
-				group.getMemberships().add(membership);
-			}
+				return membership;
+			}).collect(Collectors.toList()));
 		}
-		final String organization = xmlGroup.getOrganization();
-		if (present(organization)) {
-			group.setOrganization(Boolean.parseBoolean(organization));
-		}
-
-		final String internalId = xmlGroup.getInternalId();
-		if (present(internalId)) {
-			group.setInternalId(internalId);
-		}
-
-		if (present(xmlGroup.getParent())) {
-			group.setParent(createGroup(xmlGroup.getParent()));
-		}
-
+		setValue(group::setOrganization, xmlGroup::getOrganization, Boolean::parseBoolean);
+		setValue(group::setInternalId, xmlGroup::getInternalId);
+		setValue(group::setParent, xmlGroup::getParent, this::createGroup);
 		return group;
 	}
 
@@ -1978,7 +1917,6 @@ public abstract class AbstractRenderer implements Renderer {
 		}
 
 	}
-
 
 	/**
 	 * @param xmlModelValidator the xmlModelValidator to set
