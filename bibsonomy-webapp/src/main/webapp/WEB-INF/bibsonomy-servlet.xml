@@ -56,6 +56,9 @@
 							<bean class="org.joda.time.format.DateTimeFormat" factory-method="forPattern">
 								<constructor-arg value="yyyy-MM-dd" />
 							</bean>
+							<bean class="org.joda.time.format.DateTimeFormat" factory-method="forPattern">
+								<constructor-arg value="dd.MM.yyyy" />
+							</bean>
 						</list>
 					</property>
 				</bean>
@@ -585,7 +588,7 @@
 						<property name="controllerBeanName" value="projectReportingPageController"/>
 						<property name="allowedFields">
 							<list>
-								<value>format</value>
+								<value>downloadFormat</value>
 								<value>fieldKeys</value>
 								<value>search</value>
 								<value>type</value>
@@ -600,7 +603,7 @@
 						<property name="controllerBeanName" value="publicationReportingPageController"/>
 						<property name="allowedFields">
 							<list>
-								<value>format</value>
+								<value>downloadFormat</value>
 								<value>fieldKeys</value>
 								<value>search</value>
 								<value>startDate</value>
@@ -617,7 +620,7 @@
 						<property name="controllerBeanName" value="personReportingPageController"/>
 						<property name="allowedFields">
 							<list>
-								<value>format</value>
+								<value>downloadFormat</value>
 								<value>fieldKeys</value>
 								<value>search</value>
 

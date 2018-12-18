@@ -29,7 +29,7 @@ public class ProjectReportingPageController implements MinimalisticController<Pr
 		final ProjectQuery projectQuery = ProjectQuery.createBuilder().search(command.getSearch()).
 						startDate(command.getStartDate()).endDate(command.getEndDate()).type(command.getType()).build();
 		command.setProjects(logic.getProjects(projectQuery));
-		if (ValidationUtils.present(command.getFormat())) {
+		if (ValidationUtils.present(command.getDownloadFormat())) {
 			return Views.REPORTING_DOWNLOAD;
 		}
 		return Views.PROJECTS_REPORTING;
