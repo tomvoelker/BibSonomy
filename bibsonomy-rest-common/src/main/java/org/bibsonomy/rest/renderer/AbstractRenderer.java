@@ -27,6 +27,7 @@
 package org.bibsonomy.rest.renderer;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
