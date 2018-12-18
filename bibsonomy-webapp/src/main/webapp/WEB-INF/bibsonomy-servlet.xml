@@ -591,9 +591,13 @@
 								<value>downloadFormat</value>
 								<value>fieldKeys</value>
 								<value>search</value>
+								<value>prefix</value>
 								<value>type</value>
+								<value>sponsor</value>
 								<value>startDate</value>
 								<value>endDate</value>
+								<value>person</value>
+								<value>organization</value>
 							</list>
 						</property>
 					</bean>
@@ -623,7 +627,7 @@
 								<value>downloadFormat</value>
 								<value>fieldKeys</value>
 								<value>search</value>
-
+								<value>prefix</value>
 							</list>
 						</property>
 					</bean>

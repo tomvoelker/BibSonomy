@@ -25,8 +25,8 @@ public class PostQueryBuilder {
 	private boolean onlyIncludeAuthorsWithoutPersonId;
 	private List<PersonName> personNames;
 	private String search;
-	private int start;
-	private int end;
+	private int start = 0;
+	private int end = 10;
 
 	public <R extends Resource> PostQuery<R> createPostQuery(Class<R> resourceClass) {
 		final PostQuery<R> postQuery = new PostQuery<>(resourceClass);

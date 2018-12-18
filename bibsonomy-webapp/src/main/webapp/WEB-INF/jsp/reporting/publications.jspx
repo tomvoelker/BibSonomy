@@ -14,15 +14,12 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"/>
 
-	<fmt:message var="pageTitle" key="navi.search"/>
+	<fmt:message var="pageTitle" key="navi.export.publications"/>
 
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 
 	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.publications" command="${command}"
 					   pageTitle="${pageTitle}" activeTab="publications">
-		 <jsp:attribute name="headerExt">
-            <script type="text/javascript" src="${resdir}/javascript/publications.js"><!-- keep me --></script>
-        </jsp:attribute>
 
 		<!--+
 			  | heading
@@ -44,16 +41,9 @@
 		 	| content
 		 	+-->
 		<jsp:attribute name="content">
-
-            <div class="text-right btn-toolbar">
-                <button class="btn btn-primary btn-sm" id="sort-title" onclick="sortList('title')">
-                    <fmt:message key="post.resource.sort.title"/>
-                </button>
-                <c:set var="searchPlaceholder">
-                    <fmt:message key="post_publication.search"/>
-                </c:set>
-                <input id="search-publication-input" placeholder="${searchPlaceholder}" onkeyup="displaySearch()"/>
-            </div>
+			<parts:searchHeader headerMessageKey="reporting.publications.header"
+								searchPlaceholderKey="reporting.publications.search"
+								requPathAndQuery="${requPathAndQuery}" command="${command}"/>
 
 			<reporting:export requPathAndQuery="${requPathAndQuery}"/>
 

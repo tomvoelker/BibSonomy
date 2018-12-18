@@ -27,8 +27,12 @@ public class ProjectReportingPageController implements MinimalisticController<Pr
 	@Override
 	public View workOn(ProjectReportingCommand command) {
 		final ProjectQuery projectQuery = ProjectQuery.createBuilder().search(command.getSearch()).
-						startDate(command.getStartDate()).endDate(command.getEndDate()).type(command.getType()).build();
-		command.setProjects(logic.getProjects(projectQuery));
+						startDate(command.getStartDate()).endDate(command.getEndDate()).type(command.getType()).
+						sponsor(command.getSponsor()).prefix(command.getPrefix()).
+						start(command.getProjects().getStart()).
+						end(command.getProjects().getStart() + command.getProjects().getEntriesPerPage()).
+						person(command.getPerson()).organization(command.getOrganization()).build();
+		command.getProjects().setList(logic.getProjects(projectQuery));
 		if (ValidationUtils.present(command.getDownloadFormat())) {
 			return Views.REPORTING_DOWNLOAD;
 		}
