@@ -1262,13 +1262,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	 *
 	 * Although this is a one-to-one relationship a list is provided since it will be part of a larger chain.
 	 *
-	 * @param externalId an external id.
+	 * @param internalId an internal id.
 	 * @param session a database session.
 	 *
 	 * @return a list of groups with the external id.
 	 */
-	public Group getGroupByExternalId(String externalId, DBSession session) {
-		return this.queryForObject("getGroupByExternalId", externalId, Group.class, session);
+	public Group getGroupByInternalId(final String internalId, final DBSession session) {
+		return this.queryForObject("getGroupByInternalId", internalId, Group.class, session);
 	}
 
 	@Override

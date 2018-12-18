@@ -839,17 +839,16 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertThat(results, hasItems(parentId));
 	}
 
-	private void queryGroupByExternalIdAndValidateWithGroupname(String externalId, String groupName) {
-		Group group = groupDb.getGroupByExternalId(externalId, this.dbSession);
+	private void queryGroupByInternalIdAndValidateWithGroupname(String externalId, String groupName) {
+		Group group = groupDb.getGroupByInternalId(externalId, this.dbSession);
 		assertThat(group.getName(), equalTo(groupName));
 	}
 
-
 	@Test
 	public void testGetGroupByExternalId() {
-		queryGroupByExternalIdAndValidateWithGroupname("extid1", "testgroup1");
-		queryGroupByExternalIdAndValidateWithGroupname("extid2", "testgroup2");
-		queryGroupByExternalIdAndValidateWithGroupname("extid3", "testgroup3");
+		queryGroupByInternalIdAndValidateWithGroupname("extid1", "testgroup1");
+		queryGroupByInternalIdAndValidateWithGroupname("extid2", "testgroup2");
+		queryGroupByInternalIdAndValidateWithGroupname("extid3", "testgroup3");
 	}
 
 

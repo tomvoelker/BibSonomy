@@ -309,7 +309,7 @@
 			</iterate>
 	</select>
 
-	<select id="getGroupByExternalId" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
+	<select id="getGroupByInternalId" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
 		SELECT <include refid="basicColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date
 			FROM groupids i
 				JOIN group_memberships g USING (`group`)
