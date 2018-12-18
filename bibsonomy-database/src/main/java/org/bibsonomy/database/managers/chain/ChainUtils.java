@@ -45,8 +45,7 @@ public class ChainUtils {
 	public static boolean useResourceSearch(final GenericParam param) {
 		final PermissionDatabaseManager pdm = PermissionDatabaseManager.getInstance();
 		final List<TagIndex> tagIndex = param.getTagIndex();
-	
-		
+
 		/*
 		 * Are there Negation tags?
 		 */
@@ -68,15 +67,18 @@ public class ChainUtils {
 		if ((present(tagIndex) && pdm.useResourceSearchForTagQuery(tagIndex.size())) ||	existsNegatedTags) {
 			return true;
 		}
-		if ((param.getGrouping() == GroupingEntity.ALL) && (param.getNumSimpleConcepts() > 0)) {
+
+		final GroupingEntity grouping = param.getGrouping();
+		if ((grouping == GroupingEntity.ALL) && (param.getNumSimpleConcepts() > 0)) {
 			return true;
 		}
 		/*
-		 * Handle requests for groups.
+		 * Handle requests for groups and organizations
 		 */
-		if (param.getGrouping() == GroupingEntity.GROUP)
+		if (grouping == GroupingEntity.GROUP || GroupingEntity.ORGANIZATION.equals(grouping)) {
 			return true;
-		
+		}
+
 		return false;
 	}
 

@@ -6,12 +6,13 @@
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
-		  xmlns:fmt="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 		  xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
 		  xmlns:person="urn:jsptagdir:/WEB-INF/tags/person"
 		  xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 		  xmlns:organization="urn:jsptagdir:/WEB-INF/tags/organization"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 >
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"/>
@@ -25,11 +26,10 @@
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search"
 						  formInputValue="${title}"/>
 		</jsp:attribute>
-
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<nav:crumb nameKey="organizations" leadingIcon="fa-sitemap"/>
+					<nav:crumb nameKey="person.show.organizations" leadingIcon="fa-sitemap"/>
 					<nav:crumb name="${organization.realname}" active="true"/>
 				</jsp:attribute>
 			</nav:breadcrumbs>
@@ -40,108 +40,136 @@
 				<h1 class="organization-title">
 					<c:out value="${organization.realname}"/>
 				</h1>
-				<c:if test="${not empty organization.parent}">
+				<c:set var="parent" value="${organization.parent}" />
+				<c:if test="${not empty parent}">
 					<h2 class="organization-parent-title">
-						<c:out value="${organization.parent.realname}"/>
+						<a href="${relativeUrlGenerator.getOrganizationUrlByName(parent.name)}">
+							<!-- TODO: remove after realname is set -->
+							<c:out value="${organization.parent.name}" />
+							<c:out value="${organization.parent.realname}"/>
+						</a>
 					</h2>
 				</c:if>
 				<a href="${organization.homepage}"><c:out value="${organization.homepage}"/></a>
 			</div>
 			<div class="row">
-				<div class="col-md-3">
-					<fontawesome:icon icon="home"/><a href="#organization-description">Description</a>
-				</div>
-				<div class="col-md-3">
-					<a href="#organization-publications">Publications</a>
-					<span style="position:relative; top: -3px; left: 3px;"
-						  title="total:  ${fmt:length(organization.posts)} publications"
-						  class="badge">${fmt:length(organization.posts)}</span>
-				</div>
-				<div class="col-md-3">
-					<a href="#organization-persons">People</a>
-					<span style="position:relative; top: -3px; left: 3px;"
-						  title="total:  ${fmt:length(command.persons.list)} persons"
-						  class="badge">${fmt:length(command.persons.list)}</span>
-				</div>
-				<div class="col-md-3">
-					<a href="#organization-projects">Projects</a>
-					<span style="position:relative; top: -3px; left: 3px;"
-						  title="total:  ${fmt:length(command.projects.list)} projects"
-						  class="badge">${fmt:length(command.projects.list)}</span>
+				<div class="col-md-12">
+					<ul class="nav nav-pills">
+						<li class="active">
+							<a href="#organization-description" role="tab" data-toggle="pill">
+								<fontawesome:icon icon="info" spaceAfter="5"/>
+								Description
+							</a>
+						</li>
+
+						<c:set var="peopleCount" value="${command.persons.totalCount}" />
+						<li>
+							<a href="#organization-persons" role="tab" data-toggle="pill">
+								<fontawesome:icon icon="users" spaceAfter="5" />
+								<fmt:message key="persons" />
+								<span title="total: ${peopleCount} people" class="badge">${peopleCount}</span>
+							</a>
+						</li>
+						<li>
+							<c:set var="publicationCount" value="${command.bibtex.totalCount}" />
+							<a href="#organization-publications" role="tab" data-toggle="pill">
+								<fontawesome:icon icon="book" spaceAfter="5" />
+								<fmt:message key="publications" />
+								<span class="badge" title="total:  ${publicationCount} publications">
+									${publicationCount}
+								</span>
+							</a>
+						</li>
+						<li>
+							<c:set var="projectCount" value="${command.projects.totalCount}" />
+							<a href="#organization-projects" role="tab" data-toggle="pill">
+								<fontawesome:icon icon="project-diagram" spaceAfter="5" />
+								<fmt:message key="navi.projects" />
+								<span class="badge" title="total:  ${projectCount} projects">${projectCount}</span>
+							</a>
+						</li>
+					</ul>
+
 				</div>
 			</div>
 
-			<div class="row" id="organization-description">
-				<div class="col-md-10">
-					<h3 class="list-headline">
-						<c:out value="Description"/>
-					</h3>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-10">
-					<c:out value="${organization.description}"/>
-				</div>
-			</div>
-
-			<div class="row">
-				<div id="organization-publications" class="col-md-10 publication-list">
-					<div id="publications_0" class="publicationsContainer standard">
-					<resources:bibtexs listView="${command.bibtex}"
-									   loginUserName="${command.context.loginUser.name}"
-									   disableListNavigation="true"
-									   requPath=""
-									   widthClassName="wide"
-									   isClipboard="false"
-									   showBookmark="false"
-									   showPublication="true"
-									   additionalSorting="${additionalSorting}">
-						<jsp:attribute name="addAsLastItem">
-							<c:if test="true">
-								<div id="publicationsfooter" class="wide">
-									<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
-								</div>
-							</c:if>
-						</jsp:attribute>
-					</resources:bibtexs>
+			<div class="tab-content">
+				<div class="tab-pane fade in active" id="organization-description">
+					<div class="row" >
+						<div class="col-md-10">
+							<h3 class="list-headline">
+								<c:out value="Description"/>
+							</h3>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-10">
+							<c:out value="${organization.description}"/>
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<div class="row">
-				<div class="col-md-10">
-					<h3 class="list-headline">
-						<c:out value="Persons"/>
-					</h3>
-				</div>
-			</div>
-			<div class="row">
-				<person:personList listCommand="${command.persons}" />
-			</div>
-
-			<div class="row">
-				<div class="col-md-10">
-					<h3 class="list-headline">
-						<c:out value="Projects"/>
-					</h3>
-				</div>
-			</div>
-			<div class="row">
-				<div id="organization-projects" class="col-md-12">
-					<c:forEach var="i" begin="0" end="${fmt:length(command.projects.list)-1}" step="3">
-						<div class="row">
-							<c:set var="project" value="${command.projects.list[i]}"/>
-							<organization:projectView project="${project}"/>
-							<c:if test="${i+1 lt fmt:length(command.projects.list)}">
-								<c:set var="project" value="${command.projects.list[i+1]}"/>
-								<organization:projectView project="${project}"/>
-							</c:if>
-							<c:if test="${i+2 lt fmt:length(command.projects.list)}">
-								<c:set var="project" value="${command.projects.list[i+2]}"/>
-								<organization:projectView project="${project}"/>
-							</c:if>
+				<div class="row tab-pane fade" id="organization-publications">
+					<div  class="col-md-10 publication-list">
+						<div id="publications_0" class="publicationsContainer standard">
+						<resources:bibtexs listView="${command.bibtex}"
+										   loginUserName="${command.context.loginUser.name}"
+										   disableListNavigation="true"
+										   requPath=""
+										   widthClassName="wide"
+										   isClipboard="false"
+										   showBookmark="false"
+										   showPublication="true"
+										   additionalSorting="${additionalSorting}">
+							<jsp:attribute name="addAsLastItem">
+								<c:if test="true">
+									<div id="publicationsfooter" class="wide">
+										<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
+									</div>
+								</c:if>
+							</jsp:attribute>
+						</resources:bibtexs>
 						</div>
-					</c:forEach>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="organization-persons">
+					<div class="row">
+						<div class="col-md-10">
+							<h3 class="list-headline">
+								<c:out value="Persons"/>
+							</h3>
+						</div>
+					</div>
+					<div class="row">
+						<person:personList listCommand="${command.persons}" />
+					</div>
+				</div>
+				<div class="tab-pane fade" id="organization-projects">
+					<div class="row">
+						<div class="col-md-10">
+							<h3 class="list-headline">
+								<fmt:message key="navi.projects" />
+							</h3>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<c:forEach var="i" begin="0" end="${fn:length(command.projects.list)-1}" step="3">
+								<div class="row">
+									<c:set var="project" value="${command.projects.list[i]}"/>
+									<organization:projectView project="${project}"/>
+									<c:if test="${i+1 lt fn:length(command.projects.list)}">
+										<c:set var="project" value="${command.projects.list[i+1]}"/>
+										<organization:projectView project="${project}"/>
+									</c:if>
+									<c:if test="${i+2 lt fn:length(command.projects.list)}">
+										<c:set var="project" value="${command.projects.list[i+2]}"/>
+										<organization:projectView project="${project}"/>
+									</c:if>
+								</div>
+							</c:forEach>
+						</div>
+					</div>
 				</div>
 			</div>
 		</jsp:attribute>

@@ -1,6 +1,7 @@
 package org.bibsonomy.model.logic.query;
 
 import org.bibsonomy.common.enums.Prefix;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.enums.PersonOrder;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 
@@ -17,6 +18,8 @@ public class PersonQuery extends PersonSuggestionQueryBuilder implements Paginat
 	private int start = 0;
 	private int end = 20;
 	private PersonOrder order;
+	/** the organization to filter for */
+	private Group organization;
 
 	/**
 	 * @param query any combination of title, author-name
@@ -95,5 +98,19 @@ public class PersonQuery extends PersonSuggestionQueryBuilder implements Paginat
 	 */
 	public void setOrder(PersonOrder order) {
 		this.order = order;
+	}
+
+	/**
+	 * @return the organization
+	 */
+	public Group getOrganization() {
+		return organization;
+	}
+
+	/**
+	 * @param organization the organization to set
+	 */
+	public void setOrganization(Group organization) {
+		this.organization = organization;
 	}
 }
