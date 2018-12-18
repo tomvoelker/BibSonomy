@@ -1,5 +1,9 @@
 package org.bibsonomy.search.es.index.converter.cris;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.cris.Linkable;
@@ -17,6 +21,7 @@ import java.util.Map;
  * @author dzo
  */
 public class CRISTargetPersonConverter implements CRISEntityConverter<Person, Map<String, Object>, Object> {
+	private static final Log LOG = LogFactory.getLog(CRISTargetPersonConverter.class);
 
 	private static List<PersonName> convertToNames(Object o) {
 		final List<Map<String, Object>> values = (List<Map<String, Object>>) o;
@@ -25,7 +30,13 @@ public class CRISTargetPersonConverter implements CRISEntityConverter<Person, Ma
 
 		for (final Map<String, Object> personMapping : values) {
 			final String personNameStr = (String) personMapping.get(PersonFields.NAME);
-			final PersonName personName = PersonNameUtils.discoverPersonNamesIgnoreExceptions(personNameStr).get(0);
+			final List<PersonName> parsedPersonNames = PersonNameUtils.discoverPersonNamesIgnoreExceptions(personNameStr);
+			if (!present(parsedPersonNames)) {
+				LOG.error("error parsing " + personNameStr);
+				throw new IllegalStateException("error while converting es document to person");
+			}
+
+			final PersonName personName = parsedPersonNames.get(0);
 			personName.setMain((Boolean) personMapping.get(PersonFields.MAIN));
 			personNames.add(personName);
 		}
@@ -62,7 +73,9 @@ public class CRISTargetPersonConverter implements CRISEntityConverter<Person, Ma
 	public Person convert(Map<String, Object> source, Object options) {
 		final Person person = new Person();
 
-		person.setPersonId((String) source.get(PersonFields.PERSON_ID));
+		final String personID = (String) source.get(PersonFields.PERSON_ID);
+		LOG.debug("converting person '" + personID + "'");
+		person.setPersonId(personID);
 		person.setNames(convertToNames(source.get(PersonFields.NAMES)));
 
 		return person;
