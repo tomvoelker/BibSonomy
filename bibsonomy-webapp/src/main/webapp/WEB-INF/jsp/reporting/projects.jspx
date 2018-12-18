@@ -34,8 +34,10 @@
 			<script type="text/javascript" src="${resdir}/javascript/animate-scroll-affix.js"><!-- --></script>
 
 			<script type="text/javascript" src="${resdir}/typeahead.js/js/typeahead.bundle.js"><!-- keep me --></script>
-			<script type="text/javascript" src="${resdir}/javascript/person/personAutocomplete.js"><!-- keep me --></script>
-			<script type="text/javascript" src="${resdir}/javascript/person/autocompleteSearchPerson.js"><!-- keep me --></script>
+			<script type="text/javascript"
+					src="${resdir}/javascript/person/personAutocomplete.js"><!-- keep me --></script>
+			<script type="text/javascript"
+					src="${resdir}/javascript/person/autocompleteSearchPerson.js"><!-- keep me --></script>
 
 			<link rel="stylesheet" type="text/css" href="${resdir}/typeahead.js/css/typeahead.css"/>
 		</jsp:attribute>
@@ -57,18 +59,44 @@
 								searchPlaceholderKey="reporting.projects.search"
 								requPathAndQuery="${requPathAndQuery}" command="${command}"/>
 			<div class="heading">
-				<reporting:export requPathAndQuery="${requPathAndQuery}"/>
-				<spring:eval var="sponsorValues" expression="T(java.util.Arrays).asList('test')"/>
-				<reporting:filter requPathAndQuery="${requPathAndQuery}" filterName="Sponsor"
-								  filterValues="${sponsorValues}" filterField="sponsor"/>
-				<spring:eval var="typeValues" expression="T(java.util.Arrays).asList('test')"/>
-				<reporting:filter requPathAndQuery="${requPathAndQuery}" filterName="Type"
-								  filterField="type" filterValues="${typeValues}"/>
-
-				<reporting:date_filter requPathAndQuery="${requPathAndQuery}" filterName="Start Date"
-									   filterField="startDate"/>
-				<reporting:date_filter requPathAndQuery="${requPathAndQuery}" filterName="End Date"
-									   filterField="endDate"/>
+				<div class="row">
+					<div class="col-md-3">
+						<reporting:date_filter requPathAndQuery="${requPathAndQuery}" filterName="End Date"
+											   filterField="endDate"/>
+					</div>
+					<div class="col-md-3">
+						<spring:eval var="sponsorValues" expression="T(java.util.Arrays).asList('test')"/>
+						<reporting:filter requPathAndQuery="${requPathAndQuery}" filterName="Sponsor"
+										  filterValues="${sponsorValues}" filterField="sponsor"/>
+					</div>
+					<div class="col-md-3">
+						<spring:eval var="typeValues" expression="T(java.util.Arrays).asList('test')"/>
+						<reporting:filter requPathAndQuery="${requPathAndQuery}" filterName="Type"
+										  filterField="type" filterValues="${typeValues}"/>
+					</div>
+					<div class="col-md-3">
+						<reporting:date_filter requPathAndQuery="${requPathAndQuery}" filterName="Start Date"
+											   filterField="startDate"/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-5">
+						<form>
+							<input class='form-control typeahead' id='searchPersonAutocomplete'
+								   name='person' autocomplete="on" placeholder='search by person'/>
+						</form>
+					</div>
+					<div class="col-md-5">
+						<form>
+							<input class='form-control typeahead' id='searchOrganizationAutocomplete'
+								   name='organization'
+								   autocomplete="on" placeholder='search by organization'/>
+						</form>
+					</div>
+					<div class="col-md-2">
+						<reporting:export requPathAndQuery="${requPathAndQuery}"/>
+					</div>
+				</div>
 			</div>
 
 			<div class="row">
