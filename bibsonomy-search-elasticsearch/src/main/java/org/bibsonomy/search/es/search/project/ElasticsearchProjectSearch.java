@@ -63,10 +63,20 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 	@Override
 	protected BoolQueryBuilder buildFilterQuery(User loggedinUser, ProjectQuery query) {
 		final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery();
+
+		/*
+		 * type and sponsor filters
+		 */
 		final String type = query.getType();
 		if (present(type)) {
 			final TermQueryBuilder typeQuery = QueryBuilders.termQuery(ProjectFields.TYPE, type);
 			filterQuery.must(typeQuery);
+		}
+
+		final String sponsor = query.getSponsor();
+		if (present(sponsor)) {
+			final TermQueryBuilder sponsorQuery = QueryBuilders.termQuery(ProjectFields.SPONSOR, sponsor);
+			filterQuery.must(sponsorQuery);
 		}
 
 		final ProjectStatus projectStatus = query.getProjectStatus();
