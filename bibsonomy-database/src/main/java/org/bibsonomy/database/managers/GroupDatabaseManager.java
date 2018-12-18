@@ -608,7 +608,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	    return this.queryForList("getParentGroupsWhereUserIsMember", new GetParentGroupIdsRecursively(username, groupName), Integer.class, session);
     }
 
-
 	/**
 	 * Activates a group.
 	 *
@@ -691,7 +690,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	 * @param group a group.
 	 * @param session a database session.
 	 */
-	public void createGroup(final Group group, final DBSession session) {
+	public void createPendingGroup(final Group group, final DBSession session) {
 		final String groupName = group.getName();
 
 		final String normedGroupName = this.getNormedGroupName(groupName);

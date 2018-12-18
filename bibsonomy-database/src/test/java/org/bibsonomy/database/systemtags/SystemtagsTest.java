@@ -654,7 +654,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		groupRequest.setUserName("testrequestuser1");
 		groupRequest.setReason("testrequestreason1");
 		group.setGroupRequest(groupRequest);
-		groupDb.createGroup(group, this.dbSession);
+		groupDb.createPendingGroup(group, this.dbSession);
 		groupDb.activateGroup(name, USER_TESTUSER_1, this.dbSession);
 
 		return group;

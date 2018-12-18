@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.cris;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.bibsonomy.model.Person;
@@ -28,7 +30,7 @@ public class PersonsPageController implements MinimalisticController<PersonsPage
 	@Override
 	public PersonsPageCommand instantiateCommand() {
 		final PersonsPageCommand personsPageCommand = new PersonsPageCommand();
-		personsPageCommand.getPersons().setEntriesPerPage(3);
+		personsPageCommand.getPersons().setEntriesPerPage(30);
 		return personsPageCommand;
 	}
 
@@ -36,12 +38,13 @@ public class PersonsPageController implements MinimalisticController<PersonsPage
 	public View workOn(final PersonsPageCommand command) {
 		final boolean isUserLoggedin = command.getContext().isUserLoggedIn();
 		final ListCommand<Person> personListCommand = command.getPersons();
-		final PersonQuery query = new PersonQuery(command.getSearch());
+		final String search = command.getSearch();
+		final PersonQuery query = new PersonQuery(search);
 		query.setPrefix(command.getPrefix());
 		final int personListStart = personListCommand.getStart();
 		query.setStart(personListStart);
 		query.setEnd(personListStart + personListCommand.getEntriesPerPage());
-		query.setOrder(PersonOrder.MAIN_NAME_LAST_NAME);
+		query.setOrder(present(search) ? null : PersonOrder.MAIN_NAME_LAST_NAME);
 		if (!isUserLoggedin || !command.isShowAllPersons()) {
 			query.setCollege(this.crisCollege);
 		}

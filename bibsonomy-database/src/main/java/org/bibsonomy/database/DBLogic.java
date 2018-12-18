@@ -130,6 +130,7 @@ import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
@@ -160,8 +161,6 @@ import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.query.Query;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
-import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
-import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -180,21 +179,6 @@ import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.ValidationUtils;
-
-import java.net.InetAddress;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
 
 /**
  * Database Implementation of the LogicInterface
@@ -1324,17 +1308,28 @@ public class DBLogic implements LogicInterface {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "The user is flagged as spammer - cannot create a group with this name");
 		}
 
+		final GroupRequest groupRequest = group.getGroupRequest();
+		if (!present(groupRequest)) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "No group request given");
+		} else {
+			this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, groupRequest.getUserName());
+			// this should be done by some validator
+			if (!present(groupRequest.getReason())) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "no reason provided");
+			}
+		}
+
 		/*
 		 * only allow administrators to create new organizations
 		 */
 		final boolean isOrganization = group.isOrganization();
-		final String externalGroupId = group.getInternalId();
-		if (present(externalGroupId) || isOrganization) {
+		final String internalGroupId = group.getInternalId();
+		if (present(internalGroupId) || isOrganization) {
 			this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		}
 
 		try (final DBSession session = this.openSession()) {
-			this.groupDBManager.createGroup(group, session);
+			this.groupDBManager.createPendingGroup(group, session);
 
 			/*
 			 * activate the group immediately if it's an organization

@@ -291,7 +291,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		newGroup.setGroupRequest(groupRequest);
 		newGroup.setOrganization(true);
 
-		groupDb.createGroup(newGroup, this.dbSession);
+		groupDb.createPendingGroup(newGroup, this.dbSession);
 		groupDb.activateGroup(newGroup.getName(), USER_TESTUSER_1, this.dbSession);
 		final Group newGroupTest = groupDb.getGroup(groupName, groupName, false, false, this.dbSession);
 		assertEquals(groupName, newGroupTest.getName());
@@ -322,7 +322,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			try {
 				final Group groupToCreate = new Group();
 				groupToCreate.setName(groupname);
-				groupDb.createGroup(groupToCreate, this.dbSession);
+				groupDb.createPendingGroup(groupToCreate, this.dbSession);
 				fail("Should throw an exception: groupname '" + groupname + "'");
 			} catch (final RuntimeException ignored) {
 				// ignore
@@ -334,7 +334,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			try {
 				final Group groupToCreate = new Group();
 				groupToCreate.setName(groupname);
-				groupDb.createGroup(groupToCreate, this.dbSession);
+				groupDb.createPendingGroup(groupToCreate, this.dbSession);
 				fail("Should throw an exception: groupname '" + groupname + "'");
 			} catch (final RuntimeException ignored) {
 				// ignore
@@ -648,7 +648,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		groupRequest.setReason("testrequestreason1");
 		newGroup.setGroupRequest(groupRequest);
 
-		groupDb.createGroup(newGroup, this.dbSession);
+		groupDb.createPendingGroup(newGroup, this.dbSession);
 		groupDb.activateGroup(newGroup.getName(), USER_TESTUSER_1, this.dbSession);
 
 		final Group newGroupTest = groupDb.getGroup(groupName, groupName, false, false, this.dbSession);
@@ -683,7 +683,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		groupRequest.setReason("testrequestreason1");
 		newGroup.setGroupRequest(groupRequest);
 
-		groupDb.createGroup(newGroup, this.dbSession);
+		groupDb.createPendingGroup(newGroup, this.dbSession);
 		groupDb.activateGroup(newGroup.getName(), USER_TESTUSER_1, this.dbSession);
 
 		final Group newGroupTest = groupDb.getGroup(groupName, groupName, false, false, this.dbSession);
@@ -730,7 +730,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		groupRequest.setReason("testrequestreason1");
 		newGroup.setGroupRequest(groupRequest);
 
-		groupDb.createGroup(newGroup, this.dbSession);
+		groupDb.createPendingGroup(newGroup, this.dbSession);
 		groupDb.activateGroup(newGroup.getName(), USER_TESTUSER_1, this.dbSession);
 
 		final Group newGroupTest = groupDb.getGroup(groupName, groupName, false, false, this.dbSession);
