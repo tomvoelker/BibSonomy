@@ -91,19 +91,27 @@
 					<c:otherwise>
 						<c:set var="list" value="${command.groups.list}" />
 						<c:set var="listLength" value="${fn:length(list)}" />
-						<c:set var="columns" value="2" />
-						<c:forEach var="i" begin="0" end="${listLength - 1}" step="${columns}">
-							<div class="row">
-								<c:forEach var="offset" begin="0" end="${columns - 1}">
-									<c:set var="position" value="${i + offset}" />
-									<c:if test="${position lt listLength}">
-										<c:set var="orga" value="${list[position]}"/>
-										<organization:organizationInfoCard organization="${orga}"/>
-									</c:if>
+						<c:choose>
+							<c:when test="${listLength gt 0}">
+								<c:set var="columns" value="2" />
+								<c:forEach var="i" begin="0" end="${listLength - 1}" step="${columns}">
+									<div class="row">
+										<c:forEach var="offset" begin="0" end="${columns - 1}">
+											<c:set var="position" value="${i + offset}" />
+											<c:if test="${position lt listLength}">
+												<c:set var="orga" value="${list[position]}"/>
+												<organization:organizationInfoCard organization="${orga}"/>
+											</c:if>
+										</c:forEach>
+									</div>
 								</c:forEach>
+							</c:when>
+							<c:otherwise>
+								<div class="no-items-found">
+								<fmt:message key="organizations.noResult" />
 							</div>
-						</c:forEach>
-
+							</c:otherwise>
+						</c:choose>
 					</c:otherwise>
 				</c:choose>
 				<rc:nextprev listView="${command.groups}" listViewStartParamName="groups.start"/>
