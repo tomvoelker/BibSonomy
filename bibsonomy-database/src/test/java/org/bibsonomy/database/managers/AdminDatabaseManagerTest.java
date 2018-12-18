@@ -297,7 +297,7 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		groupRequest.setReason("testrequestreason1");
 		newGroup.setGroupRequest(groupRequest);
 
-		groupDatabaseManager.createGroup(newGroup, this.dbSession);
+		groupDatabaseManager.createPendingGroup(newGroup, this.dbSession);
 		groupDatabaseManager.activateGroup(newGroup.getName(), USER_TESTUSER_1, this.dbSession);
 
 		user.setSpammer(Boolean.TRUE);
