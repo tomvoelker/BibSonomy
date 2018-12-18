@@ -5,14 +5,12 @@
 		  xmlns:c="http://java.sun.com/jsp/jstl/core"
 		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-		  xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
-		  xmlns:project="urn:jsptagdir:/WEB-INF/tags/resources/project"
 		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 		  xmlns:spring="http://www.springframework.org/tags"
-		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-		  xmlns:lists="urn:jsptagdir:/WEB-INF/tags/layout/parts/lists">
+		  xmlns:lists="urn:jsptagdir:/WEB-INF/tags/layout/parts/lists"
+		  xmlns:project="urn:jsptagdir:/WEB-INF/tags/project">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
 
@@ -57,7 +55,8 @@
 					</div>
 				</div>
 				<div class="col-md-3 vcenter">
-					<lists:listResultInfo listCommand="${personListCommand}" messageKey="projects.results.description" />
+					<lists:listResultInfo listCommand="${projectListCommand}"
+										  messageKey="projects.results.description" />
 				</div>
 				<div class="col-md-3 text-right vcenter">
 					<div class="btn-group">
@@ -82,22 +81,7 @@
 			<hr class="option-result-divider"/>
             <div class="row" >
 				<div class="col-md-12">
-					<c:choose>
-						<c:when test="${fn:length(projectListCommand.list) gt 0}">
-							<ul class="list-unstyled" id="projects">
-								<c:forEach var="project" items="${projectListCommand.list}">
-									<project:listview project="${project}"/>
-								</c:forEach>
-							</ul>
-						</c:when>
-						<c:otherwise>
-							<div class="no-items-found">
-								<fmt:message key="projects.noResult" />
-							</div>
-						</c:otherwise>
-					</c:choose>
-
-					<rc:nextprev listView="${command.projects}" listViewStartParamName="projects.start"/>
+					<project:listview projectListCommand="${projectListCommand}" />
 				</div>
 			</div>
 		</jsp:attribute>

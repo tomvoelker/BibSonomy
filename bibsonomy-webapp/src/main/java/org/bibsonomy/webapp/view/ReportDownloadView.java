@@ -39,7 +39,7 @@ public class ReportDownloadView extends AbstractView {
 		}
 		setResponseValues(exporter, response, command.getFilename());
 		//TODO use subset of mappings?
-		exporter.save(command.getProjects(), outputStream, ReportDownloadViewUtils.INSTANCE.getProjectMappings());
+		exporter.save(command.getProjects().getList(), outputStream, ReportDownloadViewUtils.INSTANCE.getProjectMappings());
 	}
 
 	private void exportPublications(PublicationReportingCommand command, OutputStream outputStream,

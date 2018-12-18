@@ -645,12 +645,8 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private CRISLinkTypeType createXmlCRISLink(CRISLink crisLink) {
 		final CRISLinkTypeType crisLinkTypeType = new CRISLinkTypeType();
-		if (present(crisLink.getStartDate())) {
-			crisLinkTypeType.setStartDate(createXmlCalendar(crisLink.getStartDate()));
-		}
-		if (present(crisLink.getEndDate())) {
-			crisLinkTypeType.setEndDate(createXmlCalendar(crisLink.getEndDate()));
-		}
+		setValue(crisLinkTypeType::setStartDate, crisLink::getStartDate, this::createXmlCalendar);
+		setValue(crisLinkTypeType::setEndDate, crisLink::getEndDate, this::createXmlCalendar);
 		if (present(crisLink.getLinkType())) {
 			crisLinkTypeType.setLinkType(ProjectPersonLinkTypeType.
 							valueOf(((ProjectPersonLinkType) crisLink.getLinkType()).name()));
@@ -658,8 +654,8 @@ public abstract class AbstractRenderer implements Renderer {
 		if (present(crisLink.getDataSource())) {
 			crisLinkTypeType.setDataSource(CRISLinkDataSourceType.valueOf(crisLink.getDataSource().name()));
 		}
-		crisLinkTypeType.setSource(createXmlLinkable(crisLink.getSource()));
-		crisLinkTypeType.setTarget(createXmlLinkable(crisLink.getTarget()));
+		setValue(crisLinkTypeType::setSource, crisLink::getSource, this::createXmlLinkable);
+		setValue(crisLinkTypeType::setTarget, crisLink::getTarget, this::createXmlLinkable);
 		return crisLinkTypeType;
 	}
 
@@ -918,26 +914,19 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private GroupType createXmlGroup(final Group group) {
 		final GroupType xmlGroup = new GroupType();
-		xmlGroup.setName(group.getName());
-		xmlGroup.setDescription(group.getDescription());
-		xmlGroup.setRealname(group.getRealname());
-		if (present(group.getHomepage())) {
-			xmlGroup.setHomepage(group.getHomepage().toString());
-		}
-		xmlGroup.setHref(this.urlRenderer.createHrefForGroup(group.getName()));
-		xmlGroup.setDescription(group.getDescription());
+		setValue(xmlGroup::setName, group::getName);
+		setValue(xmlGroup::setDescription, group::getDescription);
+		setValue(xmlGroup::setRealname, group::getRealname);
+		setValue(xmlGroup::setHomepage, group::getHomepage, URL::toString);
+		setValue(xmlGroup::setInternalId, group::getInternalId);
+		setValue(xmlGroup::setParent, group::getParent, this::createXmlGroup);
+		setValue(xmlGroup::setHref, group::getName, urlRenderer::createHrefForGroup);
 		if (present(group.getMemberships())) {
-			group.getMemberships().stream().map(GroupMembership::getUser).
-							map(this::createXmlUser).forEach(xmlGroup.getUser()::add);
-		}
-		if (present(group.getParent())) {
-			xmlGroup.setParent(createXmlGroup(group.getParent()));
+			xmlGroup.getUser().addAll(group.getMemberships().stream().map(GroupMembership::getUser).
+							map(this::createXmlUser).collect(Collectors.toList()));
 		}
 		if (group.isOrganization()) {
 			xmlGroup.setOrganization(Boolean.TRUE.toString());
-		}
-		if (present(group.getInternalId())) {
-			xmlGroup.setInternalId(group.getInternalId());
 		}
 		return xmlGroup;
 	}

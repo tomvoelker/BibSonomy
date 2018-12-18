@@ -32,7 +32,7 @@ public class PersonReportingPageController implements MinimalisticController<Per
 		PersonQuery query = new PersonQuery(command.getQuery());
 		List<Person> personList = logic.getPersons(query);
 		command.setPersonList(personList);
-		if (ValidationUtils.present(command.getFormat())) {
+		if (ValidationUtils.present(command.getDownloadFormat())) {
 			return Views.REPORTING_DOWNLOAD;
 		}
 		return Views.PERSONS_REPORTING;

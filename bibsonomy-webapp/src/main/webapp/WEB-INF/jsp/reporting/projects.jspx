@@ -7,11 +7,10 @@
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
-		  xmlns:project="urn:jsptagdir:/WEB-INF/tags/resources/project"
-		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 		  xmlns:reporting="urn:jsptagdir:/WEB-INF/tags/reporting"
-		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 		  xmlns:spring="http://www.springframework.org/tags"
+		  xmlns:project="urn:jsptagdir:/WEB-INF/tags/project"
+		  xmlns:lists="urn:jsptagdir:/WEB-INF/tags/layout/parts/lists"
 >
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"/>
@@ -30,6 +29,17 @@
 			<parts:search pathMessageKey="navi.projects" formAction="/project/" formInputName="project"/>
 		</jsp:attribute>
 
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/animatescroll.js"><!-- --></script>
+			<script type="text/javascript" src="${resdir}/javascript/animate-scroll-affix.js"><!-- --></script>
+
+			<script type="text/javascript" src="${resdir}/typeahead.js/js/typeahead.bundle.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/person/personAutocomplete.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/person/autocompleteSearchPerson.js"><!-- keep me --></script>
+
+			<link rel="stylesheet" type="text/css" href="${resdir}/typeahead.js/css/typeahead.css"/>
+		</jsp:attribute>
+
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
@@ -46,32 +56,32 @@
 			<parts:searchHeader headerMessageKey="reporting.projects.header"
 								searchPlaceholderKey="reporting.projects.search"
 								requPathAndQuery="${requPathAndQuery}" command="${command}"/>
+			<div class="heading">
+				<reporting:export requPathAndQuery="${requPathAndQuery}"/>
+				<spring:eval var="sponsorValues" expression="T(java.util.Arrays).asList('test')"/>
+				<reporting:filter requPathAndQuery="${requPathAndQuery}" filterName="Sponsor"
+								  filterValues="${sponsorValues}" filterField="sponsor"/>
+				<spring:eval var="typeValues" expression="T(java.util.Arrays).asList('test')"/>
+				<reporting:filter requPathAndQuery="${requPathAndQuery}" filterName="Type"
+								  filterField="type" filterValues="${typeValues}"/>
 
-			<reporting:export requPathAndQuery="${requPathAndQuery}"/>
-			<spring:eval var="sponsorValues" expression="T(java.util.Arrays).asList('test')"/>
-			<reporting:filter requPathAndQuery="${requPathAndQuery}" filterName="Sponsor"
-							  filterValues="${sponsorValues}" filterField="sponsor"/>
+				<reporting:date_filter requPathAndQuery="${requPathAndQuery}" filterName="Start Date"
+									   filterField="startDate"/>
+				<reporting:date_filter requPathAndQuery="${requPathAndQuery}" filterName="End Date"
+									   filterField="endDate"/>
+			</div>
 
-			<reporting:date_filter requPathAndQuery="${requPathAndQuery}" filterName="Start Date" filterField="startDate"/>
-			<reporting:date_filter requPathAndQuery="${requPathAndQuery}" filterName="End Date" filterField="endDate" />
+			<div class="row">
+				<div class="col-md-12 vcenter">
+					<lists:listResultInfo listCommand="${command.projects}"
+										  messageKey="projects.results.description"/>
+				</div>
+			</div>
 
-            <div class="text-info">
-                <dl class="group-list">
-                    <dt>
-                        <fmt:message key="project.amountprojects"/>
-                    </dt>
-                    <dd id="amount-projects">
-                        <c:out value="${fn:length(command.projects)}"/>
-                    </dd>
-                </dl>
-                <hr/>
-            </div>
-            <div id="projects">
-				<ul class="list-group" id="all-projects">
-                    <c:forEach var="project" items="${command.projects}">
-                        <project:listview project="${project}"/>
-                    </c:forEach>
-				</ul>
+            <div class="row">
+				<div class="col-md-12">
+					<project:listview projectListCommand="${command.projects}"/>
+				</div>
 			</div>
             <nav aria-label="Page navigation example">
                 <p class="info" id="show-amount"/><br/>

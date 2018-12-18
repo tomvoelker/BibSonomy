@@ -4,6 +4,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.reporting.PublicationReportingCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -31,11 +32,11 @@ public class PublicationReportingPageController implements MinimalisticControlle
 
 	@Override
 	public View workOn(PublicationReportingCommand command) {
-		final PostQuery<BibTex> query = new PostQuery<>(BibTex.class);
-		//TODO set query params
+		final PostQuery<BibTex> query = new PostQueryBuilder().setStartDate(command.getStartDate()).
+						setEndDate(command.getEndDate()).createPostQuery(BibTex.class);
 		final List<Post<BibTex>> publications = logic.getPosts(query);
 		command.setPublications(publications);
-		if (ValidationUtils.present(command.getFormat())) {
+		if (ValidationUtils.present(command.getDownloadFormat())) {
 			return Views.REPORTING_DOWNLOAD;
 		}
 		return Views.PUBLICATIONS_REPORTING;

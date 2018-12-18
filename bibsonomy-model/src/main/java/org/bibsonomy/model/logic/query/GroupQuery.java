@@ -35,7 +35,9 @@ public class GroupQuery extends BasicQuery {
 	 * @param start      start index of the retrieved result set.
 	 * @param end        end index of the retrieved result set.
 	 */
-	public GroupQuery(final String search, final GroupOrder groupOrder, SortOrder sortOrder, final Prefix prefix, final boolean pending, final String userName, final String externalId, final Boolean organization, int start, int end) {
+	public GroupQuery(final String search, final GroupOrder groupOrder, SortOrder sortOrder, final Prefix prefix,
+										final boolean pending, final String userName, final String externalId, final Boolean organization,
+										int start, int end) {
 		this.setSearch(search);
 		this.setStart(start);
 		this.setEnd(end);

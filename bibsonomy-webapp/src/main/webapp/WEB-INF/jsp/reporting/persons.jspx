@@ -13,15 +13,12 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
 
-	<fmt:message var="pageTitle" key="navi.search"/>
+	<fmt:message var="pageTitle" key="navi.export.persons"/>
 
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 
 	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.persons" command="${command}"
 					   pageTitle="${pageTitle}" activeTab="persons">
-		 <jsp:attribute name="headerExt">
-            <script type="text/javascript" src="${resdir}/javascript/persons.js"><!-- keep me --></script>
-        </jsp:attribute>
 
 		<!--+
 			  | heading
@@ -44,18 +41,9 @@
 		 	+-->
 		<jsp:attribute name="content">
 
-            <div class="text-right btn-toolbar">
-                <button class="btn btn-primary btn-sm" id="sort-firstName" onclick="sortList('firstName')">
-                    <fmt:message key="person.sort.firstName"/>
-                </button>
-				<button class="btn btn-primary btn-sm" id="sort-lastName" onclick="sortList('lastName')">
-                    <fmt:message key="person.sort.lastName"/>
-                </button>
-                <c:set var="searchPlaceholder">
-                    <fmt:message key="person.search"/>
-                </c:set>
-                <input id="search-person-input" placeholder="${searchPlaceholder}" />
-            </div>
+			<parts:searchHeader headerMessageKey="reporting.persons.header"
+								searchPlaceholderKey="reporting.persons.search"
+								requPathAndQuery="${requPathAndQuery}" command="${command}"/>
 
 			<reporting:export requPathAndQuery="${requPathAndQuery}"/>
 
