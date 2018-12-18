@@ -1,18 +1,24 @@
 package org.bibsonomy.webapp.controller.cris;
 
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.cris.Project;
+import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.PersonOrder;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.webapp.command.ListCommand;
+import org.bibsonomy.model.logic.query.PersonQuery;
+import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.query.ProjectQuery;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.webapp.command.cris.OrganizationPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * controller that lists a organization with all the details
@@ -20,7 +26,8 @@ import java.util.Arrays;
  * request paths:
  * - /organization/ORGANIZATIONNAME
  *
- * @author dzo, pda
+ * @author dzo
+ * @author pda
  */
 public class OrganizationPageController implements MinimalisticController<OrganizationPageCommand> {
 
@@ -32,31 +39,29 @@ public class OrganizationPageController implements MinimalisticController<Organi
 	}
 
 	@Override
-	public View workOn(OrganizationPageCommand command) {
-		final Group group = logic.getGroupDetails(command.getRequestedOrganizationName(), false);
+	public View workOn(final OrganizationPageCommand command) {
+		final Group group = this.logic.getGroupDetails(command.getRequestedOrganizationName(), false);
 		command.setGroup(group);
 		// get persons for the organization
-		Person a = new Person(), b = new Person();
-		command.setPersons(new ListCommand<>(command, Arrays.asList(a, b)));
-		a.setMainName(new PersonName("Niemand", "Keiner"));
-		b.setMainName(new PersonName("Lolodld", "jsjapoij"));
-		a.setAcademicDegree("Dr.");
-		b.setAcademicDegree("Prof.Dr.");
-		a.setCollege("University of Würzburg");
-		b.setCollege("University of Würzburg");
+		final PersonQuery personOrganizationQuery = new PersonQuery(null);
+		personOrganizationQuery.setOrganization(group);
+		personOrganizationQuery.setOrder(PersonOrder.MAIN_NAME_LAST_NAME);
+		final List<Person> persons = this.logic.getPersons(personOrganizationQuery);
+		command.getPersons().setList(persons);
 
+		final ProjectQuery.ProjectQueryBuilder projectQueryBuilder = new ProjectQuery.ProjectQueryBuilder();
+		projectQueryBuilder.organization(group);
+		final List<Project> projects = this.logic.getProjects(projectQueryBuilder.build());
 		// get projects for the organization
-		command.setProjects(new ListCommand<>(command, Arrays.asList(logic.getProjectDetails("kallimachos"),
-						logic.getProjectDetails("regio"))));
+		command.getProjects().setList(projects);
 
-		// get publications for the organization
-		group.getPosts().addAll(Arrays.asList(logic.getPostDetails("82e097f84bf3891bdd856e11b31ad68e", "mho"),
-						logic.getPostDetails("9eb6e5899cb8f1a587ae6267d4d5f2e9", "jhi")));
-
-		ListCommand<Post<? extends Resource>> listCommand = new ListCommand<>(command, group.getPosts());
-		command.setBibtex(listCommand);
-		group.setDescription("jfjalkjf pioaspodi aspöodipoiad apöoiwaedpu aälsidujüaps9dui asdpüo9aisdüp9aisu asdp9aoisduü0a9sud asdüp9asuidüa09sud\n" +
-						"öoiujasöodifj asöodifjasöodifj asdöfoijasödofij asdöoifjasöodifj");
+		final PostQuery<GoldStandardPublication> postOrganizationQuery = new PostQueryBuilder()
+						.setOrder(Order.YEAR)
+						.setGrouping(GroupingEntity.ORGANIZATION)
+						.setGroupingName(group.getName())
+						.createPostQuery(GoldStandardPublication.class);
+		final List<Post<GoldStandardPublication>> organizationPosts = this.logic.getPosts(postOrganizationQuery);
+		command.getBibtex().setList(organizationPosts);
 		return Views.ORGANIZATION_PAGE;
 	}
 

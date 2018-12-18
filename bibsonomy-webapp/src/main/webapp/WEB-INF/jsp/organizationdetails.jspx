@@ -116,7 +116,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<person:personList command="${command.persons}" />
+				<person:personList listCommand="${command.persons}" />
 			</div>
 
 			<div class="row">
