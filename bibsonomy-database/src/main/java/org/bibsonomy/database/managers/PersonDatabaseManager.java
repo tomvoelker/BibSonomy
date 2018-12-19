@@ -1201,6 +1201,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		final CRISLinkParam param = new CRISLinkParam();
 		param.setSourceId(linkId.intValue());
 		param.setSourceType(crisEntityType);
+		param.setTargetType(CRISEntityType.PERSON);
 		return this.queryForList("getPersonCRISLinks", param, CRISLink.class, session);
 	}
 

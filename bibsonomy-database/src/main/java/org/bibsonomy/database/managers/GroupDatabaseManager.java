@@ -1281,6 +1281,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 		final CRISLinkParam param = new CRISLinkParam();
 		param.setTargetId(linkId.intValue());
 		param.setTargetType(crisEntityType);
+		param.setSourceType(CRISEntityType.GROUP);
 		return this.queryForList("getGroupCRISLinks", param, CRISLink.class, session);
 	}
 
