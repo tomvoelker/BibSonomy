@@ -30,11 +30,17 @@ public class ElasticsearchGroupManagerITCase extends AbstractGroupSearchTest {
 		final GroupQuery groupQuery = GroupQuery.builder().search("\"Test Group\"").build();
 		final List<Group> groups = GROUP_SEARCH.getGroups(new User(), groupQuery);
 		assertThat(groups.size(), is(4));
+
+		final List<Group> childgroup = GROUP_SEARCH.getGroups(new User(), GroupQuery.builder().search("childgroup").build());
+		assertThat(childgroup.size(), is(3));
 	}
 
 	@Test
 	public void testInsertGroup() {
 		final Group group = new Group("newGroup");
+		group.setAllowJoin(false);
+		group.setInternalId("Internal");
+		group.setOrganization(true);
 		final String realName = "New Group";
 		group.setRealname(realName);
 		final GroupRequest groupRequest = new GroupRequest();
