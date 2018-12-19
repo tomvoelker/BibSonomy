@@ -66,7 +66,6 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
-import org.bibsonomy.model.logic.querybuilder.GroupQueryBuilder;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.rest.BasicAuthenticationHandler;
 import org.bibsonomy.rest.RestServlet;
@@ -535,9 +534,8 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void getGroupsTest() {
-		final GroupQueryBuilder builder = new GroupQueryBuilder();
-		builder.setEnd(219).setStart(64);
-		this.getGroups(builder.createGroupQuery());
+		final GroupQuery groupQuery = GroupQuery.builder().start(64).end(219).build();
+		this.getGroups(groupQuery);
 	}
 
 	@Override

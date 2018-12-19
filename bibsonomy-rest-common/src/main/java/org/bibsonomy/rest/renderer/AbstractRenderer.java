@@ -1349,7 +1349,8 @@ public abstract class AbstractRenderer implements Renderer {
 					final Post<? extends Resource> p = this.createPost(post, uploadedFileAcessor);
 					posts.add(p);
 				} catch (final PersonListParserException ex) {
-					throw new BadRequestOrResponseException("Error parsing the person names for entry with BibTeX key '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
+					throw new BadRequestOrResponseException("Error parsing the person names for entry with BibTeX key '" +
+									post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
 				}
 			}
 			return posts;
@@ -1549,9 +1550,7 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(group::setDescription, xmlGroup::getDescription);
 		setValue(group::setRealname, xmlGroup::getRealname);
 		setValue(group::setHomepage, xmlGroup::getHomepage, AbstractRenderer::createURL);
-		final Function<UserType, User> typeUserFunction = this::createUser;
-		final Function<User, GroupMembership> membershipFunction = this::createGroupMembership;
-		setCollectionValue(group.getMemberships(), xmlGroup.getUser(), typeUserFunction.andThen(membershipFunction));
+		setCollectionValue(group.getMemberships(), xmlGroup.getUser(), u -> createGroupMembership(createUser(u)));
 		setValue(group::setOrganization, xmlGroup::getOrganization, Boolean::parseBoolean);
 		setValue(group::setInternalId, xmlGroup::getInternalId);
 		setValue(group::setParent, xmlGroup::getParent, this::createGroup);

@@ -28,7 +28,7 @@ package org.bibsonomy.webapp.controller;
 
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.enums.GroupOrder;
-import org.bibsonomy.model.logic.querybuilder.GroupQueryBuilder;
+import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.webapp.command.GroupsListCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -55,16 +55,11 @@ public class GroupsPageController extends SingleResourceListController implement
 		 * get requested groups
 		 */
 		if ("html".equals(format)) {
-			final GroupQueryBuilder builder = new GroupQueryBuilder();
-			final int start = groupListCommand.getStart();
-			final int end = start + groupListCommand.getEntriesPerPage();
-			builder.setPending(false)
-							.setStart(0).setEnd(end)
-							.setOrganization(command.getOrganizations())
-							.setPrefix(command.getPrefix())
-							.setSearch(command.getSearch())
-							.order(GroupOrder.GROUP_REALNAME);
-			groupListCommand.setList(this.logic.getGroups(builder.createGroupQuery()));
+			final GroupQuery groupQuery = GroupQuery.builder().start(0).
+							end(groupListCommand.getStart()+groupListCommand.getEntriesPerPage()).pending(false).
+							organization(command.getOrganizations()).prefix(command.getPrefix()).search(command.getSearch()).
+							order(GroupOrder.GROUP_REALNAME).build();
+			groupListCommand.setList(this.logic.getGroups(groupQuery));
 		} else if ("json".equals(format)) {
 			// FIXME:  why does changing the format change the result of the controller?
 			groupListCommand.setList(command.getContext().getLoginUser().getGroups());

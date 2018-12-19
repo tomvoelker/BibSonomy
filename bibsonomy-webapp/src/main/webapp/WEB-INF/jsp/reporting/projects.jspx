@@ -61,10 +61,6 @@
 			<div class="heading">
 				<div class="row">
 					<div class="col-md-3">
-						<reporting:date_filter requPathAndQuery="${requPathAndQuery}" filterName="End Date"
-											   filterField="endDate"/>
-					</div>
-					<div class="col-md-3">
 						<spring:eval var="sponsorValues" expression="T(java.util.Arrays).asList('test')"/>
 						<reporting:filter requPathAndQuery="${requPathAndQuery}" filterName="Sponsor"
 										  filterValues="${sponsorValues}" filterField="sponsor"/>
@@ -77,6 +73,10 @@
 					<div class="col-md-3">
 						<reporting:date_filter requPathAndQuery="${requPathAndQuery}" filterName="Start Date"
 											   filterField="startDate"/>
+					</div>
+					<div class="col-md-3">
+						<reporting:date_filter requPathAndQuery="${requPathAndQuery}" filterName="End Date"
+											   filterField="endDate"/>
 					</div>
 				</div>
 				<div class="row">

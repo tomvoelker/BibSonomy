@@ -7,8 +7,9 @@
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
-		  xmlns:person="urn:jsptagdir:/WEB-INF/tags/resources/person"
-		  xmlns:reporting="urn:jsptagdir:/WEB-INF/tags/reporting" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:reporting="urn:jsptagdir:/WEB-INF/tags/reporting"
+		  xmlns:person="urn:jsptagdir:/WEB-INF/tags/person"
+		  xmlns:lists="urn:jsptagdir:/WEB-INF/tags/layout/parts/lists"
 >
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
@@ -45,26 +46,32 @@
 								searchPlaceholderKey="reporting.persons.search"
 								requPathAndQuery="${requPathAndQuery}" command="${command}"/>
 
-			<reporting:export requPathAndQuery="${requPathAndQuery}"/>
-
-			<div class="text-info">
-				<dl class="group-list">
-					<dt>
-						<fmt:message key="person.amountpersons"/>
-					</dt>
-					<dd id="amount-persons">
-						<c:out value="${fn:length(command.personList)}"/>
-					</dd>
-				</dl>
-				<hr/>
+			<div class="heading">
+				<div class="row">
+					<div class="col-md-10">
+						<form>
+							<input class='form-control typeahead' id='searchOrganizationAutocomplete'
+								   name='organization'
+								   autocomplete="on" placeholder='search by organization'/>
+						</form>
+					</div>
+					<div class="col-md-2">
+						<reporting:export requPathAndQuery="${requPathAndQuery}"/>
+					</div>
+				</div>
 			</div>
 
-            <div id="persons">
-				<ul class="list-group" id="all-persons">
-                    <c:forEach var="person" items="${command.personList}">
-                        <person:listview person="${person}"/>
-                    </c:forEach>
-				</ul>
+			<div class="row">
+				<div class="col-md-12 vcenter">
+					<lists:listResultInfo listCommand="${command.persons}"
+										  messageKey="persons.results.description"/>
+				</div>
+			</div>
+
+            <div class="row">
+				<div class="col-md-12">
+					<person:listview personListCommand="${command.persons}"/>
+				</div>
 			</div>
             <nav aria-label="Page navigation example">
                 <p class="info" id="show-amount"/><br/>
