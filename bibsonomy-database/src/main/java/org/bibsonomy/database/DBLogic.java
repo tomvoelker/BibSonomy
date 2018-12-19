@@ -3728,7 +3728,7 @@ public class DBLogic implements LogicInterface {
 				.setEnd(queryBuilder.getEnd())
 				.setGroupByInterhash(queryBuilder.isGroupByInterhash())
 				.setInterhash(queryBuilder.getInterhash())
-				.setOrder(ResourcePersonRelationQuery.Order.valueOf(queryBuilder.getOrder().name()))
+				.setOrder(queryBuilder.getOrder())
 				.setPersonId(queryBuilder.getPersonId())
 				.setRelationType(queryBuilder.getRelationType())
 				.setStart(queryBuilder.getStart())
