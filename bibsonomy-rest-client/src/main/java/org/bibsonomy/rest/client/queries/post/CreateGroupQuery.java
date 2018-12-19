@@ -1,34 +1,30 @@
 /**
  * BibSonomy-Rest-Client - The REST-client.
- *
+ * <p>
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
- *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
- *                           L3S Research Center,
- *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
- *
+ * University of Kassel, Germany
+ * http://www.kde.cs.uni-kassel.de/
+ * Data Mining and Information Retrieval Group,
+ * University of Würzburg, Germany
+ * http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ * L3S Research Center,
+ * Leibniz University Hannover, Germany
+ * http://www.l3s.de/
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.bibsonomy.rest.client.queries.post;
-
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.io.StringWriter;
 
 import org.bibsonomy.model.Group;
 import org.bibsonomy.rest.client.AbstractQuery;
@@ -36,10 +32,13 @@ import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.ValidationUtils;
+
+import java.io.StringWriter;
 
 /**
  * Use this Class to create a new group in bibsonomy.
- * 
+ *
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
 public final class CreateGroupQuery extends AbstractQuery<String> {
@@ -47,15 +46,15 @@ public final class CreateGroupQuery extends AbstractQuery<String> {
 
 	/**
 	 * Creates a new group account in bibsonomy.
-	 * 
+	 *
 	 * @param group
 	 *            the group to be created
 	 * @throws IllegalArgumentException
 	 *             if the group has no name is defined
 	 */
 	public CreateGroupQuery(final Group group) throws IllegalArgumentException {
-		if (!present(group)) throw new IllegalArgumentException("no group specified");
-		if (!present(group.getName())) throw new IllegalArgumentException("no groupname specified");
+		ValidationUtils.requirePresent(group, "no group specified");
+		ValidationUtils.requirePresent(group.getName(), "no groupname specified");
 
 		this.group = group;
 	}
@@ -64,9 +63,10 @@ public final class CreateGroupQuery extends AbstractQuery<String> {
 	protected void doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializeGroup(sw, this.group, null);
-		this.downloadedDocument = performRequest(HttpMethod.POST, this.getUrlRenderer().createHrefForGroups(), StringUtils.toDefaultCharset(sw.toString()));
+		this.downloadedDocument = performRequest(HttpMethod.POST, this.getUrlRenderer().createHrefForGroups(),
+						StringUtils.toDefaultCharset(sw.toString()));
 	}
-	
+
 	@Override
 	protected String getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.isSuccess()) {

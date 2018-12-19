@@ -1331,12 +1331,7 @@ public abstract class AbstractRenderer implements Renderer {
 	public List<Group> parseGroupList(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getGroups() != null) {
-			final List<Group> groups = new LinkedList<>();
-			for (final GroupType gt : xmlDoc.getGroups().getGroup()) {
-				final Group g = this.createGroup(gt);
-				groups.add(g);
-			}
-			return groups;
+			return xmlDoc.getGroups().getGroup().stream().map(this::createGroup).collect(Collectors.toList());
 		}
 		if (xmlDoc.getError() != null) {
 			throw new BadRequestOrResponseException(xmlDoc.getError());
@@ -1554,17 +1549,28 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(group::setDescription, xmlGroup::getDescription);
 		setValue(group::setRealname, xmlGroup::getRealname);
 		setValue(group::setHomepage, xmlGroup::getHomepage, AbstractRenderer::createURL);
-		if (present(xmlGroup.getUser())) {
-			group.getMemberships().addAll(xmlGroup.getUser().stream().map(this::createUser).map(user -> {
-				final GroupMembership membership = new GroupMembership();
-				membership.setUser(user);
-				return membership;
-			}).collect(Collectors.toList()));
-		}
+		final Function<UserType, User> typeUserFunction = this::createUser;
+		final Function<User, GroupMembership> membershipFunction = this::createGroupMembership;
+		setCollectionValue(group.getMemberships(), xmlGroup.getUser(), typeUserFunction.andThen(membershipFunction));
 		setValue(group::setOrganization, xmlGroup::getOrganization, Boolean::parseBoolean);
 		setValue(group::setInternalId, xmlGroup::getInternalId);
 		setValue(group::setParent, xmlGroup::getParent, this::createGroup);
+		setValue(group::setGroupRequest, xmlGroup::getGroupRequest, this::createGroupRequest);
 		return group;
+	}
+
+	private GroupMembership createGroupMembership(User user) {
+		GroupMembership groupMembership = new GroupMembership();
+		groupMembership.setUser(user);
+		return groupMembership;
+	}
+
+	private GroupRequest createGroupRequest(GroupRequestType xmlGroupRequest) {
+		GroupRequest groupRequest = new GroupRequest();
+		setValue(groupRequest::setReason, xmlGroupRequest::getReason);
+		setValue(groupRequest::setSubmissionDate, xmlGroupRequest::getSubmissionDate, AbstractRenderer::createDate);
+		setValue(groupRequest::setUserName, xmlGroupRequest::getRequestedUser, UserType::getName);
+		return groupRequest;
 	}
 
 	/**
