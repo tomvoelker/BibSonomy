@@ -353,9 +353,15 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 	 * @param indexName
 	 * @param state
 	 */
-	protected void updateIndexState(final String indexName, final S state) {
+	protected void updateIndexState(final String indexName, final S oldState, final S state) {
 		final IndexData indexData = new IndexData();
 		indexData.setType(ESConstants.SYSTEM_INFO_INDEX_TYPE);
+
+		/*
+		 * here we use the mapping version info of the old state
+		 * BasicUtils#VERSION maybe contain a new deployed version
+		 */
+		state.setMappingVersion(oldState.getMappingVersion());
 		indexData.setSource(this.syncStateConverter.convert(state));
 		this.client.insertNewDocument(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId), indexName, indexData);
 	}

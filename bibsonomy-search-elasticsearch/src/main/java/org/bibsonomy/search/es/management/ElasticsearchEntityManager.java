@@ -45,6 +45,6 @@ public class ElasticsearchEntityManager<T> extends ElasticsearchManager<T, Defau
 
 		this.updateEntity(indexName, targetState, this.updateIndexLogic, this.entityInformationProvider);
 
-		this.updateIndexState(indexName, targetState);
+		this.updateIndexState(indexName, oldState, targetState);
 	}
 }

@@ -66,6 +66,6 @@ public class ElasticsearchOneToManyManager<T, M> extends ElasticsearchManager<T,
 		// update many relations
 		this.updateEntity(indexName, oldSecondState, this.updateIndexLogic.getToManyIndexUpdateLogic(), this.oneToManyEntityInformationProvider.getToManyEntityInformationProvider());
 
-		this.updateIndexState(indexName, targetState);
+		this.updateIndexState(indexName, oldState, targetState);
 	}
 }

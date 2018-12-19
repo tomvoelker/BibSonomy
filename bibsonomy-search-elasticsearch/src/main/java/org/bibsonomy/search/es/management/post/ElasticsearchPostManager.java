@@ -160,12 +160,12 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 			newState.setLast_tas_id(targetState.getLast_tas_id());
 			newState.setLastPersonChangeId(targetState.getLastPersonChangeId());
 			newState.setLastDocumentDate(targetState.getLastDocumentDate());
-			this.updateIndexState(indexName, newState);
+			this.updateIndexState(indexName, oldState, newState);
 		} catch (final RuntimeException e) {
-			this.updateIndexState(indexName, oldState);
+			this.updateIndexState(indexName, oldState, oldState);
 			throw e;
 		} catch (final Exception e) {
-			this.updateIndexState(indexName, oldState);
+			this.updateIndexState(indexName, oldState, oldState);
 			throw new RuntimeException(e);
 		}
 
