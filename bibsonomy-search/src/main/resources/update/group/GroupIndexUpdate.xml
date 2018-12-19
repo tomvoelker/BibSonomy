@@ -6,12 +6,12 @@
 	<select id="getUpdatedAndNewGroups" resultMap="SearchGroupCommon.fullGroup" parameterClass="searchParam">
 		SELECT <include refid="groupColumns" />
 		FROM
-			<!-- check for new persons -->
+			<!-- check for new groups -->
 			(SELECT `group`
 			FROM groupids
 				WHERE `group` >= #lastContentId#
 			UNION
-			<!-- check for new person names -->
+			<!-- check for updated groups -->
 			SELECT `group`
 			FROM log_groupids
 				WHERE log_date >= #lastLogDate#
