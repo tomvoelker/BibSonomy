@@ -50,8 +50,8 @@ import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.query.PersonQuery;
@@ -610,7 +610,7 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setPerson(person);
 
 		// TODO: maybe this should be done in the view?
-		final List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.PublicationYear));
+		final List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(PersonResourceRelationOrder.PublicationYear));
 		final List<ResourcePersonRelation> authorRelations = new ArrayList<>();
 		final List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
 		final List<ResourcePersonRelation> otherAuthorRelations = new ArrayList<>();
