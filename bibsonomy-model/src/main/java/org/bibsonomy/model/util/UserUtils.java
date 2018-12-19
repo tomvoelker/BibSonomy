@@ -308,13 +308,19 @@ public class UserUtils {
 	/**
 	 * This method returns a new groupuser {@link User} for the given group
 	 * 
-	 * @param groupName the name of the group
+	 * @param group the group
 	 * @return the group user
 	 */
-	public static User buildGroupUser(final String groupName) {
-		final User user = new User(groupName);
+	public static User buildGroupUser(final Group group) {
+		final User user = new User(group.getName());
 		user.setPassword(generateRandomPassword());
-		user.setRealname(""); // XXX: realname can't be null (db schema)
+		final String realname = group.getRealname();
+		if (present(realname)) {
+			user.setRealname(realname);
+		} else {
+			user.setRealname(""); // XXX: realname can't be null (db schema)
+		}
+
 		user.setEmail(""); // XXX: email can't be null (db schema)
 		user.setRole(Role.GROUPUSER);
 		// every info of the group is public; XXX: maybe we want to change it
