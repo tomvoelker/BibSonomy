@@ -31,7 +31,6 @@ import java.util.List;
 
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.logic.query.GroupQuery;
-import org.bibsonomy.model.logic.querybuilder.GroupQueryBuilder;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
@@ -64,9 +63,8 @@ public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>
 	@Override
 	protected List<Group> getList() {
 		final ViewModel view = this.getView();
-		final GroupQuery groupQuery = new GroupQueryBuilder().setStart(view.
-				getStartValue()).setEnd(view.getEndValue()).setPending(false).
-				setExternalId(this.internalId).createGroupQuery();
+		final GroupQuery groupQuery = GroupQuery.builder().start(view.getStartValue()).end(view.getEndValue()).
+						pending(false).externalId(this.internalId).build();
 		return this.getLogic().getGroups(groupQuery);
 	}
 

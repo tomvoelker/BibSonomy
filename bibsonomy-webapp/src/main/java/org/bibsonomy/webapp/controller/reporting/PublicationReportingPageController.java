@@ -29,6 +29,7 @@ public class PublicationReportingPageController implements MinimalisticControlle
 
 	@Override
 	public View workOn(PublicationReportingCommand command) {
+		//TODO include filter by person and organization
 		final PostQuery<BibTex> query = new PostQueryBuilder().setStartDate(command.getStartDate()).
 						setEndDate(command.getEndDate()).setStart(command.getPublications().getStart()).
 						setEnd(command.getPublications().getStart() + command.getPublications().getEntriesPerPage()).

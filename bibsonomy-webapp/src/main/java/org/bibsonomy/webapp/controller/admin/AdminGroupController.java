@@ -44,7 +44,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.querybuilder.GroupQueryBuilder;
+import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.MailUtils;
@@ -168,14 +168,12 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		}
 
 		// load the pending groups
-		final GroupQueryBuilder builder = new GroupQueryBuilder();
-		builder.setPending(true).setEnd(Integer.MAX_VALUE);
-		command.setPendingGroups(this.logic.getGroups(builder.createGroupQuery()));
+		final GroupQuery groupQuery = GroupQuery.builder().pending(true).end(Integer.MAX_VALUE).build();
+		command.setPendingGroups(this.logic.getGroups(groupQuery));
 		
 		// TODO: move extracting of the username to the view
-		final GroupQueryBuilder allGroupsQueryBuilder = new GroupQueryBuilder();
-		allGroupsQueryBuilder.setEnd(Integer.MAX_VALUE);
-		final List<Group> allGroups = this.logic.getGroups(builder.createGroupQuery());
+		final GroupQuery allGroupsQuery = GroupQuery.builder().end(Integer.MAX_VALUE).build();
+		final List<Group> allGroups = this.logic.getGroups(allGroupsQuery);
 		final List<String> allGroupnames = new LinkedList<>();
 		for (final Group group : allGroups) {
 			allGroupnames.add(group.getName());

@@ -2,6 +2,8 @@ package org.bibsonomy.webapp.command.reporting;
 
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.ListCommand;
@@ -13,6 +15,8 @@ public class PublicationReportingCommand extends ReportingCommand {
 	private Order order;
 	private String groupingName;
 	private Set<Filter> filters;
+	private Person person;
+	private Group organization;
 
 	public Order getOrder() {
 		return order;
@@ -45,5 +49,21 @@ public class PublicationReportingCommand extends ReportingCommand {
 
 	public ListCommand<Post<BibTex>> getPublications() {
 		return publications;
+	}
+
+	public Group getOrganization() {
+		return organization;
+	}
+
+	public void setOrganization(Group organization) {
+		this.organization = organization;
+	}
+
+	public Person getPerson() {
+		return person;
+	}
+
+	public void setPerson(Person person) {
+		this.person = person;
 	}
 }
