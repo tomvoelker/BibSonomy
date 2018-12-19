@@ -62,88 +62,90 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 
 	@Override
 	public List<Person> getPersons(final PersonQuery query) {
-		final String personQuery = query.getQuery();
+		return ElasticsearchIndexSearchUtils.callSearch(() -> {
+			final String personQuery = query.getQuery();
 
-		final BoolQueryBuilder mainQuery = QueryBuilders.boolQuery();
-		final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery();
-		if (present(personQuery)) {
-			/*
-			 * maybe some of tokens of the query contain the title of a publication of the author
-			 */
-			final MultiMatchQueryBuilder resourceRelationQuery = QueryBuilders.multiMatchQuery(personQuery);
-			resourceRelationQuery.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
-							.operator(Operator.AND) // "and" here means every term in the query must be in one of the following fields
-							.field(PersonFields.RelationFields.POST + "." + ESConstants.Fields.Resource.TITLE, 2.5f)
-							.field(PersonFields.RelationFields.POST + "." + ESConstants.Fields.Publication.SCHOOL, 1.3f)
-							.tieBreaker(0.8f)
-							.boost(4);
-			final HasChildQueryBuilder childSearchQuery = JoinQueryBuilders.hasChildQuery(PersonFields.TYPE_RELATION, resourceRelationQuery, ScoreMode.Max);
+			final BoolQueryBuilder mainQuery = QueryBuilders.boolQuery();
+			final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery();
+			if (present(personQuery)) {
+				/*
+				 * maybe some of tokens of the query contain the title of a publication of the author
+				 */
+				final MultiMatchQueryBuilder resourceRelationQuery = QueryBuilders.multiMatchQuery(personQuery);
+				resourceRelationQuery.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
+								.operator(Operator.AND) // "and" here means every term in the query must be in one of the following fields
+								.field(PersonFields.RelationFields.POST + "." + ESConstants.Fields.Resource.TITLE, 2.5f)
+								.field(PersonFields.RelationFields.POST + "." + ESConstants.Fields.Publication.SCHOOL, 1.3f)
+								.tieBreaker(0.8f)
+								.boost(4);
+				final HasChildQueryBuilder childSearchQuery = JoinQueryBuilders.hasChildQuery(PersonFields.TYPE_RELATION, resourceRelationQuery, ScoreMode.Max);
 
-			final HasChildQueryBuilder childQuery = JoinQueryBuilders.hasChildQuery(PersonFields.TYPE_RELATION, QueryBuilders.matchAllQuery(), ScoreMode.None);
-			final InnerHitBuilder innerHit = new InnerHitBuilder();
-			childQuery.innerHit(innerHit);
+				final HasChildQueryBuilder childQuery = JoinQueryBuilders.hasChildQuery(PersonFields.TYPE_RELATION, QueryBuilders.matchAllQuery(), ScoreMode.None);
+				final InnerHitBuilder innerHit = new InnerHitBuilder();
+				childQuery.innerHit(innerHit);
 
-			final MatchQueryBuilder nameQuery = QueryBuilders.matchQuery(PersonFields.NAMES + "." + PersonFields.NAME, personQuery);
-			final NestedQueryBuilder nestedNamesQuery = QueryBuilders.nestedQuery(PersonFields.NAMES, nameQuery, ScoreMode.Max);
-			nestedNamesQuery.boost(2.7f);
+				final MatchQueryBuilder nameQuery = QueryBuilders.matchQuery(PersonFields.NAMES + "." + PersonFields.NAME, personQuery);
+				final NestedQueryBuilder nestedNamesQuery = QueryBuilders.nestedQuery(PersonFields.NAMES, nameQuery, ScoreMode.Max);
+				nestedNamesQuery.boost(2.7f);
 
-			/*
-			 * build the search query
-			 */
-			final BoolQueryBuilder mainSearchQuery = QueryBuilders.boolQuery();
-			mainSearchQuery.should(nestedNamesQuery);
-			mainSearchQuery.should(childSearchQuery);
+				/*
+				 * build the search query
+				 */
+				final BoolQueryBuilder mainSearchQuery = QueryBuilders.boolQuery();
+				mainSearchQuery.should(nestedNamesQuery);
+				mainSearchQuery.should(childSearchQuery);
 
-			mainQuery.must(mainSearchQuery);
-			mainQuery.should(childQuery);
-		} else {
-			filterQuery.must(QueryBuilders.termQuery(PersonFields.JOIN_FIELD, PersonFields.TYPE_PERSON));
-		}
-
-		/*
-		 * add filters
-		 */
-		final String college = query.getCollege();
-		if (present(college)) {
-			final TermQueryBuilder collegeTermQuery = QueryBuilders.termQuery(PersonFields.COLLEGE, college);
-			filterQuery.must(collegeTermQuery);
-		}
-
-		final Prefix prefix = query.getPrefix();
-		if (present(prefix)) {
-			filterQuery.must(ElasticsearchIndexSearchUtils.buildPrefixFilter(prefix, PersonFields.MAIN_NAME_LOWERCASE));
-		}
-
-		if (filterQuery.hasClauses()) {
-			mainQuery.filter(filterQuery);
-		}
-
-		final int offset = BasicQueryUtils.calcOffset(query);
-		final int limit = BasicQueryUtils.calcLimit(query);
-		Pair<String, SortOrder> sortOrder = this.getSortOrder(query);
-		final SearchHits searchHits = this.manager.search(mainQuery, sortOrder, offset, limit, null, null);
-		final ResultList<Person> persons = new ResultList<>();
-		for (final SearchHit searchHit : searchHits.getHits()) {
-			final Map<String, Object> sourceAsMap = searchHit.getSourceAsMap();
-			final Person person = this.converter.convert(sourceAsMap, null);
-			final Map<String, SearchHits> innerHits = searchHit.getInnerHits();
-			if (present(innerHits)) {
-				final List<ResourcePersonRelation> resourcePersonRelations = new LinkedList<>();
-				final SearchHits resourcePersonRelationHits = innerHits.get(PersonFields.TYPE_RELATION);
-				if (present(resourcePersonRelationHits)) {
-					final SearchHit[] hits = resourcePersonRelationHits.getHits();
-					for (SearchHit hit : hits) {
-						final Map<String, Object> personResourceRelationSource = hit.getSourceAsMap();
-						final ResourcePersonRelation resourcePersonRelation = this.personResourceRelationConverter.convert(personResourceRelationSource, null);
-						resourcePersonRelations.add(resourcePersonRelation);
-					}
-				}
-				person.setResourceRelations(resourcePersonRelations);
+				mainQuery.must(mainSearchQuery);
+				mainQuery.should(childQuery);
+			} else {
+				filterQuery.must(QueryBuilders.termQuery(PersonFields.JOIN_FIELD, PersonFields.TYPE_PERSON));
 			}
-			persons.add(person);
-		}
-		persons.setTotalCount((int) searchHits.totalHits);
-		return persons;
+
+			/*
+			 * add filters
+			 */
+			final String college = query.getCollege();
+			if (present(college)) {
+				final TermQueryBuilder collegeTermQuery = QueryBuilders.termQuery(PersonFields.COLLEGE, college);
+				filterQuery.must(collegeTermQuery);
+			}
+
+			final Prefix prefix = query.getPrefix();
+			if (present(prefix)) {
+				filterQuery.must(ElasticsearchIndexSearchUtils.buildPrefixFilter(prefix, PersonFields.MAIN_NAME_LOWERCASE));
+			}
+
+			if (filterQuery.hasClauses()) {
+				mainQuery.filter(filterQuery);
+			}
+
+			final int offset = BasicQueryUtils.calcOffset(query);
+			final int limit = BasicQueryUtils.calcLimit(query);
+			Pair<String, SortOrder> sortOrder = this.getSortOrder(query);
+			final SearchHits searchHits = this.manager.search(mainQuery, sortOrder, offset, limit, null, null);
+			final ResultList<Person> persons = new ResultList<>();
+			for (final SearchHit searchHit : searchHits.getHits()) {
+				final Map<String, Object> sourceAsMap = searchHit.getSourceAsMap();
+				final Person person = this.converter.convert(sourceAsMap, null);
+				final Map<String, SearchHits> innerHits = searchHit.getInnerHits();
+				if (present(innerHits)) {
+					final List<ResourcePersonRelation> resourcePersonRelations = new LinkedList<>();
+					final SearchHits resourcePersonRelationHits = innerHits.get(PersonFields.TYPE_RELATION);
+					if (present(resourcePersonRelationHits)) {
+						final SearchHit[] hits = resourcePersonRelationHits.getHits();
+						for (SearchHit hit : hits) {
+							final Map<String, Object> personResourceRelationSource = hit.getSourceAsMap();
+							final ResourcePersonRelation resourcePersonRelation = this.personResourceRelationConverter.convert(personResourceRelationSource, null);
+							resourcePersonRelations.add(resourcePersonRelation);
+						}
+					}
+					person.setResourceRelations(resourcePersonRelations);
+				}
+				persons.add(person);
+			}
+			persons.setTotalCount((int) searchHits.totalHits);
+			return persons;
+		}, new ResultList<>());
 	}
 
 	private Pair<String, SortOrder> getSortOrder(PersonQuery query) {
