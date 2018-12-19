@@ -9,7 +9,7 @@
 
 	<c:choose>
 		<c:when test="${fn:length(personListCommand.list) gt 0}">
-			<ul class="list-unstyled" id="projects">
+			<ul class="list-unstyled" id="persons">
 				<c:forEach var="person" items="${personListCommand.list}">
 					<person:listview person="${person}"/>
 				</c:forEach>
