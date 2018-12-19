@@ -142,6 +142,16 @@ public interface PostLogicInterface {
 
 	/**
 	 * Updates the posts in the database.
+	 *
+	 * If the operation is
+	 * 	 * {@link PostUpdateOperation#UPDATE_TAGS},
+	 * 	 * the posts must only contain the
+	 * 	 * <ul>
+	 * 	 * <li>date,</li>
+	 * 	 * <li>tags,</li>
+	 * 	 * <li>intraHash,</li>
+	 * 	 * <li>and optionally a username.
+	 * 	 * </ul>
 	 * 
 	 * @param posts  the posts to update
 	 * @param operation  which parts of the posts should be updated

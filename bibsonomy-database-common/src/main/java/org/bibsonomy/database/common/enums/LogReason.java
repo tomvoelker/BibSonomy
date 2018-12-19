@@ -10,6 +10,9 @@ public enum LogReason {
 	/** the entity was updated */
 	UPDATED,
 
+	/** one linked entity was updated */
+	LINKED_ENTITY_UPDATE,
+
 	/** the entity was deleted */
 	DELETED
 }
