@@ -712,9 +712,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There is a user with this name - cannot create the group.");
 		}
 
-		// create the user
-		final User groupUser = UserUtils.buildGroupUser(normedGroupName);
-
 		// we can't be sure that the database id of the parent group is set
 		// and also that the parent exists
 		final Group parent = group.getParent();
@@ -731,9 +728,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 
 		try {
 			session.beginTransaction();
+
 			/*
 			 * every group has a corresponding user with the name of the group.
 			 */
+			final User groupUser = UserUtils.buildGroupUser(group);
 			this.userDb.createUser(groupUser, session);
 			this.insertGroup(group, session);
 			session.commitTransaction();
