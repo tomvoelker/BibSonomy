@@ -331,7 +331,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		final DocumentDatabaseManager docManager = DocumentDatabaseManager.getInstance();
 		final String testuser1 = "testuser1";
 		final int contentIdDocAdd = 12;
-		docManager.addDocument(testuser1, contentIdDocAdd, "abc", "abc.pdf", "hash", this.dbSession);
+		docManager.addDocument(testuser1, contentIdDocAdd, "abc", "abc.pdf", "hash", new User(testuser1), this.dbSession);
 		
 		// delete document
 		final Document document = new Document();

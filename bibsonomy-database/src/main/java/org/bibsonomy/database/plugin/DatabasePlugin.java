@@ -231,11 +231,13 @@ public interface DatabasePlugin {
 
 	/**
 	 * Called when a User is updated.
-	 * 
-	 * @param userName
+	 *  @param userName
+	 * @param loggedinUser
 	 * @param session
 	 */
-	public void onUserUpdate(String userName, DBSession session);	
+	default void onUserUpdate(String userName, User loggedinUser, DBSession session) {
+		// noop
+	}
 
 	/**
 	 * Called when a user is removed from a group.
