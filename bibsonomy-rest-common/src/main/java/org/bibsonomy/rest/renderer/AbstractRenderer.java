@@ -912,6 +912,9 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(xmlGroup::setParent, group::getParent, this::createXmlGroup);
 		setValue(xmlGroup::setHref, group::getName, urlRenderer::createHrefForGroup);
 		setValue(xmlGroup::setGroupRequest, group::getGroupRequest, this::createXmlGroupRequest);
+		if (group.isAllowJoin()) {
+			setValue(xmlGroup::setAllowJoin, group::isAllowJoin);
+		}
 		setCollectionValue(xmlGroup.getUser(), group.getMemberships(), g -> createXmlUser(g.getUser()));
 		if (group.isOrganization()) {
 			xmlGroup.setOrganization(Boolean.TRUE.toString());
@@ -1555,6 +1558,7 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(group::setInternalId, xmlGroup::getInternalId);
 		setValue(group::setParent, xmlGroup::getParent, this::createGroup);
 		setValue(group::setGroupRequest, xmlGroup::getGroupRequest, this::createGroupRequest);
+		setValue(group::setAllowJoin, xmlGroup::isAllowJoin);
 		return group;
 	}
 
