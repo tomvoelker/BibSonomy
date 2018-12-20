@@ -28,6 +28,16 @@
 			<parts:search pathMessageKey="navi.persons" formAction="/persons/" formInputName="person"/>
 		</jsp:attribute>
 
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/typeahead.js/js/typeahead.bundle.js"><!-- keep me --></script>
+			<script type="text/javascript"
+					src="${resdir}/javascript/reporting/organizationAutocomplete.js"><!-- keep me --></script>
+			<script type="text/javascript"
+					src="${resdir}/javascript/reporting/autocompleteSearchOrganization.js"><!-- keep me --></script>
+
+			<link rel="stylesheet" type="text/css" href="${resdir}/typeahead.js/css/typeahead.css"/>
+		</jsp:attribute>
+
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">

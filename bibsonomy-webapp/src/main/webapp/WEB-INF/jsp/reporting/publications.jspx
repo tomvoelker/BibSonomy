@@ -29,14 +29,15 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/javascript/animatescroll.js"><!-- --></script>
-			<script type="text/javascript" src="${resdir}/javascript/animate-scroll-affix.js"><!-- --></script>
-
 			<script type="text/javascript" src="${resdir}/typeahead.js/js/typeahead.bundle.js"><!-- keep me --></script>
 			<script type="text/javascript"
-					src="${resdir}/javascript/person/personAutocomplete.js"><!-- keep me --></script>
+					src="${resdir}/javascript/reporting/personAutocomplete.js"><!-- keep me --></script>
 			<script type="text/javascript"
-					src="${resdir}/javascript/person/autocompleteSearchPerson.js"><!-- keep me --></script>
+					src="${resdir}/javascript/reporting/autocompleteSearchPerson.js"><!-- keep me --></script>
+			<script type="text/javascript"
+					src="${resdir}/javascript/reporting/organizationAutocomplete.js"><!-- keep me --></script>
+			<script type="text/javascript"
+					src="${resdir}/javascript/reporting/autocompleteSearchOrganization.js"><!-- keep me --></script>
 
 			<link rel="stylesheet" type="text/css" href="${resdir}/typeahead.js/css/typeahead.css"/>
 		</jsp:attribute>
