@@ -146,6 +146,8 @@ public interface ESClient {
 		if (!present(jsonDocuments)) {
 			return true;
 		}
+
+		// convert the index data to delete data
 		final List<DeleteData> deleteData = jsonDocuments.entrySet().stream().map(entry -> {
 			final DeleteData delete = new DeleteData();
 			final IndexData indexData = entry.getValue();
@@ -154,6 +156,7 @@ public interface ESClient {
 			delete.setRouting(indexData.getRouting());
 			return delete;
 		}).collect(Collectors.toList());
+
 		this.deleteDocuments(indexName, deleteData);
 		return this.insertNewDocuments(indexName, jsonDocuments);
 	}
