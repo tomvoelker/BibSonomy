@@ -26,7 +26,7 @@
 			VALUES (<include refid="insertPersonAttributes"/>)
 	</insert>
 	
-	<insert id="insertName" parameterClass="personName">
+	<insert id="insertName" parameterClass="personNgetBibTexRelationsForPersoname">
 		INSERT INTO person_name (person_change_id, first_name, last_name, person_id, is_main, log_changed_by, log_changed_at)
 			VALUES (#personNameChangeId#, #firstName#, #lastName#, #personId#, #isMain#, #changedBy#, #changedAt#)
 		<selectKey resultClass="int" keyProperty="personNameChangeId" >
@@ -152,24 +152,6 @@
 		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsDummyRows" />
 		FROM gold_standard b
 		WHERE b.simhash1 = #simhash1#
-	</select>
-	
-	<select id="getBibTexRelationsForPerson" resultMap="PersonCommon.preFilledResourcePersonRelation" parameterClass="bibtexParam">
-		SELECT <include refid ="bibtexAttributes2"/>, t.change_date, t.tag_name, g.*, b2.count, <include refid="reviewRatingsDummyRows" />, <include refid="commonResourcePersonRelationColumns2" />
-		FROM
-			(SELECT
-					t1.*,
-					pp.person_change_id, pp.qualifying, pp.person_id, pp.relator_code, pp.log_changed_by, pp.log_changed_at, pp.person_index,
-					h.ctr AS count
-				FROM bibtex t1, bibhash h, pub_person pp
-				WHERE
-					<include refid="bibtexSimHash3"/>
-					AND t1.simhash1 = pp.simhash1 AND pp.person_id = #personRelation.person.personId#
-					<include refid="restrictToGroups"/>
-			) AS b2
-		JOIN tas t USING (content_id)
-		JOIN groupids g ON (g.`group` = b2.`group`)
-		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
 	
 	<select id="getComunityBibTexRelationsForPerson" resultMap="PersonCommon.preFilledCommunityResourcePersonRelation" parameterClass="bibtexParam">

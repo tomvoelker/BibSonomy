@@ -13,30 +13,33 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Handles cases, where an interhash is set.
+ *
+ * @author ada
  */
 public class GetResourcePersonRelationsByInterhash extends ResourcePersonRelationChainElement {
 
-    /**
-     * Creates an instance with the person database manager set.
-     *
-     * @param personDatabaseManager an instance.
-     */
-    public GetResourcePersonRelationsByInterhash(PersonDatabaseManager personDatabaseManager) {
-        super(personDatabaseManager);
-    }
+	/**
+	 * Creates an instance with the person database manager set.
+	 *
+	 * @param personDatabaseManager an instance.
+	 */
+	public GetResourcePersonRelationsByInterhash(PersonDatabaseManager personDatabaseManager) {
+		super(personDatabaseManager);
+	}
 
-    @Override
-    protected List<ResourcePersonRelation> handle(QueryAdapter<ResourcePersonRelationQuery> adapter, DBSession session) {
-        return this.getPersonDatabaseManager().getResourcePersonRelations(adapter.getQuery().getInterhash(), adapter.getQuery().getAuthorIndex(), adapter.getQuery().getRelationType(), session);
-    }
+	@Override
+	protected List<ResourcePersonRelation> handle(QueryAdapter<ResourcePersonRelationQuery> adapter, DBSession session) {
+		return this.getPersonDatabaseManager().getResourcePersonRelations(adapter.getQuery().getInterhash(), adapter.getQuery().getAuthorIndex(), adapter.getQuery().getRelationType(), session);
+	}
 
-    @Override
-    protected boolean canHandle(QueryAdapter<ResourcePersonRelationQuery> adapter) {
-        return present(adapter.getQuery().getInterhash()) &&
-               present(adapter.getQuery().getAuthorIndex()) &&
-               present(adapter.getQuery().getRelationType()) &&
-               !adapter.getQuery().isWithPosts() &&
-               !adapter.getQuery().isWithPersons() &&
-               !present(adapter.getQuery().getPersonId());
-    }
+	@Override
+	protected boolean canHandle(QueryAdapter<ResourcePersonRelationQuery> adapter) {
+		final ResourcePersonRelationQuery query = adapter.getQuery();
+		return present(query.getInterhash()) &&
+						present(query.getAuthorIndex()) &&
+						present(query.getRelationType()) &&
+						!query.isWithPosts() &&
+						!query.isWithPersons() &&
+						!present(query.getPersonId());
+	}
 }

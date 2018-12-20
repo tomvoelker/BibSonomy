@@ -58,7 +58,6 @@ import org.bibsonomy.database.params.CRISLinkParam;
 import org.bibsonomy.database.params.DNBAliasParam;
 import org.bibsonomy.database.params.DenyMatchParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
@@ -573,24 +572,17 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * @param personId
-	 * @param loginUser
-	 * @param publicationType
 	 * @param session
 	 * @return List<ResourcePersonRelation>
 	 */
-	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(String personId, User loginUser, Class<? extends BibTex> publicationType, DBSession session) {
-
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, BibTex.class, null, null, null, null, null, null, 0, Integer.MAX_VALUE, null, null, null, null, loginUser);
+	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(final String personId, final DBSession session) {
+		final BibTexParam param = new BibTexParam();
 		final ResourcePersonRelation personRelation = new ResourcePersonRelation();
 		personRelation.setPerson(new Person());
 		personRelation.getPerson().setPersonId(personId);
 		param.setPersonRelation(personRelation);
 
-		if (publicationType == GoldStandardPublication.class) {
-			return this.queryForList("getComunityBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
-		} else {
-			return this.queryForList("getBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
-		}
+		return this.queryForList("getComunityBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
 	}
 
 	/**
@@ -711,7 +703,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @param session
 	 */
 	private void mergeAllPubs(final PersonMatch match, final User loggedinUser, final DBSession session) {
-		final List<ResourcePersonRelation> allRelationsPerson2 = this.getResourcePersonRelationsWithPosts(match.getPerson2().getPersonId(), loggedinUser, GoldStandardPublication.class, session);
+		final List<ResourcePersonRelation> allRelationsPerson2 = this.getResourcePersonRelationsWithPosts(match.getPerson2().getPersonId(), session);
 		try {
 			session.beginTransaction();
 			for (final ResourcePersonRelation relation : allRelationsPerson2) {
