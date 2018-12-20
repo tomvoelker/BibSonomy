@@ -129,17 +129,6 @@
 		WHERE person_id = #personId#
 	</delete>
 
-	<select id="getResourcePersonRelationByResourcePersonRelation" resultMap="PersonCommon.lazyLoadingResourcePersonRelation" parameterClass="personResourceRelation">
-		SELECT <include refid="commonResourcePersonRelationColumns" />
-		FROM pub_person
-		WHERE simhash1 = #post.resource.interHash#
-		<isNotNull property="person">
-			AND person_id = #person.personId#
-		</isNotNull>
-		AND relator_code = #relationType.relatorCode#
-		AND person_index = #personIndex#
-	</select>
-	
 	<update id="unlinkUser" parameterClass="string">
 		UPDATE person
 		SET user_name = null,
@@ -154,34 +143,21 @@
 		WHERE b.simhash1 = #simhash1#
 	</select>
 	
-	<select id="getBibTexRelationsForPerson" resultMap="PersonCommon.preFilledResourcePersonRelation" parameterClass="bibtexParam">
-		SELECT <include refid ="bibtexAttributes2"/>, t.change_date, t.tag_name, g.*, b2.count, <include refid="reviewRatingsDummyRows" />, <include refid="commonResourcePersonRelationColumns2" />
-		FROM
-			(SELECT
-					t1.*,
-					pp.person_change_id, pp.qualifying, pp.person_id, pp.relator_code, pp.log_changed_by, pp.log_changed_at, pp.person_index,
-					h.ctr AS count
-				FROM bibtex t1, bibhash h, pub_person pp
-				WHERE
-					<include refid="bibtexSimHash3"/>
-					AND t1.simhash1 = pp.simhash1 AND pp.person_id = #personRelation.person.personId#
-					<include refid="restrictToGroups"/>
-			) AS b2
-		JOIN tas t USING (content_id)
-		JOIN groupids g ON (g.`group` = b2.`group`)
-		ORDER BY b2.date DESC, b2.content_id DESC
+	<!--
+		Queries to find resource <-> person relations
+	-->
+
+	<select id="getResourcePersonRelationByResourcePersonRelation" resultMap="PersonCommon.lazyLoadingResourcePersonRelation" parameterClass="personResourceRelation">
+		SELECT <include refid="commonResourcePersonRelationColumns" />
+		FROM pub_person
+		WHERE simhash1 = #post.resource.interHash#
+		<isNotNull property="person">
+			AND person_id = #person.personId#
+		</isNotNull>
+		AND relator_code = #relationType.relatorCode#
+		AND person_index = #personIndex#
 	</select>
-	
-	<select id="getComunityBibTexRelationsForPerson" resultMap="PersonCommon.preFilledCommunityResourcePersonRelation" parameterClass="bibtexParam">
-		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
-		FROM
-			gold_standard b
-			<include refid="reviewRatingsJoinPublication" />
-			JOIN pub_person USING(simhash1)
-		WHERE
-			pub_person.person_id = #personRelation.person.personId#
-	</select>
-	
+
 	<select id="getResourcePersonRelationsByPublication" parameterClass="java.lang.String" resultMap="PersonCommon.resourcePersonRelationWithPersonPrefilled">
 		SELECT <include refid="commonResourcePersonRelationColumns" />, <include refid="commonPersonColumns" />, <include refid="commonPersonNameColumns" />
 		FROM pub_person, person, person_name
@@ -191,8 +167,6 @@
 		ORDER BY pub_person.simhash1, pub_person.relator_code, pub_person.person_index
 	</select>
 	
-
-
 	<select id="getResourcePersonRelationsWithPersonsByInterhash" parameterClass="java.lang.String" resultMap="PersonCommon.resourcePersonRelationWithPersonPrefilled">
 		SELECT <include refid="commonResourcePersonRelationColumns" />, <include refid="commonPersonColumns"/>, <include refid="commonPersonNameColumns"/>
 		FROM pub_person
@@ -200,7 +174,27 @@
 		JOIN person_name USING (person_id)
 		WHERE simhash1 = #post.resource.interhash#
 	</select>
-	
+
+	<select id="getComunityBibTexRelationsForPerson" resultMap="PersonCommon.preFilledCommunityResourcePersonRelation" parameterClass="bibtexParam">
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
+		FROM
+		gold_standard b
+		<include refid="reviewRatingsJoinPublication" />
+		JOIN pub_person USING(simhash1)
+		WHERE
+		pub_person.person_id = #personRelation.person.personId#
+	</select>
+
+	<select id="countComunityBibTexRelationsForPerson" resultClass="int" parameterClass="bibtexParam">
+		SELECT count(*)	FROM gold_standard b <include refid="reviewRatingsJoinPublication" />
+			JOIN pub_person USING(simhash1)
+		WHERE
+			pub_person.person_id = #personRelation.person.personId#
+	</select>
+
+
+
+
 	<select id="getMatches" resultMap="PersonCommon.personMatch">
 		SELECT match_id, person1_id, person2_id, state
 		FROM person_match

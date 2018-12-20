@@ -74,6 +74,7 @@ import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
+import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.services.searcher.PersonSearch;
@@ -85,7 +86,7 @@ import org.bibsonomy.util.ObjectUtils;
  * @author jensi
  * @author Christian Pfeiffer / eisfair
  */
-public class PersonDatabaseManager extends AbstractDatabaseManager implements LinkableDatabaseManager<Person> {
+public class PersonDatabaseManager extends AbstractDatabaseManager implements LinkableDatabaseManager<Person>, StatisticsProvider<ResourcePersonRelationQuery> {
 	private static final Log log = LogFactory.getLog(PersonDatabaseManager.class);
 	private static final PersonDatabaseManager singleton = new PersonDatabaseManager();
 
@@ -100,6 +101,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	private PersonSearch personSearch;
 
 	private Chain<List<ResourcePersonRelation>, QueryAdapter<ResourcePersonRelationQuery>> chain;
+	private Chain<Statistics, ResourcePersonRelationQuery> resourcePersonRelationsStatisticsChain;
 
 	@Deprecated // use spring config
 	public static PersonDatabaseManager getInstance() {
@@ -574,11 +576,10 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	/**
 	 * @param personId
 	 * @param loginUser
-	 * @param publicationType
 	 * @param session
 	 * @return List<ResourcePersonRelation>
 	 */
-	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(String personId, User loginUser, Class<? extends BibTex> publicationType, DBSession session) {
+	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(String personId, User loginUser, DBSession session) {
 
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, BibTex.class, null, null, null, null, null, null, 0, Integer.MAX_VALUE, null, null, null, null, loginUser);
 		final ResourcePersonRelation personRelation = new ResourcePersonRelation();
@@ -586,12 +587,31 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		personRelation.getPerson().setPersonId(personId);
 		param.setPersonRelation(personRelation);
 
-		if (publicationType == GoldStandardPublication.class) {
-			return this.queryForList("getComunityBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
-		} else {
-			return this.queryForList("getBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
-		}
+		return this.queryForList("getComunityBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
 	}
+
+
+	/**
+	 * Counts the number of relations for the given person.
+	 *
+	 * @param personId a person id.
+	 * @param session a session.
+	 *
+	 * @return the number of relations.
+	 */
+	public int countResourcePersonRelationsWithPosts(String personId, DBSession session) {
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, BibTex.class, null,
+				null, null, null, null, null, 0, Integer.MAX_VALUE,
+				null, null, null, null, null);
+
+		final ResourcePersonRelation personRelation = new ResourcePersonRelation();
+		personRelation.setPerson(new Person());
+		personRelation.getPerson().setPersonId(personId);
+		param.setPersonRelation(personRelation);
+
+		return this.queryForObject("countComunityBibTexRelationsForPerson", param, Integer.class, session);
+	}
+
 
 	/**
 	 * @param interhash
@@ -711,7 +731,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @param session
 	 */
 	private void mergeAllPubs(final PersonMatch match, final User loggedinUser, final DBSession session) {
-		final List<ResourcePersonRelation> allRelationsPerson2 = this.getResourcePersonRelationsWithPosts(match.getPerson2().getPersonId(), loggedinUser, GoldStandardPublication.class, session);
+		final List<ResourcePersonRelation> allRelationsPerson2 = this.getResourcePersonRelationsWithPosts(match.getPerson2().getPersonId(), loggedinUser, session);
 		try {
 			session.beginTransaction();
 			for (final ResourcePersonRelation relation : allRelationsPerson2) {
@@ -1231,5 +1251,15 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	public void setCrisLinkDatabaseManager(CRISLinkDatabaseManager crisLinkDatabaseManager) {
 		this.crisLinkDatabaseManager = crisLinkDatabaseManager;
+	}
+
+	//FIXME (AD) This prevents the Manager to become a StatisticsProvider for Person objects, due to type erasure in Java. This should be fixed at a later point by refactoring the resource relation functionality.
+	@Override
+	public Statistics getStatistics(ResourcePersonRelationQuery query, DBSession session) {
+		return this.resourcePersonRelationsStatisticsChain.perform(query, session);
+	}
+
+	public void setResourcePersonRelationsStatisticsChain(Chain<Statistics, ResourcePersonRelationQuery> resourcePersonRelationsStatisticsChain) {
+		this.resourcePersonRelationsStatisticsChain = resourcePersonRelationsStatisticsChain;
 	}
 }

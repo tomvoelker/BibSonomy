@@ -29,7 +29,7 @@ public class GetResourcePersonRelationsWithPosts extends ResourcePersonRelationC
         final ResourcePersonRelationQuery query = adapter.getQuery();
 
         final List<ResourcePersonRelation> relations = this.getPersonDatabaseManager().getResourcePersonRelationsWithPosts(
-                query.getPersonId(), adapter.getLoggedinUser(), GoldStandardPublication.class, session);
+                query.getPersonId(), adapter.getLoggedinUser(), session);
 
         //FIXME use a join to retrieve the necessary information
         if (query.isWithPersonsOfPosts()) {

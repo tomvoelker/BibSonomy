@@ -293,6 +293,7 @@ public class DBLogic implements LogicInterface {
 	protected void initializeMaps() {
 		// register the statistic database managers
 		this.allStatisticDatabaseMangers.put(ProjectQuery.class, this.projectDatabaseManager);
+		this.allStatisticDatabaseMangers.put(ResourcePersonRelationQuery.class, this.personDBManager);
 
 		this.allDiscussionManagers.put(Comment.class, this.commentDBManager);
 		this.allDiscussionManagers.put(Review.class, this.reviewDBManager);
@@ -3431,6 +3432,7 @@ public class DBLogic implements LogicInterface {
 		ValidationUtils.assertNotNull(resourcePersonRelation.getPerson().getPersonId());
 		ValidationUtils.assertNotNull(resourcePersonRelation.getRelationType());
 
+		// this calls query getResourcePersonRelationByResourcePersonRelation in Person.xml
 		final ResourcePersonRelationQueryBuilder builder = new ResourcePersonRelationQueryBuilder()
 						.byInterhash(resourcePersonRelation.getPost().getResource().getInterHash())
 						.byRelationType(resourcePersonRelation.getRelationType())
@@ -3731,6 +3733,7 @@ public class DBLogic implements LogicInterface {
 	}
 
 
+	@Override
 	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query) {
 		try(final DBSession session = this.openSession()) {
 			return this.personDBManager.queryForResourcePersonRelations(new QueryAdapter<>(query, this.loginUser), session);
