@@ -321,6 +321,8 @@ public class UserUtils {
 			user.setRealname(""); // XXX: realname can't be null (db schema)
 		}
 
+		user.setHomepage(group.getHomepage());
+
 		user.setEmail(""); // XXX: email can't be null (db schema)
 		user.setRole(Role.GROUPUSER);
 		// every info of the group is public; XXX: maybe we want to change it

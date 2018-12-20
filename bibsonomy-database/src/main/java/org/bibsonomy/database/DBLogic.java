@@ -1314,7 +1314,7 @@ public class DBLogic implements LogicInterface {
 		} else {
 			this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, groupRequest.getUserName());
 			// this should be done by some validator
-			if (!present(groupRequest.getReason())) {
+			if (!this.permissionDBManager.isAdmin(this.loginUser) && !present(groupRequest.getReason())) {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "no reason provided");
 			}
 		}
