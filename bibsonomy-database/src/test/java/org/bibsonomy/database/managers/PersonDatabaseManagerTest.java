@@ -28,6 +28,7 @@ package org.bibsonomy.database.managers;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -52,6 +53,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
+import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.util.PersonMatchUtils;
 import org.bibsonomy.testutil.TestUtils;
 import org.junit.Before;
@@ -144,12 +147,12 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void testRemoveResourceRelation() {
-		final List<ResourcePersonRelation> resourcePersonRelationsWithPosts = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts(PERSON_ID, this.dbSession);
+		final List<ResourcePersonRelation> resourcePersonRelationsWithPosts = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts(PERSON_ID, null, null, this.dbSession);
 
 		final ResourcePersonRelation firstRelation = resourcePersonRelationsWithPosts.get(0);
 		PERSON_DATABASE_MANAGER.removeResourceRelation(PERSON_ID, firstRelation.getPost().getResource().getInterHash(), firstRelation.getPersonIndex(), firstRelation.getRelationType(), loginUser, this.dbSession);
 
-		final List<ResourcePersonRelation> afterDeletion = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts(PERSON_ID, this.dbSession);
+		final List<ResourcePersonRelation> afterDeletion = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts(PERSON_ID, null, null, this.dbSession);
 
 		assertThat(afterDeletion.size(), is(resourcePersonRelationsWithPosts.size() - 1));
 	}
@@ -285,7 +288,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			assertThat(e.getNewId(), is(personMergeTarget.getPersonId()));
 		}
 
-		final List<ResourcePersonRelation> relations = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts(personMergeTarget.getPersonId(), this.dbSession);
+		final List<ResourcePersonRelation> relations = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts(personMergeTarget.getPersonId(), null, null, this.dbSession);
 
 		for (final ResourcePersonRelation relation : relations) {
 			assertThat(relation.getRelationType(), is(notNullValue()));
@@ -323,6 +326,46 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		PERSON_DATABASE_MANAGER.denyMatch(deniedMatch, "testuser" + PersonMatch.MAX_NUMBER_OF_DENIES, this.dbSession);
 		matches = PERSON_DATABASE_MANAGER.getMatches(this.dbSession);
 		assertThat(matches.size(), is(0));
+	}
+
+
+	@Test
+	public void testGetResourcePersonRelationsWithPost() {
+		List<ResourcePersonRelation> relations = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts("w.test.1", null, null, this.dbSession);
+		assertThat(relations.size(), equalTo(3));
+	}
+
+	@Test
+	public void testGetResourcePersonRelationsWithPostPaginated() {
+		List<ResourcePersonRelation> relations = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts("w.test.1", 2, 1, this.dbSession);
+		assertThat(relations.size(), equalTo(2));
+
+		relations = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts("w.test.1", 1, 1, this.dbSession);
+		assertThat(relations.size(), equalTo(1));
+
+		relations = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts("w.test.1", 100, 1, this.dbSession);
+		assertThat(relations.size(), equalTo(2));
+	}
+
+	@Test
+	public void testGetStatistics() {
+
+		ResourcePersonRelationQuery query = new ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder()
+				.setPersonId("w.test.1")
+				.build();
+		Statistics statistics = PERSON_DATABASE_MANAGER.getStatistics(query, this.dbSession);
+
+		assertThat(statistics.getCount(), equalTo(3));
+
+		// statistics should ignore limit and offset
+		query = new ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder()
+				.setPersonId("w.test.1")
+				.setStart(1)
+				.setEnd(2)
+				.build();
+		statistics = PERSON_DATABASE_MANAGER.getStatistics(query, this.dbSession);
+
+		assertThat(statistics.getCount(), equalTo(3));
 	}
 
 	private static PersonMatch getMatchById(List<PersonMatch> matches, int id) {

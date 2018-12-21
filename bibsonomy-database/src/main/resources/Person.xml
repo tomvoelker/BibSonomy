@@ -26,7 +26,7 @@
 			VALUES (<include refid="insertPersonAttributes"/>)
 	</insert>
 	
-	<insert id="insertName" parameterClass="personNgetBibTexRelationsForPersoname">
+	<insert id="insertName" parameterClass="personName">
 		INSERT INTO person_name (person_change_id, first_name, last_name, person_id, is_main, log_changed_by, log_changed_at)
 			VALUES (#personNameChangeId#, #firstName#, #lastName#, #personId#, #isMain#, #changedBy#, #changedAt#)
 		<selectKey resultClass="int" keyProperty="personNameChangeId" >
@@ -175,14 +175,18 @@
 		WHERE simhash1 = #interhash#
 	</select>
 
-	<select id="getComunityBibTexRelationsForPerson" resultMap="PersonCommon.preFilledCommunityResourcePersonRelation" parameterClass="bibtexParam">
-		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
-		FROM
-		gold_standard b
-		<include refid="reviewRatingsJoinPublication" />
+	<select id="getComunityBibTexRelationsForPerson" resultMap="PersonCommon.preFilledCommunityResourcePersonRelation" parameterClass="org.bibsonomy.database.params.relations.GetPersonRelations">
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />,
+		       <include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
+		FROM gold_standard b
+			<include refid="reviewRatingsJoinPublication" />
 		JOIN pub_person USING(simhash1)
-		WHERE
-		pub_person.person_id = #personRelation.person.personId#
+		WHERE pub_person.person_id = #personId#
+		<isNotNull property="offset">
+			LIMIT #limit# OFFSET #offset#
+		</isNotNull>
+		<!-- (AD) check is used to support full retrievals. Since the parameter object already ensures that
+		     limit and offset are both set or absent it is sufficient to check one parameter.-->
 	</select>
 
 	<select id="countComunityBibTexRelationsForPerson" resultClass="int" parameterClass="bibtexParam">

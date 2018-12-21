@@ -57,6 +57,7 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.CRISLinkParam;
 import org.bibsonomy.database.params.DNBAliasParam;
 import org.bibsonomy.database.params.DenyMatchParam;
+import org.bibsonomy.database.params.relations.GetPersonRelations;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
@@ -599,13 +600,16 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
      * TODO (AD) Q: Which fields in ResourcePersonRelation will be populated here?
      *
 	 * @param personId a person id.
+	 * @param limit the number of relations returned from the result set.
+	 * @param offset index of the first relation returned.
 	 * @param session a database session.
      *
 	 * @return a list of all resources.
 	 */
-	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(final String personId, final DBSession session) {
+	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(final String personId, Integer limit,
+																			Integer offset, final DBSession session) {
         return this.queryForList("getComunityBibTexRelationsForPerson",
-                buildBibTexParam(personId), ResourcePersonRelation.class, session);
+                new GetPersonRelations(personId, limit, offset), ResourcePersonRelation.class, session);
 	}
 
 
@@ -757,7 +761,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @param session
 	 */
 	private void mergeAllPubs(final PersonMatch match, final User loggedinUser, final DBSession session) {
-		final List<ResourcePersonRelation> allRelationsPerson2 = this.getResourcePersonRelationsWithPosts(match.getPerson2().getPersonId(), session);
+		final List<ResourcePersonRelation> allRelationsPerson2 = this.getResourcePersonRelationsWithPosts(match.getPerson2().getPersonId(), null, null, session);
 		try {
 			session.beginTransaction();
 			for (final ResourcePersonRelation relation : allRelationsPerson2) {
