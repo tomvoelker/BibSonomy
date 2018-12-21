@@ -129,17 +129,6 @@
 		WHERE person_id = #personId#
 	</delete>
 
-	<select id="getResourcePersonRelationByResourcePersonRelation" resultMap="PersonCommon.lazyLoadingResourcePersonRelation" parameterClass="personResourceRelation">
-		SELECT <include refid="commonResourcePersonRelationColumns" />
-		FROM pub_person
-		WHERE simhash1 = #post.resource.interHash#
-		<isNotNull property="person">
-			AND person_id = #person.personId#
-		</isNotNull>
-		AND relator_code = #relationType.relatorCode#
-		AND person_index = #personIndex#
-	</select>
-	
 	<update id="unlinkUser" parameterClass="string">
 		UPDATE person
 		SET user_name = null,
@@ -154,16 +143,21 @@
 		WHERE b.simhash1 = #simhash1#
 	</select>
 	
-	<select id="getComunityBibTexRelationsForPerson" resultMap="PersonCommon.preFilledCommunityResourcePersonRelation" parameterClass="bibtexParam">
-		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
-		FROM
-			gold_standard b
-			<include refid="reviewRatingsJoinPublication" />
-			JOIN pub_person USING(simhash1)
-		WHERE
-			pub_person.person_id = #personRelation.person.personId#
+	<!--
+		Queries to find resource <-> person relations
+	-->
+
+	<select id="getResourcePersonRelationByResourcePersonRelation" resultMap="PersonCommon.lazyLoadingResourcePersonRelation" parameterClass="personResourceRelation">
+		SELECT <include refid="commonResourcePersonRelationColumns" />
+		FROM pub_person
+		WHERE simhash1 = #post.resource.interHash#
+		<isNotNull property="person">
+			AND person_id = #person.personId#
+		</isNotNull>
+		AND relator_code = #relationType.relatorCode#
+		AND person_index = #personIndex#
 	</select>
-	
+
 	<select id="getResourcePersonRelationsByPublication" parameterClass="java.lang.String" resultMap="PersonCommon.resourcePersonRelationWithPersonPrefilled">
 		SELECT <include refid="commonResourcePersonRelationColumns" />, <include refid="commonPersonColumns" />, <include refid="commonPersonNameColumns" />
 		FROM pub_person, person, person_name
@@ -172,17 +166,39 @@
 		AND pub_person.person_id = person_name.person_id
 		ORDER BY pub_person.simhash1, pub_person.relator_code, pub_person.person_index
 	</select>
-	
-
 
 	<select id="getResourcePersonRelationsWithPersonsByInterhash" parameterClass="java.lang.String" resultMap="PersonCommon.resourcePersonRelationWithPersonPrefilled">
 		SELECT <include refid="commonResourcePersonRelationColumns" />, <include refid="commonPersonColumns"/>, <include refid="commonPersonNameColumns"/>
 		FROM pub_person
 		JOIN person USING (person_id)
 		JOIN person_name USING (person_id)
-		WHERE simhash1 = #post.resource.interhash#
+		WHERE simhash1 = #interhash#
 	</select>
-	
+
+	<select id="getComunityBibTexRelationsForPerson" resultMap="PersonCommon.preFilledCommunityResourcePersonRelation" parameterClass="org.bibsonomy.database.params.relations.GetPersonRelations">
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />,
+		       <include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
+		FROM gold_standard b
+			<include refid="reviewRatingsJoinPublication" />
+		JOIN pub_person USING(simhash1)
+		WHERE pub_person.person_id = #personId#
+		<isNotNull property="offset">
+			LIMIT #limit# OFFSET #offset#
+		</isNotNull>
+		<!-- (AD) check is used to support full retrievals. Since the parameter object already ensures that
+		     limit and offset are both set or absent it is sufficient to check one parameter.-->
+	</select>
+
+	<select id="countComunityBibTexRelationsForPerson" resultClass="int" parameterClass="bibtexParam">
+		SELECT count(*)	FROM gold_standard b <include refid="reviewRatingsJoinPublication" />
+			JOIN pub_person USING(simhash1)
+		WHERE
+			pub_person.person_id = #personRelation.person.personId#
+	</select>
+
+
+
+
 	<select id="getMatches" resultMap="PersonCommon.personMatch">
 		SELECT match_id, person1_id, person2_id, state
 		FROM person_match

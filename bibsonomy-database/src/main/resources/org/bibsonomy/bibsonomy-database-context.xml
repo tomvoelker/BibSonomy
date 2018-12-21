@@ -261,6 +261,16 @@
 		</property>
 	</bean>
 
+	<bean id="resourcePersonRelationsStatisticsChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.statistic.relations.GetAllRelationsCount">
+					<constructor-arg ref="personDatabaseManager" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
 	<bean id="databaseValidator" class="org.bibsonomy.database.validation.DatabaseModelValidator">
 		<property name="databaseSchemaInformation" ref="dbSchemaInformation" />
 	</bean>
@@ -375,6 +385,7 @@
 		<property name="publicationDatabaseManager" ref="publicationDatabaseManager" />
 		<property name="crisLinkDatabaseManager" ref="crisLinkDatabaseManger" />
 		<property name="chain" ref="personRelationChain" />
+		<property name="resourcePersonRelationsStatisticsChain" ref="resourcePersonRelationsStatisticsChain" />
 	</bean>
 	
 	<bean id="clipboardDatabaseManager" class="org.bibsonomy.database.managers.ClipboardDatabaseManager" factory-method="getInstance" />
