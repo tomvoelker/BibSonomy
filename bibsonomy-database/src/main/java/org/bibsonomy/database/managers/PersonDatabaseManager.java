@@ -240,7 +240,37 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		}
 	}
 
-	/**
+
+    /**
+     * @param personNameChangeId
+     * @param loggedInUser
+     * @param session
+     */
+    public void removePersonName(int personNameChangeId, final User loggedInUser, DBSession session) {
+        session.beginTransaction();
+        try {
+            final PersonName oldPersonName = this.getPersonNameById(personNameChangeId, session);
+
+            if (!present(oldPersonName)) {
+                session.commitTransaction();
+                return;
+            }
+            // inform the plugins (e.g. log the deleted relation)
+            this.plugins.onPersonNameDelete(oldPersonName, loggedInUser, session);
+            this.delete("removePersonName", Integer.valueOf(personNameChangeId), session);
+
+            session.commitTransaction();
+        } finally {
+            session.endTransaction();
+        }
+    }
+
+    private PersonName getPersonNameById(int personNameChangeId, final DBSession session) {
+        return this.queryForObject("getPersonNameById", personNameChangeId, PersonName.class, session);
+    }
+
+
+    /**
 	 * Updates all fields of a given Person
 	 *
 	 * @param person
@@ -277,6 +307,23 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 		return JobResult.buildSuccess();
 	}
+
+    /**
+     * unlinks a user with this current person
+     *
+     * @param username
+     */
+    public void unlinkUser(final String username, final DBSession session) {
+        session.beginTransaction();
+        try {
+            // FIXME: why not getting the person by username and calling onPersonUpdate
+            this.plugins.onPersonUpdateByUserName(username, session);
+            this.update("unlinkUser", username, session);
+            session.commitTransaction();
+        } finally {
+            session.endTransaction();
+        }
+    }
 
 	/**
 	 * Update the OrcID of a Person
@@ -424,33 +471,47 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	}
 
 	/**
-	 * @param personId
-	 * @param interHash
-	 * @param index
-	 * @param type
-	 * @param loginUser
-	 * @param session
+     * Deletes a resource relation. Plugins will be notified about the change.
+     *
+     * @param personId a person id.
+     * @param interHash a resource interhash.
+     * @param index an index.
+     * @param type a relation type.
+     * @param loginUser the logged in user.
+     * @param session a database session.
 	 */
-	public void removeResourceRelation(String personId, final String interHash, final int index, final PersonResourceRelationType type, final User loginUser, final DBSession session) {
+	public void removeResourceRelation(String personId, final String interHash, final int index,
+                                       final PersonResourceRelationType type, final User loginUser,
+                                       final DBSession session) {
+
 		this.removeResourceRelation(personId, interHash, index, type, loginUser, false, session);
 	}
 
-	/**
-	 * @param personId
-	 * @param interHash
-	 * @param index
-	 * @param type
-	 * @param loginUser
-	 * @param session
-	 */
-	private void removeResourceRelation(String personId, final String interHash, final int index, final PersonResourceRelationType type, final User loginUser, final boolean update, final DBSession session) {
+    /**
+     * Deletes a resource relation.
+     * @param personId a person id.
+     * @param interHash a resource interhash.
+     * @param index an index.
+     * @param type a relation type.
+     * @param loginUser the logged in user.
+     * @param update if <code>false</code> plugins will be notified about the change, otherwise no notification will be performed. //TODO Why is it called update???
+     * @param session a database session.
+     */
+	private void removeResourceRelation(String personId, final String interHash, final int index,
+                                        final PersonResourceRelationType type, final User loginUser,
+                                        final boolean update, final DBSession session) {
+
 		session.beginTransaction();
 
 		try {
 			final ResourcePersonRelation resourcePersonRelation = this.getResourcePersonRelation(personId, interHash, index, type, session);
 			if (!present(resourcePersonRelation)) {
-				// TODO: notify someone
-				return;
+				throw new RuntimeException(
+				        String.format(
+				                "Could not delete resource relation for person %s and resource $s",
+                                personId, interHash
+                        )
+                );
 			}
 			// inform the plugins (e.g. to log the deleted relation)
 			if (!update) {
@@ -464,59 +525,20 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		}
 	}
 
-	/**
-	 * @param personNameChangeId
-	 * @param loggedInUser
-	 * @param session
-	 */
-	public void removePersonName(int personNameChangeId, final User loggedInUser, DBSession session) {
-		session.beginTransaction();
-		try {
-			final PersonName oldPersonName = this.getPersonNameById(personNameChangeId, session);
 
-			if (!present(oldPersonName)) {
-				session.commitTransaction();
-				return;
-			}
-			// inform the plugins (e.g. log the deleted relation)
-			this.plugins.onPersonNameDelete(oldPersonName, loggedInUser, session);
-			this.delete("removePersonName", Integer.valueOf(personNameChangeId), session);
+	//FIXME (AD) introduce distinct query parameter classes that are handed to ibatis instead of recycling the ResourcePersonRelation model --> affects all resource queries!
 
-			session.commitTransaction();
-		} finally {
-			session.endTransaction();
-		}
-	}
 
-	private PersonName getPersonNameById(int personNameChangeId, final DBSession session) {
-		return this.queryForObject("getPersonNameById", personNameChangeId, PersonName.class, session);
-	}
 
-	// TODO: write testcase for this method and test whether groupBy of OR-mapping works as expected
+    // TODO: write testcase for this method and test whether groupBy of OR-mapping works as expected
 	public List<ResourcePersonRelation> getResourcePersonRelationsByPublication(String interHash, DBSession databaseSession) {
 		return this.queryForList("getResourcePersonRelationsByPublication", interHash, ResourcePersonRelation.class, databaseSession);
 	}
 
-	/**
-	 * unlinks a user with this current person
-	 *
-	 * @param username
-	 */
-	public void unlinkUser(final String username, final DBSession session) {
-		session.beginTransaction();
-		try {
-			// FIXME: why not getting the person by username and calling onPersonUpdate
-			this.plugins.onPersonUpdateByUserName(username, session);
-			this.update("unlinkUser", username, session);
-			session.commitTransaction();
-		} finally {
-			session.endTransaction();
-		}
-	}
-
 
 	/**
-	 * Retrieves a list of resource person relations according to the query. The request is handled by the configured chain of responsibility.
+	 * Retrieves a list of resource person relations according to the query. The request is handled by the configured
+     * chain of responsibility.
 	 *
 	 * @param queryAdapter a query.
 	 * @param session a database session.
@@ -529,13 +551,18 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 
 	/**
-	 * @param interhash
-	 * @param authorIndex
-	 * @param role
-	 * @param session
-	 * @return list of ResourcePersonRelation
+     * Retrieves a list of relations for the resource with the given <code>interhash</code>. The returned list is
+     * restricted to specific authors by <code>authorIndex</code> and relation <code>role</code>.
+     *
+	 * @param interhash a resource interhash.
+	 * @param authorIndex an author index.
+	 * @param role a relation type.
+	 * @param session a database session.
+     *
+	 * @return a list of relations.
 	 */
-	public List<ResourcePersonRelation> getResourcePersonRelations(final String interhash, final Integer authorIndex, final PersonResourceRelationType role, final DBSession session) {
+    //TODO (AD) Q: Why do we have this query? This should always give a single entry list (see unique index)
+    public List<ResourcePersonRelation> getResourcePersonRelations(final String interhash, final Integer authorIndex, final PersonResourceRelationType role, final DBSession session) {
 		final ResourcePersonRelation rpr = new ResourcePersonRelation();
 		final Post<BibTex> post = new Post<>();
 		post.setResource(new BibTex());
@@ -547,11 +574,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			rpr.setPersonIndex(-1);
 		}
 		rpr.setRelationType(role);
-
-		return this.getResourcePersonRelationByResourcePersonRelation(rpr, session);
-	}
-
-	private List<ResourcePersonRelation> getResourcePersonRelationByResourcePersonRelation(ResourcePersonRelation rpr, DBSession session) {
 		return this.queryForList("getResourcePersonRelationByResourcePersonRelation", rpr, ResourcePersonRelation.class, session);
 	}
 
@@ -573,7 +595,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	}
 
 	/**
-     * Gets all resources for a person.
+     * Gets all resource relations for a person.
+     * TODO (AD) Q: Which fields in ResourcePersonRelation will be populated here?
      *
 	 * @param personId a person id.
 	 * @param session a database session.
@@ -613,13 +636,17 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 
     /**
-	 * @param interhash
-	 * @param session
-	 * @return
+     * Gets a list of all persons associated with a resource as identified by the resources <code>interhash</code>.
+     *
+	 * @param interhash a resource interhash.
+	 * @param session a database session.
+     *
+	 * @return a list with relations covering all persons associated with the requested resource.
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelationsWithPersonsByInterhash(String interhash, DBSession session) {
 		return this.queryForList("getResourcePersonRelationsWithPersonsByInterhash", interhash, ResourcePersonRelation.class, session);
 	}
+
 
 	/**
 	 * based on the query this logic returns all matching persons

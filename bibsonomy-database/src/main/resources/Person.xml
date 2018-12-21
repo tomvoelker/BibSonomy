@@ -172,7 +172,7 @@
 		FROM pub_person
 		JOIN person USING (person_id)
 		JOIN person_name USING (person_id)
-		WHERE simhash1 = #post.resource.interhash#
+		WHERE simhash1 = #interhash#
 	</select>
 
 	<select id="getComunityBibTexRelationsForPerson" resultMap="PersonCommon.preFilledCommunityResourcePersonRelation" parameterClass="bibtexParam">
