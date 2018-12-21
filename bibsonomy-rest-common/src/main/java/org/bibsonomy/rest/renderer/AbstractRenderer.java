@@ -631,20 +631,6 @@ public abstract class AbstractRenderer implements Renderer {
 		serialize(writer, xmlDoc);
 	}
 
-	private BibsonomyXML getEmptyBibsonomyXMLWithOK() {
-		return getEmptyBibsonomyXML(StatType.OK);
-	}
-
-	private BibsonomyXML getEmptyBibsonomyXMLWithFail() {
-		return getEmptyBibsonomyXML(StatType.FAIL);
-	}
-
-	private BibsonomyXML getEmptyBibsonomyXML(StatType statType) {
-		final BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setStat(statType);
-		return xmlDoc;
-	}
-
 	private CRISLinkTypeType createXmlCRISLink(CRISLink crisLink) {
 		final CRISLinkTypeType crisLinkTypeType = new CRISLinkTypeType();
 		setValue(crisLinkTypeType::setStartDate, crisLink::getStartDate, this::createXmlCalendar);
@@ -940,14 +926,14 @@ public abstract class AbstractRenderer implements Renderer {
 
 	@Override
 	public void serializeError(final Writer writer, final String errorMessage) {
-		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithFail();
+		final BibsonomyXML xmlDoc = buildEmptyBibsonomyXMLWithFAIL();
 		xmlDoc.setError(errorMessage);
 		this.serialize(writer, xmlDoc);
 	}
 
 	@Override
 	public void serializeGroupId(final Writer writer, final String groupId) {
-		final BibsonomyXML xmlDoc = getEmptyBibsonomyXMLWithOK();
+		final BibsonomyXML xmlDoc = buildEmptyBibsonomyXMLWithOK();
 		xmlDoc.setGroupid(groupId);
 		this.serialize(writer, xmlDoc);
 	}
