@@ -296,11 +296,11 @@ public abstract class AbstractRenderer implements Renderer {
 			}
 			xmlPosts.setStart(BigInteger.valueOf(viewModel.getStartValue()));
 		} else if (posts != null) {
-			xmlPosts.setStart(BigInteger.valueOf(0));
+			xmlPosts.setStart(BigInteger.ZERO);
 			xmlPosts.setEnd(BigInteger.valueOf(posts.size()));
 		} else {
-			xmlPosts.setStart(BigInteger.valueOf(0));
-			xmlPosts.setEnd(BigInteger.valueOf(0));
+			xmlPosts.setStart(BigInteger.ZERO);
+			xmlPosts.setEnd(BigInteger.ZERO);
 		}
 
 		if (present(posts)) {
@@ -558,11 +558,11 @@ public abstract class AbstractRenderer implements Renderer {
 			}
 			xmlUsers.setStart(BigInteger.valueOf(viewModel.getStartValue()));
 		} else if (users != null) {
-			xmlUsers.setStart(BigInteger.valueOf(0));
+			xmlUsers.setStart(BigInteger.ZERO);
 			xmlUsers.setEnd(BigInteger.valueOf(users.size()));
 		} else {
-			xmlUsers.setStart(BigInteger.valueOf(0));
-			xmlUsers.setEnd(BigInteger.valueOf(0));
+			xmlUsers.setStart(BigInteger.ZERO);
+			xmlUsers.setEnd(BigInteger.ZERO);
 		}
 
 		if (present(users)) {
@@ -609,7 +609,7 @@ public abstract class AbstractRenderer implements Renderer {
 			for (final Group group : groups) {
 				group2.add(this.createXmlGroup(group));
 			}
-			xmlUser.getGroups().setStart(BigInteger.valueOf(0));
+			xmlUser.getGroups().setStart(BigInteger.ZERO);
 			xmlUser.getGroups().setEnd(BigInteger.valueOf(groups.size()));
 		}
 		return xmlUser;
@@ -756,8 +756,10 @@ public abstract class AbstractRenderer implements Renderer {
 		final ResourcePersonRelationType xmlResourcePersonRelation = new ResourcePersonRelationType();
 		setValue(xmlResourcePersonRelation::setPerson, resourcePersonRelation::getPerson, this::createXmlPerson);
 		setValue(xmlResourcePersonRelation::setResource, resourcePersonRelation::getPost, this::createXmlResourceLink);
-		setValue(xmlResourcePersonRelation::setRelationType, resourcePersonRelation::getRelationType, this::createXmlRelationType);
-		setValue(xmlResourcePersonRelation::setPersonIndex, resourcePersonRelation::getPersonIndex, i -> BigInteger.valueOf(i));
+		setValue(xmlResourcePersonRelation::setRelationType, resourcePersonRelation::getRelationType,
+						this::createXmlRelationType);
+		setValue(xmlResourcePersonRelation::setPersonIndex, resourcePersonRelation::getPersonIndex,
+						i -> BigInteger.valueOf(i.longValue()));
 		return xmlResourcePersonRelation;
 	}
 
@@ -793,11 +795,11 @@ public abstract class AbstractRenderer implements Renderer {
 			}
 			xmlTags.setStart(BigInteger.valueOf(viewModel.getStartValue()));
 		} else if (tags != null) {
-			xmlTags.setStart(BigInteger.valueOf(0));
+			xmlTags.setStart(BigInteger.ZERO);
 			xmlTags.setEnd(BigInteger.valueOf(tags.size()));
 		} else {
-			xmlTags.setStart(BigInteger.valueOf(0));
-			xmlTags.setEnd(BigInteger.valueOf(0));
+			xmlTags.setStart(BigInteger.ZERO);
+			xmlTags.setEnd(BigInteger.ZERO);
 		}
 
 		if (present(tags)) {
@@ -844,7 +846,7 @@ public abstract class AbstractRenderer implements Renderer {
 		for (final Tag tag : tags) {
 			xmlTags.getTag().add(this.createXmlTag(tag));
 		}
-		xmlTags.setStart(BigInteger.valueOf(0));
+		xmlTags.setStart(BigInteger.ZERO);
 		xmlTags.setEnd(BigInteger.valueOf(tags.size()));
 		return xmlTags;
 	}
@@ -859,11 +861,11 @@ public abstract class AbstractRenderer implements Renderer {
 			}
 			xmlGroups.setStart(BigInteger.valueOf(viewModel.getStartValue()));
 		} else if (groups != null) {
-			xmlGroups.setStart(BigInteger.valueOf(0));
+			xmlGroups.setStart(BigInteger.ZERO);
 			xmlGroups.setEnd(BigInteger.valueOf(groups.size()));
 		} else {
-			xmlGroups.setStart(BigInteger.valueOf(0));
-			xmlGroups.setEnd(BigInteger.valueOf(0));
+			xmlGroups.setStart(BigInteger.ZERO);
+			xmlGroups.setEnd(BigInteger.ZERO);
 		}
 
 		if (present(groups)) {
@@ -995,19 +997,11 @@ public abstract class AbstractRenderer implements Renderer {
 	 */
 	private SyncPostType createXmlSyncPost(final SynchronizationPost post) {
 		final SyncPostType xmlSyncpost = new SyncPostType();
-		if (present(post.getAction())) {
-			xmlSyncpost.setAction(post.getAction().toString());
-		}
-		if (present(post.getChangeDate())) {
-			xmlSyncpost.setChangeDate(this.createXmlCalendar(post.getChangeDate()));
-		}
-		if (present(post.getCreateDate())) {
-			xmlSyncpost.setCreateDate(this.createXmlCalendar(post.getCreateDate()));
-		}
-		xmlSyncpost.setHash(post.getIntraHash());
-		if (present(post.getPost())) {
-			xmlSyncpost.setPost(this.createXmlPost(post.getPost()));
-		}
+		setValue(xmlSyncpost::setAction, post::getAction, SynchronizationAction::toString);
+		setValue(xmlSyncpost::setChangeDate, post::getChangeDate, this::createXmlCalendar);
+		setValue(xmlSyncpost::setCreateDate, post::getCreateDate, this::createXmlCalendar);
+		setValue(xmlSyncpost::setHash, post::getIntraHash);
+		setValue(xmlSyncpost::setPost, post::getPost, this::createXmlPost);
 		return xmlSyncpost;
 	}
 
@@ -1350,12 +1344,7 @@ public abstract class AbstractRenderer implements Renderer {
 	public List<Tag> parseTagList(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getTags() != null) {
-			final List<Tag> tags = new LinkedList<>();
-			for (final TagType tt : xmlDoc.getTags().getTag()) {
-				final Tag t = this.createTag(tt);
-				tags.add(t);
-			}
-			return tags;
+			return xmlDoc.getTags().getTag().stream().map(this::createTag).collect(Collectors.toList());
 		}
 		if (xmlDoc.getError() != null) {
 			throw new BadRequestOrResponseException(xmlDoc.getError());
