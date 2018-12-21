@@ -26,7 +26,7 @@
 			VALUES (<include refid="insertPersonAttributes"/>)
 	</insert>
 	
-	<insert id="insertName" parameterClass="personNgetBibTexRelationsForPersoname">
+	<insert id="insertName" parameterClass="personName">
 		INSERT INTO person_name (person_change_id, first_name, last_name, person_id, is_main, log_changed_by, log_changed_at)
 			VALUES (#personNameChangeId#, #firstName#, #lastName#, #personId#, #isMain#, #changedBy#, #changedAt#)
 		<selectKey resultClass="int" keyProperty="personNameChangeId" >
