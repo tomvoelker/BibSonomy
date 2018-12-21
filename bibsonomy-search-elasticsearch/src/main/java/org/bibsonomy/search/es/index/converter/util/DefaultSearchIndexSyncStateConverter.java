@@ -1,6 +1,7 @@
 package org.bibsonomy.search.es.index.converter.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
 

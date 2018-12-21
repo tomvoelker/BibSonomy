@@ -608,7 +608,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	    return this.queryForList("getParentGroupsWhereUserIsMember", new GetParentGroupIdsRecursively(username, groupName), Integer.class, session);
     }
 
-
 	/**
 	 * Activates a group.
 	 *
@@ -691,7 +690,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	 * @param group a group.
 	 * @param session a database session.
 	 */
-	public void createGroup(final Group group, final DBSession session) {
+	public void createPendingGroup(final Group group, final DBSession session) {
 		final String groupName = group.getName();
 
 		final String normedGroupName = this.getNormedGroupName(groupName);
@@ -713,9 +712,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There is a user with this name - cannot create the group.");
 		}
 
-		// create the user
-		final User groupUser = UserUtils.buildGroupUser(normedGroupName);
-
 		// we can't be sure that the database id of the parent group is set
 		// and also that the parent exists
 		final Group parent = group.getParent();
@@ -732,9 +728,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 
 		try {
 			session.beginTransaction();
+
 			/*
 			 * every group has a corresponding user with the name of the group.
 			 */
+			final User groupUser = UserUtils.buildGroupUser(group);
 			this.userDb.createUser(groupUser, session);
 			this.insertGroup(group, session);
 			session.commitTransaction();
@@ -1262,13 +1260,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	 *
 	 * Although this is a one-to-one relationship a list is provided since it will be part of a larger chain.
 	 *
-	 * @param externalId an external id.
+	 * @param internalId an internal id.
 	 * @param session a database session.
 	 *
 	 * @return a list of groups with the external id.
 	 */
-	public Group getGroupByExternalId(String externalId, DBSession session) {
-		return this.queryForObject("getGroupByExternalId", externalId, Group.class, session);
+	public Group getGroupByInternalId(final String internalId, final DBSession session) {
+		return this.queryForObject("getGroupByInternalId", internalId, Group.class, session);
 	}
 
 	@Override
@@ -1283,6 +1281,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 		final CRISLinkParam param = new CRISLinkParam();
 		param.setTargetId(linkId.intValue());
 		param.setTargetType(crisEntityType);
+		param.setSourceType(CRISEntityType.GROUP);
 		return this.queryForList("getGroupCRISLinks", param, CRISLink.class, session);
 	}
 

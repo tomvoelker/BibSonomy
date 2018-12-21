@@ -1,6 +1,7 @@
 package org.bibsonomy.rest.strategy.persons;
 
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
@@ -35,7 +36,7 @@ public class GetResourcePersonRelationsStrategy extends AbstractGetListStrategy<
 
 	@Override
 	protected List<ResourcePersonRelation> getList() {
-		return this.getLogic().getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(this.personId).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.PublicationYear));
+		return this.getLogic().getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(this.personId).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(PersonResourceRelationOrder.PublicationYear));
 	}
 
 	@Override

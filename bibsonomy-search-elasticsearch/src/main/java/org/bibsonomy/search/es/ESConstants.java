@@ -57,6 +57,9 @@ public final class ESConstants {
 	/** the registered lowercase normalizer */
 	public static final String LOWERCASE_NORMALIZER = "lowercase_normalizer";
 
+	/** the n gram analyser */
+	public static final String NGRAM_ANALYSER = "ngram_analyser";
+
 	static {
 		try {
 			SETTINGS = Strings.toString(XContentFactory.jsonBuilder()
@@ -92,11 +95,18 @@ public final class ESConstants {
 								.endObject()
 							.endObject()
 							.startObject("analyzer")
-								.startObject("default")
+								.startObject(NGRAM_ANALYSER)
 									.field("type", "custom")
 									.field("char_filter", Arrays.asList(BIBTEX_MAPPING, BRACKETS_CHAR_FILTER_NAME, CURLY_BRACKETS_CHAR_FILTER_NAME))
-									.field("tokenizer", "standard")
+									.field("tokenizer", "ngram_tokenizer")
 									.field("filter", Arrays.asList(ASCII_FOLDING_PRESERVE_TOKEN_FILTER_NAME, "lowercase", "standard"))
+								.endObject()
+							.endObject()
+							.startObject("tokenizer")
+								.startObject("ngram_tokenizer")
+									.field("type", "edge_ngram")
+									.field("min_gram", 2)
+									.field("max_gram", 10)
 								.endObject()
 							.endObject()
 						.endObject()
@@ -110,6 +120,8 @@ public final class ESConstants {
 	 * some constants for index settings
 	 */
 	public interface IndexSettings {
+		/** analyzer */
+		String ANALYZER = "analyzer";
 		/** properties field key */
 		String PROPERTIES = "properties";
 		/** flag to copy the field also to the other fields */

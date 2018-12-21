@@ -29,7 +29,10 @@
     <select id="getCRISLinkDetails" parameterClass="crisLinkParam" resultMap="CRISLinkCommon.simpleCrisLink">
         SELECT <include refid="simpleCRISColumns" />
           FROM cris_links c
-          WHERE source_id = #sourceId# AND source_type = #sourceType.id# AND target_id = #targetId# AND target_type = #targetType.id#
+          WHERE source_id = #sourceId#
+          AND source_type = #sourceType.id#
+          AND target_id = #targetId#
+          AND target_type = #targetType.id#
     </select>
 
     <select id="getPersonCRISLinks" parameterClass="crisLinkParam" resultMap="CRISLinkCommon.personCrisLink">
@@ -37,14 +40,18 @@
           FROM cris_links c
             JOIN person p ON (p.person_change_id = c.target_id)
             JOIN person_name pn USING (person_id)
-          WHERE c.source_id = #sourceId# and c.source_type = #sourceType.id#
+          WHERE c.source_id = #sourceId#
+          AND c.source_type = #sourceType.id#
+          AND c.target_type = #targetType.id#
     </select>
 
     <select id="getProjectCRISLinks" parameterClass="crisLinkParam" resultMap="CRISLinkCommon.projectCrisLink">
         SELECT <include refid="simpleCRISColumns" />, <include refid="projectColumns" />
         FROM cris_links c
         JOIN projects p ON (p.id = c.source_id)
-        WHERE c.target_id = #targetId# and c.target_type = #targetType.id#
+        WHERE c.target_id = #targetId#
+        AND c.target_type = #targetType.id#
+        AND c.source_type = #sourceType.id#
     </select>
 
     <select id="getGroupCRISLinks" parameterClass="crisLinkParam" resultMap="CRISLinkCommon.groupCrisLink">
@@ -52,6 +59,8 @@
         FROM cris_links c
         JOIN groupids g ON (g.`group` = c.source_id)
         JOIN user u ON (g.group_name = u.user_name)
-        WHERE c.target_id = #targetId# and c.target_type = #targetType.id#
+        WHERE c.target_id = #targetId#
+            AND c.target_type = #targetType.id#
+            AND c.source_type = #sourceType.id#
     </select>
 </sqlMap>

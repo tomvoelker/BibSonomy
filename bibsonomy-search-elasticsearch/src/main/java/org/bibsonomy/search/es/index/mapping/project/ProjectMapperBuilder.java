@@ -38,6 +38,8 @@ public class ProjectMapperBuilder implements MappingBuilder<XContentBuilder> {
 						// title
 						.startObject(ProjectFields.TITLE)
 							.field(TYPE_FIELD, TEXT_TYPE)
+							.field(ESConstants.IndexSettings.ANALYZER, ESConstants.NGRAM_ANALYSER)
+							.field(ESConstants.IndexSettings.BOOST_FIELD, 2.0)
 							.startObject("fields")
 								.startObject(ProjectFields.TITLE_SORT)
 									.field(TYPE_FIELD, KEYWORD_TYPE)
@@ -50,6 +52,12 @@ public class ProjectMapperBuilder implements MappingBuilder<XContentBuilder> {
 						.endObject()
 						// subtitle
 						.startObject(ProjectFields.SUB_TITLE)
+							.field(ESConstants.IndexSettings.ANALYZER, ESConstants.NGRAM_ANALYSER)
+							.field(TYPE_FIELD, TEXT_TYPE)
+						.endObject()
+						// description
+						.startObject(ProjectFields.DESCRIPTION)
+							.field(ESConstants.IndexSettings.ANALYZER, ESConstants.NGRAM_ANALYSER)
 							.field(TYPE_FIELD, TEXT_TYPE)
 						.endObject()
 						// type

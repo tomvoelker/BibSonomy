@@ -54,6 +54,7 @@ public class BookmarkMappingBuilder extends ResourceMappingBuilder<Bookmark> {
 	protected void doResourceSpecificMapping(XContentBuilder builder) throws IOException {
 		builder.startObject(Fields.Bookmark.URL)
 					.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.TEXT_TYPE)
+					.field(ESConstants.IndexSettings.ANALYZER, ESConstants.NGRAM_ANALYSER)
 				.endObject();
 	}
 }

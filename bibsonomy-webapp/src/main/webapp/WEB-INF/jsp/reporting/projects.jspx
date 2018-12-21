@@ -5,30 +5,38 @@
 		  xmlns:c="http://java.sun.com/jsp/jstl/core"
 		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
-		  xmlns:project="urn:jsptagdir:/WEB-INF/tags/resources/project"
-		  xmlns:reporting="urn:jsptagdir:/WEB-INF/tags/reporting" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:reporting="urn:jsptagdir:/WEB-INF/tags/reporting"
+		  xmlns:spring="http://www.springframework.org/tags"
+		  xmlns:project="urn:jsptagdir:/WEB-INF/tags/project"
+		  xmlns:lists="urn:jsptagdir:/WEB-INF/tags/layout/parts/lists"
 >
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"/>
 
-	<fmt:message var="pageTitle" key="navi.search"/>
+	<fmt:message var="pageTitle" key="navi.export.projects"/>
 
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 
 	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.projects" command="${command}"
 					   pageTitle="${pageTitle}" activeTab="projects">
-		 <jsp:attribute name="headerExt">
-            <script type="text/javascript" src="${resdir}/javascript/projects.js"><!-- keep me --></script>
-        </jsp:attribute>
 
 		<!--+
 			  | heading
 			  +-->
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.projects" formAction="/project/" formInputName="project"/>
+		</jsp:attribute>
+
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/typeahead.js/js/typeahead.bundle.js"><!-- keep me --></script>
+			<script type="text/javascript"
+					src="${resdir}/javascript/reporting/personAutocomplete.js"><!-- keep me --></script>
+			<script type="text/javascript"
+					src="${resdir}/javascript/reporting/autocompleteSearchPerson.js"><!-- keep me --></script>
+
+			<link rel="stylesheet" type="text/css" href="${resdir}/typeahead.js/css/typeahead.css"/>
 		</jsp:attribute>
 
 		<jsp:attribute name="breadcrumbs">
@@ -44,55 +52,61 @@
 		 	| content
 		 	+-->
 		<jsp:attribute name="content">
+			<parts:searchHeader headerMessageKey="reporting.projects.header"
+								searchPlaceholderKey="reporting.projects.search"
+								requPathAndQuery="${requPathAndQuery}" command="${command}"/>
+			<div class="heading">
+				<div class="row">
+					<div class="col-md-3">
+						<spring:eval var="sponsorValues" expression="T(java.util.Arrays).asList('test')"/>
+						<reporting:filter requPathAndQuery="${requPathAndQuery}" filterName="Sponsor"
+										  filterValues="${sponsorValues}" filterField="sponsor"/>
+					</div>
+					<div class="col-md-3">
+						<spring:eval var="typeValues" expression="T(java.util.Arrays).asList('test')"/>
+						<reporting:filter requPathAndQuery="${requPathAndQuery}" filterName="Type"
+										  filterField="type" filterValues="${typeValues}"/>
+					</div>
+					<div class="col-md-3">
+						<reporting:date_filter requPathAndQuery="${requPathAndQuery}" filterName="Start Date"
+											   filterField="startDate"/>
+					</div>
+					<div class="col-md-3">
+						<reporting:date_filter requPathAndQuery="${requPathAndQuery}" filterName="End Date"
+											   filterField="endDate"/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-5">
+						<form>
+							<input class='form-control typeahead' id='searchPersonAutocomplete'
+								   name='person' autocomplete="on" placeholder='search by person'/>
+						</form>
+					</div>
+					<div class="col-md-5">
+						<form>
+							<input class='form-control typeahead' id='searchOrganizationAutocomplete'
+								   name='organization'
+								   autocomplete="on" placeholder='search by organization'/>
+						</form>
+					</div>
+					<div class="col-md-2">
+						<reporting:export requPathAndQuery="${requPathAndQuery}"/>
+					</div>
+				</div>
+			</div>
 
-			<h1 class="content-heading">
-                <fmt:message key="navi.projects.all"/>
-                <c:if test="${command.context.loginUser.role eq 'ADMIN'}">
-                    <span style="float: right;">
-                        <buttons:createNewProjectButton/>
-                    </span>
-                </c:if>
-            </h1>
-            <div class="text-right btn-toolbar">
-                <button class="btn btn-primary btn-sm" id="sort-title" onclick="sortList('title')">
-                    <fmt:message key="project.sort.title"/>
-                </button>
-                <button class="btn btn-primary btn-sm" id="sort-start-date" onclick="sortList('start-date')">
-                    <fmt:message key="project.sort.startdate"/>
-                </button>
-                <button class="btn btn-primary btn-sm" id="sort-end-date" onclick="sortList('end-date')">
-                    <fmt:message key="project.sort.enddate"/>
-                </button>
-                <c:set var="searchPlaceholder">
-                    <fmt:message key="project.search"/>
-                </c:set>
-                <input id="search-project-input" placeholder="${searchPlaceholder}" onkeypress="function x(keyEvent) {
-                  var kx = keyEvent.which || keyEvent.keyCode;
-                  if (kx !== 13) {
-                  	return;
-                  }
-                }" />
-            </div>
+			<div class="row">
+				<div class="col-md-12 vcenter">
+					<lists:listResultInfo listCommand="${command.projects}"
+										  messageKey="projects.results.description"/>
+				</div>
+			</div>
 
-			<reporting:export requPathAndQuery="${requPathAndQuery}"/>
-
-            <div class="text-info">
-                <dl class="group-list">
-                    <dt>
-                        <fmt:message key="project.amountprojects"/>
-                    </dt>
-                    <dd id="amount-projects">
-                        <c:out value="${fn:length(command.projects)}"/>
-                    </dd>
-                </dl>
-                <hr/>
-            </div>
-            <div id="projects">
-				<ul class="list-group" id="all-projects">
-                    <c:forEach var="project" items="${command.projects}">
-                        <project:listview project="${project}"/>
-                    </c:forEach>
-				</ul>
+            <div class="row">
+				<div class="col-md-12">
+					<project:listview projectListCommand="${command.projects}"/>
+				</div>
 			</div>
             <nav aria-label="Page navigation example">
                 <p class="info" id="show-amount"/><br/>

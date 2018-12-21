@@ -1,5 +1,8 @@
 package org.bibsonomy.model.logic.query;
 
+import org.bibsonomy.common.enums.Prefix;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.enums.PersonOrder;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 
 /**
@@ -8,24 +11,21 @@ import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
  * FIXME add real person query builder
  * @author dzo
  */
-public class PersonQuery extends PersonSuggestionQueryBuilder {
+public class PersonQuery extends PersonSuggestionQueryBuilder implements PaginatedQuery {
 
-	private final String college;
+	private String college;
+	private Prefix prefix;
+	private int start = 0;
+	private int end = 20;
+	private PersonOrder order;
+	/** the organization to filter for */
+	private Group organization;
 
 	/**
 	 * @param query any combination of title, author-name
 	 */
 	public PersonQuery(String query) {
-		this(query, null);
-	}
-
-	/**
-	 * @param query
-	 * @param college
-	 */
-	public PersonQuery(String query, String college) {
 		super(query);
-		this.college = college;
 	}
 
 	/**
@@ -33,5 +33,84 @@ public class PersonQuery extends PersonSuggestionQueryBuilder {
 	 */
 	public String getCollege() {
 		return college;
+	}
+
+	/**
+	 * @param college the college to set
+	 */
+	public void setCollege(String college) {
+		this.college = college;
+	}
+
+	/**
+	 * @return the prefix
+	 */
+	public Prefix getPrefix() {
+		return prefix;
+	}
+
+	/**
+	 * @param prefix the prefix to set
+	 */
+	public void setPrefix(Prefix prefix) {
+		this.prefix = prefix;
+	}
+
+	/**
+	 * @return the start
+	 */
+	@Override
+	public int getStart() {
+		return start;
+	}
+
+	/**
+	 * @param start the start to set
+	 */
+	public void setStart(int start) {
+		this.start = start;
+	}
+
+	/**
+	 * @return the end
+	 */
+	@Override
+	public int getEnd() {
+		return end;
+	}
+
+	/**
+	 * @param end the end to set
+	 */
+	public void setEnd(int end) {
+		this.end = end;
+	}
+
+	/**
+	 * @return the order
+	 */
+	public PersonOrder getOrder() {
+		return order;
+	}
+
+	/**
+	 * @param order the order to set
+	 */
+	public void setOrder(PersonOrder order) {
+		this.order = order;
+	}
+
+	/**
+	 * @return the organization
+	 */
+	public Group getOrganization() {
+		return organization;
+	}
+
+	/**
+	 * @param organization the organization to set
+	 */
+	public void setOrganization(Group organization) {
+		this.organization = organization;
 	}
 }

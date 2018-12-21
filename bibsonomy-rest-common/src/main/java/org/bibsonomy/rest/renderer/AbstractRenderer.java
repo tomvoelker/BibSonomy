@@ -1,26 +1,26 @@
 /**
  * BibSonomy-Rest-Common - Common things for the REST-client and server.
- *
+ * <p>
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
- *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
- *                           L3S Research Center,
- *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
- *
+ * University of Kassel, Germany
+ * http://www.kde.cs.uni-kassel.de/
+ * Data Mining and Information Retrieval Group,
+ * University of Würzburg, Germany
+ * http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ * L3S Research Center,
+ * Leibniz University Hannover, Germany
+ * http://www.l3s.de/
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -28,36 +28,27 @@ package org.bibsonomy.rest.renderer;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.Reader;
-import java.io.Writer;
-import java.math.BigInteger;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.HashMap;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.Map;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
-import org.bibsonomy.model.*;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Document;
+import org.bibsonomy.model.GoldStandard;
+import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.GroupRequest;
+import org.bibsonomy.model.ImportResource;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
+import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.CRISLinkDataSource;
 import org.bibsonomy.model.cris.CRISLinkType;
@@ -83,9 +74,76 @@ import org.bibsonomy.model.util.data.DataAccessor;
 import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.renderer.xml.*;
+import org.bibsonomy.rest.renderer.xml.AbstractPublicationType;
+import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
+import org.bibsonomy.rest.renderer.xml.BibtexType;
+import org.bibsonomy.rest.renderer.xml.BookmarkType;
+import org.bibsonomy.rest.renderer.xml.CRISLinkDataSourceType;
+import org.bibsonomy.rest.renderer.xml.CRISLinkTypeType;
+import org.bibsonomy.rest.renderer.xml.DocumentType;
+import org.bibsonomy.rest.renderer.xml.DocumentsType;
+import org.bibsonomy.rest.renderer.xml.ExtraUrlType;
+import org.bibsonomy.rest.renderer.xml.ExtraUrlsType;
+import org.bibsonomy.rest.renderer.xml.GenderType;
+import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
+import org.bibsonomy.rest.renderer.xml.GroupRequestType;
+import org.bibsonomy.rest.renderer.xml.GroupType;
+import org.bibsonomy.rest.renderer.xml.GroupsType;
+import org.bibsonomy.rest.renderer.xml.LinkableType;
+import org.bibsonomy.rest.renderer.xml.PersonMatchType;
+import org.bibsonomy.rest.renderer.xml.PersonNameType;
+import org.bibsonomy.rest.renderer.xml.PersonType;
+import org.bibsonomy.rest.renderer.xml.PostType;
+import org.bibsonomy.rest.renderer.xml.PostsType;
+import org.bibsonomy.rest.renderer.xml.ProjectPersonLinkTypeType;
+import org.bibsonomy.rest.renderer.xml.ProjectType;
+import org.bibsonomy.rest.renderer.xml.ProjectsType;
+import org.bibsonomy.rest.renderer.xml.PublicationType;
+import org.bibsonomy.rest.renderer.xml.PublicationsType;
+import org.bibsonomy.rest.renderer.xml.PublishedInType;
+import org.bibsonomy.rest.renderer.xml.ReferenceType;
+import org.bibsonomy.rest.renderer.xml.ReferencesType;
+import org.bibsonomy.rest.renderer.xml.RelationType;
+import org.bibsonomy.rest.renderer.xml.RemoteUserIdType;
+import org.bibsonomy.rest.renderer.xml.ResourceLinkType;
+import org.bibsonomy.rest.renderer.xml.ResourcePersonRelationType;
+import org.bibsonomy.rest.renderer.xml.ResourcePersonRelationsType;
+import org.bibsonomy.rest.renderer.xml.StatType;
+import org.bibsonomy.rest.renderer.xml.SyncDataType;
+import org.bibsonomy.rest.renderer.xml.SyncPostType;
+import org.bibsonomy.rest.renderer.xml.SyncPostsType;
+import org.bibsonomy.rest.renderer.xml.TagType;
+import org.bibsonomy.rest.renderer.xml.TagsType;
+import org.bibsonomy.rest.renderer.xml.UploadDataType;
+import org.bibsonomy.rest.renderer.xml.UserType;
+import org.bibsonomy.rest.renderer.xml.UsersType;
 import org.bibsonomy.rest.validation.StandardXMLModelValidator;
 import org.bibsonomy.rest.validation.XMLModelValidator;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.Reader;
+import java.io.Writer;
+import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * @author dzo
@@ -94,6 +152,7 @@ public abstract class AbstractRenderer implements Renderer {
 	private static final Log log = LogFactory.getLog(AbstractRenderer.class);
 
 	private static final Map<String, Function<LinkableType, Linkable>> TO_LINKABLE_MAPPERS = new HashMap<>();
+	private static final Map<String, Function<Linkable, LinkableType>> TO_LINKABLE_TYPE_MAPPERS = new HashMap<>();
 
 	static {
 		TO_LINKABLE_MAPPERS.put(ProjectType.class.getName(), l -> {
@@ -109,12 +168,10 @@ public abstract class AbstractRenderer implements Renderer {
 		TO_LINKABLE_MAPPERS.put(PostType.class.getName(), l -> {
 			final Post<? extends Resource> post = new Post<>();
 			final BibTex resource = new ResourceFactory().createPublication();
-			resource.setInterHash(((PostType)l).getBibtex().getInterhash());
+			resource.setInterHash(((PostType) l).getBibtex().getInterhash());
 			return post;
 		});
 	}
-
-	private static final Map<String, Function<Linkable, LinkableType>> TO_LINKABLE_TYPE_MAPPERS = new HashMap<>();
 
 	static {
 		TO_LINKABLE_TYPE_MAPPERS.put(Project.class.getName(), l -> {
@@ -134,6 +191,20 @@ public abstract class AbstractRenderer implements Renderer {
 			postType.setBibtex(bibtexType);
 			return postType;
 		});
+	}
+
+	protected final UrlRenderer urlRenderer;
+	protected final DatatypeFactory datatypeFactory;
+	protected XMLModelValidator xmlModelValidator = new StandardXMLModelValidator();
+
+	protected AbstractRenderer(final UrlRenderer urlRenderer) {
+		this.urlRenderer = urlRenderer;
+
+		try {
+			this.datatypeFactory = DatatypeFactory.newInstance();
+		} catch (final DatatypeConfigurationException ex) {
+			throw new RuntimeException("Could not instantiate data type factory.", ex);
+		}
 	}
 
 	private static BibsonomyXML buildEmptyBibsonomyXMLWithOK() {
@@ -164,15 +235,14 @@ public abstract class AbstractRenderer implements Renderer {
 		}
 	}
 
-
 	/**
 	 * Helper method to create a date when parsing a post. Two situations may occur:
-	 *
+	 * <p>
 	 * 1/ The post is parsed on client side. Then the date is the one as sent by
-	 *    the BibSonomy API.
-	 *
+	 * the BibSonomy API.
+	 * <p>
 	 * 2/ The post is parsed on server side; the date is overwritten in order to prevent malicious users
-	 *    from posting posts with faked dates (e.g. from the future)
+	 * from posting posts with faked dates (e.g. from the future)
 	 *
 	 * @param date - the date of the XML post
 	 * @return a date for this post
@@ -191,22 +261,30 @@ public abstract class AbstractRenderer implements Renderer {
 		return date.toGregorianCalendar().getTime();
 	}
 
-	protected XMLModelValidator xmlModelValidator = new StandardXMLModelValidator();
-	protected final UrlRenderer urlRenderer;
-	protected final DatatypeFactory datatypeFactory;
-	
-	protected AbstractRenderer(final UrlRenderer urlRenderer) {
-		this.urlRenderer = urlRenderer;
+	private static <T> void setValue(Consumer<T> consumer, Supplier<T> supplier) {
+		setValue(consumer, supplier, Function.identity());
+	}
 
-		try {
-			this.datatypeFactory = DatatypeFactory.newInstance();
-		} catch (final DatatypeConfigurationException ex) {
-			throw new RuntimeException("Could not instantiate data type factory.", ex);
+	private static <T, E> void setValue(Consumer<T> consumer, Supplier<E> supplier, Function<E, T> transformer) {
+		final E value = supplier.get();
+		if (!present(value)) {
+			return;
+		}
+		final T transformedValue = transformer.apply(value);
+		if (present(transformedValue)) {
+			consumer.accept(transformedValue);
 		}
 	}
-	
+
+	private static <T, E> void setCollectionValue(Collection<T> consumer, Collection<E> producer,
+																								Function<E, T> transformer) {
+		if (present(producer)) {
+			consumer.addAll(producer.stream().map(transformer).collect(Collectors.toList()));
+		}
+	}
+
 	protected abstract void serialize(Writer writer, BibsonomyXML xmlDoc);
-	
+
 	protected abstract BibsonomyXML parse(Reader reader);
 
 	@Override
@@ -225,7 +303,7 @@ public abstract class AbstractRenderer implements Renderer {
 			xmlPosts.setStart(BigInteger.valueOf(0));
 			xmlPosts.setEnd(BigInteger.valueOf(0));
 		}
-	
+
 		if (present(posts)) {
 			for (final Post<? extends Resource> post : posts) {
 				final PostType xmlPost = this.createXmlPost(post);
@@ -251,8 +329,8 @@ public abstract class AbstractRenderer implements Renderer {
 		xmlDoc.setDocument(this.createXmlDocument(document));
 		this.serialize(writer, xmlDoc);
 	}
-	
-	protected PostType createXmlPost(final Post<? extends Resource> post) throws InternServerException {
+
+	private PostType createXmlPost(final Post<? extends Resource> post) throws InternServerException {
 		final PostType xmlPost = new PostType();
 		this.fillXmlPost(xmlPost, post);
 		return xmlPost;
@@ -271,7 +349,7 @@ public abstract class AbstractRenderer implements Renderer {
 		xmlUser.setName(userName);
 		xmlUser.setHref(this.urlRenderer.createHrefForUser(userName));
 		xmlPost.setUser(xmlUser);
-		
+
 		// date infos
 		final Date date = post.getDate();
 		if (date != null) {
@@ -281,7 +359,7 @@ public abstract class AbstractRenderer implements Renderer {
 		if (changeDate != null) {
 			xmlPost.setChangedate(this.createXmlCalendar(changeDate));
 		}
-	
+
 		// add tags
 		final Set<Tag> tags = post.getTags();
 		if (tags != null) {
@@ -292,7 +370,7 @@ public abstract class AbstractRenderer implements Renderer {
 				xmlPost.getTag().add(xmlTag);
 			}
 		}
-	
+
 		// add groups
 		for (final Group group : post.getGroups()) {
 			final GroupType xmlGroup = new GroupType();
@@ -300,39 +378,39 @@ public abstract class AbstractRenderer implements Renderer {
 			xmlGroup.setHref(this.urlRenderer.createHrefForGroup(group.getName()));
 			xmlPost.getGroup().add(xmlGroup);
 		}
-	
+
 		xmlPost.setDescription(post.getDescription());
-	
+
 		// check if the resource is a publication
 		final Resource resource = post.getResource();
 		if ((resource instanceof BibTex) && !(resource instanceof GoldStandardPublication)) {
 			final BibTex publication = (BibTex) post.getResource();
 			final BibtexType xmlPublication = new BibtexType();
-	
+
 			final String intraHash = publication.getIntraHash();
-			
+
 			// new post do not have an intrahash => set no url
 			if (present(intraHash)) {
 				xmlPublication.setHref(this.urlRenderer.createHrefForResource(userName, intraHash));
 			}
-	
+
 			this.fillXmlPublicationDetails(publication, xmlPublication);
-	
+
 			xmlPost.setBibtex(xmlPublication);
-	
+
 			// if the publication has documents …
 			final List<Document> documents = publication.getDocuments();
 			if (present(documents)) {
 				// … put them into the xml output
 				final DocumentsType xmlDocuments = new DocumentsType();
-				for (final Document document : documents){
+				for (final Document document : documents) {
 					final DocumentType xmlDocument = createXmlDocument(document);
 					xmlDocument.setHref(this.urlRenderer.createHrefForResourceDocument(userName, intraHash, document.getFileName()));
 					xmlDocuments.getDocument().add(xmlDocument);
 				}
 				xmlPost.setDocuments(xmlDocuments);
 			}
-			
+
 			/*
 			 * add extra URLs (if they exist)
 			 */
@@ -340,18 +418,18 @@ public abstract class AbstractRenderer implements Renderer {
 			if (present(extraUrls)) {
 				final ExtraUrlsType xmlExtraUrls = new ExtraUrlsType();
 				xmlPublication.setExtraurls(xmlExtraUrls);
-				
+
 				final List<ExtraUrlType> urlList = xmlExtraUrls.getUrl();
-				
-				for (final BibTexExtra bibtexExtra: extraUrls) {
+
+				for (final BibTexExtra bibtexExtra : extraUrls) {
 					final ExtraUrlType xmlExtraUrl = new ExtraUrlType();
 					xmlExtraUrl.setTitle(bibtexExtra.getText());
 					xmlExtraUrl.setHref(bibtexExtra.getUrl().toExternalForm());
 					xmlExtraUrl.setDate(this.createXmlCalendar(bibtexExtra.getDate()));
-					
+
 					urlList.add(xmlExtraUrl);
 				}
-				
+
 			}
 		}
 		// if resource is a bookmark create a xml representation
@@ -365,35 +443,35 @@ public abstract class AbstractRenderer implements Renderer {
 			xmlBookmark.setUrl(bookmark.getUrl());
 			xmlPost.setBookmark(xmlBookmark);
 		}
-	
+
 		if (resource instanceof GoldStandardPublication) {
 			/*
 			 * first clear tags; gold standard publications have (currently) no tags
 			 */
 			xmlPost.getTag().clear();
-	
+
 			final GoldStandardPublication publication = (GoldStandardPublication) post.getResource();
-	
+
 			final GoldStandardPublicationType xmlPublication = new GoldStandardPublicationType();
 			this.fillXmlPublicationDetails(publication, xmlPublication);
-	
+
 			/*
 			 * add references
 			 */
 			final ReferencesType xmlReferences = new ReferencesType();
 			xmlPublication.setReferences(xmlReferences);
-	
+
 			final List<ReferenceType> referenceList = xmlReferences.getReference();
-	
+
 			for (final BibTex reference : publication.getReferences()) {
 				final ReferenceType xmlReference = new ReferenceType();
 				final String interHash = reference.getInterHash();
 				xmlReference.setInterhash(interHash);
 				xmlReference.setHref(this.urlRenderer.createHrefForCommunityPost(interHash));
-	
+
 				referenceList.add(xmlReference);
 			}
-			
+
 			final Set<BibTex> publishedInSet = publication.getReferenceThisPublicationIsPublishedIn();
 			if (present(publishedInSet)) {
 				final BibTex publishedIn = publishedInSet.iterator().next();
@@ -403,21 +481,21 @@ public abstract class AbstractRenderer implements Renderer {
 				publisedInXml.setHref(this.urlRenderer.createHrefForCommunityPost(interHash));
 				xmlPublication.setPublishedIn(publisedInXml);
 			}
-			
+
 			final Set<BibTex> publicationsPartOfPublication = publication.getSubGoldStandards();
 			final PublicationsType partOfList = new PublicationsType();
 			xmlPublication.setPublications(partOfList);
-			
+
 			final List<PublicationType> publications = partOfList.getPublication();
 			for (final BibTex publicationPart : publicationsPartOfPublication) {
 				final PublicationType xmlPublicationPart = new PublicationType();
 				final String interHash = publicationPart.getInterHash();
-				
+
 				xmlPublicationPart.setInterhash(interHash);
 				xmlPublicationPart.setHref(this.urlRenderer.createHrefForCommunityPost(interHash));
 				publications.add(xmlPublicationPart);
 			}
-			
+
 			xmlPost.setGoldStandardPublication(xmlPublication);
 		}
 	}
@@ -487,13 +565,13 @@ public abstract class AbstractRenderer implements Renderer {
 			xmlUsers.setStart(BigInteger.valueOf(0));
 			xmlUsers.setEnd(BigInteger.valueOf(0));
 		}
-	
+
 		if (present(users)) {
 			for (final User user : users) {
 				xmlUsers.getUser().add(this.createXmlUser(user));
 			}
 		}
-	
+
 		final BibsonomyXML xmlDoc = buildEmptyBibsonomyXMLWithOK();
 		xmlDoc.setUsers(xmlUsers);
 		this.serialize(writer, xmlDoc);
@@ -508,31 +586,22 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private UserType createXmlUser(final User user) throws InternServerException {
 		final UserType xmlUser = new UserType();
-		xmlUser.setEmail(user.getEmail());
-		if (user.getHomepage() != null) {
-			xmlUser.setHomepage(user.getHomepage().toString());
-		}
-		xmlUser.setName(user.getName());
-		xmlUser.setRealname(user.getRealname());
-		xmlUser.setHref(this.urlRenderer.createHrefForUser(user.getName()));
-		if (user.getSpammer() != null) {
-			xmlUser.setSpammer(user.getSpammer());
-		}
+		setValue(xmlUser::setEmail, user::getEmail);
+		setValue(xmlUser::setHomepage, user::getHomepage, URL::toString);
+		setValue(xmlUser::setName, user::getName);
+		setValue(xmlUser::setRealname, user::getRealname);
+		setValue(xmlUser::setHref, user::getName, urlRenderer::createHrefForUser);
+		setValue(xmlUser::setSpammer, user::getSpammer);
+		setValue(xmlUser::setConfidence, user::getConfidence);
+		setValue(xmlUser::setAlgorithm, user::getAlgorithm);
+		setValue(xmlUser::setClassifierMode, user::getMode);
 		if (user.getPrediction() != null) {
 			xmlUser.setPrediction(BigInteger.valueOf(user.getPrediction()));
 		}
-		if (user.getConfidence() != null) {
-			xmlUser.setConfidence(user.getConfidence());
-		}
-		xmlUser.setAlgorithm(user.getAlgorithm());
-		xmlUser.setClassifierMode(user.getMode());
 		if (user.getToClassify() != null) {
 			xmlUser.setToClassify(BigInteger.valueOf(user.getToClassify()));
 		}
-		if (present(user.getRemoteUserIds())) {
-			user.getRemoteUserIds().stream().map(this::createXmlRemoteUserIdType).
-					forEach(xmlUser.getRemoteUserId()::add);
-		}
+		setCollectionValue(xmlUser.getRemoteUserId(), user.getRemoteUserIds(), this::createXmlRemoteUserIdType);
 
 		/*
 		 * copy groups
@@ -541,7 +610,7 @@ public abstract class AbstractRenderer implements Renderer {
 		xmlUser.setGroups(new GroupsType());
 		if (groups != null) {
 			final List<GroupType> group2 = xmlUser.getGroups().getGroup();
-			for (final Group group: groups) {
+			for (final Group group : groups) {
 				group2.add(this.createXmlGroup(group));
 			}
 			xmlUser.getGroups().setStart(BigInteger.valueOf(0));
@@ -582,21 +651,17 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private CRISLinkTypeType createXmlCRISLink(CRISLink crisLink) {
 		final CRISLinkTypeType crisLinkTypeType = new CRISLinkTypeType();
-		if (present(crisLink.getStartDate())) {
-			crisLinkTypeType.setStartDate(createXmlCalendar(crisLink.getStartDate()));
-		}
-		if (present(crisLink.getEndDate())) {
-			crisLinkTypeType.setEndDate(createXmlCalendar(crisLink.getEndDate()));
-		}
+		setValue(crisLinkTypeType::setStartDate, crisLink::getStartDate, this::createXmlCalendar);
+		setValue(crisLinkTypeType::setEndDate, crisLink::getEndDate, this::createXmlCalendar);
 		if (present(crisLink.getLinkType())) {
 			crisLinkTypeType.setLinkType(ProjectPersonLinkTypeType.
-					valueOf(((ProjectPersonLinkType)crisLink.getLinkType()).name()));
+							valueOf(((ProjectPersonLinkType) crisLink.getLinkType()).name()));
 		}
 		if (present(crisLink.getDataSource())) {
 			crisLinkTypeType.setDataSource(CRISLinkDataSourceType.valueOf(crisLink.getDataSource().name()));
 		}
-		crisLinkTypeType.setSource(createXmlLinkable(crisLink.getSource()));
-		crisLinkTypeType.setTarget(createXmlLinkable(crisLink.getTarget()));
+		setValue(crisLinkTypeType::setSource, crisLink::getSource, this::createXmlLinkable);
+		setValue(crisLinkTypeType::setTarget, crisLink::getTarget, this::createXmlLinkable);
 		return crisLinkTypeType;
 	}
 
@@ -613,8 +678,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private ProjectsType createXmlCRISProjects(List<Project> projects) {
 		ProjectsType projectsType = new ProjectsType();
-		projectsType.getProject().addAll(projects.stream().parallel().
-						map(this::createXmlCRISProject).collect(Collectors.toList()));
+		setCollectionValue(projectsType.getProject(), projects, this::createXmlCRISProject);
 		return projectsType;
 	}
 
@@ -627,41 +691,19 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private ProjectType createXmlCRISProject(Project project) {
 		final ProjectType projectType = new ProjectType();
-		projectType.setExternalId(project.getExternalId());
-		if (present(project.getBudget())) {
-			projectType.setBudget(project.getBudget());
-		}
-		if (present(project.getDescription())) {
-			projectType.setDescription(project.getDescription());
-		}
-		if (present(project.getSubTitle())) {
-			projectType.setSubTitle(project.getSubTitle());
-		}
-		if (present(project.getInternalId())) {
-			projectType.setInternalId(project.getInternalId());
-		}
-		if (present(project.getType())) {
-			projectType.setType(project.getType());
-		}
-		if (present(project.getTitle())) {
-			projectType.setTitle(project.getTitle());
-		}
-		if (present(project.getStartDate())) {
-			projectType.setStartDate(createXmlCalendar(project.getStartDate()));
-		}
-		if (present(project.getEndDate())) {
-			projectType.setEndDate(createXmlCalendar(project.getEndDate()));
-		}
-		if (present(project.getParentProject())) {
-			projectType.setParentProject(project.getParentProject().getExternalId());
-		}
-		if (present(project.getSponsor())) {
-			projectType.setSponsor(project.getSponsor());
-		}
-		if (present(project.getSubProjects())) {
-			project.getSubProjects().stream().map(Project::getExternalId).
-					forEach(eid -> projectType.getSubProjects().add(eid));
-		}
+		setValue(projectType::setExternalId, project::getExternalId);
+		setValue(projectType::setBudget, project::getBudget);
+		setValue(projectType::setDescription, project::getDescription);
+		setValue(projectType::setSubTitle, project::getSubTitle);
+		setValue(projectType::setInternalId, project::getInternalId);
+		setValue(projectType::setType, project::getType);
+		setValue(projectType::setTitle, project::getTitle);
+		setValue(projectType::setStartDate, project::getStartDate, this::createXmlCalendar);
+		setValue(projectType::setEndDate, project::getEndDate, this::createXmlCalendar);
+		setValue(projectType::setSponsor, project::getSponsor);
+		setValue(projectType::setParentProject, project::getParentProject, this::createXmlCRISProject);
+		setCollectionValue(projectType.getCrisLinks(), project.getCrisLinks(), this::createXmlCRISLink);
+		setCollectionValue(projectType.getSubProjects(), project.getSubProjects(), this::createXmlCRISProject);
 		return projectType;
 	}
 
@@ -672,33 +714,14 @@ public abstract class AbstractRenderer implements Renderer {
 		serialize(writer, xmlDoc);
 	}
 
-	private static<T> void setValue(Consumer<T> consumer, Supplier<T> supplier) {
-        setValue(consumer, supplier, Function.identity());
-    }
-
-    private static<T,E> void setValue(Consumer<T> consumer, Supplier<E> supplier, Function<E, T> transformer) {
-	    final E value = supplier.get();
-	    if (present(value)) {
-	        consumer.accept(transformer.apply(value));
-        }
-    }
-
 	private PersonMatchType createXmlPersonMatch(PersonMatch match) {
 		final PersonMatchType xmlPersonMatch = new PersonMatchType();
 		setValue(xmlPersonMatch::setMatchId, match::getMatchID);
 		setValue(xmlPersonMatch::setPerson1, match::getPerson1, this::createXmlPerson);
-        setValue(xmlPersonMatch::setPerson2, match::getPerson2, this::createXmlPerson);
-        setValue(xmlPersonMatch::setState, match::getState);
-        if (present(match.getPerson1Posts())) {
-        	for (Post post : match.getPerson1Posts()) {
-        		xmlPersonMatch.getPerson1Posts().add(createXmlPost(post));
-			}
-		}
-		if (present(match.getPerson2Posts())) {
-			for (Post post : match.getPerson2Posts()) {
-				xmlPersonMatch.getPerson2Posts().add(createXmlPost(post));
-			}
-		}
+		setValue(xmlPersonMatch::setPerson2, match::getPerson2, this::createXmlPerson);
+		setValue(xmlPersonMatch::setState, match::getState);
+		setCollectionValue(xmlPersonMatch.getPerson1Posts(), match.getPerson1Posts(), this::createXmlPost);
+		setCollectionValue(xmlPersonMatch.getPerson2Posts(), match.getPerson2Posts(), this::createXmlPost);
 		setValue(xmlPersonMatch::setMatchId, match::getMatchID);
 		setValue(xmlPersonMatch::setState, match::getState);
 		setValue(xmlPersonMatch.getUserDenies()::addAll, match::getUserDenies);
@@ -712,19 +735,24 @@ public abstract class AbstractRenderer implements Renderer {
 		serialize(writer, xmlDoc);
 	}
 
-	private PersonType createXmlPerson(Person person) throws InternServerException{
+	private UserType createXmlUser(String userName) {
+		UserType userType = new UserType();
+		userType.setName(userName);
+		return userType;
+	}
+
+	private PersonType createXmlPerson(Person person) throws InternServerException {
 		final PersonType xmlPerson = new PersonType();
 		setValue(xmlPerson::setAcademicDegree, person::getAcademicDegree);
 		setValue(xmlPerson::setCollege, person::getCollege);
 		setValue(xmlPerson::setPersonId, person::getPersonId);
-        setValue(xmlPerson::setHomepage, person::getHomepage, URL::toString);
-        setValue(xmlPerson::setEmail, person::getEmail);
+		setValue(xmlPerson::setHomepage, person::getHomepage, URL::toString);
+		setValue(xmlPerson::setEmail, person::getEmail);
 		setValue(xmlPerson::setOrcid, person::getOrcid);
 		setValue(xmlPerson::setGender, person::getGender, p -> GenderType.valueOf(p.name().toUpperCase()));
 		setValue(xmlPerson::setMainName, person::getMainName, this::createXmlPersonName);
-		if (present(person.getNames())) {
-			person.getNames().stream().map(this::createXmlPersonName).forEach(xmlPerson.getNames()::add);
-		}
+		setCollectionValue(xmlPerson.getNames(), person.getNames(), this::createXmlPersonName);
+		setValue(xmlPerson::setUser, person::getUser, this::createXmlUser);
 		return xmlPerson;
 	}
 
@@ -756,7 +784,7 @@ public abstract class AbstractRenderer implements Renderer {
 		final BibsonomyXML xmlDoc = buildEmptyBibsonomyXMLWithOK();
 
 		final ResourcePersonRelationsType listWrapper = new ResourcePersonRelationsType();
-		relations.stream().map(this::createXmlResourcePersonRelation).forEach(listWrapper.getResourcePersonRelation()::add);
+		setCollectionValue(listWrapper.getResourcePersonRelation(), relations, this::createXmlResourcePersonRelation);
 
 		xmlDoc.setResourcePersonRelations(listWrapper);
 		serialize(writer, xmlDoc);
@@ -768,8 +796,8 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private ResourceLinkType createXmlResourceLink(Post<? extends BibTex> post) {
 		final ResourceLinkType xmlLinkType = new ResourceLinkType();
-		xmlLinkType.setInterHash(post.getResource().getInterHash());
-		xmlLinkType.setIntraHash(post.getResource().getIntraHash());
+		setValue(xmlLinkType::setInterHash, post::getResource, Resource::getInterHash);
+		setValue(xmlLinkType::setIntraHash, post::getResource, Resource::getIntraHash);
 		return xmlLinkType;
 	}
 
@@ -782,14 +810,14 @@ public abstract class AbstractRenderer implements Renderer {
 				xmlTags.setNext(viewModel.getUrlToNextResources());
 			}
 			xmlTags.setStart(BigInteger.valueOf(viewModel.getStartValue()));
-		} else if( tags!=null ) {
+		} else if (tags != null) {
 			xmlTags.setStart(BigInteger.valueOf(0));
 			xmlTags.setEnd(BigInteger.valueOf(tags.size()));
 		} else {
 			xmlTags.setStart(BigInteger.valueOf(0));
 			xmlTags.setEnd(BigInteger.valueOf(0));
 		}
-	
+
 		if (present(tags)) {
 			for (final Tag tag : tags) {
 				xmlTags.getTag().add(this.createXmlTag(tag));
@@ -818,7 +846,7 @@ public abstract class AbstractRenderer implements Renderer {
 		// if (tag.getUsercount() > 0) {
 		xmlTag.setUsercount(BigInteger.valueOf(tag.getUsercount()));
 		// }
-	
+
 		// add sub-/supertags - dbe, 20070718
 		if (present(tag.getSubTags())) {
 			xmlTag.getSubTags().add(this.createXmlTags(tag.getSubTags()));
@@ -848,14 +876,14 @@ public abstract class AbstractRenderer implements Renderer {
 				xmlGroups.setNext(viewModel.getUrlToNextResources());
 			}
 			xmlGroups.setStart(BigInteger.valueOf(viewModel.getStartValue()));
-		} else if (groups!=null) {
+		} else if (groups != null) {
 			xmlGroups.setStart(BigInteger.valueOf(0));
 			xmlGroups.setEnd(BigInteger.valueOf(groups.size()));
 		} else {
 			xmlGroups.setStart(BigInteger.valueOf(0));
 			xmlGroups.setEnd(BigInteger.valueOf(0));
 		}
-	
+
 		if (present(groups)) {
 			for (final Group group : groups) {
 				xmlGroups.getGroup().add(this.createXmlGroup(group));
@@ -876,28 +904,30 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private GroupType createXmlGroup(final Group group) {
 		final GroupType xmlGroup = new GroupType();
-		xmlGroup.setName(group.getName());
-		xmlGroup.setDescription(group.getDescription());
-		xmlGroup.setRealname(group.getRealname());
-		if (present(group.getHomepage())) {
-			xmlGroup.setHomepage(group.getHomepage().toString());
+		setValue(xmlGroup::setName, group::getName);
+		setValue(xmlGroup::setDescription, group::getDescription);
+		setValue(xmlGroup::setRealname, group::getRealname);
+		setValue(xmlGroup::setHomepage, group::getHomepage, URL::toString);
+		setValue(xmlGroup::setInternalId, group::getInternalId);
+		setValue(xmlGroup::setParent, group::getParent, this::createXmlGroup);
+		setValue(xmlGroup::setHref, group::getName, urlRenderer::createHrefForGroup);
+		setValue(xmlGroup::setGroupRequest, group::getGroupRequest, this::createXmlGroupRequest);
+		if (group.isAllowJoin()) {
+			setValue(xmlGroup::setAllowJoin, group::isAllowJoin);
 		}
-		xmlGroup.setHref(this.urlRenderer.createHrefForGroup(group.getName()));
-		xmlGroup.setDescription(group.getDescription());
-		if (present(group.getMemberships())) {
-			group.getMemberships().stream().map(GroupMembership::getUser).
-					map(this::createXmlUser).forEach(xmlGroup.getUser()::add);
-		}
-		if (present(group.getParent())) {
-			xmlGroup.setParent(createXmlGroup(group.getParent()));
-		}
+		setCollectionValue(xmlGroup.getUser(), group.getMemberships(), g -> createXmlUser(g.getUser()));
 		if (group.isOrganization()) {
 			xmlGroup.setOrganization(Boolean.TRUE.toString());
 		}
-		if (present(group.getInternalId())) {
-			xmlGroup.setInternalId(group.getInternalId());
-		}
 		return xmlGroup;
+	}
+
+	private GroupRequestType createXmlGroupRequest(final GroupRequest groupRequest) {
+		final GroupRequestType groupRequestType = new GroupRequestType();
+		setValue(groupRequestType::setReason, groupRequest::getReason);
+		setValue(groupRequestType::setSubmissionDate, groupRequest::getSubmissionDate, this::createXmlCalendar);
+		setValue(groupRequestType::setRequestedUser, groupRequest::getUserName, this::createXmlUser);
+		return groupRequestType;
 	}
 
 	@Override
@@ -972,10 +1002,7 @@ public abstract class AbstractRenderer implements Renderer {
 	public void serializeSynchronizationPosts(final Writer writer, final List<? extends SynchronizationPost> posts) {
 		final BibsonomyXML xmlDoc = buildEmptyBibsonomyXMLWithOK();
 		final SyncPostsType xmlSyncPosts = new SyncPostsType();
-		for (final SynchronizationPost post : posts) {
-			final SyncPostType xmlSyncPost = this.createXmlSyncPost(post);
-			xmlSyncPosts.getSyncPost().add(xmlSyncPost);
-		}
+		setCollectionValue(xmlSyncPosts.getSyncPost(), posts, this::createXmlSyncPost);
 		xmlDoc.setSyncPosts(xmlSyncPosts);
 		this.serialize(writer, xmlDoc);
 	}
@@ -986,16 +1013,17 @@ public abstract class AbstractRenderer implements Renderer {
 	 */
 	private SyncPostType createXmlSyncPost(final SynchronizationPost post) {
 		final SyncPostType xmlSyncpost = new SyncPostType();
-		if(present(post.getAction())) {
+		if (present(post.getAction())) {
 			xmlSyncpost.setAction(post.getAction().toString());
-		} if (present(post.getChangeDate())) {
+		}
+		if (present(post.getChangeDate())) {
 			xmlSyncpost.setChangeDate(this.createXmlCalendar(post.getChangeDate()));
 		}
 		if (present(post.getCreateDate())) {
 			xmlSyncpost.setCreateDate(this.createXmlCalendar(post.getCreateDate()));
 		}
 		xmlSyncpost.setHash(post.getIntraHash());
-		if(present(post.getPost())) {
+		if (present(post.getPost())) {
 			xmlSyncpost.setPost(this.createXmlPost(post.getPost()));
 		}
 		return xmlSyncpost;
@@ -1004,14 +1032,14 @@ public abstract class AbstractRenderer implements Renderer {
 	@Override
 	public void serializeSynchronizationData(final Writer writer, final SynchronizationData syncData) {
 		final BibsonomyXML xmlDoc = buildEmptyBibsonomyXMLWithOK();
-		
+
 		final SyncDataType xmlSyncData = new SyncDataType();
 		xmlSyncData.setLastSyncDate(this.createXmlCalendar(syncData.getLastSyncDate()));
 		xmlSyncData.setResourceType(ResourceFactory.getResourceName(syncData.getResourceType()));
 		xmlSyncData.setService(syncData.getService().toString());
 		xmlSyncData.setSynchronizationStatus(syncData.getStatus().toString());
 		xmlSyncData.setInfo(syncData.getInfo());
-		
+
 		xmlDoc.setSyncData(xmlSyncData);
 		this.serialize(writer, xmlDoc);
 	}
@@ -1054,7 +1082,7 @@ public abstract class AbstractRenderer implements Renderer {
 		xmlDoc.setReferences(refsType);
 		this.serialize(writer, xmlDoc);
 	}
-	
+
 	@Override
 	public String parseError(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
@@ -1067,7 +1095,7 @@ public abstract class AbstractRenderer implements Renderer {
 	@Override
 	public User parseUser(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
-	
+
 		if (xmlDoc.getUser() != null) {
 			return this.createUser(xmlDoc.getUser());
 		}
@@ -1091,20 +1119,12 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private CRISLink createCRISLink(CRISLinkTypeType crisLinkType) {
 		final CRISLink crisLink = new CRISLink();
-		if (present(crisLinkType.getEndDate())) {
-			crisLink.setEndDate(createDate(crisLinkType.getEndDate()));
-		}
-		if (present(crisLinkType.getStartDate())) {
-			crisLink.setStartDate(createDate(crisLinkType.getStartDate()));
-		}
-		if (present(crisLinkType.getDataSource())) {
-			crisLink.setDataSource(createCRISLinkDataSource(crisLinkType.getDataSource()));
-		}
-		if (present(crisLinkType.getLinkType())) {
-			crisLink.setLinkType(createCRISLinkType(crisLinkType.getLinkType()));
-		}
-		crisLink.setSource(createCRISLinkable(crisLinkType.getSource()));
-		crisLink.setTarget(createCRISLinkable(crisLinkType.getTarget()));
+		setValue(crisLink::setEndDate, crisLinkType::getEndDate, AbstractRenderer::createDate);
+		setValue(crisLink::setStartDate, crisLinkType::getStartDate, AbstractRenderer::createDate);
+		setValue(crisLink::setDataSource, crisLinkType::getDataSource, this::createCRISLinkDataSource);
+		setValue(crisLink::setLinkType, crisLinkType::getLinkType, this::createCRISLinkType);
+		setValue(crisLink::setSource, crisLinkType::getSource, this::createCRISLinkable);
+		setValue(crisLink::setTarget, crisLinkType::getTarget, this::createCRISLinkable);
 		return crisLink;
 	}
 
@@ -1146,29 +1166,18 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private Project createProject(ProjectType projectType) {
 		final Project project = new Project();
-		if (present(projectType.getParentProject())) {
-			final Project parentProject = new Project();
-			parentProject.setExternalId(projectType.getParentProject());
-			project.setParentProject(parentProject);
-		}
-		if (present(projectType.getSubProjects())) {
-			final LinkedList<Project> subProjects = new LinkedList<>();
-			for (String s : projectType.getSubProjects()) {
-				final Project subProject = new Project();
-				subProject.setExternalId(s);
-				subProjects.add(subProject);
-			}
-			project.setSubProjects(subProjects);
-		}
-		project.setBudget(projectType.getBudget());
-		project.setTitle(projectType.getTitle());
-		project.setSubTitle(projectType.getSubTitle());
-		project.setDescription(projectType.getDescription());
-		project.setExternalId(projectType.getExternalId());
-		project.setInternalId(projectType.getInternalId());
-		project.setStartDate(createDate(projectType.getStartDate()));
-		project.setEndDate(createDate(projectType.getEndDate()));
-		project.setSponsor(projectType.getSponsor());
+		setValue(project::setParentProject, projectType::getParentProject, this::createProject);
+		setCollectionValue(project.getSubProjects(), projectType.getSubProjects(), this::createProject);
+		setCollectionValue(project.getCrisLinks(), projectType.getCrisLinks(), this::createCRISLink);
+		setValue(project::setBudget, projectType::getBudget);
+		setValue(project::setTitle, projectType::getTitle);
+		setValue(project::setSubTitle, projectType::getSubTitle);
+		setValue(project::setDescription, projectType::getDescription);
+		setValue(project::setExternalId, projectType::getExternalId);
+		setValue(project::setInternalId, projectType::getInternalId);
+		setValue(project::setStartDate, projectType::getStartDate, AbstractRenderer::createDate);
+		setValue(project::setEndDate, projectType::getEndDate, AbstractRenderer::createDate);
+		setValue(project::setSponsor, projectType::getSponsor);
 		return project;
 	}
 
@@ -1186,38 +1195,16 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private Person createPerson(PersonType personType) {
 		final Person person = new Person();
-		if (present(personType.getMainName())) {
-			person.setMainName(createPersonName(personType.getMainName()));
-		}
-		if (present(personType.getCollege())) {
-			person.setCollege(personType.getCollege());
-		}
-		if (present(personType.getAcademicDegree())) {
-			person.setAcademicDegree(personType.getAcademicDegree());
-		}
-		if (present(personType.getEmail())) {
-			person.setEmail(personType.getEmail());
-		}
-		if (present(personType.getHomepage())) {
-			try {
-				final URL url = new URL(personType.getHomepage());
-				person.setHomepage(url);
-			} catch (MalformedURLException e) {
-				person.setHomepage(null);
-			}
-		}
-		if (present(personType.getGender())) {
-			person.setGender(Gender.valueOf(personType.getGender().name()));
-		}
-		if (present(personType.getOrcid())) {
-			person.setOrcid(personType.getOrcid());
-		}
-		if (present(personType.getNames())) {
-			person.setNames(personType.getNames().stream().map(this::createPersonName).collect(Collectors.toList()));
-		}
-		if (present(personType.getPersonId())) {
-			person.setPersonId(personType.getPersonId());
-		}
+		setValue(person::setMainName, personType::getMainName, this::createPersonName);
+		setValue(person::setAcademicDegree, personType::getAcademicDegree);
+		setValue(person::setCollege, personType::getCollege);
+		setValue(person::setEmail, personType::getEmail);
+		setValue(person::setHomepage, personType::getHomepage, AbstractRenderer::createURL);
+		setValue(person::setGender, personType::getGender, g -> Gender.valueOf(g.name()));
+		setValue(person::setOrcid, personType::getOrcid);
+		setCollectionValue(person.getNames(), personType.getNames(), this::createPersonName);
+		setValue(person::setPersonId, personType::getPersonId);
+		setValue(person::setUser, personType::getUser, UserType::getName);
 		return person;
 	}
 
@@ -1245,7 +1232,7 @@ public abstract class AbstractRenderer implements Renderer {
 		resourcePersonRelation.setPost(createDummyResource(resourcePersonRelationType.getResource()));
 		resourcePersonRelation.setPersonIndex(resourcePersonRelationType.getPersonIndex().intValue());
 		resourcePersonRelation.setRelationType(PersonResourceRelationType.valueOf(
-				resourcePersonRelationType.getRelationType().name()));
+						resourcePersonRelationType.getRelationType().name()));
 		return resourcePersonRelation;
 	}
 
@@ -1275,7 +1262,7 @@ public abstract class AbstractRenderer implements Renderer {
 	@Override
 	public Post<? extends Resource> parsePost(final Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
-	
+
 		final PostType post = xmlDoc.getPost();
 		if (post != null) {
 			try {
@@ -1284,7 +1271,7 @@ public abstract class AbstractRenderer implements Renderer {
 				xmlDoc.setError("Error parsing the person names for entry with BibTeXKey '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
 			}
 		}
-	
+
 		if (xmlDoc.getError() != null) {
 			throw new BadRequestOrResponseException(xmlDoc.getError());
 		}
@@ -1294,27 +1281,27 @@ public abstract class AbstractRenderer implements Renderer {
 	@Override
 	public Document parseDocument(Reader reader, DataAccessor uploadFileAccessor) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
-		
+
 		final DocumentType docType = xmlDoc.getDocument();
-		if (docType!= null) {
-			
+		if (docType != null) {
+
 			final Document document = new Document();
 			document.setFileName(docType.getFilename());
 			document.setMd5hash(docType.getMd5Hash());
-				
+
 			return document;
 		}
-	
+
 		if (xmlDoc.getError() != null) {
 			throw new BadRequestOrResponseException(xmlDoc.getError());
 		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no valid document data defined.");
 	}
-	
+
 	@Override
 	public Post<? extends Resource> parseCommunityPost(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
-	
+
 		final PostType post = xmlDoc.getPost();
 		if (post != null) {
 			try {
@@ -1323,7 +1310,7 @@ public abstract class AbstractRenderer implements Renderer {
 				xmlDoc.setError("Error parsing the person names for entry with BibTeX key '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
 			}
 		}
-	
+
 		if (xmlDoc.getError() != null) {
 			throw new BadRequestOrResponseException(xmlDoc.getError());
 		}
@@ -1333,7 +1320,7 @@ public abstract class AbstractRenderer implements Renderer {
 	@Override
 	public Group parseGroup(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
-	
+
 		if (xmlDoc.getGroup() != null) {
 			return this.createGroup(xmlDoc.getGroup());
 		}
@@ -1347,12 +1334,7 @@ public abstract class AbstractRenderer implements Renderer {
 	public List<Group> parseGroupList(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getGroups() != null) {
-			final List<Group> groups = new LinkedList<>();
-			for (final GroupType gt : xmlDoc.getGroups().getGroup()) {
-				final Group g = this.createGroup(gt);
-				groups.add(g);
-			}
-			return groups;
+			return xmlDoc.getGroups().getGroup().stream().map(this::createGroup).collect(Collectors.toList());
 		}
 		if (xmlDoc.getError() != null) {
 			throw new BadRequestOrResponseException(xmlDoc.getError());
@@ -1370,7 +1352,8 @@ public abstract class AbstractRenderer implements Renderer {
 					final Post<? extends Resource> p = this.createPost(post, uploadedFileAcessor);
 					posts.add(p);
 				} catch (final PersonListParserException ex) {
-					throw new BadRequestOrResponseException("Error parsing the person names for entry with BibTeX key '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
+					throw new BadRequestOrResponseException("Error parsing the person names for entry with BibTeX key '" +
+									post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
 				}
 			}
 			return posts;
@@ -1380,7 +1363,7 @@ public abstract class AbstractRenderer implements Renderer {
 		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of posts defined.");
 	}
-	
+
 	@Override
 	public List<Tag> parseTagList(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
@@ -1419,20 +1402,20 @@ public abstract class AbstractRenderer implements Renderer {
 	public Set<String> parseReferences(final Reader reader) {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		final ReferencesType referencesType = xmlDoc.getReferences();
-	
+
 		if (present(referencesType)) {
 			final Set<String> references = new HashSet<>();
 			final List<ReferenceType> referenceList = referencesType.getReference();
-	
+
 			if (present(referenceList)) {
 				for (final ReferenceType referenceType : referenceList) {
 					references.add(referenceType.getInterhash());
 				}
 			}
-	
+
 			return references;
-		}		
-	
+		}
+
 		if (xmlDoc.getError() != null) {
 			throw new BadRequestOrResponseException(xmlDoc.getError());
 		}
@@ -1522,10 +1505,10 @@ public abstract class AbstractRenderer implements Renderer {
 		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no person id defined.");
 	}
-	
+
 	/**
 	 * creates a user based on the xml user
-	 * 
+	 *
 	 * @param xmlUser
 	 * @return the converted user
 	 */
@@ -1533,38 +1516,19 @@ public abstract class AbstractRenderer implements Renderer {
 		this.xmlModelValidator.checkUser(xmlUser);
 
 		final User user = new User();
-		user.setEmail(xmlUser.getEmail());
-		user.setHomepage(createURL(xmlUser.getHomepage()));
-		user.setName(xmlUser.getName());
-		user.setRealname(xmlUser.getRealname());
-		user.setPassword(xmlUser.getPassword());
-		if (xmlUser.isSpammer() != null) {
-			user.setSpammer(xmlUser.isSpammer());
-		}
-		if (xmlUser.getPrediction() != null) {
-			user.setPrediction(xmlUser.getPrediction().intValue());
-		}
-		if (xmlUser.getConfidence() != null) {
-			user.setConfidence(xmlUser.getConfidence());
-		}
-		user.setAlgorithm(xmlUser.getAlgorithm());
-		user.setMode(xmlUser.getClassifierMode());
-		if (xmlUser.getToClassify() != null) {
-			user.setToClassify(xmlUser.getToClassify().intValue());
-		}
-		if (present(xmlUser.getRemoteUserId())) {
-			xmlUser.getRemoteUserId().stream().map(this::createRemoteUserId).forEach(user::setRemoteUserId);
-		}
-		/*
-		 * copy groups
-		 */
-		final GroupsType groups = xmlUser.getGroups();
-		if (groups != null) {
-			final List<Group> groups2 = user.getGroups();
-			for (final GroupType xmlGroup: groups.getGroup()) {
-				groups2.add(this.createGroup(xmlGroup));
-			}
-		}
+		setValue(user::setEmail, xmlUser::getEmail);
+		setValue(user::setHomepage, xmlUser::getHomepage, AbstractRenderer::createURL);
+		setValue(user::setName, xmlUser::getName);
+		setValue(user::setRealname, xmlUser::getRealname);
+		setValue(user::setPassword, xmlUser::getPassword);
+		setValue(user::setSpammer, xmlUser::isSpammer);
+		setValue(user::setPrediction, xmlUser::getPrediction, BigInteger::intValue);
+		setValue(user::setConfidence, xmlUser::getConfidence);
+		setValue(user::setAlgorithm, xmlUser::getAlgorithm);
+		setValue(user::setMode, xmlUser::getClassifierMode);
+		setValue(user::setToClassify, xmlUser::getToClassify, BigInteger::intValue);
+		setCollectionValue(user.getRemoteUserIds(), xmlUser.getRemoteUserId(), this::createRemoteUserId);
+		setCollectionValue(user.getGroups(), xmlUser.getGroups().getGroup(), this::createGroup);
 		return user;
 	}
 
@@ -1577,7 +1541,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	/**
 	 * creates a {@link Group} based on the xml group
-	 * 
+	 *
 	 * @param xmlGroup
 	 * @return the converted group
 	 */
@@ -1585,38 +1549,36 @@ public abstract class AbstractRenderer implements Renderer {
 		this.xmlModelValidator.checkGroup(xmlGroup);
 
 		final Group group = new Group();
-		group.setName(xmlGroup.getName());
-		group.setDescription(xmlGroup.getDescription());
-		group.setRealname(xmlGroup.getRealname());
-		group.setHomepage(createURL(xmlGroup.getHomepage()));
-		if (xmlGroup.getUser().size() > 0) {
-			for (final UserType xmlUser : xmlGroup.getUser()) {
-				final User user = this.createUser(xmlUser);
-				final GroupMembership membership = new GroupMembership();
-				membership.setUser(user);
-				group.getMemberships().add(membership);
-			}
-		}
-		final String organization = xmlGroup.getOrganization();
-		if (present(organization)) {
-			group.setOrganization(Boolean.parseBoolean(organization));
-		}
-
-		final String internalId = xmlGroup.getInternalId();
-		if (present(internalId)) {
-			group.setInternalId(internalId);
-		}
-
-		if (present(xmlGroup.getParent())) {
-			group.setParent(createGroup(xmlGroup.getParent()));
-		}
-
+		setValue(group::setName, xmlGroup::getName);
+		setValue(group::setDescription, xmlGroup::getDescription);
+		setValue(group::setRealname, xmlGroup::getRealname);
+		setValue(group::setHomepage, xmlGroup::getHomepage, AbstractRenderer::createURL);
+		setCollectionValue(group.getMemberships(), xmlGroup.getUser(), u -> createGroupMembership(createUser(u)));
+		setValue(group::setOrganization, xmlGroup::getOrganization, Boolean::parseBoolean);
+		setValue(group::setInternalId, xmlGroup::getInternalId);
+		setValue(group::setParent, xmlGroup::getParent, this::createGroup);
+		setValue(group::setGroupRequest, xmlGroup::getGroupRequest, this::createGroupRequest);
+		setValue(group::setAllowJoin, xmlGroup::isAllowJoin);
 		return group;
+	}
+
+	private GroupMembership createGroupMembership(User user) {
+		GroupMembership groupMembership = new GroupMembership();
+		groupMembership.setUser(user);
+		return groupMembership;
+	}
+
+	private GroupRequest createGroupRequest(GroupRequestType xmlGroupRequest) {
+		GroupRequest groupRequest = new GroupRequest();
+		setValue(groupRequest::setReason, xmlGroupRequest::getReason);
+		setValue(groupRequest::setSubmissionDate, xmlGroupRequest::getSubmissionDate, AbstractRenderer::createDate);
+		setValue(groupRequest::setUserName, xmlGroupRequest::getRequestedUser, UserType::getName);
+		return groupRequest;
 	}
 
 	/**
 	 * converts a xml tag to the model representation
-	 * 
+	 *
 	 * @param xmlTag
 	 * @return the created tag
 	 */
@@ -1626,7 +1588,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	/**
 	 * TODO: improve documentation
-	 * 
+	 *
 	 * @param xmlTag
 	 * @param depth
 	 * @return the created tag
@@ -1668,10 +1630,10 @@ public abstract class AbstractRenderer implements Renderer {
 
 	/**
 	 * creates a {@link GoldStandard} post based on the xml post
-	 * 
+	 *
 	 * @param xmlPost
 	 * @return the converted post
-	 * @throws PersonListParserException 
+	 * @throws PersonListParserException
 	 */
 	public Post<Resource> createCommunityPost(final PostType xmlPost) throws PersonListParserException {
 		this.xmlModelValidator.checkStandardPost(xmlPost);
@@ -1691,14 +1653,14 @@ public abstract class AbstractRenderer implements Renderer {
 
 		return post;
 	}
-	
+
 	/**
 	 * converts an xml post to the model post
-	 * 
+	 *
 	 * @param xmlPost
-	 * @param uploadedFileAccessor 
+	 * @param uploadedFileAccessor
 	 * @return the converted post
-	 * @throws PersonListParserException 
+	 * @throws PersonListParserException
 	 */
 	protected Post<Resource> createPost(final PostType xmlPost, DataAccessor uploadedFileAccessor) throws PersonListParserException {
 		this.xmlModelValidator.checkPost(xmlPost);
@@ -1737,14 +1699,14 @@ public abstract class AbstractRenderer implements Renderer {
 				}
 				publication.setDocuments(documents);
 			}
-			
+
 			post.setResource(publication);
 		}
 
 		final BookmarkType xmlBookmark = xmlPost.getBookmark();
 		if (xmlBookmark != null) {
 			this.xmlModelValidator.checkBookmarkXML(xmlBookmark);
-			
+
 			final Bookmark bookmark = new Bookmark();
 			bookmark.setIntraHash(xmlBookmark.getIntrahash());
 			bookmark.setTitle(xmlBookmark.getTitle());
@@ -1752,7 +1714,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 			post.setResource(bookmark);
 		}
-		
+
 		final UploadDataType upload = xmlPost.getPublicationFileUpload();
 		if (upload != null) {
 			final String name = upload.getMultipartName();
@@ -1820,6 +1782,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	/**
 	 * Creates a {@link SynchronizationPost} from its xml representation
+	 *
 	 * @param xmlSyncPost
 	 * @return synchronization post
 	 */
@@ -1842,7 +1805,7 @@ public abstract class AbstractRenderer implements Renderer {
 		if (present(xmlSyncPost.getCreateDate())) {
 			post.setCreateDate(createDate(xmlSyncPost.getCreateDate()));
 		} else {
-			throw new InvalidModelException("create date not present"); 
+			throw new InvalidModelException("create date not present");
 		}
 		if (present(xmlSyncPost.getHash())) {
 			post.setIntraHash(xmlSyncPost.getHash());
@@ -1854,6 +1817,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	/**
 	 * Creates a {@link SynchronizationData} from xml representation
+	 *
 	 * @param xmlSyncData
 	 * @return synchronization data
 	 */
@@ -1869,23 +1833,23 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private String fillSyncData(final SyncDataType xmlSyncData, final SynchronizationData syncData) {
 		final StringBuilder errors = new StringBuilder();
-		
+
 		syncData.setInfo(xmlSyncData.getInfo());
-		
+
 		final XMLGregorianCalendar lastSyncDate = xmlSyncData.getLastSyncDate();
 		if (present(lastSyncDate)) {
 			syncData.setLastSyncDate(createDate(lastSyncDate));
 		} else {
 			errors.append("last sync date is not present\n");
 		}
-		
+
 		final String resourceType = xmlSyncData.getResourceType();
-		if(present(resourceType)) {
+		if (present(resourceType)) {
 			syncData.setResourceType(ResourceFactory.getResourceClass(resourceType.toLowerCase()));
 		} else {
 			errors.append("resource type is not present\n");
 		}
-		
+
 		final String service = xmlSyncData.getService();
 		if (present(service)) {
 			try {
@@ -1903,7 +1867,7 @@ public abstract class AbstractRenderer implements Renderer {
 		} else {
 			errors.append("synchronization status not present\n");
 		}
-		
+
 		if (!present(errors)) {
 			return "";
 		}
@@ -1913,7 +1877,7 @@ public abstract class AbstractRenderer implements Renderer {
 	/**
 	 * @param xmlPublication
 	 * @param publication
-	 * @throws PersonListParserException 
+	 * @throws PersonListParserException
 	 */
 	private void fillPublicationWithInformation(final AbstractPublicationType xmlPublication, final BibTex publication) throws PersonListParserException {
 		publication.setAddress(xmlPublication.getAddress());
@@ -1949,22 +1913,20 @@ public abstract class AbstractRenderer implements Renderer {
 		publication.setVolume(xmlPublication.getVolume());
 		publication.setYear(xmlPublication.getYear());
 		publication.setPrivnote(xmlPublication.getPrivnote());
-		
+
 		// extra URLs
 		final ExtraUrlsType extraurls = xmlPublication.getExtraurls();
 		if (present(extraurls)) {
 			final List<ExtraUrlType> urls = extraurls.getUrl();
 			final List<BibTexExtra> eurls = new ArrayList<>(urls.size());
-			
+
 			for (final ExtraUrlType extraUrl : urls) {
 				eurls.add(new BibTexExtra(createURL(extraUrl.getHref()), extraUrl.getTitle(), createDate(extraUrl.getDate())));
 			}
 			publication.setExtraUrls(eurls);
 		}
-		
-	}
-	
 
+	}
 
 	/**
 	 * @param xmlModelValidator the xmlModelValidator to set

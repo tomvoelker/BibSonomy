@@ -335,6 +335,7 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 		final CRISLinkParam param = new CRISLinkParam();
 		param.setTargetId(linkId.intValue());
 		param.setTargetType(crisEntityType);
+		param.setSourceType(CRISEntityType.PROJECT);
 		return this.queryForList("getProjectCRISLinks", param, CRISLink.class, session);
 	}
 

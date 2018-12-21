@@ -1,20 +1,13 @@
 package org.bibsonomy.webapp.command.reporting;
 
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
-
-import java.util.List;
+import org.bibsonomy.webapp.command.ListCommand;
 
 public class PersonReportingCommand extends ReportingCommand {
-	private List<Person> personList;
+	private final ListCommand<Person> persons = new ListCommand<>(this);
 	private String query;
-
-	public List<Person> getPersonList() {
-		return personList;
-	}
-
-	public void setPersonList(List<Person> personList) {
-		this.personList = personList;
-	}
+	private Group organization;
 
 	public String getQuery() {
 		return query;
@@ -27,5 +20,17 @@ public class PersonReportingCommand extends ReportingCommand {
 	@Override
 	public String getFilename() {
 		return "persons";
+	}
+
+	public ListCommand<Person> getPersons() {
+		return persons;
+	}
+
+	public Group getOrganization() {
+		return organization;
+	}
+
+	public void setOrganization(Group organization) {
+		this.organization = organization;
 	}
 }

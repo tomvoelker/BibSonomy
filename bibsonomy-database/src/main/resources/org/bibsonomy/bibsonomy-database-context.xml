@@ -229,7 +229,7 @@
 	<bean id="queryGroupsChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
 			<list>
-				<bean class="org.bibsonomy.database.managers.chain.group.get.GetGroupsByExternalId">
+				<bean class="org.bibsonomy.database.managers.chain.group.get.GetGroupsByInternalId">
 						<constructor-arg ref="groupDatabaseManager" />
 				</bean>
 				<bean class="org.bibsonomy.database.managers.chain.group.get.GetPendingGroups">

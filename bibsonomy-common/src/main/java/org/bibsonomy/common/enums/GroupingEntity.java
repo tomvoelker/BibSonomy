@@ -47,10 +47,15 @@ public enum GroupingEntity {
 	/**
 	 * for constraints on the filtered entity's owning user's group membership
 	 * regardless of whether the actual group of the entity is public or
-	 * friend or the constraintgroup, as long as some unspecified kind of
+	 * friend or the constraint group, as long as some unspecified kind of
 	 * authorization for seeing the entity is present.
 	 */
 	GROUP,
+
+	/**
+	 * includes all entities of the group and each subgroup
+	 */
+	ORGANIZATION,
 	
 	/* TODO: describe why this is called "viewable" */
 	/**

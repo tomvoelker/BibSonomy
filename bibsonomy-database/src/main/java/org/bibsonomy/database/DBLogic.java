@@ -130,6 +130,7 @@ import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
@@ -160,8 +161,6 @@ import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.query.Query;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
-import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
-import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -180,21 +179,6 @@ import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.ValidationUtils;
-
-import java.net.InetAddress;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
 
 /**
  * Database Implementation of the LogicInterface
@@ -1325,17 +1309,28 @@ public class DBLogic implements LogicInterface {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "The user is flagged as spammer - cannot create a group with this name");
 		}
 
+		final GroupRequest groupRequest = group.getGroupRequest();
+		if (!present(groupRequest)) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "No group request given");
+		} else {
+			this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, groupRequest.getUserName());
+			// this should be done by some validator
+			if (!this.permissionDBManager.isAdmin(this.loginUser) && !present(groupRequest.getReason())) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "no reason provided");
+			}
+		}
+
 		/*
 		 * only allow administrators to create new organizations
 		 */
 		final boolean isOrganization = group.isOrganization();
-		final String externalGroupId = group.getInternalId();
-		if (present(externalGroupId) || isOrganization) {
+		final String internalGroupId = group.getInternalId();
+		if (present(internalGroupId) || isOrganization) {
 			this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		}
 
 		try (final DBSession session = this.openSession()) {
-			this.groupDBManager.createGroup(group, session);
+			this.groupDBManager.createPendingGroup(group, session);
 
 			/*
 			 * activate the group immediately if it's an organization
@@ -1712,20 +1707,6 @@ public class DBLogic implements LogicInterface {
 		return jobResult;
 	}
 
-	/**
-	 * The given posts are updated. If the operation is
-	 * {@link PostUpdateOperation#UPDATE_TAGS},
-	 * the posts must only contain the
-	 * <ul>
-	 * <li>date,</li>
-	 * <li>tags,</li>
-	 * <li>intraHash,</li>
-	 * <li>and optionally a username.
-	 * </ul>
-	 *
-	 * @see org.bibsonomy.model.logic.PostLogicInterface#updatePosts(java.util.List,
-	 *      org.bibsonomy.common.enums.PostUpdateOperation)
-	 */
 	@Override
 	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
 		/*
@@ -1924,19 +1905,19 @@ public class DBLogic implements LogicInterface {
 		try {
 			switch (operation) {
 			case UPDATE_PASSWORD:
-				return this.userDBManager.updatePasswordForUser(user, session);
+				return this.userDBManager.updatePasswordForUser(user, this.loginUser, session);
 			case DELETE_OPENID:
 				this.userDBManager.deleteOpenIDUser(username, session);
 				return username;
 			case UPDATE_SETTINGS:
-				return this.userDBManager.updateUserSettingsForUser(user, session);
+				return this.userDBManager.updateUserSettingsForUser(user, this.loginUser, session);
 			case UPDATE_API:
-				this.userDBManager.updateApiKeyForUser(user, session);
+				this.userDBManager.updateApiKeyForUser(user, this.loginUser, session);
 				break;
 			case UPDATE_CORE:
-				return this.userDBManager.updateUserProfile(user, session);
+				return this.userDBManager.updateUserProfile(user, this.loginUser, session);
 			case UPDATE_LIMITED_USER:
-				return this.userDBManager.updateLimitedUser(user, session);
+				return this.userDBManager.updateLimitedUser(user, this.loginUser, session);
 			case ACTIVATE:
 				return this.userDBManager.activateUser(user, session);
 			case UPDATE_SPAMMER_STATUS:
@@ -1983,7 +1964,7 @@ public class DBLogic implements LogicInterface {
 					throw new ValidationException("user " + user.getName() + " does not exist");
 				}
 
-				return this.userDBManager.updateUser(user, session);
+				return this.userDBManager.updateUser(user, this.loginUser, session);
 			}
 
 			final List<User> pendingUserList = this.userDBManager.getPendingUserByUsername(user.getName(), 0, Integer.MAX_VALUE, session);
@@ -2088,7 +2069,7 @@ public class DBLogic implements LogicInterface {
 
 					} else {
 						// add document
-						this.docDBManager.addDocument(userName, post.getContentId(), document.getFileHash(), document.getFileName(), document.getMd5hash(), session);
+						this.docDBManager.addDocument(userName, post.getContentId(), document.getFileHash(), document.getFileName(), document.getMd5hash(), this.loginUser, session);
 					}
 
 				} else {
@@ -2099,7 +2080,7 @@ public class DBLogic implements LogicInterface {
 				// checks whether a layout definition is already uploaded
 				// if not the new one will be stored in the database
 				if (this.docDBManager.getDocument(userName, document.getFileHash(), session) == null) {
-					this.docDBManager.addDocument(userName, DocumentDatabaseManager.DEFAULT_CONTENT_ID, document.getFileHash(), document.getFileName(), document.getMd5hash(), session);
+					this.docDBManager.addDocument(userName, DocumentDatabaseManager.DEFAULT_CONTENT_ID, document.getFileHash(), document.getFileName(), document.getMd5hash(), this.loginUser, session);
 				}
 			}
 		} finally {
@@ -2333,7 +2314,7 @@ public class DBLogic implements LogicInterface {
 				/*
 				 * the document does not belong to a post
 				 */
-				this.docDBManager.deleteDocumentWithNoPost(DocumentDatabaseManager.DEFAULT_CONTENT_ID, userName, document.getFileHash(), session);
+				this.docDBManager.deleteDocumentWithNoPost(DocumentDatabaseManager.DEFAULT_CONTENT_ID, userName, document.getFileHash(), this.loginUser, session);
 			}
 		} finally {
 			session.close();
@@ -3750,7 +3731,7 @@ public class DBLogic implements LogicInterface {
 				.setEnd(queryBuilder.getEnd())
 				.setGroupByInterhash(queryBuilder.isGroupByInterhash())
 				.setInterhash(queryBuilder.getInterhash())
-				.setOrder(ResourcePersonRelationQuery.Order.valueOf(queryBuilder.getOrder().name()))
+				.setOrder(queryBuilder.getOrder())
 				.setPersonId(queryBuilder.getPersonId())
 				.setRelationType(queryBuilder.getRelationType())
 				.setStart(queryBuilder.getStart())

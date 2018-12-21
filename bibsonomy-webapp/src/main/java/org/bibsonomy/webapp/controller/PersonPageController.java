@@ -50,8 +50,8 @@ import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.query.PersonQuery;
@@ -99,6 +99,8 @@ public class PersonPageController extends SingleResourceListController implement
 	private PersonRoleRenderer personRoleRenderer;
 	private Errors errors;
 	private PictureHandlerFactory pictureHandlerFactory;
+	/** the college that the cris system is configured for */
+	private String crisCollege;
 
 	@Override
 	public PersonPageCommand instantiateCommand() {
@@ -268,7 +270,7 @@ public class PersonPageController extends SingleResourceListController implement
 	private List<Post<GoldStandardPublication>> getSuggestionPub(final String search) {
 		final PostQuery<GoldStandardPublication> postQuery = new PostQueryBuilder().setSearch(search).
 						createPostQuery(GoldStandardPublication.class);
-		//TODO limit searches to thesis
+		// TODO limit searches to thesis
 		return this.logic.getPosts(postQuery);
 	}
 
@@ -283,7 +285,7 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		final JSONArray array = new JSONArray();
 
-		array.addAll(buildupPubResponseArray(suggestionsPub));  // Publications(not associated to Persons) oriented search return
+		array.addAll(buildupPubResponseArray(suggestionsPub));  // Publications (not associated to Persons) oriented search return
 		command.setResponseString(array.toJSONString());
 		
 		return Views.AJAX_JSON;
@@ -295,8 +297,15 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	@SuppressWarnings("unchecked")
 	private View searchAction(PersonPageCommand command) {
-		final List<Person> persons = this.logic.getPersons(new PersonQuery(command.getFormSelectedName()));
+		final PersonQuery query = new PersonQuery(command.getFormSelectedName());
+		if (command.isLimitResultsToCRISCollege() && present(this.crisCollege)) {
+			query.setCollege(this.crisCollege);
+		}
 
+		/*
+		 * query the persons and get the publication that should be displayed alongside the person
+		 */
+		final List<Person> persons = this.logic.getPersons(query);
 		final JSONArray array = new JSONArray();
 		for (final Person person : persons) {
 			final JSONObject jsonPersonName = new JSONObject();
@@ -308,19 +317,6 @@ public class PersonPageController extends SingleResourceListController implement
 			array.add(jsonPersonName);
 		}
 
-		/* FIXME: was
-
-		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName()).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values()).doIt();
-
-
-		for (ResourcePersonRelation rel : suggestions) {
-			final JSONObject jsonPersonName = new JSONObject();
-			jsonPersonName.put("personId", rel.getPerson().getPersonId());
-			jsonPersonName.put("personName", BibTexUtils.cleanBibTex(rel.getPerson().getMainName().toString()));
-			jsonPersonName.put("extendedPersonName", this.personRoleRenderer.getExtendedPersonName(rel, this.requestLogic.getLocale(), false));
-			
-			array.add(jsonPersonName);
-		}*/
 		command.setResponseString(array.toJSONString());
 		
 		return Views.AJAX_JSON;
@@ -614,7 +610,7 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setPerson(person);
 
 		// TODO: maybe this should be done in the view?
-		final List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.PublicationYear));
+		final List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(PersonResourceRelationOrder.PublicationYear));
 		final List<ResourcePersonRelation> authorRelations = new ArrayList<>();
 		final List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
 		final List<ResourcePersonRelation> otherAuthorRelations = new ArrayList<>();
@@ -711,7 +707,6 @@ public class PersonPageController extends SingleResourceListController implement
 		this.urlGenerator = urlGenerator;
 	}
 
-
 	/**
 	 * Sets this controller's {@link PictureHandlerFactory} instance.
 	 *
@@ -719,6 +714,13 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	public void setPictureHandlerFactory(final PictureHandlerFactory factory) {
 		this.pictureHandlerFactory = factory;
+	}
+
+	/**
+	 * @param crisCollege the crisCollege to set
+	 */
+	public void setCrisCollege(String crisCollege) {
+		this.crisCollege = crisCollege;
 	}
 }
 

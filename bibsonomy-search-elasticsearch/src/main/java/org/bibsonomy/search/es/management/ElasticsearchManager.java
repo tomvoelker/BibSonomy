@@ -305,6 +305,8 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		 */
 		final Map<String, IndexData> indexDataMap = new HashMap<>();
 
+		LOG.debug("last content id is " + lastContentId + " lastLogDate is " + lastLogDate);
+
 		BasicUtils.iterateListWithLimitAndOffset((limit, offset) -> updateIndexLogic.getNewerEntities(lastContentId, lastLogDate, limit, offset), entities -> {
 			for (final E entity : entities) {
 				final IndexData indexData = new IndexData();
@@ -313,6 +315,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 				indexData.setSource(entityInformationProvider.getConverter().convert(entity));
 
 				final String entityId = entityInformationProvider.getEntityId(entity);
+				LOG.debug("inserting new entity " + entityId);
 				indexDataMap.put(entityId, indexData);
 
 				if (indexDataMap.size() >= ESConstants.BULK_INSERT_SIZE) {
@@ -326,18 +329,22 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 
 	/**
 	 * @param indexName
-	 * @param convertedPosts
+	 * @param convertedEntities
 	 */
-	protected void clearQueue(final String indexName, final Map<String, IndexData> convertedPosts) {
-		if (!present(convertedPosts)) {
+	protected void clearQueue(final String indexName, final Map<String, IndexData> convertedEntities) {
+		if (!present(convertedEntities)) {
 			// nothing to insert
 			return;
 		}
+
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("inserting docs with the ids " + convertedEntities.keySet().stream().collect(Collectors.joining(", ")));
+		}
 		/*
-		 * maybe we are updating an updated post in es
+		 * maybe we are updating an updated entity in es
 		 */
-		this.client.updateOrCreateDocuments(indexName, convertedPosts);
-		convertedPosts.clear();
+		this.client.updateOrCreateDocuments(indexName, convertedEntities);
+		convertedEntities.clear();
 	}
 
 	protected void clearUpdateQueue(String indexName, List<Pair<String, UpdateData>> updates) {
@@ -353,9 +360,15 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 	 * @param indexName
 	 * @param state
 	 */
-	protected void updateIndexState(final String indexName, final S state) {
+	protected void updateIndexState(final String indexName, final S oldState, final S state) {
 		final IndexData indexData = new IndexData();
 		indexData.setType(ESConstants.SYSTEM_INFO_INDEX_TYPE);
+
+		/*
+		 * here we use the mapping version info of the old state
+		 * BasicUtils#VERSION maybe contain a new deployed version
+		 */
+		state.setMappingVersion(oldState.getMappingVersion());
 		indexData.setSource(this.syncStateConverter.convert(state));
 		this.client.insertNewDocument(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId), indexName, indexData);
 	}

@@ -46,7 +46,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.querybuilder.GroupQueryBuilder;
+import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.opensocial.oauth.database.OAuthLogic;
@@ -137,9 +137,9 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		/*
 		 * Get pending requested groups
 		 */
-		final GroupQueryBuilder builder = new GroupQueryBuilder();
-		builder.setEnd(Integer.MAX_VALUE).setUserName(loggedInUserName).setPending(true);
-		command.setPendingRequestedgroups(this.logic.getGroups(builder.createGroupQuery()));
+		final GroupQuery groupQuery = GroupQuery.builder().end(Integer.MAX_VALUE).
+						userName(loggedInUserName).pending(true).build();
+		command.setPendingRequestedgroups(this.logic.getGroups(groupQuery));
 		
 		if (!present(selectedTab) || selectedTab.intValue() < SettingsViewCommand.MY_PROFILE_IDX || selectedTab.intValue() > SettingsViewCommand.OAUTH_IDX) {
 			this.errors.reject("error.settings.tab");

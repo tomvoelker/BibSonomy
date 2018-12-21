@@ -198,7 +198,7 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 		/*
 		 * last step: update the target state
 		 */
-		this.updateIndexState(indexName, targetState);
+		this.updateIndexState(indexName, oldState, targetState);
 	}
 
 	/**

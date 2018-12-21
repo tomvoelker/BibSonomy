@@ -26,11 +26,6 @@
  */
 package org.bibsonomy.webapp.command;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.util.List;
-
-import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.model.Group;
 
 /**
@@ -38,22 +33,8 @@ import org.bibsonomy.model.Group;
  * 
  * @author Folke Eisterlehner
  */
-public class GroupsListCommand extends BaseCommand {
-	private List<Group> list;
-	
-	// TODO: (bootstrap) remove strAlphabet and alphabet (only used in old layout)
-	// dirty hack: alphabet for direct access in group list
-	@Deprecated // use prefix enum
-	private String strAlphabet = "#ABCDEFGHIJKLMNOPQRSTUVWXYZα"; 
-	@Deprecated
-	private char[] alphabet = strAlphabet.toCharArray();
-	
-	private String format = "html";
-	
-	/** callback function for JSON outputs */
-	private String callback = "";
-
-	private Prefix prefix;
+public class GroupsListCommand extends EntitySearchAndFilterCommand {
+	private final ListCommand<Group> groups = new ListCommand<>(this);
 
 	/** stores the data if a new group is requested. */
 	private Group requestedGroup;
@@ -62,68 +43,10 @@ public class GroupsListCommand extends BaseCommand {
 	private Boolean organizations;
 
 	/**
-	 * @return the callback
+	 * @return the groups
 	 */
-	public String getCallback() {
-		return this.callback;
-	}
-
-	/**
-	 * @param callback the callback to set
-	 */
-	public void setCallback(final String callback) {
-		this.callback = callback;
-	}
-	
-	/**
-	 * @return The requested format.
-	 * 
-	 */
-	public String getFormat() {
-		if (present(this.format)) {
-			return this.format;
-		}
-		
-		/*
-		 * the default is html
-		 */
-		return "html";
-	}
-	
-	/**
-	 * @param format
-	 */
-	public void setFormat(final String format) {
-		this.format = format;
-	}
-	
-
-
-	/**
-	 * @return the alphabet
-	 */
-	public String getStrAlphabet() {
-		return this.strAlphabet;
-	}
-
-	/**
-	 * @return the alphabet
-	 */
-	public char[] getAlphabet() {
-		return this.alphabet;
-	}
-	
-	/**
-	 * @return the sublistlist on the current page
-	 */
-	public List<Group> getList() {
-		return this.list;
-	}
-	/**
-	 * @param list the sublistlist on the current page
-	 */
-	public void setList(List<Group> list) {
-		this.list = list;
+	public ListCommand<Group> getGroups() {
+		return this.groups;
 	}
 
 	/**
@@ -138,20 +61,6 @@ public class GroupsListCommand extends BaseCommand {
 	 */
 	public void setRequestedGroup(Group requestedGroup) {
 		this.requestedGroup = requestedGroup;
-	}
-
-	/**
-	 * @return the prefix
-	 */
-	public Prefix getPrefix() {
-		return prefix;
-	}
-
-	/**
-	 * @param prefix the prefix to set
-	 */
-	public void setPrefix(Prefix prefix) {
-		this.prefix = prefix;
 	}
 
 	/**

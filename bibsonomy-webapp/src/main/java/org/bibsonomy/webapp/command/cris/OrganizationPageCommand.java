@@ -1,25 +1,30 @@
 package org.bibsonomy.webapp.command.cris;
 
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.webapp.command.BaseCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 
 /**
- * @author dzo, pda
+ * organization page command
+ *
+ * @author dzo
+ * @author pda
  */
 public class OrganizationPageCommand extends BaseCommand {
 
 	private String requestedOrganizationName;
 	private Group group;
-	private ListCommand<Post<? extends Resource>> bibtex;
+
 	private String sortPageOrder = "desc";
 	private String sortPage = "date";
-	private ListCommand<Person> persons;
-	private ListCommand<Project> projects;
+
+	private final ListCommand<Post<GoldStandardPublication>> bibtex = new ListCommand<>(this);
+	private final ListCommand<Person> persons = new ListCommand<>(this);
+	private final ListCommand<Project> projects = new ListCommand<>(this);
 
 	/**
 	 * @return the requestedOrganizationName
@@ -43,12 +48,8 @@ public class OrganizationPageCommand extends BaseCommand {
 		this.group = group;
 	}
 
-	public ListCommand<Post<? extends Resource>> getBibtex() {
+	public ListCommand<Post<GoldStandardPublication>> getBibtex() {
 		return bibtex;
-	}
-
-	public void setBibtex(ListCommand<Post<? extends Resource>> bibtex) {
-		this.bibtex = bibtex;
 	}
 
 	public String getSortPageOrder() {
@@ -71,15 +72,8 @@ public class OrganizationPageCommand extends BaseCommand {
 		return persons;
 	}
 
-	public void setPersons(ListCommand<Person> persons) {
-		this.persons = persons;
-	}
-
 	public ListCommand<Project> getProjects() {
 		return projects;
 	}
 
-	public void setProjects(ListCommand<Project> projects) {
-		this.projects = projects;
-	}
 }

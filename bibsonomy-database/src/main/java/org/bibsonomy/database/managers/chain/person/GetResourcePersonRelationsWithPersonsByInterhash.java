@@ -11,29 +11,32 @@ import java.util.List;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-
+/**
+ * @author ada
+ */
 public class GetResourcePersonRelationsWithPersonsByInterhash extends ResourcePersonRelationChainElement {
 
-    /**
-     * Creates an instance with the person database manager set.
-     *
-     * @param personDatabaseManager an instance.
-     */
-    public GetResourcePersonRelationsWithPersonsByInterhash(PersonDatabaseManager personDatabaseManager) {
-        super(personDatabaseManager);
-    }
+	/**
+	 * Creates an instance with the person database manager set.
+	 *
+	 * @param personDatabaseManager an instance.
+	 */
+	public GetResourcePersonRelationsWithPersonsByInterhash(PersonDatabaseManager personDatabaseManager) {
+		super(personDatabaseManager);
+	}
 
-    @Override
-    protected List<ResourcePersonRelation> handle(QueryAdapter<ResourcePersonRelationQuery> adapter, DBSession session) {
-        return this.getPersonDatabaseManager().getResourcePersonRelationsWithPersonsByInterhash(adapter.getQuery().getInterhash(), session);
-    }
+	@Override
+	protected List<ResourcePersonRelation> handle(QueryAdapter<ResourcePersonRelationQuery> adapter, DBSession session) {
+		return this.getPersonDatabaseManager().getResourcePersonRelationsWithPersonsByInterhash(adapter.getQuery().getInterhash(), session);
+	}
 
-    @Override
-    protected boolean canHandle(QueryAdapter<ResourcePersonRelationQuery> adapter) {
-        return present(adapter.getQuery().getInterhash()) &&
-               !adapter.getQuery().isWithPosts() &&
-               !present(adapter.getQuery().getAuthorIndex()) &&
-               !present(adapter.getQuery().getPersonId()) &&
-               !present(adapter.getQuery().getRelationType());
-    }
+	@Override
+	protected boolean canHandle(QueryAdapter<ResourcePersonRelationQuery> adapter) {
+		final ResourcePersonRelationQuery query = adapter.getQuery();
+		return present(query.getInterhash()) &&
+						!query.isWithPosts() &&
+						!present(query.getAuthorIndex()) &&
+						!present(query.getPersonId()) &&
+						!present(query.getRelationType());
+	}
 }

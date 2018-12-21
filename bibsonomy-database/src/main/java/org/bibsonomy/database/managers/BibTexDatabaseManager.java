@@ -29,7 +29,6 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -59,10 +58,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ScraperMetadata;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.extra.BibTexExtra;
-import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.util.file.FileSystemFile;
 import org.bibsonomy.services.filesystem.FileLogic;
-import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
  * Used to create, read, update and delete {@link BibTex} from the database.
@@ -452,11 +449,11 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	@Override
-	protected void createdPost(final Post<BibTex> post, final DBSession session) {
-		super.createdPost(post, session);
+	protected void createdPost(final Post<BibTex> post, User loggedinUser, final DBSession session) {
+		super.createdPost(post, loggedinUser, session);
 		
 		this.handleExtraUrls(post, session);
-		this.handleDocuments(post, session);
+		this.handleDocuments(post, loggedinUser, session);
 	}
 
 	/**
@@ -473,13 +470,13 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	@Override
-	protected void updatedPost(final Post<BibTex> post, final DBSession session) {
-		super.updatedPost(post, session);
+	protected void updatedPost(final Post<BibTex> post, User loggedinUser, final DBSession session) {
+		super.updatedPost(post, loggedinUser, session);
 		
-		this.handleDocuments(post, session);
+		this.handleDocuments(post, loggedinUser, session);
 	}
 
-	private void handleDocuments(final Post<BibTex> post, final DBSession session) {
+	private void handleDocuments(final Post<BibTex> post, final User loggedinUser, final DBSession session) {
 		final List<Document> documents = post.getResource().getDocuments();
 		if (present(documents)) {
 			for (final Document document : documents) {
@@ -494,7 +491,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 						savedDocument.setFileName(document.getFileName());
 						final String savedFileHash = savedDocument.getFileHash();
 						final String savedMD5Hash = savedDocument.getMd5hash();
-						this.docDb.addDocument(username, post.getContentId(), savedFileHash, savedDocument.getFileName(), savedMD5Hash, session);
+						this.docDb.addDocument(username, post.getContentId(), savedFileHash, savedDocument.getFileName(), savedMD5Hash, loggedinUser, session);
 						document.setFileHash(savedFileHash);
 						document.setMd5hash(savedMD5Hash);
 						// TODO: delete file?

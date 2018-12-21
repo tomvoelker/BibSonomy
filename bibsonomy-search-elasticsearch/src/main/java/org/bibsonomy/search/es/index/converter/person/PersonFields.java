@@ -87,6 +87,12 @@ public interface PersonFields {
 	/** the relation type */
 	String TYPE_RELATION = "relation";
 
+	/** the main name */
+	String MAIN_NAME = "main_name";
+
+	/** the main name (lowercase) */
+	String MAIN_NAME_LOWERCASE = "main_name_lower";
+
 	interface RelationFields {
 		/** the author index */
 		String INDEX = "index";

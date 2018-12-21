@@ -1,26 +1,24 @@
 <jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page"
-		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 		  xmlns:spring="http://www.springframework.org/tags"
 		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 >
 
 	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true"/>
 
-
-	<div class="dropdown">
-		<button data-toggle="dropdown" class="btn btn-default dropdown-toggle " type="button"
-				title="export options for displayed posts" aria-expanded="false">
+	<div class="btn-group">
+		<button type="button" class="btn btn-default dropdown-toggle"
+				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			Export
+			<span class="caret" />
 		</button>
-		<ul class="dropdown-menu">
+		<div class="dropdown-menu">
 			<spring:eval var="exportValues" expression="T(org.bibsonomy.export.Exporter).EXPORT_FORMATS"/>
 			<c:forEach var="m_form" items="${exportValues}">
-				<li>
-					<a href="${mtl:setParam(requPathAndQuery, 'format', m_form)}">
-						<c:out value="${m_form}"/>
-					</a>
-				</li>
+				<a href="${mtl:setParam(requPathAndQuery, 'downloadFormat', m_form)}" class="dropdown-item">
+					<c:out value="${m_form}"/>
+				</a>
 			</c:forEach>
-		</ul>
+		</div>
 	</div>
 </jsp:root>

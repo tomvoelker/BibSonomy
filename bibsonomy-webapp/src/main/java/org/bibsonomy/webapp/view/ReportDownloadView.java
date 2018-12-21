@@ -27,53 +27,40 @@ import java.util.Map;
 
 public class ReportDownloadView extends AbstractView {
 
+	private static <T> Exporter<T> getExporter(String name) {
+		switch (name) {
+			case "excel":
+				return new ExcelExporter<>();
+			default:
+				throw new UnsupportedFormatException(name);
+		}
+	}
+
 	private void exportProjects(ProjectReportingCommand command, OutputStream outputStream,
 															HttpServletResponse response) throws IOException {
-		final ReportDownloadViewUtils utils = ReportDownloadViewUtils.INSTANCE;
-		final Exporter<Project> exporter;
-		switch (command.getFormat()) {
-			case "excel":
-				exporter = new ExcelExporter<>();
-
-				break;
-			default:
-				throw new UnsupportedFormatException(command.getFormat());
-		}
+		final Exporter<Project> exporter = getExporter(command.getDownloadFormat());
 		setResponseValues(exporter, response, command.getFilename());
 		//TODO use subset of mappings?
-		exporter.save(command.getProjects(), outputStream, utils.getProjectMappings());
+		exporter.save(command.getProjects().getList(), outputStream,
+						ReportDownloadViewUtils.INSTANCE.getProjectMappings());
 	}
 
 	private void exportPublications(PublicationReportingCommand command, OutputStream outputStream,
 																	HttpServletResponse response) throws IOException {
-		final ReportDownloadViewUtils utils = ReportDownloadViewUtils.INSTANCE;
-		final Exporter<Post<BibTex>> exporter;
-		switch (command.getFormat()) {
-			case "excel":
-				exporter = new ExcelExporter<>();
-				break;
-			default:
-				throw new UnsupportedFormatException(command.getFormat());
-		}
+		final Exporter<Post<BibTex>> exporter = getExporter(command.getDownloadFormat());
 		setResponseValues(exporter, response, command.getFilename());
 		//TODO use subset of mappings?
-		exporter.save(command.getPublications(), outputStream, utils.getPublicationMappings());
+		exporter.save(command.getPublications().getList(), outputStream,
+						ReportDownloadViewUtils.INSTANCE.getPublicationMappings());
 	}
 
 	private void exportPersons(PersonReportingCommand command, OutputStream outputStream,
 														 HttpServletResponse response) throws IOException {
-		final ReportDownloadViewUtils utils = ReportDownloadViewUtils.INSTANCE;
-		final Exporter<Person> exporter;
-		switch (command.getFormat()) {
-			case "excel":
-				exporter = new ExcelExporter<>();
-				break;
-			default:
-				throw new UnsupportedFormatException(command.getFormat());
-		}
+		final Exporter<Person> exporter = getExporter(command.getDownloadFormat());
 		setResponseValues(exporter, response, command.getFilename());
 		//TODO use subset of mappings?
-		exporter.save(command.getPersonList(), outputStream, utils.getPersonMappings());
+		exporter.save(command.getPersons().getList(), outputStream,
+						ReportDownloadViewUtils.INSTANCE.getPersonMappings());
 	}
 
 	private void setResponseValues(Exporter<?> exporter, HttpServletResponse response, String fileName)

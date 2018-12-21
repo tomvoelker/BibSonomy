@@ -56,6 +56,9 @@
 							<bean class="org.joda.time.format.DateTimeFormat" factory-method="forPattern">
 								<constructor-arg value="yyyy-MM-dd" />
 							</bean>
+							<bean class="org.joda.time.format.DateTimeFormat" factory-method="forPattern">
+								<constructor-arg value="dd.MM.yyyy" />
+							</bean>
 						</list>
 					</property>
 				</bean>
@@ -330,6 +333,10 @@
 		<property name="dbSessionFactory" ref="dbSessionFactory" />
 	</bean>
 
+	<bean id="crisSystem" class="java.lang.Boolean">
+		<constructor-arg value="${system.cris}" />
+	</bean>
+
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="interceptors">
 			<list>
@@ -354,12 +361,6 @@
 						<property name="allowedFields">
 							<list>
 								<value>requestedPersonId</value>
-								
-								<!-- <value>requestedAction</value>  -->
-								<!-- <value>requestedHash</value>  -->
-								<!--  <value>requestedUser</value> -->
-								<!-- <value>requestedRole</value> -->
-								<!-- <value>requestedIndex</value>  -->
 								<value>formResponseString</value>
 								<value>formMatchId</value>
 								<value>formAction</value>
@@ -369,19 +370,12 @@
 								<value>formInterHash</value>
 								<value>formIntraHash</value>
 								<value>formResourceHash</value>
-								<!-- <value>formUser</value> -->
 								<value>formThatsMe</value>
-								<!-- <value>formOrcid</value> -->
 								<value>formPersonNameId</value>
 								<value>formFirstName</value>
 								<value>formMiddleName</value>
 								<value>formLastName</value>
 								<value>formSelectedName</value>
-								<!-- <value>formAcademicDegree</value>
-								<value>formCollege</value>
-								<value>formEmail</value>
-								<value>formHomepage</value>-->
-								<!-- <value>formThesisId</value>  -->
 								<value>formResourcePersonRelationId</value>
 								
 								<value>formPersonIndex</value>
@@ -401,6 +395,8 @@
 								
 								<value>newName.firstName</value>
 								<value>newName.lastName</value>
+
+								<value>limitResultsToCRISCollege</value>
 							</list>
 						</property>
 					</bean>
@@ -550,6 +546,12 @@
 				<entry key="/publications">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="publicationsController"/>
+						<property name="allowedFields">
+							<list>
+								<value>publications.start</value>
+								<value>search</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/groups">
@@ -559,6 +561,9 @@
 							<list>
 								<value>format</value>
 								<value>organizations</value>
+								<value>search</value>
+								<value>prefix</value>
+								<value>groups.start</value>
 							</list>
 						</property>
 					</bean>
@@ -583,12 +588,16 @@
 						<property name="controllerBeanName" value="projectReportingPageController"/>
 						<property name="allowedFields">
 							<list>
-								<value>format</value>
+								<value>downloadFormat</value>
 								<value>fieldKeys</value>
 								<value>search</value>
+								<value>prefix</value>
 								<value>type</value>
+								<value>sponsor</value>
 								<value>startDate</value>
 								<value>endDate</value>
+								<value>person</value>
+								<value>organization</value>
 							</list>
 						</property>
 					</bean>
@@ -598,7 +607,7 @@
 						<property name="controllerBeanName" value="publicationReportingPageController"/>
 						<property name="allowedFields">
 							<list>
-								<value>format</value>
+								<value>downloadFormat</value>
 								<value>fieldKeys</value>
 								<value>search</value>
 								<value>startDate</value>
@@ -615,9 +624,10 @@
 						<property name="controllerBeanName" value="personReportingPageController"/>
 						<property name="allowedFields">
 							<list>
-								<value>format</value>
+								<value>downloadFormat</value>
 								<value>fieldKeys</value>
 								<value>search</value>
+								<value>prefix</value>
 							</list>
 						</property>
 					</bean>
@@ -839,7 +849,15 @@
 				</entry>
 				<entry key="/persons">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="personIntroPageController"/>
+						<property name="controllerBeanName" value="#{crisSystem ? 'personsPageController' : 'personIntroPageController'}"/>
+						<property name="allowedFields">
+							<list>
+								<value>search</value>
+								<value>prefix</value>
+								<value>showAllPersons</value>
+								<value>persons.start</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/projects">
@@ -910,6 +928,7 @@
 		<property name="personRoleRenderer" ref="personRoleRenderer"/>
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
 		<property name="pictureHandlerFactory" ref="gravatarStdPictureHandlerFactory" />
+		<property name="crisCollege" value="${system.cris.college}" />
 	</bean>
 
 	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.PersonDisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">
@@ -1195,35 +1214,49 @@
 			</list>
 		</property>
 	</bean>
+
+	<bean id="personsPageController" class="org.bibsonomy.webapp.controller.cris.PersonsPageController" scope="request">
+		<property name="logicInterface" ref="logic" />
+		<property name="crisCollege" value="${system.cris.college}" />
+	</bean>
 	
 	<!--  #################### static views #################### -->
 	<bean id="personIntroPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="PERSON_INTRO"/>
 	</bean>
+
 	<bean id="buttonPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="BUTTONS"/>
 	</bean>
+
 	<bean id="gettingStartedPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="GETTINGSTARTED"/>
 	</bean>
+
 	<bean id="error403PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="ERROR403"/>
 	</bean>
+
 	<bean id="error404PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="ERROR404"/>
 	</bean>
+
 	<bean id="error405PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="ERROR405"/>
 	</bean>
+
 	<bean id="error500PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="ERROR500"/>
 	</bean>
+
 	<bean id="error503PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="ERROR503"/>
 	</bean>
+
 	<bean id="useNotAllowedPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="USE_NOT_ALLOWED"/>
 	</bean>
+
 	<bean id="contextPathFilter" class="org.bibsonomy.webapp.filters.ContextPathFilter">
 		<property name="projectHomeUrl" ref="projectHome"/>
 	</bean>

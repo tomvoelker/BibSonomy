@@ -59,11 +59,17 @@ public enum Views implements View {
 	 * here users can calculate the hashes of their publications
 	 */
 	HASHEXAMPLE("hashexample"),
-	
+
+	/** the person overview page */
 	PERSON_INTRO("persons"),
+
+	/** the details page of a person */
 	PERSON_SHOW("person/show"),
+
+	/** the person disambiguation page */
 	DISAMBIGUATION("disambiguation"),
 
+	/** the auto link page after post creation */
 	AUTOLINK("person/autolink"),
 
 	/**
@@ -183,7 +189,7 @@ public enum Views implements View {
 	/**
 	 * publications overview page
 	 */
-	PUBLICATIONS_OVERVIEW("publications"),
+	PUBLICATIONS_OVERVIEW("cris/publications"),
 
 	/**
 	 * publication page shows all publications with the given inter-/intrahash

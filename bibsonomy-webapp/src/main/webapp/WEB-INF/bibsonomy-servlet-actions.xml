@@ -456,51 +456,52 @@
 						</property>
 					</bean>
 				</entry>
-                <entry key="/editProject">
-                    <bean parent="controllerBase">
-                        <property name="controllerBeanName" value="editProjectController"/>
-                        <property name="allowedFields">
-                            <list>
-                                <value>projectIdToUpdate</value>
-                                <value>ckey</value>
-                                <value>project.title</value>
-                                <value>project.subTitle</value>
-                                <value>project.description</value>
-                                <value>project.type</value>
-                                <value>project.budget</value>
-                                <value>project.startDate</value>
-                                <value>project.endDate</value>
-                                <value>project.parentProject.internalId</value>
-                            </list>
-                        </property>
-                    </bean>
-                </entry>
-                <entry key="/deleteProject">
-                    <bean parent="controllerBase">
-                        <property name="controllerBeanName" value="deleteProjectController"/>
-                        <property name="allowedFields">
-                            <list>
-                                <value>projectIdToDelete</value>
-                                <value>ckey</value>
-                                <value>project.internalId</value>
-                                <value>project.title</value>
-                            </list>
-                        </property>
-                    </bean>
-                </entry>
-                <entry key="/editProjectMember">
-                    <bean parent="controllerBase">
-                        <property name="controllerBeanName" value="editProjectMemberController"/>
-                        <property name="allowedFields">
-                            <list>
-                                <value>projectIdToUpdate</value>
-                                <value>ckey</value>
-                                <value>project.internalId</value>
-                                <value>project.crisLinks</value>
-                            </list>
-                        </property>
-                    </bean>
-                </entry>
+				<entry key="/editProject">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="editProjectController"/>
+						<property name="allowedFields">
+							<list>
+								<value>projectIdToUpdate</value>
+								<value>ckey</value>
+								<value>project.title</value>
+								<value>project.subTitle</value>
+								<value>project.description</value>
+								<value>project.type</value>
+								<value>project.sponsor</value>
+								<value>project.budget</value>
+								<value>project.startDate</value>
+								<value>project.endDate</value>
+								<value>project.parentProject.internalId</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/deleteProject">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="deleteProjectController"/>
+						<property name="allowedFields">
+							<list>
+								<value>projectIdToDelete</value>
+								<value>ckey</value>
+								<value>project.internalId</value>
+								<value>project.title</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/editProjectMember">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="editProjectMemberController"/>
+						<property name="allowedFields">
+							<list>
+								<value>projectIdToUpdate</value>
+								<value>ckey</value>
+								<value>project.internalId</value>
+								<value>project.crisLinks</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/editGoldStandardPublication">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="editGoldStandardPublicationController"/>

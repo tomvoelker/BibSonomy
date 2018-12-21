@@ -7,28 +7,39 @@
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
-		  xmlns:publication="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 		  xmlns:reporting="urn:jsptagdir:/WEB-INF/tags/reporting"
-		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:publication="urn:jsptagdir:/WEB-INF/tags/post"
+		  xmlns:lists="urn:jsptagdir:/WEB-INF/tags/layout/parts/lists"
 >
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"/>
 
-	<fmt:message var="pageTitle" key="navi.search"/>
+	<fmt:message var="pageTitle" key="navi.export.publications"/>
 
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 
 	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.publications" command="${command}"
 					   pageTitle="${pageTitle}" activeTab="publications">
-		 <jsp:attribute name="headerExt">
-            <script type="text/javascript" src="${resdir}/javascript/publications.js"><!-- keep me --></script>
-        </jsp:attribute>
 
 		<!--+
 			  | heading
 			  +-->
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.publications" formAction="/publication/" formInputName="publication"/>
+		</jsp:attribute>
+
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/typeahead.js/js/typeahead.bundle.js"><!-- keep me --></script>
+			<script type="text/javascript"
+					src="${resdir}/javascript/reporting/personAutocomplete.js"><!-- keep me --></script>
+			<script type="text/javascript"
+					src="${resdir}/javascript/reporting/autocompleteSearchPerson.js"><!-- keep me --></script>
+			<script type="text/javascript"
+					src="${resdir}/javascript/reporting/organizationAutocomplete.js"><!-- keep me --></script>
+			<script type="text/javascript"
+					src="${resdir}/javascript/reporting/autocompleteSearchOrganization.js"><!-- keep me --></script>
+
+			<link rel="stylesheet" type="text/css" href="${resdir}/typeahead.js/css/typeahead.css"/>
 		</jsp:attribute>
 
 		<jsp:attribute name="breadcrumbs">
@@ -44,36 +55,41 @@
 		 	| content
 		 	+-->
 		<jsp:attribute name="content">
+			<parts:searchHeader headerMessageKey="reporting.publications.header"
+								searchPlaceholderKey="reporting.publications.search"
+								requPathAndQuery="${requPathAndQuery}" command="${command}"/>
+			<div class="heading">
+				<div class="row">
+					<div class="col-md-5">
+						<form>
+							<input class='form-control typeahead' id='searchPersonAutocomplete'
+								   name='person' autocomplete="on" placeholder='search by person'/>
+						</form>
+					</div>
+					<div class="col-md-5">
+						<form>
+							<input class='form-control typeahead' id='searchOrganizationAutocomplete'
+								   name='organization'
+								   autocomplete="on" placeholder='search by organization'/>
+						</form>
+					</div>
+					<div class="col-md-2">
+						<reporting:export requPathAndQuery="${requPathAndQuery}"/>
+					</div>
+				</div>
+			</div>
 
-            <div class="text-right btn-toolbar">
-                <button class="btn btn-primary btn-sm" id="sort-title" onclick="sortList('title')">
-                    <fmt:message key="post.resource.sort.title"/>
-                </button>
-                <c:set var="searchPlaceholder">
-                    <fmt:message key="post_publication.search"/>
-                </c:set>
-                <input id="search-publication-input" placeholder="${searchPlaceholder}" onkeyup="displaySearch()"/>
-            </div>
+			<div class="row">
+				<div class="col-md-12 vcenter">
+					<lists:listResultInfo listCommand="${command.publications}"
+										  messageKey="projects.results.description"/>
+				</div>
+			</div>
 
-			<reporting:export requPathAndQuery="${requPathAndQuery}"/>
-
-            <div class="text-info">
-                <dl class="group-list">
-                    <dt>
-                        <fmt:message key="publications.amountpublications"/>
-                    </dt>
-                    <dd id="amount-publications">
-                        <c:out value="${fn:length(command.publications)}"/>
-                    </dd>
-                </dl>
-                <hr/>
-            </div>
-            <div id="publications">
-				<ul class="list-group" id="all-publications">
-                    <c:forEach var="publication" items="${command.publications}">
-                        <publication:listview publication="${publication}" resource="${publication.resource}"/>
-                    </c:forEach>
-				</ul>
+			<div class="row">
+				<div class="col-md-12">
+					<publication:listview publicationListCommand="${command.publications}"/>
+				</div>
 			</div>
             <nav aria-label="Page navigation example">
                 <p class="info" id="show-amount"/><br/>

@@ -24,13 +24,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * 
- */
 package org.bibsonomy.webapp.controller;
 
-import org.bibsonomy.model.logic.querybuilder.GroupQueryBuilder;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.enums.GroupOrder;
+import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.webapp.command.GroupsListCommand;
+import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -38,6 +38,7 @@ import org.bibsonomy.webapp.view.Views;
 /**
  * Controller for group overview:
  * - /groups
+ * - /organizations (for cris systems)
  * 
  * @author Folke Eisterlehner
  */
@@ -49,29 +50,26 @@ public class GroupsPageController extends SingleResourceListController implement
 	@Override
 	public View workOn(final GroupsListCommand command) {
 		final String format = command.getFormat();
-
+		final ListCommand<Group> groupListCommand = command.getGroups();
 		/*
-		 * get all groups from db; Integer#MAX_VALUE should be enough
+		 * get requested groups
 		 */
 		if ("html".equals(format)) {
-			final GroupQueryBuilder builder = new GroupQueryBuilder();
-			builder.setPending(false)
-							.setStart(0).setEnd(Integer.MAX_VALUE)
-							.setOrganization(command.getOrganizations())
-							.setPrefix(command.getPrefix());
-			command.setList(this.logic.getGroups(builder.createGroupQuery()));
+			final GroupQuery groupQuery = GroupQuery.builder().start(0).
+							end(groupListCommand.getStart()+groupListCommand.getEntriesPerPage()).pending(false).
+							organization(command.getOrganizations()).prefix(command.getPrefix()).search(command.getSearch()).
+							order(GroupOrder.GROUP_REALNAME).build();
+			groupListCommand.setList(this.logic.getGroups(groupQuery));
 		} else if ("json".equals(format)) {
 			// FIXME:  why does changing the format change the result of the controller?
-			command.setList(command.getContext().getLoginUser().getGroups());
+			groupListCommand.setList(command.getContext().getLoginUser().getGroups());
 		}
 
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
-			this.endTiming();
 			return Views.GROUPSPAGE;
 		}
-				
-		this.endTiming();
+
 		// export - return the appropriate view
 		return Views.getViewByFormat(format);
 	}

@@ -1346,7 +1346,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			// add the tags
 			this.tagDb.insertTags(post, session);
 
-			this.createdPost(post, session);
+			this.createdPost(post, loggedinUser, session);
 
 			/*
 			 * systemTags perform after create
@@ -1365,11 +1365,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * this method is called after a post and his tags were saved to the
 	 * database
 	 * and before the executable system tags are called
-	 *
-	 * @param post
+	 *  @param post
+	 * @param loggedinUser
 	 * @param session
 	 */
-	protected void createdPost(final Post<R> post, final DBSession session) {
+	protected void createdPost(final Post<R> post, User loggedinUser, final DBSession session) {
 		// noop
 	}
 
@@ -1618,7 +1618,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			this.tagDb.insertTags(post, session);
 
-			this.updatedPost(post, session);
+			this.updatedPost(post, loggedinUser, session);
 
 			session.commitTransaction();
 		} finally {
@@ -1629,11 +1629,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/**
 	 * called after a post was updated (only if updateOperation
 	 * {@link PostUpdateOperation#UPDATE_ALL}
-	 *
-	 * @param post
+	 *  @param post
+	 * @param loggedinUser
 	 * @param session
 	 */
-	protected void updatedPost(final Post<R> post, final DBSession session) {
+	protected void updatedPost(final Post<R> post, User loggedinUser, final DBSession session) {
 		// noop
 	}
 

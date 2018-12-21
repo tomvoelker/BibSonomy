@@ -40,17 +40,17 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 	 * @param manager
 	 * @param converter
 	 */
-	public ElasticsearchProjectSearch(ElasticsearchManager<Project, SearchIndexSyncState> manager, Converter<Project, Map<String, Object>, Boolean> converter) {
+	public ElasticsearchProjectSearch(final ElasticsearchManager<Project, SearchIndexSyncState> manager, final Converter<Project, Map<String, Object>, Boolean> converter) {
 		super(manager, converter);
 	}
 
 	@Override
-	public List<Project> getProjects(final User loggedinUser, ProjectQuery query) {
+	public List<Project> getProjects(final User loggedinUser, final ProjectQuery query) {
 		return this.searchEntities(loggedinUser, query);
 	}
 
 	@Override
-	protected Pair<String, SortOrder> getSortOrder(ProjectQuery query) {
+	protected Pair<String, SortOrder> getSortOrder(final ProjectQuery query) {
 		final SortOrder sortOrderQuery = ElasticsearchIndexSearchUtils.convertSortOrder(query.getSortOrder());
 		return query.getOrder() == ProjectOrder.START_DATE ? new Pair<>(ProjectFields.START_DATE, sortOrderQuery) : new Pair<>(ProjectFields.TITLE + "." + ProjectFields.TITLE_SORT, sortOrderQuery);
 	}
@@ -63,10 +63,20 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 	@Override
 	protected BoolQueryBuilder buildFilterQuery(User loggedinUser, ProjectQuery query) {
 		final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery();
+
+		/*
+		 * type and sponsor filters
+		 */
 		final String type = query.getType();
 		if (present(type)) {
 			final TermQueryBuilder typeQuery = QueryBuilders.termQuery(ProjectFields.TYPE, type);
 			filterQuery.must(typeQuery);
+		}
+
+		final String sponsor = query.getSponsor();
+		if (present(sponsor)) {
+			final TermQueryBuilder sponsorQuery = QueryBuilders.termQuery(ProjectFields.SPONSOR, sponsor);
+			filterQuery.must(sponsorQuery);
 		}
 
 		final ProjectStatus projectStatus = query.getProjectStatus();
@@ -86,6 +96,23 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 				default:
 					throw new IllegalArgumentException("project status " + projectStatus + " not supported");
 			}
+		}
+
+		/*
+		 * start date and end date filter
+		 */
+		final Date startDate = query.getStartDate();
+		if (present(startDate)) {
+			final RangeQueryBuilder startDateFilter = QueryBuilders.rangeQuery(ProjectFields.START_DATE);
+			startDateFilter.gte(startDate);
+			filterQuery.must(startDateFilter);
+		}
+
+		final Date endDate = query.getEndDate();
+		if (present(endDate)) {
+			final RangeQueryBuilder endDateFilter = QueryBuilders.rangeQuery(ProjectFields.END_DATE);
+			endDateFilter.lte(endDate);
+			filterQuery.must(endDateFilter);
 		}
 
 		final Prefix prefix = query.getPrefix();

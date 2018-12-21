@@ -6,26 +6,34 @@
 >
 
 	<jsp:directive.attribute name="person" type="org.bibsonomy.model.Person" required="true"/>
-
 	<div class="col-md-4">
 		<div class="media">
 			<div class="media-left media-middle">
 				<c:choose>
 					<c:when test="${not empty person.user}">
-						<img class="media-object"
+						<img class="media-object img-thumbnail"
 							 src="${relativeUrlGenerator.getUserPictureUrlByUsername(person.user)}"/>
 					</c:when>
 					<c:otherwise>
-						<fontawesome:icon icon="user" size="4x"/>
+						<div class="img-thumbnail person-default-icon">
+							<fontawesome:icon icon="user" size="4x"/>
+						</div>
 					</c:otherwise>
 				</c:choose>
 			</div>
 			<div class="media-body">
-				<a href="${relativeUrlGenerator.getPersonUrl(person.personId)}">
-					<h4 class="media-heading">
-						<c:out value="${person.academicDegree} ${person.mainName.lastName},${person.mainName.firstName}"/>
-					</h4>
-				</a>
+				<h4 class="media-heading">
+					<a href="${relativeUrlGenerator.getPersonUrl(person.personId)}">
+						<c:out value="${person.mainName.lastName}, ${person.mainName.firstName}"/>
+					</a>
+					<c:if test="${not empty person.academicDegree}">
+						<br />
+						<small>
+							<c:out value="${person.academicDegree}" />
+						</small>
+					</c:if>
+				</h4>
+
 				<c:out value="${person.email}"/>
 			</div>
 		</div>

@@ -53,7 +53,10 @@ public enum Order {
 	 * Some items can be ordered alphabetically ...
 	 * (in particular groups)
 	 */
-	ALPH;
+	ALPH,
+
+	/** order the posts by the year of the resource; only valid for publications */
+	YEAR;
 
 	/**
 	 * Retrieve Order by name

@@ -221,7 +221,7 @@ public class ListCommand<T> {
 	}
 	
 	/**
-	 * @param entriesPerPage number of entities to be diplayed on one page
+	 * @param entriesPerPage number of entities to be displayed on one page
 	 */
 	public void setEntriesPerPage(final int entriesPerPage) {
 		this.entriesPerPage = entriesPerPage;

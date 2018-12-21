@@ -49,6 +49,8 @@
 					data-operation="MERGE_DENIED" match-id="${personMatch.matchID}"
 					title="${textDeny}">&#10006;</button>
 			</div>
+			<!-- FIXME: sql statements not working -->
+			<!--
 			<c:set var="matchPersonPosts"
 				value="${(matchedPersonIndex == 1) ? personMatch.person1Posts : personMatch.person2Posts}" />
 			<c:if test="${fn:length(matchPersonPosts) gt 0}">
@@ -75,7 +77,7 @@
 						data-target="#info_${personMatch.matchID}"
 						title="${textReasons}" value="more">more</button>
 				</c:if>
-			</c:if>
+			</c:if>-->
 		</div>
 
 

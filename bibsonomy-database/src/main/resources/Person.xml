@@ -26,7 +26,7 @@
 			VALUES (<include refid="insertPersonAttributes"/>)
 	</insert>
 	
-	<insert id="insertName" parameterClass="personName">
+	<insert id="insertName" parameterClass="personNgetBibTexRelationsForPersoname">
 		INSERT INTO person_name (person_change_id, first_name, last_name, person_id, is_main, log_changed_by, log_changed_at)
 			VALUES (#personNameChangeId#, #firstName#, #lastName#, #personId#, #isMain#, #changedBy#, #changedAt#)
 		<selectKey resultClass="int" keyProperty="personNameChangeId" >
@@ -166,7 +166,7 @@
 		AND pub_person.person_id = person_name.person_id
 		ORDER BY pub_person.simhash1, pub_person.relator_code, pub_person.person_index
 	</select>
-	
+
 	<select id="getResourcePersonRelationsWithPersonsByInterhash" parameterClass="java.lang.String" resultMap="PersonCommon.resourcePersonRelationWithPersonPrefilled">
 		SELECT <include refid="commonResourcePersonRelationColumns" />, <include refid="commonPersonColumns"/>, <include refid="commonPersonNameColumns"/>
 		FROM pub_person

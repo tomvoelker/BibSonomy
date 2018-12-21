@@ -43,6 +43,7 @@ import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.params.discussion.DiscussionItemParam;
 import org.bibsonomy.database.params.logging.InsertGroupLog;
 import org.bibsonomy.database.params.logging.InsertGroupMembershipLog;
+import org.bibsonomy.database.params.logging.InsertUserGroupLog;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Group;
@@ -232,8 +233,12 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onUserUpdate(final String userName, final DBSession session) {
+	public void onUserUpdate(final String userName, User loggedinUser, final DBSession session) {
 		this.insert("logUser", userName, session);
+
+		// XXX: to easy update the group full text index also log
+		final InsertUserGroupLog logParam = new InsertUserGroupLog(loggedinUser, new Date(), LogReason.LINKED_ENTITY_UPDATE, userName);
+		this.insert("logGroupUpdate", logParam, session);
 	}
 
 	@Override

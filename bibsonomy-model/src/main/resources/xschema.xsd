@@ -155,10 +155,19 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
+	<xsd:complexType name="GroupRequestType">
+		<xsd:sequence>
+			<xsd:element name="requestedUser" type="UserType" />
+		</xsd:sequence>
+		<xsd:attribute type="xsd:string" name="reason" />
+		<xsd:attribute type="xsd:dateTime" name="submissionDate" />
+	</xsd:complexType>
+
 	<xsd:complexType name="GroupType">
 		<xsd:sequence>
 			<xsd:element maxOccurs="unbounded" minOccurs="0" name="user" type="UserType" />
 			<xsd:element name="parent" type="GroupType" minOccurs="0" />
+			<xsd:element name="groupRequest" type="GroupRequestType" minOccurs="0" />
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="required" />
 		<xsd:attribute name="realname" type="xsd:string" />
@@ -168,6 +177,7 @@
 		<xsd:attribute name="href" type="xsd:anyURI" />
 		<xsd:attribute name="organization" type="lboolean" />
 		<xsd:attribute name="internalId" type="xsd:string" />
+		<xsd:attribute name="allowJoin" type="xsd:boolean" />
 	</xsd:complexType>
 
 	<!--
@@ -272,6 +282,7 @@
 				<xsd:sequence>
 					<xsd:element name="mainName" type="PersonNameType" />
 					<xsd:element name="names" type="PersonNameType" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="user" type="UserType" minOccurs="0" />
 				</xsd:sequence>
 				<xsd:attribute name="college" type="xsd:string" />
 				<xsd:attribute name="academicDegree" type="xsd:string" />
@@ -547,7 +558,9 @@
 		<xsd:complexContent>
 			<xsd:extension base="LinkableType">
 				<xsd:sequence>
-					<xsd:element name="subProjects" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="subProjects" type="ProjectType" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="crisLinks" type="CRISLinkTypeType" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="parentProject" type="ProjectType" minOccurs="0" />
 				</xsd:sequence>
 				<xsd:attribute name="externalId" type="xsd:string" />
 				<xsd:attribute name="internalId" type="xsd:string" />
@@ -559,7 +572,6 @@
 				<xsd:attribute name="budget" type="xsd:float" />
 				<xsd:attribute name="startDate" type="xsd:dateTime" />
 				<xsd:attribute name="endDate" type="xsd:dateTime" />
-				<xsd:attribute name="parentProject" type="xsd:string" />
 				<xsd:attribute name="sponsor" type="xsd:string" />
 			</xsd:extension>
 		</xsd:complexContent>

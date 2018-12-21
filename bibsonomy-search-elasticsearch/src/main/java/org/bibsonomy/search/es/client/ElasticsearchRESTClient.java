@@ -146,7 +146,11 @@ public class ElasticsearchRESTClient implements ESClient {
 		return this.secureCall(() -> {
 			final IndexRequest indexRequest = buildIndexRequest(indexName, id, indexData);
 			final IndexResponse response = this.client.index(indexRequest, this.buildRequestOptions());
-			return response.getResult() == DocWriteResponse.Result.CREATED;
+			final boolean created = response.getResult() == DocWriteResponse.Result.CREATED;
+			if (!created) {
+				LOG.error(response.status());
+			}
+			return created;
 		}, false, "error while inserting new document");
 	}
 
@@ -169,7 +173,11 @@ public class ElasticsearchRESTClient implements ESClient {
 			indexRequests.forEach(bulkRequest::add);
 
 			final BulkResponse bulkResponse = this.client.bulk(bulkRequest, this.buildRequestOptions());
-			return !bulkResponse.hasFailures();
+			final boolean hasFailures = bulkResponse.hasFailures();
+			if (hasFailures) {
+				LOG.error("error while insert new documents into index '" + indexName + "':" + bulkResponse.buildFailureMessage());
+			}
+			return !hasFailures;
 		}, false, "error while inserting new documents into index " + indexName);
 	}
 
@@ -379,11 +387,13 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public boolean deleteDocuments(String indexName, List<DeleteData> documentsToDelete) {
+	public boolean deleteDocuments(final String indexName, final List<DeleteData> documentsToDelete) {
 		if (!present(documentsToDelete)) {
 			// nothing to delete
 			return true;
 		}
+
+		LOG.debug("deleting the following documents " + documentsToDelete.stream().map(DeleteData::getId).collect(Collectors.joining(", ")) + " from index " + indexName);
 
 		return this.secureCall(() -> {
 			final BulkRequest bulkRequest = new BulkRequest();
@@ -392,7 +402,11 @@ public class ElasticsearchRESTClient implements ESClient {
 			deleteRequestsStream.forEach(bulkRequest::add);
 
 			final BulkResponse bulkResponse = this.client.bulk(bulkRequest, this.buildRequestOptions());
-			return !bulkResponse.hasFailures();
+			final boolean hasFailures = bulkResponse.hasFailures();
+			if (hasFailures) {
+				LOG.error("error deleting documents in the fulltext index '" + indexName + "': " + bulkResponse.buildFailureMessage());
+			}
+			return !hasFailures;
 		}, false, "error deleting documents from index");
 	}
 

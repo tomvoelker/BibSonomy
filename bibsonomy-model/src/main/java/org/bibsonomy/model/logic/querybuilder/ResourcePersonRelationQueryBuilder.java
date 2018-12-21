@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.model.logic.querybuilder;
 
+import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 
 /**
@@ -42,17 +43,13 @@ public class ResourcePersonRelationQueryBuilder {
 	private String interhash;
 	private Integer authorIndex;
 	private String personId;
-	private Order order;
+	private PersonResourceRelationOrder order;
 	private boolean groupByInterhash;
 
 	private boolean paginated;
 	private int start;
 	private int end;
-	
-	
-	public static enum Order {
-		PublicationYear
-	}
+
 	
 	/**
 	 * @param withPersons whether to initialize the person references in the result objects
@@ -101,7 +98,7 @@ public class ResourcePersonRelationQueryBuilder {
 		return this;
 	}
 	
-	public ResourcePersonRelationQueryBuilder orderBy(Order order) {
+	public ResourcePersonRelationQueryBuilder orderBy(PersonResourceRelationOrder order) {
 		this.order = order;
 		return this;
 	}
@@ -176,7 +173,7 @@ public class ResourcePersonRelationQueryBuilder {
 		return this.personId;
 	}
 
-	public Order getOrder() {
+	public PersonResourceRelationOrder getOrder() {
 		return this.order;
 	}
 	

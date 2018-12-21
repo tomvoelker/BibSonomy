@@ -29,6 +29,7 @@ public class ElasticsearchPersonSearchITCase extends AbstractPersonSearchTest {
 	public void testGetPersonSuggestions() {
 		assertPersonSuggestion("Schorsche");
 		assertPersonSuggestion("schorsche");
+		assertPersonSuggestion("schor");
 	}
 
 	/**

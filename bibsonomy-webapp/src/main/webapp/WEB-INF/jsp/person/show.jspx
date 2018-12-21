@@ -12,7 +12,9 @@
 		  xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"
 		  xmlns:mod="urn:jsptagdir:/WEB-INF/tags/person/modals"
 		  xmlns:clear="http://java.sun.com/jsp/jstl/core"
-		  xmlns:spring="http://www.springframework.org/tags" xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
+		  xmlns:spring="http://www.springframework.org/tags"
+		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+          xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
@@ -25,7 +27,8 @@
 	<fmt:message key="person.show.saveButton" var="textSaveButton" />
 
 	<c:set var="title" value="${mtl:cleanBibtex(command.person.mainName.firstName)} ${mtl:cleanBibtex(command.person.mainName.lastName)}" />
-	<c:set var="hasClaimedPerson" value="${not empty command.person.user and not empty command.context.loginUser.name and command.person.user eq command.context.loginUser.name and not command.context.loginUser.spammer}" />
+	<c:set var="isLoggedIn" value="${not empty command.context.loginUser.name}" />
+	<c:set var="hasClaimedPerson" value="${not empty command.person.user and isLoggedIn and command.person.user eq command.context.loginUser.name and not command.context.loginUser.spammer}" />
 	<c:set var="isAdmin" value="${command.context.loginUser.role eq 'ADMIN'}" />
 	<c:set var="hasClaimedOrIsAdmin" value="${hasClaimedPerson or isAdmin}" />
 
@@ -60,18 +63,25 @@
 
 		</jsp:attribute>
 		
-		<jsp:attribute name="heading"></jsp:attribute>
+		<jsp:attribute name="heading">
+			<!-- nothing to show -->
+		</jsp:attribute>
 
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<c:set var="groupsMain" value="${relativeUrlGenerator.getPersonsUrl()}"/>
 					<nav:crumb nameKey="navi.person" href="${groupsMain}" active="${active}"/>
-					<nav:crumb name="${command.person.mainName}" leadingIcon="fa-user" active="${active}"/>
+                    <c:set var="degTitle">
+                        <c:out value="${command.person.academicDegree}" />
+                        <c:out value=" " />
+                        <c:out value="${title}" />
+                    </c:set>
+					<nav:crumb name="${degTitle}" leadingIcon="fa-user" active="${active}"/>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
-		<!--
+		<!-- FIXME: reactivate for cris links
 		<jsp:attribute name="sidebar">
 			<per:personSidebar hasClaimedPerson="${hasClaimedPerson}" command="${command}" />
 		</jsp:attribute>
@@ -151,13 +161,34 @@
 				</div>
 			</form>
 
+			<c:set var="personHasPublications" value="${fn:length(command.otherPubs) gt 0}" />
+			<c:set var="showPublicationTab" value="${personHasPublications or isLoggedIn}" />
 			<!-- Thesis block -->
 			<div id="thesisBlock">
-				<ul class="nav nav-tabs" role="tablist">
+				<ul class="nav nav-pills">
 					<c:choose>
 						<c:when test="${useCRISView}" >
-							<li class="active"><a href="#projects" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.projects" /></strong></a></li>
-							<li><a href="#publications" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.publications" /></strong></a></li>
+							<c:if test="${showPublicationTab}">
+								<li class="active">
+									<a href="#publications" role="tab" data-toggle="pill">
+										<strong>
+											<fontawesome:icon icon="book" spaceAfter="5" />
+											<fmt:message key="person.show.publications" />
+										</strong>
+									</a>
+								</li>
+							</c:if>
+							<c:if test="${true}">
+								<li class="${showPublicationTab ? '' : 'active' }">
+									<a href="#projects" role="tab" data-toggle="pill">
+										<strong>
+											<fontawesome:icon icon="project-diagram" spaceAfter="5" />
+											<fmt:message key="person.show.projects" />
+										</strong>
+									</a>
+								</li>
+							</c:if>
+
 						</c:when>
 						<c:otherwise>
 							<li class="active"><a href="#ownThesis" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.ownPubTab" /></strong></a></li>
@@ -168,22 +199,32 @@
 
 				<c:choose>
 					<c:when test="${useCRISView}" >
-						<div class="tab-content pub-person-tab-content" >
-							<!-- Projects tab content-->
-							<div id='projects' class="tab-pane active">
+						<div class="tab-content">
+							<div id="publications" class="tab-pane fade ${showPublicationTab ? 'in active' : ''}">
+								<h2>
+									<fontawesome:icon icon="book" spaceAfter="5" />
+									<fmt:message key="person.show.publications" />
+								</h2>
 								<c:choose>
-									<c:when test="${fn:length(command.person.crisLinks) gt 0}">
-										<per:projects command="${command}" />
+									<c:when test="${personHasPublications}">
+										<per:otherPubList command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}"/>
 									</c:when>
 									<c:otherwise>
-										<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
+										<c:if test="${isLoggedIn}">
+											<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
+										</c:if>
 									</c:otherwise>
 								</c:choose>
 							</div>
-							<div id='publications' class="tab-pane">
+							<!-- Projects tab content-->
+							<div id="projects" class="tab-pane fade ${showPublicationTab ? '' : 'in active'}">
+								<h2>
+									<fontawesome:icon icon="project-diagram" spaceAfter="5" />
+									<fmt:message key="person.show.projects" />
+								</h2>
 								<c:choose>
-									<c:when test="${fn:length(command.otherPubs) gt 0}">
-										<per:otherPubList command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}"/>
+									<c:when test="${fn:length(command.person.crisLinks) gt 0}">
+										<per:projects command="${command}" />
 									</c:when>
 									<c:otherwise>
 										<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
@@ -219,7 +260,7 @@
 			</c:if>
 
 			<!-- similar persons, that one could merge -->
-			<c:if test="${fn:length(command.personMatchList) gt 0 and not useCRISView}">
+			<c:if test="${fn:length(command.personMatchList) gt 0 and isAdmin}">
 				<div style="clear: both;">
 					<h3 class="list-headline">
 						<fmt:message key="person.show.similarPersonMatchList" />

@@ -16,6 +16,7 @@ public class LogReasonTypeHandlerCallback extends AbstractEnumTypeHandlerCallbac
 	static{
 		LOG_REASON_MAPPING.put(LogReason.UPDATED, 0);
 		LOG_REASON_MAPPING.put(LogReason.DELETED, 1);
+		LOG_REASON_MAPPING.put(LogReason.LINKED_ENTITY_UPDATE, 2);
 	}
 
 	@Override

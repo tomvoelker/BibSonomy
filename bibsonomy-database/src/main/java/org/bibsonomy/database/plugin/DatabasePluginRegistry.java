@@ -198,8 +198,8 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 
 	@Override
-	public void onUserUpdate(final String userName, final DBSession session) {
-		this.callAllPlugins(plugin -> plugin.onUserUpdate(userName, session));
+	public void onUserUpdate(final String userName, User loggedinUser, final DBSession session) {
+		this.callAllPlugins(plugin -> plugin.onUserUpdate(userName, loggedinUser, session));
 	}
 	
 	@Override
