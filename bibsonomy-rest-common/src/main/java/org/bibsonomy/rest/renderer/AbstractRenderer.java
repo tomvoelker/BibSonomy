@@ -594,12 +594,9 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(xmlUser::setConfidence, user::getConfidence);
 		setValue(xmlUser::setAlgorithm, user::getAlgorithm);
 		setValue(xmlUser::setClassifierMode, user::getMode);
-		if (user.getPrediction() != null) {
-			xmlUser.setPrediction(BigInteger.valueOf(user.getPrediction()));
-		}
-		if (user.getToClassify() != null) {
-			xmlUser.setToClassify(BigInteger.valueOf(user.getToClassify()));
-		}
+		setValue(xmlUser::setPassword, user::getPassword);
+		setValue(xmlUser::setPrediction, user::getPrediction, i -> BigInteger.valueOf(i.longValue()));
+		setValue(xmlUser::setToClassify, user::getToClassify, i -> BigInteger.valueOf(i.longValue()));
 		setCollectionValue(xmlUser.getRemoteUserId(), user.getRemoteUserIds(), this::createXmlRemoteUserIdType);
 
 		/*
