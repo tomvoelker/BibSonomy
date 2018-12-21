@@ -573,18 +573,16 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	}
 
 	/**
-	 * @param personId
-	 * @param session
-	 * @return List<ResourcePersonRelation>
+     * Gets all resources for a person.
+     *
+	 * @param personId a person id.
+	 * @param session a database session.
+     *
+	 * @return a list of all resources.
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(final String personId, final DBSession session) {
-		final BibTexParam param = new BibTexParam();
-		final ResourcePersonRelation personRelation = new ResourcePersonRelation();
-		personRelation.setPerson(new Person());
-		personRelation.getPerson().setPersonId(personId);
-		param.setPersonRelation(personRelation);
-
-		return this.queryForList("getComunityBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
+        return this.queryForList("getComunityBibTexRelationsForPerson",
+                buildBibTexParam(personId), ResourcePersonRelation.class, session);
 	}
 
 
@@ -597,18 +595,24 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @return the number of relations.
 	 */
 	public int countResourcePersonRelationsWithPosts(String personId, DBSession session) {
-		final BibTexParam param = new BibTexParam();
-
-		final ResourcePersonRelation personRelation = new ResourcePersonRelation();
-		personRelation.setPerson(new Person());
-		personRelation.getPerson().setPersonId(personId);
-		param.setPersonRelation(personRelation);
-
-		return this.queryForObject("countComunityBibTexRelationsForPerson", param, Integer.class, session);
+        return this.queryForObject("countComunityBibTexRelationsForPerson",
+                buildBibTexParam(personId), Integer.class, session);
 	}
 
 
-	/**
+    private BibTexParam buildBibTexParam(String personId) {
+        final BibTexParam param = new BibTexParam();
+
+        final ResourcePersonRelation personRelation = new ResourcePersonRelation();
+        personRelation.setPerson(new Person());
+        personRelation.getPerson().setPersonId(personId);
+        param.setPersonRelation(personRelation);
+
+        return param;
+    }
+
+
+    /**
 	 * @param interhash
 	 * @param session
 	 * @return
