@@ -52,7 +52,6 @@ public final class DeletePostQuery extends AbstractDeleteQuery {
 	 *             if userName or groupName are null or empty
 	 */
 	public DeletePostQuery(final String userName, final String resourceHash) throws IllegalArgumentException {
-		if (!present(userName)) throw new IllegalArgumentException("no username given");
 		if (!present(resourceHash)) throw new IllegalArgumentException("no resourcehash given");
 
 		this.userName = userName;
