@@ -29,6 +29,7 @@ package org.bibsonomy.rest.renderer;
 import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
@@ -85,7 +86,10 @@ import org.bibsonomy.rest.renderer.xml.ExtraUrlType;
 import org.bibsonomy.rest.renderer.xml.ExtraUrlsType;
 import org.bibsonomy.rest.renderer.xml.GenderType;
 import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
+import org.bibsonomy.rest.renderer.xml.GroupMembershipType;
+import org.bibsonomy.rest.renderer.xml.GroupMembershipsType;
 import org.bibsonomy.rest.renderer.xml.GroupRequestType;
+import org.bibsonomy.rest.renderer.xml.GroupRoleType;
 import org.bibsonomy.rest.renderer.xml.GroupType;
 import org.bibsonomy.rest.renderer.xml.GroupsType;
 import org.bibsonomy.rest.renderer.xml.LinkableType;
@@ -852,6 +856,26 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	@Override
+	public void serializeGroupMemberships(Writer writer, Collection<GroupMembership> groupMemberships, ViewModel viewModel) {
+		final GroupMembershipsType groupMembershipsType = new GroupMembershipsType();
+		groupMembershipsType.getGroupMembership().addAll(
+						groupMemberships.stream().map(this::createXmlGroupMembership).collect(Collectors.toList()));
+		final BibsonomyXML xmlDoc = buildEmptyBibsonomyXMLWithOK();
+		xmlDoc.setGroupMemberships(groupMembershipsType);
+		this.serialize(writer, xmlDoc);
+	}
+
+	private GroupMembershipType createXmlGroupMembership (GroupMembership groupMembership) {
+		final GroupMembershipType xmlGroupMembership = new GroupMembershipType();
+		setValue(xmlGroupMembership::setJoinDate, groupMembership::getJoinDate, this::createXmlCalendar);
+		setValue(xmlGroupMembership::setUser, groupMembership::getUser, this::createXmlUser);
+		setValue(xmlGroupMembership::setUserSharedDocuments, groupMembership::isUserSharedDocuments);
+		setValue(xmlGroupMembership::setGroupRole, groupMembership::getGroupRole,
+						r -> GroupRoleType.valueOf(r.name().toUpperCase()));
+		return xmlGroupMembership;
+	}
+
+	@Override
 	public void serializeGroups(final Writer writer, final List<Group> groups, final ViewModel viewModel) throws InternServerException {
 		final GroupsType xmlGroups = new GroupsType();
 		if (viewModel != null) {
@@ -1294,6 +1318,30 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	@Override
+	public Collection<GroupMembership> parseGroupMemberships(Reader reader) throws BadRequestOrResponseException {
+		final BibsonomyXML xmlDoc = this.parse(reader);
+
+		if (xmlDoc.getGroupMemberships() != null) {
+			return xmlDoc.getGroupMemberships().getGroupMembership().stream().
+							map(this::createGroupMembership).collect(Collectors.toList());
+		}
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no group memberships defined.");
+	}
+
+	private GroupMembership createGroupMembership(GroupMembershipType groupMembershipType) {
+		final GroupMembership groupMembership = new GroupMembership();
+		setValue(groupMembership::setUser, groupMembershipType::getUser, this::createUser);
+		setValue(groupMembership::setGroupRole, groupMembershipType::getGroupRole,
+						r -> GroupRole.valueOf(r.name().toUpperCase()));
+		setValue(groupMembership::setUserSharedDocuments, groupMembershipType::isUserSharedDocuments);
+		setValue(groupMembership::setJoinDate, groupMembershipType::getJoinDate, AbstractRenderer::createDate);
+		return groupMembership;
+	}
+
+	@Override
 	public Group parseGroup(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 
@@ -1498,10 +1546,14 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(user::setAlgorithm, xmlUser::getAlgorithm);
 		setValue(user::setMode, xmlUser::getClassifierMode);
 		setValue(user::setToClassify, xmlUser::getToClassify, BigInteger::intValue);
-		for (RemoteUserIdType remoteUserIdType : xmlUser.getRemoteUserId()) {
-			user.setRemoteUserId(createRemoteUserId(remoteUserIdType));
+		if (present(xmlUser.getRemoteUserId())) {
+			for (RemoteUserIdType remoteUserIdType : xmlUser.getRemoteUserId()) {
+				user.setRemoteUserId(createRemoteUserId(remoteUserIdType));
+			}
 		}
-		setCollectionValue(user.getGroups(), xmlUser.getGroups().getGroup(), this::createGroup);
+		if (present(xmlUser.getGroups())) {
+			setCollectionValue(user.getGroups(), xmlUser.getGroups().getGroup(), this::createGroup);
+		}
 		return user;
 	}
 

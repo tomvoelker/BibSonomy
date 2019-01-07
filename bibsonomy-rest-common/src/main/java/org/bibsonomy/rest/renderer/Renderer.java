@@ -28,12 +28,14 @@ package org.bibsonomy.rest.renderer;
 
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.Post;
@@ -266,6 +268,18 @@ public interface Renderer {
 	 *            the {@link ViewModel} encapsulates additional information,
 	 */
 	public void serializeGroup(Writer writer, Group group, ViewModel viewModel);
+
+	/**
+	 * Serializes a collection of {@link GroupMembership}.
+	 *
+	 * @param writer
+	 *            a {@link Writer} to use.
+	 * @param groupMemberships
+	 *            a collection of {@link GroupMembership} object.
+	 * @param viewModel
+	 *            the {@link ViewModel} encapsulates additional information,
+	 */
+	public void serializeGroupMemberships(Writer writer, Collection<GroupMembership> groupMemberships, ViewModel viewModel);
 
 	/**
 	 * Serializes an errormessage.
@@ -607,6 +621,17 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public Group parseGroup(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads a collection of {@link GroupMembership} from a {@link Reader}.
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return a collections of {@link GroupMembership} object.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public Collection<GroupMembership> parseGroupMemberships(Reader reader) throws BadRequestOrResponseException;
 
 	/**
 	 * Reads a List of {@link Tag}s from a {@link Reader}.
