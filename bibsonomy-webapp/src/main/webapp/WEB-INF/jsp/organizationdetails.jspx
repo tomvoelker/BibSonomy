@@ -45,7 +45,8 @@
 					<h2 class="organization-parent-title">
 						<a href="${relativeUrlGenerator.getOrganizationUrlByName(parent.name)}">
 							<!-- TODO: remove after realname is set -->
-							<c:out value="${organization.parent.name}" />
+							<c:out value="${organization.parent.name}"/>
+							<c:out value=" - "/>
 							<c:out value="${organization.parent.realname}"/>
 						</a>
 					</h2>
