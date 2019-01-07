@@ -1178,6 +1178,7 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(project::setStartDate, projectType::getStartDate, AbstractRenderer::createDate);
 		setValue(project::setEndDate, projectType::getEndDate, AbstractRenderer::createDate);
 		setValue(project::setSponsor, projectType::getSponsor);
+		setValue(project::setType, projectType::getType);
 		return project;
 	}
 
