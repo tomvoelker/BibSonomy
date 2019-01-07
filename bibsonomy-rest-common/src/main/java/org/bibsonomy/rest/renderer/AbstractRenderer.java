@@ -1196,7 +1196,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private Person createPerson(PersonType personType) {
 		final Person person = new Person();
-		setValue(person::setMainName, personType::getMainName, this::createPersonName);
+		setValue(person::setMainName, personType::getMainName, this::createPersonMainName);
 		setValue(person::setAcademicDegree, personType::getAcademicDegree);
 		setValue(person::setCollege, personType::getCollege);
 		setValue(person::setEmail, personType::getEmail);
@@ -1209,10 +1209,16 @@ public abstract class AbstractRenderer implements Renderer {
 		return person;
 	}
 
+	private PersonName createPersonMainName(PersonNameType personNameType) {
+		final PersonName personName = createPersonName(personNameType);
+		personName.setMain(true);
+		return personName;
+	}
+
 	private PersonName createPersonName(PersonNameType personNameType) {
 		final PersonName name = new PersonName();
-		name.setFirstName(personNameType.getFirstName());
-		name.setLastName(personNameType.getLastName());
+		setValue(name::setFirstName, personNameType::getFirstName);
+		setValue(name::setLastName, personNameType::getLastName);
 		return name;
 	}
 
