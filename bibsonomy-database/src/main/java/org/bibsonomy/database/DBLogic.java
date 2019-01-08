@@ -3458,9 +3458,14 @@ public class DBLogic implements LogicInterface {
 		final String personUser = person.getUser();
 		final String personId = person.getPersonId();
 		if (personUser != null) {
-			// ensure that only the loggedin user can claim a person for his/herself
-			if (!personUser.equals(this.loginUser.getName())) {
-				throw new AccessDeniedException();
+			// ensure that only the logged in user or a admin can claim a person for his/herself
+			this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, personUser);
+			if (this.permissionDBManager.isAdmin(this.loginUser)) {
+				// also ensure that the user exists that should be linked
+				final User userDetailsOfClaimingUser = this.getUserDetails(personUser);
+				if (!present(userDetailsOfClaimingUser.getName())) {
+					throw new IllegalStateException("user '" + personUser + "' not in the system");
+				}
 			}
 
 			if (present(personId)) {
