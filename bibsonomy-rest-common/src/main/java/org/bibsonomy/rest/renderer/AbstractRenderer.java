@@ -264,11 +264,11 @@ public abstract class AbstractRenderer implements Renderer {
 		return date.toGregorianCalendar().getTime();
 	}
 
-	private static <T> void setValue(Consumer<T> consumer, Supplier<T> supplier) {
+	public static <T> void setValue(Consumer<T> consumer, Supplier<T> supplier) {
 		setValue(consumer, supplier, Function.identity());
 	}
 
-	private static <T, E> void setValue(Consumer<T> consumer, Supplier<E> supplier, Function<E, T> transformer) {
+	public static <T, E> void setValue(Consumer<T> consumer, Supplier<E> supplier, Function<E, T> transformer) {
 		final E value = supplier.get();
 		if (!present(value)) {
 			return;
