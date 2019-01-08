@@ -737,7 +737,10 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(xmlPerson::setOrcid, person::getOrcid);
 		setValue(xmlPerson::setGender, person::getGender, p -> GenderType.valueOf(p.name().toUpperCase()));
 		setValue(xmlPerson::setMainName, person::getMainName, this::createXmlPersonName);
-		setCollectionValue(xmlPerson.getNames(), person.getNames(), this::createXmlPersonName);
+
+		// FIXME: here we have to remove the main name form the name because the names attribute is a list not a set
+		final List<PersonName> otherNames = person.getNames().stream().filter(personName -> !personName.isMain()).collect(Collectors.toList());
+		setCollectionValue(xmlPerson.getNames(), otherNames, this::createXmlPersonName);
 		setValue(xmlPerson::setUser, person::getUser, this::createXmlUser);
 		return xmlPerson;
 	}
