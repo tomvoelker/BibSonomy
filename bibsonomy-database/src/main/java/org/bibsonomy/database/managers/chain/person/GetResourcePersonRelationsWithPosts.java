@@ -30,7 +30,10 @@ public class GetResourcePersonRelationsWithPosts extends ResourcePersonRelationC
 	protected List<ResourcePersonRelation> handle(QueryAdapter<ResourcePersonRelationQuery> adapter, DBSession session) {
 		final ResourcePersonRelationQuery query = adapter.getQuery();
 
-		final List<ResourcePersonRelation> relations = this.getPersonDatabaseManager().getResourcePersonRelationsWithPosts(query.getPersonId(), session);
+
+		final int offset = query.getStart();
+		final int limit = query.getEnd() - offset;
+		final List<ResourcePersonRelation> relations = this.getPersonDatabaseManager().getResourcePersonRelationsWithPosts(query.getPersonId(), limit, offset, session);
 
 		//FIXME use a join to retrieve the necessary information
 		if (query.isWithPersonsOfPosts()) {

@@ -29,6 +29,7 @@ package org.bibsonomy.rest.renderer.impl;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -41,6 +42,7 @@ import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
 import org.bibsonomy.layout.jabref.JabRefConfig;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.Post;
@@ -155,6 +157,11 @@ public class JabrefLayoutRenderer implements Renderer {
 	}
 
 	@Override
+	public Collection<GroupMembership> parseGroupMemberships(Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public User parseUser(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
@@ -181,6 +188,11 @@ public class JabrefLayoutRenderer implements Renderer {
 
 	@Override
 	public void serializePerson(Writer writer, Person person, ViewModel viewModel) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializeGroupMemberships(Writer writer, Collection<GroupMembership> groupMemberships, ViewModel viewModel) {
 		throw new UnsupportedOperationException();
 	}
 

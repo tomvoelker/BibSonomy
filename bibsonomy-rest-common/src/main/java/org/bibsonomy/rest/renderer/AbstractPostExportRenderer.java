@@ -26,17 +26,12 @@
  */
 package org.bibsonomy.rest.renderer;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.Post;
@@ -52,6 +47,13 @@ import org.bibsonomy.model.util.data.DataAccessor;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.UnsupportedMediaTypeException;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /**
  * abstract renderer implementation for exporting posts
@@ -97,13 +99,23 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	 * @see org.bibsonomy.rest.renderer.Renderer#serializePerson(java.io.Writer, org.bibsonomy.model.Person, org.bibsonomy.rest.ViewModel)
 	 */
 	@Override
-	public void serializePerson(Writer writer, Person person, ViewModel viewModel) {this.handleUnsupportedMediaType();}
+	public void serializePerson(Writer writer, Person person, ViewModel viewModel) {
+		this.handleUnsupportedMediaType();
+	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.renderer.Renderer#serializePersonMatch(java.io.Writer, org.bibsonomy.model.PersonMatch, org.bibsonomy.rest.ViewModel)
 	 */
 	@Override
 	public void serializePersonMatch(Writer writer, PersonMatch match, ViewModel viewModel) {
+		this.handleUnsupportedMediaType();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#serializeGroupMembership(java.io.Writer, java.util.Collection<org.bibsonomy.model.GroupMembership>, org.bibsonomy.rest.ViewModel)
+	 */
+	@Override
+	public void serializeGroupMemberships(Writer writer, Collection<GroupMembership> groupMemberships, ViewModel viewModel) {
 		this.handleUnsupportedMediaType();
 	}
 
@@ -456,6 +468,14 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	 */
 	@Override
 	public List<Group> parseGroupList(Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#parseGroupMemberships(java.io.Reader)
+	 */
+	@Override
+	public Collection<GroupMembership> parseGroupMemberships(Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
 
