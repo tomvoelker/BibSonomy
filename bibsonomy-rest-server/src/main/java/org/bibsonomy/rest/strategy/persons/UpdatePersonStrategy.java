@@ -1,16 +1,13 @@
 package org.bibsonomy.rest.strategy.persons;
 
-import org.bibsonomy.common.enums.PersonUpdateOperation;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.enums.PersonIdType;
-import org.bibsonomy.rest.strategy.AbstractUpdateStrategy;
-import org.bibsonomy.rest.strategy.Context;
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.function.Function;
 
-import static org.bibsonomy.util.ValidationUtils.present;
+import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.rest.strategy.AbstractUpdateStrategy;
+import org.bibsonomy.rest.strategy.Context;
 
 /**
  * strategy to update a person
