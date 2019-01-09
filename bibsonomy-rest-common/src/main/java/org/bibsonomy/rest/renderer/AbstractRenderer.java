@@ -96,6 +96,7 @@ import org.bibsonomy.rest.renderer.xml.LinkableType;
 import org.bibsonomy.rest.renderer.xml.PersonMatchType;
 import org.bibsonomy.rest.renderer.xml.PersonNameType;
 import org.bibsonomy.rest.renderer.xml.PersonType;
+import org.bibsonomy.rest.renderer.xml.PersonsType;
 import org.bibsonomy.rest.renderer.xml.PostType;
 import org.bibsonomy.rest.renderer.xml.PostsType;
 import org.bibsonomy.rest.renderer.xml.ProjectPersonLinkTypeType;
@@ -721,6 +722,17 @@ public abstract class AbstractRenderer implements Renderer {
 		serialize(writer, xmlDoc);
 	}
 
+	@Override
+	public void serializePersons(Writer writer, List<Person> persons) {
+		final BibsonomyXML xmlDoc = buildEmptyBibsonomyXMLWithOK();
+
+		final PersonsType personsType = new PersonsType();
+		xmlDoc.setPersons(personsType);
+		persons.stream().map(this::createXmlPerson).forEach(personsType.getPerson()::add);
+
+		serialize(writer, xmlDoc);
+	}
+
 	private UserType createXmlUser(String userName) {
 		UserType userType = new UserType();
 		userType.setName(userName);
@@ -1225,6 +1237,13 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(name::setFirstName, personNameType::getFirstName);
 		setValue(name::setLastName, personNameType::getLastName);
 		return name;
+	}
+
+	@Override
+	public List<Person> parsePersons(Reader reader) {
+		final BibsonomyXML xmlDoc = parse(reader);
+		final PersonsType personsType = xmlDoc.getPersons();
+		return personsType.getPerson().stream().map(this::createPerson).collect(Collectors.toList());
 	}
 
 	@Override

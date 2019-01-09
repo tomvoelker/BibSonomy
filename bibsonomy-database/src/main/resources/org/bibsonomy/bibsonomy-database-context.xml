@@ -245,16 +245,29 @@
 		</property>
 	</bean>
 
+	<bean id="abstractPersonChainElement" abstract="true" class="org.bibsonomy.database.managers.chain.person.PersonChainElement">
+		<constructor-arg ref="personDatabaseManager" />
+	</bean>
+
+	<bean id="personChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.person.GetPersonsByUserName" parent="abstractPersonChainElement"/>
+				<bean class="org.bibsonomy.database.managers.chain.person.GetPersonsByFulltextSearch" parent="abstractPersonChainElement" />
+			</list>
+		</property>
+	</bean>
+
 	<bean id="personRelationChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
 			<list>
-				<bean class="org.bibsonomy.database.managers.chain.person.GetResourcePersonRelationsByInterhash">
+				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsByInterhash">
 					<constructor-arg ref="personDatabaseManager" />
 				</bean>
-				<bean class="org.bibsonomy.database.managers.chain.person.GetResourcePersonRelationsWithPersonsByInterhash">
+				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsWithPersonsByInterhash">
 					<constructor-arg ref="personDatabaseManager" />
 				</bean>
-				<bean class="org.bibsonomy.database.managers.chain.person.GetResourcePersonRelationsWithPosts">
+				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsWithPosts">
 					<constructor-arg ref="personDatabaseManager" />
 				</bean>
 			</list>
@@ -384,7 +397,8 @@
 		<property name="goldStandardPublicationDatabaseManager" ref="goldStandardPublicationDatabaseManager" />
 		<property name="publicationDatabaseManager" ref="publicationDatabaseManager" />
 		<property name="crisLinkDatabaseManager" ref="crisLinkDatabaseManger" />
-		<property name="chain" ref="personRelationChain" />
+		<property name="chain" ref="personChain" />
+		<property name="personResourceRelationChain" ref="personRelationChain" />
 		<property name="resourcePersonRelationsStatisticsChain" ref="resourcePersonRelationsStatisticsChain" />
 	</bean>
 	

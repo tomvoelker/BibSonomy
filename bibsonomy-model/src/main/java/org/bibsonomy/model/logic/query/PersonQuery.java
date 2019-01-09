@@ -11,7 +11,7 @@ import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
  * FIXME add real person query builder
  * @author dzo
  */
-public class PersonQuery extends PersonSuggestionQueryBuilder implements PaginatedQuery {
+public class PersonQuery extends PersonSuggestionQueryBuilder implements PaginatedQuery, Query {
 
 	private String college;
 	private Prefix prefix;
@@ -20,6 +20,15 @@ public class PersonQuery extends PersonSuggestionQueryBuilder implements Paginat
 	private PersonOrder order;
 	/** the organization to filter for */
 	private Group organization;
+	/** find the person claimed by the specified user */
+	private String userName;
+
+	/**
+	 * default person query with empty search
+	 */
+	public PersonQuery() {
+		super(null);
+	}
 
 	/**
 	 * @param query any combination of title, author-name
@@ -112,5 +121,19 @@ public class PersonQuery extends PersonSuggestionQueryBuilder implements Paginat
 	 */
 	public void setOrganization(Group organization) {
 		this.organization = organization;
+	}
+
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return userName;
+	}
+
+	/**
+	 * @param userName the userName to set
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 }

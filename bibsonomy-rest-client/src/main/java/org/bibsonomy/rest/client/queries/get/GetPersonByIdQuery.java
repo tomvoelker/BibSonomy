@@ -22,7 +22,7 @@ public class GetPersonByIdQuery extends AbstractQuery<Person> {
 
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException {
-		final String url = getUrlRenderer().createUrlBuilderForPersons(this.id).asString();
+		final String url = getUrlRenderer().createUrlBuilderForPerson(this.id).asString();
 		this.downloadedDocument = performGetRequest(url);
 	}
 

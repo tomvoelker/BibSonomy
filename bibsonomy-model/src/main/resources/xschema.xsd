@@ -42,6 +42,7 @@
 				<xsd:element name="groups" type="GroupsType" />
 				<xsd:element name="tags" type="TagsType" />
 				<xsd:element name="posts" type="PostsType" />
+				<xsd:element name="persons" type="PersonsType" />
 				<xsd:element name="projects" type="ProjectsType" />
 				<xsd:element name="resourcePersonRelations" type="ResourcePersonRelationsType" />
 				<xsd:element name="groupMemberships" type="GroupMembershipsType" />
@@ -218,6 +219,12 @@
 		<xsd:attribute name="start" type="positiveIntegerIncludingZero" use="required" />
 		<xsd:attribute name="end" type="positiveIntegerIncludingZero" use="required" />
 		<xsd:attribute name="next" type="xsd:anyURI" />
+	</xsd:complexType>
+
+	<xsd:complexType name="PersonsType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="person" type="PersonType" />
+		</xsd:sequence>
 	</xsd:complexType>
 
 	<!--

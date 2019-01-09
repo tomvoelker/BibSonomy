@@ -34,6 +34,7 @@ import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
 import org.bibsonomy.rest.strategy.persons.DeletePersonResourceRelationStrategy;
+import org.bibsonomy.rest.strategy.persons.GetListOfPersonsStrategy;
 import org.bibsonomy.rest.strategy.persons.GetPersonStrategy;
 import org.bibsonomy.rest.strategy.persons.GetResourcePersonRelationsStrategy;
 import org.bibsonomy.rest.strategy.persons.PostPersonMergeStrategy;
@@ -135,6 +136,8 @@ public class PersonsHandler implements ContextHandler {
 
 	private Strategy createPersonStrategy(Context context, HttpMethod httpMethod) {
 		switch (httpMethod) {
+			case GET:
+				return new GetListOfPersonsStrategy(context);
 			case POST:
 				return new PostPersonStrategy(context);
 			default:

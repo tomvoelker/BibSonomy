@@ -1,4 +1,4 @@
-package org.bibsonomy.database.managers.chain.person;
+package org.bibsonomy.database.managers.chain.personresourceRelation;
 
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.PersonDatabaseManager;

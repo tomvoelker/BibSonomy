@@ -172,6 +172,11 @@ public class JabrefLayoutRenderer implements Renderer {
 	}
 
 	@Override
+	public List<Person> parsePersons(final Reader reader) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public Project parseProject(Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
@@ -188,6 +193,11 @@ public class JabrefLayoutRenderer implements Renderer {
 
 	@Override
 	public void serializePerson(Writer writer, Person person, ViewModel viewModel) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializePersons(Writer writer, List<Person> persons) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -103,6 +103,11 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 		this.handleUnsupportedMediaType();
 	}
 
+	@Override
+	public void serializePersons(Writer writer, List<Person> persons) {
+		this.handleUnsupportedMediaType();
+	}
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.renderer.Renderer#serializePersonMatch(java.io.Writer, org.bibsonomy.model.PersonMatch, org.bibsonomy.rest.ViewModel)
 	 */
@@ -391,6 +396,11 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	 */
 	@Override
 	public Person parsePerson(Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<Person> parsePersons(Reader reader) {
 		throw new UnsupportedOperationException();
 	}
 

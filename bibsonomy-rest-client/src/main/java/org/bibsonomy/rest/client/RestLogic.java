@@ -70,6 +70,7 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
@@ -91,6 +92,7 @@ import org.bibsonomy.rest.client.queries.get.GetFriendsQuery;
 import org.bibsonomy.rest.client.queries.get.GetGroupDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetGroupListQuery;
 import org.bibsonomy.rest.client.queries.get.GetLastSyncDataQuery;
+import org.bibsonomy.rest.client.queries.get.GetPersonsQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostDocumentQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
@@ -575,6 +577,11 @@ public class RestLogic extends AbstractLogicInterface {
 			this.doDefaultAction();
 		}
 		return execute(new GetPersonByIdQuery(id));
+	}
+
+	@Override
+	public List<Person> getPersons(PersonQuery query) {
+		return execute(new GetPersonsQuery(query));
 	}
 
 	@Override

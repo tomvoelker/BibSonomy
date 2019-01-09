@@ -425,11 +425,15 @@ public class UrlRenderer {
 	}
 
 	public UrlBuilder createUrlBuilderForPersonMatch(String targetId, String sourceId) {
-		return createUrlBuilderForPersons(targetId).
+		return createUrlBuilderForPerson(targetId).
 						addPathElement(RESTConfig.PERSONS_MERGE_URL).addParameter("source", sourceId);
 	}
 
-	public UrlBuilder createUrlBuilderForPersons(String personId) {
+	public UrlBuilder createUrlBuilderForPersons(final String userName) {
+		return this.createUrlBuilderForPersons().addParameter(GroupingEntity.USER.toString().toLowerCase(), userName);
+	}
+
+	public UrlBuilder createUrlBuilderForPerson(String personId) {
 		return createUrlBuilderForPersons().addPathElement(personId);
 	}
 
@@ -438,7 +442,7 @@ public class UrlRenderer {
 	}
 
 	public UrlBuilder createUrlBuilderForPersons(String personId, PersonUpdateOperation operation) {
-		return createUrlBuilderForPersons(personId).addParameter("operation", operation.name().toLowerCase());
+		return createUrlBuilderForPerson(personId).addParameter("operation", operation.name().toLowerCase());
 	}
 
 	public UrlBuilder createUrlBuilderForProjects(String projectId) {

@@ -128,7 +128,14 @@ public interface Renderer {
 	 * @param viewModel
 	 *            the {@link ViewModel} encapsulates additional information,
 	 */
-	public void serializePerson(Writer writer, Person person, ViewModel viewModel);
+	void serializePerson(Writer writer, Person person, ViewModel viewModel);
+
+	/**
+	 * Serializes a list of persons
+	 * @param writer
+	 * @param persons
+	 */
+	void serializePersons(Writer writer, List<Person> persons);
 
 	/**
 	 * Serializes one {@link Person}.
@@ -490,6 +497,13 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public Person parsePerson(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * reads a list of {@link Person}s from a {@link Reader}
+	 * @param reader
+	 * @return
+	 */
+	List<Person> parsePersons(Reader reader);
 
 	/**
 	 * Reads one {@link Project} from a {@link Reader}.

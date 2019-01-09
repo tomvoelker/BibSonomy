@@ -3401,8 +3401,10 @@ public class DBLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<Person> getPersons(PersonQuery query) {
-		return this.personDBManager.getPersons(query);
+	public List<Person> getPersons(final PersonQuery query) {
+		try (final DBSession session = this.openSession()) {
+			return this.personDBManager.getPersons(query, this.loginUser, session);
+		}
 	}
 
 	@Override

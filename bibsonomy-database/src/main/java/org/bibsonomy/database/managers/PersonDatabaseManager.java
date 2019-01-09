@@ -1,26 +1,26 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
- *
+ * <p>
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
- *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
- *                           L3S Research Center,
- *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
- *
+ * University of Kassel, Germany
+ * http://www.kde.cs.uni-kassel.de/
+ * Data Mining and Information Retrieval Group,
+ * University of Würzburg, Germany
+ * http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ * L3S Research Center,
+ * Leibniz University Hannover, Germany
+ * http://www.l3s.de/
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -100,7 +100,9 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	private PersonSearch personSearch;
 
-	private Chain<List<ResourcePersonRelation>, QueryAdapter<ResourcePersonRelationQuery>> chain;
+	private Chain<List<Person>, QueryAdapter<PersonQuery>> chain;
+
+	private Chain<List<ResourcePersonRelation>, QueryAdapter<ResourcePersonRelationQuery>> personResourceRelationChain;
 	private Chain<Statistics, ResourcePersonRelationQuery> resourcePersonRelationsStatisticsChain;
 
 	@Deprecated // use spring config
@@ -113,13 +115,13 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 
-	public void setChain(Chain<List<ResourcePersonRelation>, QueryAdapter<ResourcePersonRelationQuery>> chain) {
-		this.chain = chain;
+	public void setPersonResourceRelationChain(Chain<List<ResourcePersonRelation>, QueryAdapter<ResourcePersonRelationQuery>> personResourceRelationChain) {
+		this.personResourceRelationChain = personResourceRelationChain;
 	}
 
 	/**
 	 * Inserts a {@link Person} into the database.
-	 * 
+	 *
 	 * @param person
 	 * @param session
 	 */
@@ -241,37 +243,36 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		}
 	}
 
+	/**
+	 * @param personNameChangeId
+	 * @param loggedInUser
+	 * @param session
+	 */
+	public void removePersonName(int personNameChangeId, final User loggedInUser, DBSession session) {
+		session.beginTransaction();
+		try {
+			final PersonName oldPersonName = this.getPersonNameById(personNameChangeId, session);
 
-    /**
-     * @param personNameChangeId
-     * @param loggedInUser
-     * @param session
-     */
-    public void removePersonName(int personNameChangeId, final User loggedInUser, DBSession session) {
-        session.beginTransaction();
-        try {
-            final PersonName oldPersonName = this.getPersonNameById(personNameChangeId, session);
+			if (!present(oldPersonName)) {
+				session.commitTransaction();
+				return;
+			}
+			// inform the plugins (e.g. log the deleted relation)
+			this.plugins.onPersonNameDelete(oldPersonName, loggedInUser, session);
+			this.delete("removePersonName", Integer.valueOf(personNameChangeId), session);
 
-            if (!present(oldPersonName)) {
-                session.commitTransaction();
-                return;
-            }
-            // inform the plugins (e.g. log the deleted relation)
-            this.plugins.onPersonNameDelete(oldPersonName, loggedInUser, session);
-            this.delete("removePersonName", Integer.valueOf(personNameChangeId), session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
 
-            session.commitTransaction();
-        } finally {
-            session.endTransaction();
-        }
-    }
-
-    private PersonName getPersonNameById(int personNameChangeId, final DBSession session) {
-        return this.queryForObject("getPersonNameById", personNameChangeId, PersonName.class, session);
-    }
+	private PersonName getPersonNameById(int personNameChangeId, final DBSession session) {
+		return this.queryForObject("getPersonNameById", personNameChangeId, PersonName.class, session);
+	}
 
 
-    /**
+	/**
 	 * Updates all fields of a given Person
 	 *
 	 * @param person
@@ -309,22 +310,22 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		return JobResult.buildSuccess();
 	}
 
-    /**
-     * unlinks a user with this current person
-     *
-     * @param username
-     */
-    public void unlinkUser(final String username, final DBSession session) {
-        session.beginTransaction();
-        try {
-            // FIXME: why not getting the person by username and calling onPersonUpdate
-            this.plugins.onPersonUpdateByUserName(username, session);
-            this.update("unlinkUser", username, session);
-            session.commitTransaction();
-        } finally {
-            session.endTransaction();
-        }
-    }
+	/**
+	 * unlinks a user with this current person
+	 *
+	 * @param username
+	 */
+	public void unlinkUser(final String username, final DBSession session) {
+		session.beginTransaction();
+		try {
+			// FIXME: why not getting the person by username and calling onPersonUpdate
+			this.plugins.onPersonUpdateByUserName(username, session);
+			this.update("unlinkUser", username, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
 
 	/**
 	 * Update the OrcID of a Person
@@ -383,7 +384,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @param session
 	 */
 	public void updateHomepage(Person person, DBSession session) {
-		this.updatePersonField(person,"PersonHomepage", session);
+		this.updatePersonField(person, "PersonHomepage", session);
 	}
 
 	/**
@@ -472,35 +473,35 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	}
 
 	/**
-     * Deletes a resource relation. Plugins will be notified about the change.
-     *
-     * @param personId a person id.
-     * @param interHash a resource interhash.
-     * @param index an index.
-     * @param type a relation type.
-     * @param loginUser the logged in user.
-     * @param session a database session.
+	 * Deletes a resource relation. Plugins will be notified about the change.
+	 *
+	 * @param personId a person id.
+	 * @param interHash a resource interhash.
+	 * @param index an index.
+	 * @param type a relation type.
+	 * @param loginUser the logged in user.
+	 * @param session a database session.
 	 */
 	public void removeResourceRelation(String personId, final String interHash, final int index,
-                                       final PersonResourceRelationType type, final User loginUser,
-                                       final DBSession session) {
+																		 final PersonResourceRelationType type, final User loginUser,
+																		 final DBSession session) {
 
 		this.removeResourceRelation(personId, interHash, index, type, loginUser, false, session);
 	}
 
-    /**
-     * Deletes a resource relation.
-     * @param personId a person id.
-     * @param interHash a resource interhash.
-     * @param index an index.
-     * @param type a relation type.
-     * @param loginUser the logged in user.
-     * @param update if <code>false</code> plugins will be notified about the change, otherwise no notification will be performed. //TODO Why is it called update???
-     * @param session a database session.
-     */
+	/**
+	 * Deletes a resource relation.
+	 * @param personId a person id.
+	 * @param interHash a resource interhash.
+	 * @param index an index.
+	 * @param type a relation type.
+	 * @param loginUser the logged in user.
+	 * @param update if <code>false</code> plugins will be notified about the change, otherwise no notification will be performed. //TODO Why is it called update???
+	 * @param session a database session.
+	 */
 	private void removeResourceRelation(String personId, final String interHash, final int index,
-                                        final PersonResourceRelationType type, final User loginUser,
-                                        final boolean update, final DBSession session) {
+																			final PersonResourceRelationType type, final User loginUser,
+																			final boolean update, final DBSession session) {
 
 		session.beginTransaction();
 
@@ -508,11 +509,11 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			final ResourcePersonRelation resourcePersonRelation = this.getResourcePersonRelation(personId, interHash, index, type, session);
 			if (!present(resourcePersonRelation)) {
 				throw new RuntimeException(
-				        String.format(
-				                "Could not delete resource relation for person %s and resource $s",
-                                personId, interHash
-                        )
-                );
+								String.format(
+												"Could not delete resource relation for person %s and resource $s",
+												personId, interHash
+								)
+				);
 			}
 			// inform the plugins (e.g. to log the deleted relation)
 			if (!update) {
@@ -530,8 +531,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	//FIXME (AD) introduce distinct query parameter classes that are handed to ibatis instead of recycling the ResourcePersonRelation model --> affects all resource queries!
 
 
-
-    // TODO: write testcase for this method and test whether groupBy of OR-mapping works as expected
+	// TODO: write testcase for this method and test whether groupBy of OR-mapping works as expected
 	public List<ResourcePersonRelation> getResourcePersonRelationsByPublication(String interHash, DBSession databaseSession) {
 		return this.queryForList("getResourcePersonRelationsByPublication", interHash, ResourcePersonRelation.class, databaseSession);
 	}
@@ -539,7 +539,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * Retrieves a list of resource person relations according to the query. The request is handled by the configured
-     * chain of responsibility.
+	 * chain of responsibility.
 	 *
 	 * @param queryAdapter a query.
 	 * @param session a database session.
@@ -547,23 +547,23 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @return a list of resource person relations.
 	 */
 	public List<ResourcePersonRelation> queryForResourcePersonRelations(final QueryAdapter<ResourcePersonRelationQuery> queryAdapter, final DBSession session) {
-		return this.chain.perform(queryAdapter, session);
+		return this.personResourceRelationChain.perform(queryAdapter, session);
 	}
 
 
 	/**
-     * Retrieves a list of relations for the resource with the given <code>interhash</code>. The returned list is
-     * restricted to specific authors by <code>authorIndex</code> and relation <code>role</code>.
-     *
+	 * Retrieves a list of relations for the resource with the given <code>interhash</code>. The returned list is
+	 * restricted to specific authors by <code>authorIndex</code> and relation <code>role</code>.
+	 *
 	 * @param interhash a resource interhash.
 	 * @param authorIndex an author index.
 	 * @param role a relation type.
 	 * @param session a database session.
-     *
+	 *
 	 * @return a list of relations.
 	 */
-    //TODO (AD) Q: Why do we have this query? This should always give a single entry list (see unique index)
-    public List<ResourcePersonRelation> getResourcePersonRelations(final String interhash, final Integer authorIndex, final PersonResourceRelationType role, final DBSession session) {
+	//TODO (AD) Q: Why do we have this query? This should always give a single entry list (see unique index)
+	public List<ResourcePersonRelation> getResourcePersonRelations(final String interhash, final Integer authorIndex, final PersonResourceRelationType role, final DBSession session) {
 		final ResourcePersonRelation rpr = new ResourcePersonRelation();
 		final Post<BibTex> post = new Post<>();
 		post.setResource(new BibTex());
@@ -596,20 +596,20 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	}
 
 	/**
-     * Gets all resource relations for a person.
-     * TODO (AD) Q: Which fields in ResourcePersonRelation will be populated here?
-     *
+	 * Gets all resource relations for a person.
+	 * TODO (AD) Q: Which fields in ResourcePersonRelation will be populated here?
+	 *
 	 * @param personId a person id.
 	 * @param limit the number of relations returned from the result set.
 	 * @param offset index of the first relation returned.
 	 * @param session a database session.
-     *
+	 *
 	 * @return a list of all resources.
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(final String personId, Integer limit,
-																			Integer offset, final DBSession session) {
-        return this.queryForList("getComunityBibTexRelationsForPerson",
-                new GetPersonRelations(personId, limit, offset), ResourcePersonRelation.class, session);
+																																					Integer offset, final DBSession session) {
+		return this.queryForList("getComunityBibTexRelationsForPerson",
+						new GetPersonRelations(personId, limit, offset), ResourcePersonRelation.class, session);
 	}
 
 
@@ -622,29 +622,29 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @return the number of relations.
 	 */
 	public int countResourcePersonRelationsWithPosts(String personId, DBSession session) {
-        return this.queryForObject("countComunityBibTexRelationsForPerson",
-                buildBibTexParam(personId), Integer.class, session);
+		return this.queryForObject("countComunityBibTexRelationsForPerson",
+						buildBibTexParam(personId), Integer.class, session);
 	}
 
 
-    private BibTexParam buildBibTexParam(String personId) {
-        final BibTexParam param = new BibTexParam();
+	private BibTexParam buildBibTexParam(String personId) {
+		final BibTexParam param = new BibTexParam();
 
-        final ResourcePersonRelation personRelation = new ResourcePersonRelation();
-        personRelation.setPerson(new Person());
-        personRelation.getPerson().setPersonId(personId);
-        param.setPersonRelation(personRelation);
+		final ResourcePersonRelation personRelation = new ResourcePersonRelation();
+		personRelation.setPerson(new Person());
+		personRelation.getPerson().setPersonId(personId);
+		param.setPersonRelation(personRelation);
 
-        return param;
-    }
+		return param;
+	}
 
 
-    /**
-     * Gets a list of all persons associated with a resource as identified by the resources <code>interhash</code>.
-     *
+	/**
+	 * Gets a list of all persons associated with a resource as identified by the resources <code>interhash</code>.
+	 *
 	 * @param interhash a resource interhash.
 	 * @param session a database session.
-     *
+	 *
 	 * @return a list with relations covering all persons associated with the requested resource.
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelationsWithPersonsByInterhash(String interhash, DBSession session) {
@@ -655,9 +655,22 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	/**
 	 * based on the query this logic returns all matching persons
 	 * @param query
+	 * @param loggedinUser
+	 * @param session
 	 * @return
 	 */
-	public List<Person> getPersons(final PersonQuery query) {
+	public List<Person> getPersons(final PersonQuery query, final User loggedinUser, final DBSession session) {
+		final QueryAdapter<PersonQuery> adapter = new QueryAdapter<>(query, loggedinUser);
+		return this.chain.perform(adapter, session);
+	}
+
+	/**
+	 * get persons based on the query
+	 * @param query
+	 * @param loggedinUser
+	 * @return
+	 */
+	public List<Person> getPersonsByFulltextSearch(PersonQuery query, User loggedinUser) {
 		return this.personSearch.getPersons(query);
 	}
 
@@ -1073,7 +1086,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	/**
 	 * performs a merge and resolves its conflicts
 	 *
-
 	 * @param formMatchId
 	 * @param map
 	 *            conflicts
@@ -1094,7 +1106,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			final Person person1 = match.getPerson1();
 			final Person person2 = match.getPerson2();
 
-			 for (final String fieldName : map.keySet()) {
+			for (final String fieldName : map.keySet()) {
 				// PersonNames are at a separate table
 				if (fieldName.equals("mainName")) {
 					// set new main names
@@ -1134,7 +1146,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @return true if only valid fieldNames are in fields
 	 */
 	private static boolean onlyValidFields(Set<String> fields) {
-		fieldLoop: for (String string : fields) {
+		fieldLoop:
+		for (String string : fields) {
 			for (String validField : Person.fieldsWithResolvableMergeConflicts) {
 				if (string.equals(validField)) {
 					// field found
@@ -1288,6 +1301,13 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	@Override
 	public Statistics getStatistics(ResourcePersonRelationQuery query, DBSession session) {
 		return this.resourcePersonRelationsStatisticsChain.perform(query, session);
+	}
+
+	/**
+	 * @param chain the chain to set
+	 */
+	public void setChain(Chain<List<Person>, QueryAdapter<PersonQuery>> chain) {
+		this.chain = chain;
 	}
 
 	public void setResourcePersonRelationsStatisticsChain(Chain<Statistics, ResourcePersonRelationQuery> resourcePersonRelationsStatisticsChain) {
