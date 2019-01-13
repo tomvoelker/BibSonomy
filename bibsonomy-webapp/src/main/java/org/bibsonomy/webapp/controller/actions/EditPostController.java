@@ -51,6 +51,7 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
+import org.bibsonomy.common.information.utils.JobInformationUtils;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.GoldStandard;
@@ -69,6 +70,7 @@ import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.tag.model.RecommendedTag;
 import org.bibsonomy.services.Pingback;
 import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.services.information.PersonResourceLinkInformationAdded;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
@@ -835,11 +837,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			log.debug("finally: creating a new post in the DB");
 			final List<JobResult> results = this.logic.createPosts(Collections.singletonList(post));
 			command.setJobResults(results);
-			final List<Post<RESOURCE>> posts = new LinkedList<>();
-			for (JobResult j : results) {
-				posts.add(this.getPostDetails(j.getId(), loginUserName));
-			}
-			command.setAbstractPosts(posts);
 			final String createdPost = results.get(0).getId();
 			/*
 			 * store intraHash for some later changes (file upload)
@@ -857,17 +854,16 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		return this.finalRedirect(command, post, loginUserName, false);
 	}
 
+	private static boolean hasAutoLinkingInformation(final List<JobResult> jobResults) {
+		return jobResults.stream().map(JobResult::getInfo).anyMatch(list -> JobInformationUtils.containsInformationType(list, PersonResourceLinkInformationAdded.class));
+	}
+
 	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, final String postOwnerName, boolean update) {
 		if (present(command.getSaveAndRate())) {
 			final String ratingUrl = this.urlGenerator.getCommunityRatingUrl(post);
 			return new ExtendedRedirectView(ratingUrl);
 		}
-		/*
-		 * If the user added an own thesis with myown tag, he should be redirected to his overview page
-		 */
-		if (present(command.getJobResults())) {
-			return Views.AUTOLINK;
-		}
+
 		/*
 		 * if the user is adding a new thesis to a person's page, he should be redirected to that person's page
 		 */
@@ -875,7 +871,17 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			final ResourcePersonRelation resourcePersonRelation = post.getResourcePersonRelations().get(post.getResourcePersonRelations().size() - 1);
 			return new ExtendedRedirectView(this.urlGenerator.getPersonUrl(resourcePersonRelation.getPerson().getPersonId()));
 		}
-		return this.finalRedirect(postOwnerName, post, command.getReferer(), update);
+
+		/*
+		 * If the user added an own publications with myown tag and the logic has auto linked persons with the post,
+		 * he should be redirected to his overview page
+		 */
+		final View redirectView = this.finalRedirect(postOwnerName, post, command.getReferer(), update);
+		if (hasAutoLinkingInformation(command.getJobResults())) {
+			command.setRedirectUrl(redirectView.getName());
+			return Views.AUTOLINK;
+		}
+		return redirectView;
 	}
 
 	/**

@@ -100,10 +100,6 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 */
 	private String friendsOrGroups;
 
-	private List<JobResult> jobResults;
-
-	private List<Post<RESOURCE>> abstractPosts;
-
 	/**
 	 * stores an id, e.g. for mapping recommendations to posts
 	 */
@@ -136,6 +132,9 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	private List<String> differentEntryKeys;
 
 	private User groupUser;
+
+	private List<JobResult> jobResults;
+	private String redirectUrl;
 
 	/**
 	 * @return saveAndRate
@@ -294,8 +293,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	}
 
 	/**
-	 * @param friendsOrGroups 
-	 * @param abstractGrouping the abstractGrouping to set
+	 * @param friendsOrGroups
 	 */
 	public void setFriendsOrGroups(String friendsOrGroups) {
 		this.friendsOrGroups=friendsOrGroups;
@@ -564,16 +562,16 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	}
 
 	/**
-	 * @return
+	 * @return the redirectUrl
 	 */
-	public List<Post<RESOURCE>> getAbstractPosts() {
-		return abstractPosts;
+	public String getRedirectUrl() {
+		return redirectUrl;
 	}
 
 	/**
-	 * @param abstractPosts
+	 * @param redirectUrl the redirectUrl to set
 	 */
-	public void setAbstractPosts(List<Post<RESOURCE>> abstractPosts) {
-		this.abstractPosts= abstractPosts;
+	public void setRedirectUrl(String redirectUrl) {
+		this.redirectUrl = redirectUrl;
 	}
 }
