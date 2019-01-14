@@ -15,6 +15,7 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * controller that lists all publications of a configurable college
+ * - /publications
  *
  * @author dzo
  */
