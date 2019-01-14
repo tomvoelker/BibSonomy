@@ -2,7 +2,6 @@ package org.bibsonomy.search.es.index.generator;
 
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.index.database.DatabaseInformationLogic;
-import org.bibsonomy.search.index.generator.IndexGenerationLogic;
 import org.bibsonomy.search.index.generator.OneToManyIndexGenerationLogic;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
@@ -42,5 +41,10 @@ public class ElasticsearchOneToManyIndexGenerator<T, M, S extends SearchIndexSyn
 		super.insertDataIntoIndex(indexName);
 
 		this.insertDataIntoIndex(indexName, (lastContenId, limit) -> this.generatorLogic.getToManyEntities(lastContenId, limit), this.entityInformationProvider.getToManyEntityInformationProvider(), new IndexVoter<M>());
+	}
+
+	@Override
+	protected int retrieveNumberOfEntities() {
+		return super.retrieveNumberOfEntities() + this.generatorLogic.getNumberOfToManyEntities();
 	}
 }

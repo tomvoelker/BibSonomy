@@ -159,6 +159,10 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 		this.client.createAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.GENERATING));
 	}
 
+	protected int retrieveNumberOfEntities() {
+		return this.generationLogic.getNumberOfEntities();
+	}
+
 	/**
 	 * inserts the posts form the database into the index
 	 */
@@ -167,7 +171,7 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 
 		// number of post entries to calculate progress
 		// FIXME: the number of posts is wrong
-		this.numberOfEntities = this.generationLogic.getNumberOfEntities();
+		this.numberOfEntities = this.retrieveNumberOfEntities();
 		LOG.info("Number of post entries: " + this.numberOfEntities);
 
 		// initialize variables

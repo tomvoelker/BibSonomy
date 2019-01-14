@@ -43,4 +43,9 @@ public class ElasticsearchIndexGeneratorWithMultipleSources<E, S extends SearchI
 			this.insertDataIntoIndex(indexName, (lastContenId, limit) -> generationLogic.getEntities(lastContenId, limit), this.entityInformationProvider, new IndexVoter<E>());
 		}
 	}
+
+	@Override
+	protected int retrieveNumberOfEntities() {
+		return this.generationLogics.stream().map(IndexGenerationLogic::getNumberOfEntities).mapToInt(Integer::intValue).sum();
+	}
 }
