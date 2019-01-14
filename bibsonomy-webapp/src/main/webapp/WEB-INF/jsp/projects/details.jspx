@@ -14,7 +14,7 @@
 
 	<c:set var="canEditProject" value="${not empty command.context.loginUser.name}" />
 
-	<layout:paneLayout pageTitle="${title}" command="${command}" requPath="${requPath}" showPageOptions="${true}" noSidebar="${true}">
+	<layout:paneLayout pageTitle="${project.title}" command="${command}" requPath="${requPath}" showPageOptions="${true}" noSidebar="${true}">
 
         <jsp:attribute name="headerExt">
             <link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
