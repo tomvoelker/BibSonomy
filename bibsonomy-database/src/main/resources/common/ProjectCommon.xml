@@ -67,6 +67,10 @@
             <isEqual property="projectStatus" compareValue="FINISHED">
                 end_date &lt; CURRENT_TIMESTAMP
             </isEqual>
+
+            <isEqual property="projectStatus" compareValue="UPCOMING">
+                start_date > CURRENT_TIMESTAMP
+            </isEqual>
         </isNotNull>
     </sql>
 

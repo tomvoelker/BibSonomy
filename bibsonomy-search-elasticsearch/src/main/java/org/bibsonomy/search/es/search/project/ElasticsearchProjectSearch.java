@@ -85,13 +85,20 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 			switch (projectStatus) {
 				case RUNNING:
 					final RangeQueryBuilder endDateGreaterQuery = QueryBuilders.rangeQuery(ProjectFields.END_DATE);
-					endDateGreaterQuery.gt(now);
-					filterQuery.must(endDateGreaterQuery);
+					endDateGreaterQuery.lte(now);
+					final RangeQueryBuilder startDateQuery = QueryBuilders.rangeQuery(ProjectFields.START_DATE);
+					startDateQuery.gte(now);
+					filterQuery.must(endDateGreaterQuery).must(startDateQuery);
 					break;
 				case FINISHED:
 					final RangeQueryBuilder projectFinishedRange = QueryBuilders.rangeQuery(ProjectFields.END_DATE);
-					projectFinishedRange.lte(now);
+					projectFinishedRange.lt(now);
 					filterQuery.must(projectFinishedRange);
+					break;
+				case UPCOMING:
+					final RangeQueryBuilder projectUpcomingRange = QueryBuilders.rangeQuery(ProjectFields.START_DATE);
+					projectUpcomingRange.gt(now);
+					filterQuery.must(projectUpcomingRange);
 					break;
 				default:
 					throw new IllegalArgumentException("project status " + projectStatus + " not supported");
