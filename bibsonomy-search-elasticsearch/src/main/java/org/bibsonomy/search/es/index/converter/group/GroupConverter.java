@@ -44,6 +44,9 @@ public class GroupConverter implements Converter<Group, Map<String, Object>, Obj
 			document.put(GroupFields.PARENT_NAME, parentGroup.getName());
 		}
 
+		document.put(GroupFields.ALLOW_JOIN, group.isAllowJoin());
+		document.put(GroupFields.SHARES_DOCUMENTS, group.isSharedDocuments());
+
 		return document;
 	}
 
@@ -55,6 +58,8 @@ public class GroupConverter implements Converter<Group, Map<String, Object>, Obj
 		group.setName((String) source.get(GroupFields.NAME));
 		group.setInternalId((String) source.get(GroupFields.INTERNAL_ID));
 		group.setOrganization((Boolean) source.get(GroupFields.ORGANIZATION));
+		group.setAllowJoin((Boolean) source.get(GroupFields.ALLOW_JOIN));
+		group.setSharedDocuments((Boolean) source.get(GroupFields.SHARES_DOCUMENTS));
 
 		final Object homepage = source.get(GroupFields.HOMEPAGE);
 		if (present(homepage)) {

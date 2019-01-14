@@ -30,4 +30,12 @@ public interface GroupFields {
 
 	/** the parent name */
 	String PARENT_NAME = "parent_name";
+
+	/** settings */
+
+	/** allows join */
+	String ALLOW_JOIN = "allow_join";
+
+	/** shares documents */
+	String SHARES_DOCUMENTS = "shares_docs";
 }

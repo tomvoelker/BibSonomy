@@ -56,6 +56,14 @@ public class GroupMappingBuilder implements MappingBuilder<XContentBuilder> {
 							.startObject(GroupFields.ORGANIZATION)
 								.field(TYPE_FIELD, "boolean")
 							.endObject()
+							// allows join requests
+							.startObject(GroupFields.ALLOW_JOIN)
+								.field(TYPE_FIELD, "boolean")
+							.endObject()
+							// shares documents
+							.startObject(GroupFields.SHARES_DOCUMENTS)
+								.field(TYPE_FIELD, "boolean")
+							.endObject()
 							// homepage
 							.startObject(GroupFields.HOMEPAGE)
 								.field(ENABLED, NOT_INDEXED)
