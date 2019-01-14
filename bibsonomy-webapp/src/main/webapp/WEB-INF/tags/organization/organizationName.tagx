@@ -1,0 +1,30 @@
+<jsp:root version="2.0"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group">
+
+	<jsp:directive.attribute name="organization" type="org.bibsonomy.model.Group" required="true" />
+	<jsp:directive.attribute name="noLink" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="showRealname" type="java.lang.Boolean" required="false" />
+
+	<c:set var="organizationName" value="${organization.name}" />
+
+	<!-- show real name of group -->
+	<c:if test="${empty noLink}">
+		<c:set var="noLink" value="${false}" />
+	</c:if>
+	<c:if test="${empty showRealname}">
+		<c:set var="showRealname" value="${false}" />
+	</c:if>
+
+	<c:choose>
+		<c:when test="${not noLink}">
+			<a href="${relativeUrlGenerator.getOrganizationUrlByName(organizationName)}">
+				<group:groupRealName group="${organization}" showRealname="${showRealname}" />
+			</a>
+		</c:when>
+		<c:otherwise>
+			<group:groupRealName group="${organization}" showRealname="${showRealname}" />
+		</c:otherwise>
+	</c:choose>
+</jsp:root>

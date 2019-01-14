@@ -42,19 +42,27 @@ public class OrganizationPageController implements MinimalisticController<Organi
 	public View workOn(final OrganizationPageCommand command) {
 		final Group group = this.logic.getGroupDetails(command.getRequestedOrganizationName(), false);
 		command.setGroup(group);
-		// get persons for the organization
+
+		/*
+		 * get persons for the organization
+		 */
 		final PersonQuery personOrganizationQuery = new PersonQuery(null);
 		personOrganizationQuery.setOrganization(group);
 		personOrganizationQuery.setOrder(PersonOrder.MAIN_NAME_LAST_NAME);
 		final List<Person> persons = this.logic.getPersons(personOrganizationQuery);
 		command.getPersons().setList(persons);
 
+		/*
+		 * get projects for the organization
+		 */
 		final ProjectQuery.ProjectQueryBuilder projectQueryBuilder = new ProjectQuery.ProjectQueryBuilder();
 		projectQueryBuilder.organization(group);
 		final List<Project> projects = this.logic.getProjects(projectQueryBuilder.build());
-		// get projects for the organization
 		command.getProjects().setList(projects);
 
+		/*
+		 * get publications for organization
+		 */
 		final PostQuery<GoldStandardPublication> postOrganizationQuery = new PostQueryBuilder()
 						.setOrder(Order.YEAR)
 						.setGrouping(GroupingEntity.ORGANIZATION)
@@ -62,6 +70,7 @@ public class OrganizationPageController implements MinimalisticController<Organi
 						.createPostQuery(GoldStandardPublication.class);
 		final List<Post<GoldStandardPublication>> organizationPosts = this.logic.getPosts(postOrganizationQuery);
 		command.getBibtex().setList(organizationPosts);
+
 		return Views.ORGANIZATION_PAGE;
 	}
 
