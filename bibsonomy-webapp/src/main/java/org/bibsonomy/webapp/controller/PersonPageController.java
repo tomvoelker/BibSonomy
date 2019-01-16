@@ -616,9 +616,7 @@ public class PersonPageController extends SingleResourceListController implement
 		final List<ResourcePersonRelation> otherAuthorRelations = new ArrayList<>();
 		final List<ResourcePersonRelation> otherAdvisorRelations = new ArrayList<>();
 
-		command.setHasPicture(pictureHandlerFactory.hasVisibleProfilePicture(person.getUser(), command.getContext().getLoginUser()));
-
-		// final List<Project> projects = this.logic.getProjects();
+		command.setHasPicture(this.pictureHandlerFactory.hasVisibleProfilePicture(person.getUser(), command.getContext().getLoginUser()));
 
 		for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
 			final Post<? extends BibTex> post = resourcePersonRelation.getPost();

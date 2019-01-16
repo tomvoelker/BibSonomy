@@ -3747,7 +3747,8 @@ public class DBLogic implements LogicInterface {
 				.setWithPosts(queryBuilder.isWithPosts());
 
 		ResourcePersonRelationQuery query = builder.build();
-
+		query.setStart(0);
+		query.setEnd(Integer.MAX_VALUE);
 		return this.getResourceRelations(query);
 	}
 
