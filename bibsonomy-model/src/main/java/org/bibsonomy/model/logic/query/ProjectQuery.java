@@ -163,6 +163,13 @@ public class ProjectQuery extends BasicQuery {
 		return internalId;
 	}
 
+	/**
+	 * @return the organization
+	 */
+	public Group getOrganization() {
+		return organization;
+	}
+
 	public static class ProjectQueryBuilder {
 		/**
 		 * the order of the projects, default {@link ProjectOrder#TITLE}

@@ -5,7 +5,7 @@ package org.bibsonomy.search.es.index.converter.project;
  * @author dzo
  */
 public interface ProjectFields {
-	/*+ the person mapping type */
+	/*+ the project mapping type */
 	String PROJECT_DOCUMENT_TYPE = "project";
 
 	/** the external id */

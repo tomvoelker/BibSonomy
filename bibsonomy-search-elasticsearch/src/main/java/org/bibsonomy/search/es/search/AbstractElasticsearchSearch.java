@@ -89,6 +89,14 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 		final BoolQueryBuilder mainQuery = this.buildMainQuery(loggedinUser, query);
 		final BoolQueryBuilder filterQuery = this.buildFilterQuery(loggedinUser, query);
 
+		/*
+		 * XXX: e.g. when a group/organization has no persons and we want to filter for projects of the connected persons
+		 * we must have a way to indicate there is no match; so the filter query returns null
+		 */
+		if (!present(filterQuery)) {
+			return null;
+		}
+
 		// now some general search queries
 		final String search = query.getSearch();
 		if (present(search)) {

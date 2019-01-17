@@ -162,7 +162,7 @@ public final class ElasticsearchUtils {
 	 */
 	public static String dateToString(final Date date) {
 		if (!present(date)) {
-			return "";
+			return null;
 		}
 		return DATE_TIME_FORMATTER.print(date.getTime());
 	}
@@ -172,6 +172,10 @@ public final class ElasticsearchUtils {
 	 * @return the date
 	 */
 	public static Date parseDate(String dateAsString) {
+		if (!present(dateAsString)) {
+			return null;
+		}
+
 		try {
 			return DATE_OPTIONAL_TIME_FORMATTER.parseDateTime(dateAsString).toDate();
 		} catch (final IllegalArgumentException e) {

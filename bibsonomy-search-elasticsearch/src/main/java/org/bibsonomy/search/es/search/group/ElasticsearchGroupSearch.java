@@ -40,7 +40,7 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 	}
 
 	@Override
-	public List<Group> getGroups(User loggedinUser, GroupQuery query) {
+	public List<Group> getGroups(final User loggedinUser, final GroupQuery query) {
 		return searchEntities(loggedinUser, query);
 	}
 
@@ -64,7 +64,7 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 	}
 
 	@Override
-	protected BoolQueryBuilder buildFilterQuery(User loggedinUser, GroupQuery query) {
+	protected BoolQueryBuilder buildFilterQuery(final User loggedinUser, final GroupQuery query) {
 		final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery();
 		final Prefix prefix = query.getPrefix();
 		if (present(prefix)) {

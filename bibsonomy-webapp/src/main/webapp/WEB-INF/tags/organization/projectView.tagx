@@ -13,7 +13,7 @@
 				<fontawesome:icon icon="users" size="4x"/>
 			</div>
 			<div class="media-body">
-				<a href="${relativeUrlGenerator.getProjectUrlByProjectId(project.internalId)}">
+				<a href="${relativeUrlGenerator.getProjectUrlByProjectId(project.externalId)}">
 					<h4 class="media-heading">
 						<c:out value="${project.title}"/>
 					</h4>

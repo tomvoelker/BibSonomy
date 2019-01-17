@@ -75,14 +75,16 @@
 								</span>
 							</a>
 						</li>
-						<li>
-							<c:set var="projectCount" value="${command.projects.totalCount}" />
-							<a href="#organization-projects" role="tab" data-toggle="pill">
-								<fontawesome:icon icon="project-diagram" spaceAfter="5" />
-								<fmt:message key="navi.projects" />
-								<span class="badge" title="total:  ${projectCount} projects">${projectCount}</span>
-							</a>
-						</li>
+						<c:set var="projectCount" value="${command.projects.totalCount}" />
+						<c:if test="${projectCount gt 0}">
+							<li>
+								<a href="#organization-projects" role="tab" data-toggle="pill">
+									<fontawesome:icon icon="project-diagram" spaceAfter="5" />
+									<fmt:message key="navi.projects" />
+									<span class="badge" title="total:  ${projectCount} projects">${projectCount}</span>
+								</a>
+							</li>
+						</c:if>
 					</ul>
 
 				</div>
@@ -172,33 +174,35 @@
 						<person:personList listCommand="${command.persons}" />
 					</div>
 				</div>
-				<div class="tab-pane fade" id="organization-projects">
-					<div class="row">
-						<div class="col-md-10">
-							<h3 class="list-headline">
-								<fmt:message key="navi.projects" />
-							</h3>
+				<c:if test="${projectCount gt 0}">
+					<div class="tab-pane fade" id="organization-projects">
+						<div class="row">
+							<div class="col-md-10">
+								<h3 class="list-headline">
+									<fmt:message key="navi.projects" />
+								</h3>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<c:forEach var="i" begin="0" end="${fn:length(command.projects.list) -1 }" step="3">
+									<div class="row">
+										<c:set var="project" value="${command.projects.list[i]}"/>
+										<organization:projectView project="${project}"/>
+										<c:if test="${i+1 lt fn:length(command.projects.list)}">
+											<c:set var="project" value="${command.projects.list[i+1]}"/>
+											<organization:projectView project="${project}"/>
+										</c:if>
+										<c:if test="${i+2 lt fn:length(command.projects.list)}">
+											<c:set var="project" value="${command.projects.list[i+2]}"/>
+											<organization:projectView project="${project}"/>
+										</c:if>
+									</div>
+								</c:forEach>
+							</div>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<c:forEach var="i" begin="0" end="${fn:length(command.projects.list)-1}" step="3">
-								<div class="row">
-									<c:set var="project" value="${command.projects.list[i]}"/>
-									<organization:projectView project="${project}"/>
-									<c:if test="${i+1 lt fn:length(command.projects.list)}">
-										<c:set var="project" value="${command.projects.list[i+1]}"/>
-										<organization:projectView project="${project}"/>
-									</c:if>
-									<c:if test="${i+2 lt fn:length(command.projects.list)}">
-										<c:set var="project" value="${command.projects.list[i+2]}"/>
-										<organization:projectView project="${project}"/>
-									</c:if>
-								</div>
-							</c:forEach>
-						</div>
-					</div>
-				</div>
+				</c:if>
 			</div>
 		</jsp:attribute>
 

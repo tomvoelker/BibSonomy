@@ -31,7 +31,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.lucene.search.Query;
 import org.apache.lucene.search.join.ScoreMode;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Filter;
@@ -128,8 +127,8 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 	}
 
 	@Override
-	protected void buildResourceSpecificFilters(BoolQueryBuilder mainFilterBuilder, String loggedinUser, Set<String> allowedGroups, Set<String> usersThatShareDocs, PostSearchQuery<?> postQuery) {
-		super.buildResourceSpecificFilters(mainFilterBuilder, loggedinUser, allowedGroups, usersThatShareDocs, postQuery);
+	protected BoolQueryBuilder buildResourceSpecificFilters(BoolQueryBuilder mainFilterBuilder, String loggedinUser, Set<String> allowedGroups, Set<String> usersThatShareDocs, PostSearchQuery<?> postQuery) {
+		final BoolQueryBuilder filterBuilder = super.buildResourceSpecificFilters(mainFilterBuilder, loggedinUser, allowedGroups, usersThatShareDocs, postQuery);
 
 		final String year = postQuery.getYear();
 		final String lastYear = postQuery.getLastYear();
@@ -137,7 +136,7 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 
 		if (present(year)) {
 			final TermQueryBuilder yearQuery = QueryBuilders.termQuery(Fields.Publication.YEAR, year);
-			mainFilterBuilder.must(yearQuery);
+			filterBuilder.must(yearQuery);
 		}
 
 		final boolean presentLastYear = present(lastYear);
@@ -151,7 +150,7 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 			if (presentLastYear) {
 				rangeFilter.lte(Integer.parseInt(lastYear));
 			}
-			mainFilterBuilder.must(rangeFilter);
+			filterBuilder.must(rangeFilter);
 		}
 
 		/*
@@ -160,7 +159,7 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 		final String entryType = postQuery.getEntryType();
 		if (present(entryType)) {
 			final MatchQueryBuilder entryTypeMatch = QueryBuilders.matchQuery(Fields.Publication.ENTRY_TYPE, entryType);
-			mainFilterBuilder.must(entryTypeMatch);
+			filterBuilder.must(entryTypeMatch);
 		}
 
 		final Set<Filter> filters = postQuery.getFilters();
@@ -174,7 +173,7 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 				final BoolQueryBuilder docFilter = QueryBuilders.boolQuery();
 				docFilter.must(docFieldExists);
 				usersThatShareDocs.stream().map(user -> QueryBuilders.matchQuery(Fields.USER_NAME, user)).forEach(docFilter::must);
-				mainFilterBuilder.must(docFilter);
+				filterBuilder.must(docFilter);
 			}
 		}
 
@@ -184,17 +183,23 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 			final QueryBuilder collegeAuthorFilter = buildCollegeTermFilter(Fields.Publication.AUTHORS, college);
 			final QueryBuilder collegeEditorFilter = buildCollegeTermFilter(Fields.Publication.EDITORS, college);
 			collegeFilter.should(collegeAuthorFilter).should(collegeEditorFilter);
-			mainFilterBuilder.must(collegeFilter);
+			filterBuilder.must(collegeFilter);
 		}
 		final GroupingEntity grouping = postQuery.getGrouping();
-
 		if (GroupingEntity.ORGANIZATION.equals(grouping)) {
 			final String groupingName = postQuery.getGroupingName();
+			// no persons assigned to this organization
 			final Set<String> personIds = this.infoLogic.getPersonsOfOrganization(groupingName);
+			if (!present(personIds)) {
+				return null;
+			}
+
 			final BoolQueryBuilder organizationQuery = QueryBuilders.boolQuery();
 			personIds.stream().map(ElasticsearchPublicationSearch::buildPersonFilter).forEach(organizationQuery::should);
-			mainFilterBuilder.must(organizationQuery);
+			filterBuilder.must(organizationQuery);
 		}
+
+		return filterBuilder;
 	}
 
 	private static QueryBuilder buildPersonFilter(final String personId) {

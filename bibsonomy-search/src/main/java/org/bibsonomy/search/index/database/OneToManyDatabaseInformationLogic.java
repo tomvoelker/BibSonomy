@@ -4,7 +4,7 @@ import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.search.update.SearchIndexDualSyncState;
 
 /**
- * adater to build a
+ * adapter to build a one to many database information logic of two {@link DatabaseInformationLogic}s
  *
  * @author dzo
  */

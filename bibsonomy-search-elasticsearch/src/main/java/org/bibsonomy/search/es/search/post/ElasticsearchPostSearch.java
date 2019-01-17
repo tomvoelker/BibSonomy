@@ -54,7 +54,6 @@ import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.search.SearchInfoLogic;
-import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.index.converter.post.ResourceConverter;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
@@ -63,7 +62,6 @@ import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.services.searcher.query.PostSearchQuery;
 import org.bibsonomy.util.Sets;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MultiMatchQueryBuilder.Type;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
@@ -206,75 +204,11 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 		return new HashSet<>();
 	}
 
-	/**
-	 * build the overall elasticsearch query term
-	 * 
-	 * @param loggedinUser
-	 * @param usersThatShareDocs all users that the logged in user is allowed to access
-	 * @param postQuery the query
-	 * @return overall elasticsearch query
-	 */
-	protected final QueryBuilder buildQuery(final User loggedinUser, final Set<String> usersThatShareDocs, final PostSearchQuery<?> postQuery) {
-		final BoolQueryBuilder mainQueryBuilder = QueryBuilders.boolQuery();
-		final BoolQueryBuilder mainFilterBuilder = QueryBuilders.boolQuery();
-
+	protected final QueryBuilder buildFilter(final User loggedinUser, final Set<String> usersThatShareDocs, final PostSearchQuery<?> postQuery) {
 		final String loggedinUserName = loggedinUser.getName();
-		Set<String> allowedGroups = UserUtils.getListOfGroups(loggedinUser).stream().map(Group::getName).collect(Collectors.toSet());
+		final Set<String> allowedGroups = UserUtils.getListOfGroups(loggedinUser).stream().map(Group::getName).collect(Collectors.toSet());
 
-		// here we exclude the logged in user; the docs are already queried using the private fields
-		final Set<String> usersToQueryForDocuments = new HashSet<>(usersThatShareDocs);
-		if (present(loggedinUserName)) {
-			usersToQueryForDocuments.remove(loggedinUserName);
-		}
-
-		final String searchTerms = postQuery.getSearch();
-
-		/*
-		 * build the query
-		 * the resulting main query
-		 */
-		if (present(searchTerms)) {
-			/*
-			 * per default we use the and operation for multiple search query terms;
-			 * to allow "and"'s for field search queries we set the dis max to false to enable
-			 * boolean queries for multiple fields
-			 *
-			 * XXX: we also need to set these parameters to the private string queries, otherwise the configured
-			 * field is ignored and ES searches again in the queried fields
-			 */
-			final QueryBuilder queryBuilder = buildStringQueryForSearchTerms(searchTerms, this.manager.getPublicFields());
-			
-			if (present(loggedinUserName)) {
-				// private field
-				final TermQueryBuilder userFilter = QueryBuilders.termQuery(Fields.USER_NAME, loggedinUserName);
-				final QueryStringQueryBuilder privateFieldSearchQuery = buildStringQueryForSearchTerms(searchTerms, this.manager.getPrivateFields());
-				final BoolQueryBuilder privateFieldQueryFiltered = QueryBuilders.boolQuery().must(privateFieldSearchQuery).filter(userFilter);
-				
-				final BoolQueryBuilder query = QueryBuilders.boolQuery().should(queryBuilder).should(privateFieldQueryFiltered);
-				
-				if (present(usersToQueryForDocuments)) {
-					// document field
-					final QueryStringQueryBuilder docFieldSearchQuery = buildStringQueryForSearchTerms(searchTerms, Sets.asSet(Fields.Publication.ALL_DOCS));
-					// restrict to users that share documents and to the visible posts (group)
-					final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery().must(buildUserQuery(usersThatShareDocs)).must(buildGroupFilter(allowedGroups));
-					query.should(QueryBuilders.boolQuery().must(docFieldSearchQuery).filter(filterQuery));
-				}
-				
-				mainQueryBuilder.must(query);
-			} else {
-				mainQueryBuilder.must(queryBuilder);
-			}
-		}
-
-		final String titleSearchTerms = postQuery.getTitleSearchTerms();
-		if (present(titleSearchTerms)) {
-			// we have search terms for title autocompletion, build a phrase prefix query for the title search terms
-			final QueryBuilder titleSearchQuery = QueryBuilders.matchPhrasePrefixQuery(Fields.Resource.TITLE, titleSearchTerms);
-			mainQueryBuilder.must(titleSearchQuery);
-		}
-		
-		this.buildResourceSpecificQuery(mainQueryBuilder, loggedinUserName, postQuery);
-
+		final BoolQueryBuilder mainFilterBuilder = QueryBuilders.boolQuery();
 		final List<String> tags = postQuery.getTags();
 		// Add the requested tags
 		if (present(tags)) {
@@ -319,15 +253,81 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 		}
 		mainFilterBuilder.must(groupFilter);
 
-		this.buildResourceSpecificFilters(mainFilterBuilder, loggedinUserName, allowedGroups, usersThatShareDocs, postQuery);
+		return this.buildResourceSpecificFilters(mainFilterBuilder, loggedinUserName, allowedGroups, usersThatShareDocs, postQuery);
+	}
+
+	protected BoolQueryBuilder buildResourceSpecificFilters(BoolQueryBuilder mainFilterBuilder, String loggedinUser, Set<String> allowedGroups, Set<String> usersThatShareDocs, PostSearchQuery<?> postQuery) {
+		return mainFilterBuilder;
+	}
+
+	/**
+	 * build the overall elasticsearch query term
+	 * 
+	 * @param loggedinUser
+	 * @param usersThatShareDocs all users that the logged in user is allowed to access
+	 * @param postQuery the query
+	 * @return overall elasticsearch query
+	 */
+	protected final QueryBuilder buildQuery(final User loggedinUser, final Set<String> usersThatShareDocs, final PostSearchQuery<?> postQuery) {
+		final BoolQueryBuilder mainQueryBuilder = QueryBuilders.boolQuery();
+
+		final String loggedinUserName = loggedinUser.getName();
+		final Set<String> allowedGroups = UserUtils.getListOfGroups(loggedinUser).stream().map(Group::getName).collect(Collectors.toSet());
+
+		// here we exclude the logged in user; the docs are already queried using the private fields
+		final Set<String> usersToQueryForDocuments = new HashSet<>(usersThatShareDocs);
+		if (present(loggedinUserName)) {
+			usersToQueryForDocuments.remove(loggedinUserName);
+		}
+
+		final String searchTerms = postQuery.getSearch();
+
+		/*
+		 * build the query
+		 * the resulting main query
+		 */
+		if (present(searchTerms)) {
+			final QueryBuilder queryBuilder = buildStringQueryForSearchTerms(searchTerms, this.manager.getPublicFields());
+			
+			if (present(loggedinUserName)) {
+				// private field
+				final TermQueryBuilder userFilter = QueryBuilders.termQuery(Fields.USER_NAME, loggedinUserName);
+				final QueryStringQueryBuilder privateFieldSearchQuery = buildStringQueryForSearchTerms(searchTerms, this.manager.getPrivateFields());
+				final BoolQueryBuilder privateFieldQueryFiltered = QueryBuilders.boolQuery().must(privateFieldSearchQuery).filter(userFilter);
+				
+				final BoolQueryBuilder query = QueryBuilders.boolQuery().should(queryBuilder).should(privateFieldQueryFiltered);
+				
+				if (present(usersToQueryForDocuments)) {
+					// document field
+					final QueryStringQueryBuilder docFieldSearchQuery = buildStringQueryForSearchTerms(searchTerms, Sets.asSet(Fields.Publication.ALL_DOCS));
+					// restrict to users that share documents and to the visible posts (group)
+					final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery().must(buildUserQuery(usersThatShareDocs)).must(buildGroupFilter(allowedGroups));
+					query.should(QueryBuilders.boolQuery().must(docFieldSearchQuery).filter(filterQuery));
+				}
+				
+				mainQueryBuilder.must(query);
+			} else {
+				mainQueryBuilder.must(queryBuilder);
+			}
+		}
+
+		final String titleSearchTerms = postQuery.getTitleSearchTerms();
+		if (present(titleSearchTerms)) {
+			// we have search terms for title autocompletion, build a phrase prefix query for the title search terms
+			final QueryBuilder titleSearchQuery = QueryBuilders.matchPhrasePrefixQuery(Fields.Resource.TITLE, titleSearchTerms);
+			mainQueryBuilder.must(titleSearchQuery);
+		}
 		
+		this.buildResourceSpecificQuery(mainQueryBuilder, loggedinUserName, postQuery);
+
+		final QueryBuilder mainFilterBuilder = this.buildFilter(loggedinUser, allowedGroups, postQuery);
+		if (!present(mainFilterBuilder)) {
+			return null;
+		}
+
 		// all done
 		log.debug("Search query: '" + mainQueryBuilder.toString() + "' and filters: '" + mainFilterBuilder.toString() + "'");
 		return QueryBuilders.boolQuery().must(mainQueryBuilder).filter(mainFilterBuilder);
-	}
-
-	protected void buildResourceSpecificFilters(BoolQueryBuilder mainFilterBuilder, String loggedinUser, Set<String> allowedGroups, Set<String> usersThatShareDocs, PostSearchQuery<?> postQuery) {
-		// noop
 	}
 
 	protected void buildResourceSpecificQuery(BoolQueryBuilder mainQueryBuilder, String loggedinUser, PostSearchQuery<?> postQuery) {

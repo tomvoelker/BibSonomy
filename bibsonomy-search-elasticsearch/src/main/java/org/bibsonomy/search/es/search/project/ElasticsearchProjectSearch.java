@@ -5,15 +5,20 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.lucene.search.join.ScoreMode;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.ProjectOrder;
 import org.bibsonomy.model.enums.ProjectStatus;
 import org.bibsonomy.model.logic.query.ProjectQuery;
+import org.bibsonomy.search.SearchInfoLogic;
+import org.bibsonomy.search.es.index.converter.person.PersonFields;
 import org.bibsonomy.search.es.index.converter.project.ProjectFields;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.AbstractElasticsearchSearch;
@@ -22,9 +27,12 @@ import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.services.searcher.ProjectSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
+import org.elasticsearch.join.query.HasChildQueryBuilder;
+import org.elasticsearch.join.query.JoinQueryBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
 /**
@@ -34,14 +42,17 @@ import org.elasticsearch.search.sort.SortOrder;
  */
 public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Project, ProjectQuery, SearchIndexSyncState, Boolean> implements ProjectSearch {
 
+	private final SearchInfoLogic infoLogic;
+
 	/**
 	 * default constructor
-	 *
-	 * @param manager
+	 *  @param manager
 	 * @param converter
+	 * @param infoLogic
 	 */
-	public ElasticsearchProjectSearch(final ElasticsearchManager<Project, SearchIndexSyncState> manager, final Converter<Project, Map<String, Object>, Boolean> converter) {
+	public ElasticsearchProjectSearch(final ElasticsearchManager<Project, SearchIndexSyncState> manager, final Converter<Project, Map<String, Object>, Boolean> converter, final SearchInfoLogic infoLogic) {
 		super(manager, converter);
+		this.infoLogic = infoLogic;
 	}
 
 	@Override
@@ -64,6 +75,8 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 	protected BoolQueryBuilder buildFilterQuery(User loggedinUser, ProjectQuery query) {
 		final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery();
 
+		filterQuery.must(QueryBuilders.termQuery(ProjectFields.JOIN_FIELD, ProjectFields.TYPE_PROJECT));
+
 		/*
 		 * type and sponsor filters
 		 */
@@ -85,9 +98,9 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 			switch (projectStatus) {
 				case RUNNING:
 					final RangeQueryBuilder endDateGreaterQuery = QueryBuilders.rangeQuery(ProjectFields.END_DATE);
-					endDateGreaterQuery.lte(now);
+					endDateGreaterQuery.gte(now);
 					final RangeQueryBuilder startDateQuery = QueryBuilders.rangeQuery(ProjectFields.START_DATE);
-					startDateQuery.gte(now);
+					startDateQuery.lte(now);
 					filterQuery.must(endDateGreaterQuery).must(startDateQuery);
 					break;
 				case FINISHED:
@@ -126,6 +139,26 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 		if (present(prefix)) {
 			filterQuery.must(ElasticsearchIndexSearchUtils.buildPrefixFilter(prefix, ProjectFields.TITLE_LOWERCASE));
 		}
+
+		final Group organization = query.getOrganization();
+		if (present(organization)) {
+			final String name = organization.getName();
+			final Set<String> personsOfOrganization = this.infoLogic.getPersonsOfOrganization(name);
+			if (!present(personsOfOrganization)) {
+				return null;
+			}
+
+			final BoolQueryBuilder personIdFilter = QueryBuilders.boolQuery();
+			personsOfOrganization.stream().map(ElasticsearchProjectSearch::buildPersonFilter).forEach(personIdFilter::should);
+
+			final HasChildQueryBuilder hasChildQueryBuilder = JoinQueryBuilders.hasChildQuery(PersonFields.TYPE_PERSON, personIdFilter, ScoreMode.None);
+			filterQuery.must(hasChildQueryBuilder);
+		}
+
 		return filterQuery;
+	}
+
+	private static QueryBuilder buildPersonFilter(final String personId) {
+		return QueryBuilders.termQuery(PersonFields.PERSON_ID, personId);
 	}
 }

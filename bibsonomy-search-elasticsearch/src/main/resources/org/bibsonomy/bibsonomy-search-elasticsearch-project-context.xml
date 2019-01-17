@@ -10,6 +10,7 @@
 	<bean id="elasticsearchProjectSearch" class="org.bibsonomy.search.es.search.project.ElasticsearchProjectSearch">
 		<constructor-arg ref="elasticsearchProjectManager" />
 		<constructor-arg ref="elasticsearchProjectConverter" />
+		<constructor-arg ref="searchInfoLogic" />
 	</bean>
 
 	<bean id="elasticsearchProjectMapperBuilder" class="org.bibsonomy.search.es.index.mapping.project.ProjectMapperBuilder" />
