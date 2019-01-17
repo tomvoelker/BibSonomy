@@ -46,7 +46,7 @@ public class OrganizationPageController implements MinimalisticController<Organi
 		/*
 		 * get persons for the organization
 		 */
-		final PersonQuery personOrganizationQuery = new PersonQuery(null);
+		final PersonQuery personOrganizationQuery = new PersonQuery();
 		personOrganizationQuery.setOrganization(group);
 		personOrganizationQuery.setOrder(PersonOrder.MAIN_NAME_LAST_NAME);
 		final List<Person> persons = this.logic.getPersons(personOrganizationQuery);

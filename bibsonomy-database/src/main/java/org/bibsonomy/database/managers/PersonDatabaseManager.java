@@ -675,6 +675,16 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	}
 
 	/**
+	 *
+	 * @param organization
+	 * @param session
+	 * @return
+	 */
+	public List<Person> getPersonsByOrganization(final Group organization, final DBSession session) {
+		return this.queryForList("getPersonsByOrganization", organization.getName(), Person.class, session);
+	}
+
+	/**
 	 * @param personId
 	 * @param session
 	 * @return

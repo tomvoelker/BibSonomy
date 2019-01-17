@@ -64,4 +64,11 @@ public interface SearchInfoLogic {
 	 * @return a set of usernames, that share documents with the specified user
 	 */
 	public Set<String> getUserNamesThatShareDocumentsWithUser(String userName);
+
+	/**
+	 *
+	 * @param organizationName
+	 * @return
+	 */
+	Set<String> getPersonsOfOrganization(final String organizationName);
 }

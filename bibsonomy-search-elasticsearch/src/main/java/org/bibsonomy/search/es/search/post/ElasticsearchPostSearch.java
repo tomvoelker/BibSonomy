@@ -90,7 +90,7 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 	 * logic interface for retrieving data from the main database
 	 * (friends, groups members)
 	 */
-	private SearchInfoLogic infoLogic;
+	protected SearchInfoLogic infoLogic;
 	
 	private ElasticsearchManager<R, ?> manager;
 

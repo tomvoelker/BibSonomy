@@ -31,10 +31,12 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.lucene.search.Query;
 import org.apache.lucene.search.join.ScoreMode;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.enums.Order;
@@ -184,9 +186,32 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 			collegeFilter.should(collegeAuthorFilter).should(collegeEditorFilter);
 			mainFilterBuilder.must(collegeFilter);
 		}
+		final GroupingEntity grouping = postQuery.getGrouping();
+
+		if (GroupingEntity.ORGANIZATION.equals(grouping)) {
+			final String groupingName = postQuery.getGroupingName();
+			final Set<String> personIds = this.infoLogic.getPersonsOfOrganization(groupingName);
+			final BoolQueryBuilder organizationQuery = QueryBuilders.boolQuery();
+			personIds.stream().map(ElasticsearchPublicationSearch::buildPersonFilter).forEach(organizationQuery::should);
+			mainFilterBuilder.must(organizationQuery);
+		}
+	}
+
+	private static QueryBuilder buildPersonFilter(final String personId) {
+		final QueryBuilder authorQuery = buildPersonFilter(Fields.Publication.AUTHORS, personId);
+		final QueryBuilder editorQuery = buildPersonFilter(Fields.Publication.EDITORS, personId);
+		return QueryBuilders.boolQuery().should(authorQuery).should(editorQuery);
+	}
+
+	private static QueryBuilder buildPersonFilter(final String field, final String personId) {
+		return buildNestedTermQuer(field, Fields.Publication.PERSON_ID, personId);
 	}
 
 	private static QueryBuilder buildCollegeTermFilter(final String field, final String college) {
-		return QueryBuilders.nestedQuery(field, QueryBuilders.termQuery(field + "." + Fields.Publication.PERSON_COLLEGE, college), ScoreMode.None);
+		return buildNestedTermQuer(field, Fields.Publication.PERSON_COLLEGE, college);
+	}
+
+	private static QueryBuilder buildNestedTermQuer(final String field, final String nestedField, final String value) {
+		return QueryBuilders.nestedQuery(field, QueryBuilders.termQuery(field + "." + nestedField, value), ScoreMode.None);
 	}
 }

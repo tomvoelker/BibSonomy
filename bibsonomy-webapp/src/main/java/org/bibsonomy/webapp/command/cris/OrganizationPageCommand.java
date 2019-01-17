@@ -16,6 +16,8 @@ import org.bibsonomy.webapp.command.ListCommand;
  */
 public class OrganizationPageCommand extends BaseCommand {
 
+	private OrganizationPageSubPage subPage;
+
 	private String requestedOrganizationName;
 	private Group group;
 
@@ -40,14 +42,23 @@ public class OrganizationPageCommand extends BaseCommand {
 		this.requestedOrganizationName = requestedOrganizationName;
 	}
 
+	/**
+	 * @return the group
+	 */
 	public Group getGroup() {
-		return group;
+		return this.group;
 	}
 
+	/**
+	 * @param group the group to set
+	 */
 	public void setGroup(Group group) {
 		this.group = group;
 	}
 
+	/**
+	 * @return the publication list command
+	 */
 	public ListCommand<Post<GoldStandardPublication>> getBibtex() {
 		return bibtex;
 	}

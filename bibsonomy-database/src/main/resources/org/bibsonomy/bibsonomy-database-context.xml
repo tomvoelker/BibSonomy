@@ -253,6 +253,7 @@
 		<property name="elements">
 			<list>
 				<bean class="org.bibsonomy.database.managers.chain.person.GetPersonsByUserName" parent="abstractPersonChainElement"/>
+				<bean class="org.bibsonomy.database.managers.chain.person.GetPersonsByOrganization" parent="abstractPersonChainElement"/>
 				<bean class="org.bibsonomy.database.managers.chain.person.GetPersonsByFulltextSearch" parent="abstractPersonChainElement" />
 			</list>
 		</property>

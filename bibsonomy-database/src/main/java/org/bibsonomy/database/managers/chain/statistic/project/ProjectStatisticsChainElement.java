@@ -6,7 +6,8 @@ import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.statistics.Statistics;
 
 /**
- * abstract statistic chain
+ * abstract statistic chain for projects
+ *
  * @author dzo
  */
 public abstract class ProjectStatisticsChainElement extends ChainElement<Statistics, ProjectQuery> {
