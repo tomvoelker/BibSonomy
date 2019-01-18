@@ -200,11 +200,13 @@ public final class PersonUtils {
 		if (!present(resource)) {
 			return null;
 		}
-		PersonName name = person.getMainName();
-		if (resource.getAuthor().contains(name)) {
+		final PersonName name = person.getMainName();
+		final List<PersonName> author = resource.getAuthor();
+		if (present(author) && author.contains(name)) {
 			return PersonResourceRelationType.AUTHOR;
 		}
-		if (resource.getEditor().contains(name)) {
+		final List<PersonName> editor = resource.getEditor();
+		if (present(editor) && editor.contains(name)) {
 			return PersonResourceRelationType.EDITOR;
 		}
 		return null;
