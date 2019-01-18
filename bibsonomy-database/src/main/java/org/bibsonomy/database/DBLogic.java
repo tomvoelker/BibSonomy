@@ -896,8 +896,9 @@ public class DBLogic implements LogicInterface {
 			if (query.isPending()) {
 				if (present(query.getUserName())) {
 					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, query.getUserName());
+				} else {
+					this.permissionDBManager.ensureAdminAccess(this.loginUser);
 				}
-				this.permissionDBManager.ensureAdminAccess(this.loginUser);
 			}
 
 			return this.groupDBManager.queryGroups(query, this.loginUser, session);
