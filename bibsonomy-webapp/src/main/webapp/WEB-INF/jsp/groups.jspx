@@ -69,7 +69,7 @@
 				<c:choose>
 					<c:when test="${isUserLoggedIn || isGroupsPage}">
 						<c:choose>
-							<c:when test="">
+							<c:when test="${groupListCommand.totalCount gt 0}">
 								<dl class="dl-horizontal dt-thumbnail-items group-list">
 									<c:forEach var="group" items="${groupListCommand.list}">
 										<c:set var="groupName" value="${group.name}"/>
