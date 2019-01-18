@@ -343,14 +343,20 @@ a.personPageShowAdditionalRoleFields {
 }
 
 #organization-persons {
+
   div.row {
 	margin-bottom: 40px;
   }
 
-  .person-default-icon > span {
-	color: #000000;
-	text-align: center;
-	font-size: 4em;
+  .person-default-icon {
+	// TODO: check why we need this margin for the default icon
+	margin-top: 13px;
+
+	> span {
+	  color: #000000;
+	  text-align: center;
+	  font-size: 4em;
+	}
   }
 
   img.media-object.img-thumbnail {
