@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
 import org.bibsonomy.search.util.Converter;
 
 /**
@@ -33,7 +34,7 @@ public class GroupConverter implements Converter<Group, Map<String, Object>, Obj
 		final String realname = group.getRealname();
 		document.put(GroupFields.REALNAME, realname);
 		if (present(realname)) {
-			document.put(GroupFields.REALNAME_LOWERCASE, realname.toLowerCase());
+			document.put(GroupFields.REALNAME_PREFIX, ElasticsearchIndexSearchUtils.getPrefixForString(realname));
 		}
 
 		document.put(GroupFields.INTERNAL_ID, group.getInternalId());

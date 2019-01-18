@@ -91,7 +91,7 @@ public interface PersonFields {
 	String MAIN_NAME = "main_name";
 
 	/** the main name (lowercase) */
-	String MAIN_NAME_LOWERCASE = "main_name_lower";
+	String MAIN_NAME_PREFIX = "main_name_prefix";
 
 	interface RelationFields {
 		/** the author index */

@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
+import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
 import org.bibsonomy.search.util.Converter;
 
 import java.util.Collections;
@@ -23,7 +24,7 @@ public class ProjectConverter implements Converter<Project, Map<String, Object>,
 		converted.put(ProjectFields.EXTERNAL_ID, source.getExternalId());
 		final String title = source.getTitle();
 		converted.put(ProjectFields.TITLE, title);
-		converted.put(ProjectFields.TITLE_LOWERCASE, title.toLowerCase());
+		converted.put(ProjectFields.TITLE_PREFIX, ElasticsearchIndexSearchUtils.getPrefixForString(title.toLowerCase()));
 		converted.put(ProjectFields.SUB_TITLE, source.getSubTitle());
 		converted.put(ProjectFields.DESCRIPTION, source.getDescription());
 		converted.put(ProjectFields.TYPE, source.getType());

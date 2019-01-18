@@ -15,6 +15,7 @@ import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.sort.SortOrder;
 
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 /**
  * util classes for search instances
@@ -24,6 +25,8 @@ import java.util.function.Supplier;
 public class ElasticsearchIndexSearchUtils {
 
 	private static final Log LOG = LogFactory.getLog(ElasticsearchIndexSearchUtils.class);
+	private static final Pattern LETTER_PATTERN = Pattern.compile("^[a-z].*", Pattern.CASE_INSENSITIVE);
+	private static final Pattern NUMBER_PATTERN = Pattern.compile("^[0-9]].*");
 
 	private ElasticsearchIndexSearchUtils() {
 		// noop
@@ -36,14 +39,26 @@ public class ElasticsearchIndexSearchUtils {
 	 * @return
 	 */
 	public static QueryBuilder buildPrefixFilter(final Prefix prefix, final String fieldName) {
-		switch (prefix) {
-			case NUMBER:
-				return QueryBuilders.regexpQuery(fieldName, "[0-9]*");
-			case OTHER:
-				return QueryBuilders.regexpQuery(fieldName, "[^0-9a-z]");
-			default:
-				return QueryBuilders.prefixQuery(fieldName, prefix.toString().toLowerCase());
+		return QueryBuilders.termQuery(fieldName, prefix);
+	}
+
+	/**
+	 * @param string
+	 * @return the correct prefix for the provided string
+	 */
+	public static Prefix getPrefixForString(final String string) {
+		if (!present(string)) {
+			return null;
 		}
+		if (LETTER_PATTERN.matcher(string).matches()) {
+			return Prefix.valueOf(string.substring(0, 1).toUpperCase());
+		}
+
+		if (NUMBER_PATTERN.matcher(string).matches()) {
+			return Prefix.NUMBER;
+		}
+
+		return Prefix.OTHER;
 	}
 
 	/**

@@ -35,6 +35,7 @@ import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.search.es.index.converter.cris.CRISTargetPersonConverter;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
+import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -55,7 +56,7 @@ public class PersonConverter extends CRISTargetPersonConverter {
 
 		final String mainName = PersonNameUtils.serializePersonName(person.getMainName());
 		mapping.put(PersonFields.MAIN_NAME, mainName);
-		mapping.put(PersonFields.MAIN_NAME_LOWERCASE, mainName.toLowerCase());
+		mapping.put(PersonFields.MAIN_NAME_PREFIX, ElasticsearchIndexSearchUtils.getPrefixForString(mainName));
 		mapping.put(PersonFields.PERSON_DATABASE_ID, person.getPersonChangeId());
 
 		mapping.put(PersonFields.ACADEMIC_DEGREE, person.getAcademicDegree());

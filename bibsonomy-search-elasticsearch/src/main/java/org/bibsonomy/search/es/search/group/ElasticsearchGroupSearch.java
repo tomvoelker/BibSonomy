@@ -68,7 +68,7 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 		final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery();
 		final Prefix prefix = query.getPrefix();
 		if (present(prefix)) {
-			filterQuery.must(ElasticsearchIndexSearchUtils.buildPrefixFilter(prefix, GroupFields.REALNAME_LOWERCASE));
+			filterQuery.must(ElasticsearchIndexSearchUtils.buildPrefixFilter(prefix, GroupFields.REALNAME_PREFIX));
 		}
 
 		final Boolean organization = query.getOrganization();

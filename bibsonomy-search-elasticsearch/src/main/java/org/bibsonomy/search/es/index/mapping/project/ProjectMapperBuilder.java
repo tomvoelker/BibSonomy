@@ -47,8 +47,8 @@ public class ProjectMapperBuilder implements MappingBuilder<XContentBuilder> {
 							.endObject()
 						.endObject()
 						// lower case variant of the title
-						.startObject(ProjectFields.TITLE_LOWERCASE)
-							.field(TYPE_FIELD, TEXT_TYPE)
+						.startObject(ProjectFields.TITLE_PREFIX)
+							.field(TYPE_FIELD, KEYWORD_TYPE)
 						.endObject()
 						// subtitle
 						.startObject(ProjectFields.SUB_TITLE)
