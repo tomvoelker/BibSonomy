@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.cris;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.bibsonomy.model.GoldStandardPublication;
@@ -37,8 +39,9 @@ public class PublicationsPageController implements MinimalisticController<Public
 		final int start = goldStandardPublications.getStart();
 		query.setStart(start);
 		query.setEnd(start + goldStandardPublications.getEntriesPerPage());
-		query.setSearch(command.getSearch());
-		query.setOrder(Order.YEAR);
+		final String search = command.getSearch();
+		query.setSearch(search);
+		query.setOrder(present(search) ? Order.RANK : Order.YEAR);
 		final List<Post<GoldStandardPublication>> posts = this.logic.getPosts(query);
 		goldStandardPublications.setList(posts);
 
