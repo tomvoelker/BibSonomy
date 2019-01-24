@@ -48,7 +48,7 @@ public class ProjectConverter implements Converter<Project, Map<String, Object>,
 		project.setExternalId((String) source.get(ProjectFields.EXTERNAL_ID));
 
 		// only set full details about the project when the user is allowed to see them
-		if (fullDetails) {
+		if (fullDetails && source.containsKey(ProjectFields.BUDGET)) {
 			project.setBudget(((Double) source.get(ProjectFields.BUDGET)).floatValue());
 		}
 
