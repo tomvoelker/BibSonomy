@@ -57,8 +57,10 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.services.searcher.query.PostSearchQuery;
 import org.bibsonomy.util.ReflectionUtils;
 
 /**
@@ -70,7 +72,7 @@ import org.bibsonomy.util.ReflectionUtils;
  *
  * @author dzo
  */
-public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends Resource & GoldStandard<RR>, P extends ResourceParam<RR>> extends AbstractDatabaseManager implements CrudableContent<R, P> {
+public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends Resource & GoldStandard<RR>, P extends ResourceParam<RR>> extends AbstractDatabaseManager implements CrudableContent<R, P>, StatisticsProvider<PostQuery<R>> {
 	private static final Log log = LogFactory.getLog(GoldStandardDatabaseManager.class);
 
 	/** simple class name of the resource managed by the class */
@@ -83,6 +85,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	private ResourceSearch<R> search;
 
 	private Chain<List<Post<R>>, QueryAdapter<PostQuery<R>>> chain;
+	private Chain<Statistics, QueryAdapter<PostQuery<R>>> statisticsChain;
 
 	protected GoldStandardDatabaseManager() {
 		this.resourceClassName = this.getResourceClassName();
@@ -460,10 +463,39 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	 */
 	protected abstract void onGoldStandardRelationDelete(final String userName, final String interHash, final String interHashRef, final GoldStandardRelation interHashRelation, final DBSession session);
 
+	@Override
+	public Statistics getStatistics(PostQuery<R> query, User loggedinUser, DBSession session) {
+		return this.statisticsChain.perform(new QueryAdapter<>(query, loggedinUser), session);
+	}
+
+	/**
+	 *
+	 * @param loggedinUser
+	 * @param query
+	 * @return
+	 */
+	public Statistics getPostsByFulltextCount(User loggedinUser, PostSearchQuery<?> query) {
+		return this.search.getStatistics(loggedinUser, query);
+	}
+
 	/**
 	 * @param chain the chain to set
 	 */
 	public void setChain(Chain<List<Post<R>>, QueryAdapter<PostQuery<R>>> chain) {
 		this.chain = chain;
+	}
+
+	/**
+	 * @return the statisticsChain
+	 */
+	public Chain<Statistics, QueryAdapter<PostQuery<R>>> getStatisticsChain() {
+		return statisticsChain;
+	}
+
+	/**
+	 * @param statisticsChain the statisticsChain to set
+	 */
+	public void setStatisticsChain(Chain<Statistics, QueryAdapter<PostQuery<R>>> statisticsChain) {
+		this.statisticsChain = statisticsChain;
 	}
 }

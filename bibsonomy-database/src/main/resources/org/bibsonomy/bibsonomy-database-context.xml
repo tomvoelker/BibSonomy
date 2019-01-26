@@ -159,6 +159,7 @@
 	<bean id="projectStatisticsChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
 			<list>
+				<bean class="org.bibsonomy.database.managers.chain.statistic.project.GetProjectsByFulltextSearchCount" parent="abstractProjectStatisticsChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.project.GetAllProjectsCount" parent="abstractProjectStatisticsChainElement" />
 			</list>
 		</property>
@@ -225,6 +226,28 @@
 		</property>
 	</bean>
 
+	<!-- goldstandard bookmark -->
+	<bean id="goldStandardBookmarkStatisticsChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.statistic.goldstandard.GetPostsByFulltextSearchCount">
+					<constructor-arg ref="goldStandardBookmarkDatabaseMananger" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<!-- goldstandard publication -->
+	<bean id="goldStandardPublicationStatisticsChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.statistic.goldstandard.GetPostsByFulltextSearchCount">
+					<constructor-arg ref="goldStandardPublicationDatabaseManager" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
 	<!-- get groups chain -->
 	<bean id="queryGroupsChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
@@ -269,6 +292,19 @@
 					<constructor-arg ref="personDatabaseManager" />
 				</bean>
 				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsWithPosts">
+					<constructor-arg ref="personDatabaseManager" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="personStatisticsChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.statistic.person.GetPersonsByOrganizationCount">
+					<constructor-arg ref="personDatabaseManager" />
+				</bean>
+				<bean class="org.bibsonomy.database.managers.chain.statistic.person.GetPersonsByFulltextSearchCount">
 					<constructor-arg ref="personDatabaseManager" />
 				</bean>
 			</list>
@@ -360,11 +396,13 @@
 	<bean id="goldStandardBookmarkDatabaseMananger" class="org.bibsonomy.database.managers.GoldStandardBookmarkDatabaseManager" factory-method="getInstance">
 		<property name="search" ref="goldStandardBookmarkSearch" />
 		<property name="chain" ref="goldStandardBookmarkChain" />
+		<property name="statisticsChain" ref="goldStandardBookmarkStatisticsChain" />
 	</bean>
 	
 	<bean id="goldStandardPublicationDatabaseManager" class="org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager" factory-method="getInstance">
 		<property name="search" ref="goldStandardPublicationSearch" />
 		<property name="chain" ref="goldStandardPublicationChain" />
+		<property name="statisticsChain" ref="goldStandardPublicationStatisticsChain" />
 	</bean>	
 
 	<bean id="goldStandardBookmarkChain" class="org.bibsonomy.database.managers.chain.Chain">
@@ -400,7 +438,11 @@
 		<property name="crisLinkDatabaseManager" ref="crisLinkDatabaseManger" />
 		<property name="chain" ref="personChain" />
 		<property name="personResourceRelationChain" ref="personRelationChain" />
-		<property name="resourcePersonRelationsStatisticsChain" ref="resourcePersonRelationsStatisticsChain" />
+		<property name="statisticsChain" ref="personStatisticsChain" />
+	</bean>
+
+	<bean id="personResourceRelationDatabaseManager" class="org.bibsonomy.database.managers.PersonResourceRelationDatabaseManager">
+		<property name="statisticsChain" ref="resourcePersonRelationsStatisticsChain" />
 	</bean>
 	
 	<bean id="clipboardDatabaseManager" class="org.bibsonomy.database.managers.ClipboardDatabaseManager" factory-method="getInstance" />

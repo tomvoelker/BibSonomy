@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers.chain.statistic.project;
 
 import org.bibsonomy.database.managers.ProjectDatabaseManager;
 import org.bibsonomy.database.managers.chain.ChainElement;
+import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.statistics.Statistics;
 
@@ -10,7 +11,7 @@ import org.bibsonomy.model.statistics.Statistics;
  *
  * @author dzo
  */
-public abstract class ProjectStatisticsChainElement extends ChainElement<Statistics, ProjectQuery> {
+public abstract class ProjectStatisticsChainElement extends ChainElement<Statistics, QueryAdapter<ProjectQuery>> {
 
 	protected ProjectDatabaseManager projectDatabaseManager;
 

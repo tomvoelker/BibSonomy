@@ -9,6 +9,8 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.logic.query.PersonQuery;
 
 /**
+ * abstract chain element for persons
+ *
  * @author dzo
  */
 public abstract class PersonChainElement extends ChainElement<List<Person>, QueryAdapter<PersonQuery>> {

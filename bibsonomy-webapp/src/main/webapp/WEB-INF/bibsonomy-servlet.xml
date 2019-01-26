@@ -326,6 +326,7 @@
 		<property name="dbSessionFactory" ref="dbSessionFactory" />
 		<property name="publicationReader" ref="bibtexReader" />
 		<property name="crisLinkDatabaseManager" ref="crisLinkDatabaseManger" />
+		<property name="personResourceRelationManager" ref="personResourceRelationDatabaseManager" />
 	</bean>
 
 	<bean id="abstractLogicInterfaceFactory" class="org.bibsonomy.database.AbstractDBLogicInterfaceFactory" abstract="true">
@@ -579,6 +580,8 @@
 						<property name="allowedFields">
 							<list>
 								<value>requestedOrganizationName</value>
+								<value>subPage</value>
+								<value>publications.start</value>
 							</list>
 						</property>
 					</bean>

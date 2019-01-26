@@ -3,6 +3,7 @@ package org.bibsonomy.services.searcher;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.logic.query.ProjectQuery;
+import org.bibsonomy.model.statistics.Statistics;
 
 import java.util.List;
 
@@ -19,4 +20,12 @@ public interface ProjectSearch {
 	 * @return all matching projects
 	 */
 	List<Project> getProjects(final User loggedinUser, final ProjectQuery query);
+
+	/**
+	 * stats about the projects
+	 * @param loggedinUser
+	 * @param query
+	 * @return
+	 */
+	Statistics getStatistics(final User loggedinUser, final ProjectQuery query);
 }

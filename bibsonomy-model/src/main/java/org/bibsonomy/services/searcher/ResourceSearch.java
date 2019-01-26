@@ -32,6 +32,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.services.searcher.query.PostSearchQuery;
 
 /**
@@ -51,6 +52,15 @@ public interface ResourceSearch<R extends Resource> {
 	 * @return all posts matching the search query
 	 */
 	List<Post<R>> getPosts(final User loggedinUser, final PostSearchQuery<?> postQuery);
+
+	/**
+	 * statistics about the posts matching the query
+	 *
+	 * @param loggedinUser
+	 * @param postQuery
+	 * @return
+	 */
+	Statistics getStatistics(final User loggedinUser, final PostSearchQuery<?> postQuery);
 
 	/**
 	 * get tag cloud for given search query

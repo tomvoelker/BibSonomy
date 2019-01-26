@@ -1,6 +1,7 @@
 package org.bibsonomy.database.managers.chain.statistic.project;
 
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.statistics.Statistics;
 
@@ -10,12 +11,12 @@ import org.bibsonomy.model.statistics.Statistics;
 public class GetAllProjectsCount extends ProjectStatisticsChainElement {
 
 	@Override
-	protected Statistics handle(ProjectQuery param, DBSession session) {
-		return this.projectDatabaseManager.getAllProjectsCounts(param.getProjectStatus(), session);
+	protected Statistics handle(QueryAdapter<ProjectQuery> param, DBSession session) {
+		return this.projectDatabaseManager.getAllProjectsCounts(param.getQuery().getProjectStatus(), session);
 	}
 
 	@Override
-	protected boolean canHandle(ProjectQuery param) {
+	protected boolean canHandle(QueryAdapter<ProjectQuery> param) {
 		return true;
 	}
 }

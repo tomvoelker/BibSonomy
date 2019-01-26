@@ -59,22 +59,25 @@
 
 						<c:set var="peopleCount" value="${command.persons.totalCount}" />
 						<li>
-							<a href="#organization-persons" role="tab" data-toggle="pill">
+							<a href="${relativUrlGenerator.getOrganizationPersonsUrlByName(command.requestedOrganizationName)}" role="tab" data-toggle="pill">
 								<fontawesome:icon icon="users" spaceAfter="5" />
 								<fmt:message key="persons" />
 								<span title="total: ${peopleCount} people" class="badge">${peopleCount}</span>
 							</a>
 						</li>
-						<li>
-							<c:set var="publicationCount" value="${command.bibtex.totalCount}" />
-							<a href="#organization-publications" role="tab" data-toggle="pill">
-								<fontawesome:icon icon="book" spaceAfter="5" />
-								<fmt:message key="publications" />
-								<span class="badge" title="total:  ${publicationCount} publications">
-									${publicationCount}
-								</span>
-							</a>
-						</li>
+						<c:set var="publicationCount" value="${command.publications.totalCount}" />
+						<c:if test="${publicationCount gt 0}">
+							<li>
+
+								<a href="#organization-publications" role="tab" data-toggle="pill">
+									<fontawesome:icon icon="book" spaceAfter="5" />
+									<fmt:message key="publications" />
+									<span class="badge" title="total:  ${publicationCount} publications">
+										${publicationCount}
+									</span>
+								</a>
+							</li>
+						</c:if>
 						<c:set var="projectCount" value="${command.projects.totalCount}" />
 						<c:if test="${projectCount gt 0}">
 							<li>
@@ -142,7 +145,7 @@
 				<div class="row tab-pane fade" id="organization-publications">
 					<div  class="col-md-10 publication-list">
 						<div id="publications_0" class="publicationsContainer standard">
-						<resources:bibtexs listView="${command.bibtex}"
+						<resources:bibtexs listView="${command.publications}"
 										   loginUserName="${command.context.loginUser.name}"
 										   disableListNavigation="true"
 										   requPath=""
@@ -154,7 +157,7 @@
 							<jsp:attribute name="addAsLastItem">
 								<c:if test="true">
 									<div id="publicationsfooter" class="wide">
-										<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
+										<rc:nextprev listView="${command.publications}" listViewStartParamName="bibtex.start"/>
 									</div>
 								</c:if>
 							</jsp:attribute>
@@ -190,11 +193,11 @@
 										<c:set var="project" value="${command.projects.list[i]}"/>
 										<organization:projectView project="${project}"/>
 										<c:if test="${i+1 lt fn:length(command.projects.list)}">
-											<c:set var="project" value="${command.projects.list[i+1]}"/>
+											<c:set var="project" value="${command.projects.list[i + 1]}"/>
 											<organization:projectView project="${project}"/>
 										</c:if>
 										<c:if test="${i+2 lt fn:length(command.projects.list)}">
-											<c:set var="project" value="${command.projects.list[i+2]}"/>
+											<c:set var="project" value="${command.projects.list[i + 2]}"/>
 											<organization:projectView project="${project}"/>
 										</c:if>
 									</div>

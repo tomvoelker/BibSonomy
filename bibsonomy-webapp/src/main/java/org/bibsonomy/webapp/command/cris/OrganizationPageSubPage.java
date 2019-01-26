@@ -14,6 +14,6 @@ public enum OrganizationPageSubPage {
 	/** publication page */
 	PUBLICATIONS,
 
-	/*+ projects page */
+	/** projects page */
 	PROJECTS
 }

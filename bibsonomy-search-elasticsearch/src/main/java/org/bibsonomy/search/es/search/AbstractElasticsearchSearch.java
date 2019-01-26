@@ -10,6 +10,7 @@ import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.query.BasicQuery;
 import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
+import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
 import org.bibsonomy.search.update.SearchIndexSyncState;
@@ -69,6 +70,21 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 
 			return results;
 		});
+	}
+
+	protected Statistics statisticsForSearch(final User loggedinUser, final Q query) {
+		final Statistics statistics = new Statistics();
+		final QueryBuilder queryBuilder = this.buildQuery(loggedinUser, query);
+		if (!present(queryBuilder)) {
+
+			return statistics;
+		}
+
+		return ElasticsearchIndexSearchUtils.callSearch(() -> {
+			final long documentCount = this.manager.getDocumentCount(queryBuilder);
+			statistics.setCount((int) documentCount);
+			return statistics;
+		}, statistics);
 	}
 
 	protected Pair<String, SortOrder> getSortOrder(Q query) {

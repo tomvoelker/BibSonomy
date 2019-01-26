@@ -15,6 +15,7 @@ import org.bibsonomy.model.logic.query.PersonQuery;
 /**
  * returns a list of a single person if the user has claimed a person
  * an empty list if the user has not claimed a person
+ *
  * @author dzo
  */
 public class GetPersonsByUserName extends PersonChainElement {

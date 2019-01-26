@@ -95,6 +95,7 @@ import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.managers.PersonDatabaseManager;
+import org.bibsonomy.database.managers.PersonResourceRelationDatabaseManager;
 import org.bibsonomy.database.managers.PostDatabaseManager;
 import org.bibsonomy.database.managers.ProjectDatabaseManager;
 import org.bibsonomy.database.managers.StatisticsDatabaseManager;
@@ -108,6 +109,7 @@ import org.bibsonomy.database.managers.discussion.CommentDatabaseManager;
 import org.bibsonomy.database.managers.discussion.DiscussionDatabaseManager;
 import org.bibsonomy.database.managers.discussion.DiscussionItemDatabaseManager;
 import org.bibsonomy.database.managers.discussion.ReviewDatabaseManager;
+import org.bibsonomy.database.managers.util.PostStatisticsProviderDelegator;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
@@ -153,7 +155,6 @@ import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
-import org.bibsonomy.model.logic.query.BasicQuery;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.PersonQuery;
@@ -216,9 +217,12 @@ public class DBLogic implements LogicInterface {
 
 	private final UserDatabaseManager userDBManager;
 	private final GroupDatabaseManager groupDBManager;
-	private final PersonDatabaseManager personDBManager;
 	private final TagDatabaseManager tagDBManager;
+
 	private final AdminDatabaseManager adminDBManager;
+
+	private final PersonDatabaseManager personDBManager;
+	private PersonResourceRelationDatabaseManager personResourceRelationManager;
 
 	private final StatisticsDatabaseManager statisticsDBManager;
 	private final TagRelationDatabaseManager tagRelationsDBManager;
@@ -275,17 +279,27 @@ public class DBLogic implements LogicInterface {
 	}
 
 	protected void initializeMaps() {
-		// register the statistic database managers
-		this.allStatisticDatabaseMangers.put(ProjectQuery.class, this.projectDatabaseManager);
-		this.allStatisticDatabaseMangers.put(ResourcePersonRelationQuery.class, this.personDBManager);
-
+		// register all discussion subtype managers
 		this.allDiscussionManagers.put(Comment.class, this.commentDBManager);
 		this.allDiscussionManagers.put(Review.class, this.reviewDBManager);
 
+		// register all resource managers
 		this.allDatabaseManagers.put(BibTex.class, this.publicationDBManager);
 		this.allDatabaseManagers.put(Bookmark.class, this.bookmarkDBManager);
 		this.allDatabaseManagers.put(GoldStandardPublication.class, this.goldStandardPublicationDBManager);
 		this.allDatabaseManagers.put(GoldStandardBookmark.class, this.goldStandardBookmarkDBManager);
+
+		// register the statistic database managers
+		this.allStatisticDatabaseMangers.put(ProjectQuery.class, this.projectDatabaseManager);
+		this.allStatisticDatabaseMangers.put(PersonQuery.class, this.personDBManager);
+		this.allStatisticDatabaseMangers.put(ResourcePersonRelationQuery.class, this.personResourceRelationManager);
+		// XXX: merge with setting up resource managers
+		// TODO: add also standard resource managers
+		final Map<Class<? extends Resource>, StatisticsProvider<?>> resourceManagers = new HashMap<>();
+		resourceManagers.put(GoldStandardPublication.class, this.goldStandardPublicationDBManager);
+		resourceManagers.put(GoldStandardBookmark.class, this.goldStandardBookmarkDBManager);
+
+		this.allStatisticDatabaseMangers.put(PostQuery.class, new PostStatisticsProviderDelegator(resourceManagers));
 	}
 
 
@@ -2436,15 +2450,6 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/**
-	 * @return a concept, i.e. a tag with its assigned subtags
-	 *
-	 *         in both queries getConceptForUser and getGlobalConceptByName
-	 *         the case of parameter conceptName is ignored
-	 *
-	 * @see org.bibsonomy.model.logic.LogicInterface#getConceptDetails(java.lang.String,
-	 * org.bibsonomy.common.enums.GroupingEntity, java.lang.String)
-	 */
 	@Override
 	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {
 		final DBSession session = this.openSession();
@@ -3076,8 +3081,7 @@ public class DBLogic implements LogicInterface {
 	/**
 	 * Retrieves a wiki from the database.
 	 *
-	 * @see org.bibsonomy.model.logic.LogicInterface#getWiki(java.lang.String,
-	 *      java.util.Date)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getWiki(java.lang.String, java.util.Date)
 	 * @param userName the user for whom the wiki is to be retrieved.
 	 * @param date - if <code>null</code>, the latest version of the wiki is
 	 *        returned. Otherwise, the latest version before <code>date</code>.
@@ -3828,16 +3832,16 @@ public class DBLogic implements LogicInterface {
 	}
 
 	@Override
-	public Statistics getStatistics(final BasicQuery query) {
+	public Statistics getStatistics(final Query query) {
 		try (final DBSession session = this.openSession()) {
 			return this.getStatistics(query, session);
 		}
 	}
 
-	private <Q extends BasicQuery> Statistics getStatistics(final Q query, final DBSession session) {
+	private <Q extends Query> Statistics getStatistics(final Q query, final DBSession session) {
 		// cast is safe
 		final StatisticsProvider<Q> statisticsProvider = (StatisticsProvider<Q>) this.allStatisticDatabaseMangers.get(query.getClass());
-		return statisticsProvider.getStatistics(query, session);
+		return statisticsProvider.getStatistics(query, this.loginUser, session);
 	}
 
 	@Override
@@ -3915,6 +3919,13 @@ public class DBLogic implements LogicInterface {
 	 */
 	public void setCrisLinkDatabaseManager(CRISLinkDatabaseManager crisLinkDatabaseManager) {
 		this.crisLinkDatabaseManager = crisLinkDatabaseManager;
+	}
+
+	/**
+	 * @param personResourceRelationManager the personResourceRelationManager to set
+	 */
+	public void setPersonResourceRelationManager(PersonResourceRelationDatabaseManager personResourceRelationManager) {
+		this.personResourceRelationManager = personResourceRelationManager;
 	}
 
 	/**

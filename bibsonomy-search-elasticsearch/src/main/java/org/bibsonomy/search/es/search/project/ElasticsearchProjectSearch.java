@@ -17,6 +17,7 @@ import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.ProjectOrder;
 import org.bibsonomy.model.enums.ProjectStatus;
 import org.bibsonomy.model.logic.query.ProjectQuery;
+import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.search.SearchInfoLogic;
 import org.bibsonomy.search.es.index.converter.person.PersonFields;
 import org.bibsonomy.search.es.index.converter.project.ProjectFields;
@@ -58,6 +59,11 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 	@Override
 	public List<Project> getProjects(final User loggedinUser, final ProjectQuery query) {
 		return this.searchEntities(loggedinUser, query);
+	}
+
+	@Override
+	public Statistics getStatistics(User loggedinUser, ProjectQuery query) {
+		return this.statisticsForSearch(loggedinUser, query);
 	}
 
 	@Override

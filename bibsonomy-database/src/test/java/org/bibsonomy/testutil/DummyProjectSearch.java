@@ -3,6 +3,7 @@ package org.bibsonomy.testutil;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.logic.query.ProjectQuery;
+import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.services.searcher.ProjectSearch;
 
 import java.util.LinkedList;
@@ -18,5 +19,10 @@ public class DummyProjectSearch implements ProjectSearch {
 	@Override
 	public List<Project> getProjects(final User loggedinUser, final ProjectQuery query) {
 		return new LinkedList<>();
+	}
+
+	@Override
+	public Statistics getStatistics(User loggedinUser, ProjectQuery query) {
+		return new Statistics();
 	}
 }

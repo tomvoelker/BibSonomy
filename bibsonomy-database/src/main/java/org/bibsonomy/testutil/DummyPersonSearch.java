@@ -26,10 +26,13 @@
  */
 package org.bibsonomy.testutil;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.query.PersonQuery;
+import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.services.searcher.PersonSearch;
 
 /**
@@ -41,7 +44,12 @@ public class DummyPersonSearch implements PersonSearch {
 
 	@Override
 	public List<Person> getPersons(PersonQuery query) {
-		return null;
+		return new LinkedList<>();
+	}
+
+	@Override
+	public Statistics getStatistics(User loggedinUser, PersonQuery query) {
+		return new Statistics();
 	}
 
 }

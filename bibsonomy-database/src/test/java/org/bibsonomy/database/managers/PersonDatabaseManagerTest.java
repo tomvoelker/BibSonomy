@@ -347,27 +347,6 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertThat(relations.size(), equalTo(2));
 	}
 
-	@Test
-	public void testGetStatistics() {
-
-		ResourcePersonRelationQuery query = new ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder()
-				.setPersonId("w.test.1")
-				.build();
-		Statistics statistics = PERSON_DATABASE_MANAGER.getStatistics(query, this.dbSession);
-
-		assertThat(statistics.getCount(), equalTo(3));
-
-		// statistics should ignore limit and offset
-		query = new ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder()
-				.setPersonId("w.test.1")
-				.setStart(1)
-				.setEnd(2)
-				.build();
-		statistics = PERSON_DATABASE_MANAGER.getStatistics(query, this.dbSession);
-
-		assertThat(statistics.getCount(), equalTo(3));
-	}
-
 	private static PersonMatch getMatchById(List<PersonMatch> matches, int id) {
 		for (PersonMatch match : matches) {
 			if (match.getMatchID() == id) {

@@ -641,6 +641,7 @@
 		<from>^/+organizations$</from>
 		<to last="true">/groups?organizations=true</to>
 	</rule>
+	<!-- /organization/ORGANIZATION -->
 	<rule>
 		<name>redirect /organization/ORGANIZATION</name>
 		<from>^/+organization/+([^/]+)$</from>
@@ -651,6 +652,33 @@
 		<name>redirect group/GROUP/</name>
 		<from>^/+group/+([^/]+)/$</from>
 		<to type="redirect" last="true">/group/$1</to>
+	</rule>
+
+	<!-- /organization/ORGANIZATION/projects -->
+	<rule>
+		<name>redirect /organization/ORGANIZATION/projects</name>
+		<from>^/+organization/+([^/]+)/projects$</from>
+		<set type="parameter" name="requestedOrganizationName">${unescapePath:$1}</set>
+		<set type="parameter" name="requestedOrganizationName">PROJECTS</set>
+		<to last="true">/organization</to>
+	</rule>
+
+	<!-- /organization/ORGANIZATION/persons -->
+	<rule>
+		<name>redirect /organization/ORGANIZATION/persons</name>
+		<from>^/+organization/+([^/]+)/projects$</from>
+		<set type="parameter" name="requestedOrganizationName">${unescapePath:$1}</set>
+		<set type="parameter" name="requestedOrganizationName">PERSONS</set>
+		<to last="true">/organization</to>
+	</rule>
+
+	<!-- /organization/ORGANIZATION/publications -->
+	<rule>
+		<name>redirect /organization/ORGANIZATION/publications</name>
+		<from>^/+organization/+([^/]+)/projects$</from>
+		<set type="parameter" name="requestedOrganizationName">${unescapePath:$1}</set>
+		<set type="parameter" name="requestedOrganizationName">PUBLICATIONS</set>
+		<to last="true">/organization</to>
 	</rule>
 
 	<!-- redirect for tag formular on /relevantfor/group/GROUP/TAG page -->

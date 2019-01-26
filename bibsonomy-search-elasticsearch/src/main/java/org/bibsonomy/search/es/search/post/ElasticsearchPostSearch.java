@@ -51,6 +51,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
+import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.search.SearchInfoLogic;
@@ -94,6 +95,8 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 
 	@Override
 	public ResultList<Post<R>> getPosts(final User loggedinUser, PostSearchQuery<?> postQuery) {
+		final int offset = BasicQueryUtils.calcOffset(postQuery);
+		final int limit = BasicQueryUtils.calcLimit(postQuery);
 		return ElasticsearchIndexSearchUtils.callSearch(() -> {
 			final ResultList<Post<R>> posts = new ResultList<>();
 			final Set<String> allowedUsers = this.getUsersThatShareDocuments(loggedinUser.getName());
@@ -103,8 +106,6 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 			}
 
 			final Pair<String, SortOrder> sortOrder = getSortOrder(postQuery);
-			final int offset = BasicQueryUtils.calcOffset(postQuery);
-			final int limit = BasicQueryUtils.calcLimit(postQuery);
 			final SearchHits hits = this.manager.search(queryBuilder, sortOrder, offset, limit, null, null);
 
 			if (hits != null) {
@@ -131,6 +132,17 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 
 			return posts;
 		}, new ResultList<>());
+	}
+
+	@Override
+	public Statistics getStatistics(final User loggedinUser, final PostSearchQuery<?> postQuery) {
+		final Set<String> allowedUsers = this.getUsersThatShareDocuments(loggedinUser.getName());
+		final QueryBuilder query = this.buildQuery(loggedinUser, allowedUsers, postQuery);
+		if (query == null) {
+			return new Statistics();
+		}
+		final long documentCount = this.manager.getDocumentCount(query);
+		return new Statistics((int) documentCount);
 	}
 
 	protected Pair<String, SortOrder> getSortOrder(PostSearchQuery<?> postQuery) {

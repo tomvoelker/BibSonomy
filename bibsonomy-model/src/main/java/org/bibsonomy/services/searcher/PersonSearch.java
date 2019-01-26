@@ -29,7 +29,9 @@ package org.bibsonomy.services.searcher;
 import java.util.List;
 
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.query.PersonQuery;
+import org.bibsonomy.model.statistics.Statistics;
 
 /**
  * Interface for person search operations
@@ -44,4 +46,12 @@ public interface PersonSearch {
 	 * @return a list of {@link Person}s. Each {@link Person} object is further initialized with a main name.
 	 */
 	List<Person> getPersons(final PersonQuery query);
+
+	/**
+	 * statistics for the matching persons (like the count)
+	 * @param loggedinUser
+	 * @param query
+	 * @return
+	 */
+	Statistics getStatistics(final User loggedinUser, final PersonQuery query);
 }

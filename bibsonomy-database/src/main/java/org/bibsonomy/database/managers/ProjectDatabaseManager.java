@@ -53,7 +53,7 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 
 	private Chain<List<Project>, QueryAdapter<ProjectQuery>> chain;
 
-	private Chain<Statistics, ProjectQuery> statisticsChain;
+	private Chain<Statistics, QueryAdapter<ProjectQuery>> statisticsChain;
 
 	/**
 	 * creates a project with the provided information
@@ -300,8 +300,8 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 	}
 
 	@Override
-	public Statistics getStatistics(ProjectQuery query, DBSession session) {
-		return this.statisticsChain.perform(query, session);
+	public Statistics getStatistics(final ProjectQuery query, User loggedinUser, DBSession session) {
+		return this.statisticsChain.perform(new QueryAdapter<>(query, loggedinUser), session);
 	}
 
 	/**
@@ -313,6 +313,16 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 		final ProjectParam projectParam = new ProjectParam();
 		projectParam.setProjectStatus(projectStatus);
 		return this.queryForObject("getAllProjectStatistics", projectParam, Statistics.class, session);
+	}
+
+	/**
+	 *
+	 * @param loggedinUser
+	 * @param query the query
+	 * @return
+	 */
+	public Statistics getProjectsByFulltextSearchCount(User loggedinUser, ProjectQuery query) {
+		return this.search.getStatistics(loggedinUser, query);
 	}
 
 	@Override
@@ -370,7 +380,7 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 	/**
 	 * @param statisticsChain the statisticsChain to set
 	 */
-	public void setStatisticsChain(Chain<Statistics, ProjectQuery> statisticsChain) {
+	public void setStatisticsChain(Chain<Statistics, QueryAdapter<ProjectQuery>> statisticsChain) {
 		this.statisticsChain = statisticsChain;
 	}
 

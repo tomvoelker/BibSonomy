@@ -86,7 +86,7 @@ import org.bibsonomy.util.ObjectUtils;
  * @author jensi
  * @author Christian Pfeiffer / eisfair
  */
-public class PersonDatabaseManager extends AbstractDatabaseManager implements LinkableDatabaseManager<Person>, StatisticsProvider<ResourcePersonRelationQuery> {
+public class PersonDatabaseManager extends AbstractDatabaseManager implements LinkableDatabaseManager<Person>, StatisticsProvider<PersonQuery> {
 	private static final Log log = LogFactory.getLog(PersonDatabaseManager.class);
 	private static final PersonDatabaseManager singleton = new PersonDatabaseManager();
 
@@ -102,8 +102,9 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	private Chain<List<Person>, QueryAdapter<PersonQuery>> chain;
 
+	// TODO: move to the other controller
 	private Chain<List<ResourcePersonRelation>, QueryAdapter<ResourcePersonRelationQuery>> personResourceRelationChain;
-	private Chain<Statistics, ResourcePersonRelationQuery> resourcePersonRelationsStatisticsChain;
+	private Chain<Statistics, QueryAdapter<PersonQuery>> statisticsChain;
 
 	@Deprecated // use spring config
 	public static PersonDatabaseManager getInstance() {
@@ -1278,6 +1279,32 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		return this.queryForList("getPersonCRISLinks", param, CRISLink.class, session);
 	}
 
+	@Override
+	public Statistics getStatistics(PersonQuery query, User loggedinUser, DBSession session) {
+		return this.statisticsChain.perform(new QueryAdapter<>(query, loggedinUser), session);
+	}
+
+	/**
+	 *
+	 * @param organization
+	 * @param session
+	 * @return the statistics about persons associated with organizations
+	 */
+	public Statistics getPersonsByOrganizationCount(Group organization, DBSession session) {
+		final Integer count = this.queryForObject("getPersonsByOrganizationCount", organization.getName(), Integer.class, session);
+		return new Statistics(saveConvertToint(count));
+	}
+
+	/**
+	 * get statistics about the matching persons using the full text search
+	 * @param loggedinUser
+	 * @param query
+	 * @return
+	 */
+	public Statistics getPersonsByFulltextSearchCount(User loggedinUser, PersonQuery query) {
+		return this.personSearch.getStatistics(loggedinUser, query);
+	}
+
 	/**
 	 * @param personSearch
 	 *            the personSearch to set
@@ -1307,12 +1334,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		this.crisLinkDatabaseManager = crisLinkDatabaseManager;
 	}
 
-	//FIXME (AD) This prevents the Manager to become a StatisticsProvider for Person objects, due to type erasure in Java. This should be fixed at a later point by refactoring the resource relation functionality.
-	@Override
-	public Statistics getStatistics(ResourcePersonRelationQuery query, DBSession session) {
-		return this.resourcePersonRelationsStatisticsChain.perform(query, session);
-	}
-
 	/**
 	 * @param chain the chain to set
 	 */
@@ -1320,7 +1341,10 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		this.chain = chain;
 	}
 
-	public void setResourcePersonRelationsStatisticsChain(Chain<Statistics, ResourcePersonRelationQuery> resourcePersonRelationsStatisticsChain) {
-		this.resourcePersonRelationsStatisticsChain = resourcePersonRelationsStatisticsChain;
+	/**
+	 * @param statisticsChain the statisticsChain to set
+	 */
+	public void setStatisticsChain(Chain<Statistics, QueryAdapter<PersonQuery>> statisticsChain) {
+		this.statisticsChain = statisticsChain;
 	}
 }

@@ -16,7 +16,7 @@ import org.bibsonomy.webapp.command.ListCommand;
  */
 public class OrganizationPageCommand extends BaseCommand {
 
-	private OrganizationPageSubPage subPage;
+	private OrganizationPageSubPage subPage = OrganizationPageSubPage.INFO;
 
 	private String requestedOrganizationName;
 	private Group group;
@@ -24,7 +24,7 @@ public class OrganizationPageCommand extends BaseCommand {
 	private String sortPageOrder = "desc";
 	private String sortPage = "date";
 
-	private final ListCommand<Post<GoldStandardPublication>> bibtex = new ListCommand<>(this);
+	private final ListCommand<Post<GoldStandardPublication>> publications = new ListCommand<>(this);
 	private final ListCommand<Person> persons = new ListCommand<>(this);
 	private final ListCommand<Project> projects = new ListCommand<>(this);
 
@@ -43,6 +43,20 @@ public class OrganizationPageCommand extends BaseCommand {
 	}
 
 	/**
+	 * @return the subPage
+	 */
+	public OrganizationPageSubPage getSubPage() {
+		return subPage;
+	}
+
+	/**
+	 * @param subPage the subPage to set
+	 */
+	public void setSubPage(OrganizationPageSubPage subPage) {
+		this.subPage = subPage;
+	}
+
+	/**
 	 * @return the group
 	 */
 	public Group getGroup() {
@@ -57,10 +71,10 @@ public class OrganizationPageCommand extends BaseCommand {
 	}
 
 	/**
-	 * @return the publication list command
+	 * @return the publications
 	 */
-	public ListCommand<Post<GoldStandardPublication>> getBibtex() {
-		return bibtex;
+	public ListCommand<Post<GoldStandardPublication>> getPublications() {
+		return publications;
 	}
 
 	public String getSortPageOrder() {

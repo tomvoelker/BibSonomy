@@ -122,7 +122,7 @@ public final class RestServlet extends HttpServlet {
 	
 	// store some infos about the specific request or the webservice (i.e.
 	// document path)
-	private final Map<String, String> additionalInfos = new HashMap<String, String>();
+	private final Map<String, String> additionalInfos = new HashMap<>();
 
 	/**
 	 * Sets the base URL of the project. Typically "project.home" in the file

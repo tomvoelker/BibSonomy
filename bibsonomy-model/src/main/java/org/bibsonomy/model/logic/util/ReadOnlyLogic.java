@@ -57,7 +57,6 @@ import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ReadOnlyDatabaseException;
 import org.bibsonomy.model.Author;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
@@ -80,7 +79,6 @@ import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
-import org.bibsonomy.model.logic.query.BasicQuery;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.Query;
@@ -949,7 +947,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	@Override
-	public Statistics getStatistics(final BasicQuery query) {
+	public Statistics getStatistics(final Query query) {
 		return this.logicinterface.getStatistics(query);
 	}
 
