@@ -659,25 +659,25 @@
 		<name>redirect /organization/ORGANIZATION/projects</name>
 		<from>^/+organization/+([^/]+)/projects$</from>
 		<set type="parameter" name="requestedOrganizationName">${unescapePath:$1}</set>
-		<set type="parameter" name="requestedOrganizationName">PROJECTS</set>
+		<set type="parameter" name="subPage">PROJECTS</set>
 		<to last="true">/organization</to>
 	</rule>
 
 	<!-- /organization/ORGANIZATION/persons -->
 	<rule>
 		<name>redirect /organization/ORGANIZATION/persons</name>
-		<from>^/+organization/+([^/]+)/projects$</from>
+		<from>^/+organization/+([^/]+)/persons</from>
 		<set type="parameter" name="requestedOrganizationName">${unescapePath:$1}</set>
-		<set type="parameter" name="requestedOrganizationName">PERSONS</set>
+		<set type="parameter" name="subPage">PERSONS</set>
 		<to last="true">/organization</to>
 	</rule>
 
 	<!-- /organization/ORGANIZATION/publications -->
 	<rule>
 		<name>redirect /organization/ORGANIZATION/publications</name>
-		<from>^/+organization/+([^/]+)/projects$</from>
+		<from>^/+organization/+([^/]+)/publications</from>
 		<set type="parameter" name="requestedOrganizationName">${unescapePath:$1}</set>
-		<set type="parameter" name="requestedOrganizationName">PUBLICATIONS</set>
+		<set type="parameter" name="subPage">PUBLICATIONS</set>
 		<to last="true">/organization</to>
 	</rule>
 

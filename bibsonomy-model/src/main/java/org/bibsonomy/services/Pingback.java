@@ -45,5 +45,5 @@ public interface Pingback {
 	 * 
 	 * @param post
 	 */
-	public String sendPingback(final Post<? extends Resource> post);
+	String sendPingback(final Post<? extends Resource> post);
 }

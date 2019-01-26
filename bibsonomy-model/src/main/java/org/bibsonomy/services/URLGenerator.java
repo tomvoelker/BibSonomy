@@ -740,6 +740,39 @@ public class URLGenerator {
 	}
 
 	/**
+	 * url for persons of a organization
+	 * @param organizationName
+	 * @return
+	 */
+	public String getOrganizationPersonsUrlByName(final String organizationName) {
+		return this.getOrganizationSubPage(organizationName, "persons");
+	}
+
+	/**
+	 * url for publications of a organization
+	 * @param organizationName
+	 * @return
+	 */
+	public String getOrganizationPublicationsUrlByName(final String organizationName) {
+		return this.getOrganizationSubPage(organizationName, "publications");
+	}
+
+	/**
+	 * url for projects of a organization
+	 * @param organizationName
+	 * @return
+	 */
+	public String getOrganizationProjectsUrlByName(final String organizationName) {
+		return this.getOrganizationSubPage(organizationName, "projects");
+	}
+
+	private String getOrganizationSubPage(final String organizationName, final String subPage) {
+		final String url = this.projectHome + ORGANIZATION_PREFIX + "/" + UrlUtils.encodePathSegment(organizationName) + "/" + subPage;
+
+		return this.getUrl(url);
+	}
+
+	/**
 	 * Constructs the URL for the projects page
 	 *
 	 * @return URL pointing to the projects page
