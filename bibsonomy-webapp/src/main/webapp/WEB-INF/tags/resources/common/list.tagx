@@ -15,7 +15,11 @@
 	<jsp:directive.attribute name="widthClassName"  type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="extTitle" type="java.lang.String" required="false" />
+
 	<jsp:directive.attribute name="hideHeadline" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="hideCounts" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="hideMetaData" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="hidePostMenu" type="java.lang.Boolean" required="false" />
 
 	<jsp:directive.attribute name="title" fragment="true" required="true"/>
 	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
@@ -26,6 +30,19 @@
 	<jsp:directive.attribute name="listHeadline" fragment="true" required="false"/>
 
 	<jsp:directive.variable name-given="post" scope="NESTED"/>
+
+	<c:if test="${empty hideMetaData}">
+		<c:set var="hideMetaData" value="${false}" />
+	</c:if>
+
+	<c:if test="${empty hideCounts}">
+		<c:set var="hideCounts" value="${false}" />
+	</c:if>
+
+	<c:if test="${empty hidePostMenu}">
+		<c:set var="hidePostMenu" value="${false}" />
+	</c:if>
+
 	<c:if test="${empty hideHeadline or not hideHeadline}">
 		<jsp:invoke fragment="listHeadline" />
 	</c:if>
@@ -49,7 +66,15 @@
 						
 						<c:set var="resourcetype" value="${listView.resourcetype}" />
 						<!-- show one post -->
-						<rc:post post="${post}" resourceType="${resourcetype}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" additionalItemClasses="${additionalItemClasses}">
+						<rc:post post="${post}"
+								 resourceType="${resourcetype}"
+								 otherPostsUrlPrefix="${otherPostsUrlPrefix}"
+								 loginUserName="${loginUserName}"
+								 additionalItemClasses="${additionalItemClasses}"
+								 hideMetaData="${hideMetaData}"
+								 hidePostMenu="${hidePostMenu}"
+								 hideCounts="${hideCounts}"
+								 >
 							<jsp:attribute name="title">    <jsp:invoke fragment="title"/>    </jsp:attribute>
 							<jsp:attribute name="actions">  <jsp:invoke fragment="actions"/>  </jsp:attribute>
 							<jsp:attribute name="desc">     <jsp:invoke fragment="desc"/>     </jsp:attribute>

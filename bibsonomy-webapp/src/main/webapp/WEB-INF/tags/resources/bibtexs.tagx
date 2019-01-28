@@ -21,6 +21,12 @@
 	<jsp:directive.attribute name="extTitle" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="widthClassName"  type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
+
+	<jsp:directive.attribute name="hideCounts" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="hideMetaData" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="hidePostMenu" type="java.lang.Boolean" required="false" />
+
+	<jsp:directive.attribute name="onlyLinkAuthorsWithPersons" type="java.lang.Boolean" required="false" />
 	
 	<!-- list Headline options -->
 	<jsp:directive.attribute name="hideHeadline" type="java.lang.Boolean" required="false" />
@@ -42,6 +48,22 @@
 		<c:set var="listIndex" value="0"/>
 	</c:if>
 
+	<c:if test="${empty hideCounts}">
+		<c:set var="hideCounts" value="${false}" />
+	</c:if>
+
+	<c:if test="${empty hideMetaData}">
+		<c:set var="hideMetaData" value="${false}" />
+	</c:if>
+
+	<c:if test="${empty hidePostMenu}">
+		<c:set var="hidePostMenu" value="${false}" />
+	</c:if>
+
+	<c:if test="${empty onlyLinkAuthorsWithPersons}">
+		<c:set var="onlyLinkAuthorsWithPersons" value="${false}" />
+	</c:if>
+
 	<!-- FIXME: find a better way to disable the headline -->
 	<rc:list
 		titleKey="publications" 
@@ -53,6 +75,9 @@
 		listView="${listView}"
 		widthClassName="${widthClassName}"
 		extTitle="${extTitle}"
+		hideMetaData="${hideMetaData}"
+		hideCounts="${hideCounts}"
+		hidePostMenu="${hidePostMenu}"
 		hideHeadline="${hideHeadline}"
 		addAsFirstItem="${addAsFirstItem}"
 		addAsLastItem="${addAsLastItem}">
@@ -61,11 +86,9 @@
 				<fmt:message key="publications" />
 				&amp;nbsp;<small class="hidden-lg hidden-md">(<a id="hide-publications" href=""><fmt:message key="list.hide" /></a>)</small>
 				<!-- Display total number of entries in list --> 
-				<c:if test="${!empty listView.list}">
-					<c:if test="${listView.totalCount != 0}">
-						<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${listView.totalCount} "/> <fmt:message key="publications" /></c:set>
-						<span class="badge" title="${totalTitle}" style="position:relative; top: -3px; left: 3px;">${listView.totalCount}</span>
-					</c:if>
+				<c:if test="${not hideCounts and not empty listView.list and listView.totalCount != 0}">
+					<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${listView.totalCount} "/> <fmt:message key="publications" /></c:set>
+					<span class="badge" title="${totalTitle}" style="position:relative; top: -3px; left: 3px;">${listView.totalCount}</span>
 				</c:if>
 				
 				<c:if test="${empty showPageOptions or showPageOptions}">
@@ -107,7 +130,10 @@
 		
 		<!-- Bibtex description -->
 		<jsp:attribute name="desc">
-			<bib:desc publication="${post.resource}" post="${post}" restrictToFirstAuthors="${true}"/>
+			<bib:desc publication="${post.resource}"
+					  post="${post}"
+					  restrictToFirstAuthors="${true}"
+					  onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}"/>
 		</jsp:attribute>
 		
 		<!-- BibTeX action -->

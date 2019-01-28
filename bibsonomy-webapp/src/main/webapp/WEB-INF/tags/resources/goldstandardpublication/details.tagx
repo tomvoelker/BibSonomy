@@ -63,7 +63,13 @@
 						</c:if>
 					</div>
 					<small>
-						<span class="publication-description"><bib:desc publication="${goldstandard}" linebreakAfterAuthors="${true}" publishedIn="${publishedIn}"/></span>
+						<span class="publication-description">
+							<bib:desc publication="${goldstandard}"
+									  post="${post}"
+									  linebreakAfterAuthors="${true}"
+									  onlyLinkAuthorsWithPersons="${not showFolkSonomyLinks}"
+									  publishedIn="${publishedIn}"/>
+						</span>
 					</small>
 					<c:if test="${isAdmin}">
 						<c:choose>

@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -95,7 +94,7 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 
 		if (source.containsKey(Fields.ALL_USERS)) {
 			final List<String> userNames = (List<String>) source.get(Fields.ALL_USERS);
-			final List<User> users = userNames.stream().map(name -> new User(name)).collect(Collectors.toList());
+			final List<User> users = userNames.stream().map(User::new).collect(Collectors.toList());
 			post.setUsers(users);
 		}
 

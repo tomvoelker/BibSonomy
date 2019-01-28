@@ -41,11 +41,17 @@ import java.util.function.Supplier;
  */
 public class OrganizationPageController implements MinimalisticController<OrganizationPageCommand> {
 
+	private static final int DEFAULT_ENTRIES_PER_PAGE = 30;
+
 	private LogicInterface logic;
 
 	@Override
 	public OrganizationPageCommand instantiateCommand() {
-		return new OrganizationPageCommand();
+		final OrganizationPageCommand organizationPageCommand = new OrganizationPageCommand();
+		organizationPageCommand.getPublications().setEntriesPerPage(DEFAULT_ENTRIES_PER_PAGE);
+		organizationPageCommand.getPersons().setEntriesPerPage(DEFAULT_ENTRIES_PER_PAGE);
+		organizationPageCommand.getProjects().setEntriesPerPage(DEFAULT_ENTRIES_PER_PAGE);
+		return organizationPageCommand;
 	}
 
 	@Override
@@ -66,10 +72,10 @@ public class OrganizationPageController implements MinimalisticController<Organi
 		/*
 		 * person query
 		 */
+		final ListCommand<Person> personsListCommand = command.getPersons();
 		final PersonQuery personOrganizationQuery = new PersonQuery();
 		personOrganizationQuery.setOrganization(group);
 		personOrganizationQuery.setOrder(PersonOrder.MAIN_NAME_LAST_NAME);
-		final ListCommand<Person> personsListCommand = command.getPersons();
 
 		/*
 		 * publication query

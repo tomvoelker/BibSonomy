@@ -10,9 +10,14 @@
 	<jsp:directive.attribute name="useAbsoluteURL" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="false"/>
 	<jsp:directive.attribute name="restrictToFirstAuthors" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="onlyLinkAuthorsWithPersons" type="java.lang.Boolean" required="false" />
 
 	<c:if test="${empty restrictToFirstAuthors}">
 		<c:set var="restrictToFirstAuthors" value="${true}" />
+	</c:if>
+
+	<c:if test="${empty onlyLinkAuthorsWithPersons}">
+		<c:set var="onlyLinkAuthorsWithPersons" value="${false}" />
 	</c:if>
 
 	<c:choose>
@@ -65,6 +70,10 @@
 			it is displayed later only via c:out, which escapes XML chars
 			anyway.
 			-->
+			<c:if test="${not empty post}">
+				<spring:eval expression="T(org.bibsonomy.model.util.PersonResourceRelationUtils).getRelationForIndex(post.resourcePersonRelations, loopStatus.index)" var="relation" />
+			</c:if>
+
 			<c:set var="firstName" value="${mtl:cleanBibtex(person.firstName)}" />
 			<c:set var="lastName" value="${mtl:cleanBibtex(person.lastName)}" />
 			<c:choose>
@@ -78,7 +87,6 @@
 			<c:if test="${loopStatus.last and not loopStatus.first and not personListRestricted}">
 				<c:out value=" "/><fmt:message key="and"/><c:out value=" "/>
 			</c:if>
-			<!-- FIXME: urls should be build correctly for remote posts. urls should be built using urlgenerator methods -->
 			<c:choose>
 				<c:when test="${properties['genealogy.activated'] eq 'true'}">
 					<c:url var='pubAuthorUrl' value='${urlGenerator.getDisambiguationUrl(publication.interHash, authorEditorUppper, loopStatus.index)}'/>
@@ -96,9 +104,17 @@
 					</c:when>
 					<c:otherwise>
 						<span itemprop="${authorEditor}" itemscope="itemscope" itemtype="http://schema.org/Person">
-							<a href="${pubAuthorUrl}" itemprop="url" title="${fn:escapeXml(firstName)} ${fn:escapeXml(lastName)}">
-								<span itemprop="name"><c:out value="${personName}"/></span>
-							</a>
+							<c:choose>
+								<c:when test="${not onlyLinkAuthorsWithPersons or onlyLinkAuthorsWithPersons and relation.present and relation.get().person.college eq properties['system.cris.college']}">
+									<a href="${pubAuthorUrl}" itemprop="url" title="${fn:escapeXml(firstName)} ${fn:escapeXml(lastName)}">
+										<span itemprop="name"><c:out value="${personName}"/></span>
+									</a>
+								</c:when>
+								<c:otherwise>
+									<span itemprop="name"><c:out value="${personName}"/></span>
+								</c:otherwise>
+							</c:choose>
+
 						</span>
 					</c:otherwise>
 				</c:choose>

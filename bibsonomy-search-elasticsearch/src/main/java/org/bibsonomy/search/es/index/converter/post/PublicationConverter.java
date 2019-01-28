@@ -95,10 +95,6 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		return result;
 	}
 
-	private static List<ResourcePersonRelation> filterPersonResourceRelations(final List<ResourcePersonRelation> relations, final Predicate<ResourcePersonRelation> selector) {
-		return relations.stream().filter(selector).collect(Collectors.toList());
-	}
-
 	private FileContentExtractorService fileContentExtractorService;
 	
 	/**
