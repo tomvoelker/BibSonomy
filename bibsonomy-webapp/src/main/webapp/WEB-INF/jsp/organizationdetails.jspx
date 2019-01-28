@@ -154,21 +154,20 @@
 							<div id="publications_0" class="publicationsContainer standard">
 							<resources:bibtexs listView="${command.publications}"
 											   loginUserName="${command.context.loginUser.name}"
-											   disableListNavigation="true"
+											   disableListNavigation="${true}"
 											   requPath=""
 											   widthClassName="wide"
-											   isClipboard="false"
-											   showBookmark="false"
+											   isClipboard="${false}"
+											   showBookmark="${false}"
 											   hideCounts="${true}"
 											   hideMetaData="${true}"
-											   showPublication="true"
-											   onlyLinkAuthorsWithPersons="${true}"
-											   showPageOptions="${false}"
-											   additionalSorting="${additionalSorting}">
+											   showPublication="${true}"
+											   onlyLinkAuthorsWithPersons="${empty command.context.loginUser.name}"
+											   showPageOptions="${false}">
 								<jsp:attribute name="addAsLastItem">
 									<c:if test="true">
 										<div id="publicationsfooter" class="wide">
-											<rc:nextprev listView="${command.publications}" listViewStartParamName="bibtex.start"/>
+											<rc:nextprev listView="${command.publications}" listViewStartParamName="publications.start"/>
 										</div>
 									</c:if>
 								</jsp:attribute>
