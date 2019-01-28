@@ -47,39 +47,29 @@ import org.junit.experimental.categories.Category;
 @Category(RemoteTest.class)
 public class TaylorAndFrancisScraperTest {
 
-	/**
-	 * 
-	 */
 	@Test
-	public void url1TestRun(){
-		assertScraperResult("http://www.tandfonline.com/doi/abs/10.1080/09540091.2014.906388#.VNtRzC7_-Uk", null, TaylorAndFrancisScraper.class, "taylorAndFrancis/TaylorAndFrancisScraperUnitURLTest1.bib");
+	public void url1TestRun() {
+		assertScraperResult("https://www.tandfonline.com/doi/abs/10.1080/09540091.2014.906388", TaylorAndFrancisScraper.class, "taylorAndFrancis/TaylorAndFrancisScraperUnitURLTest1.bib");
 	}
 
-	/**
-	 * 
-	 */
 	@Test
-	public void url2TestRun(){
-		assertScraperResult("http://www.tandfonline.com/doi/abs/10.1080/09540091.2011.587505", null, TaylorAndFrancisScraper.class, "taylorAndFrancis/TaylorAndFrancisScraperUnitURLTest2.bib");
+	public void url2TestRun() {
+		assertScraperResult("https://www.tandfonline.com/doi/abs/10.1080/09540091.2011.587505", TaylorAndFrancisScraper.class, "taylorAndFrancis/TaylorAndFrancisScraperUnitURLTest2.bib");
 	}
-	/**
-	 * 
-	 */
+
 	@Test
-	public void url3TestRun(){
-		assertScraperResult("http://www.tandfonline.com/doi/abs/10.1080/14786419.2010.534733?url_ver=Z39.88-2003&amp;rfr_id=ori:rid:crossref.org&amp;rfr_dat=cr_pub%3dpubmed", null, TaylorAndFrancisScraper.class, "taylorAndFrancis/TaylorAndFrancisScraperUnitURLTest3.bib");
+	public void url3TestRun() {
+		assertScraperResult("https://www.tandfonline.com/doi/abs/10.1080/14786419.2010.534733?url_ver=Z39.88-2003&amp;rfr_id=ori:rid:crossref.org&amp;rfr_dat=cr_pub%3dpubmed", TaylorAndFrancisScraper.class, "taylorAndFrancis/TaylorAndFrancisScraperUnitURLTest3.bib");
 	}
-	/**
-	 * 
-	 */
+
 	@Test
-	public void url4TestRun(){
-		assertScraperResult("http://amstat.tandfonline.com/doi/abs/10.1080/01621459.1977.10479922", null, TaylorAndFrancisScraper.class, "taylorAndFrancis/TaylorAndFrancisScraperUnitURLTest4.bib");
+	public void url4TestRun() {
+		assertScraperResult("https://amstat.tandfonline.com/doi/abs/10.1080/01621459.1977.10479922", TaylorAndFrancisScraper.class, "taylorAndFrancis/TaylorAndFrancisScraperUnitURLTest4.bib");
 	}
 	
 	@Test
 	public void url5TestRun() {
-		assertScraperResult("http://www.tandfonline.com/doi/abs/10.2753/MIS0742-1222270205", null, TaylorAndFrancisScraper.class, "taylorAndFrancis/TaylorAndFrancisScraperUnitURLTest5.bib");
+		assertScraperResult("https://www.tandfonline.com/doi/abs/10.2753/MIS0742-1222270205", TaylorAndFrancisScraper.class, "taylorAndFrancis/TaylorAndFrancisScraperUnitURLTest5.bib");
 	}
 	
 	/**

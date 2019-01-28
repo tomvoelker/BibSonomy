@@ -114,20 +114,6 @@
 		<BibFile>NasaAdsScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.nasaads.NasaAdsScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_33">
-		<TestDescription>URL scraping test with a citation page from intersience wiley</TestDescription>
-		<URL>http://onlinelibrary.wiley.com/doi/10.1002/jemt.10338/abstract</URL>
-		<BibFile>WileyIntersienceScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_34">
-		<TestDescription>URL scraping test with a citation download page from intersience wiley</TestDescription>
-		<URL>http://www3.interscience.wiley.com/tools/citex?clienttype=1&amp;subtype=1&amp;mode=1&amp;version=1&amp;id=104530788&amp;redirect=/cgi-bin/abstract/104530788/ABSTRACT</URL>
-		<BibFile>WileyIntersienceScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
-		<Enabled>false</Enabled>
-		<AdditionalInfo>URL does not work any longer</AdditionalInfo>
-	</URLTest>
 	<URLTest id="url_36">
 		<TestDescription>URL scraping test with books from ieeexplore</TestDescription>
 		<URL>http://ieeexplore.ieee.org/xpl/bkabstractplus.jsp?bkn=5263132</URL>
@@ -463,12 +449,6 @@
 		<!-- Scientificcommons is down, reason why is unnknown -->
 		<Enabled>false</Enabled>
 	</URLTest>
-	<URLTest id="url_146">
-		<TestDescription>URL scraping test with a citation page from intersience wiley</TestDescription>
-		<URL>http://onlinelibrary.wiley.com/book/10.1029/AR071</URL>
-		<BibFile>WileyIntersienceScraperUnitURLTest5.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_147">
 		<TestDescription>eprint url test</TestDescription>
 		<URL>http://orca.cf.ac.uk/5213/</URL>
@@ -525,14 +505,6 @@
 		<URL>http://www.ingentaconnect.com/content/mcb/026/2007/00000026/00000004/art00005</URL>
 		<BibFile>IngentaconnectScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_189">
-		<TestDescription>URL scraping test with a citation page from intersience wiley</TestDescription>
-		<URL>http://onlinelibrary.wiley.com/doi/10.1002/1521-4095(200011)12:22%3C1655::AID-ADMA1655%3E3.0.CO;2-2/abstract</URL>
-		<BibFile>WileyIntersienceScraperUnitURLTest4.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
-		<Enabled>true</Enabled>
-		<AdditionalInfo>Sometimes scraping won't work. Dunno why</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_190">
 		<TestDescription>test for PNASScraper</TestDescription>
@@ -888,12 +860,6 @@
 		<URL>http://remotesensing.spiedigitallibrary.org/article.aspx?articleid=2099648</URL>
 		<BibFile>SpieDigitalLibraryScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.spiedigitallibrary.SpieDigitalLibraryScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_351">
-		<TestDescription>test for bio one website</TestDescription>
-		<URL>http://www.bioone.org/doi/abs/10.2113/gspalynol.32.1.1</URL>
-		<BibFile>BioOneScraperScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.bioone.BioOneScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_352">
 		<TestDescription>test for UChicago Journals website</TestDescription>
