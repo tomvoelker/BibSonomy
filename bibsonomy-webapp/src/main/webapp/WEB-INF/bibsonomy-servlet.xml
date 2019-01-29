@@ -582,6 +582,8 @@
 								<value>requestedOrganizationName</value>
 								<value>subPage</value>
 								<value>publications.start</value>
+								<value>projects.start</value>
+								<value>persons.start</value>
 							</list>
 						</property>
 					</bean>
