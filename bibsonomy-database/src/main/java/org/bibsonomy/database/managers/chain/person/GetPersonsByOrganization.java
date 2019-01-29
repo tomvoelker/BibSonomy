@@ -29,8 +29,11 @@ public class GetPersonsByOrganization extends PersonChainElement {
 
 	@Override
 	protected List<Person> handle(final QueryAdapter<PersonQuery> param, final DBSession session) {
-		final Group organization = param.getQuery().getOrganization();
-		return this.getPersonDatabaseManager().getPersonsByOrganization(organization, session);
+		final PersonQuery query = param.getQuery();
+		final Group organization = query.getOrganization();
+		final int start = query.getStart();
+		final int end = query.getEnd();
+		return this.getPersonDatabaseManager().getPersonsByOrganization(organization, end - start, start, session);
 	}
 
 	@Override

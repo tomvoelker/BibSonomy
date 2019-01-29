@@ -57,6 +57,7 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.CRISLinkParam;
 import org.bibsonomy.database.params.DNBAliasParam;
 import org.bibsonomy.database.params.DenyMatchParam;
+import org.bibsonomy.database.params.person.GetPersonByOrganizationParam;
 import org.bibsonomy.database.params.relations.GetPersonRelations;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.BibTex;
@@ -681,8 +682,9 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @param session
 	 * @return
 	 */
-	public List<Person> getPersonsByOrganization(final Group organization, final DBSession session) {
-		return this.queryForList("getPersonsByOrganization", organization.getName(), Person.class, session);
+	public List<Person> getPersonsByOrganization(final Group organization, final int limit, final int offset, final DBSession session) {
+		final GetPersonByOrganizationParam param = new GetPersonByOrganizationParam(organization.getName(), limit, offset);
+		return this.queryForList("getPersonsByOrganization", param, Person.class, session);
 	}
 
 	/**

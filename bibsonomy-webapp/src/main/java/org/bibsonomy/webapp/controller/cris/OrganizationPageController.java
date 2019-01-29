@@ -76,6 +76,9 @@ public class OrganizationPageController implements MinimalisticController<Organi
 		final PersonQuery personOrganizationQuery = new PersonQuery();
 		personOrganizationQuery.setOrganization(group);
 		personOrganizationQuery.setOrder(PersonOrder.MAIN_NAME_LAST_NAME);
+		final int personStart = personsListCommand.getStart();
+		personOrganizationQuery.setStart(personStart);
+		personOrganizationQuery.setEnd(personStart + personsListCommand.getEntriesPerPage());
 
 		/*
 		 * publication query
@@ -95,7 +98,8 @@ public class OrganizationPageController implements MinimalisticController<Organi
 		 */
 		final ListCommand<Project> projectsListCommand = command.getProjects();
 		final ProjectQuery.ProjectQueryBuilder projectQueryBuilder = new ProjectQuery.ProjectQueryBuilder();
-		projectQueryBuilder.organization(group);
+		final int projectStart = projectsListCommand.getStart();
+		projectQueryBuilder.organization(group).start(projectStart).end(start + projectsListCommand.getEntriesPerPage());
 		final ProjectQuery projectsQuery = projectQueryBuilder.build();
 
 		final OrganizationPageSubPage subPage = getSubPage(command);
