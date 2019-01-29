@@ -3,7 +3,6 @@
 <jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page"
 		  xmlns:c="http://java.sun.com/jsp/jstl/core"
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
 		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
           xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
@@ -23,11 +22,7 @@
             <script type="text/javascript" src="${resdir}/javascript/person/personAutocomplete.js"><!-- keep me --></script>
         </jsp:attribute>
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.project" formAction="${relativeUrlGenerator.getProjectUrlByProject(project)}" formInputName="tag">
-				<jsp:attribute name="pathPart">
-					<a href="${relativeUrlGenerator.getProjectUrlByProject(project)}"><c:out value='${project.title}'/></a>
-				</jsp:attribute>
-			</parts:search>
+			<!-- nothing to show -->
 		</jsp:attribute>
 
         <jsp:attribute name="breadcrumbs">
