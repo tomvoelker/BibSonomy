@@ -27,8 +27,8 @@
 package org.bibsonomy.scraper.junit;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -43,7 +43,6 @@ import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.util.StringUtils;
 
-import bibtex.dom.BibtexAbstractEntry;
 import bibtex.dom.BibtexEntry;
 import bibtex.dom.BibtexFile;
 import bibtex.parser.BibtexParser;
@@ -56,8 +55,7 @@ import bibtex.parser.BibtexParser;
 public class RemoteTestAssert {
 
 	/**
-	 * calls the specified scraper with the provided url and tests the returned result of the scraper
-	 * with the contents of the provided result file
+	 * some small changes
 	 * @param url
 	 * @param scraperClass
 	 * @param resultFile
@@ -65,7 +63,7 @@ public class RemoteTestAssert {
 	public static void assertScraperResult(final String url, final Class<? extends Scraper> scraperClass, final String resultFile) {
 		assertScraperResult(url, null, scraperClass, resultFile);
 	}
-	
+
 	/**
 	 * calls the specified scraper with the 
 	 * @param url
@@ -79,10 +77,6 @@ public class RemoteTestAssert {
 			final ScrapingContext scrapingContext = createScraperContext(url, selection);
 			scraper.scrape(scrapingContext);
 			final String bibTeXResult = scrapingContext.getBibtexResult();
-			/*
-			 * final check if bibtex is valid, if not so
-			 */
-			boolean bibtexValid = false;
 			
 			if (bibTeXResult != null){
 				final BibtexParser parser = new BibtexParser(true);
@@ -90,14 +84,15 @@ public class RemoteTestAssert {
 				final BufferedReader sr = new BufferedReader(new StringReader(bibTeXResult));
 				// parse source
 				parser.parse(bibtexFile, sr);
-				
-				for (final BibtexAbstractEntry potentialEntry : bibtexFile.getEntries())
-					if ((potentialEntry instanceof BibtexEntry))
-						bibtexValid = true;
+				/*
+				 * final check if bibtex is valid, at least one bibtexentry should be in the bibtexFile
+				 */
+				final boolean bibtexValid = bibtexFile.getEntries().stream().anyMatch(BibtexEntry.class::isInstance);
+
 				// test if expected bib is equal to scraped bib (which must be valid bibtex) 
-				assertTrue("scraped BibTeX not valid", bibtexValid);
-				final String expectedRefrence = getExpectedBibTeX(resultFile).replaceAll("\\r\\n", "\n").trim();				
-				assertEquals(expectedRefrence, bibTeXResult.replaceAll("\\r\\n", "\n").trim());
+				assertThat("scraped BibTeX not valid", bibtexValid, is(true));
+				final String expectedRefrence = normBibTeX(getExpectedBibTeX(resultFile));
+				assertThat(normBibTeX(bibTeXResult), is(expectedRefrence));
 			} else {
 				fail("nothing scraped");
 			}
@@ -105,7 +100,14 @@ public class RemoteTestAssert {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
+	private static String normBibTeX(final String bibTeX) {
+		if (!present(bibTeX)) {
+			return bibTeX;
+		}
+		return bibTeX.replaceAll("\\r\\n", "\n").trim();
+	}
+
 	/**
 	 * @param resultFile
 	 * @return

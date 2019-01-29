@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.scraper.url.kde.cell;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +38,6 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericRISURLScraper;
-import org.bibsonomy.util.WebUtils;
 
 /**
  * @author tst
