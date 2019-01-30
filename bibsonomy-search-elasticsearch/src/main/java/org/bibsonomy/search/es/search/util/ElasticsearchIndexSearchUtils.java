@@ -26,7 +26,7 @@ public class ElasticsearchIndexSearchUtils {
 
 	private static final Log LOG = LogFactory.getLog(ElasticsearchIndexSearchUtils.class);
 	private static final Pattern LETTER_PATTERN = Pattern.compile("^[a-z].*", Pattern.CASE_INSENSITIVE);
-	private static final Pattern NUMBER_PATTERN = Pattern.compile("^[0-9]].*");
+	private static final Pattern NUMBER_PATTERN = Pattern.compile("^[0-9].*");
 
 	private ElasticsearchIndexSearchUtils() {
 		// noop
