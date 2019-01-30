@@ -31,7 +31,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-12 publication-list">
+				<div class="col-md-12 publication-list" id="organization-publications">
 					<resources:bibtexs listView="${command.publications}"
 									   loginUserName="${command.context.loginUser.name}"
 									   requPath="${requPath}"
@@ -40,6 +40,9 @@
 									   showBookmark="${false}"
 									   showPublication="${true}"
 									   hideHeadline="${true}"
+									   hideCounts="${true}"
+									   hideMetaData="${true}"
+									   onlyLinkAuthorsWithPersons="${empty command.context.loginUser.name}"
 									   disableResourcetypeSelection="${true}">
 						<jsp:attribute name="additionalSorting">
 							<!-- no options -->
