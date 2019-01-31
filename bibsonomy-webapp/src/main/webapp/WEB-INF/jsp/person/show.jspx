@@ -89,17 +89,11 @@
 		<jsp:attribute name="content">
 			<errors:global />
 	
-			<form method='post' name='personForm' id="personForm" action="" class='form-horizontal'>
+			<form method="post" name="personForm" id="personForm" action="" class="form-horizontal">
 				<input type="hidden" name="ckey" value="${ckey}"/>
 				<input type="hidden" name="personId" value="${command.person.personId}"/>
-				<c:choose>
-					<c:when test='${hasClaimedPerson}'>
-						<input type="hidden" id="formThatsMe" name="formThatsMe" value="true"/>
-					</c:when>
-					<c:otherwise>
-						<input type="hidden" id="formThatsMe" name="formThatsMe" value="false"/>
-					</c:otherwise>
-				</c:choose>
+
+				<input type="hidden" id="formThatsMe" name="formThatsMe" value="${hasClaimedPerson}"/>
 
 				<div class="page-header">
 					
