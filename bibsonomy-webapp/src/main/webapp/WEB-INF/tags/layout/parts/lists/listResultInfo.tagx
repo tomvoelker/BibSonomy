@@ -9,7 +9,7 @@
 	<c:set var="totalNumberOfEntities" value="${listCommand.totalCount}" />
 	<c:if test="${totalNumberOfEntities gt 0}">
 		<c:set var="startIndex" value="${listCommand.start * listCommand.entriesPerPage + 1}" />
-		<c:set var="endIndex" value="${startIndex + listCommand.entriesPerPage}" />
+		<c:set var="endIndex" value="${startIndex + listCommand.entriesPerPage - 1}" />
 		<c:set var="endIndex" value="${endIndex ge totalNumberOfEntities ? totalNumberOfEntities : endIndex}" />
 		<div class="text-muted">
 			<fmt:message key="${messageKey}">
