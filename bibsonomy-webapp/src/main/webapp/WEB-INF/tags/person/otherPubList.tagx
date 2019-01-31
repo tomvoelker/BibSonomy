@@ -9,6 +9,11 @@
     <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true" />
     <jsp:directive.attribute name="publications" type="java.util.List" required="true" />
     <jsp:directive.attribute name="useOtherPubs" type="java.lang.Boolean" required="false" />
+    <jsp:directive.attribute name="onlyLinkAuthorsWithPersons" type="java.lang.Boolean" required="false" />
+
+    <c:if test="${empty onlyLinkAuthorsWithPersons}">
+        <c:set var="onlyLinkAuthorsWithPersons" value="${false}" />
+    </c:if>
 
     <c:choose>
         <c:when test="${not useOtherPubs}" >
@@ -36,7 +41,10 @@
         </h3>
         <div id="otherPublications${key}">
             <c:forEach var="relation" items="${publications}">
-                <per:simplePubView relation="${relation}" buttons="true" personId="${command.person.personId}"/>
+                <per:simplePubView relation="${relation}"
+                                   buttons="${true}"
+                                   personId="${command.person.personId}"
+                                   onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}"/>
             </c:forEach>
         </div>
     </div>

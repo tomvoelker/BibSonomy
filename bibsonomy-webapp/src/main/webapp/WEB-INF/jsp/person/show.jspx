@@ -201,7 +201,7 @@
 								</h2>
 								<c:choose>
 									<c:when test="${personHasPublications}">
-										<per:otherPubList command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}"/>
+										<per:otherPubList command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}" onlyLinkAuthorsWithPersons="${not isLoggedIn}"/>
 									</c:when>
 									<c:otherwise>
 										<c:if test="${isLoggedIn}">
