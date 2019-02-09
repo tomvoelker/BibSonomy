@@ -601,8 +601,8 @@
 								<value>sponsor</value>
 								<value>startDate</value>
 								<value>endDate</value>
-								<value>person</value>
-								<value>organization</value>
+								<value>person.personId</value>
+								<value>organization.name</value>
 								<value>projects.start</value>
 								<value>projects.entriesPerPage</value>
 							</list>

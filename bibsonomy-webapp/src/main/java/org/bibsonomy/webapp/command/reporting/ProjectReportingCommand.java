@@ -11,7 +11,8 @@ import org.bibsonomy.webapp.command.ListCommand;
  */
 public class ProjectReportingCommand extends ReportingCommand {
 	private final ListCommand<Project> projects = new ListCommand<>(this);
-	private String type, sponsor;
+	private String type;
+	private String sponsor;
 	private Person person;
 	private Group organization;
 

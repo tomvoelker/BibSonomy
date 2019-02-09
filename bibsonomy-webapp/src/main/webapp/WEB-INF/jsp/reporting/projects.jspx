@@ -31,9 +31,9 @@
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/typeahead.js/js/typeahead.bundle.js"><!-- keep me --></script>
 			<script type="text/javascript"
-					src="${resdir}/javascript/reporting/personAutocomplete.js"><!-- keep me --></script>
+					src="${resdir}/javascript/reporting/projects.js"><!-- keep me --></script>
 			<script type="text/javascript"
-					src="${resdir}/javascript/reporting/autocompleteSearchPerson.js"><!-- keep me --></script>
+					src="${resdir}/javascript/person/personAutocomplete.js"><!-- keep me --></script>
 
 			<link rel="stylesheet" type="text/css" href="${resdir}/typeahead.js/css/typeahead.css"/>
 		</jsp:attribute>
@@ -56,9 +56,13 @@
 								searchPlaceholderKey="reporting.projects.search"
 								requPathAndQuery="${requPathAndQuery}" command="${command}"/>
 
-			<form class="form-horizontal">
+			<form class="form-horizontal" id="filterForm">
 				<input type="hidden" name="search" value="${search}" />
 				<input type="hidden" name="prefix" value="${prefix}" />
+
+				<!-- will be filled with the autocomplete -->
+				<input type="text" name="person.personId" value="${person.personId}" id="personField" />
+
 				<div class="reporting-filter">
 					<reporting:dateFilter requPathAndQuery="${requPathAndQuery}" filterName="Start Date"
 										   filterField="startDate"/>
@@ -75,8 +79,16 @@
 							<label>Person</label>
 						</div>
 						<div class="col-md-5">
-							<input class="form-control typeahead" id="searchPersonAutocomplete"
-									   name="person" autocomplete="on" placeholder=""/>
+							<c:set var="personPlaceHolder" value="" />
+							<c:set var="person" value="${command.person}" />
+							<c:if test="${not empty person.personId}">
+								<c:set var="personPlaceHolder" value="${person.mainName.lastName}, ${person.mainName.firstName}" />
+							</c:if>
+							<input class="form-control typeahead" id="searchPersonAutocomplete" autocomplete="on" placeholder="${personPlaceHolder}"/>
+
+							<button class="btn btn-default btn-sm clean-typeahead" data-id="personField">
+								Clear
+							</button>
 						</div>
 					</div>
 					<div class="form-group">
@@ -84,6 +96,7 @@
 							<label>Organization</label>
 						</div>
 						<div class="col-md-5">
+
 							<input class="form-control typeahead" id="searchOrganizationAutocomplete"
 							   name='organization'
 							   autocomplete="on" placeholder=""/>
