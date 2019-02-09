@@ -603,6 +603,8 @@
 								<value>endDate</value>
 								<value>person</value>
 								<value>organization</value>
+								<value>projects.start</value>
+								<value>projects.entriesPerPage</value>
 							</list>
 						</property>
 					</bean>

@@ -1,0 +1,24 @@
+<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:form="http://www.springframework.org/tags/form" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+>
+
+	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="filterName" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="filterField" type="java.lang.String" required="true" />
+
+	<jsp:useBean id="now" class="java.util.Date"/>
+
+	<fmt:formatDate var="nowStringFormat" value="${now}" pattern="dd.MM.yyyy" />
+
+	<div class="form-group">
+		<label for="${filterField}" class="col-md-3"><c:out value="${filterName}"/></label>
+		<div class="col-md-5">
+			<div class="input-group date dropdown-item" id="${filterField}-id" data-date-format="dd.mm.yyyy" data-clear-btn="true"
+				 data-date-viewMode="years" data-date="${nowStringFormat}">
+				<input type="text" class="form-control" value="" name="${filterField}"/>
+				<span class="input-group-addon"><i class="far fa-calendar-alt"><!-- --></i></span>
+			</div>
+		</div>
+	</div>
+</jsp:root>

@@ -99,7 +99,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 
 	private FileLogic fileLogic;
 
-	//this should be set through ${user.defaultToClassify}, if not: 1
+	// this should be set through ${user.defaultToClassify}, if not: 1
 	private Integer usersDefaultToClassify = 1;
 
 	private UserDatabaseManager() {

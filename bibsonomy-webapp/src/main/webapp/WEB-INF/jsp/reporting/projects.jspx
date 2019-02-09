@@ -8,7 +8,6 @@
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
 		  xmlns:reporting="urn:jsptagdir:/WEB-INF/tags/reporting"
-		  xmlns:spring="http://www.springframework.org/tags"
 		  xmlns:project="urn:jsptagdir:/WEB-INF/tags/project"
 		  xmlns:lists="urn:jsptagdir:/WEB-INF/tags/layout/parts/lists"
 >
@@ -20,7 +19,7 @@
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 
 	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.projects" command="${command}"
-					   pageTitle="${pageTitle}" activeTab="projects">
+					   pageTitle="${pageTitle}" activeTab="projects" noSidebar="${true}">
 
 		<!--+
 			  | heading
@@ -52,66 +51,67 @@
 		 	| content
 		 	+-->
 		<jsp:attribute name="content">
+
 			<parts:searchHeader headerMessageKey="reporting.projects.header"
 								searchPlaceholderKey="reporting.projects.search"
 								requPathAndQuery="${requPathAndQuery}" command="${command}"/>
-			<div class="heading">
-				<div class="row">
-					<div class="col-md-3">
-						<spring:eval var="sponsorValues" expression="T(java.util.Arrays).asList('test')"/>
-						<reporting:filter requPathAndQuery="${requPathAndQuery}" filterName="Sponsor"
-										  filterValues="${sponsorValues}" filterField="sponsor"/>
+
+			<form class="form-horizontal">
+				<input type="hidden" name="search" value="${search}" />
+				<input type="hidden" name="prefix" value="${prefix}" />
+				<div class="reporting-filter">
+					<reporting:dateFilter requPathAndQuery="${requPathAndQuery}" filterName="Start Date"
+										   filterField="startDate"/>
+					<reporting:dateFilter requPathAndQuery="${requPathAndQuery}" filterName="End Date"
+										   filterField="endDate"/>
+
+					<reporting:stringFilter requPathAndQuery="${requPathAndQuery}" filterName="Sponsor"
+											autocomplete="/statistics/projects/fields/sponsor" filterField="sponsor"/>
+					<reporting:stringFilter requPathAndQuery="${requPathAndQuery}" filterName="Type"
+											filterField="type" autocomplete="/statistics/projects/fields/type"/>
+
+					<div class="form-group">
+						<div class="col-md-3">
+							<label>Person</label>
+						</div>
+						<div class="col-md-5">
+							<input class="form-control typeahead" id="searchPersonAutocomplete"
+									   name="person" autocomplete="on" placeholder=""/>
+						</div>
 					</div>
-					<div class="col-md-3">
-						<spring:eval var="typeValues" expression="T(java.util.Arrays).asList('test')"/>
-						<reporting:filter requPathAndQuery="${requPathAndQuery}" filterName="Type"
-										  filterField="type" filterValues="${typeValues}"/>
-					</div>
-					<div class="col-md-3">
-						<reporting:date_filter requPathAndQuery="${requPathAndQuery}" filterName="Start Date"
-											   filterField="startDate"/>
-					</div>
-					<div class="col-md-3">
-						<reporting:date_filter requPathAndQuery="${requPathAndQuery}" filterName="End Date"
-											   filterField="endDate"/>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-5">
-						<form>
-							<input class='form-control typeahead' id='searchPersonAutocomplete'
-								   name='person' autocomplete="on" placeholder='search by person'/>
-						</form>
-					</div>
-					<div class="col-md-5">
-						<form>
-							<input class='form-control typeahead' id='searchOrganizationAutocomplete'
-								   name='organization'
-								   autocomplete="on" placeholder='search by organization'/>
-						</form>
-					</div>
-					<div class="col-md-2">
-						<reporting:export requPathAndQuery="${requPathAndQuery}"/>
+					<div class="form-group">
+						<div class="col-md-3">
+							<label>Organization</label>
+						</div>
+						<div class="col-md-5">
+							<input class="form-control typeahead" id="searchOrganizationAutocomplete"
+							   name='organization'
+							   autocomplete="on" placeholder=""/>
+						</div>
 					</div>
 				</div>
-			</div>
+				<input class="btn btn-primary" type="submit" value="Filter" />
+			</form>
+
+			<hr class="option-result-divider"/>
 
 			<div class="row">
-				<div class="col-md-12 vcenter">
+				<div class="col-md-4 col-md-offset-4 vcenter">
 					<lists:listResultInfo listCommand="${command.projects}"
 										  messageKey="projects.results.description"/>
 				</div>
+				<div class="col-md-4">
+					<reporting:export requPathAndQuery="${requPathAndQuery}"/>
+				</div>
 			</div>
+
+			<hr class="option-result-divider"/>
 
             <div class="row">
 				<div class="col-md-12">
 					<project:listview projectListCommand="${command.projects}"/>
 				</div>
 			</div>
-            <nav aria-label="Page navigation example">
-                <p class="info" id="show-amount"/><br/>
-                <ul class="pagination" id="pagin"/>
-            </nav>
 		</jsp:attribute>
 	</layout:paneLayout>
 </jsp:root>

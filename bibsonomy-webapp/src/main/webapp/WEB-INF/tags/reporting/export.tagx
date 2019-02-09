@@ -9,16 +9,16 @@
 	<div class="btn-group">
 		<button type="button" class="btn btn-default dropdown-toggle"
 				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			Export
+			Export all results
 			<span class="caret" />
 		</button>
-		<div class="dropdown-menu">
+		<ul class="dropdown-menu">
 			<spring:eval var="exportValues" expression="T(org.bibsonomy.export.Exporter).EXPORT_FORMATS"/>
 			<c:forEach var="m_form" items="${exportValues}">
-				<a href="${mtl:setParam(requPathAndQuery, 'downloadFormat', m_form)}" class="dropdown-item">
+				<li><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'downloadFormat', m_form), 'projects.entriesPerPage', '1000000')}" class="dropdown-item">
 					<c:out value="${m_form}"/>
-				</a>
+				</a></li>
 			</c:forEach>
-		</div>
+		</ul>
 	</div>
 </jsp:root>

@@ -25,6 +25,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 
+/**
+ * @author pda
+ */
 public class ReportDownloadView extends AbstractView {
 
 	private static <T> Exporter<T> getExporter(String name) {
@@ -42,7 +45,7 @@ public class ReportDownloadView extends AbstractView {
 		setResponseValues(exporter, response, command.getFilename());
 		//TODO use subset of mappings?
 		exporter.save(command.getProjects().getList(), outputStream,
-						ReportDownloadViewUtils.INSTANCE.getProjectMappings());
+						ReportDownloadViewUtils.PROJECT_FIELD_MAPPINGS);
 	}
 
 	private void exportPublications(PublicationReportingCommand command, OutputStream outputStream,
@@ -51,7 +54,7 @@ public class ReportDownloadView extends AbstractView {
 		setResponseValues(exporter, response, command.getFilename());
 		//TODO use subset of mappings?
 		exporter.save(command.getPublications().getList(), outputStream,
-						ReportDownloadViewUtils.INSTANCE.getPublicationMappings());
+						ReportDownloadViewUtils.PUBLICATION_FIELD_MAPPINGS);
 	}
 
 	private void exportPersons(PersonReportingCommand command, OutputStream outputStream,
@@ -60,7 +63,7 @@ public class ReportDownloadView extends AbstractView {
 		setResponseValues(exporter, response, command.getFilename());
 		//TODO use subset of mappings?
 		exporter.save(command.getPersons().getList(), outputStream,
-						ReportDownloadViewUtils.INSTANCE.getPersonMappings());
+						ReportDownloadViewUtils.PERSON_FIELD_MAPPINGS);
 	}
 
 	private void setResponseValues(Exporter<?> exporter, HttpServletResponse response, String fileName)

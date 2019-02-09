@@ -5,6 +5,10 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.webapp.command.ListCommand;
 
+/**
+ * command for project reporting page
+ * @author pda
+ */
 public class ProjectReportingCommand extends ReportingCommand {
 	private final ListCommand<Project> projects = new ListCommand<>(this);
 	private String type, sponsor;

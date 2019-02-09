@@ -5,8 +5,6 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
 /**
  * @author pda
@@ -23,7 +21,7 @@ public interface Exporter<T> {
 	 * @throws IOException
 	 */
 	void save(Collection<T> entities, OutputStream outputStream,
-						Map<String, Function<T, String>> mappings) throws IOException;
+						List<ExportFieldMapping<T>> mappings) throws IOException;
 
 	/**
 	 * @return the content type of the written format

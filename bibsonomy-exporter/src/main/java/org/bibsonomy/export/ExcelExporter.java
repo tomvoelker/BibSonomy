@@ -7,8 +7,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -35,13 +37,13 @@ public class ExcelExporter<T> implements Exporter<T> {
 	}
 
 	@Override
-	public void save(Collection<T> entities, OutputStream outputStream, Map<String, Function<T, String>> mappings) throws IOException {
+	public void save(Collection<T> entities, OutputStream outputStream, List<ExportFieldMapping<T>> mappings) throws IOException {
 		final XSSFWorkbook workbook = new XSSFWorkbook();
 		final Sheet sheet = workbook.createSheet();
-		fillHeaderRow(sheet.createRow(0), mappings.keySet());
+		fillHeaderRow(sheet.createRow(0), mappings.stream().map(ExportFieldMapping::getHeader).collect(Collectors.toList()));
 		int row = 1;
 		for (T entity : entities) {
-			fillRow(sheet.createRow(row++), entity, mappings.values());
+			fillRow(sheet.createRow(row++), entity, mappings.stream().map(ExportFieldMapping::getConverter).collect(Collectors.toList()));
 		}
 		// auto size columns
 		IntStream.range(0, mappings.size()).forEach(sheet::autoSizeColumn);
