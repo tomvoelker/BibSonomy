@@ -85,6 +85,7 @@ import org.bibsonomy.model.logic.query.Query;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.query.statistics.meta.MetaDataQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -949,6 +950,11 @@ public class ReadOnlyLogic implements LogicInterface {
 	@Override
 	public Statistics getStatistics(final Query query) {
 		return this.logicinterface.getStatistics(query);
+	}
+
+	@Override
+	public <R> R getMetaData(MetaDataQuery<R> query) {
+		return this.logicinterface.getMetaData(query);
 	}
 
 	@Override

@@ -62,6 +62,7 @@
 
 				<!-- will be filled with the autocomplete -->
 				<input type="text" name="person.personId" value="${person.personId}" id="personField" />
+				<input type="text" name="organization.name" value="${organization.name}" id="organizationField" />
 
 				<div class="reporting-filter">
 					<reporting:dateFilter requPathAndQuery="${requPathAndQuery}" filterName="Start Date"
@@ -100,6 +101,10 @@
 							<input class="form-control typeahead" id="searchOrganizationAutocomplete"
 							   name='organization'
 							   autocomplete="on" placeholder=""/>
+
+							<button class="btn btn-default btn-sm clean-typeahead" data-id="organizationField">
+								Clear
+							</button>
 						</div>
 					</div>
 				</div>

@@ -83,6 +83,7 @@ import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.query.Query;
+import org.bibsonomy.model.logic.query.statistics.meta.MetaDataQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -1017,6 +1018,12 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 
 	@Override
 	public JobResult deleteCRISLink(Linkable source, Linkable target) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	@Override
+	public <R> R getMetaData(MetaDataQuery<R> query) {
 		this.doDefaultAction();
 		return null;
 	}

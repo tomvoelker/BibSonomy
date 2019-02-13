@@ -62,6 +62,8 @@ import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.Query;
+import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldValuesQuery;
+import org.bibsonomy.model.logic.query.statistics.meta.MetaDataQuery;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.user.remote.RemoteUserId;
@@ -771,4 +773,12 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @return
 	 */
 	Statistics getStatistics(final Query query);
+
+	/**
+	 * returns the meta data the query requests
+	 * @param query
+	 * @param <R>
+	 * @return
+	 */
+	<R> R getMetaData(MetaDataQuery<R> query);
 }

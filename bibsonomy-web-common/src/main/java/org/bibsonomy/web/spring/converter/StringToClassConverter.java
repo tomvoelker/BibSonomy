@@ -28,6 +28,10 @@ package org.bibsonomy.web.spring.converter;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.springframework.core.convert.converter.Converter;
@@ -41,6 +45,8 @@ import org.springframework.util.ClassUtils;
 public class StringToClassConverter implements Converter<String, Class<?>> {
 
 	private ClassLoader loader = ClassUtils.getDefaultClassLoader();
+
+	private final List<Package> modelPackages = getModelPackages();
 	
 	@Override
 	public Class<?> convert(String text) {
@@ -51,10 +57,33 @@ public class StringToClassConverter implements Converter<String, Class<?>> {
 			if (present(clazz)) {
 				return clazz;
 			}
-			
+
+			/*
+			 * check for classes in our model package and all sub packages
+			 */
+
+			final String normedClassName = text.substring(0, 1).toUpperCase() + text.substring(1);
+			for (final Package aPackage : this.modelPackages) {
+				final String name = aPackage.getName();
+
+				try {
+					final Class<?> modelClass = ClassUtils.resolveClassName(name + "." + normedClassName, this.loader);
+					if (present(modelClass)) {
+						return modelClass;
+					}
+				} catch (IllegalArgumentException e) {
+					// ignore
+				}
+			}
+
 			return ClassUtils.resolveClassName(text, this.loader);
 		}
 		return null;
+	}
+
+	private static List<Package> getModelPackages() {
+		final Package modelPackage = Resource.class.getPackage();
+		return Arrays.stream(Package.getPackages()).filter(aPackage -> aPackage.getName().startsWith(modelPackage.getName())).collect(Collectors.toList());
 	}
 
 	/**

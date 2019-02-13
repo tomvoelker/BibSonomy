@@ -3,9 +3,13 @@ package org.bibsonomy.search.es.search.project;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.apache.lucene.search.join.ScoreMode;
 import org.bibsonomy.common.Pair;
@@ -34,6 +38,9 @@ import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.join.query.HasChildQueryBuilder;
 import org.elasticsearch.join.query.JoinQueryBuilders;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
 /**
@@ -42,6 +49,12 @@ import org.elasticsearch.search.sort.SortOrder;
  * @author dzo
  */
 public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Project, ProjectQuery, SearchIndexSyncState, Boolean> implements ProjectSearch {
+
+	private static final Map<Function<Project, ?>, String> FIELD_MAPPER = new HashMap<>();
+	static {
+		FIELD_MAPPER.put(Project::getSponsor, ProjectFields.SPONSOR);
+		FIELD_MAPPER.put(Project::getType, ProjectFields.TYPE);
+	}
 
 	private final SearchInfoLogic infoLogic;
 
@@ -64,6 +77,18 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 	@Override
 	public Statistics getStatistics(User loggedinUser, ProjectQuery query) {
 		return this.statisticsForSearch(loggedinUser, query);
+	}
+
+	@Override
+	public <E> Set<E> getDistinctFieldValues(final Function<Project, E> getter) {
+		final TermsAggregationBuilder distinctTermsAggregation = AggregationBuilders.terms("distinct_terms");
+		distinctTermsAggregation.field("sponsor");
+
+		final SearchHits results = this.manager.search(QueryBuilders.matchAllQuery(), distinctTermsAggregation, null, 0, 10000, null, null);
+
+
+
+		return new HashSet<>();
 	}
 
 	@Override

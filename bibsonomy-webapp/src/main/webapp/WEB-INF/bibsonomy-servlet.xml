@@ -327,6 +327,7 @@
 		<property name="publicationReader" ref="bibtexReader" />
 		<property name="crisLinkDatabaseManager" ref="crisLinkDatabaseManger" />
 		<property name="personResourceRelationManager" ref="personResourceRelationDatabaseManager" />
+		<property name="metaDataProvidersMap" ref="metaDataProviders" />
 	</bean>
 
 	<bean id="abstractLogicInterfaceFactory" class="org.bibsonomy.database.AbstractDBLogicInterfaceFactory" abstract="true">
@@ -635,6 +636,17 @@
 								<value>fieldKeys</value>
 								<value>search</value>
 								<value>prefix</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/statistics/distinctFieldValues">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="distinctFieldValuesStatisticPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>clazz</value>
+								<value>field</value>
 							</list>
 						</property>
 					</bean>
@@ -1219,6 +1231,17 @@
 					<property name="alertType" value="success" /> 
 				</bean>
 			</list>
+		</property>
+	</bean>
+
+	<bean id="distinctFieldValuesStatisticPageController" class="org.bibsonomy.webapp.controller.statistics.meta.DistinctFieldValuesController" scope="request">
+		<property name="logic" ref="logic" />
+		<property name="mappers">
+			<map>
+				<entry key-ref="projectClass">
+					<util:constant static-field="org.bibsonomy.model.cris.Project.METHOD_REFERENCE"/>
+				</entry>
+			</map>
 		</property>
 	</bean>
 

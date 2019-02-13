@@ -54,20 +54,15 @@ public class GroupsPageController extends SingleResourceListController implement
 		/*
 		 * get requested groups
 		 */
-		if ("html".equals(format)) {
-			final GroupQuery groupQuery = GroupQuery.builder()
-							.start(groupListCommand.getStart())
-							.end(groupListCommand.getStart() + groupListCommand.getEntriesPerPage())
-							.pending(false)
-							.organization(command.getOrganizations())
-							.prefix(command.getPrefix())
-							.search(command.getSearch())
-							.order(GroupOrder.GROUP_REALNAME).build();
-			groupListCommand.setList(this.logic.getGroups(groupQuery));
-		} else if ("json".equals(format)) {
-			// FIXME:  why does changing the format change the result of the controller?
-			groupListCommand.setList(command.getContext().getLoginUser().getGroups());
-		}
+		final GroupQuery groupQuery = GroupQuery.builder()
+						.start(groupListCommand.getStart())
+						.end(groupListCommand.getStart() + groupListCommand.getEntriesPerPage())
+						.pending(false)
+						.organization(command.getOrganizations())
+						.prefix(command.getPrefix())
+						.search(command.getSearch())
+						.order(GroupOrder.GROUP_REALNAME).build();
+		groupListCommand.setList(this.logic.getGroups(groupQuery));
 
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {

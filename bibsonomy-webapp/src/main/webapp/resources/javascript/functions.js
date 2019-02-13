@@ -872,18 +872,8 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 		});
 	}
 	
-	if(forAllowed) {
+	if (forAllowed) {
 		getGroups = function () {return groups;};
-		$.ajax({
-			url: '/json/groups',
-			async: false,
-			dataType: "jsonp",
-			success: function (data) {
-				groups = $.map( data.items, function( item ) {
-					return item.name;
-				});
-			}
-		});
 	}
 		
 	var autocompleteObj = textfield.autocomplete({		

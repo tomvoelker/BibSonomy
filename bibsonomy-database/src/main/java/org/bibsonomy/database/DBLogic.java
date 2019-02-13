@@ -109,6 +109,7 @@ import org.bibsonomy.database.managers.discussion.CommentDatabaseManager;
 import org.bibsonomy.database.managers.discussion.DiscussionDatabaseManager;
 import org.bibsonomy.database.managers.discussion.DiscussionItemDatabaseManager;
 import org.bibsonomy.database.managers.discussion.ReviewDatabaseManager;
+import org.bibsonomy.database.managers.metadata.MetaDataProvider;
 import org.bibsonomy.database.managers.util.PostStatisticsProviderDelegator;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
@@ -159,6 +160,7 @@ import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.query.statistics.meta.MetaDataQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.query.Query;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
@@ -178,6 +180,7 @@ import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.bibsonomy.util.ExceptionUtils;
+import org.bibsonomy.util.GetProvider;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.ValidationUtils;
 
@@ -238,6 +241,7 @@ public class DBLogic implements LogicInterface {
 	private DBSessionFactory dbSessionFactory;
 	private BibTexReader publicationReader;
 	private User loginUser;
+	private Map<Class<?>, MetaDataProvider<?>> metaDataProvidersMap;
 
 	/**
 	 * Returns an implementation of the DBLogic.
@@ -3907,6 +3911,15 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+	@Override
+	public <R> R getMetaData(MetaDataQuery<R> query) {
+		return this.getMetaDataProvider(query).getMetaData(query);
+	}
+
+	private <R> MetaDataProvider<R> getMetaDataProvider(MetaDataQuery<R> query) {
+		return (MetaDataProvider<R>) this.metaDataProvidersMap.get(query.getClass());
+	}
+
 	/**
 	 * @param projectDatabaseManager the projectDatabaseManager to set
 	 */
@@ -3926,6 +3939,13 @@ public class DBLogic implements LogicInterface {
 	 */
 	public void setPersonResourceRelationManager(PersonResourceRelationDatabaseManager personResourceRelationManager) {
 		this.personResourceRelationManager = personResourceRelationManager;
+	}
+
+	/**
+	 * @param metaDataProvidersMap the metaDataProvidersMap to set
+	 */
+	public void setMetaDataProvidersMap(Map<Class<?>, MetaDataProvider<?>> metaDataProvidersMap) {
+		this.metaDataProvidersMap = metaDataProvidersMap;
 	}
 
 	/**

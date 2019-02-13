@@ -71,6 +71,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
@@ -303,7 +304,7 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public SearchHits search(String indexName, String type, QueryBuilder queryBuilder, HighlightBuilder highlightBuilder, Pair<String, SortOrder> order, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve) {
+	public SearchHits search(String indexName, String type, QueryBuilder queryBuilder, AggregationBuilder aggregationBuilder, HighlightBuilder highlightBuilder, Pair<String, SortOrder> order, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve) {
 		return this.secureCall(() -> {
 			final SearchRequest searchRequest = new SearchRequest();
 			searchRequest.searchType(SearchType.DEFAULT);
@@ -315,6 +316,9 @@ public class ElasticsearchRESTClient implements ESClient {
 			searchSourceBuilder.size(limit);
 			searchSourceBuilder.from(offset);
 			searchSourceBuilder.highlighter(highlightBuilder);
+			if (present(aggregationBuilder)) {
+				searchSourceBuilder.aggregation(aggregationBuilder);
+			}
 
 			if (present(minScore)) {
 				searchSourceBuilder.minScore(minScore.floatValue());

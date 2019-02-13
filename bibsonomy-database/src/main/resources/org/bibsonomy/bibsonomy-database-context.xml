@@ -500,6 +500,27 @@
 			</list>
 		</property>
 	</bean>
+
+	<util:map id="metaDataProviders">
+		<entry>
+			<key>
+				<bean class="java.lang.Class" factory-method="forName">
+					<constructor-arg value="org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldValuesQuery" />
+				</bean>
+			</key>
+			<bean class="org.bibsonomy.database.managers.metadata.DistinctFieldValuesProvider">
+				<constructor-arg>
+					<map>
+						<entry key-ref="projectClass">
+							<bean class="org.bibsonomy.database.managers.metadata.ProjectMetaDataAdapter">
+								<constructor-arg ref="projectSearch" />
+							</bean>
+						</entry>
+					</map>
+				</constructor-arg>
+			</bean>
+		</entry>
+	</util:map>
 	
 	<bean id="mainDataSource" class="${database.datasource.class}" parent="basicDataSource">
 		<property name="driverClassName" value="${database.main.driverClassName}" />

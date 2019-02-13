@@ -42,6 +42,13 @@
 	</c:forEach>
 	<!--  remove last comma -->
 	<c:set var="hiddenSystemTags" value="${fn:substring(hiddenSystemTags, 0, fn:length(hiddenSystemTags) - 1 )}" />
+
+	<c:set var="groupsString" value="" />
+	<!-- groups of the logged in user -->
+	<c:forEach var="group" items="${loginUser.groups}">
+		<c:set var="groupsString" value='${groupsString} "${group.name}",'/>
+	</c:forEach>
+	<c:set var="groupsString" value="${fn:substring(groupsString, 0, fn:length(groupsString) - 1 )}" />
 	
 	<!--+
 		|
@@ -98,6 +105,9 @@
 						},
 						"confirmDelete" : ${loginUser.settings.confirmDelete}
 					};
+					var groups = [
+						${groupsString}
+					];
 					var requUser = ${(requestedUser ne '') ? requestedUserString : "null"};
 					var hiddenSystemTags = [
 						${hiddenSystemTags}

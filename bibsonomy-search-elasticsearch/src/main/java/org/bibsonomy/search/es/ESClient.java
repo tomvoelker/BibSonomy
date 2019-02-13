@@ -38,13 +38,13 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.client.DeleteData;
 import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.client.UpdateData;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
@@ -197,6 +197,7 @@ public interface ESClient {
 	 * @param indexName
 	 * @param type
 	 * @param queryBuilder
+	 * @param aggregationBuilder
 	 * @param highlightBuilder
 	 * @param order
 	 * @param offset
@@ -205,7 +206,7 @@ public interface ESClient {
 	 * @param fieldsToRetrieve
 	 * @return the search hits of the provided query
 	 */
-	SearchHits search(String indexName, final String type, QueryBuilder queryBuilder, HighlightBuilder highlightBuilder, Pair<String, SortOrder> order, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve);
+	SearchHits search(String indexName, final String type, QueryBuilder queryBuilder, AggregationBuilder aggregationBuilder, HighlightBuilder highlightBuilder, Pair<String, SortOrder> order, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve);
 
 	/**
 	 * @param indexName

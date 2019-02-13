@@ -1,10 +1,17 @@
 package org.bibsonomy.search.es.index.converter.project;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
+import org.bibsonomy.model.cris.Project;
+
 /**
  * all fields of a {@link org.bibsonomy.model.cris.Project} in the elasticsearch index
  * @author dzo
  */
 public interface ProjectFields {
+
 	/*+ the project mapping type */
 	String PROJECT_DOCUMENT_TYPE = "project";
 

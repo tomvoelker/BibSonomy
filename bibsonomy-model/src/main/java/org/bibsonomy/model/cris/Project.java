@@ -29,6 +29,7 @@ package org.bibsonomy.model.cris;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * model representation of a project
@@ -36,6 +37,18 @@ import java.util.List;
  * @author dzo
  */
 public class Project implements Linkable {
+
+	/**
+	 * a lookup method for method references for this class
+	 */
+	public static final Function<String, Function<Project, ?>> METHOD_REFERENCE = (field) -> {
+		switch (field) {
+			case "sponsor": return Project::getSponsor;
+			case "type": return Project::getType;
+		}
+
+		return null;
+	};
 
 	/** the database id */
 	private Integer id;

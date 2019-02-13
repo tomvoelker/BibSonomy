@@ -6,6 +6,8 @@ import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.statistics.Statistics;
 
 import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
 
 /**
  * search interface to search for {@link Project}s using the full text search
@@ -28,4 +30,11 @@ public interface ProjectSearch {
 	 * @return
 	 */
 	Statistics getStatistics(final User loggedinUser, final ProjectQuery query);
+
+	/**
+	 * returns all values for the specified field
+	 * @param getter
+	 * @return
+	 */
+	<E> Set<E> getDistinctFieldValues(final Function<Project, E> getter);
 }
