@@ -5,6 +5,7 @@ import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.services.searcher.ProjectSearch;
+import org.bibsonomy.util.object.FieldDescriptor;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -30,7 +31,7 @@ public class DummyProjectSearch implements ProjectSearch {
 	}
 
 	@Override
-	public <E> Set<E> getDistinctFieldValues(Function<Project, E> getter) {
+	public <E> Set<E> getDistinctFieldValues(FieldDescriptor<Project, E> fieldDescriptor) {
 		return Collections.emptySet();
 	}
 }

@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldValuesQuery;
+import org.bibsonomy.util.object.FieldDescriptor;
 import org.bibsonomy.webapp.command.statistics.meta.DistinctFieldValuesCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -20,7 +21,7 @@ import net.sf.json.JSONArray;
  */
 public class DistinctFieldValuesController<T> implements MinimalisticController<DistinctFieldValuesCommand<T>> {
 
-	private Map<Class<?>, Function<String, Function<?, ?>>> mappers;
+	private Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers;
 
 	private LogicInterface logic;
 
@@ -31,7 +32,7 @@ public class DistinctFieldValuesController<T> implements MinimalisticController<
 
 	@Override
 	public View workOn(final DistinctFieldValuesCommand<T> command) {
-		final Set<?> values = this.logic.getMetaData(new DistinctFieldValuesQuery<>(command.getClazz(), createFieldGetter(command)));
+		final Set<?> values = this.logic.getMetaData(new DistinctFieldValuesQuery<>(command.getClazz(), createFieldDescriptor(command)));
 
 		final JSONArray jsonArray = new JSONArray();
 		jsonArray.addAll(values);
@@ -40,15 +41,15 @@ public class DistinctFieldValuesController<T> implements MinimalisticController<
 		return Views.AJAX_JSON;
 	}
 
-	private Function<T, ?> createFieldGetter(DistinctFieldValuesCommand<T> command) {
+	private FieldDescriptor<T, ?> createFieldDescriptor(DistinctFieldValuesCommand<T> command) {
 		final Class<T> clazz = command.getClazz();
-		return (Function<T, ?>) mappers.get(clazz).apply(command.getField());
+		return (FieldDescriptor<T, ?>) mappers.get(clazz).apply(command.getField());
 	}
 
 	/**
 	 * @param mappers the mappers to set
 	 */
-	public void setMappers(Map<Class<?>, Function<String, Function<?, ?>>> mappers) {
+	public void setMappers(Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers) {
 		this.mappers = mappers;
 	}
 

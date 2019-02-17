@@ -55,7 +55,7 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 
 			final int offset = BasicQueryUtils.calcOffset(query);
 			final int limit = BasicQueryUtils.calcLimit(query);
-			final SearchHits hits = this.manager.search(queryBuilder, null, sortOrder, offset, limit, null, null);
+			final SearchHits hits = this.manager.search(queryBuilder, sortOrder, offset, limit, null, null);
 
 			if (hits == null) {
 				return results;

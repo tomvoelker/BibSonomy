@@ -58,6 +58,7 @@ import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.sort.SortOrder;
 
 import java.net.URI;
@@ -619,11 +620,9 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		return this.entityInformationProvider.getPrivateFields();
 	}
 
-
 	/**
 	 * execute a search
 	 * @param query the query to use
-	 * @param aggregationBuilder
 	 * @param order the order
 	 * @param offset the offset
 	 * @param limit the limit
@@ -631,8 +630,18 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 	 * @param fieldsToRetrieve the fields to retrieve
 	 * @return
 	 */
-	public SearchHits search(final QueryBuilder query, AggregationBuilder aggregationBuilder, final Pair<String, SortOrder> order, int offset, int limit, Float minScore, final Set<String> fieldsToRetrieve) {
-		return this.client.search(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query, aggregationBuilder, null, order, offset, limit, minScore, fieldsToRetrieve);
+	public SearchHits search(final QueryBuilder query, final Pair<String, SortOrder> order, int offset, int limit, Float minScore, final Set<String> fieldsToRetrieve) {
+		return this.client.search(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query, null, order, offset, limit, minScore, fieldsToRetrieve);
+	}
+
+	/**
+	 * executes an aggregation using the active index
+	 * @param query
+	 * @param aggregationBuilder
+	 * @return
+	 */
+	public Aggregations aggregate(final QueryBuilder query, final AggregationBuilder aggregationBuilder) {
+		return this.client.aggregate(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query, aggregationBuilder);
 	}
 
 	/**
@@ -644,7 +653,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 	 * @return
 	 */
 	public SearchHits search(final QueryBuilder query, int limit, int offset) {
-		return this.search(query, null, null, offset, limit, null, null);
+		return this.search(query, null, offset, limit, null, null);
 	}
 
 	public long getDocumentCount(QueryBuilder query) {

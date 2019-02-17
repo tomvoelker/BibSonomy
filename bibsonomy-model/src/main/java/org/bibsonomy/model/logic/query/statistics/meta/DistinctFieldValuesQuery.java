@@ -1,7 +1,8 @@
 package org.bibsonomy.model.logic.query.statistics.meta;
 
 import java.util.Set;
-import java.util.function.Function;
+
+import org.bibsonomy.util.object.FieldDescriptor;
 
 /**
  * query to get the distinct values indicated from a specific field
@@ -12,7 +13,7 @@ import java.util.function.Function;
  */
 public class DistinctFieldValuesQuery<T, E> implements MetaDataQuery<Set<E>> {
 
-	private final Function<T, E> fieldGetter;
+	private final FieldDescriptor<T, E> fieldDescriptor;
 	private final Class<T> clazz;
 
 	/**
@@ -20,16 +21,16 @@ public class DistinctFieldValuesQuery<T, E> implements MetaDataQuery<Set<E>> {
 	 * @param clazz
 	 * @param fieldGetter
 	 */
-	public DistinctFieldValuesQuery(Class<T> clazz, Function<T, E> fieldGetter) {
+	public DistinctFieldValuesQuery(Class<T> clazz, FieldDescriptor<T, E> fieldGetter) {
 		this.clazz = clazz;
-		this.fieldGetter = fieldGetter;
+		this.fieldDescriptor = fieldGetter;
 	}
 
 	/**
-	 * @return the fieldGetter
+	 * @return the fieldDescriptor
 	 */
-	public Function<T, E> getFieldGetter() {
-		return fieldGetter;
+	public FieldDescriptor<T, E> getFieldDescriptor() {
+		return fieldDescriptor;
 	}
 
 	/**

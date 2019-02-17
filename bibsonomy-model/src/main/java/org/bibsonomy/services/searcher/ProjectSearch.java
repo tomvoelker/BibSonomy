@@ -4,6 +4,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.statistics.Statistics;
+import org.bibsonomy.util.object.FieldDescriptor;
 
 import java.util.List;
 import java.util.Set;
@@ -33,8 +34,8 @@ public interface ProjectSearch {
 
 	/**
 	 * returns all values for the specified field
-	 * @param getter
+	 * @param fieldDescriptor
 	 * @return
 	 */
-	<E> Set<E> getDistinctFieldValues(final Function<Project, E> getter);
+	<E> Set<E> getDistinctFieldValues(final FieldDescriptor<Project, E> fieldDescriptor);
 }

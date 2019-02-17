@@ -31,6 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 
+import org.bibsonomy.util.object.FieldDescriptor;
+
 /**
  * model representation of a project
  *
@@ -38,13 +40,19 @@ import java.util.function.Function;
  */
 public class Project implements Linkable {
 
+	/** the sponsor field */
+	public static final String SPONSOR_FIELD_NAME = "sponsor";
+
+	/** the type field */
+	public static final String TYPE_FIELD_NAME = "type";
+
 	/**
 	 * a lookup method for method references for this class
 	 */
-	public static final Function<String, Function<Project, ?>> METHOD_REFERENCE = (field) -> {
+	public static final Function<String, FieldDescriptor<Project, ?>> METHOD_REFERENCE = (field) -> {
 		switch (field) {
-			case "sponsor": return Project::getSponsor;
-			case "type": return Project::getType;
+			case "sponsor": return new FieldDescriptor<>(SPONSOR_FIELD_NAME, Project::getSponsor);
+			case "type": return new FieldDescriptor<>(TYPE_FIELD_NAME, Project::getType);
 		}
 
 		return null;

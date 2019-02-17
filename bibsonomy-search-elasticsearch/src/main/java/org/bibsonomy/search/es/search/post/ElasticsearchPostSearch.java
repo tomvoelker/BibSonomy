@@ -106,7 +106,7 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 			}
 
 			final Pair<String, SortOrder> sortOrder = getSortOrder(postQuery);
-			final SearchHits hits = this.manager.search(queryBuilder, null, sortOrder, offset, limit, null, null);
+			final SearchHits hits = this.manager.search(queryBuilder, sortOrder, offset, limit, null, null);
 
 			if (hits != null) {
 				posts.setTotalCount((int) hits.getTotalHits());
@@ -161,7 +161,7 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 			final Map<Tag, Integer> tagCounterMap = new HashMap<>();
 			final int offset = BasicQueryUtils.calcOffset(postQuery);
 			final int limit = BasicQueryUtils.calcLimit(postQuery);
-			final SearchHits hits = this.manager.search(query, null, null, offset, limit, null, Collections.singleton(Fields.TAGS));
+			final SearchHits hits = this.manager.search(query, null, offset, limit, null, Collections.singleton(Fields.TAGS));
 
 			for (int i = 0; i < Math.min(limit, hits.getTotalHits() - offset); ++i) {
 				final SearchHit hit = hits.getAt(i);

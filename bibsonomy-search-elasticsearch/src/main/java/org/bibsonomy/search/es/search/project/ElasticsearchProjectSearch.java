@@ -4,12 +4,10 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.apache.lucene.search.join.ScoreMode;
 import org.bibsonomy.common.Pair;
@@ -31,6 +29,7 @@ import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.services.searcher.ProjectSearch;
+import org.bibsonomy.util.object.FieldDescriptor;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -38,8 +37,9 @@ import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.join.query.HasChildQueryBuilder;
 import org.elasticsearch.join.query.JoinQueryBuilders;
-import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
@@ -50,10 +50,11 @@ import org.elasticsearch.search.sort.SortOrder;
  */
 public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Project, ProjectQuery, SearchIndexSyncState, Boolean> implements ProjectSearch {
 
-	private static final Map<Function<Project, ?>, String> FIELD_MAPPER = new HashMap<>();
+	private static final String DISTINCT_TERMS_AGGREGATION_ID = "distinct_terms";
+	private static final Map<String, String> FIELD_MAPPER = new HashMap<>();
 	static {
-		FIELD_MAPPER.put(Project::getSponsor, ProjectFields.SPONSOR);
-		FIELD_MAPPER.put(Project::getType, ProjectFields.TYPE);
+		FIELD_MAPPER.put(Project.SPONSOR_FIELD_NAME, ProjectFields.SPONSOR);
+		FIELD_MAPPER.put(Project.TYPE_FIELD_NAME, ProjectFields.TYPE);
 	}
 
 	private final SearchInfoLogic infoLogic;
@@ -75,20 +76,20 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 	}
 
 	@Override
-	public Statistics getStatistics(User loggedinUser, ProjectQuery query) {
+	public Statistics getStatistics(final User loggedinUser, final ProjectQuery query) {
 		return this.statisticsForSearch(loggedinUser, query);
 	}
 
 	@Override
-	public <E> Set<E> getDistinctFieldValues(final Function<Project, E> getter) {
-		final TermsAggregationBuilder distinctTermsAggregation = AggregationBuilders.terms("distinct_terms");
-		distinctTermsAggregation.field("sponsor");
+	public <E> Set<E> getDistinctFieldValues(FieldDescriptor<Project, E> fieldDescriptor) {
+		final TermsAggregationBuilder distinctTermsAggregation = AggregationBuilders.terms(DISTINCT_TERMS_AGGREGATION_ID);
+		distinctTermsAggregation.field(FIELD_MAPPER.get(fieldDescriptor.getFieldName()));
 
-		final SearchHits results = this.manager.search(QueryBuilders.matchAllQuery(), distinctTermsAggregation, null, 0, 10000, null, null);
+		final Aggregations results = this.manager.aggregate(QueryBuilders.matchAllQuery(), distinctTermsAggregation);
 
-
-
-		return new HashSet<>();
+		final ParsedStringTerms aggregation = results.get(DISTINCT_TERMS_AGGREGATION_ID);
+		// FIXME: add field converter …
+		return (Set<E>) aggregation.getBuckets().stream().map(bucket -> (bucket).getKey()).collect(Collectors.toSet());
 	}
 
 	@Override

@@ -81,7 +81,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 			final int offset = BasicQueryUtils.calcOffset(query);
 			final int limit = BasicQueryUtils.calcLimit(query);
 			Pair<String, SortOrder> sortOrder = this.getSortOrder(query);
-			final SearchHits searchHits = this.manager.search(mainQuery, null, sortOrder, offset, limit, null, null);
+			final SearchHits searchHits = this.manager.search(mainQuery, sortOrder, offset, limit, null, null);
 			final ResultList<Person> persons = new ResultList<>();
 			for (final SearchHit searchHit : searchHits.getHits()) {
 				final Map<String, Object> sourceAsMap = searchHit.getSourceAsMap();

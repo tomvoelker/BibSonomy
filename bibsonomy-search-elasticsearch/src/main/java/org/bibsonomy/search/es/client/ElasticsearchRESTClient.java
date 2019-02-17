@@ -72,6 +72,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
@@ -303,22 +304,24 @@ public class ElasticsearchRESTClient implements ESClient {
 		return updateRequest;
 	}
 
+	private static SearchRequest createSearchRequest(final String indexName, String type) {
+		final SearchRequest searchRequest = new SearchRequest();
+		searchRequest.searchType(SearchType.DEFAULT);
+		searchRequest.types(type);
+		searchRequest.indices(indexName);
+		return searchRequest;
+	}
+
 	@Override
-	public SearchHits search(String indexName, String type, QueryBuilder queryBuilder, AggregationBuilder aggregationBuilder, HighlightBuilder highlightBuilder, Pair<String, SortOrder> order, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve) {
+	public SearchHits search(String indexName, String type, QueryBuilder queryBuilder, HighlightBuilder highlightBuilder, Pair<String, SortOrder> order, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve) {
 		return this.secureCall(() -> {
-			final SearchRequest searchRequest = new SearchRequest();
-			searchRequest.searchType(SearchType.DEFAULT);
-			searchRequest.types(type);
-			searchRequest.indices(indexName);
+			final SearchRequest searchRequest = createSearchRequest(indexName, type);
 
 			final SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 			searchSourceBuilder.query(queryBuilder);
 			searchSourceBuilder.size(limit);
 			searchSourceBuilder.from(offset);
 			searchSourceBuilder.highlighter(highlightBuilder);
-			if (present(aggregationBuilder)) {
-				searchSourceBuilder.aggregation(aggregationBuilder);
-			}
 
 			if (present(minScore)) {
 				searchSourceBuilder.minScore(minScore.floatValue());
@@ -336,6 +339,22 @@ public class ElasticsearchRESTClient implements ESClient {
 			final SearchResponse search = this.client.search(searchRequest, this.buildRequestOptions());
 			return search.getHits();
 		}, null, "error while searching");
+	}
+
+	@Override
+	public Aggregations aggregate(String indexName, String type, QueryBuilder queryBuilder, AggregationBuilder aggregationBuilder) {
+		return this.secureCall(() -> {
+			final SearchRequest searchRequest = createSearchRequest(indexName, type);
+
+			final SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+			searchSourceBuilder.query(queryBuilder);
+			searchSourceBuilder.aggregation(aggregationBuilder);
+			searchSourceBuilder.size(0);
+			searchRequest.source(searchSourceBuilder);
+
+			final SearchResponse search = this.client.search(searchRequest, this.buildRequestOptions());
+			return search.getAggregations();
+		}, null, "error while aggregating");
 	}
 
 	@Override

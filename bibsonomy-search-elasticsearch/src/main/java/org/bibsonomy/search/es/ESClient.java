@@ -45,6 +45,7 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
@@ -197,7 +198,6 @@ public interface ESClient {
 	 * @param indexName
 	 * @param type
 	 * @param queryBuilder
-	 * @param aggregationBuilder
 	 * @param highlightBuilder
 	 * @param order
 	 * @param offset
@@ -206,7 +206,17 @@ public interface ESClient {
 	 * @param fieldsToRetrieve
 	 * @return the search hits of the provided query
 	 */
-	SearchHits search(String indexName, final String type, QueryBuilder queryBuilder, AggregationBuilder aggregationBuilder, HighlightBuilder highlightBuilder, Pair<String, SortOrder> order, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve);
+	SearchHits search(String indexName, final String type, QueryBuilder queryBuilder, HighlightBuilder highlightBuilder, Pair<String, SortOrder> order, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve);
+
+	/**
+	 *
+	 * @param indexName
+	 * @param type
+	 * @param queryBuilder
+	 * @param aggregationBuilder
+	 * @return
+	 */
+	Aggregations aggregate(String indexName, final String type, QueryBuilder queryBuilder, AggregationBuilder aggregationBuilder);
 
 	/**
 	 * @param indexName

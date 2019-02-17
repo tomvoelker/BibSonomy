@@ -5,11 +5,12 @@ import java.util.function.Function;
 
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.services.searcher.ProjectSearch;
+import org.bibsonomy.util.object.FieldDescriptor;
 
 /**
  * @author dzo
  */
-public class ProjectMetaDataAdapter<E> implements Function<Function<Project, E>, Set<E>> {
+public class ProjectMetaDataAdapter<E> implements Function<FieldDescriptor<Project, E>, Set<E>> {
 
 	private ProjectSearch projectSearch;
 
@@ -21,7 +22,7 @@ public class ProjectMetaDataAdapter<E> implements Function<Function<Project, E>,
 	}
 
 	@Override
-	public Set<E> apply(final Function<Project, E> getter) {
-		return this.projectSearch.getDistinctFieldValues(getter);
+	public Set<E> apply(FieldDescriptor<Project, E> fieldDescriptor) {
+		return this.projectSearch.getDistinctFieldValues(fieldDescriptor);
 	}
 }
