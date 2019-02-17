@@ -6,13 +6,14 @@
     <jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true" />
     <jsp:directive.attribute name="filterName" type="java.lang.String" required="true" />
     <jsp:directive.attribute name="filterField" type="java.lang.String" required="true" />
+    <jsp:directive.attribute name="filterValue" type="java.lang.String" required="true" />
     <jsp:directive.attribute name="autocomplete" type="java.lang.String" required="true" />
 
     <div class="form-group">
         <label for="${filterField}" class="col-md-3"><c:out value="${filterName}"/></label>
         <div class="col-md-5">
-            <div class="input-group" id="${filterField}-id">
-                <input type="text" class="form-control" value="${currentFieldValue}" name="${filterField}"/>
+            <div class="input-group ${not empty autocomplete ? ' autocomplete-field' : ''}" id="${filterField}-id" data-autocomplete-url="${autocomplete}">
+                <input type="text" class="form-control" value="${filterValue}" name="${filterField}"/>
             </div>
         </div>
     </div>

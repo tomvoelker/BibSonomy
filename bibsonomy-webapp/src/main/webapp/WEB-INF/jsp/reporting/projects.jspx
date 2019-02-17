@@ -6,7 +6,6 @@
 		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
 		  xmlns:reporting="urn:jsptagdir:/WEB-INF/tags/reporting"
 		  xmlns:project="urn:jsptagdir:/WEB-INF/tags/project"
 		  xmlns:lists="urn:jsptagdir:/WEB-INF/tags/layout/parts/lists"
@@ -38,15 +37,6 @@
 			<link rel="stylesheet" type="text/css" href="${resdir}/typeahead.js/css/typeahead.css"/>
 		</jsp:attribute>
 
-		<jsp:attribute name="breadcrumbs">
-			<nav:breadcrumbs>
-				<jsp:attribute name="crumbs">
-					<fmt:message key="navi.projects" var="projects"/>
-					<nav:crumb name="${projects}" active="true"/>
-				</jsp:attribute>
-			</nav:breadcrumbs>
-		</jsp:attribute>
-
 		<!--+
 		 	| content
 		 	+-->
@@ -70,10 +60,12 @@
 					<reporting:dateFilter requPathAndQuery="${requPathAndQuery}" filterName="End Date"
 										   filterField="endDate"/>
 
-					<reporting:stringFilter requPathAndQuery="${requPathAndQuery}" filterName="Sponsor"
-											autocomplete="/statistics/projects/fields/sponsor" filterField="sponsor"/>
-					<reporting:stringFilter requPathAndQuery="${requPathAndQuery}" filterName="Type"
-											filterField="type" autocomplete="/statistics/projects/fields/type"/>
+					<reporting:stringFilter requPathAndQuery="${requPathAndQuery}"
+											filterName="Sponsor" filterValue="${command.sponsor}"
+											autocomplete="/statistics/project/sponsor" filterField="sponsor"/>
+					<reporting:stringFilter requPathAndQuery="${requPathAndQuery}"
+											filterName="Type" filterValue="${command.type}"
+											filterField="type" autocomplete="/statistics/project/type"/>
 
 					<div class="form-group">
 						<div class="col-md-3">

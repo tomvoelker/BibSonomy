@@ -173,7 +173,7 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 		}
 
 		final Group organization = query.getOrganization();
-		if (present(organization)) {
+		if (present(organization) && present(organization.getName())) {
 			final String name = organization.getName();
 			final Set<String> personsOfOrganization = this.infoLogic.getPersonsOfOrganization(name);
 			if (!present(personsOfOrganization)) {

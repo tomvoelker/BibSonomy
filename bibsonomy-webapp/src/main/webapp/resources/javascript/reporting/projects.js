@@ -13,6 +13,21 @@ $(function () {
 	setupOrganizationAutocomplete('#searchOrganizationAutocomplete', "search", 'realname', function (data) {
 		$('#organizationField').attr('value', data.name);
 	});
+
+	$.each($('div.autocomplete-field'), function() {
+		var dataUrl = $(this).data('autocomplete-url');
+
+		var staticData = new Bloodhound({
+			datumTokenizer: Bloodhound.tokenizers.whitespace,
+			queryTokenizer: Bloodhound.tokenizers.whitespace,
+			prefetch: dataUrl
+		});
+
+		$(this).find('input').typeahead(null, {
+			name: 'fieldSelector',
+			source: staticData
+		});
+	});
 });
 
 var organizationResultLimit = 100;
