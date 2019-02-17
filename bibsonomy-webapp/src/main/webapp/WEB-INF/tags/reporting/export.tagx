@@ -15,7 +15,7 @@
 		<ul class="dropdown-menu">
 			<spring:eval var="exportValues" expression="T(org.bibsonomy.export.Exporter).EXPORT_FORMATS"/>
 			<c:forEach var="m_form" items="${exportValues}">
-				<li><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'downloadFormat', m_form), 'projects.entriesPerPage', '1000000')}" class="dropdown-item">
+				<li><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'downloadFormat', m_form), 'projects.entriesPerPage', '10000')}" class="dropdown-item">
 					<c:out value="${m_form}"/>
 				</a></li>
 			</c:forEach>
