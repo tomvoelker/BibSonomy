@@ -141,8 +141,13 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 		if (query == null) {
 			return new Statistics();
 		}
-		final long documentCount = this.manager.getDocumentCount(query);
-		return new Statistics((int) documentCount);
+
+		final Statistics statistics = new Statistics();
+		return ElasticsearchIndexSearchUtils.callSearch(() -> {
+			final long documentCount = this.manager.getDocumentCount(query);
+			statistics.setCount((int) documentCount);
+			return statistics;
+		}, statistics);
 	}
 
 	protected Pair<String, SortOrder> getSortOrder(PostSearchQuery<?> postQuery) {

@@ -76,7 +76,6 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 		final Statistics statistics = new Statistics();
 		final QueryBuilder queryBuilder = this.buildQuery(loggedinUser, query);
 		if (!present(queryBuilder)) {
-
 			return statistics;
 		}
 
