@@ -5,6 +5,8 @@ import org.bibsonomy.common.exceptions.UnsupportedFormatException;
 import org.bibsonomy.export.ExcelExporter;
 import org.bibsonomy.export.Exporter;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.GoldStandard;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.cris.Project;
@@ -50,7 +52,7 @@ public class ReportDownloadView extends AbstractView {
 
 	private void exportPublications(PublicationReportingCommand command, OutputStream outputStream,
 																	HttpServletResponse response) throws IOException {
-		final Exporter<Post<BibTex>> exporter = getExporter(command.getDownloadFormat());
+		final Exporter<Post<GoldStandardPublication>> exporter = getExporter(command.getDownloadFormat());
 		setResponseValues(exporter, response, command.getFilename());
 		//TODO use subset of mappings?
 		exporter.save(command.getPublications().getList(), outputStream,

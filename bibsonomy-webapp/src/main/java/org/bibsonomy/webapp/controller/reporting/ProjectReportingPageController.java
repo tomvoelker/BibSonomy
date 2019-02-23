@@ -21,6 +21,7 @@ import org.bibsonomy.webapp.view.Views;
  * - /reporting/projects
  *
  * @author pda
+ * @author dzo
  */
 public class ProjectReportingPageController implements MinimalisticController<ProjectReportingCommand> {
 

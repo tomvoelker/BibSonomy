@@ -1,8 +1,9 @@
 package org.bibsonomy.webapp.controller.reporting;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.PersonQuery;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.reporting.PersonReportingCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -14,6 +15,7 @@ import org.bibsonomy.webapp.view.Views;
  * - /reporting/persons
  *
  * @author pda
+ * @author dzo
  */
 public class PersonReportingPageController implements MinimalisticController<PersonReportingCommand> {
 
@@ -37,10 +39,12 @@ public class PersonReportingPageController implements MinimalisticController<Per
 		query.setOrganization(command.getOrganization());
 		query.setStart(command.getPersons().getStart());
 		query.setEnd(command.getPersons().getStart() + command.getPersons().getEntriesPerPage());
-		command.getPersons().setList(logic.getPersons(query));
-		if (ValidationUtils.present(command.getDownloadFormat())) {
+		command.getPersons().setList(this.logic.getPersons(query));
+
+		if (present(command.getDownloadFormat())) {
 			return Views.REPORTING_DOWNLOAD;
 		}
+
 		return Views.PERSONS_REPORTING;
 	}
 }

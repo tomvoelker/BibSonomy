@@ -1,20 +1,19 @@
 package org.bibsonomy.webapp.command.reporting;
 
-import org.bibsonomy.common.enums.Filter;
-import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.ListCommand;
 
-import java.util.Set;
-
+/**
+ * @author pda
+ */
 public class PublicationReportingCommand extends ReportingCommand {
-	private final ListCommand<Post<BibTex>> publications = new ListCommand<>(this);
+	private final ListCommand<Post<GoldStandardPublication>> publications = new ListCommand<>(this);
 	private Order order;
 	private String groupingName;
-	private Set<Filter> filters;
 	private Person person;
 	private Group organization;
 
@@ -34,20 +33,12 @@ public class PublicationReportingCommand extends ReportingCommand {
 		this.groupingName = groupingName;
 	}
 
-	public Set<Filter> getFilters() {
-		return filters;
-	}
-
-	public void setFilters(Set<Filter> filters) {
-		this.filters = filters;
-	}
-
 	@Override
 	public String getFilename() {
 		return "publications";
 	}
 
-	public ListCommand<Post<BibTex>> getPublications() {
+	public ListCommand<Post<GoldStandardPublication>> getPublications() {
 		return publications;
 	}
 

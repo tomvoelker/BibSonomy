@@ -12,6 +12,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * post query builder
+ *
+ * @author pda
+ */
 public class PostQueryBuilder {
 	private QueryScope scope;
 	private GroupingEntity grouping;
@@ -24,6 +29,7 @@ public class PostQueryBuilder {
 	private Date endDate;
 	private boolean onlyIncludeAuthorsWithoutPersonId;
 	private List<PersonName> personNames;
+	private String college;
 	private String search;
 	private int start = 0;
 	private int end = 10;
@@ -44,6 +50,7 @@ public class PostQueryBuilder {
 		postQuery.setOnlyIncludeAuthorsWithoutPersonId(onlyIncludeAuthorsWithoutPersonId);
 		postQuery.setStart(start);
 		postQuery.setEnd(end);
+		postQuery.setCollege(this.college);
 		return postQuery;
 	}
 
@@ -109,6 +116,11 @@ public class PostQueryBuilder {
 
 	public PostQueryBuilder setOnlyIncludeAuthorsWithoutPersonId(boolean onlyIncludeAuthorsWithoutPersonId) {
 		this.onlyIncludeAuthorsWithoutPersonId = onlyIncludeAuthorsWithoutPersonId;
+		return this;
+	}
+
+	public PostQueryBuilder college(final String college) {
+		this.college = college;
 		return this;
 	}
 

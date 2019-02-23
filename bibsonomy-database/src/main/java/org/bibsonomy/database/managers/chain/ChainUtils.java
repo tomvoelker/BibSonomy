@@ -29,6 +29,7 @@ package org.bibsonomy.database.managers.chain;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.common.params.beans.TagIndex;
@@ -36,11 +37,14 @@ import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.systemstags.search.NotTagSystemTag;
+import org.bibsonomy.util.Sets;
 
 /**
  * @author mba
  */
 public class ChainUtils {
+
+	private static final Set<GroupingEntity> GROUPING_ENTITIES_SEARCH = Sets.asSet(GroupingEntity.GROUP, GroupingEntity.PERSON, GroupingEntity.ORGANIZATION);
 
 	public static boolean useResourceSearch(final GenericParam param) {
 		final PermissionDatabaseManager pdm = PermissionDatabaseManager.getInstance();
@@ -75,7 +79,7 @@ public class ChainUtils {
 		/*
 		 * Handle requests for groups and organizations
 		 */
-		if (grouping == GroupingEntity.GROUP || GroupingEntity.ORGANIZATION.equals(grouping)) {
+		if (GROUPING_ENTITIES_SEARCH.contains(grouping)) {
 			return true;
 		}
 

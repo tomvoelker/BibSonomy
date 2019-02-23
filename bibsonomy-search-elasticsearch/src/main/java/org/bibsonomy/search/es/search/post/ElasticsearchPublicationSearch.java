@@ -177,7 +177,11 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 			}
 		}
 
+		/*
+		 * for a cris system we only want publications of persons that are associated with the college
+		 */
 		final String college = postQuery.getCollege();
+
 		if (present(college)) {
 			final BoolQueryBuilder collegeFilter = QueryBuilders.boolQuery();
 			final QueryBuilder collegeAuthorFilter = buildCollegeTermFilter(Fields.Publication.AUTHORS, college);
@@ -185,6 +189,10 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 			collegeFilter.should(collegeAuthorFilter).should(collegeEditorFilter);
 			filterBuilder.must(collegeFilter);
 		}
+
+		/*
+		 * filter publications for an organization
+		 */
 		final GroupingEntity grouping = postQuery.getGrouping();
 		if (GroupingEntity.ORGANIZATION.equals(grouping)) {
 			final String groupingName = postQuery.getGroupingName();
@@ -197,6 +205,13 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 			final BoolQueryBuilder organizationQuery = QueryBuilders.boolQuery();
 			personIds.stream().map(ElasticsearchPublicationSearch::buildPersonFilter).forEach(organizationQuery::should);
 			filterBuilder.must(organizationQuery);
+		}
+
+		if (GroupingEntity.PERSON.equals(grouping)) {
+			final String groupingName = postQuery.getGroupingName();
+
+			final QueryBuilder personFilter = buildPersonFilter(groupingName);
+			filterBuilder.must(personFilter);
 		}
 
 		return filterBuilder;

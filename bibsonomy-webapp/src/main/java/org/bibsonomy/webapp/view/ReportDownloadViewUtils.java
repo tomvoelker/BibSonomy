@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.view;
 
 import org.bibsonomy.export.ExportFieldMapping;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -20,6 +21,8 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
+ * mappings for reporting
+ *
  * @author pda
  */
 public final class ReportDownloadViewUtils {
@@ -28,7 +31,7 @@ public final class ReportDownloadViewUtils {
 
 	public final static List<ExportFieldMapping<Project>> PROJECT_FIELD_MAPPINGS = new LinkedList<>();
 	public final static List<ExportFieldMapping<Person>> PERSON_FIELD_MAPPINGS = new LinkedList<>();
-	public final static List<ExportFieldMapping<Post<BibTex>>> PUBLICATION_FIELD_MAPPINGS = new LinkedList<>();
+	public final static List<ExportFieldMapping<Post<GoldStandardPublication>>> PUBLICATION_FIELD_MAPPINGS = new LinkedList<>();
 
 	static {
 		PROJECT_FIELD_MAPPINGS.add(new ExportFieldMapping<>("title", Project::getTitle));
@@ -59,11 +62,16 @@ public final class ReportDownloadViewUtils {
 	}
 
 	static {
+		PUBLICATION_FIELD_MAPPINGS.add(new ExportFieldMapping<>("title", post -> post.getResource().getTitle()));
+		PUBLICATION_FIELD_MAPPINGS.add(new ExportFieldMapping<>("authors", post -> PersonNameUtils.serializePersonNames(post.getResource().getAuthor())));
+		PUBLICATION_FIELD_MAPPINGS.add(new ExportFieldMapping<>("editors", post -> PersonNameUtils.serializePersonNames(post.getResource().getEditor())));
+		PUBLICATION_FIELD_MAPPINGS.add(new ExportFieldMapping<>("year", post -> post.getResource().getYear()));
+		PUBLICATION_FIELD_MAPPINGS.add(new ExportFieldMapping<>("journal", post -> post.getResource().getJournal()));
+		PUBLICATION_FIELD_MAPPINGS.add(new ExportFieldMapping<>("booktitle", post -> post.getResource().getBooktitle()));
+		PUBLICATION_FIELD_MAPPINGS.add(new ExportFieldMapping<>("type", post -> post.getResource().getType()));
 		PUBLICATION_FIELD_MAPPINGS.add(new ExportFieldMapping<>("description", Post::getDescription));
-		PUBLICATION_FIELD_MAPPINGS.add(new ExportFieldMapping<>("tags", p -> p.getTags().stream().map(Tag::getName).
-						collect(Collectors.joining(" "))));
+		PUBLICATION_FIELD_MAPPINGS.add(new ExportFieldMapping<>("tags", p -> p.getTags().stream().map(Tag::getName).collect(Collectors.joining(" "))));
 		PUBLICATION_FIELD_MAPPINGS.add(new ExportFieldMapping<>("date", p -> formatDate(p.getDate())));
-		//TODO what to include from posts?
 	}
 
 	private static String formatNumber(Float number) {

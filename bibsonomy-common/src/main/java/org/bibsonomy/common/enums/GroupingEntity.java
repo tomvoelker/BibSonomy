@@ -56,6 +56,11 @@ public enum GroupingEntity {
 	 * includes all entities of the group and each subgroup
 	 */
 	ORGANIZATION,
+
+	/**
+	 * filter by person
+	 */
+	PERSON,
 	
 	/* TODO: describe why this is called "viewable" */
 	/**
