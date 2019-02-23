@@ -17,6 +17,9 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
+ * controller for the project reporting page
+ * - /reporting/projects
+ *
  * @author pda
  */
 public class ProjectReportingPageController implements MinimalisticController<ProjectReportingCommand> {

@@ -45,6 +45,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.auth.util.SimpleAuthUtils;
 import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
@@ -3857,9 +3858,9 @@ public class DBLogic implements LogicInterface {
 
 	@Override
 	public Project getProjectDetails(final String projectId) {
-		final boolean admin = this.permissionDBManager.isAdmin(this.loginUser);
+		final boolean fullDetails = SimpleAuthUtils.hasAtLeastUserRole(this.loginUser, Role.REPORTING_USER);
 		try (final DBSession session = this.openSession()) {
-			return this.projectDatabaseManager.getProjectDetails(projectId, admin, session);
+			return this.projectDatabaseManager.getProjectDetails(projectId, fullDetails, session);
 		}
 	}
 

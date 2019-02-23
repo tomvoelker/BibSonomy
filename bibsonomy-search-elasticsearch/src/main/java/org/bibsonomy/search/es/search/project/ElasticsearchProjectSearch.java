@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.lucene.search.join.ScoreMode;
+import org.bibsonomy.auth.util.SimpleAuthUtils;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.common.enums.Role;
@@ -101,7 +102,7 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 
 	@Override
 	protected Boolean getConversionOptions(final User loggedinUser) {
-		return Role.ADMIN.equals(loggedinUser.getRole());
+		return SimpleAuthUtils.hasAtLeastUserRole(loggedinUser, Role.REPORTING_USER);
 	}
 
 	@Override

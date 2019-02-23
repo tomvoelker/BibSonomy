@@ -8,6 +8,13 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
+/**
+ * reporting controller for persons
+ *
+ * - /reporting/persons
+ *
+ * @author pda
+ */
 public class PersonReportingPageController implements MinimalisticController<PersonReportingCommand> {
 
 	private LogicInterface logic;

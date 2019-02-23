@@ -51,8 +51,8 @@
 				<input type="hidden" name="prefix" value="${prefix}" />
 
 				<!-- will be filled with the autocomplete -->
-				<input type="text" name="person.personId" value="${person.personId}" id="personField" />
-				<input type="text" name="organization.name" value="${organization.name}" id="organizationField" />
+				<input type="hidden" name="person.personId" value="${person.personId}" id="personField" />
+				<input type="hidden" name="organization.name" value="${organization.name}" id="organizationField" />
 
 				<div class="reporting-filter">
 					<reporting:dateFilter requPathAndQuery="${requPathAndQuery}" filterName="Start Date"

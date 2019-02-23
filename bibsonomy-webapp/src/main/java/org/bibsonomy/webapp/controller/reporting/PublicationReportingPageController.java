@@ -10,6 +10,12 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
+/**
+ * controller for the publication reporting page
+ * - /reporting/publications
+ *
+ * @author pda
+ */
 public class PublicationReportingPageController implements MinimalisticController<PublicationReportingCommand> {
 
 	private LogicInterface logic;
@@ -29,7 +35,7 @@ public class PublicationReportingPageController implements MinimalisticControlle
 
 	@Override
 	public View workOn(PublicationReportingCommand command) {
-		//TODO include filter by person and organization
+		// TODO include filter by person and organization
 		final PostQuery<BibTex> query = new PostQueryBuilder().setStartDate(command.getStartDate()).
 						setEndDate(command.getEndDate()).setStart(command.getPublications().getStart()).
 						setEnd(command.getPublications().getStart() + command.getPublications().getEntriesPerPage()).
