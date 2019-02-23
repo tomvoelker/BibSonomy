@@ -14,6 +14,7 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.ProjectOrder;
@@ -172,6 +173,9 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 			filterQuery.must(ElasticsearchIndexSearchUtils.buildPrefixFilter(prefix, ProjectFields.TITLE_PREFIX));
 		}
 
+		/*
+		 * when a organization is requested, only list projects that are managed by one of the organization members
+		 */
 		final Group organization = query.getOrganization();
 		if (present(organization) && present(organization.getName())) {
 			final String name = organization.getName();
@@ -183,6 +187,18 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 			final BoolQueryBuilder personIdFilter = QueryBuilders.boolQuery();
 			personsOfOrganization.stream().map(ElasticsearchProjectSearch::buildPersonFilter).forEach(personIdFilter::should);
 
+			final HasChildQueryBuilder hasChildQueryBuilder = JoinQueryBuilders.hasChildQuery(PersonFields.TYPE_PERSON, personIdFilter, ScoreMode.None);
+			filterQuery.must(hasChildQueryBuilder);
+		}
+
+		/*
+		 * when a person is requested, only list the projects of this person
+		 */
+		final Person person = query.getPerson();
+		if (present(person) && present(person.getPersonId())) {
+			final String personId = person.getPersonId();
+
+			final QueryBuilder personIdFilter = buildPersonFilter(personId);
 			final HasChildQueryBuilder hasChildQueryBuilder = JoinQueryBuilders.hasChildQuery(PersonFields.TYPE_PERSON, personIdFilter, ScoreMode.None);
 			filterQuery.must(hasChildQueryBuilder);
 		}

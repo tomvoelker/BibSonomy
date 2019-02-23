@@ -170,6 +170,13 @@ public class ProjectQuery extends BasicQuery {
 		return organization;
 	}
 
+	/**
+	 * @return the person
+	 */
+	public Person getPerson() {
+		return person;
+	}
+
 	public static class ProjectQueryBuilder {
 		/**
 		 * the order of the projects, default {@link ProjectOrder#TITLE}
