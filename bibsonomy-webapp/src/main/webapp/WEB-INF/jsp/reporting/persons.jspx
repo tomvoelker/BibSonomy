@@ -66,27 +66,22 @@
 						</form>
 					</div>
 					<div class="col-md-2">
-						<reporting:export requPathAndQuery="${requPathAndQuery}"/>
+						<reporting:export requPathAndQuery="${requPathAndQuery}" listCommandPath="persons"/>
 					</div>
 				</div>
 			</div>
 
 			<div class="row">
 				<div class="col-md-12 vcenter">
-					<lists:listResultInfo listCommand="${command.persons}"
-										  messageKey="persons.results.description"/>
+					<lists:listResultInfo listCommand="${command.persons}" messageKey="persons.results.description"/>
 				</div>
 			</div>
 
-            <div class="row">
+			<div class="row">
 				<div class="col-md-12">
 					<person:listview personListCommand="${command.persons}"/>
 				</div>
 			</div>
-            <nav aria-label="Page navigation example">
-                <p class="info" id="show-amount"/><br/>
-                <ul class="pagination" id="pagin"/>
-            </nav>
 		</jsp:attribute>
 	</layout:paneLayout>
 </jsp:root>

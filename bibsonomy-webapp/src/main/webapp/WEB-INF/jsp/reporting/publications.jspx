@@ -19,7 +19,7 @@
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 
 	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.publications" command="${command}"
-					   pageTitle="${pageTitle}" activeTab="publications">
+					   pageTitle="${pageTitle}" activeTab="reporting">
 
 		<!--+
 			  | heading
@@ -31,13 +31,9 @@
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/typeahead.js/js/typeahead.bundle.js"><!-- keep me --></script>
 			<script type="text/javascript"
-					src="${resdir}/javascript/reporting/personAutocomplete.js"><!-- keep me --></script>
+					src="${resdir}/javascript/reporting/projects.js"><!-- keep me --></script>
 			<script type="text/javascript"
-					src="${resdir}/javascript/reporting/autocompleteSearchPerson.js"><!-- keep me --></script>
-			<script type="text/javascript"
-					src="${resdir}/javascript/reporting/organizationAutocomplete.js"><!-- keep me --></script>
-			<script type="text/javascript"
-					src="${resdir}/javascript/reporting/autocompleteSearchOrganization.js"><!-- keep me --></script>
+					src="${resdir}/javascript/person/personAutocomplete.js"><!-- keep me --></script>
 
 			<link rel="stylesheet" type="text/css" href="${resdir}/typeahead.js/css/typeahead.css"/>
 		</jsp:attribute>
@@ -57,44 +53,45 @@
 		<jsp:attribute name="content">
 			<parts:searchHeader headerMessageKey="reporting.publications.header"
 								searchPlaceholderKey="reporting.publications.search"
+								hidePrefixMenu="${true}"
 								requPathAndQuery="${requPathAndQuery}" command="${command}"/>
-			<div class="heading">
-				<div class="row">
-					<div class="col-md-5">
-						<form>
-							<input class='form-control typeahead' id='searchPersonAutocomplete'
-								   name='person' autocomplete="on" placeholder='search by person'/>
-						</form>
-					</div>
-					<div class="col-md-5">
-						<form>
-							<input class='form-control typeahead' id='searchOrganizationAutocomplete'
-								   name='organization'
-								   autocomplete="on" placeholder='search by organization'/>
-						</form>
-					</div>
-					<div class="col-md-2">
-						<reporting:export requPathAndQuery="${requPathAndQuery}"/>
-					</div>
+
+			<form class="form-horizontal" id="filterForm">
+				<input type="hidden" name="search" value="${command.search}" />
+
+				<!-- will be filled with the autocomplete -->
+				<input type="hidden" name="person.personId" value="${command.person.personId}" id="personField" />
+				<input type="hidden" name="organization.name" value="${command.organization.name}" id="organizationField" />
+
+				<div class="reporting-filter">
+					<reporting:personFilter command="${command}" />
+
+					<reporting:organizationFilter command="${command}" />
+				</div>
+
+				<input class="btn btn-primary" type="submit" value="Filter" />
+			</form>
+
+			<hr class="option-result-divider"/>
+
+			<div class="row">
+				<div class="col-md-4">
+					<reporting:export requPathAndQuery="${requPathAndQuery}" listCommandPath="publications"/>
+				</div>
+				<div class="col-md-4 col-md-offset-4 vcenter">
+					<lists:listResultInfo listCommand="${command.publications}"
+										  messageKey="publications.results.description"/>
 				</div>
 			</div>
 
-			<div class="row">
-				<div class="col-md-12 vcenter">
-					<lists:listResultInfo listCommand="${command.publications}"
-										  messageKey="projects.results.description"/>
-				</div>
-			</div>
+			<hr class="option-result-divider"/>
 
 			<div class="row">
 				<div class="col-md-12">
 					<publication:listview publicationListCommand="${command.publications}"/>
 				</div>
 			</div>
-            <nav aria-label="Page navigation example">
-                <p class="info" id="show-amount"/><br/>
-                <ul class="pagination" id="pagin"/>
-            </nav>
+
 		</jsp:attribute>
 	</layout:paneLayout>
 </jsp:root>

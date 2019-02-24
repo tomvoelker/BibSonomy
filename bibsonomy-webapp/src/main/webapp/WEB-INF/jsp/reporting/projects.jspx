@@ -18,7 +18,7 @@
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 
 	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.projects" command="${command}"
-					   pageTitle="${pageTitle}" activeTab="projects" noSidebar="${true}">
+					   pageTitle="${pageTitle}" activeTab="reporting" noSidebar="${true}">
 
 		<!--+
 			  | heading
@@ -47,12 +47,12 @@
 								requPathAndQuery="${requPathAndQuery}" command="${command}"/>
 
 			<form class="form-horizontal" id="filterForm">
-				<input type="hidden" name="search" value="${search}" />
-				<input type="hidden" name="prefix" value="${prefix}" />
+				<input type="hidden" name="search" value="${command.search}" />
+				<input type="hidden" name="prefix" value="${command.prefix}" />
 
 				<!-- will be filled with the autocomplete -->
-				<input type="hidden" name="person.personId" value="${person.personId}" id="personField" />
-				<input type="hidden" name="organization.name" value="${organization.name}" id="organizationField" />
+				<input type="hidden" name="person.personId" value="${command.person.personId}" id="personField" />
+				<input type="hidden" name="organization.name" value="${command.organization.name}" id="organizationField" />
 
 				<div class="reporting-filter">
 					<reporting:dateFilter requPathAndQuery="${requPathAndQuery}" filterName="Start Date"
@@ -67,38 +67,10 @@
 											filterName="Type" filterValue="${command.type}"
 											filterField="type" autocomplete="/statistics/project/type"/>
 
-					<div class="form-group">
-						<div class="col-md-3">
-							<label>Person</label>
-						</div>
-						<div class="col-md-5">
-							<c:set var="personPlaceHolder" value="" />
-							<c:set var="person" value="${command.person}" />
-							<c:if test="${not empty person.personId}">
-								<c:set var="personPlaceHolder" value="${person.mainName.lastName}, ${person.mainName.firstName}" />
-							</c:if>
-							<input class="form-control typeahead" id="searchPersonAutocomplete" autocomplete="on" placeholder="${personPlaceHolder}"/>
+					<reporting:personFilter command="${command}" />
 
-							<button class="btn btn-default btn-sm clean-typeahead" data-id="personField">
-								Clear
-							</button>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-md-3">
-							<label>Organization</label>
-						</div>
-						<div class="col-md-5">
+					<reporting:organizationFilter command="${command}" />
 
-							<input class="form-control typeahead" id="searchOrganizationAutocomplete"
-							   name='organization'
-							   autocomplete="on" placeholder=""/>
-
-							<button class="btn btn-default btn-sm clean-typeahead" data-id="organizationField">
-								Clear
-							</button>
-						</div>
-					</div>
 				</div>
 				<input class="btn btn-primary" type="submit" value="Filter" />
 			</form>
@@ -111,13 +83,13 @@
 										  messageKey="projects.results.description"/>
 				</div>
 				<div class="col-md-4">
-					<reporting:export requPathAndQuery="${requPathAndQuery}"/>
+					<reporting:export requPathAndQuery="${requPathAndQuery}" listCommandPath="projects"/>
 				</div>
 			</div>
 
 			<hr class="option-result-divider"/>
 
-            <div class="row">
+			<div class="row">
 				<div class="col-md-12">
 					<project:listview projectListCommand="${command.projects}"/>
 				</div>
