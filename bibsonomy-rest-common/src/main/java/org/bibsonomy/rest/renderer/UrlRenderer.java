@@ -141,6 +141,19 @@ public class UrlRenderer {
 		return this.getUrlBuilderForGroups().addPathElement(name);
 	}
 
+	/** Creates a URL which points to the create path of the resource
+	 *
+	 * @param userName - the name of the user which owns the resource.
+	 * @return A URL which points to the given resource.
+	 */
+	public UrlBuilder createHrefForResource(final String userName) {
+		if (!present(userName)) {
+			return this.createHrefForCommunity();
+		}
+		return this.getUrlBuilderForUser(userName);
+	}
+
+
 	/** Creates a URL which points to the given resource.
 	 *
 	 * @param userName - the name of the user which owns the resource.
@@ -674,9 +687,14 @@ public class UrlRenderer {
 		return builder.asString();
 	}
 
-	protected UrlBuilder createHrefForCommunity(final String hash) {
+	protected UrlBuilder createHrefForCommunity() {
 		final UrlBuilder builder = this.createUrlBuilderForPosts();
 		builder.addPathElement(RESTConfig.COMMUNITY_SUB_PATH);
+		return builder;
+	}
+
+	protected UrlBuilder createHrefForCommunity(final String hash) {
+		final UrlBuilder builder = this.createHrefForCommunity();
 		builder.addPathElement(hash);
 		return builder;
 	}

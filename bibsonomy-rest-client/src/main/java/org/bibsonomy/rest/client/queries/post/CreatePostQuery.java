@@ -29,11 +29,13 @@ package org.bibsonomy.rest.client.queries.post;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.StringWriter;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -72,22 +74,36 @@ public final class CreatePostQuery extends AbstractQuery<String> {
 	 *             </ul>
 	 */
 	public CreatePostQuery(final String username, final Post<? extends Resource> post) throws IllegalArgumentException {
-		if (!present(username)) throw new IllegalArgumentException("no username given");
-		if (!present(post)) throw new IllegalArgumentException("no post specified");
-		if (!present(post.getResource())) throw new IllegalArgumentException("no resource specified");
+		if (!present(post)) {
+			throw new IllegalArgumentException("no post specified");
+		}
 
-		if (post.getResource() instanceof Bookmark) {
-			final Bookmark bookmark = (Bookmark) post.getResource();
+		final Resource resource = post.getResource();
+		if (!present(resource)) {
+			throw new IllegalArgumentException("no resource specified");
+		}
+
+		final boolean isCommunityPost = resource instanceof GoldStandard<?>;
+		if (!isCommunityPost && !present(username)) {
+			throw new IllegalArgumentException("no username given");
+		}
+
+		if (resource instanceof Bookmark) {
+			final Bookmark bookmark = (Bookmark) resource;
 			if (!present(bookmark.getUrl())) throw new IllegalArgumentException("no url specified in bookmark");
 		}
 
-		if (post.getResource() instanceof BibTex) {
-			final BibTex publication = (BibTex) post.getResource();
+		if (resource instanceof BibTex) {
+			final BibTex publication = (BibTex) resource;
 			if (!present(publication.getTitle())) throw new IllegalArgumentException("no title specified in bibtex");
 		}
 
-		if (!present(post.getTags())) throw new IllegalArgumentException("no tags specified");
-		for (final Tag tag : post.getTags()) {
+		final Set<Tag> tags = post.getTags();
+		if (!present(tags) && !isCommunityPost) {
+			throw new IllegalArgumentException("no tags specified");
+		}
+
+		for (final Tag tag : tags) {
 			if (!present(tag.getName())) throw new IllegalArgumentException("missing tagname");
 		}
 
@@ -99,7 +115,7 @@ public final class CreatePostQuery extends AbstractQuery<String> {
 	protected void doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializePost(sw, this.post, null);
-		final String postUrl = this.getUrlRenderer().createHrefForUserPosts(this.username);
+		final String postUrl = this.getUrlRenderer().createHrefForResource(this.username).asString();
 		this.downloadedDocument = performRequest(HttpMethod.POST, postUrl, StringUtils.toDefaultCharset(sw.toString()));
 	}
 	

@@ -334,7 +334,14 @@ public class RestLogic extends AbstractLogicInterface {
 		 */
 		final List<JobResult> jobResults = new LinkedList<>();
 		for (final Post<?> post : posts) {
-			final String hash = execute(new CreatePostQuery(this.authUser.getName(), post));
+			final Resource resource = post.getResource();
+			String postUser = post.getUser().getName();
+
+			if (resource instanceof GoldStandard<?>) {
+				postUser = "";;
+			}
+
+			final String hash = execute(new CreatePostQuery(postUser, post));
 			if (present(hash)) {
 				jobResults.add(JobResult.buildSuccess(hash));
 			} else {
@@ -348,10 +355,10 @@ public class RestLogic extends AbstractLogicInterface {
 	public String createUser(final User user) {
 		return execute(new CreateUserQuery(user));
 	}
-	
-	// TODO: Establish new group concept in here.
+
 	@Override
 	public String updateGroup(final Group group, final GroupUpdateOperation operation, GroupMembership ms) {
+		// TODO: Establish new group concept in here.
 		final String groupName = group.getName();
 		switch (operation) {
 			case ADD_MEMBER:
