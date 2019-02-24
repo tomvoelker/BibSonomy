@@ -67,6 +67,7 @@
 							<bib:desc publication="${goldstandard}"
 									  post="${post}"
 									  linebreakAfterAuthors="${true}"
+									  restrictToFirstAuthors="${false}"
 									  onlyLinkAuthorsWithPersons="${not showFolkSonomyLinks}"
 									  publishedIn="${publishedIn}"/>
 						</span>

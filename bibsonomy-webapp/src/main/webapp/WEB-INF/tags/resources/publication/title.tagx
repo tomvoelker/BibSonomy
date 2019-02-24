@@ -35,8 +35,7 @@
 				<jsp:invoke fragment="pubActionButtons" />
 				<span itemprop="name"><c:out value="${pubTitle}" /></span>
 			</h1>
-
-			<p><bib:desc post="${post}" publication="${post.resource}" /></p>
+			<p><bib:desc post="${post}" publication="${post.resource}" restrictToFirstAuthors="${false}" /></p>
 		</div>
 	</div>
 </jsp:root>
