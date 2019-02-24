@@ -53,6 +53,7 @@ public class PublicationReportingPageController implements MinimalisticControlle
 						setEndDate(command.getEndDate()).setStart(start).
 						setGrouping(groupingEntity)
 						.setGroupingName(groupingName)
+						.setSearch(command.getSearch())
 						.college(this.college).
 						setEnd(start + publicationListCommand.getEntriesPerPage()).
 						createPostQuery(GoldStandardPublication.class);
