@@ -46,7 +46,6 @@ public class PublicationReportingPageController implements MinimalisticControlle
 		final GroupingEntity groupingEntity = getGroupingEntity(person, organization);
 		final String groupingName = getGroupingName(groupingEntity, person, organization);
 
-		// TODO include filter by person and organization
 		final ListCommand<Post<GoldStandardPublication>> publicationListCommand = command.getPublications();
 		final int start = publicationListCommand.getStart();
 		final PostQuery<GoldStandardPublication> query = new PostQueryBuilder().setStartDate(command.getStartDate()).
