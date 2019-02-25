@@ -157,7 +157,7 @@ public interface PostLogicInterface {
 	 * @param operation  which parts of the posts should be updated
 	 * @return resourceHashes the (new) hashes of the updated resources
 	 */
-	List<String> updatePosts(List<Post<? extends Resource>> posts, PostUpdateOperation operation);
+	List<JobResult> updatePosts(List<Post<? extends Resource>> posts, PostUpdateOperation operation);
 	
 	/**  
 	 * retrieves the number of posts matching to the given constraints

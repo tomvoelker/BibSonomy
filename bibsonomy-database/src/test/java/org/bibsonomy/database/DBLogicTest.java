@@ -857,7 +857,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		final List<Post<?>> updates = new LinkedList<>();
 		updates.add(savedPost);
 		
-		final List<String> updatedPosts = dbl.updatePosts(updates, PostUpdateOperation.UPDATE_TAGS);
+		final List<JobResult> updatedPosts = dbl.updatePosts(updates, PostUpdateOperation.UPDATE_TAGS);
 		assertEquals(1, updatedPosts.size());
 		
 		/*
@@ -922,7 +922,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		final List<Post<?>> updates = new LinkedList<>();
 		updates.add(savedPost);
 		
-		final List<String> updatedPosts = dbl.updatePosts(updates, PostUpdateOperation.UPDATE_TAGS);
+		final List<JobResult> updatedPosts = dbl.updatePosts(updates, PostUpdateOperation.UPDATE_TAGS);
 		assertEquals(1, updatedPosts.size());
 		
 		/*
@@ -1045,10 +1045,10 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		final String newURL = "http://www.testAll2.com";
 		createdBookmark.setUrl(newURL);
 		
-		final List<String> updatedPosts = dbl.updatePosts(Collections.singletonList(createdPost), PostUpdateOperation.UPDATE_ALL);
+		final List<JobResult> updatedPosts = dbl.updatePosts(Collections.singletonList(createdPost), PostUpdateOperation.UPDATE_ALL);
 		assertEquals(1, updatedPosts.size());
 		
-		final Post<?> updatedPost  = dbl.getPostDetails(updatedPosts.get(0), TEST_USER_1);
+		final Post<?> updatedPost  = dbl.getPostDetails(updatedPosts.get(0).getId(), TEST_USER_1);
 		
 		final Bookmark updatedBookmark = (Bookmark) updatedPost.getResource();
 		assertEquals(newURL, updatedBookmark.getUrl());
@@ -1079,7 +1079,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		repositorys.add(repo );
 		createdPost.setRepositorys(repositorys );
 
-		List<String> updatedPosts = dbl.updatePosts(Collections.singletonList(createdPost), PostUpdateOperation.UPDATE_REPOSITORY);
+		List<JobResult> updatedPosts = dbl.updatePosts(Collections.singletonList(createdPost), PostUpdateOperation.UPDATE_REPOSITORY);
 		assertEquals(1, updatedPosts.size());
 
 		repositorys.clear();

@@ -181,7 +181,6 @@ import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.bibsonomy.util.ExceptionUtils;
-import org.bibsonomy.util.GetProvider;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.ValidationUtils;
 
@@ -1728,7 +1727,7 @@ public class DBLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
+	public List<JobResult> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
 		/*
 		 * TODO: Which of these checks should result in a DatabaseException,
 		 * which do we want to handle otherwise (=status quo)
@@ -1743,7 +1742,7 @@ public class DBLogic implements LogicInterface {
 			this.permissionDBManager.ensureApprovalStatusAllowed(post, this.loginUser);
 		}
 
-		final List<String> hashes = new LinkedList<>();
+		final List<JobResult> jobResults = new LinkedList<>();
 		/*
 		 * open session
 		 */
@@ -1752,7 +1751,7 @@ public class DBLogic implements LogicInterface {
 		try {
 			for (final Post<?> post : posts) {
 				try {
-					hashes.add(this.updatePost(post, operation, session));
+					jobResults.add(this.updatePost(post, operation, session));
 				} catch (final DatabaseException dbex) {
 					collectedException.addErrors(dbex);
 				} catch (final Exception ex) {
@@ -1770,13 +1769,13 @@ public class DBLogic implements LogicInterface {
 			throw collectedException;
 		}
 
-		return hashes;
+		return jobResults;
 	}
 
 	/**
 	 * Updates a post in the database.
 	 */
-	private <T extends Resource> String updatePost(final Post<T> post, final PostUpdateOperation operation, final DBSession session) {
+	private <T extends Resource> JobResult updatePost(final Post<T> post, final PostUpdateOperation operation, final DBSession session) {
 		final CrudableContent<T, GenericParam> manager = this.getFittingDatabaseManager(post);
 		final String oldIntraHash = post.getResource().getIntraHash();
 
@@ -1812,13 +1811,13 @@ public class DBLogic implements LogicInterface {
 			 * bibtexextra object in the manager/param
 			 */
 			this.bibTexExtraDBManager.createURL(oldIntraHash, this.loginUser.getName(), resourceExtra.getUrl().toExternalForm(), resourceExtra.getText(), session);
-			return oldIntraHash;
+			return JobResult.buildSuccess(oldIntraHash);
 		} else if (PostUpdateOperation.UPDATE_URLS_DELETE.equals(operation)) {
 			log.debug("Deleting URL in updatePost()/DBLogic.java");
 			final BibTexExtra resourceExtra = ((BibTex) post.getResource()).getExtraUrls().get(0);
 			this.bibTexExtraDBManager.deleteURL(oldIntraHash, this.loginUser.getName(), resourceExtra.getUrl(), session);
 
-			return oldIntraHash;
+			return JobResult.buildSuccess(oldIntraHash);
 		}
 
 		/*
@@ -1827,9 +1826,7 @@ public class DBLogic implements LogicInterface {
 		 * if we don't get an exception here, we assume the resource has been
 		 * successfully updated
 		 */
-		manager.updatePost(post, oldIntraHash, this.loginUser, operation, session);
-
-		return post.getResource().getIntraHash();
+		return manager.updatePost(post, oldIntraHash, this.loginUser, operation, session);
 	}
 
 	/*

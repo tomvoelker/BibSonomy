@@ -252,8 +252,8 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 							// duplicate post detected => handle this
 							// check whether the update bookmarks checkbox is checked
 							if (command.isOverwrite()) {
-								final List<String> createdPostHash = logic.updatePosts(singletonList, PostUpdateOperation.UPDATE_ALL);
-								updatedBookmarkEntries.put(createdPostHash.get(0), title);
+								final List<JobResult> createdPostHash = logic.updatePosts(singletonList, PostUpdateOperation.UPDATE_ALL);
+								updatedBookmarkEntries.put(createdPostHash.get(0).getId(), title);
 							} else {
 								nonCreatedBookmarkEntries.put(hash, title);
 							}

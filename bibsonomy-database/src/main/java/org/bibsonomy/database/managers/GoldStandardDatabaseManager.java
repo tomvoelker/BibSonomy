@@ -250,7 +250,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	protected abstract P createNewParam();
 
 	@Override
-	public boolean updatePost(final Post<R> post, final String oldHash, final User loginUser, final PostUpdateOperation operation, final DBSession session) {
+	public JobResult updatePost(final Post<R> post, final String oldHash, final User loginUser, final PostUpdateOperation operation, final DBSession session) {
 		session.beginTransaction();
 		try {
 
@@ -282,7 +282,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 					log.warn("Added UpdatePostErrorMessage for post " + post.getResource().getIntraHash());
 					session.commitTransaction();
 
-					return false;
+					return JobResult.buildFailure(Collections.singletonList(errorMessage));
 				}
 			} else {
 				throw new IllegalArgumentException("Could not update standard post: no interhash specified.");
@@ -300,7 +300,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 
 				session.commitTransaction();
 
-				return false;
+				return JobResult.buildFailure(Collections.singletonList(errorMessage));
 			}
 
 			final int newContentId = this.generalManager.getNewId(ConstantID.IDS_CONTENT_ID, session).intValue();
@@ -318,7 +318,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		} finally {
 			session.endTransaction();
 		}
-		return true;
+		return JobResult.buildSuccess(post.getResource().getInterHash());
 	}
 
 	@Override

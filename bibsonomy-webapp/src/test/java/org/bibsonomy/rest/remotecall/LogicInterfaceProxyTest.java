@@ -389,12 +389,12 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 		posts.add(ModelUtils.generatePost(BibTex.class));
 		this.createPosts(posts);
 	}
-	
+
 	@Override
 	public List<JobResult> createPosts(final List<Post<?>> posts) {
 		final Post<?> post = posts.get(0);
 		post.getUser().setName(LOGIN_USER_NAME);
-				
+
 		final List<JobResult> singletonList = Collections.singletonList(JobResult.buildSuccess(post.getResource().getIntraHash()));
 
 		EasyMock.expect(this.serverLogic.createPosts(PropertyEqualityArgumentMatcher.eq(posts, IGNORE1))).andReturn(singletonList);
@@ -831,19 +831,18 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	}
 	
 	@Override
-	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
+	public List<JobResult> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
 		final Post<?> post = posts.get(0);
 		post.getUser().setName(LOGIN_USER_NAME);
 		
-		final List<String> singletonList = Collections.singletonList(post.getResource().getIntraHash());
+		final List<JobResult> singletonList = Collections.singletonList(JobResult.buildSuccess(post.getResource().getIntraHash()));
 		
 		EasyMock.expect(this.serverLogic.updatePosts(PropertyEqualityArgumentMatcher.eq(posts, IGNORE1), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn(singletonList);
 		EasyMock.replay(this.serverLogic);
-		assertEquals(singletonList, this.clientLogic.updatePosts(posts, operation));
+		assertEquals(convertToHashes(singletonList), convertToHashes(this.clientLogic.updatePosts(posts, operation)));
 		EasyMock.verify(this.serverLogic);
 		assertLogin();
 		return null;
-		
 	}
 
 	/**

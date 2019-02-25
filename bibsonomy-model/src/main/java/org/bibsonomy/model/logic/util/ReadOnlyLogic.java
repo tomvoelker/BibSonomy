@@ -164,7 +164,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PostLogicInterface#updatePosts(java.util.List, org.bibsonomy.common.enums.PostUpdateOperation)
 	 */
 	@Override
-	public List<String> updatePosts(List<Post<? extends Resource>> posts, PostUpdateOperation operation) {
+	public List<JobResult> updatePosts(List<Post<? extends Resource>> posts, PostUpdateOperation operation) {
 		throwReadOnlyException();
 		return null;
 	}

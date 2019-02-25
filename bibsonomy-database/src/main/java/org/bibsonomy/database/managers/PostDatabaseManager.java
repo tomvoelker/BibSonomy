@@ -1383,7 +1383,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	public boolean updatePost(final Post<R> post, final String oldHash, final User loginUser, final PostUpdateOperation operation, final DBSession session) {
+	public JobResult updatePost(final Post<R> post, final String oldHash, final User loginUser, final PostUpdateOperation operation, final DBSession session) {
 		if (!present(oldHash)) {
 			throw new IllegalArgumentException("Could not update post: no intrahash specified.");
 		}
@@ -1400,6 +1400,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		}
 		
 		session.beginTransaction();
+		final R resource = post.getResource();
 		try {
 			/*
 			 * the resource with the "old" intrahash, that was sent
@@ -1429,13 +1430,13 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 				/*
 				 * not found -> throw exception
 				 */
-				final ErrorMessage errorMessage = new UpdatePostErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
+				final ErrorMessage errorMessage = new UpdatePostErrorMessage(this.resourceClassName, resource.getIntraHash());
 				session.addError(PostUtils.getKeyForPost(post), errorMessage);
 				// we have to commit to adjust counters in session otherwise
 				// we will not get the DatabaseException from the session
 				session.commitTransaction();
 				log.warn("Added UpdatePostErrorMessage (" + this.resourceClassName + " with hash " + oldHash + " does not exist for user " + postOwner + ")");
-				return false;
+				return JobResult.buildFailure(Collections.singletonList(errorMessage));
 			}
 
 			/*
@@ -1453,7 +1454,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 * hash already exists.
 			 */
 			if (PostUpdateOperation.UPDATE_ALL.equals(operation)) {
-				post.getResource().recalculateHashes();
+				resource.recalculateHashes();
 			}
 
 			/*
@@ -1467,7 +1468,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * the current intra hash of the resource
 			 */
-			final String intraHash = post.getResource().getIntraHash();
+			final String intraHash = resource.getIntraHash();
 
 			/*
 			 * get posts with the intrahash of the given post to check for
@@ -1505,13 +1506,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 					 * the new one - resulting
 					 * in two posts with the same (new hash)
 					 */
-					final ErrorMessage errorMessage = new IdenticalHashErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
-					session.addError(post.getResource().getIntraHash(), errorMessage);
+					final ErrorMessage errorMessage = new IdenticalHashErrorMessage(this.resourceClassName, resource.getIntraHash());
+					session.addError(resource.getIntraHash(), errorMessage);
 					// we have to commit to adjust counters in session otherwise
 					// we will not get the DatabaseException from the session
 					session.commitTransaction();
-					return false;
-
+					return JobResult.buildFailure(Collections.singletonList(errorMessage));
 				}
 			}
 
@@ -1541,7 +1541,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		} finally {
 			session.endTransaction();
 		}
-		return true;
+		// note: the intrahash might have changed after the recalculation of the hashes!
+		return JobResult.buildSuccess(resource.getIntraHash());
 	}
 
 	protected void workOnOperation(final Post<R> post, final Post<R> oldPost, final User loggedinUser, final PostUpdateOperation operation, final DBSession session) {

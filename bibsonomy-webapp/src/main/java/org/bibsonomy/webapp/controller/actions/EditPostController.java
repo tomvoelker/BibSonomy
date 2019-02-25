@@ -47,6 +47,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
@@ -525,33 +526,34 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		post.getResource().setIntraHash(command.getIntraHashToUpdate());
 
-		List<String> updatePosts = null;
+		;
 		try {
 			/*
 			 * update post in DB
 			 */
-			updatePosts = this.logic.updatePosts(Collections.singletonList(post), PostUpdateOperation.UPDATE_ALL);
+			final List<JobResult> updateResults = this.logic.updatePosts(Collections.singletonList(post), PostUpdateOperation.UPDATE_ALL);
+
+			if (Status.FAIL.equals(updateResults.get(0).getStatus())) {
+				/*
+				 * show error page FIXME: when/why can this happen? We get some
+				 * error messages here in the logs, but can't explain them.
+				 */
+				this.errors.reject("error.post.update", "Could not update post.");
+				log.warn("could not update post");
+				return Views.ERROR;
+			}
+
+			/*
+			 * do everything that must be done after a successful create or update
+			 */
+			this.createOrUpdateSuccess(command, postOwner, post);
+			/*
+			 * send final redirect
+			 */
+			return this.finalRedirect(command, post, updateResults, postOwnerName, true);
 		} catch (final DatabaseException ex) {
 			return this.handleDatabaseException(command, postOwner, post, ex, "update");
 		}
-
-		if (!present(updatePosts)) {
-			/*
-			 * show error page FIXME: when/why can this happen? We get some
-			 * error messages here in the logs, but can't explain them.
-			 */
-			this.errors.reject("error.post.update", "Could not update post.");
-			log.warn("could not update post");
-			return Views.ERROR;
-		}
-		/*
-		 * do everything that must be done after a successful create or update
-		 */
-		this.createOrUpdateSuccess(command, postOwner, post);
-		/*
-		 * send final redirect
-		 */
-		return this.finalRedirect(command, post, postOwnerName, true);
 	}
 
 	/**
@@ -843,22 +845,23 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			 */
 			command.setIntraHashToUpdate(createdPost);
 			log.debug("created post: " + createdPost);
+
+			/*
+			 * do everything that must be done after a successful create or update
+			 */
+			this.createOrUpdateSuccess(command, loginUser, post);
+
+			return this.finalRedirect(command, post, results, loginUserName, false);
 		} catch (final DatabaseException de) {
 			return this.handleDatabaseException(command, loginUser, post, de, "create");
 		}
-		/*
-		 * do everything that must be done after a successful create or update
-		 */
-		this.createOrUpdateSuccess(command, loginUser, post);
-
-		return this.finalRedirect(command, post, loginUserName, false);
 	}
 
 	private static boolean hasAutoLinkingInformation(final List<JobResult> jobResults) {
 		return jobResults.stream().map(JobResult::getInfo).anyMatch(list -> JobInformationUtils.containsInformationType(list, PersonResourceLinkInformationAdded.class));
 	}
 
-	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, final String postOwnerName, boolean update) {
+	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, List<JobResult> jobResults, final String postOwnerName, boolean update) {
 		if (present(command.getSaveAndRate())) {
 			final String ratingUrl = this.urlGenerator.getCommunityRatingUrl(post);
 			return new ExtendedRedirectView(ratingUrl);
@@ -877,7 +880,8 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * he should be redirected to his overview page
 		 */
 		final View redirectView = this.finalRedirect(postOwnerName, post, command.getReferer(), update);
-		if (hasAutoLinkingInformation(command.getJobResults())) {
+		if (hasAutoLinkingInformation(jobResults)) {
+			command.setJobResults(jobResults);
 			command.setRedirectUrl(redirectView.getName());
 			return Views.AUTOLINK;
 		}

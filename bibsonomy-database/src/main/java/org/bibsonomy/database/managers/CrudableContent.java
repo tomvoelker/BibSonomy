@@ -74,7 +74,7 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	 *
 	 * @return list of posts
 	 */
-	public Post<T> getPostDetails(String loginUserName, String resourceHash, String userName, List<Integer> visibleGroupIDs, DBSession session) throws ObjectMovedException, ObjectNotFoundException;
+	Post<T> getPostDetails(String loginUserName, String resourceHash, String userName, List<Integer> visibleGroupIDs, DBSession session) throws ObjectMovedException, ObjectNotFoundException;
 
 	/**
 	 * Delete
@@ -85,7 +85,7 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	 * @param session
 	 * @return <code>true</code>, if entry existed and was deleted
 	 */
-	public boolean deletePost(String userName, String resourceHash, User loggedinUser, DBSession session);
+	boolean deletePost(String userName, String resourceHash, User loggedinUser, DBSession session);
 
 	/**
 	 * create
@@ -107,5 +107,5 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	 * @param session
 	 * @return <code>true</code> iff update was successful
 	 */
-	public boolean updatePost(Post<T> post, String oldHash, User loginUser, PostUpdateOperation operation, DBSession session);
+	JobResult updatePost(Post<T> post, String oldHash, User loginUser, PostUpdateOperation operation, DBSession session);
 }

@@ -150,7 +150,7 @@ public class UrlRenderer {
 		if (!present(userName)) {
 			return this.createHrefForCommunity();
 		}
-		return this.getUrlBuilderForUser(userName);
+		return this.createUrlBuilderForUserPosts(userName);
 	}
 
 

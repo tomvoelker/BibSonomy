@@ -371,13 +371,13 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
+	public List<JobResult> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
 		/*
 		 * FIXME: this iteration should be done on the server, i.e.,
 		 * CreatePostQuery should support several posts ... although it's
 		 * probably not so simple.
 		 */
-		final List<String> resourceHashes = new LinkedList<>();
+		final List<JobResult> jobResults = new LinkedList<>();
 		final DatabaseException collectedException = new DatabaseException();
 		for (final Post<?> post : posts) {
 			final Resource resource = post.getResource();
@@ -395,12 +395,12 @@ public class RestLogic extends AbstractLogicInterface {
 				collectedException.addToErrorMessages(PostUtils.getKeyForPost(post), new ErrorMessage(hash, hash));
 			}
 			// hashes are recalculated by the server
-			resourceHashes.add(hash);
+			jobResults.add(JobResult.buildSuccess(hash));
 		}
 		if (collectedException.hasErrorMessages()) {
 			throw collectedException;
 		}
-		return resourceHashes;
+		return jobResults;
 	}
 
 	@Override
