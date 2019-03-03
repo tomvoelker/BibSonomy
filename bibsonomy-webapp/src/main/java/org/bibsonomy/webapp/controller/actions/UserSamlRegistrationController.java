@@ -72,7 +72,19 @@ public class UserSamlRegistrationController extends AbstractUserIDRegistrationCo
 			}
 		}
 	}
-	
+
+	@Override
+	protected String getRemoteId(User user) {
+		for (RemoteUserId remoteId : user.getRemoteUserIds()) {
+			if (remoteId instanceof SamlRemoteUserId) {
+				final SamlRemoteUserId samlRemoteId = (SamlRemoteUserId) remoteId;
+				return samlRemoteId.getUserId();
+			}
+		}
+
+		throw new IllegalStateException("no remote id found");
+	}
+
 	@Override
 	protected void setAuthentication(User registerUser, User user) {
 		for (RemoteUserId remoteId : user.getRemoteUserIds()) {

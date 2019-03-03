@@ -1089,6 +1089,7 @@
 		
 		<property name="authenticationManager" ref="samlAuthenticationManager"/>
 		<property name="rememberMeServices" ref="internalRememberMeServices" />
+		<property name="forceRemoteIDAsUsername" value="${auth.register.saml.forceRemoteIDAsUsername}" />
 	</bean>
 	
 	<bean id="joinGroupController" class="org.bibsonomy.webapp.controller.actions.JoinGroupController" scope="request">
