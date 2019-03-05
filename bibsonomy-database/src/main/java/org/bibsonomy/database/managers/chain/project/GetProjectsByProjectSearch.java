@@ -24,6 +24,6 @@ public class GetProjectsByProjectSearch extends ProjectChainElement {
 	@Override
 	protected boolean canHandle(final QueryAdapter<ProjectQuery> param) {
 		final ProjectQuery query = param.getQuery();
-		return present(query.getType()) || present(query.getSearch()) || present(query.getPrefix()) || present(query.getOrganization());
+		return present(query.getType()) || present(query.getSponsor()) || present(query.getSearch()) || present(query.getPrefix()) || present(query.getOrganization()) || present(query.getPerson()) || present(query.getStartDate()) || present(query.getEndDate());
 	}
 }
