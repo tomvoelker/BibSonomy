@@ -636,6 +636,9 @@
 								<value>fieldKeys</value>
 								<value>search</value>
 								<value>prefix</value>
+								<value>persons.start</value>
+								<value>persons.entriesPerPage</value>
+								<value>organization.name</value>
 							</list>
 						</property>
 					</bean>
@@ -1087,6 +1090,7 @@
 
 	<bean id="personReportingPageController" class="org.bibsonomy.webapp.controller.reporting.PersonReportingPageController" scope="request">
 		<property name="logic" ref="logic"/>
+		<property name="college" value="${system.cris.college}" />
 	</bean>
 
 	<bean id="publicationsController" class="org.bibsonomy.webapp.controller.cris.PublicationsPageController" scope="request">

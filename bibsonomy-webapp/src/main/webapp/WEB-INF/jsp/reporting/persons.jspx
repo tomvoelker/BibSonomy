@@ -31,9 +31,10 @@
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/typeahead.js/js/typeahead.bundle.js"><!-- keep me --></script>
 			<script type="text/javascript"
-					src="${resdir}/javascript/reporting/organizationAutocomplete.js"><!-- keep me --></script>
+					src="${resdir}/javascript/reporting/projects.js"><!-- keep me --></script>
+			<!-- FIXME: only included to use the same js file on all reporting pages -->
 			<script type="text/javascript"
-					src="${resdir}/javascript/reporting/autocompleteSearchOrganization.js"><!-- keep me --></script>
+					src="${resdir}/javascript/person/personAutocomplete.js"><!-- keep me --></script>
 
 			<link rel="stylesheet" type="text/css" href="${resdir}/typeahead.js/css/typeahead.css"/>
 		</jsp:attribute>
@@ -56,26 +57,32 @@
 								searchPlaceholderKey="reporting.persons.search"
 								requPathAndQuery="${requPathAndQuery}" command="${command}"/>
 
-			<div class="heading">
-				<div class="row">
-					<div class="col-md-10">
-						<form>
-							<input class='form-control typeahead' id='searchOrganizationAutocomplete'
-								   name='organization'
-								   autocomplete="on" placeholder='search by organization'/>
-						</form>
-					</div>
-					<div class="col-md-2">
-						<reporting:export requPathAndQuery="${requPathAndQuery}" listCommandPath="persons"/>
-					</div>
+			<form class="form-horizontal" id="filterForm">
+				<input type="hidden" name="search" value="${command.search}" />
+				<input type="hidden" name="prefix" value="${command.prefix}" />
+
+				<input type="hidden" name="organization.name" value="${command.organization.name}" id="organizationField" />
+
+				<div class="reporting-filter">
+					<reporting:organizationFilter command="${command}" />
+				</div>
+
+				<input class="btn btn-primary" type="submit" value="Filter" />
+			</form>
+
+			<hr class="option-result-divider"/>
+
+			<div class="row">
+				<div class="col-md-4 col-md-offset-4 vcenter">
+					<lists:listResultInfo listCommand="${command.persons}"
+										  messageKey="persons.results.description"/>
+				</div>
+				<div class="col-md-4">
+					<reporting:export requPathAndQuery="${requPathAndQuery}" listCommandPath="persons"/>
 				</div>
 			</div>
 
-			<div class="row">
-				<div class="col-md-12 vcenter">
-					<lists:listResultInfo listCommand="${command.persons}" messageKey="persons.results.description"/>
-				</div>
-			</div>
+			<hr class="option-result-divider"/>
 
 			<div class="row">
 				<div class="col-md-12">
