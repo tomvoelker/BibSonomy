@@ -27,7 +27,9 @@
 		 	| heading
 		 	+-->
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.groups" formAction="/group/" formInputName="group"/>
+			<c:if test="${isGroupsPage}">
+				<parts:search pathMessageKey="navi.groups" formAction="/group/" formInputName="group"/>
+			</c:if>
 		</jsp:attribute>
 
 		<!--+
