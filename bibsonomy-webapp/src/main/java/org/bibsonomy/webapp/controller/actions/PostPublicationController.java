@@ -109,12 +109,12 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * initialize post & resource
 		 */
 		final PostPublicationCommand command = new PostPublicationCommand();
-		command.setGroups(new ArrayList<String>());
+		command.setGroups(new ArrayList<>());
 
-		command.setPost(new Post<BibTex>());
+		command.setPost(new Post<>());
 		command.setAbstractGrouping(GroupUtils.buildPublicGroup().getName());
 		command.getPost().setResource(new BibTex());
-		command.setPostsErrorList(new LinkedHashMap<String, List<ErrorMessage>>());
+		command.setPostsErrorList(new LinkedHashMap<>());
 
 		return command;
 	}
@@ -282,12 +282,10 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 */
 			
 			posts = parser.parseBibTeXPosts(snippet);
-		} catch (final ParseException ex) {
-			this.errors.reject("error.upload.failed.parse", ex.getMessage());
-		} catch (final IOException ex) {
+		} catch (final ParseException | IOException ex) {
 			this.errors.reject("error.upload.failed.parse", ex.getMessage());
 		}
-		
+
 		PublicationValidator.handleParserWarnings(this.errors, parser, snippet, null);
 
 		/*
@@ -350,7 +348,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * add additional information from the form to the
 		 * post (description, groups)... present in both upload tabs
 		 */
-		final Set<String> unique_hashes = new TreeSet<String>();
+		final Set<String> unique_hashes = new TreeSet<>();
 		ErrorMessage errorMessage;
 		if (posts != null) {
 			for (final Post<BibTex> post : posts) {
@@ -377,7 +375,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 					unique_hashes.add(post.getResource().getIntraHash());
 				} else {
 					errorMessage = new DuplicatePostInSnippetErrorMessage("BibTex", post.getResource().getIntraHash());
-					final List<ErrorMessage> errorList = new ArrayList<ErrorMessage>();
+					final List<ErrorMessage> errorList = new ArrayList<>();
 					errorList.add(errorMessage);
 					command.getPostsErrorList().put(post.getResource().getIntraHash(), errorList);
 				}
@@ -388,7 +386,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * add list of posts to command for showing them to the user
 		 * (such that he can edit them)
 		 */
-		final ListCommand<Post<BibTex>> postListCommand = new ListCommand<Post<BibTex>>(command);
+		final ListCommand<Post<BibTex>> postListCommand = new ListCommand<>(command);
 		postListCommand.setList(posts);
 		/*
 		 * FIXME: rename the "bibtex" attribute of the command (hint: we try
@@ -412,7 +410,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		if (log.isDebugEnabled()) {
 			log.debug("will try to store " + postsToStore.size() + " of " + (posts != null ? Integer.toString(posts.size()) : "null") + " posts in database");
 		}
-		final List<Post<?>> validPosts = new LinkedList<Post<?>>(postsToStore.keySet());
+		final List<Post<?>> validPosts = new LinkedList<>(postsToStore.keySet());
 
 		/*
 		 * finally store the posts
@@ -441,7 +439,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 	}
 
 	/**
-	 * Attempts to find a post which matches (?) the uploaded (PDF) file.
+	 * Attempts to find a post which matches the uploaded (PDF) file.
 	 * 
 	 * FIXME: needs to be documented
 	 * 

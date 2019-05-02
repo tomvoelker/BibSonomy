@@ -141,7 +141,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		}
 		final BibTex publication = post.getResource();
 		if (publication.getDocuments() == null) {
-			publication.setDocuments(new LinkedList<Document>());
+			publication.setDocuments(new LinkedList<>());
 		}
 		for (final String compoundFileName : fileNames) {
 			if (!present(compoundFileName) || compoundFileName.length() < 32) {
@@ -329,12 +329,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		 */
 		try {
 			new PostBibTeXParser(this.instantiateResource().getClass()).updateWithParsedBibTeX(post);
-		} catch (final ParseException ex) {
-			/*
-			 * we silently ignore parsing errors - they have been handled by the
-			 * validator
-			 */
-		} catch (final IOException ex) {
+		} catch (final ParseException | IOException ex) {
 			/*
 			 * we silently ignore parsing errors - they have been handled by the
 			 * validator

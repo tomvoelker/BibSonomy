@@ -10,6 +10,11 @@ import org.bibsonomy.util.UrlBuilder;
 import java.io.Writer;
 import java.util.List;
 
+/**
+ * endpoint to query for projects
+ *
+ * @author pda
+ */
 public class GetProjectsStrategy extends AbstractGetListStrategy<List<Project>> {
 	private final String internalId;
 

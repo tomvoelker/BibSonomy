@@ -94,6 +94,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	private static final String CONTROLLER_ATTR_NAME = "minctrlatrr";
 	public static final String PATH_SEPERATOR = "/";
 	public static final String PATH_QUERY_SEPERATOR = "?";
+
 	/**
 	 * @param listCommand
 	 * @return
