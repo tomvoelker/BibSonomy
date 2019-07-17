@@ -38,12 +38,10 @@ import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
-import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.get.GetIndexRequest;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -58,6 +56,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchScrollRequest;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.support.WriteRequest;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.GetAliasesResponse;
@@ -212,7 +211,7 @@ public class ElasticsearchRESTClient implements ESClient {
 			final DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest();
 			deleteIndexRequest.indices(indexName);
 
-			final DeleteIndexResponse response = this.client.indices().delete(deleteIndexRequest, this.buildRequestOptions());
+			final AcknowledgedResponse response = this.client.indices().delete(deleteIndexRequest, this.buildRequestOptions());
 			return response.isAcknowledged();
 		}, false, "error deleting index " + indexName);
 	}
@@ -231,7 +230,7 @@ public class ElasticsearchRESTClient implements ESClient {
 			aliasesToRemoveStream.forEach(indicesAliasesRequest::addAliasAction);
 
 			// call elasticsearch
-			final IndicesAliasesResponse response = this.client.indices().updateAliases(indicesAliasesRequest, this.buildRequestOptions());
+			final AcknowledgedResponse response = this.client.indices().updateAliases(indicesAliasesRequest, this.buildRequestOptions());
 			return response.isAcknowledged();
 		}, false, "error updating aliases");
 	}
