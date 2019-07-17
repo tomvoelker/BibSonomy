@@ -26,9 +26,6 @@
  */
 package org.bibsonomy.webapp.command.actions;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,8 +35,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.webapp.command.BibtexViewCommand;
 import org.bibsonomy.webapp.command.LayoutViewCommand;
 import org.bibsonomy.webapp.command.ListCommand;
-import org.bibsonomy.webapp.command.TabCommand;
-import org.bibsonomy.webapp.command.TabsCommandInterface;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
