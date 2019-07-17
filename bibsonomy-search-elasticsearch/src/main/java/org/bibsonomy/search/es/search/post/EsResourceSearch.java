@@ -44,6 +44,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -764,7 +765,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			}
 		}
 		
-		// restricting access to posts visible to the user
+		/*
+		 * restricting access to posts visible to the user
+		 */
 		if (!present(allowedGroups)) {
 			allowedGroups = Collections.singleton(GroupUtils.buildPublicGroup().getName());
 		}
@@ -772,9 +775,32 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		final BoolQueryBuilder groupFilter = buildGroupFilter(allowedGroups);
 		
 		if (present(userName)) {
+			/*
+			 * handle private posts
+			 * the group should be private or friends and the loggedin user (userName) should be the owner of the post
+			 */
 			final TermQueryBuilder privateGroupFilter = QueryBuilders.termQuery(Fields.GROUPS, GroupUtils.buildPrivateGroup().getName());
+			final TermQueryBuilder friendsGroupFilter = QueryBuilders.termQuery(Fields.GROUPS, GroupUtils.buildFriendsGroup().getName());
 			final TermQueryBuilder userFilter = QueryBuilders.termQuery(Fields.USER_NAME, userName);
-			groupFilter.should(QueryBuilders.boolQuery().must(userFilter).must(privateGroupFilter));
+			final BoolQueryBuilder privateFriendsFilter = QueryBuilders.boolQuery().should(privateGroupFilter).should(friendsGroupFilter);
+			final BoolQueryBuilder privatePostFilter = QueryBuilders.boolQuery().must(userFilter).must(privateFriendsFilter);
+			groupFilter.should(privatePostFilter);
+
+			/*
+			 * handle friends posts
+			 * the group must be friends and the post owner must added by the loggedin user as friend
+			 */
+			final Collection<String> friendsOfUser = this.infoLogic.getFriendsForUser(userName);
+			if (present(friendsOfUser)) {
+				final BoolQueryBuilder friendsFilter = QueryBuilders.boolQuery();
+				final Stream<TermQueryBuilder> friendTermQueries = friendsOfUser.stream().map(friend -> QueryBuilders.termQuery(Fields.USER_NAME, friend));
+				// at least one friend must be the post owner …
+				friendTermQueries.forEach(friendsFilter::should);
+
+				// … when group is set to friends
+				final BoolQueryBuilder friendsVisibilityFilter = QueryBuilders.boolQuery().must(friendsGroupFilter).must(friendsFilter);
+				groupFilter.should(friendsVisibilityFilter);
+			}
 		}
 		
 		mainFilterBuilder.must(groupFilter);
