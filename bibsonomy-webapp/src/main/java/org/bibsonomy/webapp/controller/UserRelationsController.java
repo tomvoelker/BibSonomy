@@ -34,8 +34,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.UserRelationCommand;
 import org.bibsonomy.webapp.config.Parameters;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -55,18 +57,27 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 	@Override
 	public View workOn(final UserRelationCommand command) {
 		this.startTiming(command.getFormat());
+
+		final String groupingName = command.getRequestedUser();
 		
 		// no user given -> error
-		if (!present(command.getRequestedUser())) {
+		if (!present(groupingName)) {
 			/*
 			 * FIXME: wrong error message, should be /relations/ without user
 			 */
 			throw new MalformedURLSchemeException("error.user_page_without_username");
 		}
 
+		/*
+		 * render 404 when the user is not present in the database
+		 */
+		final User userDetails = this.logic.getUserDetails(groupingName);
+		if (!present(userDetails.getName())) {
+			throw new ObjectNotFoundException(groupingName);
+		}
+
 		// set grouping entity, grouping name, tags
 		final GroupingEntity groupingEntity = GroupingEntity.USER;
-		final String groupingName = command.getRequestedUser();
 
 		//query for the number of relations of a user
 		final int numberOfRelations = this.logic.getTagStatistics(null, groupingEntity, groupingName, null, null, ConceptStatus.ALL, null, null, null, 0, Integer.MAX_VALUE);
