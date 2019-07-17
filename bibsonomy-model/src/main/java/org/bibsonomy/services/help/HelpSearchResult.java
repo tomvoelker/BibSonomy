@@ -35,6 +35,7 @@ public class HelpSearchResult implements Comparable<HelpSearchResult> {
 	
 	private float score;
 	private String page;
+	private String path;
 	
 	private String highlightContent;
 	
@@ -64,6 +65,20 @@ public class HelpSearchResult implements Comparable<HelpSearchResult> {
 	 */
 	public void setPage(String page) {
 		this.page = page;
+	}
+
+	/**
+	 * @return the path
+	 */
+	public String getPath() {
+		return path;
+	}
+
+	/**
+	 * @param path the path to set
+	 */
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	/**
