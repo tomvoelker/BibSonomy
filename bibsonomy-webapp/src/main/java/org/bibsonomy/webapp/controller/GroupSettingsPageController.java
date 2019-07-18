@@ -28,8 +28,6 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
@@ -46,8 +44,6 @@ import org.bibsonomy.webapp.view.Views;
 import org.bibsonomy.wiki.CVWikiModel;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.access.AccessDeniedException;
-
-import java.io.IOException;
 
 /**
  * TODO: add documentation

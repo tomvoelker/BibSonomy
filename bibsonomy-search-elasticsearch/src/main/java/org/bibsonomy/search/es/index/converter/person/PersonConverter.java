@@ -32,7 +32,6 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.util.PersonNameUtils;
-import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.util.Converter;
 

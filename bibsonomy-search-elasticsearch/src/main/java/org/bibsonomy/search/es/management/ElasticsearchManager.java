@@ -31,7 +31,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;

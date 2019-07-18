@@ -33,7 +33,6 @@ import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
