@@ -28,8 +28,8 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
@@ -78,7 +78,7 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 			post = (Post<BibTex>) this.logic.getPostDetails(hash, user);
 		} catch (final ObjectNotFoundException ex) {
 			// ignore
-		} catch (final ResourceMovedException ex) {
+		} catch (final ObjectMovedException ex) {
 			// ignore
 		}
 

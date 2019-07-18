@@ -29,8 +29,8 @@ package org.bibsonomy.rest.client;
 import java.io.File;
 import java.io.Reader;
 
-import org.apache.commons.httpclient.HttpStatus;
-import org.bibsonomy.rest.auth.AuthenticationAccessor;
+import org.apache.http.HttpStatus;
+import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 import org.bibsonomy.rest.client.worker.impl.DeleteWorker;
@@ -99,10 +99,10 @@ public abstract class AbstractQuery<T> {
 		return downloadedDocument;
 	}
 
-	protected final Reader performMultipartPostRequest(final String absoluteUrl, final File file, final String fileName) throws ErrorPerformingRequestException {
+	protected final Reader performMultipartPostRequest(final String absoluteUrl, final File file) throws ErrorPerformingRequestException {
 		final PostWorker worker = new PostWorker(this.username, this.apiKey, this.accessor);
 		this.configHttpWorker(worker);
-		final Reader result = worker.perform(absoluteUrl, file, fileName);
+		final Reader result = worker.perform(absoluteUrl, file);
 		this.statusCode = worker.getHttpResult();
 
 		return result;

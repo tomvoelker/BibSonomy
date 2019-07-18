@@ -34,7 +34,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class PingbackService {
 
-	private final Log log = LogFactory.getLog(PingbackService.class);
+	private static final Log log = LogFactory.getLog(PingbackService.class);
 	
 	public String ping(final String sourceURI, final String targetURI) {
 		log.info("PING (" + sourceURI + "  -->  " + targetURI + ")");

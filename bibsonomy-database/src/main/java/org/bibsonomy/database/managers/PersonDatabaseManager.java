@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.database.managers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
@@ -38,6 +40,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.DuplicateEntryException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
@@ -68,12 +71,13 @@ import org.bibsonomy.services.searcher.PersonSearch;
  */
 public class PersonDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(PersonDatabaseManager.class);
-	private final static PersonDatabaseManager singleton = new PersonDatabaseManager();
+	private static final PersonDatabaseManager singleton = new PersonDatabaseManager();
 
 	private final GeneralDatabaseManager generalManager;
 	private final DatabasePluginRegistry plugins;
 	private PersonSearch personSearch;
 
+	@Deprecated // config via spring
 	public static PersonDatabaseManager getInstance() {
 		return singleton;
 	}
@@ -94,7 +98,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 		final String tempPersonId = this.generatePersonId(person, session);
 		person.setPersonId(tempPersonId);
 		try {
-			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			// get a new id from the database for the new person
+			person.setPersonChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("insertPerson", person, session);
 			session.commitTransaction();
 		} finally {
@@ -117,8 +122,15 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 		// increment id until we find the first that is not used (for the
 		// current name)
 		do {
-			final Person tempPerson = this.getPersonById(tempPersonId, session);
-			if (tempPerson != null) {
+			boolean idTaken;
+			try {
+				final Person tempPerson = this.getPersonById(tempPersonId, session);
+				idTaken = present(tempPerson);
+			} catch (final ObjectMovedException e) {
+				// ignore; but id is taken
+				idTaken = true;
+			}
+			if (idTaken) {
 				if (counter < 1000000) {
 					tempPersonId = newPersonId + "." + counter;
 				} else {
@@ -141,7 +153,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @return Person
 	 */
 	public Person getPersonByUser(String user, final DBSession session) {
-		return (Person) this.queryForObject("getPersonByUser", user, session);
+		return this.queryForObject("getPersonByUser", user, Person.class, session);
 	}
 
 	/**
@@ -152,7 +164,14 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @return Person
 	 */
 	public Person getPersonById(String id, DBSession session) {
-		return (Person) this.queryForObject("getPersonById", id, session);
+		final Person person = this.queryForObject("getPersonById", id, Person.class, session);
+		if (!present(person)) {
+			final String forwardId = this.getForwardId(id, session);
+			if (present(forwardId)) {
+				throw new ObjectMovedException(id, Person.class, forwardId, null, null);
+			}
+		}
+		return person;
 	}
 
 	/**
@@ -163,7 +182,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @return Person
 	 */
 	public Person getPersonByDnbId(String dnbId, DBSession session) {
-		return (Person) this.queryForObject("getPersonByDnbId", dnbId, session);
+		return this.queryForObject("getPersonByDnbId", dnbId, Person.class, session);
 	}
 
 	/**
@@ -175,7 +194,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	public void createPersonName(PersonName name, DBSession session) {
 		session.beginTransaction();
 		try {
-			name.setPersonNameChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			name.setPersonNameChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("insertName", name, session);
 			session.commitTransaction();
 		} finally {
@@ -184,35 +203,46 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Updates all fields of a given Person
+	 * Updates all fields of the given Person
 	 * 
 	 * @param person
 	 * @param session
 	 */
-	public void updatePerson(Person person, DBSession session) {
+	public void updatePerson(final Person person, final DBSession session) {
 		session.beginTransaction();
 		try {
-			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
-			this.insert("updatePerson", person, session);
+			// always set a new person change id
+			person.setPersonChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+
+			// inform others (to e.g. log the old person)
 			this.plugins.onPersonUpdate(person.getPersonId(), session);
+			this.update("updatePerson", person, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
 	}
 
-	/**
-	 * Updates all fields of a given Person in the database
-	 * 
-	 * @param person
-	 * @param session
-	 */
-	public void updatePersonOnAll(Person person, DBSession session) {
+	private void updatePersonField(final Person person, final String fieldName, final DBSession session) {
 		session.beginTransaction();
 		try {
-			this.plugins.onPersonUpdate(person.getPersonId(), session);
-			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
-			this.insert("updatePersonOnAll", person, session);
+			// first check if the person is in the database
+			final String personId = person.getPersonId();
+
+			final Person personInDB = this.getPersonById(personId, session);
+			if (!present(personInDB)) {
+				// FIXME: error message
+				return;
+			}
+			// prepare person
+			person.setPersonChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+
+			// inform the plugins about the update
+			this.plugins.onPersonUpdate(personId, session);
+
+			// update (specific field)
+			this.update("updatePerson" + fieldName, person, session);
+
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -226,15 +256,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void updateOrcid(Person person, DBSession session) {
-		session.beginTransaction();
-		try {
-			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
-			this.insert("updateOrcid", person, session);
-			this.plugins.onPersonUpdate(person.getPersonId(), session);
-			session.commitTransaction();
-		} finally {
-			session.endTransaction();
-		}
+		this.updatePersonField(person, "Orcid", session);
 	}
 
 	/**
@@ -244,15 +266,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void updateAcademicDegree(Person person, DBSession session) {
-		session.beginTransaction();
-		try {
-			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
-			this.insert("updateAcademicDegree", person, session);
-			this.plugins.onPersonUpdate(person.getPersonId(), session);
-			session.commitTransaction();
-		} finally {
-			session.endTransaction();
-		}
+		this.updatePersonField(person, "AcademicDegree", session);
 	}
 
 	/**
@@ -262,15 +276,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void updateCollege(Person person, DBSession session) {
-		session.beginTransaction();
-		try {
-			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
-			this.insert("updateCollege", person, session);
-			this.plugins.onPersonUpdate(person.getPersonId(), session);
-			session.commitTransaction();
-		} finally {
-			session.endTransaction();
-		}
+		this.updatePersonField(person, "College", session);
 	}
 
 	/**
@@ -280,15 +286,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void updateEmail(Person person, DBSession session) {
-		session.beginTransaction();
-		try {
-			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
-			this.insert("updateEmail", person, session);
-			this.plugins.onPersonUpdate(person.getPersonId(), session);
-			session.commitTransaction();
-		} finally {
-			session.endTransaction();
-		}
+		this.updatePersonField(person, "Email", session);
 	}
 
 	/**
@@ -298,15 +296,16 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void updateHomepage(Person person, DBSession session) {
-		session.beginTransaction();
-		try {
-			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
-			this.insert("updateHomepage", person, session);
-			this.plugins.onPersonUpdate(person.getPersonId(), session);
-			session.commitTransaction();
-		} finally {
-			session.endTransaction();
-		}
+		this.updatePersonField(person,"Homepage", session);
+	}
+
+	/**
+	 *
+	 * @param person
+	 * @param session
+	 */
+	public void updateUserLink(Person person, DBSession session) {
+		this.updatePersonField(person, "User", session);
 	}
 
 	/**
@@ -322,8 +321,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 			session.commitTransaction();
 			return true;
 		} catch (final DuplicateEntryException e) {
-			session.commitTransaction(); // FIXME: only called to not cancel the
-											// transaction
+			session.commitTransaction(); // FIXME: only called to not cancel the transaction
 			return false;
 		} finally {
 			session.endTransaction();
@@ -332,41 +330,56 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * @param personRelChangeId
-	 * @param loginUser
-	 * @param databaseSession
+	 * @param loggedinUser
+	 * @param session
 	 */
-	public void removeResourceRelation(int personRelChangeId, String loginUser, DBSession databaseSession) {
-		databaseSession.beginTransaction();
+	public void removeResourceRelation(int personRelChangeId, User loggedinUser, DBSession session) {
+		this.removeResourceRelation(personRelChangeId, loggedinUser, false, session);
+	}
+
+	private void removeResourceRelation(int personRelChangeId, User loggedinUser, boolean update, DBSession session) {
 		try {
-			ResourcePersonRelation rel = new ResourcePersonRelation();
+			session.beginTransaction();
+			final ResourcePersonRelation rel = new ResourcePersonRelation();
 			rel.setPersonRelChangeId(personRelChangeId);
-			rel.setChangedBy(loginUser);
-			rel.setChangedAt(new Date());
-			this.delete("removeResourceRelation", Integer.valueOf(personRelChangeId), databaseSession);
-			this.plugins.onPubPersonDelete(rel, databaseSession);
-			databaseSession.commitTransaction();
+
+			// inform the plugins (e.g. to log the deleted relation)
+			if (!update) {
+				this.plugins.onPubPersonDelete(rel, loggedinUser, session);
+			}
+			this.delete("removeResourceRelation", personRelChangeId, session);
+			session.commitTransaction();
 		} finally {
-			databaseSession.endTransaction();
+			session.endTransaction();
 		}
 	}
 
 	/**
 	 * @param personNameChangeId
-	 * @param databaseSession
+	 * @param loggedInUser
+	 * @param session
 	 */
-	public void removePersonName(int personNameChangeId, String loginUser, DBSession databaseSession) {
-		databaseSession.beginTransaction();
+	public void removePersonName(int personNameChangeId, final User loggedInUser, DBSession session) {
+		session.beginTransaction();
 		try {
-			PersonName person = new PersonName();
-			person.setPersonNameChangeId(personNameChangeId);
-			person.setChangedAt(new Date());
-			person.setChangedBy(loginUser);
-			this.delete("removePersonName", Integer.valueOf(personNameChangeId), databaseSession);
-			this.plugins.onPersonNameDelete(person, databaseSession);
-			databaseSession.commitTransaction();
+			final PersonName oldPersonName = this.getPersonNameById(personNameChangeId, session);
+
+			if (!present(oldPersonName)) {
+				session.commitTransaction();
+				return;
+			}
+			// inform the plugins (e.g. log the deleted relation)
+			this.plugins.onPersonNameDelete(oldPersonName, loggedInUser, session);
+			this.delete("removePersonName", Integer.valueOf(personNameChangeId), session);
+
+			session.commitTransaction();
 		} finally {
-			databaseSession.endTransaction();
+			session.endTransaction();
 		}
+	}
+
+	private PersonName getPersonNameById(int personNameChangeId, final DBSession session) {
+		return this.queryForObject("getPersonNameById", personNameChangeId, PersonName.class, session);
 	}
 
 	// TODO: write testcase for this method and test whether groupBy of
@@ -378,11 +391,12 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * @param username
 	 */
-	public void unlinkUser(String username, DBSession session) {
+	public void unlinkUser(final String username, final DBSession session) {
 		session.beginTransaction();
 		try {
-			this.update("unlinkUser", username, session);
+			// FIXME: why not getting the person by username and calling onPersonUpdate
 			this.plugins.onPersonUpdateByUserName(username, session);
+			this.update("unlinkUser", username, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -394,11 +408,11 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param authorIndex
 	 * @param role
 	 * @param session
-	 * @return List<ResourcePersonRelation>
+	 * @return list of ResourcePersonRelation
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelations(final String interhash, final Integer authorIndex, final PersonResourceRelationType role, final DBSession session) {
 		final ResourcePersonRelation rpr = new ResourcePersonRelation();
-		Post<BibTex> post = new Post<>();
+		final Post<BibTex> post = new Post<>();
 		post.setResource(new BibTex());
 		post.getResource().setInterHash(interhash);
 		rpr.setPost(post);
@@ -432,7 +446,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 		param.setPersonRelation(personRelation);
 
 		if (publicationType == GoldStandardPublication.class) {
-			return this.queryForList("getComunityBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
+			return this.queryForList("getCommunityBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
 		} else {
 			return this.queryForList("getBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
 		}
@@ -468,12 +482,12 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param newNameWithOldId
 	 * @param session
 	 */
-	public void updatePersonName(PersonName newNameWithOldId, DBSession session) {
+	public void updatePersonName(final PersonName newNameWithOldId, final User loggedinUser, final DBSession session) {
 		session.beginTransaction();
 		try {
+			this.plugins.onPersonNameUpdate(newNameWithOldId, loggedinUser, session);
 			this.delete("removePersonName", newNameWithOldId.getPersonNameChangeId(), session);
 			this.createPersonName(newNameWithOldId, session);
-			this.plugins.onPersonNameUpdate(newNameWithOldId.getPersonNameChangeId(), session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -481,11 +495,9 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * 
-	 * @param personID
 	 * @return a list of all matches
 	 */
-	public List<PersonMatch> getMatches(DBSession session) {
+	public List<PersonMatch> getMatches(final DBSession session) {
 		return this.queryForList("getMatches", null, PersonMatch.class, session);
 	}
 
@@ -494,8 +506,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param personID
 	 * @return a list of all matches for a person
 	 */
-	public List<PersonMatch> getMatchesFor(String personid, DBSession session) {
-		return this.queryForList("getMatchesFor", personid, PersonMatch.class, session);
+	public List<PersonMatch> getMatchesFor(String personID, DBSession session) {
+		return this.queryForList("getMatchesFor", personID, PersonMatch.class, session);
 	}
 
 	/**
@@ -503,35 +515,44 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * phd/habil
 	 * 
 	 * @param match
+	 * @param loggedInUser
+	 * @param session
 	 * @return true if no field is different
 	 */
-	private boolean mergeable(PersonMatch match, DBSession session, String loginUser) {
-		if (!this.testMergeOnClaims(match, loginUser)) {
+	private boolean mergeable(PersonMatch match, User loggedInUser, DBSession session) {
+		if (!this.testMergeOnClaims(match, loggedInUser)) {
 			// loginUser is not permitted
 			return false;
 		}
 
+		final Person person1 = match.getPerson1();
+		final Person person2 = match.getPerson2();
+		final String personId1 = person1.getPersonId();
+		final String personId2 = person2.getPersonId();
+
 		// check if a phd/habil conflict raises
-		Post habil1 = this.queryForObject("getHabilForPerson", match.getPerson1().getPersonId(), Post.class, session);
-		Post habil2 = this.queryForObject("getHabilForPerson", match.getPerson2().getPersonId(), Post.class, session);
+		final Post habil1 = this.queryForObject("getHabilForPerson", personId1, Post.class, session);
+		final Post habil2 = this.queryForObject("getHabilForPerson", personId2, Post.class, session);
+
 		// compare habils via hash
-		if (habil1 != null && habil2 != null && habil1.getResource().getInterHash() != habil2.getResource().getInterHash()) {
+		if (habil1 != null && habil2 != null && !habil1.getResource().getInterHash().equals(habil2.getResource().getInterHash())) {
 			return false;
 		}
-		Post phd1 = this.queryForObject("getPHDForPerson", match.getPerson1().getPersonId(), Post.class, session);
-		Post phd2 = this.queryForObject("getPHDForPerson", match.getPerson2().getPersonId(), Post.class, session);
+
+		final Post<?> phd1 = this.queryForObject("getPHDForPerson", personId1, Post.class, session);
+		final Post<?> phd2 = this.queryForObject("getPHDForPerson", personId2, Post.class, session);
 		// compare phd via hash
-		if (phd1 != null && phd2 != null && phd1.getResource().getInterHash() != phd2.getResource().getInterHash()) {
+		if (phd1 != null && phd2 != null && !phd1.getResource().getInterHash().equals(phd2.getResource().getInterHash())) {
 			return false;
 		}
 
 		// checks if the persons have two different main names
-		if (!match.getPerson1().getMainName().equals(match.getPerson2().getMainName())) {
+		if (!person1.getMainName().equals(person2.getMainName())) {
 			return false;
 		}
 
 		// check on all other attributes
-		if (!match.getPerson1().equalsTo(match.getPerson2())) {
+		if (!person1.equalsTo(person2)) {
 			return false;
 		}
 
@@ -541,50 +562,79 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Person pubs will be redirected to person 1 and the change is logged
 	 * 
-	 * @param loginUser
+	 * @param loggedinUser
 	 * @param match
 	 * @param session
 	 */
-	private void mergeAllPubs(PersonMatch match, String loginUser, DBSession session) {
-		List<ResourcePersonRelation> allRelationsPerson2 = this.queryForList("getResourcePersonRelationsByPersonId", match.getPerson2().getPersonId(), ResourcePersonRelation.class, session);
+	private void mergeAllPubs(final PersonMatch match, final User loggedinUser, final DBSession session) {
+		final List<ResourcePersonRelation> allRelationsPerson2 = this.getResourcePersonRelationsWithPosts(match.getPerson2().getPersonId(), loggedinUser, BibTex.class, session);
+		try {
+			session.beginTransaction();
+			for (final ResourcePersonRelation relation : allRelationsPerson2) {
+				this.moveRelationToPerson(relation, match.getPerson1(), loggedinUser, session);
+			}
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
 
-		for (ResourcePersonRelation relation : allRelationsPerson2) {
-			// generate new person_change_id and log the old relation
-			this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
-			this.insert("logPubPersonUpdates", relation.getPersonRelChangeId(), session);
-			// set change information and add new relation
-			relation.setChangedBy(loginUser);
-			relation.setChangedAt(new Date());
-			relation.setPerson(match.getPerson1());
-			this.update("updateResourcePersonRelation", relation, session);
+	/**
+	 * moves a relation to a new person
+	 *
+	 * @param relation
+	 * @param person
+	 * @param loggedinUser
+	 * @param session
+	 */
+	private void moveRelationToPerson(final ResourcePersonRelation relation, final Person person, final User loggedinUser, final DBSession session) {
+		try {
+			session.beginTransaction();
+
+			final int oldId = relation.getPersonRelChangeId();
+			final Integer newId = this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
+
+			final ResourcePersonRelation newRelation = new ResourcePersonRelation();
+			newRelation.setPost(relation.getPost());
+			newRelation.setPerson(person);
+			newRelation.setPersonRelChangeId(newId);
+			newRelation.setRelationType(relation.getRelationType());
+			newRelation.setChangedBy(loggedinUser.getName());
+			newRelation.setChangedAt(new Date());
+
+			this.plugins.onPersonResourceRelationUpdate(relation, newRelation, loggedinUser, session);
+
+			// remove it from the person
+			this.removeResourceRelation(oldId, loggedinUser, true, session);
+			this.addResourceRelation(newRelation, session);
+
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
 		}
 	}
 
 	/**
 	 * Person aliases will be merged
-	 * 
-	 * @param loginUser
-	 * @param match
+	 *  @param match
+	 * @param loggedinUser
 	 * @param session
 	 */
-	private void mergePersonAliases(String loginUser, PersonMatch match, DBSession session) {
-		List<PersonName> person1Names = this.queryForList("getNames", match.getPerson1().getPersonId(), PersonName.class, session);
-		List<PersonName> person2Names = this.queryForList("getNames", match.getPerson2().getPersonId(), PersonName.class, session);
-		for (PersonName name2 : person2Names) {
-			// check if person1 already has the name alias
-			boolean contains = false;
-			for (PersonName name1 : person1Names) {
-				if (name2.getFirstName().equals(name1.getFirstName()) && name2.getLastName().equals(name1.getLastName())) {
-					contains = true;
-				}
-			}
-			// add new alias, if person1 does not have it
-			if (!contains) {
-				int newId = this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
-				name2.setPersonNameChangeId(newId);
-				name2.setPersonId(match.getPerson1().getPersonId());
-				name2.setChangedAt(new Date());
-				name2.setChangedBy(loginUser);
+	private void mergePersonNameAliases(final PersonMatch match, final User loggedinUser, final DBSession session) {
+		final Person personMergeTarget = match.getPerson1();
+		final String personMergeTargetId = personMergeTarget.getPersonId();
+		final List<PersonName> person1Names = this.queryForList("getNames", personMergeTargetId, PersonName.class, session);
+		final List<PersonName> person2Names = this.queryForList("getNames", match.getPerson2().getPersonId(), PersonName.class, session);
+		for (final PersonName personName : person2Names) {
+			// add new alias, if merge target does not have it
+			if (!person1Names.contains(personName)) {
+				final int newId = this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
+				personName.setPersonNameChangeId(newId);
+				personName.setPersonId(personMergeTargetId);
+				personName.setChangedAt(new Date());
+				personName.setChangedBy(loggedinUser.getName());
+
+				this.createPersonName(personName, session);
 			}
 		}
 	}
@@ -594,24 +644,26 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * resource relation will be changed Name aliases will be added
 	 * 
 	 * @param match
-	 * @param loginUser
+	 * @param loggedinUser
 	 * @param session
 	 * 
 	 * @return true if the merge was successful
 	 */
-	public boolean mergeSimilarPersons(PersonMatch match, String loginUser, DBSession session) {
+	public boolean mergePersons(PersonMatch match, User loggedinUser, DBSession session) {
 		// merge two persons, if there is no conflict
-		if (mergeable(match, session, loginUser) && testMergeOnClaims(match, loginUser)) {
-			session.beginTransaction();
-			try {
-				performMerge(match, loginUser, session);
-			} finally {
-				session.commitTransaction();
-				session.endTransaction();
-				return true;
-			}
+		final boolean personsCanBeMerged = mergeable(match, loggedinUser, session) && testMergeOnClaims(match, loggedinUser);
+		if (!personsCanBeMerged) {
+			return false;
 		}
-		return false;
+
+		session.beginTransaction();
+		try {
+			this.performMerge(match, loggedinUser, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+			return true;
+		}
 	}
 
 	/**
@@ -619,28 +671,48 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * resource relation will be changed Name aliases will be added
 	 * 
 	 * @param match
-	 * @param loginUser
+	 * @param loggedinUser
 	 * @param session
 	 */
-	private void performMerge(PersonMatch match, String loginUser, DBSession session) {
-		// redirect resourcePersonRelation to person1 and log the changes
-		// Note that persons can have multiple related posts with same simhash
-		// and that they are will be grouped by their simhash1
-		mergeAllPubs(match, loginUser, session);
-		// add new further alias
-		mergePersonAliases(loginUser, match, session);
+	private void performMerge(PersonMatch match, User loggedinUser, DBSession session) {
+		/*
+		 * move resourcePersonRelations from person2 to  and log the changes
+		 * Note that persons can have multiple related posts with same simhash
+		 * and that they are will be grouped by their simhash1
+		 */
+		this.mergeAllPubs(match, loggedinUser, session);
 
-		boolean edit = this.combinePersonsAttributes(match.getPerson1(), match.getPerson2());
+		// add new further person names
+		this.mergePersonNameAliases(match, loggedinUser, session);
+
+		/*
+		 * update person attributes
+		 */
+		final Person personMergeTarget = match.getPerson1();
+		final Person personToMerge = match.getPerson2();
+		final boolean edit = this.combinePersonsAttributes(personMergeTarget, personToMerge);
 		if (edit) {
-			this.updatePersonOnAll(match.getPerson1(), session);
+			this.updatePerson(personMergeTarget, session);
 		}
+
 		this.mergePersonAttributes(match, session);
+
 		// sets match state to 2
 		this.update("acceptMerge", match.getMatchID(), session);
-		// Substitutes person2's id with person1's for all unresolved matches
+		// Substitutes person2's id with 's for all unresolved matches
 		this.update("updatePersonMatchAfterMerge", match, session);
 		this.delete("removeReflexivPersonMatches", match.getMatchID(), session);
-		this.mergeMerges(match.getPerson1().getPersonId(), session, loginUser);
+		this.mergeMerges(personMergeTarget.getPersonId(), loggedinUser, session);
+
+		/*
+		 * at the end delete the person that should be merged with the merge target
+		 */
+		final String personId = personToMerge.getPersonId();
+		this.plugins.onPersonDelete(personToMerge, loggedinUser, session);
+
+		// delete person names first, TODO: remove constraint
+		this.delete("deletePersonNamesByPersonId", personId, session);
+		this.delete("deletePersonById", personId, session);
 	}
 
 	/**
@@ -655,18 +727,20 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 			boolean updated1 = false;
 			boolean updated2 = false;
 			// fields that can be merged
+			final Person personMergeTarget = match.getPerson1();
+			final Person personToMerge = match.getPerson2();
 			for (String fieldName : Person.fieldsWithResolvableMergeConflicts) {
 				// get person values of an attribute
 				PropertyDescriptor desc = new PropertyDescriptor(fieldName, Person.class);
-				Object person1Value = desc.getReadMethod().invoke(match.getPerson1());
-				Object person2Value = desc.getReadMethod().invoke(match.getPerson2());
+				Object person1Value = desc.getReadMethod().invoke(personMergeTarget);
+				Object person2Value = desc.getReadMethod().invoke(personToMerge);
 				if (person1Value == null && person2Value != null) {
 					// update person 1
-					desc.getWriteMethod().invoke(match.getPerson1(), person2Value);
+					desc.getWriteMethod().invoke(personMergeTarget, person2Value);
 					updated1 = true;
 				} else if (person2Value == null && person1Value != null) {
 					// update person 2
-					desc.getWriteMethod().invoke(match.getPerson2(), person1Value);
+					desc.getWriteMethod().invoke(personToMerge, person1Value);
 					updated2 = true;
 				}
 				// dnb personid has a table that will link ids for the same
@@ -678,10 +752,12 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 			}
 			// write changes if a person was updated
 			if (updated1) {
-				this.updatePerson(match.getPerson1(), session);
+				this.updatePerson(personMergeTarget, session);
 			}
+
+			// FIXME: why do we have to update the person?
 			if (updated2) {
-				this.updatePerson(match.getPerson2(), session);
+				this.updatePerson(personToMerge, session);
 			}
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IntrospectionException e) {
 			log.error(e);
@@ -691,13 +767,13 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * duplicate matches can occur after a merge was performed, because the
 	 * match list is a transitive closure duplicates will be combined
-	 * 
 	 * @param personId
+	 * @param loggedInUser
 	 * @param session
 	 */
-	private void mergeMerges(String personId, DBSession session, String userName) {
-		List<PersonMatch> matches = this.getMatchesFor(session, personId);
-		List<PersonMatch> dupes = new LinkedList<PersonMatch>();
+	private void mergeMerges(final String personId, final User loggedInUser, final DBSession session) {
+		List<PersonMatch> matches = this.getMatchesFor(personId, session);
+		List<PersonMatch> dupes = new LinkedList<>();
 		// get all duplicate matches
 		// one copy remains because j is always bigger than i
 		for (int i = 0; i < matches.size() - 1; i++) {
@@ -724,7 +800,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 			if (combinedMerge.getUserDenies().size() >= PersonMatch.denieThreshold) {
 				// deny merge for all if the total user deny count is bigger
 				// than the deny threshold
-				this.delete("denyMatchByID", new DenyMatchParam(combinedMerge.getMatchID(), userName), session);
+				this.delete("denyMatchByID", new DenyMatchParam(combinedMerge.getMatchID(), loggedInUser.getName()), session);
 			}
 		}
 	}
@@ -760,11 +836,11 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * add user to the deny list of a match denys a match for all if a threshold
 	 * is reached
-	 *
-	 * @param matchID
+	 *  @param match
+	 * @param userName
 	 * @param session
 	 */
-	public void denyMatch(PersonMatch match, DBSession session, String userName) {
+	public void denyMatch(PersonMatch match, String userName, DBSession session) {
 		if (!match.getUserDenies().contains(userName)) {
 			DenyMatchParam param = new DenyMatchParam(match.getMatchID(), userName);
 			if (match.getUserDenies().size() == PersonMatch.denieThreshold - 1) {
@@ -785,24 +861,17 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * 
-	 * @param session
-	 * @param personID
-	 * @return all matches for a person
-	 */
-	public List<PersonMatch> getMatchesFor(DBSession session, String personID) {
-		return this.queryForList("getMatchesFor", personID, PersonMatch.class, session);
-	}
-
-	/**
+	 * FIXME: why are we not filtering this using a query?
+	 *
 	 * filters the matches such that matches the user denied wont be displayed
 	 * 
-	 * @param session
 	 * @param personID
+	 * @param userName
+	 * @param session
 	 * @return
 	 */
-	public List<PersonMatch> getMatchesForFilterWithUserName(DBSession session, String personID, String userName) {
-		List<PersonMatch> matches = this.getMatchesFor(session, personID);
+	public List<PersonMatch> getMatchesForFilterWithUserName(String personID, String userName, DBSession session) {
+		final List<PersonMatch> matches = this.getMatchesFor(personID, session);
 		matches.removeIf(match -> match.getUserDenies().contains(userName));
 
 		return matches;
@@ -811,28 +880,32 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * performs a merge and resolves its conflicts
 	 * 
-	 * @param session
 	 * @param formMatchId
 	 * @param map
 	 *            conflicts
+	 * @param loggedInUser
+	 * @param session
 	 * @return true if merge could be performed
 	 */
-	public Boolean conflictMerge(DBSession session, int formMatchId, Map<String, String> map, String loginUser) {
-		PersonMatch match = this.getMatch(formMatchId, session);
+	public boolean mergePersonsWithConflicts(int formMatchId, Map<String, String> map, User loggedInUser, DBSession session) {
+		final PersonMatch match = this.getMatch(formMatchId, session);
 		// check match in claim and field name conflicts
-		if (!this.testMergeOnClaims(match, loginUser) || !onlyValidFields(map.keySet())) {
+		if (!this.testMergeOnClaims(match, loggedInUser) || !onlyValidFields(map.keySet())) {
 			return false;
 		}
-		try {
-			Person person1 = match.getPerson1();
-			Person person2 = match.getPerson2();
-			for (String fieldName : map.keySet()) {
 
+		try {
+			session.beginTransaction();
+
+			final Person person1 = match.getPerson1();
+			final Person person2 = match.getPerson2();
+
+			 for (final String fieldName : map.keySet()) {
 				// PersonNames are at a separate table
 				if (fieldName.equals("mainName")) {
 					// set new main names
-					this.updateMainName(person1, map.get(fieldName), session, loginUser);
-					this.updateMainName(person2, map.get(fieldName), session, loginUser);
+					this.updateMainName(person1, map.get(fieldName), loggedInUser, session);
+					this.updateMainName(person2, map.get(fieldName), loggedInUser, session);
 				} else if (fieldName.equals("gender")) {
 					// genders is an enum
 					new PropertyDescriptor(fieldName, Person.class).getWriteMethod().invoke(person1, Gender.valueOf(map.get(fieldName)));
@@ -843,13 +916,13 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 					new PropertyDescriptor(fieldName, Person.class).getWriteMethod().invoke(person2, map.get(fieldName));
 				}
 			}
-			// add changes to both so they can be compared with mergable()
 
-			this.updatePersonOnAll(person1, session);
-			this.updatePersonOnAll(person2, session);
-			session.beginTransaction();
+			// add changes to both so they can be compared with mergable
+			this.updatePerson(person1, session);
+			this.updatePerson(person2, session);
+
 			try {
-				this.performMerge(match, loginUser, session);
+				this.performMerge(match, loggedInUser, session);
 				session.commitTransaction();
 			} finally {
 				session.endTransaction();
@@ -867,7 +940,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param fields
 	 * @return true if only valid fieldNames are in fields
 	 */
-	private Boolean onlyValidFields(Set<String> fields) {
+	private boolean onlyValidFields(Set<String> fields) {
 		fieldLoop: for (String string : fields) {
 			for (String validField : Person.fieldsWithResolvableMergeConflicts) {
 				if (string.equals(validField)) {
@@ -883,45 +956,47 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * set new mainName to person due to a conflict merge
-	 * 
-	 * @param person
-	 * @param newName
+	 *  @param person
+	 * @param newName FIXME: why is newName not of type PersonName
 	 * @param session
 	 */
-	private Boolean updateMainName(Person person, String newName, DBSession session, String loginUser) {
+	private boolean updateMainName(Person person, String newName, User loggedinUser, DBSession session) {
+		final String loggedinUserName = loggedinUser.getName();
 		// old mainName
-		PersonName mainName = person.getMainName();
+		final PersonName mainName = person.getMainName();
 
 		if (mainName == null) {
 			// failed because no main name was found
 			return false;
 		}
 		mainName.setMain(false);
-		this.updatePersonName(mainName, session);
-
+		this.updatePersonName(mainName, loggedinUser, session);
+		// FIXME: why not using PersonNameUtils.discoverPersonName???
 		// the name was inserted "lastName, firstName"
-		String[] nameParts = newName.split(", ", 2);
+		final String[] nameParts = newName.split(", ", 2);
 		if (nameParts.length == 1) {
 			// failed because invalid input was inserted
+			// TODO: check if the main flag is not removed from the name
 			return false;
 		}
 
 		// check if name already exists as alias
-		for (PersonName personName : person.getNames()) {
+		final Date changeDate = new Date();
+		for (final PersonName personName : person.getNames()) {
 			String name = personName.toString();
 			if (name.equals(newName)) {
 				// found name in alias and set it to main name
 				personName.setMain(true);
-				personName.setChangedBy(loginUser);
-				personName.setChangedAt(new Date());
-				this.updatePersonName(personName, session);
+				personName.setChangedBy(loggedinUserName);
+				personName.setChangedAt(changeDate);
+				this.updatePersonName(personName, loggedinUser, session);
 				return true;
 			}
 		}
 		// new PersonName needs to be added
-		PersonName newMainName = new PersonName(nameParts[1], nameParts[0]);
-		newMainName.setChangedBy(loginUser);
-		newMainName.setChangedAt(new Date());
+		final PersonName newMainName = new PersonName(nameParts[1], nameParts[0]);
+		newMainName.setChangedBy(loggedinUserName);
+		newMainName.setChangedAt(changeDate);
 		newMainName.setMain(true);
 		newMainName.setPersonId(person.getPersonId());
 		newMainName.setPerson(person);
@@ -935,8 +1010,24 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @param match
 	 * @param loginUser
 	 */
-	private Boolean testMergeOnClaims(PersonMatch match, String loginUser) {
-		return match.testMergeOnClaims(loginUser);
+	private boolean testMergeOnClaims(final PersonMatch match, final User loginUser) {
+		final String loggedinUserName = loginUser.getName();
+		final String person1User = match.getPerson1().getUser();
+		final String person2User = match.getPerson2().getUser();
+
+		final boolean p1Claim = present(person1User);
+		final boolean p2Claim = present(person2User);
+		if (p1Claim && p2Claim) {
+			return false;
+		} else if (!p1Claim && !p2Claim) {
+			return true;
+		} else if (p1Claim) {
+			//TODO notify user1 that their is a merge
+			return person1User.equals(loggedinUserName);
+		} else {
+			//TODO notify user2 that their is a merge
+			return person2User.equals(loggedinUserName);
+		}
 	}
 
 	/**
@@ -944,7 +1035,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 * @return returns the updated personId, if the person was merged to an
 	 *         other person
 	 */
-	public String getForwardId(String personId, DBSession session) {
+	private String getForwardId(String personId, DBSession session) {
 		return this.queryForObject("getPersonForward", personId, String.class, session);
 	}
 
@@ -955,5 +1046,4 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	public void setPersonSearch(PersonSearch personSearch) {
 		this.personSearch = personSearch;
 	}
-
 }

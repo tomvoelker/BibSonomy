@@ -30,25 +30,28 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.Semaphore;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.search.es.ESClient;
+import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.services.URLGenerator;
@@ -58,9 +61,7 @@ import org.bibsonomy.services.help.HelpSearch;
 import org.bibsonomy.services.help.HelpSearchResult;
 import org.bibsonomy.util.StringUtils;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
-import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
@@ -72,7 +73,8 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.highlight.HighlightField;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.jsoup.Jsoup;
 
 /**
@@ -85,10 +87,11 @@ public class HelpSearchManager implements HelpSearch {
 	
 	private static final String HEADER_FIELD = "header";
 	private static final String CONTENT_FIELD = "content";
+	private static final String PATH_FIELD = "path";
 	
 	private static final String HELP_PAGE_TYPE = "help_page";
 	
-	private static final Mapping<String> MAPPING = new Mapping<>();
+	private static final Mapping<XContentBuilder> MAPPING = new Mapping<>();
 
 	private static final String SETTINGS;
 	
@@ -101,29 +104,33 @@ public class HelpSearchManager implements HelpSearch {
 							.field("date_detection", false)
 							.startObject("properties")
 								.startObject(HEADER_FIELD)
-									.field("type", "string")
-									.field("store", "true")
+									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.TEXT_TYPE)
+									.field("boost", 2.0)
 								.endObject()
 								.startObject(CONTENT_FIELD)
-									.field("type", "string")
-									.field("store", "true")
+									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.TEXT_TYPE)
 								.endObject()
 							.endObject()
 						.endObject()
 					.endObject();
-			MAPPING.setMappingInfo(mapping.string());
+			MAPPING.setMappingInfo(mapping);
 			mapping.close();
-			SETTINGS = XContentFactory.jsonBuilder()
+			SETTINGS = Strings.toString(XContentFactory.jsonBuilder()
 					.startObject()
-						.startObject("analyzer")
-							.startObject("default")
-								.field("type", "custom")
-								.field("char_filter", Arrays.asList("html_strip"))
-								.field("tokenizer", "standard")
-								.field("filter", Arrays.asList("lowercase", "standard"))
+						.startObject("analysis")
+							.startObject("analyzer")
+								.startObject("my_analyzer")
+									.field("tokenizer", "standard")
+									.field("filter", Arrays.asList("lowercase", "standard"))
+								.endObject()
+							.endObject()
+							.startObject("char_filter")
+								.startObject("my_char_filter")
+									.field("type", "html_strip")
+								.endObject()
 							.endObject()
 						.endObject()
-					.endObject().string();
+					.endObject());
 		} catch (final IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -136,6 +143,9 @@ public class HelpSearchManager implements HelpSearch {
 	private String projectName;
 	private String projectTheme;
 	private String projectHome;
+	private String projectEmail;
+	private String projectNoSpamEmail;
+	private String projectAPIEmail;
 
 	private URLGenerator urlGenerator;
 	
@@ -159,55 +169,59 @@ public class HelpSearchManager implements HelpSearch {
 		}
 		
 		try {
-			final File baseFolder = new File(this.path);
-			final File[] languageFolders = baseFolder.listFiles(new FileFilter() {
-				
-				@Override
-				public boolean accept(File pathname) {
-					
-					//folder "code-samples" should not be included
-					return pathname.isDirectory() && !pathname.isHidden() && !pathname.getName().equals("code-samples");
-				}
-			});
+			// get all language folders (folders that are not hidden and are not the code-samples dir)
+			final Path pathToScan = Paths.get(this.path);
+			final List<Path> languageFolders = Files.list(pathToScan).filter(Files::isDirectory).filter(path -> !path.toFile().isHidden()).filter(path -> !path.toFile().getName().equals("code-samples"))
+							.collect(Collectors.toList());
 			
-			for (final File languageFolder : languageFolders) {
-				final String language = languageFolder.getName();
-				
+			for (final Path languageFolder : languageFolders) {
+				final String language = languageFolder.toFile().getName();
 				final String indexName = getIndexNameForLanguage(language);
 				
 				if (!this.client.existsIndexWithName(indexName)) {
-					this.client.createIndex(indexName, Collections.singleton(MAPPING), SETTINGS);
+					this.client.createIndex(indexName, MAPPING, SETTINGS);
 				}
-				
-				final File[] files = languageFolder.listFiles(new FilenameFilter() {
-					@Override
-					public boolean accept(File dir, String name) {
-						return name.endsWith(HelpUtils.FILE_SUFFIX);
-					}
-				});
-				
+
+				final List<Path> filePaths = Files.walk(languageFolder).filter(path -> path.toString().toLowerCase().endsWith(HelpUtils.FILE_SUFFIX)).collect(Collectors.toList());
+
 				final Map<String, Map<String, Object>> jsonDocuments = new HashMap<>();
-				for (final File file : files) {
-					final HelpParser parser = this.factory.createParser(HelpUtils.buildReplacementMap(this.projectName, this.projectTheme, this.projectHome), this.urlGenerator);
+				for (final Path filePath : filePaths) {
+					final File file = filePath.toFile();
+					final HelpParser parser = this.factory.createParser(HelpUtils.buildReplacementMap(this.projectName, this.projectTheme, this.projectHome, this.projectEmail, this.projectNoSpamEmail, this.projectAPIEmail), this.urlGenerator);
 					final String fileName = file.getName().replaceAll(HelpUtils.FILE_SUFFIX, "");
 					try (final BufferedReader helpPage = new BufferedReader(new InputStreamReader(new FileInputStream(file), StringUtils.DEFAULT_CHARSET))) {
 						final String markdown = StringUtils.getStringFromReader(helpPage);
 						final String content = parser.parseText(markdown, language);
-						final Map<String, Object> doc = new HashMap<>();
-						doc.put(HEADER_FIELD, fileName);
-						doc.put(CONTENT_FIELD, content);
-						jsonDocuments.put(fileName, doc);
+
+						final Path relativePath = languageFolder.relativize(filePath.getParent());
+
+						if (containsContent(content)) {
+							final Map<String, Object> doc = new HashMap<>();
+							doc.put(HEADER_FIELD, fileName);
+							doc.put(CONTENT_FIELD, content);
+							final String value = relativePath.toString();
+							doc.put(PATH_FIELD, value);
+							jsonDocuments.put(value + "/" + fileName, doc);
+						}
 					} catch (final Exception e) {
 						log.error("cannot parse file " + fileName, e);
 					}
 				}
-				
+
 				this.client.deleteDocuments(indexName, HELP_PAGE_TYPE, (QueryBuilder) null);
-				this.client.insertNewDocuments(indexName, HELP_PAGE_TYPE, jsonDocuments);
+				if (present(jsonDocuments)) {
+					this.client.insertNewDocuments(indexName, HELP_PAGE_TYPE, jsonDocuments);
+				}
 			}
+		} catch (final IOException e) {
+			log.error("error while updating help index", e);
 		} finally {
 			this.updateLock.release();
 		}
+	}
+
+	private static boolean containsContent(String content) {
+		return !REDIRECT_PATTERN.matcher(content).find();
 	}
 
 	/**
@@ -231,44 +245,50 @@ public class HelpSearchManager implements HelpSearch {
 	@Override
 	public SortedSet<HelpSearchResult> search(final String language, final String searchTerms) throws InvalidSearchRequestException {
 		final String indexName = this.getIndexNameForLanguage(language);
-		final SearchRequestBuilder searchBuilder = this.client.prepareSearch(indexName);
+
 		final QueryStringQueryBuilder searchQuery = QueryBuilders.queryStringQuery(searchTerms);
 		final MatchQueryBuilder sidebarQuery = QueryBuilders.matchQuery(HEADER_FIELD, HelpUtils.HELP_SIDEBAR_NAME);
 		final BoolQueryBuilder query = QueryBuilders.boolQuery();
 		query.must(searchQuery);
 		query.mustNot(sidebarQuery);
-		
-		searchBuilder.setQuery(query);
-		searchBuilder.setTypes(HELP_PAGE_TYPE);
-		searchBuilder.setSearchType(SearchType.DEFAULT);
-		searchBuilder.addHighlightedField(CONTENT_FIELD, 100, 1);
-		searchBuilder.setHighlighterRequireFieldMatch(false);
+
+		// get matches
+		final HighlightBuilder highlightBuilder = new HighlightBuilder();
+		highlightBuilder.field(CONTENT_FIELD);
+		highlightBuilder.requireFieldMatch(false);
+		highlightBuilder.fragmentSize(100);
+		highlightBuilder.numOfFragments(1);
+
 		final TreeSet<HelpSearchResult> results = new TreeSet<>();
 		try {
-			final SearchResponse response = searchBuilder.execute().actionGet();
-			if (response != null) {
-				final SearchHits hits = response.getHits();
-				for (final SearchHit searchHit : hits.hits()) {
-					final HelpSearchResult result = new HelpSearchResult();
-					result.setPage(searchHit.getId());
-					result.setScore(searchHit.getScore());
-					
-					final Map<String, HighlightField> highlightFields = searchHit.getHighlightFields();
-					
-					final HighlightField contentHighlight = highlightFields.get(CONTENT_FIELD);
-					if (present(contentHighlight)) {
-						final Text[] fragments = contentHighlight.getFragments();
-						final StringBuilder builder = new StringBuilder();
-						for (final Text fragment : fragments) {
-							builder.append(removeHtml(fragment));
-						}
-						
-						final String highlightText = builder.toString();
-						result.setHighlightContent(highlightText);
+			final SearchHits hits = this.client.search(indexName, HELP_PAGE_TYPE, query, highlightBuilder, null, 0, 25, null, null);
+
+			if (!present(hits)) {
+				return results;
+			}
+
+			for (final SearchHit searchHit : hits.getHits()) {
+				final HelpSearchResult result = new HelpSearchResult();
+				final Map<String, Object> sourceAsMap = searchHit.getSourceAsMap();
+				result.setPage(sourceAsMap.get(HEADER_FIELD).toString());
+				result.setScore(searchHit.getScore());
+				result.setPath(sourceAsMap.get(PATH_FIELD).toString());
+
+				final Map<String, HighlightField> highlightFields = searchHit.getHighlightFields();
+
+				final HighlightField contentHighlight = highlightFields.get(CONTENT_FIELD);
+				if (present(contentHighlight)) {
+					final Text[] fragments = contentHighlight.getFragments();
+					final StringBuilder builder = new StringBuilder();
+					for (final Text fragment : fragments) {
+						builder.append(removeHtml(fragment));
 					}
-					
-					results.add(result);
+
+					final String highlightText = builder.toString();
+					result.setHighlightContent(highlightText);
 				}
+
+				results.add(result);
 			}
 		} catch (final IndexNotFoundException e) {
 			log.error("index " + indexName + " not found");
@@ -276,7 +296,7 @@ public class HelpSearchManager implements HelpSearch {
 			log.info("parsing query failed.", e);
 			throw new InvalidSearchRequestException();
 		}
-		
+
 		return results;
 	}
 
@@ -288,7 +308,7 @@ public class HelpSearchManager implements HelpSearch {
 		String text = Jsoup.parse(fragment.toString()).text();
 		final int index = text.indexOf('>');
 		if (index != -1) {
-			text = text.substring(index + 1, text.length());
+			text = text.substring(index + 1);
 		}
 		
 		final int tagStartIndex = text.lastIndexOf('<');
@@ -324,6 +344,27 @@ public class HelpSearchManager implements HelpSearch {
 	 */
 	public void setProjectHome(String projectHome) {
 		this.projectHome = projectHome;
+	}
+	
+	/**
+	 * @param projectEmail the projectEmail to set
+	 */
+	public void setProjectEmail(String projectEmail) {
+		this.projectEmail = projectEmail;
+	}
+	
+	/**
+	 * @param projectNoSpamEmail the projectNoSpamEmail to set
+	 */
+	public void setProjectNoSpamEmail(String projectNoSpamEmail) {
+		this.projectNoSpamEmail = projectNoSpamEmail;
+	}
+	
+	/**
+	 * @param projectAPIEmail the projectAPIEmail to set
+	 */
+	public void setProjectAPIEmail(String projectAPIEmail) {
+		this.projectAPIEmail = projectAPIEmail;
 	}
 
 	/**

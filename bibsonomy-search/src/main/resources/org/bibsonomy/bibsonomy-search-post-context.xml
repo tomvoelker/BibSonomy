@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/util
+						http://www.springframework.org/schema/util/spring-util.xsd">
+	<bean id="searchSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="searchSqlMapClient"/>
+	</bean>
+
+	<bean id="personSearchDatabaseManager" class="org.bibsonomy.search.management.database.manager.PersonSearchDatabaseManager" />
+
+	<bean id="generationLogic" class="org.bibsonomy.search.index.generator.post.PostIndexGenerationLogic" abstract="true">
+		<property name="sessionFactory" ref="searchSessionFactory"/>
+		<property name="generalDatabaseManager" ref="generalDatabaseManager" />
+		<property name="personDatabaseManager" ref="personDatabaseManager" />
+	</bean>
+
+	<bean id="bookmarkGenerationDBLogic" class="org.bibsonomy.search.index.generator.post.PostIndexGenerationLogic" parent="generationLogic">
+		<property name="resourceClass" ref="bookmarkClass"/>
+	</bean>
+
+	<bean id="bookmarkSearchDBLogic" class="org.bibsonomy.search.management.database.SearchDBLogic" parent="bookmarkGenerationDBLogic">
+		<constructor-arg ref="personSearchDatabaseManager" />
+	</bean>
+
+	<bean id="publicationGenerationDBLogic" class="org.bibsonomy.search.index.generator.post.PostIndexGenerationLogic" parent="generationLogic">
+		<property name="resourceClass" ref="publicationClass"/>
+	</bean>
+
+	<bean id="publicationSearchDBLogic" class="org.bibsonomy.search.management.database.SearchDBLogic" parent="publicationGenerationDBLogic">
+		<constructor-arg ref="personSearchDatabaseManager" />
+	</bean>
+
+	<bean id="goldStandardPublicationGenerationDBLogic" class="org.bibsonomy.search.index.generator.post.PostIndexGenerationLogic" parent="generationLogic">
+		<property name="resourceClass" ref="goldStandardPublicationClass"/>
+	</bean>
+
+	<bean id="goldStandardPublicationSearchDBLogic" class="org.bibsonomy.search.management.database.SearchGoldStandardLogic" parent="goldStandardPublicationGenerationDBLogic">
+		<constructor-arg ref="personSearchDatabaseManager" />
+	</bean>
+
+	<bean id="goldStandardBookmarkGenerationDBLogic" class="org.bibsonomy.search.index.generator.post.PostIndexGenerationLogic" parent="generationLogic">
+		<property name="resourceClass" ref="goldStandardBookmarkClass"/>
+	</bean>
+
+	<bean id="goldStandardBookmarkSearchDBLogic" class="org.bibsonomy.search.management.database.SearchGoldStandardLogic" parent="goldStandardBookmarkGenerationDBLogic">
+		<constructor-arg ref="personSearchDatabaseManager" />
+	</bean>
+</beans>

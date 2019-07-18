@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    BibSonomy-Rest-Client-OAuth - The REST-client OAuth Accessor.
+    BibSonomy-Rest-Client-OAuth - The REST-client OAuth
 
     Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
                                   University of Kassel, Germany
@@ -33,11 +33,11 @@
 	<name>BibSonomy-Rest-Client-OAuth</name>
 	<artifactId>bibsonomy-rest-client-oauth</artifactId>
 	<packaging>jar</packaging>
-	<description>The REST-client OAuth Accessor.</description>
+	<description>The REST-client OAuth</description>
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
-		<version>3.8.20</version>
+		<version>3.9.0-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>
@@ -51,10 +51,6 @@
 			<artifactId>bibsonomy-rest-client</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>net.oauth.core</groupId>
 			<artifactId>oauth</artifactId>
 			<version>20100527</version>
@@ -66,8 +62,8 @@
 		</dependency>
 		<dependency>
 			<groupId>net.oauth.core</groupId>
-			<artifactId>oauth-httpclient3</artifactId>
-			<version>20090617</version>
+			<artifactId>oauth-httpclient4</artifactId>
+			<version>20090913</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>

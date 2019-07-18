@@ -54,7 +54,7 @@ import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.DuplicatePostInSnippetErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -64,6 +64,7 @@ import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.GroupingCommandUtils;
@@ -109,12 +110,12 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * initialize post & resource
 		 */
 		final PostPublicationCommand command = new PostPublicationCommand();
-		command.setGroups(new ArrayList<String>());
+		command.setGroups(new ArrayList<>());
 
-		command.setPost(new Post<BibTex>());
+		command.setPost(new Post<>());
 		command.setAbstractGrouping(GroupUtils.buildPublicGroup().getName());
 		command.getPost().setResource(new BibTex());
-		command.setPostsErrorList(new LinkedHashMap<String, List<ErrorMessage>>());
+		command.setPostsErrorList(new LinkedHashMap<>());
 
 		return command;
 	}
@@ -159,6 +160,8 @@ public class PostPublicationController extends AbstractEditPublicationController
 			return super.workOn(command);
 		}
 		final String selection = command.getSelection();
+		final String url = command.getUrl();
+		final boolean hasUrl = present(url);
 		final boolean hasSelection = present(selection);
 		final boolean hasFile = present(command.getFile());
 		/*
@@ -166,12 +169,13 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * provided, as then data might be automatically stored (and potentially
 		 * posts deleted). 
 		 * 
-		 * There's one exception: if a selection is supplied and the posts shall
+		 * There are two exception: if a selection or a url is supplied and the posts shall
 		 * be edited before import, then we ignore the ckey. This enables provision
 		 * of BibTeX snippets with more than one entry from external URLs. 
 		 * (see issue #2797)   
 		 */
-		if ((hasFile || hasSelection) && !context.isValidCkey() && !(hasSelection && command.isEditBeforeImport())) {
+		final boolean allowedRequestWhenEditBeforeIsActive = hasSelection || hasUrl;
+		if ((hasFile || allowedRequestWhenEditBeforeIsActive) && !context.isValidCkey() && !(allowedRequestWhenEditBeforeIsActive && command.isEditBeforeImport())) {
 			this.errors.reject("error.field.valid.ckey");
 			return Views.ERROR;
 		}
@@ -219,6 +223,14 @@ public class PostPublicationController extends AbstractEditPublicationController
 			log.debug("user uploads a file");
 			// get the (never empty) content or add corresponding errors
 			snippet = this.publicationImporter.handleFileUpload(command, this.errors);
+		} else if (hasUrl) {
+			log.debug("user has provided a url");
+
+			try {
+				snippet = WebUtils.getContentAsString(url);
+			} catch (IOException e) {
+				log.error("error while download url " + url, e);
+			}
 		} else {
 			/*
 			 * nothing given ->
@@ -377,7 +389,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 					unique_hashes.add(post.getResource().getIntraHash());
 				} else {
 					errorMessage = new DuplicatePostInSnippetErrorMessage("BibTex", post.getResource().getIntraHash());
-					final List<ErrorMessage> errorList = new ArrayList<ErrorMessage>();
+					final List<ErrorMessage> errorList = new ArrayList<>();
 					errorList.add(errorMessage);
 					command.getPostsErrorList().put(post.getResource().getIntraHash(), errorList);
 				}
@@ -388,7 +400,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * add list of posts to command for showing them to the user
 		 * (such that he can edit them)
 		 */
-		final ListCommand<Post<BibTex>> postListCommand = new ListCommand<Post<BibTex>>(command);
+		final ListCommand<Post<BibTex>> postListCommand = new ListCommand<>(command);
 		postListCommand.setList(posts);
 		/*
 		 * FIXME: rename the "bibtex" attribute of the command (hint: we try
@@ -412,7 +424,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		if (log.isDebugEnabled()) {
 			log.debug("will try to store " + postsToStore.size() + " of " + (posts != null ? Integer.toString(posts.size()) : "null") + " posts in database");
 		}
-		final List<Post<?>> validPosts = new LinkedList<Post<?>>(postsToStore.keySet());
+		final List<Post<?>> validPosts = new LinkedList<>(postsToStore.keySet());
 
 		/*
 		 * finally store the posts
@@ -534,7 +546,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 * @return
 	 */
 	private Map<Post<BibTex>, Integer> getPostsWithNoValidationErrors(final List<Post<BibTex>> posts, final Map<String, List<ErrorMessage>> errorMessages, final boolean isOverwrite) {
-		final Map<Post<BibTex>, Integer> storageList = new LinkedHashMap<Post<BibTex>, Integer>();
+		final Map<Post<BibTex>, Integer> storageList = new LinkedHashMap<>();
 		/*
 		 * iterate over all posts
 		 */
@@ -566,7 +578,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 				if (isAlreadyInCollection){
 					errorMessage = new DuplicatePostErrorMessage("BibTex", posts.get(i).getResource().getIntraHash());
 					if (!present(postErrorMessages)){
-						postErrorMessages = new ArrayList<ErrorMessage>();
+						postErrorMessages = new ArrayList<>();
 					}
 					postErrorMessages.add(errorMessage);
 					errorMessages.put(posts.get(i).getResource().getIntraHash(), postErrorMessages);
@@ -640,7 +652,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * basically we try to
 			 * save all posts and collect errors for posts we can't save.)
 			 */
-			this.logic.createPosts(new LinkedList<Post<?>>(postsToStore.keySet()));
+			this.logic.createPosts(new LinkedList<>(postsToStore.keySet()));
 		} catch (final DatabaseException e) {
 			/*
 			 * get error messages
@@ -650,7 +662,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			/*
 			 * these posts will be updated
 			 */
-			final LinkedList<Post<?>> postsForUpdate = new LinkedList<Post<?>>();
+			final LinkedList<Post<?>> postsForUpdate = new LinkedList<>();
 			/*
 			 * check for all posts what kind of errors they have
 			 */
@@ -752,7 +764,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		boolean postExisted = false;
 		try {
 			postExisted = present(this.logic.getPostDetails(intraHash, userName));
-		} catch (final ResourceMovedException ex) {
+		} catch (final ObjectMovedException ex) {
 			log.debug("Object was moved");
 		}
 

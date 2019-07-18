@@ -42,8 +42,8 @@ public class LoggingParam {
 	private String oldHash;
 	private String newHash;
 
-	private int oldContentId;
-	private int newContentId;
+	private Integer oldContentId;
+	private Integer newContentId;
 	private int contentType;
 
 	private User postOwner;
@@ -84,29 +84,28 @@ public class LoggingParam {
 	/**
 	 * @return the oldContentId
 	 */
-	public int getOldContentId() {
-		return this.oldContentId;
+	public Integer getOldContentId() {
+		return oldContentId;
 	}
 
 	/**
-	 * @param oldContentId
-	 *            the oldContentId to set
+	 * @param oldContentId the oldContentId to set
 	 */
-	public void setOldContentId(final int oldContentId) {
+	public void setOldContentId(Integer oldContentId) {
 		this.oldContentId = oldContentId;
 	}
 
 	/**
 	 * @return the newContentId
 	 */
-	public int getNewContentId() {
-		return this.newContentId;
+	public Integer getNewContentId() {
+		return newContentId;
 	}
 
 	/**
 	 * @param newContentId the newContentId to set
 	 */
-	public void setNewContentId(final int newContentId) {
+	public void setNewContentId(Integer newContentId) {
 		this.newContentId = newContentId;
 	}
 

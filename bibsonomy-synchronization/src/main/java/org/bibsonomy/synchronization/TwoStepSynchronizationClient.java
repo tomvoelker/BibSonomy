@@ -87,7 +87,7 @@ public class TwoStepSynchronizationClient extends AbstractSynchronizationClient 
 		/*
 		 * get sync plan for each configured resource type
 		 */
-		final Map<Class<? extends Resource>, List<SynchronizationPost>> result = new HashMap<Class<? extends Resource>, List<SynchronizationPost>>();
+		final Map<Class<? extends Resource>, List<SynchronizationPost>> result = new HashMap<>();
 		
 		for (final Class<? extends Resource> resourceType : resourceTypes) {
 			/*
@@ -136,7 +136,7 @@ public class TwoStepSynchronizationClient extends AbstractSynchronizationClient 
 		/*
 		 * sync each configured resource type
 		 */
-		final Map<Class<? extends Resource>, SynchronizationData> result = new HashMap<Class<? extends Resource>, SynchronizationData>();
+		final Map<Class<? extends Resource>, SynchronizationData> result = new HashMap<>();
 		
 		for (final Class<? extends Resource> resourceType : resourceTypes) {
 			/*
@@ -181,7 +181,7 @@ public class TwoStepSynchronizationClient extends AbstractSynchronizationClient 
 		
 		/*
 		 * Get synchronization data from server. Can not be constructed here 
-		 * because last_sync_date is only known by the server
+		 * because last sync date is only known by the server
 		 */
 		return getLastSyncData(serverLogic, serverUserName, resourceType);
 	}

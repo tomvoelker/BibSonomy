@@ -30,7 +30,7 @@ import java.io.ByteArrayOutputStream;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -54,7 +54,7 @@ public class DeleteClipboardStrategy extends PostClipboardStrategy {
 	}
 
 	@Override
-	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceMovedException, ObjectNotFoundException {
+	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ObjectMovedException, ObjectNotFoundException {
 		this.getLogic().deleteClipboardItems(createPost(resourceHash, userName), clearClipboard);
 		this.getRenderer().serializeOK(this.writer);
 	}
