@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS `log_groupids`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
 CREATE TABLE `log_groupids` (
   `group_name` varchar(30) NOT NULL default '',
   `group` int(10) NOT NULL default '0',
@@ -16,7 +19,9 @@ CREATE TABLE `log_groupids` (
   `log_user` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+DROP TABLE IF EXISTS `log_group_memberships`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
 CREATE TABLE `log_group_memberships` (
   `user_name` varchar(30) NOT NULL default '',
   `group` int(10) default '0',

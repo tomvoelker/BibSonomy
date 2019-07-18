@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS `projects`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
 CREATE TABLE `projects` (
   `id` int(11) unsigned NOT NULL,
   `internal_id` varchar(255) DEFAULT NULL,
@@ -17,7 +20,9 @@ CREATE TABLE `projects` (
   UNIQUE KEY `project_id` (`project_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+DROP TABLE IF EXISTS `log_projects`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
 CREATE TABLE `log_projects` (
   `id` int(11) unsigned NOT NULL,
   `internal_id` varchar(255) DEFAULT NULL,

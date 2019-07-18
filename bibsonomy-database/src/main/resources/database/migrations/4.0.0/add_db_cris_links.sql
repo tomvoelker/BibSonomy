@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS `cris_links`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
 CREATE TABLE `cris_links` (
   `id` int(11) unsigned NOT NULL,
   `source_id` int(11) DEFAULT NULL,
@@ -14,6 +17,9 @@ CREATE TABLE `cris_links` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `log_cris_links`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
 CREATE TABLE `log_cris_links` (
   `id` int(11) unsigned NOT NULL,
   `source_id` int(11) DEFAULT NULL,
