@@ -27,7 +27,6 @@
 package org.bibsonomy.search.index.generator;
 
 import org.bibsonomy.search.management.database.DatabaseInformationLogic;
-import org.bibsonomy.search.update.SearchIndexSyncState;
 
 import java.util.List;
 

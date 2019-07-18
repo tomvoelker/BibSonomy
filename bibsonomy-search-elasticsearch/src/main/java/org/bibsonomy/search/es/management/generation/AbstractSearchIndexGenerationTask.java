@@ -30,7 +30,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
-import org.bibsonomy.search.es.management.post.ElasticsearchPostManager;
 
 import java.util.concurrent.Callable;
 
