@@ -38,7 +38,7 @@
 	<name>BibSonomy Search Elasticsearch</name>
 	<description>Elasticsearch full text search module.</description>
 	<properties>
-		<es.version>6.4.0</es.version>
+		<es.version>6.8.1</es.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -104,6 +104,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<!-- FIXME: currently the es plugin is not working with the latest es version
 	<build>
 		<plugins>
 			<plugin>
@@ -124,8 +125,8 @@
 				<artifactId>elasticsearch-maven-plugin</artifactId>
 				<version>6.7</version>
 				<configuration>
-					<!--FIXME: update es version -->
-					<version>6.3.0</version>
+					FIXME: update es version
+					<version>6.6.0</version>
 					<clusterName>bibsonomy-testcluster</clusterName>
 					<transportPort>9323</transportPort>
 					<httpPort>9223</httpPort>
@@ -148,5 +149,5 @@
 				</executions>
 			</plugin>
 		</plugins>
-	</build>
+	</build>-->
 </project>
