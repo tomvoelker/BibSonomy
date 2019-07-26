@@ -45,7 +45,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.Semaphore;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -162,59 +162,64 @@ public class HelpSearchManager implements HelpSearch {
 		if (this.indexingDisabled) {
 			return;
 		}
-		
+
 		if (!this.updateLock.tryAcquire()) {
 			log.warn("reindexing in progress");
 			return;
 		}
-		
+
 		try {
 			// get all language folders (folders that are not hidden and are not the code-samples dir)
 			final Path pathToScan = Paths.get(this.path);
-			final List<Path> languageFolders = Files.list(pathToScan).filter(Files::isDirectory).filter(path -> !path.toFile().isHidden()).filter(path -> !path.toFile().getName().equals("code-samples"))
-							.collect(Collectors.toList());
-			
-			for (final Path languageFolder : languageFolders) {
-				final String language = languageFolder.toFile().getName();
-				final String indexName = getIndexNameForLanguage(language);
-				
-				if (!this.client.existsIndexWithName(indexName)) {
-					this.client.createIndex(indexName, MAPPING, SETTINGS);
-				}
 
-				final List<Path> filePaths = Files.walk(languageFolder).filter(path -> path.toString().toLowerCase().endsWith(HelpUtils.FILE_SUFFIX)).collect(Collectors.toList());
+			try (final Stream<Path> languageFolders = Files.list(pathToScan).filter(Files::isDirectory).filter(path -> !path.toFile().isHidden()).filter(path -> !path.toFile().getName().equals("code-samples"))) {
 
-				final Map<String, Map<String, Object>> jsonDocuments = new HashMap<>();
-				for (final Path filePath : filePaths) {
-					final File file = filePath.toFile();
-					final HelpParser parser = this.factory.createParser(HelpUtils.buildReplacementMap(this.projectName, this.projectTheme, this.projectHome, this.projectEmail, this.projectNoSpamEmail, this.projectAPIEmail), this.urlGenerator);
-					final String fileName = file.getName().replaceAll(HelpUtils.FILE_SUFFIX, "");
-					try (final BufferedReader helpPage = new BufferedReader(new InputStreamReader(new FileInputStream(file), StringUtils.DEFAULT_CHARSET))) {
-						final String markdown = StringUtils.getStringFromReader(helpPage);
-						final String content = parser.parseText(markdown, language);
+				languageFolders.forEach(languageFolder -> {
+					final String language = languageFolder.toFile().getName();
+					final String indexName = getIndexNameForLanguage(language);
 
-						final Path relativePath = languageFolder.relativize(filePath.getParent());
-
-						if (containsContent(content)) {
-							final Map<String, Object> doc = new HashMap<>();
-							doc.put(HEADER_FIELD, fileName);
-							doc.put(CONTENT_FIELD, content);
-							final String value = relativePath.toString();
-							doc.put(PATH_FIELD, value);
-							jsonDocuments.put(value + "/" + fileName, doc);
-						}
-					} catch (final Exception e) {
-						log.error("cannot parse file " + fileName, e);
+					if (!this.client.existsIndexWithName(indexName)) {
+						this.client.createIndex(indexName, MAPPING, SETTINGS);
 					}
-				}
 
-				this.client.deleteDocuments(indexName, HELP_PAGE_TYPE, (QueryBuilder) null);
-				if (present(jsonDocuments)) {
-					this.client.insertNewDocuments(indexName, HELP_PAGE_TYPE, jsonDocuments);
-				}
+					final Map<String, Map<String, Object>> jsonDocuments = new HashMap<>();
+
+					try (final Stream<Path> filePaths = Files.walk(languageFolder).filter(path -> path.toString().toLowerCase().endsWith(HelpUtils.FILE_SUFFIX))) {
+						filePaths.forEach(filePath -> {
+							final File file = filePath.toFile();
+							final HelpParser parser = this.factory.createParser(HelpUtils.buildReplacementMap(this.projectName, this.projectTheme, this.projectHome, this.projectEmail, this.projectNoSpamEmail, this.projectAPIEmail), this.urlGenerator);
+							final String fileName = file.getName().replaceAll(HelpUtils.FILE_SUFFIX, "");
+							try (final BufferedReader helpPage = new BufferedReader(new InputStreamReader(new FileInputStream(file), StringUtils.DEFAULT_CHARSET))) {
+								final String markdown = StringUtils.getStringFromReader(helpPage);
+								final String content = parser.parseText(markdown, language);
+
+								final Path relativePath = languageFolder.relativize(filePath.getParent());
+
+								if (containsContent(content)) {
+									final Map<String, Object> doc = new HashMap<>();
+									doc.put(HEADER_FIELD, fileName);
+									doc.put(CONTENT_FIELD, content);
+									final String value = relativePath.toString();
+									doc.put(PATH_FIELD, value);
+									jsonDocuments.put(value + "/" + fileName, doc);
+								}
+							} catch (final Exception e) {
+								log.error("cannot parse file " + fileName, e);
+							}
+						});
+					} catch (final IOException e) {
+						log.error("error while updating help index", e);
+					}
+
+					// finally update the index by deleting all pages and reinsert them again
+					this.client.deleteDocuments(indexName, HELP_PAGE_TYPE, (QueryBuilder) null);
+					if (present(jsonDocuments)) {
+						this.client.insertNewDocuments(indexName, HELP_PAGE_TYPE, jsonDocuments);
+					}
+				});
+			} catch (final IOException e) {
+				log.error("error while updating help index", e);
 			}
-		} catch (final IOException e) {
-			log.error("error while updating help index", e);
 		} finally {
 			this.updateLock.release();
 		}
