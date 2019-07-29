@@ -274,7 +274,6 @@
 				<ref bean="artifactBinding" />
 				<ref bean="soapBinding" />
 				<ref bean="paosBinding" />
-				<ref bean="postBindingSaml2" />
 			</list>
 		</constructor-arg>
 	</bean>
@@ -300,6 +299,8 @@
 	<!-- adding the updated url comparator TODO: remove with the spring security saml update (use the  parserPool, velocityEngine constructor of HTTP*Bind)-->
 	<bean id="urlComparator" class="org.bibsonomy.webapp.util.spring.security.saml.util.URLComparator" />
 
+	<alias name="${auth.saml.binding.post}" alias="postBinding" />
+
 	<bean id="httpDecoder" class="org.bibsonomy.webapp.util.spring.security.saml.util.HTTPPostDecoder">
 		<constructor-arg ref="parserPool" />
 		<constructor-arg ref="urlComparator" />
@@ -311,7 +312,7 @@
 	</bean>
 
 	<!-- Bindings, encoders and decoders used for creating and parsing messages -->
-	<bean id="postBinding" class="org.springframework.security.saml.processor.HTTPPostBinding">
+	<bean id="postBindingSaml1" class="org.springframework.security.saml.processor.HTTPPostBinding">
 		<constructor-arg ref="httpDecoder" />
 		<constructor-arg ref="httpEncoder" />
 	</bean>
