@@ -274,6 +274,7 @@
 				<ref bean="artifactBinding" />
 				<ref bean="soapBinding" />
 				<ref bean="paosBinding" />
+				<ref bean="postBindingSaml2" />
 			</list>
 		</constructor-arg>
 	</bean>
@@ -313,6 +314,21 @@
 	<bean id="postBinding" class="org.springframework.security.saml.processor.HTTPPostBinding">
 		<constructor-arg ref="httpDecoder" />
 		<constructor-arg ref="httpEncoder" />
+	</bean>
+
+	<bean id="httpDecoderSaml2" class="org.bibsonomy.webapp.util.spring.security.saml.util.HTTPPostDecoderSaml2">
+		<constructor-arg ref="parserPool" />
+		<constructor-arg ref="urlComparator" />
+	</bean>
+
+	<bean id="httpEncoderSaml2" class="org.opensaml.saml2.binding.encoding.HTTPPostEncoder">
+		<constructor-arg ref="velocityEngine" />
+		<constructor-arg value="/templates/saml2-post-binding.vm" />
+	</bean>
+
+	<bean id="postBindingSaml2" class="org.springframework.security.saml.processor.HTTPPostBinding">
+		<constructor-arg ref="httpDecoderSaml2" />
+		<constructor-arg ref="httpEncoderSaml2" />
 	</bean>
 
 	<bean id="redirectDecoder" class="org.bibsonomy.webapp.util.spring.security.saml.util.HTTPRedirectDeflateDecoder">
