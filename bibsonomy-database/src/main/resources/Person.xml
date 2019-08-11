@@ -146,7 +146,6 @@
 	<!--
 		Queries to find resource <-> person relations
 	-->
-
 	<select id="getResourcePersonRelationByResourcePersonRelation" resultMap="PersonCommon.lazyLoadingResourcePersonRelation" parameterClass="personResourceRelation">
 		SELECT <include refid="commonResourcePersonRelationColumns" />
 		FROM pub_person
@@ -195,9 +194,6 @@
 		WHERE
 			pub_person.person_id = #personRelation.person.personId#
 	</select>
-
-
-
 
 	<select id="getMatches" resultMap="PersonCommon.personMatch">
 		SELECT match_id, person1_id, person2_id, state

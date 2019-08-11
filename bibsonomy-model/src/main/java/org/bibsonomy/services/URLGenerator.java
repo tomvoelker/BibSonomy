@@ -1617,7 +1617,21 @@ public class URLGenerator {
 	 * @return the help page
 	 */
 	public String getHelpPage(final String helpPage, final String language) {
+		return this.getHelpPage(null, helpPage, language);
+	}
+
+	/**
+	 * @param prefixPath
+	 * @param helpPage
+	 * @param language
+	 * @return the help page
+	 */
+	public String getHelpPage(final String prefixPath, final String helpPage, final String language) {
 		final UrlBuilder builder = new UrlBuilder(this.projectHome + "help" + "_" + language);
+
+		if (present(prefixPath)) {
+			builder.addPathElement(prefixPath);
+		}
 
 		final String helpPath;
 		// handle anchor
