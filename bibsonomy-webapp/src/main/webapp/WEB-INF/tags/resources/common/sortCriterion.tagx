@@ -17,10 +17,10 @@
 	<!-- date / default sorting -->
 	<c:choose>
 		<c:when test="${sortPage eq 'none' or sortPage eq 'date'}">
-			<li class="disabled"><a href="#"><fontawesome:icon icon="clock-o" spaceAfter="5" /><fmt:message key="sort.date"/></a></li>
+			<li class="disabled"><a href="#"><fontawesome:icon icon="clock-o" spaceAfter="5" /><fmt:message key="sort.addedAt"/></a></li>
 		</c:when>
 		<c:otherwise>
-			<li><a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'date')}"><fontawesome:icon icon="clock-o" spaceAfter="5" /><fmt:message key="sort.date"/></a></li>
+			<li><a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'date')}"><fontawesome:icon icon="clock-o" spaceAfter="5" /><fmt:message key="sort.addedAt"/></a></li>
 		</c:otherwise>
 	</c:choose>
 	<!-- title -->

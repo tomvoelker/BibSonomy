@@ -49,8 +49,7 @@ import org.bibsonomy.model.util.ResourceUtils;
 /**
  * This client synchronizes PUMA with BibSonomy.
  * PUMA is the server, BibSonomy is the client.
- * 
- * 
+ *
  * @author wla
  */
 public class SynchronizationClient extends AbstractSynchronizationClient {
@@ -83,7 +82,7 @@ public class SynchronizationClient extends AbstractSynchronizationClient {
 		/*
 		 * sync each configured resource type
 		 */
-		final Map<Class<? extends Resource>, SynchronizationData> result = new HashMap<Class<? extends Resource>, SynchronizationData>();
+		final Map<Class<? extends Resource>, SynchronizationData> result = new HashMap<>();
 		
 		for (final Class<? extends Resource> resource : ResourceUtils.getResourceTypesByClass(resourceType)) {
 			result.put(resource, synchronize(clientLogic, serverLogic, serverUserName, resource, direction, syncServer.getStrategy(), isSecureSync));

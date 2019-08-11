@@ -116,7 +116,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		final int groupId = -1;
 		final List<Integer> groups = new ArrayList<Integer>();
 
-		List<SearchPost<BibTex>> posts = searchBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
+		List<Post<BibTex>> posts = searchBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
 		List<Post<BibTex>> postsRef = publicationDatabaseManager.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
 		int docCount = 0;
 		for (Post<BibTex> post : postsRef) {
@@ -204,8 +204,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 
 	/**
 	 * tests whether all posts whithin a given time range are retrieved
-	 * 
-	 * FIXME: fails too often - please fix! 
+	 *
 	 * @throws PersonListParserException 
 	 */
 	@Test
@@ -242,9 +241,9 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		// get all public posts for the testuser
 		String requestedUserName = "testuser1";
 		final int groupId = -1;
-		final List<Integer> groups = new ArrayList<Integer>();
+		final List<Integer> groups = new ArrayList<>();
 
-		List<SearchPost<Bookmark>> posts;
+		List<Post<Bookmark>> posts;
 		List<Post<Bookmark>> postsRef;
 
 		posts = searchBookmarkLogic.getPostsForUser(requestedUserName, 10, 0);
@@ -257,22 +256,6 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		assertEquals(postsRef.size(), posts.size());
 	}
 
-	/**
-	 * tests confluence of search's and bibsonomy's database post queries 
-	 */
-	@Test
-	public void getBookmarkNewPosts() {
-		// FIXME: implement a test
-	}
-
-	/**
-	 * tests confluence of search's and bibsonomy's database post queries 
-	 */
-	@Test
-	public void getBibTexNewPosts() {
-		// FIXME: implement a test
-	}
-
 	//------------------------------------------------------------------------
 	// private helpers
 	//------------------------------------------------------------------------
@@ -283,7 +266,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 	 * @throws PersonListParserException 
 	 */
 	private static Post<BibTex> generateBibTexDatabaseManagerTestPost(final GroupID groupID, int i) throws PersonListParserException {
-		final Post<BibTex> post = new Post<BibTex>();
+		final Post<BibTex> post = new Post<>();
 		final Group group = new Group(groupID);
 		post.getGroups().add(group);
 		
@@ -330,72 +313,13 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * @param i
+	 * @param id
 	 * @return
 	 */
 	private static String getTitleForId(int id) {
-		return "title "+ String.valueOf(id) + " " + SEARCH_MAGIC_TITLE;
+		return "title " + String.valueOf(id) + " " + SEARCH_MAGIC_TITLE;
 	}
 
-	/**
-	 * generate a Bookmark Post, can't call setBeanPropertiesOn() because private
-	 * so copy & paste the setBeanPropertiesOn() into this method
-	 */
-	private Post<Bookmark> generateBookmarkDatabaseManagerTestPost() {
-		final Post<Bookmark> post = new Post<Bookmark>();
-
-		final Group group = new Group();
-		group.setDescription(null);
-		group.setName("public");
-		group.setGroupId(GroupID.PUBLIC.getId());
-		post.getGroups().add(group);
-
-		Tag tag = new Tag();
-		tag.setName("tag1");
-		post.getTags().add(tag);
-		tag = new Tag();
-		tag.setName("tag2");
-		post.getTags().add(tag);
-
-		post.setContentId(null); // will be set in storePost()
-		post.setDescription("Some description");
-		post.setDate(new Date());
-		final User user = new User();
-		CommonModelUtils.setBeanPropertiesOn(user);
-		user.setName("testuser1");
-		user.setRole(Role.NOBODY);
-		post.setUser(user);
-		final Bookmark resource;
-
-
-		final Bookmark bookmark = new Bookmark();
-		bookmark.setCount(0);
-		bookmark.setTitle("test" + (Math.round(Math.random() * Integer.MAX_VALUE)) + " " + SEARCH_MAGIC_TITLE);
-		bookmark.setUrl("http://www.testurl.orgg");
-		bookmark.recalculateHashes();
-		resource = bookmark;
-
-		post.setResource(resource);
-		return post;
-	}
-	
-	/**
-	 * tests {@link SearchDBLogic#getPostEntries(int, int)}
-	 * @throws Exception
-	 */
-	@Test
-	public void testGetPostEntries() throws Exception {
-		final List<SearchPost<BibTex>> posts = searchBibTexLogic.getPostEntries(0, 100);
-		assertEquals(14, posts.size());
-		// check for documents
-		for (final SearchPost<BibTex> searchPost : posts) {
-			final BibTex publication = searchPost.getResource();
-			if ("b77ddd8087ad8856d77c740c8dc2864a".equals(publication.getIntraHash()) && "testuser1".equals(searchPost.getUser().getName())) {
-				assertEquals(2, publication.getDocuments().size());
-			}
-		}
-	}
-	
 	/**
 	 * tests {@link SearchDBLogic#getPostsForDocumentUpdate(Date, Date)}
 	 * @throws Exception

@@ -26,20 +26,18 @@
  */
 package org.bibsonomy.search.es.management;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
+import org.bibsonomy.search.es.management.post.ElasticsearchPostManager;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.springframework.beans.factory.BeanFactory;
 
 /**
@@ -49,29 +47,19 @@ import org.springframework.beans.factory.BeanFactory;
  * @author dzo
  */
 public abstract class AbstractEsIndexTest extends AbstractDatabaseManagerTest {
-	private static final String ELASTICSEARCH_DEFAULT_PATH = "target/elasticsearch-data";
-	
-	private static Node node;
-
-	/**
-	 * start embedded elasticsearch
-	 * @throws InterruptedException 
-	 */
-	@BeforeClass
-	public static void initElasticSearch() throws InterruptedException {
-		startEmbeddedElasticsearchServer();
-		
-		Thread.sleep(5 * 1000); // FIXME: just for testing
-	}
 	
 	/**
 	 * generates the indices
-	 * @throws InterruptedException
+	 * @throws Exception
 	 */
 	@Before
-	public void createIndices() throws InterruptedException {
-		final Map<Class<? extends Resource>, ElasticsearchManager<? extends Resource>> managers = getAllManagers();
-		for (ElasticsearchManager<? extends Resource> manager : managers.values()) {
+	public void createIndices() throws Exception {
+		final RestHighLevelClient client = EsSpringContextWrapper.getContext().getBean(RestHighLevelClient.class);
+
+		client.indices().delete(new DeleteIndexRequest("_all"), RequestOptions.DEFAULT);
+
+		final Map<Class<? extends Resource>, ElasticsearchPostManager<? extends Resource>> managers = getAllManagers();
+		for (ElasticsearchPostManager<? extends Resource> manager : managers.values()) {
 			manager.regenerateAllIndices();
 		}
 		
@@ -79,43 +67,17 @@ public abstract class AbstractEsIndexTest extends AbstractDatabaseManagerTest {
 		Thread.sleep(1000);
 	}
 
-	private static void startEmbeddedElasticsearchServer() {
-		final Settings.Builder elasticsearchSettings = Settings.settingsBuilder()
-				.put("http.port", 9223)
-				.put("transport.tcp.port", 9323)
-				.put("path.home", ELASTICSEARCH_DEFAULT_PATH);
-		
-		node = NodeBuilder.nodeBuilder().clusterName("bibsonomy-testcluster")
-				.settings(elasticsearchSettings.build()).node();
-	}
-
 	/**
 	 * @throws IOException
 	 */
 	@AfterClass
-	public static void afterClass() throws IOException {
+	public static void afterClass() {
 		closeAllIndices();
-		
-		node.close();
-		
-		deleteElasticSearchDataDir(ELASTICSEARCH_DEFAULT_PATH);
-	}
-
-	/**
-	 * @param elasticsearchDefaultPath
-	 * @throws IOException 
-	 */
-	private static void deleteElasticSearchDataDir(String path) throws IOException {
-		final File file = new File(path);
-		
-		if (file.exists()) {
-			FileUtils.deleteDirectory(file);
-		}
 	}
 
 	private static void closeAllIndices() {
-		final Map<Class<? extends Resource>, ElasticsearchManager<? extends Resource>> managers = getAllManagers();
-		for (final ElasticsearchManager<?> lrm : managers.values()) {
+		final Map<Class<? extends Resource>, ElasticsearchPostManager<? extends Resource>> managers = getAllManagers();
+		for (final ElasticsearchPostManager<?> lrm : managers.values()) {
 			lrm.shutdown();
 		}
 	}
@@ -124,8 +86,8 @@ public abstract class AbstractEsIndexTest extends AbstractDatabaseManagerTest {
 	 * @return
 	 */
 	@SuppressWarnings({ "unchecked", "resource" })
-	private static Map<Class<? extends Resource>, ElasticsearchManager<? extends Resource>> getAllManagers() {
+	private static Map<Class<? extends Resource>, ElasticsearchPostManager<? extends Resource>> getAllManagers() {
 		final BeanFactory bf = EsSpringContextWrapper.getContext();
-		return (Map<Class<? extends Resource>, ElasticsearchManager<? extends Resource>>) bf.getBean("elasticsearchManagers");
+		return (Map<Class<? extends Resource>, ElasticsearchPostManager<? extends Resource>>) bf.getBean("elasticsearchManagers");
 	}
 }

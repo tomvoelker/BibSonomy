@@ -32,16 +32,16 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
-import org.bibsonomy.rest.AuthenticationHandler;
 import org.bibsonomy.rest.BasicAuthenticationHandler;
 import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.database.TestDBLogicInterfaceFactory;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.UrlRenderer;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.resource.Resource;
 import org.junit.Ignore;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.servlet.Context;
-import org.mortbay.resource.Resource;
 
 /**
  * TODO: config of docs path, …
@@ -105,23 +105,23 @@ public class TestServerBuilder {
 		final Server server = new Server(this.port);
 		final String apiUrl = "http://localhost:" + this.port + "/api";
 
-		final Context servletContext = new Context();
-		servletContext.setContextPath("/api");
 		final Resource resource = Resource.newResource("API_URL");
 		resource.setAssociate(apiUrl);
-		servletContext.setBaseResource(resource);
+		final ServletContextHandler handler = new ServletContextHandler();
+		handler.setContextPath("/api");
+		handler.setBaseResource(resource);
 
 		final RestServlet restServlet = new RestServlet();
 		restServlet.setUrlRenderer(new UrlRenderer(apiUrl));
 		restServlet.setRendererFactory(new RendererFactory(new UrlRenderer(apiUrl)));
-		
+
 		final BasicAuthenticationHandler basicAuthenticationHandler = new BasicAuthenticationHandler();
-		basicAuthenticationHandler.setLogicFactory(logicInterfaceFactory);
-		restServlet.setAuthenticationHandlers(Arrays.<AuthenticationHandler<?>>asList(basicAuthenticationHandler));
+		basicAuthenticationHandler.setLogicFactory(this.logicInterfaceFactory);
+		restServlet.setAuthenticationHandlers(Arrays.asList(basicAuthenticationHandler));
 
-		servletContext.addServlet(RestServlet.class, "/*").setServlet(restServlet);
+		handler.addServlet(new ServletHolder(restServlet), "/*");
 
-		server.addHandler(servletContext);
+		server.setHandler(handler);
 		return server;
 	}
 }

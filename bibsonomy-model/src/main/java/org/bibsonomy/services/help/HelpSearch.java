@@ -29,6 +29,7 @@ package org.bibsonomy.services.help;
 import org.bibsonomy.search.InvalidSearchRequestException;
 
 import java.util.SortedSet;
+import java.util.regex.Pattern;
 
 /**
  * interface for the help search
@@ -36,7 +37,10 @@ import java.util.SortedSet;
  * @author dzo
  */
 public interface HelpSearch {
-	
+
+	/** the pattern to find redirect pages */
+	Pattern REDIRECT_PATTERN = Pattern.compile("<!--\\s*redirect\\s*:(.*)\\s*-->");
+
 	/**
 	 * search in help
 	 * @param language

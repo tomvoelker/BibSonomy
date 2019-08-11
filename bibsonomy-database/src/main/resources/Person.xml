@@ -166,7 +166,7 @@
 		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
 	
-	<select id="getComunityBibTexRelationsForPerson" resultMap="PersonCommon.preFilledCommunityResourcePersonRelation" parameterClass="bibtexParam">
+	<select id="getCommunityBibTexRelationsForPerson" resultMap="PersonCommon.preFilledCommunityResourcePersonRelation" parameterClass="bibtexParam">
 		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
 		FROM
 			gold_standard b

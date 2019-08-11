@@ -97,7 +97,7 @@ public abstract class Strategy {
 	 * @param outStream 
 	 * @throws InternServerException
 	 * @throws NoSuchResourceException
-	 * @throws ResourceNotFoundException 
+	 * @throws ObjectNotFoundException
 	 * @throws ObjectMovedException
 	 */
 	public abstract void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ObjectMovedException, ObjectNotFoundException;

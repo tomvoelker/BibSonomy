@@ -11,7 +11,7 @@
 	
 	<bean id="pdfExtractor" class="org.bibsonomy.search.testutils.DummyPDFExtractor" />
 	
-	<import resource="classpath:TestDatabaseBaseContext.xml" />
+	<import resource="classpath:TestDatabaseMainContext.xml" />
 	
 	<import resource="classpath:org/bibsonomy/bibsonomy-search-context.xml" />
 	<import resource="classpath:org/bibsonomy/bibsonomy-database-common-context.xml" />

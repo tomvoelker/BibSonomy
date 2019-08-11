@@ -58,7 +58,7 @@ public class TaylorAndFrancisScraper extends CitMgrScraper implements References
 	);
 
 	private final static Pattern REF_PATTERN = Pattern.compile("(?s)<ul class=\"references\">(.*)</ul></div></div>");
-	
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;

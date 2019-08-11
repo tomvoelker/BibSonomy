@@ -71,7 +71,6 @@ public class LinkRenderer extends org.pegdown.LinkRenderer {
 			// ignore
 		}
 
-		final Rendering rendering = new Rendering(url, text);
-		return rendering;
+		return new Rendering(url, text);
 	}
 }
