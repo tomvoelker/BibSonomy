@@ -144,7 +144,7 @@
 			<div class="pull-left">
 				<discussion:rating post="${post}" />
 			</div>
-			<c:if test="${hidePostMenu}">
+			<c:if test="${not hidePostMenu}">
 				<div class="pull-right">
 					<jsp:invoke fragment="actions"/>
 				</div>

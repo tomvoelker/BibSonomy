@@ -42,6 +42,7 @@
 									   hideHeadline="${true}"
 									   hideCounts="${true}"
 									   hideMetaData="${true}"
+									   hidePostMenu="${true}"
 									   onlyLinkAuthorsWithPersons="${empty command.context.loginUser.name}"
 									   disableResourcetypeSelection="${true}">
 						<jsp:attribute name="additionalSorting">
