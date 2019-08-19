@@ -1288,7 +1288,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * systemtags perform before create
 			 */
-			final List<ExecutableSystemTag> systemTags = SystemTagsExtractor.extractExecutableSystemTags(post.getTags(), new HashSet<Tag>());
+			final List<ExecutableSystemTag> systemTags = SystemTagsExtractor.extractExecutableSystemTags(post.getTags(), new HashSet<>());
 			for (final ExecutableSystemTag systemTag: systemTags) {
 				systemTag.performBeforeCreate(post, session);
 			}

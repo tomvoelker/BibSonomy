@@ -174,7 +174,7 @@ public class EditPublicationController extends AbstractEditPublicationController
 			this.logic.createResourceRelation(resourcePersonRelation);
 			
 			if (!present(command.getPost().getResourcePersonRelations())) {
-				command.getPost().setResourcePersonRelations(new ArrayList<ResourcePersonRelation>());
+				command.getPost().setResourcePersonRelations(new ArrayList<>());
 			}
 			command.getPost().getResourcePersonRelations().add(resourcePersonRelation);
 		}

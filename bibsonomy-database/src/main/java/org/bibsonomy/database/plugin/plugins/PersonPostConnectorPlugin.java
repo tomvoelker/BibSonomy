@@ -126,7 +126,9 @@ public class PersonPostConnectorPlugin extends AbstractDatabasePlugin {
 
 		final String userName = user.getName();
 		final Person personByUser = this.personDatabaseManager.getPersonByUser(userName, session);
-		persons.add(personByUser);
+		if (present(personByUser)) {
+			persons.add(personByUser);
+		}
 
 		final List<Group> groupsForUser = this.groupDatabaseManager.getGroupsForUser(userName, true, session);
 
