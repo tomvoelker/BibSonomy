@@ -326,5 +326,12 @@
 		SET dnb_person_id = #dnbId#
 		WHERE dnb_person_id = #otherDnbId#
 	</update>
+	
+	<select id="getPhdAdvisorRec" resultClass="string" parameterClass="string">
+		SELECT advisor_id
+		FROM phd_advisor_recommendation
+		WHERE doctor_id = #personId#
+		order by confidence desc
+	</select>
 
 </sqlMap>

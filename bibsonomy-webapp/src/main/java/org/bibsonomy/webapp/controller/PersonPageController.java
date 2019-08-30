@@ -588,7 +588,17 @@ public class PersonPageController extends SingleResourceListController implement
 			return Views.ERROR404;
 		}
 		command.setPerson(person);
+		HashMap<String, String> phdRecommendedAdvisorNames = new HashMap<>();
+		for (String id : person.getPhdRecommender()) {
+			try {
+				phdRecommendedAdvisorNames.put(id, this.logic.getPersonById(PersonIdType.PERSON_ID, id).getNames().get(0).toString());
+			} catch (Exception e) {
+				
+			}
+		}
 		
+		command.setAdvisorRecommenderNames(phdRecommendedAdvisorNames);
+
 		if (DisambiguationPageController.ACTION_KEY_CREATE_AND_LINK_PERSON.equals(this.requestLogic.getLastAction()) || DisambiguationPageController.ACTION_KEY_LINK_PERSON.equals(this.requestLogic.getLastAction())) {
 			command.setOkHintKey(this.requestLogic.getLastAction());
 			this.requestLogic.setLastAction(null);
