@@ -68,7 +68,7 @@
 								</c:otherwise>
 							</c:choose>
 							<c:if test="${canEditProject}">
-								<button type="button" class="btn btn-default btn-xs pull-right" data-toggle="modal" data-target="#addMember">
+								<button type="button" class="btn btn-default btn-xs pull-right" data-toggle="modal" data-target="#addMemberModal">
 									<span class="fa fa-plus" />
 								</button>
 							</c:if>

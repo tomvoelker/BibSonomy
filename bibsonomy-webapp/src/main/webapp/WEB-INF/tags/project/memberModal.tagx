@@ -4,7 +4,7 @@
     <jsp:directive.attribute name="project" type="org.bibsonomy.model.cris.Project" required="true" />
 
 
-    <div class="modal fade" id="addMember" tabindex="-1" role="dialog">
+    <div class="modal fade" id="addMemberModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -15,14 +15,20 @@
                         <span aria-hidden="true" >×</span>
                     </button>
                 </div>
-                <!-- insert form -->
                 <div class="modal-body">
-                    <input class='form-control typeahead' id='searchMemberAutocomplete' type='text' name='searchMemberAutocomplete' autocomplete="off" />
+                    <input class="form-control typeahead" id="searchMemberAutocomplete" type="text" name="searchMemberAutocomplete" autocomplete="off" />
+                    <form id="add-member-form">
+                        <input type="hidden" name="ckey" value="${command.context.ckey}" />
+                        <input type="hidden" name="personId" id="projectIdMemberAdd" />
+                        <input type="hidden" name="projectId" value="${project.externalId}" />
+                        <select class="form-control" name="linkType">
+                            <option value="MANAGER"><fmt:message key="project.member.type.MANAGER" /></option>
+                            <option value="MEMBER"><fmt:message key="project.member.type.MEMBER" /></option>
+                        </select>
+                    </form>
                 </div>
                 <div class="modal-footer">
-                    <!--TODO: use url generator -->
-                    <c:set var="test" value="/editProjectMember?projectToUpdate=${project.internalId}" />
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-primary" id="addMember"><fmt:message key="project.member.add" /></button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>

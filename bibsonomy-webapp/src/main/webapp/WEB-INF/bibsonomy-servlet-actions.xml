@@ -490,19 +490,6 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/editProjectMember">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="editProjectMemberController"/>
-						<property name="allowedFields">
-							<list>
-								<value>projectIdToUpdate</value>
-								<value>ckey</value>
-								<value>project.internalId</value>
-								<value>project.crisLinks</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
 				<entry key="/editGoldStandardPublication">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="editGoldStandardPublicationController"/>
@@ -933,11 +920,6 @@
     </bean>
 
     <bean id="deleteProjectController" class="org.bibsonomy.webapp.controller.actions.DeleteProjectController" scope="request">
-        <property name="logic" ref="logic" />
-        <property name="urlGenerator" ref="relativeUrlGenerator"/>
-    </bean>
-
-    <bean id="editProjectMemberController" class="org.bibsonomy.webapp.controller.actions.EditProjectMemberController" scope="request">
         <property name="logic" ref="logic" />
         <property name="urlGenerator" ref="relativeUrlGenerator"/>
     </bean>

@@ -72,6 +72,13 @@ public class CRISLinkDatabaseManager extends AbstractDatabaseManager {
 				return JobResult.buildFailure(errors);
 			}
 
+			/*
+			 * if no start date is provided, set it to now
+			 */
+			if (!present(link.getStartDate())) {
+				link.setStartDate(new Date());
+			}
+
 			final Integer newID = this.generalDatabaseManager.getNewId(ConstantID.LINKABLE_ID, session);
 			link.setId(newID);
 
