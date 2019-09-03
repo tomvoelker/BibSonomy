@@ -466,6 +466,7 @@ public class URLGenerator {
 	public String getCopyUrlOfPost(final Post<? extends Resource> post) {
 		return getCopyUrlOfPost(post, true, false);
 	}
+
 	/**
 	 * @param post
 	 * @param useSuperiorResourceClass 
@@ -495,6 +496,16 @@ public class URLGenerator {
 			}
 		}
 		
+		return this.getUrl(urlBuilder.asString());
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public String getProjectEditUrl() {
+		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
+		urlBuilder.addPathElement("editProject");
 		return this.getUrl(urlBuilder.asString());
 	}
 
