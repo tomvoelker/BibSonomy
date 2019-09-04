@@ -19,8 +19,7 @@ $(document).ready(function() {
             url: '/ajax/cris/projectpersonlinks',
             data: form.serialize(), // serializes the form's elements.
             success: function() {
-                button.prop('disabled', '');
-                $('#addMemberModal').modal('hide');
+                location.reload();
             }
         });
 
