@@ -65,7 +65,9 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.logic.query.GroupQuery;
+import org.bibsonomy.model.logic.query.PersonPostQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
+import org.bibsonomy.model.logic.querybuilder.PersonPostQueryBuilder;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.rest.BasicAuthenticationHandler;
 import org.bibsonomy.rest.RestServlet;
@@ -144,6 +146,16 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	@Override
 	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query) {
 		return new ArrayList<>(); //FIXME (AD) implement stub
+	}
+
+	@Override
+	public List<Post> getPersonPosts(PersonPostQueryBuilder builder) {
+		return new ArrayList<>(); // TODO
+	}
+
+	@Override
+	public List<Post> getPersonPosts(PersonPostQuery query) {
+		return new ArrayList<>(); // TODO
 	}
 
 	/**

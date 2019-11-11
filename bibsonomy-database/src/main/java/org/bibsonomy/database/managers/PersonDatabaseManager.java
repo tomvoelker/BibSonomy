@@ -52,27 +52,22 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.CRISEntityType;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.chain.Chain;
+import org.bibsonomy.database.managers.chain.personpost.get.GetPersonPosts;
 import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.CRISLinkParam;
 import org.bibsonomy.database.params.DNBAliasParam;
 import org.bibsonomy.database.params.DenyMatchParam;
 import org.bibsonomy.database.params.person.GetPersonByOrganizationParam;
+import org.bibsonomy.database.params.person.GetPersonPostsParam;
 import org.bibsonomy.database.params.relations.GetPersonRelations;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.GoldStandardPublication;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.User;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.query.PersonPostQuery;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.statistics.Statistics;
@@ -106,6 +101,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	// TODO: move to the other controller
 	private Chain<List<ResourcePersonRelation>, QueryAdapter<ResourcePersonRelationQuery>> personResourceRelationChain;
 	private Chain<Statistics, QueryAdapter<PersonQuery>> statisticsChain;
+	private Chain<List<Post>, QueryAdapter<PersonPostQuery>> personPostChain;
+
 
 	@Deprecated // use spring config
 	public static PersonDatabaseManager getInstance() {
@@ -119,6 +116,10 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	public void setPersonResourceRelationChain(Chain<List<ResourcePersonRelation>, QueryAdapter<ResourcePersonRelationQuery>> personResourceRelationChain) {
 		this.personResourceRelationChain = personResourceRelationChain;
+	}
+
+	public void setPersonPostChain(Chain<List<Post>, QueryAdapter<PersonPostQuery>> personPostChain) {
+		this.personPostChain = personPostChain;
 	}
 
 	/**
@@ -651,6 +652,39 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelationsWithPersonsByInterhash(String interhash, DBSession session) {
 		return this.queryForList("getResourcePersonRelationsWithPersonsByInterhash", interhash, ResourcePersonRelation.class, session);
+	}
+
+
+	/**
+	 * Retrieves a list of posts from the person according to the query. The request is handled by the configured
+	 * chain of responsibility.
+	 *
+	 * @param queryAdapter a query.
+	 * @param session a database session.
+	 *
+	 * @return a list of resource person relations.
+	 */
+	public List<Post> queryForPersonPosts(final QueryAdapter<PersonPostQuery> queryAdapter, final DBSession session) {
+		return this.personPostChain.perform(queryAdapter, session);
+	}
+
+
+	/**
+	 * Gets all posts for a person.
+	 * TODO (AD) Q: Which fields in ResourcePersonRelation will be populated here?
+	 *
+	 * @param personId a person id.
+	 * @param limit the number of relations returned from the result set.
+	 * @param offset index of the first relation returned.
+	 * @param session a database session.
+	 *
+	 * @return a list of all resources.
+	 */
+	public List<Post> getPersonPosts(final String personId, Integer limit,
+										   Integer offset, final DBSession session) {
+		//return this.queryForList("getPostsForPerson",
+			//	new GetPersonPostsParam(personId, limit, offset), GoldStandardPublication.class, session);
+		return this.queryForList("getPostsForPerson", personId, Post.class, session);
 	}
 
 

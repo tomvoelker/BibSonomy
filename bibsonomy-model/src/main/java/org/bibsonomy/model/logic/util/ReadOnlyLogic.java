@@ -56,20 +56,7 @@ import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ReadOnlyDatabaseException;
-import org.bibsonomy.model.Author;
-import org.bibsonomy.model.DiscussionItem;
-import org.bibsonomy.model.Document;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.GroupMembership;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
-import org.bibsonomy.model.Wiki;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
@@ -79,13 +66,9 @@ import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
-import org.bibsonomy.model.logic.query.GroupQuery;
-import org.bibsonomy.model.logic.query.ProjectQuery;
-import org.bibsonomy.model.logic.query.Query;
-import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
-import org.bibsonomy.model.logic.query.PersonQuery;
-import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.query.*;
 import org.bibsonomy.model.logic.query.statistics.meta.MetaDataQuery;
+import org.bibsonomy.model.logic.querybuilder.PersonPostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -858,6 +841,16 @@ public class ReadOnlyLogic implements LogicInterface {
 	@Override
 	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query) {
 		return this.logicinterface.getResourceRelations(query);
+	}
+
+	@Override
+	public List<Post> getPersonPosts(PersonPostQueryBuilder builder) {
+		return this.logicinterface.getPersonPosts(builder);
+	}
+
+	@Override
+	public List<Post> getPersonPosts(PersonPostQuery query) {
+		return this.logicinterface.getPersonPosts(query);
 	}
 
 	/* (non-Javadoc)

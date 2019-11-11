@@ -124,28 +124,7 @@ import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.database.systemstags.search.SearchSystemTag;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
-import org.bibsonomy.model.Author;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Comment;
-import org.bibsonomy.model.DiscussionItem;
-import org.bibsonomy.model.Document;
-import org.bibsonomy.model.GoldStandardBookmark;
-import org.bibsonomy.model.GoldStandardPublication;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.GroupMembership;
-import org.bibsonomy.model.GroupRequest;
-import org.bibsonomy.model.ImportResource;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.Review;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
-import org.bibsonomy.model.Wiki;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
@@ -157,14 +136,10 @@ import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
-import org.bibsonomy.model.logic.query.GroupQuery;
-import org.bibsonomy.model.logic.query.ProjectQuery;
-import org.bibsonomy.model.logic.query.PersonQuery;
-import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.query.*;
 import org.bibsonomy.model.logic.query.statistics.meta.MetaDataQuery;
+import org.bibsonomy.model.logic.querybuilder.PersonPostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
-import org.bibsonomy.model.logic.query.Query;
-import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -3759,6 +3734,26 @@ public class DBLogic implements LogicInterface {
 		return this.getResourceRelations(query);
 	}
 
+
+	@Override
+	public List<Post> getPersonPosts(PersonPostQuery query) {
+		try(final DBSession session = this.openSession()) {
+			return this.personDBManager.queryForPersonPosts(new QueryAdapter<>(query, this.loginUser), session);
+		}
+	}
+
+	@Override
+	public List<Post> getPersonPosts(PersonPostQueryBuilder queryBuilder) {
+		PersonPostQuery.PersonPostQueryBuilder builder = new PersonPostQuery.PersonPostQueryBuilder();
+
+		builder.setStart(queryBuilder.getStart())
+				.setEnd(queryBuilder.getEnd())
+				.setPaginated(queryBuilder.isPaginated())
+				.setPersonId(queryBuilder.getPersonId());
+
+		PersonPostQuery query = builder.build();
+		return this.getPersonPosts(query);
+	}
 
 	/**
 	 * 

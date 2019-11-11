@@ -483,6 +483,12 @@ public class UrlRenderer {
 						.addPathElement(personId).addPathElement(RESTConfig.RELATION_PARAM);
 	}
 
+	public UrlBuilder createUrlBuilderForPersonPosts(String personId) {
+		UrlBuilder builder = createUrlBuilderForPersons();
+		builder.addPathElement(RESTConfig.POSTS_URL);
+		return builder;
+	}
+
 	/**
 	 * creates a url builder for a person resource relation
 	 * @param personId

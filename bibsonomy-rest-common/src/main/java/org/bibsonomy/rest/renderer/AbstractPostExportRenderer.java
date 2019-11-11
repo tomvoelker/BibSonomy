@@ -29,16 +29,7 @@ package org.bibsonomy.rest.renderer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.model.Document;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.GroupMembership;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.sync.SynchronizationData;
@@ -153,6 +144,12 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	 */
 	@Override
 	public void serializeResourcePersonRelation(Writer writer, ResourcePersonRelation resourcePersonRelation, ViewModel viewModel) {handleUnsupportedMediaType();}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#serializePersonPosts(java.io.Writer, org.bibsonomy.model.PersonPost)
+	 */
+	@Override
+	public void serializePersonPosts(Writer writer, List<Post> posts) {handleUnsupportedMediaType();}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.renderer.Renderer#serializeTags(java.io.Writer, java.util.List, org.bibsonomy.rest.ViewModel)

@@ -84,6 +84,17 @@
 		<result property="person"          column="person_id"       javaType="person"       select="getPersonById" />
 		<result property="post"            resultMap="GoldStandardPublicationCommon.goldStandardPost" />
 	</resultMap>
+
+<!--	<resultMap id="personPost" class="personPost" groupBy="personRelChangeId">-->
+<!--		<result property="person"          column="person_id"       javaType="person"       select="getPersonById" />-->
+<!--		<result property="post"            resultMap="GoldStandardPublicationCommon.goldStandardPost" />-->
+<!--		<result property="personRelChangeId" column="r_person_change_id" javaType="int" />-->
+<!--		<result property="qualifying"        column="qualifying"       javaType="int" />-->
+<!--		<result property="relationType"      column="relator_code"     javaType="personResourceRelationType" />-->
+<!--		<result property="changedBy"         column="log_changed_by"   javaType="java.lang.String" />-->
+<!--		<result property="changedAt"         column="log_changed_at"   javaType="java.util.Date" />-->
+<!--		<result property="personIndex"       column="person_index"     javaType="int" />-->
+<!--	</resultMap>-->
 	
 	<resultMap id="personMatch" class="personMatch">
 		<result property="matchID" column="match_id"/>

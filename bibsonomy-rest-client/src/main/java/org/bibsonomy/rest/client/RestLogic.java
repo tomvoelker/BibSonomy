@@ -51,17 +51,7 @@ import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
-import org.bibsonomy.model.Document;
-import org.bibsonomy.model.GoldStandard;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.GroupMembership;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
@@ -70,11 +60,9 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.query.PersonQuery;
-import org.bibsonomy.model.logic.query.ProjectQuery;
-import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
+import org.bibsonomy.model.logic.query.*;
+import org.bibsonomy.model.logic.querybuilder.PersonPostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
-import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationData;
@@ -609,6 +597,16 @@ public class RestLogic extends AbstractLogicInterface {
 	@Override
 	public void removeResourceRelation(String personId, String interHash, int index, PersonResourceRelationType type) {
 		this.execute(new DeleteResourcePersonRelationQuery(personId, interHash, index, type));
+	}
+
+	@Override
+	public List<Post> getPersonPosts(PersonPostQueryBuilder builder) {
+		return null;
+	}
+
+	@Override
+	public List<Post> getPersonPosts(PersonPostQuery query) {
+		return null;
 	}
 
 	@Override

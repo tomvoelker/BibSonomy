@@ -188,6 +188,20 @@
 		     limit and offset are both set or absent it is sufficient to check one parameter.-->
 	</select>
 
+	<!--<select id="getPersonPosts" resultMap="PersonCommon.personPost" parameterClass="org.bibsonomy.database.params.relations.GetPersonRelations">
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />,
+		<include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
+		FROM gold_standard b
+		<include refid="reviewRatingsJoinPublication" />
+		JOIN pub_person USING(simhash1)
+		WHERE pub_person.person_id = #personId#
+		<isNotNull property="offset">
+			LIMIT #limit# OFFSET #offset#
+		</isNotNull>-->
+		<!-- (AD) check is used to support full retrievals. Since the parameter object already ensures that
+		     limit and offset are both set or absent it is sufficient to check one parameter.-->
+	<!--</select>-->
+
 	<select id="countComunityBibTexRelationsForPerson" resultClass="int" parameterClass="bibtexParam">
 		SELECT count(*)	FROM gold_standard b <include refid="reviewRatingsJoinPublication" />
 			JOIN pub_person USING(simhash1)
@@ -205,7 +219,7 @@
 	<select id="getPostsForPerson" parameterClass="string" resultMap="GoldStandardPublicationCommon.goldStandardPost">
 		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsDummyRows" />
 		FROM gold_standard b
-		JOIN pub_person p (simhash1)
+		JOIN pub_person p USING(simhash1)
 		WHERE p.person_id = #personId#
 		AND p.relator_code = 'Maut'
 	</select>
