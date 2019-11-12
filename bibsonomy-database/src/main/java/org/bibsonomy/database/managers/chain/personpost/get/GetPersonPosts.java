@@ -29,8 +29,6 @@ public class GetPersonPosts extends PersonPostChainElement {
         final int limit = query.getEnd() - offset;
         final List<Post> personPosts = this.getPersonDatabaseManager().getPersonPosts(query.getPersonId(), limit, offset, session);
 
-
-
         return personPosts;
     }
 

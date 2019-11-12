@@ -52,14 +52,12 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.CRISEntityType;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.chain.Chain;
-import org.bibsonomy.database.managers.chain.personpost.get.GetPersonPosts;
 import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.CRISLinkParam;
 import org.bibsonomy.database.params.DNBAliasParam;
 import org.bibsonomy.database.params.DenyMatchParam;
 import org.bibsonomy.database.params.person.GetPersonByOrganizationParam;
-import org.bibsonomy.database.params.person.GetPersonPostsParam;
 import org.bibsonomy.database.params.relations.GetPersonRelations;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.*;
@@ -682,8 +680,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	public List<Post> getPersonPosts(final String personId, Integer limit,
 										   Integer offset, final DBSession session) {
-		//return this.queryForList("getPostsForPerson",
-			//	new GetPersonPostsParam(personId, limit, offset), GoldStandardPublication.class, session);
 		return this.queryForList("getPostsForPerson", personId, Post.class, session);
 	}
 

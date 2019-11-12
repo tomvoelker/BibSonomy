@@ -4,6 +4,7 @@ import org.bibsonomy.database.managers.PersonDatabaseManager;
 import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.logic.query.PersonPostQuery;
 
 import java.util.List;

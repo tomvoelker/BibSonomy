@@ -32,7 +32,23 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
-import org.bibsonomy.model.*;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Document;
+import org.bibsonomy.model.GoldStandard;
+import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.GroupRequest;
+import org.bibsonomy.model.ImportResource;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
+import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.CRISLinkDataSource;
 import org.bibsonomy.model.cris.CRISLinkType;
@@ -58,7 +74,53 @@ import org.bibsonomy.model.util.data.DataAccessor;
 import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.renderer.xml.*;
+import org.bibsonomy.rest.renderer.xml.AbstractPublicationType;
+import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
+import org.bibsonomy.rest.renderer.xml.BibtexType;
+import org.bibsonomy.rest.renderer.xml.BookmarkType;
+import org.bibsonomy.rest.renderer.xml.CRISLinkDataSourceType;
+import org.bibsonomy.rest.renderer.xml.CRISLinkTypeType;
+import org.bibsonomy.rest.renderer.xml.DocumentType;
+import org.bibsonomy.rest.renderer.xml.DocumentsType;
+import org.bibsonomy.rest.renderer.xml.ExtraUrlType;
+import org.bibsonomy.rest.renderer.xml.ExtraUrlsType;
+import org.bibsonomy.rest.renderer.xml.GenderType;
+import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
+import org.bibsonomy.rest.renderer.xml.GroupMembershipType;
+import org.bibsonomy.rest.renderer.xml.GroupMembershipsType;
+import org.bibsonomy.rest.renderer.xml.GroupRequestType;
+import org.bibsonomy.rest.renderer.xml.GroupRoleType;
+import org.bibsonomy.rest.renderer.xml.GroupType;
+import org.bibsonomy.rest.renderer.xml.GroupsType;
+import org.bibsonomy.rest.renderer.xml.LinkableType;
+import org.bibsonomy.rest.renderer.xml.PersonMatchType;
+import org.bibsonomy.rest.renderer.xml.PersonNameType;
+import org.bibsonomy.rest.renderer.xml.PersonType;
+import org.bibsonomy.rest.renderer.xml.PersonsType;
+import org.bibsonomy.rest.renderer.xml.PostType;
+import org.bibsonomy.rest.renderer.xml.PostsType;
+import org.bibsonomy.rest.renderer.xml.ProjectPersonLinkTypeType;
+import org.bibsonomy.rest.renderer.xml.ProjectType;
+import org.bibsonomy.rest.renderer.xml.ProjectsType;
+import org.bibsonomy.rest.renderer.xml.PublicationType;
+import org.bibsonomy.rest.renderer.xml.PublicationsType;
+import org.bibsonomy.rest.renderer.xml.PublishedInType;
+import org.bibsonomy.rest.renderer.xml.ReferenceType;
+import org.bibsonomy.rest.renderer.xml.ReferencesType;
+import org.bibsonomy.rest.renderer.xml.RelationType;
+import org.bibsonomy.rest.renderer.xml.RemoteUserIdType;
+import org.bibsonomy.rest.renderer.xml.ResourceLinkType;
+import org.bibsonomy.rest.renderer.xml.ResourcePersonRelationType;
+import org.bibsonomy.rest.renderer.xml.ResourcePersonRelationsType;
+import org.bibsonomy.rest.renderer.xml.StatType;
+import org.bibsonomy.rest.renderer.xml.SyncDataType;
+import org.bibsonomy.rest.renderer.xml.SyncPostType;
+import org.bibsonomy.rest.renderer.xml.SyncPostsType;
+import org.bibsonomy.rest.renderer.xml.TagType;
+import org.bibsonomy.rest.renderer.xml.TagsType;
+import org.bibsonomy.rest.renderer.xml.UploadDataType;
+import org.bibsonomy.rest.renderer.xml.UserType;
+import org.bibsonomy.rest.renderer.xml.UsersType;
 import org.bibsonomy.rest.validation.StandardXMLModelValidator;
 import org.bibsonomy.rest.validation.XMLModelValidator;
 
@@ -402,18 +464,20 @@ public abstract class AbstractRenderer implements Renderer {
 			/*
 			 * add references
 			 */
-			final ReferencesType xmlReferences = new ReferencesType();
-			xmlPublication.setReferences(xmlReferences);
+			if (present(publication.getReferences())) {
+				final ReferencesType xmlReferences = new ReferencesType();
+				xmlPublication.setReferences(xmlReferences);
 
-			final List<ReferenceType> referenceList = xmlReferences.getReference();
+				final List<ReferenceType> referenceList = xmlReferences.getReference();
 
-			for (final BibTex reference : publication.getReferences()) {
-				final ReferenceType xmlReference = new ReferenceType();
-				final String interHash = reference.getInterHash();
-				xmlReference.setInterhash(interHash);
-				xmlReference.setHref(this.urlRenderer.createHrefForCommunityPost(interHash));
+				for (final BibTex reference : publication.getReferences()) {
+					final ReferenceType xmlReference = new ReferenceType();
+					final String interHash = reference.getInterHash();
+					xmlReference.setInterhash(interHash);
+					xmlReference.setHref(this.urlRenderer.createHrefForCommunityPost(interHash));
 
-				referenceList.add(xmlReference);
+					referenceList.add(xmlReference);
+				}
 			}
 
 			final Set<BibTex> publishedInSet = publication.getReferenceThisPublicationIsPublishedIn();
@@ -426,18 +490,20 @@ public abstract class AbstractRenderer implements Renderer {
 				xmlPublication.setPublishedIn(publisedInXml);
 			}
 
-			final Set<BibTex> publicationsPartOfPublication = publication.getSubGoldStandards();
-			final PublicationsType partOfList = new PublicationsType();
-			xmlPublication.setPublications(partOfList);
+			if (present(publication.getSubGoldStandards())) {
+				final Set<BibTex> publicationsPartOfPublication = publication.getSubGoldStandards();
+				final PublicationsType partOfList = new PublicationsType();
+				xmlPublication.setPublications(partOfList);
 
-			final List<PublicationType> publications = partOfList.getPublication();
-			for (final BibTex publicationPart : publicationsPartOfPublication) {
-				final PublicationType xmlPublicationPart = new PublicationType();
-				final String interHash = publicationPart.getInterHash();
+				final List<PublicationType> publications = partOfList.getPublication();
+				for (final BibTex publicationPart : publicationsPartOfPublication) {
+					final PublicationType xmlPublicationPart = new PublicationType();
+					final String interHash = publicationPart.getInterHash();
 
-				xmlPublicationPart.setInterhash(interHash);
-				xmlPublicationPart.setHref(this.urlRenderer.createHrefForCommunityPost(interHash));
-				publications.add(xmlPublicationPart);
+					xmlPublicationPart.setInterhash(interHash);
+					xmlPublicationPart.setHref(this.urlRenderer.createHrefForCommunityPost(interHash));
+					publications.add(xmlPublicationPart);
+				}
 			}
 
 			xmlPost.setGoldStandardPublication(xmlPublication);
@@ -757,17 +823,6 @@ public abstract class AbstractRenderer implements Renderer {
 		final BibsonomyXML xmlDoc = buildEmptyBibsonomyXMLWithOK();
 		xmlDoc.setPosts(xmlPosts);
 		this.serialize(writer, xmlDoc);
-	}
-
-	private PersonPostType createXmlPersonPost(PersonPost personPost) {
-		final PersonPostType xmlPersonPost = new PersonPostType();
-		setValue(xmlPersonPost::setPerson, personPost::getPerson, this::createXmlPerson);
-		//setValue(xmlPersonPost::setGoldStandard, personPost::getGoldStandard, this::createXmlGoldStandard);
-		return xmlPersonPost;
-	}
-
-	private GoldStandardPublicationType createXmlGoldStandard(GoldStandard goldStandard) throws InternServerException{
-		return null;
 	}
 
 	@Override

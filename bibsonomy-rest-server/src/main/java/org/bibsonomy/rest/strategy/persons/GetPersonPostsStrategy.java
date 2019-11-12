@@ -27,9 +27,7 @@
 
 package org.bibsonomy.rest.strategy.persons;
 
-import org.bibsonomy.model.PersonPost;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.logic.querybuilder.PersonPostQueryBuilder;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;

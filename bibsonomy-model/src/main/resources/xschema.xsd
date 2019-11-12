@@ -45,7 +45,6 @@
 				<xsd:element name="persons" type="PersonsType" />
 				<xsd:element name="projects" type="ProjectsType" />
 				<xsd:element name="resourcePersonRelations" type="ResourcePersonRelationsType" />
-				<xsd:element name="personPosts" type="PersonPostsType" />
 				<xsd:element name="groupMemberships" type="GroupMembershipsType" />
 				<!-- single elements -->
 				<xsd:element name="user" type="UserType" />
@@ -57,7 +56,6 @@
 				<xsd:element name="document" type="DocumentType" />
 				<xsd:element name="person" type="PersonType" />
                 <xsd:element name="resourcePersonRelation" type="ResourcePersonRelationType" />
-				<xsd:element name="personPost" type="PersonPostType" />
 				<xsd:element name="project" type="ProjectType" />
 				<xsd:element name="cris_link" type="CRISLinkTypeType" />
 				<xsd:element name="personMatch" type="PersonMatchType" />
@@ -563,22 +561,6 @@
 			<xsd:element name="personIndex" type="xsd:integer" />
         </xsd:sequence>
     </xsd:complexType>
-
-	<xsd:complexType name="PersonPostsType">
-		<xsd:sequence>
-			<xsd:element maxOccurs="unbounded" minOccurs="0" name="personPost" type="PersonPostType" />
-		</xsd:sequence>
-		<xsd:attribute name="start" type="positiveIntegerIncludingZero" use="required" />
-		<xsd:attribute name="end" type="positiveIntegerIncludingZero" use="required" />
-		<xsd:attribute name="next" type="xsd:anyURI" />
-	</xsd:complexType>
-
-	<xsd:complexType name="PersonPostType">
-		<xsd:sequence>
-			<xsd:element name="person" type="PersonType" />
-			<xsd:element name="post" type="PostType" />
-		</xsd:sequence>
-	</xsd:complexType>
 
 	<xsd:simpleType name="GroupRoleType">
 		<xsd:restriction base="xsd:string">
