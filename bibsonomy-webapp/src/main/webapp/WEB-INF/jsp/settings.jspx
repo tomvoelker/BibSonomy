@@ -59,6 +59,8 @@
 			<settings:sync command="${command}"/>
 			
 			<settings:group command="${command}"/>
+
+			<settings:person command="${command}"/>
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">
@@ -90,7 +92,7 @@
 			<c:if test="${not empty claimedPerson}">
 				<sidebar:sidebarItem textKey="settings.sidebar.claimedPerson">
 					<jsp:attribute name="content">
-						<a href="${relativeUrlGenerator.getPersonUrl(claimedPerson)}">
+						<a href="${relativeUrlGenerator.getPersonUrl(claimedPerson.personId)}">
 							<c:set var="mainName" value="${claimedPerson.mainName}" />
 							${mtl:cleanBibtex(mainName.firstName)} ${mtl:cleanBibtex(mainName.lastName)}
 						</a>

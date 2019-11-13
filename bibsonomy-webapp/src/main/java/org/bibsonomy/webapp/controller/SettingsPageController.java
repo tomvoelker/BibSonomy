@@ -42,6 +42,7 @@ import org.bibsonomy.layout.csl.CSLStyle;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.Wiki;
@@ -140,8 +141,15 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		final GroupQuery groupQuery = GroupQuery.builder().end(Integer.MAX_VALUE).
 						userName(loggedInUserName).pending(true).build();
 		command.setPendingRequestedgroups(this.logic.getGroups(groupQuery));
+
+		/*
+		 * Get current Person
+		 */
+		final Person person = loginUser.getClaimedPerson();
+		command.setPerson(person);
+		command.showPersonTab(person);
 		
-		if (!present(selectedTab) || selectedTab.intValue() < SettingsViewCommand.MY_PROFILE_IDX || selectedTab.intValue() > SettingsViewCommand.OAUTH_IDX) {
+		if (!present(selectedTab) || selectedTab.intValue() < SettingsViewCommand.MY_PROFILE_IDX || selectedTab.intValue() > SettingsViewCommand.PERSON_IDX) {
 			this.errors.reject("error.settings.tab");
 		} else {
 			this.checkInstalledJabrefLayout(command);

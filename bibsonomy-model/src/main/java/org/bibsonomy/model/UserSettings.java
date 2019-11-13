@@ -100,6 +100,16 @@ public class UserSettings implements Serializable {
 	 * the default language for i18n
 	 */
 	private String defaultLanguage;
+
+	/**
+	 * style for person's page posts; 0 = gold standards, 1 = 'myown' posts
+	 */
+	private int personPostsStyle = 0;
+
+	/**
+	 * layout for person's page posts
+	 */
+	private String personPostsLayout = "";
 	
 	/**
 	 * The timeZone the user lives in. Used for rendering posts in the HTML 
@@ -242,6 +252,35 @@ public class UserSettings implements Serializable {
 	 */
 	public void setDefaultLanguage(final String defaultLanguage) {
 		this.defaultLanguage = defaultLanguage;
+	}
+
+	/**
+	 * @return style for person's page posts
+	 */
+	public int getPersonPostsStyle() {
+		return personPostsStyle;
+	}
+
+	/**
+	 * @param personPostsStyle style for person's page posts
+	 */
+	public void setPersonPostsStyle(int personPostsStyle) {
+		this.personPostsStyle = personPostsStyle;
+	}
+
+	/**
+	 * @return layout for person's page posts
+	 */
+	public String getPersonPostsLayout() {
+		return personPostsLayout;
+	}
+
+
+	/**
+	 * @param personPostsLayout layout for person's page posts
+	 */
+	public void setPersonPostsLayout(String personPostsLayout) {
+		this.personPostsLayout = personPostsLayout;
 	}
 
 	/**
