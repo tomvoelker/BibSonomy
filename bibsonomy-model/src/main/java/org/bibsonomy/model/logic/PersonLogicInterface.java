@@ -27,14 +27,15 @@
 package org.bibsonomy.model.logic;
 
 import org.bibsonomy.common.enums.PersonUpdateOperation;
-import org.bibsonomy.model.*;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
+import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
-import org.bibsonomy.model.logic.query.PersonPostQuery;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
-import org.bibsonomy.model.logic.querybuilder.PersonPostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 
 import java.util.List;
@@ -124,26 +125,6 @@ public interface PersonLogicInterface {
 	 * @return a list of resource - person relations.
 	 */
 	List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query);
-
-	/**
-	 * Retrieves a list with resources according to the query.
-	 *
-	 * @param builder a query builder object with the query options.
-	 *
-	 * @return a list of resources according to the query.
-	 */
-	List<Post> getPersonPosts(PersonPostQueryBuilder builder);
-
-
-	/**
-	 * Retrieves a list with posts from a person according to the query.
-	 *
-	 * @param query the query.
-	 *
-	 * @return a list of posts from a person.
-	 */
-	List<Post> getPersonPosts(PersonPostQuery query);
-
 
 	/**
 	 * @param username

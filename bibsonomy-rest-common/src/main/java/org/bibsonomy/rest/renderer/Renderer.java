@@ -195,13 +195,6 @@ public interface Renderer {
 	public void serializeResourcePersonRelations(Writer writer, List<ResourcePersonRelation> relations);
 
 	/**
-	 * Serialize a list of {@link Post}
-	 * @param writer
-	 * @param posts
-	 */
-	public void serializePersonPosts(Writer writer, List<Post> posts);
-
-	/**
 	 * Serializes a personid
 	 *
 	 * @param writer   the {@link Writer} to use.

@@ -812,19 +812,6 @@ public abstract class AbstractRenderer implements Renderer {
 		return xmlLinkType;
 	}
 
-	public void serializePersonPosts(Writer writer, List<Post> personPosts) {
-		final PostsType xmlPosts = new PostsType();
-		if (present(personPosts)) {
-			for (final Post<? extends Resource> post : personPosts) {
-				final PostType xmlPost = this.createXmlPost(post);
-				xmlPosts.getPost().add(xmlPost);
-			}
-		}
-		final BibsonomyXML xmlDoc = buildEmptyBibsonomyXMLWithOK();
-		xmlDoc.setPosts(xmlPosts);
-		this.serialize(writer, xmlDoc);
-	}
-
 	@Override
 	public void serializeTags(final Writer writer, final List<Tag> tags, final ViewModel viewModel) throws InternServerException {
 		final TagsType xmlTags = new TagsType();

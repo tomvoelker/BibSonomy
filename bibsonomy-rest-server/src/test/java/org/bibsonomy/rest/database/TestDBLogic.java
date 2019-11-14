@@ -1,34 +1,30 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
- *
+ * <p>
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
- *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
- *                           L3S Research Center,
- *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
- *
+ * University of Kassel, Germany
+ * http://www.kde.cs.uni-kassel.de/
+ * Data Mining and Information Retrieval Group,
+ * University of Würzburg, Germany
+ * http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ * L3S Research Center,
+ * Leibniz University Hannover, Germany
+ * http://www.l3s.de/
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.bibsonomy.rest.database;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
 
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -36,22 +32,43 @@ import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
-import org.bibsonomy.model.*;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.logic.query.GroupQuery;
-import org.bibsonomy.model.logic.query.PersonPostQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
-import org.bibsonomy.model.logic.querybuilder.PersonPostQueryBuilder;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.statistics.Statistics;
 import org.junit.Ignore;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class is used for demonstrating purposes only. It is not designed to
  * verify any algorithm nor any strategy. Testing strategies with this class is
  * not possible, because one would only test the testcase's algorithm itself.<br/>
- * 
+ *
  * Furthermore the implementation is not complete; especially unimplemented are:
  * <ul>
  * <li>start and end value</li>
@@ -59,14 +76,14 @@ import org.junit.Ignore;
  * <li>popular- and added-flag at the posts-query</li>
  * <li>viewable-stuff</li>
  * </ul>
- * 
+ *
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @author Christian Kramer
  * @author Jens Illig
  */
 @Ignore
 public class TestDBLogic extends AbstractLogicInterface {
-	
+
 	private final User loginUser;
 
 	private final Map<String, Group> dbGroups;
@@ -96,7 +113,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		final Calendar cal = Calendar.getInstance();
 		cal.clear();
 		this.date = cal.getTime();
-		
+
 		try {
 			fillDataBase();
 		} catch (final MalformedURLException ex) {
@@ -149,25 +166,25 @@ public class TestDBLogic extends AbstractLogicInterface {
 		final List<Tag> tags = new LinkedList<>();
 
 		switch (grouping) {
-		case VIEWABLE:
-			// simply use groups
-		case GROUP:
-			if (this.dbGroups.get(groupingName) != null) {
-				for (final Post<? extends Resource> post : this.dbGroups.get(groupingName).getPosts()) {
-					tags.addAll(post.getTags());
+			case VIEWABLE:
+				// simply use groups
+			case GROUP:
+				if (this.dbGroups.get(groupingName) != null) {
+					for (final Post<? extends Resource> post : this.dbGroups.get(groupingName).getPosts()) {
+						tags.addAll(post.getTags());
+					}
 				}
-			}
-			break;
-		case USER:
-			if (this.dbUsers.get(groupingName) != null) {
-				for (final Post<? extends Resource> post : this.dbUsers.get(groupingName).getPosts()) {
-					tags.addAll(post.getTags());
+				break;
+			case USER:
+				if (this.dbUsers.get(groupingName) != null) {
+					for (final Post<? extends Resource> post : this.dbUsers.get(groupingName).getPosts()) {
+						tags.addAll(post.getTags());
+					}
 				}
-			}
-			break;
-		default: // ALL
-			tags.addAll(this.dbTags.values());
-		break;
+				break;
+			default: // ALL
+				tags.addAll(this.dbTags.values());
+				break;
 		}
 
 		return tags;
@@ -186,23 +203,23 @@ public class TestDBLogic extends AbstractLogicInterface {
 		final List<Post<? extends Resource>> posts = new LinkedList<>();
 		// do grouping stuff
 		switch (grouping) {
-		case USER:
-			if (this.dbUsers.get(groupingName) != null) {
-				posts.addAll(this.dbUsers.get(groupingName).getPosts());
-			}
-			break;
-		case VIEWABLE:
-			// simply use groups
-		case GROUP:
-			if (this.dbGroups.get(groupingName) != null) {
-				posts.addAll(this.dbGroups.get(groupingName).getPosts());
-			}
-			break;
-		default: // ALL
-			for (final User user : this.dbUsers.values()) {
-				posts.addAll(user.getPosts());
-			}
-		break;
+			case USER:
+				if (this.dbUsers.get(groupingName) != null) {
+					posts.addAll(this.dbUsers.get(groupingName).getPosts());
+				}
+				break;
+			case VIEWABLE:
+				// simply use groups
+			case GROUP:
+				if (this.dbGroups.get(groupingName) != null) {
+					posts.addAll(this.dbGroups.get(groupingName).getPosts());
+				}
+				break;
+			default: // ALL
+				for (final User user : this.dbUsers.values()) {
+					posts.addAll(user.getPosts());
+				}
+				break;
 		}
 
 		// check resourceType
@@ -213,8 +230,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		}
 
 		// now this cast is ok
-		@SuppressWarnings({"unchecked", "rawtypes"})
-		final List<Post<T>> rVal = ((List) posts);
+		@SuppressWarnings({"unchecked", "rawtypes"}) final List<Post<T>> rVal = ((List) posts);
 		// check hash
 		if (hash != null) {
 			rVal.removeIf(tPost -> !tPost.getResource().getInterHash().equals(hash));
@@ -222,7 +238,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 
 		// do tag filtering
 		if (tags.size() > 0) {
-			for (final Iterator<Post<T>> it = rVal.iterator(); it.hasNext();) {
+			for (final Iterator<Post<T>> it = rVal.iterator(); it.hasNext(); ) {
 				boolean drin = false;
 				for (final Tag tag : it.next().getTags()) {
 					for (final String searchTag : tags) {
@@ -233,7 +249,9 @@ public class TestDBLogic extends AbstractLogicInterface {
 					}
 
 				}
-				if (!drin) it.remove();
+				if (!drin) {
+					it.remove();
+				}
 			}
 		}
 		return rVal;
@@ -269,7 +287,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 
 		final User userButonic = new User();
 		userButonic.setEmail("joern.dreyer@uni-kassel.de");
-		userButonic.setHomepage(new URL("http://www.butonic.org"));		
+		userButonic.setHomepage(new URL("http://www.butonic.org"));
 		userButonic.setName("butonic");
 		userButonic.setRealname("Joern Dreyer");
 		userButonic.setRegistrationDate(new Date(System.currentTimeMillis()));
@@ -672,7 +690,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		post_16.getTags().add(wwwTag);
 		wwwTag.getPosts().add(post_16);
 	}
-	
+
 	@Override
 	public String createUser(final User user) {
 		this.dbUsers.put(user.getName(), user);
@@ -690,7 +708,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		this.dbUsers.put(username, user);
 		return username;
 	}
-	
+
 	@Override
 	public List<User> getUsers(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final UserRelation relation, final String search, final int start, final int end) {
 		final List<User> users = new LinkedList<>();
@@ -716,15 +734,5 @@ public class TestDBLogic extends AbstractLogicInterface {
 	@Override
 	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query) {
 		return new ArrayList<>(); //FIXME (AD) provide stubs
-	}
-
-	@Override
-	public List<Post> getPersonPosts(PersonPostQueryBuilder builder) {
-		return new ArrayList<>(); // TODO
-	}
-
-	@Override
-	public List<Post> getPersonPosts(PersonPostQuery query) {
-		return new ArrayList<>(); // TODO
 	}
 }

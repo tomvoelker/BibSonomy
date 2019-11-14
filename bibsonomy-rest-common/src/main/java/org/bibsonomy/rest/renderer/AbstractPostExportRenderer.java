@@ -146,12 +146,6 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	public void serializeResourcePersonRelation(Writer writer, ResourcePersonRelation resourcePersonRelation, ViewModel viewModel) {handleUnsupportedMediaType();}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.Renderer#serializePersonPosts(java.io.Writer, org.bibsonomy.model.PersonPost)
-	 */
-	@Override
-	public void serializePersonPosts(Writer writer, List<Post> posts) {handleUnsupportedMediaType();}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.renderer.Renderer#serializeTags(java.io.Writer, java.util.List, org.bibsonomy.rest.ViewModel)
 	 */
 	@Override

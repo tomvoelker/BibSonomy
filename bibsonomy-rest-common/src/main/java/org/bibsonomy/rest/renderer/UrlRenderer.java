@@ -484,7 +484,7 @@ public class UrlRenderer {
 	}
 
 	public UrlBuilder createUrlBuilderForPersonPosts(String personId) {
-		UrlBuilder builder = createUrlBuilderForPersons();
+		UrlBuilder builder = createUrlBuilderForPerson(personId);
 		builder.addPathElement(RESTConfig.POSTS_URL);
 		return builder;
 	}

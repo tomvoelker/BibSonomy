@@ -298,16 +298,6 @@
 		</property>
 	</bean>
 
-	<bean id="personPostChain" class="org.bibsonomy.database.managers.chain.Chain">
-		<property name="elements">
-			<list>
-				<bean class="org.bibsonomy.database.managers.chain.personpost.get.GetPersonPosts">
-					<constructor-arg ref="personDatabaseManager" />
-				</bean>
-			</list>
-		</property>
-	</bean>
-
 	<bean id="personStatisticsChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
 			<list>
@@ -448,7 +438,6 @@
 		<property name="crisLinkDatabaseManager" ref="crisLinkDatabaseManger" />
 		<property name="chain" ref="personChain" />
 		<property name="personResourceRelationChain" ref="personRelationChain" />
-		<property name="personPostChain" ref="personPostChain" />
 		<property name="statisticsChain" ref="personStatisticsChain" />
 	</bean>
 

@@ -228,11 +228,6 @@ public class JabrefLayoutRenderer implements Renderer {
 	}
 
 	@Override
-	public void serializePersonPosts(Writer writer, List<Post> posts) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public void serializeProjectId(Writer writer, String projectId) {
 		throw new UnsupportedOperationException();
 	}
