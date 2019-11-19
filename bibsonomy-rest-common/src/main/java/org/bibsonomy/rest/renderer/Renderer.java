@@ -125,8 +125,9 @@ public interface Renderer {
 	 * Serializes a list of persons
 	 * @param writer
 	 * @param persons
+	 * @param viewModel
 	 */
-	void serializePersons(Writer writer, List<Person> persons);
+	void serializePersons(Writer writer, List<Person> persons, ViewModel viewModel);
 
 	/**
 	 * Serializes one {@link Person}.

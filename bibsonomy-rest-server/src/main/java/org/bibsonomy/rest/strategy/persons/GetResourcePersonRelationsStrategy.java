@@ -36,7 +36,13 @@ public class GetResourcePersonRelationsStrategy extends AbstractGetListStrategy<
 
 	@Override
 	protected List<ResourcePersonRelation> getList() {
-		return this.getLogic().getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(this.personId).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(PersonResourceRelationOrder.PublicationYear));
+		ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
+						.byPersonId(this.personId)
+						.withPosts(true)
+						.withPersonsOfPosts(true)
+						.groupByInterhash(true)
+						.orderBy(PersonResourceRelationOrder.PublicationYear);
+		return this.getLogic().getResourceRelations(queryBuilder);
 	}
 
 	@Override

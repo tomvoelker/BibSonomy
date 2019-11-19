@@ -729,10 +729,23 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	@Override
-	public void serializePersons(Writer writer, List<Person> persons) {
+	public void serializePersons(Writer writer, List<Person> persons, ViewModel viewModel) {
 		final BibsonomyXML xmlDoc = buildEmptyBibsonomyXMLWithOK();
 
 		final PersonsType personsType = new PersonsType();
+		if (viewModel != null) {
+			personsType.setEnd(BigInteger.valueOf(viewModel.getEndValue()));
+			if (viewModel.getUrlToNextResources() != null) {
+				personsType.setNext(viewModel.getUrlToNextResources());
+			}
+			personsType.setStart(BigInteger.valueOf(viewModel.getStartValue()));
+		} else if (persons != null) {
+			personsType.setStart(BigInteger.ZERO);
+			personsType.setEnd(BigInteger.valueOf(persons.size()));
+		} else {
+			personsType.setStart(BigInteger.ZERO);
+			personsType.setEnd(BigInteger.ZERO);
+		}
 		xmlDoc.setPersons(personsType);
 		persons.stream().map(this::createXmlPerson).forEach(personsType.getPerson()::add);
 
@@ -755,6 +768,7 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(xmlPerson::setOrcid, person::getOrcid);
 		setValue(xmlPerson::setGender, person::getGender, p -> GenderType.valueOf(p.name().toUpperCase()));
 		setValue(xmlPerson::setMainName, person::getMainName, this::createXmlPersonName);
+		setValue(xmlPerson::setResearcherid, person::getResearcherid);
 
 		/*
 		 * here we have to remove the main name from the names because it was already set as the mainName attribute of the type

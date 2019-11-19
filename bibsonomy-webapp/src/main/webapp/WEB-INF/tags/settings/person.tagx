@@ -52,7 +52,7 @@
 
 				<!-- LAYOUT FOR PUBLICATION LIST -->
 				<legend><fmt:message key="settings.person.publications"/></legend>
-				<form:form cssClass="form-horizontal" method="POST" action="/updateUserPersonSettings"
+				<form:form cssClass="form-horizontal" method="POST" action="/updateUserPersonSettings?ckey=${ckey}"
 						   enctype="multipart/form-data">
 					<!-- SELECT PERSON'S POSTS STYLE -->
 					<div class="form-group clearfix">

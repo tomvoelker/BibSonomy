@@ -33,8 +33,15 @@ import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
-import org.bibsonomy.rest.strategy.persons.*;
-import org.bibsonomy.rest.strategy.users.GetUserPostsStrategy;
+import org.bibsonomy.rest.strategy.persons.DeletePersonResourceRelationStrategy;
+import org.bibsonomy.rest.strategy.persons.GetListOfPersonsStrategy;
+import org.bibsonomy.rest.strategy.persons.GetPersonPostsStrategy;
+import org.bibsonomy.rest.strategy.persons.GetPersonStrategy;
+import org.bibsonomy.rest.strategy.persons.GetResourcePersonRelationsStrategy;
+import org.bibsonomy.rest.strategy.persons.PostPersonMergeStrategy;
+import org.bibsonomy.rest.strategy.persons.PostPersonStrategy;
+import org.bibsonomy.rest.strategy.persons.PostResourcePersonRelationStrategy;
+import org.bibsonomy.rest.strategy.persons.UpdatePersonStrategy;
 import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
 
 /**
@@ -97,16 +104,30 @@ public class PersonsHandler implements ContextHandler {
 		throw new NoSuchResourceException(ERROR_MESSAGE);
 	}
 
-	private Strategy createPersonMergeStrategy(Context context, HttpMethod httpMethod, String personId) {
+	/**
+	 *
+	 * @param context
+	 * @param httpMethod
+	 * @return
+	 */
+	private Strategy createPersonStrategy(Context context, HttpMethod httpMethod) {
 		switch (httpMethod) {
+			case GET:
+				return new GetListOfPersonsStrategy(context);
 			case POST:
-				return new PostPersonMergeStrategy(context, personId,
-						context.getStringAttribute("source", ""));
+				return new PostPersonStrategy(context);
 			default:
-				throw new UnsupportedHttpMethodException(httpMethod, "PersonMerge");
+				throw new UnsupportedHttpMethodException(httpMethod, "PersonList");
 		}
 	}
 
+	/**
+	 *
+	 * @param context
+	 * @param httpMethod
+	 * @param personId
+	 * @return
+	 */
 	private Strategy createPersonStrategy(Context context, HttpMethod httpMethod, String personId) {
 		switch (httpMethod) {
 			case GET:
@@ -116,10 +137,17 @@ public class PersonsHandler implements ContextHandler {
 						context.getStringAttribute("operation", "update_all").toUpperCase());
 				return new UpdatePersonStrategy(context, personId, operation);
 			default:
-				throw new UnsupportedHttpMethodException(httpMethod, "PersonList");
+				throw new UnsupportedHttpMethodException(httpMethod, "Person");
 		}
 	}
 
+	/**
+	 *
+	 * @param context
+	 * @param httpMethod
+	 * @param personId
+	 * @return
+	 */
 	private Strategy createPersonRelationStrategy(Context context, HttpMethod httpMethod, String personId) {
 		switch (httpMethod) {
 			case GET:
@@ -128,6 +156,23 @@ public class PersonsHandler implements ContextHandler {
 				return new PostResourcePersonRelationStrategy(context, personId);
 			default:
 				throw new UnsupportedHttpMethodException(httpMethod, "ResourcePersonRelation");
+		}
+	}
+
+	/**
+	 *
+	 * @param context
+	 * @param httpMethod
+	 * @param personId
+	 * @return
+	 */
+	private Strategy createPersonMergeStrategy(Context context, HttpMethod httpMethod, String personId) {
+		switch (httpMethod) {
+			case POST:
+				return new PostPersonMergeStrategy(context, personId,
+								context.getStringAttribute("source", ""));
+			default:
+				throw new UnsupportedHttpMethodException(httpMethod, "PersonMerge");
 		}
 	}
 
@@ -147,14 +192,4 @@ public class PersonsHandler implements ContextHandler {
 		}
 	}
 
-	private Strategy createPersonStrategy(Context context, HttpMethod httpMethod) {
-		switch (httpMethod) {
-			case GET:
-				return new GetListOfPersonsStrategy(context);
-			case POST:
-				return new PostPersonStrategy(context);
-			default:
-				throw new UnsupportedHttpMethodException(httpMethod, "Person");
-		}
-	}
 }

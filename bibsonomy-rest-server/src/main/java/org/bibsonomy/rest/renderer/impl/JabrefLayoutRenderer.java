@@ -188,7 +188,7 @@ public class JabrefLayoutRenderer implements Renderer {
 	}
 
 	@Override
-	public void serializePersons(Writer writer, List<Person> persons) {
+	public void serializePersons(Writer writer, List<Person> persons, ViewModel viewModel) {
 		throw new UnsupportedOperationException();
 	}
 
