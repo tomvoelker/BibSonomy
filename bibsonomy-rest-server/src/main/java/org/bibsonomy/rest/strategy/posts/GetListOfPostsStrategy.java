@@ -28,11 +28,15 @@ package org.bibsonomy.rest.strategy.posts;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.BookmarkUtils;
 import org.bibsonomy.rest.strategy.Context;
@@ -76,8 +80,18 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 
 	protected <T extends Resource> List<Post<T>> getList(Class<T> resourceType) {
 		// TODO: support other searchtypes
-		return this.getLogic().getPosts(resourceType, this.grouping, this.groupingValue,
-				this.tags, this.hash, this.search, QueryScope.LOCAL, null, this.order, null, null,
-				getView().getStartValue(), getView().getEndValue());
+		PostQuery<T> query = new PostQueryBuilder()
+						.setGrouping(this.grouping)
+						.setGroupingName(this.groupingValue)
+						.setTags(this.tags)
+						.setHash(this.hash)
+						.setSearch(this.search)
+						.setScope(QueryScope.LOCAL)
+						.setFilters(null)
+						.setOrder(this.order)
+						.setStart(this.getView().getStartValue())
+						.setEnd(this.getView().getEndValue())
+						.createPostQuery(resourceType);
+		return this.getLogic().getPosts(query);
 	}
 }

@@ -913,6 +913,9 @@ public class UrlRenderer {
 			case VIEWABLE:
 				groupingParameterName = "viewable";
 				break;
+			case PERSON:
+				groupingParameterName = "person";
+				break;
 			case ALL:
 				groupingParameterName = null;
 				break;

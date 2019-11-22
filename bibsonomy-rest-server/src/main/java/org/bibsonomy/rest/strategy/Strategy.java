@@ -157,6 +157,9 @@ public abstract class Strategy {
 		if (present(this.context.getStringAttribute("friend", null))) {
 			return GroupingEntity.FRIEND;
 		}
+		if (present(this.context.getStringAttribute("person", null))) {
+			return GroupingEntity.PERSON;
+		}
 		return GroupingEntity.ALL;
 	}
 
