@@ -3816,4 +3816,26 @@ public class DBLogic implements LogicInterface {
 			return false;
 		}
 	}
+
+	/**
+	 * Returns a Map containing the names of each suggested phd advisor
+	 * @param person    the person of which the advisors are returned
+	 */
+	@Override
+	public HashMap<String, String> getPhdRecommendedAdvisorNames(Person person) {
+		try (final DBSession session = this.openSession()) {
+			if (present(this.loginUser.getName())) {
+				HashMap<String, String> phdRecommendedAdvisorNames = new HashMap<>();
+				for (String id : person.getPhdRecommender()) {
+					try {
+						phdRecommendedAdvisorNames.put(id, this.personDBManager.getPersonById(id, session).getNames().get(0).toString());
+					} catch (Exception e) {
+						return null;
+					}
+				}
+				return phdRecommendedAdvisorNames;
+			}
+			return null;
+		}	
+	}
 }

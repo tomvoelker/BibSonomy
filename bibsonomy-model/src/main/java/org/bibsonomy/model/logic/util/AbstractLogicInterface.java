@@ -29,6 +29,7 @@ package org.bibsonomy.model.logic.util;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -970,6 +971,16 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	/**
+	 * Returns a Map containing the names of each suggested phd advisor
+	 * @param person    the person of which the advisors are returned
+	 */
+	@Override
+	public HashMap<String, String> getPhdRecommendedAdvisorNames(Person person) {
 		// TODO Auto-generated method stub
 		return null;
 	}

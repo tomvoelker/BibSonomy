@@ -29,6 +29,7 @@ package org.bibsonomy.model.logic.util;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -941,6 +942,15 @@ public class ReadOnlyLogic implements LogicInterface {
 	 */
 	@Override
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPhdRecommendedAdvisorNames(org.bibsonomy.model.Person)
+	 */
+	@Override
+	public HashMap<String, String> getPhdRecommendedAdvisorNames(Person person) {
 		// TODO Auto-generated method stub
 		return null;
 	}

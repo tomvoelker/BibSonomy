@@ -588,14 +588,7 @@ public class PersonPageController extends SingleResourceListController implement
 			return Views.ERROR404;
 		}
 		command.setPerson(person);
-		HashMap<String, String> phdRecommendedAdvisorNames = new HashMap<>();
-		for (String id : person.getPhdRecommender()) {
-			try {
-				phdRecommendedAdvisorNames.put(id, this.logic.getPersonById(PersonIdType.PERSON_ID, id).getNames().get(0).toString());
-			} catch (Exception e) {
-				
-			}
-		}
+		HashMap<String, String> phdRecommendedAdvisorNames = this.logic.getPhdRecommendedAdvisorNames(person);
 		
 		command.setAdvisorRecommenderNames(phdRecommendedAdvisorNames);
 

@@ -29,7 +29,6 @@ package org.bibsonomy.webapp.command;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -90,7 +89,7 @@ public class PersonPageCommand extends BaseCommand {
 	
 	private int formMatchId;
 	private String formResponseString;
-	private HashMap<String, String> advisorRecommenderNames;
+	private Map<String, String> advisorRecommenderNames;
 	
 	
 	private String formAction;
@@ -605,14 +604,14 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @return the advisorRecommenderNames
 	 */
-	public HashMap<String, String> getAdvisorRecommenderNames() {
+	public Map<String, String> getAdvisorRecommenderNames() {
 		return this.advisorRecommenderNames;
 	}
 
 	/**
 	 * @param advisorRecommenderNames the advisorRecommenderNames to set
 	 */
-	public void setAdvisorRecommenderNames(HashMap<String, String> advisorRecommenderNames) {
+	public void setAdvisorRecommenderNames(Map<String, String> advisorRecommenderNames) {
 		this.advisorRecommenderNames = advisorRecommenderNames;
 	}
 
