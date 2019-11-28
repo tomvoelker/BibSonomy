@@ -1,0 +1,33 @@
+<jsp:root version="2.0"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+		  xmlns:per="urn:jsptagdir:/WEB-INF/tags/person">
+
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true" />
+	<jsp:directive.attribute name="publications" type="java.util.List" required="true" />
+
+	<div style="clear: both;">
+		<h3 class="list-headline">
+			<fmt:message key="person.show.myownPosts" />
+			<div class="pull-right btn-group dropdown-align-right all-resources-menu">
+				<div class="btn-group">
+					<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
+					<ul class="dropdown-menu">
+						<li class="dropdown-header"><fmt:message key="post.meta.sort.criterion" /></li>
+						<li class="enabled"><span data-div="myownPosts" data-sort="year" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="clock-o" spaceAfter="5" /><fmt:message key="post.resource.year"/></span></li>
+						<li><span data-div="myownPosts" data-sort="title" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.title"/></span></li>
+						<li><span data-div="myownPosts" data-sort="author" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.author"/></span></li>
+					</ul>
+				</div>
+			</div>
+		</h3>
+		<div id="myownPosts">
+			<c:forEach var="pub" items="${publications}">
+				test
+			</c:forEach>
+		</div>
+	</div>
+</jsp:root>

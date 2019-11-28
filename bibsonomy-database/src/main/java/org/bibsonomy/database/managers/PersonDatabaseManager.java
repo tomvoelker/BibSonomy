@@ -1258,6 +1258,16 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		return this.queryForObject("getPersonForward", personId, String.class, session);
 	}
 
+	/**
+	 *
+	 * @param personId
+	 * @param session
+	 * @return
+	 */
+	public int getUserPersonPostsStyleSettings(final String personId, final DBSession session) {
+		return this.queryForObject("getUserPersonPostsStyleSettings", personId, Integer.class, session);
+	}
+
 	@Override
 	public Integer getIdForLinkable(final Person linkable, final DBSession session) {
 		final Integer loadedId = linkable.getPersonChangeId();

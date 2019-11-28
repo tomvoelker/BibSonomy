@@ -3831,6 +3831,18 @@ public class DBLogic implements LogicInterface {
 		return false;
 	}
 
+	/**
+	 *
+	 * @param personId
+	 * @return
+	 */
+	@Override
+	public int getUserPersonPostsStyleSettings(String personId) {
+		try(final DBSession session = this.openSession()) {
+			return this.personDBManager.getUserPersonPostsStyleSettings(personId, session);
+		}
+	}
+
 	@Override
 	public Statistics getStatistics(final Query query) {
 		try (final DBSession session = this.openSession()) {

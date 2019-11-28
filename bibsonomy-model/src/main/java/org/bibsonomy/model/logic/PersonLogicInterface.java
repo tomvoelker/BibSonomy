@@ -146,4 +146,11 @@ public interface PersonLogicInterface {
 	 * @return
 	 */
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map);
+
+	/**
+	 * @param personId
+	 * @return
+	 */
+	public int getUserPersonPostsStyleSettings(String personId);
+
 }

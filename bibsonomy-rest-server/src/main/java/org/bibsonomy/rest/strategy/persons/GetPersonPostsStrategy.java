@@ -28,10 +28,12 @@
 package org.bibsonomy.rest.strategy.persons;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
@@ -50,9 +52,8 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 
 	private final String personId;
 	private final List<String> tags;
-	private final String tagString;
 	private final String search;
-	private final Class<? extends Resource> resourceType;
+
 
 	/**
 	 * @param context
@@ -62,9 +63,7 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 		super(context);
 		this.personId = personId;
 		this.tags = context.getTags(RESTConfig.TAGS_PARAM);
-		this.tagString = context.getStringAttribute(RESTConfig.TAGS_PARAM, null);
 		this.search = context.getStringAttribute(RESTConfig.SEARCH_PARAM, null);
-		this.resourceType = GoldStandardPublication.class;
 	}
 
 	@Override
@@ -74,13 +73,30 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		PostQuery<GoldStandardPublication> query = new PostQueryBuilder()
-						.setGrouping(GroupingEntity.PERSON)
-						.setGroupingName(this.personId)
+
+		int personPostsStyleSettings = this.getLogic().getUserPersonPostsStyleSettings(this.personId);
+		PostQueryBuilder queryBuilder = new PostQueryBuilder()
 						.setStart(this.getView().getStartValue())
 						.setEnd(this.getView().getEndValue())
-						.createPostQuery(GoldStandardPublication.class);
-		return this.getLogic().getPosts(query);
+						.setTags(this.tags)
+						.setSearch(this.search);
+		Person person = this.getLogic().getPersonById(PersonIdType.PERSON_ID, personId);
+		// Check, if a user has claimed this person and configured their person settings
+		if (person != null && person.getUser() != null) {
+			// Check, if the user set their person posts to gold standards or 'myown'-tagged posts
+			if (personPostsStyleSettings > 0) {
+				// 'myown'-tagged posts
+				this.tags.add("myown");
+				queryBuilder.setGrouping(GroupingEntity.USER)
+								.setGroupingName(person.getUser())
+								.setTags(this.tags);
+				return this.getLogic().getPosts(queryBuilder.createPostQuery(BibTex.class));
+			}
+		}
+		// Default: gold standards
+		queryBuilder.setGrouping(GroupingEntity.PERSON)
+						.setGroupingName(this.personId);
+		return this.getLogic().getPosts(queryBuilder.createPostQuery(GoldStandardPublication.class));
 	}
 
 	@Override

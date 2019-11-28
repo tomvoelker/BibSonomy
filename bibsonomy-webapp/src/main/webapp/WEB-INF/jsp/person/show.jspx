@@ -244,8 +244,12 @@
 			</div>
 
 			<!-- Other publications -->
-			<c:if test="${fn:length(command.otherPubs) gt 0 and not useCRISView}">
+			<c:if test="${command.personPostsStyleSettings le 0 and fn:length(command.otherPubs) gt 0 and not useCRISView}">
 				<per:otherPubList command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}"/>
+			</c:if>
+
+			<c:if test="${command.personPostsStyleSettings gt 0 and fn:length(command.myownPosts) gt 0}">
+				<per:myownPostList command="${command}" publications="${command.myownPosts}"/>
 			</c:if>
 
 			<!-- Other publications of similar authors -->

@@ -86,7 +86,7 @@
 					<!-- save changes button -->
 					<p class="clearfix"><!--  --></p>
 					<div class="form-group">
-						<input type="hidden" name="ckey" value="${command.context.ckey}"/>
+						<input type="hidden" name="ckey" value="${ckey}"/>
 						<input type="hidden" name="action" value="personSettings"/>
 						<input type="hidden" name="selTab" value="7"/>
 

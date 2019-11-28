@@ -27,20 +27,10 @@
 package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
@@ -78,6 +68,17 @@ import org.bibsonomy.webapp.view.Views;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.validation.Errors;
+
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * controller for a single person details page
@@ -608,6 +609,17 @@ public class PersonPageController extends SingleResourceListController implement
 		}
 
 		command.setPerson(person);
+
+		final int personPostsStyleSettings = this.logic.getUserPersonPostsStyleSettings(requestedPersonId);
+		command.setPersonPostsStyleSettings(personPostsStyleSettings);
+
+		PostQueryBuilder queryBuilder = new PostQueryBuilder()
+				.setEnd(200)
+				.setTags(new ArrayList<>(Collections.singletonList("myown")))
+				.setGrouping(GroupingEntity.USER)
+				.setGroupingName(person.getUser());
+		final List<Post<BibTex>> myownPosts = this.logic.getPosts(queryBuilder.createPostQuery(BibTex.class));
+		command.setMyownPosts(myownPosts);
 
 		// TODO: maybe this should be done in the view?
 		final List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(PersonResourceRelationOrder.PublicationYear));

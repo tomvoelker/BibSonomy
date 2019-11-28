@@ -337,4 +337,10 @@
 		AND c.target_type = 2
 	</select>
 
+	<select id="getUserPersonPostsStyleSettings" resultClass="int">
+		SELECT person_posts_style FROM person
+		JOIN user USING(user_name)
+		WHERE person_id = #personId#
+	</select>
+
 </sqlMap>
