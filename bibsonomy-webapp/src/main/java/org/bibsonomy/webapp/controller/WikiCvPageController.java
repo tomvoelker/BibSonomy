@@ -178,4 +178,20 @@ public class WikiCvPageController extends ResourceListController implements Mini
 	public void setWikiRenderer(final CVWikiModel wikiRenderer) {
 		this.wikiRenderer = wikiRenderer;
 	}
+	
+	/**
+	 * @param adminLogic the adminLogic to set
+	 */
+	public void setAdminLogic(final LogicInterface adminLogic) {
+		this.adminLogic = adminLogic;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public LogicInterface getAdminLogic() {
+		return adminLogic;
+	}
+	
 }
