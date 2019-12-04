@@ -69,9 +69,15 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.validation.Errors;
 
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -610,9 +616,11 @@ public class PersonPageController extends SingleResourceListController implement
 
 		command.setPerson(person);
 
+		// Get the linked user's person posts style settings
 		final int personPostsStyleSettings = this.logic.getUserPersonPostsStyleSettings(requestedPersonId);
 		command.setPersonPostsStyleSettings(personPostsStyleSettings);
 
+		// Get 'myown' posts of the linked user
 		PostQueryBuilder queryBuilder = new PostQueryBuilder()
 				.setEnd(200)
 				.setTags(new ArrayList<>(Collections.singletonList("myown")))
