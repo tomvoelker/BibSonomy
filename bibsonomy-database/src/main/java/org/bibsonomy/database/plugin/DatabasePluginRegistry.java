@@ -42,6 +42,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
@@ -296,9 +297,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonDelete(org.bibsonomy.model.Person, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPersonNameDelete(PersonName personName, DBSession session) {
+	public void onPersonNameDelete(PersonName personName, User loggedInUser, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPersonNameDelete(personName, session);
+			plugin.onPersonNameDelete(personName, loggedInUser, session);
 		}
 	}
 
@@ -317,9 +318,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPersonDelete(Person person, DBSession session) {
+	public void onPersonDelete(Person person, User user, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPersonDelete(person, session);
+			plugin.onPersonDelete(person, user, session);
 		}
 	}
 
@@ -327,9 +328,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPubPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPubPersonDelete(ResourcePersonRelation rel, DBSession session) {
+	public void onPubPersonDelete(ResourcePersonRelation rel, User loggedinUser, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPubPersonDelete(rel, session);
+			plugin.onPubPersonDelete(rel, loggedinUser, session);
 		}
 	}
 
@@ -347,9 +348,16 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onUpdatePersonName(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPersonNameUpdate(Integer personChangeId, DBSession session) {
+	public void onPersonNameUpdate(PersonName oldPerson, User loggedinUser, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPersonNameUpdate(personChangeId, session);
+			plugin.onPersonNameUpdate(oldPerson, loggedinUser, session);
+		}
+	}
+
+	@Override
+	public void onPersonResourceRelationUpdate(ResourcePersonRelation oldRelation, ResourcePersonRelation newRelation, User loggedinUser, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins) {
+			plugin.onPersonResourceRelationUpdate(oldRelation, newRelation, loggedinUser, session);
 		}
 	}
 

@@ -36,21 +36,7 @@ import org.bibsonomy.model.Resource;
  * @param <R> 
  * @param <T> 
  */
-public interface ResourceConverter<R extends Resource, T> {
+public interface ResourceConverter<R extends Resource, T> extends Converter<Post<R>, T, Set<String>> {
 	
-	/**
-	 * convert the our model to the model required by the resource search
-	 * @param post
-	 * @return the converted model
-	 */
-	public T convert(final Post<R> post);
-	
-	/**
-	 * 
-	 * @param source
-	 * @param allowdUsersForDocuments a set containing the usernames
-	 * 		  that are allowed to access the documents of the post
-	 * @return the model post object
-	 */
-	public Post<R> convert(final T source, final Set<String> allowdUsersForDocuments);
+
 }

@@ -36,7 +36,12 @@
 	<typeAlias alias="samlRemoteUserId"    type="org.bibsonomy.model.user.remote.SamlRemoteUserId" />
 	
 	<typeAlias alias="goldStandardRelation" type="org.bibsonomy.model.enums.GoldStandardRelation" />
-	<typeAlias alias="personResourceRelationType" type="org.bibsonomy.model.enums.PersonResourceRelationType" />
+
+	<typeAlias alias="person"						type="org.bibsonomy.model.Person" />
+	<typeAlias alias="personName"					type="org.bibsonomy.model.PersonName" />
+	<typeAlias alias="personResourceRelation"		type="org.bibsonomy.model.ResourcePersonRelation" />
+	<typeAlias alias="personResourceRelationType"	type="org.bibsonomy.model.enums.PersonResourceRelationType" />
+	<typeAlias alias="personMatch"					type="org.bibsonomy.model.PersonMatch" />
 	
 	<!-- Synchronization -->
 	<typeAlias alias="syncResource"		  type="org.bibsonomy.model.sync.SynchronizationResource" />

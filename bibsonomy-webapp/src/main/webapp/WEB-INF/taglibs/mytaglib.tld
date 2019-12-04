@@ -161,7 +161,6 @@
 		<function-class>org.bibsonomy.webapp.util.tags.BibTexListTitleHoverFormatter</function-class>
 		<function-signature>String renderHover(org.bibsonomy.model.Post, java.util.Locale)</function-signature>
 	</function>
-	<!-- <function-signature>String renderHover(org.bibsonomy.model.Resource, java.util.Locale, java.lang.Boolean)</function-signature> -->
 
 	<function>
 		<name>normalize</name>
@@ -172,67 +171,67 @@
 	<function>
 		<name>trimWhiteSpace</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String trimWhiteSpace (java.lang.String)</function-signature>
+		<function-signature>String trimWhiteSpace(java.lang.String)</function-signature>
 	</function>
 	
 	<function>
 		<name>markdownToHtml</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String markdownToHtml (java.lang.String)</function-signature>
+		<function-signature>String markdownToHtml(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<name>encodePathSegment</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String encodePathSegment (java.lang.String)</function-signature>
+		<function-signature>String encodePathSegment(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<name>toTagString</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String toTagString (java.util.Collection)</function-signature>
+		<function-signature>String toTagString(java.util.Collection)</function-signature>
 	</function>
 
 	<function>
 		<name>getPath</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String getPath (java.lang.String)</function-signature>
+		<function-signature>String getPath(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<name>getLowerPath</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String getLowerPath (java.lang.String)</function-signature>
+		<function-signature>String getLowerPath(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<name>getQuery</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String getQuery (java.lang.String)</function-signature>
+		<function-signature>String getQuery(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<name>ch</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String ch (java.lang.String)</function-signature>
+		<function-signature>String ch(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<name>containsResourceClass</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>boolean containsResourceClass (java.util.Collection, java.lang.String)</function-signature>
+		<function-signature>boolean containsResourceClass(java.util.Collection, java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<name>computeTagFontsize</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>java.lang.Integer computeTagFontsize (java.lang.Integer, java.lang.Integer, java.lang.Integer, java.lang.String)</function-signature>
+		<function-signature>java.lang.Integer computeTagFontsize(java.lang.Integer, java.lang.Integer, java.lang.Integer, java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<name>cleanUrl</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String cleanUrl (java.lang.String)</function-signature>
+		<function-signature>String cleanUrl(java.lang.String)</function-signature>
 	</function>
 
 	<function>

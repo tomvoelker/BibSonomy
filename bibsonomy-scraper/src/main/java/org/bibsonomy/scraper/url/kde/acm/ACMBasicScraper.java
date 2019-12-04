@@ -35,9 +35,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpException;
+import org.apache.http.client.HttpClient;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -56,9 +57,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
+ *
  * Scrapes the ACM digital library
  * @author rja
- *
  */
 public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScraper, CitedbyScraper {
 	private static final Log log = LogFactory.getLog(ACMBasicScraper.class);
@@ -71,21 +72,21 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 	private static final String CACM_DOMAIN = "cacm.acm.org";
 	
 	private static final List<Pair<Pattern,Pattern>> patterns = Arrays.asList(
-		new Pair<Pattern, Pattern>(
+		new Pair<>(
 			Pattern.compile(".*" + "[(portal)(dl)].acm.org"), 
 			Pattern.compile("(/beta)?/citation.cfm.*")
 		),
-		new Pair<Pattern, Pattern>(
+		new Pair<>(
 				Pattern.compile(".*" + "queue.acm.org"), 
 				Pattern.compile("/detail.cfm.*")
 			),
 			
-		new Pair<Pattern, Pattern>(
+		new Pair<>(
 				Pattern.compile(".*" + CACM_DOMAIN),
 				Pattern.compile("/magazines/*")
 				),
 				
-		new Pair<Pattern, Pattern>(
+		new Pair<>(
 				Pattern.compile(".*" + "doi.acm.org"),
 				EMPTY_PATTERN
 		)
@@ -211,12 +212,12 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 	 * 
 	 * 
 	 * @param siteUrl
-	 * @param pathsToScrape
+	 * @param path
 	 * @return extracted bibtex entries
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 */
-	private static StringBuffer extractBibtexEntries(HttpClient client, final String siteUrl, final String path) throws MalformedURLException, IOException{
+	private static StringBuffer extractBibtexEntries(HttpClient client, final String siteUrl, final String path) throws MalformedURLException, IOException, HttpException {
 		final StringBuffer bibtexEntries = new StringBuffer();
 		
 		//get content for siteUrl

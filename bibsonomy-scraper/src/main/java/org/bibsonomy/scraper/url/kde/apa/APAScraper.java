@@ -29,15 +29,16 @@ package org.bibsonomy.scraper.url.kde.apa;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpURL;
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.params.HttpClientParams;
+import org.apache.http.HttpException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -54,11 +55,9 @@ public class APAScraper extends AbstractUrlScraper {
 	private static final String SITE_URL = "http://www.apa.org/";
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 	
-	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new ArrayList<Pair<Pattern,Pattern>>();
-	
-	static {
-		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "psycnet.apa.org"), EMPTY_PATTERN));
-	}
+	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + "psycnet.apa.org"), EMPTY_PATTERN)
+	);
 	
 	private static final Pattern BUY_OPTION_LOCATION_PATTERN = Pattern.compile("fa=buy.*?id=([\\d\\-]++)");
 	
@@ -86,14 +85,16 @@ public class APAScraper extends AbstractUrlScraper {
 
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
-		
-		//Welcome to the story of scraping APA PsycNET
+		// Welcome to the story of scraping APA PsycNET
 		scrapingContext.setScraper(this);
 		
-		//We have to proof the visit of several locations
-		final HttpClient client = WebUtils.getHttpClient();
-		//we have to allow circular redirects to avoid an exception when we get temporary redirected to the login page
-		client.getParams().setParameter(HttpClientParams.ALLOW_CIRCULAR_REDIRECTS, true);
+		// We have to proof the visit of several locations
+		final RequestConfig.Builder configBuilder = WebUtils.getDefaultRequestConfig();
+		// we have to allow circular redirects to avoid an exception when we get temporary redirected to the login page
+		configBuilder.setCircularRedirectsAllowed(true);
+		final HttpClient client = WebUtils.getHttpClient(configBuilder.build());
+
+
 		// infinite redirect loops already prevented in WebUtils.getHttpClient()
 		
 		//This id is needed to build RIS download link
@@ -103,16 +104,16 @@ public class APAScraper extends AbstractUrlScraper {
 		Matcher m = BUY_OPTION_LOCATION_PATTERN.matcher(scrapingContext.getUrl().toExternalForm());
 		if (m.find()) {
 			
-			//Pattern matches requested URL
+			// Pattern matches requested URL
 			lstUIDs = m.group(1);
 			
 		} else {
 			
-			//If scraping request is not during buy action, the id is contained in the page requested to scrape
+			// If scraping request is not during buy action, the id is contained in the page requested to scrape
 			String page;
 			try {
 				page = WebUtils.getContentAsString(client, scrapingContext.getUrl().toExternalForm());
-			} catch (final IOException ex) {
+			} catch (final IOException | HttpException ex) {
 				throw new ScrapingException(ex);
 			}
 			//Is the page present?
@@ -124,42 +125,39 @@ public class APAScraper extends AbstractUrlScraper {
 				lstUIDs = m.group(1);
 			}
 		}
-		
-		//Is the id present?
-		if (!present(lstUIDs)) throw new ScrapingException("could not find lstUIDs");
-		
-		// Build link to RIS download
-		HttpURL risURL;
+		String ris = "";
 		try {
-			risURL = new HttpURL("http://psycnet.apa.org/index.cfm?fa=search.export&id=&lstUids=" + lstUIDs);
-		} catch (final URIException ex1) {
-			throw new ScrapingException(ex1);
-		}
-		
-		// download RIS exactly two times, because the first request will finally be redirected to a login page
-		String ris = null;
-		for (int i = 0; i < 2; i++) {
-			try {
-				ris = WebUtils.getContentAsString(client, risURL);
-			} catch (final IOException ex) {
-				throw new ScrapingException(ex);
+			//Is the id present?
+			if (!present(lstUIDs)) {
+				throw new ScrapingException("could not find lstUIDs");
 			}
-			if (ris.contains("Provider: American Psychological Association")) break;
+
+			// Build link to RIS download
+			final URL risURL = new URL("http://psycnet.apa.org/index.cfm?fa=search.export&id=&lstUids=" + lstUIDs);
+			// download RIS exactly two times, because the first request will finally be redirected to a login page
+			for (int i = 0; i < 2; i++) {
+				ris = WebUtils.getContentAsString(client, risURL.toURI());
+				if (ris.contains("Provider: American Psychological Association")) {
+					break;
+				}
+			}
+
+			// convert RIS to BibTeX
+			if (!present(ris)) {
+				throw new ScrapingException("Could not download citation");
+			}
+			final RisToBibtexConverter converter = new RisToBibtexConverter();
+			final String bibtex = converter.toBibtex(ris);
+			if (!present(bibtex)) {
+				throw new ScrapingException("Something went wrong while converting RIS to BibTeX");
+			}
+			scrapingContext.setBibtexResult(bibtex);
+
+			//success
+			return true;
+		} catch (final URISyntaxException | HttpException | IOException e) {
+			throw new ScrapingException(e);
 		}
-		
-		// convert RIS to BibTeX
-		if (!present(ris)) {
-			throw new ScrapingException("Could not download citation");
-		}
-		final RisToBibtexConverter converter = new RisToBibtexConverter();
-		final String bibtex = converter.toBibtex(ris);
-		if (!present(bibtex)) {
-			throw new ScrapingException("Something went wrong while converting RIS to BibTeX");
-		}
-		scrapingContext.setBibtexResult(bibtex);
-		
-		//success
-		return true;
 	}
 
 }

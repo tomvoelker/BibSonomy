@@ -127,7 +127,7 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		 * check if the reminderPassword is correct
 		 */
 		if (!present(user.getReminderPassword()) || !user.getReminderPassword().equals(cred.reminderPassword) ) {
-			this.errors.reject("error.reminder_password_not_correct");
+			this.errors.reject("error.password_reminder.password_not_correct");
 			return Views.ERROR;
 		}
 		
@@ -135,7 +135,7 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		 * check if the reminderPassword has expired
 		 */
 		if (this.hasExpired(user.getReminderPasswordRequestDate())) {
-			this.errors.reject("error.reminder_password_expired");
+			this.errors.reject("error.passReminder.expired");
 			return Views.ERROR;
 		}
 		

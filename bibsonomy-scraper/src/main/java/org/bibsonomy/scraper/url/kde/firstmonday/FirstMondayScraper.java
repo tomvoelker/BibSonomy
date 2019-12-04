@@ -50,17 +50,18 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.tidy.Tidy;
+
 /**
  * @author Haile
  */
 public class FirstMondayScraper extends AbstractUrlScraper{
-	private final Log log = LogFactory.getLog(FirstMondayScraper.class);
+	private static final Log log = LogFactory.getLog(FirstMondayScraper.class);
 	
 	private static final String SITE_NAME = "Firtst Monday";
 	private static final String SITE_URL = "http://firstmonday.org";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	private static final String BIBTEX_PATH = "/ojs/index.php/fm/rt/captureCite/";
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "journals.uic.edu"), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<>(Pattern.compile(".*" + "journals.uic.edu"), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final Pattern ID_PATTERN = Pattern.compile("\\d+(/\\d+)*?");
 	
 	@Override

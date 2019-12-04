@@ -29,7 +29,7 @@ package org.bibsonomy.webapp.controller.actions;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.Post;
@@ -85,7 +85,7 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 			post = (Post<Bookmark>) this.logic.getPostDetails(hash, user);
 		} catch (final ObjectNotFoundException ex) {
 			// ignore
-		} catch (final ResourceMovedException ex) {
+		} catch (final ObjectMovedException ex) {
 			// ignore
 		}
 

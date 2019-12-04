@@ -69,22 +69,20 @@ public class Person implements Serializable {
 	private String dnbPersonId;
 	/** the gender */
 	private Gender gender;
-	
-	
-	
+
+	/** the college of the person */
 	private String college;
+	/** the email address of the person */
 	private String email;
-	// FIXME use URL instead of string
-	//private String homepage;
-	
+	/** the homepage of the person */
 	private URL homepage;
 	
 	
 	/**
-	 * 
+	 * default constructor
 	 */
 	public Person() {
-		this.names = new ArrayList<PersonName>();
+		this.names = new ArrayList<>();
 	}
 	
 	/**
@@ -117,11 +115,11 @@ public class Person implements Serializable {
 	}
 
 	/**
-	 * @param int usually current real name
+	 * @param id usually current real name
 	 */
 	public void setMainName(int id) {
-		for(PersonName name : this.names) {
-			if(name.getPersonNameChangeId() == id) {
+		for (final PersonName name : this.names) {
+			if (name.getPersonNameChangeId() == id) {
 				name.setMain(true);
 				this.mainName = name;
 			} else {
@@ -131,11 +129,10 @@ public class Person implements Serializable {
 	}
 	
 	/**
-	 * 
-	 * @param PersonName name
+	 * @param name
 	 */
 	public void setMainName(PersonName name) {
-		if(!this.names.contains(name)) {
+		if (!this.names.contains(name)) {
 			name.setPersonId(this.getPersonId());
 			name.setMain(true);
 			this.names.add(name);
@@ -144,13 +141,14 @@ public class Person implements Serializable {
 	}
 	/**
 	 * 
-	 * @param PersonName name
+	 * @param name
 	 */
 	public void addName(PersonName name) {
-		if(this.getNames().contains(name))
+		if (this.getNames().contains(name)) {
 			return;
+		}
 		
-		if(name != null)  {
+		if (name != null) {
 			name.setPersonId(this.getPersonId());
 			name.setMain(false);
 			this.getNames().add(name);
@@ -158,13 +156,13 @@ public class Person implements Serializable {
 	}
 	
 	/**
-	 * 
-	 * @param PersonName name
+	 * @param name the person name to remove
 	 */
 	public void removeName(PersonName name) {
-		if(!this.getNames().contains(name))
+		if (!this.getNames().contains(name)) {
 			return;
-		if(name != null) {
+		}
+		if (name != null) {
 			this.names.remove(name);
 		}
 	}
@@ -229,6 +227,7 @@ public class Person implements Serializable {
 		if (personId == null) {
 			return obj == this;
 		}
+
 		return ((obj instanceof Person) && (this.getPersonId().equals(((Person)obj).getPersonId())));
 	}
 	

@@ -34,11 +34,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -96,8 +96,8 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 
 	
 	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile(IEEE_BOOK_PATH + ".*")));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile(IEEE_SEARCH_PATH + ".*")));
+		patterns.add(new Pair<>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile(IEEE_BOOK_PATH + ".*")));
+		patterns.add(new Pair<>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile(IEEE_SEARCH_PATH + ".*")));
 	}
 
 	@Override
@@ -105,27 +105,25 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 		sc.setScraper(this);
 
 		String bibtex = null;
-		String recordIds = ExtractID(sc);
+		String recordId = ExtractID(sc);
 
-		if (recordIds != null) {
+		if (recordId != null) {
 
-			//create a post method
-			PostMethod method = new PostMethod(EXPORT_ARNUM_URL);
-			method.addParameter("citations-format", "citation-abstract");
-			method.addParameter("fromPage", "");
-			method.addParameter("download-format", "download-bibtex");
-			method.addParameter("recordIds", recordIds);
 
-			//using own client because I do not want to configure any client to allow circular redirects
-			HttpClient client = WebUtils.getHttpClient();
-			client.getParams().setBooleanParameter(HttpClientParams.ALLOW_CIRCULAR_REDIRECTS, true);
 
+			// we have circular redirects that occour while downloading the bibtex
+			final RequestConfig.Builder defaultRequestConfig = WebUtils.getDefaultRequestConfig();
+			defaultRequestConfig.setCircularRedirectsAllowed(true);
+			final HttpClient client = WebUtils.getHttpClient(defaultRequestConfig.build());
 			try {
 				//better get the page first
 				WebUtils.getContentAsString(client, sc.getUrl().toExternalForm());
 
-				bibtex = WebUtils.getPostContentAsString(client, method);
-			} catch (IOException ex) {
+				//create a post method
+				final String postContent = "citations-format=citation-abstract&fromPage=&download-format=download-bibtex&recordIds=" + recordId;
+
+				bibtex = WebUtils.getContentAsString(client, EXPORT_ARNUM_URL, null, postContent, null);
+			} catch (IOException | HttpException ex) {
 				throw new InternalFailureException(ex);
 			}
 		}
@@ -156,7 +154,6 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 			} catch (IOException ex) {
 				throw new ScrapingException(ex);
 			}
-
 
 			log.debug("IEEEXploreBookScraper use JTidy to get Bibtex from " + sc.getUrl().toString());
 			sc.setBibtexResult(ieeeBookScrape(sc));
@@ -189,6 +186,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 		}
 		return recordIds;
 	}
+
 	public String ieeeBookScrape (ScrapingContext sc) throws ScrapingException {
 		try{
 			//-- init all NodeLists and Node
@@ -384,8 +382,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 			}
 
 			//-- kill special chars and add the year to bibtexkey
-			if ((isbn == null || !isbn.equals(""))
-					&& (year == null || !year.equals(""))) {
+			if (present(isbn) && present(year)) {
 				bibtexkey = isbn.replaceAll("-", "");
 				bibtexkey = bibtexkey.replaceAll("[^0-9A-Za-z]", "") + ":" + year;
 			}

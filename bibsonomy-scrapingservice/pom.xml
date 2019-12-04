@@ -41,7 +41,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>3.9.0-SNAPSHOT</version>
+		<version>3.10.0-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>
@@ -77,10 +77,9 @@
 			<version>1.1.2</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>com.hp.hpl.jena</groupId>
 			<artifactId>jena</artifactId>
@@ -93,13 +92,13 @@
 		</dependency>
 		<!--+
 		    | Otherwise, the log4j.properties from jena will be loaded. :-(
+		    | TODO: exclude log4j from com.hp.hpl.jena?
 		    +-->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
 		<!--+
 			|
 			| For testing Pingback

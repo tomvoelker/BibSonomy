@@ -44,6 +44,7 @@ public class GoldStandardBookmarkDatabaseManager extends GoldStandardDatabaseMan
 	/**
 	 * @return the @{link:CommunityPostBookmarkDatabaseManager} instance
 	 */
+	@Deprecated // config via spring
 	public static GoldStandardBookmarkDatabaseManager getInstance() {
 		return INSTANCE;
 	}

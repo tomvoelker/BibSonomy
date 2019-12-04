@@ -26,10 +26,13 @@
  */
 package org.bibsonomy.wiki;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.User;
@@ -69,40 +72,43 @@ import info.bliki.wiki.tags.util.TagStack;
  * @author Bernd Terbrack
  */
 public class CVWikiModel extends AbstractWikiModel {
+	private static final Log LOG = LogFactory.getLog(CVWikiModel.class);
 
-	private static void register(final AbstractTag tag) {
-		Configuration.DEFAULT_CONFIGURATION.addTokenTag(tag.getName(), tag);
+	private static Configuration CONFIG = null;
+
+	private static void register(final Configuration configuration, final AbstractTag tag) {
+		configuration.addTokenTag(tag.getName(), tag);
 	}
 	
 	private static Configuration createConfiguration(int maxQuerySize) {
-		if (!configCreated) {
+		// FIXME: not thread safe
+		if (CONFIG == null) {
+			final Configuration configuration = new Configuration();
 			/* About-Me Tags */
-			register(new LocationTag());
-			register(new BirthdayTag());
-			register(new InstitutionTag());
-			register(new InterestsTag());
-			register(new HobbyTag());
-			register(new ProfessionTag());
-			register(new TagcloudTag());
+			register(configuration, new LocationTag());
+			register(configuration, new BirthdayTag());
+			register(configuration, new InstitutionTag());
+			register(configuration, new InterestsTag());
+			register(configuration, new HobbyTag());
+			register(configuration, new ProfessionTag());
+			register(configuration, new TagcloudTag());
 
 			/* Group Tags */
-			register(new MembersTag());
-			register(new GroupImageTag());
-			register(new GroupDescriptionTag());
+			register(configuration, new MembersTag());
+			register(configuration, new GroupImageTag());
+			register(configuration, new GroupDescriptionTag());
 
 			/* Shared Tags */
-			register(new HomepageTag());
-			register(new NameTag());
-			register(new ImageTag());
-			register(new RegDateTag());
-			register(new BookmarkListTag(maxQuerySize));
-			register(new PublicationListTag(maxQuerySize));
-			configCreated = true;
+			register(configuration, new HomepageTag());
+			register(configuration, new NameTag());
+			register(configuration, new ImageTag());
+			register(configuration, new RegDateTag());
+			register(configuration, new BookmarkListTag(maxQuerySize));
+			register(configuration, new PublicationListTag(maxQuerySize));
+			CONFIG = configuration;
 		}
-		return Configuration.DEFAULT_CONFIGURATION;
+		return CONFIG;
 	}
-
-	private static boolean configCreated = false;;
 	
 	private User requestedUser;
 	private Group requestedGroup;
@@ -118,7 +124,7 @@ public class CVWikiModel extends AbstractWikiModel {
 	 * @param maxQuerySize		maxQuerySize property
 	 */
 	public CVWikiModel(final Locale locale, final int maxQuerySize) {
-		super(createConfiguration(maxQuerySize), locale, null, null);
+		super(createConfiguration(maxQuerySize), locale, null);
 	}
 
 	/**
@@ -147,7 +153,7 @@ public class CVWikiModel extends AbstractWikiModel {
 		headTagNode.addAttribute("class", "mw-headline level" + headLevel, true);
 
 		this.append(headTagNode);
-		return this.fTableOfContentTag;
+		return this.getTableOfContent();
 	}
 
 	@Override
@@ -163,6 +169,16 @@ public class CVWikiModel extends AbstractWikiModel {
 	@Override
 	public void parseInternalImageLink(final String imageNamespace, final String rawImageLink) {
 		// noop
+	}
+
+	@Override
+	public String render(String rawWikiText) {
+		try {
+			return super.render(rawWikiText);
+		} catch (final IOException e) {
+			LOG.error("error while rendering wiki text", e);
+		}
+		return "error";
 	}
 
 	/**
