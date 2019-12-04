@@ -51,7 +51,6 @@ import org.springframework.security.access.AccessDeniedException;
  * @author niebler
  */
 public class GroupSettingsPageController implements MinimalisticController<GroupSettingsPageCommand> {
-
 	protected LogicInterface logic;
 	
 	private CVWikiModel wikiRenderer;
@@ -152,6 +151,7 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 		
 		this.wikiRenderer.setRequestedGroup(group);
 		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
+
 		command.setWikiText(wikiText);
 	}
 	

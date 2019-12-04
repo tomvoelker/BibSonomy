@@ -26,7 +26,7 @@
 				<c:otherwise>
 					<c:forEach var="searchResult" items="${searchResults}" varStatus="status">
 						<div class="help-search-result">
-							<h2><a href="${relativeUrlGenerator.getHelpPage(searchResult.page, pageContext.response.locale)}"><c:out value="${searchResult.page}" /></a></h2>
+							<h2><a href="${relativeUrlGenerator.getHelpPage(searchResult.path, searchResult.page, pageContext.response.locale)}"><c:out value="${searchResult.page}" /></a></h2>
 							<div><c:out value="… ${searchResult.highlightContent} …" /></div>
 							<c:if test="${not status.last}">
 								<hr />

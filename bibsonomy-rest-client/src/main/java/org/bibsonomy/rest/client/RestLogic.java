@@ -67,7 +67,7 @@ import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.rest.RESTConfig;
-import org.bibsonomy.rest.auth.AuthenticationAccessor;
+import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostDocumentQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostQuery;

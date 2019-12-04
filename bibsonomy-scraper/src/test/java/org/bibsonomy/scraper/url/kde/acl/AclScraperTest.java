@@ -26,8 +26,10 @@
  */
 package org.bibsonomy.scraper.url.kde.acl;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.url.kde.aanda.AandAScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -37,13 +39,15 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class AclScraperTest {
-
+	
 	/**
 	 * starts URL test with id url_108
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_108");
+		final String url = "https://www.aclweb.org/anthology-new/W/W04/W04-1806.pdf";
+		final String resultFile = "AclScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, AandAScraper.class, resultFile);
 	}
 	
 }

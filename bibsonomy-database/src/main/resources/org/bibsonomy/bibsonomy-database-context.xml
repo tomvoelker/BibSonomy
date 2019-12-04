@@ -209,6 +209,8 @@
 	<bean id="databaseValidator" class="org.bibsonomy.database.validation.DatabaseModelValidator">
 		<property name="databaseSchemaInformation" ref="dbSchemaInformation" />
 	</bean>
+
+	<bean id="generalDatabaseManager" class="org.bibsonomy.database.managers.GeneralDatabaseManager" factory-method="getInstance" />
 	
 	<bean id="adminDatabaseManager" class="org.bibsonomy.database.managers.AdminDatabaseManager" factory-method="getInstance">
 		<property name="userDatabaseManager" ref="userDatabaseManager" />
@@ -339,9 +341,10 @@
 		<property name="username" value="${database.main.username}" />
 		<property name="password" value="${database.main.password}" />
 		<property name="maxIdle" value="${database.main.maxIdle}" />
-		<property name="maxActive" value="${database.main.maxActive}" />
-		<property name="maxWait" value="${database.main.maxWait}" />
-		<property name="removeAbandoned" value="${database.main.removeAbandoned}" />
+		<property name="maxTotal" value="${database.main.maxTotal}" />
+		<property name="maxWaitMillis" value="${database.main.maxWait}" />
+		<property name="removeAbandonedOnMaintenance" value="${database.main.removeAbandoned}" />
+		<property name="removeAbandonedOnBorrow" value="${database.main.removeAbandoned}" />
 		<property name="removeAbandonedTimeout" value="${database.main.removeAbandonedTimeout}" />
 	</bean>
 	

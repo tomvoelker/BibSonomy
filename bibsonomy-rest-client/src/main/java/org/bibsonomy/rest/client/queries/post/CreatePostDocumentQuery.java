@@ -56,8 +56,8 @@ public class CreatePostDocumentQuery extends AbstractQuery<String> {
 
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException {
-		final String url = this.getUrlRenderer().createHrefForResourceDocuments(document.getUserName(), this.resourceHash);
-		this.downloadedDocument = this.performMultipartPostRequest(url, document.getFile(), document.getFileName());
+		final String url = this.getUrlRenderer().createHrefForResourceDocuments(this.document.getUserName(), this.resourceHash);
+		this.downloadedDocument = this.performMultipartPostRequest(url, this.document.getFile());
 	}
 
 	@Override

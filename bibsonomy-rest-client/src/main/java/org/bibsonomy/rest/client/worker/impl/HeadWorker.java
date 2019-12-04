@@ -26,19 +26,14 @@
  */
 package org.bibsonomy.rest.client.worker.impl;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-
-import org.apache.commons.httpclient.methods.HeadMethod;
-import org.bibsonomy.rest.auth.AuthenticationAccessor;
+import org.apache.http.client.methods.HttpHead;
+import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.worker.HttpWorker;
-import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
-public class HeadWorker extends HttpWorker<HeadMethod> {
+public class HeadWorker extends HttpWorker<HttpHead> {
 
 	/**
 	 * 
@@ -51,14 +46,7 @@ public class HeadWorker extends HttpWorker<HeadMethod> {
 	}
 
 	@Override
-	protected HeadMethod getMethod(String url, String requestBody) {
-		final HeadMethod head = new HeadMethod(url);
-		head.setFollowRedirects(true);
-		return head;
-	}
-
-	@Override
-	protected Reader readResponse(HeadMethod method) throws IOException, ErrorPerformingRequestException {
-		return new StringReader(method.getStatusText());
+	protected HttpHead getMethod(String url, String requestBody) {
+		return new HttpHead(url);
 	}
 }

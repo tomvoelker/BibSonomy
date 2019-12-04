@@ -281,16 +281,16 @@ public class BibTexUtils {
 	/*
 	 * fields to be excluded when creating bibtex strings.
 	 */
-	private static final Set<String> EXCLUDE_FIELDS = new HashSet<String>(Arrays.asList(
-			"bibtexkey",       // added at beginning of entry
-			"entrytype",       // added at beginning of entry
-			"misc",            // contains several fields; handled separately
-			"month",           // handled separately
-			"openurl", 
-			"simhash0", // not added
-			"simhash1", // not added
-			"simhash2", // not added
-			"simhash3"  // not added
+	private static final Set<String> EXCLUDE_FIELDS = new HashSet<>(Arrays.asList(
+					"bibtexkey",       // added at beginning of entry
+					"entrytype",       // added at beginning of entry
+					"misc",            // contains several fields; handled separately
+					"month",           // handled separately
+					"openurl",
+					"simhash0", // not added
+					"simhash1", // not added
+					"simhash2", // not added
+					"simhash3"  // not added
 	));
 
 	/**
@@ -298,7 +298,7 @@ public class BibTexUtils {
 	 * month names. If we find such a month abbreviation, we should not put 
 	 * braces around the string.
 	 */
-	private static final Map<String, Integer> BIBTEX_MONTHS = new HashMap<String, Integer>();
+	private static final Map<String, Integer> BIBTEX_MONTHS = new HashMap<>();
 	static {
 		final String[] months = new String[] {
 				"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"
@@ -444,12 +444,7 @@ public class BibTexUtils {
 	 */
 	public static String toBibtexString(final BibTex bib, final int flags) {
 		if (hasFlag(flags, SERIALIZE_BIBTEX_OPTION_SKIP_DUMMY_VALUE_FIELDS)) {
-			return runWithRemovedOrReplacedDummyValues(bib, false, new Callable<String>() {
-				@Override
-				public String call() throws Exception {
-					return toBibtexStringInternal(bib, flags);
-				}
-			});
+			return runWithRemovedOrReplacedDummyValues(bib, false, () -> toBibtexStringInternal(bib, flags));
 		}
 		return toBibtexStringInternal(bib, flags);
 	}
@@ -459,7 +454,7 @@ public class BibTexUtils {
 		 * get all values to generate the BibTeX first to sort all entries
 		 * alphabetically
 		 */
-		final SortedMap<String, String> values = new TreeMap<String, String>();
+		final SortedMap<String, String> values = new TreeMap<>();
 		final boolean lastFirstNames = !hasFlag(flags, SERIALIZE_BIBTEX_OPTION_FIRST_LAST);
 		
 		final Method[] methods = BibTex.class.getMethods();

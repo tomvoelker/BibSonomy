@@ -28,15 +28,14 @@ package org.bibsonomy.scraper.url.kde.springer;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
  * Scraper URL tests #58 for SpringerScraper
- * @author tst
  *
+ * @author tst
  */
 @Category(RemoteTest.class)
 public class SpringerScraperTest {
@@ -56,8 +55,18 @@ public class SpringerScraperTest {
 	 */
 	@Test
 	public void url8TestRun() {
-		final String url = "http://link.springer.com/book/10.1007/978-0-387-85820-3/page/1";
+		final String url = "https://link.springer.com/book/10.1007/978-0-387-85820-3";
 		final String resultFile = "SpringerLinkScraperUnitURLTest9.bib";
+		assertScraperResult(url, null, SpringerScraper.class, resultFile);
+	}
+	
+	/**
+	 * starts URL test with id url_239
+	 */
+	@Test
+	public void url9TestRun() {
+		final String url = "https://link.springer.com/content/pdf/10.1007%2F978-3-319-29671-5_3.pdf";
+		final String resultFile = "SpringerLinkScraperUnitURLTest10.bib";
 		assertScraperResult(url, null, SpringerScraper.class, resultFile);
 	}
 }

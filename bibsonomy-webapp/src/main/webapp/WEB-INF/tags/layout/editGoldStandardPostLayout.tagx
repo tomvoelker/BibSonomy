@@ -159,7 +159,8 @@
 						</bsform:fieldset>
 		
 						<jsp:invoke fragment="tagsAndGroups" />
-						<c:if test="${properties['groupsandfriendsfeature.activated'] eq 'true'}">
+						<!-- FIXME: change name to groupAndFriends; do we need this check here? -->
+						<c:if test="${(properties['groupsandfriendsfeature.activated'] eq 'true') and resourceType eq 'Publication'}">
 							<jsp:invoke fragment="groupsandfriends" />
 						</c:if>
 						<!--+

@@ -29,7 +29,7 @@
 	</sql>
 	
 	<sql id="searchPublicationAttributes2">
-		<include refid="bibtexAttributes2"/>,
+		<include refid="commonSearchPublicationAttributes2"/>,
 		t.tas_id
 	</sql>
 

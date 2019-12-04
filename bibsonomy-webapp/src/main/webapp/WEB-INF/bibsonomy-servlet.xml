@@ -816,6 +816,7 @@
 		<property name="supportedResources" ref="allResources"/>
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="personRoleRenderer" ref="personRoleRenderer"/>
+		<property name="urlGenerator" ref="relativeUrlGenerator" />
 	</bean>
 	
 	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.DisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">
@@ -906,6 +907,7 @@
 				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
 			</set>
 		</property>
+		<property name="adminLogic" ref="adminLogic"/>
 	</bean>
 	
 	<bean id="mySearchController" class="org.bibsonomy.webapp.controller.MySearchController" scope="request" parent="multiResourceListControllerWithTags">

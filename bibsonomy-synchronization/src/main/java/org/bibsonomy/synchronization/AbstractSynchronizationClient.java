@@ -207,12 +207,12 @@ public abstract class AbstractSynchronizationClient {
 		/*
 		 * create target lists
 		 */
-		final List<Post<? extends Resource>> createOnClient = new ArrayList<Post<?>>();
-		final List<Post<? extends Resource>> createOnServer = new ArrayList<Post<?>>();
-		final List<Post<? extends Resource>> updateOnClient = new ArrayList<Post<?>>();
-		final List<Post<? extends Resource>> updateOnServer = new ArrayList<Post<?>>();
-		final List<String> deleteOnServer = new ArrayList<String>();
-		final List<String> deleteOnClient = new ArrayList<String>();
+		final List<Post<? extends Resource>> createOnClient = new ArrayList<>();
+		final List<Post<? extends Resource>> createOnServer = new ArrayList<>();
+		final List<Post<? extends Resource>> updateOnClient = new ArrayList<>();
+		final List<Post<? extends Resource>> updateOnServer = new ArrayList<>();
+		final List<String> deleteOnServer = new ArrayList<>();
+		final List<String> deleteOnClient = new ArrayList<>();
 
 		/*
 		 * iterate over all posts and put each post into the target list

@@ -26,82 +26,66 @@
  */
 package org.bibsonomy.scraper.url.kde.ieee;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
-import org.bibsonomy.util.XmlUtils;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-/** Scraper for IEEE Explore
+/**
+ * Scraper for IEEE Explore
  * @author rja
- *
  */
 public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
+	private static final Log log = LogFactory.getLog(IEEEXploreStandardsScraper.class);
+
 	private static final String SITE_NAME 	= "IEEEXplore Standards";
 	private static final String SITE_URL  	= "https://ieeexplore.ieee.org/";
 	private static final String info 		= "This scraper creates a BibTeX entry for the standards at " + href(SITE_URL, SITE_NAME)+".";
 	private static final String DOWNLOAD_URL = SITE_URL + "xpl/downloadCitations";
 
-	private static final Log log = LogFactory.getLog(IEEEXploreStandardsScraper.class);
+
 
 	private static final String IEEE_HOST        	 	  = "ieeexplore.ieee.org";
 	private static final String IEEE_STANDARDS_PATH   	  = "xpl";
-	private static final String IEEE_STANDARDS		 	  = "@misc";
-	private static final String IEEE_STANDARDS_IDENTIFIER = "punumber";
 
-	private static final String CONST_EISBN               = "E-ISBN: ";
-	private static final String CONST_PAGE                = "Page(s): ";
-	private static final String CONST_DATE                = "Publication Date: ";
+	private static final Pattern PATTERN1 = Pattern.compile("arnumber=([^&]*)");
 
-	private static final Pattern pattern1 = Pattern.compile("arnumber=([^&]*)");
-
-	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
-
-
-	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile("/" + IEEE_STANDARDS_PATH + ".*")));
-	}
-
+	private static final List<Pair<Pattern,Pattern>> patterns = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile("/" + IEEE_STANDARDS_PATH + ".*"))
+	);
 
 	protected static String getBibTeX(final ScrapingContext sc, final String id) throws InternalFailureException {
 		// using own client because I do not want to configure any client to allow circular redirects
+		final RequestConfig.Builder builder = WebUtils.getDefaultRequestConfig();
+		builder.setCircularRedirectsAllowed(true);
 		final HttpClient client = WebUtils.getHttpClient();
-		client.getParams().setBooleanParameter(HttpClientParams.ALLOW_CIRCULAR_REDIRECTS, true);
 
 		try {
 			// better get the page first
 			final String url = sc.getUrl().toExternalForm();
 			WebUtils.getContentAsString(client, url);
 
-			//create a post method
-			final PostMethod method = new PostMethod(DOWNLOAD_URL);
-			method.addParameter("citations-format", "citation-abstract");
-			method.addParameter("fromPage", "");
-			method.addParameter("download-format", "download-bibtex");
-			method.addParameter("recordIds", id);
+			final String postData = "citations-format=citation-abstract&download-format=download-bibtex&recordIds=" + UrlUtils.safeURIEncode(id);
 
 			// now get bibtex
-			String bibtex = WebUtils.getPostContentAsString(client, method);
+			String bibtex = WebUtils.getContentAsString(client, DOWNLOAD_URL, null, postData, null);
 
 			if (bibtex != null) {
 				// clean up
@@ -113,9 +97,7 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 				return bibtex.trim();
 			}
 			return null;
-		} catch (MalformedURLException ex) {
-			throw new InternalFailureException(ex);
-		} catch (IOException ex) {
+		} catch (IOException | HttpException ex) {
 			throw new InternalFailureException(ex);
 		}
 	}
@@ -123,129 +105,36 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 	@Override
 	protected boolean scrapeInternal (ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-
-		String id = null;
-		Matcher matcher = pattern1.matcher(sc.getUrl().toString());
+		final Matcher matcher = PATTERN1.matcher(sc.getUrl().toString());
 		if (matcher.find()) {
-			id = matcher.group(1);
-		}
-		if (id != null) {
-			String bibtex = getBibTeX(sc, id);
+			final String id = matcher.group(1);
+			final String bibtex = getBibTeX(sc, id);
 
-			if (bibtex != null) {
-				// add downloaded bibtex to result 
-				sc.setBibtexResult(bibtex.toString().trim());
-				return true;
-
-			} else {
-				log.debug("IEEEXploreStandardsScraper: direct bibtex download failed. Use JTidy to get bibliographic data.");
-				sc.setBibtexResult(ieeeStandardsScrape(sc));
+			if (present(bibtex)) {
+				// add downloaded bibtex to result
+				sc.setBibtexResult(bibtex);
 				return true;
 			}
-		} else {
-			log.debug("IEEEXploreStandardsScraper use JTidy to get Bibtex from " + sc.getUrl().toString());
-			sc.setBibtexResult(ieeeStandardsScrape(sc));
-			return true;
 		}
+		return false;
 	}
 
+	@Override
 	public String getInfo() {
 		return info;
 	}
 
-	public String ieeeStandardsScrape (ScrapingContext sc) throws ScrapingException {
-		try{
-			//-- init all NodeLists and Node
-			NodeList pres 		= null; 
-			Node currNode 		= null;
-			NodeList temp 		= null;
-
-			//-- init String map for bibtex entries
-			String type 		= IEEE_STANDARDS;
-			String url 			= sc.getUrl().toString();
-			String numpages 	= "";
-			String title 		= "";
-			String isbn 		= "";
-			String abstr	 	= "";
-			String year 		= "";
-
-			//-- get the html doc and parse the DOM
-			final Document document = XmlUtils.getDOM(sc.getPageContent());
-
-			/* -- get the spans to extract the title and abstract
-			 */
-			pres = null;
-			pres = document.getElementsByTagName("span"); //get all <span>-Tags
-			for (int i=0; i<pres.getLength(); i++){
-				currNode = pres.item(i);
-				if (currNode.hasAttributes()) {
-					Element g = (Element)currNode;
-					Attr own = g.getAttributeNode("class");
-					//-- Extract the title
-					if ("headNavBlueXLarge2".equals(own.getValue())){
-						temp = currNode.getChildNodes();
-						title = temp.item(temp.getLength()-1).getNodeValue().trim();
-					}
-					//-- Extract the abstract
-					if ("sectionHeaders".equals(own.getValue()) && "Abstract".equals(currNode.getFirstChild().getNodeValue())){
-						abstr = currNode.getParentNode().getLastChild().getNodeValue().trim();
-					}
-				}
-			}
-
-
-			/*-- get all <p>-Tags to extract the standard informations
-			 *  In every standard page the css-class "bodyCopyBlackLargeSpaced"
-			 *  indicates the collection of all informations.
-			 * */
-			pres = null;
-			pres = document.getElementsByTagName("p"); //get all <p>-Tags
-			for (int i=0; i<pres.getLength(); i++){
-				currNode = pres.item(i);
-				if (currNode.hasAttributes()) {
-					Element g = (Element)currNode;
-					Attr own = g.getAttributeNode("class");
-					if ("bodyCopyBlackLargeSpaced".equals(own.getValue())){
-						temp = currNode.getChildNodes();
-
-						for(int j =0; j<temp.getLength(); j++){
-							if (temp.item(j).getNodeValue().indexOf(CONST_DATE) != -1){
-								String date = temp.item(j).getNodeValue().substring(CONST_DATE.length()).trim();
-								year = date.substring(date.length()-4).trim();
-							}
-							if (temp.item(j).getNodeValue().indexOf(CONST_PAGE) != -1){
-								numpages = temp.item(j).getNodeValue().substring(CONST_PAGE.length()).trim();
-							}
-							if (temp.item(j).getNodeValue().indexOf(CONST_EISBN) !=  -1){
-								isbn = temp.item(j).getNodeValue().substring(CONST_EISBN.length()).trim();
-							}
-						}
-					}
-				}
-			}
-
-			//create valid bibtex snippet
-			return type + " {," 
-			+ "title = {" + title + "}, " 
-			+ "year = {" + year + "}, " 
-			+ "url = {" + url + "}, "
-			+ "pages = {" + numpages + "}, " 
-			+ "abstract = {" + abstr + "}, "
-			+ "isbn = {" + isbn + "}}";
-
-		}catch(Exception e){
-			throw new InternalFailureException(e);
-		}
-	}
-
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
