@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.util;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Locale;
 import java.util.Properties;
 
@@ -36,6 +38,7 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.print.attribute.standard.PresentationDirection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -192,7 +195,8 @@ public class MailUtils {
 	 */
 	public boolean sendJoinGroupDenied(final String groupName, final String deniedUserName, final String deniedUserEMail, final String reason, final Locale locale) {
 		final Object[] messagesParameters = new Object[]{
-			groupName, deniedUserName,
+			groupName, 
+			deniedUserName,
 			reason,
 			projectHome,
 			// TODO: remove null values
@@ -205,7 +209,12 @@ public class MailUtils {
 		/*
 		 * Format the message "mail.registration.body" with the given parameters.
 		 */
-		final String messageBody = messageSource.getMessage("mail.joinGroupRequest.denied.body", messagesParameters, locale);
+		final String messageBody;
+		if (present(reason)) {
+			messageBody = messageSource.getMessage("mail.joinGroupRequest.denied.bodyWithReason", messagesParameters, locale);
+		} else {			
+			messageBody = messageSource.getMessage("mail.joinGroupRequest.denied.body", messagesParameters, locale);
+		}
 		final String messageSubject = messageSource.getMessage("mail.joinGroupRequest.denied.subject", messagesParameters, locale);
 	
 		/*
