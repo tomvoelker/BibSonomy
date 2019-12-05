@@ -274,7 +274,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 					try {
 						this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.DECLINE_JOIN_REQUEST, ms);
 						// TODO: I18N
-						this.mailUtils.sendJoinGroupDenied(groupToUpdate.getName(), username, declineUser.getEmail(), "Your group join request was denied.", this.requestLogic.getLocale());
+						this.mailUtils.sendJoinGroupDenied(groupToUpdate.getName(), username, declineUser.getEmail(), null, this.requestLogic.getLocale());
 					} catch (final Exception ex) {
 						log.error("error while declining the join request of user '" + username + "' from group '" + groupToUpdate + "'", ex);
 						this.errors.rejectValue("username", "settings.group.error.declineJoinRequestFailed", new Object[] { username },
