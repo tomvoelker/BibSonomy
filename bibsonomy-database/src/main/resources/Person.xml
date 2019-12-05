@@ -329,9 +329,10 @@
 	
 	<select id="getPhdAdvisorRec" resultMap="PersonCommon.lazyLoadingPerson" parameterClass="string">
 		SELECT <include refid="commonPersonColumns"/>
-		FROM person, phd_advisor_recommendation as adv
+		FROM person 
+		JOIN phd_advisor_recommendation AS adv 
+		ON adv.advisor_id = person.person_id
 		WHERE adv.doctor_id = #personId#
-		AND person.person_id = advisor_id 
 		order by confidence desc
 	</select>
 </sqlMap>
