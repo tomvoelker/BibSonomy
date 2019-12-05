@@ -1,4 +1,5 @@
 /**
+
  * BibSonomy-Rest-Client - The REST-client.
  *
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
@@ -31,7 +32,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
