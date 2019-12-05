@@ -301,9 +301,14 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		 * if the settings weren't loaded yet, load the profile privacy setting
 		 * now
 		 */
-		final ProfilePrivlevel result = this.queryForObject("getProfilePrivlevel", user, ProfilePrivlevel.class, session);
-		if (present(result)) {
-			privacyLevel = result;
+		if (!present(user.getSettings()) || !present(user.getSettings().getProfilePrivlevel())) {
+			final ProfilePrivlevel result = this.queryForObject("getProfilePrivlevel", user, ProfilePrivlevel.class, session);
+
+			if (present(result)) {
+				privacyLevel = result;
+			}
+		} else {
+			privacyLevel = user.getSettings().getProfilePrivlevel();
 		}
 
 		switch (privacyLevel) {

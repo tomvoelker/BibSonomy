@@ -186,12 +186,4 @@ public class WikiCvPageController extends ResourceListController implements Mini
 		this.adminLogic = adminLogic;
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
-	public LogicInterface getAdminLogic() {
-		return adminLogic;
-	}
-	
 }
