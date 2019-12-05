@@ -59,7 +59,7 @@
 			+-->
 		<h4 class="pub-details"><span class="fa fa-link" ><!--  --></span><c:out value=" "/><fmt:message key="publications.resource.headline" /></h4>
 		
-		<dl class="dl-horizontal" id="resources resources-dl">
+		<dl class="dl-horizontal" id="resources">
 			<!--+
 				| DOI
 				+-->
