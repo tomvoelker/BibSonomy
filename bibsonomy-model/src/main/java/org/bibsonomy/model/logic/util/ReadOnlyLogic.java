@@ -945,13 +945,4 @@ public class ReadOnlyLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPhdRecommendedAdvisorNames(org.bibsonomy.model.Person)
-	 */
-	@Override
-	public HashMap<String, String> getPhdRecommendedAdvisorNames(Person person) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

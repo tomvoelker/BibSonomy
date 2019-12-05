@@ -974,14 +974,4 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	/**
-	 * Returns a Map containing the names of each suggested phd advisor
-	 * @param person    the person of which the advisors are returned
-	 */
-	@Override
-	public HashMap<String, String> getPhdRecommendedAdvisorNames(Person person) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

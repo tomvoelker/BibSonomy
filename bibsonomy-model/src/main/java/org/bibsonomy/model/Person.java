@@ -78,7 +78,7 @@ public class Person implements Serializable {
 	private URL homepage;
 	
 	// PhdAdvisor recommendation sorted by confidence
-	private List<String> phdRecommender;
+	private List<Person> phdRecommender;
 	/**
 	 * default constructor
 	 */
@@ -367,14 +367,14 @@ public class Person implements Serializable {
 	/**
 	 * @return the phdRecommender
 	 */
-	public List<String> getPhdRecommender() {
+	public List<Person> getPhdRecommender() {
 		return this.phdRecommender;
 	}
 
 	/**
 	 * @param phdRecommender the phdRecommender to set
 	 */
-	public void setPhdRecommender(List<String> phdRecommender) {
+	public void setPhdRecommender(List<Person> phdRecommender) {
 		this.phdRecommender = phdRecommender;
 	}
 

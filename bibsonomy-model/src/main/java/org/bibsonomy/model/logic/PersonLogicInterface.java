@@ -100,9 +100,4 @@ public interface PersonLogicInterface {
 	 */
 	public void updatePerson(final Person person, final PersonUpdateOperation operation);
 
-	/**
-	 * Returns a Map containing the names of each suggested phd advisor
-	 * @param person    the person of which the advisors are returned
-	 */
-	public HashMap<String, String> getPhdRecommendedAdvisorNames(Person person);
 }
