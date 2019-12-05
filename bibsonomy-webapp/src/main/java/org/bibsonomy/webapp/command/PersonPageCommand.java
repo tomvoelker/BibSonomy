@@ -88,8 +88,7 @@ public class PersonPageCommand extends BaseCommand {
 	private int formPersonIndex = -1;
 	
 	private int formMatchId;
-	private String formResponseString;
-	
+	private String formResponseString;	
 	
 	private String formAction;
 	

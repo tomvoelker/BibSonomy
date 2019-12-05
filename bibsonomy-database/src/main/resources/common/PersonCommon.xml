@@ -19,6 +19,7 @@
 		<result property="college"          column="college"           	 javaType="string" />
 		<result property="homepage"         column="homepage"     		 javaType="url" />
 		<result property="email"            column="email"           	 javaType="string" />
+		<result property="phdRecommender"   column="person_id"      javaType="java.util.ArrayList" select="getPhdAdvisorRec" />
 	</resultMap>
 	
 	<resultMap id="lazyLoadingPerson" class="person" extends="abstractPerson">

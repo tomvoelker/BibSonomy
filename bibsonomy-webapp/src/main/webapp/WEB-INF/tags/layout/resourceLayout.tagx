@@ -91,6 +91,8 @@
 			<!-- UnAPI service -->
 			<link rel="unapi-server" type="application/xml" title="unAPI" href="${properties['project.home']}unapi"/>
 
+			<script type="text/javascript" src="/resources/javascript/resourceLayout.js"><!-- keep me --></script>
+
 			<jsp:invoke fragment="headerExt"/>
 		</jsp:attribute>
 		
