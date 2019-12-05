@@ -26,8 +26,6 @@
  */
 package org.bibsonomy.model.logic;
 
-import java.util.HashMap;
-
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
