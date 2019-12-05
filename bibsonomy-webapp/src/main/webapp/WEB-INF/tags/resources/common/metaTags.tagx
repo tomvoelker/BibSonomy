@@ -8,90 +8,169 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<!-- Decide wether or not to display "Tags: " before listing all tags -->
 	<jsp:directive.attribute name="showTagsLabel" type="java.lang.Boolean" required="false" />
-	
+	<jsp:directive.attribute name="renderAsList" type="java.lang.Boolean" required="false" />
 	
 	<c:set var="isRemotePost" value="${not empty post.systemUrl and not mtl:isSameHost(post.systemUrl, properties['project.home'])}" />
 
-	<span style="margin-top: 2px;" class="fa fa-tag pull-left">
-		<!--  -->
-	</span>
-	<c:out value=" " />
+	<c:set var="tmpRequstedTags" value=""></c:set>
+	<mtl:exists path="command.requestedTags">
+		<c:if test="${not empty command.requestedTags}">
+			<c:set var="tmpRequstedTags" value="${fn:split(command.requestedTags, ' ')}"></c:set>
+		</c:if>
+	</mtl:exists>
 
-	<!--+
-		| Display all tags of a post. 
-		| If there are hidden systemtags (that are visible for the logginUser) display the small icon. 
-		| Afterwards all tags.
-		+ -->
 
-	<!-- HIDDEN SYSTEM TAGS -->
+	<c:choose>
+	<c:when test="${not renderAsList}">
+
+		<span style="margin-top: 2px;" class="fa fa-tag pull-left">
+			<!--  -->
+		</span>
+		<c:out value=" " />
 	
-	<fmt:message key="tag.systemTag.hidden.title" var="systemTagsTitle"/>
-	<div class="extend hiddenSystemTag pull-left">
+		<!--+
+			| Display all tags of a post. 
+			| If there are hidden systemtags (that are visible for the logginUser) display the small icon. 
+			| Afterwards all tags.
+			+ -->
+	
+		<!-- HIDDEN SYSTEM TAGS -->
 		
-		<a id="system-tags-link-${post.resource.intraHash}${post.user.name}" href="#" class="system-tags-link" style="${empty post.hiddenSystemTags ? 'display: none;' : ''}">
-			<span class="fa fa-asterisk" title="${systemTagsTitle}"><!-- KEEP ME --></span>
-		</a>&amp;nbsp;
-		
-		<div class="popover popover-dismiss system-tags hide" id="system-tags-${post.resource.intraHash}${post.user.name}">
-			<div class="help popover-title">
-				<!--  -->
-			</div>
-			<div class="help popover-content popover-dismissible" href="#">
-				<button style="margin-top: -3px;" type="button" class="close" onclick="javascript:$(this).parent().parent().prev().popover('hide');">
-					&amp;nbsp;
-					<span aria-hidden="true">&amp;times;</span>
-					<span class="sr-only">Close</span>
-				</button>
-				
-				<div style="margin-right: 25px;">
-					<ul class="systemtags list-inline">
-						<c:forEach var="systag" items="${post.hiddenSystemTags}">
-							<li>
-								<span class="label label-warning">
-									<c:choose>
-										<c:when test="${isRemotePost}">
-											<a href="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getUserUrlByUserNameAndTagName(post.user.name, systag.name)}">
-												<c:out value="${systag.name}" />
-											</a>
-										</c:when>
-										<c:otherwise>
-											<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, systag.name)}">
-												<c:out value="${systag.name}" />
-											</a>
-										</c:otherwise>
-									</c:choose>
-								</span>
-							</li>
-						</c:forEach>
-					</ul>
+		<fmt:message key="tag.systemTag.hidden.title" var="systemTagsTitle"/>
+		<div class="extend hiddenSystemTag pull-left">
+			
+			<a id="system-tags-link-${post.resource.intraHash}${post.user.name}" href="#" class="system-tags-link" style="${empty post.hiddenSystemTags ? 'display: none;' : ''}">
+				<span class="fa fa-asterisk" title="${systemTagsTitle}"><!-- KEEP ME --></span>
+			</a>&amp;nbsp;
+			
+			<div class="popover popover-dismiss system-tags hide" id="system-tags-${post.resource.intraHash}${post.user.name}">
+				<div class="help popover-title">
+					<!--  -->
+				</div>
+				<div class="help popover-content popover-dismissible" href="#">
+					<button style="margin-top: -3px;" type="button" class="close" onclick="javascript:$(this).parent().parent().prev().popover('hide');">
+						&amp;nbsp;
+						<span aria-hidden="true">&amp;times;</span>
+						<span class="sr-only">Close</span>
+					</button>
+					
+					<div style="margin-right: 25px;">
+						<ul class="systemtags list-inline">
+							<c:forEach var="systag" items="${post.hiddenSystemTags}">
+								<li>
+									<span class="label label-warning">
+										<c:choose>
+											<c:when test="${isRemotePost}">
+												<a href="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getUserUrlByUserNameAndTagName(post.user.name, systag.name)}">
+													<c:out value="${systag.name}" />
+												</a>
+											</c:when>
+											<c:otherwise>
+												<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, systag.name)}">
+													<c:out value="${systag.name}" />
+												</a>
+											</c:otherwise>
+										</c:choose>
+									</span>
+								</li>
+							</c:forEach>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+		
 	
+		<!-- ALL REGULAR TAGS -->
+		<!-- FIXME: Remove this, as soon as we have a "real" post preview instead of only full lines of tags and meta data -->
+		<c:if test="${showTagsLabel}">
+			<fmt:message key="tags" />
+			<c:out value=": " />
+		</c:if>
+	
+		<c:forEach var="tag" items="${post.visibleTags}">
+		
+			<!-- searched tag - so we simply hide it -->
+			<c:set var="labelClass" value="label-grey" />
+			<c:forEach var="searchedTag" items="${tmpRequstedTags}">
+				<c:if test="${fn:toLowerCase(searchedTag) eq fn:toLowerCase(tag.name)}">
+				    <c:set var="labelClass" value="hidden" />
+				</c:if>
+			</c:forEach>	
+	
+			<span class="label label-grey label-tag">
+				<c:choose>
+					<c:when test="${isRemotePost}">
+						<a href="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getUserUrlByUserNameAndTagName(post.user.name, tag.name)}">
+							<c:out value="${tag.name}" />
+						</a>
+					</c:when>
+					<c:otherwise>
+						<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}">
+							<c:out value="${tag.name}" />
+						</a>
+					</c:otherwise>
+				</c:choose>
+			</span>
+		</c:forEach>
+	</c:when>
+	
+	
+	<!-- renderAsList == true -->
+	<c:otherwise>
+		<ul class="custom-all-tags-list">
+			<!-- HIDDEN SYSTEM TAGS -->
+			<c:forEach var="systag" items="${post.hiddenSystemTags}">
+				<li>
+					<span class="label label-warning">
+						<c:choose>
+							<c:when test="${isRemotePost}">
+								<a href="${relativeUrlGenerator.getUserUrlByUserNameTagNameAndSysUrl(post.user.name, systag.name, post.systemUrl)}">
+									<c:out value="${systag.name}" />
+								</a>
+							</c:when>
+							<c:otherwise>
+								<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, systag.name)}">
+									<c:out value="${systag.name}" />
+								</a>
+							</c:otherwise>
+						</c:choose>
+					</span>
+				</li>
+			</c:forEach>
 
-	<!-- ALL REGULAR TAGS -->
-	<!-- FIXME: Remove this, as soon as we have a "real" post preview instead of only full lines of tags and meta data -->
-	<c:if test="${showTagsLabel}">
-		<fmt:message key="tags" />
-		<c:out value=": " />
-	</c:if>
-
-	<c:forEach var="tag" items="${post.visibleTags}">
-		<span class="label label-grey label-tag">
-			<c:choose>
-				<c:when test="${isRemotePost}">
-					<a href="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getUserUrlByUserNameAndTagName(post.user.name, tag.name)}">
-						<c:out value="${tag.name}" />
-					</a>
-				</c:when>
-				<c:otherwise>
-					<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}">
-						<c:out value="${tag.name}" />
-					</a>
-				</c:otherwise>
-			</c:choose>
-		</span>
-	</c:forEach>
+			<!-- ALL REGULAR TAGS -->
+			<c:forEach var="tag" items="${post.visibleTags}">
+			
+				<!-- searched tag? -->
+				<c:set var="labelClass" value="label-grey" />
+				<c:forEach var="searchedTag" items="${tmpRequstedTags}">
+					<c:if test="${fn:toLowerCase(searchedTag) eq fn:toLowerCase(tag.name)}">
+					    <c:set var="labelClass" value="label-success" />
+					</c:if>
+				</c:forEach>
+			
+				<li>
+					<span class="label ${labelClass} label-tag">
+						<c:choose>
+							<c:when test="${isRemotePost}">
+								<a href="${relativeUrlGenerator.getUserUrlByUserNameTagNameAndSysUrl(post.user.name, tag.name, post.systemUrl)}">
+									<c:out value="${tag.name}" />
+								</a>
+							</c:when>
+							<c:otherwise>
+								<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}">
+									<c:out value="${tag.name}" />
+								</a>
+							</c:otherwise>
+						</c:choose>
+					</span>
+				</li>
+				
+			</c:forEach>
+		</ul>
+	</c:otherwise>
+	</c:choose>		
+		
 	<meta itemprop="keywords" content="${mtl:toTagString(post.visibleTags)}" />
 </jsp:root>
