@@ -88,9 +88,7 @@ public class PersonPageCommand extends BaseCommand {
 	private int formPersonIndex = -1;
 	
 	private int formMatchId;
-	private String formResponseString;
-	private Map<String, String> advisorRecommenderNames;
-	
+	private String formResponseString;	
 	
 	private String formAction;
 	
@@ -600,20 +598,5 @@ public class PersonPageCommand extends BaseCommand {
 	public void setFormResponseString(String formResponseString) {
 		this.formResponseString = formResponseString;
 	}
-
-	/**
-	 * @return the advisorRecommenderNames
-	 */
-	public Map<String, String> getAdvisorRecommenderNames() {
-		return this.advisorRecommenderNames;
-	}
-
-	/**
-	 * @param advisorRecommenderNames the advisorRecommenderNames to set
-	 */
-	public void setAdvisorRecommenderNames(Map<String, String> advisorRecommenderNames) {
-		this.advisorRecommenderNames = advisorRecommenderNames;
-	}
-
 
 }
