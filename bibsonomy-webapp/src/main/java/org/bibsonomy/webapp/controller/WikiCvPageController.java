@@ -37,6 +37,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
+import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.CvPageViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -54,7 +55,8 @@ import org.springframework.beans.factory.annotation.Required;
  */
 public class WikiCvPageController extends ResourceListController implements MinimalisticController<CvPageViewCommand> {
 	private static final Log log = LogFactory.getLog(WikiCvPageController.class);
-
+	// to retrieve the information if a user is considered for classification
+	private LogicInterface adminLogic;
 
 	private CVWikiModel wikiRenderer;
 
@@ -135,9 +137,12 @@ public class WikiCvPageController extends ResourceListController implements Mini
 		 * hide cv page of spammers
 		 */
 		if (present(requestedUser)) {
-			final boolean isNoSpammer = !requestedUser.isSpammer();
-			final boolean isClassified = requestedUser.getToClassify() != null && requestedUser.getToClassify() != 1;
-			final boolean ownCVPage = requestedUser.equals(command.getContext().getLoginUser());
+			User requestedUserComplete = adminLogic.getUserDetails(requestedUser.getName());
+			
+			final boolean isNoSpammer = !requestedUserComplete.isSpammer();
+			
+			final boolean isClassified = requestedUserComplete.getToClassify() != null && requestedUserComplete.getToClassify() != 1;
+			final boolean ownCVPage = requestedUserComplete.equals(command.getContext().getLoginUser());
 			showCV &= ownCVPage || isNoSpammer && isClassified;
 		}
 		if (showCV) {
@@ -173,4 +178,12 @@ public class WikiCvPageController extends ResourceListController implements Mini
 	public void setWikiRenderer(final CVWikiModel wikiRenderer) {
 		this.wikiRenderer = wikiRenderer;
 	}
+	
+	/**
+	 * @param adminLogic the adminLogic to set
+	 */
+	public void setAdminLogic(final LogicInterface adminLogic) {
+		this.adminLogic = adminLogic;
+	}
+	
 }
