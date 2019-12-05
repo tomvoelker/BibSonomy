@@ -29,7 +29,6 @@ package org.bibsonomy.model.logic.util;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
