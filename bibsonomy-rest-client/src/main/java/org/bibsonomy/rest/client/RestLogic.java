@@ -1,5 +1,4 @@
 /**
-
  * BibSonomy-Rest-Client - The REST-client.
  *
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
