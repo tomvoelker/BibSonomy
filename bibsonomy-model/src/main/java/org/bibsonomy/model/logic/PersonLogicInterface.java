@@ -26,8 +26,6 @@
  */
 package org.bibsonomy.model.logic;
 
-import java.util.HashMap;
-
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
@@ -100,9 +98,4 @@ public interface PersonLogicInterface {
 	 */
 	public void updatePerson(final Person person, final PersonUpdateOperation operation);
 
-	/**
-	 * Returns a Map containing the names of each suggested phd advisor
-	 * @param person    the person of which the advisors are returned
-	 */
-	public HashMap<String, String> getPhdRecommendedAdvisorNames(Person person);
 }

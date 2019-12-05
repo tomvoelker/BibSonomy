@@ -38,7 +38,7 @@
 	<fmt:message key="person.show.orcidId" var="textOrcidId" />
 	<fmt:message key="person.show.saveButton" var="textSaveButton" />
 	<fmt:message key="person.show.TooltipLockedForm" var="formLockedTooltip" />
-	
+
 	<c:set var="title" value="${mtl:cleanBibtex(command.person.mainName.firstName)} ${mtl:cleanBibtex(command.person.mainName.lastName)}" />
 	
 	<layout:paneLayout pageTitle="${title}" 
@@ -92,14 +92,12 @@
 				</c:otherwise>
 			</c:choose>
 			<c:if test="${fn:length(command.person.phdRecommender) gt 0}">
-				<h4><fmt:message key="person.sidebar.phdAdvisorRecommendations"/></h4>	
+				<h4><fmt:message key="person.sidebar.phdAdvisorRecommendations"/></h4>
+				<p><fmt:message key="person.show.TooltipPhDRecommendation"/></p>
 				<ul><c:forEach var="advisorRecommendation" items="${command.person.phdRecommender}">
  						<li>
- 						
- 						<a href="${relativeUrlGenerator.getPersonUrl(advisorRecommendation)}"> ${command.advisorRecommenderNames.get(advisorRecommendation)}</a>
- 						<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-							<span data-toggle='modal' data-target="#addRole" data-relation-pubowner="${post.user.name}" data-resourceTitle="${post.resource.title}" data-relation-simhash1="${post.resource.interHash}" data-relation-simhash2='${post.resource.intraHash}' data-person-role="${role}" href="#addRole" class='addRole pull-right'><button class="btn btn-default btn-xs  ${systemReadOnly ? 'disabled' : '' }" ><fontawesome:icon icon="plus" /></button></span>
-						</c:if> 
+ 						<a href="${relativeUrlGenerator.getPersonUrl(advisorRecommendation.personId)}"> ${advisorRecommendation.mainName.lastName}, ${advisorRecommendation.mainName.firstName}</a>
+						
 						<div class="clearfix"></div>
  						</li>
 					</c:forEach>
