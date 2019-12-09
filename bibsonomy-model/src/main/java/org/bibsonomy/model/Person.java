@@ -76,9 +76,7 @@ public class Person implements Serializable {
 	private String email;
 	/** the homepage of the person */
 	private URL homepage;
-	
-	// PhdAdvisor recommendation sorted by confidence
-	private List<Person> phdRecommender;
+
 	/**
 	 * default constructor
 	 */
@@ -363,19 +361,4 @@ public class Person implements Serializable {
 			(this.orcid == null || person.orcid == null || this.orcid.equals(person.orcid))&&
 			(this.user == null || person.user == null);
   }
-
-	/**
-	 * @return the phdRecommender
-	 */
-	public List<Person> getPhdRecommender() {
-		return this.phdRecommender;
-	}
-
-	/**
-	 * @param phdRecommender the phdRecommender to set
-	 */
-	public void setPhdRecommender(List<Person> phdRecommender) {
-		this.phdRecommender = phdRecommender;
-	}
-
 }
