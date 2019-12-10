@@ -774,5 +774,5 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	<version>3.9.1</version>
+	<version>3.9.2</version>
 </project>
