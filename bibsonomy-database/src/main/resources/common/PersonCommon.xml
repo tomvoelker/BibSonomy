@@ -19,7 +19,6 @@
 		<result property="college"          column="college"           	 javaType="string" />
 		<result property="homepage"         column="homepage"     		 javaType="url" />
 		<result property="email"            column="email"           	 javaType="string" />
-		<result property="phdRecommender"   column="person_id"      javaType="java.util.ArrayList" select="getPhdAdvisorRec" />
 	</resultMap>
 	
 	<resultMap id="lazyLoadingPerson" class="person" extends="abstractPerson">
@@ -81,6 +80,13 @@
 		<result property="userDenies"		column="match_id"		  javaType="string"		select="getDeniesForMatch" />
 		<result property="person1Posts"		column="person1_id"		  javaType="org.bibsonomy.model.Post"		  select="getPostsForPerson" />
 		<result property="person2Posts"		column="person2_id"		  javaType="org.bibsonomy.model.Post"		  select="getPostsForPerson" />
+	</resultMap>
+	
+	<resultMap id="phdRecommendation" class="org.bibsonomy.model.PhDRecommendation">
+		<result property="confidence" column="confidence"/>
+		<result property="rank" column="rank"/>
+		<result property="doctor"           column="doctor_id"       javaType="person"		select="getPersonById"/>
+		<result property="advisor"          column="advisor_id"       javaType="person"		select="getPersonById"/>
 	</resultMap>
 
 	<!-- FIXME: use table alias instead of full table name -->

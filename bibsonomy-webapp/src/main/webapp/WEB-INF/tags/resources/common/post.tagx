@@ -116,7 +116,7 @@
 				</c:if>
 
 				<span class="all-tags-button label label-tag pull-right hidden">
-					<a href="#" class="tag-popover" data-toggle="popover">
+					<a href="#" class="tag-popover">
 						<fmt:message key="post.actions.showAllTags" />
 					</a>
 					<div class="popover-content-custom hidden">

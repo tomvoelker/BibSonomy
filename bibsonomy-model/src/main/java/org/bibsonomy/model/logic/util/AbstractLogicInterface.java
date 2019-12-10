@@ -63,6 +63,7 @@ import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.PhDRecommendation;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -970,6 +971,15 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	/* 
+	 * PhD Advisor Recommendations for a person
+	 */
+	@Override
+	public List<PhDRecommendation> getPhdAdvisorRecForPerson(String personID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
