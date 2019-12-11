@@ -70,7 +70,7 @@ public class FollowersPageController extends SingleResourceListController implem
 		Order order = command.getOrder();
 		
 		if ("date".equals(pageSort)) {
-			order = Order.ADDED;
+			order = Order.DATE;
 		} else if ("ranking".equals(pageSort)) {
 			order = Order.RANK;
 		}

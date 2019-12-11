@@ -57,7 +57,7 @@ public class GetResourcesByTagNames<R extends Resource, P extends ResourceParam<
 				param.getNumSimpleTags() > 0 &&
 				param.getNumTransitiveConcepts() == 0 &&
 				!present(param.getHash()) &&
-				nullOrEqual(param.getOrder(), Order.ADDED, Order.FOLKRANK) &&
+				nullOrEqual(param.getOrder(), Order.NONE, Order.DATE, Order.FOLKRANK) &&
 				!present(param.getSearch()) &&
 				!present(param.getAuthor()) &&
 				!present(param.getTitle()) );

@@ -65,7 +65,7 @@ public class GetResourcesByTaggedUserRelation<R extends Resource, P extends Reso
 				present(param.getRelationTags()) &&
 				SystemTagsUtil.containsSystemTag(param.getRelationTags(), UserRelationSystemTag.NAME) &&
 				!present(param.getHash()) &&
-				nullOrEqual(param.getOrder(), Order.ADDED) &&
+				nullOrEqual(param.getOrder(), Order.NONE, Order.DATE) &&
 				!present(param.getSearch()));		
 	}
 }

@@ -43,6 +43,8 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResourcePersonRelationLogStub;
+import org.bibsonomy.model.SortOrder;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.ESConstants.Fields.Publication;
@@ -139,7 +141,7 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 
 	private void updateIndexForPersonWithId(String indexName, LRUMap updatedInterhashes, final String personId) {
 		final TermQueryBuilder query = QueryBuilders.termQuery(Fields.PERSON_ENTITY_IDS_FIELD_NAME, personId);
-		final SearchHits hits = this.search(query, null, 0, 1000, null, null);
+		final SearchHits hits = this.search(query, null,0, 1000, null, null);
 		if (hits != null) {
 			for (final SearchHit hit : hits.getHits()) {
 				final Map<String, Object> doc = hit.getSourceAsMap();

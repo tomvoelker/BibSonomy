@@ -27,20 +27,11 @@
 package org.bibsonomy.search.es.management.post;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.net.URI;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.SortOrder;
 import org.bibsonomy.model.User;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
@@ -54,7 +45,14 @@ import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.sort.SortOrder;
+
+import java.net.URI;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * manager for Elasticsearch
@@ -96,7 +94,6 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 
 		final SearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, indexName);
 		final SearchIndexSyncState targetState = this.inputLogic.getDbState();
-		
 		final int oldLastTasId = oldState.getLast_tas_id().intValue();
 		
 		/*
@@ -280,15 +277,15 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	/**
 	 * execute a search
 	 * @param query the query to use
-	 * @param order the order
+	 * @param sortOrder descending or ascending sorting order
 	 * @param offset the offset
 	 * @param limit the limit
 	 * @param minScore the min score
 	 * @param fieldsToRetrieve the fields to retrieve
 	 * @return
 	 */
-	public SearchHits search(final QueryBuilder query, final Pair<String, SortOrder> order, int offset, int limit, Float minScore, final Set<String> fieldsToRetrieve) {
-		return this.client.search(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query, null, order, offset, limit, minScore, fieldsToRetrieve);
+	public SearchHits search(final QueryBuilder query, final SortOrder sortOrder, int offset, int limit, Float minScore, final Set<String> fieldsToRetrieve) {
+		return this.client.search(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query, null, sortOrder, offset, limit, minScore, fieldsToRetrieve);
 	}
 
 	public long getDocumentCount(QueryBuilder query) {

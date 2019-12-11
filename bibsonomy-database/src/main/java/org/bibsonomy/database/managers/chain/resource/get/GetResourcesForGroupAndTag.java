@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.database.managers.chain.resource.get;
 
+import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.enums.Order;
 
 /**
  * Returns a list of resources for a given group and common tags of a group.
@@ -59,7 +61,7 @@ public class GetResourcesForGroupAndTag<R extends Resource, P extends ResourcePa
 				(param.getNumSimpleTags() > 0) &&
 				(param.getNumTransitiveConcepts() == 0) &&
 				!present(param.getHash()) &&
-				!present(param.getOrder()) &&
+				nullOrEqual(param.getOrder(), Order.NONE) &&
 				!present(param.getSearch()) &&
 				!present(param.getTitle()) &&
 				!present(param.getAuthor()));

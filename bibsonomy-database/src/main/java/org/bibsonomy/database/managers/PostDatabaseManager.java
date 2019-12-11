@@ -74,9 +74,11 @@ import org.bibsonomy.database.validation.DatabaseModelValidator;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.SortOrder;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.SortDirection;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.GroupUtils;
@@ -672,15 +674,15 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param firstYear
 	 * @param lastYear
 	 * @param negatedTags
-	 * @param order
+	 * @param sortOrder
 	 * @param limit
 	 * @param offset
 	 * @return a list of posts
 	 */
-	public List<Post<R>> getPostsByResourceSearch(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationName, final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final Order order, final int limit, final int offset) {
+	public List<Post<R>> getPostsByResourceSearch(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationName, final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final SortOrder sortOrder, final int limit, final int offset) {
 		if (present(this.resourceSearch)) {
 			if (present(searchType)){
-				return this.resourceSearch.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationName, allowedGroups, searchType, searchTerms, titleSearchTerms, authorSearchTerms, null, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
+				return this.resourceSearch.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationName, allowedGroups, searchType, searchTerms, titleSearchTerms, authorSearchTerms, null, tagIndex, year, firstYear, lastYear, negatedTags, sortOrder, limit, offset);
 			}
 			log.error("no search type or resource type is set");
 		}
@@ -960,7 +962,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	public List<Post<R>> getPostsForUser(final String loginUserName, final String requestedUserName, final SearchType searchType, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final PostAccess postAccess, final Set<Filter> filters, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		if(searchType==SearchType.FEDERATED){
-			return this.resourceSearch.getPosts(loginUserName, requestedUserName, null, null, null, searchType, null, null, null, null, null, null, null, null, null, null, limit, offset);
+			return this.resourceSearch.getPosts(loginUserName, requestedUserName, null, null, null, searchType, null, null, null, null, null, null, null, null, null, Order.DATE, limit, offset);
 		}
 
 		return this.getPostsForUser(loginUserName, requestedUserName, simHash, groupId, visibleGroupIDs, postAccess, filters, limit, offset, systemTags, session);
@@ -1085,8 +1087,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param limit
 	 * @param offset
 	 * @param session	a database session
-	 * @param loginUserName
-	 * @param systemTags
 	 * @return list of  posts
 	 */
 	public List<Post<R>> getPostsWithHistory(final String resourceHash, final String requestedUserName, final int limit, final int offset, final DBSession session) {
@@ -2092,7 +2092,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/**
 	 * returns a list of all metadata for the given post and MetaDataPluginKey.
 	 *
-	 * @param HashID
+	 * @param hashType
 	 * @param resourceHash
 	 * @param userName
 	 * @param metaDataPluginKey

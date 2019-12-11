@@ -39,6 +39,7 @@ import org.bibsonomy.database.systemstags.search.BibTexKeySystemTag;
 import org.bibsonomy.database.systemstags.search.UserSystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.webapp.command.BibtexkeyCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -88,7 +89,7 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
-			setList(command, resourceType, groupingEntity, groupingName, command.getRequestedTagsList(), null, null, command.getScope(), null, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
+			setList(command, resourceType, groupingEntity, groupingName, command.getRequestedTagsList(), null, null, command.getScope(), null, Order.NONE, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
 			postProcessAndSortList(command, resourceType);
 		}
 		

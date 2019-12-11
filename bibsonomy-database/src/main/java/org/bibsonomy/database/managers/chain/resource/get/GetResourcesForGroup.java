@@ -59,7 +59,7 @@ public class GetResourcesForGroup<R extends Resource, P extends ResourceParam<R>
 				!present(param.getRequestedUserName()) &&
 				!present(param.getTagIndex()) &&
 				!present(param.getHash()) &&
-				nullOrEqual(param.getOrder(), Order.ADDED) &&
+				nullOrEqual(param.getOrder(), Order.DATE) &&
 				!present(param.getSearch()) &&
 				!present(param.getAuthor()) &&
 				!present(param.getTitle()));

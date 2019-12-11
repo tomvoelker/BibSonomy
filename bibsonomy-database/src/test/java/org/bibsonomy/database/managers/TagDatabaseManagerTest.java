@@ -88,12 +88,12 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void testGetTagsViewableRelated() {
 		final List<TagIndex> tagIndex = new LinkedList<>();
 		tagIndex.add(new TagIndex("finetune", 1));
-		final List<Tag> relatedTags = tagDb.getRelatedTagsViewable(ConstantID.ALL_CONTENT_TYPE, "testuser1", 4, tagIndex, Order.ADDED, 10, 0, this.dbSession);
+		final List<Tag> relatedTags = tagDb.getRelatedTagsViewable(ConstantID.ALL_CONTENT_TYPE, "testuser1", 4, tagIndex, Order.DATE, 10, 0, this.dbSession);
 		assertEquals(1, relatedTags.size());
 		
 		tagIndex.add(new TagIndex("radio", 2));
 		
-		final List<Tag> relatedRelatedTag = tagDb.getRelatedTagsViewable(ConstantID.ALL_CONTENT_TYPE, "testuser1", 4, tagIndex, Order.ADDED, 10, 0, this.dbSession);
+		final List<Tag> relatedRelatedTag = tagDb.getRelatedTagsViewable(ConstantID.ALL_CONTENT_TYPE, "testuser1", 4, tagIndex, Order.DATE, 10, 0, this.dbSession);
 		assertEquals(0, relatedRelatedTag.size());
 	}
 	

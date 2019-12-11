@@ -53,6 +53,6 @@ public class GetBibtexByKey extends ResourceChainElement<BibTex, BibTexParam> {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return (present(param.getBibtexKey()) && (param.getNumSimpleConcepts() == 0) && (param.getNumTransitiveConcepts() == 0) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED, Order.FOLKRANK));
+		return (present(param.getBibtexKey()) && (param.getNumSimpleConcepts() == 0) && (param.getNumTransitiveConcepts() == 0) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.NONE, Order.DATE, Order.FOLKRANK));
 	}
 }

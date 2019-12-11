@@ -107,7 +107,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
-			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, searchType, null, null, command.getStartDate(), command.getEndDate(), listCommand.getEntriesPerPage());
+			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, searchType, null, Order.NONE, command.getStartDate(), command.getEndDate(), listCommand.getEntriesPerPage());
 			
 			this.postProcessAndSortList(command, resourceType);
 			totalNumPosts += listCommand.getTotalCount();
@@ -121,7 +121,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 			}
 			this.endTiming();
 			if (hasTags) {
-				this.setRelatedTags(command, BibTex.class, groupingEntity, null, null, requTags, command.getStartDate(), command.getEndDate(), Order.ADDED, 0, 20, null);
+				this.setRelatedTags(command, BibTex.class, groupingEntity, null, null, requTags, command.getStartDate(), command.getEndDate(), Order.DATE, 0, 20, null);
 				command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);
 				return Views.AUTHORTAGPAGE;
 			}

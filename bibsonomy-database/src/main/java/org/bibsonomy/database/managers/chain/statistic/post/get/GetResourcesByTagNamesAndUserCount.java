@@ -65,7 +65,7 @@ public class GetResourcesByTagNamesAndUserCount extends StatisticChainElement {
 		   		param.getNumSimpleConcepts() == 0 && 
 		   		param.getNumSimpleTags() > 0 && 
 		   		param.getNumTransitiveConcepts() == 0 && 
-		   		nullOrEqual(param.getOrder(), Order.ADDED) && 
+		   		nullOrEqual(param.getOrder(), Order.NONE, Order.DATE) &&
 		   		!present(param.getSearch());
 	}
 }

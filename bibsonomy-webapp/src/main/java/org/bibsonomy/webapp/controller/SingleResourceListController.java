@@ -87,8 +87,8 @@ public abstract class SingleResourceListController extends ResourceListControlle
 	 * returns the number of posts tagged with all of requTags by groupingName. 
 	 */
 	protected int getPostCountForSidebar(final GroupingEntity groupingEntity, final String groupingName, final List<String> requTags) {
-		return this.logic.getPostStatistics(BibTex.class, groupingEntity, groupingName, requTags, null, null, null, Order.ADDED, null, null, 0, 999).getCount()
-				+ this.logic.getPostStatistics(Bookmark.class, groupingEntity, groupingName, requTags, null, null, null, Order.ADDED, null, null, 0, 999).getCount();
+		return this.logic.getPostStatistics(BibTex.class, groupingEntity, groupingName, requTags, null, null, null, Order.DATE, null, null, 0, 999).getCount()
+				+ this.logic.getPostStatistics(Bookmark.class, groupingEntity, groupingName, requTags, null, null, null, Order.DATE, null, null, 0, 999).getCount();
 	}
 
 }

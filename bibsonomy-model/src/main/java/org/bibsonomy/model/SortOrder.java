@@ -24,36 +24,40 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.model.enums;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+package org.bibsonomy.model;
 
-import org.junit.Test;
+import org.bibsonomy.model.enums.SortDirection;
+import org.bibsonomy.model.enums.Order;
 
-/**
- * @author Christian Schenk
- */
-public class OrderTest {
+public class SortOrder {
 
-	/**
-	 * tests getOrderByName
-	 */
-	@Test
-	public void getOrderByName() {
-		assertEquals(Order.DATE, Order.getOrderByName("added"));
-		assertEquals(Order.DATE, Order.getOrderByName("AdDeD"));
-		assertEquals(Order.POPULAR, Order.getOrderByName("popular"));
-		assertEquals(Order.POPULAR, Order.getOrderByName("PoPuLaR"));
-		assertEquals(Order.FOLKRANK, Order.getOrderByName("folkrank"));
-		assertEquals(Order.FOLKRANK, Order.getOrderByName("FoLkRaNk"));
+	private Order order;
+	private SortDirection direction;
 
-		for (final String test : new String[] { "", " ", null, "test" }) {
-			try {
-				Order.getOrderByName(test);
-				fail("Should throw exception");
-			} catch (IllegalArgumentException ignore) {
-			}
-		}
+	public SortOrder() {
+		this.order = Order.DATE;
+		this.direction = SortDirection.DESC;
+	}
+
+	public SortOrder(Order order, SortDirection direction) {
+		this.order = order;
+		this.direction = direction;
+	}
+
+	public Order getOrder() {
+		return order;
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
+	}
+
+	public SortDirection getDirection() {
+		return direction;
+	}
+
+	public void setDirection(SortDirection direction) {
+		this.direction = direction;
 	}
 }

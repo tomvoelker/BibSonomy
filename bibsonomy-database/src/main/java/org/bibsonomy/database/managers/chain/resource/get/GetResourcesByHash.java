@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.database.managers.chain.resource.get;
 
+import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
@@ -38,6 +39,7 @@ import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.enums.Order;
 
 /**
  * Returns a list of resources for a given hash.
@@ -54,7 +56,7 @@ public class GetResourcesByHash<R extends Resource, P extends ResourceParam<R>> 
 				param.getGrouping() == GroupingEntity.ALL &&
 				!present(param.getRequestedUserName()) &&
 				!present(param.getTagIndex()) &&
-				!present(param.getOrder()) &&
+				nullOrEqual(param.getOrder(), Order.NONE) &&
 				!present(param.getSearch()));
 	}
 

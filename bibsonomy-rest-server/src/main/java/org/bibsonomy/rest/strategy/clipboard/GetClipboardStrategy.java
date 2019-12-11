@@ -33,6 +33,7 @@ import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.users.GetUserPostsStrategy;
 
@@ -52,7 +53,7 @@ public class GetClipboardStrategy extends GetUserPostsStrategy {
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		return this.getLogic().getPosts(BibTex.class, GroupingEntity.CLIPBOARD, this.userName, null, null, null, SearchType.LOCAL, null, null, null, null, this.getView().getStartValue(), this.getView().getEndValue());
+		return this.getLogic().getPosts(BibTex.class, GroupingEntity.CLIPBOARD, this.userName, null, null, null, SearchType.LOCAL, null, Order.NONE, null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 
 }

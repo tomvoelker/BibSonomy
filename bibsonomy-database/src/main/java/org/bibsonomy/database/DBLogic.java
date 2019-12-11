@@ -133,9 +133,11 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Review;
+import org.bibsonomy.model.SortOrder;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
+import org.bibsonomy.model.enums.SortDirection;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
@@ -703,9 +705,24 @@ public class DBLogic implements LogicInterface {
 	 * java.util.List, java.lang.String, org.bibsonomy.model.enums.Order,
 	 * org.bibsonomy.common.enums.FilterEntity, int, int, java.lang.String)
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+		SortOrder sortOrder = new SortOrder(order, SortDirection.DESC);
+		return this.getPosts(resourceType, grouping, groupingName, tags, hash, search, searchType, filters, sortOrder, startDate, endDate, start, end);
+	}
+
+		/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class,
+	 * org.bibsonomy.common.enums.GroupingEntity, java.lang.String,
+	 * java.util.List, java.lang.String, org.bibsonomy.model.SortOrder,
+	 * org.bibsonomy.common.enums.FilterEntity, int, int, java.lang.String)
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final SortOrder sortOrder, final Date startDate, final Date endDate, final int start, final int end) {
 		// check allowed start-/end-values
 		this.permissionDBManager.checkStartEnd(this.loginUser, grouping, start, end, "posts");
 
@@ -737,9 +754,11 @@ public class DBLogic implements LogicInterface {
 				this.permissionDBManager.ensureIsAdminOrSelfOrHasGroupRoleOrHigher(this.loginUser, groupingName, GroupRole.USER);
 			}
 			if (resourceType == BibTex.class) {
-				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
-				// sets the search type to ealasticSearch
+				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, grouping, groupingName, tags, hash, sortOrder.getOrder(), start, end, startDate, endDate, search, filters, this.loginUser);
+				// sets the search type to elasticSearch
 				param.setSearchType(searchType);
+				// sets the sort order to elasticSearch
+				param.setSortOrder(sortOrder);
 
 				// check permissions for displaying links to documents
 				final boolean allowedToAccessUsersOrGroupDocuments = this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, session);
@@ -761,16 +780,18 @@ public class DBLogic implements LogicInterface {
 			}
 
 			if (resourceType == Bookmark.class) {
-				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, resourceType, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
-				// sets the search type to ealasticSearch
+				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, resourceType, grouping, groupingName, tags, hash, sortOrder.getOrder(), start, end, startDate, endDate, search, filters, this.loginUser);
+				// sets the search type to elasticSearch
 				param.setSearchType(searchType);
+				// sets the sort order to elasticSearch
+				param.setSortOrder(sortOrder);
 				final List<Post<T>> bookmarks = (List) this.bookmarkDBManager.getPosts(param, session);
 				SystemTagsExtractor.handleHiddenSystemTags(bookmarks, this.loginUser.getName());
 				return bookmarks;
 			}
 
 			if (resourceType == GoldStandardPublication.class) {
-				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
+				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, grouping, groupingName, tags, hash, sortOrder.getOrder(), start, end, startDate, endDate, search, filters, this.loginUser);
 				// sets the search type to ealasticSearch
 				param.setSearchType(searchType);
 
@@ -778,7 +799,7 @@ public class DBLogic implements LogicInterface {
 			}
 
 			if (resourceType == GoldStandardBookmark.class) {
-				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, resourceType, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
+				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, resourceType, grouping, groupingName, tags, hash, sortOrder.getOrder(), start, end, startDate, endDate, search, filters, this.loginUser);
 				// sets the search type to ealasticSearch
 				param.setSearchType(searchType);
 
@@ -2379,8 +2400,7 @@ public class DBLogic implements LogicInterface {
 	 *         in both queries getConceptForUser and getGlobalConceptByName
 	 *         the case of parameter conceptName is ignored
 	 *
-	 * @see org.bibsonomy.model.logic.LogicInterface#getConceptDetails(java.lang.
-	 *      String, org.bibsonomy.common.enums.GroupingEntity, java.lang.String)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getConceptDetails(java.lang.String, org.bibsonomy.common.enums.GroupingEntity, java.lang.String)
 	 */
 	@Override
 	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {

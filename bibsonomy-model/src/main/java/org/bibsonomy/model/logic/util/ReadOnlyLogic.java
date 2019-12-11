@@ -67,6 +67,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.SortOrder;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
@@ -110,6 +111,14 @@ public class ReadOnlyLogic implements LogicInterface {
 	@Override
 	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end) {
 		return this.logicinterface.getPosts(resourceType, grouping, groupingName, tags, hash, search, searchType, filters, order, startDate, endDate, start, end);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.SearchType, java.util.Set, org.bibsonomy.model.SortOrder, java.util.Date, java.util.Date, int, int)
+	 */
+	@Override
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, Set<Filter> filters, SortOrder sortOrder, Date startDate, Date endDate, int start, int end) {
+		return this.logicinterface.getPosts(resourceType, grouping, groupingName, tags, hash, search, searchType, filters, sortOrder, startDate, endDate, start, end);
 	}
 
 	/* (non-Javadoc)

@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.database.managers.chain.statistic.post.get;
 
+import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -36,6 +37,7 @@ import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.statistics.Statistics;
 
 /**
@@ -65,7 +67,7 @@ public class GetResourcesForHashCount extends StatisticChainElement {
 				param.getGrouping() == GroupingEntity.ALL &&
 				!present(param.getRequestedUserName()) &&
 				!present(param.getTagIndex()) &&
-				!present(param.getOrder()) &&
+				nullOrEqual(param.getOrder(), Order.NONE) &&
 				!present(param.getSearch()));
 	}
 }

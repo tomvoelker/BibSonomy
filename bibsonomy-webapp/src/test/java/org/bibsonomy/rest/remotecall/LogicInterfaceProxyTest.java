@@ -619,7 +619,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void getPostsTestBookmarkByTag() {
-		this.getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, SearchType.LOCAL,null,  null /* must be null because order is inferred and not transmitted */, null, null, 7, 1264);
+		this.getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, SearchType.LOCAL,null,  Order.NONE, null, null, 7, 1264);
 	}
 	
 	/**
@@ -627,7 +627,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByGroupAndTag() {
-		this.getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null,SearchType.LOCAL, null, null, null, null, 0, 1);
+		this.getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null,SearchType.LOCAL, null, Order.NONE, null, null, 0, 1);
 	}
 	
 	/**
@@ -635,7 +635,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByTagWithUmlaut() {
-		this.getPosts(BibTex.class, GroupingEntity.ALL, null, Arrays.asList("blüb"), null, null,SearchType.LOCAL, null, null, null, null, 0, 1);
+		this.getPosts(BibTex.class, GroupingEntity.ALL, null, Arrays.asList("blüb"), null, null,SearchType.LOCAL, null, Order.NONE, null, null, 0, 1);
 	}
 	
 	/**
@@ -643,7 +643,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByUserAndHash() {
-		this.getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null,SearchType.LOCAL, null, null, null, null, 0, 5);
+		this.getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null,SearchType.LOCAL, null, Order.NONE, null, null, 0, 5);
 	}
 	
 	@Test

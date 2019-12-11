@@ -64,7 +64,7 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		// FIXME: merge sortPage and order, see SearchPageController
 		final String pageSort = command.getSortPage();
 		if ("date".equals(pageSort)) {
-			command.setOrder(Order.ADDED);
+			command.setOrder(Order.DATE);
 		} else if ("folkrank".equals(pageSort)) {
 			command.setOrder(Order.FOLKRANK);
 		}

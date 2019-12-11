@@ -57,7 +57,7 @@ public class GetResourcesByConceptForUser<R extends Resource, P extends Resource
 				(param.getNumSimpleTags() == 0) &&
 				(param.getNumTransitiveConcepts() == 0) &&
 				!present(param.getHash()) &&
-				nullOrEqual(param.getOrder(), Order.ADDED) &&
+				nullOrEqual(param.getOrder(), Order.NONE, Order.DATE) &&
 				!present(param.getSearch()));
 	}
 

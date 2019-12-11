@@ -283,6 +283,8 @@ public abstract class GenericParam {
 
 		this.relationTags = new ArrayList<String>();
 		this.relationTagIndex = new ArrayList<TagIndex>();
+
+		this.order = Order.DATE;
 	}
 
 	/**

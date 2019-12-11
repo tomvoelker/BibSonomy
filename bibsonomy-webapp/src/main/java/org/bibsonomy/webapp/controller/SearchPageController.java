@@ -36,7 +36,9 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.SortOrder;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.SortDirection;
 import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.webapp.command.SearchViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -69,15 +71,16 @@ public class SearchPageController extends SingleResourceListController implement
 		try {
 			log.debug(this.getClass().getSimpleName());
 			final String format = command.getFormat();
-			
-			// FIXME: this is a hack because we have the property sortPage and order
-			final String pageOrder = command.getSortPage();
-			if ("date".equals(pageOrder)) {
-				command.setOrder(Order.ADDED);
-			} else if ("relevance".equals(pageOrder)) {
+
+			// set order
+			if (!command.getSortPage().equals("relevance")) {
+				command.setOrder(Order.getOrderByName(command.getSortPage()));
+			} else {
 				command.setOrder(Order.RANK);
 			}
-			
+			// set sorting order and direction
+			command.setSortOrder(new SortOrder(command.getOrder(), SortDirection.getByName(command.getSortPageOrder())));
+
 			this.startTiming(format);
 			String search = command.getRequestedSearch();
 			if (!present(search)) {
@@ -125,9 +128,10 @@ public class SearchPageController extends SingleResourceListController implement
 			
 			// no search given, but a grouping, reset the order to added
 			if (!present(search)){
-				command.setOrder(Order.ADDED);
+				command.setOrder(Order.DATE);
+				command.setSortOrder(new SortOrder(command.getOrder(), SortDirection.getByName(command.getSortPageOrder())));
 			}
-			
+
 			// if grouping entity set to GroupingEntity.ALL, database only allows 1000 tags maximum
 			if (groupingEntity.equals(GroupingEntity.ALL)) {
 				maximumTags = 1000;
@@ -139,8 +143,9 @@ public class SearchPageController extends SingleResourceListController implement
 			// retrieve and set the requested resource lists
 			for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 	
-				this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, searchType, null, command.getOrder(), command.getStartDate(), command.getEndDate(), command
-						.getListCommand(resourceType).getEntriesPerPage());
+				this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, searchType,
+								null, command.getSortOrder(), command.getStartDate(), command.getEndDate(),
+								command.getListCommand(resourceType).getEntriesPerPage());
 	
 				this.postProcessAndSortList(command, resourceType);
 			}

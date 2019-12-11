@@ -99,7 +99,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), filter, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), filter, Order.NONE, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
 
 			// retrieve resource counts, if no tags are given
@@ -115,7 +115,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 				 * handle the "relevant for group" pages
 				 */
 				command.setPageTitle("relevant for :: " + groupingName); // TODO: i18n
-				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), Order.ADDED, 0, 20, null);
+				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), Order.DATE, 0, 20, null);
 				this.endTiming();
 				/*
 				 * Remove "relevant:for" from tags such that only the remaining
@@ -145,7 +145,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			command.setGroup(group);
 
 			if (requTags.size() > 0) {
-				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), Order.ADDED, 0, 20, null);
+				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), Order.DATE, 0, 20, null);
 			}
 
 			this.endTiming();

@@ -40,6 +40,7 @@ import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
@@ -81,7 +82,7 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 		if (present(action)) {
 			if (GET_SENT_REPOSITORIES.equals(action)) {
 				// TODO: adapt limit to get all posts
-				final List<Post<BibTex>> posts = logic.getPosts(BibTex.class, GroupingEntity.USER, command.getContext().getLoginUser().getName(), null, command.getInterhash(), null, SearchType.LOCAL, Sets.<Filter>asSet(FilterEntity.POSTS_WITH_REPOSITORY), null, null, null, 0, this.maxQuerySize);
+				final List<Post<BibTex>> posts = logic.getPosts(BibTex.class, GroupingEntity.USER, command.getContext().getLoginUser().getName(), null, command.getInterhash(), null, SearchType.LOCAL, Sets.<Filter>asSet(FilterEntity.POSTS_WITH_REPOSITORY), Order.NONE, null, null, 0, this.maxQuerySize);
 
 				// TODO: implement this
 				/*

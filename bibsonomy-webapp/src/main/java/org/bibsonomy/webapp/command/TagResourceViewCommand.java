@@ -26,13 +26,14 @@
  */
 package org.bibsonomy.webapp.command;
 
+import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.model.SortOrder;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.enums.Order;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.Order;
 
 /**
  * Bean for Tag Sites
@@ -59,7 +60,10 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	private int numberOfNormalTags;
 	
 	/** the specified order */
-	private Order order = Order.ADDED;
+	private Order order;
+
+	/** the specified sort order */
+	private SortOrder sortOrder = new SortOrder();
 		
 	/** bean for related tags */
 	private RelatedTagCommand relatedTagCommand = new RelatedTagCommand();
@@ -151,6 +155,21 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	 */
 	public void setOrder(final Order order) {
 		this.order = order;
+	}
+
+	/**
+	 * Ascending or descending sort order
+	 * @return sortOrder
+	 */
+	public SortOrder getSortOrder() {
+		return this.sortOrder;
+	}
+
+	/**
+	 * @param sortOrder	set the ascending or descending sort order
+	 */
+	public void setSortOrder(final SortOrder sortOrder) {
+		this.sortOrder = sortOrder;
 	}
 
 	/**

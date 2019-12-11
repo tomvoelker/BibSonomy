@@ -88,7 +88,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 			throw new ObjectNotFoundException(command.getRequestedHash());
 		}
 		
-		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, command.getRequestedHash(), null, null, null, null, null, null, 0, 100);
+		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, command.getRequestedHash(), null, null, null, Order.NONE, null, null, 0, 100);
 		
 		if (!present(posts)) {
 			throw new ObjectNotFoundException(command.getRequestedHash());

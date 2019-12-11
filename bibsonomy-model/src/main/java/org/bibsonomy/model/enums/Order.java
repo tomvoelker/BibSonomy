@@ -35,23 +35,44 @@ package org.bibsonomy.model.enums;
  * @author Jens Illig
  */
 public enum Order {
+
+	NONE,
+
 	/** for ordering by adding time (desc) */
-	ADDED,
+	DATE,
+
 	/** for ordering by popularity (desc) */
 	POPULAR,
-	/**
-	 * for ordering by rank (e. g. full text search by score) 
-	 */
+
+	/** for ordering by rank (e. g. full text search by score) */
 	RANK,
+
 	/** for ordering by folkrank (desc) */
-	FOLKRANK,	
+	FOLKRANK,
+
 	/** for ordering tags by frequency (desc) */
-	FREQUENCY,	
-	/**
-	 * Some items can be ordered alphabetically ...
-	 * (in particular groups)
-	 */
-	ALPH;
+	FREQUENCY,
+
+	/** Some items can be ordered alphabetically ... (in particular groups) */
+	ALPH,
+
+	/**  for ordering by title (desc) */
+	TITLE,
+
+	/** for ordering by author names (desc) */
+	AUTHOR,
+
+	/** for ordering by publication year (desc) */
+	YEAR,
+
+	/** for ordering by publication month (desc) */
+	MONTH,
+
+	/** for ordering by publication day (desc) */
+	DAY,
+
+	/** for ordering by publication date (desc) */
+	PUBDATE;
 
 	/**
 	 * Retrieve Order by name
@@ -66,7 +87,7 @@ public enum Order {
 		} catch (NullPointerException np) {
 			throw new IllegalArgumentException("No order specified!");
 		} catch (IllegalArgumentException ia) {
-			throw new IllegalArgumentException("Requested order not supported. Possible values are 'added', 'popular', 'alph', 'frequency' or 'folkrank'");
+			throw new IllegalArgumentException("Requested order not supported.");
 		}
 	}
 }

@@ -40,6 +40,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResultList;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
@@ -85,9 +86,9 @@ public class ElasticsearchPublicationSearchITCase extends AbstractEsIndexTest {
 	@Test
 	public void testCaseInsensitiveTagFiltering() {
 		final String tag = "TEST";
-		final ResultList<Post<BibTex>> postsUpperCase = PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, null, null, null, null, Collections.singletonList(tag), null, null, null, null, null, 10, 0);
+		final ResultList<Post<BibTex>> postsUpperCase = PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, null, null, null, null, Collections.singletonList(tag), null, null, null, null, Order.NONE, 10, 0);
 
-		final ResultList<Post<BibTex>> postsLowerCase = PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, null, null, null, null, Collections.singletonList(tag.toLowerCase()), null, null, null, null, null, 10, 0);
+		final ResultList<Post<BibTex>> postsLowerCase = PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, null, null, null, null, Collections.singletonList(tag.toLowerCase()), null, null, null, null, Order.NONE, 10, 0);
 
 		assertThat(postsUpperCase.getTotalCount(), is(postsLowerCase.getTotalCount()));
 	}

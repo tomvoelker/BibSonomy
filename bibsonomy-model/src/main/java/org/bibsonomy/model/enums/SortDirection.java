@@ -26,34 +26,25 @@
  */
 package org.bibsonomy.model.enums;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+public enum SortDirection {
 
-import org.junit.Test;
-
-/**
- * @author Christian Schenk
- */
-public class OrderTest {
+	ASC,
+	DESC;
 
 	/**
-	 * tests getOrderByName
+	 * Retrieve SortDirection by name
+	 *
+	 * @param name "asc" or "desc"
+	 *
+	 * @return the corresponding SortDirection enum
 	 */
-	@Test
-	public void getOrderByName() {
-		assertEquals(Order.DATE, Order.getOrderByName("added"));
-		assertEquals(Order.DATE, Order.getOrderByName("AdDeD"));
-		assertEquals(Order.POPULAR, Order.getOrderByName("popular"));
-		assertEquals(Order.POPULAR, Order.getOrderByName("PoPuLaR"));
-		assertEquals(Order.FOLKRANK, Order.getOrderByName("folkrank"));
-		assertEquals(Order.FOLKRANK, Order.getOrderByName("FoLkRaNk"));
-
-		for (final String test : new String[] { "", " ", null, "test" }) {
-			try {
-				Order.getOrderByName(test);
-				fail("Should throw exception");
-			} catch (IllegalArgumentException ignore) {
-			}
+	public static SortDirection getByName(String name) {
+		try {
+			return SortDirection.valueOf(name.toUpperCase());
+		} catch (NullPointerException np) {
+			throw new IllegalArgumentException("No sort direction specified!");
+		} catch (IllegalArgumentException ia) {
+			throw new IllegalArgumentException("Requested sort direction not supported.");
 		}
 	}
 }

@@ -54,6 +54,9 @@ public final class ESConstants {
 	/** settings of each created index */
 	public static final String SETTINGS;
 
+	/** fielddata */
+	public static final String FIELDDATA = "fielddata";
+
 	/** the registered lowercase normalizer */
 	public static final String LOWERCASE_NORMALIZER = "lowercase_normalizer";
 

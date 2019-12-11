@@ -28,11 +28,14 @@ package org.bibsonomy.search.es.client;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import com.tdunning.math.stats.Sort;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
+import org.bibsonomy.search.es.util.SortingUtils;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.action.DocWriteResponse;
@@ -272,7 +275,7 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public SearchHits search(String indexName, String type, QueryBuilder queryBuilder, HighlightBuilder highlightBuilder, Pair<String, SortOrder> order, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve) {
+	public SearchHits search(String indexName, String type, QueryBuilder queryBuilder, HighlightBuilder highlightBuilder, org.bibsonomy.model.SortOrder sortOrder, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve) {
 		return this.secureCall(() -> {
 			final SearchRequest searchRequest = new SearchRequest();
 			searchRequest.searchType(SearchType.DEFAULT);
@@ -294,8 +297,12 @@ public class ElasticsearchRESTClient implements ESClient {
 				searchSourceBuilder.fetchSource(fieldsToRetrieve.iterator().next(), null);
 			}
 
-			if (present(order)) {
-				searchSourceBuilder.sort(order.getFirst(), order.getSecond());
+			if (present(sortOrder)) {
+				List<Pair<String, SortOrder>> sortParameters = type.equals("bookmark") ?
+								SortingUtils.buildBookmarkSortParameters(sortOrder) : SortingUtils.buildSortParameters(sortOrder);
+				for (Pair<String, SortOrder> param : sortParameters) {
+					searchSourceBuilder.sort(param.getFirst(), param.getSecond());
+				}
 			}
 			searchRequest.source(searchSourceBuilder);
 			final SearchResponse search = this.client.search(searchRequest, this.buildRequestOptions());

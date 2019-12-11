@@ -29,6 +29,7 @@ package org.bibsonomy.database.params;
 import org.bibsonomy.common.enums.RatingAverage;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.SortOrder;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /** 
@@ -45,6 +46,7 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 	protected T resource;
 	protected GoldStandardRelation relation;
 	protected ResourcePersonRelation personRelation;
+	protected SortOrder sortOrder;
 	
 
 	/**
@@ -96,4 +98,11 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 		this.personRelation = personRelation;
 	}
 
+	public SortOrder getSortOrder() {
+		return sortOrder;
+	}
+
+	public void setSortOrder(SortOrder sortOrder) {
+		this.sortOrder = sortOrder;
+	}
 }

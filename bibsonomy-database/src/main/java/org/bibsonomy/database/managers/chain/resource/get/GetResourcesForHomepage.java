@@ -53,7 +53,7 @@ public class GetResourcesForHomepage<R extends Resource, P extends ResourceParam
 		return ((param.getGrouping() == GroupingEntity.ALL) &&
 				!present(param.getTagIndex()) &&
 				!(present(param.getHash())) &&
-				nullOrEqual(param.getOrder(), Order.ADDED) &&
+				nullOrEqual(param.getOrder(), Order.NONE, Order.DATE) &&
 				!present(param.getTitle()) &&
 				!present(param.getAuthor()) &&
 				!present(param.getSearch()));

@@ -67,6 +67,6 @@ public class GetResourcesForUserCount extends StatisticChainElement {
 				!presentValidGroupId(param.getGroupId()) && 
 				!present(param.getTagIndex()) && 
 				!present(param.getHash()) && 
-				nullOrEqual(param.getOrder(), Order.ADDED);
+				nullOrEqual(param.getOrder(), Order.NONE, Order.DATE);
 	}
 }

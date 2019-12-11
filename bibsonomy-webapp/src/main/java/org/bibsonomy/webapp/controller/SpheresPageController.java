@@ -146,7 +146,7 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
-			this.setList(command, resourceType, GroupingEntity.FRIEND, loginUser.getName(), queryTags, null, null, null, Order.ADDED, command.getStartDate(), command.getEndDate(), entriesPerPage);
+			this.setList(command, resourceType, GroupingEntity.FRIEND, loginUser.getName(), queryTags, null, null, null, Order.DATE, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
 		}
 		
@@ -154,7 +154,7 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 		this.setTags(command, Resource.class, GroupingEntity.FRIEND, loginUser.getName(), null, null, queryTags, null, Integer.MAX_VALUE, null);
 
 		if (present(requestedUserTags)) {
-			this.setRelatedTags(command, Resource.class, GroupingEntity.FRIEND, loginUser.getName(), null, queryTags, command.getStartDate(), command.getEndDate(), Order.ADDED, 0, 20, null);
+			this.setRelatedTags(command, Resource.class, GroupingEntity.FRIEND, loginUser.getName(), null, queryTags, command.getStartDate(), command.getEndDate(), Order.DATE, 0, 20, null);
 		}
 		
 		//Set the Users in the Sphere

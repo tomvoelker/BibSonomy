@@ -45,7 +45,7 @@ public class StringToEnumConverterTest {
 	public void testUpperCase() {
 		final Converter<String, Order> orderConverter = createConverter(Order.class);
 		
-		assertEquals(Order.ADDED, orderConverter.convert("ADDED"));
+		assertEquals(Order.DATE, orderConverter.convert("ADDED"));
 		assertEquals(Order.FOLKRANK, orderConverter.convert("FOLKRANK"));
 		
 		final Converter<String, UserRelation> userRelationConverter = createConverter(UserRelation.class);
@@ -59,7 +59,7 @@ public class StringToEnumConverterTest {
 	public void testLowerCase() {
 		final Converter<String, Order> orderConverter = createConverter(Order.class);
 		
-		assertEquals(Order.ADDED, orderConverter.convert("added"));
+		assertEquals(Order.DATE, orderConverter.convert("added"));
 		assertEquals(Order.FOLKRANK, orderConverter.convert("folkrank"));
 		
 		final Converter<String, UserRelation> userRelationConverter = createConverter(UserRelation.class);

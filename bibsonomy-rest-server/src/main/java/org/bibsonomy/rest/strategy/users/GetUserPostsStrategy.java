@@ -33,6 +33,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
@@ -72,7 +73,7 @@ public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
 		// TODO: support other search types
-		return this.getLogic().getPosts(this.resourceType, GroupingEntity.USER, this.userName, this.tags, null, this.search, SearchType.LOCAL, null, null, null, null, this.getView().getStartValue(),
+		return this.getLogic().getPosts(this.resourceType, GroupingEntity.USER, this.userName, this.tags, null, this.search, SearchType.LOCAL, null, Order.NONE, null, null, this.getView().getStartValue(),
 				this.getView().getEndValue());
 	}
 

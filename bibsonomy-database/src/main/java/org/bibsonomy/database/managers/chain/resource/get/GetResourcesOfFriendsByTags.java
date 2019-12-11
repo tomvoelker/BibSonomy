@@ -68,7 +68,7 @@ public class GetResourcesOfFriendsByTags<R extends Resource, P extends ResourceP
 				( !present(param.getRelationTags()) || 
 					((param.getRelationTags().size()==1) && (NetworkRelationSystemTag.BibSonomyFriendSystemTag.equals(param.getRelationTags().get(0))))
 				) &&
-				nullOrEqual(param.getOrder(), Order.ADDED) &&
+				nullOrEqual(param.getOrder(), Order.NONE, Order.DATE) &&
 				!present(param.getSearch()) && 
 				!present(param.getAuthor()) &&
 				!present(param.getTitle()));

@@ -58,7 +58,7 @@ public class GetResourcesViewable<R extends Resource, P extends ResourceParam<R>
 				(param.getGrouping() == GroupingEntity.VIEWABLE) &&
 				present(param.getRequestedGroupName()) &&
 				!present(param.getHash()) &&
-				nullOrEqual(param.getOrder(), Order.ADDED) &&
+				nullOrEqual(param.getOrder(), Order.NONE, Order.DATE) &&
 				!present(param.getSearch())) && 
 				!present(param.getAuthor()) &&
 				!present(param.getTitle());

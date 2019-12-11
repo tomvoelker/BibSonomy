@@ -69,7 +69,7 @@ public class ElasticsearchManagerITCase extends AbstractEsIndexTest {
 	@Test
 	public void testUpdateIndexWithSpammer() {
 		final String userToFlag = "testuser3";
-		final ResultList<Post<BibTex>> postsBefore = publicationSearch.getPosts(userToFlag, userToFlag, null, null, Collections.<String>emptyList(), null, "test", null, null, null, null, null, null, null, null, Order.ADDED, 10, 0);
+		final ResultList<Post<BibTex>> postsBefore = publicationSearch.getPosts(userToFlag, userToFlag, null, null, Collections.<String>emptyList(), null, "test", null, null, null, null, null, null, null, null, Order.DATE, 10, 0);
 		assertEquals(1, postsBefore.size());
 
 		final User user = new User(userToFlag);
@@ -78,7 +78,7 @@ public class ElasticsearchManagerITCase extends AbstractEsIndexTest {
 		adminDatabaseManager.flagSpammer(user, "admin", this.dbSession);
 		publicationManager.updateIndex();
 		
-		final ResultList<Post<BibTex>> posts = publicationSearch.getPosts(userToFlag, userToFlag, null, null, Collections.<String>emptyList(), null, null, null, null, null, null, null, null, null, null, Order.ADDED, 10, 0);
+		final ResultList<Post<BibTex>> posts = publicationSearch.getPosts(userToFlag, userToFlag, null, null, Collections.<String>emptyList(), null, null, null, null, null, null, null, null, null, null, Order.DATE, 10, 0);
 		assertEquals(0, posts.size());
 		
 		user.setSpammer(Boolean.FALSE);
@@ -88,7 +88,7 @@ public class ElasticsearchManagerITCase extends AbstractEsIndexTest {
 		
 		publicationManager.updateIndex();
 		
-		final ResultList<Post<BibTex>> readded = publicationSearch.getPosts(userToFlag, userToFlag, null, null, Collections.<String>emptyList(), null, null, null, null, null, null, null, null, null, null, Order.ADDED, 10, 0);
+		final ResultList<Post<BibTex>> readded = publicationSearch.getPosts(userToFlag, userToFlag, null, null, Collections.<String>emptyList(), null, null, null, null, null, null, null, null, null, null, Order.DATE, 10, 0);
 		assertEquals(postsBefore.size(), readded.size());
 	}
 }
