@@ -327,11 +327,10 @@
 		WHERE dnb_person_id = #otherDnbId#
 	</update>
 	
-	<select id="getPhdAdvisorRec" resultMap="PersonCommon.lazyLoadingPerson" parameterClass="string">
-		SELECT <include refid="commonPersonColumns"/>
-		FROM person, phd_advisor_recommendation as adv
-		WHERE adv.doctor_id = #personId#
-		AND person.person_id = advisor_id 
+	<select id="getPhdAdvisorRec" resultMap="PersonCommon.phdRecommendation" parameterClass="string">
+		SELECT doctor_id, advisor_id, confidence, rank
+		FROM phd_advisor_recommendation AS adv 
+	    WHERE adv.doctor_id = #personId#
 		order by confidence desc
 	</select>
 </sqlMap>

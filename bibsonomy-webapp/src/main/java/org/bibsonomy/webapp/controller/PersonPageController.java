@@ -588,7 +588,8 @@ public class PersonPageController extends SingleResourceListController implement
 			return Views.ERROR404;
 		}
 		command.setPerson(person);
-
+		command.setPhdAdvisorRecForPerson(this.logic.getPhdAdvisorRecForPerson(person.getPersonId()));
+		
 		if (DisambiguationPageController.ACTION_KEY_CREATE_AND_LINK_PERSON.equals(this.requestLogic.getLastAction()) || DisambiguationPageController.ACTION_KEY_LINK_PERSON.equals(this.requestLogic.getLastAction())) {
 			command.setOkHintKey(this.requestLogic.getLastAction());
 			this.requestLogic.setLastAction(null);
