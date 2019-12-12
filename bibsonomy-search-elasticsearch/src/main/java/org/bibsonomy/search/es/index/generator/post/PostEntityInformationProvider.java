@@ -58,6 +58,7 @@ public class PostEntityInformationProvider<R extends Resource> extends EntityInf
 					ESConstants.Fields.Resource.TITLE,
 					ESConstants.Fields.Bookmark.URL,
 					ESConstants.Fields.Publication.ALL_AUTHORS,
+					ESConstants.Fields.Publication.AUTHOR_INDEX,
 					ESConstants.Fields.Publication.MISC_FIELDS_VALUES,
 					ESConstants.Fields.Publication.SCHOOL,
 					ESConstants.Fields.Publication.YEAR,

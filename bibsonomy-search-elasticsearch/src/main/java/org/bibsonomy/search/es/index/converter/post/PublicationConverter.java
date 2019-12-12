@@ -29,12 +29,18 @@ package org.bibsonomy.search.es.index.converter.post;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalField;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -56,6 +62,7 @@ import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
+import org.bibsonomy.search.es.util.SortingUtils;
 import org.bibsonomy.search.index.utils.FileContentExtractorService;
 import org.bibsonomy.util.ValidationUtils;
 
@@ -245,6 +252,11 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		if (present(authors)) {
 			jsonDocument.put(Fields.Publication.AUTHORS, convertPersonNames(authors));
 		}
+
+		if (present(authors) || present(editors)) {
+			String authorIndex = present(authors) ? convertToPersonIndex(authors) : convertToPersonIndex(editors);
+			jsonDocument.put(Fields.Publication.AUTHOR_INDEX, authorIndex);
+		}
 		
 		jsonDocument.put(Fields.Publication.ENTRY_TYPE, resource.getEntrytype());
 		jsonDocument.put(Fields.Publication.HOWPUBLISHED, resource.getHowpublished());
@@ -294,7 +306,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 			jsonDocument.put(Fields.Publication.MISC_FIELDS, miscFields);
 		}
 
-		jsonDocument.put(Fields.Publication.MONTH, resource.getMonth());
+		jsonDocument.put(Fields.Publication.MONTH, convertMonth(resource.getMonth()));
 		jsonDocument.put(Fields.Publication.NOTE, resource.getNote());
 		jsonDocument.put(Fields.Publication.NUMBER, resource.getNumber());
 		jsonDocument.put(Fields.Publication.ORGANIZATION, resource.getOrganization());
@@ -359,6 +371,25 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	}
 
 	/**
+	 * Convert the month string into a numeric string for sorting with index.
+	 *
+	 * @param month
+	 * @return
+	 */
+	private static String convertMonth(String month) {
+		if (month == null || SortingUtils.isNumeric(month)) {
+			return month;
+		}
+		String newMonth = month.substring(0, 1).toUpperCase() + month.substring(1);
+		DateTimeFormatter parser = DateTimeFormatter.ofPattern("MMM").withLocale(Locale.ENGLISH);
+		try {
+			return "" + parser.parse(newMonth).get(ChronoField.MONTH_OF_YEAR);
+		} catch (DateTimeParseException e) {
+			return month;
+		}
+	}
+
+	/**
 	 * @param persons
 	 * @return
 	 */
@@ -370,6 +401,25 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		}
 		
 		return serializedPersonNames;
+	}
+
+	/**
+	 * @param persons
+	 * @return
+	 */
+	private static String convertToPersonIndex(List<PersonName> persons) {
+		final StringBuilder stringBuilder = new StringBuilder();
+
+		for (final PersonName person : persons) {
+			stringBuilder.append(person.getLastName().toLowerCase());
+			if (person.getFirstName() != null) {
+				stringBuilder.append(",");
+				stringBuilder.append(person.getFirstName().toLowerCase());
+			}
+			stringBuilder.append(";");
+		}
+
+		return stringBuilder.toString();
 	}
 
 	/* (non-Javadoc)

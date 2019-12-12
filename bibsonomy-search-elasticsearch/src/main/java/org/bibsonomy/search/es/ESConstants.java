@@ -186,6 +186,8 @@ public final class ESConstants {
 		public interface Resource {
 			/** the title of the resource */
 			String TITLE = "title";
+			/** the title index of the resource */
+			String TITLE_INDEX = "titleIndex";
 			/** the inter hash of the resource */
 			String INTERHASH = "interhash";
 			/** the intra hash of the resource */
@@ -203,6 +205,8 @@ public final class ESConstants {
 
 			/** field that contains all authors */
 			String ALL_AUTHORS = "author";
+			/** field that contains all authors in a single string for sorting */
+			String AUTHOR_INDEX = "authorIndex";
 
 			String AUTHORS = "authors";
 			String EDITORS = "editors";

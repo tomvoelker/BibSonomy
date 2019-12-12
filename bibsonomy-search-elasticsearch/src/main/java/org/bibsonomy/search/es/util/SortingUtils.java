@@ -1,6 +1,7 @@
 package org.bibsonomy.search.es.util;
 
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.search.es.ESConstants;
 import org.elasticsearch.search.sort.SortOrder;
 
 import java.util.ArrayList;
@@ -29,8 +30,11 @@ public class SortingUtils {
 				sortParameters.add(new Pair<>("month", reverseSortOrder(esSortOrder)));
 				sortParameters.add(new Pair<>("day", esSortOrder));
 				break;
+			case TITLE:
+				sortParameters.add(new Pair<>(ESConstants.Fields.Resource.TITLE_INDEX, esSortOrder));
+				break;
 			case AUTHOR:
-				sortParameters.add(new Pair<>("authors.name", esSortOrder));
+				sortParameters.add(new Pair<>(ESConstants.Fields.Publication.AUTHOR_INDEX, esSortOrder));
 				break;
 			// more complex order types possible here
 			default:
@@ -56,8 +60,10 @@ public class SortingUtils {
 		switch (sortOrder.getOrder()) {
 			// only supported order type for bookmarks
 			case TITLE:
+				sortParameters.add(new Pair<>(ESConstants.Fields.Resource.TITLE_INDEX, esSortOrder));
+				break;
 			case DATE:
-				sortParameters.add(new Pair<>(sortOrder.getOrder().toString().toLowerCase(), esSortOrder));
+				sortParameters.add(new Pair<>(ESConstants.Fields.DATE, esSortOrder));
 				break;
 			default:
 				break;
@@ -71,4 +77,17 @@ public class SortingUtils {
 		}
 		return SortOrder.DESC;
 	}
+
+	public static boolean isNumeric(String strNum) {
+		if (strNum == null) {
+			return false;
+		}
+		try {
+			double d = Double.parseDouble(strNum);
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
+		return true;
+	}
+
 }
