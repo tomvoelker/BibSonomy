@@ -26,7 +26,7 @@ public class SortingUtils {
 				break;
 			case PUBDATE:
 				sortParameters.add(new Pair<>("year", esSortOrder));
-				sortParameters.add(new Pair<>("month", esSortOrder));
+				sortParameters.add(new Pair<>("month", reverseSortOrder(esSortOrder)));
 				sortParameters.add(new Pair<>("day", esSortOrder));
 				break;
 			case AUTHOR:
@@ -65,4 +65,10 @@ public class SortingUtils {
 		return sortParameters;
 	}
 
+	public static SortOrder reverseSortOrder(SortOrder sortOrder) {
+		if (sortOrder == SortOrder.DESC) {
+			return SortOrder.ASC;
+		}
+		return SortOrder.DESC;
+	}
 }
