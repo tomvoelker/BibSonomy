@@ -44,7 +44,7 @@ public enum SortDirection {
 		} catch (NullPointerException np) {
 			throw new IllegalArgumentException("No sort direction specified!");
 		} catch (IllegalArgumentException ia) {
-			throw new IllegalArgumentException("Requested sort direction not supported.");
+			throw new IllegalArgumentException("Requested sort direction not supported. Possible values are 'asc' or 'desc'.");
 		}
 	}
 }

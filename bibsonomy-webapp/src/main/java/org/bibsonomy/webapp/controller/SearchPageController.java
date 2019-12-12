@@ -35,10 +35,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.SortOrder;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.SortDirection;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.webapp.command.SearchViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -72,10 +74,10 @@ public class SearchPageController extends SingleResourceListController implement
 			log.debug(this.getClass().getSimpleName());
 			final String format = command.getFormat();
 
-			// set order
-			if (!command.getSortPage().equals("relevance")) {
+			// set order, default to rank if sort page attribute unknown or equals 'relavance'
+			try {
 				command.setOrder(Order.getOrderByName(command.getSortPage()));
-			} else {
+			} catch (IllegalArgumentException e){
 				command.setOrder(Order.RANK);
 			}
 			// set sorting order and direction
@@ -146,8 +148,21 @@ public class SearchPageController extends SingleResourceListController implement
 				this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, searchType,
 								null, command.getSortOrder(), command.getStartDate(), command.getEndDate(),
 								command.getListCommand(resourceType).getEntriesPerPage());
-	
-				this.postProcessAndSortList(command, resourceType);
+
+				// remove duplicates depending on command settings
+				if (resourceType == BibTex.class) {
+					switch (command.getDuplicates()) {
+						case MERGED:
+							BibTexUtils.mergeDuplicates(command.getBibtex().getList());
+							break;
+						case NO:
+							BibTexUtils.removeDuplicates(command.getBibtex().getList());
+							break;
+						case YES:
+						default:
+							break;
+					}
+				}
 			}
 			// html format - retrieve tags and return HTML view
 			if ("html".equals(format)) {
