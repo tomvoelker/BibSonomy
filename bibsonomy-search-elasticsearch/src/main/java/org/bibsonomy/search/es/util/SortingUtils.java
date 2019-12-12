@@ -8,6 +8,14 @@ import java.util.List;
 
 public class SortingUtils {
 
+	/**
+	 * Takes a sort order and creates a list of sort parameters.
+	 * These are pairs contain the attribute names in the searchindex and
+	 * the ascending or descding enum from elasticsearch.
+	 *
+	 * @param 	sortOrder
+	 * @return	list of sort parameters
+	 */
 	public static List<Pair<String, SortOrder>> buildSortParameters(org.bibsonomy.model.SortOrder sortOrder) {
 		List<Pair<String, SortOrder>> sortParameters = new ArrayList<>();
 		SortOrder esSortOrder = SortOrder.fromString(sortOrder.getDirection().toString());
@@ -32,6 +40,16 @@ public class SortingUtils {
 		return sortParameters;
 	}
 
+	/**
+	 * Takes a sort order and creates a list of sort parameters.
+	 * These are pairs contain the attribute names in the searchindex and
+	 * the ascending or descding enum from elasticsearch.
+	 *
+	 * This method only supports Order.TITLE and Order.DATE for building sorting parameters for the bookmark index.
+	 *
+	 * @param 	sortOrder
+	 * @return	list of sort parameters
+	 */
 	public static List<Pair<String, SortOrder>> buildBookmarkSortParameters(org.bibsonomy.model.SortOrder sortOrder) {
 		List<Pair<String, SortOrder>> sortParameters = new ArrayList<>();
 		SortOrder esSortOrder = SortOrder.fromString(sortOrder.getDirection().toString());

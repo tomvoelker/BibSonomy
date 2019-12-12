@@ -41,8 +41,8 @@ public class OrderTest {
 	 */
 	@Test
 	public void getOrderByName() {
-		assertEquals(Order.DATE, Order.getOrderByName("added"));
-		assertEquals(Order.DATE, Order.getOrderByName("AdDeD"));
+		assertEquals(Order.DATE, Order.getOrderByName("date"));
+		assertEquals(Order.DATE, Order.getOrderByName("DaTe"));
 		assertEquals(Order.POPULAR, Order.getOrderByName("popular"));
 		assertEquals(Order.POPULAR, Order.getOrderByName("PoPuLaR"));
 		assertEquals(Order.FOLKRANK, Order.getOrderByName("folkrank"));

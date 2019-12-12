@@ -27,12 +27,9 @@
 package org.bibsonomy.search.es.client;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
-import com.tdunning.math.stats.Sort;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.es.util.SortingUtils;
