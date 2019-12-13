@@ -57,6 +57,9 @@ public final class ESConstants {
 	/** fielddata */
 	public static final String FIELDDATA = "fielddata";
 
+	/** normalizer attribute */
+	public static final String NORMALIZER = "normalizer";
+
 	/** the registered lowercase normalizer */
 	public static final String LOWERCASE_NORMALIZER = "lowercase_normalizer";
 
@@ -65,7 +68,7 @@ public final class ESConstants {
 			SETTINGS = Strings.toString(XContentFactory.jsonBuilder()
 					.startObject()
 						.startObject("analysis")
-							.startObject("normalizer")
+							.startObject(NORMALIZER)
 								.startObject(LOWERCASE_NORMALIZER)
 									.field("type", "custom")
 									.array("char_filter")
@@ -186,8 +189,6 @@ public final class ESConstants {
 		public interface Resource {
 			/** the title of the resource */
 			String TITLE = "title";
-			/** the title index of the resource */
-			String TITLE_INDEX = "titleIndex";
 			/** the inter hash of the resource */
 			String INTERHASH = "interhash";
 			/** the intra hash of the resource */
@@ -205,8 +206,6 @@ public final class ESConstants {
 
 			/** field that contains all authors */
 			String ALL_AUTHORS = "author";
-			/** field that contains all authors in a single string for sorting */
-			String AUTHOR_INDEX = "authorIndex";
 
 			String AUTHORS = "authors";
 			String EDITORS = "editors";
@@ -280,6 +279,20 @@ public final class ESConstants {
 				String CONTENT_HASH = "content_hash";
 				String DATE = "date";
 			}
+		}
+
+		public interface Search {
+			/** the title cleaned up */
+			String TITLE = "_title";
+			String BOOKTITLE = "_booktitle";
+			String JOURNAL = "_journal";
+			String SERIES = "_series";
+			String PUBLISHER = "_publisher";
+			String AUTHOR = "_author";
+			String EDITOR = "_editor";
+			String SCHOOL = "_school";
+			String INSTITUTION = "_institution";
+			String ORGANIZATION = "_organization";
 		}
 	}
 

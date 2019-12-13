@@ -38,40 +38,67 @@ public enum Order {
 
 	NONE,
 
-	/** for ordering by adding time (desc) */
+	/** for ordering by adding time */
 	DATE,
 
-	/** for ordering by popularity (desc) */
+	/** for ordering by popularity */
 	POPULAR,
 
 	/** for ordering by rank (e. g. full text search by score) */
 	RANK,
 
-	/** for ordering by folkrank (desc) */
+	/** for ordering by folkrank */
 	FOLKRANK,
 
-	/** for ordering tags by frequency (desc) */
+	/** for ordering tags by frequency */
 	FREQUENCY,
 
 	/** Some items can be ordered alphabetically ... (in particular groups) */
 	ALPH,
 
-	/**  for ordering by title (desc) */
+	/** for ordering by entrytype */
+	ENTRYTYPE,
+
+	/** for ordering by title */
 	TITLE,
 
-	/** for ordering by author names (desc) */
+	/** for ordering by booktitle */
+	BOOKTITLE,
+
+	/** for ordering by journal */
+	JOURNAL,
+
+	/** for ordering by series */
+	SERIES,
+
+	/** for ordering by publisher */
+	PUBLISHER,
+
+	/** for ordering by author names */
 	AUTHOR,
 
-	/** for ordering by publication year (desc) */
+	/** for ordering by editor names */
+	EDITOR,
+
+	/** for ordering by school */
+	SCHOOL,
+
+	/** for ordering by institution */
+	INSTITUTION,
+
+	/** for ordering by organization */
+	ORGANIZATION,
+
+	/** for ordering by publication year */
 	YEAR,
 
-	/** for ordering by publication month (desc) */
+	/** for ordering by publication month */
 	MONTH,
 
-	/** for ordering by publication day (desc) */
+	/** for ordering by publication day */
 	DAY,
 
-	/** for ordering by publication date (desc) */
+	/** for ordering by publication date */
 	PUBDATE;
 
 	/**

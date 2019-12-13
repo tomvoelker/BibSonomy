@@ -1,7 +1,7 @@
 package org.bibsonomy.search.es.util;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.search.es.ESConstants;
+import org.bibsonomy.search.es.ESConstants.Fields;
 import org.elasticsearch.search.sort.SortOrder;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class SortingUtils {
 	 * @param 	sortOrder
 	 * @return	list of sort parameters
 	 */
-	public static List<Pair<String, SortOrder>> buildSortParameters(org.bibsonomy.model.SortOrder sortOrder) {
+	public static List<Pair<String, SortOrder>> buildPublicationSortParameters(org.bibsonomy.model.SortOrder sortOrder) {
 		List<Pair<String, SortOrder>> sortParameters = new ArrayList<>();
 		SortOrder esSortOrder = SortOrder.fromString(sortOrder.getDirection().toString());
 		switch (sortOrder.getOrder()) {
@@ -25,16 +25,22 @@ public class SortingUtils {
 			case RANK:
 			case NONE:
 				break;
-			case PUBDATE:
-				sortParameters.add(new Pair<>("year", esSortOrder));
-				sortParameters.add(new Pair<>("month", reverseSortOrder(esSortOrder)));
-				sortParameters.add(new Pair<>("day", esSortOrder));
-				break;
 			case TITLE:
-				sortParameters.add(new Pair<>(ESConstants.Fields.Resource.TITLE_INDEX, esSortOrder));
-				break;
+			case BOOKTITLE:
+			case JOURNAL:
+			case SERIES:
+			case PUBLISHER:
 			case AUTHOR:
-				sortParameters.add(new Pair<>(ESConstants.Fields.Publication.AUTHOR_INDEX, esSortOrder));
+			case EDITOR:
+			case SCHOOL:
+			case INSTITUTION:
+			case ORGANIZATION:
+				sortParameters.add(new Pair<>("_" + sortOrder.getOrder().toString().toLowerCase(), esSortOrder));
+				break;
+			case PUBDATE:
+				sortParameters.add(new Pair<>(Fields.Publication.YEAR, esSortOrder));
+				sortParameters.add(new Pair<>(Fields.Publication.MONTH, reverseSortOrder(esSortOrder)));
+				sortParameters.add(new Pair<>(Fields.Publication.DAY, esSortOrder));
 				break;
 			// more complex order types possible here
 			default:
@@ -49,21 +55,21 @@ public class SortingUtils {
 	 * These are pairs contain the attribute names in the searchindex and
 	 * the ascending or descding enum from elasticsearch.
 	 *
-	 * This method only supports Order.TITLE and Order.DATE for building sorting parameters for the bookmark index.
+	 * This method only supports Order.TITLE and Order.DATE for building sorting parameters for any resource index.
 	 *
 	 * @param 	sortOrder
 	 * @return	list of sort parameters
 	 */
-	public static List<Pair<String, SortOrder>> buildBookmarkSortParameters(org.bibsonomy.model.SortOrder sortOrder) {
+	public static List<Pair<String, SortOrder>> buildSortParameters(org.bibsonomy.model.SortOrder sortOrder) {
 		List<Pair<String, SortOrder>> sortParameters = new ArrayList<>();
 		SortOrder esSortOrder = SortOrder.fromString(sortOrder.getDirection().toString());
 		switch (sortOrder.getOrder()) {
 			// only supported order type for bookmarks
 			case TITLE:
-				sortParameters.add(new Pair<>(ESConstants.Fields.Resource.TITLE_INDEX, esSortOrder));
+				sortParameters.add(new Pair<>(Fields.Search.TITLE, esSortOrder));
 				break;
 			case DATE:
-				sortParameters.add(new Pair<>(ESConstants.Fields.DATE, esSortOrder));
+				sortParameters.add(new Pair<>(Fields.DATE, esSortOrder));
 				break;
 			default:
 				break;

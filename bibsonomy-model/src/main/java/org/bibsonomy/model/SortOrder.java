@@ -36,7 +36,7 @@ public class SortOrder {
 	private SortDirection direction;
 
 	public SortOrder() {
-		this.order = Order.DATE;
+		this.order = Order.NONE;
 		this.direction = SortDirection.DESC;
 	}
 
