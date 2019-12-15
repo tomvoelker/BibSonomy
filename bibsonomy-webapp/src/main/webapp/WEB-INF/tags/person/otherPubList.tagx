@@ -10,9 +10,14 @@
     <jsp:directive.attribute name="publications" type="java.util.List" required="true" />
     <jsp:directive.attribute name="useOtherPubs" type="java.lang.Boolean" required="false" />
     <jsp:directive.attribute name="onlyLinkAuthorsWithPersons" type="java.lang.Boolean" required="false" />
+    <jsp:directive.attribute name="hideHeadline" type="java.lang.Boolean" required="false" />
 
     <c:if test="${empty onlyLinkAuthorsWithPersons}">
         <c:set var="onlyLinkAuthorsWithPersons" value="${false}" />
+    </c:if>
+
+    <c:if test="${empty hideHeadline}">
+        <c:set var="hideHeadline" value="${false}" />
     </c:if>
 
     <c:choose>
@@ -25,20 +30,32 @@
     </c:choose>
 
     <div style="clear: both;">
-        <h3 class="list-headline">
-            <fmt:message key="person.show.otherPub${key}" />
-            <div class="pull-right btn-group dropdown-align-right all-resources-menu">
-                <div class="btn-group">
-                    <bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
-                    <ul class="dropdown-menu">
-                        <li class="dropdown-header"><fmt:message key="post.meta.sort.criterion" /></li>
-                        <li class="enabled"><span data-div="otherPublications${key}" data-sort="year" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="clock-o" spaceAfter="5" /><fmt:message key="post.resource.year"/></span></li>
-                        <li><span data-div="otherPublications${key}" data-sort="title" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.title"/></span></li>
-                        <li><span data-div="otherPublications${key}" data-sort="author" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.author"/></span></li>
-                    </ul>
+        <c:if test="${not hideHeadline}">
+            <h3 class="list-headline">
+
+                <fmt:message key="person.show.otherPub${key}" />
+
+                <div class="pull-right btn-group dropdown-align-right all-resources-menu">
+                    <div class="btn-group">
+                        <bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header">
+                                <fmt:message key="post.meta.sort.criterion" />
+                            </li>
+                            <li class="enabled">
+                                <span data-div="otherPublications${key}" data-sort="year" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="clock-o" spaceAfter="5" /><fmt:message key="post.resource.year"/></span>
+                            </li>
+                            <li>
+                                <span data-div="otherPublications${key}" data-sort="title" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.title"/></span>
+                            </li>
+                            <li>
+                                <span data-div="otherPublications${key}" data-sort="author" data-ordering="ASC" class="pubSort"><fontawesome:icon icon="sort-alpha-asc " spaceAfter="5" /> <fmt:message key="post.resource.author"/></span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </h3>
+            </h3>
+        </c:if>
         <div id="otherPublications${key}">
             <c:forEach var="relation" items="${publications}">
                 <per:simplePubView relation="${relation}"
