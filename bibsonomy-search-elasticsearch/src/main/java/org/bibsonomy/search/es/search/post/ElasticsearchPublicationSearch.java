@@ -27,14 +27,9 @@
 package org.bibsonomy.search.es.search.post;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.util.Collection;
-import java.util.List;
-
 import org.apache.lucene.search.join.ScoreMode;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.search.es.ESConstants.Fields;
-import org.bibsonomy.search.es.search.post.EsResourceSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.Operator;
@@ -42,6 +37,9 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * handles publication relevant search

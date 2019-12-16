@@ -78,23 +78,17 @@ public class SortingUtils {
 		return sortParameters;
 	}
 
+	/**
+	 * Reverse the elastic search SortOrder enum.
+	 *
+	 * @param sortOrder
+	 * @return DESC, if sortOrder is ASC. ASC, if sortOrder is DESC.
+	 */
 	public static SortOrder reverseSortOrder(SortOrder sortOrder) {
 		if (sortOrder == SortOrder.DESC) {
 			return SortOrder.ASC;
 		}
 		return SortOrder.DESC;
-	}
-
-	public static boolean isNumeric(String strNum) {
-		if (strNum == null) {
-			return false;
-		}
-		try {
-			double d = Double.parseDouble(strNum);
-		} catch (NumberFormatException nfe) {
-			return false;
-		}
-		return true;
 	}
 
 }
