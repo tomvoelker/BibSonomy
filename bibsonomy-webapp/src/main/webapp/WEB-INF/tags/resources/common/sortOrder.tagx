@@ -10,6 +10,7 @@
 	<jsp:directive.attribute name="sortPage" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="sortPageOrder" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="isBibtex" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="additionalSorting" fragment="true"/>
 
 	<!--+
 		+ actions concerning different sorting criteria
@@ -34,24 +35,7 @@
 		</c:otherwise>
 	</c:choose>
 
-	<!-- relevance sorting -->
-	<c:choose>
-		<c:when test="${command.sortPage eq 'relevance' and command.sortPageOrder eq 'desc'}">
-			<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'relevance'), 'sortPageOrder', 'asc')}">
-				<fontawesome:icon icon="sort-amount-desc" spaceAfter="5"/><fmt:message key="sort.rank"/>
-			</a></li>
-		</c:when>
-		<c:when test="${command.sortPage eq 'relevance' and command.sortPageOrder eq 'asc'}">
-			<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'relevance'), 'sortPageOrder', 'desc')}">
-				<fontawesome:icon icon="sort-amount-asc" spaceAfter="5"/><fmt:message key="sort.rank"/>
-			</a></li>
-		</c:when>
-		<c:otherwise>
-			<li class="sort-unselected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'relevance'), 'sortPageOrder', 'desc')}">
-				<fontawesome:icon icon="sort-amount-desc" spaceAfter="5" /><fmt:message key="sort.rank"/>
-			</a></li>
-		</c:otherwise>
-	</c:choose>
+	
 
 	<!-- title sorting -->
 	<c:choose>
@@ -130,5 +114,25 @@
 				</a></li>
 			</c:otherwise>
 		</c:choose>
+
+		<!-- entrytype sorting -->
+		<c:choose>
+			<c:when test="${command.sortPage eq 'entrytype' and command.sortPageOrder eq 'desc'}">
+				<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'entrytype'), 'sortPageOrder', 'asc')}">
+					<fontawesome:icon icon="book" spaceAfter="5"/><fmt:message key="sort.entrytype"/>
+				</a></li>
+			</c:when>
+			<c:when test="${command.sortPage eq 'entrytype' and command.sortPageOrder eq 'asc'}">
+				<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'entrytype'), 'sortPageOrder', 'desc')}">
+					<fontawesome:icon icon="book" spaceAfter="5"/><fmt:message key="sort.entrytype"/>
+				</a></li>
+			</c:when>
+			<c:otherwise>
+				<li class="sort-unselected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'entrytype'), 'sortPageOrder', 'asc')}">
+					<fontawesome:icon icon="book" spaceAfter="5" /><fmt:message key="sort.entrytype"/>
+				</a></li>
+			</c:otherwise>
+		</c:choose>
 	</c:if>
+	<jsp:invoke fragment="additionalSorting" />
 </jsp:root>

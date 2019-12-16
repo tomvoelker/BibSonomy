@@ -25,6 +25,7 @@ public class SortingUtils {
 			case RANK:
 			case NONE:
 				break;
+			// Order type with cleaned up index attribute
 			case TITLE:
 			case BOOKTITLE:
 			case JOURNAL:
