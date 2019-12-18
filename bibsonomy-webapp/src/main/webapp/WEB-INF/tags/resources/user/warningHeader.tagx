@@ -1,0 +1,18 @@
+<jsp:root version="2.0"
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+>
+	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="esIndex" type="java.lang.Boolean" required="true" />
+
+	<c:if test="${esIndex}">
+		<div class="alert alert-warning" role="alert">
+			<fmt:message key="sort.warning.user">
+				<fmt:param value="${mtl:setParam(requPathAndQuery, 'esIndex', '0')}" />
+			</fmt:message>
+		</div>
+	</c:if>
+</jsp:root>

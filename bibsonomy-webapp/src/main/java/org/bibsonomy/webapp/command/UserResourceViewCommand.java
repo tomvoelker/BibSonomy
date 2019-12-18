@@ -58,10 +58,16 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 * Has the requested user added the logged in user to her friend list? 
 	 */
 	private boolean friendOfUser = false;
+
 	/**
 	 * Has the logged in user added the requested user to his friend list?
 	 */
 	private boolean ofFriendUser = false;
+
+	/**
+	 * Use the elasticsearch index for retrieving and sorting listed posts?
+	 */
+	private boolean esIndex = true;
 	
 	/**
 	 * defines the similarity measure by which the related users are computed  
@@ -161,6 +167,21 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 */
 	public void setOfFriendUser(boolean ofFriendUser) {
 		this.ofFriendUser = ofFriendUser;
+	}
+
+	/**
+	 * @return esIndex
+	 */
+	public boolean isEsIndex() {
+		return this.esIndex;
+	}
+
+	/**
+	 * Set wether to use elasticsearch index for retrieving and sorting posts.
+	 * @param 	esIndex		use elasticsearch index?
+	 */
+	public void setEsIndex(boolean esIndex) {
+		this.esIndex = esIndex;
 	}
 
 	/**

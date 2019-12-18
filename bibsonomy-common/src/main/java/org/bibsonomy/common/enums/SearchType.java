@@ -37,7 +37,13 @@ public enum SearchType {
 	/**
 	 * search public posts of all connected BibSonomy-based systems (including PUMA)
 	 */
-	FEDERATED, 
+	FEDERATED,
+
+	/**
+	 * search public posts with elasticsearch, results might not be matching recent changes in the DB
+	 */
+	ELASTICSEARCH,
+
 	/**
 	 * search all viewable posts on the local system
 	 */

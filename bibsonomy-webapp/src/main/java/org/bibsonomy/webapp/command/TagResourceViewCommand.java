@@ -321,7 +321,7 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	}
 
 	/**
-	 * @param selectedSearchScope the selected search type such as 'group', 'search', 'sharedResourceSearch'
+	 * @param scope the selected search type such as 'group', 'search', 'sharedResourceSearch'
 	 */
 	public void setScope(SearchType scope) {
 		this.scope = scope;

@@ -57,7 +57,6 @@ public class GetResourcesForUser<R extends Resource, P extends ResourceParam<R>>
 				!presentValidGroupId(param.getGroupId()) &&
 				!present(param.getTagIndex()) &&
 				!present(param.getHash()) &&
-				nullOrEqual(param.getOrder(), Order.NONE, Order.DATE) &&
 				!present(param.getSearch())) && 
 				!present(param.getAuthor()) && 
 				!present(param.getTitle());
@@ -65,7 +64,7 @@ public class GetResourcesForUser<R extends Resource, P extends ResourceParam<R>>
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.databaseManager.getPostsForUser(param.getUserName(), param.getRequestedUserName(), param.getSearchType(), HashID.getSimHash(param.getSimHash()), param.getGroupId(), param.getGroups(), param.getPostAccess(), param.getFilters(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
+		return this.databaseManager.getPostsForUser(param.getUserName(), param.getRequestedUserName(), param.getSearchType(), HashID.getSimHash(param.getSimHash()), param.getGroupId(), param.getGroups(), param.getPostAccess(), param.getFilters(), param.getSortOrder(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}
 
 }

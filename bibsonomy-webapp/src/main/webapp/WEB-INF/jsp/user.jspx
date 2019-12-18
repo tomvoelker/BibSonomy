@@ -1,30 +1,32 @@
 <?xml version="1.0" ?>
 <jsp:root version="2.0"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
-	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
-	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"
-	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"	
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group"
-	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
-	xmlns:adminUser="urn:jsptagdir:/WEB-INF/tags/admin/users"
-	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+		  xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+		  xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+		  xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group"
+		  xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+		  xmlns:adminUser="urn:jsptagdir:/WEB-INF/tags/admin/users"
+		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
+
+	<c:set var="esIndex" value="${command.isEsIndex()}"/>
+	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}">
+		<jsp:attribute name="content">
+			<user:warningHeader esIndex="${esIndex}" requPathAndQuery="${requPathAndQuery}"/>
+		</jsp:attribute>
 		<jsp:attribute name="heading">
 			<c:choose>
-				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL'}">
+				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL' and command.scope.name() ne 'ELASTICSEARCH'}">
 					<c:set var="pathMessageKey" value="navi.federatedUser"/>
 					<c:set var="userUrl" value="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}?scope=${command.scope.name()}"/>
 				</c:when>
