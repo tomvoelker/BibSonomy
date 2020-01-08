@@ -439,6 +439,13 @@
 		<to type="redirect" last="true">/user/$1</to>
 	</rule>
 
+	<!-- /user/USER/ (note the trailing slash) -->
+	<rule>
+		<name>/user/USER</name>
+		<from>^/+user/+([^/\\?]+)/$</from>
+		<to type="redirect" last="true">/user/$1?esIndex=0</to>
+	</rule>
+
 	<!-- redirect for FOAF Output of user profile on /foaf/user/USER page -->
 	<rule>
 		<name>redirect /foaf/user/USER</name>
