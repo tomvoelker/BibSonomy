@@ -28,43 +28,35 @@
 package org.bibsonomy.database.params.person;
 
 /**
- * @author dzo
+ * Parameters to get a person by an additional key
+ * @author kchoong
  */
-public class GetPersonByOrganizationParam {
-	private final String organizationName;
-	private final int limit;
-	private final int offset;
+public class PersonAdditionalKeyParam {
+	private final String personId;
+	private final String key;
+	private final String value;
 
 	/**
-	 * default constructor
-	 * @param organizationName
-	 * @param limit
-	 * @param offset
+	 * Default constructor
+	 * @param personId
+	 * @param key
+	 * @param value
 	 */
-	public GetPersonByOrganizationParam(String organizationName, int limit, int offset) {
-		this.organizationName = organizationName;
-		this.limit = limit;
-		this.offset = offset;
+	public PersonAdditionalKeyParam(String personId, String key, String value) {
+		this.personId = personId;
+		this.key = key;
+		this.value = value;
 	}
 
-	/**
-	 * @return the organizationName
-	 */
-	public String getOrganizationName() {
-		return organizationName;
+	public String getPersonId() {
+		return personId;
 	}
 
-	/**
-	 * @return the limit
-	 */
-	public int getLimit() {
-		return limit;
+	public String getKey() {
+		return key;
 	}
 
-	/**
-	 * @return the offset
-	 */
-	public int getOffset() {
-		return offset;
+	public String getValue() {
+		return value;
 	}
 }

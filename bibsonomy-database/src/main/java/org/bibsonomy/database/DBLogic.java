@@ -3658,19 +3658,40 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public Person getPersonById(final PersonIdType idType, final String id) {
 		// TODO: implement a chain
+
 		final DBSession session = this.openSession();
 		try {
+			Person person;
 			if (PersonIdType.PERSON_ID == idType) {
-				return this.personDBManager.getPersonById(id, session);
+				person = this.personDBManager.getPersonById(id, session);
 			} else if (PersonIdType.DNB_ID == idType) {
-				return this.personDBManager.getPersonByDnbId(id, session);
+				person = this.personDBManager.getPersonByDnbId(id, session);
 				// } else if (PersonIdType.ORCID == idType) {
 				//	TODO: implement
 			} else if (PersonIdType.USER == idType) {
-				return this.personDBManager.getPersonByUser(id, session);
+				person = this.personDBManager.getPersonByUser(id, session);
 			} else {
 				throw new UnsupportedOperationException("person cannot be found by it type " + idType);
 			}
+
+			if (this.permissionDBManager.isAdminOrSelf(this.loginUser, person.getUser())
+					|| this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, person.getUser(), GroupRole.ADMINISTRATOR)) {
+				//this.personDBManager.getAdd
+				return person;
+			}
+		} finally {
+			session.close();
+		}
+	}
+
+	/* (non-Javadoc)get
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonByAdditionalKey(String, String)
+	 */
+	@Override
+	public Person getPersonByAdditionalKey(final String key, final String value) {
+		final DBSession session = this.openSession();
+		try {
+			return this.personDBManager.getPersonByAdditionalKey(key, value, session);
 		} finally {
 			session.close();
 		}
@@ -3833,13 +3854,13 @@ public class DBLogic implements LogicInterface {
 
 	/**
 	 *
-	 * @param personId
+	 * @param userName
 	 * @return
 	 */
 	@Override
-	public int getUserPersonPostsStyleSettings(String personId) {
+	public int getUserPersonPostsStyleSettings(String userName) {
 		try(final DBSession session = this.openSession()) {
-			return this.personDBManager.getUserPersonPostsStyleSettings(personId, session);
+			return this.personDBManager.getUserPersonPostsStyleSettings(userName, session);
 		}
 	}
 

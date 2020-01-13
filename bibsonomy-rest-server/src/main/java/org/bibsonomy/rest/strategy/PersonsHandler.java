@@ -35,6 +35,8 @@ import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
 import org.bibsonomy.rest.strategy.persons.DeletePersonResourceRelationStrategy;
 import org.bibsonomy.rest.strategy.persons.GetListOfPersonsStrategy;
+import org.bibsonomy.rest.strategy.persons.GetPersonByAdditionalKeyStrategy;
+import org.bibsonomy.rest.strategy.persons.GetPersonPostsByAdditionalKeyStrategy;
 import org.bibsonomy.rest.strategy.persons.GetPersonPostsStrategy;
 import org.bibsonomy.rest.strategy.persons.GetPersonStrategy;
 import org.bibsonomy.rest.strategy.persons.GetResourcePersonRelationsStrategy;
@@ -58,6 +60,8 @@ public class PersonsHandler implements ContextHandler {
 		final int numTokensLeft = urlTokens.countRemainingTokens();
 		final String personId;
 		final String req;
+		final String key;
+		final String value;
 
 		switch (numTokensLeft) {
 			// /persons
@@ -78,6 +82,19 @@ public class PersonsHandler implements ContextHandler {
 				}
 				if (RESTConfig.PERSONS_MERGE_URL.equalsIgnoreCase(req)) {
 					return createPersonMergeStrategy(context, httpMethod, personId);
+				}
+
+				// /persons/[key]/[value]
+				key = personId;
+				value = req;
+				return createPersonStrategy(context, httpMethod, key, value);
+			// /persons/[key]/[value]/posts
+			case 3:
+				key = urlTokens.next();
+				value = urlTokens.next();
+				req = urlTokens.next();
+				if (RESTConfig.POSTS_URL.equalsIgnoreCase(req)) {
+					return createPersonPostsStrategy(context, httpMethod, key, value);
 				}
 				break;
 			// /persons/[personID]/relations/[interhash]/[type]/[index]
@@ -145,6 +162,23 @@ public class PersonsHandler implements ContextHandler {
 	 *
 	 * @param context
 	 * @param httpMethod
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	private Strategy createPersonStrategy(Context context, HttpMethod httpMethod, String key, String value) {
+		switch (httpMethod) {
+			case GET:
+				return new GetPersonByAdditionalKeyStrategy(context, key, value);
+			default:
+				throw new UnsupportedHttpMethodException(httpMethod, "PersonByKeyValue");
+		}
+	}
+
+	/**
+	 *
+	 * @param context
+	 * @param httpMethod
 	 * @param personId
 	 * @return
 	 */
@@ -189,6 +223,23 @@ public class PersonsHandler implements ContextHandler {
 				return new GetPersonPostsStrategy(context, personId);
 			default:
 				throw new UnsupportedHttpMethodException(httpMethod, "PersonPosts");
+		}
+	}
+
+	/**
+	 *
+	 * @param context
+	 * @param httpMethod
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	private Strategy createPersonPostsStrategy(Context context, HttpMethod httpMethod, String key, String value) {
+		switch (httpMethod) {
+			case GET:
+				return new GetPersonPostsByAdditionalKeyStrategy(context, key, value);
+			default:
+				throw new UnsupportedHttpMethodException(httpMethod, "PersonPostsByKeyValue");
 		}
 	}
 

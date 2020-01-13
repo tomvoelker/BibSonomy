@@ -799,6 +799,12 @@ INSERT INTO `person_match` (match_id, person1_id, person2_id, state) VALUES
 (3, 'w.test.2', 'w.test.3', 0),
 (4, 'w.test.1', 'w.test.4', 0);
 
+INSERT INTO `person_additional_keys` (`person_id`, `key`, `value`) VALUES
+('w.test.1', 'addKey.1', 'w.test.1.addKey.1'),
+('w.test.1', 'addKey.2', 'w.test.1.addKey.2'),
+('w.test.2', 'addKey.1', 'w.test.2.addKey.2'),
+('w.test.3', 'addKey.1', 'w.test.3.addKey.1');
+
 -- FIXME: this data is broken
 INSERT INTO `gold_standard` (content_id, simhash0, simhash1, simhash2, simhash3, author, title, change_date, date, user_name, content_type) VALUES
 (34, '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', 'Willi Test and Maria Mueller', 'title1', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP',2),

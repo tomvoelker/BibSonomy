@@ -45,24 +45,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Strategy to get the publications of a person by their ID.
+ * Strategy to get the publications of a person by an additional key.
  *
  * @author kchoong
  */
-public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? extends Post<? extends Resource>>> {
+public class GetPersonPostsByAdditionalKeyStrategy extends AbstractGetListStrategy<List<? extends Post<? extends Resource>>> {
 
-	private final String personId;
+	private final String key;
+	private final String value;
 	private final List<String> tags;
 	private final String search;
 
-
 	/**
 	 * @param context
-	 * @param personId
+	 * @param key
+	 * @param value
 	 */
-	public GetPersonPostsStrategy(Context context, String personId) {
+	public GetPersonPostsByAdditionalKeyStrategy(Context context, String key, String value) {
 		super(context);
-		this.personId = personId;
+		this.key = key;
+		this.value = value;
 		this.tags = context.getTags(RESTConfig.TAGS_PARAM);
 		this.search = context.getStringAttribute(RESTConfig.SEARCH_PARAM, null);
 	}
@@ -76,11 +78,11 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 	protected List<? extends Post<? extends Resource>> getList() {
 
 		PostQueryBuilder queryBuilder = new PostQueryBuilder()
-						.setStart(this.getView().getStartValue())
-						.setEnd(this.getView().getEndValue())
-						.setTags(this.tags)
-						.setSearch(this.search);
-		Person person = this.getLogic().getPersonById(PersonIdType.PERSON_ID, personId);
+				.setStart(this.getView().getStartValue())
+				.setEnd(this.getView().getEndValue())
+				.setTags(this.tags)
+				.setSearch(this.search);
+		Person person = this.getLogic().getPersonByAdditionalKey(this.key, this.value);
 		// Check, if a user has claimed this person and configured their person settings
 		if (person != null && person.getUser() != null) {
 			// Check, if the user set their person posts to gold standards or 'myown'-tagged posts
@@ -89,13 +91,13 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 				// 'myown'-tagged posts
 				this.tags.add("myown");
 				queryBuilder.setGrouping(GroupingEntity.USER)
-								.setGroupingName(person.getUser())
-								.setTags(this.tags);
+						.setGroupingName(person.getUser())
+						.setTags(this.tags);
 				return this.getLogic().getPosts(queryBuilder.createPostQuery(BibTex.class));
 			}
 			// Default: gold standards
 			queryBuilder.setGrouping(GroupingEntity.PERSON)
-					.setGroupingName(this.personId);
+					.setGroupingName(person.getPersonId());
 			return this.getLogic().getPosts(queryBuilder.createPostQuery(GoldStandardPublication.class));
 		}
 		return new ArrayList<>();
@@ -103,6 +105,6 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 
 	@Override
 	protected UrlBuilder getLinkPrefix() {
-		return this.getUrlRenderer().createUrlBuilderForPersonPosts(this.personId);
+		return this.getUrlRenderer().createUrlBuilderForPersonPostsByAdditionalKey(this.key, this.value);
 	}
 }

@@ -136,4 +136,7 @@
 		person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by
 	</sql>
 
+	<sql id="commonPersonAdditionalKeysColumns">
+		`person_id`, `key`, `value`
+	</sql>
 </sqlMap>

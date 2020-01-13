@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.database.managers;
 
-import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.JobResult;
@@ -46,6 +45,7 @@ import org.bibsonomy.database.params.CRISLinkParam;
 import org.bibsonomy.database.params.DNBAliasParam;
 import org.bibsonomy.database.params.DenyMatchParam;
 import org.bibsonomy.database.params.person.GetPersonByOrganizationParam;
+import org.bibsonomy.database.params.person.PersonAdditionalKeyParam;
 import org.bibsonomy.database.params.relations.GetPersonRelations;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.BibTex;
@@ -79,6 +79,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * database manger for handling {@link Person} related actions
@@ -229,6 +231,24 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	}
 
 	/**
+	 * Returns a Person identified by an additional key value
+	 *
+	 * @param key
+	 * @param value
+	 * @param session
+	 * @return Person
+	 */
+	public Person getPersonByAdditionalKey(final String key, final String value, final DBSession session) {
+		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(null, key, value);
+		return this.queryForObject("getPersonByAdditionalKey", param, Person.class, session);
+	}
+
+	public void createAdditionalKey(final String personId, final String key, final String value, final DBSession session) {
+		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(personId, key, value);
+		this.insert("insertAdditionalKeyForPerson", param, session);
+	}
+
+	/**
 	 * Creates a new name and adds it to the specified Person
 	 *
 	 * @param name
@@ -268,6 +288,17 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			session.endTransaction();
 		}
 	}
+
+	/**
+	 * @param personId
+	 * @param key
+	 * @param session
+	 */
+	public void removePersonAdditionalKey(final String personId, final String key, final DBSession session) {
+		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(personId, key, null);
+		this.delete("deleteAdditionalKeyForPerson", param, session);
+	}
+
 
 	private PersonName getPersonNameById(int personNameChangeId, final DBSession session) {
 		return this.queryForObject("getPersonNameById", personNameChangeId, PersonName.class, session);
@@ -396,6 +427,17 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	public void updateUserLink(Person person, DBSession session) {
 		this.updatePersonField(person, "PersonUser", session);
+	}
+
+	/**
+	 * @param personId
+	 * @param key
+	 * @param value
+	 * @param session
+	 */
+	public void updateAdditionalKey(final String personId, final String key, final String value, final DBSession session) {
+		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(personId, key, value);
+		this.update("updateAdditionalKeyForPerson", param, session);
 	}
 
 	/**
@@ -1260,12 +1302,12 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 *
-	 * @param personId
+	 * @param userName
 	 * @param session
 	 * @return
 	 */
-	public int getUserPersonPostsStyleSettings(final String personId, final DBSession session) {
-		return this.queryForObject("getUserPersonPostsStyleSettings", personId, Integer.class, session);
+	public int getUserPersonPostsStyleSettings(final String userName, final DBSession session) {
+		return this.queryForObject("getUserPersonPostsStyleSettings", userName, Integer.class, session);
 	}
 
 	@Override

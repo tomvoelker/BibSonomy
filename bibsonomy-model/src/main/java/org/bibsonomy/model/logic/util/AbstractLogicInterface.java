@@ -151,6 +151,12 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 		return null;
 	}
 
+	@Override
+	public Person getPersonByAdditionalKey(String key, String value) {
+		this.doDefaultAction();
+		return null;
+	}
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(java.lang.Integer)
 	 */

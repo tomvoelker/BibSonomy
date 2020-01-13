@@ -489,6 +489,14 @@ public class UrlRenderer {
 		return builder;
 	}
 
+	public UrlBuilder createUrlBuilderForPersonPostsByAdditionalKey(String key, String value) {
+		UrlBuilder builder = createUrlBuilderForPersons();
+		builder.addPathElement(key);
+		builder.addPathElement(value);
+		builder.addPathElement(RESTConfig.POSTS_URL);
+		return builder;
+	}
+
 	/**
 	 * creates a url builder for a person resource relation
 	 * @param personId

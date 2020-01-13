@@ -847,6 +847,11 @@ public class ReadOnlyLogic implements LogicInterface {
 		return this.logicinterface.getPersonById(idType, id);
 	}
 
+	@Override
+	public Person getPersonByAdditionalKey(String key, String value) {
+		return this.logicinterface.getPersonByAdditionalKey(key, value);
+	}
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations()
 	 */

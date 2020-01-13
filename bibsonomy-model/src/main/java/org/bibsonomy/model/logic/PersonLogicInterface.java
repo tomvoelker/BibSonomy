@@ -57,6 +57,14 @@ public interface PersonLogicInterface {
 	public Person getPersonById(final PersonIdType idType, final String id);
 
 	/**
+	 * gets the person by any additional key and value
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public Person getPersonByAdditionalKey(final String key, final String value);
+
+	/**
 	 * sets id for new persons
 	 *
 	 * @param person the person to be saved or updated
@@ -148,9 +156,9 @@ public interface PersonLogicInterface {
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map);
 
 	/**
-	 * @param personId
+	 * @param userName
 	 * @return
 	 */
-	public int getUserPersonPostsStyleSettings(String personId);
+	public int getUserPersonPostsStyleSettings(String userName);
 
 }

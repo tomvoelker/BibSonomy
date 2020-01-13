@@ -30,8 +30,10 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Linkable;
@@ -85,6 +87,9 @@ public class Person implements Linkable, Serializable {
 	private List<CRISLink> crisLinks = new LinkedList<>();
 
 	private List<ResourcePersonRelation> resourceRelations = new LinkedList<>();
+
+	/** additional keys for person */
+	private Map<String, String> additionalKeys = new HashMap<>();
 
 	/**
 	 * default constructor
@@ -401,6 +406,20 @@ public class Person implements Linkable, Serializable {
 	 */
 	public void setResourceRelations(List<ResourcePersonRelation> resourceRelations) {
 		this.resourceRelations = resourceRelations;
+	}
+
+	/**
+	 * @return the additionalKeys
+	 */
+	public Map<String, String> getAdditionalKeys() {
+		return additionalKeys;
+	}
+
+	/**
+	 * @param additionalKeys the additionalKeys to set
+	 */
+	public void setAdditionalKeys(Map<String, String> additionalKeys) {
+		this.additionalKeys = additionalKeys;
 	}
 
 	@Override
