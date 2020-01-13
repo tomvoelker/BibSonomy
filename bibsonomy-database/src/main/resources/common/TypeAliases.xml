@@ -58,6 +58,7 @@
 	<typeAlias alias="personResourceRelation" 		type="org.bibsonomy.model.ResourcePersonRelation" />
 	<typeAlias alias="personResourceRelationType" 	type="org.bibsonomy.model.enums.PersonResourceRelationType" />
 	<typeAlias alias="personMatch"					type="org.bibsonomy.model.PersonMatch" />
+	<typeAlias alias="additionalKey"				type="org.bibsonomy.model.extra.AdditionalKey"/>
 
 	<!-- Synchronization -->
 	<typeAlias alias="syncResource"		  type="org.bibsonomy.model.sync.SynchronizationResource" />

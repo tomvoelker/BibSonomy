@@ -57,6 +57,7 @@ import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.cris.ProjectPersonLinkType;
 import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.sync.SynchronizationAction;
@@ -75,6 +76,7 @@ import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.xml.AbstractPublicationType;
+import org.bibsonomy.rest.renderer.xml.AdditionalKeyType;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
@@ -776,6 +778,8 @@ public abstract class AbstractRenderer implements Renderer {
 		final List<PersonName> otherNames = person.getNames().stream().filter(personName -> !personName.isMain()).collect(Collectors.toList());
 		setCollectionValue(xmlPerson.getNames(), otherNames, this::createXmlPersonName);
 		setValue(xmlPerson::setUser, person::getUser, this::createXmlUser);
+		final List<AdditionalKey> additionalKeys = person.getAdditionalKeys();
+		setCollectionValue(xmlPerson.getAdditionalKey(), additionalKeys, this::createXmlAdditionalKey);
 		return xmlPerson;
 	}
 
@@ -784,6 +788,13 @@ public abstract class AbstractRenderer implements Renderer {
 		xmlName.setFirstName(personName.getFirstName());
 		xmlName.setLastName(personName.getLastName());
 		return xmlName;
+	}
+
+	private AdditionalKeyType createXmlAdditionalKey(AdditionalKey additionalKey) {
+		final AdditionalKeyType xmlAdditionalKey = new AdditionalKeyType();
+		xmlAdditionalKey.setKey(additionalKey.getKey());
+		xmlAdditionalKey.setValue(additionalKey.getValue());
+		return xmlAdditionalKey;
 	}
 
 	@Override

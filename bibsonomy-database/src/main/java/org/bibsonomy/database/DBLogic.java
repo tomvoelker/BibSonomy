@@ -138,6 +138,7 @@ import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -3676,9 +3677,10 @@ public class DBLogic implements LogicInterface {
 
 			if (this.permissionDBManager.isAdminOrSelf(this.loginUser, person.getUser())
 					|| this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, person.getUser(), GroupRole.ADMINISTRATOR)) {
-				//this.personDBManager.getAdd
-				return person;
+				List<AdditionalKey> additionalKeys = this.personDBManager.getAdditionalKeyByPerson(person.getPersonId(), session);
+				person.setAdditionalKeys(additionalKeys);
 			}
+			return person;
 		} finally {
 			session.close();
 		}
@@ -3691,7 +3693,13 @@ public class DBLogic implements LogicInterface {
 	public Person getPersonByAdditionalKey(final String key, final String value) {
 		final DBSession session = this.openSession();
 		try {
-			return this.personDBManager.getPersonByAdditionalKey(key, value, session);
+			Person person = this.personDBManager.getPersonByAdditionalKey(key, value, session);
+			if (this.permissionDBManager.isAdminOrSelf(this.loginUser, person.getUser())
+					|| this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, person.getUser(), GroupRole.ADMINISTRATOR)) {
+				List<AdditionalKey> additionalKeys = this.personDBManager.getAdditionalKeyByPerson(person.getPersonId(), session);
+				person.setAdditionalKeys(additionalKeys);
+			}
+			return person;
 		} finally {
 			session.close();
 		}

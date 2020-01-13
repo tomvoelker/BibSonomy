@@ -59,6 +59,7 @@
 				<xsd:element name="project" type="ProjectType" />
 				<xsd:element name="cris_link" type="CRISLinkTypeType" />
 				<xsd:element name="personMatch" type="PersonMatchType" />
+				<xsd:element name="additionalKey" type="AdditionalKeyType" />
 				<!-- error -->
 				<xsd:element name="error" type="xsd:string" />
 				<!-- hashes to return when creating / updating resources -->
@@ -295,6 +296,7 @@
 					<xsd:element name="mainName" type="PersonNameType" />
 					<xsd:element name="names" type="PersonNameType" minOccurs="0" maxOccurs="unbounded" />
 					<xsd:element name="user" type="UserType" minOccurs="0" />
+					<xsd:element name="additionalKey" type="AdditionalKeyType" maxOccurs="unbounded"/>
 				</xsd:sequence>
 				<xsd:attribute name="personId" type="xsd:string" />
 				<xsd:attribute name="gender" type="GenderType" />
@@ -304,6 +306,7 @@
 				<xsd:attribute name="academicDegree" type="xsd:string" />
 				<xsd:attribute name="orcid" type="xsd:string" />
 				<xsd:attribute name="researcherid" type="xsd:string" />
+
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
@@ -659,5 +662,10 @@
 		</xsd:sequence>
 		<xsd:attribute name="state" type="xsd:int" />
 		<xsd:attribute name="matchId" type="xsd:int" />
+	</xsd:complexType>
+
+	<xsd:complexType name="AdditionalKeyType">
+		<xsd:attribute name="key" type="xsd:string" />
+		<xsd:attribute name="value" type="xsd:string" />
 	</xsd:complexType>
 </xsd:schema>

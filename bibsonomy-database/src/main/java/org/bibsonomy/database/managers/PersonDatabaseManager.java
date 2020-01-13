@@ -61,6 +61,7 @@ import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.statistics.Statistics;
@@ -233,16 +234,34 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	/**
 	 * Returns a Person identified by an additional key value
 	 *
-	 * @param key
-	 * @param value
-	 * @param session
-	 * @return Person
+	 * @param key		additional key name
+	 * @param value		additional key value
+	 * @param session	db session
+	 * @return Person	retrieved person
 	 */
 	public Person getPersonByAdditionalKey(final String key, final String value, final DBSession session) {
 		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(null, key, value);
 		return this.queryForObject("getPersonByAdditionalKey", param, Person.class, session);
 	}
 
+
+	/**
+	 * Get the list of additional keys of a specified person
+	 * @param personId	specified person
+	 * @param session	db session
+	 * @return			list of additional keys
+	 */
+	public List<AdditionalKey> getAdditionalKeyByPerson(final String personId, final DBSession session) {
+		return this.queryForList("getAdditionalKeysByPerson", personId, AdditionalKey.class, session);
+	}
+
+	/**
+	 * Creates a new additional key and corresponding value for the specified Person
+	 * @param personId	specified person
+	 * @param key		new additional key name
+	 * @param value		additional key value
+	 * @param session	db session
+	 */
 	public void createAdditionalKey(final String personId, final String key, final String value, final DBSession session) {
 		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(personId, key, value);
 		this.insert("insertAdditionalKeyForPerson", param, session);
@@ -290,9 +309,11 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	}
 
 	/**
-	 * @param personId
-	 * @param key
-	 * @param session
+	 * Remove an additional key entry of the specified person
+	 *
+	 * @param personId	specified person
+	 * @param key		additional key name to remove
+	 * @param session	db session
 	 */
 	public void removePersonAdditionalKey(final String personId, final String key, final DBSession session) {
 		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(personId, key, null);
@@ -430,10 +451,11 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	}
 
 	/**
-	 * @param personId
-	 * @param key
-	 * @param value
-	 * @param session
+	 * Update an existing additional key of the specified person
+	 * @param personId 	specified person
+	 * @param key		additional key name to update
+	 * @param value		new additional key value
+	 * @param session	db session
 	 */
 	public void updateAdditionalKey(final String personId, final String key, final String value, final DBSession session) {
 		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(personId, key, value);

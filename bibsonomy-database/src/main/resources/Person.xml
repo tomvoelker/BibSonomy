@@ -29,7 +29,7 @@
 		AND person_additional_keys.value = #value#
 	</select>
 
-	<select id="getAdditionalKeysByPerson" resultMap="PersonCommon.simplePersonName" parameterClass="string">
+	<select id="getAdditionalKeysByPerson" resultMap="PersonCommon.additionalKey" parameterClass="string">
 		SELECT `key`, `value`
 		FROM person_additional_keys
 		WHERE person_id = #personId#
