@@ -3675,8 +3675,8 @@ public class DBLogic implements LogicInterface {
 				throw new UnsupportedOperationException("person cannot be found by it type " + idType);
 			}
 
-			if (this.permissionDBManager.isAdminOrSelf(this.loginUser, person.getUser())
-					|| this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, person.getUser(), GroupRole.ADMINISTRATOR)) {
+			if (present(person) && (this.permissionDBManager.isAdminOrSelf(this.loginUser, person.getUser())
+					|| this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, person.getUser(), GroupRole.ADMINISTRATOR))) {
 				List<AdditionalKey> additionalKeys = this.personDBManager.getAdditionalKeyByPerson(person.getPersonId(), session);
 				person.setAdditionalKeys(additionalKeys);
 			}
@@ -3694,8 +3694,8 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		try {
 			Person person = this.personDBManager.getPersonByAdditionalKey(key, value, session);
-			if (this.permissionDBManager.isAdminOrSelf(this.loginUser, person.getUser())
-					|| this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, person.getUser(), GroupRole.ADMINISTRATOR)) {
+			if (present(person) && (this.permissionDBManager.isAdminOrSelf(this.loginUser, person.getUser())
+					|| this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, person.getUser(), GroupRole.ADMINISTRATOR))) {
 				List<AdditionalKey> additionalKeys = this.personDBManager.getAdditionalKeyByPerson(person.getPersonId(), session);
 				person.setAdditionalKeys(additionalKeys);
 			}
