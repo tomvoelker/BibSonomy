@@ -261,6 +261,9 @@
 				<bean class="org.bibsonomy.database.managers.chain.group.get.GetGroupsBySearch">
 					<constructor-arg ref="groupDatabaseManager" />
 				</bean>
+				<bean class="org.bibsonomy.database.managers.chain.group.get.GetOrganizationGroups">
+					<constructor-arg ref="groupDatabaseManager" />
+				</bean>
 				<bean class="org.bibsonomy.database.managers.chain.group.get.GetAllGroups">
 					<constructor-arg ref="groupDatabaseManager" />
 				</bean>

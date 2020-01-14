@@ -15,6 +15,19 @@
 		ORDER BY i.group_name
 	</select>
 
+	<select id="getAllOrganizationGroups" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="groupParam">
+		SELECT <include refid="basicColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date
+		FROM
+		(SELECT * from groupids
+		WHERE `group` > 2
+		AND `organization` = 1
+		ORDER BY group_name
+		LIMIT #limit# OFFSET #offset#) i
+		JOIN group_memberships g USING (`group`)
+		JOIN user u ON (i.group_name = u.user_name)
+		ORDER BY i.group_name
+	</select>
+
 	<select id="getPendingGroups" resultMap="GroupCommon.group" parameterClass="groupParam">
 		SELECT <include refid="basicColumns" />, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage
 		FROM pending_groupids i 

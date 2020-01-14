@@ -67,6 +67,7 @@ public final class Context {
 		Context.urlHandlers.put(RESTConfig.CONCEPTS_URL, new ConceptsHandler());
 		Context.urlHandlers.put(RESTConfig.SYNC_URL, new SynchronizationHandler());
 		Context.urlHandlers.put(RESTConfig.PROJECTS_URL, new ProjectsHandler());
+		Context.urlHandlers.put(RESTConfig.ORGANIZATIONS_URL, new OrganizationsHandler());
 		Context.urlHandlers.put(RESTConfig.CRIS_LINKS_URL, new CRISLinksHandler());
 	}
 
