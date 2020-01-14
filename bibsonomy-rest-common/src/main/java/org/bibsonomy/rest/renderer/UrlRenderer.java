@@ -489,10 +489,10 @@ public class UrlRenderer {
 		return builder;
 	}
 
-	public UrlBuilder createUrlBuilderForPersonPostsByAdditionalKey(String key, String value) {
+	public UrlBuilder createUrlBuilderForPersonPostsByAdditionalKey(String keyName, String keyValue) {
 		UrlBuilder builder = createUrlBuilderForPersons();
-		builder.addPathElement(key);
-		builder.addPathElement(value);
+		builder.addPathElement(keyName);
+		builder.addPathElement(keyValue);
 		builder.addPathElement(RESTConfig.POSTS_URL);
 		return builder;
 	}

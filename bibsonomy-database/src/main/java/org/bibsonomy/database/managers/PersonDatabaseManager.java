@@ -234,13 +234,13 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	/**
 	 * Returns a Person identified by an additional key value
 	 *
-	 * @param key		additional key name
-	 * @param value		additional key value
-	 * @param session	db session
-	 * @return Person	retrieved person
+	 * @param keyName		additional key name
+	 * @param keyValue		additional key value
+	 * @param session		db session
+	 * @return Person		retrieved person
 	 */
-	public Person getPersonByAdditionalKey(final String key, final String value, final DBSession session) {
-		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(null, key, value);
+	public Person getPersonByAdditionalKey(final String keyName, final String keyValue, final DBSession session) {
+		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(null, keyName, keyValue);
 		return this.queryForObject("getPersonByAdditionalKey", param, Person.class, session);
 	}
 
@@ -257,13 +257,13 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * Creates a new additional key and corresponding value for the specified Person
-	 * @param personId	specified person
-	 * @param key		new additional key name
-	 * @param value		additional key value
-	 * @param session	db session
+	 * @param personId		specified person
+	 * @param keyName		new additional key name
+	 * @param keyValue		additional key value
+	 * @param session		db session
 	 */
-	public void createAdditionalKey(final String personId, final String key, final String value, final DBSession session) {
-		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(personId, key, value);
+	public void createAdditionalKey(final String personId, final String keyName, final String keyValue, final DBSession session) {
+		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(personId, keyName, keyValue);
 		this.insert("insertAdditionalKeyForPerson", param, session);
 	}
 
@@ -311,12 +311,12 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	/**
 	 * Remove an additional key entry of the specified person
 	 *
-	 * @param personId	specified person
-	 * @param key		additional key name to remove
-	 * @param session	db session
+	 * @param personId		specified person
+	 * @param keyName		additional key name to remove
+	 * @param session		db session
 	 */
-	public void removePersonAdditionalKey(final String personId, final String key, final DBSession session) {
-		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(personId, key, null);
+	public void removePersonAdditionalKey(final String personId, final String keyName, final DBSession session) {
+		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(personId, keyName, null);
 		this.delete("deleteAdditionalKeyForPerson", param, session);
 	}
 
@@ -452,13 +452,13 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * Update an existing additional key of the specified person
-	 * @param personId 	specified person
-	 * @param key		additional key name to update
-	 * @param value		new additional key value
-	 * @param session	db session
+	 * @param personId 		specified person
+	 * @param keyName		additional key name to update
+	 * @param keyValue		new additional key value
+	 * @param session		db session
 	 */
-	public void updateAdditionalKey(final String personId, final String key, final String value, final DBSession session) {
-		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(personId, key, value);
+	public void updateAdditionalKey(final String personId, final String keyName, final String keyValue, final DBSession session) {
+		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(personId, keyName, keyValue);
 		this.update("updateAdditionalKeyForPerson", param, session);
 	}
 

@@ -665,7 +665,7 @@
 	</xsd:complexType>
 
 	<xsd:complexType name="AdditionalKeyType">
-		<xsd:attribute name="key" type="xsd:string" />
-		<xsd:attribute name="value" type="xsd:string" />
+		<xsd:attribute name="keyName" type="xsd:string" />
+		<xsd:attribute name="keyValue" type="xsd:string" />
 	</xsd:complexType>
 </xsd:schema>

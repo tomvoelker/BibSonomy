@@ -51,20 +51,20 @@ import java.util.List;
  */
 public class GetPersonPostsByAdditionalKeyStrategy extends AbstractGetListStrategy<List<? extends Post<? extends Resource>>> {
 
-	private final String key;
-	private final String value;
+	private final String keyName;
+	private final String keyValue;
 	private final List<String> tags;
 	private final String search;
 
 	/**
 	 * @param context
-	 * @param key
-	 * @param value
+	 * @param keyName
+	 * @param keyValue
 	 */
-	public GetPersonPostsByAdditionalKeyStrategy(Context context, String key, String value) {
+	public GetPersonPostsByAdditionalKeyStrategy(Context context, String keyName, String keyValue) {
 		super(context);
-		this.key = key;
-		this.value = value;
+		this.keyName = keyName;
+		this.keyValue = keyValue;
 		this.tags = context.getTags(RESTConfig.TAGS_PARAM);
 		this.search = context.getStringAttribute(RESTConfig.SEARCH_PARAM, null);
 	}
@@ -82,7 +82,7 @@ public class GetPersonPostsByAdditionalKeyStrategy extends AbstractGetListStrate
 				.setEnd(this.getView().getEndValue())
 				.setTags(this.tags)
 				.setSearch(this.search);
-		Person person = this.getLogic().getPersonByAdditionalKey(this.key, this.value);
+		Person person = this.getLogic().getPersonByAdditionalKey(this.keyName, this.keyValue);
 		// Check, if a user has claimed this person and configured their person settings
 		if (person != null && person.getUser() != null) {
 			// Check, if the user set their person posts to gold standards or 'myown'-tagged posts
@@ -105,6 +105,6 @@ public class GetPersonPostsByAdditionalKeyStrategy extends AbstractGetListStrate
 
 	@Override
 	protected UrlBuilder getLinkPrefix() {
-		return this.getUrlRenderer().createUrlBuilderForPersonPostsByAdditionalKey(this.key, this.value);
+		return this.getUrlRenderer().createUrlBuilderForPersonPostsByAdditionalKey(this.keyName, this.keyValue);
 	}
 }

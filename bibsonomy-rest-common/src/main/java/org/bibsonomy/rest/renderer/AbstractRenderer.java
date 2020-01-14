@@ -792,8 +792,8 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private AdditionalKeyType createXmlAdditionalKey(AdditionalKey additionalKey) {
 		final AdditionalKeyType xmlAdditionalKey = new AdditionalKeyType();
-		xmlAdditionalKey.setKey(additionalKey.getKey());
-		xmlAdditionalKey.setValue(additionalKey.getValue());
+		xmlAdditionalKey.setKeyName(additionalKey.getKeyName());
+		xmlAdditionalKey.setKeyValue(additionalKey.getKeyValue());
 		return xmlAdditionalKey;
 	}
 

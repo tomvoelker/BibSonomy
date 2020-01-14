@@ -33,30 +33,30 @@ package org.bibsonomy.database.params.person;
  */
 public class PersonAdditionalKeyParam {
 	private final String personId;
-	private final String key;
-	private final String value;
+	private final String keyName;
+	private final String keyValue;
 
 	/**
 	 * Default constructor
 	 * @param personId
-	 * @param key
-	 * @param value
+	 * @param keyName
+	 * @param keyValue
 	 */
-	public PersonAdditionalKeyParam(String personId, String key, String value) {
+	public PersonAdditionalKeyParam(String personId, String keyName, String keyValue) {
 		this.personId = personId;
-		this.key = key;
-		this.value = value;
+		this.keyName = keyName;
+		this.keyValue = keyValue;
 	}
 
 	public String getPersonId() {
 		return personId;
 	}
 
-	public String getKey() {
-		return key;
+	public String getKeyName() {
+		return keyName;
 	}
 
-	public String getValue() {
-		return value;
+	public String getKeyValue() {
+		return keyValue;
 	}
 }

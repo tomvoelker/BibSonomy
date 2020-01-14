@@ -25,12 +25,12 @@
 		SELECT <include refid="commonPersonColumns"/>
 		FROM person_additional_keys
 		JOIN person USING(person_id)
-		WHERE person_additional_keys.key = #key#
-		AND person_additional_keys.value = #value#
+		WHERE person_additional_keys.key_name = #keyName#
+		AND person_additional_keys.key_value = #keyValue#
 	</select>
 
 	<select id="getAdditionalKeysByPerson" resultMap="PersonCommon.additionalKey" parameterClass="string">
-		SELECT `key`, `value`
+		SELECT key_name, key_value
 		FROM person_additional_keys
 		WHERE person_id = #personId#
 	</select>
@@ -58,8 +58,8 @@
 	</insert>
 
 	<insert id="insertAdditionalKeyForPerson" parameterClass="org.bibsonomy.database.params.person.PersonAdditionalKeyParam">
-		INSERT INTO person (<include refid="commonPersonAdditionalKeysColumns"/>)
-		VALUES (#personId#, #key#, #value#)
+		INSERT INTO person_additional_keys (<include refid="commonPersonAdditionalKeysColumns"/>)
+		VALUES (#personId#, #keyName#, #keyValue#)
 	</insert>
 	
 	<select id="getNames" resultMap="PersonCommon.personName" parameterClass="string">
@@ -130,9 +130,9 @@
 
 	<update id="updateAdditionalKeyForPerson" parameterClass="org.bibsonomy.database.params.person.PersonAdditionalKeyParam">
 		UPDATE person_additional_keys
-		SET value = #value#
+		SET key_value = #keyValue#
 		WHERE person_id = #personId#
-		AND key = #key#
+		AND key_name = #keyName#
 	</update>
 	
 	<delete id="removeResourceRelation" parameterClass="int">
@@ -148,7 +148,7 @@
 	<delete id="deleteAdditionalKeyForPerson" parameterClass="org.bibsonomy.database.params.person.PersonAdditionalKeyParam">
 		DELETE FROM person_additional_keys
 		WHERE person_id = #personId#
-		AND key = #key#
+		AND key_name = #keyName#
 	</delete>
 
 	<delete id="deletePersonNamesByPersonId" parameterClass="string">

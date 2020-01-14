@@ -382,7 +382,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		PERSON_DATABASE_MANAGER.removePersonAdditionalKey(personId, additionalKey, this.dbSession);
 
 		final Person person = PERSON_DATABASE_MANAGER.getPersonByAdditionalKey(additionalKey, additionalValue, this.dbSession);
-		assertThat(person.getPersonId(), is(personId));
+		assertThat(person, equalTo(null));
 	}
 
 	@Test

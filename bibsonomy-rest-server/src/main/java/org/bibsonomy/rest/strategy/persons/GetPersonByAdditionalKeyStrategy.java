@@ -48,23 +48,23 @@ import static org.bibsonomy.util.ValidationUtils.present;
  */
 public class GetPersonByAdditionalKeyStrategy extends Strategy {
 
-	private final String key;
-	private final String value;
+	private final String keyName;
+	private final String keyValue;
 
 	/**
 	 * @param context
 	 */
-	public GetPersonByAdditionalKeyStrategy(Context context, String key, String value) {
+	public GetPersonByAdditionalKeyStrategy(Context context, String keyName, String keyValue) {
 		super(context);
-		this.key = key;
-		this.value = value;
+		this.keyName = keyName;
+		this.keyValue = keyValue;
 	}
 
 	@Override
 	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ObjectMovedException, ObjectNotFoundException {
-		final Person person = this.getLogic().getPersonByAdditionalKey(this.key, this.value);
+		final Person person = this.getLogic().getPersonByAdditionalKey(this.keyName, this.keyValue);
 		if (!present(person)) {
-			throw new NoSuchResourceException("The requested person with " + this.key + " '" + this.value + "' does not exist.");
+			throw new NoSuchResourceException("The requested person with " + this.keyName + " '" + this.keyValue + "' does not exist.");
 		}
 		this.getRenderer().serializePerson(this.writer, person, new ViewModel());
 	}

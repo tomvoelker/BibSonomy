@@ -29,22 +29,22 @@ package org.bibsonomy.model.extra;
 
 public class AdditionalKey {
 
-	private String key;
-	private String value;
+	private String keyName;
+	private String keyValue;
 
-	public String getKey() {
-		return key;
+	public String getKeyName() {
+		return keyName;
 	}
 
-	public void setKey(String key) {
-		this.key = key;
+	public void setKeyName(String keyName) {
+		this.keyName = keyName;
 	}
 
-	public String getValue() {
-		return value;
+	public String getKeyValue() {
+		return keyValue;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public void setKeyValue(String keyValue) {
+		this.keyValue = keyValue;
 	}
 }

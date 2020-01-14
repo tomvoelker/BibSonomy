@@ -58,11 +58,11 @@ public interface PersonLogicInterface {
 
 	/**
 	 * gets the person by any additional key and value
-	 * @param key
-	 * @param value
+	 * @param keyName
+	 * @param keyValue
 	 * @return
 	 */
-	public Person getPersonByAdditionalKey(final String key, final String value);
+	public Person getPersonByAdditionalKey(final String keyName, final String keyValue);
 
 	/**
 	 * sets id for new persons

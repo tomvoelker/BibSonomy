@@ -848,8 +848,8 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	@Override
-	public Person getPersonByAdditionalKey(String key, String value) {
-		return this.logicinterface.getPersonByAdditionalKey(key, value);
+	public Person getPersonByAdditionalKey(String keyName, String keyValue) {
+		return this.logicinterface.getPersonByAdditionalKey(keyName, keyValue);
 	}
 
 	/* (non-Javadoc)

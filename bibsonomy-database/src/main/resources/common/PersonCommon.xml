@@ -96,8 +96,8 @@
 	</resultMap>
 
 	<resultMap id="additionalKey" class="additionalKey">
-		<result property="key" column="key" javaType="java.lang.String"/>
-		<result property="value" column="value" javaType="java.lang.String"/>
+		<result property="keyName" column="key_name" javaType="java.lang.String"/>
+		<result property="keyValue" column="key_value" javaType="java.lang.String"/>
 	</resultMap>
 
 	<!-- FIXME: use table alias instead of full table name -->
@@ -142,6 +142,6 @@
 	</sql>
 
 	<sql id="commonPersonAdditionalKeysColumns">
-		`person_id`, `key`, `value`
+		person_id, key_name, key_value
 	</sql>
 </sqlMap>
