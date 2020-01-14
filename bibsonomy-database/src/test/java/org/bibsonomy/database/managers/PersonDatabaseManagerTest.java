@@ -38,6 +38,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.util.PersonMatchUtils;
 import org.bibsonomy.testutil.TestUtils;
 import org.junit.Before;
@@ -343,6 +344,13 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		relations = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts("w.test.1", 100, 1, this.dbSession);
 		assertThat(relations.size(), equalTo(2));
+	}
+
+	@Test
+	public void testGetAdditionalKeysByPerson() {
+		final String personId = "w.test.1";
+		final List<AdditionalKey> additionalKeys = PERSON_DATABASE_MANAGER.getAdditionalKeyByPerson(personId, this.dbSession);
+		assertThat(additionalKeys.size(), greaterThan(1));
 	}
 
 	@Test
