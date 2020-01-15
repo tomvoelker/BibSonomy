@@ -52,12 +52,14 @@ public class DOIUtils {
 	 * Host name of the DOI resolver. 
 	 */
 	public static final String DX_DOI_ORG = "dx.doi.org";
+	
+	public static final String DOI_ORG = "doi.org";
 	/**
 	 * URL of the DOI resolver.
 	 */
 	public static final String DX_DOI_ORG_URL = "http://" + DX_DOI_ORG + "/";
 
-	private static final Pattern HOST_PATTERN = Pattern.compile(".*" + DX_DOI_ORG);
+	private static final Pattern HOST_PATTERN = Pattern.compile(".*" + DOI_ORG);
 
 	private static final String NON_NUMBERS_OR_LETTERS = "[^0-9\\p{L}]*?";
 
