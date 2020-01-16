@@ -35,6 +35,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.user.UserChainElement;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 
@@ -48,7 +49,10 @@ public class GetUsersByGroup extends UserChainElement {
 	@Override
 	protected List<User> handle(final UserParam param, final DBSession session) {
 		final List<User> userList = new LinkedList<>();
-		for (final GroupMembership ms : this.groupDb.getGroup(param.getUserName(), param.getRequestedGroupName(), false, false, session).getMemberships()) {
+		Group group = this.groupDb.getGroup(param.getUserName(), param.getRequestedGroupName(), false, false, session);
+		// return empty user list if organization is requested and found group is not an organization
+		if (GroupingEntity.ORGANIZATION.equals(param.getGrouping()) && !group.isOrganization()) return userList;
+		for (final GroupMembership ms : group.getMemberships()) {
 			userList.add(ms.getUser());
 		}
 		return userList;
@@ -56,7 +60,8 @@ public class GetUsersByGroup extends UserChainElement {
 
 	@Override
 	protected boolean canHandle(final UserParam param) {
-		return (GroupingEntity.GROUP.equals(param.getGrouping()) && 
+		return ((GroupingEntity.GROUP.equals(param.getGrouping()) ||
+				GroupingEntity.ORGANIZATION.equals(param.getGrouping())) &&
 				present(param.getRequestedGroupName()));
 	}
 }
