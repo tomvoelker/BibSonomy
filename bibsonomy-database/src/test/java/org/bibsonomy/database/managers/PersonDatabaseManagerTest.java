@@ -396,6 +396,17 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertThat(person.getPersonId(), is(personId));
 	}
 
+	@Test
+	public void testUpdateOnInsertDuplicateAdditionalKey() {
+		final String personId = "w.test.4";
+		final String addKey = "addKey.1";
+		final String addKeyValue = personId + "." + addKey + ".new";
+		PERSON_DATABASE_MANAGER.createAdditionalKey(personId, addKey, addKeyValue, this.dbSession);
+
+		final Person person = PERSON_DATABASE_MANAGER.getPersonByAdditionalKey(addKey, addKeyValue, this.dbSession);
+		assertThat(person.getPersonId(), is(personId));
+	}
+
 	private static PersonMatch getMatchById(List<PersonMatch> matches, int id) {
 		for (PersonMatch match : matches) {
 			if (match.getMatchID() == id) {

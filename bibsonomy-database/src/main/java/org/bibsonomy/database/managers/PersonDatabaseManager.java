@@ -334,6 +334,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	public void updatePerson(final Person person, final DBSession session) {
 		this.updatePersonField(person, "Person", session); // XXX: this is not a single field update
+		this.updatePersonAdditionalKeys(person, session);
 	}
 
 	private JobResult updatePersonField(final Person person, final String fieldName, final DBSession session) {
@@ -361,6 +362,28 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			session.endTransaction();
 		}
 
+		return JobResult.buildSuccess();
+	}
+
+	private JobResult updatePersonAdditionalKeys(final Person person, final DBSession session) {
+		session.beginTransaction();
+		try {
+			// first check if the person is in the database
+			final String personId = person.getPersonId();
+
+			final Person personInDB = this.getPersonById(personId, session);
+			if (!present(personInDB)) {
+				return JobResult.buildFailure(Collections.singletonList(new MissingObjectErrorMessage(personId, "person")));
+			}
+			// TODO inform plugins about key updates?
+			List<AdditionalKey> keys = person.getAdditionalKeys();
+			for (AdditionalKey key : keys) {
+				this.createAdditionalKey(personId, key.getKeyName(), key.getKeyValue(), session);
+			}
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
 		return JobResult.buildSuccess();
 	}
 

@@ -803,7 +803,8 @@ INSERT INTO `person_additional_keys` (`person_id`, `key_name`, `key_value`) VALU
 ('w.test.1', 'addKey.1', 'w.test.1.addKey.1'),
 ('w.test.1', 'addKey.2', 'w.test.1.addKey.2'),
 ('w.test.2', 'addKey.1', 'w.test.2.addKey.2'),
-('w.test.3', 'addKey.1', 'w.test.3.addKey.1');
+('w.test.3', 'addKey.1', 'w.test.3.addKey.1'),
+('w.test.4', 'addKey.1', 'w.test.4.addKey.1');
 
 -- FIXME: this data is broken
 INSERT INTO `gold_standard` (content_id, simhash0, simhash1, simhash2, simhash3, author, title, change_date, date, user_name, content_type) VALUES

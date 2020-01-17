@@ -60,6 +60,7 @@
 	<insert id="insertAdditionalKeyForPerson" parameterClass="org.bibsonomy.database.params.person.PersonAdditionalKeyParam">
 		INSERT INTO person_additional_keys (<include refid="commonPersonAdditionalKeysColumns"/>)
 		VALUES (#personId#, #keyName#, #keyValue#)
+		ON DUPLICATE KEY UPDATE key_value = #keyValue#
 	</insert>
 	
 	<select id="getNames" resultMap="PersonCommon.personName" parameterClass="string">
