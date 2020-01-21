@@ -53,6 +53,9 @@ public class DOIUtils {
 	 */
 	public static final String DX_DOI_ORG = "dx.doi.org";
 	
+	/**
+	 * DOI host name and possible alternative host name of the DOI resolver. 
+	 */
 	public static final String DOI_ORG = "doi.org";
 	/**
 	 * URL of the DOI resolver.
