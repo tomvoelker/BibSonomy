@@ -168,7 +168,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 
 			// set the scope/searchtype
 			if (command.isEsIndex()) {
-				command.setScope(SearchType.ELASTICSEARCH);
+				command.setScope(SearchType.SEARCH);
 			} else {
 				command.setScope(SearchType.LOCAL);
 			}

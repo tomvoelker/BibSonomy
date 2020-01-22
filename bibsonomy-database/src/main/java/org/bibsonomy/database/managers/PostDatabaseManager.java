@@ -960,15 +960,15 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @return list of posts
 	 */
 	public List<Post<R>> getPostsForUser(final String loginUserName, final String requestedUserName, final SearchType searchType, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final PostAccess postAccess, final Set<Filter> filters, SortOrder sortOrder, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		if(searchType==SearchType.FEDERATED){
-			return this.resourceSearch.getPosts(loginUserName, requestedUserName, null, null, null, searchType, null, null, null, null, null, null, null, null, null, Order.NONE, limit, offset);
+		switch(searchType) {
+			case FEDERATED:
+				return this.resourceSearch.getPosts(loginUserName, requestedUserName, null, null, null, searchType, null, null, null, null, null, null, null, null, null, Order.NONE, limit, offset);
+			case SEARCH:
+				return this.resourceSearch.getPosts(loginUserName, requestedUserName, null, null, null, searchType, null, null, null, null, null, null, null, null, null, sortOrder, limit, offset);
+			case LOCAL:
+			default:
+				return this.getPostsForUser(loginUserName, requestedUserName, simHash, groupId, visibleGroupIDs, postAccess, filters, limit, offset, systemTags, session);
 		}
-
-		if(searchType == SearchType.ELASTICSEARCH) {
-			return this.resourceSearch.getPosts(loginUserName, requestedUserName, null, null, null, searchType, null, null, null, null, null, null, null, null, null, sortOrder, limit, offset);
-		}
-
-		return this.getPostsForUser(loginUserName, requestedUserName, simHash, groupId, visibleGroupIDs, postAccess, filters, limit, offset, systemTags, session);
 	}
 
 	/**

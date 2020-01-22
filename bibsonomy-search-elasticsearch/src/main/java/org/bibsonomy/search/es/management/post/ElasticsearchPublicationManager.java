@@ -141,7 +141,7 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 
 	private void updateIndexForPersonWithId(String indexName, LRUMap updatedInterhashes, final String personId) {
 		final TermQueryBuilder query = QueryBuilders.termQuery(Fields.PERSON_ENTITY_IDS_FIELD_NAME, personId);
-		final SearchHits hits = this.search(query, null,0, 1000, null, null);
+		final SearchHits hits = this.search(query, null, 0, 1000, null, null);
 		if (hits != null) {
 			for (final SearchHit hit : hits.getHits()) {
 				final Map<String, Object> doc = hit.getSourceAsMap();

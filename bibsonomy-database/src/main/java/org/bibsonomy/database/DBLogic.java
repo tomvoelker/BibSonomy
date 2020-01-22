@@ -756,7 +756,7 @@ public class DBLogic implements LogicInterface {
 			}
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, grouping, groupingName, tags, hash, sortOrder.getOrder(), start, end, startDate, endDate, search, filters, this.loginUser);
-				// sets the search type to elasticSearch
+				// sets the search type to
 				param.setSearchType(searchType);
 				// sets the sort order to elasticSearch
 				param.setSortOrder(sortOrder);
@@ -782,9 +782,9 @@ public class DBLogic implements LogicInterface {
 
 			if (resourceType == Bookmark.class) {
 				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, resourceType, grouping, groupingName, tags, hash, sortOrder.getOrder(), start, end, startDate, endDate, search, filters, this.loginUser);
-				// sets the search type to elasticSearch
+				// sets the search type to search index
 				param.setSearchType(searchType);
-				// sets the sort order to elasticSearch
+				// sets the sort order to search index
 				param.setSortOrder(sortOrder);
 				final List<Post<T>> bookmarks = (List) this.bookmarkDBManager.getPosts(param, session);
 				SystemTagsExtractor.handleHiddenSystemTags(bookmarks, this.loginUser.getName());

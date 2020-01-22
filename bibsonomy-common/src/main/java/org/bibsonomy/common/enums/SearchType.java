@@ -31,7 +31,6 @@ package org.bibsonomy.common.enums;
  *
  * @author lutful
  */
-@Deprecated // TODO: discuss
 public enum SearchType {
 
 	/**
@@ -40,9 +39,9 @@ public enum SearchType {
 	FEDERATED,
 
 	/**
-	 * search public posts with elasticsearch, results might not be matching recent changes in the DB
+	 * search public posts with search index, results might not be matching recent changes in the DB
 	 */
-	ELASTICSEARCH,
+	SEARCH,
 
 	/**
 	 * search all viewable posts on the local system
