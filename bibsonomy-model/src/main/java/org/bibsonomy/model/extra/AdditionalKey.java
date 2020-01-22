@@ -32,6 +32,15 @@ public class AdditionalKey {
 	private String keyName;
 	private String keyValue;
 
+	public AdditionalKey() {
+
+	}
+
+	public AdditionalKey(String keyName, String keyValue) {
+		this.keyName = keyName;
+		this.keyValue = keyValue;
+	}
+
 	public String getKeyName() {
 		return keyName;
 	}

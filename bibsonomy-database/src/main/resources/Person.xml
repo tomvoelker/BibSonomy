@@ -29,6 +29,13 @@
 		AND person_additional_keys.key_value = #keyValue#
 	</select>
 
+	<select id="getAdditionalKeyByPerson" resultMap="PersonCommon.additionalKey" parameterClass="org.bibsonomy.database.params.person.PersonAdditionalKeyParam">
+		SELECT key_name, key_value
+		FROM person_additional_keys
+		WHERE person_id = #personId#
+		AND key_name = #keyname#
+	</select>
+
 	<select id="getAdditionalKeysByPerson" resultMap="PersonCommon.additionalKey" parameterClass="string">
 		SELECT key_name, key_value
 		FROM person_additional_keys

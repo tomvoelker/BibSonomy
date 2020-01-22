@@ -33,6 +33,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
@@ -160,5 +161,45 @@ public interface PersonLogicInterface {
 	 * @return
 	 */
 	public int getUserPersonPostsStyleSettings(String userName);
+
+
+	/**
+	 * Get list of all additional keys of a person
+	 * @param person	person to get the keys from
+	 * @return 			list of additional keys
+	 */
+	public List<AdditionalKey> getAdditionalKeys(Person person);
+
+	/**
+	 * Get a specific additional key of a person
+	 * @param person 	person to get the key from
+	 * @param keyName 	additional key specified by this name
+	 * @return 			specific additional key
+	 */
+	public AdditionalKey getAdditionalKey(Person person, String keyName);
+
+	/**
+	 * Create an additional key for the specified person
+	 * @param person	person
+	 * @param keyName	key name
+	 * @param keyValue	key value
+	 */
+	public void createAdditionalKey(Person person, String keyName, String keyValue);
+
+	/**
+	 * Delete an additional key for a specified person with the given key name
+	 * @param person	person
+	 * @param keyName	key name
+	 */
+	public void removeAdditionalKey(Person person, String keyName);
+
+
+	/**
+	 * Update an additional key for a specified person
+	 * @param person	person
+	 * @param keyName	key name
+	 * @param keyValue	key value
+	 */
+	public void updateAdditionalKey(Person person, String keyName, String keyValue);
 
 }

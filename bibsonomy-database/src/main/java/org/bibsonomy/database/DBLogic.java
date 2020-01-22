@@ -3653,7 +3653,7 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/* (non-Javadoc)get
+	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonById(int)
 	 */
 	@Override
@@ -3677,8 +3677,7 @@ public class DBLogic implements LogicInterface {
 
 			if (present(person) && (this.permissionDBManager.isAdminOrSelf(this.loginUser, person.getUser())
 					|| this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, person.getUser(), GroupRole.ADMINISTRATOR))) {
-				List<AdditionalKey> additionalKeys = this.personDBManager.getAdditionalKeyByPerson(person.getPersonId(), session);
-				person.setAdditionalKeys(additionalKeys);
+				person.setAdditionalKeys(this.getAdditionalKeys(person));
 			}
 			return person;
 		} finally {
@@ -3686,7 +3685,7 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/* (non-Javadoc)get
+	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonByAdditionalKey(String, String)
 	 */
 	@Override
@@ -3696,10 +3695,75 @@ public class DBLogic implements LogicInterface {
 			Person person = this.personDBManager.getPersonByAdditionalKey(key, value, session);
 			if (present(person) && (this.permissionDBManager.isAdminOrSelf(this.loginUser, person.getUser())
 					|| this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, person.getUser(), GroupRole.ADMINISTRATOR))) {
-				List<AdditionalKey> additionalKeys = this.personDBManager.getAdditionalKeyByPerson(person.getPersonId(), session);
-				person.setAdditionalKeys(additionalKeys);
+				person.setAdditionalKeys(this.getAdditionalKeys(person));
 			}
 			return person;
+		} finally {
+			session.close();
+		}
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getAdditionalKeys(Person)
+	 */
+	@Override
+	public List<AdditionalKey> getAdditionalKeys(Person person) {
+		final DBSession session = this.openSession();
+		try {
+			return this.personDBManager.getAdditionalKeysByPerson(person.getPersonId(), session);
+		} finally {
+			session.close();
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getAdditionalKey(Person, String)
+	 */
+	@Override
+	public AdditionalKey getAdditionalKey(Person person, String keyName) {
+		final DBSession session = this.openSession();
+		try {
+			return this.personDBManager.getAdditionalKeyByPerson(person.getPersonId(), keyName, session);
+		} finally {
+			session.close();
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createAdditionalKey(Person, String, String)
+	 */
+	@Override
+	public void createAdditionalKey(Person person, String keyName, String keyValue) {
+		final DBSession session = this.openSession();
+		try {
+			this.personDBManager.createAdditionalKey(person.getPersonId(), keyName, keyValue, session);
+		} finally {
+			session.close();
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removeAdditionalKey(Person, String)
+	 */
+	@Override
+	public void removeAdditionalKey(Person person, String keyName) {
+		final DBSession session = this.openSession();
+		try {
+			this.personDBManager.removePersonAdditionalKey(person.getPersonId(), keyName, session);
+		} finally {
+			session.close();
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#updateAdditionalKey(Person, String, String)
+	 */
+	@Override
+	public void updateAdditionalKey(Person person, String keyName, String keyValue) {
+		final DBSession session = this.openSession();
+		try {
+			this.personDBManager.updateAdditionalKey(person.getPersonId(), keyName, keyValue, session);
 		} finally {
 			session.close();
 		}
@@ -3718,6 +3782,7 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
+
 
 	/**
 	 * @param byInterHash
