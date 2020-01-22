@@ -9,6 +9,13 @@ import java.util.List;
 
 public class SortingUtils {
 
+	public static List<Pair<String, SortOrder>> buildSortParameters(org.bibsonomy.model.SortOrder sortOrder, String type) {
+		if (type.equals("publication")) {
+			return buildPublicationSortParameters(sortOrder);
+		}
+		return buildSortParameters(sortOrder);
+	}
+
 	/**
 	 * Takes a sort order and creates a list of sort parameters.
 	 * These are pairs contain the attribute names in the searchindex and
@@ -67,7 +74,7 @@ public class SortingUtils {
 		switch (sortOrder.getOrder()) {
 			// only supported order type for bookmarks
 			case TITLE:
-				sortParameters.add(new Pair<>(Fields.Search.TITLE, esSortOrder));
+				sortParameters.add(new Pair<>(Fields.Sorting.TITLE, esSortOrder));
 				break;
 			case DATE:
 				sortParameters.add(new Pair<>(Fields.DATE, esSortOrder));

@@ -60,6 +60,9 @@ public final class ESConstants {
 	/** normalizer attribute */
 	public static final String NORMALIZER = "normalizer";
 
+	/** analyzer attribute */
+	public static final String ANALYZER = "analyzer";
+
 	/** the registered lowercase normalizer */
 	public static final String LOWERCASE_NORMALIZER = "lowercase_normalizer";
 
@@ -281,7 +284,7 @@ public final class ESConstants {
 			}
 		}
 
-		public interface Search {
+		public interface Sorting {
 			/** the title cleaned up */
 			String TITLE = "_title";
 			String BOOKTITLE = "_booktitle";

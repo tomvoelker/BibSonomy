@@ -76,16 +76,16 @@ public class PostEntityInformationProvider<R extends Resource> extends EntityInf
 					ESConstants.Fields.Publication.TYPE,
 					ESConstants.Fields.Publication.URL,
 					ESConstants.Fields.Publication.VOLUME,
-					ESConstants.Fields.Search.TITLE,
-					ESConstants.Fields.Search.BOOKTITLE,
-					ESConstants.Fields.Search.JOURNAL,
-					ESConstants.Fields.Search.SERIES,
-					ESConstants.Fields.Search.PUBLISHER,
-					ESConstants.Fields.Search.AUTHOR,
-					ESConstants.Fields.Search.EDITOR,
-					ESConstants.Fields.Search.SCHOOL,
-					ESConstants.Fields.Search.INSTITUTION,
-					ESConstants.Fields.Search.ORGANIZATION
+					ESConstants.Fields.Sorting.TITLE,
+					ESConstants.Fields.Sorting.BOOKTITLE,
+					ESConstants.Fields.Sorting.JOURNAL,
+					ESConstants.Fields.Sorting.SERIES,
+					ESConstants.Fields.Sorting.PUBLISHER,
+					ESConstants.Fields.Sorting.AUTHOR,
+					ESConstants.Fields.Sorting.EDITOR,
+					ESConstants.Fields.Sorting.SCHOOL,
+					ESConstants.Fields.Sorting.INSTITUTION,
+					ESConstants.Fields.Sorting.ORGANIZATION
 	);
 
 	static {

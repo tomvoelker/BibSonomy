@@ -243,7 +243,7 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 	 */
 	protected void convertResourceInternal(Map<String, Object> jsonDocument, R resource) {
 		jsonDocument.put(Fields.Resource.TITLE, resource.getTitle());
-		jsonDocument.put(Fields.Search.TITLE, BibTexUtils.cleanBibTex(resource.getTitle()));
+		jsonDocument.put(Fields.Sorting.TITLE, resource.getTitle().toLowerCase());
 		jsonDocument.put(Fields.Resource.INTRAHASH, resource.getIntraHash());
 		jsonDocument.put(Fields.Resource.INTERHASH, resource.getInterHash());
 		this.convertResource(jsonDocument, resource);

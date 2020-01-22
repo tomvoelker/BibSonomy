@@ -295,8 +295,7 @@ public class ElasticsearchRESTClient implements ESClient {
 			}
 
 			if (present(sortOrder)) {
-				List<Pair<String, SortOrder>> sortParameters = type.equals("publication") ?
-								SortingUtils.buildPublicationSortParameters(sortOrder) : SortingUtils.buildSortParameters(sortOrder);
+				List<Pair<String, SortOrder>> sortParameters = SortingUtils.buildSortParameters(sortOrder, type);
 				for (Pair<String, SortOrder> param : sortParameters) {
 					searchSourceBuilder.sort(param.getFirst(), param.getSecond());
 				}

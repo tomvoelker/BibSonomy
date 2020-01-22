@@ -309,7 +309,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		jsonDocument.put(Fields.Publication.YEAR, resource.getYear());
 
 		jsonDocument.put(Fields.Publication.DOCUMENTS, convertDocuments(resource.getDocuments()));
-		buildSearchAttributesFromResource(jsonDocument, resource);
+		buildSortingAttributesFromResource(jsonDocument, resource);
 	}
 
 	private static String getSpecialMiscFieldValue(Map<String, String> miscField, String key) {
@@ -348,20 +348,19 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		return list;
 	}
 
-	private static void buildSearchAttributesFromResource(Map<String, Object> jsonDocument, BibTex resource) {
-		jsonDocument.put(Fields.Search.TITLE, BibTexUtils.cleanBibTex(resource.getTitle()).toLowerCase());
-		jsonDocument.put(Fields.Search.BOOKTITLE, BibTexUtils.cleanBibTex(resource.getBooktitle()).toLowerCase());
-		jsonDocument.put(Fields.Search.JOURNAL, BibTexUtils.cleanBibTex(resource.getJournal()).toLowerCase());
-		jsonDocument.put(Fields.Search.SERIES, BibTexUtils.cleanBibTex(resource.getSeries()).toLowerCase());
-		jsonDocument.put(Fields.Search.PUBLISHER, BibTexUtils.cleanBibTex(resource.getPublisher()).toLowerCase());
-		jsonDocument.put(Fields.Search.SCHOOL, BibTexUtils.cleanBibTex(resource.getSchool()).toLowerCase());
-		jsonDocument.put(Fields.Search.INSTITUTION, BibTexUtils.cleanBibTex(resource.getInstitution()).toLowerCase());
-		jsonDocument.put(Fields.Search.ORGANIZATION, BibTexUtils.cleanBibTex(resource.getOrganization()).toLowerCase());
+	private static void buildSortingAttributesFromResource(Map<String, Object> jsonDocument, BibTex resource) {
+		jsonDocument.put(Fields.Sorting.BOOKTITLE, BibTexUtils.cleanBibTex(resource.getBooktitle()).toLowerCase());
+		jsonDocument.put(Fields.Sorting.JOURNAL, BibTexUtils.cleanBibTex(resource.getJournal()).toLowerCase());
+		jsonDocument.put(Fields.Sorting.SERIES, BibTexUtils.cleanBibTex(resource.getSeries()).toLowerCase());
+		jsonDocument.put(Fields.Sorting.PUBLISHER, BibTexUtils.cleanBibTex(resource.getPublisher()).toLowerCase());
+		jsonDocument.put(Fields.Sorting.SCHOOL, BibTexUtils.cleanBibTex(resource.getSchool()).toLowerCase());
+		jsonDocument.put(Fields.Sorting.INSTITUTION, BibTexUtils.cleanBibTex(resource.getInstitution()).toLowerCase());
+		jsonDocument.put(Fields.Sorting.ORGANIZATION, BibTexUtils.cleanBibTex(resource.getOrganization()).toLowerCase());
 		if (present(resource.getAuthor())) {
-			jsonDocument.put(Fields.Search.AUTHOR, BibTexUtils.cleanBibTex(convertToPersonIndex(resource.getAuthor())).toLowerCase());
+			jsonDocument.put(Fields.Sorting.AUTHOR, BibTexUtils.cleanBibTex(convertToPersonIndex(resource.getAuthor())).toLowerCase());
 		}
 		if (present(resource.getEditor())) {
-			jsonDocument.put(Fields.Search.EDITOR, BibTexUtils.cleanBibTex(convertToPersonIndex(resource.getEditor())).toLowerCase());
+			jsonDocument.put(Fields.Sorting.EDITOR, BibTexUtils.cleanBibTex(convertToPersonIndex(resource.getEditor())).toLowerCase());
 		}
 	}
 
@@ -409,19 +408,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 * @return
 	 */
 	private static String convertToPersonIndex(List<PersonName> persons) {
-		final StringBuilder stringBuilder = new StringBuilder();
-
-
-		for (final PersonName person : persons) {
-			stringBuilder.append(person.getLastName());
-			if (person.getFirstName() != null) {
-				stringBuilder.append(" ");
-				stringBuilder.append(person.getFirstName());
-			}
-			stringBuilder.append(" ");
-		}
-
-		return stringBuilder.toString();
+		return PersonNameUtils.serializePersonNames(persons, true, " ");
 	}
 
 	/* (non-Javadoc)
