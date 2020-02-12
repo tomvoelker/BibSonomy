@@ -26,28 +26,32 @@
  */
 package org.bibsonomy.webapp.controller;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.GroupResourceViewCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+
+import java.util.List;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Controller for Grouppages
@@ -99,8 +103,26 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), filter, Order.NONE, command.getStartDate(), command.getEndDate(), entriesPerPage);
-			this.postProcessAndSortList(command, resourceType);
+
+			// set order, default to rank if sort page attribute unknown or equals 'relavance'
+			command.setSortKey(SortKey.getByName(command.getSortPage()));
+			// set sorting criteriums list
+			List<SortKey> sortKeys = SortUtils.parseSortKeys(command.getSortPage());
+			List<SortOrder> sortOrders = SortUtils.parseSortOrders(command.getSortPageOrder());
+			List<SortCriterium> sortCriteriums = SortUtils.generateSortCriteriums(sortKeys, sortOrders);
+			command.setSortCriteriums(sortCriteriums);
+
+			// set the scope/searchtype
+			if (command.isEsIndex()) {
+				command.setScope(SearchType.SEARCHINDEX);
+			} else {
+				command.setScope(SearchType.LOCAL);
+			}
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), command.getFilter(), command.getSortCriteriums(), command.getStartDate(), command.getEndDate(), entriesPerPage);
+			// secondary sorting, if not using elasticsearch index
+			if (!command.isEsIndex()) {
+				this.postProcessAndSortList(command, resourceType);
+			}
 
 			// retrieve resource counts, if no tags are given
 			if (requTags.size() == 0 && filter != FilterEntity.JUST_PDF) {
@@ -115,7 +137,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 				 * handle the "relevant for group" pages
 				 */
 				command.setPageTitle("relevant for :: " + groupingName); // TODO: i18n
-				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), Order.DATE, 0, 20, null);
+				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), SortKey.DATE, 0, 20, null);
 				this.endTiming();
 				/*
 				 * Remove "relevant:for" from tags such that only the remaining
@@ -145,7 +167,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			command.setGroup(group);
 
 			if (requTags.size() > 0) {
-				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), Order.DATE, 0, 20, null);
+				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), SortKey.DATE, 0, 20, null);
 			}
 
 			this.endTiming();

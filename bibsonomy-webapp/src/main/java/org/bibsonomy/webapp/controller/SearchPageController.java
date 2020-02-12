@@ -28,20 +28,22 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.SortOrder;
-import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.enums.SortDirection;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.search.InvalidSearchRequestException;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.SearchViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -76,12 +78,15 @@ public class SearchPageController extends SingleResourceListController implement
 
 			// set order, default to rank if sort page attribute unknown or equals 'relavance'
 			try {
-				command.setOrder(Order.getOrderByName(command.getSortPage()));
+				command.setSortKey(SortKey.getByName(command.getSortPage()));
 			} catch (IllegalArgumentException e){
-				command.setOrder(Order.RANK);
+				command.setSortKey(SortKey.RANK);
 			}
-			// set sorting order and direction
-			command.setSortOrder(new SortOrder(command.getOrder(), SortDirection.getByName(command.getSortPageOrder())));
+			// set sorting criteriums list
+			List<SortKey> sortKeys = SortUtils.parseSortKeys(command.getSortPage());
+			List<SortOrder> sortOrders = SortUtils.parseSortOrders(command.getSortPageOrder());
+			List<SortCriterium> sortCriteriums = SortUtils.generateSortCriteriums(sortKeys, sortOrders);
+			command.setSortCriteriums(sortCriteriums);
 
 			this.startTiming(format);
 			String search = command.getRequestedSearch();
@@ -130,8 +135,10 @@ public class SearchPageController extends SingleResourceListController implement
 			
 			// no search given, but a grouping, reset the order to added
 			if (!present(search)){
-				command.setOrder(Order.DATE);
-				command.setSortOrder(new SortOrder(command.getOrder(), SortDirection.getByName(command.getSortPageOrder())));
+				command.setSortKey(SortKey.DATE);
+				List<SortCriterium> sortCriteriumsNoSearch = new ArrayList<>();
+				sortCriteriumsNoSearch.add(new SortCriterium(command.getSortKey(), SortOrder.DESC));
+				command.setSortCriteriums(sortCriteriumsNoSearch);
 			}
 
 			// if grouping entity set to GroupingEntity.ALL, database only allows 1000 tags maximum
@@ -146,7 +153,7 @@ public class SearchPageController extends SingleResourceListController implement
 			for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 	
 				this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, searchType,
-								null, command.getSortOrder(), command.getStartDate(), command.getEndDate(),
+								null, command.getSortCriteriums(), command.getStartDate(), command.getEndDate(),
 								command.getListCommand(resourceType).getEntriesPerPage());
 
 				// remove duplicates depending on command settings
@@ -184,7 +191,7 @@ public class SearchPageController extends SingleResourceListController implement
 	public SearchViewCommand instantiateCommand() {
 		final SearchViewCommand command = new SearchViewCommand();
 		// set the order to rank by default
-		command.setOrder(Order.RANK);
+		command.setSortKey(SortKey.RANK);
 		command.setSortPage("relevance");
 		return command;
 	}

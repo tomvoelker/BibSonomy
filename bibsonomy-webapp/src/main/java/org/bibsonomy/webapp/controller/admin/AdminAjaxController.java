@@ -41,6 +41,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
@@ -50,7 +51,6 @@ import org.bibsonomy.model.EvaluatorUser;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.command.ajax.AdminAjaxCommand;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
@@ -235,7 +235,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 			if (command.getShowSpamPosts().equals("true")) {
 				filters = Sets.<Filter>asSet(FilterEntity.ADMIN_SPAM_POSTS);
 			}
-			final List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, SearchType.LOCAL, filters, Order.DATE, null, null, 0, 5);
+			final List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, SearchType.LOCAL, filters, SortKey.DATE, null, null, 0, 5);
 			command.setBookmarks(bookmarks);
 
 			final int totalBookmarks = this.logic.getPostStatistics(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, filters, null, null, null, 0, 100).getCount();

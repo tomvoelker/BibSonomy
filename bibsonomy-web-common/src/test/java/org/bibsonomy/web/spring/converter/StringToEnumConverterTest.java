@@ -26,12 +26,12 @@
  */
 package org.bibsonomy.web.spring.converter;
 
-import static org.junit.Assert.assertEquals;
-
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.model.enums.Order;
 import org.junit.Test;
 import org.springframework.core.convert.converter.Converter;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author dzo
@@ -43,10 +43,10 @@ public class StringToEnumConverterTest {
 	
 	@Test
 	public void testUpperCase() {
-		final Converter<String, Order> orderConverter = createConverter(Order.class);
+		final Converter<String, SortKey> orderConverter = createConverter(SortKey.class);
 		
-		assertEquals(Order.DATE, orderConverter.convert("ADDED"));
-		assertEquals(Order.FOLKRANK, orderConverter.convert("FOLKRANK"));
+		assertEquals(SortKey.DATE, orderConverter.convert("ADDED"));
+		assertEquals(SortKey.FOLKRANK, orderConverter.convert("FOLKRANK"));
 		
 		final Converter<String, UserRelation> userRelationConverter = createConverter(UserRelation.class);
 		
@@ -57,10 +57,10 @@ public class StringToEnumConverterTest {
 	
 	@Test
 	public void testLowerCase() {
-		final Converter<String, Order> orderConverter = createConverter(Order.class);
+		final Converter<String, SortKey> orderConverter = createConverter(SortKey.class);
 		
-		assertEquals(Order.DATE, orderConverter.convert("added"));
-		assertEquals(Order.FOLKRANK, orderConverter.convert("folkrank"));
+		assertEquals(SortKey.DATE, orderConverter.convert("added"));
+		assertEquals(SortKey.FOLKRANK, orderConverter.convert("folkrank"));
 		
 		final Converter<String, UserRelation> userRelationConverter = createConverter(UserRelation.class);
 		

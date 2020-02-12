@@ -31,13 +31,13 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.enums.Order;
 
 /**
  * Returns a list of BibTex's for a given key.
@@ -53,6 +53,6 @@ public class GetBibtexByKey extends ResourceChainElement<BibTex, BibTexParam> {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return (present(param.getBibtexKey()) && (param.getNumSimpleConcepts() == 0) && (param.getNumTransitiveConcepts() == 0) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.NONE, Order.DATE, Order.FOLKRANK));
+		return (present(param.getBibtexKey()) && (param.getNumSimpleConcepts() == 0) && (param.getNumTransitiveConcepts() == 0) && !present(param.getHash()) && nullOrEqual(param.getSortKey(), SortKey.NONE, SortKey.DATE, SortKey.FOLKRANK));
 	}
 }

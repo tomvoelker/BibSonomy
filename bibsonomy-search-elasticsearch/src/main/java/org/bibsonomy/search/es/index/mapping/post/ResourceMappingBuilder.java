@@ -108,7 +108,7 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.TEXT_TYPE)
 									.field(ESConstants.IndexSettings.BOOST_FIELD, 0)
 								.endObject()
-								.startObject(Fields.Sorting.TITLE)
+								.startObject(Fields.Sort.TITLE)
 									.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
 									.field(ESConstants.NORMALIZER, ESConstants.LOWERCASE_NORMALIZER)
 									.field(ESConstants.IndexSettings.BOOST_FIELD, 2)

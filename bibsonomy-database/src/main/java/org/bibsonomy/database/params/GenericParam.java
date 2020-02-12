@@ -47,6 +47,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -54,7 +55,6 @@ import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.Order;
 
 /**
  * This is the most generic param. All fields which are not specific to
@@ -225,7 +225,7 @@ public abstract class GenericParam {
 	private String url;
 	private ConstantID contentType;
 
-	private Order order;
+	private SortKey sortKey;
 	private GroupingEntity grouping;
 	private Set<Filter> filters;
 	private ConceptStatus conceptStatus;
@@ -284,7 +284,7 @@ public abstract class GenericParam {
 		this.relationTags = new ArrayList<String>();
 		this.relationTagIndex = new ArrayList<TagIndex>();
 
-		this.order = Order.NONE;
+		this.sortKey = SortKey.NONE;
 	}
 
 	/**
@@ -876,17 +876,17 @@ public abstract class GenericParam {
 	}
 
 	/**
-	 * @return the order
+	 * @return the sort key
 	 */
-	public Order getOrder() {
-		return this.order;
+	public SortKey getSortKey() {
+		return sortKey;
 	}
 
 	/**
-	 * @param order the order to set
+	 * @param sortKey the sort key to set
 	 */
-	public void setOrder(final Order order) {
-		this.order = order;
+	public void setSortKey(SortKey sortKey) {
+		this.sortKey = sortKey;
 	}
 
 	/**

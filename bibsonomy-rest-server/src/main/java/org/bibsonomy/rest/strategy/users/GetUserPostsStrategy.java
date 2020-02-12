@@ -26,31 +26,25 @@
  */
 package org.bibsonomy.rest.strategy.users;
 
-import java.io.Writer;
-import java.util.List;
-
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.factories.ResourceFactory;
-import org.bibsonomy.rest.RESTConfig;
-import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.rest.strategy.posts.AbstractListOfPostsStrategy;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.UrlBuilder;
+
+import java.util.List;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
-public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends Post<? extends Resource>>> {
+public class GetUserPostsStrategy extends AbstractListOfPostsStrategy {
 
 	/** the requested user name */
 	protected final String userName;
-	private final List<String> tags;
-	private final String tagString;
-	private final String search;
-	private final Class<? extends Resource> resourceType;
 
 	/**
 	 * @param context
@@ -59,10 +53,6 @@ public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends
 	public GetUserPostsStrategy(final Context context, final String userName) {
 		super(context);
 		this.userName = userName;
-		this.tags = context.getTags(RESTConfig.TAGS_PARAM);
-		this.tagString = context.getStringAttribute(RESTConfig.TAGS_PARAM, null);
-		this.search = context.getStringAttribute(RESTConfig.SEARCH_PARAM, null);
-		this.resourceType = ResourceFactory.getResourceClass(context.getStringAttribute(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.RESOURCE_CLASS_NAME));
 	}
 
 	@Override
@@ -72,18 +62,10 @@ public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		// TODO: support other search types
-		return this.getLogic().getPosts(this.resourceType, GroupingEntity.USER, this.userName, this.tags, null, this.search, SearchType.LOCAL, null, Order.NONE, null, null, this.getView().getStartValue(),
-				this.getView().getEndValue());
+		List<SortCriterium> sortCriteriums = SortUtils.generateSortCriteriums(this.sortKeys, this.sortOrders);
+		return this.getLogic().getPosts(this.resourceType, GroupingEntity.USER, this.userName, this.tags, null,
+				this.search, this.searchType, null, sortCriteriums, null, null,
+				this.getView().getStartValue(), this.getView().getEndValue());
 	}
 
-	@Override
-	protected void render(final Writer writer, final List<? extends Post<? extends Resource>> resultList) {
-		this.getRenderer().serializePosts(writer, resultList, this.getView());
-	}
-
-	@Override
-	public String getContentType() {
-		return "posts";
-	}
 }

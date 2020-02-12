@@ -35,13 +35,13 @@ import java.util.List;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
@@ -88,7 +88,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 			throw new ObjectNotFoundException(command.getRequestedHash());
 		}
 		
-		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, command.getRequestedHash(), null, null, null, Order.NONE, null, null, 0, 100);
+		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, command.getRequestedHash(), null, null, null, SortKey.NONE, null, null, 0, 100);
 		
 		if (!present(posts)) {
 			throw new ObjectNotFoundException(command.getRequestedHash());
@@ -143,7 +143,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 		 * 
 		 * get at least 50 publications from authors with same name
 		 */	
-		final List<Post<BibTex>> pubAuthorSearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, name, SearchType.LOCAL, null , Order.ALPH, null, null, 0, 50);
+		final List<Post<BibTex>> pubAuthorSearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, name, SearchType.LOCAL, null , SortKey.ALPH, null, null, 0, 50);
 
 		List<Post<BibTex>> pubsWithSameAuthorName = new ArrayList<>(pubAuthorSearch);
 		for (final Post<BibTex> post : pubAuthorSearch) {			

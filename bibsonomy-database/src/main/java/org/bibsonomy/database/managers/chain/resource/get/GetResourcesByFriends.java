@@ -33,13 +33,13 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
 
 /**
  * Returns all resources of your friends.
@@ -67,7 +67,7 @@ public class GetResourcesByFriends<R extends Resource, P extends ResourceParam<R
 				!present(param.getRequestedUserName()) &&
 				!present(param.getTagIndex()) &&
 				!present(param.getHash()) &&
-				nullOrEqual(param.getOrder(), Order.NONE, Order.DATE) &&
+				nullOrEqual(param.getSortKey(), SortKey.NONE, SortKey.DATE) &&
 				!present(param.getSearch()));
 	}
 

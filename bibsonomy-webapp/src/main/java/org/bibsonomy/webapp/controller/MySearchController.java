@@ -35,7 +35,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.MySearchCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;

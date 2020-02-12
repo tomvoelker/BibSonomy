@@ -41,7 +41,7 @@ public enum SearchType {
 	/**
 	 * search public posts with search index, results might not be matching recent changes in the DB
 	 */
-	SEARCH,
+	SEARCHINDEX,
 
 	/**
 	 * search all viewable posts on the local system

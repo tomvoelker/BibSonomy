@@ -30,6 +30,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.es.util.SortingUtils;
@@ -272,7 +273,7 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public SearchHits search(String indexName, String type, QueryBuilder queryBuilder, HighlightBuilder highlightBuilder, org.bibsonomy.model.SortOrder sortOrder, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve) {
+	public SearchHits search(String indexName, String type, QueryBuilder queryBuilder, HighlightBuilder highlightBuilder, List<SortCriterium> sortCriteriums, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve) {
 		return this.secureCall(() -> {
 			final SearchRequest searchRequest = new SearchRequest();
 			searchRequest.searchType(SearchType.DEFAULT);
@@ -294,8 +295,8 @@ public class ElasticsearchRESTClient implements ESClient {
 				searchSourceBuilder.fetchSource(fieldsToRetrieve.iterator().next(), null);
 			}
 
-			if (present(sortOrder)) {
-				List<Pair<String, SortOrder>> sortParameters = SortingUtils.buildSortParameters(sortOrder, type);
+			if (present(sortCriteriums)) {
+				List<Pair<String, SortOrder>> sortParameters = SortingUtils.buildSortParameters(sortCriteriums, type);
 				for (Pair<String, SortOrder> param : sortParameters) {
 					searchSourceBuilder.sort(param.getFirst(), param.getSecond());
 				}

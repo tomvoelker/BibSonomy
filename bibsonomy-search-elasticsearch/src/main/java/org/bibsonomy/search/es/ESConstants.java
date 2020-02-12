@@ -284,18 +284,18 @@ public final class ESConstants {
 			}
 		}
 
-		public interface Sorting {
+		public interface Sort {
 			/** the title cleaned up */
-			String TITLE = "_title";
-			String BOOKTITLE = "_booktitle";
-			String JOURNAL = "_journal";
-			String SERIES = "_series";
-			String PUBLISHER = "_publisher";
-			String AUTHOR = "_author";
-			String EDITOR = "_editor";
-			String SCHOOL = "_school";
-			String INSTITUTION = "_institution";
-			String ORGANIZATION = "_organization";
+			String TITLE = "sort_title";
+			String BOOKTITLE = "sort_booktitle";
+			String JOURNAL = "sort_journal";
+			String SERIES = "sort_series";
+			String PUBLISHER = "sort_publisher";
+			String AUTHOR = "sort_author";
+			String EDITOR = "sort_editor";
+			String SCHOOL = "sort_school";
+			String INSTITUTION = "sort_institution";
+			String ORGANIZATION = "sort_organization";
 		}
 	}
 

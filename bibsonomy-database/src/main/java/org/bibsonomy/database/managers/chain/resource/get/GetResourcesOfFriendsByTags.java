@@ -34,13 +34,13 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
 
 /**
  * Returns a list of resources for a given friend of a user (this friend also
@@ -68,7 +68,7 @@ public class GetResourcesOfFriendsByTags<R extends Resource, P extends ResourceP
 				( !present(param.getRelationTags()) || 
 					((param.getRelationTags().size()==1) && (NetworkRelationSystemTag.BibSonomyFriendSystemTag.equals(param.getRelationTags().get(0))))
 				) &&
-				nullOrEqual(param.getOrder(), Order.NONE, Order.DATE) &&
+				nullOrEqual(param.getSortKey(), SortKey.NONE, SortKey.DATE) &&
 				!present(param.getSearch()) && 
 				!present(param.getAuthor()) &&
 				!present(param.getTitle()));

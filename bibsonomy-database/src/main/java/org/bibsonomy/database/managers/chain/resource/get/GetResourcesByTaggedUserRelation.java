@@ -32,6 +32,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
@@ -39,7 +40,6 @@ import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.UserRelationSystemTag;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
 
 /**
  * Returns a list of posts owned by  related users (restricted by the given tag). 
@@ -65,7 +65,7 @@ public class GetResourcesByTaggedUserRelation<R extends Resource, P extends Reso
 				present(param.getRelationTags()) &&
 				SystemTagsUtil.containsSystemTag(param.getRelationTags(), UserRelationSystemTag.NAME) &&
 				!present(param.getHash()) &&
-				nullOrEqual(param.getOrder(), Order.NONE, Order.DATE) &&
+				nullOrEqual(param.getSortKey(), SortKey.NONE, SortKey.DATE) &&
 				!present(param.getSearch()));		
 	}
 }

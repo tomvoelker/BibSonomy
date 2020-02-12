@@ -31,13 +31,13 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.statistics.Statistics;
 
 /**
@@ -64,7 +64,7 @@ public class GetResourcesByTagNamesCount extends StatisticChainElement {
 				(param.getNumSimpleTags() > 0) && 
 				(param.getNumTransitiveConcepts() == 0) && 
 				!present(param.getHash()) && 
-				nullOrEqual(param.getOrder(), Order.NONE, Order.DATE, Order.FOLKRANK) &&
+				nullOrEqual(param.getSortKey(), SortKey.NONE, SortKey.DATE, SortKey.FOLKRANK) &&
 				!present(param.getSearch());
 	}
 }

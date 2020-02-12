@@ -29,9 +29,9 @@ package org.bibsonomy.search.es.management.post;
 import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.SortOrder;
 import org.bibsonomy.model.User;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
@@ -277,15 +277,15 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	/**
 	 * execute a search
 	 * @param query the query to use
-	 * @param sortOrder descending or ascending sorting order
+	 * @param sortCriteriums a list of sorting criteriums
 	 * @param offset the offset
 	 * @param limit the limit
 	 * @param minScore the min score
 	 * @param fieldsToRetrieve the fields to retrieve
 	 * @return
 	 */
-	public SearchHits search(final QueryBuilder query, final SortOrder sortOrder, int offset, int limit, Float minScore, final Set<String> fieldsToRetrieve) {
-		return this.client.search(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query, null, sortOrder, offset, limit, minScore, fieldsToRetrieve);
+	public SearchHits search(final QueryBuilder query, final List<SortCriterium> sortCriteriums, int offset, int limit, Float minScore, final Set<String> fieldsToRetrieve) {
+		return this.client.search(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query, null, sortCriteriums, offset, limit, minScore, fieldsToRetrieve);
 	}
 
 	public long getDocumentCount(QueryBuilder query) {

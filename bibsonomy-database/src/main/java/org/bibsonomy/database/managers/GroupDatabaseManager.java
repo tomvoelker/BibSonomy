@@ -42,6 +42,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Privlevel;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
@@ -56,7 +57,6 @@ import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.TagSet;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.ExceptionUtils;
@@ -98,7 +98,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @return a list of all groups
 	 */
 	public List<Group> getAllGroups(final int start, final int end, final DBSession session) {
-		final GroupParam param = LogicInterfaceHelper.buildParam(GroupParam.class, Order.ALPH, start, end);
+		final GroupParam param = LogicInterfaceHelper.buildParam(GroupParam.class, SortKey.ALPH, start, end);
 		return this.queryForList("getAllGroups", param, Group.class, session);
 	}
 
@@ -640,7 +640,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Insert a TagSet
 	 * 
 	 * @param tagset the Set to insert
-	 * @param group the group which owns the tagset
+	 * @param groupname the group which owns the tagset
 	 * @param session
 	 */
 	private void insertTagSet(final TagSet tagset, final String groupname, final DBSession session) {
@@ -670,7 +670,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Deletes a TagSet in the DataBase
 	 * 
 	 * @param setName - the name of the TagSet to delete
-	 * @param group - the group of the TagSet
+	 * @param groupname - the group of the TagSet
 	 * @param session
 	 */
 	private void deleteTagSet(final String setName, final String groupname, final DBSession session) {
@@ -1015,7 +1015,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @param loginUserName
 	 * @param group
 	 * @param session
-	 * @param paramGroup
 	 */
 	public void updateGroupLevelPermissions(final String loginUserName, final Group group, final DBSession session) {
 		try {
@@ -1052,7 +1051,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Restores a group.
 	 *
-	 * @param groupName
+	 * @param group
 	 * @param session
 	 */
 	public void restoreGroup(final Group group, final DBSession session) {

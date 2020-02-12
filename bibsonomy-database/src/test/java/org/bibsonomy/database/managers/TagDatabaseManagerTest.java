@@ -36,12 +36,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Ignore;
@@ -73,27 +73,27 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 	
 	/**
-	 * tests {@link TagDatabaseManager#getTagsViewable(ConstantID, String, int, Order, int, int, org.bibsonomy.database.common.DBSession)}
+	 * tests {@link TagDatabaseManager#getTagsViewable(ConstantID, String, int, SortKey, int, int, org.bibsonomy.database.common.DBSession)}
 	 */
 	@Test
 	public void getTagsViewable() {
-		final List<Tag> tags = tagDb.getTagsViewable(ConstantID.ALL_CONTENT_TYPE, "testuser1", 4, Order.FREQUENCY, 10, 0, this.dbSession);
+		final List<Tag> tags = tagDb.getTagsViewable(ConstantID.ALL_CONTENT_TYPE, "testuser1", 4, SortKey.FREQUENCY, 10, 0, this.dbSession);
 		assertEquals(3, tags.size());
 	}
 	
 	/**
-	 * tests {@link TagDatabaseManager#getRelatedTagsViewable(ConstantID, String, int, List, Order, int, int, org.bibsonomy.database.common.DBSession)}
+	 * tests {@link TagDatabaseManager#getRelatedTagsViewable(ConstantID, String, int, List, SortKey, int, int, org.bibsonomy.database.common.DBSession)}
 	 */
 	@Test
 	public void testGetTagsViewableRelated() {
 		final List<TagIndex> tagIndex = new LinkedList<>();
 		tagIndex.add(new TagIndex("finetune", 1));
-		final List<Tag> relatedTags = tagDb.getRelatedTagsViewable(ConstantID.ALL_CONTENT_TYPE, "testuser1", 4, tagIndex, Order.DATE, 10, 0, this.dbSession);
+		final List<Tag> relatedTags = tagDb.getRelatedTagsViewable(ConstantID.ALL_CONTENT_TYPE, "testuser1", 4, tagIndex, SortKey.DATE, 10, 0, this.dbSession);
 		assertEquals(1, relatedTags.size());
 		
 		tagIndex.add(new TagIndex("radio", 2));
 		
-		final List<Tag> relatedRelatedTag = tagDb.getRelatedTagsViewable(ConstantID.ALL_CONTENT_TYPE, "testuser1", 4, tagIndex, Order.DATE, 10, 0, this.dbSession);
+		final List<Tag> relatedRelatedTag = tagDb.getRelatedTagsViewable(ConstantID.ALL_CONTENT_TYPE, "testuser1", 4, tagIndex, SortKey.DATE, 10, 0, this.dbSession);
 		assertEquals(0, relatedRelatedTag.size());
 	}
 	
@@ -133,7 +133,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		tagParam.setRequestedUserName("testuser1");
 		tagParam.setGroupId(0);
 		tagParam.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
-		tagParam.setOrder(Order.FREQUENCY);
+		tagParam.setSortKey(SortKey.FREQUENCY);
 		final List<Tag> tags = tagDb.getTagsByUser(tagParam, this.dbSession);
 		int count = tags.get(0).getUsercount();
 		for (final Tag tag : tags) {
@@ -205,14 +205,14 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 	
 	/**
-	 * tests {@link TagDatabaseManager#getTagsByBibtexHash(String, String, HashID, List, Order, int, int, org.bibsonomy.database.common.DBSession)}
+	 * tests {@link TagDatabaseManager#getTagsByBibtexHash(String, String, HashID, List, SortKey, int, int, org.bibsonomy.database.common.DBSession)}
 	 */
 	@Test
 	public void testGetTagsByPublicationHash() {
 		final String loginUserName = "testuser1";
 		final String hash = "097248439469d8f5a1e7fad6b02cbfcd";
 		final List<Integer> visibleGroups = Collections.singletonList(Integer.valueOf(PUBLIC_GROUP_ID));
-		final List<Tag> tags = tagDb.getTagsByPublicationHash(loginUserName, hash, HashID.INTER_HASH, visibleGroups, Order.ALPH, 10, 0, this.dbSession);
+		final List<Tag> tags = tagDb.getTagsByPublicationHash(loginUserName, hash, HashID.INTER_HASH, visibleGroups, SortKey.ALPH, 10, 0, this.dbSession);
 		assertEquals(2, tags.size());
 	}
 
@@ -230,14 +230,14 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests {@link TagDatabaseManager#getTagsByBookmarkHash(String, String, List, Order, int, int, org.bibsonomy.database.common.DBSession)}
+	 * tests {@link TagDatabaseManager#getTagsByBookmarkHash(String, String, List, SortKey, int, int, org.bibsonomy.database.common.DBSession)}
 	 */
 	@Test
 	public void testGetTagsByBookmarkHash() {
 		final String loginUserName = "testuser2";
 		final String hash = "7eda282d1d604c702597600a06f8a6b0";
 		final List<Integer> visibleGroups = Collections.singletonList(Integer.valueOf(PUBLIC_GROUP_ID));
-		final List<Tag> tags = tagDb.getTagsByBookmarkHash(loginUserName, hash, visibleGroups, Order.FREQUENCY, 10, 0, this.dbSession);
+		final List<Tag> tags = tagDb.getTagsByBookmarkHash(loginUserName, hash, visibleGroups, SortKey.FREQUENCY, 10, 0, this.dbSession);
 		assertEquals(2, tags.size());
 	}
 

@@ -30,10 +30,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 
@@ -47,7 +47,7 @@ public final class GetTagRelationQuery extends AbstractQuery<List<Tag>> {
 	private final int start;
 	private final int end;
 	private final String filter = null;
-	private final Order order = null;
+	private final SortKey sortKey = null;
 	private final GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;
 	private final Class<? extends Resource> resourceType = Resource.class;
@@ -80,7 +80,7 @@ public final class GetTagRelationQuery extends AbstractQuery<List<Tag>> {
 	
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException {
-		final String tagUrl = this.getUrlRenderer().createHrefForTags(this.resourceType, this.tagNames, this.grouping, this.groupingValue, this.filter, this.relation, this.order, this.start, this.end);
+		final String tagUrl = this.getUrlRenderer().createHrefForTags(this.resourceType, this.tagNames, this.grouping, this.groupingValue, this.filter, this.relation, this.sortKey, this.start, this.end);
 		this.downloadedDocument = this.performGetRequest(tagUrl);
 	}
 	

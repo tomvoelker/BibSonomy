@@ -34,12 +34,12 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
 
 /**
  * Returns a list of resources for a given hash.
@@ -56,7 +56,7 @@ public class GetResourcesByHash<R extends Resource, P extends ResourceParam<R>> 
 				param.getGrouping() == GroupingEntity.ALL &&
 				!present(param.getRequestedUserName()) &&
 				!present(param.getTagIndex()) &&
-				nullOrEqual(param.getOrder(), Order.NONE) &&
+				nullOrEqual(param.getSortKey(), SortKey.NONE) &&
 				!present(param.getSearch()));
 	}
 

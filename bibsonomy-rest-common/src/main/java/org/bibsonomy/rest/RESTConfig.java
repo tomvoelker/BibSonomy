@@ -45,7 +45,6 @@ public final class RESTConfig {
 	}
 	
 	private static final String DATE_FORMAT_STRING = "yyyy-MM-DD HH:mm:ss";
-	
 
 	public static final String POSTS_URL = "posts";
 
@@ -94,16 +93,16 @@ public final class RESTConfig {
 	public static final String TAGS_PARAM = "tags";
 
 	public static final String FILTER_PARAM = "filter";
+	
+	public static final String SORT_KEY_PARAM = "sortkey";
 
-	public static final String ORDER_PARAM = "order";
-	
-	public static final String SORTKEY_PARAM = "sortPage";
-	
-	public static final String SORTORDER_PARAM = "sortOrder";
+	public static final String SORT_ORDER_PARAM = "sortorder";
 
 	public static final String CONCEPT_STATUS_PARAM = "status";
 
 	public static final String SEARCH_PARAM = "search";
+
+	public static final String SEARCH_TYPE_PARAM = "searchtype";
 
 	public static final String SUB_TAG_PARAM = "subtag";
 

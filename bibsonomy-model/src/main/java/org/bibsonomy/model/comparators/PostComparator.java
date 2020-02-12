@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.util.BibTexUtils;
@@ -48,24 +49,7 @@ public abstract class PostComparator implements Serializable {
 	private static final long serialVersionUID = -359261836667807271L;
 	
 	
-	protected List<SortCriterium> sortCriteria = new ArrayList<SortCriterium>();
-
-	/** Helper structure to bind a sort key to a sort order */
-	protected class SortCriterium {
-		/** sort key */
-		public final SortKey sortKey;
-		/** sort order */
-		public final SortOrder sortOrder;
-		/**
-		 * Constructor
-		 * @param key 
-		 * @param order
-		 */
-		public SortCriterium(final SortKey key, final SortOrder order) {
-			this.sortKey = key;
-			this.sortOrder = order;
-		}
-	}	
+	protected List<SortCriterium> sortCriteria = new ArrayList<>();
 
 	/** helper exception */
 	protected class SortKeyIsEqualException extends Exception {

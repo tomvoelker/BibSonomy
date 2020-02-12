@@ -6,6 +6,7 @@
 		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+		  xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 		  xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 		  xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
@@ -22,11 +23,11 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}">
 		<jsp:attribute name="content">
-			<user:warningHeader esIndex="${esIndex}" requPathAndQuery="${requPathAndQuery}"/>
+			<rc:sortWarningHeader esIndex="${esIndex}" requPathAndQuery="${requPathAndQuery}"/>
 		</jsp:attribute>
 		<jsp:attribute name="heading">
 			<c:choose>
-				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL' and command.scope.name() ne 'ELASTICSEARCH'}">
+				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL' and command.scope.name() ne 'SEARCHINDEX'}">
 					<c:set var="pathMessageKey" value="navi.federatedUser"/>
 					<c:set var="userUrl" value="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}?scope=${command.scope.name()}"/>
 				</c:when>

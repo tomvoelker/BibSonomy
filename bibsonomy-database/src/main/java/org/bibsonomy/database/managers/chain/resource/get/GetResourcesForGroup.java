@@ -41,7 +41,6 @@ import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
 
 /**
  * Returns a list of resources for a given group.
@@ -59,7 +58,6 @@ public class GetResourcesForGroup<R extends Resource, P extends ResourceParam<R>
 				!present(param.getRequestedUserName()) &&
 				!present(param.getTagIndex()) &&
 				!present(param.getHash()) &&
-				nullOrEqual(param.getOrder(), Order.DATE) &&
 				!present(param.getSearch()) &&
 				!present(param.getAuthor()) &&
 				!present(param.getTitle()));
@@ -73,7 +71,9 @@ public class GetResourcesForGroup<R extends Resource, P extends ResourceParam<R>
 			return new ArrayList<Post<R>>();			
 		}
 		
-		return this.databaseManager.getPostsForGroup(group.getGroupId(), param.getGroups(), param.getSearchType(), param.getUserName(), HashID.getSimHash(param.getSimHash()), param.getPostAccess(), param.getFilters(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
+		return this.databaseManager.getPostsForGroup(group.getGroupId(), param.getRequestedGroupName(), param.getGroups(), param.getSearchType(),
+				param.getUserName(), HashID.getSimHash(param.getSimHash()), param.getPostAccess(), param.getFilters(),
+				param.getSortCriteriums(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}
 
 }

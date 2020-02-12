@@ -40,6 +40,7 @@ import java.util.TreeSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
@@ -51,7 +52,6 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.comparators.UserComparator;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.SphereResourceViewCommand;
@@ -146,7 +146,7 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
-			this.setList(command, resourceType, GroupingEntity.FRIEND, loginUser.getName(), queryTags, null, null, null, Order.DATE, command.getStartDate(), command.getEndDate(), entriesPerPage);
+			this.setList(command, resourceType, GroupingEntity.FRIEND, loginUser.getName(), queryTags, null, null, null, SortKey.DATE, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
 		}
 		
@@ -154,7 +154,7 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 		this.setTags(command, Resource.class, GroupingEntity.FRIEND, loginUser.getName(), null, null, queryTags, null, Integer.MAX_VALUE, null);
 
 		if (present(requestedUserTags)) {
-			this.setRelatedTags(command, Resource.class, GroupingEntity.FRIEND, loginUser.getName(), null, queryTags, command.getStartDate(), command.getEndDate(), Order.DATE, 0, 20, null);
+			this.setRelatedTags(command, Resource.class, GroupingEntity.FRIEND, loginUser.getName(), null, queryTags, command.getStartDate(), command.getEndDate(), SortKey.DATE, 0, 20, null);
 		}
 		
 		//Set the Users in the Sphere
@@ -236,7 +236,7 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 
 			// set tag cloud
 			if (!command.isNotags()) {
-				final List<Tag> aspectTagCloud= logic.getTags(Resource.class, GroupingEntity.FRIEND, loginUser.getName(), sphereTags, null, null, null, null, Order.FREQUENCY, command.getStartDate(), command.getEndDate(), 0, 25);
+				final List<Tag> aspectTagCloud= logic.getTags(Resource.class, GroupingEntity.FRIEND, loginUser.getName(), sphereTags, null, null, null, null, SortKey.FREQUENCY, command.getStartDate(), command.getEndDate(), 0, 25);
 				final TagCloudCommand tagCloudCommand = new TagCloudCommand();
 				tagCloudCommand.setMaxCount(TAG_CLOUD_SIZE);
 				tagCloudCommand.setMinFreq(TAG_CLOUD_MINFREQ);

@@ -26,17 +26,17 @@
  */
 package org.bibsonomy.services.searcher;
 
-import java.util.Collection;
-import java.util.List;
-
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.SortOrder;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Interface for resource search operations
@@ -65,16 +65,16 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param firstYear
 	 * @param lastYear
 	 * @param negatedTags
-	 * @param order			the order to use (supported {@link Order}
+	 * @param sortKey			the order to use (supported {@link SortKey}
 	 * @param limit
 	 * @param offset
 	 * @return a list of posts containing the search result
 	 */
 	public List<Post<R>> getPosts(
-					final String userName, final String requestedUserName, String requestedGroupName,
-					final List<String> requestedRelationNames,
-					final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey,
-					final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final Order order, final int limit, final int offset);
+			final String userName, final String requestedUserName, String requestedGroupName,
+			final List<String> requestedRelationNames,
+			final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey,
+			final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final SortKey sortKey, final int limit, final int offset);
 
 	/**
 	 * search for posts using a full text search index
@@ -94,16 +94,16 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param firstYear
 	 * @param lastYear
 	 * @param negatedTags
-	 * @param sortOrder			the order to use (supported {@link SortOrder}
+	 * @param sortCriteriums			the list of sort criteriums to use (supported {@link SortCriterium}
 	 * @param limit
 	 * @param offset
 	 * @return a list of posts containing the search result
 	 */
 	public List<Post<R>> getPosts(
-					final String userName, final String requestedUserName, String requestedGroupName,
-					final List<String> requestedRelationNames,
-					final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey,
-					final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final SortOrder sortOrder, final int limit, final int offset);
+			final String userName, final String requestedUserName, String requestedGroupName,
+			final List<String> requestedRelationNames,
+			final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey,
+			final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final List<SortCriterium> sortCriteriums, final int limit, final int offset);
 
 	/**
 	 * @param options options about the search including the querystring

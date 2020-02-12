@@ -35,10 +35,10 @@ import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.MultiResourceViewCommand;
@@ -78,17 +78,17 @@ public abstract class MultiResourceListController extends ResourceListController
 	 * @param groupingName the grouping name
 	 * @param tags 
 	 * @param hash 
-	 * @param order 
+	 * @param sortKey
 	 * @param filter 
 	 * @param search 
 	 * @param itemsPerPage number of items to be displayed on each page
 	 */
-	protected <T extends Resource> void addList(final MultiResourceViewCommand cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, String search, int itemsPerPage) {
+	protected <T extends Resource> void addList(final MultiResourceViewCommand cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, List<String> tags, String hash, SortKey sortKey, FilterEntity filter, String search, int itemsPerPage) {
 		// new list command to put result list into
 		final ListCommand<Post<T>> listCommand = new ListCommand<Post<T>>(cmd);
 		// retrieve posts		
 		log.debug("getPosts " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
-		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, SearchType.LOCAL, Sets.<Filter>asSet(filter), order, null, null, listCommand.getStart(), listCommand.getStart() + itemsPerPage) );
+		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, SearchType.LOCAL, Sets.<Filter>asSet(filter), sortKey, null, null, listCommand.getStart(), listCommand.getStart() + itemsPerPage) );
 		cmd.getListCommand(resourceType).add(listCommand);
 
 		// list settings

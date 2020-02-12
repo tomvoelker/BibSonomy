@@ -50,6 +50,7 @@ import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.DuplicatePostInSnippetErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
@@ -58,7 +59,6 @@ import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
@@ -478,7 +478,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 						tags.add("sys:title:" + titleToken);
 					}
 				}
-				final List<Post<BibTex>> publicationPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, null, SearchType.LOCAL, null, Order.NONE, null, null, 0, 5);
+				final List<Post<BibTex>> publicationPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, null, SearchType.LOCAL, null, SortKey.NONE, null, null, 0, 5);
 				final Post<BibTex> bestMatch = getBestMatch(publicationPosts);
 				if (present(bestMatch)) {
 					foundPublication = true;

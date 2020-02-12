@@ -35,6 +35,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DuplicateEntryException;
@@ -53,7 +54,6 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.model.util.GroupUtils;
@@ -194,7 +194,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		final UserParam param = new UserParam();
 		param.setOffset(start);
 		param.setLimit(end);
-		param.setOrder(Order.ALPH);
+		param.setSortKey(SortKey.ALPH);
 		return this.queryForList("getAllDeletedGroupUsers", param, User.class, session);
 	}
 	
@@ -652,7 +652,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Deletes a user from the openID table
 	 *
-	 * @param user user authenticating via OpenID
+	 * @param userName user authenticating via OpenID
 	 * @param session
 	 */
 	public void deleteOpenIDUser(final String userName, final DBSession session) {
@@ -662,7 +662,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Deletes a user from the ldapUser table
 	 *
-	 * @param user user authenticating via ldap
+	 * @param userName user authenticating via ldap
 	 * @param session
 	 */
 	private void deleteLdapUserId(final String userName, final DBSession session) {

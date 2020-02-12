@@ -33,11 +33,14 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.enums.TagsType;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
@@ -47,13 +50,11 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.SortOrder;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.enums.SortDirection;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.EnumUtils;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.UserResourceViewCommand;
@@ -158,21 +159,20 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 
 			// set order, default to rank if sort page attribute unknown or equals 'relavance'
-			try {
-				command.setOrder(Order.getOrderByName(command.getSortPage()));
-			} catch (IllegalArgumentException e){
-				command.setOrder(Order.RANK);
-			}
-			// set sorting order and direction
-			command.setSortOrder(new SortOrder(command.getOrder(), SortDirection.getByName(command.getSortPageOrder())));
+			command.setSortKey(SortKey.getByName(command.getSortPage()));
+			// set sorting criteriums list
+			List<SortKey> sortKeys = SortUtils.parseSortKeys(command.getSortPage());
+			List<SortOrder> sortOrders = SortUtils.parseSortOrders(command.getSortPageOrder());
+			List<SortCriterium> sortCriteriums = SortUtils.generateSortCriteriums(sortKeys, sortOrders);
+			command.setSortCriteriums(sortCriteriums);
 
 			// set the scope/searchtype
 			if (command.isEsIndex()) {
-				command.setScope(SearchType.SEARCH);
+				command.setScope(SearchType.SEARCHINDEX);
 			} else {
 				command.setScope(SearchType.LOCAL);
 			}
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), command.getFilter(), command.getSortOrder(), command.getStartDate(), command.getEndDate(), entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), command.getFilter(), command.getSortCriteriums(), command.getStartDate(), command.getEndDate(), entriesPerPage);
 
 			// secondary sorting, if not using elasticsearch index
 			if (!command.isEsIndex()) {
@@ -217,7 +217,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 
 			if (present(requTags)) {
 				//TODO: make it federated search enable
-				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), Order.DATE, 0, 20, null);
+				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), SortKey.DATE, 0, 20, null);
 				command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);
 				this.endTiming();
 

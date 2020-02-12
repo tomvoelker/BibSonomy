@@ -26,12 +26,13 @@
  */
 package org.bibsonomy.webapp.command;
 
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.model.SortOrder;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.Order;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -59,12 +60,17 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	 */
 	private int numberOfNormalTags;
 	
-	/** the specified order */
-	private Order order;
+	/** the specified sorting key */
+	private SortKey sortKey;
 
-	/** the specified sort order */
-	private SortOrder sortOrder = new SortOrder();
-		
+	/** the specified list of sort criteriums */
+	private List<SortCriterium> sortCriteriums = new LinkedList<>();
+
+	/**
+	 * Use the elasticsearch index for retrieving and sorting listed posts?
+	 */
+	private boolean esIndex = true;
+
 	/** bean for related tags */
 	private RelatedTagCommand relatedTagCommand = new RelatedTagCommand();
 	
@@ -144,32 +150,47 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	}
 
 	/**
-	 * @return order
+	 * @return sortKey
 	 */
-	public Order getOrder() {
-		return this.order;
+	public SortKey getSortKey() {
+		return sortKey;
 	}
 
 	/**
-	 * @param order
+	 * @param sortKey	the sort key to set
 	 */
-	public void setOrder(final Order order) {
-		this.order = order;
+	public void setSortKey(SortKey sortKey) {
+		this.sortKey = sortKey;
 	}
 
 	/**
-	 * Ascending or descending sort order
-	 * @return sortOrder
+	 * List of sorting criteriums
+	 * @return sortCriteriums
 	 */
-	public SortOrder getSortOrder() {
-		return this.sortOrder;
+	public List<SortCriterium> getSortCriteriums() {
+		return sortCriteriums;
 	}
 
 	/**
-	 * @param sortOrder	set the ascending or descending sort order
+	 * @param sortCriteriums	set the list of sort criteriums
 	 */
-	public void setSortOrder(final SortOrder sortOrder) {
-		this.sortOrder = sortOrder;
+	public void setSortCriteriums(List<SortCriterium> sortCriteriums) {
+		this.sortCriteriums = sortCriteriums;
+	}
+
+	/**
+	 * @return esIndex
+	 */
+	public boolean isEsIndex() {
+		return this.esIndex;
+	}
+
+	/**
+	 * Set wether to use elasticsearch index for retrieving and sorting posts.
+	 * @param 	esIndex		use elasticsearch index?
+	 */
+	public void setEsIndex(boolean esIndex) {
+		this.esIndex = esIndex;
 	}
 
 	/**

@@ -30,12 +30,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
 
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
 import org.bibsonomy.search.es.management.post.ElasticsearchPostManager;
 import org.bibsonomy.search.es.search.post.ElasticsearchPublicationSearch;
@@ -69,7 +69,7 @@ public class ElasticsearchManagerITCase extends AbstractEsIndexTest {
 	@Test
 	public void testUpdateIndexWithSpammer() {
 		final String userToFlag = "testuser3";
-		final ResultList<Post<BibTex>> postsBefore = publicationSearch.getPosts(userToFlag, userToFlag, null, null, Collections.<String>emptyList(), null, "test", null, null, null, null, null, null, null, null, Order.DATE, 10, 0);
+		final ResultList<Post<BibTex>> postsBefore = publicationSearch.getPosts(userToFlag, userToFlag, null, null, Collections.<String>emptyList(), null, "test", null, null, null, null, null, null, null, null, SortKey.DATE, 10, 0);
 		assertEquals(1, postsBefore.size());
 
 		final User user = new User(userToFlag);
@@ -78,7 +78,7 @@ public class ElasticsearchManagerITCase extends AbstractEsIndexTest {
 		adminDatabaseManager.flagSpammer(user, "admin", this.dbSession);
 		publicationManager.updateIndex();
 		
-		final ResultList<Post<BibTex>> posts = publicationSearch.getPosts(userToFlag, userToFlag, null, null, Collections.<String>emptyList(), null, null, null, null, null, null, null, null, null, null, Order.DATE, 10, 0);
+		final ResultList<Post<BibTex>> posts = publicationSearch.getPosts(userToFlag, userToFlag, null, null, Collections.<String>emptyList(), null, null, null, null, null, null, null, null, null, null, SortKey.DATE, 10, 0);
 		assertEquals(0, posts.size());
 		
 		user.setSpammer(Boolean.FALSE);
@@ -88,7 +88,7 @@ public class ElasticsearchManagerITCase extends AbstractEsIndexTest {
 		
 		publicationManager.updateIndex();
 		
-		final ResultList<Post<BibTex>> readded = publicationSearch.getPosts(userToFlag, userToFlag, null, null, Collections.<String>emptyList(), null, null, null, null, null, null, null, null, null, null, Order.DATE, 10, 0);
+		final ResultList<Post<BibTex>> readded = publicationSearch.getPosts(userToFlag, userToFlag, null, null, Collections.<String>emptyList(), null, null, null, null, null, null, null, null, null, null, SortKey.DATE, 10, 0);
 		assertEquals(postsBefore.size(), readded.size());
 	}
 }

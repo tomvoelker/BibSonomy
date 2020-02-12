@@ -26,11 +26,13 @@
  */
 package org.bibsonomy.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Convenience methods for sorting lists
@@ -50,7 +52,7 @@ public class SortUtils {
 	 * @return a list of sort keys
 	 */
 	public static List<SortKey> parseSortKeys(final String sortKeys) {
-		final List<SortKey> parsedSortKeys = new ArrayList<SortKey>();
+		final List<SortKey> parsedSortKeys = new LinkedList<>();
 		if (sortKeys == null) {
 			return parsedSortKeys;
 		}
@@ -67,7 +69,7 @@ public class SortUtils {
 	 * @return a list of sort orders
 	 */
 	public static List<SortOrder> parseSortOrders(final String sortOrders) {
-		final List<SortOrder> parsedSortOrders = new ArrayList<SortOrder>();
+		final List<SortOrder> parsedSortOrders = new LinkedList<>();
 		if (sortOrders == null) {
 			return parsedSortOrders;
 		}
@@ -75,5 +77,30 @@ public class SortUtils {
 			parsedSortOrders.add(EnumUtils.searchEnumByName(SortOrder.values(), sortOrder));
 		}
 		return parsedSortOrders;
-	}	
+	}
+
+	public static List<SortCriterium> generateSortCriteriums(List<SortKey> sortKeys, List<SortOrder> sortOrders) {
+		List<SortCriterium> sortCriteriums = new LinkedList<>();
+		// Check, if any sort keys given
+		if (sortKeys.isEmpty()) {
+			return sortCriteriums;
+		}
+		// Check, if there is enough sort orders for each key
+		if (sortOrders.size() >= sortKeys.size()) {
+			// Create pair-wise sort criteriums
+			Iterator<SortKey> sortKeysIt = sortKeys.iterator();
+			Iterator<SortOrder> sortOrderIt = sortOrders.iterator();
+			while (sortKeysIt.hasNext() && sortOrderIt.hasNext()) {
+				sortCriteriums.add(new SortCriterium(sortKeysIt.next(), sortOrderIt.next()));
+			}
+
+		} else {
+			// Not enough sort orders, take first sort order for all keys
+			SortOrder sortOrder = sortOrders.get(0);
+			for (SortKey sortKey : sortKeys) {
+				sortCriteriums.add(new SortCriterium(sortKey, sortOrder));
+			}
+		}
+		return sortCriteriums;
+	}
 }

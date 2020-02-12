@@ -33,12 +33,12 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
 
 /**
  * Returns a list of bookmarks for given tag/tags.
@@ -57,7 +57,7 @@ public class GetResourcesByTagNames<R extends Resource, P extends ResourceParam<
 				param.getNumSimpleTags() > 0 &&
 				param.getNumTransitiveConcepts() == 0 &&
 				!present(param.getHash()) &&
-				nullOrEqual(param.getOrder(), Order.NONE, Order.DATE, Order.FOLKRANK) &&
+				nullOrEqual(param.getSortKey(), SortKey.NONE, SortKey.DATE, SortKey.FOLKRANK) &&
 				!present(param.getSearch()) &&
 				!present(param.getAuthor()) &&
 				!present(param.getTitle()) );
@@ -65,7 +65,7 @@ public class GetResourcesByTagNames<R extends Resource, P extends ResourceParam<
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.databaseManager.getPostsByTagNames(GroupID.PUBLIC.getId(), param.getTagIndex(), param.getSearchType(), param.getOrder(), param.getLimit(), param.getOffset(), session);
+		return this.databaseManager.getPostsByTagNames(GroupID.PUBLIC.getId(), param.getTagIndex(), param.getSearchType(), param.getSortKey(), param.getLimit(), param.getOffset(), session);
 	}
 
 }

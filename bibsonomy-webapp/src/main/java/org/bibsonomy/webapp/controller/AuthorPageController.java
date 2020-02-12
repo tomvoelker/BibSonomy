@@ -34,12 +34,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.AuthorSystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.AuthorResourceCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -107,7 +107,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
-			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, searchType, null, Order.NONE, command.getStartDate(), command.getEndDate(), listCommand.getEntriesPerPage());
+			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, searchType, null, SortKey.NONE, command.getStartDate(), command.getEndDate(), listCommand.getEntriesPerPage());
 			
 			this.postProcessAndSortList(command, resourceType);
 			totalNumPosts += listCommand.getTotalCount();
@@ -121,7 +121,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 			}
 			this.endTiming();
 			if (hasTags) {
-				this.setRelatedTags(command, BibTex.class, groupingEntity, null, null, requTags, command.getStartDate(), command.getEndDate(), Order.DATE, 0, 20, null);
+				this.setRelatedTags(command, BibTex.class, groupingEntity, null, null, requTags, command.getStartDate(), command.getEndDate(), SortKey.DATE, 0, 20, null);
 				command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);
 				return Views.AUTHORTAGPAGE;
 			}
