@@ -57,7 +57,11 @@ public class SortUtils {
 			return parsedSortKeys;
 		}
 		for (String sortKey : sortKeys.split("\\" + SORT_KEY_DELIMITER)) {
-			parsedSortKeys.add(EnumUtils.searchEnumByName(SortKey.values(), sortKey));
+			if (sortKey.toLowerCase() == "relevance") {
+				parsedSortKeys.add(SortKey.RANK);
+			} else {				
+				parsedSortKeys.add(EnumUtils.searchEnumByName(SortKey.values(), sortKey));
+			}
 		}
 		return parsedSortKeys;
 	}
