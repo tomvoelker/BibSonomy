@@ -26,6 +26,23 @@
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
+	
+	<jsp:directive.attribute name="noContentPadding" type="java.lang.Boolean" required="false"/>
+	
+	<jsp:directive.attribute name="sidebarId" type="java.lang.String" required="false"/>
+	<c:if test="${empty sidebarId}">
+		<c:set var="sidebarId" value="sidebar" />
+	</c:if>
+	
+	<c:choose>
+		<c:when test="${noContentPadding}">
+			<c:set var="containerPadding" value="no-padding" />
+		</c:when>
+		<c:otherwise>
+		<c:set var="containerPadding" value="" />
+		</c:otherwise>
+	</c:choose>
+
 
 	<c:set var="systemReadOnly" value="${properties['system.mode.readOnly']}" scope="request" />
 	<!--+
@@ -94,7 +111,7 @@
 
 				<menu:navi activeTab="${activeTab}" loginUser="${loginUser}" />
 
-				<div class="container main">
+				<div class="container main ${containerPadding}">
 					<c:choose>
 						<c:when test="${noSidebar}">
 							<!-- without sidebar -->
@@ -136,7 +153,7 @@
 										<jsp:invoke fragment="content"/>
 									</div>
 								</div>
-								<div class="col-md-3 hidden-xs hidden-sm sidebar" id="sidebar">
+								<div class="col-md-3 hidden-xs hidden-sm sidebar" id="${sidebarId}">
 									<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}" infobox="${infobox}"/>
 								</div>
 							</div><!-- /.row -->

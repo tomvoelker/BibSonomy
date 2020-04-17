@@ -1,0 +1,40 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<jsp:directive.attribute name="cmd"	type="org.bibsonomy.webapp.command.TagCloudCommand" required="true" />
+	
+	<c:if test="${not empty cmd.tags}">
+	
+		<h3 class="page-header" id="users"><fmt:message key="tags"/></h3>
+		<fmt:message key="show.more.users" var="moreMessage">
+			<fmt:param value="${fn:length(tagList)}" />
+		</fmt:message>
+		
+		<!-- 
+		Idee: Balken der illustriert, wieviele Posts global dieses Tag tragen
+		
+		-> Supertags darunter anzeigen?
+		
+		 -->
+		
+		<c:forEach var="tag" items="${cmd.tags}" varStatus="count" >
+			<div class="progress">
+				<div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
+				<!-- <span class="sr-only">20% Complete</span>  -->
+				</div>
+			</div>
+			
+			<span class="label label-primary">${fn:escapeXml(tag.name)}</span>
+			
+			gc .. ${fn:escapeXml(tag.globalcount)}
+			
+		</c:forEach>
+
+	</c:if>
+
+</jsp:root>

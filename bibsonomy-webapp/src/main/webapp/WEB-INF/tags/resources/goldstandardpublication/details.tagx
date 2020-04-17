@@ -46,155 +46,187 @@
 		<c:set var="itemType" value="http://schema.org/Book"/>
 	</c:if>
 	
-	<goldstandard:actionHeader post="${post}" showEditOnly="${false}" postOfLoggedInUser="${postOfLoggedInUser}" communityPostExists="${isRealGoldstandard}" resourceType="bibtex" loginUser="${loginUser}" />
+<!-- 	<goldstandard:actionHeader post="${post}" showEditOnly="${false}" postOfLoggedInUser="${postOfLoggedInUser}" communityPostExists="${isRealGoldstandard}" resourceType="bibtex" loginUser="${loginUser}" /> -->
 	
-	<div id="goldstandard" class="row" data-interhash="${goldstandard.interHash}">
-		<div class="col-md-7 col-md-offset-1" itemtype="${itemType}" itemscope="itemscope" id="${goldstandard.interHash}">
+	<div id="goldstandard" data-interhash="${goldstandard.interHash}">
+		<div itemtype="${itemType}" itemscope="itemscope" id="${goldstandard.interHash}">
+			
 			<div class="content-header" id="info">
-				<h1><div itemprop="name"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
-						<c:if test="${post.approved}">
-							<fmt:message key="goldStandard.approved.title" var="approved"/>
-							<span class="fa fa-check-circle community-approved" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(approved)}"><!-- keep me --></span>
-						</c:if>
-					</div>
-					<small>
-						<span class="publication-description"><bib:desc publication="${goldstandard}" linebreakAfterAuthors="${true}" publishedIn="${publishedIn}"/></span>
-					</small>
-					<c:if test="${isAdmin}">
-						<c:choose>
-							<c:when test="${empty publishedIn}">
-								<input data-relation="PART_OF" type="text" placeholder="published in ..." class="addRelation form-control" />
-							</c:when>
-							<c:otherwise>
-								<button class="deleteRelation btn btn-danger btn-xs" data-relation="PART_OF" data-interhash="${publishedIn.interHash}">Delete Published In</button>
-							</c:otherwise>
-						</c:choose>
-					</c:if>
+				<div class="">
+				<c:out value="${command.relatedUserCommand.relatedUsers.size()}" /><br />
+				Users
+				</div>
+			
+				<h1 itemprop="name">
+					<c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
 				</h1>
+					
+				<h2>
+					<bib:author publication="${goldstandard}" post="${post}"/>
+					<!--<bib:desc publication="${goldstandard}" linebreakAfterAuthors="${true}" publishedIn="${publishedIn}"/>-->
+				</h2>
+				
+				
+				<div class="content-header-buttons">
+					<c:if test="${post.approved}">
+						<fmt:message key="goldStandard.approved.title" var="approved"/>
+						<div class="btn btn-success community-approved" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(approved)}">
+							<span class="fa fa-check-circle" ><!-- keep me --></span>
+						</div>
+					</c:if>
+					
+					<buttons:communityPostActionButtons post="${post}" resourceType="bibtex" communityPostExists="${isRealGoldstandard}"/>
+				</div>
+
+				
+				
+				
+				
+				<!-- TODO: MOVE SOMEWHERE -->	
+				<c:if test="${isAdmin}">
+					<c:choose>
+						<c:when test="${empty publishedIn}">
+							<input data-relation="PART_OF" type="text" placeholder="published in ..." class="addRelation form-control" />
+						</c:when>
+						<c:otherwise>
+							<button class="deleteRelation btn btn-danger btn-xs" data-relation="PART_OF" data-interhash="${publishedIn.interHash}">Delete Published In</button>
+						</c:otherwise>
+					</c:choose>
+				</c:if>
 				
 			</div>
 			
-			<!--+
-				| abstract
-				+-->
-			<c:set var="abstractPresent" value="${not empty goldstandard['abstract']}" />
-			<c:choose>
-				<c:when test="${abstractPresent}">
-					<div id="abstract">
-						<div class="show-more" itemprop="description">
-							<span class="contentContainer"><c:out value="${mtl:cleanBibtex(goldstandard['abstract'])}" /></span>
-						</div>
-					</div>
-				</c:when>
-				<c:otherwise>
-					<goldstandardpublication:editField fieldKey="bibtex.abstract" loginUser="${loginUser}" post="${post}" communityPostExists="${isRealGoldstandard}"/>
-				</c:otherwise>
-			</c:choose>
+			<div class="goldstandard-content">
 			
-			<!-- 
-				| resources
-				-->
-			<div id="linksresources">
-				<dl class="dl-horizontal">
-					<c:set var="isLinkToDocument" value="${mtl:isLinkToDocument(goldstandard.url)}" />
-					<c:if test="${not empty goldstandard.url or userLoggedIn}">
+				<div class="row">
+					<div class="col-md-9 col-sm-12 col-xs-12 content">
+					
+						<!--+
+							| abstract
+							+-->
 						<c:choose>
-							<c:when test="${isLinkToDocument}">
-								<dt><fmt:message key="document" /></dt>
+							<c:when test="${not empty goldstandard['abstract']}">
+								<h3 class="pub-details">
+									<span class="fa fa-align-justify"><!--  --></span>
+									<c:out value=" "/>
+									<fmt:message key="publications.abstract.headline"/>
+								</h3>
+								<div id="abstract">
+									<div class="show-more" itemprop="description">
+										<span class="contentContainer"><c:out value="${mtl:cleanBibtex(goldstandard['abstract'])}" /></span>
+									</div>
+								</div>
 							</c:when>
 							<c:otherwise>
-								<dt>URL</dt>
+								<goldstandardpublication:editField fieldKey="bibtex.abstract" loginUser="${loginUser}" post="${post}" communityPostExists="${isRealGoldstandard}"/>
 							</c:otherwise>
 						</c:choose>
-						<dd>
-							<c:choose>
-								<c:when test="${not empty goldstandard.url}">
-									<a href="${fn:escapeXml(goldstandard.url)}">
-										<c:if test="${isLinkToDocument}">
-											<fontawesome:icon icon="file-pdf-o" /><c:out value=" " />
-										</c:if>
-										<c:out value="${goldstandard.url}" />
-									</a>
-								</c:when>
-								<c:otherwise>
-									<goldstandardpublication:editField post="${post}" communityPostExists="${isRealGoldstandard}" loginUser="${loginUser}" field="URL" />
-								</c:otherwise>
-							</c:choose>
+					
+						<!--+
+							| full description table
+							+-->
+						<div class="goldstandard-metadata">
+							<bib:allFieldsTable publication="${goldstandard}" post="${post}" publishedIn="${publishedIn}" ></bib:allFieldsTable>
+						</div>
+	
+	
+	
 							
-						</dd>
-					</c:if>
-					<c:set var="doi" value="${mtl:extractDOI(goldstandard.miscFields['doi'])}" />
-					<c:set var="doiPresent" value="${not empty doi}" />
-					<c:if test="${doiPresent or userLoggedIn}">
-						<dt>DOI</dt>
-						<dd>
-							<c:choose>
-								<c:when test="${doiPresent}">
-									<a itemprop="sameAs" href="https://doi.org/${mtl:encodePathSegment(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a>
-								</c:when>
-								<c:otherwise>
-									<goldstandardpublication:editField post="${post}" communityPostExists="${isRealGoldstandard}" loginUser="${loginUser}" field="DOI" />
-								</c:otherwise>
-							</c:choose>
-						</dd>
-					</c:if>
-					<dt><fmt:message key="resources.searchExternal.dropDownLabel" /></dt>
-					<dd><pub2:externalSearchPublication loggedinUser="${loginUser}" publication="${goldstandard}" /></dd>
-				</dl>
+							
+						<!--<bib:desc publication="${goldstandard}" linebreakAfterAuthors="${true}" publishedIn="${publishedIn}"/>-->
+					
+					
+						<!-- tags -->				
+						<h3 id="tags">
+							<fmt:message key="publications.tags.headline"/>
+							<c:if test="${not empty postOfLoggedInUser.tags}">
+								<small>
+									<c:out value=" " /><fmt:message key="community.tags.myown"/>
+								</small>
+							</c:if>
+						</h3>
+						<goldstandard:tags tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
+					
+						<!-- Referenced and Referencing posts -->
+						<c:if test="${hasRelatedPublication or (isAdmin and isRealGoldstandard)}">
+							<div id="related-publications">
+								<div id="related-publications-references" class="related-publications-container">
+									<h3><fmt:message key="publications.related.referenced" /></h3>
+									<ul class="more-list" data-items="3">
+										<c:forEach var="reference" items="${goldstandard.references}">
+											<li>
+												<goldstandardpublication:simpleDetails publication="${reference}" />
+												<c:if test="${isAdmin}">
+													<button class="deleteRelation btn btn-danger btn-xs" data-relation="REFERENCE" data-interhash="${reference.interHash}">Delete</button>
+												</c:if>
+											</li>
+										</c:forEach>
+									</ul>
+									<c:if test="${isAdmin}">
+										<input data-relation="REFERENCE" type="text" placeholder="add publication" class="addRelation form-control" />
+									</c:if>
+								</div>
+								<div id="related-publications-citing" class="related-publications-container">
+									<h3><fmt:message key="publications.related.citing" /></h3>
+									<ul data-items="3" class="more-list" data-inline="true">
+										<c:forEach var="reference" items="${goldstandard.referencedBy}">
+											<li>
+												<goldstandardpublication:simpleDetails publication="${reference}" />
+											</li>
+										</c:forEach>
+									</ul>
+								</div>
+								<div id="related-publications-incollection" class="related-publications-container">
+									<h3><fmt:message key="publications.related.incollection" /></h3>
+									<ul data-items="3" class="more-list" data-inline="true">
+										<c:forEach var="reference" items="${goldstandard.subGoldStandards}">
+											<li>
+												<goldstandardpublication:simpleDetails publication="${reference}" />
+											</li>
+										</c:forEach>
+									</ul>
+								</div>
+							</div>
+						</c:if>
+					
+								
+						<!-- citation box -->
+						<h3 id="export">
+							<fmt:message key="publications.citations.headline" />
+						</h3>
+						<pub2:citation post="${post}" isCommunityPost="${true}" />
+					
+					</div>
+					
+					
+					<!-- SIDEBAR -->
+					<div class="col-md-3 hidden-xs hidden-sm sidebar">
+<!-- 						<img src="/resources/image/concepts.png" /> -->
+						<h2><fmt:message key="resources.searchExternal.dropDownLabel" /></h2>
+						<pub2:externalSearchPublication loggedinUser="${loginUser}" publication="${goldstandard}" buttonGroupVertical="True" />
+					</div>
+				
+				</div>
 			</div>
 			
-			<!-- tags -->
-			<goldstandard:tags tagCloudCommand="${command.tagcloud}" tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
+		
+
+			
 			
 			<!-- users that have this resource in their collection -->
-			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}" interHash="${goldstandard.interHash}"/>
+			<!-- DISABLED - now shown in the sidebar -->
+			<!--<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}" interHash="${goldstandard.interHash}"/>-->
 			
-			<c:if test="${hasRelatedPublication or (isAdmin and isRealGoldstandard)}">
-				<div id="related-publications">
-					<div id="related-publications-references" class="related-publications-container">
-						<h2 class="page-header"><fmt:message key="publications.related.referenced" /></h2>
-						<ul class="more-list" data-items="3">
-							<c:forEach var="reference" items="${goldstandard.references}">
-								<li>
-									<goldstandardpublication:simpleDetails publication="${reference}" />
-									<c:if test="${isAdmin}">
-										<button class="deleteRelation btn btn-danger btn-xs" data-relation="REFERENCE" data-interhash="${reference.interHash}">Delete</button>
-									</c:if>
-								</li>
-							</c:forEach>
-						</ul>
-						<c:if test="${isAdmin}">
-							<input data-relation="REFERENCE" type="text" placeholder="add publication" class="addRelation form-control" />
-						</c:if>
-					</div>
-					<div id="related-publications-citing" class="related-publications-container">
-						<h2 class="page-header"><fmt:message key="publications.related.citing" /></h2>
-						<ul data-items="3" class="more-list" data-inline="true">
-							<c:forEach var="reference" items="${goldstandard.referencedBy}">
-								<li>
-									<goldstandardpublication:simpleDetails publication="${reference}" />
-								</li>
-							</c:forEach>
-						</ul>
-					</div>
-					<div id="related-publications-incollection" class="related-publications-container">
-						<h2 class="page-header"><fmt:message key="publications.related.incollection" /></h2>
-						<ul data-items="3" class="more-list" data-inline="true">
-							<c:forEach var="reference" items="${goldstandard.subGoldStandards}">
-								<li>
-									<goldstandardpublication:simpleDetails publication="${reference}" />
-								</li>
-							</c:forEach>
-						</ul>
-					</div>
-				</div>
-			</c:if>
+
+			
+
+			
 			
 			<!--+
 				| discussion and rating
 				+-->
-			<div id="discussion-section">
-				<h2 class="page-header">
+			<div id="discussion-section" class="hidden">
+				<h2>
 					<fmt:message key="publications.discussion.headline"/>
 				</h2>
 
@@ -207,47 +239,13 @@
 				<!-- discussion -->
 				<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}" postIsPublic="${postIsPublic}" />
 			</div>
-			<!-- citation box -->
-			<h2 class="page-header" id="export">
-				<fmt:message key="publications.citations.headline" />
-				<export:favLayoutHint />
-			</h2>
-			<pub2:citation post="${post}" isCommunityPost="${true}" />
 		</div>
+	
+	
+		<!--<sidebar:sidebarTagCloudItem requPath="user/${command.context.loginUser.name}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" />-->	
+		<!-- users that have this resource in their collection -->
+		<!--<sidebar:sidebarGoldStandardUsers userList="${command.relatedUserCommand.relatedUsers}" interHash="${postToShow.resource.interHash}"/>-->
+		<!--<sidebar:sidebarGoldStandardTagCount cmd="${command.tagcloud}" />-->
 		
-		<div class="col-md-3 hidden-md-down" id="sidebar-nav">
-			<nav class="sidebar-nav" data-spy="affix" data-offset-top="275">
-				<ul class="nav">
-					<li>
-						<a href="#info"><fmt:message key="community.generalinformation" /></a>
-					</li>
-					<c:if test="${not empty goldstandard['abstract']}"> 
-						<li>
-							<a href="#abstract"><fmt:message key="publications.abstract.headline"/></a>
-						</li>
-					</c:if>
-					<li>
-						<a href="#linksresources"><fmt:message key="publications.resource.headline" /></a>
-					</li>
-					<li>
-						<a href="#tags">Tags</a>
-					</li>
-					<li>
-						<a href="#users"><span class="capitalize"><fmt:message key="users"/></span></a>
-					</li>
-					<c:if test="${hasRelatedPublication}">
-						<li>
-							<a href="#related-publications">Related Publications</a> <!-- TODO: i18n -->
-						</li>
-					</c:if>
-					<li>
-						<a href="#discussion-section"><fmt:message key="publications.discussion.headline"/></a>
-					</li>
-					<li>
-						<a href="#export"><fmt:message key="publications.citations.headline" /></a>
-					</li>
-				</ul>
-			</nav>
-		</div>
 	</div>
 </jsp:root>

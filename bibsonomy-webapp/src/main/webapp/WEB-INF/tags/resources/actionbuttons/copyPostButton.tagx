@@ -13,6 +13,7 @@
 	<jsp:directive.attribute name="forceCommunityCreate" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="icon" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="titleKey" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="additionalText" type="java.lang.String" required="false"/>
 	
 	<c:if test="${empty icon}">
 		<c:set var="icon" value="copy" />
@@ -101,6 +102,10 @@
 	
 	<a class="${buttonClasses}" href="${url}" title="${copyTitle}">
 		<span class="fa fa-${icon}"><!--  --></span>
+		<c:if test="${not empty additionalText}">
+			<c:out value=" " />
+			<span>${additionalText}</span>
+		</c:if>
 		<span class="sr-only"><fmt:message key="post.actions.copy"/></span>
 	</a>
 </jsp:root>
