@@ -5,11 +5,12 @@ var FADE_DURATION = 1000;
 var GOLD_REFERENCE_URL = '/ajax/goldstandards/relation';
 
 $(function() {
-	$('div.related-publications-container').each(function(index, container) {
-		if ($(container).find('ul>li').length == 0 && $(container).find('input').length == 0) {
-			$(container).hide();
-		}
-	});
+// TODO FIXME REMOVE!
+//	$('div.related-publications-container').each(function(index, container) {
+//		if ($(container).find('ul>li').length == 0 && $(container).find('input').length == 0) {
+//			$(container).hide();
+//		}
+//	});
 	
 	// init title autocomplete
 	var publicationSource = new Bloodhound({
