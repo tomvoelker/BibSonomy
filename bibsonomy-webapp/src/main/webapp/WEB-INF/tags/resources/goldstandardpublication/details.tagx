@@ -270,7 +270,7 @@
 								
 						<!-- citation box -->
 						<h3 id="export">
-							<span class="fa fa-quote"></span>
+							<span class="fa fa-quote-right"></span>
 							<c:out value=" "/>
 							<fmt:message key="publications.citations.headline" />
 						</h3>
@@ -282,7 +282,15 @@
 					<!-- SIDEBAR -->
 					<div class="col-md-3 hidden-xs hidden-sm sidebar">
 						<h3>TODO</h3>
+						<c:set var="exportUrl" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'export').getPublicationUrl(post.resource)}?formatEmbedded=true&amp;items=1" />
+
+						<div class="citation-box">
 						
+						<div data-formaturl="${exportUrl}" id="goldstandard-quick-cite" style="width: 100px; height: 40px; background: #000;" ></div>						
+						</div>
+						
+						<div id="goldstandard-quick-cite-select"></div>
+
 					
 <!-- 						<img src="/resources/image/concepts.png" /> -->
 						<h2><fmt:message key="resources.searchExternal.dropDownLabel" /></h2>
@@ -330,7 +338,7 @@
 			<!--+
 				| discussion and rating
 				+-->
-			<div id="discussion-section" class="hidden">
+			<div id="discussion-section">
 				<h2>
 					<fmt:message key="publications.discussion.headline"/>
 				</h2>

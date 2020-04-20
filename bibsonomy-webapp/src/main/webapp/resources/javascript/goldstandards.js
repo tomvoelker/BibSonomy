@@ -4,13 +4,26 @@
 var FADE_DURATION = 1000;
 var GOLD_REFERENCE_URL = '/ajax/goldstandards/relation';
 
+function a(formatUrl) {
+	$.ajax({
+		url: formatUrl, 
+		dataType: "html", 
+		success: function(data) {
+			$("#goldstandard-quick-cite-select").html(data).find("select").addClass("form-control input-sm");
+			
+			$(".select2-container--above").trigger();
+		}
+	});
+	return;
+}
+
+
 $(function() {
-// TODO FIXME REMOVE!
-//	$('div.related-publications-container').each(function(index, container) {
-//		if ($(container).find('ul>li').length == 0 && $(container).find('input').length == 0) {
-//			$(container).hide();
-//		}
-//	});
+	
+	$("#goldstandard-quick-cite").click(function() {
+		a($(this).data("formaturl"));
+	})
+	
 	
 	// init title autocomplete
 	var publicationSource = new Bloodhound({
