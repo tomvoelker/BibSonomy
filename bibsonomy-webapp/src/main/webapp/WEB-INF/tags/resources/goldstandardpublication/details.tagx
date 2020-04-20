@@ -52,10 +52,6 @@
 		<div itemtype="${itemType}" itemscope="itemscope" id="${goldstandard.interHash}">
 			
 			<div class="content-header" id="info">
-				<div class="">
-				<c:out value="${command.relatedUserCommand.relatedUsers.size()}" /><br />
-				Users
-				</div>
 			
 				<h1 itemprop="name">
 					<c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
@@ -65,6 +61,24 @@
 					<bib:author publication="${goldstandard}" post="${post}"/>
 					<!--<bib:desc publication="${goldstandard}" linebreakAfterAuthors="${true}" publishedIn="${publishedIn}"/>-->
 				</h2>
+				
+				<div class="content-header-additional-info hidden-xs">
+					<fmt:message key="goldStandard.users" var="inCollectionOf"/>
+					<div class="content-header-additional-info-item badge" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(inCollectionOf)}">
+						<span class="content-header-additional-info-count"><c:out value="${command.relatedUserCommand.relatedUsers.size()}" /></span>
+
+						<span class="content-header-additional-info-description"><fmt:message key="users" /></span>
+					</div>
+					
+					<div class="content-header-additional-info-spacer"><!-- keep me --></div>
+				
+					<fmt:message key="tags.of_resource" var="tagsTotal"/>
+					<div class="content-header-additional-info-item badge" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(tagsTotal)}">
+						<span class="content-header-additional-info-count"><c:out value="${command.tagcloud.tags.size()}" /></span>
+	
+						<span class="content-header-additional-info-description"><fmt:message key="tags" /></span>
+					</div>
+				</div>
 				
 				
 				<div class="content-header-buttons">
@@ -76,24 +90,7 @@
 					</c:if>
 					
 					<buttons:communityPostActionButtons post="${post}" resourceType="bibtex" communityPostExists="${isRealGoldstandard}"/>
-				</div>
-
-				
-				
-				
-				
-				<!-- TODO: MOVE SOMEWHERE -->	
-				<c:if test="${isAdmin}">
-					<c:choose>
-						<c:when test="${empty publishedIn}">
-							<input data-relation="PART_OF" type="text" placeholder="published in ..." class="addRelation form-control" />
-						</c:when>
-						<c:otherwise>
-							<button class="deleteRelation btn btn-danger btn-xs" data-relation="PART_OF" data-interhash="${publishedIn.interHash}">Delete Published In</button>
-						</c:otherwise>
-					</c:choose>
-				</c:if>
-				
+				</div>	
 			</div>
 			
 			<div class="goldstandard-content">
@@ -128,6 +125,8 @@
 						<div class="goldstandard-metadata">
 							<bib:allFieldsTable publication="${goldstandard}" post="${post}" publishedIn="${publishedIn}" ></bib:allFieldsTable>
 						</div>
+						
+
 	
 	
 	
@@ -138,6 +137,9 @@
 					
 						<!-- tags -->				
 						<h3 id="tags">
+							<span class="fa fa-tag"></span>
+							<c:out value=" "/>
+							
 							<fmt:message key="publications.tags.headline"/>
 							<c:if test="${not empty postOfLoggedInUser.tags}">
 								<small>
@@ -149,49 +151,127 @@
 					
 						<!-- Referenced and Referencing posts -->
 						<c:if test="${hasRelatedPublication or (isAdmin and isRealGoldstandard)}">
+							<c:set var="tabActive" value="false" />
 							<div id="related-publications">
-								<div id="related-publications-references" class="related-publications-container">
-									<h3><fmt:message key="publications.related.referenced" /></h3>
-									<ul class="more-list" data-items="3">
+								<h3>
+									<span class="fa fa-link"></span>
+									<c:out value=" "/>
+									<fmt:message key="publications.related.referencedAndCited" />
+								</h3>
+								
+								<ul class="nav nav-tabs">
+									<c:if test="${not empty goldstandard.references}">
+									<c:choose>
+										<c:when test="${tabActive == false}">
+											<c:set var="tabActive" value="true" />
+											<c:set var="liClassReferences" value="active" />
+										</c:when>
+										<c:otherwise>
+											<c:set var="liClassReferences" value="" />
+										</c:otherwise>
+									</c:choose>
+										<li class="${liClassReferences}">
+										<a data-toggle="tab" href="#related-publications-references">
+											<fmt:message key="goldStandard.resource.info.references" />
+										</a>
+									</li>
+									</c:if>
+									
+									<c:if test="${not empty goldstandard.referencedBy}">
+									<c:choose>
+										<c:when test="${tabActive == false}">
+											<c:set var="tabActive" value="true" />
+											<c:set var="liClassReferencedBy" value="active" />
+										</c:when>
+										<c:otherwise>
+											<c:set var="liClassReferencedBy" value="" />
+										</c:otherwise>
+									</c:choose>
+									<li class="${liClassReferencedBy}">
+										<a data-toggle="tab" href="#related-publications-referencedy">
+											<fmt:message key="goldStandard.resource.info.citations" />											
+										</a>
+									</li>
+									</c:if>
+									
+									<c:if test="${not empty goldstandard.subGoldStandards}">
+									<c:choose>
+										<c:when test="${tabActive == false}">
+											<c:set var="tabActive" value="true" />
+											<c:set var="liClassSubGoldStandards" value="active" />
+										</c:when>
+										<c:otherwise>
+											<c:set var="liClassSubGoldStandards" value="" />
+										</c:otherwise>
+									</c:choose>
+									<li class="${liClassSubGoldStandards}">
+										<a data-toggle="tab" href="#related-publications-subgoldstandards">
+											<fmt:message key="publications.related.incollection" />
+										</a>
+									</li>
+									</c:if>
+								</ul>
+								
+								
+								<div class="tab-content">
+									<div class="tab-pane ${liClassReferences}" id="related-publications-references">
+										<ul data-items="3" class="more-list" data-inline="true">
 										<c:forEach var="reference" items="${goldstandard.references}">
 											<li>
-												<goldstandardpublication:simpleDetails publication="${reference}" />
 												<c:if test="${isAdmin}">
 													<button class="deleteRelation btn btn-danger btn-xs" data-relation="REFERENCE" data-interhash="${reference.interHash}">Delete</button>
 												</c:if>
+												<goldstandardpublication:simpleDetails publication="${reference}" />
 											</li>
 										</c:forEach>
-									</ul>
-									<c:if test="${isAdmin}">
-										<input data-relation="REFERENCE" type="text" placeholder="add publication" class="addRelation form-control" />
-									</c:if>
-								</div>
-								<div id="related-publications-citing" class="related-publications-container">
-									<h3><fmt:message key="publications.related.citing" /></h3>
-									<ul data-items="3" class="more-list" data-inline="true">
+										</ul>
+										
+										<c:if test="${isAdmin}">
+										<a class="btn btn-xs btn-success add-reference-link" data-toggle="collapse" href="#admin-add-reference" role="button" aria-expanded="false" aria-controls="admin-add-reference">
+											<fmt:message key="post.resource.addreference" />
+										</a>
+										<div class="collapse" id="admin-add-reference">
+											<h4><fmt:message key="post.resource.addreference" /></h4>
+											<input data-relation="REFERENCE" type="text" placeholder="add publication" class="addRelation form-control" />
+										</div>
+										</c:if>
+									</div>
+									
+									<div class="tab-pane ${liClassReferencedBy}" id="related-publications-referencedy">
+										<ul data-items="3" class="more-list" data-inline="true">
 										<c:forEach var="reference" items="${goldstandard.referencedBy}">
 											<li>
+												<c:if test="${isAdmin}">
+													<button class="deleteRelation btn btn-danger btn-xs" data-relation="REFERENCE" data-interhash="${reference.interHash}">Delete</button>
+												</c:if>
 												<goldstandardpublication:simpleDetails publication="${reference}" />
 											</li>
 										</c:forEach>
-									</ul>
-								</div>
-								<div id="related-publications-incollection" class="related-publications-container">
-									<h3><fmt:message key="publications.related.incollection" /></h3>
-									<ul data-items="3" class="more-list" data-inline="true">
+										</ul>
+									</div>
+									
+									<div class="tab-pane ${liClassSubGoldStandards}" id="related-publications-subgoldstandards">
+										<ul data-items="3" class="more-list" data-inline="true">
 										<c:forEach var="reference" items="${goldstandard.subGoldStandards}">
 											<li>
+												<c:if test="${isAdmin}">
+													<button class="deleteRelation btn btn-danger btn-xs" data-relation="REFERENCE" data-interhash="${reference.interHash}">Delete</button>
+												</c:if>
 												<goldstandardpublication:simpleDetails publication="${reference}" />
 											</li>
 										</c:forEach>
-									</ul>
+										</ul>
+									</div>
 								</div>
+
 							</div>
 						</c:if>
 					
 								
 						<!-- citation box -->
 						<h3 id="export">
+							<span class="fa fa-quote"></span>
+							<c:out value=" "/>
 							<fmt:message key="publications.citations.headline" />
 						</h3>
 						<pub2:citation post="${post}" isCommunityPost="${true}" />
@@ -201,10 +281,35 @@
 					
 					<!-- SIDEBAR -->
 					<div class="col-md-3 hidden-xs hidden-sm sidebar">
+						<h3>TODO</h3>
+						
+					
 <!-- 						<img src="/resources/image/concepts.png" /> -->
 						<h2><fmt:message key="resources.searchExternal.dropDownLabel" /></h2>
 						<pub2:externalSearchPublication loggedinUser="${loginUser}" publication="${goldstandard}" buttonGroupVertical="True" />
+					
+					
+															
+						<c:if test="${isAdmin}">
+							<h4>Published in</h4>
+
+							<c:if test="${not empty publishedIn}">
+							<goldstandardpublication:simpleDetails publication="${publishedIn}" />
+							</c:if>
+							<c:choose>
+								<c:when test="${empty publishedIn}">
+									<input data-relation="PART_OF" type="text" placeholder="published in ..." class="addRelation form-control" />
+								</c:when>
+								<c:otherwise>
+									<button class="deleteRelation btn btn-danger btn-xs" data-relation="PART_OF" data-interhash="${publishedIn.interHash}">Delete Published In</button>
+								</c:otherwise>
+							</c:choose>
+						</c:if>
+					
+					
 					</div>
+					
+					
 				
 				</div>
 			</div>
