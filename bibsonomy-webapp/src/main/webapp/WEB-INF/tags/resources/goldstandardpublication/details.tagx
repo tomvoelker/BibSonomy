@@ -80,7 +80,6 @@
 					</div>
 				</div>
 				
-				
 				<div class="content-header-buttons">
 					<c:if test="${post.approved}">
 						<fmt:message key="goldStandard.approved.title" var="approved"/>
@@ -216,7 +215,6 @@
 									</c:if>
 								</ul>
 								
-								
 								<div class="tab-content">
 									<div class="tab-pane ${liClassReferences}" id="related-publications-references">
 										<ul data-items="3" class="more-list" data-inline="true">
@@ -267,8 +265,24 @@
 										</ul>
 									</div>
 								</div>
-
+								
 							</div>
+						</c:if>
+			
+						<c:if test="${not hasRelatedPublication and isAdmin}">
+						<h3>
+							<span class="fa fa-link"><!-- keep me --></span>
+							<c:out value=" "/>
+							<fmt:message key="publications.related.referencedAndCited" />
+						</h3>
+						
+						<a class="btn btn-xs btn-success add-reference-link" data-toggle="collapse" href="#admin-add-reference2" role="button" aria-expanded="false" aria-controls="admin-add-reference2">
+							<fmt:message key="post.resource.addreference" />
+						</a>
+						<div class="collapse" id="admin-add-reference2">
+							<h4><fmt:message key="post.resource.addreference" /></h4>
+							<input data-relation="REFERENCE" type="text" placeholder="add publication" class="addRelation form-control" />
+						</div>
 						</c:if>
 			
 								
