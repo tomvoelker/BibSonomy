@@ -12,11 +12,11 @@
 	
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" description="The publication"/>	
 	<jsp:directive.attribute name="loggedinUser" type="org.bibsonomy.model.User" required="true" description="The loggedin user"/>
-	<jsp:directive.attribute name="buttonGroupVertical" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="buttonGroupClass" type="java.lang.String" required="false" />
 	
-	<c:set var="buttonGroupClass" value="btn-group" />
-	<c:if test="${buttonGroupVertical}">
-		<c:set var="buttonGroupClass" value="btn-group-vertical" />
+	<c:set var="buttonGroupClassString" value="btn-group" />
+	<c:if test="${not empty buttonGroupClass}">
+		<c:set var="buttonGroupClassString" value="${buttonGroupClass}" />
 	</c:if>
 	
 	<!-- the string you would usually enter in google scholar, world cat etc. -->
@@ -48,7 +48,7 @@
 		<c:set var="userOpenURL" value="${command.context.loginUser.openURL}" />
 		<spring:eval var="publicationOpenURL" expression="T(org.bibsonomy.model.util.BibTexUtils).getOpenurl(publication)" />
 		<c:set var="systemOpenURLProvider" value="${properties['system.openurl.provider']}" />
-		<div class="${buttonGroupClass}">
+		<div class="${buttonGroupClassString}">
 			<c:if test="${not empty userOpenURL}">
 				<fmt:message var="openurlTitle" key="bibtex.actions.openurl.title" />
 				<a itemprop="url" href="${fn:escapeXml(userOpenURL)}?${fn:escapeXml(publicationOpenURL)}"

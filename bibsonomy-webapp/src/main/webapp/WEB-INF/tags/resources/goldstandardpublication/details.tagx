@@ -115,7 +115,11 @@
 								</div>
 							</c:when>
 							<c:otherwise>
-								<goldstandardpublication:editField fieldKey="bibtex.abstract" loginUser="${loginUser}" post="${post}" communityPostExists="${isRealGoldstandard}"/>
+								<h3 class="pub-details">
+									<span class="fa fa-align-justify"><!-- keep me --></span>
+									<c:out value=" "/>
+									<fmt:message key="bibtex.details.meta"/>
+								</h3>
 							</c:otherwise>
 						</c:choose>
 					
@@ -266,7 +270,7 @@
 
 							</div>
 						</c:if>
-					
+			
 								
 						<!-- citation box -->
 						<h3 id="export">
@@ -275,6 +279,36 @@
 							<fmt:message key="publications.citations.headline" />
 						</h3>
 						<pub2:citation post="${post}" isCommunityPost="${true}" />
+					
+					
+						<!--+
+							| discussion 
+							+-->		
+						<c:set var="collapseClass" value="collapse" />
+						<c:set var="collapseExpanded" value="false" />
+						<c:if test="${not empty goldstandard.discussionItems}">
+							<c:set var="collapseClass" value="collapse in" />
+							<c:set var="collapseExpanded" value="true" />
+						</c:if>				
+						<h3>
+							<span class="fa fa-comments"><!-- keep me --></span>
+							<c:out value=" "/>
+							<fmt:message key="publications.discussion.headline"/>
+							
+							<a class="discussion-toggle-link btn-primary badge" data-toggle="collapse" href="#discussion-section" role="button" aria-expanded="${collapseExpanded}" aria-controls="discussion-section">
+							    <fmt:message key="show" />
+							    /
+							    <fmt:message key="hide" />
+							  </a>
+						</h3>
+						
+
+						
+						<div class="${collapseClass}" id="discussion-section" aria-expanded="${collapseExpanded}">
+							<!-- discussion -->
+							<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}" postIsPublic="${postIsPublic}" />
+						</div>
+					
 					
 					</div>
 					
@@ -297,22 +331,9 @@
 							</div>
 						</div>
 						
-<!-- 						<div class="sidebar-quick-cite-box"> -->
-<!-- 							<div class="form-group"> -->
-<!-- 								<label for="selectAllStyles">Example select</label> -->
-<!-- 								<select class="form-control" data-formaturl="${exportUrl}" id="goldstandard-quick-cite"> -->
-<!-- 								<option></option> -->
-<!-- 								</select>						 -->
-<!-- 								<div id="goldstandard-quick-cite-select"></div> -->
-<!-- 							</div> -->
-<!-- 						</div> -->
-						
 
-					
-<!-- 						<img src="/resources/image/concepts.png" /> -->
-						<h2><fmt:message key="resources.searchExternal.dropDownLabel" /></h2>
-						<pub2:externalSearchPublication loggedinUser="${loginUser}" publication="${goldstandard}" buttonGroupVertical="True" />
-					
+						<h3><fmt:message key="resources.searchExternal.dropDownLabel" /></h3>
+						<pub2:externalSearchPublication loggedinUser="${loginUser}" publication="${goldstandard}" buttonGroupClass="sidebar-links" />
 					
 															
 						<c:if test="${isAdmin}">
@@ -352,23 +373,7 @@
 
 			
 			
-			<!--+
-				| discussion and rating
-				+-->
-			<div id="discussion-section">
-				<h2>
-					<fmt:message key="publications.discussion.headline"/>
-				</h2>
 
-				<!-- Aggregated RatingInfo -->
-				<review:reviewRatingsInfo resource="${post.resource}" />
-		
-				<!-- Publication reference link -->
-				<!-- TODO: discuss this feature: <discussion:linkBox resource="${post.resource}"/> TODODZO -->
-				
-				<!-- discussion -->
-				<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}" postIsPublic="${postIsPublic}" />
-			</div>
 		</div>
 	
 	
