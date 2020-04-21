@@ -4,24 +4,42 @@
 var FADE_DURATION = 1000;
 var GOLD_REFERENCE_URL = '/ajax/goldstandards/relation';
 
-function a(formatUrl) {
+/**
+ * Loads the select2 combobox layout selection
+ * @param formatUrl
+ * @param element
+ * @returns
+ */
+function loadLayoutSelect(formatUrl, element) {
 	$.ajax({
 		url: formatUrl, 
 		dataType: "html", 
 		success: function(data) {
 			$("#goldstandard-quick-cite-select").html(data).find("select").addClass("form-control input-sm");
-			
-			$(".select2-container--above").trigger();
+			$("#goldstandard-quick-cite").hide();
+			openSelect2(element);
 		}
 	});
 	return;
 }
 
+/**
+ * Opens the select2 element
+ * @param element
+ * @returns
+ */
+function openSelect2(element) {
+	if ($(element).next().find('#selectAllStyles').hasClass("select2-hidden-accessible")) {
+	    $(element).next().find('#selectAllStyles').select2('open');
+	}
+}
+
 
 $(function() {
 	
+	// remove the dummy element and replace it by select2 combobox layout selection
 	$("#goldstandard-quick-cite").click(function() {
-		a($(this).data("formaturl"));
+		loadLayoutSelect($(this).data("formaturl"), this);
 	})
 	
 	

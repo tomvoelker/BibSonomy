@@ -104,7 +104,7 @@
 						<c:choose>
 							<c:when test="${not empty goldstandard['abstract']}">
 								<h3 class="pub-details">
-									<span class="fa fa-align-justify"><!--  --></span>
+									<span class="fa fa-align-justify"><!-- keep me --></span>
 									<c:out value=" "/>
 									<fmt:message key="publications.abstract.headline"/>
 								</h3>
@@ -137,7 +137,7 @@
 					
 						<!-- tags -->				
 						<h3 id="tags">
-							<span class="fa fa-tag"></span>
+							<span class="fa fa-tag"><!-- keep me --></span>
 							<c:out value=" "/>
 							
 							<fmt:message key="publications.tags.headline"/>
@@ -154,7 +154,7 @@
 							<c:set var="tabActive" value="false" />
 							<div id="related-publications">
 								<h3>
-									<span class="fa fa-link"></span>
+									<span class="fa fa-link"><!-- keep me --></span>
 									<c:out value=" "/>
 									<fmt:message key="publications.related.referencedAndCited" />
 								</h3>
@@ -270,7 +270,7 @@
 								
 						<!-- citation box -->
 						<h3 id="export">
-							<span class="fa fa-quote-right"></span>
+							<span class="fa fa-quote-right"><!-- keep me --></span>
 							<c:out value=" "/>
 							<fmt:message key="publications.citations.headline" />
 						</h3>
@@ -281,15 +281,32 @@
 					
 					<!-- SIDEBAR -->
 					<div class="col-md-3 hidden-xs hidden-sm sidebar">
-						<h3>TODO</h3>
-						<c:set var="exportUrl" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'export').getPublicationUrl(post.resource)}?formatEmbedded=true&amp;items=1" />
-
-						<div class="citation-box">
+						<h3>
+							<fmt:message key="publications.citations.headline" />
+						</h3>
 						
-						<div data-formaturl="${exportUrl}" id="goldstandard-quick-cite" style="width: 100px; height: 40px; background: #000;" ></div>						
+						<c:set var="exportUrl" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'export').getPublicationUrl(post.resource)}?formatEmbedded=true&amp;items=1" />
+						
+						<div class="sidebar-quick-cite-box">
+							<div class="form-group">
+								<label for="selectAllStyles"><fmt:message key="sidebar.quickCite.label" /></label>
+								<select class="form-control" data-formaturl="${exportUrl}" id="goldstandard-quick-cite">
+									<option><fmt:message key="form.input.select" /></option>
+								</select>
+								<div id="goldstandard-quick-cite-select"><!-- keep me --></div>
+							</div>
 						</div>
 						
-						<div id="goldstandard-quick-cite-select"></div>
+<!-- 						<div class="sidebar-quick-cite-box"> -->
+<!-- 							<div class="form-group"> -->
+<!-- 								<label for="selectAllStyles">Example select</label> -->
+<!-- 								<select class="form-control" data-formaturl="${exportUrl}" id="goldstandard-quick-cite"> -->
+<!-- 								<option></option> -->
+<!-- 								</select>						 -->
+<!-- 								<div id="goldstandard-quick-cite-select"></div> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+						
 
 					
 <!-- 						<img src="/resources/image/concepts.png" /> -->
