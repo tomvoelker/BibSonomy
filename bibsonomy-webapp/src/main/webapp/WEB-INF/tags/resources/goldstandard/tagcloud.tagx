@@ -8,16 +8,7 @@
 	
 	<jsp:directive.attribute name="tagCloudCommand" type="org.bibsonomy.webapp.command.TagCloudCommand" required="true"/>
 	<jsp:directive.attribute name="tagsOfLoggedinUser" type="java.util.Set" required="true" />
-	
-	<h2 id="tags">
-		<fmt:message key="post.resource.tags"/>
-		<c:if test="${not empty tagsOfLoggedinUser}">
-			<small>
-				<c:out value=" " /><fmt:message key="community.tags.myown"/>
-			</small>
-		</c:if>
-	</h2>
-	
+		
 	<div class="tagcloud">
 		<c:forEach var="tag" items="${tagCloudCommand.tags }">
 			<span class="tag ${mtl:getTagSize(tag.usercount, tagCloudCommand.maxTagCount)} ${mtl:contains(tagsOfLoggedinUser, tag) ? 'myown' : ''}"><a href="${relativeUrlGenerator.getTagUrlByTagName(tag.name)}"><c:out value="${tag.name }" /></a></span>

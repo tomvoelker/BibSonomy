@@ -78,6 +78,34 @@
 	
 						<span class="content-header-additional-info-description"><fmt:message key="tags" /></span>
 					</div>
+					
+					
+					<c:if test="${hasRelatedPublication or (isAdmin and isRealGoldstandard)}">
+						<c:if test="${not empty goldstandard.references}">
+							<div class="content-header-additional-info-spacer"><!-- keep me --></div>
+						
+							<fmt:message key="goldStandard.resource.info.references" var="referencesTotal"/>
+							<div class="content-header-additional-info-item badge" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(referencesTotal)}">
+								<span class="content-header-additional-info-count"><c:out value="${goldstandard.references.size()}" /></span>
+			
+								<span class="content-header-additional-info-description"><fmt:message key="goldStandard.resource.info.references" /></span>
+							</div>
+						</c:if>
+						
+						<c:if test="${not empty goldstandard.referencedBy}">
+							<div class="content-header-additional-info-spacer"><!-- keep me --></div>
+							
+							<fmt:message key="goldStandard.resource.info.citations" var="referencedByTotal"/>
+							<div class="content-header-additional-info-item badge" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(referencedByTotal)}">
+								<span class="content-header-additional-info-count"><c:out value="${goldstandard.referencedBy.size()}" /></span>
+			
+								<span class="content-header-additional-info-description"><fmt:message key="goldStandard.resource.info.citations" /></span>
+							</div>
+						</c:if>
+					
+					</c:if>
+					
+					
 				</div>
 				
 				<div class="content-header-buttons">
@@ -137,6 +165,9 @@
 							
 						<!--<bib:desc publication="${goldstandard}" linebreakAfterAuthors="${true}" publishedIn="${publishedIn}"/>-->
 					
+<!-- 					goldstandard.tags -->
+
+
 					
 						<!-- tags -->				
 						<h3 id="tags">
@@ -150,7 +181,22 @@
 								</small>
 							</c:if>
 						</h3>
-						<goldstandard:tags tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
+						<c:choose>
+							<c:when test="${properties['goldstandard.tags'] eq 'tagcloud'}">
+								<goldstandard:tagcloud tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
+							</c:when>
+							<c:when test="${properties['goldstandard.tags'] eq 'list'}">
+								<goldstandard:tags tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
+							</c:when>
+							<c:when test="${properties['goldstandard.tags'] eq 'disabled'}">
+								<!-- do nothing -->
+							</c:when>							
+							<c:otherwise>
+								<!-- tag list as default fallback -->
+								<goldstandard:tags tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
+							</c:otherwise>
+						</c:choose>
+						
 					
 						<!-- Referenced and Referencing posts -->
 						<c:if test="${hasRelatedPublication or (isAdmin and isRealGoldstandard)}">
