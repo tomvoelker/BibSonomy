@@ -76,7 +76,7 @@ public class SearchPageController extends SingleResourceListController implement
 			log.debug(this.getClass().getSimpleName());
 			final String format = command.getFormat();
 
-			// set order, default to rank if sort page attribute unknown or equals 'relavance'
+			// set order, default to rank if sort page attribute unknown or equals 'relevance'
 			try {
 				command.setSortKey(SortKey.getByName(command.getSortPage()));
 			} catch (IllegalArgumentException e){

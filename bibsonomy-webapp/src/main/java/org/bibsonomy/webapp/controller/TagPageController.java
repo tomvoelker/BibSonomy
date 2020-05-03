@@ -38,6 +38,7 @@ import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.es.ESConstants;
+import org.bibsonomy.search.es.util.SortingUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.RelatedUserCommand;
@@ -61,13 +62,13 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 	public View workOn(final TagResourceViewCommand command) {
 		final String format = command.getFormat();
 		this.startTiming(format);
-		
-		// FIXME: merge sortPage and order, see SearchPageController
+
 		final String pageSort = command.getSortPage();
-		if ("date".equals(pageSort)) {
-			command.setSortKey(SortKey.DATE);
-		} else if ("folkrank".equals(pageSort)) {
-			command.setSortKey(SortKey.FOLKRANK);
+		// set order, default to rank if sort page attribute unknown or equals 'relevance'
+		try {
+			command.setSortKey(SortKey.getByName(command.getSortPage()));
+		} catch (IllegalArgumentException e){
+			command.setSortKey(SortKey.RANK);
 		}
 		
 		// if no tags given return

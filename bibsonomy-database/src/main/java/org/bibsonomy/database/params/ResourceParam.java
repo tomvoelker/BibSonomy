@@ -49,7 +49,6 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 	protected T resource;
 	protected GoldStandardRelation relation;
 	protected ResourcePersonRelation personRelation;
-	protected SortKey sortKey;
 	protected List<SortCriterium> sortCriteriums;
 	
 
