@@ -30,6 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.errors.MissingObjectErrorMessage;
 import org.bibsonomy.common.exceptions.DuplicateEntryException;
@@ -217,6 +218,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			person.setCrisLinks(crisLinks);
 		}
 
+		// TODO get additionalkeys
 		return person;
 	}
 
@@ -228,7 +230,9 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @return Person
 	 */
 	public Person getPersonByDnbId(final String dnbId, final DBSession session) {
-		return this.queryForObject("getPersonByDnbId", dnbId, Person.class, session);
+		Person person = this.queryForObject("getPersonByDnbId", dnbId, Person.class, session);
+		// TODO get additionalkeys
+		return person;
 	}
 
 	/**
@@ -241,7 +245,9 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	public Person getPersonByAdditionalKey(final String keyName, final String keyValue, final DBSession session) {
 		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(null, keyName, keyValue);
-		return this.queryForObject("getPersonByAdditionalKey", param, Person.class, session);
+		Person person = this.queryForObject("getPersonByAdditionalKey", param, Person.class, session);
+		// TODO get additionalkeys
+		return person;
 	}
 
 	/**
@@ -335,7 +341,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	private PersonName getPersonNameById(int personNameChangeId, final DBSession session) {
 		return this.queryForObject("getPersonNameById", personNameChangeId, PersonName.class, session);
 	}
-
 
 	/**
 	 * Updates all fields of a given Person

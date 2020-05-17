@@ -981,11 +981,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	@Override
-	public int getUserPersonPostsStyleSettings(String personId) {
-		return 0;
-	}
-
-	@Override
 	public Statistics getStatistics(Query query) {
 		this.doDefaultAction();
 		return null;

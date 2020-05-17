@@ -33,7 +33,7 @@
 		SELECT key_name, key_value
 		FROM person_additional_keys
 		WHERE person_id = #personId#
-		AND key_name = #keyname#
+		AND key_name = #keyName#
 	</select>
 
 	<select id="getAdditionalKeysByPerson" resultMap="PersonCommon.additionalKey" parameterClass="string">

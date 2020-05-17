@@ -349,7 +349,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void testGetAdditionalKeysByPerson() {
 		final String personId = "w.test.1";
-		final List<AdditionalKey> additionalKeys = PERSON_DATABASE_MANAGER.getAdditionalKeyByPerson(personId, this.dbSession);
+		final List<AdditionalKey> additionalKeys = PERSON_DATABASE_MANAGER.getAdditionalKeysByPerson(personId, this.dbSession);
 		assertThat(additionalKeys.size(), greaterThan(1));
 	}
 

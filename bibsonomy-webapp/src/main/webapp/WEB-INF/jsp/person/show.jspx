@@ -206,7 +206,7 @@
 												<per:myownPostList command="${command}" posts="${command.myownPosts}"/>
 											</c:when>
 											<c:otherwise>
-												<per:otherPubList command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}" onlyLinkAuthorsWithPersons="${not isLoggedIn}"/>
+												<per:otherPubList command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}" onlyLinkAuthorsWithPersons="${not isLoggedIn}" hideHeadline="${true}"/>
 											</c:otherwise>
 										</c:choose>
 									</c:when>

@@ -953,11 +953,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	@Override
-	public int getUserPersonPostsStyleSettings(String personId) {
-		return 0;
-	}
-
-	@Override
 	public Statistics getStatistics(final Query query) {
 		return this.logicinterface.getStatistics(query);
 	}

@@ -138,7 +138,6 @@ import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
-import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -3674,11 +3673,6 @@ public class DBLogic implements LogicInterface {
 			} else {
 				throw new UnsupportedOperationException("person cannot be found by it type " + idType);
 			}
-
-			if (present(person) && (this.permissionDBManager.isAdminOrSelf(this.loginUser, person.getUser())
-					|| this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, person.getUser(), GroupRole.ADMINISTRATOR))) {
-				person.setAdditionalKeys(this.getAdditionalKeys(person));
-			}
 			return person;
 		} finally {
 			session.close();
@@ -3692,78 +3686,7 @@ public class DBLogic implements LogicInterface {
 	public Person getPersonByAdditionalKey(final String key, final String value) {
 		final DBSession session = this.openSession();
 		try {
-			Person person = this.personDBManager.getPersonByAdditionalKey(key, value, session);
-			if (present(person) && (this.permissionDBManager.isAdminOrSelf(this.loginUser, person.getUser())
-					|| this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, person.getUser(), GroupRole.ADMINISTRATOR))) {
-				person.setAdditionalKeys(this.getAdditionalKeys(person));
-			}
-			return person;
-		} finally {
-			session.close();
-		}
-	}
-
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getAdditionalKeys(Person)
-	 */
-	@Override
-	public List<AdditionalKey> getAdditionalKeys(Person person) {
-		final DBSession session = this.openSession();
-		try {
-			return this.personDBManager.getAdditionalKeysByPerson(person.getPersonId(), session);
-		} finally {
-			session.close();
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getAdditionalKey(Person, String)
-	 */
-	@Override
-	public AdditionalKey getAdditionalKey(Person person, String keyName) {
-		final DBSession session = this.openSession();
-		try {
-			return this.personDBManager.getAdditionalKeyByPerson(person.getPersonId(), keyName, session);
-		} finally {
-			session.close();
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createAdditionalKey(Person, String, String)
-	 */
-	@Override
-	public void createAdditionalKey(Person person, String keyName, String keyValue) {
-		final DBSession session = this.openSession();
-		try {
-			this.personDBManager.createAdditionalKey(person.getPersonId(), keyName, keyValue, session);
-		} finally {
-			session.close();
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removeAdditionalKey(Person, String)
-	 */
-	@Override
-	public void removeAdditionalKey(Person person, String keyName) {
-		final DBSession session = this.openSession();
-		try {
-			this.personDBManager.removePersonAdditionalKey(person.getPersonId(), keyName, session);
-		} finally {
-			session.close();
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#updateAdditionalKey(Person, String, String)
-	 */
-	@Override
-	public void updateAdditionalKey(Person person, String keyName, String keyValue) {
-		final DBSession session = this.openSession();
-		try {
-			this.personDBManager.updateAdditionalKey(person.getPersonId(), keyName, keyValue, session);
+			return this.personDBManager.getPersonByAdditionalKey(key, value, session);
 		} finally {
 			session.close();
 		}
@@ -3782,7 +3705,6 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-
 
 	/**
 	 * @param byInterHash
@@ -3923,18 +3845,6 @@ public class DBLogic implements LogicInterface {
 			return this.personDBManager.mergePersonsWithConflicts(formMatchId, map, this.loginUser, session);
 		}
 		return false;
-	}
-
-	/**
-	 *
-	 * @param userName
-	 * @return
-	 */
-	@Override
-	public int getUserPersonPostsStyleSettings(String userName) {
-		try(final DBSession session = this.openSession()) {
-			return this.personDBManager.getUserPersonPostsStyleSettings(userName, session);
-		}
 	}
 
 	@Override

@@ -32,14 +32,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.GoldStandardPublication;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.PersonMergeFieldConflict;
-import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
@@ -617,8 +610,13 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setPerson(person);
 
 		// Get the linked user's person posts style settings
-		final int personPostsStyleSettings = this.logic.getUserPersonPostsStyleSettings(requestedPersonId);
-		command.setPersonPostsStyleSettings(personPostsStyleSettings);
+		if (present(person.getUser())) {
+			User user = this.logic.getUserDetails(person.getUser());
+			command.setPersonPostsStyleSettings(user.getSettings().getPersonPostsStyle());
+		} else {
+			// default to gold standard publications, if no linked user found
+			command.setPersonPostsStyleSettings(0);
+		}
 
 		// Get 'myown' posts of the linked user
 		PostQueryBuilder queryBuilder = new PostQueryBuilder()

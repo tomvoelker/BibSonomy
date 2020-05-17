@@ -28,11 +28,7 @@
 package org.bibsonomy.rest.strategy.persons;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.GoldStandardPublication;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.rest.RESTConfig;
@@ -86,7 +82,8 @@ public class GetPersonPostsByAdditionalKeyStrategy extends AbstractGetListStrate
 		// Check, if a user has claimed this person and configured their person settings
 		if (person != null && person.getUser() != null) {
 			// Check, if the user set their person posts to gold standards or 'myown'-tagged posts
-			int personPostsStyleSettings = this.getLogic().getUserPersonPostsStyleSettings(person.getUser());
+			User user = this.getLogic().getUserDetails(person.getUser());
+			int personPostsStyleSettings = user.getSettings().getPersonPostsStyle();
 			if (personPostsStyleSettings > 0) {
 				// 'myown'-tagged posts
 				this.tags.add("myown");
