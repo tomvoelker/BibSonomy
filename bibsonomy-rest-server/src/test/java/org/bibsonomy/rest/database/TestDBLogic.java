@@ -45,6 +45,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.logic.query.GroupQuery;
+import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.statistics.Statistics;
@@ -200,6 +201,29 @@ public class TestDBLogic extends AbstractLogicInterface {
 	 * @param endDate TODO*/
 	@Override
 	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+		final PostQuery<T> query = new PostQuery<>(resourceType);
+		query.setGrouping(grouping);
+		query.setGroupingName(groupingName);
+		query.setTags(tags);
+		query.setHash(hash);
+		query.setSearch(search);
+		query.setScope(queryScope);
+		query.setFilters(filters);
+		query.setOrder(order);
+		query.setStartDate(startDate);
+		query.setEndDate(endDate);
+		query.setStart(start);
+		query.setEnd(end);
+		return this.getPosts(query);
+	}
+
+	@Override
+	public <T extends Resource> List<Post<T>> getPosts(PostQuery<T> query) {
+		final GroupingEntity grouping = query.getGrouping();
+		final String groupingName = query.getGroupingName();
+		final Class<T> resourceType = query.getResourceClass();
+		final String hash = query.getHash();
+		final List<String> tags = query.getTags();
 		final List<Post<? extends Resource>> posts = new LinkedList<>();
 		// do grouping stuff
 		switch (grouping) {
