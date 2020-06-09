@@ -26,25 +26,13 @@
  */
 package org.bibsonomy.database.managers;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.JobResult;
-import org.bibsonomy.common.errors.MissingObjectErrorMessage;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.errors.MissingObjectErrorMessage;
 import org.bibsonomy.common.exceptions.DuplicateEntryException;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
@@ -58,6 +46,7 @@ import org.bibsonomy.database.params.CRISLinkParam;
 import org.bibsonomy.database.params.DNBAliasParam;
 import org.bibsonomy.database.params.DenyMatchParam;
 import org.bibsonomy.database.params.person.GetPersonByOrganizationParam;
+import org.bibsonomy.database.params.person.PersonAdditionalKeyParam;
 import org.bibsonomy.database.params.relations.GetPersonRelations;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.BibTex;
@@ -73,6 +62,7 @@ import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.statistics.Statistics;
@@ -80,6 +70,19 @@ import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.services.searcher.PersonSearch;
 import org.bibsonomy.util.ObjectUtils;
+
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * database manger for handling {@link Person} related actions
@@ -106,6 +109,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	// TODO: move to the other controller
 	private Chain<List<ResourcePersonRelation>, QueryAdapter<ResourcePersonRelationQuery>> personResourceRelationChain;
 	private Chain<Statistics, QueryAdapter<PersonQuery>> statisticsChain;
+
 
 	@Deprecated // use spring config
 	public static PersonDatabaseManager getInstance() {
@@ -214,6 +218,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			person.setCrisLinks(crisLinks);
 		}
 
+		// TODO get additionalkeys
 		return person;
 	}
 
@@ -225,7 +230,58 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @return Person
 	 */
 	public Person getPersonByDnbId(final String dnbId, final DBSession session) {
-		return this.queryForObject("getPersonByDnbId", dnbId, Person.class, session);
+		Person person = this.queryForObject("getPersonByDnbId", dnbId, Person.class, session);
+		// TODO get additionalkeys
+		return person;
+	}
+
+	/**
+	 * Returns a Person identified by an additional key value
+	 *
+	 * @param keyName		additional key name
+	 * @param keyValue		additional key value
+	 * @param session		db session
+	 * @return Person		retrieved person
+	 */
+	public Person getPersonByAdditionalKey(final String keyName, final String keyValue, final DBSession session) {
+		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(null, keyName, keyValue);
+		Person person = this.queryForObject("getPersonByAdditionalKey", param, Person.class, session);
+		// TODO get additionalkeys
+		return person;
+	}
+
+	/**
+	 * Get an additional key of a specified person and key name
+	 * @param personId	specified person
+	 * @param keyName 	specified key name
+	 * @param session	db session
+	 * @return			additional key
+	 */
+	public AdditionalKey getAdditionalKeyByPerson(final String personId, final String keyName, final DBSession session) {
+		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(personId, keyName, null);
+		return this.queryForObject("getAdditionalKeyByPerson", param, AdditionalKey.class, session);
+	}
+
+	/**
+	 * Get the list of additional keys of a specified person
+	 * @param personId	specified person
+	 * @param session	db session
+	 * @return			list of additional keys
+	 */
+	public List<AdditionalKey> getAdditionalKeysByPerson(final String personId, final DBSession session) {
+		return this.queryForList("getAdditionalKeysByPerson", personId, AdditionalKey.class, session);
+	}
+
+	/**
+	 * Creates a new additional key and corresponding value for the specified Person
+	 * @param personId		specified person
+	 * @param keyName		new additional key name
+	 * @param keyValue		additional key value
+	 * @param session		db session
+	 */
+	public void createAdditionalKey(final String personId, final String keyName, final String keyValue, final DBSession session) {
+		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(personId, keyName, keyValue);
+		this.insert("insertAdditionalKeyForPerson", param, session);
 	}
 
 	/**
@@ -269,10 +325,22 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		}
 	}
 
+	/**
+	 * Remove an additional key entry of the specified person
+	 *
+	 * @param personId		specified person
+	 * @param keyName		additional key name to remove
+	 * @param session		db session
+	 */
+	public void removePersonAdditionalKey(final String personId, final String keyName, final DBSession session) {
+		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(personId, keyName, null);
+		this.delete("deleteAdditionalKeyForPerson", param, session);
+	}
+
+
 	private PersonName getPersonNameById(int personNameChangeId, final DBSession session) {
 		return this.queryForObject("getPersonNameById", personNameChangeId, PersonName.class, session);
 	}
-
 
 	/**
 	 * Updates all fields of a given Person
@@ -282,6 +350,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	public void updatePerson(final Person person, final DBSession session) {
 		this.updatePersonField(person, "Person", session); // XXX: this is not a single field update
+		this.updatePersonAdditionalKeys(person, session);
 	}
 
 	private JobResult updatePersonField(final Person person, final String fieldName, final DBSession session) {
@@ -309,6 +378,28 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			session.endTransaction();
 		}
 
+		return JobResult.buildSuccess();
+	}
+
+	private JobResult updatePersonAdditionalKeys(final Person person, final DBSession session) {
+		session.beginTransaction();
+		try {
+			// first check if the person is in the database
+			final String personId = person.getPersonId();
+
+			final Person personInDB = this.getPersonById(personId, session);
+			if (!present(personInDB)) {
+				return JobResult.buildFailure(Collections.singletonList(new MissingObjectErrorMessage(personId, "person")));
+			}
+			// TODO inform plugins about key updates?
+			List<AdditionalKey> keys = person.getAdditionalKeys();
+			for (AdditionalKey key : keys) {
+				this.createAdditionalKey(personId, key.getKeyName(), key.getKeyValue(), session);
+			}
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
 		return JobResult.buildSuccess();
 	}
 
@@ -396,6 +487,18 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	public void updateUserLink(Person person, DBSession session) {
 		this.updatePersonField(person, "PersonUser", session);
+	}
+
+	/**
+	 * Update an existing additional key of the specified person
+	 * @param personId 		specified person
+	 * @param keyName		additional key name to update
+	 * @param keyValue		new additional key value
+	 * @param session		db session
+	 */
+	public void updateAdditionalKey(final String personId, final String keyName, final String keyValue, final DBSession session) {
+		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(personId, keyName, keyValue);
+		this.update("updateAdditionalKeyForPerson", param, session);
 	}
 
 	/**
@@ -1256,6 +1359,16 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	private String getForwardId(String personId, DBSession session) {
 		return this.queryForObject("getPersonForward", personId, String.class, session);
+	}
+
+	/**
+	 *
+	 * @param userName
+	 * @param session
+	 * @return
+	 */
+	public int getUserPersonPostsStyleSettings(final String userName, final DBSession session) {
+		return this.queryForObject("getUserPersonPostsStyleSettings", userName, Integer.class, session);
 	}
 
 	@Override

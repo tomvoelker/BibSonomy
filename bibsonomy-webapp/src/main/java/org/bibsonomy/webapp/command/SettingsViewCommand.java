@@ -42,6 +42,8 @@ import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 /**
  * @author Steffen Kress
  */
@@ -56,13 +58,14 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public final static int SYNC_IDX = 4;
 	public final static int CV_IDX = 5;
 	public final static int OAUTH_IDX = 6;
+	public final static int PERSON_IDX = 7;
 	
 	private static final String TAB_URL = "/settings";
 	
 	
 	/**
-	 * action can be logging, api or layoutTagPost
-	 * this three types determine the different possible actions which will be handled 
+	 * action can be logging, api, layoutTagPost, personSettings
+	 * this four types determine the different possible actions which will be handled
 	 * by this controller for the settings.settings site
 	 */
 	private String action;
@@ -89,6 +92,11 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 * current user
 	 */
 	private User user;
+
+	/**
+	 * person of the current user
+	 */
+	private Person person;
 	
 	private boolean hasOwnGroup;
 	
@@ -260,6 +268,16 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public void showSyncTab(boolean show) {
 		if(show) {
 			this.addTab(SYNC_IDX, "navi.sync");
+		}
+	}
+
+	/**
+	 * shows the person tab for users with a linked person
+	 * @param person
+	 */
+	public void showPersonTab(Person person) {
+		if (present(person)) {
+			this.addTab(PERSON_IDX, "navi.person");
 		}
 	}
 	
@@ -486,6 +504,22 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	/**
+	 * Get the person of the current user
+	 * @return the person
+	 */
+	public Person getPerson() {
+		return person;
+	}
+
+	/**
+	 * Set the person of the current user
+	 * @param person the person to set
+	 */
+	public void setPerson(Person person) {
+		this.person = person;
 	}
 
 	/**

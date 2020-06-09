@@ -27,14 +27,6 @@
 package org.bibsonomy.rest.client;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.net.URI;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.JobResult;
@@ -70,11 +62,11 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
-import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationData;
@@ -84,14 +76,21 @@ import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
-import org.bibsonomy.rest.client.queries.get.GetPersonByIdQuery;
-import org.bibsonomy.rest.client.queries.delete.DeleteResourcePersonRelationQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteCRISLinkQuery;
+import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
+import org.bibsonomy.rest.client.queries.delete.DeletePostDocumentQuery;
+import org.bibsonomy.rest.client.queries.delete.DeletePostQuery;
+import org.bibsonomy.rest.client.queries.delete.DeleteResourcePersonRelationQuery;
+import org.bibsonomy.rest.client.queries.delete.DeleteSyncDataQuery;
+import org.bibsonomy.rest.client.queries.delete.DeleteUserQuery;
+import org.bibsonomy.rest.client.queries.delete.RemoveUserFromGroupQuery;
+import org.bibsonomy.rest.client.queries.delete.UnpickClipboardQuery;
 import org.bibsonomy.rest.client.queries.get.GetConceptDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetFriendsQuery;
 import org.bibsonomy.rest.client.queries.get.GetGroupDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetGroupListQuery;
 import org.bibsonomy.rest.client.queries.get.GetLastSyncDataQuery;
+import org.bibsonomy.rest.client.queries.get.GetPersonByIdQuery;
 import org.bibsonomy.rest.client.queries.get.GetPersonsQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostDocumentQuery;
@@ -99,13 +98,6 @@ import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
 import org.bibsonomy.rest.client.queries.get.GetProjectDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetProjectsQuery;
 import org.bibsonomy.rest.client.queries.get.GetResourcePersonRelationsQuery;
-import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
-import org.bibsonomy.rest.client.queries.delete.DeletePostDocumentQuery;
-import org.bibsonomy.rest.client.queries.delete.DeletePostQuery;
-import org.bibsonomy.rest.client.queries.delete.DeleteSyncDataQuery;
-import org.bibsonomy.rest.client.queries.delete.DeleteUserQuery;
-import org.bibsonomy.rest.client.queries.delete.RemoveUserFromGroupQuery;
-import org.bibsonomy.rest.client.queries.delete.UnpickClipboardQuery;
 import org.bibsonomy.rest.client.queries.get.GetTagDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetTagRelationQuery;
 import org.bibsonomy.rest.client.queries.get.GetTagsQuery;
@@ -143,6 +135,13 @@ import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.util.ExceptionUtils;
+
+import java.net.URI;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * {@link LogicInterface} for a remote BibSonomy/PUMA instance

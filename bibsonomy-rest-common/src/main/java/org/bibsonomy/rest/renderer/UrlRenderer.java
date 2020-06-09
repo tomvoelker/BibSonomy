@@ -483,6 +483,20 @@ public class UrlRenderer {
 						.addPathElement(personId).addPathElement(RESTConfig.RELATION_PARAM);
 	}
 
+	public UrlBuilder createUrlBuilderForPersonPosts(String personId) {
+		UrlBuilder builder = createUrlBuilderForPerson(personId);
+		builder.addPathElement(RESTConfig.POSTS_URL);
+		return builder;
+	}
+
+	public UrlBuilder createUrlBuilderForPersonPostsByAdditionalKey(String keyName, String keyValue) {
+		UrlBuilder builder = createUrlBuilderForPersons();
+		builder.addPathElement(keyName);
+		builder.addPathElement(keyValue);
+		builder.addPathElement(RESTConfig.POSTS_URL);
+		return builder;
+	}
+
 	/**
 	 * creates a url builder for a person resource relation
 	 * @param personId
@@ -906,6 +920,9 @@ public class UrlRenderer {
 				break;
 			case VIEWABLE:
 				groupingParameterName = "viewable";
+				break;
+			case PERSON:
+				groupingParameterName = "person";
 				break;
 			case ALL:
 				groupingParameterName = null;

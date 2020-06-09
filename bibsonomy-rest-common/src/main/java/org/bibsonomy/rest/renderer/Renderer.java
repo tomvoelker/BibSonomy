@@ -33,16 +33,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.model.Document;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.GroupMembership;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.sync.SynchronizationData;
@@ -134,8 +125,9 @@ public interface Renderer {
 	 * Serializes a list of persons
 	 * @param writer
 	 * @param persons
+	 * @param viewModel
 	 */
-	void serializePersons(Writer writer, List<Person> persons);
+	void serializePersons(Writer writer, List<Person> persons, ViewModel viewModel);
 
 	/**
 	 * Serializes one {@link Person}.

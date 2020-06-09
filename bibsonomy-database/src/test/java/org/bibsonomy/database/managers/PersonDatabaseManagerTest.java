@@ -26,21 +26,6 @@
  */
 package org.bibsonomy.database.managers;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertNotNull;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.BibTex;
@@ -53,12 +38,26 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
-import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
-import org.bibsonomy.model.statistics.Statistics;
+import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.util.PersonMatchUtils;
 import org.bibsonomy.testutil.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  * tests for {@link PersonDatabaseManager}
@@ -345,6 +344,67 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		relations = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts("w.test.1", 100, 1, this.dbSession);
 		assertThat(relations.size(), equalTo(2));
+	}
+
+	@Test
+	public void testGetAdditionalKeysByPerson() {
+		final String personId = "w.test.1";
+		final List<AdditionalKey> additionalKeys = PERSON_DATABASE_MANAGER.getAdditionalKeysByPerson(personId, this.dbSession);
+		assertThat(additionalKeys.size(), greaterThan(1));
+	}
+
+	@Test
+	public void testGetPersonByAdditionalKey() {
+		final String personId = "w.test.1";
+		final String additionalKey = "addKey.1";
+		final String additionalValue = personId + "." + additionalKey;
+
+		final Person person = PERSON_DATABASE_MANAGER.getPersonByAdditionalKey(additionalKey, additionalValue, this.dbSession);
+		assertThat(person.getPersonId(), is(personId));
+	}
+
+	@Test
+	public void testCreateAdditionalKey() {
+		final String personId = "w.test.1";
+		final String additionalKey = "addKey.3";
+		final String additionalValue = personId + "." + additionalKey;
+		PERSON_DATABASE_MANAGER.createAdditionalKey(personId, additionalKey, additionalValue, this.dbSession);
+
+		final Person person = PERSON_DATABASE_MANAGER.getPersonByAdditionalKey(additionalKey, additionalValue, this.dbSession);
+		assertThat(person.getPersonId(), is(personId));
+	}
+
+	@Test
+	public void testRemoveAdditionalKey() {
+		final String personId = "w.test.1";
+		final String additionalKey = "addKey.2";
+		final String additionalValue = personId + "." + additionalKey;
+		PERSON_DATABASE_MANAGER.removePersonAdditionalKey(personId, additionalKey, this.dbSession);
+
+		final Person person = PERSON_DATABASE_MANAGER.getPersonByAdditionalKey(additionalKey, additionalValue, this.dbSession);
+		assertThat(person, equalTo(null));
+	}
+
+	@Test
+	public void testUpdateAdditionalKey() {
+		final String personId = "w.test.2";
+		final String addKey = "addKey.1";
+		final String addKeyValue = personId + "." + addKey;
+		PERSON_DATABASE_MANAGER.updateAdditionalKey(personId, addKey, addKeyValue, this.dbSession);
+
+		final Person person = PERSON_DATABASE_MANAGER.getPersonByAdditionalKey(addKey, addKeyValue, this.dbSession);
+		assertThat(person.getPersonId(), is(personId));
+	}
+
+	@Test
+	public void testUpdateOnInsertDuplicateAdditionalKey() {
+		final String personId = "w.test.4";
+		final String addKey = "addKey.1";
+		final String addKeyValue = personId + "." + addKey + ".new";
+		PERSON_DATABASE_MANAGER.createAdditionalKey(personId, addKey, addKeyValue, this.dbSession);
+
+		final Person person = PERSON_DATABASE_MANAGER.getPersonByAdditionalKey(addKey, addKeyValue, this.dbSession);
+		assertThat(person.getPersonId(), is(personId));
 	}
 
 	private static PersonMatch getMatchById(List<PersonMatch> matches, int id) {

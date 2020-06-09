@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Database - Database for BibSonomy.
+ * BibSonomy-Model - Java- and JAXB-Model.
  *
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -25,46 +25,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.bibsonomy.database.params.person;
+package org.bibsonomy.model.extra;
 
-/**
- * @author dzo
- */
-public class GetPersonByOrganizationParam {
-	private final String organizationName;
-	private final int limit;
-	private final int offset;
+public class AdditionalKey {
 
-	/**
-	 * default constructor
-	 * @param organizationName
-	 * @param limit
-	 * @param offset
-	 */
-	public GetPersonByOrganizationParam(String organizationName, int limit, int offset) {
-		this.organizationName = organizationName;
-		this.limit = limit;
-		this.offset = offset;
+	private String keyName;
+	private String keyValue;
+
+	public AdditionalKey() {
+
 	}
 
-	/**
-	 * @return the organizationName
-	 */
-	public String getOrganizationName() {
-		return organizationName;
+	public AdditionalKey(String keyName, String keyValue) {
+		this.keyName = keyName;
+		this.keyValue = keyValue;
 	}
 
-	/**
-	 * @return the limit
-	 */
-	public int getLimit() {
-		return limit;
+	public String getKeyName() {
+		return keyName;
 	}
 
-	/**
-	 * @return the offset
-	 */
-	public int getOffset() {
-		return offset;
+	public void setKeyName(String keyName) {
+		this.keyName = keyName;
+	}
+
+	public String getKeyValue() {
+		return keyValue;
+	}
+
+	public void setKeyValue(String keyValue) {
+		this.keyValue = keyValue;
 	}
 }

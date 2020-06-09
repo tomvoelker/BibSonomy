@@ -83,6 +83,7 @@ import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.query.Query;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.query.statistics.meta.MetaDataQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
@@ -146,6 +147,12 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public Person getPersonById(PersonIdType idType, String id) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	@Override
+	public Person getPersonByAdditionalKey(String key, String value) {
 		this.doDefaultAction();
 		return null;
 	}
@@ -965,6 +972,11 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
+		return null;
+	}
+
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query) {
 		return null;
 	}
 

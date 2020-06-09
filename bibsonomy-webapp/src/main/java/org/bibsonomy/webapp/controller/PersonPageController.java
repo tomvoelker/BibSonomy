@@ -27,29 +27,12 @@
 package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.GoldStandardPublication;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.PersonMergeFieldConflict;
-import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
@@ -78,6 +61,23 @@ import org.bibsonomy.webapp.view.Views;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.validation.Errors;
+
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * controller for a single person details page
@@ -608,6 +608,24 @@ public class PersonPageController extends SingleResourceListController implement
 		}
 
 		command.setPerson(person);
+
+		// Get the linked user's person posts style settings
+		if (present(person.getUser())) {
+			User user = this.logic.getUserDetails(person.getUser());
+			command.setPersonPostsStyleSettings(user.getSettings().getPersonPostsStyle());
+		} else {
+			// default to gold standard publications, if no linked user found
+			command.setPersonPostsStyleSettings(0);
+		}
+
+		// Get 'myown' posts of the linked user
+		PostQueryBuilder queryBuilder = new PostQueryBuilder()
+				.setEnd(200)
+				.setTags(new ArrayList<>(Collections.singletonList("myown")))
+				.setGrouping(GroupingEntity.USER)
+				.setGroupingName(person.getUser());
+		final List<Post<BibTex>> myownPosts = this.logic.getPosts(queryBuilder.createPostQuery(BibTex.class));
+		command.setMyownPosts(myownPosts);
 
 		// TODO: maybe this should be done in the view?
 		final List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(PersonResourceRelationOrder.PublicationYear));

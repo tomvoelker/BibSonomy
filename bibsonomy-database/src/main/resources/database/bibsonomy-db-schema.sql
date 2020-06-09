@@ -1124,6 +1124,8 @@ CREATE TABLE `pendingUser` (
   `show_bookmark` tinyint(1) default '1',
   `show_bibtex` tinyint(1) default '1',
   `useExternalPicture` tinyint(1) DEFAULT '0',
+  `person_posts_style` tinyint(4) NOT NULL DEFAULT '0',
+  `person_posts_layout` varchar(255) NOT NULL DEFAULT '',
   `reg_log` MEDIUMTEXT NULL DEFAULT NULL,
   `favourite_layouts` LONGTEXT NULL,
   UNIQUE (`activation_code`),
@@ -1528,6 +1530,8 @@ CREATE TABLE `user` (
   `show_bookmark` tinyint(1) default '1',
   `show_bibtex` tinyint(1) default '1',
   `useExternalPicture` tinyint(1) DEFAULT '0',
+  `person_posts_style` tinyint(4) NOT NULL DEFAULT '0',
+  `person_posts_layout` varchar(255) NOT NULL DEFAULT '',
   `reg_log` MEDIUMTEXT NULL DEFAULT NULL,
   `favourite_layouts` LONGTEXT NULL,
   PRIMARY KEY  (`user_name`),
@@ -1830,6 +1834,13 @@ CREATE TABLE `person_match`(
   `person2_id` varchar(64) NOT NULL,
   `state` tinyint(4) NOT NULL DEFAULT 0 COMMENT 'set to 1 if merge is denied, 2 if they are merged',
    PRIMARY KEY  (`match_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `person_additional_keys` (
+  `person_id` varchar(64) NOT NULL,
+  `key_name` varchar(64) NOT NULL,
+  `key_value` varchar(64) NOT NULL,
+  UNIQUE KEY (`person_id`, `key_value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `user_denied_match`(

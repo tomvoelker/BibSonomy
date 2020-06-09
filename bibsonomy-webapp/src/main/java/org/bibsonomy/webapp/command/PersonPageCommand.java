@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonMergeFieldConflict;
@@ -111,6 +112,9 @@ public class PersonPageCommand extends BaseCommand {
 	
 	private Person person;
 	private Post<? extends Resource> post;
+
+	private int personPostsStyleSettings;
+	private List<Post<BibTex>> myownPosts;
 	
 	private List<ResourcePersonRelation> thesis;
 	private List<ResourcePersonRelation> advisedThesis;
@@ -224,6 +228,36 @@ public class PersonPageCommand extends BaseCommand {
 	 */
 	public void setPost(Post<? extends Resource> post) {
 		this.post = post;
+	}
+
+	/**
+	 * 0 = gold standard publications, 1 = 'myown'-tagged posts by linked user
+	 * @return the person posts style setting as integer
+	 */
+	public int getPersonPostsStyleSettings() {
+		return personPostsStyleSettings;
+	}
+
+	/**
+	 * 0 = gold standard publications, 1 = 'myown'-tagged posts by linked user
+	 * @param personPostsStyleSettings the person posts style setting as integer
+	 */
+	public void setPersonPostsStyleSettings(int personPostsStyleSettings) {
+		this.personPostsStyleSettings = personPostsStyleSettings;
+	}
+
+	/**
+	 * @return the list of 'myown'-tagged posts by linked user
+	 */
+	public List<Post<BibTex>> getMyownPosts() {
+		return myownPosts;
+	}
+
+	/**
+	 * @param myownPosts the list of 'myown'-tagged posts by linked user
+	 */
+	public void setMyownPosts(List<Post<BibTex>> myownPosts) {
+		this.myownPosts = myownPosts;
 	}
 
 	/**

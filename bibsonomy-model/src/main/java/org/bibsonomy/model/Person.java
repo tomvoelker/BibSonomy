@@ -26,16 +26,17 @@
  */
 package org.bibsonomy.model;
 
+import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.Linkable;
+import org.bibsonomy.model.enums.Gender;
+import org.bibsonomy.model.extra.AdditionalKey;
+
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.bibsonomy.model.cris.CRISLink;
-import org.bibsonomy.model.cris.Linkable;
-import org.bibsonomy.model.enums.Gender;
 
 /**
  * Entity class of a real person. Note that {@link User} and {@link Author} are
@@ -85,6 +86,9 @@ public class Person implements Linkable, Serializable {
 	private List<CRISLink> crisLinks = new LinkedList<>();
 
 	private List<ResourcePersonRelation> resourceRelations = new LinkedList<>();
+
+	/** additional keys for person */
+	private List<AdditionalKey> additionalKeys = new LinkedList<>();
 
 	/**
 	 * default constructor
@@ -401,6 +405,98 @@ public class Person implements Linkable, Serializable {
 	 */
 	public void setResourceRelations(List<ResourcePersonRelation> resourceRelations) {
 		this.resourceRelations = resourceRelations;
+	}
+
+	/**
+	 * @return	list of additional keys
+	 */
+	public List<AdditionalKey> getAdditionalKeys() {
+		return additionalKeys;
+	}
+
+	/**
+	 * @param additionalKeys to set
+	 */
+	public void setAdditionalKeys(List<AdditionalKey> additionalKeys) {
+		this.additionalKeys = additionalKeys;
+	}
+
+	/**
+	 * Get the person's additional key specified by the key name
+	 *
+	 * @param keyName	the key name
+	 * @return			the additional key as an object, null if not found
+	 */
+	public AdditionalKey getAdditionalKey(String keyName) {
+		for (AdditionalKey additionalKey : this.additionalKeys) {
+			if (additionalKey.getKeyName().equalsIgnoreCase(keyName)) return additionalKey;
+		}
+		return null;
+	}
+
+	/**
+	 * Add a new additional key to the person with key name and value
+	 *
+	 * @param keyName	the key name
+	 * @param keyValue	the key value
+	 * @return 			true, if added or exact same key was already present, false if key couldn't be added
+	 */
+	public boolean addAdditionalKey(String keyName, String keyValue) {
+		AdditionalKey additionalKey = new AdditionalKey(keyName, keyValue);
+		return addAdditionalKey(additionalKey);
+	}
+
+	/**
+	 * Add a new additional key to the person with an additional key object
+	 *
+	 * @param additionalKey		the additional key object
+	 * @return 					true, if added or exact same key was already present, false if key couldn't be added
+	 */
+	public boolean addAdditionalKey(AdditionalKey additionalKey) {
+		AdditionalKey foundKey = getAdditionalKey(additionalKey.getKeyName());
+
+		if (foundKey != null) {
+			// Return true, if exact same key was already present
+			// Return false, if key name with different value was found
+			return foundKey.getKeyValue().equals(additionalKey.getKeyName());
+		} else {
+			// Adding key
+			this.additionalKeys.add(additionalKey);
+			return true;
+		}
+	}
+
+	/**
+	 * Remove an additional key from the person specified by the key name
+	 *
+	 * @param keyName	the key name
+	 * @return true, if removing it was successful or key wasn't present. false otherwise
+	 */
+	public boolean removeAdditionalKey(String keyName) {
+		AdditionalKey foundKey = getAdditionalKey(keyName);
+		if (foundKey != null) {
+			this.additionalKeys.remove(foundKey);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Update an additional key of the person specified by the key name
+	 *
+	 * @param keyName	the key name
+	 * @param keyValue	the new key value
+	 * @return			true, if additional key was updated. False, if key wasn't found to update
+	 */
+	public boolean updateAdditionalKey(String keyName, String keyValue) {
+		AdditionalKey foundKey = getAdditionalKey(keyName);
+		if (foundKey != null) {
+			foundKey.setKeyValue(keyValue);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override

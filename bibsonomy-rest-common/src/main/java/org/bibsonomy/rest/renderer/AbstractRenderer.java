@@ -57,6 +57,7 @@ import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.cris.ProjectPersonLinkType;
 import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.sync.SynchronizationAction;
@@ -75,6 +76,7 @@ import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.xml.AbstractPublicationType;
+import org.bibsonomy.rest.renderer.xml.AdditionalKeyType;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
@@ -348,11 +350,13 @@ public abstract class AbstractRenderer implements Renderer {
 
 	protected void fillXmlPost(final PostType xmlPost, final Post<? extends Resource> post) {
 		// set user
-		final String userName = post.getUser().getName();
-		final UserType xmlUser = new UserType();
-		xmlUser.setName(userName);
-		xmlUser.setHref(this.urlRenderer.createHrefForUser(userName));
-		xmlPost.setUser(xmlUser);
+		final String userName = (present(post.getUser())) ? post.getUser().getName() : "";
+		if (present(post.getUser())) {
+			final UserType xmlUser = new UserType();
+			xmlUser.setName(userName);
+			xmlUser.setHref(this.urlRenderer.createHrefForUser(userName));
+			xmlPost.setUser(xmlUser);
+		}
 
 		// date infos
 		final Date date = post.getDate();
@@ -462,18 +466,20 @@ public abstract class AbstractRenderer implements Renderer {
 			/*
 			 * add references
 			 */
-			final ReferencesType xmlReferences = new ReferencesType();
-			xmlPublication.setReferences(xmlReferences);
+			if (present(publication.getReferences())) {
+				final ReferencesType xmlReferences = new ReferencesType();
+				xmlPublication.setReferences(xmlReferences);
 
-			final List<ReferenceType> referenceList = xmlReferences.getReference();
+				final List<ReferenceType> referenceList = xmlReferences.getReference();
 
-			for (final BibTex reference : publication.getReferences()) {
-				final ReferenceType xmlReference = new ReferenceType();
-				final String interHash = reference.getInterHash();
-				xmlReference.setInterhash(interHash);
-				xmlReference.setHref(this.urlRenderer.createHrefForCommunityPost(interHash));
+				for (final BibTex reference : publication.getReferences()) {
+					final ReferenceType xmlReference = new ReferenceType();
+					final String interHash = reference.getInterHash();
+					xmlReference.setInterhash(interHash);
+					xmlReference.setHref(this.urlRenderer.createHrefForCommunityPost(interHash));
 
-				referenceList.add(xmlReference);
+					referenceList.add(xmlReference);
+				}
 			}
 
 			final Set<BibTex> publishedInSet = publication.getReferenceThisPublicationIsPublishedIn();
@@ -486,18 +492,20 @@ public abstract class AbstractRenderer implements Renderer {
 				xmlPublication.setPublishedIn(publisedInXml);
 			}
 
-			final Set<BibTex> publicationsPartOfPublication = publication.getSubGoldStandards();
-			final PublicationsType partOfList = new PublicationsType();
-			xmlPublication.setPublications(partOfList);
+			if (present(publication.getSubGoldStandards())) {
+				final Set<BibTex> publicationsPartOfPublication = publication.getSubGoldStandards();
+				final PublicationsType partOfList = new PublicationsType();
+				xmlPublication.setPublications(partOfList);
 
-			final List<PublicationType> publications = partOfList.getPublication();
-			for (final BibTex publicationPart : publicationsPartOfPublication) {
-				final PublicationType xmlPublicationPart = new PublicationType();
-				final String interHash = publicationPart.getInterHash();
+				final List<PublicationType> publications = partOfList.getPublication();
+				for (final BibTex publicationPart : publicationsPartOfPublication) {
+					final PublicationType xmlPublicationPart = new PublicationType();
+					final String interHash = publicationPart.getInterHash();
 
-				xmlPublicationPart.setInterhash(interHash);
-				xmlPublicationPart.setHref(this.urlRenderer.createHrefForCommunityPost(interHash));
-				publications.add(xmlPublicationPart);
+					xmlPublicationPart.setInterhash(interHash);
+					xmlPublicationPart.setHref(this.urlRenderer.createHrefForCommunityPost(interHash));
+					publications.add(xmlPublicationPart);
+				}
 			}
 
 			xmlPost.setGoldStandardPublication(xmlPublication);
@@ -723,10 +731,23 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	@Override
-	public void serializePersons(Writer writer, List<Person> persons) {
+	public void serializePersons(Writer writer, List<Person> persons, ViewModel viewModel) {
 		final BibsonomyXML xmlDoc = buildEmptyBibsonomyXMLWithOK();
 
 		final PersonsType personsType = new PersonsType();
+		if (viewModel != null) {
+			personsType.setEnd(BigInteger.valueOf(viewModel.getEndValue()));
+			if (viewModel.getUrlToNextResources() != null) {
+				personsType.setNext(viewModel.getUrlToNextResources());
+			}
+			personsType.setStart(BigInteger.valueOf(viewModel.getStartValue()));
+		} else if (persons != null) {
+			personsType.setStart(BigInteger.ZERO);
+			personsType.setEnd(BigInteger.valueOf(persons.size()));
+		} else {
+			personsType.setStart(BigInteger.ZERO);
+			personsType.setEnd(BigInteger.ZERO);
+		}
 		xmlDoc.setPersons(personsType);
 		persons.stream().map(this::createXmlPerson).forEach(personsType.getPerson()::add);
 
@@ -749,6 +770,7 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(xmlPerson::setOrcid, person::getOrcid);
 		setValue(xmlPerson::setGender, person::getGender, p -> GenderType.valueOf(p.name().toUpperCase()));
 		setValue(xmlPerson::setMainName, person::getMainName, this::createXmlPersonName);
+		setValue(xmlPerson::setResearcherid, person::getResearcherid);
 
 		/*
 		 * here we have to remove the main name from the names because it was already set as the mainName attribute of the type
@@ -756,6 +778,8 @@ public abstract class AbstractRenderer implements Renderer {
 		final List<PersonName> otherNames = person.getNames().stream().filter(personName -> !personName.isMain()).collect(Collectors.toList());
 		setCollectionValue(xmlPerson.getNames(), otherNames, this::createXmlPersonName);
 		setValue(xmlPerson::setUser, person::getUser, this::createXmlUser);
+		final List<AdditionalKey> additionalKeys = person.getAdditionalKeys();
+		setCollectionValue(xmlPerson.getAdditionalKey(), additionalKeys, this::createXmlAdditionalKey);
 		return xmlPerson;
 	}
 
@@ -764,6 +788,13 @@ public abstract class AbstractRenderer implements Renderer {
 		xmlName.setFirstName(personName.getFirstName());
 		xmlName.setLastName(personName.getLastName());
 		return xmlName;
+	}
+
+	private AdditionalKeyType createXmlAdditionalKey(AdditionalKey additionalKey) {
+		final AdditionalKeyType xmlAdditionalKey = new AdditionalKeyType();
+		xmlAdditionalKey.setKeyName(additionalKey.getKeyName());
+		xmlAdditionalKey.setKeyValue(additionalKey.getKeyValue());
+		return xmlAdditionalKey;
 	}
 
 	@Override

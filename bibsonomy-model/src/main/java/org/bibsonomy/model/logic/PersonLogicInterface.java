@@ -33,6 +33,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
@@ -55,6 +56,14 @@ public interface PersonLogicInterface {
 	 * @return
 	 */
 	public Person getPersonById(final PersonIdType idType, final String id);
+
+	/**
+	 * gets the person by any additional key and value
+	 * @param keyName
+	 * @param keyValue
+	 * @return
+	 */
+	public Person getPersonByAdditionalKey(final String keyName, final String keyValue);
 
 	/**
 	 * sets id for new persons
@@ -126,7 +135,6 @@ public interface PersonLogicInterface {
 	 */
 	List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query);
 
-
 	/**
 	 * @param username
 	 */
@@ -147,4 +155,5 @@ public interface PersonLogicInterface {
 	 * @return
 	 */
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map);
+
 }

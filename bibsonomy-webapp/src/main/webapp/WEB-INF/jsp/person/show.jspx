@@ -222,7 +222,14 @@
 								</h2>
 								<c:choose>
 									<c:when test="${personHasPublications}">
-										<per:otherPubList command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}" onlyLinkAuthorsWithPersons="${not isLoggedIn}" hideHeadline="${true}"/>
+										<c:choose>
+											<c:when test="${command.personPostsStyleSettings gt 0}">
+												<per:myownPostList command="${command}" posts="${command.myownPosts}"/>
+											</c:when>
+											<c:otherwise>
+												<per:otherPubList command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}" onlyLinkAuthorsWithPersons="${not isLoggedIn}" hideHeadline="${true}"/>
+											</c:otherwise>
+										</c:choose>
 									</c:when>
 									<c:otherwise>
 										<c:if test="${isLoggedIn}">
@@ -265,8 +272,12 @@
 			</div>
 
 			<!-- Other publications -->
-			<c:if test="${fn:length(command.otherPubs) gt 0 and not useCRISView}">
+			<c:if test="${command.personPostsStyleSettings le 0 and fn:length(command.otherPubs) gt 0 and not useCRISView}">
 				<per:otherPubList command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}"/>
+			</c:if>
+
+			<c:if test="${command.personPostsStyleSettings gt 0 and fn:length(command.myownPosts) gt 0}">
+				<per:myownPostList command="${command}" posts="${command.myownPosts}"/>
 			</c:if>
 
 			<!-- Other publications of similar authors -->

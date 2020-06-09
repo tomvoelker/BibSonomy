@@ -28,21 +28,6 @@ package org.bibsonomy.database;
 
 import static org.bibsonomy.util.ValidationUtils.assertNotNull;
 import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.net.InetAddress;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.auth.util.SimpleAuthUtils;
@@ -158,13 +143,13 @@ import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.GroupQuery;
-import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
-import org.bibsonomy.model.logic.query.statistics.meta.MetaDataQuery;
-import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
+import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.Query;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
+import org.bibsonomy.model.logic.query.statistics.meta.MetaDataQuery;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -183,6 +168,20 @@ import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.ValidationUtils;
+
+import java.net.InetAddress;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * Database Implementation of the LogicInterface
@@ -3653,25 +3652,41 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/* (non-Javadoc)get
+	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonById(int)
 	 */
 	@Override
 	public Person getPersonById(final PersonIdType idType, final String id) {
 		// TODO: implement a chain
+
 		final DBSession session = this.openSession();
 		try {
+			Person person;
 			if (PersonIdType.PERSON_ID == idType) {
-				return this.personDBManager.getPersonById(id, session);
+				person = this.personDBManager.getPersonById(id, session);
 			} else if (PersonIdType.DNB_ID == idType) {
-				return this.personDBManager.getPersonByDnbId(id, session);
+				person = this.personDBManager.getPersonByDnbId(id, session);
 				// } else if (PersonIdType.ORCID == idType) {
 				//	TODO: implement
 			} else if (PersonIdType.USER == idType) {
-				return this.personDBManager.getPersonByUser(id, session);
+				person = this.personDBManager.getPersonByUser(id, session);
 			} else {
 				throw new UnsupportedOperationException("person cannot be found by it type " + idType);
 			}
+			return person;
+		} finally {
+			session.close();
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonByAdditionalKey(String, String)
+	 */
+	@Override
+	public Person getPersonByAdditionalKey(final String key, final String value) {
+		final DBSession session = this.openSession();
+		try {
+			return this.personDBManager.getPersonByAdditionalKey(key, value, session);
 		} finally {
 			session.close();
 		}
@@ -3758,7 +3773,6 @@ public class DBLogic implements LogicInterface {
 		query.setEnd(Integer.MAX_VALUE);
 		return this.getResourceRelations(query);
 	}
-
 
 	/**
 	 * 

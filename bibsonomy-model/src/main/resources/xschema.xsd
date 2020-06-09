@@ -59,6 +59,7 @@
 				<xsd:element name="project" type="ProjectType" />
 				<xsd:element name="cris_link" type="CRISLinkTypeType" />
 				<xsd:element name="personMatch" type="PersonMatchType" />
+				<xsd:element name="additionalKey" type="AdditionalKeyType" />
 				<!-- error -->
 				<xsd:element name="error" type="xsd:string" />
 				<!-- hashes to return when creating / updating resources -->
@@ -221,12 +222,6 @@
 		<xsd:attribute name="next" type="xsd:anyURI" />
 	</xsd:complexType>
 
-	<xsd:complexType name="PersonsType">
-		<xsd:sequence>
-			<xsd:element maxOccurs="unbounded" minOccurs="0" name="person" type="PersonType" />
-		</xsd:sequence>
-	</xsd:complexType>
-
 	<!--
 		a post
 	-->
@@ -277,6 +272,16 @@
 	<!--
     	a person
 	-->
+
+	<xsd:complexType name="PersonsType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="person" type="PersonType" />
+		</xsd:sequence>
+		<xsd:attribute name="start" type="positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="end" type="positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="next" type="xsd:anyURI" />
+	</xsd:complexType>
+
 	<xsd:simpleType name="GenderType">
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="M" />
@@ -291,14 +296,17 @@
 					<xsd:element name="mainName" type="PersonNameType" />
 					<xsd:element name="names" type="PersonNameType" minOccurs="0" maxOccurs="unbounded" />
 					<xsd:element name="user" type="UserType" minOccurs="0" />
+					<xsd:element name="additionalKey" type="AdditionalKeyType" maxOccurs="unbounded"/>
 				</xsd:sequence>
-				<xsd:attribute name="college" type="xsd:string" />
-				<xsd:attribute name="academicDegree" type="xsd:string" />
 				<xsd:attribute name="personId" type="xsd:string" />
+				<xsd:attribute name="gender" type="GenderType" />
 				<xsd:attribute name="homepage" type="xsd:anyURI" />
 				<xsd:attribute name="email" type="xsd:string" />
+				<xsd:attribute name="college" type="xsd:string" />
+				<xsd:attribute name="academicDegree" type="xsd:string" />
 				<xsd:attribute name="orcid" type="xsd:string" />
-				<xsd:attribute name="gender" type="GenderType" />
+				<xsd:attribute name="researcherid" type="xsd:string" />
+
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
@@ -654,5 +662,10 @@
 		</xsd:sequence>
 		<xsd:attribute name="state" type="xsd:int" />
 		<xsd:attribute name="matchId" type="xsd:int" />
+	</xsd:complexType>
+
+	<xsd:complexType name="AdditionalKeyType">
+		<xsd:attribute name="keyName" type="xsd:string" />
+		<xsd:attribute name="keyValue" type="xsd:string" />
 	</xsd:complexType>
 </xsd:schema>

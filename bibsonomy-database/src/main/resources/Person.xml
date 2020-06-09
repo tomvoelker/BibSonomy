@@ -20,7 +20,28 @@
 		FROM person
 		WHERE person.user_name = #user#
 	</select>
-	
+
+	<select id="getPersonByAdditionalKey" resultMap="PersonCommon.lazyLoadingPerson" parameterClass="org.bibsonomy.database.params.person.PersonAdditionalKeyParam">
+		SELECT <include refid="commonPersonColumns"/>
+		FROM person_additional_keys
+		JOIN person USING(person_id)
+		WHERE person_additional_keys.key_name = #keyName#
+		AND person_additional_keys.key_value = #keyValue#
+	</select>
+
+	<select id="getAdditionalKeyByPerson" resultMap="PersonCommon.additionalKey" parameterClass="org.bibsonomy.database.params.person.PersonAdditionalKeyParam">
+		SELECT key_name, key_value
+		FROM person_additional_keys
+		WHERE person_id = #personId#
+		AND key_name = #keyName#
+	</select>
+
+	<select id="getAdditionalKeysByPerson" resultMap="PersonCommon.additionalKey" parameterClass="string">
+		SELECT key_name, key_value
+		FROM person_additional_keys
+		WHERE person_id = #personId#
+	</select>
+
 	<insert id="insertPerson" parameterClass="person">
 		INSERT INTO person (<include refid="commonPersonColumnsPlain"/>)
 			VALUES (<include refid="insertPersonAttributes"/>)
@@ -42,6 +63,12 @@
     		SELECT @@IDENTITY AS person_change_id
   		</selectKey>
 	</insert>
+
+	<insert id="insertAdditionalKeyForPerson" parameterClass="org.bibsonomy.database.params.person.PersonAdditionalKeyParam">
+		INSERT INTO person_additional_keys (<include refid="commonPersonAdditionalKeysColumns"/>)
+		VALUES (#personId#, #keyName#, #keyValue#)
+		ON DUPLICATE KEY UPDATE key_value = #keyValue#
+	</insert>
 	
 	<select id="getNames" resultMap="PersonCommon.personName" parameterClass="string">
 		SELECT <include refid="commonPersonNameColumns"/>
@@ -52,7 +79,7 @@
 	<select id="getPersonNameById" resultMap="PersonCommon.personName" parameterClass="int">
 		SELECT <include refid='commonPersonNameColumns'/>
 		FROM person_name
-			WHERE person_change_id = #personChangeId#
+		WHERE person_change_id = #personChangeId#
 	</select>
 
 	<update id="updatePerson" parameterClass="person">
@@ -108,6 +135,13 @@
 		SET is_main = #isMain#
 		WHERE person_name.person_change_id = #personNameChangeId#
 	</update>
+
+	<update id="updateAdditionalKeyForPerson" parameterClass="org.bibsonomy.database.params.person.PersonAdditionalKeyParam">
+		UPDATE person_additional_keys
+		SET key_value = #keyValue#
+		WHERE person_id = #personId#
+		AND key_name = #keyName#
+	</update>
 	
 	<delete id="removeResourceRelation" parameterClass="int">
 		DELETE FROM pub_person
@@ -117,6 +151,12 @@
 	<delete id="removePersonName" parameterClass="int">
 		DELETE FROM person_name
 		WHERE person_change_id = #personNameId#
+	</delete>
+
+	<delete id="deleteAdditionalKeyForPerson" parameterClass="org.bibsonomy.database.params.person.PersonAdditionalKeyParam">
+		DELETE FROM person_additional_keys
+		WHERE person_id = #personId#
+		AND key_name = #keyName#
 	</delete>
 
 	<delete id="deletePersonNamesByPersonId" parameterClass="string">
@@ -205,7 +245,7 @@
 	<select id="getPostsForPerson" parameterClass="string" resultMap="GoldStandardPublicationCommon.goldStandardPost">
 		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsDummyRows" />
 		FROM gold_standard b
-		JOIN pub_person p (simhash1)
+		JOIN pub_person p USING(simhash1)
 		WHERE p.person_id = #personId#
 		AND p.relator_code = 'Maut'
 	</select>
@@ -335,6 +375,11 @@
 		WHERE g.group_name = #name#
 		AND c.source_type = 4
 		AND c.target_type = 2
+	</select>
+
+	<select id="getUserPersonPostsStyleSettings" resultClass="int">
+		SELECT person_posts_style FROM user
+		WHERE user_name = #userName#
 	</select>
 
 </sqlMap>

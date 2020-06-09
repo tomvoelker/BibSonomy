@@ -26,13 +26,6 @@
  */
 package org.bibsonomy.model.logic.util;
 
-import java.net.InetAddress;
-import java.net.URI;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
@@ -80,11 +73,11 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.GroupQuery;
+import org.bibsonomy.model.logic.query.PersonQuery;
+import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.Query;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
-import org.bibsonomy.model.logic.query.PersonQuery;
-import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.query.statistics.meta.MetaDataQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
@@ -96,6 +89,13 @@ import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.user.remote.RemoteUserId;
+
+import java.net.InetAddress;
+import java.net.URI;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * an adapter for a {@link LogicInterface} that only supports read only methods
@@ -845,6 +845,11 @@ public class ReadOnlyLogic implements LogicInterface {
 	@Override
 	public Person getPersonById(PersonIdType idType, String id) {
 		return this.logicinterface.getPersonById(idType, id);
+	}
+
+	@Override
+	public Person getPersonByAdditionalKey(String keyName, String keyValue) {
+		return this.logicinterface.getPersonByAdditionalKey(keyName, keyValue);
 	}
 
 	/* (non-Javadoc)
