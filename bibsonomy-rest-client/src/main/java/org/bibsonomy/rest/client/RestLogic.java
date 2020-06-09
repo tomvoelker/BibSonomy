@@ -64,6 +64,7 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.PersonQuery;
+import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
@@ -274,19 +275,37 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+		final PostQuery<T> query = new PostQuery<>(resourceType);
+		query.setGrouping(grouping);
+		query.setGroupingName(groupingName);
+		query.setTags(tags);
+		query.setHash(hash);
+		query.setSearch(search);
+		query.setScope(queryScope);
+		query.setFilters(filters);
+		query.setOrder(order);
+		query.setStartDate(startDate);
+		query.setEndDate(endDate);
+		query.setStart(start);
+		query.setEnd(end);
+
+		return this.getPosts(query);
+	}
+
+	@Override
+	public <R extends Resource> List<Post<R>> getPosts(PostQuery<R> query) {
 		// TODO: properly implement searchtype in query and rest-server
 		// TODO: clientside chain of responsibility
-		final GetPostsQuery query = new GetPostsQuery(start, end);
-		query.setGrouping(grouping, groupingName);
-		query.setResourceHash(hash);
-		query.setResourceType(resourceType);
-		query.setTags(tags);
-		query.setSearch(search);
-		query.setOrder(order);
-		query.setUserName(this.getAuthenticatedUser().getName());
-		return (List) execute(query);
+		final GetPostsQuery restQuery = new GetPostsQuery(query.getStart(), query.getEnd());
+		restQuery.setGrouping(query.getGrouping(), query.getGroupingName());
+		restQuery.setResourceHash(query.getHash());
+		restQuery.setResourceType(query.getResourceClass());
+		restQuery.setTags(query.getTags());
+		restQuery.setSearch(query.getSearch());
+		restQuery.setOrder(query.getOrder());
+		restQuery.setUserName(this.getAuthenticatedUser().getName());
+		return (List) execute(restQuery);
 	}
 
 	@Override

@@ -58,6 +58,7 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.logic.query.GroupQuery;
+import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.rest.BasicAuthenticationHandler;
@@ -667,11 +668,22 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 			expectedPosts.add( (Post) ModelUtils.generatePost(Bookmark.class));
 			expectedPosts.add( (Post) ModelUtils.generatePost(BibTex.class));
 		}
+
+		final PostQuery<T> query = new PostQuery<>(resourceType);
+		query.setGrouping(grouping);
+		query.setGroupingName(groupingName);
+		query.setTags(tags);
+		query.setSearch(search);
+		query.setScope(queryScope);
+		query.setFilters(filters);
+		query.setOrder(order);
+		query.setStart(start);
+		query.setEnd(end);
 		
-		EasyMock.expect(this.serverLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search, queryScope, filters, order, null, null, start, end)).andReturn(expectedPosts);
+		EasyMock.expect(this.serverLogic.getPosts(PropertyEqualityArgumentMatcher.eq(query))).andReturn(expectedPosts);
 		EasyMock.replay(this.serverLogic);
 
-		final List<Post<T>> returnedPosts = this.clientLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search, queryScope, filters, order, null, null, start, end);
+		final List<Post<T>> returnedPosts = this.clientLogic.getPosts(query);
 		CommonModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(" + COMMON_USER_PROPERTIES + "|confidence|activationCode|reminderPassword|openID|ldapId|remoteUserIds|prediction|algorithm|mode)|.*\\.date|.*\\.scraperId|.*\\.openURL|.*\\.numberOfRatings|.*\\.rating"));
 		EasyMock.verify(this.serverLogic);
 		assertLogin();
