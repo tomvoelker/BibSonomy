@@ -6,7 +6,6 @@
             <references>
                 <reference interhash="abc" href="http://www.bibsonomy.org/api/posts/community/abc"/>
             </references>
-            <publications/>
         </goldStandardPublication>
     </post>
 </bibsonomy>
