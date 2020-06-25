@@ -26,19 +26,14 @@
  */
 package org.bibsonomy.webapp.controller;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.util.List;
-
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.UnsupportedOrderingException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.search.es.ESConstants;
-import org.bibsonomy.search.es.util.SortingUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.RelatedUserCommand;
@@ -48,6 +43,10 @@ import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+
+import java.util.List;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 
 /**
@@ -105,10 +104,12 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
-
-			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, command.getScope(),null, sortKey, command.getStartDate(), command.getEndDate(), entriesPerPage);
-			this.postProcessAndSortList(command, resourceType);
-			
+			this.preProcessForSearchIndexSort(command);
+			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, command.getScope(),null, command.getSortCriteriums(), command.getStartDate(), command.getEndDate(), entriesPerPage);
+			// secondary sorting, if not using elasticsearch index
+			if (!command.isEsIndex()) {
+				this.postProcessAndSortList(command, resourceType);
+			}
 			this.setTotalCount(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			totalNumPosts += listCommand.getTotalCount();
 		}

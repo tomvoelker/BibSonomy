@@ -76,17 +76,12 @@ public class SearchPageController extends SingleResourceListController implement
 			log.debug(this.getClass().getSimpleName());
 			final String format = command.getFormat();
 
-			// set order, default to rank if sort page attribute unknown or equals 'relevance'
 			try {
 				command.setSortKey(SortKey.getByName(command.getSortPage()));
 			} catch (IllegalArgumentException e){
 				command.setSortKey(SortKey.RANK);
 			}
-			// set sorting criteriums list
-			List<SortKey> sortKeys = SortUtils.parseSortKeys(command.getSortPage());
-			List<SortOrder> sortOrders = SortUtils.parseSortOrders(command.getSortPageOrder());
-			List<SortCriterium> sortCriteriums = SortUtils.generateSortCriteriums(sortKeys, sortOrders);
-			command.setSortCriteriums(sortCriteriums);
+			this.preProcessForSearchIndexSort(command);
 
 			this.startTiming(format);
 			String search = command.getRequestedSearch();

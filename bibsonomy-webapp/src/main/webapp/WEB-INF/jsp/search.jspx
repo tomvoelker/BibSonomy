@@ -45,7 +45,7 @@
 		
 		<jsp:attribute name="heading">
 			<c:choose>
-				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL'}">
+				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL' and command.scope.name() ne 'SEARCHINDEX'}">
 					<c:set var="pathMessageKey" value="navi.${command.scope.name().toLowerCase()}"/>
 				</c:when>
 				<c:otherwise>

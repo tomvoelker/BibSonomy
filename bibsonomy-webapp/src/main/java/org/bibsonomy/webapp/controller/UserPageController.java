@@ -157,21 +157,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
-
-			// set order, default to rank if sort page attribute unknown or equals 'relavance'
-			command.setSortKey(SortKey.getByName(command.getSortPage()));
-			// set sorting criteriums list
-			List<SortKey> sortKeys = SortUtils.parseSortKeys(command.getSortPage());
-			List<SortOrder> sortOrders = SortUtils.parseSortOrders(command.getSortPageOrder());
-			List<SortCriterium> sortCriteriums = SortUtils.generateSortCriteriums(sortKeys, sortOrders);
-			command.setSortCriteriums(sortCriteriums);
-
-			// set the scope/searchtype
-			if (command.isEsIndex()) {
-				command.setScope(SearchType.SEARCHINDEX);
-			} else {
-				command.setScope(SearchType.LOCAL);
-			}
+			this.preProcessForSearchIndexSort(command);
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), command.getFilter(), command.getSortCriteriums(), command.getStartDate(), command.getEndDate(), entriesPerPage);
 
 			// secondary sorting, if not using elasticsearch index

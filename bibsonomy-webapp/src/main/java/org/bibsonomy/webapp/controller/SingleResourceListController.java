@@ -32,8 +32,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
@@ -41,6 +44,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BookmarkUtils;
 import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
+import org.bibsonomy.webapp.command.TagResourceViewCommand;
 
 /**
  * Controller for retrieving a windowed list with resources.
@@ -63,6 +67,23 @@ public abstract class SingleResourceListController extends ResourceListControlle
 			if (!"none".equals(cmd.getSortPage())) {
 				BookmarkUtils.sortBookmarkList(cmd.getBookmark().getList(), SortUtils.parseSortKeys(cmd.getSortPage()), SortUtils.parseSortOrders(cmd.getSortPageOrder()));
 			}
+		}
+	}
+
+	protected void preProcessForSearchIndexSort(final TagResourceViewCommand command) {
+		// set order, default to rank if sort page attribute unknown or equals 'relevance'
+		command.setSortKey(SortKey.getByName(command.getSortPage()));
+		// set sorting criteriums list
+		List<SortKey> sortKeys = SortUtils.parseSortKeys(command.getSortPage());
+		List<SortOrder> sortOrders = SortUtils.parseSortOrders(command.getSortPageOrder());
+		List<SortCriterium> sortCriteriums = SortUtils.generateSortCriteriums(sortKeys, sortOrders);
+		command.setSortCriteriums(sortCriteriums);
+
+		// set the scope/searchtype
+		if (command.isEsIndex()) {
+			command.setScope(SearchType.SEARCHINDEX);
+		} else {
+			command.setScope(SearchType.LOCAL);
 		}
 	}
 
