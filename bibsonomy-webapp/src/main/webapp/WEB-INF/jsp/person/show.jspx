@@ -224,7 +224,7 @@
 									<c:when test="${personHasPublications}">
 										<c:choose>
 											<c:when test="${command.personPostsStyleSettings gt 0}">
-												<per:myownPostList command="${command}" posts="${command.myownPosts}"/>
+												<per:myownPostList command="${command}" posts="${command.myownPosts}" hideHeadline="${true}"/>
 											</c:when>
 											<c:otherwise>
 												<per:otherPubList command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}" onlyLinkAuthorsWithPersons="${not isLoggedIn}" hideHeadline="${true}"/>

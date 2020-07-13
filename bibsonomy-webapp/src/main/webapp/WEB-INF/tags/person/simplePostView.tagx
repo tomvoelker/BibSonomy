@@ -17,7 +17,7 @@
 		<c:set var="onlyLinkAuthorsWithPersons" value="${false}" />
 	</c:if>
 
-	<div class="simplePostEntry"
+	<div class="simplePubEntry"
 		 data-year="${mtl:getDate('', '', post.resource.year, locale)}"
 		 data-author="${post.resource.author}"
 		 data-title="${mtl:cleanBibtex(post.resource.title)}">
