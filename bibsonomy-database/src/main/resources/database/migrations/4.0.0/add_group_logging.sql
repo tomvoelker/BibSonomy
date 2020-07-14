@@ -13,7 +13,7 @@ CREATE TABLE `log_groupids` (
   `publ_reporting_mail_template` text,
   `publ_reporting_external_url` varchar(255) DEFAULT NULL,
   `organization` BOOLEAN DEFAULT FALSE,
-  `external_id` VARCHAR(255) DEFAULT NULL,
+  `internal_id` VARCHAR(255) DEFAULT NULL,
   `log_reason` int(2) DEFAULT NULL,
   `log_date` timestamp NULL DEFAULT NULL,
   `log_user` varchar(30) DEFAULT NULL
