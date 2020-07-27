@@ -3,13 +3,13 @@ bin
 work
 .classpath
 \.project
-/.settings/
+.settings
 .externalToolBuilders
 .tomcatplugin
 .springBeans
-src/main/webapp/WEB-INF/lib
-src/main/webapp/WEB-INF/classes
-src/main/webapp/META-INF
+*/src/main/webapp/WEB-INF/lib
+*/src/main/webapp/WEB-INF/classes
+*/src/main/webapp/META-INF
 nbactions.xml
 nb-configuration.xml
 Thumbs.db
