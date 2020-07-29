@@ -613,11 +613,6 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setPerson(person);
 		command.setPhdAdvisorRecForPerson(this.logic.getPhdAdvisorRecForPerson(person.getPersonId()));
 
-		if (DisambiguationPageController.ACTION_KEY_CREATE_AND_LINK_PERSON.equals(this.requestLogic.getLastAction()) || DisambiguationPageController.ACTION_KEY_LINK_PERSON.equals(this.requestLogic.getLastAction())) {
-			command.setOkHintKey(this.requestLogic.getLastAction());
-			this.requestLogic.setLastAction(null);
-		}
-
 		// Get the linked user's person posts style settings
 		if (present(person.getUser())) {
 			User user = this.logic.getUserDetails(person.getUser());

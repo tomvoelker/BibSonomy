@@ -64,7 +64,6 @@ public class RequestLogic {
 	private static final String HEADER_REFERER = "Referer";
 	private static final String HEADER_X_FORWARDED_FOR = "x-forwarded-for";
 	private static final String HEADER_ACCEPT = "accept";
-	private static final String LAST_ACTION_SESSION_KEY = "lastAction";
 	
 
 	/**
