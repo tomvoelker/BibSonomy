@@ -1,8 +1,8 @@
 # maven related files
 target/
-src/main/webapp/WEB-INF/lib/
-src/main/webapp/WEB-INF/classes/
-src/main/webapp/META-INF/
+*/src/main/webapp/WEB-INF/lib/
+*/src/main/webapp/WEB-INF/classes/
+*/src/main/webapp/META-INF/
 
 # eclipse related files
 bin/
