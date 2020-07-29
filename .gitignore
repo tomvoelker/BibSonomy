@@ -1,20 +1,27 @@
-target
-bin
-work
+# maven related files
+target/
+src/main/webapp/WEB-INF/lib/
+src/main/webapp/WEB-INF/classes/
+src/main/webapp/META-INF/
+
+# eclipse related files
+bin/
+work/
 .classpath
-\.project
-.settings
+.project
+.settings/
 .externalToolBuilders
 .tomcatplugin
 .springBeans
-*/src/main/webapp/WEB-INF/lib
-*/src/main/webapp/WEB-INF/classes
-*/src/main/webapp/META-INF
+
+# netbeans related files
 nbactions.xml
 nb-configuration.xml
-Thumbs.db
 
-# intellij files
-\.iml$
-/out/*
-.idea/*
+# intellij related files
+*.iml
+out/
+.idea/
+
+# other files
+Thumbs.db
