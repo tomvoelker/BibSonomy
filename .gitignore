@@ -2,19 +2,17 @@ target
 bin
 work
 .classpath
-.project
-/.settings/
+\.project
+.settings
 .externalToolBuilders
 .tomcatplugin
 .springBeans
-src/main/webapp/WEB-INF/lib
-src/main/webapp/WEB-INF/classes
-src/main/webapp/META-INF
-bibsonomy-lucene/src/test/resources/lucene_*
+*/src/main/webapp/WEB-INF/lib
+*/src/main/webapp/WEB-INF/classes
+*/src/main/webapp/META-INF
 nbactions.xml
 nb-configuration.xml
 Thumbs.db
-bibsonomy-lucene/data
 
 # intellij files
 \.iml$
