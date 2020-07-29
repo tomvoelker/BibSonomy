@@ -37,6 +37,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.PhDRecommendation;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -69,7 +70,6 @@ public class PersonPageCommand extends BaseCommand {
 
 
 	private String pubToDelete;
-
 	@Deprecated // TODO: bind person directly
 	private String formResourceHash;
 	@Deprecated // TODO: bind person directly
@@ -107,7 +107,7 @@ public class PersonPageCommand extends BaseCommand {
 	private boolean showProjects;
 
 	private List<Project> projects;
-	
+
 	private String formAction;
 	
 	private Person person;
@@ -115,7 +115,7 @@ public class PersonPageCommand extends BaseCommand {
 
 	private int personPostsStyleSettings;
 	private List<Post<BibTex>> myownPosts;
-	
+
 	private List<ResourcePersonRelation> thesis;
 	private List<ResourcePersonRelation> advisedThesis;
 	private List<ResourcePersonRelation> allPosts;
@@ -132,6 +132,9 @@ public class PersonPageCommand extends BaseCommand {
 	private List<PersonMatch> personMatchList;
 	
 	private Map<Integer, PersonMergeFieldConflict[]> mergeConflicts;
+	private List<PhDRecommendation> phdAdvisorRecForPerson;
+	private String okHintKey;
+	
 
 	@Deprecated // FIXME: remove use errors handling build into spring
 	private final Collection<LogicException> logicExceptions = new ArrayList<>();
@@ -632,6 +635,20 @@ public class PersonPageCommand extends BaseCommand {
 	 */
 	public void setFormResponseString(String formResponseString) {
 		this.formResponseString = formResponseString;
+	}
+
+	/**
+	 * @return the phdAdvisorRecForPerson
+	 */
+	public List<PhDRecommendation> getPhdAdvisorRecForPerson() {
+		return this.phdAdvisorRecForPerson;
+	}
+
+	/**
+	 * @param phdAdvisorRecForPerson the phdAdvisorRecForPerson to set
+	 */
+	public void setPhdAdvisorRecForPerson(List<PhDRecommendation> phdAdvisorRecForPerson) {
+		this.phdAdvisorRecForPerson = phdAdvisorRecForPerson;
 	}
 
 	/**

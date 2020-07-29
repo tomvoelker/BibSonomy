@@ -16,7 +16,6 @@
 		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
           xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
-	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<fmt:message key="person.show.close" var="textClose" />
@@ -26,7 +25,6 @@
 	<fmt:message key="person.show.newThesisButton" var="textNewThesisButton" />
 	<fmt:message key="person.show.noResourcesFound" var="textNoResourcesFound" />
 	<fmt:message key="person.show.saveButton" var="textSaveButton" />
-
 	<c:set var="title" value="${mtl:cleanBibtex(command.person.mainName.firstName)} ${mtl:cleanBibtex(command.person.mainName.lastName)}" />
 	<c:set var="isLoggedIn" value="${not empty command.context.loginUser.name}" />
 	<c:set var="hasClaimedPerson" value="${not empty command.person.user and isLoggedIn and command.person.user eq command.context.loginUser.name and not command.context.loginUser.spammer}" />
@@ -85,6 +83,19 @@
 		<!-- FIXME: reactivate for cris links
 		<jsp:attribute name="sidebar">
 			<per:personSidebar hasClaimedPerson="${hasClaimedPerson}" command="${command}" />
+			<c:if test="${fn:length(command.phdAdvisorRecForPerson) gt 0}">
+				<h4><fmt:message key="person.sidebar.phdAdvisorRecommendations"/></h4>
+				<p><fmt:message key="person.show.TooltipPhDRecommendation"/></p>
+				<ul><c:forEach var="advisorRecommendation" items="${command.phdAdvisorRecForPerson}">
+ 						<li>
+ 						<a href="${relativeUrlGenerator.getPersonUrl(advisorRecommendation.advisor.personId)}"> ${advisorRecommendation.advisor.mainName.lastName}, ${advisorRecommendation.advisor.mainName.firstName}</a>
+
+						<div class="clearfix"></div>
+ 						</li>
+					</c:forEach>
+				</ul>
+			</c:if>
+
 		</jsp:attribute>
 		-->
 		<jsp:attribute name="content">

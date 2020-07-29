@@ -273,11 +273,20 @@ public final class ESConstants {
 			String ISSN = "issn";
 			/** the isbn (special misc field) */
 			String ISBN = "isbn";
+
+			/** BEGIN additional special MISC fields until another solution is found **/
+			/** the project (special misc field) */
+			String PROJECT = "project";
+			/** the abteilung (special misc field) */
+			String ABTEILUNG = "abteilung";
+			/** the orcid (special misc field) */
+			String ORCID = "orcid";
+			/** END additional special MISC fields until another solution is found **/
+
 			/** the language */
 			String LANGUAGE = "language";
 			/** a list of special misc fields */
-			Set<String> SPECIAL_MISC_FIELDS = Sets.asSet(DOI, ISSN, ISBN, LANGUAGE);
-
+			Set<String> SPECIAL_MISC_FIELDS = Sets.asSet(DOI, ISSN, ISBN, LANGUAGE, PROJECT, ABTEILUNG, ORCID);
 			/** the document */
 			interface Document {
 				String NAME = "name";

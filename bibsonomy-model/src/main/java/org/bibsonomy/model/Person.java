@@ -89,7 +89,6 @@ public class Person implements Linkable, Serializable {
 
 	/** additional keys for person */
 	private List<AdditionalKey> additionalKeys = new LinkedList<>();
-
 	/**
 	 * default constructor
 	 */
@@ -524,5 +523,4 @@ public class Person implements Linkable, Serializable {
 						(this.researcherid == null || person.researcherid == null || this.researcherid.equals(person.researcherid)) &&
 						(this.user == null || person.user == null);
 	}
-
 }

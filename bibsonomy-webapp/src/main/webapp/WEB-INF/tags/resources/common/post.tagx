@@ -20,7 +20,7 @@
 	<jsp:directive.attribute name="hideMetaData" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="hideCounts" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="hidePostMenu" type="java.lang.Boolean" required="false" />
-	
+
 	<jsp:directive.attribute name="title" fragment="true" required="true"/>
 	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
 	<jsp:directive.attribute name="actions" fragment="true" required="true"/>
@@ -37,7 +37,7 @@
 	<c:if test="${empty hidePostMenu}">
 		<c:set var="hidePostMenu" value="${false}" />
 	</c:if>
-	
+
 	<c:set var="isRemotePost" value="${not empty post.systemUrl and not mtl:isSameHost(post.systemUrl, properties['project.home'])}" />
 	
 	<!-- FIXME: not nice here-->
@@ -138,7 +138,19 @@
 						<bs:linkButton icon="pencil" dataToggle="modal" dataTarget="#tag-modal-${post.resource.intraHash}${post.user.name}" title="${editTags}" href="#" size="xsmall" additionalClass="tags-edit-link"></bs:linkButton>
 						&amp;nbsp;
 					</c:if>
-					<rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/>
+	<span class="all-tags-button label label-tag pull-right hidden">
+					<a href="#" class="tag-popover">
+						<fmt:message key="post.actions.showAllTags" />
+					</a>
+					<div class="popover-content-custom hidden">
+						<button type="button" class="close popover-content-custom-close" onclick="javascript:$(this).parent().parent().prev().popover('hide');">
+							&amp;nbsp;
+							<span aria-hidden="true">&amp;times;</span>
+							<span class="sr-only">Close</span>
+						</button>
+						<rc:metaTags post="${post}" renderAsList="true" />
+					</div>
+				</span>				<rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/>
 				</div>
 			</c:if>
 			<div class="pull-left">

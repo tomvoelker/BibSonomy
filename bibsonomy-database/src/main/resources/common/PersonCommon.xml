@@ -94,6 +94,13 @@
 		<result property="person1Posts"		column="person1_id"		  javaType="org.bibsonomy.model.Post"		  select="getPostsForPerson" />
 		<result property="person2Posts"		column="person2_id"		  javaType="org.bibsonomy.model.Post"		  select="getPostsForPerson" />
 	</resultMap>
+	
+	<resultMap id="phdRecommendation" class="org.bibsonomy.model.PhDRecommendation">
+		<result property="confidence" column="confidence"/>
+		<result property="rank" column="rank"/>
+		<result property="doctor"           column="doctor_id"       javaType="person"		select="getPersonById"/>
+		<result property="advisor"          column="advisor_id"       javaType="person"		select="getPersonById"/>
+	</resultMap>
 
 	<resultMap id="additionalKey" class="additionalKey">
 		<result property="keyName" column="key_name" javaType="java.lang.String"/>

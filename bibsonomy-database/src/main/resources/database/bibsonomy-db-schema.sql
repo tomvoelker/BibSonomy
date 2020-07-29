@@ -1962,6 +1962,16 @@ CREATE TABLE `log_group_memberships` (
   PRIMARY KEY (`group`,`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `phd_advisor_recommendation`(
+    `doctor_id` varchar(64) NOT NULL,
+    `simhash2` char(32) NOT NULL,
+    `advisor_id` varchar(64) default NULL,
+    `confidence` DOUBLE default NULL,
+    `rank` TINYINT NOT NULL,
+    PRIMARY KEY (`doctor_id`,`simhash2`,`rank`),
+    KEY (`simhash2`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
