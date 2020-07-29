@@ -1,0 +1,20 @@
+target
+bin
+work
+.classpath
+\.project
+.settings
+.externalToolBuilders
+.tomcatplugin
+.springBeans
+*/src/main/webapp/WEB-INF/lib
+*/src/main/webapp/WEB-INF/classes
+*/src/main/webapp/META-INF
+nbactions.xml
+nb-configuration.xml
+Thumbs.db
+
+# intellij files
+\.iml$
+/out/*
+.idea/*
