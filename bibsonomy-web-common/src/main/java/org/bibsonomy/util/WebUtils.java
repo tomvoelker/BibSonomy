@@ -166,7 +166,7 @@ public class WebUtils {
 	 * @Deprecated
 	 */
 	public static String getPostContentAsString(final URL url, final String postContent, final String charset, final String cookie) throws IOException {
-		final HttpURLConnection urlConn = createConnnection(url);
+		final HttpURLConnection urlConn = createConnection(url);
 		urlConn.setAllowUserInteraction(false);
 		urlConn.setDoInput(true);
 		urlConn.setDoOutput(true);
@@ -264,7 +264,7 @@ public class WebUtils {
 	 */
 	public static String getContentAsString(final URL inputURL, final String cookie) throws IOException {
 		try {
-			final HttpURLConnection urlConn = createConnnection(inputURL);
+			final HttpURLConnection urlConn = createConnection(inputURL);
 			urlConn.setAllowUserInteraction(false);
 			urlConn.setDoInput(true);
 			urlConn.setDoOutput(false);
@@ -571,7 +571,7 @@ public class WebUtils {
 	 * @throws IOException
 	 */
 	public static String getCookies(final URL url) throws IOException {
-		final HttpURLConnection urlConn = createConnnection(url);
+		final HttpURLConnection urlConn = createConnection(url);
 		urlConn.setAllowUserInteraction(false);
 		urlConn.setDoInput(true);
 		urlConn.setDoOutput(false);
@@ -589,7 +589,7 @@ public class WebUtils {
 	 * @return the proper configured http connection for the url
 	 * @throws IOException
 	 */
-	public static HttpURLConnection createConnnection(URL url) throws IOException {
+	public static HttpURLConnection createConnection(URL url) throws IOException {
 		final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
 
 		// set the timeouts
