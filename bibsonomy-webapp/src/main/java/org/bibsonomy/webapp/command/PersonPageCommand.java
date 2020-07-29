@@ -710,20 +710,6 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @return
 	 */
-	public boolean isHasPicture() {
-		return hasPicture;
-	}
-
-	/**
-	 * @param hasPicture
-	 */
-	public void setHasPicture(boolean hasPicture) {
-		this.hasPicture = hasPicture;
-	}
-
-	/**
-	 * @return
-	 */
 	public boolean isShowProjects() {
 		return showProjects;
 	}
