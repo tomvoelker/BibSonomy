@@ -129,6 +129,7 @@ import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.PhDRecommendation;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -3774,6 +3775,18 @@ public class DBLogic implements LogicInterface {
 				return this.personDBManager.mergePersonsWithConflicts(formMatchId, map, this.loginUser, session);
 			}
 			return false;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param matchID
+	 * @return the match with given matchID
+	 */
+	@Override
+	public List<PhDRecommendation> getPhdAdvisorRecForPerson(String personID) {
+		try (final DBSession session = this.openSession()) {
+			return personDBManager.getPhdAdvisorRecForPerson(personID, session);
 		}
 	}
 }

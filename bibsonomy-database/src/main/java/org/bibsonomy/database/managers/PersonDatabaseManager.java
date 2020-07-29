@@ -57,6 +57,7 @@ import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.PhDRecommendation;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
@@ -1143,6 +1144,15 @@ public class PersonDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void setPersonSearch(PersonSearch personSearch) {
 		this.personSearch = personSearch;
+	}
+
+	/**
+	 * @param personID
+	 * @param session
+	 * @return
+	 */
+	public List<PhDRecommendation> getPhdAdvisorRecForPerson(String personID, DBSession session) {
+		return this.queryForList("getPhdAdvisorRec", personID, PhDRecommendation.class, session);
 	}
 
 	/**

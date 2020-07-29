@@ -96,5 +96,4 @@ public interface PersonLogicInterface {
 	 * @param operation		the desired update operation
 	 */
 	void updatePerson(final Person person, final PersonUpdateOperation operation);
-	
 }

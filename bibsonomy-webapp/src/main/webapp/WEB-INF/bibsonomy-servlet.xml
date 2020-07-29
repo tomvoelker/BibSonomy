@@ -907,6 +907,7 @@
 				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
 			</set>
 		</property>
+		<property name="adminLogic" ref="adminLogic"/>
 	</bean>
 	
 	<bean id="mySearchController" class="org.bibsonomy.webapp.controller.MySearchController" scope="request" parent="multiResourceListControllerWithTags">

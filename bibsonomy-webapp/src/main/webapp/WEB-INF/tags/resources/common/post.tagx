@@ -114,6 +114,21 @@
 					<bs:linkButton icon="pencil" dataToggle="modal" dataTarget="#tag-modal-${post.resource.intraHash}${post.user.name}" title="${editTags}" href="#" size="xsmall" additionalClass="tags-edit-link"></bs:linkButton>
 					&amp;nbsp;
 				</c:if>
+
+				<span class="all-tags-button label label-tag pull-right hidden">
+					<a href="#" class="tag-popover">
+						<fmt:message key="post.actions.showAllTags" />
+					</a>
+					<div class="popover-content-custom hidden">
+						<button type="button" class="close popover-content-custom-close" onclick="javascript:$(this).parent().parent().prev().popover('hide');">
+							&amp;nbsp;
+							<span aria-hidden="true">&amp;times;</span>
+							<span class="sr-only">Close</span>
+						</button>
+						<rc:metaTags post="${post}" renderAsList="true" />
+					</div>
+				</span>
+				
 				<rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/>
 			</div>
 			<div class="pull-left">

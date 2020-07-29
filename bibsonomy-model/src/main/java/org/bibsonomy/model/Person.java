@@ -76,8 +76,7 @@ public class Person implements Serializable {
 	private String email;
 	/** the homepage of the person */
 	private URL homepage;
-	
-	
+
 	/**
 	 * default constructor
 	 */
@@ -362,5 +361,4 @@ public class Person implements Serializable {
 			(this.orcid == null || person.orcid == null || this.orcid.equals(person.orcid))&&
 			(this.user == null || person.user == null);
   }
-
 }
