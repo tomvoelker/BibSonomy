@@ -42,7 +42,6 @@ import org.bibsonomy.webapp.command.ajax.AjaxPersonPublicationCommand;
 import org.bibsonomy.webapp.controller.PersonPageController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
-import org.bibsonomy.webapp.util.ResponseLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
@@ -52,6 +51,14 @@ import java.util.List;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+/**
+ * TODO: document controller
+ *
+ * FIXME: remove copy paste code
+ *
+ * œauthor mho
+ *
+ */
 public class PersonPublicationAjaxController extends AjaxController implements MinimalisticController<AjaxPersonPublicationCommand> {
 
 	@Override
@@ -86,24 +93,30 @@ public class PersonPublicationAjaxController extends AjaxController implements M
 		int personPostStyle = 0;
 		int postsPerPage = 20;
 
-		// Get the linked user's person posts style settings
-		if (present(person.getUser())) {
-			User user = this.logic.getUserDetails(person.getUser());
-			personPostStyle = user.getSettings().getPersonPostsStyle();
-			postsPerPage = user.getSettings().getPersonPostsPerPage();
-		}
-
 		int start = command.getPage() * postsPerPage;
 		int end = start + postsPerPage;
 
-		// Get 'myown' posts of the linked user
-		PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
-				.setStart(start)
-				.setEnd(end)
-				.setTags(new ArrayList<>(Collections.singletonList("myown")))
-				.setGrouping(GroupingEntity.USER)
-				.setGroupingName(person.getUser());
-		final List<Post<BibTex>> myownPosts = this.logic.getPosts(myOwnqueryBuilder.createPostQuery(BibTex.class));
+		// Get the linked user's person posts style settings
+		String linkedUser = person.getUser();
+		if (present(linkedUser)) {
+			User user = this.logic.getUserDetails(linkedUser);
+			personPostStyle = user.getSettings().getPersonPostsStyle();
+
+			// FIXME: this should the setting of the logged in user, correct?
+			postsPerPage = user.getSettings().getPersonPostsPerPage();
+
+			// Get 'myown' posts of the linked user
+			PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
+					.setStart(start)
+					.setEnd(end)
+					.setTags(new ArrayList<>(Collections.singletonList("myown")))
+					.setGrouping(GroupingEntity.USER)
+					.setGroupingName(linkedUser);
+			final List<Post<BibTex>> myownPosts = this.logic.getPosts(myOwnqueryBuilder.createPostQuery(BibTex.class));
+
+
+			command.setMyownPosts(myownPosts);
+		}
 
 		// TODO: this needs to be removed/refactored as soon as the ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder accepts start/end
 		ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
@@ -113,7 +126,6 @@ public class PersonPublicationAjaxController extends AjaxController implements M
 				.groupByInterhash(true)
 				.orderBy(PersonResourceRelationOrder.PublicationYear)
 				.fromTo(start, end);
-
 		ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder builder = new ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder();
 
 		builder.setAuthorIndex(queryBuilder.getAuthorIndex())
@@ -152,7 +164,7 @@ public class PersonPublicationAjaxController extends AjaxController implements M
 			publication.setNumberOfRatings(null);
 		}
 
-		command.setMyownPosts(myownPosts);
+
 		command.setOtherPubs(otherAuthorRelations);
 
 		return Views.AJAX_PERSON_PUBLICATIONS;
