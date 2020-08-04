@@ -347,6 +347,11 @@ public enum Views implements View {
 	AJAX_POSTS("ajax/posts"),
 
 	/**
+	 * posts
+	 */
+	AJAX_PERSON_PUBLICATIONS("ajax/personPublications"),
+
+	/**
 	 * spammer predictions
 	 */
 	AJAX_PREDICTIONS("ajax/predictions"),

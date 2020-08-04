@@ -110,7 +110,12 @@ public class UserSettings implements Serializable {
 	 * layout for person's page posts
 	 */
 	private String personPostsLayout = "";
-	
+
+	/**
+	 * Number of posts displayed per page (for pagination)
+	 */
+	private int personPostsPerPage = 20;
+
 	/**
 	 * The timeZone the user lives in. Used for rendering posts in the HTML 
 	 * output. 
@@ -395,5 +400,13 @@ public class UserSettings implements Serializable {
 	 */
 	public void setFavouriteLayouts(final List<FavouriteLayout> favouriteLayouts) {
 		this.favouriteLayouts = favouriteLayouts;
+	}
+
+	public int getPersonPostsPerPage() {
+		return personPostsPerPage;
+	}
+
+	public void setPersonPostsPerPage(int personPostsPerPage) {
+		this.personPostsPerPage = personPostsPerPage;
 	}
 }

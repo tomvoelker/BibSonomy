@@ -48,6 +48,7 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
@@ -95,7 +96,7 @@ import java.util.Set;
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(PersonMatch.class);
 
-	private static final Set<PersonResourceRelationType> PUBLICATION_RELATED_RELATION_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
+	public static final Set<PersonResourceRelationType> PUBLICATION_RELATED_RELATION_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
 
 	private URLGenerator urlGenerator;
 	private RequestLogic requestLogic;
@@ -616,22 +617,50 @@ public class PersonPageController extends SingleResourceListController implement
 		if (present(person.getUser())) {
 			User user = this.logic.getUserDetails(person.getUser());
 			command.setPersonPostsStyleSettings(user.getSettings().getPersonPostsStyle());
+			command.setPersonPostsPerPage(user.getSettings().getPersonPostsPerPage());
 		} else {
 			// default to gold standard publications, if no linked user found
 			command.setPersonPostsStyleSettings(0);
+			command.setPersonPostsPerPage(20);
 		}
 
 		// Get 'myown' posts of the linked user
-		PostQueryBuilder queryBuilder = new PostQueryBuilder()
-				.setEnd(200)
+		PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
+				.setStart(0)
+				.setEnd(command.getPersonPostsPerPage())
 				.setTags(new ArrayList<>(Collections.singletonList("myown")))
 				.setGrouping(GroupingEntity.USER)
 				.setGroupingName(person.getUser());
-		final List<Post<BibTex>> myownPosts = this.logic.getPosts(queryBuilder.createPostQuery(BibTex.class));
+		final List<Post<BibTex>> myownPosts = this.logic.getPosts(myOwnqueryBuilder.createPostQuery(BibTex.class));
 		command.setMyownPosts(myownPosts);
 
+		// TODO: this needs to be removed/refactored as soon as the ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder accepts start/end
+		ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
+				.byPersonId(person.getPersonId())
+				.withPosts(true)
+				.withPersonsOfPosts(true)
+				.groupByInterhash(true)
+				.orderBy(PersonResourceRelationOrder.PublicationYear)
+				.fromTo(0, command.getPersonPostsPerPage());
+
+		ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder builder = new ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder();
+
+		builder.setAuthorIndex(queryBuilder.getAuthorIndex())
+				.setEnd(queryBuilder.getEnd())
+				.setGroupByInterhash(queryBuilder.isGroupByInterhash())
+				.setInterhash(queryBuilder.getInterhash())
+				.setOrder(queryBuilder.getOrder())
+				.setPersonId(queryBuilder.getPersonId())
+				.setRelationType(queryBuilder.getRelationType())
+				.setStart(queryBuilder.getStart())
+				.setWithPersons(queryBuilder.isWithPersons())
+				.setWithPersonsOfPosts(queryBuilder.isWithPersonsOfPosts())
+				.setWithPosts(queryBuilder.isWithPosts());
+
+		ResourcePersonRelationQuery query = builder.build();
+
 		// TODO: maybe this should be done in the view?
-		final List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(PersonResourceRelationOrder.PublicationYear));
+		final List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(query);
 		final List<ResourcePersonRelation> authorRelations = new ArrayList<>();
 		final List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
 		final List<ResourcePersonRelation> otherAuthorRelations = new ArrayList<>();

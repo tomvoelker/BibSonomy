@@ -114,8 +114,9 @@ public class PersonPageCommand extends BaseCommand {
 	private Post<? extends Resource> post;
 
 	private int personPostsStyleSettings;
+	private int personPostsPerPage;
 	private List<Post<BibTex>> myownPosts;
-	
+
 	private List<ResourcePersonRelation> thesis;
 	private List<ResourcePersonRelation> advisedThesis;
 	private List<ResourcePersonRelation> allPosts;
@@ -730,5 +731,17 @@ public class PersonPageCommand extends BaseCommand {
 	 */
 	public void setLimitResultsToCRISCollege(boolean limitResultsToCRISCollege) {
 		this.limitResultsToCRISCollege = limitResultsToCRISCollege;
+	}
+
+	/**
+	 * Number of publications displayed per page on the person page
+	 * @return
+	 */
+	public int getPersonPostsPerPage() {
+		return personPostsPerPage;
+	}
+
+	public void setPersonPostsPerPage(int personPostsPerPage) {
+		this.personPostsPerPage = personPostsPerPage;
 	}
 }

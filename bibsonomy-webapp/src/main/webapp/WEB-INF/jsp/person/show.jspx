@@ -58,6 +58,9 @@
 
 			<script type='text/javascript' src='/resources/jquery/plugins/jquery.maskedinput.js'><!-- keep me --></script>
 
+			<script type='text/javascript' src='/resources/jquery/plugins/infinite-scroll-pagination/js/scrollpagination.js'><!-- keep me --></script>
+			<link rel="stylesheet" type="text/css" href='/resources/jquery/plugins/infinite-scroll-pagination/css/scrollpagination.css'/>
+
 			<script type='text/javascript' src='/resources/javascript/person/personPage.js'><!-- keep me --></script>
 			
 			<link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
@@ -202,6 +205,10 @@
 									<!-- FIXME: copy paste code remove, quick hack ! -->
 									<div class="pull-right btn-group dropdown-align-right all-resources-menu">
 										<div class="btn-group">
+											<a class="personpage-pagination-prev-button" data-page="1" data-url="/ajax/person/publications?requestedPersonId=${command.person.personId}&amp;ckey=${ckey}" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a>
+											<a class="personpage-pagination-next-button" data-page="1" data-url="/ajax/person/publications?requestedPersonId=${command.person.personId}&amp;ckey=${ckey}" href="#" aria-label="Next"><span aria-hidden="true">»</span></a>
+
+
 											<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
 											<ul class="dropdown-menu">
 												<li class="dropdown-header">
@@ -225,9 +232,11 @@
 										<c:choose>
 											<c:when test="${command.personPostsStyleSettings gt 0}">
 												<per:myownPostList command="${command}" posts="${command.myownPosts}" hideHeadline="${true}"/>
+												<div class="cust-loader"><span class="cust-spinner"><!-- KEEP MY --></span></div>
 											</c:when>
 											<c:otherwise>
 												<per:otherPubList command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}" onlyLinkAuthorsWithPersons="${not isLoggedIn}" hideHeadline="${true}"/>
+												<div class="cust-loader"><span class="cust-spinner"><!-- KEEP MY --></span></div>
 											</c:otherwise>
 										</c:choose>
 									</c:when>
@@ -272,11 +281,11 @@
 			</div>
 
 			<!-- Other publications -->
-			<c:if test="${command.personPostsStyleSettings le 0 and fn:length(command.otherPubs) gt 0 and not useCRISView}">
+			<c:if test="${command.personPostsStyleSettings gt 0 and fn:length(command.otherPubs) gt 0 and not useCRISView}">
 				<per:otherPubList command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}"/>
 			</c:if>
 
-			<c:if test="${command.personPostsStyleSettings gt 0 and fn:length(command.myownPosts) gt 0}">
+			<c:if test="${command.personPostsStyleSettings le 0 and fn:length(command.myownPosts) gt 0 and not useCRISView}">
 				<per:myownPostList command="${command}" posts="${command.myownPosts}"/>
 			</c:if>
 
@@ -299,6 +308,38 @@
 					</div>
 				</div>
 			</c:if>
+
+
+			<script type="text/javascript">
+				$(document).ready(function(){
+					$('#otherPublications').scrollPagination({
+						'url': "/ajax/person/publications?requestedPersonId=${command.person.personId}&amp;ckey=${ckey}", // The url you are fetching the results.
+						'data': {
+							// These are the variables you can pass to the request
+							'page': 1, // Which page at the firsttime
+							'size': 1000, // Number of pages TODO FIXME: set acutal number of max entries!
+							'pagesize': "${command.personPostsPerPage}",
+						},
+						'scroller': $(window), // Who gonna scroll? default is the full window
+						'autoload': true, // Change this to false if you want to load manually, default true.
+						'heightOffset': 250, // It gonna request when scroll is 10 pixels before the page ends
+						'loading': "#loading", // ID of loading prompt.
+						'loadingText': 'click to loading more.', // Text of loading prompt.
+						'loadingNomoreText': 'No more.', // No more of loading prompt.
+						'manuallyText': 'click to loading more.', // Click of loading prompt.
+						'before': function(){
+							// Before load function, you can display a preloader div
+							// example:
+							//$(this.loading).fadeIn();
+							$(".cust-loader").fadeIn();
+						},
+						'after': function(elementsLoaded){
+							// After loading content, you can use this function to animate your new elements
+							$(".cust-loader").fadeOut();
+						}
+					});
+				});
+			</script>
 
 			<!-- ############################################# -->
 			<!-- ############### MODAL DIALOGS ############### -->
