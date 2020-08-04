@@ -612,27 +612,32 @@ public class PersonPageController extends SingleResourceListController implement
 		}
 
 		command.setPerson(person);
+		command.setPhdAdvisorRecForPerson(this.logic.getPhdAdvisorRecForPerson(person.getPersonId()));
 
 		// Get the linked user's person posts style settings
-		if (present(person.getUser())) {
-			User user = this.logic.getUserDetails(person.getUser());
+		final String linkedUser = person.getUser();
+		if (present(linkedUser)) {
+			final User user = this.logic.getUserDetails(linkedUser);
 			command.setPersonPostsStyleSettings(user.getSettings().getPersonPostsStyle());
 			command.setPersonPostsPerPage(user.getSettings().getPersonPostsPerPage());
+
+			// Get 'myown' posts of the linked user
+			PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
+					.setStart(0)
+					.setEnd(command.getPersonPostsPerPage())
+					.setTags(new ArrayList<>(Collections.singletonList("myown")))
+					.setGrouping(GroupingEntity.USER)
+					.setGroupingName(person.getUser());
+			final List<Post<BibTex>> myownPosts = this.logic.getPosts(myOwnqueryBuilder.createPostQuery(BibTex.class));
+			command.setMyownPosts(myownPosts);
+
 		} else {
 			// default to gold standard publications, if no linked user found
 			command.setPersonPostsStyleSettings(0);
 			command.setPersonPostsPerPage(20);
 		}
 
-		// Get 'myown' posts of the linked user
-		PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
-				.setStart(0)
-				.setEnd(command.getPersonPostsPerPage())
-				.setTags(new ArrayList<>(Collections.singletonList("myown")))
-				.setGrouping(GroupingEntity.USER)
-				.setGroupingName(person.getUser());
-		final List<Post<BibTex>> myownPosts = this.logic.getPosts(myOwnqueryBuilder.createPostQuery(BibTex.class));
-		command.setMyownPosts(myownPosts);
+
 
 		// TODO: this needs to be removed/refactored as soon as the ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder accepts start/end
 		ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
@@ -666,7 +671,7 @@ public class PersonPageController extends SingleResourceListController implement
 		final List<ResourcePersonRelation> otherAuthorRelations = new ArrayList<>();
 		final List<ResourcePersonRelation> otherAdvisorRelations = new ArrayList<>();
 
-		command.setHasPicture(this.pictureHandlerFactory.hasVisibleProfilePicture(person.getUser(), command.getContext().getLoginUser()));
+		command.setHasPicture(this.pictureHandlerFactory.hasVisibleProfilePicture(linkedUser, command.getContext().getLoginUser()));
 
 		for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
 			final Post<? extends BibTex> post = resourcePersonRelation.getPost();
