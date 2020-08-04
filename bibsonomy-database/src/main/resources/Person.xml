@@ -69,7 +69,7 @@
 		VALUES (#personId#, #keyName#, #keyValue#)
 		ON DUPLICATE KEY UPDATE key_value = #keyValue#
 	</insert>
-	
+
 	<select id="getNames" resultMap="PersonCommon.personName" parameterClass="string">
 		SELECT <include refid="commonPersonNameColumns"/>
 		FROM person_name
@@ -142,7 +142,7 @@
 		WHERE person_id = #personId#
 		AND key_name = #keyName#
 	</update>
-	
+
 	<delete id="removeResourceRelation" parameterClass="int">
 		DELETE FROM pub_person
 		WHERE person_change_id = #resourceRelationId#
@@ -196,6 +196,17 @@
 		AND relator_code = #relationType.relatorCode#
 		AND person_index = #personIndex#
 	</select>
+	
+	<select id="getCommunityBibTexRelationsForPerson" resultMap="PersonCommon.preFilledCommunityResourcePersonRelation" parameterClass="bibtexParam">
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
+		FROM
+			gold_standard b
+			<include refid="reviewRatingsJoinPublication" />
+			JOIN pub_person USING(simhash1)
+		WHERE
+			pub_person.person_id = #personRelation.person.personId#
+	</select>
+	
 
 	<select id="getResourcePersonRelationsByPublication" parameterClass="java.lang.String" resultMap="PersonCommon.resourcePersonRelationWithPersonPrefilled">
 		SELECT <include refid="commonResourcePersonRelationColumns" />, <include refid="commonPersonColumns" />, <include refid="commonPersonNameColumns" />
@@ -351,6 +362,13 @@
 		SET dnb_person_id = #dnbId#
 		WHERE dnb_person_id = #otherDnbId#
 	</update>
+
+	<select id="getPhdAdvisorRec" resultMap="PersonCommon.phdRecommendation" parameterClass="string">
+		SELECT doctor_id, advisor_id, confidence, rank
+		FROM phd_advisor_recommendation AS adv
+	    WHERE adv.doctor_id = #personId#
+		order by confidence desc
+	</select>
 
 	<select id="getPersonsByOrganization" parameterClass="org.bibsonomy.database.params.person.GetPersonByOrganizationParam" resultMap="PersonCommon.personWithNamesPrefilled">
 		SELECT <include refid="commonPersonColumns" />, <include refid="commonPersonNameColumns" />

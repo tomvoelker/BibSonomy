@@ -54,6 +54,8 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.PersonMatch;
+import org.bibsonomy.model.PhDRecommendation;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -781,4 +783,10 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @return
 	 */
 	<R> R getMetaData(MetaDataQuery<R> query);
+
+	/**
+	 * @param personID
+	 * @return
+	 */
+	List<PhDRecommendation> getPhdAdvisorRecForPerson(String personID);
 }

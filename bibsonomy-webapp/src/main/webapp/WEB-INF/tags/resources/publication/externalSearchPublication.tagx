@@ -42,34 +42,23 @@
 		<spring:eval var="publicationOpenURL" expression="T(org.bibsonomy.model.util.BibTexUtils).getOpenurl(publication)" />
 		<c:set var="systemOpenURLProvider" value="${properties['system.openurl.provider']}" />
 		<div class="btn-group">
-			<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-				<fmt:message key="resources.searchExternal.dropDownTitle" /><c:out value=" " />
-				<span class="caret"><!-- keep me --></span>
-			</button>
-			<ul class="dropdown-menu" role="menu">
-				<c:if test="${not empty userOpenURL}">
-					<fmt:message var="openurlTitle" key="bibtex.actions.openurl.title" />
-					<li>
-						<a itemprop="url" href="${fn:escapeXml(userOpenURL)}?${fn:escapeXml(publicationOpenURL)}" title="${openurlTitle}">
-							<fmt:message key="bibtex.actions.openurl"/>
-						</a>
-					</li>
-				</c:if>
-				<c:if test="${not empty systemOpenURLProvider}">
-					<li>
-						<fmt:message key="bibtex.actions.openurl.system.title" var="openurlTitle" />
-						<a href="${fn:escapeXml(systemOpenURLProvider)}?${fn:escapeXml(publicationOpenURL)}" title="${openurlTitle}">
-							<fmt:message key="bibtex.actions.openurl.system" />
-						</a>
-					</li>
-				</c:if>
-				<c:if test="${not empty systemOpenURLProvider or not empty userOpenURL}">
-					<li class="divider"><!-- keep me --></li>
-				</c:if>
-				<li><a href="${googleScholarPostUrl}">Google Scholar</a></li>
-				<li><a href="${microsoftAcademicUrl}">Microsoft Bing</a></li>
-				<li><a href="${worldCatUrl}">WorldCat</a></li>
-				<li><a href="${baseSearchUrl}">BASE</a></li>
-			</ul>
+			<c:if test="${not empty userOpenURL}">
+				<fmt:message var="openurlTitle" key="bibtex.actions.openurl.title" />
+				<a itemprop="url" href="${fn:escapeXml(userOpenURL)}?${fn:escapeXml(publicationOpenURL)}"
+				   title="${openurlTitle}" target="_blank" class="btn btn-default">
+					<fmt:message key="bibtex.actions.openurl"/>
+				</a>
+			</c:if>
+			<c:if test="${not empty systemOpenURLProvider}">
+				<fmt:message key="bibtex.actions.openurl.system.title" var="openurlTitle" />
+				<a href="${fn:escapeXml(systemOpenURLProvider)}?${fn:escapeXml(publicationOpenURL)}"
+				   title="${openurlTitle}" target="_blank" class="btn btn-default">
+					<fmt:message key="bibtex.actions.openurl.system" />
+				</a>
+			</c:if>
+			<a href="${googleScholarPostUrl}" target="_blank" class="btn btn-default">Google Scholar</a>
+			<a href="${microsoftAcademicUrl}" target="_blank" class="btn btn-default">Microsoft Bing</a>
+			<a href="${worldCatUrl}" target="_blank" class="btn btn-default">WorldCat</a>
+			<a href="${baseSearchUrl}" target="_blank" class="btn btn-default">BASE</a>
 		</div>
 </jsp:root>

@@ -37,6 +37,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonMergeFieldConflict;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.PhDRecommendation;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -69,7 +70,6 @@ public class PersonPageCommand extends BaseCommand {
 
 
 	private String pubToDelete;
-
 	@Deprecated // TODO: bind person directly
 	private String formResourceHash;
 	@Deprecated // TODO: bind person directly
@@ -107,7 +107,7 @@ public class PersonPageCommand extends BaseCommand {
 	private boolean showProjects;
 
 	private List<Project> projects;
-	
+
 	private String formAction;
 	
 	private Person person;
@@ -133,6 +133,9 @@ public class PersonPageCommand extends BaseCommand {
 	private List<PersonMatch> personMatchList;
 	
 	private Map<Integer, PersonMergeFieldConflict[]> mergeConflicts;
+	private List<PhDRecommendation> phdAdvisorRecForPerson;
+	private String okHintKey;
+	
 
 	@Deprecated // FIXME: remove use errors handling build into spring
 	private final Collection<LogicException> logicExceptions = new ArrayList<>();
@@ -636,6 +639,20 @@ public class PersonPageCommand extends BaseCommand {
 	}
 
 	/**
+	 * @return the phdAdvisorRecForPerson
+	 */
+	public List<PhDRecommendation> getPhdAdvisorRecForPerson() {
+		return this.phdAdvisorRecForPerson;
+	}
+
+	/**
+	 * @param phdAdvisorRecForPerson the phdAdvisorRecForPerson to set
+	 */
+	public void setPhdAdvisorRecForPerson(List<PhDRecommendation> phdAdvisorRecForPerson) {
+		this.phdAdvisorRecForPerson = phdAdvisorRecForPerson;
+	}
+
+	/**
 	 * @return
 	 */
 	public String getType() {
@@ -678,14 +695,14 @@ public class PersonPageCommand extends BaseCommand {
 	}
 
 	/**
-	 * @return
+	 * @return the hasPicture
 	 */
 	public boolean isHasPicture() {
 		return hasPicture;
 	}
 
 	/**
-	 * @param hasPicture
+	 * @param hasPicture the hasPicture to set
 	 */
 	public void setHasPicture(boolean hasPicture) {
 		this.hasPicture = hasPicture;

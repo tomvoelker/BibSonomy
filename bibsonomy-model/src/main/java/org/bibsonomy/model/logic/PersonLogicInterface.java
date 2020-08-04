@@ -155,5 +155,4 @@ public interface PersonLogicInterface {
 	 * @return
 	 */
 	public Boolean conflictMerge(int formMatchId, Map<String, String> map);
-
 }
