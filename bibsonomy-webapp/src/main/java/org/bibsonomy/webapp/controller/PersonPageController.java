@@ -614,22 +614,24 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setPhdAdvisorRecForPerson(this.logic.getPhdAdvisorRecForPerson(person.getPersonId()));
 
 		// Get the linked user's person posts style settings
-		if (present(person.getUser())) {
-			User user = this.logic.getUserDetails(person.getUser());
+		final String linkedUser = person.getUser();
+		if (present(linkedUser)) {
+			// FIXME: the settings for the users are only visible to the user
+			final User user = this.logic.getUserDetails(linkedUser);
 			command.setPersonPostsStyleSettings(user.getSettings().getPersonPostsStyle());
+
+			// Get 'myown' posts of the linked user
+			final PostQueryBuilder queryBuilder = new PostQueryBuilder()
+					.setEnd(200) // FIXME: why only retrieving the first 200 posts?
+					.setTags(new ArrayList<>(Collections.singletonList("myown")))
+					.setGrouping(GroupingEntity.USER)
+					.setGroupingName(linkedUser);
+			final List<Post<BibTex>> myownPosts = this.logic.getPosts(queryBuilder.createPostQuery(BibTex.class));
+			command.setMyownPosts(myownPosts);
 		} else {
 			// default to gold standard publications, if no linked user found
 			command.setPersonPostsStyleSettings(0);
 		}
-
-		// Get 'myown' posts of the linked user
-		PostQueryBuilder queryBuilder = new PostQueryBuilder()
-				.setEnd(200)
-				.setTags(new ArrayList<>(Collections.singletonList("myown")))
-				.setGrouping(GroupingEntity.USER)
-				.setGroupingName(person.getUser());
-		final List<Post<BibTex>> myownPosts = this.logic.getPosts(queryBuilder.createPostQuery(BibTex.class));
-		command.setMyownPosts(myownPosts);
 
 		// TODO: maybe this should be done in the view?
 		final List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(PersonResourceRelationOrder.PublicationYear));
@@ -638,7 +640,7 @@ public class PersonPageController extends SingleResourceListController implement
 		final List<ResourcePersonRelation> otherAuthorRelations = new ArrayList<>();
 		final List<ResourcePersonRelation> otherAdvisorRelations = new ArrayList<>();
 
-		command.setHasPicture(this.pictureHandlerFactory.hasVisibleProfilePicture(person.getUser(), command.getContext().getLoginUser()));
+		command.setHasPicture(this.pictureHandlerFactory.hasVisibleProfilePicture(linkedUser, command.getContext().getLoginUser()));
 
 		for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
 			final Post<? extends BibTex> post = resourcePersonRelation.getPost();
