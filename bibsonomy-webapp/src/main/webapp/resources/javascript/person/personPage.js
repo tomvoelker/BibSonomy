@@ -481,8 +481,6 @@ $(document).ready(function() {
 		url = $(this).data('url');
 		page = parseInt($(this).attr('data-page'));
 
-		alert(page)
-
 		$.post(url+"&page="+page).done(function(data) {
 			$("#otherPublications").html(data);
 		});
@@ -494,8 +492,6 @@ $(document).ready(function() {
 	$(".personpage-pagination-prev-button").click(function() {
 		url = $(this).data('url');
 		page = parseInt($(this).attr('data-page'));
-
-		alert(page)
 
 		$.post(url+"&page="+page).done(function(data) {
 			$("#otherPublications").html(data);
