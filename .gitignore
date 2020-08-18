@@ -18,3 +18,7 @@ Thumbs.db
 \.iml$
 /out/*
 .idea/*
+.idea
+*.iws
+*.iml
+*.ipr
