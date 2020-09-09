@@ -84,7 +84,6 @@ public class UpdateUserPersonSettingsController extends SettingsPageController {
 		final UserSettings userSettings = user.getSettings();
 		userSettings.setPersonPostsStyle(commandSettings.getPersonPostsStyle());
 		userSettings.setPersonPostsLayout(commandSettings.getPersonPostsLayout());
-		userSettings.setPersonPostsPerPage(commandSettings.getPersonPostsPerPage());
 		final String updatedUser = logic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
 		log.debug("person settings of user " + updatedUser + " has been changed successfully");
 	}

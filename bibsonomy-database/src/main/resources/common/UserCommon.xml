@@ -73,7 +73,6 @@
 		<result property="defaultLanguage" 	column="lang" 	       		javaType="string" />
 		<result property="personPostsStyle" column="person_posts_style" javaType="integer" />
 		<result property="personPostsLayout" column="person_posts_layout" javaType="string" />
-		<result property="personPostsPerPage" column="person_posts_per_page" javaType="integer" />
 		<result property="confirmDelete"   	column="confirmDelete"  	javaType="boolean" />
 		<result property="profilePrivlevel" column="profilegroup"   	javaType="ProfilePrivlevel" />
 		<result property="showBookmark"   	column="show_bookmark"  	javaType="boolean" />
@@ -109,7 +108,7 @@
 	<sql id="userSettingsAttributes">
 		tagbox_style, tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, 
 		lang, log_level, confirmDelete, profilegroup, tagbox_max_count, is_max_count,
-		show_bookmark, show_bibtex, simple_interface, person_posts_style, person_posts_layout, person_posts_per_page, favourite_layouts
+		show_bookmark, show_bibtex, simple_interface, person_posts_style, person_posts_layout, favourite_layouts
 	</sql>
 
 	<!-- 
@@ -127,7 +126,7 @@
 		<isNull property="settings.defaultLanguage">DEFAULT(lang),</isNull> 
 		#settings.logLevel#, #settings.confirmDelete#, #settings.profilePrivlevel#, #settings.tagboxMaxCount#, #settings.isMaxCount#, 
 		#settings.showBookmark#, #settings.showBibtex#, #settings.layoutSettings.simpleInterface#, #settings.personPostsStyle#,
-		#settings.personPostsLayout#, #settings.personPostsPerPage#, #settings.favouriteLayouts,handler=org.bibsonomy.database.common.typehandler.FavouriteLayoutsTypeHandlerCallback#
+		#settings.personPostsLayout#, #settings.favouriteLayouts,handler=org.bibsonomy.database.common.typehandler.FavouriteLayoutsTypeHandlerCallback#
 	</sql>
 
 	<sql id="updateUserProfileAttributes">
@@ -161,7 +160,6 @@
 		simple_interface = #settings.layoutSettings.simpleInterface#,
 		person_posts_style = #settings.personPostsStyle#,
 		person_posts_layout = #settings.personPostsLayout#,
-		person_posts_per_page = #settings.personPostsPerPage#,
 		favourite_layouts = #settings.favouriteLayouts,handler=org.bibsonomy.database.common.typehandler.FavouriteLayoutsTypeHandlerCallback#
 	</sql>
 	

@@ -83,10 +83,6 @@
 							</form:select>
 						</div>
 					</div>
-					<!-- SELECT PERSON'S POSTS POST COUNT PER PAGE -->
-					<div class="form-group clearfix">
-						<bsform:input noHelp="true" labelKey="settings.tag.itemsPerPage" path="user.settings.personPostsPerPage" labelColSpan="3" inputColSpan="9" />
-					</div>
 					<!-- save changes button -->
 					<p class="clearfix"><!--  --></p>
 					<div class="form-group">

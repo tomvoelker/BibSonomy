@@ -112,11 +112,6 @@ public class UserSettings implements Serializable {
 	private String personPostsLayout = "";
 
 	/**
-	 * Number of posts displayed per page (for pagination)
-	 */
-	private int personPostsPerPage = 20;
-
-	/**
 	 * The timeZone the user lives in. Used for rendering posts in the HTML 
 	 * output. 
 	 * FIXME: let user choose on the /settings page. FIXME: then we must store
@@ -402,11 +397,4 @@ public class UserSettings implements Serializable {
 		this.favouriteLayouts = favouriteLayouts;
 	}
 
-	public int getPersonPostsPerPage() {
-		return personPostsPerPage;
-	}
-
-	public void setPersonPostsPerPage(int personPostsPerPage) {
-		this.personPostsPerPage = personPostsPerPage;
-	}
 }
