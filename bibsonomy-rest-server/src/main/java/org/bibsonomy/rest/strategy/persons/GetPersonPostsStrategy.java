@@ -38,6 +38,7 @@ import org.bibsonomy.util.UrlBuilder;
 
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -77,19 +78,25 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 						.setTags(this.tags)
 						.setSearch(this.search);
 		Person person = this.getLogic().getPersonById(PersonIdType.PERSON_ID, personId);
+
 		// Check, if a user has claimed this person and configured their person settings
 		if (person != null && person.getUser() != null) {
 			// Check, if the user set their person posts to gold standards or 'myown'-tagged posts
-			User user = this.getLogic().getUserDetails(person.getUser());
+			User user = this.getAdminLogic().getUserDetails(person.getUser());
 			int personPostsStyleSettings = user.getSettings().getPersonPostsStyle();
+
 			if (personPostsStyleSettings > 0) {
-				// 'myown'-tagged posts
+				// Get 'myown' posts of the linked user
 				this.tags.add("myown");
-				queryBuilder.setGrouping(GroupingEntity.USER)
-								.setGroupingName(person.getUser())
-								.setTags(this.tags);
-				return this.getLogic().getPosts(queryBuilder.createPostQuery(BibTex.class));
+				PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
+						.setStart(this.getView().getStartValue())
+						.setEnd(this.getView().getEndValue())
+						.setTags(this.tags)
+						.setGrouping(GroupingEntity.USER)
+						.setGroupingName(person.getUser());
+				return this.getLogic().getPosts(myOwnqueryBuilder.createPostQuery(BibTex.class));
 			}
+
 			// Default: gold standards
 			queryBuilder.setGrouping(GroupingEntity.PERSON)
 					.setGroupingName(this.personId);

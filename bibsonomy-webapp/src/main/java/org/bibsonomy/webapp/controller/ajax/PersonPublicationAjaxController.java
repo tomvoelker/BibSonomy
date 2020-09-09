@@ -90,8 +90,14 @@ public class PersonPublicationAjaxController extends AjaxController implements M
 			return Views.AJAX_ERRORS;
 		}
 
-		int personPostStyle = 0;
+		command.setPersonPostsStyleSettings(0);
 		int postsPerPage = 20;
+
+		final User authenticatedUser = this.logic.getAuthenticatedUser();
+
+		if (authenticatedUser != null && authenticatedUser.getSettings().getListItemcount() > 0) {
+			postsPerPage = authenticatedUser.getSettings().getListItemcount();
+		}
 
 		int start = command.getPage() * postsPerPage;
 		int end = start + postsPerPage;
@@ -100,10 +106,7 @@ public class PersonPublicationAjaxController extends AjaxController implements M
 		String linkedUser = person.getUser();
 		if (present(linkedUser)) {
 			User user = this.logic.getUserDetails(linkedUser);
-			personPostStyle = user.getSettings().getPersonPostsStyle();
-
-			// FIXME: this should the setting of the logged in user, correct?
-			postsPerPage = user.getSettings().getPersonPostsPerPage();
+			command.setPersonPostsStyleSettings(user.getSettings().getPersonPostsStyle());
 
 			// Get 'myown' posts of the linked user
 			PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()

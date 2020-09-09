@@ -951,6 +951,7 @@
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
 		<property name="pictureHandlerFactory" ref="gravatarStdPictureHandlerFactory" />
 		<property name="crisCollege" value="${system.cris.college}" />
+		<property name="adminLogic" ref="adminLogic"/>
 	</bean>
 
 	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.PersonDisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">

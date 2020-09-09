@@ -45,6 +45,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
@@ -106,6 +107,9 @@ public class PersonPageController extends SingleResourceListController implement
 	/** the college that the cris system is configured for */
 	private String crisCollege;
 
+	private LogicInterface adminLogic;
+
+
 	@Override
 	public PersonPageCommand instantiateCommand() {
 		return new PersonPageCommand();
@@ -153,6 +157,14 @@ public class PersonPageController extends SingleResourceListController implement
 		// the following statement cannot be reached, and seems useless anyway, since in this case no formAction was present and not PersonId. 
 		// Remove when sure. 
 		return indexAction();
+	}
+
+	public LogicInterface getAdminLogic() {
+		return adminLogic;
+	}
+
+	public void setAdminLogic(LogicInterface adminLogic) {
+		this.adminLogic = adminLogic;
 	}
 
 	/**
@@ -614,12 +626,20 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setPerson(person);
 		command.setPhdAdvisorRecForPerson(this.logic.getPhdAdvisorRecForPerson(person.getPersonId()));
 
+		final User authenticatedUser = this.logic.getAuthenticatedUser();
+
+		if (authenticatedUser != null && authenticatedUser.getSettings().getListItemcount() > 0) {
+			command.setPersonPostsPerPage(authenticatedUser.getSettings().getListItemcount());
+		} else {
+			command.setPersonPostsPerPage(20);
+		}
+
 		// Get the linked user's person posts style settings
 		final String linkedUser = person.getUser();
 		if (present(linkedUser)) {
-			final User user = this.logic.getUserDetails(linkedUser);
+			final User user = this.adminLogic.getUserDetails(linkedUser);
+
 			command.setPersonPostsStyleSettings(user.getSettings().getPersonPostsStyle());
-			command.setPersonPostsPerPage(user.getSettings().getPersonPostsPerPage());
 
 			// Get 'myown' posts of the linked user
 			PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
@@ -634,7 +654,6 @@ public class PersonPageController extends SingleResourceListController implement
 		} else {
 			// default to gold standard publications, if no linked user found
 			command.setPersonPostsStyleSettings(0);
-			command.setPersonPostsPerPage(20);
 		}
 
 

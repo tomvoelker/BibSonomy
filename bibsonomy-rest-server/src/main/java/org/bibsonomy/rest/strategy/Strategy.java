@@ -166,7 +166,11 @@ public abstract class Strategy {
 	protected LogicInterface getLogic() {
 		return this.context.getLogic();
 	}
-	
+
+	protected LogicInterface getAdminLogic() {
+		return this.context.getAdminLogic();
+	}
+
 	protected UrlRenderer getUrlRenderer() {
 		return this.context.getUrlRenderer();
 	}

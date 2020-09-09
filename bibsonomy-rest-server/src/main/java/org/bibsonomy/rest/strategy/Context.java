@@ -108,6 +108,11 @@ public final class Context {
 	private final Map<String, String> additionalInfos;
 
 	/**
+	 * TODO
+	 */
+	private LogicInterface adminLogic;
+
+	/**
 	 * @param httpMethod
 	 *            method used in the request: GET, POST, PUT or DELETE
 	 * @param url
@@ -159,6 +164,62 @@ public final class Context {
 		if (this.strategy == null) {
 			throw new NoSuchResourceException("The requested resource does not exist: " + url);
 		}
+	}
+
+	/**
+	 * @param httpMethod
+	 *            method used in the request: GET, POST, PUT or DELETE
+	 * @param url
+	 * @param renderingFormat	the mediatype of the request and response
+	 * @param rendererFactory	the renderfactory to use to create a
+	 * 							renderer for the specified rendering format
+	 * @param doc
+	 * @param uploadAccessor
+	 * @param logic
+	 * @param fileLogic
+	 * @param parameterMap
+	 *            map of the attributes
+	 * @param additionalInfos
+	 * @throws NoSuchResourceException
+	 *             if the requested url doesnt exist
+	 * @throws ValidationException
+	 *             if '/' is requested
+	 */
+	public Context(final HttpMethod httpMethod, final String url, final RenderingFormat renderingFormat, final RendererFactory rendererFactory, final Reader doc, final UploadedFileAccessor uploadAccessor,
+				   final LogicInterface logic, final FileLogic fileLogic, final Map<?, ?> parameterMap, final Map<String, String> additionalInfos, LogicInterface adminLogic) throws ValidationException, NoSuchResourceException {
+		this.doc = doc;
+		this.logic = logic;
+		this.fileLogic = fileLogic;
+
+		this.rendererFactory = rendererFactory;
+
+		if (parameterMap == null) {
+			throw new RuntimeException("Parameter map is null");
+		}
+		this.parameterMap = parameterMap;
+
+		if (uploadAccessor != null) {
+			this.uploadAccessor = uploadAccessor;
+		} else {
+			this.uploadAccessor = new UploadedFileAccessor(null);
+		}
+
+		this.additionalInfos = additionalInfos;
+
+		if ((url == null) || "/".equals(url)) {
+			throw new AccessDeniedException("It is forbidden to access '/'.");
+		}
+
+		// choose rendering format (defaults to xml)
+		this.renderingFormat = renderingFormat;
+
+		// choose the strategy
+		this.strategy = this.chooseStrategy(httpMethod, url);
+		if (this.strategy == null) {
+			throw new NoSuchResourceException("The requested resource does not exist: " + url);
+		}
+
+		this.adminLogic = adminLogic;
 	}
 
 	private Strategy chooseStrategy(final HttpMethod httpMethod, final String url) {
@@ -278,6 +339,13 @@ public final class Context {
 	 */
 	public LogicInterface getLogic() {
 		return this.logic;
+	}
+
+	/**
+	 * @return Returns the logic.
+	 */
+	public LogicInterface getAdminLogic() {
+		return this.adminLogic;
 	}
 
 	/**

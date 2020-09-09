@@ -775,7 +775,6 @@
 								<value>selTab</value>
 								<value>user.settings.personPostsStyle</value>
 								<value>user.settings.personPostsLayout</value>
-								<value>user.settings.personPostsPerPage</value>
 							</list>
 						</property>
 					</bean>

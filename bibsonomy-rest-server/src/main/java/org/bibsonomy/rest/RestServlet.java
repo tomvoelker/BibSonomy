@@ -125,6 +125,11 @@ public final class RestServlet extends HttpServlet {
 	private final Map<String, String> additionalInfos = new HashMap<>();
 
 	/**
+	 * TODO
+	 */
+	private LogicInterface adminLogic;
+
+	/**
 	 * Sets the base URL of the project. Typically "project.home" in the file
 	 * <tt>project.properties</tt>.
 	 * 
@@ -211,6 +216,14 @@ public final class RestServlet extends HttpServlet {
 		}
 	}
 
+	public LogicInterface getAdminLogic() {
+		return adminLogic;
+	}
+
+	public void setAdminLogic(LogicInterface adminLogic) {
+		this.adminLogic = adminLogic;
+	}
+
 	/**
 	 * @param request
 	 *            the servletrequest
@@ -242,7 +255,7 @@ public final class RestServlet extends HttpServlet {
 			// create Context which selects the appropriate strategy for the
 			// requested API URL
 			final Reader reader = RESTUtils.getInputReaderForStream(getMainInputStream(request), REQUEST_ENCODING);
-			final Context context = new Context(method, request.getRequestURI(), renderingFormat, this.rendererFactory, reader, uploadAccessor, logic, this.fileLogic, request.getParameterMap(), this.additionalInfos);
+			final Context context = new Context(method, request.getRequestURI(), renderingFormat, this.rendererFactory, reader, uploadAccessor, logic, this.fileLogic, request.getParameterMap(), this.additionalInfos, adminLogic);
 
 			// validate request
 			context.canAccess();
