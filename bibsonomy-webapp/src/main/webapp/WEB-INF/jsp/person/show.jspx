@@ -320,7 +320,9 @@
 				</div>
 			</c:if>
 
-
+			<!-- ################################################################### -->
+			<!-- ############### Simple Pagination - Move in Future! ############### -->
+			<!-- ################################################################### -->
 			<script type="text/javascript">
 				$(document).ready(function(){
 					$('#otherPublications').scrollPagination({
@@ -343,6 +345,7 @@
 							// example:
 							//$(this.loading).fadeIn();
 							$(".cust-loader").fadeIn();
+							//$(".cust-loader").fadeOut();
 						},
 						'after': function(elementsLoaded){
 							// After loading content, you can use this function to animate your new elements
