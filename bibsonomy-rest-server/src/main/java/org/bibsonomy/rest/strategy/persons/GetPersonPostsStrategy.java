@@ -1,26 +1,26 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
- * <p>
+ *
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- * University of Kassel, Germany
- * http://www.kde.cs.uni-kassel.de/
- * Data Mining and Information Retrieval Group,
- * University of Würzburg, Germany
- * http://www.is.informatik.uni-wuerzburg.de/en/dmir/
- * L3S Research Center,
- * Leibniz University Hannover, Germany
- * http://www.l3s.de/
- * <p>
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * <p>
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * <p>
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,8 +37,7 @@ import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.UrlBuilder;
 
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -51,7 +50,6 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 	private final String personId;
 	private final List<String> tags;
 	private final String search;
-
 
 	/**
 	 * @param context
@@ -71,38 +69,46 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
+		final Person person = this.getLogic().getPersonById(PersonIdType.PERSON_ID, personId);
+		if (person != null) {
+			// check, if a user has claimed this person and configured their person settings
+			final String linkedUser = person.getUser();
+			if (linkedUser != null) {
+				// Check, if the user set their person posts to gold standards or 'myown'-tagged posts
+				// we use the admin logic here, because the setting might not be visible to the current logged in user
 
-		PostQueryBuilder queryBuilder = new PostQueryBuilder()
+				// FIXME: because we need this also in the webapp, this should be moved to the logic and not handled by
+				// the rest server or the webapp controller
+				final User user = this.getAdminLogic().getUserDetails(linkedUser);
+				int personPostsStyleSettings = user.getSettings().getPersonPostsStyle();
+
+				// TODO: replace check after using an enum for this setting
+				if (personPostsStyleSettings > 0) {
+					// Get 'myown' posts of the linked user
+
+					// TODO: use the myown system tag
+					this.tags.add("myown");
+					final PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
+							.setStart(this.getView().getStartValue())
+							.setEnd(this.getView().getEndValue())
+							.setTags(this.tags)
+							.setGrouping(GroupingEntity.USER)
+							.setGroupingName(linkedUser);
+					return this.getLogic().getPosts(myOwnqueryBuilder.createPostQuery(BibTex.class));
+				}
+
+				// Default: gold standards
+				final PostQueryBuilder queryBuilder = new PostQueryBuilder()
 						.setStart(this.getView().getStartValue())
 						.setEnd(this.getView().getEndValue())
 						.setTags(this.tags)
 						.setSearch(this.search);
-		Person person = this.getLogic().getPersonById(PersonIdType.PERSON_ID, personId);
-
-		// Check, if a user has claimed this person and configured their person settings
-		if (person != null && person.getUser() != null) {
-			// Check, if the user set their person posts to gold standards or 'myown'-tagged posts
-			User user = this.getAdminLogic().getUserDetails(person.getUser());
-			int personPostsStyleSettings = user.getSettings().getPersonPostsStyle();
-
-			if (personPostsStyleSettings > 0) {
-				// Get 'myown' posts of the linked user
-				this.tags.add("myown");
-				PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
-						.setStart(this.getView().getStartValue())
-						.setEnd(this.getView().getEndValue())
-						.setTags(this.tags)
-						.setGrouping(GroupingEntity.USER)
-						.setGroupingName(person.getUser());
-				return this.getLogic().getPosts(myOwnqueryBuilder.createPostQuery(BibTex.class));
+				queryBuilder.setGrouping(GroupingEntity.PERSON)
+						.setGroupingName(this.personId);
+				return this.getLogic().getPosts(queryBuilder.createPostQuery(GoldStandardPublication.class));
 			}
-
-			// Default: gold standards
-			queryBuilder.setGrouping(GroupingEntity.PERSON)
-					.setGroupingName(this.personId);
-			return this.getLogic().getPosts(queryBuilder.createPostQuery(GoldStandardPublication.class));
 		}
-		return new ArrayList<>();
+		return new LinkedList<>();
 	}
 
 	@Override

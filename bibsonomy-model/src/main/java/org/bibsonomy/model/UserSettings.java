@@ -103,6 +103,7 @@ public class UserSettings implements Serializable {
 
 	/**
 	 * style for person's page posts; 0 = gold standards, 1 = 'myown' posts
+	 * FIXME: should be an enum!
 	 */
 	private int personPostsStyle = 0;
 

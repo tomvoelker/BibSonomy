@@ -159,14 +159,6 @@ public class PersonPageController extends SingleResourceListController implement
 		return indexAction();
 	}
 
-	public LogicInterface getAdminLogic() {
-		return adminLogic;
-	}
-
-	public void setAdminLogic(LogicInterface adminLogic) {
-		this.adminLogic = adminLogic;
-	}
-
 	/**
 	 * @param command
 	 * @return
@@ -768,6 +760,16 @@ public class PersonPageController extends SingleResourceListController implement
 		this.requestLogic = requestLogic;
 	}
 
+	/**
+	 * @param adminLogic the adminLogic to set
+	 */
+	public void setAdminLogic(LogicInterface adminLogic) {
+		this.adminLogic = adminLogic;
+	}
+
+	/**
+	 * @param personRoleRenderer the personRoleRenderer to set
+	 */
 	public void setPersonRoleRenderer(PersonRoleRenderer personRoleRenderer) {
 		this.personRoleRenderer = personRoleRenderer;
 	}
