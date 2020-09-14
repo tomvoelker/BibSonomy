@@ -76,6 +76,11 @@ public final class Context {
 	 * the logic
 	 */
 	private final LogicInterface logic;
+
+	/**
+	 * the admin logic (use with caution)
+	 */
+	private LogicInterface adminLogic;
 	
 	private final FileLogic fileLogic;
 
@@ -106,11 +111,6 @@ public final class Context {
 	 * i.e. the documents path
 	 */
 	private final Map<String, String> additionalInfos;
-
-	/**
-	 * TODO
-	 */
-	private LogicInterface adminLogic;
 
 	/**
 	 * @param httpMethod
@@ -187,37 +187,7 @@ public final class Context {
 	 */
 	public Context(final HttpMethod httpMethod, final String url, final RenderingFormat renderingFormat, final RendererFactory rendererFactory, final Reader doc, final UploadedFileAccessor uploadAccessor,
 				   final LogicInterface logic, final FileLogic fileLogic, final Map<?, ?> parameterMap, final Map<String, String> additionalInfos, LogicInterface adminLogic) throws ValidationException, NoSuchResourceException {
-		this.doc = doc;
-		this.logic = logic;
-		this.fileLogic = fileLogic;
-
-		this.rendererFactory = rendererFactory;
-
-		if (parameterMap == null) {
-			throw new RuntimeException("Parameter map is null");
-		}
-		this.parameterMap = parameterMap;
-
-		if (uploadAccessor != null) {
-			this.uploadAccessor = uploadAccessor;
-		} else {
-			this.uploadAccessor = new UploadedFileAccessor(null);
-		}
-
-		this.additionalInfos = additionalInfos;
-
-		if ((url == null) || "/".equals(url)) {
-			throw new AccessDeniedException("It is forbidden to access '/'.");
-		}
-
-		// choose rendering format (defaults to xml)
-		this.renderingFormat = renderingFormat;
-
-		// choose the strategy
-		this.strategy = this.chooseStrategy(httpMethod, url);
-		if (this.strategy == null) {
-			throw new NoSuchResourceException("The requested resource does not exist: " + url);
-		}
+		this(httpMethod, url, renderingFormat, rendererFactory, doc, uploadAccessor, logic, fileLogic, parameterMap, additionalInfos);
 
 		this.adminLogic = adminLogic;
 	}
@@ -273,7 +243,7 @@ public final class Context {
 	 * @return a list of all tags, which might be empty.
 	 */
 	public List<String> getTags(final String parameterName) {
-		final List<String> tags = new LinkedList<String>();
+		final List<String> tags = new LinkedList<>();
 		final String joinParams = this.getStringAttribute(parameterName, null);
 		if ((joinParams != null) && (joinParams.length() > 0)) {
 			final String[] params = joinParams.split("\\s");
@@ -342,7 +312,7 @@ public final class Context {
 	}
 
 	/**
-	 * @return Returns the logic.
+	 * @return Returns the admin logic.
 	 */
 	public LogicInterface getAdminLogic() {
 		return this.adminLogic;
