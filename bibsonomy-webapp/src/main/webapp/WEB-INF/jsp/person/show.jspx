@@ -216,8 +216,8 @@
 									<!-- FIXME: copy paste code remove, quick hack ! -->
 									<div class="pull-right btn-group dropdown-align-right all-resources-menu">
 
-										<a class="person-nav-link personpage-pagination-prev-button" data-page="1" data-url="/ajax/person/publications?requestedPersonId=${command.person.personId}&amp;ckey=${ckey}" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a>
-										<a class="person-nav-link personpage-pagination-next-button" data-page="1" data-url="/ajax/person/publications?requestedPersonId=${command.person.personId}&amp;ckey=${ckey}" href="#" aria-label="Next"><span aria-hidden="true">»</span></a>
+										<a class="person-nav-link personpage-pagination-prev-button" href="?start=${command.prevStart}&amp;end=${command.prevStart + command.personPostsPerPage}" aria-label="Previous"><span aria-hidden="true">«</span></a>
+										<a class="person-nav-link personpage-pagination-next-button" href="?start=${command.end}&amp;end=${command.end + command.personPostsPerPage}" aria-label="Next"><span aria-hidden="true">»</span></a>
 
 										<div class="btn-group" style="float: inherit">
 											<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />

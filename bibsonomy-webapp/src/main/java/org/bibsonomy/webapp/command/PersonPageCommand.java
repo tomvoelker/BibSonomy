@@ -135,7 +135,11 @@ public class PersonPageCommand extends BaseCommand {
 	private Map<Integer, PersonMergeFieldConflict[]> mergeConflicts;
 	private List<PhDRecommendation> phdAdvisorRecForPerson;
 	private String okHintKey;
-	
+
+	private Integer start;
+	private Integer end;
+	private Integer prevStart;
+
 
 	@Deprecated // FIXME: remove use errors handling build into spring
 	private final Collection<LogicException> logicExceptions = new ArrayList<>();
@@ -760,5 +764,29 @@ public class PersonPageCommand extends BaseCommand {
 
 	public void setPersonPostsPerPage(int personPostsPerPage) {
 		this.personPostsPerPage = personPostsPerPage;
+	}
+
+	public Integer getStart() {
+		return start;
+	}
+
+	public void setStart(Integer start) {
+		this.start = start;
+	}
+
+	public Integer getEnd() {
+		return end;
+	}
+
+	public void setEnd(Integer end) {
+		this.end = end;
+	}
+
+	public Integer getPrevStart() {
+		return prevStart;
+	}
+
+	public void setPrevStart(Integer prevStart) {
+		this.prevStart = prevStart;
 	}
 }

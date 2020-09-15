@@ -626,6 +626,29 @@ public class PersonPageController extends SingleResourceListController implement
 			command.setPersonPostsPerPage(20);
 		}
 
+		// default start/end for post query
+		int start = 0;
+		int end = command.getPersonPostsPerPage();
+
+		// override when given via GET param
+		if (present(command.getStart())) {
+			start = Integer.valueOf(command.getStart());
+
+			if (present(command.getEnd())) {
+				end = command.getEnd();
+			} else {
+				end = start+command.getPersonPostsPerPage();
+			}
+		}
+		command.setEnd(end);
+		command.setStart(start);
+
+		if (start < command.getPersonPostsPerPage()) {
+			command.setPrevStart(0);
+		} else {
+			command.setPrevStart(start - command.getPersonPostsPerPage());
+		}
+
 		// Get the linked user's person posts style settings
 		final String linkedUser = person.getUser();
 		if (present(linkedUser)) {
@@ -635,8 +658,8 @@ public class PersonPageController extends SingleResourceListController implement
 
 			// Get 'myown' posts of the linked user
 			PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
-					.setStart(0)
-					.setEnd(command.getPersonPostsPerPage())
+					.setStart(start)
+					.setEnd(end)
 					.setTags(new ArrayList<>(Collections.singletonList("myown")))
 					.setGrouping(GroupingEntity.USER)
 					.setGroupingName(person.getUser());
@@ -657,7 +680,7 @@ public class PersonPageController extends SingleResourceListController implement
 				.withPersonsOfPosts(true)
 				.groupByInterhash(true)
 				.orderBy(PersonResourceRelationOrder.PublicationYear)
-				.fromTo(0, command.getPersonPostsPerPage());
+				.fromTo(start, end);
 
 		ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder builder = new ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder();
 

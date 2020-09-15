@@ -399,6 +399,12 @@
 								<value>newName.lastName</value>
 
 								<value>limitResultsToCRISCollege</value>
+								
+								<value>newName.firstName</value>
+								<value>newName.lastName</value>
+								
+								<value>start</value>
+								<value>end</value>
 							</list>
 						</property>
 					</bean>

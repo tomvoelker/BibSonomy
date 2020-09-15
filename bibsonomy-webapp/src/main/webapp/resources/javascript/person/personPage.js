@@ -477,28 +477,36 @@ $(document).ready(function() {
 		});
 	});
 
-	$(".personpage-pagination-next-button").click(function() {
-		url = $(this).data('url');
-		page = parseInt($(this).attr('data-page'));
 
-		$.post(url+"&page="+page).done(function(data) {
-			$("#otherPublications").html(data);
-		});
+	/**
+	 * Pagination stuff
+	 */
+	$(".personpage-pagination-next-button").hide();
+	$(".personpage-pagination-prev-button").hide();
 
-		$(this).attr('data-page', page+1);
-		$(".personpage-pagination-prev-button").attr('data-page', page);
-	});
-
-	$(".personpage-pagination-prev-button").click(function() {
-		url = $(this).data('url');
-		page = parseInt($(this).attr('data-page'));
-
-		$.post(url+"&page="+page).done(function(data) {
-			$("#otherPublications").html(data);
-		});
-
-		$(this).attr('data-page', page-1);
-		$(".personpage-pagination-next-button").attr('data-page', page);
-	});
+	// TODO cleanup in case auto loading will live on
+	// $(".personpage-pagination-next-button").click(function() {
+	// 	url = $(this).data('url');
+	// 	page = parseInt($(this).attr('data-page'));
+	//
+	// 	$.post(url+"&page="+page).done(function(data) {
+	// 		$("#otherPublications").html(data);
+	// 	});
+	//
+	// 	$(this).attr('data-page', page+1);
+	// 	$(".personpage-pagination-prev-button").attr('data-page', page);
+	// });
+	//
+	// $(".personpage-pagination-prev-button").click(function() {
+	// 	url = $(this).data('url');
+	// 	page = parseInt($(this).attr('data-page'));
+	//
+	// 	$.post(url+"&page="+page).done(function(data) {
+	// 		$("#otherPublications").html(data);
+	// 	});
+	//
+	// 	$(this).attr('data-page', page-1);
+	// 	$(".personpage-pagination-next-button").attr('data-page', page);
+	// });
 
 });
