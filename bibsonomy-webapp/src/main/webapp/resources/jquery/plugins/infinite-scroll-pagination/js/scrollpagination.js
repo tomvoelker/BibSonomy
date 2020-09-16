@@ -5,7 +5,7 @@
  * 2020/02/17
  */
 
-;(function($){
+(function($){
     var defaults = {
         'url': null, // The url you are fetching the results.
         'autoload': true, // Change this to false if you want to load manually, default true.
@@ -26,7 +26,7 @@
         'scroller': $(window), // Who gonna scroll? default is the full window
         'heightOffset': 20, // It gonna request when scroll is 10 pixels before the page ends
         'loading': '#loading', // ID of loading prompt.
-        'loadingText': 'Wait a moment... it\'s loading!', // Text of loading prompt.
+        'loadingText': 'Loading!', // Text of loading prompt.
         'loadingNomoreText': 'No more.', // No more of loading prompt.
         'manuallyText': 'click to loading more.',
     };
@@ -137,27 +137,3 @@
         });
     };
 })(jQuery);
-
-/*
- * example
- * 
-    $('#content').scrollPagination({
-        'url': 'democontent.html', // the url you are fetching the results
-        'data': {}, // these are the variables you can pass to the request, for example: children().size() to know which page you are
-        'scroller': $(window), // who gonna scroll? in this example, the full window
-        'heightOffset': 10, // it gonna request when scroll is 10 pixels before the page ends
-        'before': function(){ // before load function, you can display a preloader div
-            $('#loading').fadeIn();
-        },
-        'after': function(elementsLoaded){ // after loading content, you can use this function to animate your new elements
-            $('#loading').fadeOut();
-            var i = 0;
-            $(elementsLoaded).fadeInWithDelay();
-            if ($('#content').children().size() > 100){ // if more than 100 results already loaded, then stop pagination (only for testing)
-                $('#nomoreresults').fadeIn();
-                $('#content').stopScrollPagination();
-            }
-        }
-    });
- *
- */
