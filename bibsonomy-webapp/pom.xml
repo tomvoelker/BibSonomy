@@ -74,6 +74,7 @@
 									<directory>${project.source.webapp.resourcedir}</directory>
 									<excludes>
 										<exclude>javascript/citeproc/xmle4x.js</exclude>
+										<exclude>jquery/plugins/infinite-scroll-pagination/js/scrollpagination.js</exclude>
 									</excludes>
 									<includes>
 										<include>**/*.js</include>
