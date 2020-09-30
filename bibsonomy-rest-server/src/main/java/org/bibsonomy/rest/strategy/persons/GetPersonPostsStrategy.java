@@ -30,15 +30,22 @@ package org.bibsonomy.rest.strategy.persons;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.*;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationOrder;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
+import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.UrlBuilder;
 
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Strategy to get the publications of a person by their ID.
@@ -50,6 +57,10 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 	private final String personId;
 	private final List<String> tags;
 	private final String search;
+
+	// TODO REMOVE ASAP
+	public static final Set<PersonResourceRelationType> PUBLICATION_RELATED_RELATION_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
+
 
 	/**
 	 * @param context
@@ -98,14 +109,69 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 				}
 
 				// Default: gold standards
-				final PostQueryBuilder queryBuilder = new PostQueryBuilder()
-						.setStart(this.getView().getStartValue())
-						.setEnd(this.getView().getEndValue())
-						.setTags(this.tags)
-						.setSearch(this.search);
-				queryBuilder.setGrouping(GroupingEntity.PERSON)
-						.setGroupingName(this.personId);
-				return this.getLogic().getPosts(queryBuilder.createPostQuery(GoldStandardPublication.class));
+//				final PostQueryBuilder queryBuilder = new PostQueryBuilder()
+//						.setStart(this.getView().getStartValue())
+//						.setEnd(this.getView().getEndValue())
+//						.setTags(this.tags)
+//						.setSearch(this.search);
+//				queryBuilder.setGrouping(GroupingEntity.PERSON)
+//						.setGroupingName(this.personId);
+
+////////////////////////////////////////////////////////////////////
+/////////////	REFACTOR 	////////////////////////////////
+////////////////////////////////////////////////////////////////////
+				// TODO: this needs to be removed/refactored as soon as the ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder accepts start/end
+				ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
+						.byPersonId(person.getPersonId())
+						.withPosts(true)
+						.withPersonsOfPosts(true)
+						.groupByInterhash(true)
+						.orderBy(PersonResourceRelationOrder.PublicationYear)
+						.fromTo(this.getView().getStartValue(), this.getView().getEndValue());
+
+				ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder builder = new ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder();
+
+				builder.setAuthorIndex(queryBuilder.getAuthorIndex())
+						.setEnd(queryBuilder.getEnd())
+						.setGroupByInterhash(queryBuilder.isGroupByInterhash())
+						.setInterhash(queryBuilder.getInterhash())
+						.setOrder(queryBuilder.getOrder())
+						.setPersonId(queryBuilder.getPersonId())
+						.setRelationType(queryBuilder.getRelationType())
+						.setStart(queryBuilder.getStart())
+						.setWithPersons(queryBuilder.isWithPersons())
+						.setWithPersonsOfPosts(queryBuilder.isWithPersonsOfPosts())
+						.setWithPosts(queryBuilder.isWithPosts());
+
+				ResourcePersonRelationQuery query = builder.build();
+
+				final List<ResourcePersonRelation> resourceRelations = this.getLogic().getResourceRelations(query);
+				final List<Post<? extends BibTex>> otherAuthorRelations = new ArrayList<>(); // !!
+
+
+				for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
+					final Post<? extends BibTex> post = resourcePersonRelation.getPost();
+					final BibTex publication = post.getResource();
+					final boolean isThesis = publication.getEntrytype().toLowerCase().endsWith("thesis");
+					final boolean isAuthorEditorRelation = PUBLICATION_RELATED_RELATION_TYPES.contains(resourcePersonRelation.getRelationType());
+
+					if (isAuthorEditorRelation) {
+						if (!isThesis) {
+							otherAuthorRelations.add(resourcePersonRelation.getPost());
+						}
+					}
+
+					// we explicitly do not want ratings on the person pages because this might cause users of the genealogy feature to hesitate putting in their dissertations
+					publication.setRating(null);
+					publication.setNumberOfRatings(null);
+				}
+
+				return otherAuthorRelations;
+////////////////////////////////////////////////////////////////////
+/////////////	REFACTOR 	////////////////////////////////
+////////////////////////////////////////////////////////////////////
+
+				//return this.getLogic().getPosts(queryBuilder.createPostQuery(GoldStandardPublication.class));
 			}
 		}
 		return new LinkedList<>();
