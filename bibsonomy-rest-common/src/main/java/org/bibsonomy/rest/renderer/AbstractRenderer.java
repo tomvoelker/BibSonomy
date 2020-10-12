@@ -1254,6 +1254,16 @@ public abstract class AbstractRenderer implements Renderer {
 		setCollectionValue(person.getNames(), personType.getNames(), this::createPersonName);
 		setValue(person::setPersonId, personType::getPersonId);
 		setValue(person::setUser, personType::getUser, UserType::getName);
+
+		List<AdditionalKey> additionalKeys = new ArrayList<>();
+		for (AdditionalKeyType keyType : personType.getAdditionalKey()) {
+			AdditionalKey key = new AdditionalKey();
+			key.setKeyName(keyType.getKeyName());
+			key.setKeyValue(keyType.getKeyValue());
+			additionalKeys.add(key);
+		}
+
+		person.setAdditionalKeys(additionalKeys);
 		return person;
 	}
 
