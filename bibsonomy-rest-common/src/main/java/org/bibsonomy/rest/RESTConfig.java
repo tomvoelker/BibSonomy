@@ -152,6 +152,13 @@ public final class RESTConfig {
 	/** place holder for the login user - used e.g. for OAuth requests */
 	public static final String USER_ME = "@me";
 
+	public static final String REMOTE_USER_ID = "remoteUserId";
+
+	public static final String IDENTITY_PROVIDER = "identityProvider";
+
+	public static final String IDENTITY_PROVIDER_TYPE = "identityProviderType";
+
+
 	public static String serializeDate(final Date date) {
 		final DateFormat fmt = new SimpleDateFormat(RESTConfig.DATE_FORMAT_STRING);
 		return fmt.format(date);

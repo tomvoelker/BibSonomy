@@ -74,6 +74,8 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
+import org.bibsonomy.model.user.remote.RemoteUserId;
+import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
@@ -106,6 +108,7 @@ import org.bibsonomy.rest.client.queries.get.GetTagDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetTagRelationQuery;
 import org.bibsonomy.rest.client.queries.get.GetTagsQuery;
 import org.bibsonomy.rest.client.queries.get.GetUserDetailsQuery;
+import org.bibsonomy.rest.client.queries.get.GetUserBySamlUserIdQuery;
 import org.bibsonomy.rest.client.queries.get.GetUserListOfGroupQuery;
 import org.bibsonomy.rest.client.queries.get.GetUserListQuery;
 import org.bibsonomy.rest.client.queries.post.AddUsersToGroupQuery;
@@ -339,6 +342,15 @@ public class RestLogic extends AbstractLogicInterface {
 	@Override
 	public User getUserDetails(final String userName) {
 		return execute(new GetUserDetailsQuery(userName));
+	}
+
+	@Override
+	public String getUsernameByRemoteUserId(RemoteUserId remoteUserId) {
+		if (remoteUserId instanceof SamlRemoteUserId) {
+			return execute(new GetUserBySamlUserIdQuery((SamlRemoteUserId) remoteUserId));
+		}
+
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

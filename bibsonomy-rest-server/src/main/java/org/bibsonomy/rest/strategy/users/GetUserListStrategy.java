@@ -27,10 +27,15 @@
 package org.bibsonomy.rest.strategy.users;
 
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.user.remote.RemoteUserId;
+import org.bibsonomy.model.user.remote.RemoteUserNameSpace;
+import org.bibsonomy.model.user.remote.SamlRemoteUserId;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.UrlBuilder;
@@ -41,12 +46,20 @@ import org.bibsonomy.util.UrlBuilder;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
 public class GetUserListStrategy extends AbstractGetListStrategy<List<User>> {
-	
+
+	private String remoteUserId;
+	private String identityProvider;
+	private String identityProviderType;
+
 	/**
 	 * @param context
 	 */
 	public GetUserListStrategy(final Context context) {
 		super(context);
+		this.remoteUserId = context.getStringAttribute(RESTConfig.REMOTE_USER_ID, null);
+		this.identityProvider = context.getStringAttribute(RESTConfig.IDENTITY_PROVIDER, null);
+		// TODO ENUM?
+		this.identityProviderType = context.getStringAttribute(RESTConfig.IDENTITY_PROVIDER_TYPE, "SAML");
 	}
 
 	@Override
@@ -56,6 +69,20 @@ public class GetUserListStrategy extends AbstractGetListStrategy<List<User>> {
 
 	@Override
 	protected List<User> getList() {
+		if (this.remoteUserId != null && this.identityProvider != null) {
+			// TODO enum
+			if (this.identityProviderType.equals("SAML")) {
+				RemoteUserId remoteUserId = new SamlRemoteUserId(this.identityProvider, this.remoteUserId);
+				String userName = this.getLogic().getUsernameByRemoteUserId(remoteUserId);
+				User user = this.getAdminLogic().getUserDetails(userName);
+
+				if (user != null) {
+					return new ArrayList<User>(){{add(user);}};
+				}
+			}
+			return new ArrayList<User>();
+		}
+
 		return this.getLogic().getUsers(null, GroupingEntity.ALL, null, null, null, null, null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 
