@@ -280,12 +280,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 					final long count = this.manager.getDocumentCount(QueryBuilders.termQuery(Fields.Resource.INTERHASH, resource.getInterHash()));
 					resource.setCount((int) count);
 
-					/*
-					// check system tags matching with resource
-					if (systemTags.size() > 0 && !SystemTagsUtil.checkResourceBySystemTags(resource, systemTags)) {
-						continue;
-					}
-					 */
 					posts.add(post);
 				}
 			}

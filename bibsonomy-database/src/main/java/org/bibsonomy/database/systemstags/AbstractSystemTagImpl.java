@@ -58,8 +58,4 @@ public abstract class AbstractSystemTagImpl implements SystemTag {
 		return true;
 	}
 
-	@Override
-	public boolean accepts(Object o) {
-		return true;
-	}
 }

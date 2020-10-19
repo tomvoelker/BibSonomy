@@ -408,24 +408,6 @@ public class SystemTagsUtil {
 		return false;
 	}
 
-	/**
-	 * Check, if the given resource matches all system tag in the list.
-	 * For example, a BibTeX resource of entrytype 'incollection' would match a EntryTypeSystemTag with value 'incollection'.
-	 *
-	 * @param resource		a resource
-	 * @param systemTags	a list of systemtags
-	 * @return true, if resource matches all system tags, else false
-	 */
-	public static boolean checkResourceBySystemTags(Resource resource, Collection<SystemTag> systemTags) {
-		for (SystemTag systemTag : systemTags) {
-			if (!systemTag.accepts(resource)) {
-				// if the resource doesn't match one of the system tags, returns false
-				return false;
-			}
-		}
-		return true;
-	}
-
 	/** 
 	 * The systemTagFactory that manages our registered systemTags
 	 */
