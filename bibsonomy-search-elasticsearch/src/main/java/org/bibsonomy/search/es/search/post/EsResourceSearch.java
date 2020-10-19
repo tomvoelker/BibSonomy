@@ -35,6 +35,9 @@ import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
+import org.bibsonomy.database.services.PersonSearch;
+import org.bibsonomy.database.services.ResourceSearch;
+import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
@@ -56,8 +59,6 @@ import org.bibsonomy.search.es.index.converter.post.NormalizedEntryTypes;
 import org.bibsonomy.search.es.index.converter.post.ResourceConverter;
 import org.bibsonomy.search.es.management.post.ElasticsearchPostManager;
 import org.bibsonomy.search.es.search.util.tokenizer.SimpleTokenizer;
-import org.bibsonomy.services.searcher.PersonSearch;
-import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.Sets;
 import org.elasticsearch.ElasticsearchStatusException;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
@@ -172,7 +173,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 */
 	@Override
 	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexkey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
-		final QueryBuilder query = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, this.getUsersThatShareDocuments(userName), searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
+		final QueryBuilder query = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, this.getUsersThatShareDocuments(userName), searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags, null);
 		if (query == null) {
 			return new LinkedList<>();
 		}
@@ -226,11 +227,11 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	}
 
 	@Override
-	public ResultList<Post<R>> getPosts(String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, SearchType searchType, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, Collection<String> tagIndex, String year, String firstYear, String lastYear, List<String> negatedTags, SortKey sortKey, int limit, int offset) {
+	public ResultList<Post<R>> getPosts(String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, SearchType searchType, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, Collection<String> tagIndex, String year, String firstYear, String lastYear, List<String> negatedTags, SortKey sortKey, int limit, int offset, Collection<SystemTag> systemTags) {
 		SortCriterium sortCriterium = new SortCriterium(sortKey, SortOrder.DESC);
 		LinkedList<SortCriterium> sortCriteriums = new LinkedList<>();
 		sortCriteriums.add(sortCriterium);
-		return getPosts(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchType, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, tagIndex, year, firstYear, lastYear, negatedTags, sortCriteriums, limit, offset);
+		return getPosts(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchType, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, tagIndex, year, firstYear, lastYear, negatedTags, sortCriteriums, limit, offset, systemTags);
 	}
 
 	/**
@@ -254,7 +255,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @return returns the list of posts
 	 */
 	@Override
-	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final List<SortCriterium> sortCriteriums, final int limit, final int offset) {
+	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final List<SortCriterium> sortCriteriums, final int limit, final int offset, final Collection<SystemTag> systemTags) {
 
 		final ResultList<Post<R>> postList = callSearch(() -> {
 			final ResultList<Post<R>> posts = new ResultList<>();
@@ -263,7 +264,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 							requestedUserName, requestedGroupName,
 							requestedRelationNames, allowedGroups, allowedUsers, searchTerms,
 							titleSearchTerms, authorSearchTerms, bibtexKey,
-							tagIndex, year, firstYear, lastYear, negatedTags);
+							tagIndex, year, firstYear, lastYear, negatedTags, systemTags);
 			if (queryBuilder == null) {
 				return posts;
 			}
@@ -277,8 +278,14 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 					final R resource = post.getResource();
 
 					final long count = this.manager.getDocumentCount(QueryBuilders.termQuery(Fields.Resource.INTERHASH, resource.getInterHash()));
-
 					resource.setCount((int) count);
+
+					/*
+					// check system tags matching with resource
+					if (systemTags.size() > 0 && !SystemTagsUtil.checkResourceBySystemTags(resource, systemTags)) {
+						continue;
+					}
+					 */
 					posts.add(post);
 				}
 			}
@@ -697,9 +704,10 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @param firstYear 
 	 * @param lastYear 
 	 * @param negatedTags
+	 * @param systemTags
 	 * @return overall elasticsearch query
 	 */
-	protected final QueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, Collection<String> allowedGroups, Set<String> usersThatShareDocs, String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
+	protected final QueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, Collection<String> allowedGroups, Set<String> usersThatShareDocs, String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags, final Collection<SystemTag> systemTags) {
 		final BoolQueryBuilder mainQueryBuilder = QueryBuilders.boolQuery();
 		final BoolQueryBuilder mainFilterBuilder = QueryBuilders.boolQuery();
 		// here we exclude the logged in user the docs are already queried using the private fields
@@ -750,7 +758,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			mainQueryBuilder.must(titleSearchQuery);
 		}
 		
-		this.buildResourceSpecifiyQuery(mainQueryBuilder, userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, year, firstYear, lastYear);
+		this.buildResourceSpecifiyQuery(mainQueryBuilder, userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, year, firstYear, lastYear, systemTags);
 		
 		// Add the requested tags
 		if (present(tagIndex)) {
@@ -813,13 +821,13 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		mainFilterBuilder.must(groupFilter);
 		
 		// post owned by user 
-		// Use this restriction iff there is no user relation
+		// Use this restriction if there is no user relation
 		if (present(requestedUserName)) {
 			final QueryBuilder requestedUserFilter = QueryBuilders.termQuery(Fields.USER_NAME, requestedUserName);
 			mainFilterBuilder.must(requestedUserFilter);
 		}
 		
-		this.buildResourceSpecifiyFilters(mainFilterBuilder, userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, year, firstYear, lastYear);
+		this.buildResourceSpecifiyFilters(mainFilterBuilder, userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, year, firstYear, lastYear, systemTags);
 		
 		// all done
 		log.debug("Search query: '" + mainQueryBuilder.toString() + "' and filters: '" + mainFilterBuilder.toString() + "'");
@@ -871,8 +879,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @param year
 	 * @param firstYear
 	 * @param lastYear
+	 * @param systemTags
 	 */
-	protected void buildResourceSpecifiyFilters(BoolQueryBuilder mainFilterBuilder, String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, String year, String firstYear, String lastYear) {
+	protected void buildResourceSpecifiyFilters(BoolQueryBuilder mainFilterBuilder, String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, String year, String firstYear, String lastYear, Collection<SystemTag> systemTags) {
 		// noop
 	}
 
@@ -890,8 +899,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @param year
 	 * @param firstYear
 	 * @param lastYear
+	 * @param systemTags
 	 */
-	protected void buildResourceSpecifiyQuery(BoolQueryBuilder mainQueryBuilder, String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, String year, String firstYear, String lastYear) {
+	protected void buildResourceSpecifiyQuery(BoolQueryBuilder mainQueryBuilder, String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, String year, String firstYear, String lastYear, Collection<SystemTag> systemTags) {
 		// noop
 	}
 

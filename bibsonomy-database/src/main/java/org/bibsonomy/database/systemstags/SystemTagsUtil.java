@@ -26,7 +26,12 @@
  */
 package org.bibsonomy.database.systemstags;
 
-import static org.bibsonomy.util.ValidationUtils.present;
+import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
+import org.bibsonomy.database.systemstags.executable.ForFriendTag;
+import org.bibsonomy.database.systemstags.markup.MarkUpSystemTag;
+import org.bibsonomy.database.systemstags.search.SearchSystemTag;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 
 import java.util.Collection;
 import java.util.List;
@@ -34,11 +39,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
-import org.bibsonomy.database.systemstags.executable.ForFriendTag;
-import org.bibsonomy.database.systemstags.markup.MarkUpSystemTag;
-import org.bibsonomy.database.systemstags.search.SearchSystemTag;
-import org.bibsonomy.model.Tag;
+import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Helper class to encapsulate methods to create and work with systemTags
@@ -200,7 +201,7 @@ public class SystemTagsUtil {
 	/**
 	 * Create a new instance of a markUp systemTag
 	 * 
-	 * @param tagName the original tag from that a systemTag is to be created
+	 * @param tag the original tag from that a systemTag is to be created
 	 * @return a new instance of the matching systemTag 
 	 * 		   or null, if the given tag does not describe a systemTag
 	 */
@@ -405,6 +406,24 @@ public class SystemTagsUtil {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Check, if the given resource matches all system tag in the list.
+	 * For example, a BibTeX resource of entrytype 'incollection' would match a EntryTypeSystemTag with value 'incollection'.
+	 *
+	 * @param resource		a resource
+	 * @param systemTags	a list of systemtags
+	 * @return true, if resource matches all system tags, else false
+	 */
+	public static boolean checkResourceBySystemTags(Resource resource, Collection<SystemTag> systemTags) {
+		for (SystemTag systemTag : systemTags) {
+			if (!systemTag.accepts(resource)) {
+				// if the resource doesn't match one of the system tags, returns false
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/** 

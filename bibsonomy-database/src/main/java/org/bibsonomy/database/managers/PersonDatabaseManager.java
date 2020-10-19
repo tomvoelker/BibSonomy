@@ -62,7 +62,7 @@ import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.util.PersonUtils;
-import org.bibsonomy.services.searcher.PersonSearch;
+import org.bibsonomy.database.services.PersonSearch;
 
 /**
  * database manger for handling {@link Person} related actions

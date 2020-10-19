@@ -63,4 +63,10 @@ public interface SystemTag extends Cloneable{
 	 * @return
 	 */
 	public boolean isToHide();
+
+	/**
+	 * Returns true if the system tag accept/matches/applies to the given object
+	 * @return
+	 */
+	public boolean accepts(Object o);
 }
