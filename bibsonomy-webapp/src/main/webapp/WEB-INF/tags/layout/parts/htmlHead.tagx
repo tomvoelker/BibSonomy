@@ -48,8 +48,15 @@
 	<c:forEach var="group" items="${loginUser.groups}">
 		<c:set var="groupsString" value='${groupsString} "${group.name}",'/>
 	</c:forEach>
-	<c:set var="groupsString" value="${fn:substring(groupsString, 0, fn:length(groupsString) - 1 )}" />
-	
+	<c:choose>
+		<c:when test="groupsString != ''">
+			<c:set var="groupsString" value="[${fn:substring(groupsString, 0, fn:length(groupsString) - 1 )}]" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="groupsString" value="null" />
+		</c:otherwise>
+	</c:choose>
+
 	<!--+
 		|
 		| real content starts here
@@ -105,9 +112,9 @@
 						},
 						"confirmDelete" : ${loginUser.settings.confirmDelete}
 					};
-					var groups = [
+					var groups =
 						${groupsString}
-					];
+					;
 					var requUser = ${(requestedUser ne '') ? requestedUserString : "null"};
 					var hiddenSystemTags = [
 						${hiddenSystemTags}
