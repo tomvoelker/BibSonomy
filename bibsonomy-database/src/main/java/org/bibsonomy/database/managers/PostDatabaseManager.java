@@ -72,7 +72,7 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.validation.ModelValidator;
-import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.database.services.ResourceSearch;
 import org.bibsonomy.util.ReflectionUtils;
 
 import java.util.ArrayList;
@@ -371,7 +371,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			for(final TagIndex tag:tagIndex){
 				tagIndexNames.add(tag.getTagName());
 			}
-			return this.resourceSearch.getPosts(null, null, null, null, null, searchType, null, null, null, null, tagIndexNames, null, null, null, null, sortKey, limit, offset);
+			return this.resourceSearch.getPosts(null, null, null, null, null, searchType, null, null, null, null, tagIndexNames, null, null, null, null, sortKey, limit, offset, null);
 
 		}
 
@@ -681,7 +681,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	public List<Post<R>> getPostsByResourceSearch(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationName, final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final List<SortCriterium> sortCriteriums, final int limit, final int offset) {
 		if (present(this.resourceSearch)) {
 			if (present(searchType)){
-				return this.resourceSearch.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationName, allowedGroups, searchType, searchTerms, titleSearchTerms, authorSearchTerms, null, tagIndex, year, firstYear, lastYear, negatedTags, sortCriteriums, limit, offset);
+				return this.resourceSearch.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationName, allowedGroups, searchType, searchTerms, titleSearchTerms, authorSearchTerms, null, tagIndex, year, firstYear, lastYear, negatedTags, sortCriteriums, limit, offset, null);
 			}
 			log.error("no search type or resource type is set");
 		}
@@ -780,9 +780,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	public List<Post<R>> getPostsForGroup(final int groupId, final String requestedGroupName, final List<Integer> visibleGroupIDs, final SearchType searchType,final String loginUserName, final HashID simHash, final PostAccess postAccess, final Set<Filter> filters, final List<SortCriterium> sortCriteriums, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		switch(searchType) {
 			case FEDERATED:
-				return this.resourceSearch.getPosts(loginUserName, null, requestedGroupName, null, null, searchType, null, null, null, null, null, null, null, null, null, SortKey.NONE, limit, offset);
+				return this.resourceSearch.getPosts(loginUserName, null, requestedGroupName, null, null, searchType, null, null, null, null, null, null, null, null, null, SortKey.NONE, limit, offset, systemTags);
 			case SEARCHINDEX:
-				return this.resourceSearch.getPosts(loginUserName, null, requestedGroupName, null, null, searchType, null, null, null, null, null, null, null, null, null, sortCriteriums, limit, offset);
+				return this.resourceSearch.getPosts(loginUserName, null, requestedGroupName, null, null, searchType, null, null, null, null, null, null, null, null, null, sortCriteriums, limit, offset, systemTags);
 			case LOCAL:
 			default:
 				return this.getPostsForGroup(groupId, visibleGroupIDs, loginUserName, simHash, postAccess, filters, limit, offset, systemTags, session);
@@ -974,9 +974,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	public List<Post<R>> getPostsForUser(final String loginUserName, final String requestedUserName, final SearchType searchType, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final PostAccess postAccess, final Set<Filter> filters, List<SortCriterium> sortCriteriums, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		switch(searchType) {
 			case FEDERATED:
-				return this.resourceSearch.getPosts(loginUserName, requestedUserName, null, null, null, searchType, null, null, null, null, null, null, null, null, null, SortKey.NONE, limit, offset);
+				return this.resourceSearch.getPosts(loginUserName, requestedUserName, null, null, null, searchType, null, null, null, null, null, null, null, null, null, SortKey.NONE, limit, offset, systemTags);
 			case SEARCHINDEX:
-				return this.resourceSearch.getPosts(loginUserName, requestedUserName, null, null, null, searchType, null, null, null, null, null, null, null, null, null, sortCriteriums, limit, offset);
+				return this.resourceSearch.getPosts(loginUserName, requestedUserName, null, null, null, searchType, null, null, null, null, null, null, null, null, null, sortCriteriums, limit, offset, systemTags);
 			case LOCAL:
 			default:
 				return this.getPostsForUser(loginUserName, requestedUserName, simHash, groupId, visibleGroupIDs, postAccess, filters, limit, offset, systemTags, session);

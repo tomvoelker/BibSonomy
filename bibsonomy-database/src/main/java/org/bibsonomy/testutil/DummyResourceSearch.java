@@ -33,12 +33,13 @@ import java.util.List;
 import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
-import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.database.services.ResourceSearch;
 
 /**
  * @author dzo
@@ -49,14 +50,11 @@ public class DummyResourceSearch implements ResourceSearch<Resource> {
 	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPosts(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, org.bibsonomy.model.es.SearchType, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.common.enums.SortKey, int, int)
 	 */
 	@Override
-	public List<Post<Resource>> getPosts(String userName,
-										 String requestedUserName, String requestedGroupName,
-										 List<String> requestedRelationNames,
-										 Collection<String> allowedGroups, SearchType searchType,
-										 String searchTerms, String titleSearchTerms,
+	public List<Post<Resource>> getPosts(String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames,
+										 Collection<String> allowedGroups, SearchType searchType, String searchTerms, String titleSearchTerms,
 										 String authorSearchTerms, String bibtexKey, Collection<String> tagIndex, String year,
-										 String firstYear, String lastYear, List<String> negatedTags,
-										 SortKey sortKey, int limit, int offset) {
+										 String firstYear, String lastYear, List<String> negatedTags, SortKey sortKey,
+										 int limit, int offset, Collection<SystemTag> systemTags) {
 		return new LinkedList<>();
 	}
 
@@ -64,14 +62,11 @@ public class DummyResourceSearch implements ResourceSearch<Resource> {
 	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPosts(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, org.bibsonomy.model.es.SearchType, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.common.SortCriterium, int, int)
 	 */
 	@Override
-	public List<Post<Resource>> getPosts(String userName,
-										 String requestedUserName, String requestedGroupName,
-										 List<String> requestedRelationNames,
-										 Collection<String> allowedGroups, SearchType searchType,
-										 String searchTerms, String titleSearchTerms,
+	public List<Post<Resource>> getPosts(String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames,
+										 Collection<String> allowedGroups, SearchType searchType, String searchTerms, String titleSearchTerms,
 										 String authorSearchTerms, String bibtexKey, Collection<String> tagIndex, String year,
-										 String firstYear, String lastYear, List<String> negatedTags,
-										 List<SortCriterium> sortCriteriums, int limit, int offset) {
+										 String firstYear, String lastYear, List<String> negatedTags, List<SortCriterium> sortCriteriums,
+										 int limit, int offset, Collection<SystemTag> systemTags) {
 		return new LinkedList<>();
 	}
 

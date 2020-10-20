@@ -35,7 +35,7 @@ import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.database.services.ResourceSearch;
 
 /**
  * @author dzo
@@ -52,7 +52,7 @@ public class GetGoldStandardsByResourceSearch<RR extends Resource, R extends Res
 			// FIXME: should probably not be null, but was null for goldstandardbookmarks (test via http://localhost:8080/api/posts?resourcetype=goldstandardbookmark&sortPage=TITLE&sortOrder=ASC ) which might be at the wrong chain element here? 
 			throw new UnsupportedResourceTypeException();
 		}
-		return search.getPosts(param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), null, param.getGroupNames(), param.getSearchType(), param.getSearch(), param.getTitle(), param.getAuthor(), null, null, null, null, null, null, param.getSortKey(), param.getLimit(), param.getOffset());
+		return search.getPosts(param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), null, param.getGroupNames(), param.getSearchType(), param.getSearch(), param.getTitle(), param.getAuthor(), null, null, null, null, null, null, param.getSortKey(), param.getLimit(), param.getOffset(), param.getSystemTags());
 	}
 
 	@Override

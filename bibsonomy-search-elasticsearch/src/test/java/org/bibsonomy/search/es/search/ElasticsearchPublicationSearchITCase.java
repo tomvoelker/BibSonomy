@@ -86,9 +86,9 @@ public class ElasticsearchPublicationSearchITCase extends AbstractEsIndexTest {
 	@Test
 	public void testCaseInsensitiveTagFiltering() {
 		final String tag = "TEST";
-		final ResultList<Post<BibTex>> postsUpperCase = PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, null, null, null, null, Collections.singletonList(tag), null, null, null, null, SortKey.NONE, 10, 0);
+		final ResultList<Post<BibTex>> postsUpperCase = PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, null, null, null, null, Collections.singletonList(tag), null, null, null, null, SortKey.NONE, 10, 0, null);
 
-		final ResultList<Post<BibTex>> postsLowerCase = PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, null, null, null, null, Collections.singletonList(tag.toLowerCase()), null, null, null, null, SortKey.NONE, 10, 0);
+		final ResultList<Post<BibTex>> postsLowerCase = PUBLICATION_SEARCH.getPosts(null, null, null, null, null, null, null, null, null, null, Collections.singletonList(tag.toLowerCase()), null, null, null, null, SortKey.NONE, 10, 0, null);
 
 		assertThat(postsUpperCase.getTotalCount(), is(postsLowerCase.getTotalCount()));
 	}

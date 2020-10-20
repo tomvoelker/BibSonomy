@@ -71,7 +71,7 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.model.util.UserUtils;
-import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.database.services.ResourceSearch;
 
 /**
  * Used to retrieve tags from the database.

@@ -57,4 +57,5 @@ public abstract class AbstractSystemTagImpl implements SystemTag {
 	public boolean hasArguments() {
 		return true;
 	}
+
 }
