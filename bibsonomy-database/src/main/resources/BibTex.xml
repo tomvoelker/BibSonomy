@@ -537,7 +537,7 @@
 		       FROM bibtex b, group_memberships g
 		       WHERE b.user_name = #userName#
 		             AND g.user_name = b.user_name    <!-- only, if currUser ... -->
-		             AND g.group = #groupId#          <!-- is in this group       -->
+					AND g.group = #groupId#          <!-- is in this group       -->
 		      )
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS bb
@@ -560,6 +560,7 @@
 		       WHERE g.group = #groupId#
 		             AND g.user_name = t1.user_name    <!-- user owns this publication -->
 		             <include refid="inGroups"/>
+					AND t1.user_name != #userName# <!-- XXX: works only because user logged in is checked before -->
 				LIMIT #limit# OFFSET #offset#
 		      )UNION(
 		       SELECT content_id, date, g.user_shared_documents                <!-- publications from users of group which have currUser as friend -->
@@ -574,7 +575,7 @@
 		       FROM bibtex b, group_memberships g
 		       WHERE b.user_name = #userName#
 		             AND g.user_name = b.user_name    <!-- only, if currUser ... -->
-		             AND g.group = #groupId#          <!-- is in this group       -->
+		             <!-- AND g.group = #groupId#          is in this group       -->
 				LIMIT #limit# OFFSET #offset#
 		      )) as ids			      
 		      ORDER BY date DESC
@@ -598,6 +599,7 @@
 		       FROM bibtex t1, group_memberships g
 		       WHERE g.group = #groupId#
 		             AND g.user_name = t1.user_name    <!-- user owns this publication -->
+					AND t1.user_name != #userName# <!-- XXX: works only because user logged in is checked before -->
 		             <include refid="inGroups"/>
 		      )UNION(
 		       SELECT content_id, date, g.user_shared_documents                <!-- publications from users of group which have currUser as friend -->
@@ -611,7 +613,7 @@
 		       FROM bibtex b, group_memberships g
 		       WHERE b.user_name = #userName#
 		             AND g.user_name = b.user_name    <!-- only, if currUser ... -->
-		             AND g.group = #groupId#          <!-- is in this group       -->
+		             <!-- AND g.group = #groupId#          is in this group       -->
 		      )) as ids			           
 			  JOIN document d ON ids.content_id = d.content_id AND ids.user_shared_documents = TRUE 
 		      ORDER BY date DESC
