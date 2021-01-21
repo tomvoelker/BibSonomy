@@ -85,6 +85,10 @@ public class ExtendedSearchPageController extends SingleResourceListController i
 			this.startTiming(format);
 			String search = command.getRequestedSearch();
 
+			if (!present(search)) {
+				return Views.EXTENDEDSEARCHPAGE;
+			}
+
 			GroupingEntity groupingEntity = GroupingEntity.ALL;
 			String groupingName = null;
 

@@ -32,11 +32,11 @@
         <!-- filters -->
         <!-- Expanding button -->
         <div style="margin: 5px 0;">
-            <a data-toggle="collapse" href="#collapseExtendedSearch" role="button" aria-expanded="false" aria-controls="collapseExample">
-                <fmt:message key="search.extended.expand"/><fontawesome:icon icon="angle-double-down"/>
+            <a data-toggle="collapse" href="#collapseExtendedSearch" role="button" aria-expanded="true" aria-controls="collapseExample">
+                <fmt:message key="search.extended.expand"/> <fontawesome:icon icon="angle-double-down"/>
             </a>
         </div>
-        <div class="collapse" id="collapseExtendedSearch">
+        <div class="collapse.show collapse in" id="collapseExtendedSearch" aria-expanded="true">
                 <!-- filter header -->
                 <h4><fmt:message key="search.extended.filters"/></h4>
                 <hr/>
@@ -86,26 +86,6 @@
                     </ul>
                 </div>
 
-                <!-- entity -->
-                <div class="input-group col-md-6">
-                    <div class="input-group-addon">
-                        <a href="#"  style="background-color: #eee;" class="dropdown-toggle" data-toggle="dropdown">
-                            <span id="filterSelectionEntity"><fmt:message key="search.extended.entity"/></span> <span class="caret"><!--  --></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" onclick="return switchSelection('Entity', this)"><fmt:message key="search.extended.entity.author"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Entity', this)"><fmt:message key="search.extended.entity.user"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Entity', this)"><fmt:message key="search.extended.entity.group"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Entity', this)"><fmt:message key="search.extended.entity.additionalKey"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Entity', this)"><fmt:message key="search.extended.entity.publisher"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Entity', this)"><fmt:message key="search.extended.entity.institution"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Entity', this)"><fmt:message key="search.extended.entity.organization"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Entity', this)"><fmt:message key="search.extended.entity.school"/></a></li>
-                        </ul>
-                    </div>
-                    <input class="form-control" type="text" size="20" id="filterValueEntity"/>
-                </div>
-
                 <!-- field -->
                 <div class="input-group col-md-6">
                     <div class="input-group-addon">
@@ -113,6 +93,14 @@
                             <span id="filterSelectionField"><fmt:message key="search.extended.field"/></span> <span class="caret"><!--  --></span>
                         </a>
                         <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.author"/></a></li>
+                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.user"/></a></li>
+                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.group"/></a></li>
+                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.additionalKey"/></a></li>
+                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.publisher"/></a></li>
+                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.institution"/></a></li>
+                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.organization"/></a></li>
+                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.school"/></a></li>
                             <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.doi"/></a></li>
                             <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.isbn"/></a></li>
                             <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.issn"/></a></li>
@@ -127,7 +115,6 @@
                 </div>
 
                 <!-- and/or operator for search syntax -->
-                <!--
                 <div class="btn-group btn-group-toggle" data-toggle="buttons" id="filterOperator">
                     <label class="btn btn-primary active">
                         <input type="radio" name="options" value="and" autocomplete="off" checked="checked"/> <fmt:message key="search.extended.and"/>
@@ -136,7 +123,6 @@
                         <input type="radio" name="options" value="or" autocomplete="off" /> <fmt:message key="search.extended.or"/>
                     </label>
                 </div>
-                -->
 
                 <button type="button" class="btn btn-primary btn-block" onclick="addFilter()"><fmt:message key="search.extended.add"/></button>
         </div>
