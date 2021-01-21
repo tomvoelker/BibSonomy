@@ -930,6 +930,27 @@
 		<from>^/+search$</from>
 		<to type="redirect" last="true">/search/${escapePath:%1}</to>
 	</rule>
+
+	<rule>
+		<name>/extsearch/SEARCH/TAG</name>
+		<from>^/+extsearch/+([^/]+?)/(.+)$</from>
+		<set type="parameter" name="requestedSearch">${unescapePath:$1}</set>
+		<set type="parameter" name="requestedTags">${unescapePath:$2}</set>
+		<to last="true">/extsearch</to>
+	</rule>
+	<rule>
+		<name>/extsearch/SEARCH</name>
+		<from>^/+extSearch/+([^/]+)$</from>
+		<set type="parameter" name="requestedSearch">${unescapePath:$1}</set>
+		<to last="true">/extsearch</to>
+	</rule>
+	<!-- redirect for search formular on /search/SEARCHTERM page -->
+	<rule>
+		<name>redirect /extsearch/SEARCH</name>
+		<condition type="parameter" name="search">(.+)</condition>
+		<from>^/+extsearch</from>
+		<to type="redirect" last="true">/extsearch/${escapePath:%1}</to>
+	</rule>
 	
 	<!-- ############## /concepts ############### -->
 	

@@ -252,6 +252,11 @@ public enum Views implements View {
 	SEARCHPAGE("search"),
 
 	/**
+	 * extended search page
+	 */
+	EXTENDEDSEARCHPAGE("extendedSearch"),
+
+	/**
 	 * relevant-for page
 	 */
 	RELEVANTFORPAGE("relevantfor"),
