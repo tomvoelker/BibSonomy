@@ -58,31 +58,31 @@
                 <!-- entrytypes -->
                 <div class="dropdown">
                     <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span id="filterSelectionEntrytype"><fmt:message key="search.extended.entrytype"/></span> <span class="caret"><!--  --></span>
+                        <span id="filterSelectionEntrytype"><span class="unselected"><!-- keep me --></span><fmt:message key="search.extended.entrytype"/></span> <span class="caret"><!--  --></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.article"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.book"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.booklet"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.collection"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.conference"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.dataset"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.electronic"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.inbook"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.incollection"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.inproceedings"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.manual"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.masterthesis"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.misc"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.patent"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.periodical"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.phdthesis"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.preamble"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.presentation"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.proceedings"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.standard"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.techreport"/></a></li>
-                        <li><a class="dropdown-item" onclick="return switchSelection('Entrytype', this)"><fmt:message key="search.extended.entrytype.unpublished"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="article"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.article"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="book"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.book"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="booklet"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.booklet"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="collection"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.collection"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="conference"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.conference"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="dataset"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.dataset"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="electronic"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.electronic"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="inbook"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.inbook"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="incollection"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.incollection"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="inproceedings"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.inproceedings"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="manual"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.manual"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="masterthesis"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.masterthesis"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="misc"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.misc"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="patent"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.patent"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="periodical"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.periodical"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="phdthesis"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.phdthesis"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="preamble"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.preamble"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="presentation"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.presentation"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="proceedings"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.proceedings"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="standard"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.standard"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="techreport"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.techreport"/></a></li>
+                        <li onclick="return switchSelection('Entrytype', this)" value="unpublished"><a class="dropdown-item"><fmt:message key="search.extended.entrytype.unpublished"/></a></li>
                     </ul>
                 </div>
 
@@ -90,25 +90,25 @@
                 <div class="input-group col-md-6">
                     <div class="input-group-addon">
                         <a href="#"  style="background-color: #eee;" class="dropdown-toggle" data-toggle="dropdown">
-                            <span id="filterSelectionField"><fmt:message key="search.extended.field"/></span> <span class="caret"><!--  --></span>
+                            <span id="filterSelectionField"><span class="unselected"><!-- keep me --></span><fmt:message key="search.extended.field"/></span> <span class="caret"><!--  --></span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.author"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.user"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.group"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.additionalKey"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.publisher"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.institution"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.organization"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.school"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.doi"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.isbn"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.issn"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.journal"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.series"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.edition"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.volume"/></a></li>
-                            <li><a class="dropdown-item" onclick="return switchSelection('Field', this)"><fmt:message key="search.extended.field.language"/></a></li>
+                            <li onclick="return switchSelection('Field', this)" value="author"><a class="dropdown-item"><fmt:message key="search.extended.field.author"/></a></li>
+                            <li onclick="return switchSelection('Field', this)" value="user"><a class="dropdown-item"><fmt:message key="search.extended.field.user"/></a></li>
+                            <li onclick="return switchSelection('Field', this)" value="group"><a class="dropdown-item"><fmt:message key="search.extended.field.group"/></a></li>
+                            <li onclick="return switchSelection('Field', this)" value="additionalKey"><a class="dropdown-item"><fmt:message key="search.extended.field.additionalKey"/></a></li>
+                            <li onclick="return switchSelection('Field', this)" value="publisher"><a class="dropdown-item"><fmt:message key="search.extended.field.publisher"/></a></li>
+                            <li onclick="return switchSelection('Field', this)" value="institution"><a class="dropdown-item"><fmt:message key="search.extended.field.institution"/></a></li>
+                            <li onclick="return switchSelection('Field', this)" value="organization"><a class="dropdown-item"><fmt:message key="search.extended.field.organization"/></a></li>
+                            <li onclick="return switchSelection('Field', this)" value="school"><a class="dropdown-item"><fmt:message key="search.extended.field.school"/></a></li>
+                            <li onclick="return switchSelection('Field', this)" value="doi"><a class="dropdown-item"><fmt:message key="search.extended.field.doi"/></a></li>
+                            <li onclick="return switchSelection('Field', this)" value="isbn"><a class="dropdown-item"><fmt:message key="search.extended.field.isbn"/></a></li>
+                            <li onclick="return switchSelection('Field', this)" value="issn"><a class="dropdown-item"><fmt:message key="search.extended.field.issn"/></a></li>
+                            <li onclick="return switchSelection('Field', this)" value="journal"><a class="dropdown-item"><fmt:message key="search.extended.field.journal"/></a></li>
+                            <li onclick="return switchSelection('Field', this)" value="series"><a class="dropdown-item"><fmt:message key="search.extended.field.series"/></a></li>
+                            <li onclick="return switchSelection('Field', this)" value="edition"><a class="dropdown-item"><fmt:message key="search.extended.field.edition"/></a></li>
+                            <li onclick="return switchSelection('Field', this)" value="volume"><a class="dropdown-item"><fmt:message key="search.extended.field.volume"/></a></li>
+                            <li onclick="return switchSelection('Field', this)" value="language"><a class="dropdown-item"><fmt:message key="search.extended.field.language"/></a></li>
                         </ul>
                     </div>
                     <input class="form-control" type="text" size="20" id="filterValueField"/>
@@ -117,11 +117,16 @@
                 <!-- and/or operator for search syntax -->
                 <div class="btn-group btn-group-toggle" data-toggle="buttons" id="filterOperator">
                     <label class="btn btn-primary active">
-                        <input type="radio" name="options" value="and" autocomplete="off" checked="checked"/> <fmt:message key="search.extended.and"/>
+                        <input type="radio" value="AND" autocomplete="off" checked="checked"/> <fmt:message key="search.extended.and"/>
                     </label>
                     <label class="btn btn-primary">
-                        <input type="radio" name="options" value="or" autocomplete="off" /> <fmt:message key="search.extended.or"/>
+                        <input type="radio" value="OR" autocomplete="off" /> <fmt:message key="search.extended.or"/>
                     </label>
+                    <!--
+                    <label class="btn btn-primary">
+                        <input type="radio" value="NOT" autocomplete="off" /> <fmt:message key="search.extended.not"/>
+                    </label>
+                    -->
                 </div>
 
                 <button type="button" class="btn btn-primary btn-block" onclick="addFilter()"><fmt:message key="search.extended.add"/></button>

@@ -1,49 +1,85 @@
+const unique_keys = [
+    'year:from',
+    'year:to'
+]
+
+const invalid_keys = [
+    'entrytypes'
+]
+
 function switchSelection(type, selection) {
-    let id = 'filterSelection' + type;
-    let filterSelection = document.getElementById(id);
-    filterSelection.value = selection.value;
+    const id = 'filterSelection' + type;
+    var filterSelection = document.getElementById(id);
+    filterSelection.innerHTML = selection.innerText;
 }
 
 function addFilter() {
 
     // term operator
-    const operator = "AND";
+    const operator = $('#filterOperator label.active input').val();
 
     // search
-    let input = document.getElementById('extendedSearchInput');
-    let search = input.value;
+    const input = document.getElementById('extendedSearchInput');
+    var query = input.value;
 
     // filters
-    let yearFrom = document.getElementById('filterValueYearFrom').value;
-    let yearTo = document.getElementById('filterValueYearTo').value;
-    let entrytype = document.getElementById('filterSelectionEntrytype').value;
-    let entity = document.getElementById('filterSelectionEntity').value;
-    let entityValue = document.getElementById('filterValueEntity').value;
-    let additional = document.getElementById('filterSelectionAdditional').value;
-    let additionalValue = document.getElementById('filterValueAdditional').value;
-
-    // append filters to search
-    if (entrytype != null) {
-        search = appendFilter(search, operator, 'entrytype', entrytype);
+    const yearFrom = document.getElementById('filterValueYearFrom').value;
+    if (validateYear(yearFrom)) {
+        query = appendFilter(query, operator, 'year:from', yearFrom);
     }
 
-    if (entityValue != null) {
-        search = appendFilter(search, operator, entity, entityValue);
+    const yearTo = document.getElementById('filterValueYearTo').value;
+    if (validateYear(yearFrom)) {
+        query = appendFilter(query, operator, 'year:to', yearTo);
     }
 
-    if (additionalValue != null) {
-        search = appendFilter(search, operator, additional, additionalValue);
-    }
+    const entrytype = document.getElementById('filterSelectionEntrytype').innerHTML;
+    query = appendFilter(query, operator, 'entrytype', entrytype);
 
-    input.value = search;
+
+    const field = document.getElementById('filterSelectionField').innerHTML;
+    const fieldValue = document.getElementById('filterValueField').value;
+    query = appendFilter(query, operator, field, fieldValue);
+
+    input.value = query;
 }
 
-function appendFilter(search, operator, key, value) {
-    let term = key + ':' + value;
-    // check, if term is already in the search
-    if (search.includes(term)) {
-        // returns previous search to avoid duplicate terms
-        return search;
+function appendFilter(query, operator, key, value) {
+
+    if (key == null || value == null) {
+        return query;
     }
-    return search + ' ' +  operator + ' ' + term;
+
+    if (key === '' || value === '') {
+        return query;
+    }
+
+    // don't add, when key is just a label from a unselected dropdown
+    const unselected = '<span class="unselected">';
+    if (key.includes(unselected) || value.includes(unselected)) {
+        return query;
+    }
+
+    const term = key + ':' + value;
+    // check, if term is already in the search
+    if (query.includes(term)) {
+        // returns previous search to avoid duplicate terms
+        return query;
+    }
+
+    // check, if a unique key is already in query
+    if (unique_keys.includes(key) && query.includes(key + ':')) {
+        // TODO replace value
+        return query;
+    }
+
+    if (operator === 'OR') {
+        return '(' + query + ')' + ' ' +  operator + ' ' + term
+    }
+
+    return query + ' ' +  operator + ' ' + term;
+}
+
+function validateYear(year) {
+    return !isNaN(year);
 }
