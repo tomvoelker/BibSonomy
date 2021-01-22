@@ -7,10 +7,10 @@ const invalid_keys = [
     'entrytypes'
 ]
 
-function switchSelection(type, selection) {
+function switchSelection(type, value, selection) {
     const id = 'filterSelection' + type;
     var filterSelection = document.getElementById(id);
-    filterSelection.innerHTML = selection.innerText;
+    filterSelection.innerHTML = '<span style="display:none;">' + value + '</span>' + selection.innerText;
 }
 
 function addFilter() {
@@ -33,11 +33,11 @@ function addFilter() {
         query = appendFilter(query, operator, 'year:to', yearTo);
     }
 
-    const entrytype = document.getElementById('filterSelectionEntrytype').innerHTML;
+    const entrytype = document.getElementById('filterSelectionEntrytype').children[0].innerText;
     query = appendFilter(query, operator, 'entrytype', entrytype);
 
 
-    const field = document.getElementById('filterSelectionField').innerHTML;
+    const field = document.getElementById('filterSelectionField').children[0].innerText;
     const fieldValue = document.getElementById('filterValueField').value;
     query = appendFilter(query, operator, field, fieldValue);
 
