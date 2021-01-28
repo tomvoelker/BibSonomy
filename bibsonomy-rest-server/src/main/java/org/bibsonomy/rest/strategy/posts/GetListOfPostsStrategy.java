@@ -38,6 +38,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.BookmarkUtils;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.UrlBuilder;
 
 /**
@@ -60,28 +61,7 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		// TODO: why not sort in DBLogic? (Maybe refactoring LogicInterface with
-		// a smarter parameter object to keep parameter lists and sorting clear)
-		if ((resourceType != null) && BibTex.class.isAssignableFrom(resourceType)) {
-			final List<? extends Post<? extends BibTex>> bibtexList = getList((Class<? extends BibTex>) resourceType);
-			if (searchType != SearchType.SEARCHINDEX) {
-				BibTexUtils.sortBibTexList(bibtexList, sortKeys, sortOrders);
-			}
-			return bibtexList;
-		} else if ((resourceType != null) && Bookmark.class.isAssignableFrom(resourceType)) {
-			final List<? extends Post<? extends Bookmark>> bookmarkList = getList((Class<? extends Bookmark>) resourceType);
-			if (searchType != SearchType.SEARCHINDEX) {
-				BookmarkUtils.sortBookmarkList(bookmarkList, sortKeys, sortOrders);
-			}
-			return bookmarkList;
-		}
-
-		// return other resource types without ordering
-		return getList(resourceType);
-	}
-
-	protected <T extends Resource> List<Post<T>> getList(Class<T> resourceType) {
-		List<SortCriterium> sortCriteriums = new LinkedList<>();
+		List<SortCriterium> sortCriteriums = SortUtils.generateSortCriteriums(sortKeys, sortOrders);
 		return this.getLogic().getPosts(resourceType, this.grouping, this.groupingValue,
 				this.tags, this.hash, this.search, this.searchType, null, sortCriteriums, null, null,
 				getView().getStartValue(), getView().getEndValue());

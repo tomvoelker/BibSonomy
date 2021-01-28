@@ -756,7 +756,11 @@ public class DBLogic implements LogicInterface {
 			if (ValidationUtils.safeContains(filters, FilterEntity.HISTORY) && !(resourceType == GoldStandardPublication.class || resourceType == GoldStandardBookmark.class)) {
 				this.permissionDBManager.ensureIsAdminOrSelfOrHasGroupRoleOrHigher(this.loginUser, groupingName, GroupRole.USER);
 			}
-			SortKey firstSortKey = sortCriteriums.get(0).getSortKey();
+			// TODO maybe clean up, firstSortKey only there to not change the buildParam signature
+			SortKey firstSortKey = null;
+			if (sortCriteriums.size() > 0) {
+				firstSortKey = sortCriteriums.get(0).getSortKey();
+			}
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, grouping, groupingName, tags, hash, firstSortKey, start, end, startDate, endDate, search, filters, this.loginUser);
 				// sets the search type
