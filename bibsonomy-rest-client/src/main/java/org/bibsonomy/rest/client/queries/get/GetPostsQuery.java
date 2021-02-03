@@ -28,10 +28,12 @@ package org.bibsonomy.rest.client.queries.get;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
@@ -53,8 +55,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 
 	private final int start;
 	private final int end;
-	private SortKey sortKey;
-	private SortOrder sortOrder;
+	private List<SortCriterium> sortCriteriums;
 	private String search;
 	private Class<? extends Resource> resourceType;
 	private List<String> tags;
@@ -88,6 +89,8 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 
 		this.start = start;
 		this.end = end;
+
+		this.sortCriteriums = new ArrayList<>();
 	}
 
 	/**
@@ -143,17 +146,11 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	}
 
 	/**
-	 * @param sortKey	the sort key to set
+	 * @param sortCriteriums
+	 * 				the sort criteriums to set
 	 */
-	public void setSortKey(SortKey sortKey) {
-		this.sortKey = sortKey;
-	}
-
-	/**
-	 * @param sortOrder	the sort order to set
-	 */
-	public void setSortOrder(SortOrder sortOrder) {
-		this.sortOrder = sortOrder;
+	public void setSortCriteriums(final List<SortCriterium> sortCriteriums) {
+		this.sortCriteriums = sortCriteriums;
 	}
 
 	/**
@@ -162,6 +159,10 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	 */
 	public void setSearch(final String search) {
 		this.search = search;
+	}
+
+	public void addSorting(SortKey sortKey, SortOrder sortOrder) {
+		this.sortCriteriums.add(new SortCriterium(sortKey, sortOrder));
 	}
 
 	@Override
@@ -181,7 +182,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 			return;
 		}
 		
-		final String url = this.getUrlRenderer().createHrefForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.resourceHash, this.search, this.sortKey, this.sortOrder, this.start, this.end);
+		final String url = this.getUrlRenderer().createHrefForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.resourceHash, this.search, this.sortCriteriums, this.start, this.end);
 		if (log.isDebugEnabled()) {
 			log.debug("GetPostsQuery doExecute() called - URL: " + url);
 		}

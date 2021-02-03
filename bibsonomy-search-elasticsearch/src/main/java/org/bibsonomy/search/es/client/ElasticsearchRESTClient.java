@@ -33,7 +33,7 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
-import org.bibsonomy.search.es.util.SortingUtils;
+import org.bibsonomy.search.es.util.ESSortUtils;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.action.DocWriteResponse;
@@ -296,7 +296,7 @@ public class ElasticsearchRESTClient implements ESClient {
 			}
 
 			if (present(sortCriteriums)) {
-				List<Pair<String, SortOrder>> sortParameters = SortingUtils.buildSortParameters(sortCriteriums, type);
+				List<Pair<String, SortOrder>> sortParameters = ESSortUtils.buildSortParameters(sortCriteriums, type);
 				for (Pair<String, SortOrder> param : sortParameters) {
 					searchSourceBuilder.sort(param.getFirst(), param.getSecond());
 				}

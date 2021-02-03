@@ -49,11 +49,11 @@ public class GetNewPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected UrlBuilder getLinkPrefix() {
-		return this.getUrlRenderer().createUrlBuilderForAddedPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, null, null);
+		return this.getUrlRenderer().createUrlBuilderForAddedPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, this.sortCriteriums);
 	}
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, search, SearchType.LOCAL, null, SortKey.DATE, null, null, this.getView().getStartValue(), this.getView().getEndValue());
+		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, search, SearchType.SEARCHINDEX, null, SortKey.DATE, null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 }

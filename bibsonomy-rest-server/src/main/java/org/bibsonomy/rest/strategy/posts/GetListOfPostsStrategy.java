@@ -26,20 +26,12 @@
  */
 package org.bibsonomy.rest.strategy.posts;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.bibsonomy.common.SortCriterium;
-import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.model.util.BookmarkUtils;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.UrlBuilder;
+
+import java.util.List;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -55,15 +47,14 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected UrlBuilder getLinkPrefix() {
-		return this.getUrlRenderer().createUrlBuilderForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, null, null);
+		return this.getUrlRenderer().createUrlBuilderForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, this.sortCriteriums);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		List<SortCriterium> sortCriteriums = SortUtils.generateSortCriteriums(sortKeys, sortOrders);
 		return this.getLogic().getPosts(resourceType, this.grouping, this.groupingValue,
-				this.tags, this.hash, this.search, this.searchType, null, sortCriteriums, null, null,
+				this.tags, this.hash, this.search, this.searchType, null, this.sortCriteriums, null, null,
 				getView().getStartValue(), getView().getEndValue());
 	}
 }

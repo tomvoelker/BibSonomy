@@ -30,6 +30,7 @@ import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -106,5 +107,21 @@ public class SortUtils {
 			}
 		}
 		return sortCriteriums;
+	}
+
+	public static String getSortKeys(List<SortCriterium> sortCriteriums) {
+		List<String> sortKeys = new ArrayList<>();
+		for (SortCriterium criterium : sortCriteriums) {
+			sortKeys.add(criterium.getSortKey().toString());
+		}
+		return StringUtils.implodeStringArray(sortKeys.toArray(), SORT_KEY_DELIMITER);
+	}
+
+	public static String getSortOrders(List<SortCriterium> sortCriteriums) {
+		List<String> sortOrders = new ArrayList<>();
+		for (SortCriterium criterium : sortCriteriums) {
+			sortOrders.add(criterium.getSortOrder().toString());
+		}
+		return StringUtils.implodeStringArray(sortOrders.toArray(), SORT_ORDER_DELIMITER);
 	}
 }

@@ -29,6 +29,7 @@ package org.bibsonomy.rest.client;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -37,6 +38,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.ConceptUpdateOperation;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
@@ -44,6 +46,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -236,17 +239,24 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 	
 	@Override
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final SortKey sortKey, final Date startDate, final Date endDate, final int start, final int end) {
-		// TODO: properly implement searchtype in query and rest-server
 		// TODO: clientside chain of responsibility
+		List<SortCriterium> sortCriteriums = new ArrayList<>();
+		sortCriteriums.add(new SortCriterium(sortKey, SortOrder.DESC));
+		return this.getPosts(resourceType, grouping, groupingName, tags, hash, search, searchType, filters, sortCriteriums, startDate, endDate, start, end);
+	}
+
+	@Override
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, Set<Filter> filters, List<SortCriterium> sortCriteriums, Date startDate, Date endDate, int start, int end) {
 		final GetPostsQuery query = new GetPostsQuery(start, end);
 		query.setGrouping(grouping, groupingName);
 		query.setResourceHash(hash);
 		query.setResourceType(resourceType);
 		query.setTags(tags);
 		query.setSearch(search);
-		query.setSortKey(sortKey);
+		query.setSortCriteriums(sortCriteriums);
 		query.setUserName(this.getAuthenticatedUser().getName());
 		return (List) execute(query);
 	}

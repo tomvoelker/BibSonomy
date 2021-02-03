@@ -8,7 +8,7 @@ import org.elasticsearch.search.sort.SortOrder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SortingUtils {
+public class ESSortUtils {
 
 	public static List<Pair<String, SortOrder>> buildSortParameters(List<SortCriterium> sortCriteriums, String type) {
 		if (type.equals("publication")) {

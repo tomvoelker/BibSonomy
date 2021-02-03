@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.rest.renderer;
 
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SortKey;
@@ -39,6 +40,7 @@ import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.RESTConfig;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlBuilder;
 
@@ -703,8 +705,7 @@ public class UrlRenderer {
 	 * @param tags
 	 * @param resourceHash
 	 * @param search
-	 * @param sortKey
-	 * @param sortOrder
+	 * @param sortCriteriums
 	 * @param start
 	 * @param end
 	 * @return
@@ -712,9 +713,8 @@ public class UrlRenderer {
 	public String createHrefForPosts(final GroupingEntity grouping,
 									 final String groupingValue, final Class<? extends Resource> resourceType,
 									 final List<String> tags, final String resourceHash, final String search,
-									 final SortKey sortKey, final SortOrder sortOrder,
-									 final int start, final int end) {
-		final UrlBuilder urlBuilder = createUrlBuilderForPosts(grouping, groupingValue, resourceType, tags, resourceHash, search, sortKey, sortOrder);
+									 final List<SortCriterium> sortCriteriums, final int start, final int end) {
+		final UrlBuilder urlBuilder = createUrlBuilderForPosts(grouping, groupingValue, resourceType, tags, resourceHash, search, sortCriteriums);
 
 		applyStartEnd(urlBuilder, start, end);
 		return urlBuilder.asString();
@@ -727,14 +727,13 @@ public class UrlRenderer {
 	 * @param tags
 	 * @param resourceHash
 	 * @param search
-	 * @param sortKey
-	 * @param sortOrder
+	 * @param sortCriteriums
 	 * @return
 	 */
-	public UrlBuilder createUrlBuilderForPosts(final GroupingEntity grouping, final String groupingValue, final Class<? extends Resource> resourceType, final List<String> tags, final String resourceHash, final String search, final SortKey sortKey, final SortOrder sortOrder) {
+	public UrlBuilder createUrlBuilderForPosts(final GroupingEntity grouping, final String groupingValue, final Class<? extends Resource> resourceType, final List<String> tags, final String resourceHash, final String search, final List<SortCriterium> sortCriteriums) {
 		final UrlBuilder urlBuilder = this.createUrlBuilderForPosts();
 
-		applyPostParamsToBuilder(grouping, groupingValue, resourceType, tags, resourceHash, search, sortKey, sortOrder, urlBuilder);
+		applyPostParamsToBuilder(grouping, groupingValue, resourceType, tags, resourceHash, search, sortCriteriums, urlBuilder);
 		return urlBuilder;
 	}
 
@@ -745,11 +744,10 @@ public class UrlRenderer {
 	 * @param tags
 	 * @param resourceHash
 	 * @param search
-	 * @param sortKey
-	 * @param sortOrder
+	 * @param sortCriteriums
 	 * @param urlBuilder
 	 */
-	private void applyPostParamsToBuilder(final GroupingEntity grouping, final String groupingValue, final Class<? extends Resource> resourceType, final List<String> tags, final String resourceHash, final String search, final SortKey sortKey, final SortOrder sortOrder, final UrlBuilder urlBuilder) {
+	private void applyPostParamsToBuilder(final GroupingEntity grouping, final String groupingValue, final Class<? extends Resource> resourceType, final List<String> tags, final String resourceHash, final String search, final List<SortCriterium> sortCriteriums, final UrlBuilder urlBuilder) {
 		if (resourceType != Resource.class) {
 			urlBuilder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(resourceType));
 		}
@@ -765,17 +763,11 @@ public class UrlRenderer {
 			urlBuilder.addParameter(RESTConfig.RESOURCE_PARAM, resourceHash);
 		}
 
-		if (sortKey != null) {
-			urlBuilder.addParameter(RESTConfig.SORT_KEY_PARAM, sortKey.toString());
+		if (sortCriteriums != null) {
+			urlBuilder.addParameter(RESTConfig.SORT_KEY_PARAM, SortUtils.getSortKeys(sortCriteriums));
+			urlBuilder.addParameter(RESTConfig.SORT_ORDER_PARAM, SortUtils.getSortOrders(sortCriteriums));
 		}
 
-		if (sortOrder != null) {
-			urlBuilder.addParameter(RESTConfig.SORT_ORDER_PARAM, sortOrder.toString());
-		}
-
-		if (present(search)) {
-			urlBuilder.addParameter(RESTConfig.SEARCH_PARAM, search);
-		}
 	}
 
 	/**
@@ -800,13 +792,12 @@ public class UrlRenderer {
 	 * @param tags
 	 * @param hash
 	 * @param search
-	 * @param sortKey
-	 * @param sortOrder
+	 * @param sortCriteriums
 	 * @return
 	 */
-	public UrlBuilder createUrlBuilderForAddedPosts(GroupingEntity grouping, String groupingValue, Class<? extends Resource> resourceType, List<String> tags, String hash, String search, SortKey sortKey, SortOrder sortOrder) {
+	public UrlBuilder createUrlBuilderForAddedPosts(GroupingEntity grouping, String groupingValue, Class<? extends Resource> resourceType, List<String> tags, String hash, String search, List<SortCriterium> sortCriteriums) {
 		final UrlBuilder builder = this.createUrlBuilderForPostAdded();
-		this.applyPostParamsToBuilder(grouping, groupingValue, resourceType, tags, hash, search, sortKey, sortOrder, builder);
+		this.applyPostParamsToBuilder(grouping, groupingValue, resourceType, tags, hash, search, sortCriteriums, builder);
 		return builder;
 	}
 	
@@ -817,13 +808,12 @@ public class UrlRenderer {
 	 * @param tags
 	 * @param hash
 	 * @param search
-	 * @param sortKey
-	 * @param sortOrder
+	 * @param sortCriteriums
 	 * @return
 	 */
-	public UrlBuilder createUrlBuilderForPopularPosts(GroupingEntity grouping, String groupingValue, Class<? extends Resource> resourceType, List<String> tags, String hash, String search, SortKey sortKey, SortOrder sortOrder) {
+	public UrlBuilder createUrlBuilderForPopularPosts(GroupingEntity grouping, String groupingValue, Class<? extends Resource> resourceType, List<String> tags, String hash, String search, List<SortCriterium> sortCriteriums) {
 		final UrlBuilder builder = this.createUrlBuilderForPostPopular();
-		this.applyPostParamsToBuilder(grouping, groupingValue, resourceType, tags, hash, search, sortKey, sortOrder, builder);
+		this.applyPostParamsToBuilder(grouping, groupingValue, resourceType, tags, hash, search, sortCriteriums, builder);
 		return builder;
 	}
 

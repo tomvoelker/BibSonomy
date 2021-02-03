@@ -55,12 +55,12 @@ public class GetPopularPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected UrlBuilder getLinkPrefix() {
-		return this.getUrlRenderer().createUrlBuilderForPopularPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, null, null);
+		return this.getUrlRenderer().createUrlBuilderForPopularPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, this.sortCriteriums);
 	}
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
 		final List<String> tag = Collections.singletonList("sys:days:" + String.valueOf(this.periodIndex)); // FIXME: use system tag builder
-		return this.getLogic().getPosts(this.resourceType, this.grouping, this.groupingValue, tag, null, this.search, SearchType.LOCAL, null, SortKey.POPULAR, null, null, this.getView().getStartValue(), this.getView().getEndValue());
+		return this.getLogic().getPosts(this.resourceType, this.grouping, this.groupingValue, tag, null, this.search, SearchType.SEARCHINDEX, null, SortKey.POPULAR, null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 }
