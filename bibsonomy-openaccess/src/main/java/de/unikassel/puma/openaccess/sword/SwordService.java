@@ -30,6 +30,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -39,6 +40,7 @@ import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import ch.qos.logback.core.net.server.Client;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
@@ -53,12 +55,17 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.util.HashUtils;
-import org.purl.sword.base.DepositResponse;
-import org.purl.sword.base.ServiceDocument;
-import org.purl.sword.client.Client;
-import org.purl.sword.client.PostMessage;
-import org.purl.sword.client.SWORDClientException;
 import org.springframework.beans.factory.annotation.Required;
+import org.swordapp.client.AuthCredentials;
+import org.swordapp.client.ClientConfiguration;
+import org.swordapp.client.Deposit;
+import org.swordapp.client.DepositReceipt;
+import org.swordapp.client.ProtocolViolationException;
+import org.swordapp.client.SWORDClient;
+import org.swordapp.client.SWORDClientException;
+import org.swordapp.client.SWORDError;
+import org.swordapp.client.ServiceDocument;
+import org.swordapp.client.UriRegistry;
 
 /**
  * Sword main
@@ -94,18 +101,41 @@ public class SwordService {
 	private String projectDocumentPath;
 	private UrlRenderer urlRenderer;
 
+
+	//Internationalized Resource Identifiers
+	private String getIRI(){
+		return this.repositoryConfig.getHttpServer() + ":" +
+				this.repositoryConfig.getHttpPort() +
+				this.repositoryConfig.getHttpServicedocumentUrl();
+	}
+
 	/**
 	 * retrieve service document from sword server
 	 * @return
 	 */
 	private ServiceDocument retrieveServicedocument(){
 		ServiceDocument serviceDocument = null;
-		final Client swordClient = this.createClient();
+		final SWORDClient swordClient = this.createClient();
 		try {
-			serviceDocument = swordClient.getServiceDocument(this.repositoryConfig.getHttpServicedocumentUrl());
+
+			//swordClient.setServer(this.repositoryConfig.getHttpServer(), this.repositoryConfig.getHttpPort());
+			//swordClient.setUserAgent(this.repositoryConfig.getHttpUserAgent());
+			//swordClient.setCredentials(this.repositoryConfig.getAuthUsername(), this.repositoryConfig.getAuthPassword());
+
+
+
+			serviceDocument = swordClient.getServiceDocument(
+					this.getIRI(),
+					new AuthCredentials(
+							this.repositoryConfig.getAuthUsername(),
+							this.repositoryConfig.getAuthPassword())
+			);
 		} catch (final SWORDClientException e) {
 			log.info("SWORDClientException! getServiceDocument" + e.getMessage());
+		} catch (ProtocolViolationException e) {
+			e.printStackTrace();
 		}
+
 		return serviceDocument;
 	}
 	
@@ -130,9 +160,9 @@ public class SwordService {
 	 * @param user 
 	 * @throws SwordException 
 	 */
-	public void submitDocument(final PumaData<?> pumaData, final User user) throws SwordException {
+	public void submitDocument(final PumaData<?> pumaData, final User user) throws SwordException, FileNotFoundException {
 		log.info("starting sword");
-		DepositResponse depositResponse = new DepositResponse(999); 
+		//DepositResponse depositResponse = new DepositResponse(999);
 		File swordZipFile = null;
 
 		final Post<?> post = pumaData.getPost(); 
@@ -247,7 +277,7 @@ public class SwordService {
 		if (swordZipFile != null) {
 
 			// create sword client
-			final Client swordClient = this.createClient();
+			final SWORDClient swordClient = this.createClient();
 			
 			/*
 			 * message file
@@ -257,24 +287,41 @@ public class SwordService {
 			 * delete post document files and meta data file
 			 */
 			
-			final PostMessage swordMessage = new PostMessage();
+//			final PostMessage swordMessage = new PostMessage();
 			// message meta
-			swordMessage.setNoOp(false);
-			swordMessage.setUserAgent(this.repositoryConfig.getHttpUserAgent());
-			swordMessage.setFilepath(swordZipFile.getAbsolutePath());
-			swordMessage.setFiletype("application/zip");
-			swordMessage.setFormatNamespace("http://purl.org/net/sword-types/METSDSpaceSIP"); // sets packaging!
-			swordMessage.setVerbose(false);
+//			swordMessage.setNoOp(false);
+//			swordMessage.setUserAgent(this.repositoryConfig.getHttpUserAgent());
+//			swordMessage.setFilepath(swordZipFile.getAbsolutePath());
+//			swordMessage.setFiletype("application/zip");
+//			swordMessage.setFormatNamespace("http://purl.org/net/sword-types/METSDSpaceSIP"); // sets packaging!
+//			swordMessage.setVerbose(false);
 
+			Deposit deposit = new Deposit();
+			deposit.setFile(new FileInputStream(swordZipFile));
+			deposit.setMimeType("application/zip");
+			deposit.setFilename(swordZipFile.getName());
+			deposit.setPackaging("http://purl.org/net/sword/package/METSDSpaceSIP");
+			//deposit.setMd5(); TODO needed?
+			deposit.setInProgress(true);
+			//deposit.setSuggestedIdentifier(); TODO needed?
 
 			try {
 				// check depositurl against service document
 				if (this.checkServicedokument(this.retrieveServicedocument(), this.repositoryConfig.getHttpServicedocumentUrl(), SWORDFILETYPE, SWORDFORMAT)) {
+
 					// transmit sword message (zip file with document metadata and document files
-					swordMessage.setDestination(this.repositoryConfig.getHttpDepositUrl());
-	
-					depositResponse = swordClient.postFile(swordMessage);
-					
+//					swordMessage.setDestination(this.repositoryConfig.getHttpDepositUrl());
+//
+//					depositResponse = swordClient.postFile(swordMessage);
+
+					DepositReceipt receipt = swordClient.deposit(
+							this.repositoryConfig.getHttpDepositUrl(),
+							deposit,
+							new AuthCredentials(
+									this.repositoryConfig.getAuthUsername(),
+									this.repositoryConfig.getAuthPassword())
+					);
+
 					/*
 					 * 200 OK Used in response to successful GET operations and
 					 * to Media Resource Creation operations where X-No-Op is
@@ -312,22 +359,30 @@ public class SwordService {
 					 * or in an X-Packaging header or the combination of the two
 					 * is not accepted by the server.
 					 */
-					log.info("throw SwordException: errcode"+depositResponse.getHttpResponse());
-					throw new SwordException("error.sword.errcode"+depositResponse.getHttpResponse());
+					log.info("SWORD deposit status code: " + receipt.getStatusCode());
+					//throw new SwordException("error.sword.errcode"+depositResponse.getHttpResponse());
 				}
 
 			} catch (final SWORDClientException e) {
-				log.warn("SWORDClientException: " + e.getMessage() + "\n" + e.getCause() + " / " + swordMessage.getDestination());
+				log.warn("SWORDClientException: " + e.getMessage() + "\n" + e.getCause() + " / " + this.repositoryConfig.getHttpDepositUrl());
 				throw new SwordException("error.sword.urlnotaccessable");
+			} catch (ProtocolViolationException e) {
+				e.printStackTrace();
+			} catch (SWORDError swordError) {
+				// TODO log?
+				swordError.printStackTrace();
 			}
 		}
 	}
 
-	private Client createClient() {
-		final Client swordClient = new Client();
-		swordClient.setServer(this.repositoryConfig.getHttpServer(), this.repositoryConfig.getHttpPort());
-		swordClient.setUserAgent(this.repositoryConfig.getHttpUserAgent());
-		swordClient.setCredentials(this.repositoryConfig.getAuthUsername(), this.repositoryConfig.getAuthPassword());
+	private SWORDClient createClient() {
+		final ClientConfiguration clientConfiguration = new ClientConfiguration();
+		clientConfiguration.setUserAgent(this.repositoryConfig.getHttpUserAgent());
+
+		final SWORDClient swordClient = new SWORDClient(clientConfiguration);
+		//swordClient.setServer(this.repositoryConfig.getHttpServer(), this.repositoryConfig.getHttpPort());
+		//swordClient.setUserAgent(this.repositoryConfig.getHttpUserAgent());
+		//swordClient.setCredentials(this.repositoryConfig.getAuthUsername(), this.repositoryConfig.getAuthPassword());
 		return swordClient;
 	}
 	
