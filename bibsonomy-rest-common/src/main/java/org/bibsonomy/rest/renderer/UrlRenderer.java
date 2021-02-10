@@ -768,6 +768,10 @@ public class UrlRenderer {
 			urlBuilder.addParameter(RESTConfig.SORT_ORDER_PARAM, SortUtils.getSortOrders(sortCriteriums));
 		}
 
+		if (present(search)) {
+			urlBuilder.addParameter(RESTConfig.SEARCH_PARAM, search);
+		}
+
 	}
 
 	/**
