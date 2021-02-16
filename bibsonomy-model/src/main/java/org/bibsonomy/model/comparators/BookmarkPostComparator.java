@@ -26,13 +26,14 @@
  */
 package org.bibsonomy.model.comparators;
 
-import java.util.Comparator;
-import java.util.List;
-
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+
+import java.util.Comparator;
+import java.util.List;
 
 
 /**
@@ -65,16 +66,16 @@ public class BookmarkPostComparator extends PostComparator implements Comparator
 		for (final SortCriterium crit : this.sortCriteria) {
 			try {
 				// posting date
-				if (SortKey.DATE.equals(crit.sortKey)) {
-					return this.compare(post1.getDate(), post2.getDate(), crit.sortOrder);
+				if (SortKey.DATE.equals(crit.getSortKey())) {
+					return this.compare(post1.getDate(), post2.getDate(), crit.getSortOrder());
 				}
 				// title 
-				else if (SortKey.TITLE.equals(crit.sortKey)) {
-					return this.normalizeAndCompare(post1.getResource().getTitle(), post2.getResource().getTitle(), crit.sortOrder);
+				else if (SortKey.TITLE.equals(crit.getSortKey())) {
+					return this.normalizeAndCompare(post1.getResource().getTitle(), post2.getResource().getTitle(), crit.getSortOrder());
 				}
 				// ranking
-				else if (SortKey.RANKING.equals(crit.sortKey)) {
-					return this.compare(post1.getRanking(), post2.getRanking(), crit.sortOrder);
+				else if (SortKey.RANK.equals(crit.getSortKey())) {
+					return this.compare(post1.getRanking(), post2.getRanking(), crit.getSortOrder());
 				} else {
 					return 0;
 				}

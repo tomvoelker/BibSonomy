@@ -65,6 +65,15 @@ ul.dropdown-menu.list-options > li > span {
 	font-size: inherit;
 }
 
+/** sorting order selection **/
+ul.dropdown-menu > li.sort-selected > a {
+	color: @font-color;
+}
+
+ul.dropdown-menu > li.sort-unselected > a {
+	color: @unselected-font-color;
+}
+
 /** FIX for breadcrumb text outside of container */
 .breadcrumb {
 	word-break: break-all;
@@ -630,6 +639,12 @@ div#sidebar {
 	padding-right: 10px;
 	margin-left: 15px;
 	border-left: 1px @border-color solid;
+	
+	.clear-inbox-confirmation-item h3 {
+		line-height: unset;
+		height: auto;
+		font-size: inherit;
+	}
 }
 
 #sidebar ul {

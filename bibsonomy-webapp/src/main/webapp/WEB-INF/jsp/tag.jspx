@@ -27,33 +27,16 @@
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
-		
-		<jsp:attribute name="additionalSorting">
-			<c:if test="${command.numberOfNormalTags > 0}">
-				<c:choose>
-					<c:when test="${command.sortPage eq 'folkrank'}">
-						<li><span class="italic"><fontawesome:icon icon="sort-numeric-asc " spaceAfter="5" /><fmt:message key="sort.folkrank"/></span></li>
-					</c:when>
-					<c:otherwise>
-						<li><a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'folkrank')}"><fontawesome:icon icon="sort-numeric-asc " spaceAfter="5" /><fmt:message key="sort.folkrank"/></a></li>
-					</c:otherwise>
-				</c:choose>
-			</c:if>
-		</jsp:attribute>
-		
+
 		<jsp:attribute name="heading">
 			<c:choose>
-				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL'}">
+				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL' and command.scope.name() ne 'SEARCHINDEX'}">
 					<c:set var="pathMessageKey" value="navi.federatedTag"/>
 					<c:url var="tagUrl" value="${relativeUrlGenerator.getTagUrlByTagName(command.requestedTags)}?scope=FEDERATED"/>
-					<c:url var="tagUrlFolkRank" value ="${tagUrl}">
-						<c:param name="order" value="folkrank"/>
-					</c:url>
 				</c:when>
 				<c:otherwise>
 					<c:set var="pathMessageKey" value="navi.tag"/>
 					<c:url var="tagUrl" value="${relativeUrlGenerator.getTagUrlByTagName(command.requestedTags)}" />
-					<c:url var="tagUrlFolkRank" value="${tagUrl}?order=folkrank"/>
 				</c:otherwise>
 			</c:choose>
 			<parts:search scope="${command.scope}" pathMessageKey="${pathMessageKey}" formAction="/tag/" formInputName="tag" formInputValue="${command.requestedTags}" />
@@ -64,7 +47,7 @@
 			
 			<!-- related tags -->
 			<c:if test="${not empty command.relatedTagCommand.relatedTags}">
-				<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}" scope="${command.scope.name()}" order="${command.order}"/>
+				<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}" scope="${command.scope.name()}" order="${command.sortKey.toString()}"/>
 			</c:if>
 			
 			<fmt:message key="help.link.tag.similarRelated" var="helpLink"/>

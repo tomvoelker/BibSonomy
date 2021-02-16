@@ -32,12 +32,12 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
 
 /**
  * @author Stefan Stützer
@@ -56,7 +56,7 @@ public class GetResourcesByConceptForGroup<R extends Resource, P extends Resourc
 				(param.getNumSimpleTags() == 0) &&
 				(param.getNumTransitiveConcepts() == 0) &&
 				!present(param.getHash()) &&
-				nullOrEqual(param.getOrder(), Order.ADDED) &&
+				nullOrEqual(param.getSortKey(), SortKey.NONE, SortKey.DATE) &&
 				!present(param.getSearch()));
 	}
 

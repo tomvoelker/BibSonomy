@@ -31,11 +31,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.tag.TagChainElement;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.Order;
 
 /**
  * @author Dominik Benz
@@ -51,7 +51,7 @@ public class GetAllTags extends TagChainElement {
 	@Override
 	protected boolean canHandle(final TagParam param) {
 		return (param.getGrouping() == GroupingEntity.ALL &&
-				param.getOrder() != Order.POPULAR &&
+				param.getSortKey() != SortKey.POPULAR &&
 				!present(param.getTagIndex()) &&
 				!present(param.getHash()) &&
 				!present(param.getBibtexKey()) &&

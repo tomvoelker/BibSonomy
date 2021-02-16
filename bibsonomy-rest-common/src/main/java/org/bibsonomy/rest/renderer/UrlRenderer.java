@@ -26,25 +26,28 @@
  */
 package org.bibsonomy.rest.renderer;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.util.Date;
-import java.util.List;
-
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.GoldStandardRelation;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.RESTConfig;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlBuilder;
+
+import java.util.Date;
+import java.util.List;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * This renderer creates URLs according to BibSonomys REST URL scheme.
@@ -477,8 +480,7 @@ public class UrlRenderer {
 	/**
 	 * @param username
 	 * @param relation
-	 * @param start
-	 * @param end
+	 * @param tag
 	 * @return the users friends
 	 */
 	public String createHrefForUserRelationship(final String username, final String relation, final String tag) {
@@ -703,16 +705,16 @@ public class UrlRenderer {
 	 * @param tags
 	 * @param resourceHash
 	 * @param search
-	 * @param order
+	 * @param sortCriteriums
 	 * @param start
 	 * @param end
 	 * @return
 	 */
 	public String createHrefForPosts(final GroupingEntity grouping,
-			final String groupingValue, final Class<? extends Resource> resourceType,
-			final List<String> tags, final String resourceHash, final String search, final Order order,
-			final int start, final int end) {
-		final UrlBuilder urlBuilder = createUrlBuilderForPosts(grouping, groupingValue, resourceType, tags, resourceHash, search, order);
+									 final String groupingValue, final Class<? extends Resource> resourceType,
+									 final List<String> tags, final String resourceHash, final String search,
+									 final List<SortCriterium> sortCriteriums, final int start, final int end) {
+		final UrlBuilder urlBuilder = createUrlBuilderForPosts(grouping, groupingValue, resourceType, tags, resourceHash, search, sortCriteriums);
 
 		applyStartEnd(urlBuilder, start, end);
 		return urlBuilder.asString();
@@ -725,13 +727,13 @@ public class UrlRenderer {
 	 * @param tags
 	 * @param resourceHash
 	 * @param search
-	 * @param order
+	 * @param sortCriteriums
 	 * @return
 	 */
-	public UrlBuilder createUrlBuilderForPosts(final GroupingEntity grouping, final String groupingValue, final Class<? extends Resource> resourceType, final List<String> tags, final String resourceHash, final String search, final Order order) {
+	public UrlBuilder createUrlBuilderForPosts(final GroupingEntity grouping, final String groupingValue, final Class<? extends Resource> resourceType, final List<String> tags, final String resourceHash, final String search, final List<SortCriterium> sortCriteriums) {
 		final UrlBuilder urlBuilder = this.createUrlBuilderForPosts();
 
-		applyPostParamsToBuilder(grouping, groupingValue, resourceType, tags, resourceHash, search, order, urlBuilder);
+		applyPostParamsToBuilder(grouping, groupingValue, resourceType, tags, resourceHash, search, sortCriteriums, urlBuilder);
 		return urlBuilder;
 	}
 
@@ -742,10 +744,10 @@ public class UrlRenderer {
 	 * @param tags
 	 * @param resourceHash
 	 * @param search
-	 * @param order
+	 * @param sortCriteriums
 	 * @param urlBuilder
 	 */
-	private void applyPostParamsToBuilder(final GroupingEntity grouping, final String groupingValue, final Class<? extends Resource> resourceType, final List<String> tags, final String resourceHash, final String search, final Order order, final UrlBuilder urlBuilder) {
+	private void applyPostParamsToBuilder(final GroupingEntity grouping, final String groupingValue, final Class<? extends Resource> resourceType, final List<String> tags, final String resourceHash, final String search, final List<SortCriterium> sortCriteriums, final UrlBuilder urlBuilder) {
 		if (resourceType != Resource.class) {
 			urlBuilder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(resourceType));
 		}
@@ -761,13 +763,15 @@ public class UrlRenderer {
 			urlBuilder.addParameter(RESTConfig.RESOURCE_PARAM, resourceHash);
 		}
 
-		if (order != null) {
-			urlBuilder.addParameter(RESTConfig.ORDER_PARAM, order.toString());
+		if (sortCriteriums != null) {
+			urlBuilder.addParameter(RESTConfig.SORT_KEY_PARAM, SortUtils.getSortKeys(sortCriteriums));
+			urlBuilder.addParameter(RESTConfig.SORT_ORDER_PARAM, SortUtils.getSortOrders(sortCriteriums));
 		}
 
 		if (present(search)) {
 			urlBuilder.addParameter(RESTConfig.SEARCH_PARAM, search);
 		}
+
 	}
 
 	/**
@@ -792,12 +796,12 @@ public class UrlRenderer {
 	 * @param tags
 	 * @param hash
 	 * @param search
-	 * @param order
+	 * @param sortCriteriums
 	 * @return
 	 */
-	public UrlBuilder createUrlBuilderForAddedPosts(GroupingEntity grouping, String groupingValue, Class<? extends Resource> resourceType, List<String> tags, String hash, String search, Order order) {
+	public UrlBuilder createUrlBuilderForAddedPosts(GroupingEntity grouping, String groupingValue, Class<? extends Resource> resourceType, List<String> tags, String hash, String search, List<SortCriterium> sortCriteriums) {
 		final UrlBuilder builder = this.createUrlBuilderForPostAdded();
-		this.applyPostParamsToBuilder(grouping, groupingValue, resourceType, tags, hash, search, order, builder);
+		this.applyPostParamsToBuilder(grouping, groupingValue, resourceType, tags, hash, search, sortCriteriums, builder);
 		return builder;
 	}
 	
@@ -808,12 +812,12 @@ public class UrlRenderer {
 	 * @param tags
 	 * @param hash
 	 * @param search
-	 * @param order
+	 * @param sortCriteriums
 	 * @return
 	 */
-	public UrlBuilder createUrlBuilderForPopularPosts(GroupingEntity grouping, String groupingValue, Class<? extends Resource> resourceType, List<String> tags, String hash, String search, Order order) {
+	public UrlBuilder createUrlBuilderForPopularPosts(GroupingEntity grouping, String groupingValue, Class<? extends Resource> resourceType, List<String> tags, String hash, String search, List<SortCriterium> sortCriteriums) {
 		final UrlBuilder builder = this.createUrlBuilderForPostPopular();
-		this.applyPostParamsToBuilder(grouping, groupingValue, resourceType, tags, hash, search, order, builder);
+		this.applyPostParamsToBuilder(grouping, groupingValue, resourceType, tags, hash, search, sortCriteriums, builder);
 		return builder;
 	}
 
@@ -866,20 +870,20 @@ public class UrlRenderer {
 	 * @param groupingValue
 	 * @param filter
 	 * @param relation
-	 * @param order
+	 * @param sortKey
 	 * @param start
 	 * @param end
 	 * @return
 	 */
-	public String createHrefForTags(final Class<? extends Resource> resourceType, final List<String> tagNames, final GroupingEntity grouping, final String groupingValue, final String filter, final TagRelation relation, final Order order, final int start, final int end) {
+	public String createHrefForTags(final Class<? extends Resource> resourceType, final List<String> tagNames, final GroupingEntity grouping, final String groupingValue, final String filter, final TagRelation relation, final SortKey sortKey, final int start, final int end) {
 		final UrlBuilder urlBuilder = createURLBuilderForTags();
 		if (present(tagNames)) {
 			urlBuilder.addPathElement(StringUtils.implodeStringCollection(tagNames, " "));
 		}
 		applyStartEnd(urlBuilder, start, end);
 
-		if (order != null) {
-			urlBuilder.addParameter(RESTConfig.ORDER_PARAM, order.toString());
+		if (sortKey != null) {
+			urlBuilder.addParameter(RESTConfig.SORT_KEY_PARAM, sortKey.toString());
 		}
 
 		applyGrouping(urlBuilder, grouping, groupingValue);
@@ -906,10 +910,10 @@ public class UrlRenderer {
 	 * @param groupingValue
 	 * @param hash
 	 * @param regex
-	 * @param order
+	 * @param sortKey
 	 * @return
 	 */
-	public UrlBuilder createUrlBuilderForTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingValue, String hash, String regex, Order order) {
+	public UrlBuilder createUrlBuilderForTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingValue, String hash, String regex, SortKey sortKey) {
 		final UrlBuilder builder = this.createURLBuilderForTags();
 		
 		if (grouping != GroupingEntity.ALL && groupingValue != null) {
@@ -918,8 +922,8 @@ public class UrlRenderer {
 		if (regex != null) {
 			builder.addParameter(RESTConfig.REGEX_PARAM, regex);
 		}
-		if (order == Order.FREQUENCY) {
-			builder.addParameter(RESTConfig.ORDER_PARAM, order.toString().toLowerCase());
+		if (sortKey == SortKey.FREQUENCY) {
+			builder.addParameter(RESTConfig.SORT_KEY_PARAM, sortKey.toString().toLowerCase());
 		}
 		if (resourceType != Resource.class) {
 			builder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceUtils.toString(resourceType).toLowerCase());

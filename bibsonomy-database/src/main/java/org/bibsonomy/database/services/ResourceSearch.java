@@ -24,22 +24,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.services.searcher;
+package org.bibsonomy.database.services;
 
-import java.util.Collection;
-import java.util.List;
-
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Interface for resource search operations
- * 
+ *
  * @author fei, dzo
  *
  * @param <R>
@@ -48,32 +50,63 @@ public interface ResourceSearch<R extends Resource> {
 
 	/**
 	 * search for posts using a full text search index
-	 * 
+	 *
 	 * @param userName
 	 * @param requestedUserName
 	 * @param requestedGroupName
 	 * @param requestedRelationNames @Deprecated TODO: (spheres) remove
 	 * @param allowedGroups
-	 * @param searchType 
+	 * @param searchType
 	 * @param searchTerms
 	 * @param titleSearchTerms
 	 * @param authorSearchTerms
-	 * @param bibtexKey 
+	 * @param bibtexKey
 	 * @param tagIndex
 	 * @param year
 	 * @param firstYear
 	 * @param lastYear
 	 * @param negatedTags
-	 * @param order			the order to use (supported {@link Order#ADDED} and {@link Order#RANK}
+	 * @param sortKey			the order to use (supported {@link SortKey}
 	 * @param limit
 	 * @param offset
+	 * @param systemTags
 	 * @return a list of posts containing the search result
 	 */
 	public List<Post<R>> getPosts(
-			final String userName, final String requestedUserName, String requestedGroupName, 
-			final List<String> requestedRelationNames,
-			final Collection<String> allowedGroups,final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, 
-			final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset);
+			final String userName, final String requestedUserName, String requestedGroupName, final List<String> requestedRelationNames,
+			final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms,
+			final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags,
+			final SortKey sortKey, final int limit, final int offset, final Collection<SystemTag> systemTags);
+
+	/**
+	 * search for posts using a full text search index
+	 *
+	 * @param userName
+	 * @param requestedUserName
+	 * @param requestedGroupName
+	 * @param requestedRelationNames @Deprecated TODO: (spheres) remove
+	 * @param allowedGroups
+	 * @param searchType
+	 * @param searchTerms
+	 * @param titleSearchTerms
+	 * @param authorSearchTerms
+	 * @param bibtexKey
+	 * @param tagIndex
+	 * @param year
+	 * @param firstYear
+	 * @param lastYear
+	 * @param negatedTags
+	 * @param sortCriteriums			the list of sort criteriums to use (supported {@link SortCriterium}
+	 * @param limit
+	 * @param offset
+	 * @param systemTags
+	 * @return a list of posts containing the search result
+	 */
+	public List<Post<R>> getPosts(
+			final String userName, final String requestedUserName, String requestedGroupName, final List<String> requestedRelationNames,
+			final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms,
+			final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags,
+			final List<SortCriterium> sortCriteriums, final int limit, final int offset, final Collection<SystemTag> systemTags);
 
 	/**
 	 * @param options options about the search including the querystring
@@ -83,7 +116,7 @@ public interface ResourceSearch<R extends Resource> {
 
 	/**
 	 * get tag cloud for given search query
-	 * 
+	 *
 	 * @param userName
 	 * @param requestedUserName
 	 * @param requestedGroupName
@@ -91,7 +124,7 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param searchTerms
 	 * @param titleSearchTerms
 	 * @param authorSearchTerms
-	 * @param bibtexkey 
+	 * @param bibtexkey
 	 * @param tagIndex
 	 * @param year
 	 * @param firstYear

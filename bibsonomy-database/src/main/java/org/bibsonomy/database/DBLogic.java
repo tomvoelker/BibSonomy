@@ -45,6 +45,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -62,6 +63,8 @@ import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.common.enums.TagRelation;
@@ -138,7 +141,6 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.GoldStandardRelation;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
@@ -701,12 +703,29 @@ public class DBLogic implements LogicInterface {
 	 * @see
 	 * org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class,
 	 * org.bibsonomy.common.enums.GroupingEntity, java.lang.String,
-	 * java.util.List, java.lang.String, org.bibsonomy.model.enums.Order,
+	 * java.util.List, java.lang.String, org.bibsonomy.common.enums.SortKey,
+	 * org.bibsonomy.common.enums.FilterEntity, int, int, java.lang.String)
+	 */
+	@Override
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final SortKey sortKey, final Date startDate, final Date endDate, final int start, final int end) {
+		SortCriterium sortCriterium = new SortCriterium(sortKey, SortOrder.DESC);
+		LinkedList<SortCriterium> sortCriteriums = new LinkedList<>();
+		sortCriteriums.add(sortCriterium);
+		return this.getPosts(resourceType, grouping, groupingName, tags, hash, search, searchType, filters, sortCriteriums, startDate, endDate, start, end);
+	}
+
+		/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class,
+	 * org.bibsonomy.common.enums.GroupingEntity, java.lang.String,
+	 * java.util.List, java.lang.String, org.bibsonomy.common.SortCriterium,
 	 * org.bibsonomy.common.enums.FilterEntity, int, int, java.lang.String)
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final List<SortCriterium> sortCriteriums, final Date startDate, final Date endDate, final int start, final int end) {
 		// check allowed start-/end-values
 		this.permissionDBManager.checkStartEnd(this.loginUser, grouping, start, end, "posts");
 
@@ -737,10 +756,17 @@ public class DBLogic implements LogicInterface {
 			if (ValidationUtils.safeContains(filters, FilterEntity.HISTORY) && !(resourceType == GoldStandardPublication.class || resourceType == GoldStandardBookmark.class)) {
 				this.permissionDBManager.ensureIsAdminOrSelfOrHasGroupRoleOrHigher(this.loginUser, groupingName, GroupRole.USER);
 			}
+			// TODO maybe clean up, firstSortKey only there to not change the buildParam signature
+			SortKey firstSortKey = null;
+			if (sortCriteriums.size() > 0) {
+				firstSortKey = sortCriteriums.get(0).getSortKey();
+			}
 			if (resourceType == BibTex.class) {
-				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
-				// sets the search type to ealasticSearch
+				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, grouping, groupingName, tags, hash, firstSortKey, start, end, startDate, endDate, search, filters, this.loginUser);
+				// sets the search type
 				param.setSearchType(searchType);
+				// sets the sort order
+				param.setSortCriteriums(sortCriteriums);
 
 				// check permissions for displaying links to documents
 				final boolean allowedToAccessUsersOrGroupDocuments = this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, session);
@@ -762,16 +788,18 @@ public class DBLogic implements LogicInterface {
 			}
 
 			if (resourceType == Bookmark.class) {
-				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, resourceType, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
-				// sets the search type to ealasticSearch
+				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, resourceType, grouping, groupingName, tags, hash, firstSortKey, start, end, startDate, endDate, search, filters, this.loginUser);
+				// sets the search type to search index
 				param.setSearchType(searchType);
+				// sets the sort order to search index
+				param.setSortCriteriums(sortCriteriums);
 				final List<Post<T>> bookmarks = (List) this.bookmarkDBManager.getPosts(param, session);
 				SystemTagsExtractor.handleHiddenSystemTags(bookmarks, this.loginUser.getName());
 				return bookmarks;
 			}
 
 			if (resourceType == GoldStandardPublication.class) {
-				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
+				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, grouping, groupingName, tags, hash, firstSortKey, start, end, startDate, endDate, search, filters, this.loginUser);
 				// sets the search type to ealasticSearch
 				param.setSearchType(searchType);
 
@@ -779,7 +807,7 @@ public class DBLogic implements LogicInterface {
 			}
 
 			if (resourceType == GoldStandardBookmark.class) {
-				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, resourceType, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
+				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, resourceType, grouping, groupingName, tags, hash, firstSortKey, start, end, startDate, endDate, search, filters, this.loginUser);
 				// sets the search type to ealasticSearch
 				param.setSearchType(searchType);
 
@@ -962,23 +990,23 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getTags(java.lang.Class,
 	 * org.bibsonomy.common.enums.GroupingEntity, java.lang.String,
 	 * java.lang.String, java.util.List, java.lang.String,
-	 * org.bibsonomy.model.enums.Order, int, int, java.lang.String,
+	 * org.bibsonomy.common.enums.SortKey, int, int, java.lang.String,
 	 * org.bibsonomy.common.enums.TagSimilarity)
 	 */
 	@Override
-	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
-		return this.getTags(resourceType, grouping, groupingName, tags, hash, search, SearchType.LOCAL, regex, relation, order, startDate, endDate, start, end);
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final String regex, final TagSimilarity relation, final SortKey sortKey, final Date startDate, final Date endDate, final int start, final int end) {
+		return this.getTags(resourceType, grouping, groupingName, tags, hash, search, SearchType.LOCAL, regex, relation, sortKey, startDate, endDate, start, end);
 	}
 
 	@Override
-	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final String regex, final TagSimilarity relation, final SortKey sortKey, final Date startDate, final Date endDate, final int start, final int end) {
 		if (GroupingEntity.ALL.equals(grouping)) {
 			this.permissionDBManager.checkStartEnd(this.loginUser, grouping, start, end, "tags");
 		}
 
 		final DBSession session = this.openSession();
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, resourceType, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, null, this.loginUser);
+			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, resourceType, grouping, groupingName, tags, hash, sortKey, start, end, startDate, endDate, search, null, this.loginUser);
 			param.setTagRelationType(relation);
 			param.setSearchType(searchType);
 
@@ -1941,11 +1969,11 @@ public class DBLogic implements LogicInterface {
 	 * @see
 	 * org.bibsonomy.model.logic.LogicInterface#getAuthors(org.bibsonomy.common
 	 * .enums.GroupingEntity, java.lang.String, java.util.List,
-	 * java.lang.String, org.bibsonomy.model.enums.Order,
+	 * java.lang.String, org.bibsonomy.common.enums.SortKey,
 	 * org.bibsonomy.common.enums.FilterEntity, int, int, java.lang.String)
 	 */
 	@Override
-	public List<Author> getAuthors(final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
+	public List<Author> getAuthors(final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final SortKey sortKey, final FilterEntity filter, final int start, final int end, final String search) {
 		/*
 		 * FIXME: implement a chain or something similar
 		 */
@@ -2326,18 +2354,18 @@ public class DBLogic implements LogicInterface {
 	 * @see
 	 * org.bibsonomy.model.logic.PostLogicInterface#getPostStatistics(java.lang
 	 * .Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String,
-	 * java.util.List, java.lang.String, org.bibsonomy.model.enums.Order,
+	 * java.util.List, java.lang.String, org.bibsonomy.common.enums.SortKey,
 	 * org.bibsonomy.common.enums.FilterEntity, int, int, java.lang.String,
 	 * org.bibsonomy.common.enums.StatisticsConstraint)
 	 */
 	@Override
-	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final Set<Filter> filters, final SortKey sortKey, final Date startDate, final Date endDate, final int start, final int end) {
 		final DBSession session = this.openSession();
 
 		try {
 			this.handleAdminFilters(filters);
 
-			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, resourceType, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
+			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, resourceType, grouping, groupingName, tags, hash, sortKey, start, end, startDate, endDate, search, filters, this.loginUser);
 			if (resourceType == GoldStandardPublication.class || resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
 				param.setContentTypeByClass(resourceType);
 				return this.statisticsDBManager.getPostStatistics(param, session);
@@ -2380,8 +2408,7 @@ public class DBLogic implements LogicInterface {
 	 *         in both queries getConceptForUser and getGlobalConceptByName
 	 *         the case of parameter conceptName is ignored
 	 *
-	 * @see org.bibsonomy.model.logic.LogicInterface#getConceptDetails(java.lang.
-	 *      String, org.bibsonomy.common.enums.GroupingEntity, java.lang.String)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getConceptDetails(java.lang.String, org.bibsonomy.common.enums.GroupingEntity, java.lang.String)
 	 */
 	@Override
 	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {
@@ -2534,13 +2561,13 @@ public class DBLogic implements LogicInterface {
 	 *
 	 * @see org.bibsonomy.model.logic.LogicInterface#getUsers(java.lang.Class,
 	 * org.bibsonomy.common.enums.GroupingEntity, java.lang.String,
-	 * java.util.List, java.lang.String, org.bibsonomy.model.enums.Order,
+	 * java.util.List, java.lang.String, org.bibsonomy.common.enums.SortKey,
 	 * org.bibsonomy.common.enums.UserRelation, java.lang.String, int, int)
 	 */
 	@Override
-	public List<User> getUsers(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final UserRelation relation, final String search, final int start, final int end) {
+	public List<User> getUsers(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final SortKey sortKey, final UserRelation relation, final String search, final int start, final int end) {
 		// assemble param object
-		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, resourceType, grouping, groupingName, tags, hash, order, start, end, null, null, search, null, this.loginUser);
+		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, resourceType, grouping, groupingName, tags, hash, sortKey, start, end, null, null, search, null, this.loginUser);
 		param.setUserRelation(relation);
 
 		// check start/end values
@@ -3820,8 +3847,8 @@ public class DBLogic implements LogicInterface {
 	
 	/**
 	 * 
-	 * @param matchID
-	 * @return the match with given matchID
+	 * @param personID
+	 * @return the match with given personID
 	 */
 	@Override
 	public List<PhDRecommendation> getPhdAdvisorRecForPerson(String personID) {

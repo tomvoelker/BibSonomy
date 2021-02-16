@@ -28,15 +28,18 @@ package org.bibsonomy.rest.client.queries.get;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -52,7 +55,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 
 	private final int start;
 	private final int end;
-	private Order order;
+	private List<SortCriterium> sortCriteriums;
 	private String search;
 	private Class<? extends Resource> resourceType;
 	private List<String> tags;
@@ -86,6 +89,8 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 
 		this.start = start;
 		this.end = end;
+
+		this.sortCriteriums = new ArrayList<>();
 	}
 
 	/**
@@ -141,11 +146,11 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	}
 
 	/**
-	 * @param order
-	 *            the order to set
+	 * @param sortCriteriums
+	 * 				the sort criteriums to set
 	 */
-	public void setOrder(final Order order) {
-		this.order = order;
+	public void setSortCriteriums(final List<SortCriterium> sortCriteriums) {
+		this.sortCriteriums = sortCriteriums;
 	}
 
 	/**
@@ -154,6 +159,10 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	 */
 	public void setSearch(final String search) {
 		this.search = search;
+	}
+
+	public void addSorting(SortKey sortKey, SortOrder sortOrder) {
+		this.sortCriteriums.add(new SortCriterium(sortKey, sortOrder));
 	}
 
 	@Override
@@ -173,7 +182,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 			return;
 		}
 		
-		final String url = this.getUrlRenderer().createHrefForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.resourceHash, this.search, this.order, this.start, this.end);
+		final String url = this.getUrlRenderer().createHrefForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.resourceHash, this.search, this.sortCriteriums, this.start, this.end);
 		if (log.isDebugEnabled()) {
 			log.debug("GetPostsQuery doExecute() called - URL: " + url);
 		}

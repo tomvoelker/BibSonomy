@@ -28,16 +28,22 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.search.InvalidSearchRequestException;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.SearchViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -69,15 +75,14 @@ public class SearchPageController extends SingleResourceListController implement
 		try {
 			log.debug(this.getClass().getSimpleName());
 			final String format = command.getFormat();
-			
-			// FIXME: this is a hack because we have the property sortPage and order
-			final String pageOrder = command.getSortPage();
-			if ("date".equals(pageOrder)) {
-				command.setOrder(Order.ADDED);
-			} else if ("relevance".equals(pageOrder)) {
-				command.setOrder(Order.RANK);
+
+			try {
+				command.setSortKey(SortKey.getByName(command.getSortPage()));
+			} catch (IllegalArgumentException e){
+				command.setSortKey(SortKey.RANK);
 			}
-			
+			this.preProcessForSearchIndexSort(command);
+
 			this.startTiming(format);
 			String search = command.getRequestedSearch();
 			if (!present(search)) {
@@ -125,9 +130,12 @@ public class SearchPageController extends SingleResourceListController implement
 			
 			// no search given, but a grouping, reset the order to added
 			if (!present(search)){
-				command.setOrder(Order.ADDED);
+				command.setSortKey(SortKey.DATE);
+				List<SortCriterium> sortCriteriumsNoSearch = new ArrayList<>();
+				sortCriteriumsNoSearch.add(new SortCriterium(command.getSortKey(), SortOrder.DESC));
+				command.setSortCriteriums(sortCriteriumsNoSearch);
 			}
-			
+
 			// if grouping entity set to GroupingEntity.ALL, database only allows 1000 tags maximum
 			if (groupingEntity.equals(GroupingEntity.ALL)) {
 				maximumTags = 1000;
@@ -139,10 +147,24 @@ public class SearchPageController extends SingleResourceListController implement
 			// retrieve and set the requested resource lists
 			for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 	
-				this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, searchType, null, command.getOrder(), command.getStartDate(), command.getEndDate(), command
-						.getListCommand(resourceType).getEntriesPerPage());
-	
-				this.postProcessAndSortList(command, resourceType);
+				this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, searchType,
+								null, command.getSortCriteriums(), command.getStartDate(), command.getEndDate(),
+								command.getListCommand(resourceType).getEntriesPerPage());
+
+				// remove duplicates depending on command settings
+				if (resourceType == BibTex.class) {
+					switch (command.getDuplicates()) {
+						case MERGED:
+							BibTexUtils.mergeDuplicates(command.getBibtex().getList());
+							break;
+						case NO:
+							BibTexUtils.removeDuplicates(command.getBibtex().getList());
+							break;
+						case YES:
+						default:
+							break;
+					}
+				}
 			}
 			// html format - retrieve tags and return HTML view
 			if ("html".equals(format)) {
@@ -164,7 +186,7 @@ public class SearchPageController extends SingleResourceListController implement
 	public SearchViewCommand instantiateCommand() {
 		final SearchViewCommand command = new SearchViewCommand();
 		// set the order to rank by default
-		command.setOrder(Order.RANK);
+		command.setSortKey(SortKey.RANK);
 		command.setSortPage("relevance");
 		return command;
 	}

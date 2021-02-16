@@ -26,20 +26,9 @@
  */
 package org.bibsonomy.database.managers;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupRole;
@@ -48,6 +37,7 @@ import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.IdenticalHashErrorMessage;
@@ -76,15 +66,26 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.validation.ModelValidator;
-import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.database.services.ResourceSearch;
 import org.bibsonomy.util.ReflectionUtils;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Used to create, read, update and delete posts from the database.
@@ -322,21 +323,21 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 *
 	 * @param groupId
 	 * @param tagIndex
-	 * @param order
+	 * @param sortKey
 	 * @param limit
 	 * @param offset
 	 * @param session
 	 * @return a list of posts
 	 *
 	 */
-	public List<Post<R>> getPostsByTagNames(final int groupId, final List<TagIndex> tagIndex, final Order order, final int limit, final int offset, final DBSession session) {
+	public List<Post<R>> getPostsByTagNames(final int groupId, final List<TagIndex> tagIndex, final SortKey sortKey, final int limit, final int offset, final DBSession session) {
 		final P param = this.createParam(limit, offset);
 		param.setGroupId(groupId);
 		param.setTagIndex(tagIndex);
-		param.setOrder(order);
+		param.setSortKey(sortKey);
 
-		if (present(order)) {
-			if (Order.FOLKRANK.equals(param.getOrder())){
+		if (present(sortKey)) {
+			if (SortKey.FOLKRANK.equals(param.getSortKey())){
 				param.setGroupId(GroupID.PUBLIC);
 				return this.postList("get" + this.resourceClassName + "ByTagNamesAndFolkrank", param, session);
 			}
@@ -357,24 +358,24 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param groupId
 	 * @param tagIndex
 	 * @param searchType
-	 * @param order
+	 * @param sortKey
 	 * @param limit
 	 * @param offset
 	 * @param session
 	 * @return a list of posts
 	 *
 	 */
-	public List<Post<R>> getPostsByTagNames(final int groupId, final List<TagIndex> tagIndex, final SearchType searchType, final Order order, final int limit, final int offset, final DBSession session) {
+	public List<Post<R>> getPostsByTagNames(final int groupId, final List<TagIndex> tagIndex, final SearchType searchType, final SortKey sortKey, final int limit, final int offset, final DBSession session) {
 		if(SearchType.FEDERATED == searchType){
 			final List<String> tagIndexNames = new ArrayList<String>();
 			for(final TagIndex tag:tagIndex){
 				tagIndexNames.add(tag.getTagName());
 			}
-			return this.resourceSearch.getPosts(null, null, null, null, null, searchType, null, null, null, null, tagIndexNames, null, null, null, null, order, limit, offset);
+			return this.resourceSearch.getPosts(null, null, null, null, null, searchType, null, null, null, null, tagIndexNames, null, null, null, null, sortKey, limit, offset, null);
 
 		}
 
-		return this.getPostsByTagNames(groupId, tagIndex, order, limit, offset, session);
+		return this.getPostsByTagNames(groupId, tagIndex, sortKey, limit, offset, session);
 	}
 
 	/**
@@ -672,15 +673,15 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param firstYear
 	 * @param lastYear
 	 * @param negatedTags
-	 * @param order
+	 * @param sortCriteriums
 	 * @param limit
 	 * @param offset
 	 * @return a list of posts
 	 */
-	public List<Post<R>> getPostsByResourceSearch(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationName, final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final Order order, final int limit, final int offset) {
+	public List<Post<R>> getPostsByResourceSearch(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationName, final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final List<SortCriterium> sortCriteriums, final int limit, final int offset) {
 		if (present(this.resourceSearch)) {
 			if (present(searchType)){
-				return this.resourceSearch.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationName, allowedGroups, searchType, searchTerms, titleSearchTerms, authorSearchTerms, null, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
+				return this.resourceSearch.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationName, allowedGroups, searchType, searchTerms, titleSearchTerms, authorSearchTerms, null, tagIndex, year, firstYear, lastYear, negatedTags, sortCriteriums, limit, offset, null);
 			}
 			log.error("no search type or resource type is set");
 		}
@@ -762,20 +763,31 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * group. This is an aggregated view of all posts of the group members
 	 *
 	 * @param groupId
+	 * @param requestedGroupName
 	 * @param visibleGroupIDs
 	 * @param searchType
 	 * @param loginUserName
 	 * @param simHash
 	 * @param postAccess
 	 * @param filters
+	 * @param sortCriteriums
 	 * @param limit
 	 * @param offset
 	 * @param systemTags
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForGroup(final int groupId, final List<Integer> visibleGroupIDs, final SearchType searchType,final String loginUserName, final HashID simHash, final PostAccess postAccess, final Set<Filter> filters, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		return this.getPostsForGroup(groupId, visibleGroupIDs, loginUserName, simHash, postAccess, filters, limit, offset, systemTags, session);
+	public List<Post<R>> getPostsForGroup(final int groupId, final String requestedGroupName, final List<Integer> visibleGroupIDs, final SearchType searchType,final String loginUserName, final HashID simHash, final PostAccess postAccess, final Set<Filter> filters, final List<SortCriterium> sortCriteriums, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+		switch(searchType) {
+			case FEDERATED:
+				return this.resourceSearch.getPosts(loginUserName, null, requestedGroupName, null, null, searchType, null, null, null, null, null, null, null, null, null, SortKey.NONE, limit, offset, systemTags);
+			case SEARCHINDEX:
+				return this.resourceSearch.getPosts(loginUserName, null, requestedGroupName, null, null, searchType, null, null, null, null, null, null, null, null, null, sortCriteriums, limit, offset, systemTags);
+			case LOCAL:
+			default:
+				return this.getPostsForGroup(groupId, visibleGroupIDs, loginUserName, simHash, postAccess, filters, limit, offset, systemTags, session);
+		}
+
 	}
 
 
@@ -952,18 +964,23 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param visibleGroupIDs
 	 * @param postAccess TODO
 	 * @param filters
+	 * @param sortCriteriums
 	 * @param limit
 	 * @param offset
 	 * @param systemTags
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForUser(final String loginUserName, final String requestedUserName, final SearchType searchType, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final PostAccess postAccess, final Set<Filter> filters, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		if(searchType==SearchType.FEDERATED){
-			return this.resourceSearch.getPosts(loginUserName, requestedUserName, null, null, null, searchType, null, null, null, null, null, null, null, null, null, null, limit, offset);
+	public List<Post<R>> getPostsForUser(final String loginUserName, final String requestedUserName, final SearchType searchType, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final PostAccess postAccess, final Set<Filter> filters, List<SortCriterium> sortCriteriums, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+		switch(searchType) {
+			case FEDERATED:
+				return this.resourceSearch.getPosts(loginUserName, requestedUserName, null, null, null, searchType, null, null, null, null, null, null, null, null, null, SortKey.NONE, limit, offset, systemTags);
+			case SEARCHINDEX:
+				return this.resourceSearch.getPosts(loginUserName, requestedUserName, null, null, null, searchType, null, null, null, null, null, null, null, null, null, sortCriteriums, limit, offset, systemTags);
+			case LOCAL:
+			default:
+				return this.getPostsForUser(loginUserName, requestedUserName, simHash, groupId, visibleGroupIDs, postAccess, filters, limit, offset, systemTags, session);
 		}
-
-		return this.getPostsForUser(loginUserName, requestedUserName, simHash, groupId, visibleGroupIDs, postAccess, filters, limit, offset, systemTags, session);
 	}
 
 	/**
@@ -1085,8 +1102,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param limit
 	 * @param offset
 	 * @param session	a database session
-	 * @param loginUserName
-	 * @param systemTags
 	 * @return list of  posts
 	 */
 	public List<Post<R>> getPostsWithHistory(final String resourceHash, final String requestedUserName, final int limit, final int offset, final DBSession session) {
@@ -2092,7 +2107,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/**
 	 * returns a list of all metadata for the given post and MetaDataPluginKey.
 	 *
-	 * @param HashID
+	 * @param hashType
 	 * @param resourceHash
 	 * @param userName
 	 * @param metaDataPluginKey

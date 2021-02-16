@@ -50,6 +50,7 @@ import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.DuplicatePostInSnippetErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
@@ -477,7 +478,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 						tags.add("sys:title:" + titleToken);
 					}
 				}
-				final List<Post<BibTex>> publicationPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, null, SearchType.LOCAL, null, null, null, null, 0, 5);
+				final List<Post<BibTex>> publicationPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, null, SearchType.LOCAL, null, SortKey.NONE, null, null, 0, 5);
 				final Post<BibTex> bestMatch = getBestMatch(publicationPosts);
 				if (present(bestMatch)) {
 					foundPublication = true;

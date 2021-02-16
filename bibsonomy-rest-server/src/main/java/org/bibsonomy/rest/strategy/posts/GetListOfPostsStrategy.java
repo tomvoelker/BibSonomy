@@ -26,17 +26,12 @@
  */
 package org.bibsonomy.rest.strategy.posts;
 
-import java.util.List;
-
-import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.model.util.BookmarkUtils;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.UrlBuilder;
+
+import java.util.List;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -52,32 +47,14 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected UrlBuilder getLinkPrefix() {
-		return this.getUrlRenderer().createUrlBuilderForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, this.order);
+		return this.getUrlRenderer().createUrlBuilderForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, this.sortCriteriums);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		// TODO: why not sort in DBLogic? (Maybe refactoring LogicInterface with
-		// a smarter parameter object to keep parameter lists and sorting clear)
-		if ((resourceType != null) && BibTex.class.isAssignableFrom(resourceType)) {
-			final List<? extends Post<? extends BibTex>> bibtexList = getList((Class<? extends BibTex>) resourceType);
-			BibTexUtils.sortBibTexList(bibtexList, sortKeys, sortOrders);
-			return bibtexList;
-		} else if ((resourceType != null) && Bookmark.class.isAssignableFrom(resourceType)) {
-			final List<? extends Post<? extends Bookmark>> bookmarkList = getList((Class<? extends Bookmark>) resourceType);
-			BookmarkUtils.sortBookmarkList(bookmarkList, sortKeys, sortOrders);
-			return bookmarkList;
-		}
-
-		// return other resource types without ordering
-		return getList(resourceType);
-	}
-
-	protected <T extends Resource> List<Post<T>> getList(Class<T> resourceType) {
-		// TODO: support other searchtypes
 		return this.getLogic().getPosts(resourceType, this.grouping, this.groupingValue,
-				this.tags, this.hash, this.search, SearchType.LOCAL, null, this.order, null, null,
+				this.tags, this.hash, this.search, this.searchType, null, this.sortCriteriums, null, null,
 				getView().getStartValue(), getView().getEndValue());
 	}
 }
