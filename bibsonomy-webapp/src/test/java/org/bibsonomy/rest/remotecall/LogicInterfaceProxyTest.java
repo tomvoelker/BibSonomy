@@ -72,6 +72,7 @@ import org.bibsonomy.services.filesystem.extension.ListExtensionChecker;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.util.HashUtils;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.file.ServerFileLogic;
 import org.bibsonomy.webapp.util.file.document.ServerDocumentFileLogic;
 import org.easymock.EasyMock;
@@ -655,7 +656,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	
 	@Test
 	public void getPostsTestWithSearchAndSortKey() {
-		this.getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), "search", QueryScope.LOCAL, null, SortCriteria.singletonCriterium(SortKey.FOLKRANK), null, null, 0, 5);
+		this.getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), "search", QueryScope.LOCAL, null, SortUtils.singletonSortCriteria(SortKey.FOLKRANK), null, null, 0, 5);
 	}
 	
 	@Override

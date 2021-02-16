@@ -37,7 +37,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
-import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
@@ -50,6 +49,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
 import org.bibsonomy.search.InvalidSearchRequestException;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.util.id.ISBNUtils;
 import org.bibsonomy.webapp.command.actions.PublicationAutocompleteCommand;
@@ -120,7 +120,7 @@ public class PublicationAutocompleteController implements MinimalisticController
 				}
 			}
 			try {
-				final List<Post<BibTex>> postsBySearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, search, QueryScope.LOCAL, null, SortCriteria.singletonCriterium(SortKey.RANK), null, null, 0, 10);
+				final List<Post<BibTex>> postsBySearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, search, QueryScope.LOCAL, null, SortUtils.singletonSortCriteria(SortKey.RANK), null, null, 0, 10);
 				allPosts.addAll(postsBySearch);
 			} catch (final InvalidSearchRequestException e) {
 				// ignore
