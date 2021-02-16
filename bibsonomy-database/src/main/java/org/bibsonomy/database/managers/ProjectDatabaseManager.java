@@ -15,6 +15,7 @@ import org.bibsonomy.database.params.CRISLinkParam;
 import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.database.params.ProjectParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
+import org.bibsonomy.database.services.ProjectSearch;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
@@ -24,7 +25,6 @@ import org.bibsonomy.model.enums.ProjectStatus;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.validation.ProjectValidator;
-import org.bibsonomy.services.searcher.ProjectSearch;
 import org.bibsonomy.util.StringUtils;
 
 import java.util.Collections;

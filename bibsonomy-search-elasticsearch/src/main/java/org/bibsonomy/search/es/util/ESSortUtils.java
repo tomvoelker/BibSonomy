@@ -2,18 +2,24 @@ package org.bibsonomy.search.es.util;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.elasticsearch.search.sort.SortOrder;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author kch
+ */
 public class ESSortUtils {
 
-	public static List<Pair<String, SortOrder>> buildSortParameters(List<SortCriterium> sortCriteriums, String type) {
-		if (type.equals("publication")) {
+	public static List<Pair<String, SortOrder>> buildSortParameters(final List<SortCriterium> sortCriteriums, final Class<?> type) {
+		// TODO: maybe move to the ESPubSearch class @kch
+		if (type.equals(BibTex.class)) {
 			return buildPublicationSortParameters(sortCriteriums);
 		}
+
 		return buildSortParameters(sortCriteriums);
 	}
 

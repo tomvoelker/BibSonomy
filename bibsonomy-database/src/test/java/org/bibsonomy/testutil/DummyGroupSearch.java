@@ -3,10 +3,10 @@ package org.bibsonomy.testutil;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bibsonomy.database.services.GroupSearch;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.query.GroupQuery;
-import org.bibsonomy.services.searcher.GroupSearch;
 
 /**
  * dummy implementation of the group search

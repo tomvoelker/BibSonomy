@@ -280,7 +280,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			 */
 			final RequestWrapperContext context = command.getContext();
 			final User loggedinUser = context.getLoginUser();
-			final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, QueryScope.LOCAL, null, SortKey.NONE, null, null, 0, this.maxQuerySize);
+			final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, QueryScope.LOCAL, null, null, null, null, 0, this.maxQuerySize);
 			for (final Post<R> post : allPosts) {
 				final User user = post.getUser();
 				if (user.equals(loggedinUser)) {

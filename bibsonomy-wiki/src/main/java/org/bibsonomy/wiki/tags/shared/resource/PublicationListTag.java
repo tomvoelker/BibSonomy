@@ -161,7 +161,7 @@ public class PublicationListTag extends SharedTag {
 		 * FIXME: We want these working in a different way. We want the
 		 * publication's year, not the BibSonomy year of the posting.
 		 */
-		List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, this.getGroupingEntity(), requestedName, Arrays.asList(tags.split(" ")), null, null, QueryScope.LOCAL, null, SortKey.NONE, null, null, 0, this.maxQuerySize);
+		List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, this.getGroupingEntity(), requestedName, Arrays.asList(tags.split(" ")), null, null, QueryScope.LOCAL, null, null, null, null, 0, this.maxQuerySize);
 		BibTexUtils.removeDuplicates(posts);
 
 		/*

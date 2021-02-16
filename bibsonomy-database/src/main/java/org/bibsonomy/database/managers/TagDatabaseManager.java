@@ -43,7 +43,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.errors.MissingTagsErrorMessage;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
@@ -56,6 +55,7 @@ import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
+import org.bibsonomy.database.services.query.PostSearchQuery;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
@@ -71,9 +71,6 @@ import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.TagUtils;
-import org.bibsonomy.services.searcher.ResourceSearch;
-import org.bibsonomy.services.searcher.query.PostSearchQuery;
-import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.database.services.ResourceSearch;
 
 /**

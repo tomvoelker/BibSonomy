@@ -31,7 +31,7 @@ import java.util.List;
 
 import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Post;
@@ -54,7 +54,7 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 	protected final String tagString;
 	protected final List<String> tags;
 	protected final String search;
-	protected final SearchType searchType;
+	protected final QueryScope searchType;
 	protected final List<SortKey> sortKeys;
 	protected final List<SortOrder> sortOrders;
 	protected final List<SortCriterium> sortCriteriums;
@@ -86,10 +86,10 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 		this.groupingValue = groupingValue;
 
 		// Set search type
-		SearchType searchType = context.getEnumAttribute(RESTConfig.SEARCH_TYPE_PARAM, SearchType.class, SearchType.SEARCHINDEX);
+		QueryScope searchType = context.getEnumAttribute(RESTConfig.SEARCH_TYPE_PARAM, QueryScope.class, QueryScope.SEARCHINDEX);
 		// Allowing federated search?
-		if (searchType == SearchType.FEDERATED) {
-			this.searchType = SearchType.SEARCHINDEX;
+		if (searchType == QueryScope.FEDERATED) {
+			this.searchType = QueryScope.SEARCHINDEX;
 		} else {
 			this.searchType = searchType;
 		}

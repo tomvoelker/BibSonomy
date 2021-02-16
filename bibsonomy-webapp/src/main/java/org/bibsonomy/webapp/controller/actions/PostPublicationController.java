@@ -476,7 +476,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 						tags.add("sys:title:" + titleToken);
 					}
 				}
-				final List<Post<BibTex>> publicationPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, null, QueryScope.LOCAL, null, SortKey.NONE, null, null, 0, 5);
+				final List<Post<BibTex>> publicationPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, null, QueryScope.LOCAL, null, null, null, null, 0, 5);
 				final Post<BibTex> bestMatch = getBestMatch(publicationPosts);
 				if (present(bestMatch)) {
 					foundPublication = true;

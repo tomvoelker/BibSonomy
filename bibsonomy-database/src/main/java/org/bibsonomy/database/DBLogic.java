@@ -51,7 +51,6 @@ import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.enums.SpamStatus;
@@ -733,23 +732,6 @@ public class DBLogic implements LogicInterface {
 	 * @see
 	 * org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class,
 	 * org.bibsonomy.common.enums.GroupingEntity, java.lang.String,
-	 * java.util.List, java.lang.String, org.bibsonomy.common.enums.SortKey,
-	 * org.bibsonomy.common.enums.FilterEntity, int, int, java.lang.String)
-	 */
-	@Override
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final SortKey sortKey, final Date startDate, final Date endDate, final int start, final int end) {
-		SortCriterium sortCriterium = new SortCriterium(sortKey, SortOrder.DESC);
-		LinkedList<SortCriterium> sortCriteriums = new LinkedList<>();
-		sortCriteriums.add(sortCriterium);
-		return this.getPosts(resourceType, grouping, groupingName, tags, hash, search, searchType, filters, sortCriteriums, startDate, endDate, start, end);
-	}
-
-		/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class,
-	 * org.bibsonomy.common.enums.GroupingEntity, java.lang.String,
 	 * java.util.List, java.lang.String, org.bibsonomy.common.SortCriterium,
 	 * org.bibsonomy.common.enums.FilterEntity, int, int, java.lang.String)
 	 */
@@ -770,7 +752,6 @@ public class DBLogic implements LogicInterface {
 						setHash(hash).
 						setSearch(search).
 						setFilters(filters).
-						setOrder(order).
 						setStartDate(startDate).
 						setEndDate(endDate).
 						setStart(start).
@@ -784,13 +765,13 @@ public class DBLogic implements LogicInterface {
 		final Class<R> resourceType = query.getResourceClass();
 		final QueryScope queryScope = query.getScope();
 		final String hash = query.getHash();
-		final Order order = query.getOrder();
 		final Date startDate = query.getStartDate();
 		final Date endDate = query.getEndDate();
 		final String search = query.getSearch();
 		final GroupingEntity grouping = query.getGrouping();
 		final String groupingName = query.getGroupingName();
 		final Set<Filter> filters = query.getFilters();
+		final List<SortCriterium> sortCriteriums = query.getSortCriteriums();
 		final List<String> tags = query.getTags();
 		final int start = query.getStart();
 		final int end = query.getEnd();
@@ -829,7 +810,7 @@ public class DBLogic implements LogicInterface {
 				firstSortKey = sortCriteriums.get(0).getSortKey();
 			}
 			if (resourceType == BibTex.class) {
-				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, grouping, groupingName, tags, hash, firstSortKey, start, end, startDate, endDate, search, filters, this.loginUser);
+				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, queryScope, grouping, groupingName, tags, hash, firstSortKey, start, end, startDate, endDate, search, filters, this.loginUser);
 				// sets the sort order
 				param.setSortCriteriums(sortCriteriums);
 
@@ -855,13 +836,11 @@ public class DBLogic implements LogicInterface {
 			}
 
 			if (resourceType == Bookmark.class) {
-				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, resourceType, grouping, groupingName, tags, hash, firstSortKey, start, end, startDate, endDate, search, filters, this.loginUser);
+				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, resourceType, queryScope, grouping, groupingName, tags, hash, firstSortKey, start, end, startDate, endDate, search, filters, this.loginUser);
 				param.setQuery((PostQuery<Bookmark>) query);
-				// sets the search type to search index
-				param.setSearchType(searchType);
 				// sets the sort order to search index
 				param.setSortCriteriums(sortCriteriums);
-				final List<Post<T>> bookmarks = (List) this.bookmarkDBManager.getPosts(param, session);
+				final List<Post<R>> bookmarks = (List) this.bookmarkDBManager.getPosts(param, session);
 				SystemTagsExtractor.handleHiddenSystemTags(bookmarks, this.loginUser.getName());
 				return bookmarks;
 			}

@@ -196,26 +196,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		return this.dbTags.get(tagName);
 	}
 
-	/** note: popular and added are not considered 
-	 * @param startDate TODO
-	 * @param endDate TODO*/
-	@Override
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final Set<Filter> filters, final SortKey sortKey, final Date startDate, final Date endDate, final int start, final int end) {
-		final PostQuery<T> query = new PostQuery<>(resourceType);
-		query.setGrouping(grouping);
-		query.setGroupingName(groupingName);
-		query.setTags(tags);
-		query.setHash(hash);
-		query.setSearch(search);
-		query.setScope(queryScope);
-		query.setFilters(filters);
-		query.setOrder(order);
-		query.setStartDate(startDate);
-		query.setEndDate(endDate);
-		query.setStart(start);
-		query.setEnd(end);
-		return this.getPosts(query);
-	}
+
 
 	@Override
 	public <T extends Resource> List<Post<T>> getPosts(PostQuery<T> query) {

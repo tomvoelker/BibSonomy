@@ -191,15 +191,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.QueryScope, java.util.Set, org.bibsonomy.common.enums.SortKey, java.util.Date, java.util.Date, int, int)
-	 */
-	@Override
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, Set<Filter> filters, SortKey sortKey, Date startDate, Date endDate, int start, int end) {
-		this.doDefaultAction();
-		return null;
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.SearchType, java.util.Set, org.bibsonomy.common.SortCriterium, java.util.Date, java.util.Date, int, int)
 	 */
 	@Override

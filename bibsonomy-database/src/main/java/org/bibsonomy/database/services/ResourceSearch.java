@@ -29,20 +29,17 @@ package org.bibsonomy.database.services;
 import java.util.List;
 
 import org.bibsonomy.common.SortCriterium;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.systemstags.SystemTag;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.statistics.Statistics;
-import org.bibsonomy.services.searcher.query.PostSearchQuery;
+import org.bibsonomy.database.services.query.PostSearchQuery;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Interface for resource search operations
@@ -54,69 +51,10 @@ import java.util.List;
 public interface ResourceSearch<R extends Resource> {
 
 	/**
-	 * search for posts using a full text search index
-	 *
-	 * @param userName
-	 * @param requestedUserName
-	 * @param requestedGroupName
-	 * @param requestedRelationNames @Deprecated TODO: (spheres) remove
-	 * @param allowedGroups
-	 * @param searchType
-	 * @param searchTerms
-	 * @param titleSearchTerms
-	 * @param authorSearchTerms
-	 * @param bibtexKey
-	 * @param tagIndex
-	 * @param year
-	 * @param firstYear
-	 * @param lastYear
-	 * @param negatedTags
-	 * @param sortKey			the order to use (supported {@link SortKey}
-	 * @param limit
-	 * @param offset
-	 * @param systemTags
-	 * @return a list of posts containing the search result
-	 */
-	public List<Post<R>> getPosts(
-			final String userName, final String requestedUserName, String requestedGroupName, final List<String> requestedRelationNames,
-			final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms,
-			final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags,
-			final SortKey sortKey, final int limit, final int offset, final Collection<SystemTag> systemTags);
-
-	/**
-	 * search for posts using a full text search index
-	 *
 	 * @param loggedinUser the logged in user
 	 * @param postQuery the query with all query parameters
 	 * @return all posts matching the search query
-	 *
-	 * @param userName
-	 * @param requestedUserName
-	 * @param requestedGroupName
-	 * @param requestedRelationNames @Deprecated TODO: (spheres) remove
-	 * @param allowedGroups
-	 * @param searchType
-	 * @param searchTerms
-	 * @param titleSearchTerms
-	 * @param authorSearchTerms
-	 * @param bibtexKey
-	 * @param tagIndex
-	 * @param year
-	 * @param firstYear
-	 * @param lastYear
-	 * @param negatedTags
-	 * @param sortCriteriums			the list of sort criteriums to use (supported {@link SortCriterium}
-	 * @param limit
-	 * @param offset
-	 * @param systemTags
-	 * @return a list of posts containing the search result
 	 */
-	public List<Post<R>> getPosts(
-			final String userName, final String requestedUserName, String requestedGroupName, final List<String> requestedRelationNames,
-			final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms,
-			final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags,
-			final List<SortCriterium> sortCriteriums, final int limit, final int offset, final Collection<SystemTag> systemTags);
-
 	List<Post<R>> getPosts(final User loggedinUser, final PostSearchQuery<?> postQuery);
 
 	/**

@@ -2,11 +2,13 @@ package org.bibsonomy.search.es.search.group;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Prefix;
+import org.bibsonomy.database.services.GroupSearch;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.GroupOrder;
@@ -17,7 +19,6 @@ import org.bibsonomy.search.es.search.AbstractElasticsearchSearch;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
 import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
-import org.bibsonomy.services.searcher.GroupSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortOrder;
@@ -45,15 +46,15 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 	}
 
 	@Override
-	protected Pair<String, SortOrder> getSortOrder(final GroupQuery query) {
+	protected List<Pair<String, SortOrder>> getSortOrder(final GroupQuery query) {
 		final SortOrder sortOrder = ElasticsearchIndexSearchUtils.convertSortOrder(query.getSortOrder());
 		final GroupOrder order = query.getGroupOrder();
 		if (present(order)) {
 			switch (order) {
 				case GROUP_NAME:
-					return new Pair<>(GroupFields.NAME, sortOrder);
+					return Collections.singletonList(new Pair<>(GroupFields.NAME, sortOrder));
 				case GROUP_REALNAME:
-					return new Pair<>(GroupFields.REALNAME + "." + GroupFields.REALNAME_SORT, sortOrder);
+					return Collections.singletonList(new Pair<>(GroupFields.REALNAME + "." + GroupFields.REALNAME_SORT, sortOrder));
 				case RANK:
 					return null; // default order is rank
 			}

@@ -27,6 +27,7 @@
 package org.bibsonomy.model.logic.util;
 
 import org.bibsonomy.common.JobResult;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -113,14 +114,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	public ReadOnlyLogic(LogicInterface logicinterface) {
 		super();
 		this.logicinterface = logicinterface;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.QueryScope, java.util.Set, org.bibsonomy.common.enums.SortKey, java.util.Date, java.util.Date, int, int)
-	 */
-	@Override
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, Set<Filter> filters, SortKey sortKey, Date startDate, Date endDate, int start, int end) {
-		return this.logicinterface.getPosts(resourceType, grouping, groupingName, tags, hash, search, searchType, filters, sortKey, startDate, endDate, start, end);
 	}
 
 	/* (non-Javadoc)

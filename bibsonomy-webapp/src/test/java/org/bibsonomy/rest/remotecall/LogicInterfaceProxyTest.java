@@ -33,6 +33,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.JobResult;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
@@ -625,7 +626,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void getPostsTestBookmarkByTag() {
-		this.getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, QueryScope.LOCAL,null,  SortKey.NONE, null, null, 7, 1264);
+		this.getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, QueryScope.LOCAL,null, null, null, null, 7, 1264);
 	}
 	
 	/**
@@ -633,7 +634,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByGroupAndTag() {
-		this.getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null, QueryScope.LOCAL, null, SortKey.NONE, null, null, 0, 1);
+		this.getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null, QueryScope.LOCAL, null,null, null, null, 0, 1);
 	}
 	
 	/**
@@ -641,7 +642,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByTagWithUmlaut() {
-		this.getPosts(BibTex.class, GroupingEntity.ALL, null, Arrays.asList("blüb"), null, null, QueryScope.LOCAL, null, SortKey.NONE, null, null, 0, 1);
+		this.getPosts(BibTex.class, GroupingEntity.ALL, null, Arrays.asList("blüb"), null, null, QueryScope.LOCAL, null, null, null, null, 0, 1);
 	}
 	
 	/**
@@ -649,17 +650,17 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByUserAndHash() {
-		this.getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null, QueryScope.LOCAL, null, SortKey.NONE, null, null, 0, 5);
+		this.getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null, QueryScope.LOCAL, null, null, null, null, 0, 5);
 	}
 	
 	@Test
 	public void getPostsTestWithSearchAndSortKey() {
-		this.getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), "search", QueryScope.LOCAL, null, SortKey.FOLKRANK, null, null, 0, 5);
+		this.getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), "search", QueryScope.LOCAL, null, SortCriterium.singletonCriterium(SortKey.FOLKRANK), null, null, 0, 5);
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final Set<Filter> filters, final SortKey sortKey, final Date startDate, final Date endDate, final int start, final int end) {
+	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final Set<Filter> filters, final List<SortCriterium> sortCriteriums, final Date startDate, final Date endDate, final int start, final int end) {
 		final List<Post<T>> expectedPosts = new ArrayList<>();
 		expectedPosts.add(ModelUtils.generatePost(resourceType));
 		expectedPosts.get(0).setDescription("erstes");
@@ -676,7 +677,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 		query.setSearch(search);
 		query.setScope(queryScope);
 		query.setFilters(filters);
-		query.setOrder(order);
+		query.setSortCriteriums(sortCriteriums);
 		query.setStart(start);
 		query.setEnd(end);
 

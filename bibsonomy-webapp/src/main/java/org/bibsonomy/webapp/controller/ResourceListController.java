@@ -139,10 +139,8 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param hash 
 	 * @param max 
 	 * @param search 
-	 * @param searchType
 	 * @param queryScope
-	 * @param start start parameter
-	 * @param end end parameter
+	 * @param queryScope
 	 */
 	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, SortKey sortKey, final List<String> tags, final String hash, final int max, final String search, final QueryScope queryScope) {
 		final TagCloudCommand tagCloudCommand = cmd.getTagcloud();
@@ -306,7 +304,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param itemsPerPage number of items to be displayed on each page
 	 */
 	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final SortKey sortKey, final Date startDate, final Date endDate, final int itemsPerPage) {
-		this.setList(cmd, resourceType, groupingEntity, groupingName, tags, hash, search, SearchType.LOCAL, filter, sortKey, startDate, endDate, itemsPerPage);
+		this.setList(cmd, resourceType, groupingEntity, groupingName, tags, hash, search, QueryScope.LOCAL, filter, sortKey, startDate, endDate, itemsPerPage);
 	}
 
 	/**
@@ -327,9 +325,8 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param endDate
 	 * @param itemsPerPage number of items to be displayed on each page
 	 */
-	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final FilterEntity filter, final SortKey sortKey, final Date startDate, final Date endDate, final int itemsPerPage) {
-		List<SortCriterium> sortCriteriums = new ArrayList<>();
-		sortCriteriums.add(new SortCriterium(sortKey, SortOrder.DESC));
+	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope searchType, final FilterEntity filter, final SortKey sortKey, final Date startDate, final Date endDate, final int itemsPerPage) {
+		final List<SortCriterium> sortCriteriums = Collections.singletonList(new SortCriterium(sortKey, SortOrder.DESC));
 		this.setList(cmd, resourceType, groupingEntity, groupingName, tags, hash, search, searchType, filter, sortCriteriums, startDate, endDate, itemsPerPage);
 	}
 

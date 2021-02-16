@@ -3,6 +3,12 @@ package org.bibsonomy.common;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * @author kch
+ */
 public class SortCriterium {
 	/** sort key */
 	private SortKey sortKey;
@@ -22,6 +28,10 @@ public class SortCriterium {
 	public SortCriterium(String key, String order) {
 		this.sortKey = SortKey.getByName(key);
 		this.sortOrder = SortOrder.getByName(order);
+	}
+
+	public static List<SortCriterium> singletonCriterium(SortKey key) {
+		return Collections.singletonList(new SortCriterium(key, SortOrder.DESC));
 	}
 
 	public SortKey getSortKey() {

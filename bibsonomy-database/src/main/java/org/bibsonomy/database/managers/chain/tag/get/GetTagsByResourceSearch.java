@@ -28,7 +28,6 @@ package org.bibsonomy.database.managers.chain.tag.get;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,12 +36,12 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.ChainUtils;
 import org.bibsonomy.database.managers.chain.tag.TagChainElement;
 import org.bibsonomy.database.params.TagParam;
+import org.bibsonomy.database.services.query.PostSearchQuery;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.systemstags.search.NotTagSystemTag;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
-import org.bibsonomy.services.searcher.query.PostSearchQuery;
 
 /**
  * Returns a list of tags for a given author.

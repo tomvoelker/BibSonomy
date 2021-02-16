@@ -42,14 +42,16 @@ import java.util.stream.Stream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.services.ResourceSearch;
+import org.bibsonomy.database.services.query.PostSearchQuery;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.util.GroupUtils;
@@ -59,8 +61,7 @@ import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.index.converter.post.ResourceConverter;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
-import org.bibsonomy.services.searcher.ResourceSearch;
-import org.bibsonomy.services.searcher.query.PostSearchQuery;
+import org.bibsonomy.search.es.util.ESSortUtils;
 import org.bibsonomy.util.Sets;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -105,8 +106,9 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 				return posts;
 			}
 
-			final Pair<String, SortOrder> sortOrder = getSortOrder(postQuery);
-			final SearchHits hits = this.manager.search(queryBuilder, sortOrder, offset, limit, null, null);
+			final List<SortCriterium> sortCriteriums = postQuery.getSortCriteriums();
+			final List<Pair<String, SortOrder>> sortParameters = ESSortUtils.buildSortParameters(sortCriteriums, postQuery.getResourceClass());
+			final SearchHits hits = this.manager.search(queryBuilder, sortParameters, offset, limit, null, null);
 
 			if (hits != null) {
 				posts.setTotalCount((int) hits.getTotalHits());
@@ -148,10 +150,6 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 			statistics.setCount((int) documentCount);
 			return statistics;
 		}, statistics);
-	}
-
-	protected Pair<String, SortOrder> getSortOrder(PostSearchQuery<?> postQuery) {
-		return postQuery.getOrder() == Order.RANK ? null : new Pair<>(Fields.DATE, SortOrder.DESC);
 	}
 
 	@Override

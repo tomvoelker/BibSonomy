@@ -58,6 +58,7 @@ import org.bibsonomy.database.params.WikiParam;
 import org.bibsonomy.database.params.group.GetParentGroupIdsRecursively;
 import org.bibsonomy.database.params.group.InsertParentRelations;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
+import org.bibsonomy.database.services.GroupSearch;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
@@ -66,11 +67,9 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.TagSet;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
-import org.bibsonomy.services.searcher.GroupSearch;
 import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.wiki.TemplateManager;
 
@@ -134,7 +133,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	 * @return a list of all organization groups
 	 */
 	public List<Group> getAllOrganizationGroups(final int start, final int end, final DBSession session) {
-		final GroupParam param = LogicInterfaceHelper.buildParam(GroupParam.class, Order.ALPH, start, end);
+		final GroupParam param = LogicInterfaceHelper.buildParam(GroupParam.class, SortKey.ALPH, start, end);
 		return this.queryForList("getAllOrganizationGroups", param, Group.class, session);
 	}
 

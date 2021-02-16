@@ -31,12 +31,12 @@ import java.util.List;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.goldstandard.GoldStandardChainElement;
 import org.bibsonomy.database.managers.chain.util.QueryAdapter;
+import org.bibsonomy.database.services.query.PostSearchQuery;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.query.PostQuery;
-import org.bibsonomy.services.searcher.query.PostSearchQuery;
 
 /**
  * @author dzo

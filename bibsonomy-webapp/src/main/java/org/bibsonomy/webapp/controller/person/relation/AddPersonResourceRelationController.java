@@ -19,8 +19,6 @@ import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
-import org.bibsonomy.webapp.view.Views;
-import org.json.simple.JSONObject;
 import org.springframework.validation.Errors;
 
 import java.util.List;

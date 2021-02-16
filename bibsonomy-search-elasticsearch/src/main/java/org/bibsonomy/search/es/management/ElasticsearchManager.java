@@ -31,6 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.client.DeleteData;
@@ -630,7 +631,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 	 * @param fieldsToRetrieve the fields to retrieve
 	 * @return
 	 */
-	public SearchHits search(final QueryBuilder query, final Pair<String, SortOrder> order, int offset, int limit, Float minScore, final Set<String> fieldsToRetrieve) {
+	public SearchHits search(final QueryBuilder query, final List<Pair<String, SortOrder>> order, int offset, int limit, Float minScore, final Set<String> fieldsToRetrieve) {
 		return this.client.search(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query, null, order, offset, limit, minScore, fieldsToRetrieve);
 	}
 

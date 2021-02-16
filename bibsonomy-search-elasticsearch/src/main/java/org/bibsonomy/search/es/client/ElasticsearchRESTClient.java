@@ -299,19 +299,6 @@ public class ElasticsearchRESTClient implements ESClient {
 		}, false, "error while updating documents " + updates.stream().map(Pair::getFirst).collect(Collectors.joining(", ")));
 	}
 
-	@Override
-	public SearchHits search(String indexName, String type, QueryBuilder queryBuilder, HighlightBuilder highlightBuilder, List<SortCriterium> sortCriteriums, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve) {
-		return this.secureCall(() -> {
-			final BulkRequest bulkRequest = new BulkRequest();
-
-			final Stream<UpdateRequest> updateRequestStream = updates.stream().map(entry -> buildUpdateRequest(indexName, entry.getFirst(), entry.getSecond()));
-			updateRequestStream.forEach(bulkRequest::add);
-
-			final BulkResponse bulkResponse = this.client.bulk(bulkRequest, this.buildRequestOptions());
-			return !bulkResponse.hasFailures();
-		}, false, "error while updating documents " + updates.stream().map(Pair::getFirst).collect(Collectors.joining(", ")));
-	}
-
 	private UpdateRequest buildUpdateRequest(final String index, String id, UpdateData updateData) {
 		final UpdateRequest updateRequest = new UpdateRequest(index, updateData.getType(), id);
 		updateRequest.routing(updateData.getRouting());
@@ -328,7 +315,7 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public SearchHits search(String indexName, String type, QueryBuilder queryBuilder, HighlightBuilder highlightBuilder, Pair<String, SortOrder> order, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve) {
+	public SearchHits search(String indexName, String type, QueryBuilder queryBuilder, HighlightBuilder highlightBuilder, final List<Pair<String, SortOrder>> orders, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve) {
 		return this.secureCall(() -> {
 			final SearchRequest searchRequest = createSearchRequest(indexName, type);
 
@@ -347,12 +334,12 @@ public class ElasticsearchRESTClient implements ESClient {
 				searchSourceBuilder.fetchSource(fieldsToRetrieve.iterator().next(), null);
 			}
 
-			if (present(sortCriteriums)) {
-				List<Pair<String, SortOrder>> sortParameters = ESSortUtils.buildSortParameters(sortCriteriums, type);
-				for (Pair<String, SortOrder> param : sortParameters) {
+			if (present(orders)) {
+				for (final Pair<String, SortOrder> param : orders) {
 					searchSourceBuilder.sort(param.getFirst(), param.getSecond());
 				}
 			}
+
 			searchRequest.source(searchSourceBuilder);
 			final SearchResponse search = this.client.search(searchRequest, this.buildRequestOptions());
 			return search.getHits();

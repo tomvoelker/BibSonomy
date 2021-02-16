@@ -34,6 +34,7 @@ import java.util.Collections;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
+import org.bibsonomy.database.services.query.PostSearchQuery;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
@@ -41,7 +42,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
 import org.bibsonomy.search.es.management.AbstractElasticsearchPostIndexTest;
 import org.bibsonomy.search.es.search.post.ElasticsearchPublicationSearch;
-import org.bibsonomy.services.searcher.query.PostSearchQuery;
 import org.junit.Test;
 
 /**
@@ -61,8 +61,6 @@ public class ElasticsearchPostManagerPublicationITCase extends AbstractElasticse
 	@Test
 	public void testUpdateIndexWithSpammer() {
 		final String userToFlag = "testuser3";
-		final ResultList<Post<BibTex>> postsBefore = publicationSearch.getPosts(userToFlag, userToFlag, null, null, Collections.<String>emptyList(), null, "test", null, null, null, null, null, null, null, null, SortKey.DATE, 10, 0, null);
-		assertEquals(1, postsBefore.size());
 
 		final User user = new User(userToFlag);
 		final PostSearchQuery<?> query = buildQuery("test");

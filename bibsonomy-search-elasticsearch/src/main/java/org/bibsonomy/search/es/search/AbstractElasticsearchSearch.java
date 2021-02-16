@@ -51,7 +51,7 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 				return results;
 			}
 			
-			final Pair<String, SortOrder> sortOrder = this.getSortOrder(query);
+			final List<Pair<String, SortOrder>> sortOrder = this.getSortOrder(query);
 
 			final int offset = BasicQueryUtils.calcOffset(query);
 			final int limit = BasicQueryUtils.calcLimit(query);
@@ -86,7 +86,7 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 		}, statistics);
 	}
 
-	protected Pair<String, SortOrder> getSortOrder(Q query) {
+	protected List<Pair<String, SortOrder>> getSortOrder(Q query) {
 		return null;
 	}
 

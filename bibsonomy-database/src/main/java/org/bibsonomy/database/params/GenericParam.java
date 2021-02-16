@@ -56,7 +56,6 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 
 /**
  * This is the most generic param. All fields which are not specific to

@@ -2,14 +2,16 @@ package org.bibsonomy.webapp.controller.cris;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.cris.Project;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonOrder;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.PersonQuery;
@@ -24,6 +26,7 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -86,7 +89,7 @@ public class OrganizationPageController implements MinimalisticController<Organi
 		final ListCommand<Post<GoldStandardPublication>> publicationsListCommand = command.getPublications();
 		final int start = publicationsListCommand.getStart();
 		final PostQuery<GoldStandardPublication> postOrganizationQuery = new PostQueryBuilder()
-						.setOrder(Order.YEAR)
+						.setSortCriteriums(Collections.singletonList(new SortCriterium(SortKey.YEAR, SortOrder.DESC)))
 						.setGrouping(GroupingEntity.ORGANIZATION)
 						.setGroupingName(group.getName())
 						.setStart(start)

@@ -9,6 +9,7 @@ import org.bibsonomy.database.managers.AdminDatabaseManager;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager;
 import org.bibsonomy.database.managers.PersonDatabaseManager;
+import org.bibsonomy.database.services.query.PostSearchQuery;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
@@ -24,7 +25,6 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
 import org.bibsonomy.search.es.search.post.ElasticsearchPostSearch;
 import org.bibsonomy.search.es.testutil.AbstractCommunityPostSearchTest;
-import org.bibsonomy.services.searcher.query.PostSearchQuery;
 import org.bibsonomy.util.Sets;
 import org.junit.Test;
 

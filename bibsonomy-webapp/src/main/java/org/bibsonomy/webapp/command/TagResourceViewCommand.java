@@ -27,7 +27,7 @@
 package org.bibsonomy.webapp.command;
 
 import org.bibsonomy.common.SortCriterium;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.Tag;
 
@@ -35,10 +35,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import org.bibsonomy.common.enums.QueryScope;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.Order;
 
 /**
  * Bean for Tag Sites

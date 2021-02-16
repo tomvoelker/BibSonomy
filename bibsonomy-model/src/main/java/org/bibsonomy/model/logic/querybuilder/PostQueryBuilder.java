@@ -1,11 +1,11 @@
 package org.bibsonomy.model.logic.querybuilder;
 
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.query.PostQuery;
 
 import java.util.Date;
@@ -24,7 +24,6 @@ public class PostQueryBuilder {
 	private List<String> tags;
 	private String hash;
 	private Set<Filter> filters;
-	private Order order;
 	private Date startDate;
 	private Date endDate;
 	private boolean onlyIncludeAuthorsWithoutPersonId;
@@ -33,6 +32,8 @@ public class PostQueryBuilder {
 	private String search;
 	private int start = 0;
 	private int end = 10;
+
+	private List<SortCriterium> sortCriteriums;
 
 	public <R extends Resource> PostQuery<R> createPostQuery(Class<R> resourceClass) {
 		final PostQuery<R> postQuery = new PostQuery<>(resourceClass);
@@ -43,7 +44,6 @@ public class PostQueryBuilder {
 		postQuery.setTags(tags);
 		postQuery.setHash(hash);
 		postQuery.setFilters(filters);
-		postQuery.setOrder(order);
 		postQuery.setStartDate(startDate);
 		postQuery.setEndDate(endDate);
 		postQuery.setPersonNames(personNames);
@@ -51,6 +51,7 @@ public class PostQueryBuilder {
 		postQuery.setStart(start);
 		postQuery.setEnd(end);
 		postQuery.setCollege(this.college);
+		postQuery.setSortCriteriums(this.sortCriteriums);
 		return postQuery;
 	}
 
@@ -99,11 +100,6 @@ public class PostQueryBuilder {
 		return this;
 	}
 
-	public PostQueryBuilder setOrder(Order order) {
-		this.order = order;
-		return this;
-	}
-
 	public PostQueryBuilder setStartDate(Date startDate) {
 		this.startDate = startDate;
 		return this;
@@ -126,6 +122,14 @@ public class PostQueryBuilder {
 
 	public PostQueryBuilder setPersonNames(List<PersonName> personNames) {
 		this.personNames = personNames;
+		return this;
+	}
+
+	/**
+	 * @param sortCriteriums the sortCriteriums to set
+	 */
+	public PostQueryBuilder setSortCriteriums(List<SortCriterium> sortCriteriums) {
+		this.sortCriteriums = sortCriteriums;
 		return this;
 	}
 }

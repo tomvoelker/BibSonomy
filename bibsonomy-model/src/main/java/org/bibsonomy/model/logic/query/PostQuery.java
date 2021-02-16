@@ -1,11 +1,11 @@
 package org.bibsonomy.model.logic.query;
 
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
 
 import java.util.Date;
 import java.util.List;
@@ -32,8 +32,6 @@ public class PostQuery<R extends Resource> extends BasicQuery {
 
 	private Set<Filter> filters;
 
-	private Order order;
-
 	private Date startDate;
 
 	private Date endDate;
@@ -45,6 +43,8 @@ public class PostQuery<R extends Resource> extends BasicQuery {
 
 	/** get all publications assigned to persons of the specified college */
 	private String college;
+
+	private List<SortCriterium> sortCriteriums;
 
 	/**
 	 * default constructor
@@ -139,20 +139,6 @@ public class PostQuery<R extends Resource> extends BasicQuery {
 	}
 
 	/**
-	 * @return the order
-	 */
-	public Order getOrder() {
-		return order;
-	}
-
-	/**
-	 * @param order the order to set
-	 */
-	public void setOrder(Order order) {
-		this.order = order;
-	}
-
-	/**
 	 * @return the startDate
 	 */
 	public Date getStartDate() {
@@ -234,5 +220,19 @@ public class PostQuery<R extends Resource> extends BasicQuery {
 	 */
 	public void setCollege(String college) {
 		this.college = college;
+	}
+
+	/**
+	 * @return the sortCriteriums
+	 */
+	public List<SortCriterium> getSortCriteriums() {
+		return sortCriteriums;
+	}
+
+	/**
+	 * @param sortCriteriums the sortCriteriums to set
+	 */
+	public void setSortCriteriums(List<SortCriterium> sortCriteriums) {
+		this.sortCriteriums = sortCriteriums;
 	}
 }

@@ -33,6 +33,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.AdminActions;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.Filter;
@@ -233,9 +234,10 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 			// set filter to display spam posts
 			Set<Filter> filters = null;
 			if (command.getShowSpamPosts().equals("true")) {
-				filters = Sets.<Filter>asSet(FilterEntity.ADMIN_SPAM_POSTS);
+				filters = Sets.asSet(FilterEntity.ADMIN_SPAM_POSTS);
 			}
-			final List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, QueryScope.LOCAL, filters, SortKey.DATE, null, null, 0, 5);
+
+			final List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, QueryScope.LOCAL, filters, SortCriterium.singletonCriterium(SortKey.DATE), null, null, 0, 5);
 			command.setBookmarks(bookmarks);
 
 			final int totalBookmarks = this.logic.getPostStatistics(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, filters, null, null, null, 0, 100).getCount();

@@ -51,6 +51,7 @@ import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.database.params.GoldStandardReferenceParam;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
+import org.bibsonomy.database.services.query.PostSearchQuery;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -60,7 +61,6 @@ import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.database.services.ResourceSearch;
-import org.bibsonomy.services.searcher.query.PostSearchQuery;
 import org.bibsonomy.util.ReflectionUtils;
 
 /**

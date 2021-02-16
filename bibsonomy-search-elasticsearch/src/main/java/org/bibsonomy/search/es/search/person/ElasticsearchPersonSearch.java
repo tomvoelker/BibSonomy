@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.lucene.search.join.ScoreMode;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Prefix;
+import org.bibsonomy.database.services.PersonSearch;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResultList;
@@ -19,7 +20,6 @@ import org.bibsonomy.search.es.index.converter.person.PersonFields;
 import org.bibsonomy.search.es.index.converter.person.PersonResourceRelationConverter;
 import org.bibsonomy.search.es.management.ElasticsearchOneToManyManager;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
-import org.bibsonomy.services.searcher.PersonSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.InnerHitBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
@@ -33,6 +33,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -79,8 +80,9 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 
 			final int offset = BasicQueryUtils.calcOffset(query);
 			final int limit = BasicQueryUtils.calcLimit(query);
-			Pair<String, SortOrder> sortOrder = this.getSortOrder(query);
-			final SearchHits searchHits = this.manager.search(mainQuery, sortOrder, offset, limit, null, null);
+
+			final List<Pair<String, SortOrder>> sortOrders = this.getSortOrders(query);
+			final SearchHits searchHits = this.manager.search(mainQuery, sortOrders, offset, limit, null, null);
 			final ResultList<Person> persons = new ResultList<>();
 			for (final SearchHit searchHit : searchHits.getHits()) {
 				final Map<String, Object> sourceAsMap = searchHit.getSourceAsMap();
@@ -163,14 +165,14 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 		return mainQuery;
 	}
 
-	private Pair<String, SortOrder> getSortOrder(PersonQuery query) {
+	private List<Pair<String, SortOrder>> getSortOrders(PersonQuery query) {
 		final PersonOrder order = query.getOrder();
 		if (present(order)) {
 			switch (order) {
 				case RANK:
 					return null; // rank is the default order
 				case MAIN_NAME_LAST_NAME:
-					return new Pair<>(PersonFields.MAIN_NAME, SortOrder.ASC);
+					return Collections.singletonList(new Pair<>(PersonFields.MAIN_NAME, SortOrder.ASC));
 			}
 		}
 		return null;

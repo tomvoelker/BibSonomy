@@ -2,11 +2,7 @@ package org.bibsonomy.search.es.search.project;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.apache.lucene.search.join.ScoreMode;
@@ -14,6 +10,7 @@ import org.bibsonomy.auth.util.SimpleAuthUtils;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.database.services.ProjectSearch;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
@@ -30,7 +27,6 @@ import org.bibsonomy.search.es.search.AbstractElasticsearchSearch;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
-import org.bibsonomy.services.searcher.ProjectSearch;
 import org.bibsonomy.util.object.FieldDescriptor;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -95,9 +91,10 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 	}
 
 	@Override
-	protected Pair<String, SortOrder> getSortOrder(final ProjectQuery query) {
+	protected List<Pair<String, SortOrder>> getSortOrder(final ProjectQuery query) {
 		final SortOrder sortOrderQuery = ElasticsearchIndexSearchUtils.convertSortOrder(query.getSortOrder());
-		return query.getOrder() == ProjectOrder.START_DATE ? new Pair<>(ProjectFields.START_DATE, sortOrderQuery) : new Pair<>(ProjectFields.TITLE + "." + ProjectFields.TITLE_SORT, sortOrderQuery);
+		Pair<String, SortOrder> pair = query.getOrder() == ProjectOrder.START_DATE ? new Pair<>(ProjectFields.START_DATE, sortOrderQuery) : new Pair<>(ProjectFields.TITLE + "." + ProjectFields.TITLE_SORT, sortOrderQuery);
+		return Collections.singletonList(pair);
 	}
 
 	@Override

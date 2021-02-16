@@ -27,7 +27,6 @@
 package org.bibsonomy.webapp.controller;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.UnsupportedOrderingException;

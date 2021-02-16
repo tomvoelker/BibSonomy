@@ -15,6 +15,7 @@ import org.bibsonomy.webapp.view.Views;
 import java.util.LinkedList;
 import java.util.List;
 
+// FIXME: remove dzo
 public class ReportPageController implements MinimalisticController<ReportCommand> {
 	private LogicInterface logic;
 
@@ -36,8 +37,7 @@ public class ReportPageController implements MinimalisticController<ReportComman
 		List<Post<BibTex>> posts = new LinkedList<>();
 		while (running) {
 			int size = posts.size();
-			posts.addAll(this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, null,
-							QueryScope.LOCAL, null, null, null, null, currentIndex, currentIndex + 20));
+			// posts.addAll(this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, null,  QueryScope.LOCAL, null, null, null, null, currentIndex, currentIndex + 20));
 			currentIndex = currentIndex + 20;
 			running = (posts.size() - size) == 20 && currentIndex < limit;
 		}

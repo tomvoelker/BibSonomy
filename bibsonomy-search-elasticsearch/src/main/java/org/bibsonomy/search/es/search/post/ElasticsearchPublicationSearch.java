@@ -30,12 +30,14 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 import java.util.Set;
+import java.util.Collection;
 
 import org.apache.lucene.search.join.ScoreMode;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.services.query.PostSearchQuery;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.systemstags.search.AuthorSystemTag;
@@ -44,9 +46,7 @@ import org.bibsonomy.database.systemstags.search.EntryTypeSystemTag;
 import org.bibsonomy.database.systemstags.search.TitleSystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.search.es.ESConstants.Fields;
-import org.bibsonomy.services.searcher.query.PostSearchQuery;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.ExistsQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
@@ -58,8 +58,6 @@ import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
-import java.util.Collection;
-import java.util.List;
 
 /**
  * handles publication relevant search
@@ -70,20 +68,8 @@ import java.util.List;
 public class ElasticsearchPublicationSearch<P extends BibTex> extends ElasticsearchPostSearch<P> {
 
 	@Override
-	protected Pair<String, SortOrder> getSortOrder(PostSearchQuery<?> postQuery) {
-		if (Order.YEAR.equals(postQuery.getOrder())) {
-			return new Pair<>(Fields.Publication.YEAR, SortOrder.DESC);
-		}
-
-		return super.getSortOrder(postQuery);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.search.post.EsResourceSearch#buildResourceSpecifiyQuery(org.elasticsearch.index.query.BoolQueryBuilder, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-	 */
-	@Override
-	protected void buildResourceSpecifiyQuery(BoolQueryBuilder mainQueryBuilder, String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, String year, String firstYear, String lastYear, PostSearchQuery<?> postQuery, Collection<SystemTag> systemTags) {
-		super.buildResourceSpecifiyQuery(mainQueryBuilder, userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, year, firstYear, lastYear, systemTags);
+	protected void buildResourceSpecificQuery(BoolQueryBuilder mainQueryBuilder, String loggedinUser, PostSearchQuery<?> postQuery) {
+		super.buildResourceSpecificQuery(mainQueryBuilder, loggedinUser, postQuery);
 
 		final String authorSearchTerms = postQuery.getAuthorSearchTerms();
 		if (present(authorSearchTerms)) {
@@ -98,12 +84,16 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 			mainQueryBuilder.must(bibtexKeyQuery);
 		}
 
-		// add system tags to the query builder
-		List<SystemTag> authorTags = SystemTagsExtractor.extractSystemTags(systemTags, AuthorSystemTag.NAME);
-		List<SystemTag> titleTags = SystemTagsExtractor.extractSystemTags(systemTags, TitleSystemTag.NAME);
-		List<SystemTag> bibtexTags = SystemTagsExtractor.extractSystemTags(systemTags, BibTexKeySystemTag.NAME);
-		List<SystemTag> entrytypeTags = SystemTagsExtractor.extractSystemTags(systemTags, EntryTypeSystemTag.NAME);
+		final List<SystemTag> systemTags = postQuery.getSystemTags();
 
+		// add system tags to the query builder
+		// TODO: move to filter method
+		final List<SystemTag> authorTags = SystemTagsExtractor.extractSystemTags(systemTags, AuthorSystemTag.NAME);
+		final List<SystemTag> titleTags = SystemTagsExtractor.extractSystemTags(systemTags, TitleSystemTag.NAME);
+		final List<SystemTag> bibtexTags = SystemTagsExtractor.extractSystemTags(systemTags, BibTexKeySystemTag.NAME);
+		final List<SystemTag> entrytypeTags = SystemTagsExtractor.extractSystemTags(systemTags, EntryTypeSystemTag.NAME);
+
+		// TODO: use present @kch
 		if (authorTags.size() > 0) {
 			final QueryBuilder authorSearchQuery = QueryBuilders.matchQuery(Fields.Publication.AUTHORS + "." + Fields.Publication.PERSON_NAME, authorSearchTerms).operator(Operator.AND);
 			final NestedQueryBuilder nestedQuery = QueryBuilders.nestedQuery(Fields.Publication.AUTHORS, authorSearchQuery, ScoreMode.Total);
@@ -163,8 +153,8 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 	}
 
 	@Override
-	protected void buildResourceSpecifiyFilters(BoolQueryBuilder mainFilterBuilder, String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, String year, String firstYear, String lastYear, Collection<SystemTag> systemTags) {
-		final BoolQueryBuilder filterBuilder = super.buildResourceSpecifiyFilters(mainFilterBuilder, userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, year, firstYear, lastYear, systemTags);
+	protected BoolQueryBuilder buildResourceSpecificFilters(BoolQueryBuilder mainFilterBuilder, String loggedinUser, Set<String> allowedGroups, Set<String> usersThatShareDocs, PostSearchQuery<?> postQuery) {
+		final BoolQueryBuilder filterBuilder = super.buildResourceSpecificFilters(mainFilterBuilder, loggedinUser, allowedGroups, usersThatShareDocs, postQuery);
 
 		final String year = postQuery.getYear();
 		final String lastYear = postQuery.getLastYear();

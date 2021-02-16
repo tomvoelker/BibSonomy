@@ -2,11 +2,14 @@ package org.bibsonomy.webapp.controller.cris;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.LinkedList;
 import java.util.List;
 
+import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.webapp.command.ListCommand;
@@ -41,7 +44,13 @@ public class PublicationsPageController implements MinimalisticController<Public
 		query.setEnd(start + goldStandardPublications.getEntriesPerPage());
 		final String search = command.getSearch();
 		query.setSearch(search);
-		query.setOrder(present(search) ? Order.RANK : Order.YEAR);
+		final List<SortCriterium> sortCriteriums = new LinkedList<>();
+		if (present(search)) {
+			sortCriteriums.add(new SortCriterium(SortKey.RANK, SortOrder.ASC));
+		} else {
+			sortCriteriums.add(new SortCriterium(SortKey.YEAR, SortOrder.DESC));
+		}
+		query.setSortCriteriums(sortCriteriums);
 		final List<Post<GoldStandardPublication>> posts = this.logic.getPosts(query);
 		goldStandardPublications.setList(posts);
 

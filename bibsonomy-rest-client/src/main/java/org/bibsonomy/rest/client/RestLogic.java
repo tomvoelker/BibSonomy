@@ -40,17 +40,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.JobResult;
-import org.bibsonomy.common.enums.ConceptUpdateOperation;
-import org.bibsonomy.common.enums.Filter;
-import org.bibsonomy.common.enums.GroupUpdateOperation;
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.PersonUpdateOperation;
-import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.common.enums.QueryScope;
-import org.bibsonomy.common.enums.TagRelation;
-import org.bibsonomy.common.enums.TagSimilarity;
-import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.enums.*;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.Document;
@@ -288,24 +278,9 @@ public class RestLogic extends AbstractLogicInterface {
 	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) {
 		return execute(new GetPostDetailsQuery(userName, resourceHash));
 	}
-	
-	@Override
-	@Deprecated
-	@SuppressWarnings("unchecked")
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final SortKey sortKey, final Date startDate, final Date endDate, final int start, final int end) {
-		// TODO: clientside chain of responsibility
-		List<SortCriterium> sortCriteriums = new ArrayList<>();
-		sortCriteriums.add(new SortCriterium(sortKey, SortOrder.DESC));
-		return this.getPosts(resourceType, grouping, groupingName, tags, hash, search, searchType, filters, sortCriteriums, startDate, endDate, start, end);
-	}
 
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, Set<Filter> filters, List<SortCriterium> sortCriteriums, Date startDate, Date endDate, int start, int end) {
-		final GetPostsQuery query = new GetPostsQuery(start, end);
-		query.setGrouping(grouping, groupingName);
-		query.setResourceHash(hash);
-		query.setResourceType(resourceType);
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, Set<Filter> filters, List<SortCriterium> sortCriteriums, Date startDate, Date endDate, int start, int end) {
 		final PostQuery<T> query = new PostQuery<>(resourceType);
 		query.setGrouping(grouping);
 		query.setGroupingName(groupingName);
@@ -333,7 +308,7 @@ public class RestLogic extends AbstractLogicInterface {
 		restQuery.setResourceType(query.getResourceClass());
 		restQuery.setTags(query.getTags());
 		restQuery.setSearch(query.getSearch());
-		restQuery.setOrder(query.getOrder());
+		restQuery.setSortCriteriums(query.getSortCriteriums());
 		restQuery.setUserName(this.getAuthenticatedUser().getName());
 		return (List) execute(restQuery);
 	}

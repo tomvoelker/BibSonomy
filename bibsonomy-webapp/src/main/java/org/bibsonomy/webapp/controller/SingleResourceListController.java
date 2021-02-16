@@ -34,7 +34,7 @@ import java.util.List;
 
 import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
@@ -81,9 +81,9 @@ public abstract class SingleResourceListController extends ResourceListControlle
 
 		// set the scope/searchtype
 		if (command.isEsIndex()) {
-			command.setScope(SearchType.SEARCHINDEX);
+			command.setScope(QueryScope.SEARCHINDEX);
 		} else {
-			command.setScope(SearchType.LOCAL);
+			command.setScope(QueryScope.LOCAL);
 		}
 	}
 

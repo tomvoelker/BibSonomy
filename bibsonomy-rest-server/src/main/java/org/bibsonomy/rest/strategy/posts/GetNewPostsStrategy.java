@@ -26,13 +26,16 @@
  */
 package org.bibsonomy.rest.strategy.posts;
 
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.UrlBuilder;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -54,6 +57,7 @@ public class GetNewPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, search, QueryScope.SEARCHINDEX, null, SortKey.DATE, null, null, this.getView().getStartValue(), this.getView().getEndValue());
+		final List<SortCriterium> sortCriteriums = Collections.singletonList(new SortCriterium(SortKey.DATE, SortOrder.DESC));
+		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, search, QueryScope.SEARCHINDEX, null, sortCriteriums, null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 }

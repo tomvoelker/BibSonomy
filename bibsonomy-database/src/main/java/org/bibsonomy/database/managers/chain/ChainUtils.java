@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
@@ -83,9 +83,11 @@ public class ChainUtils {
 		if (GROUPING_ENTITIES_SEARCH.contains(grouping)) {
 			return true;
 		}
-if ((param.getSearchType() == SearchType.SEARCHINDEX) && (param.getNumSimpleTags() > 0)) {
+
+		if ((param.getQueryScope() == QueryScope.SEARCHINDEX) && (param.getNumSimpleTags() > 0)) {
 			return true;
 		}
+
 		return false;
 	}
 

@@ -1,8 +1,8 @@
 package org.bibsonomy.webapp.command.reporting;
 
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.ListCommand;
 
 /**
@@ -10,13 +10,13 @@ import org.bibsonomy.webapp.command.ListCommand;
  */
 public class PublicationReportingCommand extends ReportingCommand {
 	private final ListCommand<Post<GoldStandardPublication>> publications = new ListCommand<>(this);
-	private Order order;
+	private SortKey order;
 
-	public Order getOrder() {
+	public SortKey getOrder() {
 		return order;
 	}
 
-	public void setOrder(Order order) {
+	public void setOrder(SortKey order) {
 		this.order = order;
 	}
 

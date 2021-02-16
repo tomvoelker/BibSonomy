@@ -33,8 +33,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
-import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;

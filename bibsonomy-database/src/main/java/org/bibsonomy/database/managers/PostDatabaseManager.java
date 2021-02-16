@@ -38,7 +38,6 @@ import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
@@ -57,6 +56,7 @@ import org.bibsonomy.database.params.LoggingParam;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.params.metadata.PostParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
+import org.bibsonomy.database.services.query.PostSearchQuery;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
@@ -69,6 +69,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.GroupUtils;
@@ -76,7 +77,6 @@ import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.validation.ModelValidator;
 import org.bibsonomy.database.services.ResourceSearch;
-import org.bibsonomy.services.searcher.query.PostSearchQuery;
 import org.bibsonomy.util.ReflectionUtils;
 
 import java.util.ArrayList;
@@ -730,16 +730,20 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @return list of posts
 	 */
 	public List<Post<R>> getPostsForGroup(final int groupId, final String requestedGroupName, final List<Integer> visibleGroupIDs, final QueryScope queryScope, final String loginUserName, final HashID simHash, final PostAccess postAccess, final Set<Filter> filters, final List<SortCriterium> sortCriteriums, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		switch(searchType) {
-			case FEDERATED:
-				return this.resourceSearch.getPosts(loginUserName, null, requestedGroupName, null, null, searchType, null, null, null, null, null, null, null, null, null, SortKey.NONE, limit, offset, systemTags);
+		switch(queryScope) {
+			// FIXME: switch to query call @kch
+			/*case FEDERATED:
+
+				PostSearchQuery<?> query = new PostSearchQuery(this.getResourceClassName());
+				return this.resourceSearch.getPosts(new User(loginUserName), query);
+
+				return this.resourceSearch.getPosts(loginUserName, null, requestedGroupName, null, null, queryScope, null, null, null, null, null, null, null, null, null, SortKey.NONE, limit, offset, systemTags);
 			case SEARCHINDEX:
-				return this.resourceSearch.getPosts(loginUserName, null, requestedGroupName, null, null, searchType, null, null, null, null, null, null, null, null, null, sortCriteriums, limit, offset, systemTags);
+				return this.resourceSearch.getPosts(loginUserName, null, requestedGroupName, null, null, queryScope, null, null, null, null, null, null, null, null, null, sortCriteriums, limit, offset, systemTags); */
 			case LOCAL:
 			default:
 				return this.getPostsForGroup(groupId, visibleGroupIDs, loginUserName, simHash, postAccess, filters, limit, offset, systemTags, session);
 		}
-
 	}
 
 
