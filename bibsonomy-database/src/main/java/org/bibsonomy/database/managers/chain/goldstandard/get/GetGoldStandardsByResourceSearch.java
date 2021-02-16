@@ -28,14 +28,12 @@ package org.bibsonomy.database.managers.chain.goldstandard.get;
 
 import java.util.List;
 
-import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.goldstandard.GoldStandardChainElement;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
  * @author dzo

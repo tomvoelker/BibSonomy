@@ -94,9 +94,6 @@ public class DisambiguationPageController extends SingleResourceListController i
 			throw new ObjectNotFoundException(requestedHash);
 		}
 
-		if (!present(posts)) {
-			throw new ObjectNotFoundException(command.getRequestedHash());
-		}
 		command.setPost(post);
 		if ("newPerson".equals(command.getRequestedAction())) {
 			return newAction(command);
