@@ -157,6 +157,7 @@ public class LogicInterfaceHelper {
 			case VIEWABLE:
 			case GROUP:
 			case PENDING:
+			case ORGANIZATION:
 				param.setRequestedGroupName(groupingName);
 				break;
 			case INBOX:

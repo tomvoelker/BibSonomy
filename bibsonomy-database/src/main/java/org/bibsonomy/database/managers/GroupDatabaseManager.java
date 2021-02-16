@@ -124,6 +124,18 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 		return this.queryForList("getAllGroups", param, Group.class, session);
 	}
 
+	/**
+	 * Returns a list of all organization groups
+	 *
+	 * @param start
+	 * @param end
+	 * @param session
+	 * @return a list of all organization groups
+	 */
+	public List<Group> getAllOrganizationGroups(final int start, final int end, final DBSession session) {
+		final GroupParam param = LogicInterfaceHelper.buildParam(GroupParam.class, Order.ALPH, start, end);
+		return this.queryForList("getAllOrganizationGroups", param, Group.class, session);
+	}
 
 	/**
 	 * Returns a list of all groups as specified by the query object, without membership information.

@@ -24,44 +24,38 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.database.managers.chain.user.get;
 
-import static org.bibsonomy.util.ValidationUtils.present;
+package org.bibsonomy.database.managers.chain.group.get;
 
-import java.util.LinkedList;
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.managers.GroupDatabaseManager;
+import org.bibsonomy.database.managers.chain.group.GroupChainElement;
+import org.bibsonomy.database.managers.chain.util.QueryAdapter;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.logic.query.GroupQuery;
+
 import java.util.List;
 
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.managers.chain.user.UserChainElement;
-import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.GroupMembership;
-import org.bibsonomy.model.User;
 
 /**
- * Get group members
- * 
- * @author Dominik Benz
+ * Handles the retrieval of all organization groups.
+ *
+ * @author kchoong
  */
-public class GetUsersByGroup extends UserChainElement {
+public class GetOrganizationGroups extends GroupChainElement {
 
-	@Override
-	protected List<User> handle(final UserParam param, final DBSession session) {
-		final List<User> userList = new LinkedList<>();
-		Group group = this.groupDb.getGroup(param.getUserName(), param.getRequestedGroupName(), false, false, session);
-		// return empty user list if organization is requested and found group is not an organization
-		if (GroupingEntity.ORGANIZATION.equals(param.getGrouping()) && !group.isOrganization()) return userList;
-		for (final GroupMembership ms : group.getMemberships()) {
-			userList.add(ms.getUser());
-		}
-		return userList;
+	public GetOrganizationGroups(GroupDatabaseManager groupDatabaseManager) {
+		super(groupDatabaseManager);
 	}
 
 	@Override
-	protected boolean canHandle(final UserParam param) {
-		return ((GroupingEntity.GROUP.equals(param.getGrouping()) ||
-				GroupingEntity.ORGANIZATION.equals(param.getGrouping())) &&
-				present(param.getRequestedGroupName()));
+	protected List<Group> handle(QueryAdapter<GroupQuery> queryAdapter, DBSession session) {
+		final GroupQuery param = queryAdapter.getQuery();
+		return this.groupDb.getAllOrganizationGroups(param.getStart(), param.getEnd(), session);
+	}
+
+	@Override
+	protected boolean canHandle(QueryAdapter<GroupQuery> param) {
+		return param.getQuery().getOrganization();
 	}
 }
