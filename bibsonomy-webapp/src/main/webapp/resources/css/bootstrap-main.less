@@ -65,6 +65,11 @@ ul.dropdown-menu.list-options > li > span {
 	font-size: inherit;
 }
 
+/** FIX for breadcrumb text outside of container */
+.breadcrumb {
+	word-break: break-all;
+}
+
 /*
  * Fonts
  */
@@ -687,7 +692,8 @@ div#sidebar {
  */
 
 .tagcloud li a{
-	line-height: 1.5em;
+    line-height: 1.5em;
+    word-break: break-word;
 }
 
 ul.news {
@@ -759,8 +765,8 @@ ul.tagcloud {
 
 .tagcloud li {
 	display: inline;
-	padding: 0em .1em 0em .1em;
-	line-height: 1.5em;
+	padding: 0em .2em 0em .2em;
+	line-height: 2em;
 	font-size: 90%;
 }
 
@@ -887,6 +893,10 @@ span.web					{background-position:-2px -1106px;	width:61px;	height:37px; 					ma
  * PUBLICATION PAGE
  */
 
+#desc {
+	word-break: break-word;
+}
+
 h1#pubtitle {
 	font-size: 21px;
 	font-weight: 300;
@@ -935,7 +945,8 @@ h4.pub-details {
 }
 
 #resources dd {
-	padding: 4px 0 !important;
+    padding: 4px 0 !important;
+    word-break: break-all;
 }
 
 table a.img-thumbnail {
