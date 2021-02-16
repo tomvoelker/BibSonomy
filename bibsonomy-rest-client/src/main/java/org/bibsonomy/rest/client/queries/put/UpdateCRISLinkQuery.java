@@ -12,6 +12,11 @@ import org.bibsonomy.util.ValidationUtils;
 import java.io.StringWriter;
 import java.util.Collections;
 
+/**
+ * query to update CRIS link
+ *
+ * @author pda
+ */
 public class UpdateCRISLinkQuery extends AbstractQuery<JobResult> {
 
 	private final CRISLink link;

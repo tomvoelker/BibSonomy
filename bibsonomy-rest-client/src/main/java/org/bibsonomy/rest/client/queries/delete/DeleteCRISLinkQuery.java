@@ -11,6 +11,11 @@ import org.bibsonomy.util.ValidationUtils;
 
 import java.util.Collections;
 
+/**
+ * query to delete a CRIS link
+ *
+ * @author pda
+ */
 public class DeleteCRISLinkQuery extends AbstractQuery<JobResult> {
 	private final Linkable source;
 	private final Linkable target;

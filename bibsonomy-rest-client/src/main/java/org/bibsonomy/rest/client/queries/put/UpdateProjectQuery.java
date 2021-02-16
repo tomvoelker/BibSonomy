@@ -12,6 +12,11 @@ import org.bibsonomy.util.ValidationUtils;
 import java.io.StringWriter;
 import java.util.Collections;
 
+/**
+ * query to update a project
+ *
+ * @author pda
+ */
 public class UpdateProjectQuery extends AbstractQuery<JobResult> {
 	private String projectId;
 	private Project project;
