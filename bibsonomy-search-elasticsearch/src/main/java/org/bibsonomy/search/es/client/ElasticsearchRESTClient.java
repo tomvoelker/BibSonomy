@@ -31,7 +31,10 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.search.es.ESClient;
+import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
+import org.bibsonomy.search.es.util.ESSortUtils;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;
@@ -296,6 +299,19 @@ public class ElasticsearchRESTClient implements ESClient {
 		}, false, "error while updating documents " + updates.stream().map(Pair::getFirst).collect(Collectors.joining(", ")));
 	}
 
+	@Override
+	public SearchHits search(String indexName, String type, QueryBuilder queryBuilder, HighlightBuilder highlightBuilder, List<SortCriterium> sortCriteriums, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve) {
+		return this.secureCall(() -> {
+			final BulkRequest bulkRequest = new BulkRequest();
+
+			final Stream<UpdateRequest> updateRequestStream = updates.stream().map(entry -> buildUpdateRequest(indexName, entry.getFirst(), entry.getSecond()));
+			updateRequestStream.forEach(bulkRequest::add);
+
+			final BulkResponse bulkResponse = this.client.bulk(bulkRequest, this.buildRequestOptions());
+			return !bulkResponse.hasFailures();
+		}, false, "error while updating documents " + updates.stream().map(Pair::getFirst).collect(Collectors.joining(", ")));
+	}
+
 	private UpdateRequest buildUpdateRequest(final String index, String id, UpdateData updateData) {
 		final UpdateRequest updateRequest = new UpdateRequest(index, updateData.getType(), id);
 		updateRequest.routing(updateData.getRouting());
@@ -331,8 +347,11 @@ public class ElasticsearchRESTClient implements ESClient {
 				searchSourceBuilder.fetchSource(fieldsToRetrieve.iterator().next(), null);
 			}
 
-			if (present(order)) {
-				searchSourceBuilder.sort(order.getFirst(), order.getSecond());
+			if (present(sortCriteriums)) {
+				List<Pair<String, SortOrder>> sortParameters = ESSortUtils.buildSortParameters(sortCriteriums, type);
+				for (Pair<String, SortOrder> param : sortParameters) {
+					searchSourceBuilder.sort(param.getFirst(), param.getSecond());
+				}
 			}
 			searchRequest.source(searchSourceBuilder);
 			final SearchResponse search = this.client.search(searchRequest, this.buildRequestOptions());

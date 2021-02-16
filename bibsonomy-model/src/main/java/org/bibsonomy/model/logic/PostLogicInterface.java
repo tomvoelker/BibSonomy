@@ -31,11 +31,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.JobResult;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.Post;
@@ -60,10 +63,10 @@ public interface PostLogicInterface {
 	
 	/** the maximum number of the most recent posts (global)  */
 	int MAX_RECENT_POSTS = 100000;
-	
-	/**  
+
+	/**
 	 * retrieves a filterable list of posts.
-	 * 
+	 *
 	 * @param <T> resource type to be shown.
 	 * @param resourceType resource type to be shown.
 	 * @param grouping
@@ -84,16 +87,50 @@ public interface PostLogicInterface {
 	 * @param search - free text search
 	 * @param queryScope - whether to search locally or using an index shared by several systems
 	 * @param filters - filter for the retrieved posts
-	 * @param order - a flag indicating the way of sorting
-	 * @param startDate - if given, only posts that have been created after (inclusive) startDate are returned  
-	 * @param endDate - if given, only posts that have been created before (inclusive) endDate are returned 
+	 * @param sortKey - sort by key
+	 * @param startDate - if given, only posts that have been created after (inclusive) startDate are returned
+	 * @param endDate - if given, only posts that have been created before (inclusive) endDate are returned
 	 * @param start - inclusive start index of the view window
 	 * @param end - exclusive end index of the view window
 	 * @return A filtered list of posts. may be empty but not null
 	 * @since 3.1
 	 */
 	@Deprecated // in favour of getPosts(PostQuery)
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end);
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, Set<Filter> filters, SortKey sortKey, Date startDate, Date endDate, int start, int end);
+
+
+	/**
+	 * retrieves a filterable list of posts.
+	 *
+	 * @param <T> resource type to be shown.
+	 * @param resourceType resource type to be shown.
+	 * @param grouping
+	 *            grouping tells whom posts are to be shown: the posts of a
+	 *            user, of a group or of the viewables.
+	 * @param groupingName
+	 *            name of the grouping. if grouping is user, then its the
+	 *            username. if grouping is set to {@link GroupingEntity#ALL},
+	 *            then its an empty string!
+	 * @param tags
+	 *            a set of tags. remember to parse special tags like
+	 *            ->[tagname], -->[tagname] and <->[tagname]. see documentation.
+	 *            if the parameter is not used, its an empty list
+	 * @param hash
+	 *            hash value of a resource, if one would like to get a list of
+	 *            all posts belonging to a given resource. if unused, its empty
+	 *            but not null.
+	 * @param search - free text search
+	 * @param searchType - whether to search locally or using an index shared by several systems
+	 * @param filters - filter for the retrieved posts
+	 * @param sortCriteriums - list of sort criterion and ascending/descending sorting
+	 * @param startDate - if given, only posts that have been created after (inclusive) startDate are returned
+	 * @param endDate - if given, only posts that have been created before (inclusive) endDate are returned
+	 * @param start - inclusive start index of the view window
+	 * @param end - exclusive end index of the view window
+	 * @return A filtered list of posts. may be empty but not null
+	 * @since 3.1
+	 */
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, Set<Filter> filters, List<SortCriterium> sortCriteriums, Date startDate, Date endDate, int start, int end);
 
 	<R extends Resource> List<Post<R>> getPosts(final PostQuery<R> query);
 	
@@ -152,7 +189,7 @@ public interface PostLogicInterface {
 	 * 	 * <li>intraHash,</li>
 	 * 	 * <li>and optionally a username.
 	 * 	 * </ul>
-	 * 
+	 *
 	 * @param posts  the posts to update
 	 * @param operation  which parts of the posts should be updated
 	 * @return resourceHashes the (new) hashes of the updated resources
@@ -180,12 +217,12 @@ public interface PostLogicInterface {
 	 *            but not null.
 	 * @param search free text search
 	 * @param filters the filters for the retrieved posts
-	 * @param order a flag indicating the way of sorting
+	 * @param sortKey sort by key
 	 * @param startDate - if given, only posts that have been created after (inclusive) startDate are regarded  
 	 * @param endDate - if given, only posts that have been created before (inclusive) endDate are regarded
 	 * @param start inclusive start index of the view window
 	 * @param end exclusive end index of the view window
 	 * @return a filtered list of posts. may be empty but not null
 	 */
-	Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end);
+	Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, SortKey sortKey, Date startDate, Date endDate, int start, int end);
 }

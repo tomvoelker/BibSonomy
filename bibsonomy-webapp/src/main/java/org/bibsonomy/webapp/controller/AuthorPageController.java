@@ -32,14 +32,17 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.AuthorSystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.AuthorResourceCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -96,10 +99,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		final String sysAuthor = SystemTagsUtil.buildSystemTagString(AuthorSystemTag.NAME, authorQuery);
 		requTags.add(sysAuthor);
 		sysTags.add(sysAuthor);
-		
-		//sets the search type
-		final QueryScope queryScope = command.getScope();
-		
+
 		// handle case when only tags are requested
 		this.handleTagsOnly(command, groupingEntity, null, null, requTags, null, 1000, null);
 		
@@ -107,9 +107,12 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
-			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, queryScope, null, null, command.getStartDate(), command.getEndDate(), listCommand.getEntriesPerPage());
-			
-			this.postProcessAndSortList(command, resourceType);
+			this.preProcessForSearchIndexSort(command);
+			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, command.getScope(), null, command.getSortCriteriums(), command.getStartDate(), command.getEndDate(), listCommand.getEntriesPerPage());
+			// secondary sorting, if not using elasticsearch index
+			if (!command.isEsIndex()) {
+				this.postProcessAndSortList(command, resourceType);
+			}
 			totalNumPosts += listCommand.getTotalCount();
 		}
 		
@@ -117,11 +120,11 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		if ("html".equals(format)) {
 			// only fetch tags if they were not already fetched by handleTagsOnly
 			if (command.getTagstype() == null) {
-				this.setTags(command, BibTex.class, groupingEntity, null, null, null, sysTags, null, 1000, null, queryScope);
+				this.setTags(command, BibTex.class, groupingEntity, null, null, null, sysTags, null, 1000, null, command.getScope());
 			}
 			this.endTiming();
 			if (hasTags) {
-				this.setRelatedTags(command, BibTex.class, groupingEntity, null, null, requTags, command.getStartDate(), command.getEndDate(), Order.ADDED, 0, 20, null);
+				this.setRelatedTags(command, BibTex.class, groupingEntity, null, null, requTags, command.getStartDate(), command.getEndDate(), SortKey.DATE, 0, 20, null);
 				command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);
 				return Views.AUTHORTAGPAGE;
 			}

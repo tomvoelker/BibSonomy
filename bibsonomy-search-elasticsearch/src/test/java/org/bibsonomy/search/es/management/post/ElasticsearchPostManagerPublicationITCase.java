@@ -29,7 +29,10 @@ package org.bibsonomy.search.es.management.post;
 import static org.bibsonomy.search.es.management.post.ElasticsearchCommunityPostPublicationManagerITCase.buildQuery;
 import static org.junit.Assert.assertEquals;
 
+import java.util.Collections;
+
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -58,6 +61,9 @@ public class ElasticsearchPostManagerPublicationITCase extends AbstractElasticse
 	@Test
 	public void testUpdateIndexWithSpammer() {
 		final String userToFlag = "testuser3";
+		final ResultList<Post<BibTex>> postsBefore = publicationSearch.getPosts(userToFlag, userToFlag, null, null, Collections.<String>emptyList(), null, "test", null, null, null, null, null, null, null, null, SortKey.DATE, 10, 0, null);
+		assertEquals(1, postsBefore.size());
+
 		final User user = new User(userToFlag);
 		final PostSearchQuery<?> query = buildQuery("test");
 		query.setGrouping(GroupingEntity.USER);

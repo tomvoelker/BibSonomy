@@ -56,6 +56,7 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 * Has the requested user added the logged in user to her friend list? 
 	 */
 	private boolean friendOfUser = false;
+
 	/**
 	 * Has the logged in user added the requested user to his friend list?
 	 */
@@ -65,7 +66,6 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 * The claimed person of the user
 	 */
 	private Person claimedPerson = null;
-
 	/**
 	 * defines the similarity measure by which the related users are computed  
 	 * (default is folkrank)

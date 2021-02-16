@@ -26,7 +26,13 @@
  */
 package org.bibsonomy.webapp.command;
 
+import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.model.Tag;
+
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -58,9 +64,17 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	 */
 	private int numberOfNormalTags;
 	
-	/** the specified order */
-	private Order order = Order.ADDED;
-		
+	/** the specified sorting key */
+	private SortKey sortKey;
+
+	/** the specified list of sort criteriums */
+	private List<SortCriterium> sortCriteriums = new LinkedList<>();
+
+	/**
+	 * Use the elasticsearch index for retrieving and sorting listed posts?
+	 */
+	private boolean esIndex = true;
+
 	/** bean for related tags */
 	private RelatedTagCommand relatedTagCommand = new RelatedTagCommand();
 	
@@ -140,17 +154,47 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	}
 
 	/**
-	 * @return order
+	 * @return sortKey
 	 */
-	public Order getOrder() {
-		return this.order;
+	public SortKey getSortKey() {
+		return sortKey;
 	}
 
 	/**
-	 * @param order
+	 * @param sortKey	the sort key to set
 	 */
-	public void setOrder(final Order order) {
-		this.order = order;
+	public void setSortKey(SortKey sortKey) {
+		this.sortKey = sortKey;
+	}
+
+	/**
+	 * List of sorting criteriums
+	 * @return sortCriteriums
+	 */
+	public List<SortCriterium> getSortCriteriums() {
+		return sortCriteriums;
+	}
+
+	/**
+	 * @param sortCriteriums	set the list of sort criteriums
+	 */
+	public void setSortCriteriums(List<SortCriterium> sortCriteriums) {
+		this.sortCriteriums = sortCriteriums;
+	}
+
+	/**
+	 * @return esIndex
+	 */
+	public boolean isEsIndex() {
+		return this.esIndex;
+	}
+
+	/**
+	 * Set wether to use elasticsearch index for retrieving and sorting posts.
+	 * @param 	esIndex		use elasticsearch index?
+	 */
+	public void setEsIndex(boolean esIndex) {
+		this.esIndex = esIndex;
 	}
 
 	/**
@@ -302,7 +346,7 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	}
 
 	/**
-	 * @param selectedSearchScope the selected search type such as 'group', 'search', 'sharedResourceSearch'
+	 * @param scope the selected search type such as 'group', 'search', 'sharedResourceSearch'
 	 */
 	public void setScope(QueryScope scope) {
 		this.scope = scope;

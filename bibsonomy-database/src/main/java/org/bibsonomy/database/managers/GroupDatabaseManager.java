@@ -43,6 +43,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Privlevel;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
@@ -120,7 +121,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	 * @return a list of all groups
 	 */
 	public List<Group> getAllGroups(final int start, final int end, final DBSession session) {
-		final GroupParam param = LogicInterfaceHelper.buildParam(GroupParam.class, Order.ALPH, start, end);
+		final GroupParam param = LogicInterfaceHelper.buildParam(GroupParam.class, SortKey.ALPH, start, end);
 		return this.queryForList("getAllGroups", param, Group.class, session);
 	}
 

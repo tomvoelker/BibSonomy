@@ -34,6 +34,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.managers.chain.Chain;
@@ -56,7 +57,6 @@ import org.bibsonomy.database.managers.chain.resource.get.GetResourcesPopular;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesViewable;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Before;
@@ -98,7 +98,7 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 	public void getBookmarkByConceptForUser() {
 		this.bookmarkParam.setGrouping(GroupingEntity.USER);
 		this.bookmarkParam.setHash(null);
-		this.bookmarkParam.setOrder(null);
+		this.bookmarkParam.setSortKey(null);
 		this.bookmarkParam.setRequestedUserName("hotho");
 		this.bookmarkParam.setNumSimpleConcepts(3);
 		this.bookmarkParam.setNumSimpleTags(0);
@@ -113,7 +113,7 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 	public void getBookmarkByFriends() {
 		this.bookmarkParam.setGrouping(GroupingEntity.FRIEND);
 		this.bookmarkParam.setHash(null);
-		this.bookmarkParam.setOrder(null);
+		this.bookmarkParam.setSortKey(null);
 		this.bookmarkParam.setTagIndex(null);
 		this.bookmarkParam.setRequestedUserName(null);
 		this.bookmarkParam.setRequestedGroupName(null);
@@ -126,7 +126,7 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getBookmarkByHash() {
 		this.bookmarkParam.setGrouping(GroupingEntity.ALL);
-		this.bookmarkParam.setOrder(null);
+		this.bookmarkParam.setSortKey(null);
 		this.bookmarkParam.setTagIndex(null);
 		this.bookmarkParam.setRequestedUserName(null);
 		assertEquals(GetResourcesByHash.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
@@ -138,7 +138,7 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getBookmarkByHashForUser() {
 		this.bookmarkParam.setGrouping(GroupingEntity.USER);
-		this.bookmarkParam.setOrder(null);
+		this.bookmarkParam.setSortKey(null);
 		this.bookmarkParam.setTagIndex(null);
 		assertEquals(GetResourcesByHashForUser.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
 	}
@@ -150,7 +150,7 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 	public void getBookmarkByTagNames() {
 		this.bookmarkParam.setGrouping(GroupingEntity.ALL);
 		this.bookmarkParam.setHash(null);
-		this.bookmarkParam.setOrder(null);
+		this.bookmarkParam.setSortKey(null);
 		assertEquals(GetResourcesByTagNames.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
 	}
 
@@ -163,7 +163,7 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 		this.bookmarkParam.setGrouping(GroupingEntity.USER);
 		this.bookmarkParam.setRequestedUserName("grahl");
 		this.bookmarkParam.setHash(null);
-		this.bookmarkParam.setOrder(null);
+		this.bookmarkParam.setSortKey(null);
 		assertEquals(GetResourcesByTagNamesAndUser.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
 	}
 	
@@ -189,7 +189,7 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 	public void getBookmarkForGroup() {
 		this.bookmarkParam.setGrouping(GroupingEntity.GROUP);
 		this.bookmarkParam.setHash(null);
-		this.bookmarkParam.setOrder(null);
+		this.bookmarkParam.setSortKey(null);
 		this.bookmarkParam.setTagIndex(null);
 		this.bookmarkParam.setRequestedUserName(null);
 		assertEquals(GetBookmarksByResourceSearch.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
@@ -202,7 +202,7 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 	public void getBookmarkForGroupAndTag() {
 		this.bookmarkParam.setGrouping(GroupingEntity.GROUP);
 		this.bookmarkParam.setHash(null);
-		this.bookmarkParam.setOrder(null);
+		this.bookmarkParam.setSortKey(null);
 		this.bookmarkParam.setRequestedUserName(null);
 		assertEquals(GetBookmarksByResourceSearch.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
 	}
@@ -214,7 +214,7 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 	public void getBookmarkForHomePage() {
 		this.bookmarkParam.setGrouping(GroupingEntity.ALL);
 		this.bookmarkParam.setHash(null);
-		this.bookmarkParam.setOrder(null);
+		this.bookmarkParam.setSortKey(null);
 		this.bookmarkParam.setTagIndex(null);
 		assertEquals(GetResourcesForHomepage.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
 	}
@@ -226,7 +226,7 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 	public void getBookmarksForUser() {
 		this.bookmarkParam.setGrouping(GroupingEntity.USER);
 		this.bookmarkParam.setHash(null);
-		this.bookmarkParam.setOrder(null);
+		this.bookmarkParam.setSortKey(null);
 		this.bookmarkParam.setTagIndex(null);
 		this.bookmarkParam.setGroupId(GroupID.INVALID.getId());
 		assertEquals(GetResourcesForUser.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
@@ -239,7 +239,7 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 	public void getBookmarkOfFriendsByTags() {
 		this.bookmarkParam.setGrouping(GroupingEntity.FRIEND);
 		this.bookmarkParam.setHash(null);
-		this.bookmarkParam.setOrder(null);
+		this.bookmarkParam.setSortKey(null);
 		assertEquals(GetResourcesOfFriendsByTags.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
 	}
 
@@ -250,7 +250,7 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 	public void getBookmarksOfFriendsByUser() {
 		this.bookmarkParam.setGrouping(GroupingEntity.FRIEND);
 		this.bookmarkParam.setHash(null);
-		this.bookmarkParam.setOrder(null);
+		this.bookmarkParam.setSortKey(null);
 		this.bookmarkParam.setTagIndex(null);
 		assertEquals(GetResourcesOfFriendsByUser.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
 	}
@@ -262,7 +262,7 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 	public void getBookmarkPopular() {
 		this.bookmarkParam.setGrouping(GroupingEntity.ALL);
 		this.bookmarkParam.setHash(null);
-		this.bookmarkParam.setOrder(Order.POPULAR);
+		this.bookmarkParam.setSortKey(SortKey.POPULAR);
 		this.bookmarkParam.setTagIndex(null);
 		this.bookmarkParam.setDays(0);
 		assertEquals(GetResourcesPopular.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
@@ -275,7 +275,7 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 	public void getBookmarkViewable() {
 		this.bookmarkParam.setGrouping(GroupingEntity.VIEWABLE);
 		this.bookmarkParam.setHash(null);
-		this.bookmarkParam.setOrder(null);
+		this.bookmarkParam.setSortKey(null);
 		this.bookmarkParam.setTagIndex(null);
 		assertEquals(GetResourcesViewable.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
 	}
@@ -309,7 +309,7 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 	public void getBookmarksByConceptTag() {
 		this.bookmarkParam.setGrouping(GroupingEntity.ALL);
 		this.bookmarkParam.setHash(null);
-		this.bookmarkParam.setOrder(null);
+		this.bookmarkParam.setSortKey(null);
 		this.bookmarkParam.setNumSimpleConcepts(3);
 		this.bookmarkParam.setNumSimpleTags(0);
 		this.bookmarkParam.setNumTransitiveConcepts(0);

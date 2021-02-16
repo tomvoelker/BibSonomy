@@ -23,19 +23,29 @@
 	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}">
 		
 		<jsp:attribute name="additionalSorting">
+			<!-- relevance sorting -->
 			<c:choose>
-				<c:when test="${command.sortPage eq 'relevance'}">
-					<li><span class="italic"><fontawesome:icon icon="sort-numeric-asc " spaceAfter="5" /><fmt:message key="sort.rank"/></span></li>
+				<c:when test="${command.sortPage eq 'relevance' and command.sortPageOrder eq 'desc'}">
+					<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'relevance'), 'sortPageOrder', 'asc')}">
+						<fontawesome:icon icon="sort-amount-desc" spaceAfter="5"/><fmt:message key="sort.rank"/>
+					</a></li>
+				</c:when>
+				<c:when test="${command.sortPage eq 'relevance' and command.sortPageOrder eq 'asc'}">
+					<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'relevance'), 'sortPageOrder', 'desc')}">
+						<fontawesome:icon icon="sort-amount-asc" spaceAfter="5"/><fmt:message key="sort.rank"/>
+					</a></li>
 				</c:when>
 				<c:otherwise>
-					<li><a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'relevance')}"><fontawesome:icon icon="sort-numeric-asc " spaceAfter="5" /><fmt:message key="sort.rank"/></a></li>
+					<li class="sort-unselected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'relevance'), 'sortPageOrder', 'desc')}">
+						<fontawesome:icon icon="sort-amount-desc" spaceAfter="5" /><fmt:message key="sort.rank"/>
+					</a></li>
 				</c:otherwise>
 			</c:choose>
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">
 			<c:choose>
-				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL'}">
+				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL' and command.scope.name() ne 'SEARCHINDEX'}">
 					<c:set var="pathMessageKey" value="navi.${command.scope.name().toLowerCase()}"/>
 				</c:when>
 				<c:otherwise>

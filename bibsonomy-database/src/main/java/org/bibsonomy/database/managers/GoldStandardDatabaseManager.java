@@ -59,7 +59,7 @@ import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.util.PostUtils;
-import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.database.services.ResourceSearch;
 import org.bibsonomy.services.searcher.query.PostSearchQuery;
 import org.bibsonomy.util.ReflectionUtils;
 

@@ -38,6 +38,7 @@ import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
@@ -51,7 +52,6 @@ import org.bibsonomy.database.systemstags.search.SearchSystemTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.UserUtils;
 
@@ -73,18 +73,17 @@ public class LogicInterfaceHelper {
 	 * 
 	 * @param <T>
 	 * @param type
-	 * @param order
 	 * @param start
 	 * @param end
 	 * @return - the filled parameter object
 	 */
-	public static <T extends GenericParam> T buildParam(final Class<T> type, final Order order, int start, final int end) {
+	public static <T extends GenericParam> T buildParam(final Class<T> type, SortKey sortKey, int start, final int end) {
 		final T param = getParam(type);
 		
 		if (start < 0) {
 			start = 0;
 		}
-		param.setOrder(order);
+		param.setSortKey(sortKey);
 		param.setOffset(start);
 		if (end - start < 0) {
 			param.setLimit(DEFAULT_LIST_LIMIT);
@@ -106,7 +105,7 @@ public class LogicInterfaceHelper {
 	 * @param groupingName as specified for {@link PostLogicInterface#getPosts}
 	 * @param tags as specified for {@link PostLogicInterface#getPosts}
 	 * @param hash as specified for {@link PostLogicInterface#getPosts}
-	 * @param order as specified for {@link PostLogicInterface#getPosts}
+	 * @param sortKey as specified for {@link PostLogicInterface#getPosts}
 	 * @param start as specified for {@link PostLogicInterface#getPosts}
 	 * @param end as specified for {@link PostLogicInterface#getPosts}
 	 * @param startDate as specified for {@link PostLogicInterface#getPosts}
@@ -115,11 +114,11 @@ public class LogicInterfaceHelper {
 	 * @param filters as specified for {@link PostLogicInterface#getPosts}
 	 * @param loginUser logged in user as specified for {@link PostLogicInterface#getPosts}         @return the fresh param object
 	 */
-	public static <T extends GenericParam> T buildParam(final Class<T> type, Class<? extends Resource> resourceType, QueryScope queryScope, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, final Date startDate, final Date endDate, final String search, final Set<Filter> filters, final User loginUser) {
+	public static <T extends GenericParam> T buildParam(final Class<T> type, Class<? extends Resource> resourceType, QueryScope queryScope, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final SortKey sortKey, final int start, final int end, final Date startDate, final Date endDate, final String search, final Set<Filter> filters, final User loginUser) {
 		/*
 		 * delegate to simpler method
 		 */
-		final T param = buildParam(type, order, start, end);
+		final T param = buildParam(type, sortKey, start, end);
 
 		// if hash length is 33 ,than use the first character as hash type
 		if (hash != null && hash.length() == 33) {
@@ -131,6 +130,7 @@ public class LogicInterfaceHelper {
 			}
 			
 			if (param instanceof BibTexParam || param instanceof TagParam || param instanceof StatisticsParam) {
+				param.setSortKey(sortKey);
 				param.setSimHash(id);
 			}
 			param.setHash(hash.substring(1));

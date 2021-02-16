@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
@@ -62,10 +63,10 @@ public class ChainUtils {
 		}
 		
 		/*
-		 * Handle the request when:
+		 * Handle the request when one of the following points is met:
 		 * 1. There are TAGS in the query AND the lucene should be uses for the amount of tags
-		 * OR
 		 * 2. There are negated tags
+		 * 3.
 		 */
 		//TODO (AD) define rules for handling the query if groups are involved
 		if ((present(tagIndex) && pdm.useResourceSearchForTagQuery(tagIndex.size())) ||	existsNegatedTags) {
@@ -82,7 +83,9 @@ public class ChainUtils {
 		if (GROUPING_ENTITIES_SEARCH.contains(grouping)) {
 			return true;
 		}
-
+if ((param.getSearchType() == SearchType.SEARCHINDEX) && (param.getNumSimpleTags() > 0)) {
+			return true;
+		}
 		return false;
 	}
 

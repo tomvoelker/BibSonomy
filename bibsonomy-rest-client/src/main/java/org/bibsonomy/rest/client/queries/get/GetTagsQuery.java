@@ -31,9 +31,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -49,7 +49,7 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 	private final int start;
 	private final int end;
 	private String filter = null;
-	private Order order = null;
+	private SortKey sortKey = null;
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;
 	private Class<? extends Resource> resourceType = Resource.class;
@@ -99,12 +99,12 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 	}
 	
 	/**
-	 * @param order the order to set
+	 * @param sortKey	the sort key to set
 	 */
-	public void setOrder(final Order order) {
-		this.order = order;
+	public void setSortKey(SortKey sortKey) {
+		this.sortKey = sortKey;
 	}
-	
+
 	/**
 	 * TODO: change to Class<? extends Resource> and reuse methods of the {@link ResourceFactory}
 	 * Be careful with 'bibtex' (ensure on rest server that {@link ResourceFactory} is used too)
@@ -133,7 +133,7 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException {
-		final String url = this.getUrlRenderer().createHrefForTags(this.resourceType, null, this.grouping, this.groupingValue, this.filter, null, this.order, this.start, this.end);
+		final String url = this.getUrlRenderer().createHrefForTags(this.resourceType, null, this.grouping, this.groupingValue, this.filter, null, this.sortKey, this.start, this.end);
 		this.downloadedDocument = performGetRequest(url);
 	}
 }

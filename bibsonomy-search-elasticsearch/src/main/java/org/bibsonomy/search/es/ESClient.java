@@ -38,6 +38,7 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.client.DeleteData;
 import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.client.UpdateData;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;
@@ -47,7 +48,6 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
-import org.elasticsearch.search.sort.SortOrder;
 
 /**
  * Wrapper around an ElasticSearch Client.
@@ -96,7 +96,7 @@ public interface ESClient {
 	boolean insertNewDocument(String indexName, String id, IndexData indexData);
 
 	/**
-	 * 
+	 *
 	 * @param indexName
 	 * @param jsonDocuments
 	 * @return <code>true</code> iff all documents were inserted successfully
@@ -177,7 +177,7 @@ public interface ESClient {
 	 * @param updates the update map (key: document id and value is the update to apply)
 	 */
 	boolean updateDocuments(String indexName, List<Pair<String, UpdateData>> updates);
-	
+
 	/**
 	 * @param indexName
 	 * @param alias
@@ -199,14 +199,14 @@ public interface ESClient {
 	 * @param type
 	 * @param queryBuilder
 	 * @param highlightBuilder
-	 * @param order
+	 * @param sortCriteriums
 	 * @param offset
 	 * @param limit
 	 * @param minScore
 	 * @param fieldsToRetrieve
 	 * @return the search hits of the provided query
 	 */
-	SearchHits search(String indexName, final String type, QueryBuilder queryBuilder, HighlightBuilder highlightBuilder, Pair<String, SortOrder> order, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve);
+	SearchHits search(String indexName, final String type, QueryBuilder queryBuilder, HighlightBuilder highlightBuilder, List<SortCriterium> sortCriteriums, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve);
 
 	/**
 	 *

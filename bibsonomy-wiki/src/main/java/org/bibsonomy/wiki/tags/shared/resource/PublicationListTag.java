@@ -26,6 +26,19 @@
  */
 package org.bibsonomy.wiki.tags.shared.resource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.exceptions.LayoutRenderingException;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Layout;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.util.Sets;
+import org.bibsonomy.util.SortUtils;
+import org.bibsonomy.wiki.tags.SharedTag;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,18 +50,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.QueryScope;
-import org.bibsonomy.common.exceptions.LayoutRenderingException;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Layout;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.util.Sets;
-import org.bibsonomy.util.SortUtils;
-import org.bibsonomy.wiki.tags.SharedTag;
 
 /**
  * TODO: abstract resource tag
@@ -160,7 +161,7 @@ public class PublicationListTag extends SharedTag {
 		 * FIXME: We want these working in a different way. We want the
 		 * publication's year, not the BibSonomy year of the posting.
 		 */
-		List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, this.getGroupingEntity(), requestedName, Arrays.asList(tags.split(" ")), null, null, QueryScope.LOCAL, null, null, null, null, 0, this.maxQuerySize);
+		List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, this.getGroupingEntity(), requestedName, Arrays.asList(tags.split(" ")), null, null, QueryScope.LOCAL, null, SortKey.NONE, null, null, 0, this.maxQuerySize);
 		BibTexUtils.removeDuplicates(posts);
 
 		/*

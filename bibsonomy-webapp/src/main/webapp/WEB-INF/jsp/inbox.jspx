@@ -18,6 +18,11 @@
 			requPath="${requPath}"  
 			showPageOptions="${true}"
 			showInboxActions="${true}">
+			
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/bs/bootstrap-confirmation.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/inbox.js"><!-- keep me --></script>
+		</jsp:attribute>
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
@@ -49,7 +54,7 @@
 			| sidebar
 			+-->
 		<jsp:attribute name="sidebar">
-			<li style="text-align: center;">
+			<li style="text-align: center;" class="clear-inbox-confirmation-item">
 				<c:url var="message_remove" value="/removeMessage">
 					<c:param name="hash" value=""/>
 					<c:param name="user" value=""/>
@@ -57,7 +62,22 @@
 					<c:param name="clear" value="true"/>
 				</c:url>
 				
-				<bs:linkButton style="primary" href="${message_remove}" size="defaultSize" block="${true}" textKey="inbox.actions.removeAllMessages" titleKey="inbox.actions.removeAllMessages.title" />
+				
+				<fmt:message var="clearInboxLinkTitle" key="inbox.actions.removeAllMessages.title" />
+				<fmt:message var="clearInboxConfirmOk" key="yes" />
+				<fmt:message var="clearInboxConfirmCancel" key="settings.cancel" />
+				
+				<a onclick="" 
+					class="btn btn-block btn-primary clear-inbox-confirmation" 
+					title="${clearInboxLinkTitle}" 
+					data-toggle="confirmation" 
+					href="${message_remove}"
+					data-confirmation-title="${clearInboxLinkTitle}"
+					data-btn-ok-label="${clearInboxConfirmOk}"
+					data-btn-cancel-label="${clearInboxConfirmCancel}"	
+				>
+					<fmt:message key="inbox.actions.removeAllMessages" />
+				</a>
 			</li>
 		</jsp:attribute>
 	</layout:resourceLayout>

@@ -42,9 +42,11 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.util.Converter;
+
 
 /**
  * abstract class to convert the model to the ES mapping
@@ -249,6 +251,7 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 	protected void convertResourceInternal(Map<String, Object> jsonDocument, Post<R> post) {
 		final R resource = post.getResource();
 		jsonDocument.put(Fields.Resource.TITLE, resource.getTitle());
+		jsonDocument.put(Fields.Sort.TITLE, BibTexUtils.cleanBibTex(resource.getTitle().toLowerCase()));
 		jsonDocument.put(Fields.Resource.INTRAHASH, resource.getIntraHash());
 		jsonDocument.put(Fields.Resource.INTERHASH, resource.getInterHash());
 		this.convertResource(jsonDocument, post);

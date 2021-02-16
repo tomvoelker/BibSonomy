@@ -36,7 +36,13 @@ public enum QueryScope {
 	/**
 	 * search public posts of all connected BibSonomy-based systems (including PUMA)
 	 */
-	FEDERATED, 
+	FEDERATED,
+
+	/**
+	 * search public posts with search index, results might not be matching recent changes in the DB
+	 */
+	SEARCHINDEX,
+
 	/**
 	 * search all viewable posts on the local system
 	 */

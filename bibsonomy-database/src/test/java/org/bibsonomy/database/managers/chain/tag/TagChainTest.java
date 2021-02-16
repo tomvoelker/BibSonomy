@@ -32,6 +32,7 @@ import java.util.*;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.chain.Chain;
@@ -47,7 +48,6 @@ import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.Order;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -90,7 +90,7 @@ public class TagChainTest extends AbstractDatabaseManagerTest {
 	public void getPopularTags() {
 		final TagParam param = new TagParam();
 		param.setGrouping(GroupingEntity.ALL);
-		param.setOrder(Order.POPULAR);
+		param.setSortKey(SortKey.POPULAR);
 		param.setTagIndex(null);
 		param.setHash(null);
 		param.setRegex(null);

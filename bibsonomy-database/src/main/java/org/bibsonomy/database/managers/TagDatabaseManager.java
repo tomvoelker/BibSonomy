@@ -43,6 +43,8 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.errors.MissingTagsErrorMessage;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -64,7 +66,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 import org.bibsonomy.model.util.GroupUtils;
@@ -72,6 +73,8 @@ import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.services.searcher.query.PostSearchQuery;
+import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.database.services.ResourceSearch;
 
 /**
  * Used to retrieve tags from the database.
@@ -718,7 +721,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			if (Resource.class.equals(resourceClass)) {
 				final List<Tag> bookmarkTags = this.bookmarkSearch.getTags(loggedinUser,  query);
 				final List<Tag> publicationTags = this.publicationSearch.getTags(loggedinUser, query);
-				final List<Tag> retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, Order.POPULAR, Order.POPULAR, limit);
+				final List<Tag> retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, SortKey.POPULAR, SortKey.POPULAR, limit);
 				return retVal;
 			}
 			
@@ -764,18 +767,18 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param contentType
 	 * @param loginUserName
 	 * @param groupId
-	 * @param order
+	 * @param sortKey
 	 * @param limit
 	 * @param offset
 	 * @param session
 	 * @return list of tags
 	 */
-	public List<Tag> getTagsViewable(final ConstantID contentType, final String loginUserName, final int groupId, final Order order, final int limit, final int offset, final DBSession session) {
+	public List<Tag> getTagsViewable(final ConstantID contentType, final String loginUserName, final int groupId, final SortKey sortKey, final int limit, final int offset, final DBSession session) {
 		final TagParam param = new TagParam();
 		param.setContentType(contentType);
 		param.setGroupId(groupId);
 		param.setUserName(loginUserName);
-		param.setOrder(order);
+		param.setSortKey(sortKey);
 		param.setLimit(limit);
 		param.setOffset(offset);
 		if (GroupID.isSpecialGroupId(groupId)) {
@@ -834,13 +837,13 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param loginUserName 
 	 * @param groupId 
 	 * @param tagIndex 
-	 * @param order 
+	 * @param sortKey
 	 * @param limit 
 	 * @param offset 
 	 * @param session
 	 * @return list of tags
 	 */
-	public List<Tag> getRelatedTagsViewable(final ConstantID contentType, final String loginUserName, final int groupId, final List<TagIndex> tagIndex, final Order order, final int limit, final int offset, final DBSession session) {
+	public List<Tag> getRelatedTagsViewable(final ConstantID contentType, final String loginUserName, final int groupId, final List<TagIndex> tagIndex, final SortKey sortKey, final int limit, final int offset, final DBSession session) {
 		// check maximum number of tags
 		if (this.exceedsMaxSize(tagIndex)) {
 			return new ArrayList<>();
@@ -851,7 +854,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		param.setGroupId(groupId);
 		param.setUserName(loginUserName);
 		param.setTagIndex(tagIndex);
-		param.setOrder(order);
+		param.setSortKey(sortKey);
 		param.setLimit(limit);
 		param.setOffset(offset);
 		if (GroupID.isSpecialGroupId(groupId)) {
@@ -931,18 +934,18 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param loginUserName
 	 * @param hash
 	 * @param visibleGroupIDs
-	 * @param order 
+	 * @param sortKey
 	 * @param limit
 	 * @param offset
 	 * @param session
 	 * @return a list of tags attached to the bookmark with the given hash
 	 */
-	public List<Tag> getTagsByBookmarkHash(final String loginUserName, final String hash, final List<Integer> visibleGroupIDs, Order order, final int limit, final int offset, final DBSession session) {
+	public List<Tag> getTagsByBookmarkHash(final String loginUserName, final String hash, final List<Integer> visibleGroupIDs, SortKey sortKey, final int limit, final int offset, final DBSession session) {
 		final TagParam param = new TagParam();
 		param.setHash(hash);
 		param.setUserName(loginUserName);
 		param.addGroups(visibleGroupIDs);
-		param.setOrder(order);
+		param.setSortKey(sortKey);
 		param.setLimit(limit);
 		param.setOffset(offset);
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
@@ -981,19 +984,19 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param hash
 	 * @param hashId
 	 * @param visibleGroupIDs
-	 * @param order 
+	 * @param sortKey
 	 * @param limit
 	 * @param offset
 	 * @param session
 	 * @return a list of tags attached to a publication with the given hash
 	 */
-	public List<Tag> getTagsByPublicationHash(final String loginUserName, final String hash, final HashID hashId, final List<Integer> visibleGroupIDs, final Order order, final int limit, final int offset, final DBSession session) {
+	public List<Tag> getTagsByPublicationHash(final String loginUserName, final String hash, final HashID hashId, final List<Integer> visibleGroupIDs, final SortKey sortKey, final int limit, final int offset, final DBSession session) {
 		final TagParam param = new TagParam();
 		param.setHash(hash);
 		param.setSimHash(hashId);
 		param.setUserName(loginUserName);
 		param.addGroups(visibleGroupIDs);
-		param.setOrder(order);
+		param.setSortKey(sortKey);
 		param.setLimit(limit);
 		param.setOffset(offset);
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);

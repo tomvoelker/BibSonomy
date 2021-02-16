@@ -54,6 +54,15 @@ public final class ESConstants {
 	/** settings of each created index */
 	public static final String SETTINGS;
 
+	/** fielddata */
+	public static final String FIELDDATA = "fielddata";
+
+	/** normalizer attribute */
+	public static final String NORMALIZER = "normalizer";
+
+	/** analyzer attribute */
+	public static final String ANALYZER = "analyzer";
+
 	/** the registered lowercase normalizer */
 	public static final String LOWERCASE_NORMALIZER = "lowercase_normalizer";
 
@@ -65,7 +74,7 @@ public final class ESConstants {
 			SETTINGS = Strings.toString(XContentFactory.jsonBuilder()
 					.startObject()
 						.startObject("analysis")
-							.startObject("normalizer")
+							.startObject(NORMALIZER)
 								.startObject(LOWERCASE_NORMALIZER)
 									.field("type", "custom")
 									.array("char_filter")
@@ -295,6 +304,20 @@ public final class ESConstants {
 				String CONTENT_HASH = "content_hash";
 				String DATE = "date";
 			}
+		}
+
+		public interface Sort {
+			/** the title cleaned up */
+			String TITLE = "sort_title";
+			String BOOKTITLE = "sort_booktitle";
+			String JOURNAL = "sort_journal";
+			String SERIES = "sort_series";
+			String PUBLISHER = "sort_publisher";
+			String AUTHOR = "sort_author";
+			String EDITOR = "sort_editor";
+			String SCHOOL = "sort_school";
+			String INSTITUTION = "sort_institution";
+			String ORGANIZATION = "sort_organization";
 		}
 	}
 

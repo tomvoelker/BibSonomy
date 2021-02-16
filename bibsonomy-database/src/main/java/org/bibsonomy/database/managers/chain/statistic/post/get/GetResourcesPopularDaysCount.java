@@ -29,13 +29,13 @@ package org.bibsonomy.database.managers.chain.statistic.post.get;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.statistics.Statistics;
 
 /**
@@ -58,7 +58,7 @@ public class GetResourcesPopularDaysCount extends StatisticChainElement {
 	
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
-		return 	param.getOrder() == Order.POPULAR &&
+		return 	param.getSortKey() == SortKey.POPULAR &&
 				param.getDays() >= 0 &&
 				param.getGrouping() == GroupingEntity.ALL &&
 				!present(param.getHash()) &&

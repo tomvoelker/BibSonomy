@@ -56,42 +56,14 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected UrlBuilder getLinkPrefix() {
-		return this.getUrlRenderer().createUrlBuilderForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, this.order);
+		return this.getUrlRenderer().createUrlBuilderForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, this.sortCriteriums);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		// TODO: why not sort in DBLogic? (Maybe refactoring LogicInterface with
-		// a smarter parameter object to keep parameter lists and sorting clear)
-		if ((resourceType != null) && BibTex.class.isAssignableFrom(resourceType)) {
-			final List<? extends Post<? extends BibTex>> bibtexList = getList((Class<? extends BibTex>) resourceType);
-			BibTexUtils.sortBibTexList(bibtexList, sortKeys, sortOrders);
-			return bibtexList;
-		} else if ((resourceType != null) && Bookmark.class.isAssignableFrom(resourceType)) {
-			final List<? extends Post<? extends Bookmark>> bookmarkList = getList((Class<? extends Bookmark>) resourceType);
-			BookmarkUtils.sortBookmarkList(bookmarkList, sortKeys, sortOrders);
-			return bookmarkList;
-		}
-
-		// return other resource types without ordering
-		return getList(resourceType);
-	}
-
-	protected <T extends Resource> List<Post<T>> getList(Class<T> resourceType) {
-		// TODO: support other searchtypes
-		PostQuery<T> query = new PostQueryBuilder()
-						.setGrouping(this.grouping)
-						.setGroupingName(this.groupingValue)
-						.setTags(this.tags)
-						.setHash(this.hash)
-						.setSearch(this.search)
-						.setScope(QueryScope.LOCAL)
-						.setFilters(null)
-						.setOrder(this.order)
-						.setStart(this.getView().getStartValue())
-						.setEnd(this.getView().getEndValue())
-						.createPostQuery(resourceType);
-		return this.getLogic().getPosts(query);
+		return this.getLogic().getPosts(resourceType, this.grouping, this.groupingValue,
+				this.tags, this.hash, this.search, this.searchType, null, this.sortCriteriums, null, null,
+				getView().getStartValue(), getView().getEndValue());
 	}
 }

@@ -77,7 +77,7 @@ public class PostStatisticChainTest extends AbstractDatabaseManagerTest {
 		this.statisticsParam.setGrouping(GroupingEntity.ALL);
 		this.statisticsParam.setRequestedUserName(null);
 		this.statisticsParam.setTagIndex(null);
-		this.statisticsParam.setOrder(null);
+		this.statisticsParam.setSortKey(null);
 		this.statisticsParam.setSearch(null);
 		
 		final Statistics stats = postStatisticsChain.perform(this.statisticsParam, this.dbSession);

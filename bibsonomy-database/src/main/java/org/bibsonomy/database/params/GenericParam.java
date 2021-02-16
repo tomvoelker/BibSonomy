@@ -47,6 +47,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -231,7 +232,7 @@ public abstract class GenericParam {
 	private String url;
 	private ConstantID contentType;
 
-	private Order order;
+	private SortKey sortKey;
 	private GroupingEntity grouping;
 	private Set<Filter> filters;
 	private ConceptStatus conceptStatus;
@@ -303,6 +304,8 @@ public abstract class GenericParam {
 	 */
 	public void setLoggedinUser(final User loggedinUser) {
 		this.loggedinUser = loggedinUser;
+
+		this.sortKey = SortKey.NONE;
 	}
 
 	/**
@@ -894,17 +897,17 @@ public abstract class GenericParam {
 	}
 
 	/**
-	 * @return the order
+	 * @return the sort key
 	 */
-	public Order getOrder() {
-		return this.order;
+	public SortKey getSortKey() {
+		return sortKey;
 	}
 
 	/**
-	 * @param order the order to set
+	 * @param sortKey the sort key to set
 	 */
-	public void setOrder(final Order order) {
-		this.order = order;
+	public void setSortKey(SortKey sortKey) {
+		this.sortKey = sortKey;
 	}
 
 	/**

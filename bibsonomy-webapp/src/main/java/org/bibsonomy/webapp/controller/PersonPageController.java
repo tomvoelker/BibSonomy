@@ -33,6 +33,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
@@ -250,7 +252,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * This is a helper function adds to an JSONarray Publications form a sugesstions list.  
 	 * @param posts
 	 * @return
-	 */	
+	 */
 	private JSONArray buildupPubResponseArray(final List<Post<GoldStandardPublication>> posts) {
 		final JSONArray array = new JSONArray();
 		for (final Post<GoldStandardPublication> post : posts) {

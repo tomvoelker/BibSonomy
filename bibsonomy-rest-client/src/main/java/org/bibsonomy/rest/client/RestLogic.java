@@ -27,8 +27,18 @@
 package org.bibsonomy.rest.client;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.ConceptUpdateOperation;
 import org.bibsonomy.common.enums.Filter;
@@ -58,7 +68,6 @@ import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -281,6 +290,21 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 	
 	@Override
+	@Deprecated
+	@SuppressWarnings("unchecked")
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final SortKey sortKey, final Date startDate, final Date endDate, final int start, final int end) {
+		// TODO: clientside chain of responsibility
+		List<SortCriterium> sortCriteriums = new ArrayList<>();
+		sortCriteriums.add(new SortCriterium(sortKey, SortOrder.DESC));
+		return this.getPosts(resourceType, grouping, groupingName, tags, hash, search, searchType, filters, sortCriteriums, startDate, endDate, start, end);
+	}
+
+	@Override
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, Set<Filter> filters, List<SortCriterium> sortCriteriums, Date startDate, Date endDate, int start, int end) {
+		final GetPostsQuery query = new GetPostsQuery(start, end);
+		query.setGrouping(grouping, groupingName);
+		query.setResourceHash(hash);
+		query.setResourceType(resourceType);
 	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final PostQuery<T> query = new PostQuery<>(resourceType);
 		query.setGrouping(grouping);
@@ -290,7 +314,7 @@ public class RestLogic extends AbstractLogicInterface {
 		query.setSearch(search);
 		query.setScope(queryScope);
 		query.setFilters(filters);
-		query.setOrder(order);
+		query.setSortCriteriums(sortCriteriums);
 		query.setStartDate(startDate);
 		query.setEndDate(endDate);
 		query.setStart(start);
@@ -325,17 +349,17 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
-		return this.getTags(resourceType, grouping, groupingName, tags, hash, search, QueryScope.LOCAL, regex, relation, order, startDate, endDate, start, end);
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final String regex, final TagSimilarity relation, final SortKey sortKey, final Date startDate, final Date endDate, final int start, final int end) {
+		return this.getTags(resourceType, grouping, groupingName, tags, hash, search, QueryScope.LOCAL, regex, relation, sortKey, startDate, endDate, start, end);
 	}
 	
 	@Override
-	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final String regex, final TagSimilarity relation, final SortKey sortKey, final Date startDate, final Date endDate, final int start, final int end) {
 		final GetTagsQuery query = new GetTagsQuery(start, end);
 		query.setResourceType(resourceType);
 		query.setGrouping(grouping, groupingName);
 		query.setFilter(regex);
-		query.setOrder(order);
+		query.setSortKey(sortKey);
 		return execute(query);
 	}
 
@@ -504,7 +528,7 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public List<User> getUsers(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final UserRelation relation, final String search, final int start, final int end) {
+	public List<User> getUsers(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final SortKey sortKey, final UserRelation relation, final String search, final int start, final int end) {
 		// here we just simulate two possible answers of the user chain
 		if (GroupingEntity.ALL.equals(grouping)) {
 			return execute(new GetUserListQuery(start, end));

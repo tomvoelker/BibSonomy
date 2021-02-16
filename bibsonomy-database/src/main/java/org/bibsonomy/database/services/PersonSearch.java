@@ -24,50 +24,34 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.services.searcher;
+package org.bibsonomy.database.services;
 
 import java.util.List;
 
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.statistics.Statistics;
-import org.bibsonomy.services.searcher.query.PostSearchQuery;
 
 /**
- * Interface for resource search operations
+ * Interface for person search operations
  * 
- * @author fei, dzo
- *
- * @param <R>
+ * @author jil
  */
-public interface ResourceSearch<R extends Resource> {
+public interface PersonSearch {
 
 	/**
-	 * search for posts using a full text search index
-	 *
-	 * @param loggedinUser the logged in user
-	 * @param postQuery the query with all query parameters
-	 * @return all posts matching the search query
+	 * Allows autocompletion for persons
+	 * @param query contains a query with some mixture of parts of a name, parts of the title or the university name
+	 * @return a list of {@link Person}s. Each {@link Person} object is further initialized with a main name.
 	 */
-	List<Post<R>> getPosts(final User loggedinUser, final PostSearchQuery<?> postQuery);
+	List<Person> getPersons(final PersonQuery query);
 
 	/**
-	 * statistics about the posts matching the query
-	 *
+	 * statistics for the matching persons (like the count)
 	 * @param loggedinUser
-	 * @param postQuery
+	 * @param query
 	 * @return
 	 */
-	Statistics getStatistics(final User loggedinUser, final PostSearchQuery<?> postQuery);
-
-	/**
-	 * get tag cloud for given search query
-	 *
-	 * @param loggedinUser
-	 * @param postQuery
-	 * @return tags that are used for the posts matching the search query
-	 */
-	List<Tag> getTags(final User loggedinUser, final PostSearchQuery<?> postQuery);
+	Statistics getStatistics(final User loggedinUser, final PersonQuery query);
 }

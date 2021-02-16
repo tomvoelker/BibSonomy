@@ -27,7 +27,6 @@
 package org.bibsonomy.search.es.index.generator;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.search.es.ESClient;

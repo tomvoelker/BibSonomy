@@ -39,6 +39,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -54,6 +55,15 @@ import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHits;
+
+import java.net.URI;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * manager for Elasticsearch
@@ -94,7 +104,6 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	@Override
 	protected void updateIndex(final String indexName, final DefaultSearchIndexSyncState oldState) {
 		final DefaultSearchIndexSyncState targetState = this.inputLogic.getDbState();
-		
 		final int oldLastTasId = oldState.getLast_tas_id().intValue();
 		
 		/*
@@ -259,5 +268,23 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 		indexData.setType(this.entityInformationProvider.getType());
 		indexData.setSource(convertedPost);
 		return indexData;
+	}
+
+	/**
+	 * execute a search
+	 * @param query the query to use
+	 * @param sortCriteriums a list of sorting criteriums
+	 * @param offset the offset
+	 * @param limit the limit
+	 * @param minScore the min score
+	 * @param fieldsToRetrieve the fields to retrieve
+	 * @return
+	 */
+	public SearchHits search(final QueryBuilder query, final List<SortCriterium> sortCriteriums, int offset, int limit, Float minScore, final Set<String> fieldsToRetrieve) {
+		return this.client.search(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query, null, sortCriteriums, offset, limit, minScore, fieldsToRetrieve);
+	}
+
+	public long getDocumentCount(QueryBuilder query) {
+		return this.client.getDocumentCount(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query);
 	}
 }

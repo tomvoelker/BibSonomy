@@ -26,21 +26,10 @@
  */
 package org.bibsonomy.database.managers;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.JobResult;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupRole;
@@ -49,6 +38,8 @@ import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.IdenticalHashErrorMessage;
@@ -78,16 +69,27 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.validation.ModelValidator;
-import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.database.services.ResourceSearch;
 import org.bibsonomy.services.searcher.query.PostSearchQuery;
 import org.bibsonomy.util.ReflectionUtils;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Used to create, read, update and delete posts from the database.
@@ -325,21 +327,21 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 *
 	 * @param groupId
 	 * @param tagIndex
-	 * @param order
+	 * @param sortKey
 	 * @param limit
 	 * @param offset
 	 * @param session
 	 * @return a list of posts
 	 *
 	 */
-	public List<Post<R>> getPostsByTagNames(final int groupId, final List<TagIndex> tagIndex, final Order order, final int limit, final int offset, final DBSession session) {
+	public List<Post<R>> getPostsByTagNames(final int groupId, final List<TagIndex> tagIndex, final SortKey sortKey, final int limit, final int offset, final DBSession session) {
 		final P param = this.createParam(limit, offset);
 		param.setGroupId(groupId);
 		param.setTagIndex(tagIndex);
-		param.setOrder(order);
+		param.setSortKey(sortKey);
 
-		if (present(order)) {
-			if (Order.FOLKRANK.equals(param.getOrder())){
+		if (present(sortKey)) {
+			if (SortKey.FOLKRANK.equals(param.getSortKey())){
 				param.setGroupId(GroupID.PUBLIC);
 				return this.postList("get" + this.resourceClassName + "ByTagNamesAndFolkrank", param, session);
 			}
@@ -713,20 +715,31 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * group. This is an aggregated view of all posts of the group members
 	 *
 	 * @param groupId
+	 * @param requestedGroupName
 	 * @param visibleGroupIDs
 	 * @param queryScope
 	 * @param loginUserName
 	 * @param simHash
 	 * @param postAccess
 	 * @param filters
+	 * @param sortCriteriums
 	 * @param limit
 	 * @param offset
 	 * @param systemTags
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForGroup(final int groupId, final List<Integer> visibleGroupIDs, final QueryScope queryScope, final String loginUserName, final HashID simHash, final PostAccess postAccess, final Set<Filter> filters, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		return this.getPostsForGroup(groupId, visibleGroupIDs, loginUserName, simHash, postAccess, filters, limit, offset, systemTags, session);
+	public List<Post<R>> getPostsForGroup(final int groupId, final String requestedGroupName, final List<Integer> visibleGroupIDs, final QueryScope queryScope, final String loginUserName, final HashID simHash, final PostAccess postAccess, final Set<Filter> filters, final List<SortCriterium> sortCriteriums, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+		switch(searchType) {
+			case FEDERATED:
+				return this.resourceSearch.getPosts(loginUserName, null, requestedGroupName, null, null, searchType, null, null, null, null, null, null, null, null, null, SortKey.NONE, limit, offset, systemTags);
+			case SEARCHINDEX:
+				return this.resourceSearch.getPosts(loginUserName, null, requestedGroupName, null, null, searchType, null, null, null, null, null, null, null, null, null, sortCriteriums, limit, offset, systemTags);
+			case LOCAL:
+			default:
+				return this.getPostsForGroup(groupId, visibleGroupIDs, loginUserName, simHash, postAccess, filters, limit, offset, systemTags, session);
+		}
+
 	}
 
 

@@ -163,7 +163,7 @@ public class PerformanceTest extends AbstractDatabaseManagerTest {
 	private void callMethod(final Method method, final BookmarkParam param) {
 		switch (method) {
 		case getBookmarkByTagNames:
-			bookmarkDb.getPostsByTagNames(param.getGroupId(), param.getTagIndex(), param.getOrder(), param.getLimit(), param.getOffset(), this.dbSession);
+			bookmarkDb.getPostsByTagNames(param.getGroupId(), param.getTagIndex(), param.getSortKey(), param.getLimit(), param.getOffset(), this.dbSession);
 			break;
 		case getBookmarkByTagNamesForUser:
 			bookmarkDb.getPostsByTagNamesForUser(param.getUserName(), param.getRequestedUserName(), param.getTagIndex(), param.getGroupId(), param.getGroups(), param.getLimit(), param.getOffset(), null, param.getFilters(), param.getSystemTags(), this.dbSession);

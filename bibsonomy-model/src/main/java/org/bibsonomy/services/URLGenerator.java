@@ -33,6 +33,7 @@ import java.net.URL;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.exceptions.UnsupportedFormatException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.Author;
@@ -47,7 +48,6 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.FavouriteLayoutSource;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.enums.SimpleExportLayout;
 import org.bibsonomy.model.factories.ResourceFactory;
@@ -1077,7 +1077,7 @@ public class URLGenerator {
 		final String url = this.projectHome + PUBLICATIONS_URL;
 		return this.getUrl(url);
 	}
-	
+
 	/**
 	 * @param publication
 	 * @return the publication url
@@ -1290,16 +1290,16 @@ public class URLGenerator {
 	 * 
 	 * @param toSearch
 	 * @param searchScope the search type such as 'group', 'search', 'sharedResourceSearch'
-	 * @param order
+	 * @param sortKey
 	 * @return URL pointing to the results of the search.
 	 */
-	public String getSearchUrl(final String toSearch, QueryScope searchScope, Order order) {
+	public String getSearchUrl(final String toSearch, QueryScope searchScope, SortKey sortKey) {
 		UrlBuilder ub = new UrlBuilder(this.projectHome).addPathElement(SEARCH_PREFIX).addPathElement(toSearch);
 		if (searchScope != QueryScope.LOCAL) {
 			ub.addParameter("scope", searchScope.name());
 		}
-		if ((order != null) && (order != Order.RANK)) {
-			ub.addParameter("order", order.name().toLowerCase());
+		if ((sortKey != null) && (sortKey != SortKey.RANK)) {
+			ub.addParameter("sortKey", sortKey.name().toLowerCase());
 		}
 		return this.getUrl(ub.asString());
 	}
@@ -1311,7 +1311,7 @@ public class URLGenerator {
 	 * @return URL pointing to the results of the search.
 	 */
 	public String getSearchUrl(final String toSearch) {
-		return getSearchUrl(toSearch, QueryScope.LOCAL, Order.RANK);
+		return getSearchUrl(toSearch, QueryScope.LOCAL, SortKey.RANK);
 	}
 
 	/**

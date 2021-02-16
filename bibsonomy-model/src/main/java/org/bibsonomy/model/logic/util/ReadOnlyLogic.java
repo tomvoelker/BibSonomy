@@ -40,6 +40,7 @@ import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.common.enums.TagRelation;
@@ -68,7 +69,6 @@ import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -116,11 +116,19 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.QueryScope, java.util.Set, org.bibsonomy.model.enums.Order, java.util.Date, java.util.Date, int, int)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.QueryScope, java.util.Set, org.bibsonomy.common.enums.SortKey, java.util.Date, java.util.Date, int, int)
 	 */
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end) {
-		return this.logicinterface.getPosts(resourceType, grouping, groupingName, tags, hash, search, queryScope, filters, order, startDate, endDate, start, end);
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, Set<Filter> filters, SortKey sortKey, Date startDate, Date endDate, int start, int end) {
+		return this.logicinterface.getPosts(resourceType, grouping, groupingName, tags, hash, search, searchType, filters, sortKey, startDate, endDate, start, end);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.SearchType, java.util.Set, org.bibsonomy.common.SortCriterium, java.util.Date, java.util.Date, int, int)
+	 */
+	@Override
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, Set<Filter> filters, List<SortCriterium> sortCriteriums, Date startDate, Date endDate, int start, int end) {
+		return this.logicinterface.getPosts(resourceType, grouping, groupingName, tags, hash, search, queryScope, filters, sortCriteriums, startDate, endDate, start, end);
 	}
 
 	@Override
@@ -171,11 +179,11 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPostStatistics(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, java.util.Set, org.bibsonomy.model.enums.Order, java.util.Date, java.util.Date, int, int)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPostStatistics(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, java.util.Set, org.bibsonomy.common.enums.SortKey, java.util.Date, java.util.Date, int, int)
 	 */
 	@Override
-	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end) {
-		return this.logicinterface.getPostStatistics(resourceType, grouping, groupingName, tags, hash, search, filters, order, startDate, endDate, start, end);
+	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, SortKey sortKey, Date startDate, Date endDate, int start, int end) {
+		return this.logicinterface.getPostStatistics(resourceType, grouping, groupingName, tags, hash, search, filters, sortKey, startDate, endDate, start, end);
 	}
 
 	/* (non-Javadoc)
@@ -347,11 +355,11 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getUsers(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, org.bibsonomy.model.enums.Order, org.bibsonomy.common.enums.UserRelation, java.lang.String, int, int)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getUsers(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, org.bibsonomy.common.enums.SortKey, org.bibsonomy.common.enums.UserRelation, java.lang.String, int, int)
 	 */
 	@Override
-	public List<User> getUsers(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, UserRelation relation, String search, int start, int end) {
-		return this.logicinterface.getUsers(resourceType, grouping, groupingName, tags, hash, order, relation, search, start, end);
+	public List<User> getUsers(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, SortKey sortKey, UserRelation relation, String search, int start, int end) {
+		return this.logicinterface.getUsers(resourceType, grouping, groupingName, tags, hash, sortKey, relation, search, start, end);
 	}
 
 	/* (non-Javadoc)
@@ -427,19 +435,19 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getTags(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, java.lang.String, org.bibsonomy.common.enums.TagSimilarity, org.bibsonomy.model.enums.Order, java.util.Date, java.util.Date, int, int)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getTags(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, java.lang.String, org.bibsonomy.common.enums.TagSimilarity, org.bibsonomy.common.enums.SortKey, java.util.Date, java.util.Date, int, int)
 	 */
 	@Override
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end) {
-		return this.logicinterface.getTags(resourceType, grouping, groupingName, tags, hash, search, regex, relation, order, startDate, endDate, start, end);
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, String regex, TagSimilarity relation, SortKey sortKey, Date startDate, Date endDate, int start, int end) {
+		return this.logicinterface.getTags(resourceType, grouping, groupingName, tags, hash, search, regex, relation, sortKey, startDate, endDate, start, end);
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getAuthors(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, org.bibsonomy.model.enums.Order, org.bibsonomy.common.enums.FilterEntity, int, int, java.lang.String)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getAuthors(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, org.bibsonomy.common.enums.SortKey, org.bibsonomy.common.enums.FilterEntity, int, int, java.lang.String)
 	 */
 	@Override
-	public List<Author> getAuthors(GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search) {
-		return this.logicinterface.getAuthors(grouping, groupingName, tags, hash, order, filter, start, end, search);
+	public List<Author> getAuthors(GroupingEntity grouping, String groupingName, List<String> tags, String hash, SortKey sortKey, FilterEntity filter, int start, int end, String search) {
+		return this.logicinterface.getAuthors(grouping, groupingName, tags, hash, sortKey, filter, start, end, search);
 	}
 
 	/* (non-Javadoc)
@@ -870,8 +878,8 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getTags(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.QueryScope, java.lang.String, org.bibsonomy.common.enums.TagSimilarity, org.bibsonomy.model.enums.Order, java.util.Date, java.util.Date, int, int)
 	 */
 	@Override
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end) {
-		return this.logicinterface.getTags(resourceType, grouping, groupingName, tags, hash, search, queryScope, regex, relation, order, startDate, endDate, start, end);
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, String regex, TagSimilarity relation, SortKey sortKey, Date startDate, Date endDate, int start, int end) {
+		return this.logicinterface.getTags(resourceType, grouping, groupingName, tags, hash, search, queryScope, regex, relation, sortKey, startDate, endDate, start, end);
 	}
 
 	/* (non-Javadoc)
