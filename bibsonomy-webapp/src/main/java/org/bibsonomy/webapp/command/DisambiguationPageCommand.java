@@ -53,7 +53,7 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	
 	private Person person;
 	private PersonName personName;
-	private Post<BibTex> post;
+	private Post<? extends BibTex> post;
 	private List<ResourcePersonRelation> personSuggestions;
 	private HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts;
 	private List<Post<BibTex>> suggestedPosts;
@@ -75,14 +75,14 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the post
 	 */
-	public Post<BibTex> getPost() {
+	public Post<? extends BibTex> getPost() {
 		return this.post;
 	}
 
 	/**
 	 * @param post the post to set
 	 */
-	public void setPost(Post<BibTex> post) {
+	public void setPost(Post<? extends BibTex> post) {
 		this.post = post;
 	}
 

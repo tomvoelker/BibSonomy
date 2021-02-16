@@ -142,6 +142,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -483,11 +484,8 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void createSyncService(final SyncService service, final boolean server) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			this.syncDBManager.createSyncService(service, server, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -501,11 +499,8 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void deleteSyncService(final URI service, final boolean server) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			this.syncDBManager.deleteSyncService(service, server, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -519,11 +514,8 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void createSyncServer(final String userName, final SyncService server) {
 		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			this.syncDBManager.createSyncServerForUser(userName, server, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -537,11 +529,8 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void updateSyncServer(final String userName, final SyncService service, final SyncSettingsUpdateOperation operation) {
 		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			this.syncDBManager.updateSyncServerForUser(userName, service, operation, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -846,11 +835,8 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) throws ObjectMovedException, ObjectNotFoundException {
-		final DBSession session = this.openSession();
-		try {
+		try (DBSession session = this.openSession()) {
 			return this.getPostDetails(resourceHash, userName, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -1024,7 +1010,7 @@ public class DBLogic implements LogicInterface {
 			throw new UnsupportedResourceTypeException("The requested resourcetype (" + resourceType.getClass().getName() + ") is not supported.");
 		} catch (final QueryTimeoutException ex) {
 			// if a query times out, we return an empty list
-			return new ArrayList<Tag>();
+			return new ArrayList<>();
 		} finally {
 			session.close();
 		}
@@ -2408,7 +2394,8 @@ public class DBLogic implements LogicInterface {
 	 *         in both queries getConceptForUser and getGlobalConceptByName
 	 *         the case of parameter conceptName is ignored
 	 *
-	 * @see org.bibsonomy.model.logic.LogicInterface#getConceptDetails(java.lang.String, org.bibsonomy.common.enums.GroupingEntity, java.lang.String)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getConceptDetails(java.lang.String,
+     * org.bibsonomy.common.enums.GroupingEntity, java.lang.String)
 	 */
 	@Override
 	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {
@@ -3364,13 +3351,8 @@ public class DBLogic implements LogicInterface {
 
 
 	@Override
-	public PersonSuggestionQueryBuilder getPersonSuggestion(final String queryString) {
-		return new PersonSuggestionQueryBuilder(queryString) {
-			@Override
-			public List<ResourcePersonRelation> doIt() {
-				return DBLogic.this.personDBManager.getPersonSuggestion(this);
-			}
-		};
+	public List<ResourcePersonRelation> getPersonSuggestion(final PersonSuggestionQueryBuilder builder) {
+		return this.personDBManager.getPersonSuggestion(builder);
 	}
 
 	@Override
@@ -3386,23 +3368,21 @@ public class DBLogic implements LogicInterface {
 		ValidationUtils.assertNotNull(resourcePersonRelation.getPerson().getPersonId());
 		ValidationUtils.assertNotNull(resourcePersonRelation.getRelationType());
 
-		final List<ResourcePersonRelation> existingRelations = this.getResourceRelations() //
-				.byInterhash(resourcePersonRelation.getPost().getResource().getInterHash()) //
-				.byRelationType(resourcePersonRelation.getRelationType())//
-				.byAuthorIndex(Integer.valueOf(resourcePersonRelation.getPersonIndex())) //
-				.getIt();
-		if (existingRelations.size() > 0 ) {
+		final ResourcePersonRelationQueryBuilder builder = new ResourcePersonRelationQueryBuilder()
+						.byInterhash(resourcePersonRelation.getPost().getResource().getInterHash())
+						.byRelationType(resourcePersonRelation.getRelationType())
+						.byAuthorIndex(Integer.valueOf(resourcePersonRelation.getPersonIndex()));
+		final List<ResourcePersonRelation> existingRelations = this.getResourceRelations(builder);
+		if (existingRelations.size() > 0) {
 			final ResourcePersonRelation existingRelation = existingRelations.get(0);
 			throw new ResourcePersonAlreadyAssignedException(existingRelation);
 		}
 
 		resourcePersonRelation.setChangedBy(this.loginUser.getName());
 		resourcePersonRelation.setChangedAt(new Date());
-		final DBSession session = this.openSession();
-		try {
-			this.personDBManager.addResourceRelation(resourcePersonRelation, session);
-		} finally {
-			session.close();
+
+		try (final DBSession session = this.openSession()) {
+			this.personDBManager.addResourceRelation(resourcePersonRelation, this.loginUser, session);
 		}
 	}
 
@@ -3410,10 +3390,10 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonRelation(java.lang.String, java.lang.String, org.bibsonomy.model.Person, org.bibsonomy.model.enums.PersonResourceRelation)
 	 */
 	@Override
-	public void removeResourceRelation(final int resourceRelationId) {
+	public void removeResourceRelation(String personId, final String interHash, int index, PersonResourceRelationType type) {
 		this.ensureLoggedInAndNoSpammer();
 		try (final DBSession session = this.openSession()) {
-			this.personDBManager.removeResourceRelation(resourceRelationId, this.loginUser, session);
+			this.personDBManager.removeResourceRelation(personId, interHash, index, type, this.loginUser, session);
 		}
 	}
 
@@ -3508,17 +3488,14 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
 	 */
 	@Override
-	public void createOrUpdatePerson(final Person person) {
+	public String createOrUpdatePerson(final Person person) {
 		this.ensureLoggedInAndNoSpammer();
-		final DBSession session = this.openSession();
-		try {
-			this.createOrUpdatePerson(person, session);
-		} finally {
-			session.close();
-		}
+        try (DBSession session = this.openSession()) {
+            return createOrUpdatePerson(person, session);
+        }
 	}
 
-	private void createOrUpdatePerson(final Person person, final DBSession session) {
+	private String createOrUpdatePerson(final Person person, final DBSession session) {
 		this.ensureLoggedInAndNoSpammer();
 		if (person.getUser() != null) {
 			if (!person.getUser().equals(this.loginUser.getName())) {
@@ -3529,7 +3506,7 @@ public class DBLogic implements LogicInterface {
 				if (personOld == null) {
 					throw new NoSuchElementException("person " + person.getPersonId());
 				}
-				if (personOld.getUser() != null && personOld.getUser().equals(this.loginUser.getName()) == false) {
+				if (personOld.getUser() != null && !personOld.getUser().equals(this.loginUser.getName())) {
 					throw new AccessDeniedException();
 				}
 			}
@@ -3543,6 +3520,7 @@ public class DBLogic implements LogicInterface {
 			this.personDBManager.createPerson(person, session);
 		}
 		this.updatePersonNames(person, session);
+		return person.getPersonId();
 	}
 
 	private void updatePersonNames(final Person person, final DBSession session) {
@@ -3632,22 +3610,6 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-	
-	/**
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonByUser(String)
-	 */
-	public Person getPersonByUser(final String userName) {
-		final DBSession session = this.openSession();
-		
-		try {
-			if (present(userName)) {
-				return this.personDBManager.getPersonByUser(userName, session);
-			}
-			return null;
-		} finally {
-			session.close();
-		}
-	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(int)
@@ -3700,75 +3662,74 @@ public class DBLogic implements LogicInterface {
 	}
 
 	@Override
-	public ResourcePersonRelationQueryBuilder getResourceRelations() {
-		return new ResourcePersonRelationQueryBuilder() {
-			@Override
-			public List<ResourcePersonRelation> getIt() {
-				final List<ResourcePersonRelation> rVal = this.query();
-				if (rVal != null) {
-					this.postProcess(rVal);
-					return rVal;
-				}
-				throw new UnsupportedOperationException(this.toString());
-			}
+	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQueryBuilder builder) {
+		final List<ResourcePersonRelation> rVal = this.queryResourceRelations(builder);
+		if (rVal != null) {
+			this.postProcessResourceRelation(rVal, builder);
+			return rVal;
+		}
 
-			private List<ResourcePersonRelation> query() {
-				final DBSession session = DBLogic.this.openSession();
+		throw new UnsupportedOperationException(this.toString());
+	}
+
+	private List<ResourcePersonRelation> queryResourceRelations(ResourcePersonRelationQueryBuilder builder) {
+		final DBSession session = this.openSession();
+		try {
+			if (!builder.isWithPosts() && builder.isWithPersonsOfPosts()) {
+				throw new IllegalArgumentException("need to fetch posts to retrieve persons of posts");
+			}
+			if (present(builder.getInterhash())) {
+				if (!builder.isWithPosts() && !present(builder.getAuthorIndex()) && !present(builder.getPersonId()) && !present(builder.getRelationType())) {
+					return this.personDBManager.getResourcePersonRelationsWithPersonsByInterhash(builder.getInterhash(), session);
+				} else if (present(builder.getAuthorIndex()) && present(builder.getRelationType()) && !builder.isWithPosts() && !builder.isWithPersons() && !present(builder.getPersonId())) {
+					return this.personDBManager.getResourcePersonRelations(builder.getInterhash(), builder.getAuthorIndex(), builder.getRelationType(), session);
+				}
+			} else if (present(builder.getPersonId()) && !builder.isWithPersons() && !present(builder.getAuthorIndex()) && !present(builder.getRelationType())) {
+				final List<ResourcePersonRelation> rVal = this.personDBManager.getResourcePersonRelationsWithPosts(builder.getPersonId(), this.loginUser, GoldStandardPublication.class, session);
+				for (final ResourcePersonRelation rpr : rVal) {
+					SystemTagsExtractor.handleHiddenSystemTags(rpr.getPost(), this.loginUser.getName());
+				}
+				if (builder.isWithPersonsOfPosts()) {
+					for (final ResourcePersonRelation resourcePersonRelation : rVal) {
+						final String interHash = resourcePersonRelation.getPost().getResource().getInterHash();
+						final ResourcePersonRelationQueryBuilder relsBuilder = new ResourcePersonRelationQueryBuilder()
+										.byInterhash(interHash)
+										.withPersons(true);
+						final List<ResourcePersonRelation> relsOfPub = this.getResourceRelations(relsBuilder);
+						resourcePersonRelation.getPost().setResourcePersonRelations(relsOfPub);
+					}
+				}
+				return rVal;
+			}
+			return null;
+		} finally {
+			session.close();
+		}
+	}
+
+	private void postProcessResourceRelation(final List<ResourcePersonRelation> rVal, final ResourcePersonRelationQueryBuilder builder) {
+		if (builder.isGroupByInterhash()) {
+			final Map<String, ResourcePersonRelation> byInterHash = new HashMap<>();
+			addToMapIfNotPresent(byInterHash, rVal);
+			rVal.clear();
+			rVal.addAll(byInterHash.values());
+		}
+		if (builder.getOrder() == ResourcePersonRelationQueryBuilder.Order.publicationYear) {
+			Collections.sort(rVal, (o1, o2) -> {
 				try {
-					if (!this.isWithPosts() && this.isWithPersonsOfPosts()) {
-						throw new IllegalArgumentException("need to fetch posts to retrieve persons of posts");
+					final int year1 = Integer.parseInt(o1.getPost().getResource().getYear().trim());
+					final int year2 = Integer.parseInt(o2.getPost().getResource().getYear().trim());
+					if (year1 != year2) {
+						return year2 - year1;
 					}
-					if (present(this.getInterhash())) {
-						if (!this.isWithPosts() && !present(this.getAuthorIndex()) && !present(this.getPersonId()) && !present(this.getRelationType())) {
-							return DBLogic.this.personDBManager.getResourcePersonRelationsWithPersonsByInterhash(this.getInterhash(), session);
-						} else if (present(this.getAuthorIndex()) && present(this.getRelationType()) && !this.isWithPosts() && !this.isWithPersons() && !present(this.getPersonId())) {
-							return DBLogic.this.personDBManager.getResourcePersonRelations(this.getInterhash(), this.getAuthorIndex(), this.getRelationType(), session);
-						}
-					} else if (present(this.getPersonId()) && !this.isWithPersons() && !present(this.getAuthorIndex()) && !present(this.getRelationType())) {
-						final List<ResourcePersonRelation> rVal = DBLogic.this.personDBManager.getResourcePersonRelationsWithPosts(this.getPersonId(), DBLogic.this.loginUser, BibTex.class, session);
-						for (final ResourcePersonRelation rpr : rVal) {
-							SystemTagsExtractor.handleHiddenSystemTags(rpr.getPost(), DBLogic.this.loginUser.getName());
-						}
-						if (this.isWithPersonsOfPosts()) {
-							for (final ResourcePersonRelation resourcePersonRelation : rVal) {
-								final String interHash = resourcePersonRelation.getPost().getResource().getInterHash();
-								final List<ResourcePersonRelation> relsOfPub = DBLogic.this.getResourceRelations().byInterhash(interHash).withPersons(true).getIt();
-								resourcePersonRelation.getPost().setResourcePersonRelations(relsOfPub);
-							}
-						}
-						return rVal;
-					}
-					return null;
-				} finally {
-					session.close();
+				} catch (final Exception e) {
+					log.warn(e);
 				}
-			}
-
-			private void postProcess(final List<ResourcePersonRelation> rVal) {
-				if (this.isGroupByInterhash()) {
-					final Map<String, ResourcePersonRelation> byInterHash = new HashMap<>();
-					addToMapIfNotPresent(byInterHash, rVal);
-					rVal.clear();
-					rVal.addAll(byInterHash.values());
-				}
-				if (this.getOrder() == ResourcePersonRelationQueryBuilder.Order.publicationYear) {
-					Collections.sort(rVal, (o1, o2) -> {
-						try {
-							final int year1 = Integer.parseInt(o1.getPost().getResource().getYear().trim());
-							final int year2 = Integer.parseInt(o2.getPost().getResource().getYear().trim());
-							if (year1 != year2) {
-								return year2 - year1;
-							}
-						} catch (final Exception e) {
-							log.warn(e);
-						}
-						return System.identityHashCode(o1) - System.identityHashCode(o2);
-					});
-				} else if (this.getOrder() != null) {
-					throw new UnsupportedOperationException();
-				}
-			}
-		};
+				return System.identityHashCode(o1) - System.identityHashCode(o2);
+			});
+		} else if (builder.getOrder() != null) {
+			throw new UnsupportedOperationException();
+		}
 	}
 
 	/**

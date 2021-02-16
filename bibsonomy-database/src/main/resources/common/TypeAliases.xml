@@ -80,6 +80,7 @@
 	<typeAlias alias="inboxParam"			type="org.bibsonomy.database.params.InboxParam" />
 	<typeAlias alias="loggingParam"			type="org.bibsonomy.database.params.LoggingParam" />
 	<typeAlias alias="metaDataPostParam"	type="org.bibsonomy.database.params.metadata.PostParam" />
+	<typeAlias alias="goldstandardReferenceParam"	type="org.bibsonomy.database.params.GoldStandardReferenceParam" />
 	<typeAlias alias="wikiParam"			type="org.bibsonomy.database.params.WikiParam" />
 	
 	<typeAlias alias="discussionItemParam"	type="org.bibsonomy.database.params.discussion.DiscussionItemParam" />

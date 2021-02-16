@@ -160,7 +160,7 @@ public class UserUtilsTest {
 		 * @throws Exception
 		 */
 	@Test
-	public void testIsExistingUser() throws Exception {
+	public void testIsExistingUser() {
 		final User user = new User();
 		assertFalse(UserUtils.isExistingUser(user));
 		user.setRole(Role.DELETED);
@@ -178,11 +178,12 @@ public class UserUtilsTest {
 	}
 
 	@Test
-	public void testGetNiceUserName() throws Exception {
+	public void testGetNiceUserName() {
 		User user = new User("testuser");
-		assertEquals("testuser",UserUtils.getNiceUserName(user, false));
-		assertEquals("@testuser",UserUtils.getNiceUserName(user, true));
+		assertEquals("testuser", UserUtils.getNiceUserName(user, false));
+		assertEquals("@testuser", UserUtils.getNiceUserName(user, true));
+
 		user.setRealname("William T. Riker");
-		assertEquals("William T. Riker",UserUtils.getNiceUserName(user, true));
+		assertEquals("William T. Riker", UserUtils.getNiceUserName(user, true));
 	}
 }

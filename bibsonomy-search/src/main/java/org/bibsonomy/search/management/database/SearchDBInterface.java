@@ -49,7 +49,7 @@ import org.bibsonomy.database.services.ResourceSearch;
 public interface SearchDBInterface<R extends Resource> extends DatabaseInformationLogic {
 	
 	/** the max entries to fetch from the database into memory */
-	public static final int SQL_BLOCKSIZE = 10000;
+	public static final int SQL_BLOCKSIZE = 100;
 
 	/** 
 	 * @param userName

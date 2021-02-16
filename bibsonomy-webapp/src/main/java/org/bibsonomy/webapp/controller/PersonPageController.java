@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -57,10 +58,12 @@ import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.model.util.PersonMatchUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.command.PersonPageCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -68,6 +71,7 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.picture.PictureHandlerFactory;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.json.simple.JSONArray;
@@ -79,6 +83,8 @@ import org.springframework.validation.Errors;
  */
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(PersonMatch.class);
+
+	private static final Set<PersonResourceRelationType> PUBLICATION_RELATED_RELATION_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
 
 	private URLGenerator urlGenerator;
 	private RequestLogic requestLogic;
@@ -97,12 +103,11 @@ public class PersonPageController extends SingleResourceListController implement
 		if (!present(formAction) && !present(command.getRequestedPersonId())){
 			throw new MalformedURLSchemeException("The person page was requested without a person in the request.");
 		}
-		
-		if (!context.isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
-		}
-		
+
 		if (present(formAction)) {
+			if (!context.isValidCkey()) {
+				errors.reject("error.field.valid.ckey");
+			}
 			switch(formAction) {
 				case "conflictMerge": return this.conflictMerge(command);
 				case "getConflict": return this.getConflicts(command);
@@ -239,9 +244,15 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 * @return
 	 */
-	private View searchAuthorAction(PersonPageCommand command) { 
-		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName()).withEntityPersons(true).withNonEntityPersons(true).withRelationType(PersonResourceRelationType.AUTHOR).preferUnlinked(true).doIt();
-		JSONArray array = new JSONArray();
+	private View searchAuthorAction(PersonPageCommand command) {
+		final PersonSuggestionQueryBuilder builder = new PersonSuggestionQueryBuilder(command.getFormSelectedName());
+		builder.withEntityPersons(true)
+						.withNonEntityPersons(true)
+						.withRelationType(PersonResourceRelationType.AUTHOR)
+						.preferUnlinked(true);
+
+		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(builder);
+		final JSONArray array = new JSONArray();
 		buildupAuthorResponseArray(suggestions,array);
 		command.setResponseString(array.toJSONString());
 		
@@ -273,17 +284,21 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 * @return
 	 */
-	private View searchPubAuthorAction(PersonPageCommand command) { 
-		final List<ResourcePersonRelation> suggestionsPerson = this.logic.getPersonSuggestion(command.getFormSelectedName()).withEntityPersons(true).withNonEntityPersons(true).withRelationType(PersonResourceRelationType.AUTHOR).preferUnlinked(true).doIt();
+	private View searchPubAuthorAction(final PersonPageCommand command) {
+		final PersonSuggestionQueryBuilder builder = new PersonSuggestionQueryBuilder(command.getFormSelectedName())
+						.withEntityPersons(true).withNonEntityPersons(true)
+						.withRelationType(PersonResourceRelationType.AUTHOR)
+						.preferUnlinked(true);
+
+		final List<ResourcePersonRelation> suggestionsPerson = this.logic.getPersonSuggestion(builder);
 		final List<Post<BibTex>> suggestionsPub = this.logic.getPublicationSuggestion(command.getFormSelectedName());
 		
-		JSONArray array = new JSONArray();
+		final JSONArray array = new JSONArray();
 		buildupAuthorResponseArray(suggestionsPerson, array); // Person(with publication) oriented search return 
 		buildupPubResponseArray(suggestionsPub, array);  // Publications(not associated to Persons) oriented search return
 		command.setResponseString(array.toJSONString());
 		
 		return Views.AJAX_JSON;
-		
 	}
 
 	/**
@@ -292,7 +307,12 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	@SuppressWarnings("unchecked")
 	private View searchAction(PersonPageCommand command) {
-		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName()).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values()).doIt();
+		final PersonSuggestionQueryBuilder builder = new PersonSuggestionQueryBuilder(command.getFormSelectedName())
+						.withEntityPersons(true)
+						.withNonEntityPersons(true)
+						.withRelationType(PersonResourceRelationType.AUTHOR)
+						.preferUnlinked(true);
+		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(builder);
 		
 		final JSONArray array = new JSONArray();
 		for (ResourcePersonRelation rel : suggestions) {
@@ -330,7 +350,7 @@ public class PersonPageController extends SingleResourceListController implement
 		this.logic.updatePerson(person, PersonUpdateOperation.LINK_USER);
 		return Views.AJAX_TEXT;
 	}
-	
+
 	/**
 	 * Action called when a user wants to add a person role to a thesis
 	 * @param command
@@ -401,7 +421,7 @@ public class PersonPageController extends SingleResourceListController implement
 	}
 	
 	private View deleteRoleAction(PersonPageCommand command) {
-		this.logic.removeResourceRelation(Integer.valueOf(command.getFormResourcePersonRelationId()).intValue());
+		this.logic.removeResourceRelation(null, null, -1, null); // FIXME: change
 		
 		return Views.AJAX_TEXT;
 	}
@@ -463,7 +483,8 @@ public class PersonPageController extends SingleResourceListController implement
 			this.logic.updatePerson(person, operation);
 			jsonResponse.put("status", true);
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
+			log.error("error while updating person " + commandPerson.getPersonId(), e);
 			jsonResponse.put("status", false);
 			// TODO: set proper error message
 			//jsonResponse.put("message", "Some error occured");
@@ -577,16 +598,21 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View showAction(final PersonPageCommand command) {
+		// TODO: remove initialization
+		for (PersonResourceRelationType prr : PersonResourceRelationType.values()) {
+			command.getAvailableRoles().add(prr);
+		}
+
 		final String requestedPersonId = command.getRequestedPersonId();
 		/*
 		 * get the person; if person with the requested id was merged with another person, this method
 		 * throws a ObjectMovedException and the wrapper will render the redirect
 		 */
 		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, requestedPersonId);
-		
 		if (!present(person)) {
 			return Views.ERROR404;
 		}
+
 		command.setPerson(person);
 		command.setPhdAdvisorRecForPerson(this.logic.getPhdAdvisorRecForPerson(person.getPersonId()));
 		
@@ -594,62 +620,77 @@ public class PersonPageController extends SingleResourceListController implement
 			command.setOkHintKey(this.requestLogic.getLastAction());
 			this.requestLogic.setLastAction(null);
 		}
-		
-		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
-		List<Post<?>> authorPosts = new ArrayList<>();
-		List<Post<?>> advisorPosts = new ArrayList<>();
-		List<Post<?>> otherAuthorPosts = new ArrayList<>();
-		List<Post<?>> otherAdvisorPosts = new ArrayList<>();
+
+		// maybe this should be done in the view?
+		final List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear));
+		final List<ResourcePersonRelation> authorRelations = new ArrayList<>();
+		final List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
+		final List<ResourcePersonRelation> otherAuthorRelations = new ArrayList<>();
+		final List<ResourcePersonRelation> otherAdvisorRelations = new ArrayList<>();
 
 		for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
-			final boolean isThesis = resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis");
-			
-			if (resourcePersonRelation.getRelationType().equals(PersonResourceRelationType.AUTHOR)) {
+			final Post<? extends BibTex> post = resourcePersonRelation.getPost();
+			final BibTex publication = post.getResource();
+			final boolean isThesis = publication.getEntrytype().toLowerCase().endsWith("thesis");
+			final boolean isAuthorEditorRelation = PUBLICATION_RELATED_RELATION_TYPES.contains(resourcePersonRelation.getRelationType());
+
+			if (isAuthorEditorRelation) {
 				if (isThesis) {
-					authorPosts.add(resourcePersonRelation.getPost());
+					authorRelations.add(resourcePersonRelation);
 				} else {
-					otherAuthorPosts.add(resourcePersonRelation.getPost());
+					otherAuthorRelations.add(resourcePersonRelation);
 				}
 			} else {
 				if (isThesis) {
-					advisorPosts.add(resourcePersonRelation.getPost());
+					advisorRelations.add(resourcePersonRelation);
 				} else {
-					otherAdvisorPosts.add(resourcePersonRelation.getPost());
+					otherAdvisorRelations.add(resourcePersonRelation);
 				}
 			}
 			
 			// we explicitly do not want ratings on the person pages because this might cause users of the genealogy feature to hesitate putting in their dissertations
-			resourcePersonRelation.getPost().getResource().setRating(null);
-			resourcePersonRelation.getPost().getResource().setNumberOfRatings(null);
+			publication.setRating(null);
+			publication.setNumberOfRatings(null);
 		}
 		
-		command.setThesis(authorPosts);
-		command.setOtherPubs(otherAuthorPosts);
-		command.setAdvisedThesis(advisorPosts);
-		command.setOtherAdvisedPubs(otherAdvisorPosts);
-		command.setPersonMatchList(this.logic.getPersonMatches(person.getPersonId()));
-		command.setMergeConflicts(PersonMatchUtils.getMergeConflicts(command.getPersonMatchList()));
-		
+		command.setThesis(authorRelations);
+		command.setOtherPubs(otherAuthorRelations);
+		command.setAdvisedThesis(advisorRelations);
+		// FIXME: not used in the view!!
+		command.setOtherAdvisedPubs(otherAdvisorRelations);
+
+		final List<PersonMatch> personMatches = this.logic.getPersonMatches(person.getPersonId());
+		command.setPersonMatchList(personMatches);
+		command.setMergeConflicts(PersonMatchUtils.getMergeConflicts(personMatches));
+
+		/*
+		 * get a list of post that could be also be written by the requested person
+		 */
 		final List<Post<BibTex>> similarAuthorPubs = this.getPublicationsOfSimilarAuthor(person);
 
-		command.setSimilarAuthorPubs(similarAuthorPubs);
-
-		// prepare command
-		for (PersonResourceRelationType prr : PersonResourceRelationType.values()) {
-			command.getAvailableRoles().add(prr);
+		final List<ResourcePersonRelation> similarAuthorRelations = new ArrayList<>();
+		for (Post<BibTex> post : similarAuthorPubs) {
+			ResourcePersonRelation relation = new ResourcePersonRelation();
+			relation.setPost(post);
+			relation.setPersonIndex(PersonUtils.findIndexOfPerson(person, post.getResource()));
+			relation.setRelationType(PersonUtils.getRelationType(person, post.getResource()));
+			similarAuthorRelations.add(relation);
 		}
-		
+
+		command.setSimilarAuthorPubs(similarAuthorRelations);
+
 		return Views.PERSON_SHOW;
 	}
-	
+
 	private List<Post<BibTex>> getPublicationsOfSimilarAuthor(Person person) {
-		
-		final PersonName requestedName = person.getMainName();		
+		final PersonName requestedName = person.getMainName();
 		final String name = person.getMainName().toString();
-		
-		PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
-		List<ResourcePersonRelation> suggestedPersons = query.doIt();		
-			
+
+		final PersonSuggestionQueryBuilder builder = new PersonSuggestionQueryBuilder(name);
+		builder.withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
+
+		List<ResourcePersonRelation> suggestedPersons = this.logic.getPersonSuggestion(builder);
+
 		/*
 		 * FIXME: use author-parameter in getPosts method
 		 * @see bibsonomy.database.managers.PostDatabaseManager.#getPostsByResourceSearch()
@@ -672,13 +713,13 @@ public class PersonPageController extends SingleResourceListController implement
 			}
 		}
 		
-		List<Post<?>> postsOfSuggestedPersons = new ArrayList<>();
-		HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts = new HashMap<>();
+		final List<Post<?>> postsOfSuggestedPersons = new ArrayList<>();
+		Map<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts = new HashMap<>();
 
 		// get all persons with same name
 		for (final ResourcePersonRelation suggestedPerson : suggestedPersons) {
 
-			List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(suggestedPerson.getPerson().getPersonId()).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
+			List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(suggestedPerson.getPerson().getPersonId()).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear));
 			List<Post<?>> personPosts = new ArrayList<>();
 			
 			for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
@@ -703,14 +744,14 @@ public class PersonPageController extends SingleResourceListController implement
 			final String currentPostInterHash = post.getResource().getInterHash();
 
 			// remove post if it's already related to a person
-			for (final Post<?> personPost : postsOfSuggestedPersons) {				
+			for (final Post<?> personPost : postsOfSuggestedPersons) {
 				if (currentPostInterHash.equals(personPost.getResource().getInterHash())) {
 					noPersonRelPubList.remove(post);
 					break;
 				}
 			}
 		}
-				
+
 		return noPersonRelPubList;
 	}
 

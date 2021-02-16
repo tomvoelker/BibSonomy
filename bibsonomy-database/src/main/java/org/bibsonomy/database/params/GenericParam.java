@@ -533,7 +533,7 @@ public abstract class GenericParam {
 	 * @return a list of groups
 	 */
 	public List<Integer> getGroups() {
-		return new ArrayList<Integer>(this.groups);
+		return new ArrayList<>(this.groups);
 	}
 
 	/**
@@ -544,7 +544,7 @@ public abstract class GenericParam {
 	 * @param groups a LIST of group ids
 	 */
 	public void setGroups(final Collection<Integer> groups) {
-		this.groups = new HashSet<Integer>(groups);
+		this.groups = new HashSet<>(groups);
 	}
 
 	/**

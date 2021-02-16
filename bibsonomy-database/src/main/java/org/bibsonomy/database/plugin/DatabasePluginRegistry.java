@@ -65,9 +65,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	private List<DatabasePlugin> defaultPlugins;
 	
 	@Override
-	public void onPublicationInsert(final Post<? extends BibTex> post, final DBSession session) {
+	public void onPublicationInsert(final Post<? extends BibTex> post, User loggedinUser, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPublicationInsert(post, session);
+			plugin.onPublicationInsert(post, loggedinUser, session);
 		}
 	}
 
@@ -93,9 +93,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 
 	@Override
-	public void onGoldStandardDelete(final String interhash, final DBSession session) {
+	public void onGoldStandardDelete(final String interhash, User loggedinUser, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onGoldStandardDelete(interhash, session);
+			plugin.onGoldStandardDelete(interhash, loggedinUser, session);
 		}
 	}
 
@@ -121,9 +121,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 
 	@Override
-	public void onBookmarkInsert(final Post<? extends Resource> post, final DBSession session) {
+	public void onBookmarkInsert(final Post<? extends Resource> post, User logginUser, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onBookmarkInsert(post, session);
+			plugin.onBookmarkInsert(post, logginUser, session);
 		}
 	}
 
@@ -328,9 +328,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPubPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPubPersonDelete(ResourcePersonRelation rel, User loggedinUser, DBSession session) {
+	public void onPubPersonDelete(ResourcePersonRelation rel, User loginUser, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins) {
-			plugin.onPubPersonDelete(rel, loggedinUser, session);
+			plugin.onPubPersonDelete(rel, loginUser, session);
 		}
 	}
 

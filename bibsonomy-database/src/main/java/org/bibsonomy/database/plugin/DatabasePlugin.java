@@ -58,11 +58,11 @@ public interface DatabasePlugin {
 
 	/**
 	 * Called when a publication is inserted.
-	 * 
-	 * @param post
+	 *  @param post
+	 * @param loggedinUser
 	 * @param session
 	 */
-	default void onPublicationInsert(Post<? extends BibTex> post, DBSession session) {
+	default void onPublicationInsert(Post<? extends BibTex> post, User loggedinUser, DBSession session) {
 		// noop
 	}
 
@@ -135,19 +135,21 @@ public interface DatabasePlugin {
 	
 	/**
 	 * Called when a gold standard publication is deleted.
-	 * 
-	 * @param interhash
+	 *  @param interhash
+	 * @param loggedinUser
 	 * @param session
 	 */
-	public void onGoldStandardDelete(String interhash, DBSession session);
+	default void onGoldStandardDelete(String interhash, User loggedinUser, DBSession session) {
+		// noop
+	}
 	
 	/**
 	 * Called when a Bookmark is inserted.
-	 * 
-	 * @param post
+	 *  @param post
+	 * @param logginUser
 	 * @param session
 	 */
-	public void onBookmarkInsert(Post<? extends Resource> post, DBSession session);
+	public void onBookmarkInsert(Post<? extends Resource> post, User logginUser, DBSession session);
 
 	/**
 	 * Called when a Bookmark is deleted.
@@ -362,10 +364,10 @@ public interface DatabasePlugin {
 	/**
 	 * called when a pubPerson will be deleted
 	 * @param rel the relation to be deleted updated with the deleting user and the date of the deletion
-	 * @param loggedinUser
+	 * @param loginUser
 	 * @param session
 	 */
-	public void onPubPersonDelete(final ResourcePersonRelation rel, User loggedinUser, final DBSession session);
+	public void onPubPersonDelete(final ResourcePersonRelation rel, User loginUser, final DBSession session);
 
 	/**
 	 * @param oldPerson

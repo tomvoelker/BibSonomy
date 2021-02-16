@@ -701,6 +701,22 @@
 						</property>
 					</bean>
 				</entry>
+
+				<!-- person related actions -->
+				<entry key="/deletePersonResourceRelation">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="deletePersonResourceRelationController"/>
+						<property name="allowedFields" ref="personRelationParameters" />
+					</bean>
+				</entry>
+
+				<entry key="/addPersonResourceRelation">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="addPersonResourceRelationController"/>
+						<property name="allowedFields" ref="personRelationParameters" />
+					</bean>
+				</entry>
+
 				<entry key="/autoRegisterSamlAndOAuth">
 					<bean parent="controllerBase">
 						<property name="presenceCondition" ref="samlActivatedCondition" />
@@ -832,6 +848,14 @@
 		<value>compareVersion</value>
 		<value>differentEntryKeys</value>
 		
+	</util:list>
+
+	<util:list id="personRelationParameters">
+		<value>ckey</value>
+        <value>person.personId</value>
+		<value>type</value>
+		<value>interhash</value>
+		<value>index</value>
 	</util:list>
 
 	<!--  #################### controller #################### -->
@@ -1328,7 +1352,18 @@
 	<bean id="editTagsPageViewController" class="org.bibsonomy.webapp.controller.actions.EditTagsPageViewController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
-	</bean>	
+	</bean>
+
+	<!-- person actions -->
+	<bean id="deletePersonResourceRelationController" class="org.bibsonomy.webapp.controller.person.relation.DeletePersonResourceRelationController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="urlGenerator" ref="relativeUrlGenerator" />
+	</bean>
+
+	<bean id="addPersonResourceRelationController" class="org.bibsonomy.webapp.controller.person.relation.AddPersonResourceRelationController" scope="request">
+		<property name="logic" ref="logic"/>
+        <property name="urlGenerator" ref="relativeUrlGenerator" />
+	</bean>
 	
 	<bean id="vuFindUserInitController" class="org.bibsonomy.webapp.controller.actions.VuFindUserInitController" scope="request" lazy-init="true">
 		<property name="oaAuthorizeController" ref="oAuthAuthorizeController"/>

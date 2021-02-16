@@ -93,6 +93,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	private final GeneralDatabaseManager generalDb;
 	private final TagRelationDatabaseManager tagRelDb;
 	private final DatabasePluginRegistry plugins;
+	private PermissionDatabaseManager permissionDatabaseManager;
 
 	/** interface to a resource searcher for building an tag cloud */
 	private ResourceSearch<BibTex> publicationSearch;
@@ -103,6 +104,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * @return a singleton instance of the TagDatabaseManager
 	 */
+	@Deprecated // use spring config
 	public static TagDatabaseManager getInstance() {
 		return singleton;
 	}
@@ -368,7 +370,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		}
 		tagParam.setChangeDate(changeDate);
 
-		final List<Integer> groups = new ArrayList<Integer>();
+		final List<Integer> groups = new ArrayList<>();
 		/*
 		 * copy the groups' ids into the param
 		 */
@@ -488,7 +490,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 				 * check,
 				 * if we have something like that already.
 				 */
-				final List<Integer> groups = new ArrayList<Integer>();
+				final List<Integer> groups = new ArrayList<>();
 				for (final Group group : post.getGroups()) {
 					groups.add(group.getGroupId());
 				}
@@ -503,7 +505,6 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		}
 
 		if (log.isDebugEnabled()) {
-
 			/*
 			 * test: check tags
 			 */
@@ -690,12 +691,13 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return list of tags
 	 */
 	public List<Tag> getTagsByUser(final TagParam param, final DBSession session) {
-		if (UserUtils.isSpecialUser(param.getRequestedUserName())) {
-			/*
-			 * another DBLP extra sausage - don't query DB for tags (as only "dblp"
-			 * will be returned anyways), but return that directly
-			 */
-			return UserUtils.getTagsOfSpecialUser(param.getRequestedUserName());
+		final String requestedUserName = param.getRequestedUserName();
+		/*
+		 * we have some import users with many posts -> get tags query for these users is slow so return instead only
+		 * one tag
+		 */
+		if (this.permissionDatabaseManager.isSpecialUser(requestedUserName)) {
+			return this.permissionDatabaseManager.getTagsForSpecialUser(requestedUserName);
 		}
 
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
@@ -809,7 +811,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getRelatedTagsForGroup(final TagParam param, final DBSession session) {
 		// check maximum number of tags
 		if (this.exceedsMaxSize(param.getTagIndex())) {
-			return new ArrayList<Tag>();
+			return new ArrayList<>();
 		}
 		return this.queryForList("getRelatedTagsForGroup", param, Tag.class, session);
 	}
@@ -829,7 +831,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getRelatedTagsForUser(final String loginUserName, final String requestedUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
 		// check maximum number of tags
 		if (this.exceedsMaxSize(tagIndex)) {
-			return new ArrayList<Tag>();
+			return new ArrayList<>();
 		}
 		final TagParam param = new TagParam();
 		param.setUserName(loginUserName);
@@ -856,7 +858,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getRelatedTagsViewable(final ConstantID contentType, final String loginUserName, final int groupId, final List<TagIndex> tagIndex, final SortKey sortKey, final int limit, final int offset, final DBSession session) {
 		// check maximum number of tags
 		if (this.exceedsMaxSize(tagIndex)) {
-			return new ArrayList<Tag>();
+			return new ArrayList<>();
 		}
 		
 		final TagParam param = new TagParam();
@@ -1184,5 +1186,12 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void setChain(final Chain<List<Tag>, TagParam> chain) {
 		this.chain = chain;
+	}
+
+	/**
+	 * @param permissionDatabaseManager the permissionDatabaseManager to set
+	 */
+	public void setPermissionDatabaseManager(PermissionDatabaseManager permissionDatabaseManager) {
+		this.permissionDatabaseManager = permissionDatabaseManager;
 	}
 }

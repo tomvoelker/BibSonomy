@@ -111,7 +111,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	@Override
 	public Post<R> getPostDetails(final String loginUserName, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final DBSession session) {
 		if (present(userName)) {
-			return null; // TODO: think about this return
+			return null;
 		}
 		
 		final Post<R> post = this.getGoldStandardPostByHash(resourceHash, session);
@@ -298,7 +298,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			this.onGoldStandardUpdate(oldPost.getContentId().intValue(), newContentId, oldHash, resourceHash, session);
 			// logs old post and updates reference table
 			// then you can delete it
-			this.deletePost(oldHash, true, session);
+			this.deletePost(oldHash, loginUser, true, session);
 			// and add a new one
 			this.insertPost(post, session);
 
@@ -314,10 +314,10 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		if (present(userName)) {
 			return false;
 		}
-		return this.deletePost(resourceHash, false, session);
+		return this.deletePost(resourceHash, loggedinUser, false, session);
 	}
 
-	protected boolean deletePost(final String resourceHash, final boolean update, final DBSession session) {
+	protected boolean deletePost(final String resourceHash, User loggedinUser, final boolean update, final DBSession session) {
 		session.beginTransaction();
 		try {
 			final Post<R> post = this.getGoldStandardPostByHash(resourceHash, session);
@@ -328,7 +328,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			}
 
 			if (!update) {
-				this.onGoldStandardDelete(resourceHash, session);
+				this.onGoldStandardDelete(resourceHash, loggedinUser, session);
 			}
 
 			final P param = this.createNewParam();
@@ -437,8 +437,8 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		this.plugins.onGoldStandardUpdate(oldContentId, newContentId, newResourceHash, oldHash, session);
 	}
 
-	private void onGoldStandardDelete(final String resourceHash, final DBSession session) {
-		this.plugins.onGoldStandardDelete(resourceHash, session);
+	private void onGoldStandardDelete(final String resourceHash, User loggedinUser, final DBSession session) {
+		this.plugins.onGoldStandardDelete(resourceHash, loggedinUser, session);
 	}
 
 	/**

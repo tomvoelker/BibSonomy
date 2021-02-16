@@ -59,7 +59,7 @@ public abstract class SingleResourceListController extends ResourceListControlle
 	 * 
 	 * @param cmd
 	 */
-	protected void postProcessAndSortList(final SimpleResourceViewCommand cmd, final Class<? extends Resource> resourceType) {						
+	protected void postProcessAndSortList(final SimpleResourceViewCommand cmd, final Class<? extends Resource> resourceType) {
 		if (resourceType == BibTex.class) {
 			postProcessAndSortList(cmd, cmd.getBibtex().getList());
 		}

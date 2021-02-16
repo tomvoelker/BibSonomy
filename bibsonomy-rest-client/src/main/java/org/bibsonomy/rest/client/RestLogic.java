@@ -39,29 +39,15 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.SortCriterium;
-import org.bibsonomy.common.enums.ConceptUpdateOperation;
-import org.bibsonomy.common.enums.Filter;
-import org.bibsonomy.common.enums.GroupUpdateOperation;
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.enums.SortKey;
-import org.bibsonomy.common.enums.SortOrder;
-import org.bibsonomy.common.enums.TagRelation;
-import org.bibsonomy.common.enums.TagSimilarity;
-import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.enums.*;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
-import org.bibsonomy.model.Document;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.GroupMembership;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationData;
@@ -71,6 +57,8 @@ import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
+import org.bibsonomy.rest.client.queries.delete.DeleteResourcePersonRelationQuery;
+import org.bibsonomy.rest.client.queries.get.GetResourcePersonRelationsQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostDocumentQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostQuery;
@@ -78,36 +66,9 @@ import org.bibsonomy.rest.client.queries.delete.DeleteSyncDataQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteUserQuery;
 import org.bibsonomy.rest.client.queries.delete.RemoveUserFromGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.UnpickClipboardQuery;
-import org.bibsonomy.rest.client.queries.get.GetConceptDetailsQuery;
-import org.bibsonomy.rest.client.queries.get.GetFriendsQuery;
-import org.bibsonomy.rest.client.queries.get.GetGroupDetailsQuery;
-import org.bibsonomy.rest.client.queries.get.GetGroupListQuery;
-import org.bibsonomy.rest.client.queries.get.GetLastSyncDataQuery;
-import org.bibsonomy.rest.client.queries.get.GetPostDetailsQuery;
-import org.bibsonomy.rest.client.queries.get.GetPostDocumentQuery;
-import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
-import org.bibsonomy.rest.client.queries.get.GetTagDetailsQuery;
-import org.bibsonomy.rest.client.queries.get.GetTagRelationQuery;
-import org.bibsonomy.rest.client.queries.get.GetTagsQuery;
-import org.bibsonomy.rest.client.queries.get.GetUserDetailsQuery;
-import org.bibsonomy.rest.client.queries.get.GetUserListOfGroupQuery;
-import org.bibsonomy.rest.client.queries.get.GetUserListQuery;
-import org.bibsonomy.rest.client.queries.post.AddUsersToGroupQuery;
-import org.bibsonomy.rest.client.queries.post.CreateConceptQuery;
-import org.bibsonomy.rest.client.queries.post.CreateGroupQuery;
-import org.bibsonomy.rest.client.queries.post.CreatePostDocumentQuery;
-import org.bibsonomy.rest.client.queries.post.CreatePostQuery;
-import org.bibsonomy.rest.client.queries.post.CreateRelationQuery;
-import org.bibsonomy.rest.client.queries.post.CreateSyncPlanQuery;
-import org.bibsonomy.rest.client.queries.post.CreateUserQuery;
-import org.bibsonomy.rest.client.queries.post.CreateUserRelationshipQuery;
-import org.bibsonomy.rest.client.queries.post.PickPostQuery;
-import org.bibsonomy.rest.client.queries.put.ChangeConceptQuery;
-import org.bibsonomy.rest.client.queries.put.ChangeDocumentNameQuery;
-import org.bibsonomy.rest.client.queries.put.ChangeGroupQuery;
-import org.bibsonomy.rest.client.queries.put.ChangePostQuery;
-import org.bibsonomy.rest.client.queries.put.ChangeSyncStatusQuery;
-import org.bibsonomy.rest.client.queries.put.ChangeUserQuery;
+import org.bibsonomy.rest.client.queries.get.*;
+import org.bibsonomy.rest.client.queries.post.*;
+import org.bibsonomy.rest.client.queries.put.*;
 import org.bibsonomy.rest.client.util.FileFactory;
 import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.util.ProgressCallbackFactory;
@@ -175,6 +136,14 @@ public class RestLogic extends AbstractLogicInterface {
 
 		this.authUser = loggedinUser;
 		this.accessor = accessor;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.util.AbstractLogicInterface#doDefaultAction()
+	 */
+	@Override
+	protected void doDefaultAction() {
+		throw new UnsupportedOperationException();
 	}
 
 	private <T> T execute(final AbstractQuery<T> query) {
@@ -486,7 +455,7 @@ public class RestLogic extends AbstractLogicInterface {
 			query.setResourceHash(posts.get(0).getResource().getIntraHash());
 		}
 
-		return execute(query).intValue();
+		return execute(query);
 	}
 	
 	@Override
@@ -530,12 +499,42 @@ public class RestLogic extends AbstractLogicInterface {
 		
 		this.execute(new ChangeDocumentNameQuery(userName, resourceHash, documentName, document));
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.util.AbstractLogicInterface#doDefaultAction()
-	 */
+
 	@Override
-	protected void doDefaultAction() {
-		throw new UnsupportedOperationException();
+	public Person getPersonById(PersonIdType idType, String id) {
+		if (!PersonIdType.PERSON_ID.equals(idType)) {
+			this.doDefaultAction();
+		}
+		return execute(new GetPersonByIdQuery(id));
+	}
+
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(final ResourcePersonRelationQueryBuilder builder) {
+		return this.execute(new GetResourcePersonRelationsQuery(builder.getPersonId()));
+	}
+
+	@Override
+	public String createOrUpdatePerson(Person person) {
+		return execute(new CreatePersonQuery(person));
+	}
+
+	@Override
+	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) {
+		execute(new CreateResourcePersonRelationQuery(resourcePersonRelation));
+	}
+
+	@Override
+	public void removeResourceRelation(String personId, String interHash, int index, PersonResourceRelationType type) {
+		this.execute(new DeleteResourcePersonRelationQuery(personId, interHash, index, type));
+	}
+
+	@Override
+	public void updatePerson(Person person, PersonUpdateOperation operation) {
+		execute(new UpdatePersonQuery(person, operation));
+	}
+
+	@Override
+	public boolean acceptMerge(PersonMatch match) {
+		return execute(new MergePersonQuery(match));
 	}
 }

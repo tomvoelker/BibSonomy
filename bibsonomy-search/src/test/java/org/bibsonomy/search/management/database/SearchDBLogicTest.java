@@ -317,9 +317,9 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 	 * @return
 	 */
 	private static String getTitleForId(int id) {
-		return "title "+ String.valueOf(id) + " " + SEARCH_MAGIC_TITLE;
+		return "title " + String.valueOf(id) + " " + SEARCH_MAGIC_TITLE;
 	}
-	
+
 	/**
 	 * tests {@link SearchDBLogic#getPostsForDocumentUpdate(Date, Date)}
 	 * @throws Exception

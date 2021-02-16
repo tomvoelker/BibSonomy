@@ -96,9 +96,9 @@ public interface PostLogicInterface {
 	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, Set<Filter> filters, SortKey sortKey, Date startDate, Date endDate, int start, int end);
 
 
-	/**  
+	/**
 	 * retrieves a filterable list of posts.
-	 * 
+	 *
 	 * @param <T> resource type to be shown.
 	 * @param resourceType resource type to be shown.
 	 * @param grouping
@@ -120,8 +120,8 @@ public interface PostLogicInterface {
 	 * @param searchType - whether to search locally or using an index shared by several systems
 	 * @param filters - filter for the retrieved posts
 	 * @param sortCriteriums - list of sort criterion and ascending/descending sorting
-	 * @param startDate - if given, only posts that have been created after (inclusive) startDate are returned  
-	 * @param endDate - if given, only posts that have been created before (inclusive) endDate are returned 
+	 * @param startDate - if given, only posts that have been created after (inclusive) startDate are returned
+	 * @param endDate - if given, only posts that have been created before (inclusive) endDate are returned
 	 * @param start - inclusive start index of the view window
 	 * @param end - exclusive end index of the view window
 	 * @return A filtered list of posts. may be empty but not null
@@ -208,7 +208,7 @@ public interface PostLogicInterface {
 	 * @param end exclusive end index of the view window
 	 * @return a filtered list of posts. may be empty but not null
 	 */
-	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, SortKey sortKey, Date startDate, Date endDate, int start, int end);
+	Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, SortKey sortKey, Date startDate, Date endDate, int start, int end);
 
 	/**
 	 * @param queryString a query string which may be an arbitrary combination of tokens from title, author, year and school fields

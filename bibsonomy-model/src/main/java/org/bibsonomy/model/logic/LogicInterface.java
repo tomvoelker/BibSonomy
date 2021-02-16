@@ -769,8 +769,13 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 */
 	@Deprecated
 	public void unlinkUser(String username);
-	
-	public List<PersonMatch> getPersonMatches(String personID);
+
+	/**
+	 *
+	 * @param personID
+	 * @return return the matches where either the personID is the person merge target to or the person to merge
+	 */
+	List<PersonMatch> getPersonMatches(String personID);
 	
 	public PersonMatch getPersonMatch(int matchID);
 	

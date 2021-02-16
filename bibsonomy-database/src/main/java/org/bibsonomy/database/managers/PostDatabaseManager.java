@@ -1436,7 +1436,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * on update, do a delete first ...
 			 */
-			this.insertPost(post, session);
+			this.insertPost(post, loggedinUser, false, session);
 			// add the tags
 			this.tagDb.insertTags(post, session);
 
@@ -1704,7 +1704,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * insert new post
 			 */
-			this.insertPost(post, session);
+			this.insertPost(post, loggedinUser, true, session);
 
 			/*
 			 * add the tags
@@ -1785,7 +1785,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	//
 	// /*
 	// * Updates GroupID of the post*/
-	// final P param = this.getInsertParam(post, session);
+	// final P param = this.createInsertParam(post, session);
 	// this.updateGroupsOfPost(param, session);
 	//
 	// /*
@@ -1812,7 +1812,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	//
 	// //Updates bibtex key
 	//
-	// final P param = this.getInsertParam(post, session);
+	// final P param = this.createInsertParam(post, session);
 	// this.updatePostBibTexKey(param, session);
 	//
 	// session.commitTransaction();
@@ -1831,11 +1831,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 	/**
 	 * inserts a post into the database
-	 *
-	 * @param post		the post to insert
-	 * @param session
+	 * @param post    the post to insert
+	 * @param loggedinUser the current loggedin user
+	 * @param isUpdate flag iff the post is created while a post is actually updated
+	 * @param session the session
 	 */
-	private void insertPost(final Post<R> post, final DBSession session) {
+	private void insertPost(final Post<R> post, final User loggedinUser, boolean isUpdate, final DBSession session) {
 		if (session.hasErrorsForKey(PostUtils.getKeyForPost(post))) {
 			// one or more errors occurred in this method
 			// => we don't want to go deeper into the process with these kinds
@@ -1844,10 +1845,25 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			return;
 		}
 
-		final P param = this.getInsertParam(post, session);
+		final P param = this.createInsertParam(post);
+
+		if (!isUpdate) {
+			// inform the plugins
+			this.onPostInsert(post, loggedinUser, session);
+		}
+
 		// insert
 		this.insertPost(param, session);
 	}
+
+	/**
+	 * called before a post is created
+	 *
+	 * @param post
+	 * @param loggedinUser
+	 * @param session
+	 */
+	protected abstract void onPostInsert(final Post<R> post, final User loggedinUser, final DBSession session);
 
 	/**
 	 * @param post
@@ -2084,11 +2100,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 
 	/**
-	 * @param post
-	 * @param session
+	 * @param post the post that will be created
 	 * @return new param for insert a resource
 	 */
-	protected abstract P getInsertParam(final Post<? extends R> post, final DBSession session);
+	protected abstract P createInsertParam(final Post<? extends R> post);
 
 	/**
 	 * @param chain the chain to set
@@ -2132,8 +2147,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * sets the post of the leavingUser that are only visible to the group to
 	 * the private group
 	 *
-	 * FIXME: as soon as we support multiple groups per post this logic must be
-	 * adapted
+	 * FIXME: as soon as we support multiple groups per post this logic must be adapted
 	 *
 	 * @param leavingUser
 	 * @param groupId

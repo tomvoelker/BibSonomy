@@ -29,11 +29,12 @@ package org.bibsonomy.rest.renderer;
 import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.SortKey;
-import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationDirection;
@@ -103,9 +104,7 @@ public class UrlRenderer {
 	 * @return a urlbuilder for the group url
 	 */
 	protected UrlBuilder getUrlBuilderForGroup(final String name) {
-		final UrlBuilder builder = this.getUrlBuilderForGroups();
-		builder.addPathElement(name);
-		return builder;
+		return this.getUrlBuilderForGroups().addPathElement(name);
 	}
 
 	/** Creates a URL which points to the given resource.
@@ -392,6 +391,44 @@ public class UrlRenderer {
 	public UrlBuilder createUrlBuilderForUsers() {
 		final UrlBuilder builder = this.createUrlBuilderForApi();
 		builder.addPathElement(RESTConfig.USERS_URL);
+		return builder;
+	}
+
+	public UrlBuilder createUrlBuilderForPersonMatch(String targetId, String sourceId) {
+		return createUrlBuilderForPersons(targetId).
+				addPathElement(RESTConfig.PERSONS_MERGE_URL).addParameter("source", sourceId);
+	}
+
+	public UrlBuilder createUrlBuilderForPersons(String personId) {
+		return createUrlBuilderForPersons().addPathElement(personId);
+	}
+
+	public UrlBuilder createUrlBuilderForPersons() {
+		return createUrlBuilderForApi().addPathElement(RESTConfig.PERSONS_URL);
+	}
+
+	public UrlBuilder createUrlBuilderForPersons(String personId, PersonUpdateOperation operation) {
+		return createUrlBuilderForPersons(personId).addParameter("operation", operation.name().toLowerCase());
+	}
+
+	public UrlBuilder createUrlBuilderForResourcePersonRelations(String personId) {
+		return createUrlBuilderForApi().addPathElement(RESTConfig.PERSONS_URL)
+				.addPathElement(personId).addPathElement(RESTConfig.RELATION_PARAM);
+	}
+
+	/**
+	 * creates a url builder for a person resource relation
+	 * @param personId
+	 * @param interHash
+	 * @param index
+	 * @param type
+	 * @return
+	 */
+	public UrlBuilder createUrlBuilderForPersonResourceRelation(String personId, String interHash, int index, PersonResourceRelationType type) {
+		final UrlBuilder builder = this.createUrlBuilderForResourcePersonRelations(personId);
+		builder.addPathElement(interHash);
+		builder.addPathElement(type.toString());
+		builder.addPathElement(String.valueOf(index));
 		return builder;
 	}
 

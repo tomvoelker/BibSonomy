@@ -90,5 +90,4 @@ public class JSONRenderer extends AbstractRenderer {
 			throw new BadRequestOrResponseException(ex);
 		}
 	}
-
 }

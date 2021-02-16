@@ -74,6 +74,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
@@ -107,7 +108,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removeResourceRelation(int)
 	 */
 	@Override
-	public void removeResourceRelation(int resourceRelationId) {
+	public void removeResourceRelation(String personId, String interHash, int index, PersonResourceRelationType type) {
 		this.doDefaultAction();
 	}
 
@@ -115,8 +116,9 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
 	 */
 	@Override
-	public void createOrUpdatePerson(Person person) {
+	public String createOrUpdatePerson(Person person) {
 		this.doDefaultAction();
+		return null;
 	}
 	
 	/*
@@ -133,14 +135,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public Person getPersonById(PersonIdType idType, String id) {
-		this.doDefaultAction();
-		return null;
-	}
-	
-	/**
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonByUser(String)
-	 */
-	public Person getPersonByUser(String userName) {
 		this.doDefaultAction();
 		return null;
 	}
@@ -165,7 +159,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
 	 */
 	@Override
-	public PersonSuggestionQueryBuilder getPersonSuggestion(String queryString) {
+	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder builder) {
 		this.doDefaultAction();
 		return null;
 	}
@@ -174,7 +168,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations()
 	 */
 	@Override
-	public ResourcePersonRelationQueryBuilder getResourceRelations() {
+	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQueryBuilder builder) {
 		this.doDefaultAction();
 		return null;
 	}

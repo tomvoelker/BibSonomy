@@ -84,16 +84,17 @@ public class DisambiguationPageController extends SingleResourceListController i
 	
 	@Override
 	public View workOn(final DisambiguationPageCommand command) {
-		if (command.getRequestedHash() == null) {
-			throw new ObjectNotFoundException(command.getRequestedHash());
+		final String requestedHash = command.getRequestedHash();
+		if (requestedHash == null) {
+			throw new ObjectNotFoundException(requestedHash);
 		}
-		
-		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, command.getRequestedHash(), null, null, null, SortKey.NONE, null, null, 0, 100);
-		
-		if (!present(posts)) {
-			throw new ObjectNotFoundException(command.getRequestedHash());
+
+		final Post<? extends BibTex> post = this.findPost(requestedHash);
+		if (!present(post)) {
+			throw new ObjectNotFoundException(requestedHash);
 		}
-		command.setPost(posts.get(0));
+
+		command.setPost(post);
 		if ("newPerson".equals(command.getRequestedAction())) {
 			return newAction(command);
 		} else if ("linkPerson".equals(command.getRequestedAction())) {
@@ -107,12 +108,53 @@ public class DisambiguationPageController extends SingleResourceListController i
 		return disambiguateAction(command);
 	}
 
+	/**
+	 * method that normalizes the provided hash (removes the hash id from the hash iff it starts with the hash id)
+	 * @param hash
+	 * @return
+	 */
+	private static String normHash(final String hash) {
+		if (!present(hash)) {
+			return hash;
+		}
+
+		// no hash id given use the provided hash
+		if (hash.length() == 32) {
+			return hash;
+		}
+
+		// strip the hash id
+		return hash.substring(1);
+	}
+
+	private Post<? extends BibTex> findPost(final String requestedHash) {
+		final String interHash = normHash(requestedHash);
+		// first try to find a community post
+		final Post<? extends BibTex> postDetails = (Post<? extends BibTex>) this.logic.getPostDetails(interHash, "");
+		if (present(postDetails)) {
+			return postDetails;
+		}
+
+		// else find a post in the database
+		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, requestedHash, null, null, null, SortKey.NONE, null, null, 0, 100);
+		if (present(posts)) {
+			return posts.get(0);
+		}
+
+		// nothing found
+		return null;
+	}
+
 	private View disambiguateAction(final DisambiguationPageCommand command) {
 		final PersonResourceRelationType requestedRole = command.getRequestedRole();
 		final int requestedIndex = command.getRequestedIndex().intValue();
-		
-		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations().byInterhash(command.getPost().getResource().getInterHash()).byRelationType(requestedRole).byAuthorIndex(requestedIndex).getIt();
-		if (matchingRelations.size() > 0 ) {
+
+		final ResourcePersonRelationQueryBuilder personResourceRelationQuery = new ResourcePersonRelationQueryBuilder()
+						.byInterhash(command.getPost().getResource().getInterHash())
+						.byRelationType(requestedRole)
+						.byAuthorIndex(requestedIndex);
+		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations(personResourceRelationQuery);
+		if (matchingRelations.size() > 0) {
 			// FIXME: cache urlgenerator
 			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingRelations.get(0).getPerson().getPersonId()));
 		}
@@ -134,8 +176,8 @@ public class DisambiguationPageController extends SingleResourceListController i
 		// FIXME: move escape to es module
 		final String name = QueryParser.escape(BibTexUtils.cleanBibTex(requestedName.toString()));
 		
-		PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
-		List<ResourcePersonRelation> suggestedPersons = query.doIt();		
+		final PersonSuggestionQueryBuilder query = new PersonSuggestionQueryBuilder(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
+		List<ResourcePersonRelation> suggestedPersons = this.logic.getPersonSuggestion(query);
 			
 		/*
 		 * FIXME: use author-parameter in getPosts method
@@ -167,7 +209,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 			if (!suggestedPerson.getPerson().getMainName().toString().equals(name))
 				continue;
 			
-			List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(suggestedPerson.getPerson().getPersonId()).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
+			List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byPersonId(suggestedPerson.getPerson().getPersonId()).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear));
 			List<Post<?>> personPosts = new ArrayList<>();
 
 			for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
@@ -206,7 +248,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 			}
 		}
 		
-		command.setSuggestedPersonPosts(suggestedPersonPosts);		
+		command.setSuggestedPersonPosts(suggestedPersonPosts);
 		command.setSuggestedPosts(noPersonRelPubList);
 		
 		return Views.DISAMBIGUATION;
@@ -276,9 +318,10 @@ public class DisambiguationPageController extends SingleResourceListController i
 		final PersonName mainName = publicationNames.get(personIndex);
 		return mainName;
 	}
-	
-	
+
 	/**
+	 *
+	 * FIXME: remove this method, use the add resource relation controller
 	 * creates a new person, links the resource and redirects to the new person page
 	 * @param command
 	 * @return

@@ -238,9 +238,10 @@
 		<property name="fileLogic" ref="fileLogic" />
 		<property name="usersDefaultToClassify" value="${user.defaultToClassify}" />
 	</bean>
-	
+
 	<bean id="permissionDatabaseManager" class="org.bibsonomy.database.managers.PermissionDatabaseManager" factory-method="getInstance">
 		<property name="maxQuerySize" value="${database.maxQuerySize}" />
+		<property name="specialUserTagMap" value="${system.specialUsersTagMap}" />
 	</bean>
 	
 	<bean id="groupDatabaseManager" class="org.bibsonomy.database.managers.GroupDatabaseManager" factory-method="getInstance">
@@ -270,6 +271,7 @@
 	</bean>
 	
 	<bean id="tagDatabaseManager" class="org.bibsonomy.database.managers.TagDatabaseManager" factory-method="getInstance">
+		<property name="permissionDatabaseManager" ref="permissionDatabaseManager" />
 		<property name="bookmarkSearch" ref="bookmarkSearch" />
 		<property name="publicationSearch" ref="publicationSearch" />
 		<property name="chain" ref="tagChain" />
@@ -313,6 +315,8 @@
 	
 	<bean id="personDatabaseManager" class="org.bibsonomy.database.managers.PersonDatabaseManager" factory-method="getInstance">
 		<property name="personSearch" ref="personSearch" />
+		<property name="goldStandardPublicationDatabaseManager" ref="goldStandardPublicationDatabaseManager" />
+		<property name="publicationDatabaseManager" ref="publicationDatabaseManager" />
 	</bean>
 	
 	<bean id="clipboardDatabaseManager" class="org.bibsonomy.database.managers.ClipboardDatabaseManager" factory-method="getInstance" />
@@ -326,7 +330,7 @@
 					<property name="clipboardDatabaseManager" ref="clipboardDatabaseManager" />
 				</bean>
 				<bean class="org.bibsonomy.database.plugin.plugins.DiscussionPlugin" />
-				<bean class="org.bibsonomy.database.plugin.plugins.GoldStandardPublicationReferencePlugin" />
+				<bean class="org.bibsonomy.database.plugin.plugins.GoldStandardPublicationPlugin" />
 				<bean class="org.bibsonomy.database.plugin.plugins.MetaDataPlugin" />
 				<bean class="org.bibsonomy.database.plugin.plugins.PersonPostConnectorPlugin">
 					<property name="personDatabaseManager" ref="personDatabaseManager" />

@@ -132,7 +132,7 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 		/*
 		 * get BibTex-File from ACS
 		 */
-		final HttpURLConnection urlConn = WebUtils.createConnnection(queryURL);
+		final HttpURLConnection urlConn = WebUtils.createConnection(queryURL);
 		urlConn.setAllowUserInteraction(false);
 		urlConn.setDoInput(true);
 		urlConn.setDoOutput(true);

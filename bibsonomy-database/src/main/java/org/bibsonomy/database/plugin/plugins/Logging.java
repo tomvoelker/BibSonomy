@@ -27,6 +27,7 @@
 package org.bibsonomy.database.plugin.plugins;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.params.BibTexExtraParam;
@@ -66,13 +67,7 @@ import java.util.Date;
  */
 public class Logging extends AbstractDatabasePlugin {
 
-	private final GeneralDatabaseManager generalManager;
-	/**
-	 *
-	 */
-	public Logging() {
-		this.generalManager = GeneralDatabaseManager.getInstance();
-	}
+	private final GeneralDatabaseManager generalManager = GeneralDatabaseManager.getInstance();
 
 	/*
 	 * (non-Javadoc)
@@ -143,7 +138,7 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onGoldStandardDelete(final String interhash, final DBSession session) {
+	public void onGoldStandardDelete(final String interhash, User loggedinUser, final DBSession session) {
 		final LoggingParam logParam = new LoggingParam();
 		logParam.setOldHash(interhash);
 		logParam.setNewContentId(0);

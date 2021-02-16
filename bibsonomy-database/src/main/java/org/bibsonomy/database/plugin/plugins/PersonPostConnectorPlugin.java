@@ -46,10 +46,12 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 
 /**
- * connects publications with persons
+ * connects publications with persons when the posting user has his/her account connected to a person
+ * and the post is tagged with the {@link MyOwnSystemTag} system tag
  * 
  * @author dzo
  */
@@ -59,34 +61,37 @@ public class PersonPostConnectorPlugin extends AbstractDatabasePlugin {
 	private PersonDatabaseManager personDatabaseManager;
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onPublicationInsert(org.bibsonomy.model.Post, org.bibsonomy.database.common.DBSession)
+	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onPostInsert(org.bibsonomy.model.Post, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPublicationInsert(Post<? extends BibTex> post, DBSession session) {
-		if (SystemTagsUtil.containsSystemTag(post.getTags(), MyOwnSystemTag.NAME)) {
+	public void onPublicationInsert(final Post<? extends BibTex> post, User loggedinUser, final DBSession session) {
+		// only link the post with the person of the post user and the post is public
+		if (SystemTagsUtil.containsSystemTag(post.getTags(), MyOwnSystemTag.NAME) && GroupUtils.isPublicGroup(post.getGroups())) {
 			final User user = post.getUser();
 			if (present(user)) {
 				final Person person = this.personDatabaseManager.getPersonByUser(user.getName(), session);
 				if (present(person)) {
 					final BibTex publication = post.getResource();
-					autoInsertPersonResourceRelation(post, person, publication.getAuthor(), PersonResourceRelationType.AUTHOR, session);
-					autoInsertPersonResourceRelation(post, person, publication.getEditor(), PersonResourceRelationType.EDITOR, session);
+					autoInsertPersonResourceRelation(post, person, publication.getAuthor(), PersonResourceRelationType.AUTHOR, loggedinUser, session);
+					autoInsertPersonResourceRelation(post, person, publication.getEditor(), PersonResourceRelationType.EDITOR, loggedinUser, session);
 				}
 			}
 		}
 	}
 
 	/**
-	 * @param post
-	 * @param person
-	 * @param personList 
-	 * @param relationType 
+	 * @param post the post to connect
+	 * @param person the person to connect
+	 * @param personList
+	 * @param relationType
+	 * @param loggedinUser
 	 * @param session
 	 */
-	private void autoInsertPersonResourceRelation(Post<? extends BibTex> post, final Person person, List<PersonName> personList, PersonResourceRelationType relationType, DBSession session) {
+	private void autoInsertPersonResourceRelation(final Post<? extends BibTex> post, final Person person, final List<PersonName> personList, final PersonResourceRelationType relationType, final User loggedinUser, final DBSession session) {
 		final List<PersonName> personNames = person.getNames();
 		final SortedSet<Integer> foundPersons = new TreeSet<>();
 		if (present(personNames)) {
+			// check if the person name can be found in the publication
 			for (final PersonName personName : personNames) {
 				foundPersons.addAll(PersonNameUtils.getPositionsInPersonList(personName, personList, true));
 			}
@@ -98,7 +103,8 @@ public class PersonPostConnectorPlugin extends AbstractDatabasePlugin {
 			resourcePersonRelation.setPost(post);
 			resourcePersonRelation.setRelationType(relationType);
 			resourcePersonRelation.setPersonIndex(foundPersons.iterator().next().intValue());
-			this.personDatabaseManager.addResourceRelation(resourcePersonRelation, session);
+
+			this.personDatabaseManager.addResourceRelation(resourcePersonRelation, loggedinUser, session);
 		} else if (foundPersons.size() != 0) {
 			log.warn("found more than one " + relationType.toString().toLowerCase() + " that could be the person " + post.getResource().getInterHash() + " " + PersonNameUtils.serializePersonNames(personNames));
 		}

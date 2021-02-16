@@ -42,6 +42,7 @@
 				<xsd:element name="groups" type="GroupsType" />
 				<xsd:element name="tags" type="TagsType" />
 				<xsd:element name="posts" type="PostsType" />
+				<xsd:element name="resourcePersonRelations" type="ResourcePersonRelationsType" />
 				<!-- single elements -->
 				<xsd:element name="user" type="UserType" />
 				<xsd:element name="group" type="GroupType" />
@@ -50,6 +51,9 @@
 				<xsd:element name="bookmark" type="BookmarkType" />
 				<xsd:element name="bibtex" type="BibtexType" />
 				<xsd:element name="document" type="DocumentType" />
+				<xsd:element name="person" type="PersonType" />
+                <xsd:element name="resourcePersonRelation" type="ResourcePersonRelationType" />
+				<xsd:element name="personMatch" type="PersonMatchType" />
 				<!-- error -->
 				<xsd:element name="error" type="xsd:string" />
 				<!-- hashes to return when creating / updating resources -->
@@ -57,12 +61,13 @@
 				<!-- user-/group-ids to return when creating / updating users / groups -->
 				<xsd:element name="userid" type="xsd:string" />
 				<xsd:element name="groupid" type="xsd:string" />
+				<xsd:element name="personid" type="xsd:string" />
 				<!-- uri to return (i.e. on uploading documents) -->
 				<xsd:element name="uri" type="xsd:anyURI" />
 				<!-- gold standard references -->
 				<xsd:element name="references" type="ReferencesType" />
-				<xsd:element name="syncPosts" type="SyncPostsType"></xsd:element>
-				<xsd:element name="syncData" type="SyncDataType"></xsd:element>
+				<xsd:element name="syncPosts" type="SyncPostsType" />
+				<xsd:element name="syncData" type="SyncDataType" />
 			</xsd:choice>
 
 		</xsd:sequence>
@@ -111,7 +116,7 @@
 
 		<!-- link to details page -->
 		<xsd:attribute name="href" type="xsd:anyURI" />
-		<xsd:attribute name="confidence" type="xsd:double"></xsd:attribute>
+		<xsd:attribute name="confidence" type="xsd:double" />
 	</xsd:complexType>
 
 	<!--
@@ -214,7 +219,38 @@
 	<xsd:complexType name="UploadDataType">
 		<xsd:attribute name="multipartName" use="required" type="xsd:string" />
 	</xsd:complexType>
-	
+
+	<!--
+    	a main name
+	-->
+	<xsd:complexType name="PersonNameType">
+		<xsd:attribute name="firstName" type="xsd:string" />
+		<xsd:attribute name="lastName" type="xsd:string" />
+	</xsd:complexType>
+
+	<!--
+    	a person
+	-->
+	<xsd:simpleType name="GenderType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="M" />
+			<xsd:enumeration value="F" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="PersonType">
+		<xsd:sequence>
+			<xsd:element name="mainName" type="PersonNameType" />
+			<xsd:element name="names" type="PersonNameType" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="college" type="xsd:string" />
+		<xsd:attribute name="academicDegree" type="xsd:string" />
+		<xsd:attribute name="personId" type="xsd:string" />
+		<xsd:attribute name="homepage" type="xsd:anyURI" />
+		<xsd:attribute name="email" type="xsd:string" />
+		<xsd:attribute name="orcid" type="xsd:string" />
+		<xsd:attribute name="gender" type="GenderType" />
+	</xsd:complexType>
 	
 	<!-- 
 		list of Documents
@@ -438,5 +474,52 @@
 		<xsd:sequence>
 			<xsd:element name="syncPost" type="SyncPostType" maxOccurs="unbounded" minOccurs="0" />
 		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ResourceLinkType">
+		<xsd:attribute name="interHash" type="hashType" />
+		<xsd:attribute name="intraHash" type="hashType" />
+	</xsd:complexType>
+
+	<xsd:simpleType name="RelationType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="doctor_vater" />
+			<xsd:enumeration value="first_reviewer" />
+			<xsd:enumeration value="reviewer" />
+			<xsd:enumeration value="advisor" />
+			<xsd:enumeration value="author" />
+			<xsd:enumeration value="editor" />
+			<xsd:enumeration value="other" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="ResourcePersonRelationsType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="resourcePersonRelation" type="ResourcePersonRelationType" />
+		</xsd:sequence>
+		<xsd:attribute name="start" type="positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="end" type="positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="next" type="xsd:anyURI" />
+	</xsd:complexType>
+
+    <xsd:complexType name="ResourcePersonRelationType">
+        <xsd:sequence>
+            <xsd:element name="person" type="PersonType" />
+            <xsd:element name="resource" type="ResourceLinkType" />
+			<xsd:element name="relationType" type="RelationType" />
+			<xsd:element name="personIndex" type="xsd:integer" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+	<xsd:complexType name="PersonMatchType">
+		<xsd:sequence>
+			<xsd:element name="person1" type="PersonType" />
+			<xsd:element name="person2" type="PersonType" />
+			<xsd:element name="person1Posts" type="PostType" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="person2Posts" type="PostType" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="userDenies" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="state" type="xsd:int" />
+		<xsd:attribute name="matchId" type="xsd:int" />
 	</xsd:complexType>
 </xsd:schema>

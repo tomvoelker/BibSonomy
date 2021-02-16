@@ -126,12 +126,12 @@
 		b2.person_change_id as r_person_change_id, b2.simhash1, b2.simhash2, b2.qualifying, b2.person_id, b2.relator_code, b2.log_changed_by, b2.log_changed_at, b2.person_index
 	</sql>
 
-	<sql id="commonPublicationAttributesWithoutPrivateNote">
-		b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
-		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
-		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
-		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype,
-		NULL AS privnote , b.scraperid, t1.change_date, b.simhash1 AS interHash, b.simhash2 AS intraHash, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
+	<sql id="allPubPersonRelationLogAttributes">
+		person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by
+	</sql>
+
+	<sql id="allPubPersonRelationAttributes">
+		person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by
 	</sql>
 
 </sqlMap>
