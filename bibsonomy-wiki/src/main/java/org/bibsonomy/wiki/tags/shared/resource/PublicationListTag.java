@@ -29,7 +29,6 @@ package org.bibsonomy.wiki.tags.shared.resource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.QueryScope;
-import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Layout;
@@ -120,8 +119,6 @@ public class PublicationListTag extends SharedTag {
 		final StringBuilder renderedHTML = new StringBuilder();
 		final Map<String, String> tagAttributes = this.getAttributes();
 		String tags;
-		
-		
 		
 		if (!tagAttributes.containsKey(TAGS)) {
 			tags = "myown"; // TODO: should be MyOwnSystemTag.NAME but adding

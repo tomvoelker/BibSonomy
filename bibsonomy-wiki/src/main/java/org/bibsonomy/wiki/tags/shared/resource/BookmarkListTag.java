@@ -28,7 +28,6 @@ package org.bibsonomy.wiki.tags.shared.resource;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.common.enums.QueryScope;
-import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.util.Sets;
