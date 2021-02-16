@@ -8,13 +8,12 @@ import org.bibsonomy.common.enums.SortOrder;
  */
 public class SortCriteria {
 	/** sort key */
-	private SortKey sortKey;
+	private final SortKey sortKey;
 	/** sort order */
-	private SortOrder sortOrder;
+	private final SortOrder sortOrder;
 
 	public SortCriteria() {
-		this.sortKey = SortKey.NONE;
-		this.sortOrder = SortOrder.DESC;
+		this(SortKey.NONE, SortOrder.DESC);
 	}
 
 	public SortCriteria(SortKey sortKey, SortOrder sortOrder) {
@@ -22,24 +21,12 @@ public class SortCriteria {
 		this.sortOrder = sortOrder;
 	}
 
-	public SortCriteria(String key, String order) {
-		this.sortKey = SortKey.getByName(key);
-		this.sortOrder = SortOrder.getByName(order);
-	}
-
 	public SortKey getSortKey() {
 		return sortKey;
-	}
-
-	public void setSortKey(SortKey sortKey) {
-		this.sortKey = sortKey;
 	}
 
 	public SortOrder getSortOrder() {
 		return sortOrder;
 	}
 
-	public void setSortOrder(SortOrder sortOrder) {
-		this.sortOrder = sortOrder;
-	}
 }
