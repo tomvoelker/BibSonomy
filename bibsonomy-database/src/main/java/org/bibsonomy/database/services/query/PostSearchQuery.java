@@ -36,7 +36,7 @@ public class PostSearchQuery<R extends Resource> extends PostQuery<R> {
 	 * copy constructor for {@link PostQuery}
 	 * @param other
 	 */
-	public PostSearchQuery(PostQuery<R> other) {
+	public PostSearchQuery(final PostQuery<R> other) {
 		super(other.getResourceClass());
 		this.setSearch(other.getSearch());
 		this.setScope(other.getScope());

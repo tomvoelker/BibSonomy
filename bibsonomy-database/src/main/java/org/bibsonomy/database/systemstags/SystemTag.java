@@ -29,7 +29,7 @@ package org.bibsonomy.database.systemstags;
 /**
  * @author Andreas Koch
  */
-public interface SystemTag extends Cloneable{
+public interface SystemTag extends Cloneable {
 	
 	/**
 	 * @return the argument
