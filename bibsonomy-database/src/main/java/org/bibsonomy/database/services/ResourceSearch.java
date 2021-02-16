@@ -28,18 +28,12 @@ package org.bibsonomy.database.services;
 
 import java.util.List;
 
-import org.bibsonomy.common.SortCriterium;
-import org.bibsonomy.common.enums.QueryScope;
-import org.bibsonomy.common.enums.SortKey;
-import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.database.services.query.PostSearchQuery;
-
-import java.util.Collection;
 
 /**
  * Interface for resource search operations

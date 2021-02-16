@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.util.BibTexUtils;
@@ -49,7 +49,7 @@ public abstract class PostComparator implements Serializable {
 	private static final long serialVersionUID = -359261836667807271L;
 	
 	
-	protected List<SortCriterium> sortCriteria = new ArrayList<>();
+	protected List<SortCriteria> sortCriteria = new ArrayList<>();
 
 	/** helper exception */
 	protected class SortKeyIsEqualException extends Exception {
@@ -65,10 +65,10 @@ public abstract class PostComparator implements Serializable {
 	public PostComparator(final List<SortKey> sortKeys, final List<SortOrder> sortOrders) {
 		for (int i = 0; i <= sortKeys.size() - 1; i++) {
 			try {
-				this.sortCriteria.add(new SortCriterium(sortKeys.get(i), sortOrders.get(i)));
+				this.sortCriteria.add(new SortCriteria(sortKeys.get(i), sortOrders.get(i)));
 			} catch (final IndexOutOfBoundsException ignore) {
 				// fill up with default ascending order
-				this.sortCriteria.add(new SortCriterium(sortKeys.get(i), SortOrder.ASC));
+				this.sortCriteria.add(new SortCriteria(sortKeys.get(i), SortOrder.ASC));
 			}
 		}
 	}

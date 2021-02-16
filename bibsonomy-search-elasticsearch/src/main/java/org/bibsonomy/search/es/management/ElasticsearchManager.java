@@ -31,7 +31,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.client.DeleteData;

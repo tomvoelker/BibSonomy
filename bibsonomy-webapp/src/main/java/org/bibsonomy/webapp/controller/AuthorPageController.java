@@ -32,17 +32,13 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
-import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.AuthorSystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.AuthorResourceCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;

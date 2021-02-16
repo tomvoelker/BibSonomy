@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.JobResult;
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.*;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
@@ -102,7 +102,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	private static final Set<String> DEFAULT_USERNAME_SET = new HashSet<String>(Arrays.asList(TEST_USER_NAME));
 
 	private static final DBLogic ADMIN_LOGIC = testDatabaseContext.getBean("dbLogicPrototype", DBLogic.class);
-	private static final List<SortCriterium> SORT_CRITERIUMS_DATE = Collections.singletonList(new SortCriterium(SortKey.DATE, SortOrder.DESC));
+	private static final List<SortCriteria> SORT_CRITERIUMS_DATE = Collections.singletonList(new SortCriteria(SortKey.DATE, SortOrder.DESC));
 
 	private static UserDatabaseManager userDb;
 	
@@ -143,7 +143,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		return this.getDbLogic(userName, Role.ADMIN);
 	}
 	
-	private static void assertList(final List<Post<BibTex>> posts, final Set<String> checkUserNameOneOf, final List<SortCriterium> sortCriteriums, final Set<String> checkTags, final String checkInterHash, final Set<Integer> mustBeInGroups, final Set<Integer> mustNotBeInGroups) {
+	private static void assertList(final List<Post<BibTex>> posts, final Set<String> checkUserNameOneOf, final List<SortCriteria> sortCriteria, final Set<String> checkTags, final String checkInterHash, final Set<Integer> mustBeInGroups, final Set<Integer> mustNotBeInGroups) {
 		final Set<Integer> alreadyFound = new HashSet<Integer>();
 		long orderValue = Long.MAX_VALUE;
 		
@@ -153,7 +153,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 			if (checkUserNameOneOf != null) {
 				assertTrue("userName test with " + post.getUser().getName(), checkUserNameOneOf.contains(post.getUser().getName()));
 			}
-			if (sortCriteriums == SORT_CRITERIUMS_DATE) {
+			if (sortCriteria == SORT_CRITERIUMS_DATE) {
 				final long nextOrderValue = post.getDate().getTime();
 				assertTrue("order test", (orderValue >= nextOrderValue));
 				orderValue = nextOrderValue;
@@ -574,7 +574,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getPostsPopular() {
-		final List<SortCriterium> popular = Collections.singletonList(new SortCriterium(SortKey.POPULAR, SortOrder.DESC));
+		final List<SortCriteria> popular = Collections.singletonList(new SortCriteria(SortKey.POPULAR, SortOrder.DESC));
 		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", null, null, null, QueryScope.LOCAL, null, popular, null, null, 0, 10);
 		assertEquals(10, bibTexPostsList.size());
 

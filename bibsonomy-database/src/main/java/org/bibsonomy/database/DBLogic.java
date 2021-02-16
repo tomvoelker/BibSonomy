@@ -33,7 +33,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.auth.util.SimpleAuthUtils;
 import org.bibsonomy.common.JobResult;
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -52,7 +52,6 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SortKey;
-import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.common.enums.TagRelation;
@@ -739,10 +738,10 @@ public class DBLogic implements LogicInterface {
 	@Override
 	@Deprecated
 	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping,
-																										 final String groupingName, final List<String> tags, final String hash,
-																										 final String search, final QueryScope queryScope, final Set<Filter> filters,
-																										 final List<SortCriterium> sortCriteriums, final Date startDate, final Date endDate,
-																										 final int start, final int end) {
+													   final String groupingName, final List<String> tags, final String hash,
+													   final String search, final QueryScope queryScope, final Set<Filter> filters,
+													   final List<SortCriteria> sortCriteria, final Date startDate, final Date endDate,
+													   final int start, final int end) {
 
 		final PostQuery<T> query = new PostQueryBuilder().
 						setScope(queryScope).
@@ -771,7 +770,7 @@ public class DBLogic implements LogicInterface {
 		final GroupingEntity grouping = query.getGrouping();
 		final String groupingName = query.getGroupingName();
 		final Set<Filter> filters = query.getFilters();
-		final List<SortCriterium> sortCriteriums = query.getSortCriteriums();
+		final List<SortCriteria> sortCriteria = query.getSortCriteriums();
 		final List<String> tags = query.getTags();
 		final int start = query.getStart();
 		final int end = query.getEnd();
@@ -806,13 +805,13 @@ public class DBLogic implements LogicInterface {
 			}
 			// TODO maybe clean up, firstSortKey only there to not change the buildParam signature
 			SortKey firstSortKey = null;
-			if (sortCriteriums.size() > 0) {
-				firstSortKey = sortCriteriums.get(0).getSortKey();
+			if (sortCriteria.size() > 0) {
+				firstSortKey = sortCriteria.get(0).getSortKey();
 			}
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, queryScope, grouping, groupingName, tags, hash, firstSortKey, start, end, startDate, endDate, search, filters, this.loginUser);
 				// sets the sort order
-				param.setSortCriteriums(sortCriteriums);
+				param.setSortCriteriums(sortCriteria);
 
 				// check permissions for displaying links to documents
 				final boolean allowedToAccessUsersOrGroupDocuments = this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, session);
@@ -839,7 +838,7 @@ public class DBLogic implements LogicInterface {
 				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, resourceType, queryScope, grouping, groupingName, tags, hash, firstSortKey, start, end, startDate, endDate, search, filters, this.loginUser);
 				param.setQuery((PostQuery<Bookmark>) query);
 				// sets the sort order to search index
-				param.setSortCriteriums(sortCriteriums);
+				param.setSortCriteriums(sortCriteria);
 				final List<Post<R>> bookmarks = (List) this.bookmarkDBManager.getPosts(param, session);
 				SystemTagsExtractor.handleHiddenSystemTags(bookmarks, this.loginUser.getName());
 				return bookmarks;

@@ -42,7 +42,7 @@ import java.util.stream.Stream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.services.ResourceSearch;
 import org.bibsonomy.database.services.query.PostSearchQuery;
@@ -106,8 +106,8 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 				return posts;
 			}
 
-			final List<SortCriterium> sortCriteriums = postQuery.getSortCriteriums();
-			final List<Pair<String, SortOrder>> sortParameters = ESSortUtils.buildSortParameters(sortCriteriums, postQuery.getResourceClass());
+			final List<SortCriteria> sortCriteria = postQuery.getSortCriteriums();
+			final List<Pair<String, SortOrder>> sortParameters = ESSortUtils.buildSortParameters(sortCriteria, postQuery.getResourceClass());
 			final SearchHits hits = this.manager.search(queryBuilder, sortParameters, offset, limit, null, null);
 
 			if (hits != null) {

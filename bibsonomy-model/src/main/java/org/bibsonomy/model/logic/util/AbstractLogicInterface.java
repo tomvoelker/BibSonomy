@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bibsonomy.common.JobResult;
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -194,7 +194,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.SearchType, java.util.Set, org.bibsonomy.common.SortCriterium, java.util.Date, java.util.Date, int, int)
 	 */
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, Set<Filter> filters, List<SortCriterium> sortCriteriums, Date startDate, Date endDate, int start, int end) {
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, Set<Filter> filters, List<SortCriteria> sortCriteria, Date startDate, Date endDate, int start, int end) {
 		this.doDefaultAction();
 		return null;
 	}

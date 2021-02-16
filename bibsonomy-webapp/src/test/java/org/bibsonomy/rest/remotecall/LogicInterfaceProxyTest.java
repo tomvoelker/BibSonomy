@@ -33,7 +33,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.JobResult;
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
@@ -655,12 +655,12 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	
 	@Test
 	public void getPostsTestWithSearchAndSortKey() {
-		this.getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), "search", QueryScope.LOCAL, null, SortCriterium.singletonCriterium(SortKey.FOLKRANK), null, null, 0, 5);
+		this.getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), "search", QueryScope.LOCAL, null, SortCriteria.singletonCriterium(SortKey.FOLKRANK), null, null, 0, 5);
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final Set<Filter> filters, final List<SortCriterium> sortCriteriums, final Date startDate, final Date endDate, final int start, final int end) {
+	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final Set<Filter> filters, final List<SortCriteria> sortCriteria, final Date startDate, final Date endDate, final int start, final int end) {
 		final List<Post<T>> expectedPosts = new ArrayList<>();
 		expectedPosts.add(ModelUtils.generatePost(resourceType));
 		expectedPosts.get(0).setDescription("erstes");
@@ -677,7 +677,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 		query.setSearch(search);
 		query.setScope(queryScope);
 		query.setFilters(filters);
-		query.setSortCriteriums(sortCriteriums);
+		query.setSortCriteriums(sortCriteria);
 		query.setStart(start);
 		query.setEnd(end);
 

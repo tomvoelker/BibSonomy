@@ -29,7 +29,7 @@ package org.bibsonomy.database.managers;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.JobResult;
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupRole;
@@ -67,9 +67,7 @@ import org.bibsonomy.database.validation.DatabaseModelValidator;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.GroupUtils;
@@ -722,14 +720,14 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param simHash
 	 * @param postAccess
 	 * @param filters
-	 * @param sortCriteriums
+	 * @param sortCriteria
 	 * @param limit
 	 * @param offset
 	 * @param systemTags
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForGroup(final int groupId, final String requestedGroupName, final List<Integer> visibleGroupIDs, final QueryScope queryScope, final String loginUserName, final HashID simHash, final PostAccess postAccess, final Set<Filter> filters, final List<SortCriterium> sortCriteriums, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsForGroup(final int groupId, final String requestedGroupName, final List<Integer> visibleGroupIDs, final QueryScope queryScope, final String loginUserName, final HashID simHash, final PostAccess postAccess, final Set<Filter> filters, final List<SortCriteria> sortCriteria, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		switch(queryScope) {
 			// FIXME: switch to query call @kch
 			/*case FEDERATED:

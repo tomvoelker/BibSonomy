@@ -5,7 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.GoldStandardPublication;
@@ -44,13 +44,13 @@ public class PublicationsPageController implements MinimalisticController<Public
 		query.setEnd(start + goldStandardPublications.getEntriesPerPage());
 		final String search = command.getSearch();
 		query.setSearch(search);
-		final List<SortCriterium> sortCriteriums = new LinkedList<>();
+		final List<SortCriteria> sortCriteria = new LinkedList<>();
 		if (present(search)) {
-			sortCriteriums.add(new SortCriterium(SortKey.RANK, SortOrder.ASC));
+			sortCriteria.add(new SortCriteria(SortKey.RANK, SortOrder.ASC));
 		} else {
-			sortCriteriums.add(new SortCriterium(SortKey.YEAR, SortOrder.DESC));
+			sortCriteria.add(new SortCriteria(SortKey.YEAR, SortOrder.DESC));
 		}
-		query.setSortCriteriums(sortCriteriums);
+		query.setSortCriteriums(sortCriteria);
 		final List<Post<GoldStandardPublication>> posts = this.logic.getPosts(query);
 		goldStandardPublications.setList(posts);
 

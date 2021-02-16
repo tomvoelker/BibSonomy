@@ -28,17 +28,8 @@ package org.bibsonomy.rest.strategy.posts;
 
 import java.util.List;
 
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.QueryScope;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.logic.query.PostQuery;
-import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
-import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.model.util.BookmarkUtils;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.UrlBuilder;
 
@@ -56,14 +47,14 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected UrlBuilder getLinkPrefix() {
-		return this.getUrlRenderer().createUrlBuilderForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, this.sortCriteriums);
+		return this.getUrlRenderer().createUrlBuilderForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, this.sortCriteria);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
 		return this.getLogic().getPosts(resourceType, this.grouping, this.groupingValue,
-				this.tags, this.hash, this.search, this.searchType, null, this.sortCriteriums, null, null,
+				this.tags, this.hash, this.search, this.searchType, null, this.sortCriteria, null, null,
 				getView().getStartValue(), getView().getEndValue());
 	}
 }

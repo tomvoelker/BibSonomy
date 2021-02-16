@@ -26,7 +26,7 @@
  */
 package org.bibsonomy.rest.strategy.posts;
 
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
@@ -52,12 +52,12 @@ public class GetNewPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected UrlBuilder getLinkPrefix() {
-		return this.getUrlRenderer().createUrlBuilderForAddedPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, this.sortCriteriums);
+		return this.getUrlRenderer().createUrlBuilderForAddedPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, this.sortCriteria);
 	}
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		final List<SortCriterium> sortCriteriums = Collections.singletonList(new SortCriterium(SortKey.DATE, SortOrder.DESC));
-		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, search, QueryScope.SEARCHINDEX, null, sortCriteriums, null, null, this.getView().getStartValue(), this.getView().getEndValue());
+		final List<SortCriteria> sortCriteria = Collections.singletonList(new SortCriteria(SortKey.DATE, SortOrder.DESC));
+		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, search, QueryScope.SEARCHINDEX, null, sortCriteria, null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 }

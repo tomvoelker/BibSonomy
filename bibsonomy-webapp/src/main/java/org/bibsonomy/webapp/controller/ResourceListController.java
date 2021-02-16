@@ -28,7 +28,7 @@ package org.bibsonomy.webapp.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.Duplicates;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
@@ -58,7 +58,6 @@ import org.bibsonomy.webapp.command.TagCloudCommand;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -326,8 +325,8 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param itemsPerPage number of items to be displayed on each page
 	 */
 	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope searchType, final FilterEntity filter, final SortKey sortKey, final Date startDate, final Date endDate, final int itemsPerPage) {
-		final List<SortCriterium> sortCriteriums = Collections.singletonList(new SortCriterium(sortKey, SortOrder.DESC));
-		this.setList(cmd, resourceType, groupingEntity, groupingName, tags, hash, search, searchType, filter, sortCriteriums, startDate, endDate, itemsPerPage);
+		final List<SortCriteria> sortCriteria = Collections.singletonList(new SortCriteria(sortKey, SortOrder.DESC));
+		this.setList(cmd, resourceType, groupingEntity, groupingName, tags, hash, search, searchType, filter, sortCriteria, startDate, endDate, itemsPerPage);
 	}
 
 		/**
@@ -343,12 +342,12 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 		 * @param search
 		 * @param queryScope
 	 * @param filter
-	 * @param sortCriteriums
+	 * @param sortCriteria
 		 * @param startDate
 		 * @param endDate
 		 * @param itemsPerPage number of items to be displayed on each page
 		 */
-	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final FilterEntity filter, final List<SortCriterium> sortCriteriums, final Date startDate, final Date endDate, final int itemsPerPage) {
+	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final FilterEntity filter, final List<SortCriteria> sortCriteria, final Date startDate, final Date endDate, final int itemsPerPage) {
 		final ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType);
 		// retrieve posts
 		log.debug("getPosts " + resourceType + " " + queryScope + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
@@ -357,7 +356,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 		if (present(filter)) {
 			filters.add(filter);
 		}
-		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, queryScope, filters, sortCriteriums, startDate, endDate, start, start + itemsPerPage));
+		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, queryScope, filters, sortCriteria, startDate, endDate, start, start + itemsPerPage));
 		// list settings
 		listCommand.setEntriesPerPage(itemsPerPage);
 	}

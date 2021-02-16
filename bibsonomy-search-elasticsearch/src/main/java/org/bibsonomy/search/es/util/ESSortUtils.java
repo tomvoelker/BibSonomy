@@ -1,7 +1,7 @@
 package org.bibsonomy.search.es.util;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.elasticsearch.search.sort.SortOrder;
@@ -14,13 +14,13 @@ import java.util.List;
  */
 public class ESSortUtils {
 
-	public static List<Pair<String, SortOrder>> buildSortParameters(final List<SortCriterium> sortCriteriums, final Class<?> type) {
+	public static List<Pair<String, SortOrder>> buildSortParameters(final List<SortCriteria> sortCriteria, final Class<?> type) {
 		// TODO: maybe move to the ESPubSearch class @kch
 		if (type.equals(BibTex.class)) {
-			return buildPublicationSortParameters(sortCriteriums);
+			return buildPublicationSortParameters(sortCriteria);
 		}
 
-		return buildSortParameters(sortCriteriums);
+		return buildSortParameters(sortCriteria);
 	}
 
 	/**
@@ -28,14 +28,14 @@ public class ESSortUtils {
 	 * These are pairs contain the attribute names in the searchindex and
 	 * the ascending or descding enum from elasticsearch.
 	 *
-	 * @param 	sortCriteriums		list of sort criteriums
+	 * @param 	sortCriteria		list of sort criteriums
 	 * @return	list of sort parameters
 	 */
-	public static List<Pair<String, SortOrder>> buildPublicationSortParameters(List<SortCriterium> sortCriteriums) {
+	public static List<Pair<String, SortOrder>> buildPublicationSortParameters(List<SortCriteria> sortCriteria) {
 		List<Pair<String, SortOrder>> sortParameters = new ArrayList<>();
-		for (SortCriterium sortCriterium : sortCriteriums) {
-			SortOrder esSortOrder = SortOrder.fromString(sortCriterium.getSortOrder().toString());
-			switch (sortCriterium.getSortKey()) {
+		for (SortCriteria sortCriteria : sortCriteria) {
+			SortOrder esSortOrder = SortOrder.fromString(sortCriteria.getSortOrder().toString());
+			switch (sortCriteria.getSortKey()) {
 				// ignore these Order type since result of no sorting
 				case RANK:
 				case NONE:
@@ -69,7 +69,7 @@ public class ESSortUtils {
 					sortParameters.add(new Pair<>(Fields.Sort.INSTITUTION, esSortOrder));
 					break;
 				case ORGANIZATION:
-					sortParameters.add(new Pair<>("sort_" + sortCriterium.getSortKey().toString().toLowerCase(), esSortOrder));
+					sortParameters.add(new Pair<>("sort_" + sortCriteria.getSortKey().toString().toLowerCase(), esSortOrder));
 					break;
 				case PUBDATE:
 					sortParameters.add(new Pair<>(Fields.Publication.YEAR, esSortOrder));
@@ -78,7 +78,7 @@ public class ESSortUtils {
 					break;
 				// more complex order types possible here
 				default:
-					sortParameters.add(new Pair<>(sortCriterium.getSortKey().toString().toLowerCase(), esSortOrder));
+					sortParameters.add(new Pair<>(sortCriteria.getSortKey().toString().toLowerCase(), esSortOrder));
 					break;
 			}
 		}
@@ -92,14 +92,14 @@ public class ESSortUtils {
 	 *
 	 * This method only supports Order.TITLE and Order.DATE for building sorting parameters for any resource index.
 	 *
-	 * @param 	sortCriteriums		list of sort criteriums
+	 * @param 	sortCriteria		list of sort criteriums
 	 * @return	list of sort parameters
 	 */
-	public static List<Pair<String, SortOrder>> buildSortParameters(List<SortCriterium> sortCriteriums) {
+	public static List<Pair<String, SortOrder>> buildSortParameters(List<SortCriteria> sortCriteria) {
 		List<Pair<String, SortOrder>> sortParameters = new ArrayList<>();
-		for (SortCriterium sortCriterium : sortCriteriums) {
-			SortOrder esSortOrder = SortOrder.fromString(sortCriterium.getSortOrder().toString());
-			switch (sortCriterium.getSortKey()) {
+		for (SortCriteria sortCriteria : sortCriteria) {
+			SortOrder esSortOrder = SortOrder.fromString(sortCriteria.getSortOrder().toString());
+			switch (sortCriteria.getSortKey()) {
 				// only supported order type for bookmarks
 				case TITLE:
 					sortParameters.add(new Pair<>(Fields.Sort.TITLE, esSortOrder));

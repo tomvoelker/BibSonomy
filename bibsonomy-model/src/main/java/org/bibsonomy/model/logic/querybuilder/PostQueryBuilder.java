@@ -1,6 +1,6 @@
 package org.bibsonomy.model.logic.querybuilder;
 
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.QueryScope;
@@ -33,7 +33,7 @@ public class PostQueryBuilder {
 	private int start = 0;
 	private int end = 10;
 
-	private List<SortCriterium> sortCriteriums;
+	private List<SortCriteria> sortCriteria;
 
 	public <R extends Resource> PostQuery<R> createPostQuery(Class<R> resourceClass) {
 		final PostQuery<R> postQuery = new PostQuery<>(resourceClass);
@@ -51,7 +51,7 @@ public class PostQueryBuilder {
 		postQuery.setStart(start);
 		postQuery.setEnd(end);
 		postQuery.setCollege(this.college);
-		postQuery.setSortCriteriums(this.sortCriteriums);
+		postQuery.setSortCriteriums(this.sortCriteria);
 		return postQuery;
 	}
 
@@ -126,10 +126,10 @@ public class PostQueryBuilder {
 	}
 
 	/**
-	 * @param sortCriteriums the sortCriteriums to set
+	 * @param sortCriteria the sortCriteriums to set
 	 */
-	public PostQueryBuilder setSortCriteriums(List<SortCriterium> sortCriteriums) {
-		this.sortCriteriums = sortCriteriums;
+	public PostQueryBuilder setSortCriteriums(List<SortCriteria> sortCriteria) {
+		this.sortCriteria = sortCriteria;
 		return this;
 	}
 }

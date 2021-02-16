@@ -26,9 +26,8 @@
  */
 package org.bibsonomy.rest.strategy.users;
 
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.strategy.Context;
@@ -62,9 +61,9 @@ public class GetUserPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		List<SortCriterium> sortCriteriums = SortUtils.generateSortCriteriums(this.sortKeys, this.sortOrders);
+		List<SortCriteria> sortCriteria = SortUtils.generateSortCriteriums(this.sortKeys, this.sortOrders);
 		return this.getLogic().getPosts(this.resourceType, GroupingEntity.USER, this.userName, this.tags, null,
-				this.search, this.searchType, null, sortCriteriums, null, null,
+				this.search, this.searchType, null, sortCriteria, null, null,
 				this.getView().getStartValue(), this.getView().getEndValue());
 	}
 

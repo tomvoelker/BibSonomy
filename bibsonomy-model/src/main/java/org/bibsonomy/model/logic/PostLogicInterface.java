@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.JobResult;
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
@@ -85,7 +85,7 @@ public interface PostLogicInterface {
 	 * @param search - free text search
 	 * @param searchType - whether to search locally or using an index shared by several systems
 	 * @param filters - filter for the retrieved posts
-	 * @param sortCriteriums - list of sort criterion and ascending/descending sorting
+	 * @param sortCriteria - list of sort criterion and ascending/descending sorting
 	 * @param startDate - if given, only posts that have been created after (inclusive) startDate are returned
 	 * @param endDate - if given, only posts that have been created before (inclusive) endDate are returned
 	 * @param start - inclusive start index of the view window
@@ -93,7 +93,7 @@ public interface PostLogicInterface {
 	 * @return A filtered list of posts. may be empty but not null
 	 * @since 3.1
 	 */
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope searchType, Set<Filter> filters, List<SortCriterium> sortCriteriums, Date startDate, Date endDate, int start, int end);
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope searchType, Set<Filter> filters, List<SortCriteria> sortCriteria, Date startDate, Date endDate, int start, int end);
 
 	<R extends Resource> List<Post<R>> getPosts(final PostQuery<R> query);
 	

@@ -2,7 +2,7 @@ package org.bibsonomy.webapp.controller.cris;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
@@ -89,7 +89,7 @@ public class OrganizationPageController implements MinimalisticController<Organi
 		final ListCommand<Post<GoldStandardPublication>> publicationsListCommand = command.getPublications();
 		final int start = publicationsListCommand.getStart();
 		final PostQuery<GoldStandardPublication> postOrganizationQuery = new PostQueryBuilder()
-						.setSortCriteriums(Collections.singletonList(new SortCriterium(SortKey.YEAR, SortOrder.DESC)))
+						.setSortCriteriums(Collections.singletonList(new SortCriteria(SortKey.YEAR, SortOrder.DESC)))
 						.setGrouping(GroupingEntity.ORGANIZATION)
 						.setGroupingName(group.getName())
 						.setStart(start)

@@ -26,7 +26,7 @@
  */
 package org.bibsonomy.util;
 
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 
@@ -84,11 +84,11 @@ public class SortUtils {
 		return parsedSortOrders;
 	}
 
-	public static List<SortCriterium> generateSortCriteriums(List<SortKey> sortKeys, List<SortOrder> sortOrders) {
-		List<SortCriterium> sortCriteriums = new LinkedList<>();
+	public static List<SortCriteria> generateSortCriteriums(List<SortKey> sortKeys, List<SortOrder> sortOrders) {
+		List<SortCriteria> sortCriteria = new LinkedList<>();
 		// Check, if any sort keys given
 		if (sortKeys.isEmpty()) {
-			return sortCriteriums;
+			return sortCriteria;
 		}
 		// Check, if there is enough sort orders for each key
 		if (sortOrders.size() >= sortKeys.size()) {
@@ -96,30 +96,30 @@ public class SortUtils {
 			Iterator<SortKey> sortKeysIt = sortKeys.iterator();
 			Iterator<SortOrder> sortOrderIt = sortOrders.iterator();
 			while (sortKeysIt.hasNext() && sortOrderIt.hasNext()) {
-				sortCriteriums.add(new SortCriterium(sortKeysIt.next(), sortOrderIt.next()));
+				sortCriteria.add(new SortCriteria(sortKeysIt.next(), sortOrderIt.next()));
 			}
 
 		} else {
 			// Not enough sort orders, take first sort order for all keys
 			SortOrder sortOrder = sortOrders.get(0);
 			for (SortKey sortKey : sortKeys) {
-				sortCriteriums.add(new SortCriterium(sortKey, sortOrder));
+				sortCriteria.add(new SortCriteria(sortKey, sortOrder));
 			}
 		}
-		return sortCriteriums;
+		return sortCriteria;
 	}
 
-	public static String getSortKeys(List<SortCriterium> sortCriteriums) {
+	public static String getSortKeys(List<SortCriteria> sortCriteria) {
 		List<String> sortKeys = new ArrayList<>();
-		for (SortCriterium criterium : sortCriteriums) {
+		for (SortCriteria criterium : sortCriteria) {
 			sortKeys.add(criterium.getSortKey().toString());
 		}
 		return StringUtils.implodeStringArray(sortKeys.toArray(), SORT_KEY_DELIMITER);
 	}
 
-	public static String getSortOrders(List<SortCriterium> sortCriteriums) {
+	public static String getSortOrders(List<SortCriteria> sortCriteria) {
 		List<String> sortOrders = new ArrayList<>();
-		for (SortCriterium criterium : sortCriteriums) {
+		for (SortCriteria criterium : sortCriteria) {
 			sortOrders.add(criterium.getSortOrder().toString());
 		}
 		return StringUtils.implodeStringArray(sortOrders.toArray(), SORT_ORDER_DELIMITER);

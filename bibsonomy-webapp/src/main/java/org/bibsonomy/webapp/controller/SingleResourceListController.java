@@ -32,7 +32,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
@@ -76,8 +76,8 @@ public abstract class SingleResourceListController extends ResourceListControlle
 		// set sorting criteriums list
 		List<SortKey> sortKeys = SortUtils.parseSortKeys(command.getSortPage());
 		List<SortOrder> sortOrders = SortUtils.parseSortOrders(command.getSortPageOrder());
-		List<SortCriterium> sortCriteriums = SortUtils.generateSortCriteriums(sortKeys, sortOrders);
-		command.setSortCriteriums(sortCriteriums);
+		List<SortCriteria> sortCriteria = SortUtils.generateSortCriteriums(sortKeys, sortOrders);
+		command.setSortCriteriums(sortCriteria);
 
 		// set the scope/searchtype
 		if (command.isEsIndex()) {

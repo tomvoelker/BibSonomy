@@ -29,7 +29,6 @@ package org.bibsonomy.rest.client;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -38,7 +37,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.*;
 import org.bibsonomy.common.errors.ErrorMessage;
@@ -79,13 +78,11 @@ import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.queries.delete.DeleteCRISLinkQuery;
-import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.queries.delete.DeleteResourcePersonRelationQuery;
 import org.bibsonomy.rest.client.queries.get.GetResourcePersonRelationsQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostDocumentQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostQuery;
-import org.bibsonomy.rest.client.queries.delete.DeleteResourcePersonRelationQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteSyncDataQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteUserQuery;
 import org.bibsonomy.rest.client.queries.delete.RemoveUserFromGroupQuery;
@@ -102,7 +99,6 @@ import org.bibsonomy.rest.client.queries.get.GetPostDocumentQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
 import org.bibsonomy.rest.client.queries.get.GetProjectDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetProjectsQuery;
-import org.bibsonomy.rest.client.queries.get.GetResourcePersonRelationsQuery;
 import org.bibsonomy.rest.client.queries.get.GetTagDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetTagRelationQuery;
 import org.bibsonomy.rest.client.queries.get.GetTagsQuery;
@@ -141,13 +137,6 @@ import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.util.ExceptionUtils;
-
-import java.net.URI;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
 
 /**
  * {@link LogicInterface} for a remote BibSonomy/PUMA instance
@@ -280,7 +269,7 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, Set<Filter> filters, List<SortCriterium> sortCriteriums, Date startDate, Date endDate, int start, int end) {
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, Set<Filter> filters, List<SortCriteria> sortCriteria, Date startDate, Date endDate, int start, int end) {
 		final PostQuery<T> query = new PostQuery<>(resourceType);
 		query.setGrouping(grouping);
 		query.setGroupingName(groupingName);
@@ -289,7 +278,7 @@ public class RestLogic extends AbstractLogicInterface {
 		query.setSearch(search);
 		query.setScope(queryScope);
 		query.setFilters(filters);
-		query.setSortCriteriums(sortCriteriums);
+		query.setSortCriteriums(sortCriteria);
 		query.setStartDate(startDate);
 		query.setEndDate(endDate);
 		query.setStart(start);

@@ -1,6 +1,6 @@
 package org.bibsonomy.model.logic.query;
 
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.QueryScope;
@@ -44,7 +44,7 @@ public class PostQuery<R extends Resource> extends BasicQuery {
 	/** get all publications assigned to persons of the specified college */
 	private String college;
 
-	private List<SortCriterium> sortCriteriums;
+	private List<SortCriteria> sortCriteria;
 
 	/**
 	 * default constructor
@@ -225,14 +225,14 @@ public class PostQuery<R extends Resource> extends BasicQuery {
 	/**
 	 * @return the sortCriteriums
 	 */
-	public List<SortCriterium> getSortCriteriums() {
-		return sortCriteriums;
+	public List<SortCriteria> getSortCriteriums() {
+		return sortCriteria;
 	}
 
 	/**
-	 * @param sortCriteriums the sortCriteriums to set
+	 * @param sortCriteria the sortCriteriums to set
 	 */
-	public void setSortCriteriums(List<SortCriterium> sortCriteriums) {
-		this.sortCriteriums = sortCriteriums;
+	public void setSortCriteriums(List<SortCriteria> sortCriteria) {
+		this.sortCriteria = sortCriteria;
 	}
 }

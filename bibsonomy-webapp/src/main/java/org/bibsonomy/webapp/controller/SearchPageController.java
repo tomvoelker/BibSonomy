@@ -34,7 +34,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
@@ -43,7 +43,6 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.search.InvalidSearchRequestException;
-import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.SearchViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -131,9 +130,9 @@ public class SearchPageController extends SingleResourceListController implement
 			// no search given, but a grouping, reset the order to added
 			if (!present(search)){
 				command.setSortKey(SortKey.DATE);
-				List<SortCriterium> sortCriteriumsNoSearch = new ArrayList<>();
-				sortCriteriumsNoSearch.add(new SortCriterium(command.getSortKey(), SortOrder.DESC));
-				command.setSortCriteriums(sortCriteriumsNoSearch);
+				List<SortCriteria> sortCriteriumsNoSearches = new ArrayList<>();
+				sortCriteriumsNoSearches.add(new SortCriteria(command.getSortKey(), SortOrder.DESC));
+				command.setSortCriteriums(sortCriteriumsNoSearches);
 			}
 
 			// if grouping entity set to GroupingEntity.ALL, database only allows 1000 tags maximum

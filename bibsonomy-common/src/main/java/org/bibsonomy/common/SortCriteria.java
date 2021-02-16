@@ -9,29 +9,29 @@ import java.util.List;
 /**
  * @author kch
  */
-public class SortCriterium {
+public class SortCriteria {
 	/** sort key */
 	private SortKey sortKey;
 	/** sort order */
 	private SortOrder sortOrder;
 
-	public SortCriterium() {
+	public SortCriteria() {
 		this.sortKey = SortKey.NONE;
 		this.sortOrder = SortOrder.DESC;
 	}
 
-	public SortCriterium(SortKey sortKey, SortOrder sortOrder) {
+	public SortCriteria(SortKey sortKey, SortOrder sortOrder) {
 		this.sortKey = sortKey;
 		this.sortOrder = sortOrder;
 	}
 
-	public SortCriterium(String key, String order) {
+	public SortCriteria(String key, String order) {
 		this.sortKey = SortKey.getByName(key);
 		this.sortOrder = SortOrder.getByName(order);
 	}
 
-	public static List<SortCriterium> singletonCriterium(SortKey key) {
-		return Collections.singletonList(new SortCriterium(key, SortOrder.DESC));
+	public static List<SortCriteria> singletonCriterium(SortKey key) {
+		return Collections.singletonList(new SortCriteria(key, SortOrder.DESC));
 	}
 
 	public SortKey getSortKey() {

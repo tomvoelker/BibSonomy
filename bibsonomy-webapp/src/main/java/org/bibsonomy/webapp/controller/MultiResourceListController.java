@@ -32,7 +32,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.*;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -86,8 +86,8 @@ public abstract class MultiResourceListController extends ResourceListController
 		// retrieve posts		
 		log.debug("getPosts " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
 
-		final List<SortCriterium> sortCriteriums = Collections.singletonList(new SortCriterium(sortKey, SortOrder.DESC));
-		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, QueryScope.LOCAL, Sets.asSet(filter), sortCriteriums, null, null, listCommand.getStart(), listCommand.getStart() + itemsPerPage));
+		final List<SortCriteria> sortCriteria = Collections.singletonList(new SortCriteria(sortKey, SortOrder.DESC));
+		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, QueryScope.LOCAL, Sets.asSet(filter), sortCriteria, null, null, listCommand.getStart(), listCommand.getStart() + itemsPerPage));
 		cmd.getListCommand(resourceType).add(listCommand);
 
 		// list settings

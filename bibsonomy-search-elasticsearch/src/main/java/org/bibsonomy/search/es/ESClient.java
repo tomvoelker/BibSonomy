@@ -38,7 +38,6 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.client.DeleteData;
 import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.client.UpdateData;
-import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;

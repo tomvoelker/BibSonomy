@@ -26,9 +26,8 @@
  */
 package org.bibsonomy.database.params;
 
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.RatingAverage;
-import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.GoldStandardRelation;
@@ -52,7 +51,7 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 	protected T resource;
 	protected GoldStandardRelation relation;
 	protected ResourcePersonRelation personRelation;
-	protected List<SortCriterium> sortCriteriums;
+	protected List<SortCriteria> sortCriteria;
 
 	/**
 	 * @return the query
@@ -117,11 +116,11 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 		this.personRelation = personRelation;
 	}
 
-	public List<SortCriterium> getSortCriteriums() {
-		return sortCriteriums;
+	public List<SortCriteria> getSortCriteriums() {
+		return sortCriteria;
 	}
 
-	public void setSortCriteriums(List<SortCriterium> sortCriteriums) {
-		this.sortCriteriums = sortCriteriums;
+	public void setSortCriteriums(List<SortCriteria> sortCriteria) {
+		this.sortCriteria = sortCriteria;
 	}
 }

@@ -26,7 +26,7 @@
  */
 package org.bibsonomy.model.comparators;
 
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
@@ -75,7 +75,7 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 	 */
 	@Override
 	public int compare(final Post<? extends BibTex> post1, final Post<? extends BibTex> post2) {
-		for (final SortCriterium crit : this.sortCriteria) {
+		for (final SortCriteria crit : this.sortCriteria) {
 			try {
 				// author
 				if (SortKey.AUTHOR.equals(crit.getSortKey())) {

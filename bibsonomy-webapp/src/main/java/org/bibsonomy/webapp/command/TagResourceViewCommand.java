@@ -26,7 +26,7 @@
  */
 package org.bibsonomy.webapp.command;
 
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.Tag;
@@ -64,7 +64,7 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	private SortKey sortKey;
 
 	/** the specified list of sort criteriums */
-	private List<SortCriterium> sortCriteriums = new LinkedList<>();
+	private List<SortCriteria> sortCriteria = new LinkedList<>();
 
 	/**
 	 * Use the elasticsearch index for retrieving and sorting listed posts?
@@ -167,15 +167,15 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	 * List of sorting criteriums
 	 * @return sortCriteriums
 	 */
-	public List<SortCriterium> getSortCriteriums() {
-		return sortCriteriums;
+	public List<SortCriteria> getSortCriteriums() {
+		return sortCriteria;
 	}
 
 	/**
-	 * @param sortCriteriums	set the list of sort criteriums
+	 * @param sortCriteria	set the list of sort criteriums
 	 */
-	public void setSortCriteriums(List<SortCriterium> sortCriteriums) {
-		this.sortCriteriums = sortCriteriums;
+	public void setSortCriteriums(List<SortCriteria> sortCriteria) {
+		this.sortCriteria = sortCriteria;
 	}
 
 	/**
