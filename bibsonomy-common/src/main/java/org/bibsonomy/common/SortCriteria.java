@@ -30,10 +30,6 @@ public class SortCriteria {
 		this.sortOrder = SortOrder.getByName(order);
 	}
 
-	public static List<SortCriteria> singletonCriterium(SortKey key) {
-		return Collections.singletonList(new SortCriteria(key, SortOrder.DESC));
-	}
-
 	public SortKey getSortKey() {
 		return sortKey;
 	}

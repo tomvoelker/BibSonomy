@@ -30,7 +30,7 @@ import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -92,7 +92,7 @@ public class SortUtils {
 		}
 		// Check, if there is enough sort orders for each key
 		if (sortOrders.size() >= sortKeys.size()) {
-			// Create pair-wise sort criteriums
+			// Create pair-wise sort criteria
 			Iterator<SortKey> sortKeysIt = sortKeys.iterator();
 			Iterator<SortOrder> sortOrderIt = sortOrders.iterator();
 			while (sortKeysIt.hasNext() && sortOrderIt.hasNext()) {
@@ -110,18 +110,27 @@ public class SortUtils {
 	}
 
 	public static String getSortKeys(List<SortCriteria> sortCriteria) {
-		List<String> sortKeys = new ArrayList<>();
-		for (SortCriteria criterium : sortCriteria) {
-			sortKeys.add(criterium.getSortKey().toString());
+		final List<String> sortKeys = new LinkedList<>();
+		for (final SortCriteria criteria : sortCriteria) {
+			sortKeys.add(criteria.getSortKey().toString());
 		}
 		return StringUtils.implodeStringArray(sortKeys.toArray(), SORT_KEY_DELIMITER);
 	}
 
 	public static String getSortOrders(List<SortCriteria> sortCriteria) {
-		List<String> sortOrders = new ArrayList<>();
-		for (SortCriteria criterium : sortCriteria) {
-			sortOrders.add(criterium.getSortOrder().toString());
+		final List<String> sortOrders = new LinkedList<>();
+		for (final SortCriteria criteria : sortCriteria) {
+			sortOrders.add(criteria.getSortOrder().toString());
 		}
 		return StringUtils.implodeStringArray(sortOrders.toArray(), SORT_ORDER_DELIMITER);
+	}
+
+	/**
+	 * returns a single sort criteria
+	 * @param key
+	 * @return
+	 */
+	public static List<SortCriteria> singletonSortCriteria(SortKey key) {
+		return Collections.singletonList(new SortCriteria(key, SortOrder.DESC));
 	}
 }
