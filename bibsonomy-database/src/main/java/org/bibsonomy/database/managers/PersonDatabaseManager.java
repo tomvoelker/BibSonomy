@@ -66,7 +66,7 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.model.util.UserUtils;
-import org.bibsonomy.services.searcher.PersonSearch;
+import org.bibsonomy.database.services.PersonSearch;
 import org.bibsonomy.util.ObjectUtils;
 
 /**

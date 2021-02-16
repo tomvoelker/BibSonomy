@@ -27,17 +27,6 @@
 package org.bibsonomy.search.es.index.converter.post;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -59,6 +48,16 @@ import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.index.utils.FileContentExtractorService;
 import org.bibsonomy.util.ValidationUtils;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 /**
  * converts a {@link BibTex} to the ElasticSearch representation and vice versa
  *
@@ -67,33 +66,33 @@ import org.bibsonomy.util.ValidationUtils;
  */
 public class PublicationConverter extends ResourceConverter<BibTex> {
 	private static final Log log = LogFactory.getLog(PublicationConverter.class);
-	
+
 	private static final String PERSON_DELIMITER = " & ";
 	private static final String NAME_PART_DELIMITER = " ; ";
-	
+
 	private static interface PersonNameSetter {
 		public void setPersonNames(final BibTex publication, final List<PersonName> personNames);
 	}
-	
+
 	private static final PersonNameSetter AUTHOR_NAME_SETTER = new PersonNameSetter() {
 		@Override
 		public void setPersonNames(BibTex publication, List<PersonName> personNames) {
 			publication.setAuthor(personNames);
 		}
 	};
-	
+
 	private static final PersonNameSetter EDITOR_NAME_SETTER = new PersonNameSetter() {
 		@Override
 		public void setPersonNames(BibTex publication, List<PersonName> personNames) {
 			publication.setEditor(personNames);
 		}
 	};
-	
+
 	private FileContentExtractorService fileContentExtractorService;
-	
+
 	/**
 	 * @param systemURI
-	 * @param fileContentExtractorService 
+	 * @param fileContentExtractorService
 	 */
 	public PublicationConverter(URI systemURI, final FileContentExtractorService fileContentExtractorService) {
 		super(systemURI);
@@ -107,7 +106,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	protected BibTex createNewResource() {
 		return new BibTex();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.search.es.index.converter.post.ResourceConverter#convertResourceInternal(org.bibsonomy.model.Resource, java.util.Map, boolean)
@@ -125,10 +124,10 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		publication.setCrossref((String) source.get(Fields.Publication.CROSSREF));
 		publication.setDay((String) source.get(Fields.Publication.DAY));
 		publication.setEdition((String) source.get(Fields.Publication.EDITION));
-		
+
 		setPersonNames(Fields.Publication.EDITORS, EDITOR_NAME_SETTER, publication, source);
 		setPersonNames(Fields.Publication.AUTHORS, AUTHOR_NAME_SETTER, publication, source);
-		
+
 		publication.setEntrytype((String) source.get(Fields.Publication.ENTRY_TYPE));
 		publication.setHowpublished((String) source.get(Fields.Publication.HOWPUBLISHED));
 		publication.setInstitution((String) source.get(Fields.Publication.INSTITUTION));
@@ -147,7 +146,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		publication.setUrl((String) source.get(Fields.Publication.URL));
 		publication.setVolume((String) source.get(Fields.Publication.VOLUME));
 		publication.setYear((String) source.get(Fields.Publication.YEAR));
-		
+
 		if (loadDocuments) {
 			final String userName;
 			final User user = post.getUser();
@@ -162,14 +161,13 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 
 	/**
 	 * @param object
-	 * @param userName 
+	 * @param userName
 	 * @return
 	 */
 	private static List<Document> convertDocuments(final Object object, final String userName) {
 		final LinkedList<Document> documents = new LinkedList<>();
 		if (object instanceof List) {
-			@SuppressWarnings("unchecked")
-			final List<Map<String, String>> docMaps = (List<Map<String, String>>) object;
+			@SuppressWarnings("unchecked") final List<Map<String, String>> docMaps = (List<Map<String, String>>) object;
 			for (Map<String, String> docMap : docMaps) {
 				final Document document = new Document();
 				document.setFileName(docMap.get(Fields.Publication.Document.NAME));
@@ -190,10 +188,9 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	private static void setPersonNames(final String fieldName, final PersonNameSetter personNameSetter, BibTex publication, Map<String, Object> source) {
 		final Object rawPersonNamesFieldValue = source.get(fieldName);
 		if (rawPersonNamesFieldValue instanceof List) {
-			@SuppressWarnings("unchecked")
-			final List<Map<String, String>> personNamesList = (List<Map<String, String>>) rawPersonNamesFieldValue;
+			@SuppressWarnings("unchecked") final List<Map<String, String>> personNamesList = (List<Map<String, String>>) rawPersonNamesFieldValue;
 			final StringBuilder personNameStringBuilder = new StringBuilder();
-			
+
 			final Iterator<Map<String, String>> personNameIterator = personNamesList.iterator();
 			while (personNameIterator.hasNext()) {
 				final Map<String, String> embeddedObject = personNameIterator.next();
@@ -204,7 +201,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 				}
 			}
 			personNameSetter.setPersonNames(publication, PersonNameUtils.discoverPersonNamesIgnoreExceptions(personNameStringBuilder.toString()));
-		} else if (rawPersonNamesFieldValue != null){
+		} else if (rawPersonNamesFieldValue != null) {
 			log.error("person name not a list; was " + rawPersonNamesFieldValue.getClass());
 		}
 	}
@@ -219,7 +216,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 			rel.setPost(post);
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.index.converter.post.ResourceConverter#convertResource(java.util.Map, org.bibsonomy.model.Resource)
 	 */
@@ -235,23 +232,23 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		jsonDocument.put(Fields.Publication.CROSSREF, resource.getCrossref());
 		jsonDocument.put(Fields.Publication.DAY, resource.getDay());
 		jsonDocument.put(Fields.Publication.EDITION, resource.getEdition());
-		
+
 		final List<PersonName> editors = resource.getEditor();
 		if (present(editors)) {
 			jsonDocument.put(Fields.Publication.EDITORS, convertPersonNames(editors));
 		}
-		
+
 		final List<PersonName> authors = resource.getAuthor();
 		if (present(authors)) {
 			jsonDocument.put(Fields.Publication.AUTHORS, convertPersonNames(authors));
 		}
-		
+
 		jsonDocument.put(Fields.Publication.ENTRY_TYPE, resource.getEntrytype());
 		jsonDocument.put(Fields.Publication.HOWPUBLISHED, resource.getHowpublished());
-		
+
 		jsonDocument.put(Fields.Publication.INSTITUTION, resource.getInstitution());
 		jsonDocument.put(Fields.Publication.JOURNAL, resource.getJournal());
-		
+
 		/*
 		 * insert misc field
 		 * parse it and insert all misc fields as separate fields in elasticsearch
@@ -294,24 +291,25 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 			jsonDocument.put(Fields.Publication.MISC_FIELDS, miscFields);
 		}
 
-		jsonDocument.put(Fields.Publication.MONTH, resource.getMonth());
+		jsonDocument.put(Fields.Publication.MONTH, normalizeMonth(resource.getMonth()));
 		jsonDocument.put(Fields.Publication.NOTE, resource.getNote());
 		jsonDocument.put(Fields.Publication.NUMBER, resource.getNumber());
 		jsonDocument.put(Fields.Publication.ORGANIZATION, resource.getOrganization());
 		jsonDocument.put(Fields.Publication.PAGES, resource.getPages());
-		
+
 		jsonDocument.put(Fields.Publication.PRIVNOTE, resource.getPrivnote());
 		jsonDocument.put(Fields.Publication.PUBLISHER, resource.getPublisher());
 		jsonDocument.put(Fields.Publication.SCHOOL, resource.getSchool());
 		jsonDocument.put(Fields.Publication.SERIES, resource.getSeries());
-		
+
 		jsonDocument.put(Fields.Publication.TYPE, resource.getType());
 		jsonDocument.put(Fields.Publication.URL, resource.getUrl());
 		jsonDocument.put(Fields.Publication.VOLUME, resource.getVolume());
-		
+
 		jsonDocument.put(Fields.Publication.YEAR, resource.getYear());
-		
+
 		jsonDocument.put(Fields.Publication.DOCUMENTS, convertDocuments(resource.getDocuments()));
+		buildSortingAttributesFromResource(jsonDocument, resource);
 	}
 
 	private static String getSpecialMiscFieldValue(Map<String, String> miscField, String key) {
@@ -333,7 +331,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		if (!present(documents)) {
 			return list;
 		}
-		
+
 		for (final Document document : documents) {
 			final Map<String, String> documentMap = new HashMap<>();
 			documentMap.put(Fields.Publication.Document.NAME, document.getFileName());
@@ -346,8 +344,24 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 			documentMap.put(Fields.Publication.Document.DATE, ElasticsearchUtils.dateToString(document.getDate()));
 			list.add(documentMap);
 		}
-		
+
 		return list;
+	}
+
+	private static void buildSortingAttributesFromResource(Map<String, Object> jsonDocument, BibTex resource) {
+		jsonDocument.put(Fields.Sort.BOOKTITLE, BibTexUtils.cleanBibTex(resource.getBooktitle()).toLowerCase());
+		jsonDocument.put(Fields.Sort.JOURNAL, BibTexUtils.cleanBibTex(resource.getJournal()).toLowerCase());
+		jsonDocument.put(Fields.Sort.SERIES, BibTexUtils.cleanBibTex(resource.getSeries()).toLowerCase());
+		jsonDocument.put(Fields.Sort.PUBLISHER, BibTexUtils.cleanBibTex(resource.getPublisher()).toLowerCase());
+		jsonDocument.put(Fields.Sort.SCHOOL, BibTexUtils.cleanBibTex(resource.getSchool()).toLowerCase());
+		jsonDocument.put(Fields.Sort.INSTITUTION, BibTexUtils.cleanBibTex(resource.getInstitution()).toLowerCase());
+		jsonDocument.put(Fields.Sort.ORGANIZATION, BibTexUtils.cleanBibTex(resource.getOrganization()).toLowerCase());
+		if (present(resource.getAuthor())) {
+			jsonDocument.put(Fields.Sort.AUTHOR, BibTexUtils.cleanBibTex(convertToPersonIndex(resource.getAuthor())).toLowerCase());
+		}
+		if (present(resource.getEditor())) {
+			jsonDocument.put(Fields.Sort.EDITOR, BibTexUtils.cleanBibTex(convertToPersonIndex(resource.getEditor())).toLowerCase());
+		}
 	}
 
 	/**
@@ -359,17 +373,42 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	}
 
 	/**
+	 * Convert the month string into a numeric string for sorting with index.
+	 *
+	 * @param month
+	 * @return
+	 */
+	private static String normalizeMonth(String month) {
+		if (present(month)) {
+			String normMonth = BibTexUtils.getMonthAsNumber(month);
+			if (normMonth.length() == 1) {
+				normMonth = "0" + normMonth;
+			}
+			return normMonth;
+		}
+		return month;
+	}
+
+	/**
 	 * @param persons
 	 * @return
 	 */
 	private static List<Map<String, String>> convertPersonNames(List<PersonName> persons) {
 		final List<Map<String, String>> serializedPersonNames = new LinkedList<>();
-		
+
 		for (final PersonName person : persons) {
 			serializedPersonNames.add(Collections.singletonMap(Fields.Publication.PERSON_NAME, PersonNameUtils.serializePersonName(person)));
 		}
-		
+
 		return serializedPersonNames;
+	}
+
+	/**
+	 * @param persons
+	 * @return
+	 */
+	private static String convertToPersonIndex(List<PersonName> persons) {
+		return PersonNameUtils.serializePersonNames(persons, true, " ");
 	}
 
 	/* (non-Javadoc)
@@ -378,7 +417,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	@Override
 	protected void convertPostInternal(final Post<BibTex> post, final Map<String, Object> jsonDocument) {
 		jsonDocument.put(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, getNormalizedEntryType(post));
-		
+
 		final List<ResourcePersonRelation> rels = post.getResourcePersonRelations();
 		this.updateDocumentWithPersonRelation(jsonDocument, rels);
 	}
@@ -393,11 +432,11 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		jsonDocument.put(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME, serializeMainNames(rels, null));
 		jsonDocument.put(Fields.PERSON_ENTITY_IDS_FIELD_NAME, serializePersonIds(rels, null));
 	}
-	
+
 	private static String getNormalizedEntryType(final Post<? extends BibTex> post) {
 		final BibTex bibtex = post.getResource();
 		String normalizedEntryType = null;
-		
+
 		final String entryType = bibtex.getEntrytype();
 		if (BibTexUtils.PHD_THESIS.equals(entryType)) {
 			normalizedEntryType = NormalizedEntryTypes.phdthesis.name();
@@ -408,7 +447,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		if (BibTexUtils.THESIS.equals(entryType)) {
 			normalizedEntryType = NormalizedEntryTypes.bachelor_thesis.name();
 		}
-		
+
 		if (normalizedEntryType != null) {
 			String type = bibtex.getType();
 			if (type != null) {
@@ -428,7 +467,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		}
 		return normalizedEntryType;
 	}
-	
+
 	private static String serializeMainNames(final List<ResourcePersonRelation> rels, PersonResourceRelationType type) {
 		if (rels == null) {
 			return null;
@@ -463,7 +502,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		}
 		return sb.toString();
 	}
-	
+
 	private static String serializePersonIds(final List<ResourcePersonRelation> rels, PersonResourceRelationType type) {
 		if (rels == null) {
 			return null;
@@ -488,22 +527,22 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		}
 		return sb.toString();
 	}
-	
+
 	private static List<ResourcePersonRelation> readPersonRelationsFromIndex(Map<String, Object> result) {
 		final List<ResourcePersonRelation> rels = new ArrayList<>();
-		
+
 		final String ids = (String) result.get(Fields.PERSON_ENTITY_IDS_FIELD_NAME);
 		if (StringUtils.isEmpty(ids)) {
 			return rels;
 		}
 		String[] parts = split(ids, " ");
-		
+
 		final int personIndexCtr[] = new int[PersonResourceRelationType.values().length];
-		for (int i = 0; i+1 < parts.length; i += 2) {
+		for (int i = 0; i + 1 < parts.length; i += 2) {
 			final String relatorCodeStr = parts[i].trim();
 			final PersonResourceRelationType role = PersonResourceRelationType.getByRelatorCode(relatorCodeStr);
 			final int personIndex = personIndexCtr[role.ordinal()]++;
-			final String id = parts[i+1].trim();
+			final String id = parts[i + 1].trim();
 			ResourcePersonRelation rel = new ResourcePersonRelation();
 			rel.setRelationType(role);
 			rel.setPersonIndex(personIndex);
@@ -511,17 +550,17 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 			rel.getPerson().setPersonId(id);
 			rels.add(rel);
 		}
-		
+
 		final String namesField = (String) result.get(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME);
 		final String[] names = split(namesField, PERSON_DELIMITER);
 		if (names.length != rels.size()) {
 			throw new IllegalStateException();
 		}
-		
+
 		for (int i = 0; i < names.length; ++i) {
 			String[] nameParts = split(names[i], NAME_PART_DELIMITER);
 			if (nameParts.length < 3) {
-				throw new IllegalStateException(); 
+				throw new IllegalStateException();
 			}
 			Person p = rels.get(i).getPerson();
 			PersonName mainName = buildNameFromParts(nameParts, 1);
@@ -539,18 +578,18 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		}
 		return rels;
 	}
-	
+
 	private static PersonName buildNameFromParts(String[] nameParts, int firstPartIndex) {
 		PersonName name = new PersonName();
 		if (present(nameParts[1])) {
 			name.setFirstName(nameParts[firstPartIndex].trim());
 		}
 		if (present(nameParts[2])) {
-			name.setLastName(nameParts[firstPartIndex+1].trim());
+			name.setLastName(nameParts[firstPartIndex + 1].trim());
 		}
 		return name;
 	}
-	
+
 	/**
 	 * @param fieldName
 	 * @param delimiter
@@ -566,7 +605,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		}
 		return rVal;
 	}
-	
+
 	private static String getRelatorCodeOrEmptyString(ResourcePersonRelation rel) {
 		PersonResourceRelationType type = rel.getRelationType();
 		if (type == null) {
@@ -575,7 +614,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		}
 		return type.getRelatorCode();
 	}
-	
+
 	/**
 	 * @param value
 	 * @return

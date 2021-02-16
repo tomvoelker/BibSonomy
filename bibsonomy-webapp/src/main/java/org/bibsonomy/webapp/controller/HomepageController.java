@@ -26,11 +26,10 @@
  */
 package org.bibsonomy.webapp.controller;
 
-import java.util.Arrays;
-
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.HomepageCommand;
@@ -38,6 +37,8 @@ import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+
+import java.util.Arrays;
 
 /**
  * Controller for Homepage
@@ -96,7 +97,7 @@ public class HomepageController extends SingleResourceListController implements 
 			/*
 			 * add news posts (= latest blog posts)
 			 */
-			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, newsGroup, Arrays.asList(newsTag), null, null,SearchType.LOCAL, null, null, null, null, 0, 3));
+			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, newsGroup, Arrays.asList(newsTag), null, null,SearchType.LOCAL, null, SortKey.NONE, null, null, 0, 3));
 			this.endTiming();
 			
 			return Views.HOMEPAGE;

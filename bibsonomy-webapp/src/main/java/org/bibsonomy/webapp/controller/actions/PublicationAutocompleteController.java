@@ -39,9 +39,9 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.Scraper;
@@ -119,7 +119,7 @@ public class PublicationAutocompleteController implements MinimalisticController
 				}
 			}
 			try {
-				final List<Post<BibTex>> postsBySearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, search, SearchType.LOCAL, null, Order.RANK, null, null, 0, 10);
+				final List<Post<BibTex>> postsBySearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, search, SearchType.LOCAL, null, SortKey.RANK, null, null, 0, 10);
 				allPosts.addAll(postsBySearch);
 			} catch (final InvalidSearchRequestException e) {
 				// ignore

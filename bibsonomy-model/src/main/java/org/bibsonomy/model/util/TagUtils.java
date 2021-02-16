@@ -41,9 +41,9 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.comparators.TagCountComparator;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.tagparser.TagString3Lexer;
 import org.bibsonomy.model.util.tagparser.TagString3Parser;
 import org.bibsonomy.util.ValidationUtils;
@@ -189,8 +189,8 @@ public class TagUtils {
 	 * @return either the top n tags of the merged list (if limitType==POPULAR)
 	 *         or all tags with globalTagCount>=limit (if limitType==FREQUENCY)
 	 */
-	public static List<Tag> mergeTagLists(final List<Tag> src1, final List<Tag> src2, Order tagOrder, Order limitType, int limit) {
-		if (Order.POPULAR.equals(limitType)) {
+	public static List<Tag> mergeTagLists(final List<Tag> src1, final List<Tag> src2, SortKey tagOrder, SortKey limitType, int limit) {
+		if (SortKey.POPULAR.equals(limitType)) {
 			return mergePopularityFilteredTagLists(src1, src2, tagOrder, limit);
 		}
 		
@@ -211,7 +211,7 @@ public class TagUtils {
 	 * 
 	 * @return all tags with globalTagCount>=limit
 	 */
-	private static List<Tag> mergeFrequencyFilteredTagLists(final List<Tag> src1, final List<Tag> src2, Order tagOrder, int limit ) {
+	private static List<Tag> mergeFrequencyFilteredTagLists(final List<Tag> src1, final List<Tag> src2, SortKey tagOrder, int limit ) {
 		List<Tag> mergedList = new LinkedList<Tag>();
 		
 		log.debug("Merging tag lists ("+src1.size()+"/"+src2.size()+")and filter by minFreq");
@@ -259,7 +259,7 @@ public class TagUtils {
 	 * 
 	 * @return the top n tags of the merged list 
 	 */
-	private static List<Tag> mergePopularityFilteredTagLists(final List<Tag> src1, final List<Tag> src2, Order tagOrder, int limit ) {
+	private static List<Tag> mergePopularityFilteredTagLists(final List<Tag> src1, final List<Tag> src2, SortKey tagOrder, int limit ) {
 		List<Tag> mergedList = new LinkedList<Tag>();
 		
 		log.debug("Merging tag lists (" + src1.size() + "/" + src2.size() + ")and filter by popularity");

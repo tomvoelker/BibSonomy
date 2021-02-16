@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
-import org.bibsonomy.services.searcher.PersonSearch;
+import org.bibsonomy.database.services.PersonSearch;
 
 /**
  * TODO: add documentation to this class

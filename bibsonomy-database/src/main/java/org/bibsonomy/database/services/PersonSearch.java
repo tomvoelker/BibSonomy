@@ -24,49 +24,26 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.model.enums;
+package org.bibsonomy.database.services;
+
+import java.util.List;
+
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 
 /**
- * Defines some ordering criteria for lists of entities
+ * Interface for person search operations
  * 
- * FIXME: the orderings "FREQUENCY" AND "POPULAR" probably mean the same. Check
- * their usage and if possible, remove one of them.
- * 
- * @author Jens Illig
+ * @author jil
  */
-public enum Order {
-	/** for ordering by adding time (desc) */
-	ADDED,
-	/** for ordering by popularity (desc) */
-	POPULAR,
-	/**
-	 * for ordering by rank (e. g. full text search by score) 
-	 */
-	RANK,
-	/** for ordering by folkrank (desc) */
-	FOLKRANK,	
-	/** for ordering tags by frequency (desc) */
-	FREQUENCY,	
-	/**
-	 * Some items can be ordered alphabetically ...
-	 * (in particular groups)
-	 */
-	ALPH;
+public interface PersonSearch {
 
 	/**
-	 * Retrieve Order by name
-	 * 
-	 * @param name
-	 *            the requested order (e.g. "folkrank")
-	 * @return the corresponding Order enum
+	 * Allows autocompletion for persons
+	 * @param options contains a query with some mixture of parts of a name, parts of the title or the university name
+	 * @return a list of {@link ResourcePersonRelation} objects with initialized {@link Person} references. Each {@link Person} object is further initialized with a main name.
 	 */
-	public static Order getOrderByName(String name) {
-		try {
-			return Order.valueOf(name.toUpperCase());
-		} catch (NullPointerException np) {
-			throw new IllegalArgumentException("No order specified!");
-		} catch (IllegalArgumentException ia) {
-			throw new IllegalArgumentException("Requested order not supported. Possible values are 'added', 'popular', 'alph', 'frequency' or 'folkrank'");
-		}
-	}
+	public  List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options);
+	
 }

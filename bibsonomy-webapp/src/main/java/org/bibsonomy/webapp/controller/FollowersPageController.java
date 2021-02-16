@@ -34,11 +34,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Duplicates;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.webapp.command.FollowersViewCommand;
 import org.bibsonomy.webapp.command.ListCommand;
@@ -67,14 +67,12 @@ public class FollowersPageController extends SingleResourceListController implem
 		}
 		
 		final String pageSort = command.getSortPage();
-		Order order = command.getOrder();
+		SortKey sortKey = command.getSortKey();
 		
-		if ("date".equals(pageSort)) {
-			order = Order.ADDED;
-		} else if ("ranking".equals(pageSort)) {
-			order = Order.RANK;
+		if ("ranking".equals(pageSort)) {
+			sortKey = SortKey.RANK;
 		}
-		command.setOrder(order);
+		command.setSortKey(sortKey);
 		
 		// set params
 		final UserRelation userRelation = EnumUtils.searchEnumByName(UserRelation.values(), command.getUserSimilarity());
@@ -91,7 +89,7 @@ public class FollowersPageController extends SingleResourceListController implem
 		
 		final String username = command.getContext().getLoginUser().getName();
 		
-		switch (order) {
+		switch (sortKey) {
 		case RANK:
 			
 			// ranking settings
@@ -147,7 +145,7 @@ public class FollowersPageController extends SingleResourceListController implem
 				this.postProcessAndSortList(command, resourceType);
 				
 				// set total count
-				this.setTotalCount(command, resourceType, groupingEntity, groupingName, null, null, null, null, order, null, null, resourceEntriesPerPage);
+				this.setTotalCount(command, resourceType, groupingEntity, groupingName, null, null, null, null, sortKey, null, null, resourceEntriesPerPage);
 			}
 			break;
 		}

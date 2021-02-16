@@ -32,13 +32,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
-import org.elasticsearch.search.sort.SortOrder;
 
 /**
  * Wrapper around an ElasticSearch Client.
@@ -179,14 +179,14 @@ public interface ESClient {
 	 * @param type
 	 * @param queryBuilder
 	 * @param highlightBuilder
-	 * @param order
+	 * @param sortCriteriums
 	 * @param offset
 	 * @param limit
 	 * @param minScore
 	 * @param fieldsToRetrieve
 	 * @return the search hits of the provided query
 	 */
-	SearchHits search(String indexName, final String type, QueryBuilder queryBuilder, HighlightBuilder highlightBuilder, Pair<String, SortOrder> order, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve);
+	SearchHits search(String indexName, final String type, QueryBuilder queryBuilder, HighlightBuilder highlightBuilder, List<SortCriterium> sortCriteriums, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve);
 
 	/**
 	 * @param indexName

@@ -48,6 +48,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
@@ -310,7 +311,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		int startCount = 0;
 
 		do {
-			tmp = this.logic.getPosts((Class<RESOURCE>) this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, SearchType.LOCAL, null, null, null, null, startCount, startCount + this.maxQuerySize);
+			tmp = this.logic.getPosts((Class<RESOURCE>) this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, SearchType.LOCAL, null, SortKey.NONE, null, null, startCount, startCount + this.maxQuerySize);
 			dbPosts.addAll(tmp);
 			startCount += this.maxQuerySize;
 		} while (tmp.size() == this.maxQuerySize);
@@ -470,7 +471,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				// comparePost is the history revision which will be restored.
 				final int compareVersion = command.getCompareVersion();
 				@SuppressWarnings("unchecked")
-				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(postOwner), null, intraHashToUpdate, null, SearchType.LOCAL, Sets.asSet(FilterEntity.HISTORY), null, null, null, compareVersion, compareVersion + 1).get(0);
+				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(postOwner), null, intraHashToUpdate, null, SearchType.LOCAL, Sets.asSet(FilterEntity.HISTORY), SortKey.NONE, null, null, compareVersion, compareVersion + 1).get(0);
 
 				// TODO: why don't we set the dbPost = comparePost? why do we
 				// have to restore all fields by hand?

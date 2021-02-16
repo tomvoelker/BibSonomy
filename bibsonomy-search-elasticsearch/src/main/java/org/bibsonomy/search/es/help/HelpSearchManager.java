@@ -266,7 +266,7 @@ public class HelpSearchManager implements HelpSearch {
 
 		final TreeSet<HelpSearchResult> results = new TreeSet<>();
 		try {
-			final SearchHits hits = this.client.search(indexName, HELP_PAGE_TYPE, query, highlightBuilder, null, 0, 25, null, null);
+			final SearchHits hits = this.client.search(indexName, HELP_PAGE_TYPE, query, highlightBuilder, null,0, 25, null, null);
 
 			if (!present(hits)) {
 				return results;

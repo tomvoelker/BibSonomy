@@ -58,10 +58,13 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 * Has the requested user added the logged in user to her friend list? 
 	 */
 	private boolean friendOfUser = false;
+
 	/**
 	 * Has the logged in user added the requested user to his friend list?
 	 */
 	private boolean ofFriendUser = false;
+
+
 	
 	/**
 	 * defines the similarity measure by which the related users are computed  

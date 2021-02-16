@@ -30,10 +30,10 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.DaysSystemTag;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.rest.exceptions.UnsupportedMediaTypeException;
 import org.bibsonomy.webapp.command.MultiResourceViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -69,7 +69,7 @@ public class PopularPageController extends MultiResourceListController implement
 		
 		// set the grouping entity and the order
 		final GroupingEntity groupingEntity = GroupingEntity.ALL;
-		final Order order = Order.POPULAR;
+		final SortKey sortKey = SortKey.POPULAR;
 		
 		// the start parameter for OFFSET
 		int begin = 0; 
@@ -82,13 +82,13 @@ public class PopularPageController extends MultiResourceListController implement
 				// build day systemtag
 				final List<String> tags = Collections.singletonList(SystemTagsUtil.buildSystemTagString(DaysSystemTag.NAME, Integer.valueOf(begin)));
 				// determine the value of popular days, e.g. the last 10 days
-				days = this.logic.getPostStatistics(resourceType, groupingEntity, null, tags, null, null, null, order, command.getStartDate(), command.getEndDate(), 0, this.entriesPerPage).getCount();
+				days = this.logic.getPostStatistics(resourceType, groupingEntity, null, tags, null, null, null, sortKey, command.getStartDate(), command.getEndDate(), 0, this.entriesPerPage).getCount();
 				
 				// only retrieve and set the requested resource lists if days > 0
 				// because otherwise the lists will be empty
 				if (days > 0) {
 					// retrieve and set the requested resource lists
-					this.addList(command, resourceType, groupingEntity, null, tags, null, order, null, null, this.entriesPerPage);
+					this.addList(command, resourceType, groupingEntity, null, tags, null, sortKey, null, null, this.entriesPerPage);
 					// FIXME: do this only once outside the "days"-loop
 					this.postProcessAndSortList(command, resourceType);
 					this.addDescription(command, resourceType, days + "");

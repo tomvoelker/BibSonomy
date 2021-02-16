@@ -26,6 +26,16 @@
  */
 package org.bibsonomy.search.es.index.converter.post;
 
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.search.es.ESConstants.Fields;
+import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
+import org.bibsonomy.search.util.Converter;
+
 import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,15 +44,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
-import org.bibsonomy.search.es.ESConstants.Fields;
-import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
-import org.bibsonomy.search.util.Converter;
 
 /**
  * abstract class to convert the model to the ES mapping
@@ -242,6 +243,7 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 	 */
 	protected void convertResourceInternal(Map<String, Object> jsonDocument, R resource) {
 		jsonDocument.put(Fields.Resource.TITLE, resource.getTitle());
+		jsonDocument.put(Fields.Sort.TITLE, BibTexUtils.cleanBibTex(resource.getTitle().toLowerCase()));
 		jsonDocument.put(Fields.Resource.INTRAHASH, resource.getIntraHash());
 		jsonDocument.put(Fields.Resource.INTERHASH, resource.getInterHash());
 		this.convertResource(jsonDocument, resource);

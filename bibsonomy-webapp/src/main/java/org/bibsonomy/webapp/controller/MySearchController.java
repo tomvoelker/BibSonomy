@@ -27,13 +27,6 @@
 package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.BibTex;
@@ -42,13 +35,18 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.MySearchCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * This controller retrieve all publication informations of a currently logged in

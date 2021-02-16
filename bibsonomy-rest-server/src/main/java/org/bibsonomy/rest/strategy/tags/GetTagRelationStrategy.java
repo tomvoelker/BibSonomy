@@ -75,7 +75,7 @@ public class GetTagRelationStrategy extends GetListOfTagsStrategy {
 				return this.handleSimilar();
 			default:
 				return this.getLogic().getTags(resourceType, grouping, groupingValue, tags,
-						hash, null, regex, null, this.getView().getOrder(), null, null,
+						hash, null, regex, null, this.getView().getSortKeys().get(0), null, null,
 						this.getView().getStartValue(), this.getView().getEndValue());
 		}
 	}
@@ -86,7 +86,7 @@ public class GetTagRelationStrategy extends GetListOfTagsStrategy {
 	 */
 	private List<Tag> handleRelated() {
 		return this.getLogic().getTags(resourceType, grouping, groupingValue, tags,
-				hash, null, regex, TagSimilarity.COOC, this.getView().getOrder(),
+				hash, null, regex, TagSimilarity.COOC, this.getView().getSortKeys().get(0),
 				null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 
@@ -100,7 +100,7 @@ public class GetTagRelationStrategy extends GetListOfTagsStrategy {
 		}
 		
 		return this.getLogic().getTags(resourceType, grouping, groupingValue, tags,
-				hash, null, regex, TagSimilarity.COSINE, this.getView().getOrder(),
+				hash, null, regex, TagSimilarity.COSINE, this.getView().getSortKeys().get(0),
 				null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 }

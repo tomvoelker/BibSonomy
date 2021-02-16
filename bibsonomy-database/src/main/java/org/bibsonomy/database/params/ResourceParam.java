@@ -26,10 +26,14 @@
  */
 package org.bibsonomy.database.params;
 
+import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.RatingAverage;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+
+import java.util.List;
 
 /** 
  * Super class for parameter objects that are about resources.
@@ -45,6 +49,7 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 	protected T resource;
 	protected GoldStandardRelation relation;
 	protected ResourcePersonRelation personRelation;
+	protected List<SortCriterium> sortCriteriums;
 	
 
 	/**
@@ -96,4 +101,11 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 		this.personRelation = personRelation;
 	}
 
+	public List<SortCriterium> getSortCriteriums() {
+		return sortCriteriums;
+	}
+
+	public void setSortCriteriums(List<SortCriterium> sortCriteriums) {
+		this.sortCriteriums = sortCriteriums;
+	}
 }

@@ -33,12 +33,12 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
 
 /**
  * Return a list of popular resources.
@@ -54,7 +54,7 @@ public class GetResourcesPopular<R extends Resource, P extends ResourceParam<R>>
 		return (param.getGrouping() == GroupingEntity.ALL &&
 				param.getDays() >= 0 &&
 				!present(param.getHash()) &&
-				nullOrEqual(param.getOrder(), Order.POPULAR) &&
+				nullOrEqual(param.getSortKey(), SortKey.NONE, SortKey.POPULAR) &&
 				!present(param.getSearch()) &&
 				!present(param.getAuthor()) &&
 				!present(param.getTitle()));

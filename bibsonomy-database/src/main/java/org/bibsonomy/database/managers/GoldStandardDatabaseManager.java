@@ -54,7 +54,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.util.PostUtils;
-import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.database.services.ResourceSearch;
 import org.bibsonomy.util.ReflectionUtils;
 
 /**

@@ -42,6 +42,7 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
@@ -61,7 +62,6 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.user.remote.RemoteUserId;
@@ -106,8 +106,8 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * 			- a list of tags by which to retrieve users (e.g., users related to these tags by folkrank)
 	 * @param hash
 	 * 			- a resourcehash
-	 * @param order
-	 * 			- the order by which to retrieve the users
+	 * @param sortKey
+	 * 			- sort by key
 	 * @param relation
 	 * 			- the relation between the users
 	 * @param search
@@ -117,7 +117,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 *
 	 * @return list of user
 	 */
-	public List<User> getUsers (Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, UserRelation relation, String search, int start, int end);
+	public List<User> getUsers (Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, SortKey sortKey, UserRelation relation, String search, int start, int end);
 
 	/**
 	 * @param grouping TODO
@@ -216,14 +216,14 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param regex
 	 *            a regular expression used to filter the tagnames
 	 * @param relation TODO
-	 * @param order
+	 * @param sortKey	sort by key
 	 * @param startDate - if given, only tags of posts that have been created after (inclusive) startDate are returned
 	 * @param endDate - if given, only tags of posts that have been created before (inclusive) endDate are returned
 	 * @param start
 	 * @param end
 	 * @return a set of tags, an empty list else
 	 */
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end);
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, String regex, TagSimilarity relation, SortKey sortKey, Date startDate, Date endDate, int start, int end);
 
 	/**
 	 * Returns a list of tags which can be filtered.
@@ -245,14 +245,14 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param regex
 	 *            a regular expression used to filter the tagnames
 	 * @param relation TODO
-	 * @param order
+	 * @param sortKey 	sort by key
 	 * @param startDate - if given, only tags of posts that have been created after (inclusive) startDate are returned
 	 * @param endDate - if given, only tags of posts that have been created before (inclusive) endDate are returned
 	 * @param start
 	 * @param end
 	 * @return a set of tags, an empty list else
 	 */
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end);
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, String regex, TagSimilarity relation, SortKey sortKey, Date startDate, Date endDate, int start, int end);
 
 	/**
 	 * retrieves a filterable list of authors.
@@ -275,11 +275,11 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param start inclusive start index of the view window
 	 * @param end exclusive end index of the view window
 	 * @param search free text search
-	 * @param order a flag indicating the way of sorting
+	 * @param sortKey 	sort by key
 	 * @param filter filter for the retrieved authors
 	 * @return a filtered list of authors. may be empty but not null
 	 */
-	public List<Author> getAuthors(GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search);
+	public List<Author> getAuthors(GroupingEntity grouping, String groupingName, List<String> tags, String hash, SortKey sortKey, FilterEntity filter, int start, int end, String search);
 
 	/**
 	 * Returns details about a tag. Those details are:
@@ -378,7 +378,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * <dt>{@link GroupUpdateOperation#UPDATE_SETTINGS}</dt><dd>Updates the settings of the group.</dd>
 	 * <dt>{@link GroupUpdateOperation#UPDATE_ALL}</dt><dd>Updates the complete group.</dd>
 	 * <dt>{@link GroupUpdateOperation#ACTIVATE}</dt><dd>Activates the group.</dd>
-	 * <dt>{@link GroupUpdateOperation#DELETE}</dt><dd>Deletes the pending group.</dd>
+	 * <dt>{@link GroupUpdateOperation#DELETE_GROUP_REQUEST}</dt><dd>Deletes the pending group.</dd>
 	 * </dl>
 	 *
 	 *
@@ -439,7 +439,6 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param groupingEntity
 	 * @param grouping
 	 * @param filters
-	 * @param constraints
 	 * @param startDate
 	 * @param endDate
 	 * @return the stats
@@ -558,7 +557,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName);
 
 	/**
-	 * TODO: can we merge this with the {@link #getUsers(Class, GroupingEntity, String, List, String, Order, UserRelation, String, int, int)}
+	 * TODO: can we merge this with the {@link #getUsers(Class, GroupingEntity, String, List, String, SortKey, UserRelation, String, int, int)}
 	 * method?
 	 *
 	 * Returns all users that are classified to the specified state by
@@ -694,7 +693,6 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param regex
 	 * @param status
 	 * @param filters
-	 * @param contraints the statistic contraint
 	 * @param startDate
 	 * @param endDate
 	 * @param start

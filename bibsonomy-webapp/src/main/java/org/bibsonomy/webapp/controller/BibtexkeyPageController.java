@@ -33,6 +33,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.BibTexKeySystemTag;
@@ -88,8 +89,9 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
-			setList(command, resourceType, groupingEntity, groupingName, command.getRequestedTagsList(), null, null, command.getScope(), null, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
-			postProcessAndSortList(command, resourceType);
+			//this.preProcessForSearchIndexSort(command);
+			this.setList(command, resourceType, groupingEntity, groupingName, command.getRequestedTagsList(), null, null, command.getScope(), null, SortKey.NONE, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
+			this.postProcessAndSortList(command, resourceType);
 		}
 		
 		// html format - fetch tags and return HTML view

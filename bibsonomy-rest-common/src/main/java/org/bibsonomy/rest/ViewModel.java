@@ -26,7 +26,11 @@
  */
 package org.bibsonomy.rest;
 
-import org.bibsonomy.model.enums.Order;
+
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
+
+import java.util.List;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -49,9 +53,14 @@ public class ViewModel {
 	private int endValue;
 
 	/**
-	 * Order attribute for Tags
+	 * List of sorting key attribute
 	 */
-	private Order order;
+	private List<SortKey> sortKeys;
+
+	/**
+	 * List of sorting order
+	 */
+	private List<SortOrder> sortOrders;
 
 	/**
 	 * @return Returns the urlToNextResources.
@@ -98,17 +107,19 @@ public class ViewModel {
 		this.startValue = startValue;
 	}
 
-	/**
-	 * @param order the order
-	 */
-	public void setOrder(final Order order) {
-		this.order = order;
+	public List<SortKey> getSortKeys() {
+		return sortKeys;
 	}
 
-	/**
-	 * @return Returns the order
-	 */
-	public Order getOrder() {
-		return this.order;
+	public void setSortKeys(List<SortKey> sortKeys) {
+		this.sortKeys = sortKeys;
+	}
+
+	public List<SortOrder> getSortOrders() {
+		return sortOrders;
+	}
+
+	public void setSortOrders(List<SortOrder> sortOrders) {
+		this.sortOrders = sortOrders;
 	}
 }

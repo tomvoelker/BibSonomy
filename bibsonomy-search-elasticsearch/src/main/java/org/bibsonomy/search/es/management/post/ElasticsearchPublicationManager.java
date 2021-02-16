@@ -26,14 +26,6 @@
  */
 package org.bibsonomy.search.es.management.post;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.net.URI;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -58,6 +50,14 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+
+import java.net.URI;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * manager that also updates person informations
