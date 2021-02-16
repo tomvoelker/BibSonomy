@@ -60,7 +60,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.file.FileSystemFile;
 import org.bibsonomy.services.filesystem.FileLogic;
-import org.bibsonomy.database.services.ResourceSearch;
 
 /**
  * Used to create, read, update and delete {@link BibTex} from the database.
