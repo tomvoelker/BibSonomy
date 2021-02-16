@@ -3,9 +3,6 @@ package org.bibsonomy.common;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 
-import java.util.Collections;
-import java.util.List;
-
 /**
  * @author kch
  */
