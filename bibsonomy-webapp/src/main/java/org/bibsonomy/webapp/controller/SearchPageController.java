@@ -28,13 +28,11 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
@@ -131,7 +129,7 @@ public class SearchPageController extends SingleResourceListController implement
 			// no search given, but a grouping, reset the order to added
 			if (!present(search)){
 				command.setSortKey(SortKey.DATE);
-				command.setSortCriteriums(SortUtils.singletonSortCriteria(command.getSortKey(), SortOrder.DESC));
+				command.setSortCriteria(SortUtils.singletonSortCriteria(command.getSortKey(), SortOrder.DESC));
 			}
 
 			// if grouping entity set to GroupingEntity.ALL, database only allows 1000 tags maximum
@@ -146,7 +144,7 @@ public class SearchPageController extends SingleResourceListController implement
 			for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 	
 				this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, queryScope,
-								null, command.getSortCriteriums(), command.getStartDate(), command.getEndDate(),
+								null, command.getSortCriteria(), command.getStartDate(), command.getEndDate(),
 								command.getListCommand(resourceType).getEntriesPerPage());
 
 				// remove duplicates depending on command settings

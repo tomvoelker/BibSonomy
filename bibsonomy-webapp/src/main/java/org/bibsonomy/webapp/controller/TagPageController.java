@@ -104,7 +104,7 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 			this.preProcessForSearchIndexSort(command);
-			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, command.getScope(),null, command.getSortCriteriums(), command.getStartDate(), command.getEndDate(), entriesPerPage);
+			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, command.getScope(),null, command.getSortCriteria(), command.getStartDate(), command.getEndDate(), entriesPerPage);
 			// secondary sorting, if not using elasticsearch index
 			if (!command.isEsIndex()) {
 				this.postProcessAndSortList(command, resourceType);

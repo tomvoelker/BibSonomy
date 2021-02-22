@@ -164,17 +164,17 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	}
 
 	/**
-	 * List of sorting criteriums
-	 * @return sortCriteriums
+	 * Get list of sort criteria
+	 * @return sortCriteria
 	 */
-	public List<SortCriteria> getSortCriteriums() {
+	public List<SortCriteria> getSortCriteria() {
 		return sortCriteria;
 	}
 
 	/**
-	 * @param sortCriteria	set the list of sort criteriums
+	 * @param sortCriteria	set the list of sort criteria
 	 */
-	public void setSortCriteriums(List<SortCriteria> sortCriteria) {
+	public void setSortCriteria(List<SortCriteria> sortCriteria) {
 		this.sortCriteria = sortCriteria;
 	}
 
