@@ -27,9 +27,9 @@ public class ESSortUtils {
 	/**
 	 * Takes a list of sort orders and creates a list of sort parameters.
 	 * These are pairs contain the attribute names in the searchindex and
-	 * the ascending or descding enum from elasticsearch.
+	 * the ascending or descending enum from elasticsearch.
 	 *
-	 * @param 	sortCriteria		list of sort criteriums
+	 * @param 	sortCriteria		list of sort criteria
 	 * @return	list of sort parameters
 	 */
 	public static List<Pair<String, SortOrder>> buildPublicationSortParameters(List<SortCriteria> sortCriteria) {
@@ -90,11 +90,11 @@ public class ESSortUtils {
 	/**
 	 * Takes a list of sort orders and creates a list of sort parameters.
 	 * These are pairs contain the attribute names in the searchindex and
-	 * the ascending or descding enum from elasticsearch.
+	 * the ascending or descending enum from elasticsearch.
 	 *
 	 * This method only supports Order.TITLE and Order.DATE for building sorting parameters for any resource index.
 	 *
-	 * @param 	sortCriteria		list of sort criteriums
+	 * @param 	sortCriteria		list of sort criteria
 	 * @return	list of sort parameters
 	 */
 	public static List<Pair<String, SortOrder>> buildSortParameters(List<SortCriteria> sortCriteria) {
