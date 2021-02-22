@@ -43,6 +43,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.search.InvalidSearchRequestException;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.SearchViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -130,9 +131,7 @@ public class SearchPageController extends SingleResourceListController implement
 			// no search given, but a grouping, reset the order to added
 			if (!present(search)){
 				command.setSortKey(SortKey.DATE);
-				List<SortCriteria> sortCriteriumsNoSearches = new ArrayList<>();
-				sortCriteriumsNoSearches.add(new SortCriteria(command.getSortKey(), SortOrder.DESC));
-				command.setSortCriteriums(sortCriteriumsNoSearches);
+				command.setSortCriteriums(SortUtils.singletonSortCriteria(command.getSortKey(), SortOrder.DESC));
 			}
 
 			// if grouping entity set to GroupingEntity.ALL, database only allows 1000 tags maximum

@@ -857,7 +857,7 @@ public class UrlRenderer {
 			urlBuilder.addParameter(RESTConfig.RESOURCE_PARAM, resourceHash);
 		}
 
-		if (sortCriteria != null) {
+		if (present(sortCriteria)) {
 			urlBuilder.addParameter(RESTConfig.SORT_KEY_PARAM, SortUtils.getSortKeys(sortCriteria));
 			urlBuilder.addParameter(RESTConfig.SORT_ORDER_PARAM, SortUtils.getSortOrders(sortCriteria));
 		}

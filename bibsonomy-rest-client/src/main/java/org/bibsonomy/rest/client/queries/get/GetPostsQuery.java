@@ -89,8 +89,6 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 
 		this.start = start;
 		this.end = end;
-
-		this.sortCriteria = new ArrayList<>();
 	}
 
 	/**
@@ -159,10 +157,6 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	 */
 	public void setSearch(final String search) {
 		this.search = search;
-	}
-
-	public void addSorting(SortKey sortKey, SortOrder sortOrder) {
-		this.sortCriteria.add(new SortCriteria(sortKey, sortOrder));
 	}
 
 	@Override

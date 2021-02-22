@@ -26,17 +26,16 @@
  */
 package org.bibsonomy.rest.strategy.posts;
 
-import org.bibsonomy.common.SortCriteria;
+import java.util.List;
+
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.UrlBuilder;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -57,7 +56,6 @@ public class GetNewPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		final List<SortCriteria> sortCriteria = Collections.singletonList(new SortCriteria(SortKey.DATE, SortOrder.DESC));
-		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, search, QueryScope.SEARCHINDEX, null, sortCriteria, null, null, this.getView().getStartValue(), this.getView().getEndValue());
+		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, search, QueryScope.SEARCHINDEX, null, SortUtils.singletonSortCriteria(SortKey.DATE, SortOrder.DESC), null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 }
