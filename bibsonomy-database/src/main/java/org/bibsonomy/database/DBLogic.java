@@ -805,7 +805,7 @@ public class DBLogic implements LogicInterface {
 			}
 			// TODO maybe clean up, firstSortKey only there to not change the buildParam signature
 			SortKey firstSortKey = null;
-			if (sortCriteria.size() > 0) {
+			if (present(sortCriteria)) {
 				firstSortKey = sortCriteria.get(0).getSortKey();
 			}
 			if (resourceType == BibTex.class) {
