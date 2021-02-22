@@ -3,7 +3,7 @@ package org.bibsonomy.database.managers.metadata;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.bibsonomy.database.services.ProjectSearch;
+import org.bibsonomy.services.searcher.ProjectSearch;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.util.object.FieldDescriptor;
 

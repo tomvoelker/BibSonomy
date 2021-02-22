@@ -29,12 +29,9 @@ package org.bibsonomy.search.es.management.post;
 import static org.bibsonomy.search.es.management.post.ElasticsearchCommunityPostPublicationManagerITCase.buildQuery;
 import static org.junit.Assert.assertEquals;
 
-import java.util.Collections;
-
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
-import org.bibsonomy.database.services.query.PostSearchQuery;
+import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;

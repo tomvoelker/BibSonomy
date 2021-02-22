@@ -28,6 +28,7 @@ package org.bibsonomy.database.systemstags;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.SystemTag;
 
 /**
  * @author sdo

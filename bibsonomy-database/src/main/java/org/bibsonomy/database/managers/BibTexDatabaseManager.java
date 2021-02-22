@@ -50,7 +50,7 @@ import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.RepositoryParam;
 import org.bibsonomy.database.params.ResourceParam;
-import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;

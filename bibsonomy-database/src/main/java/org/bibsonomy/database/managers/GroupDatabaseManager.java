@@ -58,7 +58,7 @@ import org.bibsonomy.database.params.WikiParam;
 import org.bibsonomy.database.params.group.GetParentGroupIdsRecursively;
 import org.bibsonomy.database.params.group.InsertParentRelations;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.database.services.GroupSearch;
+import org.bibsonomy.services.searcher.GroupSearch;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;

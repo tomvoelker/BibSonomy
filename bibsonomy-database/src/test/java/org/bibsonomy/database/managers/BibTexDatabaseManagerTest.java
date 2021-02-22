@@ -59,7 +59,7 @@ import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.params.BibTexParam;
-import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.database.systemstags.search.EntryTypeSystemTag;
 import org.bibsonomy.database.systemstags.search.YearSystemTag;
 import org.bibsonomy.database.util.LogicInterfaceHelper;

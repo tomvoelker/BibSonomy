@@ -1,6 +1,6 @@
-package org.bibsonomy.database.services.query;
+package org.bibsonomy.services.searcher;
 
-import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.logic.query.PostQuery;
 

@@ -4,7 +4,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.GoldStandardDatabaseManager;
 import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.database.managers.chain.util.QueryAdapter;
-import org.bibsonomy.database.services.query.PostSearchQuery;
+import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.logic.query.PostQuery;

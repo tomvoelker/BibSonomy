@@ -9,7 +9,7 @@ import org.bibsonomy.database.managers.AdminDatabaseManager;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager;
 import org.bibsonomy.database.managers.PersonDatabaseManager;
-import org.bibsonomy.database.services.query.PostSearchQuery;
+import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;

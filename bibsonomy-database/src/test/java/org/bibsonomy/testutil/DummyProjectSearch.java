@@ -1,6 +1,6 @@
 package org.bibsonomy.testutil;
 
-import org.bibsonomy.database.services.ProjectSearch;
+import org.bibsonomy.services.searcher.ProjectSearch;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.logic.query.ProjectQuery;

@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Prefix;
-import org.bibsonomy.database.services.GroupSearch;
+import org.bibsonomy.services.searcher.GroupSearch;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.GroupOrder;

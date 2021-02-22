@@ -24,7 +24,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.database.services;
+package org.bibsonomy.services.searcher;
 
 import java.util.List;
 
@@ -33,7 +33,6 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.statistics.Statistics;
-import org.bibsonomy.database.services.query.PostSearchQuery;
 
 /**
  * Interface for resource search operations

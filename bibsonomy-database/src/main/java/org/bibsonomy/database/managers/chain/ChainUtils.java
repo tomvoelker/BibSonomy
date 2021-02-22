@@ -36,8 +36,8 @@ import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.systemstags.search.NotTagSystemTag;
+import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.util.Sets;
 
 /**

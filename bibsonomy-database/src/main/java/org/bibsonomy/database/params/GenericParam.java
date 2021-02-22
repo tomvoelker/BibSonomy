@@ -50,7 +50,7 @@ import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
-import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;

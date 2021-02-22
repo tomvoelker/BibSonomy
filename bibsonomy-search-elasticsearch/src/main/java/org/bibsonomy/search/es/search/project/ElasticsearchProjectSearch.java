@@ -10,7 +10,7 @@ import org.bibsonomy.auth.util.SimpleAuthUtils;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.database.services.ProjectSearch;
+import org.bibsonomy.services.searcher.ProjectSearch;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;

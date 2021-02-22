@@ -28,7 +28,7 @@ package org.bibsonomy.database.systemstags.executable;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 

@@ -61,7 +61,7 @@ import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
-import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagFactory;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.database.systemstags.search.YearSystemTag;

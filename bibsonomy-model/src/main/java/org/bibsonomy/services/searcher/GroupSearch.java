@@ -1,4 +1,4 @@
-package org.bibsonomy.database.services;
+package org.bibsonomy.services.searcher;
 
 import java.util.List;
 

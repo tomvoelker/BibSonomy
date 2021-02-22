@@ -30,15 +30,13 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 import java.util.Set;
-import java.util.Collection;
 
 import org.apache.lucene.search.join.ScoreMode;
-import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.services.query.PostSearchQuery;
-import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.services.searcher.PostSearchQuery;
+import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.systemstags.search.AuthorSystemTag;
 import org.bibsonomy.database.systemstags.search.BibTexKeySystemTag;
@@ -56,7 +54,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
-import org.elasticsearch.search.sort.SortOrder;
 
 
 /**

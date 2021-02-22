@@ -1,4 +1,4 @@
-package org.bibsonomy.database.services;
+package org.bibsonomy.services.searcher;
 
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;

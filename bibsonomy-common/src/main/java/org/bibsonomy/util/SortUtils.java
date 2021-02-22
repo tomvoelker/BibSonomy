@@ -26,14 +26,14 @@
  */
 package org.bibsonomy.util;
 
-import org.bibsonomy.common.SortCriteria;
-import org.bibsonomy.common.enums.SortKey;
-import org.bibsonomy.common.enums.SortOrder;
-
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.bibsonomy.common.SortCriteria;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 
 /**
  * Convenience methods for sorting lists
@@ -130,7 +130,17 @@ public class SortUtils {
 	 * @param key
 	 * @return
 	 */
-	public static List<SortCriteria> singletonSortCriteria(SortKey key) {
-		return Collections.singletonList(new SortCriteria(key, SortOrder.DESC));
+	public static List<SortCriteria> singletonSortCriteria(SortKey key, SortOrder order) {
+		return Collections.singletonList(new SortCriteria(key, order));
 	}
+
+	/**
+	 * returns a single sort criteria, defaulting to descending order
+	 * @param key
+	 * @return
+	 */
+	public static List<SortCriteria> singletonSortCriteria(SortKey key) {
+		return singletonSortCriteria(key, SortOrder.DESC);
+	}
+
 }

@@ -33,7 +33,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.statistics.Statistics;
-import org.bibsonomy.database.services.PersonSearch;
+import org.bibsonomy.services.searcher.PersonSearch;
 
 /**
  * dummy implementation of the {@link PersonSearch} interface

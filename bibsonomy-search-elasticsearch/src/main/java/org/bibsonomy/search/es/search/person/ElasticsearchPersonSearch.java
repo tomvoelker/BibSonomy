@@ -5,7 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.lucene.search.join.ScoreMode;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Prefix;
-import org.bibsonomy.database.services.PersonSearch;
+import org.bibsonomy.services.searcher.PersonSearch;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResultList;

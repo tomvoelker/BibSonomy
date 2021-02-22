@@ -34,7 +34,7 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.params.ResourceParam;
-import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;

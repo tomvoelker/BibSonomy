@@ -731,7 +731,7 @@ public class DBLogic implements LogicInterface {
 	 * @see
 	 * org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class,
 	 * org.bibsonomy.common.enums.GroupingEntity, java.lang.String,
-	 * java.util.List, java.lang.String, org.bibsonomy.common.SortCriterium,
+	 * java.util.List, java.lang.String, org.bibsonomy.common.SortCriteria,
 	 * org.bibsonomy.common.enums.FilterEntity, int, int, java.lang.String)
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })

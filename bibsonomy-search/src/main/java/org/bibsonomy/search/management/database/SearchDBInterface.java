@@ -38,7 +38,7 @@ import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
 import org.bibsonomy.search.index.database.DatabaseInformationLogic;
 import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
-import org.bibsonomy.database.services.ResourceSearch;
+import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
  * interface encapsulating database access for {@link ResourceSearch}

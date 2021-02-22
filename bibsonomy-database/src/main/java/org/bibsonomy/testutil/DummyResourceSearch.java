@@ -29,13 +29,13 @@ package org.bibsonomy.testutil;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bibsonomy.database.services.query.PostSearchQuery;
+import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.statistics.Statistics;
-import org.bibsonomy.database.services.ResourceSearch;
+import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
  * @author dzo
