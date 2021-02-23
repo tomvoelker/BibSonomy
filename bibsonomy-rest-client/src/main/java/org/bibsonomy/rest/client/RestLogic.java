@@ -358,6 +358,8 @@ public class RestLogic extends AbstractLogicInterface {
 			final Resource resource = post.getResource();
 			String postUser = post.getUser().getName();
 
+			// community posts do not have a post owner, so we set it here to an empty string
+			// this is later used to call the correct api endpoint
 			if (resource instanceof GoldStandard<?>) {
 				postUser = "";;
 			}
