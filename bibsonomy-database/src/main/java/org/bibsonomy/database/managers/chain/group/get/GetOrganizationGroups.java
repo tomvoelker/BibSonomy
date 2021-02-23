@@ -27,6 +27,8 @@
 
 package org.bibsonomy.database.managers.chain.group.get;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.chain.group.GroupChainElement;
@@ -49,13 +51,14 @@ public class GetOrganizationGroups extends GroupChainElement {
 	}
 
 	@Override
-	protected List<Group> handle(QueryAdapter<GroupQuery> queryAdapter, DBSession session) {
+	protected List<Group> handle(final QueryAdapter<GroupQuery> queryAdapter, final DBSession session) {
 		final GroupQuery param = queryAdapter.getQuery();
 		return this.groupDb.getAllOrganizationGroups(param.getStart(), param.getEnd(), session);
 	}
 
 	@Override
-	protected boolean canHandle(QueryAdapter<GroupQuery> param) {
-		return param.getQuery().getOrganization();
+	protected boolean canHandle(final QueryAdapter<GroupQuery> param) {
+		final Boolean organization = param.getQuery().getOrganization();
+		return present(organization) && organization.booleanValue();
 	}
 }
