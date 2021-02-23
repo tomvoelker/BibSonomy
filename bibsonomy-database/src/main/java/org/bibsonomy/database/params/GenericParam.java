@@ -303,8 +303,6 @@ public abstract class GenericParam {
 	 */
 	public void setLoggedinUser(final User loggedinUser) {
 		this.loggedinUser = loggedinUser;
-
-		this.sortKey = SortKey.NONE;
 	}
 
 	/**
