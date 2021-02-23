@@ -30,19 +30,32 @@ import java.io.Writer;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.rest.RESTConfig;
+import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.UrlBuilder;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @author Christian Kramer
  */
 public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
+
+	private static SortKey getFirstSortKey(final List<SortKey> sortKeys) {
+		if (!present(sortKeys)) {
+			return null;
+		}
+
+		return sortKeys.get(0);
+	}
+
 	/** the resource type */
 	protected final Class<? extends Resource> resourceType;
 	/** the grouping */
@@ -79,7 +92,9 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 
 	@Override
 	protected List<Tag> getList() {
-		return this.getLogic().getTags(resourceType, grouping, groupingValue, null, hash, null, regex, null, this.getView().getSortKeys().get(0), null, null, this.getView().getStartValue(), this.getView().getEndValue());
+		final ViewModel view = this.getView();
+		final SortKey sortKey = getFirstSortKey(view.getSortKeys());
+		return this.getLogic().getTags(resourceType, grouping, groupingValue, null, hash, null, regex, null, sortKey, null, null, view.getStartValue(), view.getEndValue());
 	}
 
 	@Override

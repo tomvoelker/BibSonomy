@@ -49,7 +49,7 @@ public class GetListOfGroupsStrategyTest extends AbstractContextTest {
 	 */
 	@Test
 	public void testGetListOfGroupsStrategy() throws Exception {
-		final Context ctx = new Context(HttpMethod.GET, "/api/groups", RenderingFormat.XML, new RendererFactory(this.urlRenderer), this.is, null, this.db, null, null, new HashMap<String, String>(), null);
+		final Context ctx = new Context(HttpMethod.GET, "/api/groups", RenderingFormat.XML, new RendererFactory(this.urlRenderer), this.is, null, this.db, null, new HashMap<>(), new HashMap<>(), null);
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ctx.perform(baos);
 
