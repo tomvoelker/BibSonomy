@@ -125,8 +125,11 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 	}
 
 	@Override
-	protected List<Pair<String, SortOrder>> buildResourceSpecificSortParameters(List<SortCriteria> sortCriteria) {
+	protected List<Pair<String, SortOrder>> buildResourceSpecificSortParameters(final List<SortCriteria> sortCriteria) {
 		final List<Pair<String, SortOrder>> sortParameters = new ArrayList<>();
+		if (!present(sortCriteria)) {
+			return sortParameters;
+		}
 		for (final SortCriteria sortCrit : sortCriteria) {
 			final SortOrder esSortOrder = SortOrder.fromString(sortCrit.getSortOrder().toString());
 			final SortKey sortKey = sortCrit.getSortKey();
