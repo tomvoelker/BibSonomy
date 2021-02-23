@@ -255,7 +255,7 @@ public final class RestServlet extends HttpServlet {
 			// create Context which selects the appropriate strategy for the
 			// requested API URL
 			final Reader reader = RESTUtils.getInputReaderForStream(getMainInputStream(request), REQUEST_ENCODING);
-			final Context context = new Context(method, request.getRequestURI(), renderingFormat, this.rendererFactory, reader, uploadAccessor, logic, this.fileLogic, request.getParameterMap(), this.additionalInfos, adminLogic);
+			final Context context = new Context(method, request.getRequestURI(), renderingFormat, this.rendererFactory, reader, uploadAccessor, logic, this.fileLogic, request.getParameterMap(), this.additionalInfos, this.adminLogic);
 
 			// validate request
 			context.canAccess();

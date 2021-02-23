@@ -72,7 +72,7 @@ public class GetUserListStrategy extends AbstractGetListStrategy<List<User>> {
 		if (this.remoteUserId != null && this.identityProvider != null) {
 			// TODO enum
 			if (this.identityProviderType.equals("SAML")) {
-				RemoteUserId remoteUserId = new SamlRemoteUserId(this.identityProvider, this.remoteUserId);
+				final RemoteUserId remoteUserId = new SamlRemoteUserId(this.identityProvider, this.remoteUserId);
 				String userName = this.getLogic().getUsernameByRemoteUserId(remoteUserId);
 				User user = this.getAdminLogic().getUserDetails(userName);
 
@@ -80,7 +80,7 @@ public class GetUserListStrategy extends AbstractGetListStrategy<List<User>> {
 					return new ArrayList<User>(){{add(user);}};
 				}
 			}
-			return new ArrayList<User>();
+			return new ArrayList<>();
 		}
 
 		return this.getLogic().getUsers(null, GroupingEntity.ALL, null, null, null, null, null, null, this.getView().getStartValue(), this.getView().getEndValue());
