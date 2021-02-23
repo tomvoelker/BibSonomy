@@ -8,6 +8,9 @@ package org.bibsonomy.model.logic.query;
  */
 public class BasicQuery extends BasicPaginatedQuery implements SearchQuery, Query {
 
+    /**
+     * free text search
+     */
     private String search;
 
     /**

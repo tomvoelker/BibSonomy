@@ -32,6 +32,7 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.webapp.command.HomepageCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -110,7 +111,13 @@ public class HomepageController extends SingleResourceListController implements 
 			/*
 			 * add news posts (= latest blog posts)
 			 */
-			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, newsGroup, Arrays.asList(newsTag), null, null, QueryScope.LOCAL, null, null, null, null, 0, 3));
+			final PostQuery<Bookmark> query = new PostQuery<>(Bookmark.class);
+			query.setGrouping(GroupingEntity.GROUP);
+			query.setGroupingName(this.newsGroup);
+			query.setTags(Arrays.asList(this.newsTag));
+			query.setStart(0);f
+			query.setEnd(3);
+			command.setNews(this.logic.getPosts(query));
 			this.endTiming();
 			
 			return Views.HOMEPAGE;

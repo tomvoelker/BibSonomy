@@ -93,8 +93,15 @@ public interface PostLogicInterface {
 	 * @return A filtered list of posts. may be empty but not null
 	 * @since 3.1
 	 */
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope searchType, Set<Filter> filters, List<SortCriteria> sortCriteria, Date startDate, Date endDate, int start, int end);
+	@Deprecated // will be removed soon
+	<T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope searchType, Set<Filter> filters, List<SortCriteria> sortCriteria, Date startDate, Date endDate, int start, int end);
 
+	/**
+	 *
+	 * @param query the query to use
+	 * @param <R> the resource type to be shown
+	 * @return A filtered list of posts. may be empty but never be null
+	 */
 	<R extends Resource> List<Post<R>> getPosts(final PostQuery<R> query);
 	
 	/**

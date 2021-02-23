@@ -30,6 +30,8 @@ import java.util.List;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.UrlBuilder;
 
@@ -53,8 +55,17 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		return this.getLogic().getPosts(resourceType, this.grouping, this.groupingValue,
-				this.tags, this.hash, this.search, this.searchType, null, this.sortCriteria, null, null,
-				getView().getStartValue(), getView().getEndValue());
+		final PostQuery<?> query = new PostQuery<>(this.resourceType);
+		query.setGrouping(this.grouping);
+		query.setGroupingName(this.groupingValue);
+		query.setTags(this.tags);
+		query.setHash(this.hash);
+		query.setSearch(this.search);
+		query.setScope(this.searchType);
+		query.setSortCriteriums(this.sortCriteria);
+		final ViewModel view = this.getView();
+		query.setStart(view.getStartValue());
+		query.setEnd(view.getEndValue());
+		return this.getLogic().getPosts(query);
 	}
 }

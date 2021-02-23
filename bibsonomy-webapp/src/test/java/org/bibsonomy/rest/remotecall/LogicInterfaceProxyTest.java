@@ -678,7 +678,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 		query.setSearch(search);
 		query.setScope(queryScope);
 		query.setFilters(filters);
-		query.setSortCriteriums(sortCriteria);
+		query.setSortCriteriums(sortCriteria == null ? new LinkedList<>() : sortCriteria);
 		query.setStart(start);
 		query.setEnd(end);
 

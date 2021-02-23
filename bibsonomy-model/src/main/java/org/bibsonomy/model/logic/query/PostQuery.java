@@ -18,32 +18,73 @@ import java.util.Set;
  * @param <R>
  */
 public class PostQuery<R extends Resource> extends BasicQuery {
+	/**
+	 * resource type to be shown.
+	 */
 	private Class<R> resourceClass;
 
+	/**
+	 * whether to search locally or using an index shared by several systems or the fulltext search
+	 */
 	private QueryScope scope = QueryScope.LOCAL;
 
+	/**
+	 * grouping tells whom posts are to be shown: the posts of a
+	 * user, of a group or of the viewables.
+	 */
 	private GroupingEntity grouping = GroupingEntity.ALL;
 
+	/**
+	 * name of the grouping. if grouping is user, then its the
+	 * username. if grouping is set to {@link GroupingEntity#ALL},
+	 * then its an empty string!
+	 */
 	private String groupingName;
 
+	/**
+	 * a set of tags. remember to parse special tags like
+	 * ->[tagname], -->[tagname] and <->[tagname]. see documentation.
+	 *  if the parameter is not used, its an empty list
+	 */
 	private List<String> tags;
 
+	/**
+	 * hash value of a resource, if one would like to get a list of
+	 * all posts belonging to a given resource. if unused, its empty
+	 * but not null.
+	 */
 	private String hash;
 
+	/**
+	 * filter for the retrieved posts
+	 */
 	private Set<Filter> filters;
 
+	/**
+	 * if given, only posts that have been created after (inclusive) startDate are returned
+	 */
 	private Date startDate;
 
+	/**
+	 * if given, only posts that have been created before (inclusive) endDate are returned
+	 */
 	private Date endDate;
 
-	/** flag to retrieve posts where the person names are not assigned to a person */
+	/**
+	 * flag to retrieve posts where the person names are not assigned to a person
+	 */
 	private boolean onlyIncludeAuthorsWithoutPersonId = false;
 
 	private List<PersonName> personNames;
 
-	/** get all publications assigned to persons of the specified college */
+	/**
+	 * get all publications assigned to persons of the specified college
+	 */
 	private String college;
 
+	/**
+	 * list of sort criterion and ascending/descending sorting
+	 */
 	private List<SortCriteria> sortCriteria;
 
 	/**
