@@ -115,7 +115,7 @@ public class HomepageController extends SingleResourceListController implements 
 			query.setGrouping(GroupingEntity.GROUP);
 			query.setGroupingName(this.newsGroup);
 			query.setTags(Arrays.asList(this.newsTag));
-			query.setStart(0);f
+			query.setStart(0);
 			query.setEnd(3);
 			command.setNews(this.logic.getPosts(query));
 			this.endTiming();
