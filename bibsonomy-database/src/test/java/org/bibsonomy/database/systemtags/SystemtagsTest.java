@@ -344,9 +344,9 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		final Set<Tag> tags1 = ModelUtils.getTagSet("for:forgroup1", MyOwnSystemTag.NAME);
 		final Set<Tag> tags2 = ModelUtils.getTagSet("for:forgroup1", "for:forgroup2");
 
-		final List<Post<?>> posts1 = new LinkedList<Post<?>>();
-		final List<Post<?>> posts2 = new LinkedList<Post<?>>();
-		final List<Post<?>> posts3 = new LinkedList<Post<?>>();
+		final List<Post<?>> posts1 = new LinkedList<>();
+		final List<Post<?>> posts2 = new LinkedList<>();
+		final List<Post<?>> posts3 = new LinkedList<>();
 		posts1.add(this.createTestBookmarkPost(testUser1, tags1));
 		posts2.add(this.createTestBookmarkPost(testUser2, tags2));
 		posts3.add(this.createTestBookmarkPost(testUser1, tags2));
@@ -676,7 +676,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		// hash-selection?
 		final List<Post<T>> groupPosts = logic.getPosts(
 				(Class<T>)post.getResource().getClass(), groupingEntity, groupName, tags,
-				post.getResource().getIntraHash(), "", QueryScope.LOCAL,null, null, null, null, 0, SystemtagsTest.maxQuerySize);
+				post.getResource().getIntraHash(), null, QueryScope.LOCAL,null, null, null, null, 0, SystemtagsTest.maxQuerySize);
 		return groupPosts;
 	}
 

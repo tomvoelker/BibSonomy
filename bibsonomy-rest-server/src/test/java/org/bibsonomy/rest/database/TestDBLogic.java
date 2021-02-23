@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.rest.database;
 
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.QueryScope;
@@ -47,6 +48,7 @@ import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.statistics.Statistics;
 import org.junit.Ignore;
@@ -196,10 +198,31 @@ public class TestDBLogic extends AbstractLogicInterface {
 		return this.dbTags.get(tagName);
 	}
 
+	@Deprecated
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping,
+													   final String groupingName, final List<String> tags, final String hash,
+													   final String search, final QueryScope queryScope, final Set<Filter> filters,
+													   final List<SortCriteria> sortCriteria, final Date startDate, final Date endDate,
+													   final int start, final int end) {
 
+		final PostQuery<T> query = new PostQueryBuilder().
+				setScope(queryScope).
+				setGrouping(grouping).
+				setGroupingName(groupingName).
+				setTags(tags).
+				setHash(hash).
+				setSearch(search).
+				setFilters(filters).
+				setStartDate(startDate).
+				setEndDate(endDate).
+				setStart(start).
+				setEnd(end).createPostQuery(resourceType);
+		// delegating to the new method
+		return this.getPosts(query);
+	}
 
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(PostQuery<T> query) {
+	public <T extends Resource> List<Post<T>> getPosts(final PostQuery<T> query) {
 		final GroupingEntity grouping = query.getGrouping();
 		final String groupingName = query.getGroupingName();
 		final Class<T> resourceType = query.getResourceClass();

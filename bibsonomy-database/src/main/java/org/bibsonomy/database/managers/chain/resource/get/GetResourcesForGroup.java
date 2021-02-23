@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.database.managers.chain.resource.get;
 
-import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
