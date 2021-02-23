@@ -248,10 +248,14 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 	 * @param jsonDocument
 	 * @param post
 	 */
-	protected void convertResourceInternal(Map<String, Object> jsonDocument, Post<R> post) {
+	protected void convertResourceInternal(final Map<String, Object> jsonDocument, Post<R> post) {
 		final R resource = post.getResource();
-		jsonDocument.put(Fields.Resource.TITLE, resource.getTitle());
-		jsonDocument.put(Fields.Sort.TITLE, BibTexUtils.cleanBibTex(resource.getTitle().toLowerCase()));
+		final String title = resource.getTitle();
+		jsonDocument.put(Fields.Resource.TITLE, title);
+		// check if title is present, maybe we have old invalid posts in the database
+		if (present(title)) {
+			jsonDocument.put(Fields.Sort.TITLE, BibTexUtils.cleanBibTex(title.toLowerCase()));
+		}
 		jsonDocument.put(Fields.Resource.INTRAHASH, resource.getIntraHash());
 		jsonDocument.put(Fields.Resource.INTERHASH, resource.getInterHash());
 		this.convertResource(jsonDocument, post);
