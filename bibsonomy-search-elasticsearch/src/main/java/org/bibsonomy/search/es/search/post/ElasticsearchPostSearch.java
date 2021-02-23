@@ -28,6 +28,7 @@ package org.bibsonomy.search.es.search.post;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -106,8 +107,7 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 				return posts;
 			}
 
-			final List<SortCriteria> sortCriteria = postQuery.getSortCriteriums();
-			final List<Pair<String, SortOrder>> sortParameters = ESSortUtils.buildSortParameters(sortCriteria, postQuery.getResourceClass());
+			final List<Pair<String, SortOrder>> sortParameters = this.buildResourceSpecificSortParameters(postQuery.getSortCriteriums());
 			final SearchHits hits = this.manager.search(queryBuilder, sortParameters, offset, limit, null, null);
 
 			if (hits != null) {
@@ -347,6 +347,35 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 
 	protected void buildResourceSpecificQuery(BoolQueryBuilder mainQueryBuilder, String loggedinUser, PostSearchQuery<?> postQuery) {
 		// noop
+	}
+
+	/**
+	 * Takes a list of sort orders and creates a list of sort parameters.
+	 * These are pairs contain the attribute names in the searchindex and
+	 * the ascending or descending enum from elasticsearch.
+	 *
+	 * This method only supports Order.TITLE and Order.DATE for building sorting parameters for any resource index.
+	 *
+	 * @param 	sortCriteria		list of sort criteria
+	 * @return	list of sort parameters
+	 */
+	protected List<Pair<String, SortOrder>> buildResourceSpecificSortParameters(final List<SortCriteria> sortCriteria) {
+		final List<Pair<String, SortOrder>> sortParameters = new ArrayList<>();
+		for (SortCriteria sortCrit : sortCriteria) {
+			SortOrder esSortOrder = SortOrder.fromString(sortCrit.getSortOrder().toString());
+			switch (sortCrit.getSortKey()) {
+				// only supported order type for bookmarks
+				case TITLE:
+					sortParameters.add(new Pair<>(Fields.Sort.TITLE, esSortOrder));
+					break;
+				case DATE:
+					sortParameters.add(new Pair<>(Fields.DATE, esSortOrder));
+					break;
+				default:
+					break;
+			}
+		}
+		return sortParameters;
 	}
 
 	private static QueryStringQueryBuilder buildStringQueryForSearchTerms(String searchTerms, final Set<String> fields) {

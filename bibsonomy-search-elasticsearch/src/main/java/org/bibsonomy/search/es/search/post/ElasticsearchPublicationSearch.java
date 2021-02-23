@@ -28,13 +28,18 @@ package org.bibsonomy.search.es.search.post;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.lucene.search.join.ScoreMode;
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.search.es.util.ESSortUtils;
 import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
@@ -54,6 +59,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 
 
 /**
@@ -79,37 +85,6 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 		if (present(bibtexKey)) {
 			final QueryBuilder bibtexKeyQuery = QueryBuilders.termQuery(Fields.Publication.BIBTEXKEY, bibtexKey);
 			mainQueryBuilder.must(bibtexKeyQuery);
-		}
-
-		final List<SystemTag> systemTags = postQuery.getSystemTags();
-
-		// add system tags to the query builder
-		// TODO: move to filter method
-		final List<SystemTag> authorTags = SystemTagsExtractor.extractSystemTags(systemTags, AuthorSystemTag.NAME);
-		final List<SystemTag> titleTags = SystemTagsExtractor.extractSystemTags(systemTags, TitleSystemTag.NAME);
-		final List<SystemTag> bibtexTags = SystemTagsExtractor.extractSystemTags(systemTags, BibTexKeySystemTag.NAME);
-		final List<SystemTag> entrytypeTags = SystemTagsExtractor.extractSystemTags(systemTags, EntryTypeSystemTag.NAME);
-
-		// TODO: use present @kch
-		if (authorTags.size() > 0) {
-			final QueryBuilder authorSearchQuery = QueryBuilders.matchQuery(Fields.Publication.AUTHORS + "." + Fields.Publication.PERSON_NAME, authorSearchTerms).operator(Operator.AND);
-			final NestedQueryBuilder nestedQuery = QueryBuilders.nestedQuery(Fields.Publication.AUTHORS, authorSearchQuery, ScoreMode.Total);
-			mainQueryBuilder.must(nestedQuery);
-		}
-
-		if (titleTags.size() > 0) {
-			final QueryBuilder titleQuery = QueryBuilders.matchQuery(Fields.Resource.TITLE, titleTags.get(0).getArgument());
-			mainQueryBuilder.must(titleQuery);
-		}
-
-		if (bibtexTags.size() > 0) {
-			final QueryBuilder bibtexQuery = QueryBuilders.matchQuery(Fields.Publication.BIBTEXKEY, bibtexTags.get(0).getArgument());
-			mainQueryBuilder.must(bibtexQuery);
-		}
-
-		if (entrytypeTags.size() > 0) {
-			final QueryBuilder entryTypeQuery = QueryBuilders.matchQuery(Fields.Publication.ENTRY_TYPE, entrytypeTags.get(0).getArgument()).operator(Operator.OR);
-			mainQueryBuilder.must(entryTypeQuery);
 		}
 
 		/*
@@ -147,6 +122,62 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 		boolQueryBuilder.mustNot(QueryBuilders.existsQuery(Fields.Publication.AUTHORS + "." + Fields.Publication.PERSON_ID));
 
 		return boolQueryBuilder;
+	}
+
+	@Override
+	protected List<Pair<String, SortOrder>> buildResourceSpecificSortParameters(List<SortCriteria> sortCriteria) {
+		final List<Pair<String, SortOrder>> sortParameters = new ArrayList<>();
+		for (final SortCriteria sortCrit : sortCriteria) {
+			final SortOrder esSortOrder = SortOrder.fromString(sortCrit.getSortOrder().toString());
+			final SortKey sortKey = sortCrit.getSortKey();
+			switch (sortKey) {
+				// ignore these Order type since result of no sort parameters
+				case RANK:
+				case NONE:
+					break;
+				// Order type with cleaned up index attribute
+				case TITLE:
+					sortParameters.add(new Pair<>(Fields.Sort.TITLE, esSortOrder));
+					break;
+				case BOOKTITLE:
+					sortParameters.add(new Pair<>(Fields.Sort.BOOKTITLE, esSortOrder));
+					break;
+				case JOURNAL:
+					sortParameters.add(new Pair<>(Fields.Sort.JOURNAL, esSortOrder));
+					break;
+				case SERIES:
+					sortParameters.add(new Pair<>(Fields.Sort.SERIES, esSortOrder));
+					break;
+				case PUBLISHER:
+					sortParameters.add(new Pair<>(Fields.Sort.PUBLISHER, esSortOrder));
+					break;
+				case AUTHOR:
+					sortParameters.add(new Pair<>(Fields.Sort.AUTHOR, esSortOrder));
+					break;
+				case EDITOR:
+					sortParameters.add(new Pair<>(Fields.Sort.EDITOR, esSortOrder));
+					break;
+				case SCHOOL:
+					sortParameters.add(new Pair<>(Fields.Sort.SCHOOL, esSortOrder));
+					break;
+				case INSTITUTION:
+					sortParameters.add(new Pair<>(Fields.Sort.INSTITUTION, esSortOrder));
+					break;
+				case ORGANIZATION:
+					sortParameters.add(new Pair<>("sort_" + sortKey.toString().toLowerCase(), esSortOrder));
+					break;
+				case PUBDATE:
+					sortParameters.add(new Pair<>(Fields.Publication.YEAR, esSortOrder));
+					sortParameters.add(new Pair<>(Fields.Publication.MONTH, ESSortUtils.reverseSortOrder(esSortOrder)));
+					sortParameters.add(new Pair<>(Fields.Publication.DAY, esSortOrder));
+					break;
+				// more complex order types possible here
+				default:
+					sortParameters.add(new Pair<>(sortKey.toString().toLowerCase(), esSortOrder));
+					break;
+			}
+		}
+		return sortParameters;
 	}
 
 	@Override
@@ -237,7 +268,40 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 			filterBuilder.must(personFilter);
 		}
 
+		applySystemTagFilters(mainFilterBuilder, postQuery.getSystemTags());
+
 		return filterBuilder;
+	}
+
+	private void applySystemTagFilters(BoolQueryBuilder filterBuilder, List<SystemTag> systemTags ) {
+		// add system tags to the query builder
+		final List<SystemTag> authorTags = SystemTagsExtractor.extractSystemTags(systemTags, AuthorSystemTag.NAME);
+		final List<SystemTag> titleTags = SystemTagsExtractor.extractSystemTags(systemTags, TitleSystemTag.NAME);
+		final List<SystemTag> bibtexTags = SystemTagsExtractor.extractSystemTags(systemTags, BibTexKeySystemTag.NAME);
+		final List<SystemTag> entrytypeTags = SystemTagsExtractor.extractSystemTags(systemTags, EntryTypeSystemTag.NAME);
+
+		if (present(authorTags)) {
+			/* TODO fix me @kch
+			final QueryBuilder authorSearchQuery = QueryBuilders.matchQuery(Fields.Publication.AUTHORS + "." + Fields.Publication.PERSON_NAME, authorSearchTerms).operator(Operator.AND);
+			final NestedQueryBuilder nestedQuery = QueryBuilders.nestedQuery(Fields.Publication.AUTHORS, authorSearchQuery, ScoreMode.Total);
+			filterBuilder.must(nestedQuery);
+			 */
+		}
+
+		if (present(titleTags)) {
+			final QueryBuilder titleQuery = QueryBuilders.matchQuery(Fields.Resource.TITLE, titleTags.get(0).getArgument());
+			filterBuilder.must(titleQuery);
+		}
+
+		if (present(bibtexTags)) {
+			final QueryBuilder bibtexQuery = QueryBuilders.matchQuery(Fields.Publication.BIBTEXKEY, bibtexTags.get(0).getArgument());
+			filterBuilder.must(bibtexQuery);
+		}
+
+		if (present(entrytypeTags)) {
+			final QueryBuilder entryTypeQuery = QueryBuilders.matchQuery(Fields.Publication.ENTRY_TYPE, entrytypeTags.get(0).getArgument()).operator(Operator.OR);
+			filterBuilder.must(entryTypeQuery);
+		}
 	}
 
 	private static QueryBuilder buildPersonFilter(final String personId) {
