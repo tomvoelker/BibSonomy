@@ -361,6 +361,9 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 	 */
 	protected List<Pair<String, SortOrder>> buildResourceSpecificSortParameters(final List<SortCriteria> sortCriteria) {
 		final List<Pair<String, SortOrder>> sortParameters = new ArrayList<>();
+		if (!present(sortCriteria)) {
+			return sortParameters;
+		}
 		for (SortCriteria sortCrit : sortCriteria) {
 			SortOrder esSortOrder = SortOrder.fromString(sortCrit.getSortOrder().toString());
 			switch (sortCrit.getSortKey()) {
