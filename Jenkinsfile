@@ -7,20 +7,23 @@ pipeline {
     disableConcurrentBuilds()
   }
   stages {
+  /*
     stage ('Build') {
       steps {
         withMaven(maven: 'Maven 3.6.3', mavenSettingsConfig: 'bibsonomy') {
           sh "mvn clean install"
         }
       }
-    }
-    stage ('Deploy BibLicious') {
+    }*/
+    stage ('Deploy BibLicious Webapp') {
       when {
         branch 'master'
       }
       steps {
-        withMaven(maven: 'Maven 3.6.3', mavenSettingsConfig: 'bibsonomy') {
-          sh "mvn tomcat7:redeploy -Ddeploy-to=biblicious"
+        dir("bibsonomy-webapp") {
+            withMaven(maven: 'Maven 3.6.3', mavenSettingsConfig: 'bibsonomy') {
+              sh "mvn tomcat7:redeploy -Ddeploy-to=biblicious"
+            }
         }
       }
     }
