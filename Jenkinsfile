@@ -6,7 +6,11 @@ pipeline {
   stages {
     stage ('Build') {
       steps {
-        sh 'mvn clean install'
+        withMaven(
+          mavenSettingsConfig: 'bibsonomy'
+        ) {
+          sh 'mvn clean install'
+        }
       }
     }
   }
