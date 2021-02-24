@@ -24,5 +24,15 @@ pipeline {
         }
       }
     }
+    stage ('Deploy Artifacts') {
+      when {
+        branch 'master'
+      }
+      steps {
+        withMaven(maven: 'Maven 3.6.3', mavenSettingsConfig: 'bibsonomy') {
+          sh "echo TODO"
+        }
+      }
+    }
   }
 }
