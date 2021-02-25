@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.database.plugin;
 
+import org.bibsonomy.common.information.JobInformation;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.ClipboardParam;
 import org.bibsonomy.database.params.BibTexExtraParam;
@@ -34,13 +35,20 @@ import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This interface supplies hooks which can be implemented by plugins. This way
@@ -58,12 +66,13 @@ public interface DatabasePlugin {
 
 	/**
 	 * Called when a publication is inserted.
-	 * 
+	 *
 	 * @param post
+	 * @param loggedinUser
 	 * @param session
 	 */
-	default void onPublicationInsert(Post<? extends BibTex> post, DBSession session) {
-		// noop
+	default List<JobInformation> onPublicationInsert(Post<? extends BibTex> post, User loggedinUser, DBSession session) {
+		return Collections.emptyList();
 	}
 
 	/**
@@ -135,19 +144,23 @@ public interface DatabasePlugin {
 	
 	/**
 	 * Called when a gold standard publication is deleted.
-	 * 
-	 * @param interhash
+	 *  @param interhash
+	 * @param loggedinUser
 	 * @param session
 	 */
-	public void onGoldStandardDelete(String interhash, DBSession session);
+	default void onGoldStandardDelete(String interhash, User loggedinUser, DBSession session) {
+		// noop
+	}
 	
 	/**
 	 * Called when a Bookmark is inserted.
-	 * 
 	 * @param post
+	 * @param logginUser
 	 * @param session
 	 */
-	public void onBookmarkInsert(Post<? extends Resource> post, DBSession session);
+	default List<JobInformation> onBookmarkInsert(Post<? extends Resource> post, User logginUser, DBSession session) {
+		return Collections.emptyList();
+	}
 
 	/**
 	 * Called when a Bookmark is deleted.
@@ -218,20 +231,24 @@ public interface DatabasePlugin {
 
 	/**
 	 * Called when a User is updated.
-	 * 
-	 * @param userName
+	 *  @param userName
+	 * @param loggedinUser
 	 * @param session
 	 */
-	public void onUserUpdate(String userName, DBSession session);	
+	default void onUserUpdate(String userName, User loggedinUser, DBSession session) {
+		// noop
+	}
 
 	/**
 	 * Called when a user is removed from a group.
-	 * 
+	 *  @param group
 	 * @param userName
-	 * @param groupId
+	 * @param loggedinUser
 	 * @param session
 	 */
-	public void onChangeUserMembershipInGroup(String userName, int groupId, DBSession session);
+	default void onChangeUserMembershipInGroup(Group group, String userName, User loggedinUser, DBSession session) {
+		// noop
+	}
 	
 	/**
 	 * Called when a fellowship will be deleted
@@ -339,10 +356,11 @@ public interface DatabasePlugin {
 	
 	/**
 	 * called when a person will be updated
-	 * @param personId
+	 * @param oldPerson
+	 * @param newPerson
 	 * @param session
 	 */
-	public void onPersonUpdate(final String personId, final DBSession session);
+	public void onPersonUpdate(final Person oldPerson, Person newPerson, final DBSession session);
 	
 	/**
 	 * called when a person will be updated by username change
@@ -362,10 +380,10 @@ public interface DatabasePlugin {
 	/**
 	 * called when a pubPerson will be deleted
 	 * @param rel the relation to be deleted updated with the deleting user and the date of the deletion
-	 * @param loggedinUser
+	 * @param loginUser
 	 * @param session
 	 */
-	public void onPubPersonDelete(final ResourcePersonRelation rel, User loggedinUser, final DBSession session);
+	public void onPubPersonDelete(final ResourcePersonRelation rel, User loginUser, final DBSession session);
 
 	/**
 	 * @param oldPerson
@@ -384,6 +402,98 @@ public interface DatabasePlugin {
 	 * @param session
 	 */
 	default void onPersonResourceRelationUpdate(ResourcePersonRelation oldRelation, ResourcePersonRelation newRelation, User loggedinUser, DBSession session) {
+		// noop
+	}
+	/**
+	 * called before a project is inserted into the database
+	 * @param project
+	 * @param session
+	 */
+	default void onProjectInsert(final Project project, DBSession session) {
+		// noop
+	}
+
+	/**
+	 * called before a project is updated
+	 * @param oldProject
+	 * @param newProject
+	 * @param loggedinUser
+	 * @param session
+	 */
+	default void onProjectUpdate(final Project oldProject, final Project newProject, User loggedinUser, final DBSession session) {
+		// noop
+	}
+
+	/**
+	 * called before a project is deleted
+	 * @param project
+	 * @param loggedinUser
+	 * @param session
+	 */
+	default void onProjectDelete(Project project, User loggedinUser, DBSession session) {
+		// noop
+	}
+
+	/**
+	 * called before a cris link is updated
+	 * @param oldCRISLink
+	 * @param link
+	 * @param loginUser
+	 * @param session
+	 */
+	default void onCRISLinkUpdate(CRISLink oldCRISLink, CRISLink link, User loginUser, DBSession session) {
+		// noop
+	}
+
+	/**
+	 * called after a user is added to a group
+	 * @param group
+	 * @param membership
+	 * @param loggedinUser
+	 * @param session
+	 */
+	default void onAddedGroupMembership(final Group group, final GroupMembership membership, User loggedinUser, final DBSession session) {
+		// noop
+	}
+
+	/**
+	 * called after a user was removed from a group
+	 * @param group
+	 * @param username
+	 * @param loggedinUser
+	 * @param session
+	 */
+	default void onRemovedGroupMembership(Group group, String username, User loggedinUser, DBSession session) {
+		// noop
+	}
+
+
+	/**
+	 * Called before a group is removed.
+	 *
+	 * @param group the group that will be removed.
+	 * @param loggedInUser the user that is currently logged in.
+	 * @param session a database session.
+	 */
+	default void beforeRemoveGroup(Group group, User loggedInUser, DBSession session) {
+		// noop
+	}
+
+
+	/**
+	 * Called before a user is removed from a group.
+	 *
+	 * @param group the group.
+	 * @param username the name of the user that will be removed from the group.
+	 * @param loggedInUser the user that is currently logged in.
+	 * @param session a database session.
+	 */
+	default void beforeRemoveGroupMembership(Group group, String username, User loggedInUser, DBSession session) {
+		// noop
+	}
+
+
+	default void onCRISLinkDelete(CRISLink crisLink, User loginUser, DBSession session) {
 		// noop
 	}
 }

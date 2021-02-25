@@ -26,9 +26,8 @@
  */
 package org.bibsonomy.database.plugin.plugins;
 
-import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.managers.GeneralDatabaseManager;
+import org.bibsonomy.database.common.enums.LogReason;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
@@ -42,12 +41,18 @@ import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.params.discussion.DiscussionItemParam;
+import org.bibsonomy.database.params.logging.InsertGroupLog;
+import org.bibsonomy.database.params.logging.InsertGroupMembershipLog;
+import org.bibsonomy.database.params.logging.InsertUserGroupLog;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
 import java.util.Date;
@@ -65,14 +70,6 @@ import java.util.Date;
  *
  */
 public class Logging extends AbstractDatabasePlugin {
-
-	private final GeneralDatabaseManager generalManager;
-	/**
-	 *
-	 */
-	public Logging() {
-		this.generalManager = GeneralDatabaseManager.getInstance();
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -143,7 +140,7 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onGoldStandardDelete(final String interhash, final DBSession session) {
+	public void onGoldStandardDelete(final String interhash, User loggedinUser, final DBSession session) {
 		final LoggingParam logParam = new LoggingParam();
 		logParam.setOldHash(interhash);
 		logParam.setNewContentId(0);
@@ -228,16 +225,20 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onChangeUserMembershipInGroup(final String userName, final int groupId, final DBSession session) {
+	public void onChangeUserMembershipInGroup(Group group, String userName, User loggedinUser, final DBSession session) {
 		final GroupParam groupParam = new GroupParam();
-		groupParam.setGroupId(groupId);
+		groupParam.setGroupId(group.getGroupId());
 		groupParam.setUserName(userName);
 		this.insert("logChangeUserMembershipInGroup", groupParam, session);
 	}
 
 	@Override
-	public void onUserUpdate(final String userName, final DBSession session) {
+	public void onUserUpdate(final String userName, User loggedinUser, final DBSession session) {
 		this.insert("logUser", userName, session);
+
+		// XXX: to easy update the group full text index also log
+		final InsertUserGroupLog logParam = new InsertUserGroupLog(loggedinUser, new Date(), LogReason.LINKED_ENTITY_UPDATE, userName);
+		this.insert("logGroupUpdate", logParam, session);
 	}
 
 	@Override
@@ -296,8 +297,8 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onPersonUpdate(final String personId, final DBSession session) {
-		this.insert("logPersonUpdate", personId, session);
+	public void onPersonUpdate(final Person oldPerson, Person newPerson, final DBSession session) {
+		this.insert("logPersonUpdate", oldPerson.getPersonId(), session);
 	}
 
 	@Override
@@ -326,6 +327,36 @@ public class Logging extends AbstractDatabasePlugin {
 		this.logPersonResourceRelation(rel.getPersonRelChangeId(), null, loggedinUser, session);
 	}
 
+	private void logUpdate(final String statement, final int oldId, final int newId, User loggedinUser, DBSession session) {
+		final LoggingParam param = new LoggingParam();
+		param.setNewContentId(newId);
+		param.setOldContentId(oldId);
+		param.setDate(new Date());
+		param.setPostEditor(loggedinUser); // TODO: rename field to editor
+
+		this.insert(statement, param, session);
+	}
+
+	@Override
+	public void onProjectUpdate(final Project oldProject, final Project newProject, final User loggedinUser, final DBSession session) {
+		this.logUpdate("logProjectUpdate", oldProject.getId(), newProject.getId(), loggedinUser, session);
+	}
+
+	@Override
+	public void onProjectDelete(final Project project, final User loggedinUser, DBSession session) {
+		this.logUpdate("logProjectUpdate", project.getId(), -1, loggedinUser, session);
+	}
+
+	@Override
+	public void onCRISLinkUpdate(CRISLink oldCRISLink, CRISLink link, User loginUser, DBSession session) {
+		this.logUpdate("logCRISLinkUpdate", oldCRISLink.getId(), link.getId(), loginUser, session);
+	}
+
+	@Override
+	public void onCRISLinkDelete(CRISLink crisLink, User loginUser, DBSession session) {
+		this.logUpdate("logCRISLinkUpdate", crisLink.getId(), -1, loginUser, session);
+	}
+
 	private void logPersonResourceRelation(Integer oldRelationId, Integer newRelationId, final User loggedinUser, final DBSession session) {
 		final LoggingParam param = new LoggingParam();
 		param.setOldContentId(oldRelationId);
@@ -334,5 +365,17 @@ public class Logging extends AbstractDatabasePlugin {
 		param.setPostEditor(loggedinUser); // FIXME: rename field of param
 
 		this.insert("logPubPerson", param, session);
+	}
+
+	@Override
+	public void beforeRemoveGroupMembership(Group group, String username, User loggedInUser, DBSession session) {
+		final InsertGroupMembershipLog param = new InsertGroupMembershipLog(loggedInUser, username, group, LogReason.DELETED);
+		this.insert("logGroupMembership", param, session);
+	}
+
+	@Override
+	public void beforeRemoveGroup(Group group, User loggedInUser, DBSession session) {
+		final InsertGroupLog param = new InsertGroupLog(loggedInUser, group, LogReason.DELETED);
+		this.insert("logGroup", param, session);
 	}
 }

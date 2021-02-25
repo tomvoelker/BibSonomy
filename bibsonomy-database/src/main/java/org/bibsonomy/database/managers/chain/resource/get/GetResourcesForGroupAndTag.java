@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.database.managers.chain.resource.get;
 
+import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
@@ -45,8 +47,11 @@ import org.bibsonomy.model.Resource;
  * 
  * @author Miranda Grahl
  * @param <R> 
- * @param <P> 
+ * @param <P>
+ *
+ * @deprecated
  */
+@Deprecated
 public class GetResourcesForGroupAndTag<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override
@@ -59,7 +64,7 @@ public class GetResourcesForGroupAndTag<R extends Resource, P extends ResourcePa
 				(param.getNumSimpleTags() > 0) &&
 				(param.getNumTransitiveConcepts() == 0) &&
 				!present(param.getHash()) &&
-				!present(param.getOrder()) &&
+				nullOrEqual(param.getSortKey(), SortKey.NONE) &&
 				!present(param.getSearch()) &&
 				!present(param.getTitle()) &&
 				!present(param.getAuthor()));
@@ -70,7 +75,7 @@ public class GetResourcesForGroupAndTag<R extends Resource, P extends ResourcePa
 		final Group group = this.groupDb.getGroupByName(param.getRequestedGroupName(), session);
 		if ((group == null) || (group.getGroupId() == GroupID.INVALID.getId()) || GroupID.isSpecialGroupId(group.getGroupId())) {
 			log.debug("group '" + param.getRequestedGroupName() + "' not found or special group");
-			return new ArrayList<Post<R>>();
+			return new ArrayList<>();
 		}
 		return this.databaseManager.getPostsForGroupByTag(group.getGroupId(), param.getGroups(), param.getUserName(), param.getTagIndex(), param.getPostAccess(), param.getFilters(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}

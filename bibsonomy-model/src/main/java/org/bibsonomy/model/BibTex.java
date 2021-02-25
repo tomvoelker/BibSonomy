@@ -834,30 +834,12 @@ public class BibTex extends Resource {
 		if (this.miscFields != null) {
 			this.miscFields.clear();
 		}
-		this.miscFieldParsed = false; // this is true in any case
-									  // at this point
-	}
-
-	/**
-	 * @param role
-	 * @return
-	 */
-	public List<PersonName> getPersonNamesByRole(PersonResourceRelationType role) {
-		final List<PersonName> publicationNames;
-		if (role == PersonResourceRelationType.AUTHOR) {
-			publicationNames = getAuthor();
-		} else if (role == PersonResourceRelationType.EDITOR) {
-			publicationNames = getEditor();
-		} else {
-			publicationNames = null;
-		}
-		return publicationNames;
+		this.miscFieldParsed = false; // this is true in any case at this point
 	}
 	
 	/**
 	 * 	clone an BibTex object 
 	 */
-
 	public BibTex clone(){
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -868,10 +850,10 @@ public class BibTex extends Resource {
 			return (BibTex) ois.readObject();
 		} catch (IOException e) {
 			log.error("IO Problem cloning an object: in BibTeX ", e);
-				return null;
+			return null;
 		} catch (ClassNotFoundException e) {
 			log.error("ClassNotFroundException during cloning an object: in BibTex", e);
-				return null;
+			return null;
 		}
 	}
 

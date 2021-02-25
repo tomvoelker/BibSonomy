@@ -8,24 +8,21 @@
 	
 	<jsp:directive.attribute name="tagCloudCommand" type="org.bibsonomy.webapp.command.TagCloudCommand" required="true"/>
 	<jsp:directive.attribute name="tagsOfLoggedinUser" type="java.util.Set" required="true" />
-	
-	<div class="tag-list">
-		<ul class="list-inline">
-			<c:forEach var="tag" items="${tagCloudCommand.tags}">
-				<li>
-					<c:set var="lblColor" value="primary" />
-					<c:if test="${mtl:contains(tagsOfLoggedinUser, tag)}"> 
-						<c:set var="lblColor" value="warning" />
-					</c:if>
-				
-					<span class="label label-${lblColor}">
-						<a href="${relativeUrlGenerator.getTagUrlByTagName(tag.name)}">
-							<c:out value="${tag.name }" />
-						</a>
-					</span>
-				</li>
+	<c:set var="tags" value="${tagCloudCommand.tags}" />
+	<c:if test="${not empty tags}">
+		<h2 class="page-header" id="tags">
+			Tags
+			<c:if test="${not empty tagsOfLoggedinUser}">
+				<small>
+					<fmt:message key="community.tags.myown"/>
+				</small>
+			</c:if>
+		</h2>
+		<div class="tagcloud">
+			<c:forEach var="tag" items="${tags}">
+				<span class="tag ${mtl:getTagSize(tag.usercount, tagCloudCommand.maxTagCount)} ${mtl:contains(tagsOfLoggedinUser, tag) ? 'myown' : ''}"><a href="${relativeUrlGenerator.getTagUrlByTagName(tag.name)}"><c:out value="${tag.name }" /></a></span>
 			</c:forEach>
-		</ul>
-	</div>
-
+			<meta itemprop="keywords" content="${mtl:toTagString(tags)}" />
+		</div>
+	</c:if>
 </jsp:root>

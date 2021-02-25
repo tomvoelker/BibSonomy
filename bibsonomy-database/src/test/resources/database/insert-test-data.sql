@@ -5,9 +5,7 @@
 -- module. It expects the existence of all tables; their create statements
 -- are found in src/main/resources/bibsonomy_db_schema.sql
 --
--- 
-
-
+--
 
 -- 
 -- Data for table `classifier_settings`
@@ -161,13 +159,16 @@ INSERT INTO `bibtexurls` (`content_id`, `url`, `text`, `group`, `date`) VALUES
 -- publications
 INSERT INTO `gold_standard` (`content_id`, `journal`, `volume`, `chapter`, `edition`, `month`, `day`, `booktitle`, `howPublished`, `institution`, `organization`, `publisher`, `address`, `school`, `series`, `bibtexKey`, `group`, `date`, `user_name`, `url`, `type`, `description`, `annote`, `note`, `pages`, `bKey`, `number`, `crossref`, `misc`, `bibtexAbstract`, `simhash0`, `simhash1`, `simhash2`, `simhash3`, `entrytype`, `title`, `author`, `editor`, `year`, `privnote`, `scraperid`, `change_date`, `rating`, `content_type`) VALUES
 (1005, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'bibtexKey1', 0, '1815-12-10 00:00:00', 'testuser1',   'http://www.testurl.org',        '2', 'test description', 'test annote', 'test note', 'test pages', 'test bKey', 'test number', 'test crossref', 'misc={test}', 'test bibtexAbstract', '9abf98937435f05aec3d58b214a2ac58', '097248439469d8f5a1e7fad6b02cbfcd', 'b77ddd8087ad8856d77c740c8dc2864a', '', 'test entrytype', 'test title',         'test author',  'test editor', 'test year', 'test privnote', -1, '2008-03-20 16:24:55', 0, 2),
-(1015, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'bibtexKey2', 0, '1815-12-10 00:00:00', 'testuser2',   'http://private.bibtex.url.com', '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'misc={test}', 'test bibtexAbstract', '8711751127efb070ee910a5d145a168b', 'ac6aa3ccb181e61801cefbc1401d409a', '1b298f199d487bc527a62326573892b8', '', 'test entrytype', 'test private title', 'test author',  'test editor', 'test year', 'test privnote', -1, '2008-05-19 14:34:29', 0, 2);
+(1015, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'bibtexKey2', 0, '1815-12-10 00:00:00', 'testuser2',   'http://private.bibtex.url.com', '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'misc={test}', 'test bibtexAbstract', '8711751127efb070ee910a5d145a168b', 'ac6aa3ccb181e61801cefbc1401d409a', '1b298f199d487bc527a62326573892b8', '', 'test entrytype', 'test private title', 'test author',  'test editor', 'test year', 'test privnote', -1, '2008-05-19 14:34:29', 0, 2),
+-- gold standard for the person resource relation
+(1073740827,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'University of Nowhere',NULL,'muller2004wurst',0,'2015-07-06 14:15:12','testuserP',NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,'9132de6d174bcfd8018d0b299642f12d','0b539e248a02e3edcfe591c64346c7a0','d63038ea59383b94bb52fc4a9b76d1f5','','phdthesis','Wurst aufs Brot','Müller, Heinrich Georg',NULL,'2004', NULL, 0,'2015-07-06 12:21:34',0, 2);
+
 -- bookmarks
-INSERT INTO `gold_standard` (`content_id`, `title`, `url`, `description`, `date`, `user_name`, `simhash1`, `content_type`) VALUES
-(1025, 'Universität Kassel', 'http://www.uni-kassel.de', 'Nordhessen', '2011-01-01 00:00:00', 'testuser1', '20592a292e53843965c1bb42bfd51876', 1);
+INSERT INTO `gold_standard` (`content_id`, `title`, `url`, `description`, `date`, `user_name`, `simhash1`, `simhash2`, `content_type`) VALUES
+(1025, 'Universität Kassel', 'http://www.uni-kassel.de', 'Nordhessen', '2011-01-01 00:00:00', 'testuser1', '20592a292e53843965c1bb42bfd51876', '20592a292e53843965c1bb42bfd51876', 1);
 
 -- 
--- Data for insert into similar_persons (match_id, person1_id, person2_id, mode, item1_id, item2_id) values (0, "johirth.0", "johirth.1", "test", "01234567891011121314151617181920", "01234567891011121314151617181921");table `gold_standard_relations`
+-- Data for table `gold_standard_relations`
 -- 
 INSERT INTO `gold_standard_relations` (`publication`, `reference`, `user_name`, `date`, `relation_kind`) VALUES
 ('097248439469d8f5a1e7fad6b02cbfcd', 'ac6aa3ccb181e61801cefbc1401d409a', 'testuser1', '2008-03-20 16:24:55', '0'),
@@ -176,8 +177,7 @@ INSERT INTO `gold_standard_relations` (`publication`, `reference`, `user_name`, 
 
 -- 
 -- Data for table `bookmark`
--- 
-
+--
 INSERT INTO `bookmark` (`content_id`, `book_url_hash`, `book_description`, `book_extended`, `group`, `date`, `user_name`, `to_bib`, `change_date`, `rating`) VALUES
 (1, '6f372faea7ff92eedf52f597090a6291', 'test bookmark descripton', 'test bookmark extended',    3, '1815-12-10 00:00:00', 'testuser1', 0, '2008-01-18 10:17:10', 0),
 (2, '108eca7b644e2c5e09853619bc416ed0', 'Google',                   'bekannteste Suchmaschine',  0, '1815-12-10 00:00:00', 'testuser1', 0, '2008-01-18 10:34:17', 0),
@@ -204,7 +204,7 @@ INSERT INTO `collector` (`user_name`, `content_id`, `date`) VALUES
 ('testuser2', 14, '2008-06-18 14:33:22');
 
 
--- insert into similar_persons (match_id, person1_id, person2_id, mode, item1_id, item2_id) values (0, "johirth.0", "johirth.1", "test", "01234567891011121314151617181920", "01234567891011121314151617181921");
+--
 -- Data for table `document`
 -- 
 INSERT INTO `document` VALUES 
@@ -240,17 +240,21 @@ INSERT INTO `friends` VALUES
 -- 
 -- Data for table `groupids`
 -- 
-INSERT INTO `groupids` (`group_name`, `group`, `privlevel`, `sharedDocuments`) VALUES 
-('public',     -2147483648, 1, 0),
-('private',    -2147483647, 1, 0),
-('friends',    -2147483646, 1, 0),
-('public',     0,           1, 0),
-('private',    1,           1, 0),
-('friends',    2,           1, 0),
-('testgroup1', 3,           0, 1),
-('testgroup2', 4,           1, 0),
-('testgroup3', 5,           2, 0),
-('testgroup4', 6,           2, 1);
+INSERT INTO `groupids` (`group_name`, `group`, `parent`, `privlevel`, `sharedDocuments`, `internal_id`) VALUES
+('public',          -2147483648, NULL,  1, 0, NULL),
+('private',         -2147483647, NULL,  1, 0, NULL),
+('friends',         -2147483646, NULL,  1, 0, NULL),
+('public',          0,           NULL,  1, 0, NULL),
+('private',         1,           NULL,  1, 0, NULL),
+('friends',         2,           NULL,  1, 0, NULL),
+('testgroup1',      3,           NULL,  0, 1, 'extid1'),
+('testgroup2',      4,           NULL,  1, 0, 'extid2'),
+('testgroup3',      5,           NULL,  2, 0, 'extid3'),
+('testgroup4',      6,           NULL,  2, 1, NULL),
+('rootgroup',       9,           NULL,  2, 1, NULL),
+('childgroup1',     10,             9,  2, 1, NULL),
+('childgroup2',     11,             9,  2, 1, NULL),
+('childgroup3depth2', 12,           10, 2, 1, NULL);
 
 -- 
 -- Data for table `pending_groupids`
@@ -264,19 +268,32 @@ INSERT INTO `pending_groupids` (`group_name`, `request_user_name`, `request_reas
 -- 
 
 INSERT INTO `group_memberships` VALUES 
-('testuser1', 3, 3, '2007-01-01 01:01:01', 2, 1),
-('testuser2', 3, 3, '2007-01-01 01:01:01', 2, 0),
-('testuser1', 4, 3, '2007-01-01 01:01:01', 2, 1),
-('testuser1', 5, 3, '2007-01-01 01:01:01', 2, 0),
-('testuser1', 6, 3, '2007-01-01 01:01:01', 2, 0),
-('testuser2', 6, 3, '2007-01-01 01:01:01', 2, 0),
-('testgroup1', 3, 3, '2007-01-01 01:01:01', 3, 0),
-('testgroup2', 4, 4, '2007-01-01 01:01:01', 3, 0),
-('testgroup3', 5, 5, '2007-01-01 01:01:01', 3, 0),
-('testgroup3', 6, 6, '2007-01-01 01:01:01', 3, 0);
+('testuser1',   3, 3, '2007-01-01 01:01:01', 2, 1),
+('testuser2',   3, 3, '2007-01-01 01:01:01', 2, 0),
+('testuser1',   4, 3, '2007-01-01 01:01:01', 2, 1),
+('testuser1',   5, 3, '2007-01-01 01:01:01', 2, 0),
+('testuser1',   6, 3, '2007-01-01 01:01:01', 2, 0),
+('testuser2',   6, 3, '2007-01-01 01:01:01', 2, 0),
+('testgroup1',  3, 3, '2007-01-01 01:01:01', 3, 0),
+('testgroup2',  4, 4, '2007-01-01 01:01:01', 3, 0),
+('testgroup3',  5, 5, '2007-01-01 01:01:01', 3, 0),
+('testgroup3',  6, 6, '2007-01-01 01:01:01', 3, 0),
+('rootgroup',   9, 9, '2007-01-01 01:01:01', 3, 0),
+('childgroup1', 10, 10, '2007-01-01 01:01:01', 3, 0),
+('childgroup2', 11, 11, '2007-01-01 01:01:01', 3, 0),
+('childgroup3depth2', 12, 12, '2007-01-01 01:01:01', 3, 0),
+('testuser4', 9, 9, '2007-01-01 01:01:01', 3, 0),
+('testuser4', 3, 9, '2007-01-01 01:01:01', 3, 0),
+('testuser4', 10, 9, '2007-01-01 01:01:01', 3, 0);
 
 
 
+
+INSERT INTO `group_hierarchy` VALUES
+(10,  9),
+(11,  9),
+(12, 10),
+(12,  9);
 
 -- 
 -- Data for table `ids`
@@ -294,7 +311,10 @@ INSERT INTO `ids` VALUES
 (14, 3,  'message_id'),
 (15, 4, 'comment_id'),
 (16, 12, 'sync_service_id'),
-(17, 36, 'person_change_id');
+(17, 36, 'person_change_id'),
+(18, 3, 'project_id'),
+(19, 2, 'cris_link_id'),
+(20,12, 'group_id');
 
 
 --
@@ -591,8 +611,7 @@ INSERT INTO `temp_bookmark` (`content_id`, `book_description`, `book_extended`, 
 
 -- 
 -- Data for table `urls`
--- 
-
+--
 INSERT INTO `urls` (`book_url_hash`, `book_url`, `book_url_ctr`) VALUES
 ('108eca7b644e2c5e09853619bc416ed0', 'http://www.google.de', 1),
 ('16dfed76f9d846056a6a3c0d022c3493', 'http://www.finetune.com', 1),
@@ -606,8 +625,13 @@ INSERT INTO `urls` (`book_url_hash`, `book_url`, `book_url_ctr`) VALUES
 ('e9ea2574c49c3778f166e8b4b6ed63dd', 'http://www.apple.com\r\n', 1),
 ('10ab297107e4bb79b345e406b3c2a087', 'http://www.cs.uni-kassel.de', 1),
 ('bbf9b0339a070080a3668c9cb6158ecf', 'http://www.heise.de', 0),
-('2574200000e4bb79b100e406b777a044', 'http://www.wm2010.com', 1);
-
+('2574200000e4bb79b100e406b777a044', 'http://www.wm2010.com', 1),
+-- FIXME: the url to the hash is wrong
+('6232752de0376fb6692917faf2e0a41e', 'https://www.uni-wuerzburg.de', 1),
+('35b3ed178e437da1e93e2cac75333c67', 'https://www.hu-berlin.de/en/', 1),
+('bcf7feb2dd4acba08f79b31991ed51bb', 'https://l3s.de', 1),
+('c7c8d5f682a6f32b7b3be9f3986a1cba', 'https://www.uni-kassel.de/eecs/', 1),
+('c4bb293ee64fecf340db99b39f401008', 'https://www.informatik.uni-wuerzburg.de/startseite/', 1);
 
 
 -- 
@@ -619,6 +643,11 @@ INSERT INTO `user` (`user_name`,`user_email`,`user_password`,`user_password_salt
 ('testgroup2',  'testgroup2@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/testgroup2', 'Test Group 2', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
 ('testgroup3',  'testgroup3@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/testgroup3', 'Test Group 3', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
 ('testgroup4',  'testgroup4@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/testgroup4', 'Test Group 4', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
+('rootgroup',  'rootgroup@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/rootgroup', 'Root Group', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
+
+('childgroup1',  'childgroup1@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/childgroup1', 'Child Group 1', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
+('childgroup2',  'childgroup2@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/childgroup2', 'Child Group 2', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
+('childgroup3depth2',  'childgroup3depth2@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/childgroup3depth2', 'Child Group 3 Depth 2', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
 ('testspammer', 'testspammer@bibsonomy.org', 'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/',                 'Test Spammer', 1, 'http://sfxserv.rug.ac.be:8888/rug', '2007-02-02 02:02:02', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
 ('testspammer2', 'testspammer@bibsonomy.org', 'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/',                 'Test Spammer', 1, 'http://sfxserv.rug.ac.be:8888/rug', '2007-02-02 02:02:02', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
 ('testuser1',   'testuser1@bibsonomy.org',   'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/user/testuser1',   'Test User 1',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'rja',     '1815-12-10 00:00:00', 0,  'en', 0, 1, 3),
@@ -734,12 +763,12 @@ INSERT INTO `grouptas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `conten
 (24, 'testbibtex',    'testbibtex',    12, 2, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-03-20 20:35:21');
 
 
-INSERT INTO `person` (`person_change_id`, `person_id`, `academic_degree`, `user_name`, `post_ctr`, `orcid`, `dnb_person_id`, `gender`, `log_changed_at`, `log_changed_by`, homepage) VALUES
-(5,'h.muller','',NULL,0,'',NULL,NULL,NULL,NULL,''),
-(20, 'w.test.1','',NULL,0,'',NULL,'m',NULL,NULL, "hisPage"),
-(21, 'w.test.2','', null, 0,'',NULL, "m",NULL,NULL,''),
-(22, 'w.test.3','', null, 0, '',NULL,"m",NULL,NULL,''),
-(23, 'w.test.4', '',NULL,0,'',NULL,'F',NULL,NULL,"myPage")
+INSERT INTO `person` (`person_change_id`, `person_id`, `academic_degree`, `user_name`, `post_ctr`, `orcid`, `dnb_person_id`, `gender`, `log_changed_at`, `log_changed_by`, `college`, `homepage`) VALUES
+(5, 'h.muller', '', NULL, 0, '', NULL, NULL, '2015-07-06 14:19:55', NULL, 'Test College', ''),
+(20, 'w.test.1', '', NULL, 0, '', NULL, 'm', '2015-07-06 14:19:55', NULL, 'Test College', 'hisPage'),
+(21, 'w.test.2', '', null, 0,'', NULL, 'm', '2015-07-06 16:19:55', NULL, 'Test College', ''),
+(22, 'w.test.3', '', null, 0, '', NULL, 'm', '2015-07-06 18:19:55', NULL, 'Test College', ''),
+(23, 'w.test.4', '', NULL, 0, '', NULL, 'F', '2016-07-06 14:19:55', NULL, 'College', 'myPage')
 ;
 
 
@@ -764,10 +793,31 @@ INSERT INTO `pub_person` (`person_change_id`, `simhash1`, `simhash2`, `relator_c
 (29, '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', 'Maut', 0, 'w.test.3', 0,'2015-07-06 14:19:55','testuserP'),
 (30, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Maut', 0, 'w.test.4', 0,'2015-07-06 14:19:55','testuserP');
 
-INSERT INTO `person_match` (match_id, person1_id, person2_id, state) VALUES (1, "w.test.1", "w.test.2", 0),
-(2, "w.test.1", "w.test.3", 0), (3, "w.test.2", "w.test.3", 0), (4, "w.test.1", "w.test.4", 0);
+INSERT INTO `person_match` (match_id, person1_id, person2_id, state) VALUES
+(1, 'w.test.1', 'w.test.2', 0),
+(2, 'w.test.1', 'w.test.3', 0),
+(3, 'w.test.2', 'w.test.3', 0),
+(4, 'w.test.1', 'w.test.4', 0);
 
-INSERT INTO `bibtex` (content_id, simhash0, simhash1, simhash2, simhash3, author, title, change_date,date,user_name) VALUES 
+INSERT INTO `person_additional_keys` (`person_id`, `key_name`, `key_value`) VALUES
+('w.test.1', 'addKey.1', 'w.test.1.addKey.1'),
+('w.test.1', 'addKey.2', 'w.test.1.addKey.2'),
+('w.test.2', 'addKey.1', 'w.test.2.addKey.2'),
+('w.test.3', 'addKey.1', 'w.test.3.addKey.1'),
+('w.test.4', 'addKey.1', 'w.test.4.addKey.1');
+
+-- FIXME: this data is broken
+INSERT INTO `gold_standard` (content_id, simhash0, simhash1, simhash2, simhash3, author, title, change_date, date, user_name, content_type) VALUES
+(34, '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', 'Willi Test and Maria Mueller', 'title1', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP',2),
+(35, '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', 'Willi Test and Johann Hilfe', 'title2', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP',2),
+(36, '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', 'Willi Test', 'same', '2008-01-18 10:20:07', '1815-12-10 00:00:00', 'testuserP', 2),
+(37, '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', 'Willi Test and Mario Mueller', 'title4', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP', 2),
+(38, '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', 'Willi Test and Ted Hansen', 'title5', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP', 2),
+(39, 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'Willi Test', 'same', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP', 2),
+(40, '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', 'Willi Test and Ted Hansen', 'title7', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP', 2),
+(41, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Willi Test and Johann Hilfe', 'title8', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP', 2);
+
+INSERT INTO `bibtex` (content_id, simhash0, simhash1, simhash2, simhash3, author, title, change_date, date, user_name) VALUES
 (34, '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', '0c000000d00000f00cef0c00f000e00a', 'Willi Test and Maria Mueller', 'title1', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP'),
 (35, '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', '0c0000cdc00000b000cbe0fe0ab0acd0', 'Willi Test and Johann Hilfe', 'title2', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP'),
 (36, '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', 'Willi Test', 'same', '2008-01-18 10:20:07','1815-12-10 00:00:00','testuserP'),
@@ -786,6 +836,7 @@ INSERT INTO `bibhash` VALUES ('0c000000d00000f00cef0c00f000e00a', 1, 0),
 ('0e0a00c000000f00d0d000b00eefe00b', 1, 0),
 ('00dc000febca00a0f0f00ce0de000000', 1, 0);
 
+
 INSERT INTO `tas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_type`, `user_name`, `date`, `group`, `change_date`) VALUES
 (50, 'testtag',        'testtag',        34, 1, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-01-18 10:20:07'),
 (51, 'testtag',        'testtag',        35, 1, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-01-18 10:20:07'),
@@ -796,3 +847,12 @@ INSERT INTO `tas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_typ
 (56, 'testtag',        'testtag',        40, 1, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-01-18 10:20:07'),
 (57, 'testtag',        'testtag',        41, 1, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-01-18 10:20:07');
 
+
+INSERT INTO `projects` (`id`, `internal_id`, `project_id`, `title`, `subtitle`, `description`, `start_date`, `end_date`, `type`, `budget`, `parent_id`, `updated_at`, `updated_by`)
+VALUES
+	(1, '122323-2323', 'posts', 'PoSTs', NULL, NULL, '2018-07-31 00:17:56', '2019-07-31 00:26:16', 'DFG', 130000.45, null, '2018-07-31 00:17:56', 'testuser1'),
+	(2, '122323-2324', 'posts_ii', 'PoSTs II', NULL, NULL, '2018-09-29 00:17:56', '2018-07-31 00:26:16', 'DFG', 130000.45, 1, '2018-07-31 00:17:56', 'testuser1');
+
+INSERT INTO `cris_links` (`id`, `source_id`, `source_type`, `target_id`, `target_type`, `start_date`, `end_date`, `linktype_type`, `linktype_value`, `link_source`, `updated_by`, `updated_at`)
+VALUES
+	(1, 1, 3, 5, 2, '2018-07-31 00:17:56', '2019-07-31 00:26:16', 1, '2', 1, 'testuser1', '2018-08-06 02:25:31');

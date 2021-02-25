@@ -26,20 +26,19 @@
  */
 package org.bibsonomy.wiki.tags.shared.resource;
 
-import static org.bibsonomy.util.ValidationUtils.present;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.util.Sets;
+import org.bibsonomy.wiki.tags.SharedTag;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.logic.PostLogicInterface;
-import org.bibsonomy.util.Sets;
-import org.bibsonomy.wiki.tags.SharedTag;
+import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * TODO: abstract resource tag
@@ -88,7 +87,7 @@ public class BookmarkListTag extends SharedTag {
  		}
  		
  		// TODO: Remove duplicates, if rendered for group
- 		List<Post<Bookmark>> posts = this.logic.getPosts(Bookmark.class, this.getGroupingEntity(), this.getRequestedName(), Arrays.asList(tags.split(" ")), null, null, SearchType.LOCAL, null, null, null, null, 0, this.maxQuerySize);
+ 		List<Post<Bookmark>> posts = this.logic.getPosts(Bookmark.class, this.getGroupingEntity(), this.getRequestedName(), Arrays.asList(tags.split(" ")), null, null, QueryScope.LOCAL, null, null, null, null, 0, this.maxQuerySize);
 
  		if (tagAttributes.get(LIMIT) != null) {
 			try {

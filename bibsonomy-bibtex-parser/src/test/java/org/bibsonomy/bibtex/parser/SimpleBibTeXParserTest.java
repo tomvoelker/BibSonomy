@@ -309,27 +309,26 @@ public class SimpleBibTeXParserTest {
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
 
 		final List<BibTex> parsedBibTeX = parser.parseBibTeXs(getTestFile("test2.bib"));
-		
+
 		assertEquals(2, parsedBibTeX.size());
-		
+
 		assertEquals("2014", parsedBibTeX.get(0).getYear());
 		assertEquals("1145--1154", parsedBibTeX.get(0).getPages());
-		
+
 		assertEquals("2014", parsedBibTeX.get(1).getYear());
 		assertEquals("2065--2074", parsedBibTeX.get(1).getPages());
-		
+
 		// We have two entries, both with missing crossrefs.
 		assertEquals(2, parser.getWarnings().size());
-		
-		assertEquals(CrossReferenceExpansionException.class, parser.getWarnings().get(0).getClass());
-		
-		final CrossReferenceExpansionException firstWarning = (CrossReferenceExpansionException) parser.getWarnings().get(0); 
-		
-		assertEquals("crossref key not found", firstWarning.getMessage());
-		assertEquals("DBLP:conf/acl/PickhardtGKWSS14",  firstWarning.getEntryKey());
-		assertEquals("dblp:conf/acl/2014-1",  firstWarning.getCrossrefKey());
-	}	
 
+		assertEquals(CrossReferenceExpansionException.class, parser.getWarnings().get(0).getClass());
+
+		final CrossReferenceExpansionException firstWarning = (CrossReferenceExpansionException) parser.getWarnings().get(0);
+
+		assertEquals("crossref key not found", firstWarning.getMessage());
+		assertEquals("DBLP:conf/acl/PickhardtGKWSS14", firstWarning.getEntryKey());
+		assertEquals("dblp:conf/acl/2014-1", firstWarning.getCrossrefKey());
+	}
 	
 	@Test
 	public void testFile1() throws Exception {
@@ -356,6 +355,13 @@ public class SimpleBibTeXParserTest {
 		assertEquals(s, sp2);
 	}
 
+	@Test
+	public void testHiggsPaper() throws Exception {
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+		final BibTex parsedBibteX = parser.parseBibTeX(getTestFile("higgs.bib"));
+		assertEquals(3025, parsedBibteX.getAuthor().size());
+	}
+
 	private static String getTestFile(final String filename) throws IOException {
 		final BufferedReader stream = new BufferedReader(new InputStreamReader(SimpleBibTeXParserTest.class.getClassLoader().getResourceAsStream(filename), StringUtils.CHARSET_UTF_8));
 		final StringBuilder buf = new StringBuilder();
@@ -365,22 +371,6 @@ public class SimpleBibTeXParserTest {
 		}
 		stream.close();
 		return buf.toString();
-	}
-
-	protected BibTex getExampleBibtex() {
-		final BibTex bib = new BibTex();
-		bib.setEntrytype("inproceedings");
-		bib.setBibtexKey("KIE");
-		bib.setTitle("The most wonderful title on earth");
-		bib.setAuthor(Arrays.asList(new PersonName("Dampf", "Dampf"), new PersonName("Peter", "Silie")));
-		bib.setJournal("Journal of the most wonderful articles on earth");
-		bib.setYear("2525");
-		bib.setVolume("3");
-		bib.setAbstract("This is a nice abstract.");
-		bib.setPrivnote("This is private!");
-
-		bib.setMisc("  isbn = {999-12345-123-x},\n  vgwort = {12},\n  doi = {my doi}");
-		return bib;
 	}
 
 }

@@ -49,7 +49,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.DuplicatePostInSnippetErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
@@ -294,12 +294,10 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 */
 			
 			posts = parser.parseBibTeXPosts(snippet);
-		} catch (final ParseException ex) {
-			this.errors.reject("error.upload.failed.parse", ex.getMessage());
-		} catch (final IOException ex) {
+		} catch (final ParseException | IOException ex) {
 			this.errors.reject("error.upload.failed.parse", ex.getMessage());
 		}
-		
+
 		PublicationValidator.handleParserWarnings(this.errors, parser, snippet, null);
 
 		/*
@@ -362,8 +360,8 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * add additional information from the form to the
 		 * post (description, groups)... present in both upload tabs
 		 */
-		final Set<String> unique_hashes = new TreeSet<String>();
-		ErrorMessage errorMessage;
+		final Set<String> unique_hashes = new TreeSet<>();
+
 		if (posts != null) {
 			for (final Post<BibTex> post : posts) {
 				post.setUser(context.getLoginUser());
@@ -388,7 +386,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 				if (!unique_hashes.contains(post.getResource().getIntraHash())) {
 					unique_hashes.add(post.getResource().getIntraHash());
 				} else {
-					errorMessage = new DuplicatePostInSnippetErrorMessage("BibTex", post.getResource().getIntraHash());
+					final ErrorMessage errorMessage = new DuplicatePostInSnippetErrorMessage("BibTex", post.getResource().getIntraHash());
 					final List<ErrorMessage> errorList = new ArrayList<>();
 					errorList.add(errorMessage);
 					command.getPostsErrorList().put(post.getResource().getIntraHash(), errorList);
@@ -419,7 +417,8 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * We try to store only posts that have no validation errors.
 		 * The following function, add error(s) to the erroneous posts.
 		 */
-		final Map<Post<BibTex>, Integer> postsToStore = this.getPostsWithNoValidationErrors(posts, command.getPostsErrorList(),command.isOverwrite());
+
+		final Map<Post<BibTex>, Integer> postsToStore = this.getPostsWithNoValidationErrors(posts, command.getPostsErrorList(), command.isOverwrite());
 
 		if (log.isDebugEnabled()) {
 			log.debug("will try to store " + postsToStore.size() + " of " + (posts != null ? Integer.toString(posts.size()) : "null") + " posts in database");
@@ -453,7 +452,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 	}
 
 	/**
-	 * Attempts to find a post which matches (?) the uploaded (PDF) file.
+	 * Attempts to find a post which matches the uploaded (PDF) file.
 	 * 
 	 * FIXME: needs to be documented
 	 * 
@@ -477,7 +476,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 						tags.add("sys:title:" + titleToken);
 					}
 				}
-				final List<Post<BibTex>> publicationPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, null, SearchType.LOCAL, null, null, null, null, 0, 5);
+				final List<Post<BibTex>> publicationPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, null, QueryScope.LOCAL, null, null, null, null, 0, 5);
 				final Post<BibTex> bestMatch = getBestMatch(publicationPosts);
 				if (present(bestMatch)) {
 					foundPublication = true;

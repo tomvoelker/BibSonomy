@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/util
+						http://www.springframework.org/schema/util/spring-util.xsd">
+
+
+	<bean id="projectSearchGenerationSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource" ref="searchDataSource" />
+		<property name="configLocation" value="classpath:generation/project/ProjectIndexGenerationSQLMapConfig.xml" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+
+	<bean id="projectSearchGenerationSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="projectSearchGenerationSqlMapClient"/>
+	</bean>
+
+	<bean id="projectGenerationDBLogic" class="org.bibsonomy.search.index.generator.GeneralIndexGenerationLogic">
+		<constructor-arg ref="projectClass" />
+		<property name="sessionFactory" ref="projectSearchGenerationSessionFactory"/>
+	</bean>
+
+	<bean id="crisLinkSearchGenerationSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource" ref="searchDataSource" />
+		<property name="configLocation" value="classpath:generation/crislink/CRISLinkIndexGenerationSQLMapConfig.xml" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+
+	<bean id="crisLinkSearchGenerationSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="crisLinkSearchGenerationSqlMapClient"/>
+	</bean>
+
+	<bean id="crisLinkProjectPersonGenerationLogic" class="org.bibsonomy.search.index.generator.cris.CRISLinkIndexGenerationLogic">
+		<property name="sessionFactory" ref="crisLinkSearchGenerationSessionFactory" />
+		<constructor-arg value="PROJECT" />
+		<constructor-arg value="PERSON" />
+	</bean>
+
+	<bean id="projectSearchInformationSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource" ref="searchDataSource" />
+		<property name="configLocation" value="classpath:information/project/ProjectIndexInformationSQLMapConfig.xml" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+
+	<bean id="projectSearchInformationSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="projectSearchInformationSqlMapClient"/>
+	</bean>
+
+	<bean id="projectDatabaseInformationLogic" class="org.bibsonomy.search.index.database.project.ProjectDatabaseInformationLogic">
+		<property name="sessionFactory" ref="projectSearchInformationSessionFactory"/>
+	</bean>
+
+	<bean id="crisLinkSearchInformationSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource" ref="searchDataSource" />
+		<property name="configLocation" value="classpath:information/crislink/CRISIndexInformationSQLMapConfig.xml" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+
+	<bean id="crisLinkSearchInformationSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="crisLinkSearchInformationSqlMapClient"/>
+	</bean>
+
+	<bean id="crisLinkDatabaseInformationLogic" class="org.bibsonomy.search.index.database.cris.CRISLinkDatabaseInformationLogic">
+		<property name="sessionFactory" ref="crisLinkSearchInformationSessionFactory"/>
+	</bean>
+
+	<bean id="projectSearchUpdateSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource" ref="searchDataSource" />
+		<property name="configLocation" value="classpath:update/project/ProjectIndexUpdateSQLMapConig.xml" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+
+	<bean id="projectSearchUpdateSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="projectSearchUpdateSqlMapClient"/>
+	</bean>
+
+	<bean id="projectSearchUpdateLogic" class="org.bibsonomy.search.index.update.project.ProjectIndexUpdateLogic">
+		<property name="sessionFactory" ref="projectSearchUpdateSessionFactory"/>
+	</bean>
+
+	<bean id="crisLinkSearchUpdateSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource" ref="searchDataSource" />
+		<property name="configLocation" value="classpath:update/crislink/CRISLinkIndexUpdateSQLMapConig.xml" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+
+	<bean id="crisLinkSearchUpdateSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="crisLinkSearchUpdateSqlMapClient"/>
+	</bean>
+
+	<bean id="crisLinkProjectPersonSearchUpdateLogic" class="org.bibsonomy.search.index.update.cris.CRISLinkUpdateLogic">
+		<constructor-arg value="PROJECT" />
+		<constructor-arg value="PERSON" />
+		<property name="sessionFactory" ref="crisLinkSearchUpdateSessionFactory"/>
+	</bean>
+</beans>

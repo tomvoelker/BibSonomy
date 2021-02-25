@@ -49,7 +49,7 @@ import org.bibsonomy.model.Resource;
  */
 public class ResourceViewCommand extends BaseCommand {
 	/** default value for sortPage */
-	public static final String DEFAULT_SORTPAGE = "date";
+	public static final String DEFAULT_SORTPAGE = "year";
 	/** default value for sortPageOrder */
 	public static final String DEFAULT_SORTPAGEORDER = "desc";
 	
@@ -59,7 +59,7 @@ public class ResourceViewCommand extends BaseCommand {
 	private Date endDate;
 	
 	private String requestedUser;
-	private Set<Class<? extends Resource>> resourcetype = new HashSet<Class<? extends Resource>>();
+	private Set<Class<? extends Resource>> resourcetype = new HashSet<>();
 	
 	private TagsType tagstype; // for queries for specific kinds of tags
 	

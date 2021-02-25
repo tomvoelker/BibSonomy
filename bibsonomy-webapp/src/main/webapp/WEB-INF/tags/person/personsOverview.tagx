@@ -1,0 +1,77 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+          xmlns:lists="urn:jsptagdir:/WEB-INF/tags/layout/parts/lists"
+          xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+          xmlns:person="urn:jsptagdir:/WEB-INF/tags/person"
+          xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
+
+    <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true" />
+
+    <c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
+
+    <fmt:message key="person.index.placeholder" var="placeholderText"/>
+    <fmt:message key="person.index.searchInfo" var="searchInfo"/>
+
+    <div class="row">
+        <div class="col-md-12">
+            <parts:searchHeader headerMessageKey="persons.header" searchPlaceholderKey="person.search" requPathAndQuery="${requPathAndQuery}" command="${command}" />
+        </div>
+    </div>
+
+    <c:set var="loggedinUser" value="${command.context.userLoggedIn}" />
+
+    <c:set var="personListCommand" value="${command.persons}" />
+    <c:if test="${loggedinUser or personListCommand.totalCount gt 0}">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4 vcenter">
+                <lists:listResultInfo listCommand="${personListCommand}" messageKey="persons.results.description" />
+            </div>
+            <c:if test="${command.context.userLoggedIn}">
+                <div class="col-md-4 text-right vcenter">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <fontawesome:icon icon="users" spaceAfter="5"/>
+                            <c:choose>
+                                <c:when test="${command.showAllPersons}">
+                                    <fmt:message key="persons.select.college.all" />
+                                </c:when>
+                                <c:otherwise>
+                                    <fmt:message key="persons.select.college.filtered" />
+                                </c:otherwise>
+                            </c:choose>
+                            <span class="caret"><!-- keep me --></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li class="${not command.showAllPersons ? '' : 'disabled'}">
+                                <c:set var="allPersonsUrl" value="${mtl:setParam(requPathAndQuery, 'showAllPersons', 'true')}" />
+                                <a href="${allPersonsUrl}">
+                                    <c:if test="${command.showAllPersons}">
+                                        <fontawesome:icon icon="check" spaceAfter="5" size="xs" />
+                                    </c:if>
+                                    <fmt:message key="persons.select.college.all" />
+                                </a>
+                            </li>
+                            <li class="${command.showAllPersons ? '' : 'disabled'}">
+                                <c:set var="filterUniversity" value="${mtl:setParam(requPathAndQuery, 'showAllPersons', 'false')}" />
+                                <a href="${filterUniversity}">
+                                    <c:if test="${not command.showAllPersons}">
+                                        <fontawesome:icon icon="check" spaceAfter="5" size="xs" />
+                                    </c:if>
+                                    <fmt:message key="persons.select.college.filtered" />
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </c:if>
+        </div>
+    </c:if>
+
+    <hr class="option-result-divider"/>
+
+    <person:personList listCommand="${personListCommand}" showPagination="${true}" />
+
+</jsp:root>

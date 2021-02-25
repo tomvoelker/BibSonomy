@@ -31,7 +31,6 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
-import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.MappingBuilder;
 import org.bibsonomy.util.Sets;
@@ -42,7 +41,9 @@ import java.util.Set;
 
 /**
  * implementation of the {@link EntityInformationProvider} interface for posts
+ *
  * @param <R>
+ * @author dzo
  */
 public class PostEntityInformationProvider<R extends Resource> extends EntityInformationProvider<Post<R>> {
 
@@ -55,11 +56,8 @@ public class PostEntityInformationProvider<R extends Resource> extends EntityInf
 	public static final Set<String> PUBLIC_FIELDS = Sets.asSet(
 					ESConstants.Fields.TAGS,
 					ESConstants.Fields.DESCRIPTION,
-					ESConstants.Fields.Resource.TITLE,
 					ESConstants.Fields.Bookmark.URL,
-					ESConstants.Fields.Publication.ALL_AUTHORS,
 					ESConstants.Fields.Publication.MISC_FIELDS_VALUES,
-					ESConstants.Fields.Publication.SCHOOL,
 					ESConstants.Fields.Publication.YEAR,
 					ESConstants.Fields.Publication.BIBTEXKEY,
 					ESConstants.Fields.Publication.ADDRESS,
@@ -67,24 +65,28 @@ public class PostEntityInformationProvider<R extends Resource> extends EntityInf
 					ESConstants.Fields.Publication.ANNOTE,
 					ESConstants.Fields.Publication.KEY,
 					ESConstants.Fields.Publication.ABSTRACT,
-					ESConstants.Fields.Publication.BOOKTITLE,
 					ESConstants.Fields.Publication.CHAPTER,
 					ESConstants.Fields.Publication.CROSSREF,
 					ESConstants.Fields.Publication.DAY,
 					ESConstants.Fields.Publication.EDITION,
 					ESConstants.Fields.Publication.HOWPUBLISHED,
-					ESConstants.Fields.Publication.INSTITUTION,
-					ESConstants.Fields.Publication.JOURNAL,
 					ESConstants.Fields.Publication.MONTH,
 					ESConstants.Fields.Publication.NOTE,
 					ESConstants.Fields.Publication.NUMBER,
-					ESConstants.Fields.Publication.ORGANIZATION,
 					ESConstants.Fields.Publication.PAGES,
-					ESConstants.Fields.Publication.PUBLISHER,
-					ESConstants.Fields.Publication.SERIES,
 					ESConstants.Fields.Publication.TYPE,
 					ESConstants.Fields.Publication.URL,
-					ESConstants.Fields.Publication.VOLUME
+					ESConstants.Fields.Publication.VOLUME,
+					ESConstants.Fields.Sort.TITLE,
+					ESConstants.Fields.Sort.BOOKTITLE,
+					ESConstants.Fields.Sort.JOURNAL,
+					ESConstants.Fields.Sort.SERIES,
+					ESConstants.Fields.Sort.PUBLISHER,
+					ESConstants.Fields.Sort.AUTHOR,
+					ESConstants.Fields.Sort.EDITOR,
+					ESConstants.Fields.Sort.SCHOOL,
+					ESConstants.Fields.Sort.INSTITUTION,
+					ESConstants.Fields.Sort.ORGANIZATION
 	);
 
 	static {
@@ -112,7 +114,7 @@ public class PostEntityInformationProvider<R extends Resource> extends EntityInf
 
 	@Override
 	public String getEntityId(Post<R> entity) {
-		return ElasticsearchUtils.createElasticSearchId(entity.getContentId());
+		return String.valueOf(entity.getContentId());
 	}
 
 	@Override

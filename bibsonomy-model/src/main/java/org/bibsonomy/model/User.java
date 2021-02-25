@@ -45,11 +45,8 @@ import org.bibsonomy.model.user.remote.RemoteUserNameSpace;
 import org.bibsonomy.model.util.file.UploadedFile;
 import org.bibsonomy.util.UrlUtils;
 
-
-
 /**
  * This class defines a user. An unknown user has an empty (<code>null</code>) name.
- * 
  */
 public class User implements Serializable {
 	/*
@@ -163,9 +160,8 @@ public class User implements Serializable {
 	 * The user belongs to these groups.
 	 */
 	private List<Group> groups;
-	/**
-	 * 
-	 */
+
+	/** a list of groups that the user has requested and are not already activated by an admin */
 	private List<Group> pendingGroups;
 	
 	/**
@@ -259,7 +255,7 @@ public class User implements Serializable {
 	private String ldapId;
 	
 	/** userids of remote authentication systems such as saml, ldap, and openid */
-	private final Map<RemoteUserNameSpace, RemoteUserId> remoteUserIds = new HashMap<RemoteUserNameSpace, RemoteUserId>(2);
+	private final Map<RemoteUserNameSpace, RemoteUserId> remoteUserIds = new HashMap<>(2);
 	/**
 	 * The temporary password the user can request when asking for a password reminder.
 	 */
@@ -268,7 +264,10 @@ public class User implements Serializable {
 	 * The time at which the user requested a password reminder.
 	 */
 	private Date reminderPasswordRequestDate;
-	
+
+	/** the person that the user has claimed to be */
+	private Person claimedPerson;
+
 	/**
 	 * Constructor
 	 */
@@ -361,7 +360,7 @@ public class User implements Serializable {
 	 */
 	public List<Group> getGroups() {
 		if (this.groups == null) {
-			this.groups = new LinkedList<Group>();
+			this.groups = new LinkedList<>();
 		}
 		return this.groups;
 	}
@@ -733,20 +732,21 @@ public class User implements Serializable {
 	 */
 	public List<User> getFriends() {
 		if (this.friends == null) {
-			this.friends = new LinkedList<User>();
+			this.friends = new LinkedList<>();
 		}
 		return this.friends;
 	}
 	
 	/**
 	 * TODO: unused?
+	 * FIXME: move to util class if it is used;
 	 * @return a List with names of user's friends
 	 */
 	public List<String> getFriendsAsString() {
 		if (this.friends == null) {
-			this.friends = new LinkedList<User>();
+			this.friends = new LinkedList<>();
 		}
-		final List<String> friendsAsString = new LinkedList<String>();
+		final List<String> friendsAsString = new LinkedList<>();
 		for (final User friend : friends) {
 			friendsAsString.add(friend.getName());
 		}
@@ -936,7 +936,7 @@ public class User implements Serializable {
 	 */
 	public List<Post<? extends Resource>> getPosts() {
 		if (this.posts == null) {
-			this.posts = new LinkedList<Post<? extends Resource>>();
+			this.posts = new LinkedList<>();
 		}
 		return this.posts;
 	}
@@ -960,28 +960,6 @@ public class User implements Serializable {
 	 */
 	public List<Tag> getTags() {
 		return tags;
-	}
-	
-	/**
-	 * Two users are equal, if their name is equal. Users with <code>null</code>
-	 * names are not equal.
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(final Object obj) {
-		return obj != null && obj instanceof User && this.name != null && this.name.equals(((User) obj).name);
-	}
-	
-	@Override
-	public int hashCode() {
-		if (this.name != null) return this.name.hashCode();
-		return super.hashCode();
-	}
-
-	@Override
-	public String toString() {
-		return name;
 	}
 
 	/**
@@ -1034,7 +1012,7 @@ public class User implements Serializable {
 	 * @return all group level permissions this user has from any group he is a member of
 	 */
 	public Set<GroupLevelPermission> getGroupLevelPermissions() {
-		Set<GroupLevelPermission> groupLevelPermissions = new HashSet<GroupLevelPermission>();
+		Set<GroupLevelPermission> groupLevelPermissions = new HashSet<>();
 		for (Group group: this.getGroups()) {
 			groupLevelPermissions.addAll(group.getGroupLevelPermissions());
 		}
@@ -1067,5 +1045,41 @@ public class User implements Serializable {
 	 */
 	public void setRegistrationLog(String registrationLog) {
 		this.registrationLog = registrationLog;
+	}
+
+	/**
+	 * @return the claimedPerson
+	 */
+	public Person getClaimedPerson() {
+		return claimedPerson;
+	}
+
+	/**
+	 * @param claimedPerson the claimedPerson to set
+	 */
+	public void setClaimedPerson(Person claimedPerson) {
+		this.claimedPerson = claimedPerson;
+	}
+
+	/**
+	 * Two users are equal, if their name is equal. Users with <code>null</code>
+	 * names are not equal.
+	 *
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		return obj != null && obj instanceof User && this.name != null && this.name.equals(((User) obj).name);
+	}
+
+	@Override
+	public int hashCode() {
+		if (this.name != null) return this.name.hashCode();
+		return super.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return name;
 	}
 }

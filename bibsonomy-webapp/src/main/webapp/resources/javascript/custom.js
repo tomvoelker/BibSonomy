@@ -139,6 +139,58 @@ $(function() {
 		}
 	});
 
+	/*
+	 * show more list for persons
+	 */
+	$('span.show-more-person-list').each(function() {
+		var personList = $(this);
+		personList.data('expanded', false);
+		var children = personList.children();
+		var maxPersons = 20;
+		var numberPersons = children.length;
+		var hiddenPersons = numberPersons - maxPersons;
+
+		var personType = personList.data('person-type');
+
+		if (numberPersons > maxPersons) {
+			children.slice(maxPersons).hide();
+
+			var lessLinkTemplate = $('<span class="less-link" style="margin-left: 3px"></span>');
+			var moreLinkTemplate = $('<span class="more-link"></span>');
+
+			var moreLink = $('<a href="#"></a>');
+			moreLinkTemplate.append(moreLink);
+			var personTypeName = "";
+			if ("author" == personType) {
+				personTypeName = getString('post.resource.author');
+			} else {
+				personTypeName = getString('post.resource.editor');
+			}
+			moreLink.html(hiddenPersons + " " + getString('persons.others') + " " + personTypeName);
+			moreLink.click(function() {
+				children.show();
+				$(this).parent().hide();
+				lessLinkTemplate.show();
+				return false;
+			});
+
+			var lessLink = $('<a href="#"></a>');
+			lessLinkTemplate.append(lessLink);
+			lessLink.html("(" + getString("less") + " " + personTypeName + ")");
+			lessLink.click(function() {
+				children.slice(maxPersons).hide();
+				$(this).parent().hide();
+				moreLinkTemplate.show();
+				return false;
+			});
+
+			personList.append(moreLinkTemplate);
+			personList.append(lessLinkTemplate);
+
+			lessLinkTemplate.hide();
+		}
+	});
+
 	/**
 	 * SYSTEM TAGS HANDLING
 	 */

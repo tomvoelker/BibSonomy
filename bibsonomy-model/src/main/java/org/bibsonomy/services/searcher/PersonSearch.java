@@ -29,8 +29,9 @@ package org.bibsonomy.services.searcher;
 import java.util.List;
 
 import org.bibsonomy.model.Person;
-import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.query.PersonQuery;
+import org.bibsonomy.model.statistics.Statistics;
 
 /**
  * Interface for person search operations
@@ -41,9 +42,16 @@ public interface PersonSearch {
 
 	/**
 	 * Allows autocompletion for persons
-	 * @param options contains a query with some mixture of parts of a name, parts of the title or the university name
-	 * @return a list of {@link ResourcePersonRelation} objects with initialized {@link Person} references. Each {@link Person} object is further initialized with a main name.
+	 * @param query contains a query with some mixture of parts of a name, parts of the title or the university name
+	 * @return a list of {@link Person}s. Each {@link Person} object is further initialized with a main name.
 	 */
-	public  List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options);
-	
+	List<Person> getPersons(final PersonQuery query);
+
+	/**
+	 * statistics for the matching persons (like the count)
+	 * @param loggedinUser
+	 * @param query
+	 * @return
+	 */
+	Statistics getStatistics(final User loggedinUser, final PersonQuery query);
 }

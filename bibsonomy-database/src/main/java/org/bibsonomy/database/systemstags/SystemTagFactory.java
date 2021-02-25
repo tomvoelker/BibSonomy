@@ -36,6 +36,7 @@ import java.util.Set;
 import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
 import org.bibsonomy.database.systemstags.markup.MarkUpSystemTag;
 import org.bibsonomy.database.systemstags.search.SearchSystemTag;
+import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.model.Tag;
 
 /**

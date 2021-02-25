@@ -16,32 +16,34 @@
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="showEditOnly" type="java.lang.Boolean" required="true"/>
 	
-
-	<buttons:communityPostActions post="${post}" resourceType="${resourceType}" communityPostExists="${communityPostExists}"/>
-	<c:choose>
-		<c:when test="${not empty postOfLoggedInUser}">
-			<span class="community-info warning">
-				<fontawsome:icon icon="warning" /><c:out value=" " />
-				<fmt:message key="community.warning.view" /><c:out value=" " />
-				<c:choose>
-					<c:when test="${showEditOnly}">
-						<a href="${relativeUrlGenerator.getEditUrlOfPost(postOfLoggedInUser)}"><fmt:message key="community.${resourceType}.edit" /></a>
-					</c:when>
-					<c:otherwise>
-						<fmt:message key="community.warning.edit">
-							<fmt:param value="${relativeUrlGenerator.getPostUrl(postOfLoggedInUser)}" />
-						</fmt:message>
-					</c:otherwise>
-				</c:choose>
-			</span>
-		</c:when>
-		<c:otherwise>
-			<c:if test="${command.context.userLoggedIn}">
-				<span class="community-info">
-					<bs:linkButton href="${relativeUrlGenerator.getCopyUrlOfPost(post) }" size="small" style="success" icon="copy" textKey="${resourceType}.actions.copy.title" />
-				</span>
-			</c:if>
-		</c:otherwise>
-	</c:choose>
-
+	<div class="row">
+		<div class="col-md-12">
+			<buttons:communityPostActions post="${post}" resourceType="${resourceType}" communityPostExists="${communityPostExists}"/>
+			<c:choose>
+				<c:when test="${not empty postOfLoggedInUser}">
+					<span class="community-info warning">
+						<fontawsome:icon icon="warning" /><c:out value=" " />
+						<fmt:message key="community.warning.view" /><c:out value=" " />
+						<c:choose>
+							<c:when test="${showEditOnly}">
+								<a href="${relativeUrlGenerator.getEditUrlOfPost(postOfLoggedInUser)}"><fmt:message key="community.${resourceType}.edit" /></a>
+							</c:when>
+							<c:otherwise>
+								<fmt:message key="community.warning.edit">
+									<fmt:param value="${relativeUrlGenerator.getPostUrl(postOfLoggedInUser)}" />
+								</fmt:message>
+							</c:otherwise>
+						</c:choose>
+					</span>
+				</c:when>
+				<c:otherwise>
+					<c:if test="${command.context.userLoggedIn}">
+						<span class="community-info">
+							<bs:linkButton href="${relativeUrlGenerator.getCopyUrlOfPost(post) }" size="small" style="success" icon="copy" textKey="${resourceType}.actions.copy.title" />
+						</span>
+					</c:if>
+				</c:otherwise>
+			</c:choose>
+		</div>
+	</div>
 </jsp:root>

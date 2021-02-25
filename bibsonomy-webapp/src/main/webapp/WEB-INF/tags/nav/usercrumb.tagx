@@ -17,7 +17,7 @@
 		<c:set var="active" value="${false}" />
 	</c:if>
 	<c:choose>
-		<c:when test="${not empty scope and scope ne 'LOCAL'}">
+		<c:when test="${not empty scope and scope ne 'LOCAL' and scope ne 'SEARCHINDEX'}">
 			<c:set var="ownPage" value="false" />
 		</c:when>
 		<c:otherwise>

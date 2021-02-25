@@ -39,7 +39,7 @@ import org.springframework.beans.factory.FactoryBean;
  * @see FactoryBean
  * @author Jens Illig
  */
-public class LogicFactoryBean extends DBLogicUserInterfaceFactory implements FactoryBean<LogicInterface> {
+public abstract class LogicFactoryBean extends DBLogicUserInterfaceFactory implements FactoryBean<LogicInterface> {
 
 	private User user;
 	private LogicInterface instance;

@@ -28,13 +28,11 @@ package org.bibsonomy.database.managers.chain.tag;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.chain.Chain;
@@ -50,7 +48,6 @@ import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.Order;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -93,7 +90,7 @@ public class TagChainTest extends AbstractDatabaseManagerTest {
 	public void getPopularTags() {
 		final TagParam param = new TagParam();
 		param.setGrouping(GroupingEntity.ALL);
-		param.setOrder(Order.POPULAR);
+		param.setSortKey(SortKey.POPULAR);
 		param.setTagIndex(null);
 		param.setHash(null);
 		param.setRegex(null);
@@ -101,32 +98,6 @@ public class TagChainTest extends AbstractDatabaseManagerTest {
 		assertEquals(GetPopularTags.class, tagChain.getChainElement(param).getClass());
 	}
 
-	/**
-	 * get related tags
-	 */
-	@Test
-	@Ignore
-	public void getRelatedTags() {
-		// TODO: implement test
-	}
-
-	/**
-	 * get related tags for group
-	 */
-	@Test
-	@Ignore
-	public void getRelatedTagsForGroup() {
-		// TODO: implement test
-	}
-
-	/**
-	 * get similar tags
-	 */
-	@Test
-	@Ignore
-	public void getSimilarTags() {
-		// TODO: implement test
-	}
 
 	/**
 	 * get tags by author
@@ -205,13 +176,6 @@ public class TagChainTest extends AbstractDatabaseManagerTest {
 		assertEquals(GetTagsByExpression.class, tagChain.getChainElement(param).getClass());
 	}
 
-	/**
-	 * get tags by friend of user
-	 */
-	@Test
-	public void GetTagsByFriendOfUser() {
-		// TODO
-	}
 
 	/**
 	 * get tags by group
@@ -224,25 +188,24 @@ public class TagChainTest extends AbstractDatabaseManagerTest {
 		param.getTagIndex().clear();
 		param.setRequestedGroupName("requestedGroup");
 		param.addGroup(GroupID.PUBLIC.getId());
-		assertEquals(GetTagsByGroup.class, tagChain.getChainElement(param).getClass());
+		assertEquals(GetTagsByResourceSearch.class, tagChain.getChainElement(param).getClass());
 	}
 
 	/**
-	 * get tags by hash
+	 * get related tags by group
 	 */
 	@Test
-	@Ignore
-	public void GetTagsByHash() {
-		// TODO: implement test
-	}
-
-	/**
-	 * get tags by hash for user
-	 */
-	@Test
-	@Ignore
-	public void GetTagsByHashForUser() {
-		// TODO: implement test
+	public void GetRelatedTagsForGroup() {
+		final TagParam param = new TagParam();
+		param.setGrouping(GroupingEntity.GROUP);
+		param.setBibtexKey(null);
+		param.setTagIndex(Arrays.asList(new TagIndex("test", 2)));
+		param.setSearch(null);
+		param.setTitle(null);
+		param.setAuthor(null);
+		param.setRequestedGroupName("requestedGroup");
+		param.addGroup(GroupID.PUBLIC.getId());
+		assertEquals(GetTagsByResourceSearch.class, tagChain.getChainElement(param).getClass());
 	}
 
 	/**

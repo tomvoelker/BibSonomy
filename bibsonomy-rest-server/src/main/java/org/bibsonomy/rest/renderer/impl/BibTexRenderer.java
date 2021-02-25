@@ -72,9 +72,7 @@ public class BibTexRenderer extends AbstractPostExportRenderer {
 					writer.append(BibTexUtils.toBibtexString(bibtex));
 					writer.append(NEW_LINE); // add a new line between each post
 					writer.flush();
-				} catch (final LayoutRenderingException ex) {
-					throw new InternServerException(ex);
-				} catch (final IOException ex) {
+				} catch (final LayoutRenderingException | IOException ex) {
 					throw new InternServerException(ex);
 				}
 			} else {

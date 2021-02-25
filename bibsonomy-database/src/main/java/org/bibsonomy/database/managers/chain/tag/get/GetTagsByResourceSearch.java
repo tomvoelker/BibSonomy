@@ -28,18 +28,20 @@ package org.bibsonomy.database.managers.chain.tag.get;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.ChainUtils;
 import org.bibsonomy.database.managers.chain.tag.TagChainElement;
 import org.bibsonomy.database.params.TagParam;
-import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.services.searcher.PostSearchQuery;
+import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.database.systemstags.search.NotTagSystemTag;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 
 /**
  * Returns a list of tags for a given author.
@@ -51,11 +53,11 @@ public class GetTagsByResourceSearch extends TagChainElement {
 
 	@Override
 	protected List<Tag> handle(final TagParam param, final DBSession session) {
-		final Collection<String> tags = present(param.getTagIndex()) ? DatabaseUtils.extractTagNames(param) : null;
+		final List<String> tags = present(param.getTagIndex()) ? DatabaseUtils.extractTagNames(param) : null;
 		/*
 		 * Check System tags for negated and year tags
 		 */
-		final List<String> negatedTags = new LinkedList<String>();
+		final List<String> negatedTags = new LinkedList<>();
 		if (present(param.getSystemTags())) {
 			for (final SystemTag systemTag : param.getSystemTags()) {
 				if (systemTag instanceof NotTagSystemTag) {
@@ -65,7 +67,32 @@ public class GetTagsByResourceSearch extends TagChainElement {
 		}
 
 		// FIXME: year restrictions missing
-		return this.db.getTagsByResourceSearch(param.getResourceType(), param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getGroupNames(), param.getSearchType(), param.getSearch(), param.getTitle(), param.getAuthor(), tags, param.getBibtexKey(), null, null, null, negatedTags, param.getLimit(), param.getOffset());
+
+		final PostSearchQuery<?> query = new PostSearchQuery<>();
+		query.setNegatedTags(negatedTags);
+		query.setAuthorSearchTerms(param.getAuthor());
+		query.setTitleSearchTerms(param.getTitle());
+		query.setSearch(param.getSearch());
+		query.setGrouping(getGroupingEntity(param));
+		query.setBibtexKey(param.getBibtexKey());
+		query.setScope(param.getQueryScope());
+		query.setTags(tags);
+
+		BasicQueryUtils.setStartAndEnd(query, param.getLimit(), param.getOffset());
+
+		return this.db.getTagsByResourceSearch(param.getResourceType(), param.getLoggedinUser(), query);
+	}
+
+	private static GroupingEntity getGroupingEntity(TagParam param) {
+		if (present(param.getRequestedUserName())) {
+			return GroupingEntity.USER;
+		}
+
+		if (present(param.getRequestedGroupName())) {
+			return GroupingEntity.GROUP;
+		}
+
+		return GroupingEntity.ALL;
 	}
 
 	@Override

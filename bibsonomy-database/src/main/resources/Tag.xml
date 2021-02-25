@@ -47,7 +47,7 @@
 			  t1.tag_name LIKE #regex#
 			  <include refid="getTagsByResourceType"/>
 		GROUP BY t1.tag_name
-		<isEqual property="order" compareValue="FREQUENCY">
+		<isEqual property="sortKey" compareValue="FREQUENCY">
 			ORDER BY tag_ctr DESC
 		</isEqual>
 		LIMIT #limit# OFFSET #offset#
@@ -59,7 +59,7 @@
 		WHERE t1.group = #groupId#
 			<include refid="getTagsByResourceType"/>
 		GROUP BY t1.tag_name
-		<isEqual property="order" compareValue="FREQUENCY">
+		<isEqual property="sortKey" compareValue="FREQUENCY">
 			ORDER BY tag_ctr DESC
 		</isEqual>
 		LIMIT #limit# OFFSET #offset#
@@ -72,7 +72,7 @@
 			  AND t1.user_name = #requestedUserName#
 			<include refid="getTagsByResourceType"/>
 			GROUP BY t1.tag_name
-			<isEqual property="order" compareValue="FREQUENCY">
+			<isEqual property="sortKey" compareValue="FREQUENCY">
 			  ORDER BY tag_ctr DESC
 			</isEqual>
 			LIMIT #limit# OFFSET #offset#
@@ -94,7 +94,7 @@
 			<include refid="getTagsByResourceType"/>
 			<include refid="restrictToGroups"/>
 		  GROUP BY t1.tag_name 
-		  <isEqual property="order" compareValue="FREQUENCY">
+		  <isEqual property="sortKey" compareValue="FREQUENCY">
 			ORDER BY tag_ctr_user DESC
 	      </isEqual>
 		  LIMIT #limit# OFFSET #offset#
@@ -120,7 +120,7 @@
 		        AND g.group = #groupId#
 		        <include refid="getTagsByResourceType"/>)) AS tagsalias
 		GROUP BY tag_name 
-		<isEqual property="order" compareValue="FREQUENCY">
+		<isEqual property="sortKey" compareValue="FREQUENCY">
 			ORDER BY tag_ctr DESC
 		</isEqual>
 		LIMIT #limit# OFFSET #offset#
@@ -322,7 +322,7 @@
           	    <include refid="restrictToGroups"/>
           ) AS t
       	  GROUP BY t.tag_lower
-		<isEqual property="order" compareValue="FREQUENCY">
+		<isEqual property="sortKey" compareValue="FREQUENCY">
 			ORDER BY tag_ctr DESC
 		</isEqual>
 		LIMIT #limit# OFFSET #offset#
@@ -340,7 +340,7 @@
 				<include refid="restrictToGroups"/>
 				) AS t
 		GROUP BY t.tag_lower
-		<isEqual property="order" compareValue="FREQUENCY">
+		<isEqual property="sortKey" compareValue="FREQUENCY">
 			ORDER BY tag_ctr DESC
 		</isEqual>
 		LIMIT #limit# OFFSET #offset#
@@ -403,10 +403,10 @@
 		  <include refid="getTagsByResourceType"/>
 		  <include refid="restrictToGroups"/>
 		GROUP BY t1.tag_name 
-		<isEqual property="order" compareValue="FREQUENCY">
+		<isEqual property="sortKey" compareValue="FREQUENCY">
 			ORDER BY tag_ctr DESC
 		</isEqual>
-		<isNull property="order">
+		<isNull property="sortKey">
 			ORDER BY tag_ctr DESC
 		</isNull>
 		LIMIT #limit# OFFSET #offset#

@@ -8,10 +8,24 @@
 	<jsp:directive.attribute name="group" required="true" type="org.bibsonomy.model.Group" />
 	<jsp:directive.attribute name="size" type="java.lang.Integer" required="false" />
 	<jsp:directive.attribute name="noname" type="java.lang.Boolean" required="false" />
-	
+	<jsp:directive.attribute name="imageGroupClass" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="orgaUrl" type="java.lang.Boolean" required="false" />
+
+	<c:if test="${empty orgaUrl}">
+		<c:set var="orgaUrl" value="${false}" />
+	</c:if>
+	<c:if test="${empty imageGroupClass}">
+		<c:set var="imageGroupClass" value="group-img" />
+	</c:if>
+
 	<c:set var="groupname"><group:groupname group="${group}" noLink="${true}"/></c:set>
+
+	<c:set var="url" value="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}" />
+	<c:if test="${orgaUrl and group.organization}">
+		<c:set var="url" value="${relativeUrlGenerator.getOrganizationUrlByName(group.name)}" />
+	</c:if>
 	
-	<a class="text-center" href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}" title="${groupname}">
-		<img alt="${groupname}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(group.name)}" class="group-img img-circle"/>
+	<a class="text-center" href="${url}" title="${groupname}">
+		<img alt="${groupname}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(group.name)}" class="${imageGroupClass} img-circle"/>
 	</a>
 </jsp:root>

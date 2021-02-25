@@ -1,22 +1,25 @@
 <?xml version="1.0" ?>
 <jsp:root version="2.0"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:jspx="urn:jsptld:/WEB-INF/taglibs/jspx.tld"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:publication="urn:jsptagdir:/WEB-INF/tags/resources/publication"
-	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
-	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:jspx="urn:jsptld:/WEB-INF/taglibs/jspx.tld"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+		  xmlns:publication="urn:jsptagdir:/WEB-INF/tags/resources/publication"
+		  xmlns:spring="http://www.springframework.org/tags"
+		  xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
+		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<c:set var="goldstandardPresent" value="${not empty command.goldStandardPublications.list}" />
-	<c:set var="postToShow" value="${command.bibtex.list[0]}" />
+	<c:if test="${not empty command.bibtex.list}">
+		<c:set var="postToShow" value="${command.bibtex.list[0]}" />
+	</c:if>
 	<c:if test="${goldstandardPresent}">
 		<c:set var="postToShow" value="${command.goldStandardPublications.list[0]}" />
 	</c:if>
@@ -25,6 +28,12 @@
 	<c:set var="title" value="${mtl:cleanBibtex(publication.title)}" />
 	
 	<fmt:message key="navi.publication" var="pageTitle"/>
+
+	<c:set var="publicationOverviewLink" value="" />
+	<c:set var="isCRISSystem" value="${properties['system.cris'] eq 'true'}" />
+	<c:if test="${isCRISSystem}">
+		<c:set var="publicationOverviewLink" value="${relativeUrlGenerator.getPublicationsUrl()}" />
+	</c:if>
 	
 	<layout:layout pageTitle="${title}" loginUser="${command.context.loginUser}" requPath="${requPath}" noSidebar="${true}" noContentPadding="true" >
 		<jsp:attribute name="headerExt">
@@ -40,25 +49,26 @@
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
+
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:crumb nameKey="publications"  href="${publicationOverviewLink}" />
+					<nav:crumb leadingIcon="fa-book" name="${mtl:shorten(title, 75)}" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
 		
 		<jsp:attribute name="content">
-			<c:set var="isPublic" value="${false}"/>
 			<c:choose>
-				<!-- community post -->
-				<c:when test="${goldstandardPresent}">
+				<c:when test="${empty command.bibtex.list}">
 					<c:set var="isPublic" value="${true}"/>
 				</c:when>
-				<!-- or first item is public -->
 				<c:otherwise>
-					<!-- quick fix for discussion page -->
-					<c:forEach var="group" items="${command.bibtex.list[0].groups}">
-						<c:if test="${group.name eq 'public'}">
-							<c:set var="isPublic" value="${true}"/>
-						</c:if>
-					</c:forEach>
+					<spring:eval expression="T(org.bibsonomy.model.util.GroupUtils).isPublicGroup(command.bibtex.list[0].groups)"
+						 var="isPublic"/>
 				</c:otherwise>
 			</c:choose>
-			
 			<goldstandardpublication:details post="${postToShow}" postOfLoggedInUser="${command.postOfLoggedInUser}" loginUser="${command.context.loginUser}" postUserName="${command.postOwner}" postIsPublic="${isPublic}"/>
 		</jsp:attribute>
 

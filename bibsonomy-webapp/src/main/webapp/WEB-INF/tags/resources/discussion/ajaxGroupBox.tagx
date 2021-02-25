@@ -23,7 +23,7 @@
     
         Shows form fields to choose group(s) the post should be viewable for.
         Consists of three radio buttons: public, private, other
-        and a select box which contains the group "friends" plus other possible groups.     
+        and a filter box which contains the group "friends" plus other possible groups.
     	(for ajax views = without command path binding)
      -->
 
@@ -85,7 +85,7 @@
 		</div>
 		
 		<div class="col-sm-8">
-		    <!-- select box for "other" groups -->
+		    <!-- filter box for "other" groups -->
 		    <!-- TODO: allow multiple groups ( multiple="multiples") -->
 			<select name="groups" size="4" class="form-control otherGroupsBox" tabindex="2" disabled = "disabled">
 			<c:set var="friendsLabel" value="friends" /> <!-- TODO: i18n? -->

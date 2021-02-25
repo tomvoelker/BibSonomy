@@ -75,7 +75,7 @@
 				</ul>
 			</c:if>
 		</jsp:attribute>
-		
+
 		<jsp:attribute name="sidebar">
 			<sidebar:sidebarTagCloudItem textKey="busytags" requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="home"/>
 		</jsp:attribute>

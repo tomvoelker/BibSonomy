@@ -24,12 +24,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * 
- */
 package org.bibsonomy.webapp.controller;
 
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.enums.GroupOrder;
+import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.webapp.command.GroupsListCommand;
+import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -37,6 +38,7 @@ import org.bibsonomy.webapp.view.Views;
 /**
  * Controller for group overview:
  * - /groups
+ * - /organizations (for cris systems)
  * 
  * @author Folke Eisterlehner
  */
@@ -47,26 +49,26 @@ public class GroupsPageController extends SingleResourceListController implement
 	 */
 	@Override
 	public View workOn(final GroupsListCommand command) {
-		
-		//return Views.GROUPSPAGE;
 		final String format = command.getFormat();
+		final ListCommand<Group> groupListCommand = command.getGroups();
 		/*
-		 * get all groups from db; Integer#MAX_VALUE should be enough
+		 * get requested groups
 		 */
-		if ("html".equals(format)) {
-			command.setList(logic.getGroups(false, null, 0, Integer.MAX_VALUE));
-		} else if ("json".equals(format)) {
-			command.setList(command.getContext().getLoginUser().getGroups());
-		}
-		
-		
+		final GroupQuery groupQuery = GroupQuery.builder()
+						.start(groupListCommand.getStart())
+						.end(groupListCommand.getStart() + groupListCommand.getEntriesPerPage())
+						.pending(false)
+						.organization(command.getOrganizations())
+						.prefix(command.getPrefix())
+						.search(command.getSearch())
+						.order(GroupOrder.GROUP_REALNAME).build();
+		groupListCommand.setList(this.logic.getGroups(groupQuery));
+
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
-			this.endTiming();
 			return Views.GROUPSPAGE;
-		} 
-				
-		this.endTiming();
+		}
+
 		// export - return the appropriate view
 		return Views.getViewByFormat(format);
 	}

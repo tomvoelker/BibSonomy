@@ -1,0 +1,2 @@
+ALTER TABLE `groupids` ADD COLUMN `organization` BOOLEAN DEFAULT FALSE;
+ALTER TABLE `pending_groupids` ADD COLUMN `organization` BOOLEAN DEFAULT FALSE;

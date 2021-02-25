@@ -420,7 +420,7 @@
 						</tr>
 						<tr>
 			
-						<!-- options which algorithm to select -->
+						<!-- options which algorithm to filter -->
 							<td>algorithm:</td>
 							<td>
 								<form:select path="settingsCommand.algorithm" id="algorithm"

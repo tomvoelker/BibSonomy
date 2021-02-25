@@ -37,14 +37,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListControllerWithTags;
@@ -254,7 +255,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			}
 			firstResource = resourceList.get(0).getResource();
 			/*
-			 * TODO: As first Resource we'd like to use the post, which is the one, that the user clicked on
+			 * TODO: As first resource we'd like to use the post, which is the one, that the user clicked on
 			 * (as long as no goldstandard exists).
 			 */
 		}
@@ -262,7 +263,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 		/*
 		 * preprint handling 
 		 */
-		handleDiskussionItems(goldStandard, command.getContext().getLoginUser());
+		this.handleDiscussionItems(goldStandard, command.getContext().getLoginUser());
 		
 		this.endTiming();
 		return this.handleFormat(command, format, longHash, requUser, groupingEntity, goldHash, goldStandard, firstResource);
@@ -279,7 +280,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			 */
 			final RequestWrapperContext context = command.getContext();
 			final User loggedinUser = context.getLoginUser();
-			final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, SearchType.LOCAL, null, null, null, null, 0, this.maxQuerySize);
+			final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, QueryScope.LOCAL, null, null, null, null, 0, this.maxQuerySize);
 			for (final Post<R> post : allPosts) {
 				final User user = post.getUser();
 				if (user.equals(loggedinUser)) {
@@ -315,15 +316,24 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 				this.setTags(command, this.getResourceClass(), GroupingEntity.ALL, null, null, null, null, longHash, TAG_LIMIT, null);
 				return this.getDetailsView();
 			}
+
+			if (present(goldStandard)) {
+				this.loadResourceSpecificData(goldHash, goldStandard);
+			}
+
 			/*
 			 * get only those tags, related to the resource
 			 */
-			this.setTags(command, this.getResourceClass(), groupingEntity, requUser, null, Order.ALPH, null, longHash, TAG_LIMIT, null);
+			this.setTags(command, this.getResourceClass(), groupingEntity, requUser, null, SortKey.ALPH, null, longHash, TAG_LIMIT, null);
 			return this.getResourcePage();
 		}
 
 		// export - return the appropriate view
 		return Views.getViewByFormat(format);
+	}
+
+	protected void loadResourceSpecificData(String goldHash, Post<G> goldStandard) {
+		// noop
 	}
 
 	/**
@@ -332,7 +342,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 	 * @param goldStandard
 	 * @param loginUser
 	 */
-	protected void handleDiskussionItems(Post<G> goldStandard, User loginUser) {
+	protected void handleDiscussionItems(Post<G> goldStandard, User loginUser) {
 		/*
 		 * by default do nothing
 		 */

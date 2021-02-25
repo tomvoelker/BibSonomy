@@ -26,10 +26,14 @@
  */
 package org.bibsonomy.search;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
+import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.search.testutils.SearchSpringContextWrapper;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,7 +43,7 @@ import org.junit.Test;
  *
  * @author dzo
  */
-public class SearchInfoDBLogicTest {
+public class SearchInfoDBLogicTest extends AbstractDatabaseManagerTest {
 	
 	private static SearchInfoDBLogic LOGIC;
 	
@@ -47,7 +51,7 @@ public class SearchInfoDBLogicTest {
 	 * retrieves the logic from the config
 	 */
 	@BeforeClass
-	public static final void setLogic() {
+	public static void setLogic() {
 		LOGIC = SearchSpringContextWrapper.getBeanFactory().getBean(SearchInfoDBLogic.class);
 	}
 	
@@ -57,6 +61,21 @@ public class SearchInfoDBLogicTest {
 	@Test
 	public void testGetUserNamesThatShareDocumentsWithUser() {
 		final Set<String> users = LOGIC.getUserNamesThatShareDocumentsWithUser("testuser1");
-		assertEquals(1, users.size());
+		assertThat(users.size(), is(1));
+	}
+
+	@Test
+	public void testGetGroupMembersByGroupName() {
+		List<String> users = LOGIC.getGroupMembersByGroupName("rootgroup");
+
+		assertThat(users.size(), is(5));
+		assertThat(users, hasItems("childgroup1", "childgroup2", "childgroup3depth2", "rootgroup"));
+
+		users = LOGIC.getGroupMembersByGroupName("childgroup1");
+
+		assertThat(users.size(), is(3));
+		assertThat(users, hasItems("childgroup1", "childgroup3depth2"));
+
 	}
 }
+

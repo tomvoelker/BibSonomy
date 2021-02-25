@@ -34,10 +34,12 @@ import java.util.Set;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.information.JobInformation;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.User;
 
 /**
  * Used to CRUD bookmarks from the database.
@@ -84,16 +86,9 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 		// nop
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.bibsonomy.database.managers.PostDatabaseManager#onPostDelete(java
-	 * .lang.Integer, org.bibsonomy.database.util.DBSession)
-	 */
 	@Override
-	protected void onPostDelete(final int contentId, final DBSession session) {
-		this.plugins.onBookmarkDelete(contentId, session);
+	protected List<JobInformation> onPostInsert(final Post<Bookmark> post, final User loggedinUser, final DBSession session) {
+		return this.plugins.onBookmarkInsert(post, loggedinUser, session);
 	}
 
 	/*
@@ -106,6 +101,18 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	@Override
 	protected void onPostUpdate(final int oldContentId, final int newContentId, final DBSession session) {
 		this.plugins.onBookmarkUpdate(oldContentId, newContentId, session);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * org.bibsonomy.database.managers.PostDatabaseManager#onPostDelete(java
+	 * .lang.Integer, org.bibsonomy.database.util.DBSession)
+	 */
+	@Override
+	protected void onPostDelete(final int contentId, final DBSession session) {
+		this.plugins.onBookmarkDelete(contentId, session);
 	}
 	
 	/* (non-Javadoc)
@@ -130,11 +137,11 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.bibsonomy.database.managers.PostDatabaseManager#getInsertParam(org
+	 * org.bibsonomy.database.managers.PostDatabaseManager#createInsertParam(org
 	 * .bibsonomy.model.Post, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	protected BookmarkParam getInsertParam(final Post<? extends Bookmark> post, final DBSession session) {
+	protected BookmarkParam createInsertParam(final Post<? extends Bookmark> post) {
 		final BookmarkParam insert = this.getNewParam();
 
 		insert.setResource(post.getResource());
@@ -150,9 +157,6 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 		// or the id of the FIRST group in list
 		final int groupId = post.getGroups().iterator().next().getGroupId();
 		insert.setGroupId(groupId);
-
-		// inform plugins
-		this.plugins.onBookmarkInsert(post, session);
 		
 		return insert;
 	}

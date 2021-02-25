@@ -97,11 +97,6 @@
 					<dd><span class="fa fa-twitter"><!--  --></span>&amp;nbsp;<a href="https://twitter.com/${twitter}"><fmt:message key="footer.social.twitter"/></a></dd>
 				</c:if>
 				
-				<c:set var="googleCommunity" value="${properties['project.social.google-plus']}" />
-				<c:if test="${not empty googleCommunity}">
-					<dd><span class="fa fa-google-plus"><!--  --></span>&amp;nbsp;<a href="https://plus.google.com/communities/${googleCommunity}"><fmt:message key="footer.social.google"/></a></dd>
-				</c:if>
-				
 				<c:set var="facebook" value="${properties['project.social.facebook']}" />
 				<c:if test="${not empty facebook}">
 					<dd><span class="fa fa-facebook"><!--  --></span>&amp;nbsp;<a href="https://facebook.com/${facebook}"><fmt:message key="footer.social.facebook"/></a></dd>

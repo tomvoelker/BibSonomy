@@ -43,9 +43,9 @@ public abstract class AbstractSearchIndexGenerationTask<T> implements Callable<V
 	private static final Log LOG = LogFactory.getLog(AbstractSearchIndexGenerationTask.class);
 
 	/** the manager that is started the recommendation task */
-	protected final ElasticsearchManager<T> manager;
+	protected final ElasticsearchManager<T, ?> manager;
 	/** the generator to use */
-	private final ElasticsearchIndexGenerator<T> generator;
+	private final ElasticsearchIndexGenerator<T, ?> generator;
 	/** the name of the index to generate */
 	private final String newIndexName;
 
@@ -54,7 +54,7 @@ public abstract class AbstractSearchIndexGenerationTask<T> implements Callable<V
 	 * @param generator
 	 * @param newIndexName
 	 */
-	public AbstractSearchIndexGenerationTask(ElasticsearchManager<T> manager, ElasticsearchIndexGenerator<T> generator, final String newIndexName) {
+	public AbstractSearchIndexGenerationTask(ElasticsearchManager<T, ?> manager, ElasticsearchIndexGenerator<T, ?> generator, final String newIndexName) {
 		this.manager = manager;
 		this.generator = generator;
 		this.newIndexName = newIndexName;
@@ -69,7 +69,9 @@ public abstract class AbstractSearchIndexGenerationTask<T> implements Callable<V
 			this.generator.generateIndex(this.newIndexName);
 			this.indexGenerated(this.newIndexName);
 		} catch (final Exception e) {
+			this.generator.reset();
 			LOG.error("error while generating index", e);
+			throw new RuntimeException(e);
 		} finally {
 			this.manager.generatedIndex();
 		}

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
-	                    http://www.springframework.org/schema/beans/spring-beans.xsd">
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/task
+						http://www.springframework.org/schema/task/spring-task-3.2.xsd">
 
 	<!--+ 
 	 	| TODO: for more readability we should use the spring task namespace
@@ -150,4 +153,13 @@
 			</list>
 		</property>
 	</bean>
+
+	<task:scheduler id="searchUpdateScheduler" pool-size="10"/>
+
+	<task:scheduled-tasks scheduler="searchUpdateScheduler">
+		<task:scheduled ref="elasticsearchGroupManager" method="updateIndex" fixed-delay="5000" />
+		<task:scheduled ref="elasticsearchProjectManager" method="updateIndex" fixed-delay="5000" initial-delay="1000" />
+		<task:scheduled ref="elasticsearchPersonManager" method="updateIndex" fixed-delay="5000" initial-delay="2000" />
+	</task:scheduled-tasks>
+
 </beans>

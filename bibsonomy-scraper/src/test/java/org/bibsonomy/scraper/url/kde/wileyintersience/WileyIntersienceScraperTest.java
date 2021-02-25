@@ -26,33 +26,24 @@
  */
 package org.bibsonomy.scraper.url.kde.wileyintersience;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #33 #34 #109 for WileyIntersienceScraper
+ * Scraper URL tests for WileyIntersienceScraper
+ *
  * @author tst
  *
  */
 @Category(RemoteTest.class)
 public class WileyIntersienceScraperTest {
-	
-	/**
-	 * starts URL test with id url_33
-	 */
+
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_33");
-	}
-
-	/**
-	 * starts URL test with id url_34
-	 */
-	@Test
-	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_34");
+		assertScraperResult("http://onlinelibrary.wiley.com/doi/abs/10.1002/jemt.10338", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest1.bib");
 	}
 
 	/**
@@ -60,7 +51,7 @@ public class WileyIntersienceScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_109");
+		assertScraperResult("http://onlinelibrary.wiley.com/doi/abs/10.1111/j.1365-2575.2007.00275.x", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest3.bib");
 	}
 	
 	/**
@@ -68,7 +59,7 @@ public class WileyIntersienceScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		UnitTestRunner.runSingleTest("url_189");
+		assertScraperResult("https://onlinelibrary.wiley.com/doi/abs/10.1002/1521-4095%28200011%2912%3A22%3C1655%3A%3AAID-ADMA1655%3E3.0.CO%3B2-2", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest4.bib");
 	}	
 	
 	/**
@@ -76,6 +67,7 @@ public class WileyIntersienceScraperTest {
 	 */
 	@Test
 	public void url5TestRun(){
-		UnitTestRunner.runSingleTest("url_146");
+		assertScraperResult("https://agupubs.onlinelibrary.wiley.com/doi/book/10.1029/AR071", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest5.bib");
+
 	}	
 }

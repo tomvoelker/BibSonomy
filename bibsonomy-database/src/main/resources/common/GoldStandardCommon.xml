@@ -88,4 +88,12 @@
 		b.bibtexAbstract, null as user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, b.content_type, b.approved
 	</sql>
 
+	<sql id="allGoldStandardPublicationAttributesAnonymWithPostAttributes">
+		<include refid="allGoldStandardPublicationAttributesAnonym" />, b.simhash2 as intraHash, b.simhash1 as interHash, b.change_date, 1 as count
+	</sql>
+
+	<sql id="commonLogGoldStandardReferenceAttributes">
+		publication, reference, user_name, relation_kind
+	</sql>
+
 </sqlMap>

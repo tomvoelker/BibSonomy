@@ -26,44 +26,37 @@
  */
 package org.bibsonomy.rest.client.queries.get;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
- * Use this Class to receive an ordered list of all groups bibsonomy has.
+ * query to retrieve groups from the server
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
 public final class GetGroupListQuery extends AbstractQuery<List<Group>> {
 
-	private final int start;
-	private final int end;
+	private final GroupQuery groupQuery;
 
 	/**
-	 * Gets bibsonomy's group list
-	 */
-	public GetGroupListQuery() {
-		this(0, 19);
-	}
-
-	/**
-	 * Gets bibsonomy's group list.
+	 * inits this group list query with the specified query
 	 * 
-	 * @param start
-	 *            start of the list
-	 * @param end
-	 *            end of the list
+	 * @param groupQuery
 	 */
-	public GetGroupListQuery(int start, int end) {
-		if (start < 0) start = 0;
-		if (end < start) end = start;
+	public GetGroupListQuery(final GroupQuery groupQuery) {
+		if (!present(groupQuery)) {
+			throw new IllegalArgumentException("No group query given.");
+		}
 
-		this.start = start;
-		this.end = end;
+		this.groupQuery = groupQuery;
 	}
 
 	@Override
@@ -73,7 +66,7 @@ public final class GetGroupListQuery extends AbstractQuery<List<Group>> {
 
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException {
-		final String groupsUrl = this.getUrlRenderer().createHrefForGroups(this.start, this.end);
-		this.downloadedDocument = performGetRequest(groupsUrl);
+		final UrlBuilder groupsUrlBuilder = this.getUrlRenderer().createUrlBuilderForGroups(this.groupQuery);
+		this.downloadedDocument = performGetRequest(groupsUrlBuilder.asString());
 	}
 }

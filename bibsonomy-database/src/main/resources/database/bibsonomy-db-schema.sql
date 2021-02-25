@@ -515,6 +515,7 @@ SET character_set_client = utf8;
 CREATE TABLE `groupids` (
   `group_name` varchar(30) NOT NULL default '',
   `group` int(10) NOT NULL default '0',
+  `parent` int(10) DEFAULT NULL,
   `privlevel` tinyint(3) unsigned default '1',
   `sharedDocuments` tinyint(1) default '0',
   `allow_join` TINYINT(1) NULL DEFAULT '1',
@@ -522,6 +523,8 @@ CREATE TABLE `groupids` (
   `publ_reporting_mail` varchar(255) DEFAULT NULL,
   `publ_reporting_mail_template` text,
   `publ_reporting_external_url` varchar(255) DEFAULT NULL,
+  `organization` BOOLEAN DEFAULT FALSE,
+  `internal_id` VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY  (`group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -541,6 +544,19 @@ CREATE TABLE `group_memberships` (
   `group_role` int(10) NOT NULL default '2',
   `user_shared_documents` tinyint(1) default '0',
   PRIMARY KEY (`group`,`user_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `group_hierarchy`
+-- The table contains ONLY parent-child relations, no self relations, e.g. (1, 1)
+--
+DROP TABLE IF EXISTS `group_hierarchy`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `group_hierarchy` (
+  `child_group_id` int(10) NOT NULL,
+  `parent_group_id` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
@@ -1026,6 +1042,7 @@ CREATE TABLE `pending_groupids` (
   `request_reason` text NOT NULL,
   `request_submission_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `group` int(10) NOT NULL default '0',
+  `parent` int(10) default NULL,
   `privlevel` tinyint(3) unsigned default '1',
   `sharedDocuments` tinyint(1) default '0',
   `allow_join` TINYINT(1) NULL DEFAULT '1',
@@ -1033,6 +1050,8 @@ CREATE TABLE `pending_groupids` (
   `publ_reporting_mail` varchar(255) DEFAULT NULL,
   `publ_reporting_mail_template` text,
   `publ_reporting_external_url` varchar(255) DEFAULT NULL,
+  `organization` BOOLEAN DEFAULT FALSE,
+  `internal_id` VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY  (`group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -1105,6 +1124,8 @@ CREATE TABLE `pendingUser` (
   `show_bookmark` tinyint(1) default '1',
   `show_bibtex` tinyint(1) default '1',
   `useExternalPicture` tinyint(1) DEFAULT '0',
+  `person_posts_style` tinyint(4) NOT NULL DEFAULT '0',
+  `person_posts_layout` varchar(255) NOT NULL DEFAULT '',
   `reg_log` MEDIUMTEXT NULL DEFAULT NULL,
   `favourite_layouts` LONGTEXT NULL,
   UNIQUE (`activation_code`),
@@ -1509,6 +1530,8 @@ CREATE TABLE `user` (
   `show_bookmark` tinyint(1) default '1',
   `show_bibtex` tinyint(1) default '1',
   `useExternalPicture` tinyint(1) DEFAULT '0',
+  `person_posts_style` tinyint(4) NOT NULL DEFAULT '0',
+  `person_posts_layout` varchar(255) NOT NULL DEFAULT '',
   `reg_log` MEDIUMTEXT NULL DEFAULT NULL,
   `favourite_layouts` LONGTEXT NULL,
   PRIMARY KEY  (`user_name`),
@@ -1708,6 +1731,7 @@ CREATE TABLE `person` (
   `user_name` varchar(30) DEFAULT NULL,
   `post_ctr` int(11) DEFAULT NULL,
   `orcid` char(16) DEFAULT NULL,
+  `researcherid` char(9) DEFAULT NULL,
   `college` VARCHAR(128) NULL,
   `email` VARCHAR(255) NULL,
   `homepage` VARCHAR(255) default NULL,
@@ -1725,6 +1749,7 @@ CREATE TABLE `log_person` (
   `academic_degree` varchar(64) DEFAULT NULL,
   `user_name` varchar(30) DEFAULT NULL,
   `orcid` char(16) DEFAULT NULL,
+  `researcherid` char(9) DEFAULT NULL,
   `college` VARCHAR(128) DEFAULT NULL,
   `email` VARCHAR(255) DEFAULT NULL,
   `homepage` VARCHAR(255) DEFAULT NULL,
@@ -1811,6 +1836,13 @@ CREATE TABLE `person_match`(
    PRIMARY KEY  (`match_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `person_additional_keys` (
+  `person_id` varchar(64) NOT NULL,
+  `key_name` varchar(64) NOT NULL,
+  `key_value` varchar(64) NOT NULL,
+  UNIQUE KEY (`person_id`, `key_value`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `user_denied_match`(
   `match_id` int(10) unsigned NOT NULL,
   `user_name` varchar(30) NOT NULL
@@ -1820,6 +1852,115 @@ CREATE TABLE `other_dnb_ids`(
   `dnb_person_id` char(18) NOT NULL,
   `other_dnb_person_id` char(18) NOT NULL
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `projects` (
+  `id` int(11) unsigned NOT NULL,
+  `internal_id` varchar(255) DEFAULT NULL,
+  `project_id` varchar(255) DEFAULT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `subtitle` varchar(255) DEFAULT NULL,
+  `description` text,
+  `start_date` timestamp NULL DEFAULT NULL,
+  `end_date` timestamp NULL DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `sponsor` varchar(255) DEFAULT NULL,
+  `budget` double DEFAULT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `project_id` (`project_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `log_projects` (
+  `id` int(11) unsigned NOT NULL,
+  `internal_id` varchar(255) DEFAULT NULL,
+  `project_id` varchar(255) DEFAULT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `subtitle` varchar(255) DEFAULT NULL,
+  `description` text,
+  `start_date` timestamp NULL DEFAULT NULL,
+  `end_date` timestamp NULL DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `budget` double DEFAULT NULL,
+  `sponsor` varchar(255) DEFAULT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(30) DEFAULT NULL,
+  `new_id` int(11) NOT NULL,
+  `log_date` timestamp NULL DEFAULT NULL,
+  `log_user` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `cris_links` (
+  `id` int(11) unsigned NOT NULL,
+  `source_id` int(11) DEFAULT NULL,
+  `source_type` int(2) DEFAULT NULL,
+  `target_id` int(11) DEFAULT NULL,
+  `target_type` int(2) DEFAULT NULL,
+  `start_date` timestamp NULL DEFAULT NULL,
+  `end_date` timestamp NULL DEFAULT NULL,
+  `linktype_type` int(11) DEFAULT NULL,
+  `linktype_value` varchar(30) DEFAULT NULL,
+  `link_source` int(2) DEFAULT NULL,
+  `updated_by` varchar(30) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `log_cris_links` (
+  `id` int(11) unsigned NOT NULL,
+  `source_id` int(11) DEFAULT NULL,
+  `source_type` int(2) DEFAULT NULL,
+  `target_id` int(11) DEFAULT NULL,
+  `target_type` int(2) DEFAULT NULL,
+  `start_date` timestamp NULL DEFAULT NULL,
+  `end_date` timestamp NULL DEFAULT NULL,
+  `linktype_type` int(11) DEFAULT NULL,
+  `linktype_value` varchar(30) DEFAULT NULL,
+  `link_source` int(2) DEFAULT NULL,
+  `updated_by` varchar(30) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `new_id` int(11) NOT NULL,
+  `log_date` timestamp NULL DEFAULT NULL,
+  `log_user` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `log_groupids`;
+CREATE TABLE `log_groupids` (
+  `group_name` varchar(30) NOT NULL default '',
+  `group` int(10) NOT NULL default '0',
+  `parent` int(10) DEFAULT NULL,
+  `privlevel` tinyint(3) unsigned default '1',
+  `sharedDocuments` tinyint(1) default '0',
+  `allow_join` TINYINT(1) NULL DEFAULT '1',
+  `shortDescription` TEXT NULL,
+  `publ_reporting_mail` varchar(255) DEFAULT NULL,
+  `publ_reporting_mail_template` text,
+  `publ_reporting_external_url` varchar(255) DEFAULT NULL,
+  `organization` BOOLEAN DEFAULT FALSE,
+  `internal_id` VARCHAR(255) DEFAULT NULL,
+  `log_reason` int(2) DEFAULT NULL,
+  `log_date` timestamp NULL DEFAULT NULL,
+  `log_user` varchar(30) DEFAULT NULL,
+  PRIMARY KEY  (`group`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `log_group_memberships`;
+CREATE TABLE `log_group_memberships` (
+  `user_name` varchar(30) NOT NULL default '',
+  `group` int(10) default '0',
+  `defaultgroup` int(10) default '0',
+  `start_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `group_role` int(10) NOT NULL default '2',
+  `user_shared_documents` tinyint(1) default '0',
+  `log_reason` int(2) DEFAULT NULL,
+  `log_date` timestamp NULL DEFAULT NULL,
+  `log_user` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`group`,`user_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `phd_advisor_recommendation`(
     `doctor_id` varchar(64) NOT NULL,

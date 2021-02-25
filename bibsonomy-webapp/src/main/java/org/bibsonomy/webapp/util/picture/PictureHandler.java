@@ -36,16 +36,23 @@ import org.bibsonomy.webapp.util.View;
  * 
  * @author cut
  */
-public interface PictureHandler {
+public abstract class PictureHandler {
+
+	protected User requestedUser;
+
+	/**
+	 * default constructor with the user to handle
+	 * @param requestedUser
+	 */
+	public PictureHandler(User requestedUser) {
+		this.requestedUser = requestedUser;
+	}
 
 	/**
 	 * Returns a view containing requested user's profile picture.<br/>
-	 * @param requestedUser 
-	 * 
-	 * @param user - requested user
 	 * @param command - the actual picture command
 	 * @return view containing profile picture
 	 */
-	public View getProfilePictureView (final User requestedUser, final PictureCommand command);
+	public abstract View getProfilePictureView(final PictureCommand command);
 
 }

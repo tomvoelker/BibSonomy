@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ProjectCommon">
+
+    <resultMap id="simpleCrisLinkProject" class="project" groupBy="id">
+        <result property="id"			column="id"             javaType="int" />
+        <result property="externalId"	column="project_id"		javaType="string" />
+        <result property="title"	    column="title"		    javaType="string" />
+        <result property="subTitle"	    column="subtitle"	    javaType="string" />
+        <result property="type"	        column="type"	        javaType="string" />
+        <result property="sponsor"      column="sponsor"        javaType="string" />
+        <result property="startDate" 	column="start_date"		javaType="date" />
+        <result property="endDate"	    column="end_date"	    javaType="date" />
+    </resultMap>
+
+    <resultMap id="simpleProject" class="project" groupBy="id" extends="simpleCrisLinkProject">
+        <result property="description"	column="description"	javaType="string" />
+    </resultMap>
+
+    <resultMap id="project" class="project" groupBy="id" extends="simpleProject">
+        <result property="internalId"	column="internal_id"	javaType="string" />
+        <result property="parentProject" resultMap="ProjectCommon.parentProject" />
+    </resultMap>
+
+    <resultMap id="fullProject" class="project" groupBy="id" extends="project">
+        <result property="budget"	    column="budget"	        javaType="float" />
+    </resultMap>
+
+    <resultMap id="parentProject" class="project" groupBy="id">
+        <result property="id"			column="parent_id"         javaType="int" />
+        <result property="externalId"	column="parent_project_id" javaType="string" />
+        <result property="title"	    column="parent_title"	   javaType="string" />
+    </resultMap>
+
+    <sql id="allProjectAttributes">
+        id, project_id, internal_id, title, subtitle, description, start_date, end_date, type, sponsor, budget, parent_id, updated_at, updated_by
+    </sql>
+
+    <sql id="fullProjectAttributes">
+        <include refid="projectColumns" />, p.budget
+    </sql>
+
+    <sql id="projectColumns">
+        p.id, p.project_id, p.internal_id, p.title, p.subtitle, p.description, p.start_date, p.end_date, p.type, p.sponsor
+    </sql>
+
+    <sql id="parentSimpleProjectAttributes">
+        pp.id AS parent_id, pp.project_id AS parent_project_id, pp.title AS parent_title
+    </sql>
+
+    <sql id="simpleProjectAttributes">
+        id, project_id, title, subtitle, description, start_date, end_date, type, sponsor, budget
+    </sql>
+
+    <sql id="insertProjectAttributes">
+        #project.id#, #project.externalId#, #project.internalId#,  #project.title#, #project.subTitle#, #project.description#, #project.startDate#, #project.endDate#, #project.type#, #project.sponsor#, #project.budget#, #parentProjectId#, #updatedAt#, #updatedBy#
+    </sql>
+
+    <sql id="projectStatusFilter">
+        <isNotNull property="projectStatus">
+            WHERE
+            <isEqual property="projectStatus" compareValue="RUNNING">
+                start_date &lt; CURRENT_TIMESTAMP AND end_date >= CURRENT_TIMESTAMP
+            </isEqual>
+
+            <isEqual property="projectStatus" compareValue="FINISHED">
+                end_date &lt; CURRENT_TIMESTAMP
+            </isEqual>
+
+            <isEqual property="projectStatus" compareValue="UPCOMING">
+                start_date > CURRENT_TIMESTAMP
+            </isEqual>
+        </isNotNull>
+    </sql>
+
+</sqlMap>

@@ -52,7 +52,6 @@ import org.bibsonomy.scraper.url.kde.biologists.BiologistsScraper;
 import org.bibsonomy.scraper.url.kde.biomed.BioMedCentralScraper;
 import org.bibsonomy.scraper.url.kde.bioone.BioOneScraper;
 import org.bibsonomy.scraper.url.kde.biorxiv.BioRxivScraper;
-import org.bibsonomy.scraper.url.kde.blackwell.BlackwellSynergyScraper;
 import org.bibsonomy.scraper.url.kde.bmj.BMJOpenScraper;
 import org.bibsonomy.scraper.url.kde.bmj.BMJScraper;
 import org.bibsonomy.scraper.url.kde.cambridge.CambridgeScraper;
@@ -163,6 +162,7 @@ import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
 import org.bibsonomy.scraper.url.kde.worldscientific.WorldScientificScraper;
 import org.bibsonomy.scraper.url.kde.wormbase.WormbaseScraper;
 import org.bibsonomy.scraper.url.kde.zenodo.ZenodoScraper;
+import org.bibsonomy.scraper.url.researchgate.ResearchGateScraper;
 
 /**
  * Contains all active UrlScrapers.
@@ -211,7 +211,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new NatureArticleScraper());
 		addScraper(new NatureJournalScraper());
 		addScraper(new NatureNewsScraper());
-		addScraper(new BlackwellSynergyScraper());
 		addScraper(new DBLPScraper());
 		addScraper(new BioMedCentralScraper());
 		addScraper(new WorldCatScraper());
@@ -333,6 +332,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new BaseScraper());
 		addScraper(new UmanisticaDigitaleScraper());
 		addScraper(new ZfdGScraper());
+		addScraper(new ResearchGateScraper());
 		//addScraper(new AkademiaiScraper()); error = 404
 	}
 

@@ -259,7 +259,7 @@
 												<!-- number of changed fields, in comparison to the current version -->
 												<c:set var="diffNumCurr" value="${fn:length(diffArrayCurr)}"/>
 								
-												<!-- select revision to compare -->
+												<!-- filter revision to compare -->
 												<td class="col-sm-6">	
 													<div class="col-sm-4" style="float:left">
 														<h6> <label class="control-label" style="white-space:nowrap;">

@@ -32,29 +32,48 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.ESClient;
+import org.bibsonomy.search.es.ESConstants;
+import org.bibsonomy.search.es.client.DeleteData;
+import org.bibsonomy.search.es.client.IndexData;
+import org.bibsonomy.search.es.client.UpdateData;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.management.generation.AbstractSearchIndexGenerationTask;
 import org.bibsonomy.search.es.management.generation.ElasticSearchIndexGenerationTask;
 import org.bibsonomy.search.es.management.generation.ElasticSearchIndexRegenerationTask;
+import org.bibsonomy.search.es.management.post.ElasticsearchPostManager;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.exceptions.IndexAlreadyGeneratingException;
+import org.bibsonomy.search.index.update.IndexUpdateLogic;
 import org.bibsonomy.search.management.SearchIndexManager;
 import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.model.SearchIndexStatistics;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
+import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.util.Converter;
+import org.bibsonomy.util.BasicUtils;
 import org.bibsonomy.util.Sets;
 import org.elasticsearch.index.IndexNotFoundException;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.sort.SortOrder;
 
 import java.net.URI;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * manager that manages the indices for the specified type
@@ -62,7 +81,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author dzo
  */
-public abstract class ElasticsearchManager<T> implements SearchIndexManager {
+public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> implements SearchIndexManager {
 	private static final Log LOG = LogFactory.getLog(ElasticsearchManager.class);
 
 
@@ -73,27 +92,33 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 	private final boolean updateEnabled;
 
 	private final ExecutorService executorService = Executors.newFixedThreadPool(1);
-	private final ElasticsearchIndexGenerator<T> generator;
+	private final ElasticsearchIndexGenerator<T, S> generator;
 
 	/** the client to use for all interaction with elasticsearch */
 	protected final ESClient client;
+	protected final Converter<S, Map<String, Object>, Object> syncStateConverter;
 
 	protected final EntityInformationProvider<T> entityInformationProvider;
 	protected final URI systemId;
 
 	/**
 	 * default constructor
+	 * @param systemId
 	 * @param disabledIndexing
 	 * @param updateEnabled
 	 * @param client
+	 * @param generator
+	 * @param syncStateConverter
+	 * @param entityInformationProvider
 	 */
-	public ElasticsearchManager(final URI systemId, boolean disabledIndexing, final boolean updateEnabled, final ESClient client, final ElasticsearchIndexGenerator<T> generator, final EntityInformationProvider<T> entityInformationProvider) {
-		this.systemId = systemId;
-		this.generator = generator;
-		this.entityInformationProvider = entityInformationProvider;
+	public ElasticsearchManager(final URI systemId, final boolean disabledIndexing, final boolean updateEnabled, final ESClient client, ElasticsearchIndexGenerator<T, S> generator, final Converter<S, Map<String, Object>, Object> syncStateConverter, final EntityInformationProvider<T> entityInformationProvider) {
 		this.disabledIndexing = disabledIndexing;
 		this.updateEnabled = updateEnabled;
+		this.generator = generator;
 		this.client = client;
+		this.syncStateConverter = syncStateConverter;
+		this.entityInformationProvider = entityInformationProvider;
+		this.systemId = systemId;
 	}
 
 	/**
@@ -109,7 +134,7 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 			// check if index is the current active one
 			final String currentActiveIndexName = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
 			final String inactiveIndex = this.client.getIndexNameForAlias(this.getInactiveLocalAlias());
-			if (currentActiveIndexName.equals(indexName) && present(inactiveIndex)) {
+			if (present(currentActiveIndexName) && currentActiveIndexName.equals(indexName) && present(inactiveIndex)) {
 				this.switchActiveAndInactiveIndex();
 			}
 
@@ -241,7 +266,11 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 				LOG.error("no inactive index found for " + this.entityInformationProvider.getType());
 				return;
 			}
-			this.updateIndex(realIndexName);
+
+			final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId);
+
+			final S oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, realIndexName, this.syncStateConverter);
+			this.updateIndex(realIndexName, oldState);
 			this.switchActiveAndInactiveIndex();
 		} catch (final IndexNotFoundException e) {
 			LOG.error("Can't update " + this.entityInformationProvider.getType() + " index. No inactive index available.");
@@ -250,7 +279,101 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 		}
 	}
 
-	protected abstract void updateIndex(final String indexName);
+	protected abstract void updateIndex(final String indexName, S oldState);
+
+	protected <E> void updateEntity(final String indexName, final DefaultSearchIndexSyncState oldState, final IndexUpdateLogic<E> updateIndexLogic, final EntityInformationProvider<E> entityInformationProvider) {
+		final long lastContentId = oldState.getLastPostContentId();
+		final Date lastLogDate = oldState.getLast_log_date();
+		final String entityType = entityInformationProvider.getType();
+
+		/*
+		 * delete old entities
+		 */
+		final List<E> deletedEntities = updateIndexLogic.getDeletedEntities(lastLogDate);
+
+		// convert the entities to the list of delete data
+		final List<DeleteData> idsToDelete = deletedEntities.stream().map(entity -> {
+			final DeleteData deleteData = new DeleteData();
+			deleteData.setType(entityType);
+			deleteData.setId(entityInformationProvider.getEntityId(entity));
+			deleteData.setRouting(entityInformationProvider.getRouting(entity));
+			return deleteData;
+		}).collect(Collectors.toList());
+
+		this.client.deleteDocuments(indexName, idsToDelete);
+
+		/*
+		 * insert new or updated entities
+		 */
+		final Map<String, IndexData> indexDataMap = new HashMap<>();
+
+		LOG.debug("last content id is " + lastContentId + " lastLogDate is " + lastLogDate);
+
+		BasicUtils.iterateListWithLimitAndOffset((limit, offset) -> updateIndexLogic.getNewerEntities(lastContentId, lastLogDate, limit, offset), entities -> {
+			for (final E entity : entities) {
+				final IndexData indexData = new IndexData();
+				indexData.setRouting(entityInformationProvider.getRouting(entity));
+				indexData.setType(entityInformationProvider.getType());
+				indexData.setSource(entityInformationProvider.getConverter().convert(entity));
+
+				final String entityId = entityInformationProvider.getEntityId(entity);
+				LOG.debug("inserting new entity " + entityId);
+				indexDataMap.put(entityId, indexData);
+
+				if (indexDataMap.size() >= ESConstants.BULK_INSERT_SIZE) {
+					this.clearQueue(indexName, indexDataMap);
+				}
+			}
+		}, ElasticsearchPostManager.SQL_BLOCKSIZE);
+
+		this.clearQueue(indexName, indexDataMap);
+	}
+
+	/**
+	 * @param indexName
+	 * @param convertedEntities
+	 */
+	protected void clearQueue(final String indexName, final Map<String, IndexData> convertedEntities) {
+		if (!present(convertedEntities)) {
+			// nothing to insert
+			return;
+		}
+
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("inserting docs with the ids " + convertedEntities.keySet().stream().collect(Collectors.joining(", ")));
+		}
+		/*
+		 * maybe we are updating an updated entity in es
+		 */
+		this.client.updateOrCreateDocuments(indexName, convertedEntities);
+		convertedEntities.clear();
+	}
+
+	protected void clearUpdateQueue(String indexName, List<Pair<String, UpdateData>> updates) {
+		if (!present(updates)) {
+			// nothing to update
+			return;
+		}
+
+		this.client.updateDocuments(indexName, updates);
+	}
+
+	/**
+	 * @param indexName
+	 * @param state
+	 */
+	protected void updateIndexState(final String indexName, final S oldState, final S state) {
+		final IndexData indexData = new IndexData();
+		indexData.setType(ESConstants.SYSTEM_INFO_INDEX_TYPE);
+
+		/*
+		 * here we use the mapping version info of the old state
+		 * BasicUtils#VERSION maybe contain a new deployed version
+		 */
+		state.setMappingVersion(oldState.getMappingVersion());
+		indexData.setSource(this.syncStateConverter.convert(state));
+		this.client.insertNewDocument(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId), indexName, indexData);
+	}
 
 	/**
 	 * @return informations about the indices managed by this manager
@@ -327,7 +450,7 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 		searchIndexInfo.setId(indexName);
 
 		if (loadSyncState) {
-			searchIndexInfo.setSyncState(this.client.getSearchIndexStateForIndex(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId), indexName));
+			searchIndexInfo.setSyncState(this.client.getSearchIndexStateForIndex(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId), indexName, this.syncStateConverter));
 		}
 
 		final SearchIndexStatistics statistics = new SearchIndexStatistics();
@@ -353,7 +476,7 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 		}
 
 		final String newIndexName = ElasticsearchUtils.getIndexNameWithTime(this.systemId, this.entityInformationProvider.getType());
-		final ElasticSearchIndexRegenerationTask task = new ElasticSearchIndexRegenerationTask(this, this.generator, newIndexName, indexNameToReplace);
+		final ElasticSearchIndexRegenerationTask<T> task = new ElasticSearchIndexRegenerationTask<>(this, this.generator, newIndexName, indexNameToReplace);
 		this.executeTask(async, task);
 	}
 
@@ -428,7 +551,7 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 			throw new IndexAlreadyGeneratingException();
 		}
 		final String newIndexName = ElasticsearchUtils.getIndexNameWithTime(this.systemId, this.entityInformationProvider.getType());
-		final ElasticSearchIndexGenerationTask task = new ElasticSearchIndexGenerationTask(this, this.generator, newIndexName, activeIndexAfterGeneration);
+		final ElasticSearchIndexGenerationTask<T> task = new ElasticSearchIndexGenerationTask<>(this, this.generator, newIndexName, activeIndexAfterGeneration);
 		this.executeTask(async, task);
 	}
 
@@ -498,10 +621,49 @@ public abstract class ElasticsearchManager<T> implements SearchIndexManager {
 	}
 
 	/**
+	 * execute a search
+	 * @param query the query to use
+	 * @param order the order
+	 * @param offset the offset
+	 * @param limit the limit
+	 * @param minScore the min score
+	 * @param fieldsToRetrieve the fields to retrieve
+	 * @return
+	 */
+	public SearchHits search(final QueryBuilder query, final List<Pair<String, SortOrder>> order, int offset, int limit, Float minScore, final Set<String> fieldsToRetrieve) {
+		return this.client.search(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query, null, order, offset, limit, minScore, fieldsToRetrieve);
+	}
+
+	/**
+	 * executes an aggregation using the active index
+	 * @param query
+	 * @param aggregationBuilder
+	 * @return
+	 */
+	public Aggregations aggregate(final QueryBuilder query, final AggregationBuilder aggregationBuilder) {
+		return this.client.aggregate(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query, aggregationBuilder);
+	}
+
+	/**
+	 * executes the query against the active index
+	 *
+	 * @param query
+	 * @param limit
+	 * @param offset
+	 * @return
+	 */
+	public SearchHits search(final QueryBuilder query, int limit, int offset) {
+		return this.search(query, null, offset, limit, null, null);
+	}
+
+	public long getDocumentCount(QueryBuilder query) {
+		return this.client.getDocumentCount(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query);
+	}
+
+	/**
 	 * shut downs the executor service
 	 */
 	public void shutdown() {
 		this.executorService.shutdownNow();
 	}
-
 }

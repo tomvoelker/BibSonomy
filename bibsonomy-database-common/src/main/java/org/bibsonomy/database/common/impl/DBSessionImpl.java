@@ -1,4 +1,5 @@
 /**
+/**
  * BibSonomy-Database-Common - Helper classes for database interaction
  *
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,

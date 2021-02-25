@@ -26,7 +26,9 @@
  */
 package org.bibsonomy.util;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -88,6 +90,7 @@ public class UrlUtilsTest {
 		assertEquals("http://www.test.123.com?param=value", UrlUtils.setParam("http://www.test.123.com", "param", "value"));
 		// append parameter when query exists
 		assertEquals("http://www.test.123.com?bla=blub&param=value", UrlUtils.setParam("http://www.test.123.com?bla=blub", "param", "value"));
+		assertThat(UrlUtils.setParam("/path?param=", "param", "test"), is("/path?param=test"));
 	}
 	
 	/**

@@ -51,7 +51,7 @@ public class JsonToMapFactoryBean implements FactoryBean<Map<String, String>>{
 	@Override
 	public Map<String, String> getObject() throws Exception {
 		if (jsonObject == null) {
-			return new HashMap<String, String>();
+			return new HashMap<>();
 		}
 		return new ObjectMapper().readValue(jsonObject, HashMap.class);
 	}

@@ -273,6 +273,45 @@ public final class ModelUtils {
 	}
 
 	/**
+	 * @param <T> any resource type
+	 * @param resourceType
+	 * @return a post object with the given resource type
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends Resource> Post<T> generatePost(final Class<T> resourceType, final User user) {
+		final Post<T> post = new Post<T>();
+		final Set<Tag> tags = ModelUtils.getTagSet(ModelUtils.class.getName(), "hurz");
+		post.setTags(tags);
+
+		final Group group = new Group();
+		//group.setGroupId(GroupID.PUBLIC.getId()); // the group ID of posts from the "outside" is usually unknown
+		group.setDescription(null);
+		group.setName("public");
+		post.getGroups().add(group);
+
+		post.setContentId(null);
+		post.setDescription("trallalla");
+		post.setDate(new Date(1303798514000l));
+		post.setChangeDate(new Date(1303998514000l));
+		post.setUser(user);
+		final T resource;
+
+		if (resourceType == BibTex.class) {
+			resource = (T) ModelUtils.getBibTex();
+		} else if (resourceType == Bookmark.class) {
+			resource = (T) ModelUtils.getBookmark();
+		} else if (resourceType == GoldStandardPublication.class) {
+			resource = (T) ModelUtils.getGoldStandardPublication();
+		} else {
+			throw new UnsupportedResourceTypeException();
+		}
+		post.setResource(resource);
+
+		return post;
+	}
+
+
+	/**
 	 * Checks whether the given post has the required tags.
 	 * 
 	 * @param post

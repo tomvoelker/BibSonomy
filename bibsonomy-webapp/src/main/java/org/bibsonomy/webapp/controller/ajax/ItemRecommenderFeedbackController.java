@@ -31,7 +31,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -70,14 +71,14 @@ public class ItemRecommenderFeedbackController extends AjaxController implements
 		recommendationUser.setUserName(loggedInUserName);
 		// TODO: why not getpostDetails?
 		if (command.getAction().equalsIgnoreCase(ACTION_BIBTEX)) {
-			List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.USER, command.getUserName(), null, command.getIntraHash(), null,SearchType.LOCAL, null, null, null, null, 0, 1);
+			List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.USER, command.getUserName(), null, command.getIntraHash(), null, QueryScope.LOCAL, null, null, null, null, 0, 1);
 			if (present(posts)) {
 				RecommendedPost<BibTex> result = new RecommendedPost<BibTex>();
 				result.setPost(posts.get(0));
 				this.multiplexingBibTexRecommender.setFeedback(loggedInUserName, recommendationUser, result);
 			}
 		} else if (command.getAction().equalsIgnoreCase(ACTION_BOOKMARK)) {
-			List<Post<Bookmark>> posts = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, command.getIntraHash(), null, SearchType.LOCAL, null, null, null, null, 0, 1);
+			List<Post<Bookmark>> posts = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, command.getIntraHash(), null, QueryScope.LOCAL, null, null, null, null, 0, 1);
 			if (present(posts)) {
 				RecommendedPost<Bookmark> result = new RecommendedPost<Bookmark>();
 				result.setPost(posts.get(0));

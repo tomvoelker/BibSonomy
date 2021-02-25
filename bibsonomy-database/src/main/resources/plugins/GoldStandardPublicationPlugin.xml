@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="GoldStandardPublicationPlugin">
+
+	<insert id="logDeletedPersonRelationsByInterhash" parameterClass="goldstandardReferenceParam">
+		INSERT INTO log_pub_person (<include refid="allPubPersonRelationAttributes" />, log_date, edited_by)
+		SELECT <include refid="allPubPersonRelationAttributes" />, CURRENT_TIMESTAMP, #username#
+		FROM pub_person
+		WHERE simhash1 = #hash#
+	</insert>
+
+	<insert id="logDeletedRelationsGoldStandardPublication" parameterClass="goldstandardReferenceParam">
+		INSERT INTO log_gold_standard_relations (<include refid="commonLogGoldStandardReferenceAttributes" />)
+		SELECT <include refid="commonLogGoldStandardReferenceAttributes" />
+		FROM gold_standard_relations
+			WHERE reference = #hash#
+	</insert>
+
+	<insert id="logDeletedGoldStandardPublicationRelations" parameterClass="goldstandardReferenceParam">
+		INSERT INTO log_gold_standard_relations (<include refid="commonLogGoldStandardReferenceAttributes" />)
+		SELECT <include refid="commonLogGoldStandardReferenceAttributes" />
+		FROM gold_standard_relations
+			WHERE publication = #hash#
+	</insert>
+
+	<update id="updateGoldStandardPublicationRelations">
+		UPDATE gold_standard_relations SET publication = #newHash# WHERE publication = #oldHash#
+	</update>
+	
+	<update id="updateRelationsGoldStandardPublication">
+		UPDATE gold_standard_relations SET reference = #newHash# WHERE reference = #oldHash#
+	</update>
+	
+	<delete id="deleteGoldStandardPublicationRelations">
+		DELETE FROM gold_standard_relations WHERE publication = #hash#
+	</delete>
+	
+	<delete id="deleteRelationsGoldStandardPublication">
+		DELETE FROM gold_standard_relations WHERE reference = #refHash#
+	</delete>
+	
+	<update id="updateDiscussion">
+		UPDATE discussion SET interHash = #newHash# WHERE interHash = #oldHash#
+	</update>
+	
+	<update id="updateReviewRatingCache">
+		UPDATE review_ratings_cache SET interHash = #newHash# WHERE interHash = #oldHash#
+	</update>
+
+	<update id="updatePersonRelationsByInterhash">
+		UPDATE pub_person SET simhash1 = #newHash# WHERE simhash1 = #oldHash#
+	</update>
+
+	<delete id="deletePersonRelationsByInterhash" parameterClass="goldstandardReferenceParam">
+		DELETE FROM pub_person WHERE simhash1 = #hash#
+	</delete>
+</sqlMap>

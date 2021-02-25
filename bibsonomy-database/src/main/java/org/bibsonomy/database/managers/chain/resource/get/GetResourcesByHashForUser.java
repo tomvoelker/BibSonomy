@@ -53,7 +53,7 @@ public class GetResourcesByHashForUser<R extends Resource, P extends ResourcePar
 				param.getGrouping() == GroupingEntity.USER &&
 				present(param.getRequestedUserName()) &&
 				!present(param.getTagIndex()) &&
-				!present(param.getOrder()) &&
+				!present(param.getSortKey()) &&
 				!present(param.getSearch()));
 	}
 

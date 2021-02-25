@@ -47,6 +47,7 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ScraperMetadata;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -124,7 +125,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		final String loggedInUserName = loginUser.getName();
 		command.setUserFriends(this.logic.getUserRelationship(loggedInUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
 		command.setFriendsOfUser(this.logic.getUserRelationship(loggedInUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
-		command.setClaimedPerson(this.logic.getPersonByUser(loggedInUserName));
+		command.setClaimedPerson(this.logic.getPersonById(PersonIdType.USER, loggedInUserName));
 	}
 
 	@Override
@@ -140,7 +141,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		}
 		final BibTex publication = post.getResource();
 		if (publication.getDocuments() == null) {
-			publication.setDocuments(new LinkedList<Document>());
+			publication.setDocuments(new LinkedList<>());
 		}
 		for (final String compoundFileName : fileNames) {
 			if (!present(compoundFileName) || compoundFileName.length() < 32) {
@@ -328,12 +329,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		 */
 		try {
 			new PostBibTeXParser(this.instantiateResource().getClass()).updateWithParsedBibTeX(post);
-		} catch (final ParseException ex) {
-			/*
-			 * we silently ignore parsing errors - they have been handled by the
-			 * validator
-			 */
-		} catch (final IOException ex) {
+		} catch (final ParseException | IOException ex) {
 			/*
 			 * we silently ignore parsing errors - they have been handled by the
 			 * validator

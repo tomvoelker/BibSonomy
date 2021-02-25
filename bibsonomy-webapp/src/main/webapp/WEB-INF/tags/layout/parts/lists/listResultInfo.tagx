@@ -1,0 +1,22 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<jsp:directive.attribute name="listCommand" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
+	<jsp:directive.attribute name="messageKey" type="java.lang.String" required="true"/>
+
+	<c:set var="totalNumberOfEntities" value="${listCommand.totalCount}" />
+	<c:if test="${totalNumberOfEntities gt 0}">
+		<c:set var="startIndex" value="${listCommand.start * listCommand.entriesPerPage + 1}" />
+		<c:set var="endIndex" value="${startIndex + listCommand.entriesPerPage - 1}" />
+		<c:set var="endIndex" value="${endIndex ge totalNumberOfEntities ? totalNumberOfEntities : endIndex}" />
+		<div class="text-muted">
+			<fmt:message key="${messageKey}">
+				<fmt:param value="${startIndex}" />
+				<fmt:param value="${endIndex}" />
+				<fmt:param value="${totalNumberOfEntities}" />
+			</fmt:message>
+		</div>
+	</c:if>
+</jsp:root>

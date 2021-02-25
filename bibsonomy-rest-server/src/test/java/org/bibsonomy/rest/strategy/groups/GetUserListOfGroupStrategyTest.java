@@ -49,8 +49,8 @@ public class GetUserListOfGroupStrategyTest extends AbstractContextTest {
 	 */
 	@Test
 	public void testGetUserListOfGroupStrategy() throws Exception {
-		final Context c = new Context(HttpMethod.GET, "/api/groups/public/users", RenderingFormat.XML, new RendererFactory(this.urlRenderer), this.is, null, this.db, null,
-				new HashMap<String, String>(), null);
+		final Context c = new Context(HttpMethod.GET, "/api/groups/public/users", RenderingFormat.XML, new RendererFactory(this.urlRenderer), this.is, null, this.db, null, new HashMap<>(),
+				new HashMap<>(), null);
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		c.perform(baos);
 

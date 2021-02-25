@@ -63,6 +63,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * Singleton 
 	 * @return SynchronizationDatabaseManager
 	 */
+	@Deprecated // use spring injection
 	public static SynchronizationDatabaseManager getInstance() {
 		return singleton;
 	}

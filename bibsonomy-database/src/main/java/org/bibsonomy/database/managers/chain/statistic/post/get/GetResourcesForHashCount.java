@@ -26,10 +26,12 @@
  */
 package org.bibsonomy.database.managers.chain.statistic.post.get;
 
+import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
@@ -65,7 +67,7 @@ public class GetResourcesForHashCount extends StatisticChainElement {
 				param.getGrouping() == GroupingEntity.ALL &&
 				!present(param.getRequestedUserName()) &&
 				!present(param.getTagIndex()) &&
-				!present(param.getOrder()) &&
+				nullOrEqual(param.getSortKey(), SortKey.NONE) &&
 				!present(param.getSearch()));
 	}
 }

@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.search.es.management.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.net.URI;
 
@@ -43,6 +44,6 @@ public class ElasticsearchUtilsTest {
 
 	@Test
 	public void testGetIndexName() throws Exception {
-		assertEquals("wwwbibsonomyorg_bookmark", ElasticsearchUtils.getIndexName(new URI("http://www.bibsonomy.org/"), Bookmark.class));
+		assertThat(ElasticsearchUtils.getIndexName(new URI("http://www.bibsonomy.org/"), Bookmark.class), is("wwwbibsonomyorg_bookmark"));
 	}
 }

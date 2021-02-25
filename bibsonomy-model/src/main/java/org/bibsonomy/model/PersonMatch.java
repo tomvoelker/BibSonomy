@@ -28,6 +28,7 @@ package org.bibsonomy.model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,9 +39,11 @@ import org.apache.commons.logging.LogFactory;
  * @author jhi
  */
 public class PersonMatch implements Serializable {
-	private static final Log log = LogFactory.getLog(PersonMatch.class);
 	private static final long serialVersionUID = -470932185819510145L;
-	public static final int denieThreshold = 5;
+
+	private static final Log log = LogFactory.getLog(PersonMatch.class);
+
+	public static final int MAX_NUMBER_OF_DENIES = 5;
 	
 	private Person person1;
 	private Person person2;
@@ -111,13 +114,20 @@ public class PersonMatch implements Serializable {
 		this.userDenies = userDenies;
 	}
 
-	public int equals(PersonMatch match) {
-		if ((this.person1.getPersonId().equals(match.getPerson1().getPersonId()) && this.person2.getPersonId().equals(match.getPerson2().getPersonId()))
-				|| (this.person1.getPersonId().equals(match.getPerson2().getPersonId()) && this.person2.getPersonId().equals(match.getPerson1().getPersonId()))) {
-			return 0;
-		}
-		return -1;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		PersonMatch that = (PersonMatch) o;
+		return Objects.equals(person1, that.person1) && Objects.equals(person2, that.person2) ||
+				Objects.equals(person1, that.person2) && Objects.equals(person2, that.person1);
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(person1, person2);
+	}
+
 	/**
 	 * @return the person1Posts
 	 */
@@ -144,5 +154,5 @@ public class PersonMatch implements Serializable {
 	public void setPerson2Posts(List<Post> person2Posts) {
 		this.person2Posts = person2Posts;
 	}
-	
+
 }

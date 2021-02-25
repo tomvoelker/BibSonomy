@@ -57,7 +57,6 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
-import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.search.testutils.SearchSpringContextWrapper;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.junit.BeforeClass;
@@ -114,7 +113,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		// get all public posts for the testuser
 		String requestedUserName = "testuser1";
 		final int groupId = -1;
-		final List<Integer> groups = new ArrayList<Integer>();
+		final List<Integer> groups = new ArrayList<>();
 
 		List<Post<BibTex>> posts = searchBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
 		List<Post<BibTex>> postsRef = publicationDatabaseManager.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
@@ -146,7 +145,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 	public void retrieveRecordsFromDatabase() throws PersonListParserException {
 		DatabasePluginRegistry.getInstance().removeAllPlugins();
 		DatabasePluginRegistry.getInstance().addPlugin(new BibTexExtraPlugin());
-		final List<Post<? extends Resource>> refPosts = new LinkedList<Post<? extends Resource>>();
+		final List<Post<? extends Resource>> refPosts = new LinkedList<>();
 		//--------------------------------------------------------------------
 		// TEST 1: insert special posts into test database and search for it
 		//--------------------------------------------------------------------
@@ -182,7 +181,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 	public void testLimitOffset() throws PersonListParserException {
 		DatabasePluginRegistry.getInstance().removeAllPlugins();
 		DatabasePluginRegistry.getInstance().addPlugin(new BibTexExtraPlugin());
-		final List<Post<? extends Resource>> refPosts = new LinkedList<Post<? extends Resource>>();
+		final List<Post<? extends Resource>> refPosts = new LinkedList<>();
 		//--------------------------------------------------------------------
 		// TEST 1: insert special posts into test database and search for it
 		//--------------------------------------------------------------------
@@ -209,7 +208,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getContentIdsToDelete() throws PersonListParserException {
-		final List<Post<? extends Resource>> refPosts = new LinkedList<Post<? extends Resource>>();
+		final List<Post<? extends Resource>> refPosts = new LinkedList<>();
 
 		//--------------------------------------------------------------------
 		// TEST 1: insert and delete special posts into test database and search for it
@@ -317,9 +316,9 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 	 * @return
 	 */
 	private static String getTitleForId(int id) {
-		return "title "+ String.valueOf(id) + " " + SEARCH_MAGIC_TITLE;
+		return "title " + String.valueOf(id) + " " + SEARCH_MAGIC_TITLE;
 	}
-	
+
 	/**
 	 * tests {@link SearchDBLogic#getPostsForDocumentUpdate(Date, Date)}
 	 * @throws Exception
@@ -332,7 +331,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		final DocumentDatabaseManager docManager = DocumentDatabaseManager.getInstance();
 		final String testuser1 = "testuser1";
 		final int contentIdDocAdd = 12;
-		docManager.addDocument(testuser1, contentIdDocAdd, "abc", "abc.pdf", "hash", this.dbSession);
+		docManager.addDocument(testuser1, contentIdDocAdd, "abc", "abc.pdf", "hash", new User(testuser1), this.dbSession);
 		
 		// delete document
 		final Document document = new Document();

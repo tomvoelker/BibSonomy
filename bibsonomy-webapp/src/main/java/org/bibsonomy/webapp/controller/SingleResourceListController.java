@@ -32,15 +32,19 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.BookmarkUtils;
 import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
+import org.bibsonomy.webapp.command.TagResourceViewCommand;
 
 /**
  * Controller for retrieving a windowed list with resources.
@@ -55,7 +59,7 @@ public abstract class SingleResourceListController extends ResourceListControlle
 	 * 
 	 * @param cmd
 	 */
-	protected void postProcessAndSortList(final SimpleResourceViewCommand cmd, final Class<? extends Resource> resourceType) {						
+	protected void postProcessAndSortList(final SimpleResourceViewCommand cmd, final Class<? extends Resource> resourceType) {
 		if (resourceType == BibTex.class) {
 			postProcessAndSortList(cmd, cmd.getBibtex().getList());
 		}
@@ -66,12 +70,29 @@ public abstract class SingleResourceListController extends ResourceListControlle
 		}
 	}
 
+	protected void preProcessForSearchIndexSort(final TagResourceViewCommand command) {
+		// set order, default to rank if sort page attribute unknown or equals 'relevance'
+		command.setSortKey(SortKey.getByName(command.getSortPage()));
+		// set sorting criteriums list
+		List<SortKey> sortKeys = SortUtils.parseSortKeys(command.getSortPage());
+		List<SortOrder> sortOrders = SortUtils.parseSortOrders(command.getSortPageOrder());
+		List<SortCriteria> sortCriteria = SortUtils.generateSortCriteriums(sortKeys, sortOrders);
+		command.setSortCriteria(sortCriteria);
+
+		// set the scope/searchtype
+		if (command.isEsIndex()) {
+			command.setScope(QueryScope.SEARCHINDEX);
+		} else {
+			command.setScope(QueryScope.LOCAL);
+		}
+	}
+
 	/** 
 	 * returns a list of concepts, namely those tags of the requestedTags that the user groupingName has as concepts
 	 * FIXME: cmd unused
 	 */
 	protected List<Tag> getConceptsForSidebar(final SimpleResourceViewCommand cmd, final GroupingEntity groupingEntity, final String groupingName, final List<String> requTags) {
-		final List<Tag> concepts = new ArrayList<Tag>();
+		final List<Tag> concepts = new ArrayList<>();
 		for (final String requTag : requTags) {
 			final Tag conceptDetails = this.logic.getConceptDetails(requTag, groupingEntity, groupingName);
 			if (present(conceptDetails)) {
@@ -87,8 +108,8 @@ public abstract class SingleResourceListController extends ResourceListControlle
 	 * returns the number of posts tagged with all of requTags by groupingName. 
 	 */
 	protected int getPostCountForSidebar(final GroupingEntity groupingEntity, final String groupingName, final List<String> requTags) {
-		return this.logic.getPostStatistics(BibTex.class, groupingEntity, groupingName, requTags, null, null, null, Order.ADDED, null, null, 0, 999).getCount()
-				+ this.logic.getPostStatistics(Bookmark.class, groupingEntity, groupingName, requTags, null, null, null, Order.ADDED, null, null, 0, 999).getCount();
+		return this.logic.getPostStatistics(BibTex.class, groupingEntity, groupingName, requTags, null, null, null, SortKey.DATE, null, null, 0, 999).getCount()
+				+ this.logic.getPostStatistics(Bookmark.class, groupingEntity, groupingName, requTags, null, null, null, SortKey.DATE, null, null, 0, 999).getCount();
 	}
 
 }

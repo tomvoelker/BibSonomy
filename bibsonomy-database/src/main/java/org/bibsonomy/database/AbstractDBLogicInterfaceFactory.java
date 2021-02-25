@@ -36,22 +36,10 @@ import org.bibsonomy.model.util.BibTexReader;
  * @author niebler
  */
 public abstract class AbstractDBLogicInterfaceFactory implements LogicInterfaceFactory {
-	protected BibTexReader bibtexReader = null;
 	protected DBSessionFactory dbSessionFactory;
 
-	/**
-	 * @return the bibtexReader
-	 */
-	public BibTexReader getBibtexReader() {
-		return this.bibtexReader;
-	}
-
-	/**
-	 * @param bibtexReader the bibtexReader to set
-	 */
-	public void setBibtexReader(BibTexReader bibtexReader) {
-		this.bibtexReader = bibtexReader;
-	}
+	/** creates a configured dbLogic object */
+	protected abstract DBLogic buildLogic();
 
 	/**
 	 * @param dbSessionFactory
@@ -61,14 +49,10 @@ public abstract class AbstractDBLogicInterfaceFactory implements LogicInterfaceF
 		this.dbSessionFactory = dbSessionFactory;
 	}
 
-	public DBSessionFactory getDbSessionFactory() {
-		return this.dbSessionFactory;
-	}
-
 	/**
 	 * Returns a new database session.
 	 */
 	protected DBSession openSession() {
-		return this.getDbSessionFactory().getDatabaseSession();
+		return this.dbSessionFactory.getDatabaseSession();
 	}
 }

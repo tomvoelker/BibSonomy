@@ -7,5 +7,6 @@
 	
 	<sqlMap resource="TestLogging.xml" />
 	<sqlMap resource="TestDiscussion.xml" />
+	<sqlMap resource="TestGroup.xml" />
 
 </sqlMapConfig>

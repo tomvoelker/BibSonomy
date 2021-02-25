@@ -452,7 +452,15 @@ public class StringUtils {
 			keyValPairs.put(trimmedKey, trimmedValue);
 		}
 	}
-	
+
+	/**
+	 * @param string
+	 * @return
+	 */
+	public static String normalizeString(final String string) {
+		return foldToASCII(string.trim().toLowerCase().replaceAll("\\s", "_"));
+	}
+
 	private enum ParseMode {KEY,VALUE}
 	
 	/**

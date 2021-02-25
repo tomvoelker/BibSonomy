@@ -54,15 +54,27 @@ public final class ESConstants {
 	/** settings of each created index */
 	public static final String SETTINGS;
 
+	/** fielddata */
+	public static final String FIELDDATA = "fielddata";
+
+	/** normalizer attribute */
+	public static final String NORMALIZER = "normalizer";
+
+	/** analyzer attribute */
+	public static final String ANALYZER = "analyzer";
+
 	/** the registered lowercase normalizer */
 	public static final String LOWERCASE_NORMALIZER = "lowercase_normalizer";
+
+	/** the n gram analyzer */
+	public static final String NGRAM_ANALYZER = "ngram_analyzer";
 
 	static {
 		try {
 			SETTINGS = Strings.toString(XContentFactory.jsonBuilder()
 					.startObject()
 						.startObject("analysis")
-							.startObject("normalizer")
+							.startObject(NORMALIZER)
 								.startObject(LOWERCASE_NORMALIZER)
 									.field("type", "custom")
 									.array("char_filter")
@@ -92,11 +104,18 @@ public final class ESConstants {
 								.endObject()
 							.endObject()
 							.startObject("analyzer")
-								.startObject("default")
+								.startObject(NGRAM_ANALYZER)
 									.field("type", "custom")
 									.field("char_filter", Arrays.asList(BIBTEX_MAPPING, BRACKETS_CHAR_FILTER_NAME, CURLY_BRACKETS_CHAR_FILTER_NAME))
-									.field("tokenizer", "standard")
+									.field("tokenizer", "ngram_tokenizer")
 									.field("filter", Arrays.asList(ASCII_FOLDING_PRESERVE_TOKEN_FILTER_NAME, "lowercase", "standard"))
+								.endObject()
+							.endObject()
+							.startObject("tokenizer")
+								.startObject("ngram_tokenizer")
+									.field("type", "edge_ngram")
+									.field("min_gram", 2)
+									.field("max_gram", 10)
 								.endObject()
 							.endObject()
 						.endObject()
@@ -110,12 +129,16 @@ public final class ESConstants {
 	 * some constants for index settings
 	 */
 	public interface IndexSettings {
+		/** analyzer */
+		String ANALYZER = "analyzer";
 		/** properties field key */
 		String PROPERTIES = "properties";
 		/** flag to copy the field also to the other fields */
 		String COPY_TO = "copy_to";
 		/** boost the field (search in _all field) */
 		String BOOST_FIELD = "boost";
+		/** relation field */
+		String RELATION_FIELD = "relations";
 		/** type text */
 		String TEXT_TYPE = "text";
 		/** type keyword used only for filtering */
@@ -124,6 +147,8 @@ public final class ESConstants {
 		String NESTED_TYPE = "nested";
 		/** date type */
 		String DATE_TYPE = "date";
+		/** join type */
+		String JOIN_TYPE = "join";
 		/** the type field */
 		String TYPE_FIELD = "type";
 		/** the index field */
@@ -162,9 +187,11 @@ public final class ESConstants {
 	public static final int BULK_INSERT_SIZE = 1000;
 
 	/** contains all field information */
-	public static final class Fields {
+	public interface Fields {
 		/** the name of the user of the post */
 		public static final String USER_NAME = "user_name";
+		/** list of all users that posted this post (with the same interhash) */
+		String ALL_USERS = "all_users";
 		/** the groups of the post */
 		public static final String GROUPS = "groups";
 		/** the tags of the post */
@@ -204,7 +231,11 @@ public final class ESConstants {
 			String AUTHORS = "authors";
 			String EDITORS = "editors";
 			String PERSON_NAME = "name";
-			
+			String PERSON_ID = "person_id";
+			String PERSON_COLLEGE = "person_college";
+			String OTHER_PERSON_RESOURCE_RELATIONS = "other_relations";
+			String PERSON_RELATION_TYPE = "relation_type";
+
 			String SCHOOL = "school";
 			/** the publication's year */
 			String YEAR = "year";
@@ -251,7 +282,7 @@ public final class ESConstants {
 			String ISSN = "issn";
 			/** the isbn (special misc field) */
 			String ISBN = "isbn";
-			
+
 			/** BEGIN additional special MISC fields until another solution is found **/
 			/** the project (special misc field) */
 			String PROJECT = "project";
@@ -260,7 +291,7 @@ public final class ESConstants {
 			/** the orcid (special misc field) */
 			String ORCID = "orcid";
 			/** END additional special MISC fields until another solution is found **/
-			
+
 			/** the language */
 			String LANGUAGE = "language";
 			/** a list of special misc fields */
@@ -273,6 +304,20 @@ public final class ESConstants {
 				String CONTENT_HASH = "content_hash";
 				String DATE = "date";
 			}
+		}
+
+		public interface Sort {
+			/** the title cleaned up */
+			String TITLE = "sort_title";
+			String BOOKTITLE = "sort_booktitle";
+			String JOURNAL = "sort_journal";
+			String SERIES = "sort_series";
+			String PUBLISHER = "sort_publisher";
+			String AUTHOR = "sort_author";
+			String EDITOR = "sort_editor";
+			String SCHOOL = "sort_school";
+			String INSTITUTION = "sort_institution";
+			String ORGANIZATION = "sort_organization";
 		}
 	}
 

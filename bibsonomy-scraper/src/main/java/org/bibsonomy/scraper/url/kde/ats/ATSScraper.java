@@ -48,7 +48,7 @@ import org.w3c.dom.Document;
 /**
  * @author clemens
  */
-public class ATSScraper extends GenericRISURLScraper implements CitedbyScraper{
+public class ATSScraper extends GenericRISURLScraper implements CitedbyScraper {
 	private static final Log log = LogFactory.getLog(ATSScraper.class);
 	
 	private static final String SITE_NAME = "American Thoracic Society Journals";
@@ -90,11 +90,11 @@ public class ATSScraper extends GenericRISURLScraper implements CitedbyScraper{
 	}
 
 	private static String abstractParser(URL url){
-		try {			
+		try {
 			final String cookie = WebUtils.getCookies(url);
 			final Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url.toString(),cookie));
 			if (m.find()) {
-				Document temp = XmlUtils.getDOM(m.group(1));			
+				Document temp = XmlUtils.getDOM(m.group(1));
 				return XmlUtils.getText(temp);
 			}
 		} catch (Exception e) {
@@ -108,7 +108,7 @@ public class ATSScraper extends GenericRISURLScraper implements CitedbyScraper{
 	 */
 	@Override
 	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
-		return BibTexUtils.addFieldIfNotContained(bibtex,"abstract",abstractParser(scrapingContext.getUrl()));
+		return BibTexUtils.addFieldIfNotContained(bibtex,"abstract", abstractParser(scrapingContext.getUrl()));
 	}
 	
 	/* (non-Javadoc)

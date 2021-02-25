@@ -2,19 +2,8 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
-	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
-	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
-	xmlns:per="urn:jsptagdir:/WEB-INF/tags/resources/person"
-	xmlns:tagper="urn:jsptagdir:/WEB-INF/tags/person"
-	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
-	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex">
 
 	<jsp:directive.attribute name="personMatch"
 		type="org.bibsonomy.model.PersonMatch" required="true" />
@@ -60,6 +49,8 @@
 					data-operation="MERGE_DENIED" match-id="${personMatch.matchID}"
 					title="${textDeny}">&#10006;</button>
 			</div>
+			<!-- FIXME: sql statements not working -->
+			<!--
 			<c:set var="matchPersonPosts"
 				value="${(matchedPersonIndex == 1) ? personMatch.person1Posts : personMatch.person2Posts}" />
 			<c:if test="${fn:length(matchPersonPosts) gt 0}">
@@ -86,7 +77,7 @@
 						data-target="#info_${personMatch.matchID}"
 						title="${textReasons}" value="more">more</button>
 				</c:if>
-			</c:if>
+			</c:if>-->
 		</div>
 
 

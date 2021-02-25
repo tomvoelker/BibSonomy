@@ -28,8 +28,15 @@ package org.bibsonomy.model.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.util.StringUtils;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * util methods for {@link Person}
@@ -54,19 +61,154 @@ public final class PersonUtils {
 		
 		final StringBuilder sb = new StringBuilder();
 		if (present(firstName)) {
-			sb.append(normName(firstName).charAt(0));
+			sb.append(StringUtils.normalizeString(firstName).charAt(0));
 			sb.append('.');
 		}
-		sb.append(normName(lastName));
+		sb.append(StringUtils.normalizeString(lastName));
 	
 		return sb.toString();
 	}
 
+	public static List<PersonName> getPersonsByRoleWithFallback(BibTex publication, PersonResourceRelationType role) {
+		final List<PersonName> personsByRole = getPersonsByRole(publication, role);
+
+		if (personsByRole != null) {
+			return personsByRole;
+		}
+
+		// MacGyver-fix, in case there are multiple similar simhash1 caused by author == editor
+		switch (role) {
+			case AUTHOR: return publication.getEditor();
+			case EDITOR: return publication.getAuthor();
+		}
+
+		return null;
+	}
+
+	public static List<PersonName> getPersonsByRole(final BibTex publication, PersonResourceRelationType role) {
+		switch(role) {
+			case AUTHOR: return publication.getAuthor();
+			case EDITOR: return publication.getEditor();
+		}
+
+		return null;
+	}
+
 	/**
-	 * @param name
+	 * finds the top resource relations that should be displayed for the person
+	 *
+	 * @param relations
 	 * @return
 	 */
-	private static String normName(final String name) {
-		return StringUtils.foldToASCII(name.trim().toLowerCase().replaceAll("\\s", "_"));
+	public static ResourcePersonRelation findTopRelation(final List<ResourcePersonRelation> relations) {
+		if (!present(relations)) {
+			return null;
+		}
+
+		// prefer a kind of thesis
+		for (final String type : Arrays.asList(BibTexUtils.PHD_THESIS, BibTexUtils.MASTERS_THESIS, BibTexUtils.THESIS)) {
+			final ResourcePersonRelation relationByType = findRelationByType(type, relations);
+			if (present(relationByType)) {
+				return relationByType;
+			}
+		}
+
+		// prefer authors
+		final ResourcePersonRelation relationByRelationType = findRelationByRelationType(PersonResourceRelationType.AUTHOR, relations);
+		if (present(relationByRelationType)) {
+			return relationByRelationType;
+		}
+
+		// fall back
+		return relations.get(0);
+	}
+
+	private static ResourcePersonRelation findRelationByRelationType(PersonResourceRelationType relationType, List<ResourcePersonRelation> relations) {
+		for (ResourcePersonRelation relation : relations) {
+			if (relationType.equals(relation.getRelationType())) {
+				return relation;
+			}
+		}
+
+		return null;
+	}
+
+	private static ResourcePersonRelation findRelationByType(String type, List<ResourcePersonRelation> relations) {
+		for (ResourcePersonRelation relation : relations) {
+			if (type.equals(relation.getPost().getResource().getType())) {
+				return relation;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * finds the index of the person in the author or editor list of the publication
+	 * @param person
+	 * @param resource
+	 * @return
+	 */
+	public static int findIndexOfPerson(final Person person, final BibTex resource) {
+		final int indexOfPerson = findIndexOfPerson(person, resource.getAuthor());
+		if (indexOfPerson >= 0) {
+			return indexOfPerson;
+		}
+
+		return findIndexOfPerson(person, resource.getEditor());
+	}
+
+	/**
+	 * finds the index of the person in the person list
+	 * see PersonNameUtils.getPositionsInPersonList (this list does not norm the person name)
+	 *
+	 * @param person
+	 * @param personNames
+	 * @return
+	 */
+	public static int findIndexOfPerson(final Person person, final List<PersonName> personNames) {
+		if (!present(personNames)) {
+			return -1;
+		}
+
+		// first try the main name to prefer it (mainname is also in the person name list of a person)
+		final int mainNameIndex = personNames.indexOf(person.getMainName());
+
+		if (mainNameIndex >= 0) {
+			return mainNameIndex;
+		}
+
+		// now try the other names
+		for (final PersonName personName : person.getNames()) {
+			final int personNameIndex = personNames.indexOf(personName);
+
+			if (personNameIndex >= 0) {
+				return personNameIndex;
+			}
+		}
+
+		return -1;
+	}
+
+	/**
+	 * Returns the relation of the person of a post. Is either AUTHOR or EDITOR
+	 * @param person
+	 * @param resource
+	 * @return
+	 */
+	public static PersonResourceRelationType getRelationType(final Person person, final BibTex resource){
+		if (!present(resource)) {
+			return null;
+		}
+		final PersonName name = person.getMainName();
+		final List<PersonName> author = resource.getAuthor();
+		if (present(author) && author.contains(name)) {
+			return PersonResourceRelationType.AUTHOR;
+		}
+		final List<PersonName> editor = resource.getEditor();
+		if (present(editor) && editor.contains(name)) {
+			return PersonResourceRelationType.EDITOR;
+		}
+		return null;
 	}
 }

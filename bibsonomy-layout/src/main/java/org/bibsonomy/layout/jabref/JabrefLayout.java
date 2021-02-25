@@ -155,7 +155,7 @@ public class JabrefLayout extends AbstractJabRefLayout {
 			endLayout = getSubLayout(LayoutPart.EMBEDDEDEND);
 		} 
 		/*
-		 * second: if not available, take normal begin layout
+		 * second: if not available, take normal end layout
 		 */
 		else {
 			endLayout = getSubLayout(LayoutPart.END);

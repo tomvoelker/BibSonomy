@@ -226,6 +226,13 @@ $(document).ready(function() {
 			$(this).parent().parent().find(".personProfileUpdate").removeClass("disabled");
 		}
 	});
+
+    // researcher id formatter
+    $("#formResearcherid").mask("\a-9999-9999", {
+        completed: function() {
+            $(this).parent().parent().find(".personProfileUpdate").removeClass("disabled");
+        }
+    });
 	
 	// toggle view/hide all available roles
 	$(".personPageShowAdditionalRoleFields").click(function() {
@@ -271,6 +278,7 @@ $(document).ready(function() {
 		
 		// save the form values to update the preview
 		orcid =  $("#formOrcid").val();
+		researcherid = $("#formResearcherid").val();
 		academicDegree = $("#formAcademicDegree").val();
 		college = $("#formCollege").val();
 		email = $("#formEmail").val();
@@ -310,6 +318,7 @@ $(document).ready(function() {
 				
 				// TODO: update the preview values (only the updated one)
 				$("#personPageFormAcademicDegreeValue").text(academicDegree);
+				$("#personPageFormResearcheridValue").text(researcherid);
 				$("#personPageFormOrcidValue").text(orcid);
 				$("#personPageFormCollegeValue").text(college);
 				$("#personPageFormEmailValue").text(email);
@@ -467,5 +476,37 @@ $(document).ready(function() {
 			}
 		});
 	});
-	
+
+
+	/**
+	 * Pagination stuff
+	 */
+	$(".personpage-pagination-next-button").hide();
+	$(".personpage-pagination-prev-button").hide();
+
+	// TODO cleanup in case auto loading will live on
+	// $(".personpage-pagination-next-button").click(function() {
+	// 	url = $(this).data('url');
+	// 	page = parseInt($(this).attr('data-page'));
+	//
+	// 	$.post(url+"&page="+page).done(function(data) {
+	// 		$("#otherPublications").html(data);
+	// 	});
+	//
+	// 	$(this).attr('data-page', page+1);
+	// 	$(".personpage-pagination-prev-button").attr('data-page', page);
+	// });
+	//
+	// $(".personpage-pagination-prev-button").click(function() {
+	// 	url = $(this).data('url');
+	// 	page = parseInt($(this).attr('data-page'));
+	//
+	// 	$.post(url+"&page="+page).done(function(data) {
+	// 		$("#otherPublications").html(data);
+	// 	});
+	//
+	// 	$(this).attr('data-page', page-1);
+	// 	$(".personpage-pagination-next-button").attr('data-page', page);
+	// });
+
 });

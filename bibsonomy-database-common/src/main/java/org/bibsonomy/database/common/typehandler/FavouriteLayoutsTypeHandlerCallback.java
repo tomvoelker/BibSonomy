@@ -72,13 +72,13 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void setParameter(ParameterSetter setter, Object parameter) throws SQLException {
+	public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {
 		if (parameter == null) {
 			setter.setString(null);
 			return;
 		}
-		//removing duplicates
-		final List<FavouriteLayout> favls = new LinkedList<FavouriteLayout>(new LinkedHashSet<FavouriteLayout>((List<FavouriteLayout>) parameter));
+		// removing duplicates
+		final List<FavouriteLayout> favls = new LinkedList<>(new LinkedHashSet<>((List<FavouriteLayout>) parameter));
 		if (favls.isEmpty()) {
 			setter.setString(null);
 		} else {
