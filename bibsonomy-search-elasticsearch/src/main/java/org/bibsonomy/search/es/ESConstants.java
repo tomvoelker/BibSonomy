@@ -66,8 +66,8 @@ public final class ESConstants {
 	/** the registered lowercase normalizer */
 	public static final String LOWERCASE_NORMALIZER = "lowercase_normalizer";
 
-	/** the n gram analyser */
-	public static final String NGRAM_ANALYSER = "ngram_analyser";
+	/** the n gram analyzer */
+	public static final String NGRAM_ANALYZER = "ngram_analyzer";
 
 	static {
 		try {
@@ -104,7 +104,7 @@ public final class ESConstants {
 								.endObject()
 							.endObject()
 							.startObject("analyzer")
-								.startObject(NGRAM_ANALYSER)
+								.startObject(NGRAM_ANALYZER)
 									.field("type", "custom")
 									.field("char_filter", Arrays.asList(BIBTEX_MAPPING, BRACKETS_CHAR_FILTER_NAME, CURLY_BRACKETS_CHAR_FILTER_NAME))
 									.field("tokenizer", "ngram_tokenizer")
