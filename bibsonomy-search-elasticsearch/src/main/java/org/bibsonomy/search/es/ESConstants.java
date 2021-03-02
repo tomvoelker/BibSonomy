@@ -54,14 +54,8 @@ public final class ESConstants {
 	/** settings of each created index */
 	public static final String SETTINGS;
 
-	/** fielddata */
-	public static final String FIELDDATA = "fielddata";
-
 	/** normalizer attribute */
 	public static final String NORMALIZER = "normalizer";
-
-	/** analyzer attribute */
-	public static final String f = "analyzer";
 
 	/** the registered lowercase normalizer */
 	public static final String LOWERCASE_NORMALIZER = "lowercase_normalizer";
@@ -71,8 +65,16 @@ public final class ESConstants {
 
 	public static final String STANDARD_TEXT_ANALYSER = NGRAM_ANALYZER;
 
-	public static final String STANDARD_ANALYSER = "analyser";
+	/**
+	 * the standard analyzer that must be used for fields indexed with an edge ngram filter
+	 */
+	public static final String STANDARD_ANALYSER = "standard";
 
+	/**
+	 * for a search as you type feature like search, we add an edge ngram filter to each token,
+	 * please use a search_analyser set to standard to avoid that the search is also tokenized into ngrams
+	 * and than matches every ngram token
+	 */
 	private static final String EDGE_NGRAM_FILTER = "edge_ngram_filter";
 
 	static {
@@ -195,7 +197,7 @@ public final class ESConstants {
 	/** contains all field information */
 	public interface Fields {
 		/** the name of the user of the post */
-		public static final String USER_NAME = "user_name";
+		String USER_NAME = "user_name";
 		/** list of all users that posted this post (with the same interhash) */
 		String ALL_USERS = "all_users";
 		/** the groups of the post */
