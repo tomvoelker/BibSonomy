@@ -61,7 +61,7 @@ public final class ESConstants {
 	public static final String NORMALIZER = "normalizer";
 
 	/** analyzer attribute */
-	public static final String ANALYZER = "analyzer";
+	public static final String f = "analyzer";
 
 	/** the registered lowercase normalizer */
 	public static final String LOWERCASE_NORMALIZER = "lowercase_normalizer";
@@ -69,7 +69,7 @@ public final class ESConstants {
 	/** the n gram analyzer */
 	public static final String NGRAM_ANALYZER = "ngram_analyzer";
 
-	public static final String STANDARD_TEXT_ANALYSER = NGRAM_ANALYSER;
+	public static final String STANDARD_TEXT_ANALYSER = NGRAM_ANALYZER;
 
 	public static final String STANDARD_ANALYSER = "analyser";
 
