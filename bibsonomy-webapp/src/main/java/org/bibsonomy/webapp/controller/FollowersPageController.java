@@ -67,11 +67,7 @@ public class FollowersPageController extends SingleResourceListController implem
 		}
 		
 		final String pageSort = command.getSortPage();
-		SortKey sortKey = command.getSortKey();
-		
-		if ("ranking".equals(pageSort)) {
-			sortKey = SortKey.RANK;
-		}
+		final SortKey sortKey = "ranking".equals(pageSort) ? SortKey.RANK : SortKey.DATE;
 		command.setSortKey(sortKey);
 		
 		// set params
