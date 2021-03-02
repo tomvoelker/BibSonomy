@@ -69,6 +69,12 @@ public final class ESConstants {
 	/** the n gram analyzer */
 	public static final String NGRAM_ANALYZER = "ngram_analyzer";
 
+	public static final String STANDARD_TEXT_ANALYSER = NGRAM_ANALYSER;
+
+	public static final String STANDARD_ANALYSER = "analyser";
+
+	private static final String EDGE_NGRAM_FILTER = "edge_ngram_filter";
+
 	static {
 		try {
 			SETTINGS = Strings.toString(XContentFactory.jsonBuilder()
@@ -102,20 +108,18 @@ public final class ESConstants {
 									.field("type", "asciifolding")
 									.field("preserve_original", true)
 								.endObject()
+								.startObject(EDGE_NGRAM_FILTER)
+									.field("type", "edge_ngram")
+									.field("min_gram", 2)
+									.field("max_gram", 10)
+								.endObject()
 							.endObject()
 							.startObject("analyzer")
 								.startObject(NGRAM_ANALYZER)
 									.field("type", "custom")
 									.field("char_filter", Arrays.asList(BIBTEX_MAPPING, BRACKETS_CHAR_FILTER_NAME, CURLY_BRACKETS_CHAR_FILTER_NAME))
-									.field("tokenizer", "ngram_tokenizer")
-									.field("filter", Arrays.asList(ASCII_FOLDING_PRESERVE_TOKEN_FILTER_NAME, "lowercase", "standard"))
-								.endObject()
-							.endObject()
-							.startObject("tokenizer")
-								.startObject("ngram_tokenizer")
-									.field("type", "edge_ngram")
-									.field("min_gram", 2)
-									.field("max_gram", 10)
+									.field("tokenizer", STANDARD_ANALYSER)
+									.field("filter", Arrays.asList(ASCII_FOLDING_PRESERVE_TOKEN_FILTER_NAME, "lowercase", EDGE_NGRAM_FILTER))
 								.endObject()
 							.endObject()
 						.endObject()
@@ -131,6 +135,8 @@ public final class ESConstants {
 	public interface IndexSettings {
 		/** analyzer */
 		String ANALYZER = "analyzer";
+		/** search analyzer */
+		String SEARCH_ANALYZER = "search_analyzer";
 		/** properties field key */
 		String PROPERTIES = "properties";
 		/** flag to copy the field also to the other fields */
