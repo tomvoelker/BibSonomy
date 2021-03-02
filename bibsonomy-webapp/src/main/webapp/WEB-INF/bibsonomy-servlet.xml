@@ -963,11 +963,11 @@
 	</bean>
 
 	<!-- projects controller -->
-	<bean id="projectsController" class="org.bibsonomy.webapp.controller.ProjectsPageController" scope="request">
+	<bean id="projectsController" class="org.bibsonomy.webapp.controller.cris.ProjectsPageController" scope="request">
 		<property name="logic" ref="logic" />
 	</bean>
 
-	<bean id="projectDetailsController" class="org.bibsonomy.webapp.controller.ProjectPageController" scope="request">
+	<bean id="projectDetailsController" class="org.bibsonomy.webapp.controller.cris.ProjectPageController" scope="request">
 		<property name="logic" ref="logic" />
 	</bean>
 

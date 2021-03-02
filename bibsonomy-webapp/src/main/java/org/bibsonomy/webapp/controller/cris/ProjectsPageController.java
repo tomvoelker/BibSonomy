@@ -1,4 +1,4 @@
-package org.bibsonomy.webapp.controller;
+package org.bibsonomy.webapp.controller.cris;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -7,7 +7,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.webapp.command.ListCommand;
-import org.bibsonomy.webapp.command.ProjectsPageCommand;
+import org.bibsonomy.webapp.command.cris.ProjectsPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
