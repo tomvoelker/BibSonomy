@@ -2,6 +2,7 @@ package org.bibsonomy.search.es.search.group;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +55,11 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 				case GROUP_NAME:
 					return Collections.singletonList(new Pair<>(GroupFields.NAME, sortOrder));
 				case GROUP_REALNAME:
-					return Collections.singletonList(new Pair<>(GroupFields.REALNAME + "." + GroupFields.REALNAME_SORT, sortOrder));
+					// here we add the name as a second search order to handle groups without real names
+					return Arrays.asList(
+							new Pair<>(GroupFields.REALNAME + "." + GroupFields.REALNAME_SORT, sortOrder),
+							new Pair<>(GroupFields.NAME, sortOrder)
+							);
 				case RANK:
 					return null; // default order is rank
 			}
