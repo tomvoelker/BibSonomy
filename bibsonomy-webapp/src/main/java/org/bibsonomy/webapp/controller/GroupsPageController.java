@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.webapp.controller;
 
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.enums.GroupOrder;
 import org.bibsonomy.model.logic.query.GroupQuery;
@@ -34,6 +35,8 @@ import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Controller for group overview:
@@ -54,14 +57,18 @@ public class GroupsPageController extends SingleResourceListController implement
 		/*
 		 * get requested groups
 		 */
+		final String search = command.getSearch();
+		final boolean searchPresent = present(search);
+		final GroupOrder order = searchPresent ? GroupOrder.RANK : GroupOrder.GROUP_REALNAME;
+		final SortOrder sortOrder = searchPresent ? SortOrder.DESC : SortOrder.ASC;
 		final GroupQuery groupQuery = GroupQuery.builder()
-						.start(groupListCommand.getStart())
-						.end(groupListCommand.getStart() + groupListCommand.getEntriesPerPage())
+						.entriesStartingAt(groupListCommand.getEntriesPerPage(), groupListCommand.getStart())
 						.pending(false)
 						.organization(command.getOrganizations())
 						.prefix(command.getPrefix())
-						.search(command.getSearch())
-						.order(GroupOrder.GROUP_REALNAME).build();
+						.search(search)
+						.order(order)
+						.sortOrder(sortOrder).build();
 		groupListCommand.setList(this.logic.getGroups(groupQuery));
 
 		// html format - retrieve tags and return HTML view

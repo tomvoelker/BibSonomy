@@ -105,6 +105,9 @@ public class GroupQuery extends BasicQuery {
 		return sortOrder;
 	}
 
+	/**
+	 * group query builder
+	 */
 	public final static class GroupQueryBuilder {
 		private String search;
 		private int start = 0;
@@ -119,56 +122,112 @@ public class GroupQuery extends BasicQuery {
 		private String externalId;
 		private Boolean organization;
 
+		/**
+		 * @param order the group order
+		 * @return the group builder
+		 */
 		public GroupQueryBuilder order(final GroupOrder order) {
 			this.groupOrder = order;
 			return this;
 		}
 
+		/**
+		 * @param sortOrder the sort order to set
+		 * @return the group builder
+		 */
 		public GroupQueryBuilder sortOrder(final SortOrder sortOrder) {
 			this.sortOrder = sortOrder;
 			return this;
 		}
 
+		/**
+		 * @param search the search to set
+		 * @return the group builder
+		 */
 		public GroupQueryBuilder search(final String search) {
 			this.search = search;
 			return this;
 		}
 
+		/**
+		 * @param organization if only organizations should be retrieved
+		 * @return the group builder
+		 */
 		public GroupQueryBuilder organization(final Boolean organization) {
 			this.organization = organization;
 			return this;
 		}
 
+		/**
+		 * the prefix of the group name
+		 * @param prefix the prefix
+		 * @return the group builder
+		 */
 		public GroupQueryBuilder prefix(final Prefix prefix) {
 			this.prefix = prefix;
 			return this;
 		}
 
+		/**
+		 * @param pending if pending groups should be queried
+		 * @return the group builder
+		 */
 		public GroupQueryBuilder pending(boolean pending) {
 			this.pending = pending;
 			return this;
 		}
 
-		public GroupQueryBuilder userName(String userName) {
+		/**
+		 * @param userName the user name to query (for pending groups)
+		 * @return the group builder
+		 */
+		public GroupQueryBuilder userName(final String userName) {
 			this.userName = userName;
 			return this;
 		}
 
-		public GroupQueryBuilder start(int start) {
+		/**
+		 * @param start the start index of the list
+		 * @return the group builder
+		 */
+		public GroupQueryBuilder start(final int start) {
 			this.start = start;
 			return this;
 		}
 
-		public GroupQueryBuilder end(int end) {
+		/**
+		 * @param end the end index of the list
+		 * @return the group builder
+		 */
+		public GroupQueryBuilder end(final int end) {
 			this.end = end;
 			return this;
 		}
 
-		public GroupQueryBuilder externalId(String externalId) {
+		/**
+		 * @param entries the number of entries to retrieve
+		 * @param start the start index
+		 * @return
+		 */
+		public GroupQueryBuilder entriesStartingAt(final int entries, final int start) {
+			this.start = start;
+
+			return this.end(start + entries);
+		}
+
+		/**
+		 * @param externalId the external id of the organization
+		 * @return the group builder
+		 */
+		public GroupQueryBuilder externalId(final String externalId) {
 			this.externalId = externalId;
 			return this;
 		}
 
+		/**
+		 * builds the group query
+		 * @return the group query
+		 */
 		public GroupQuery build() {
 			return new GroupQuery(search, groupOrder, sortOrder, prefix, pending,
 							userName, externalId, organization, start, end);
