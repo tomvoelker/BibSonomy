@@ -325,7 +325,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public User getUserDetails(final String userName) {
-		try (DBSession session = this.openSession()) {
+		try (final DBSession session = this.openSession()) {
 			/*
 			 * We don't use userName but user.getName() in the remaining part of
 			 * this method, since the name gets normalized in getUserDetails().
@@ -333,24 +333,27 @@ public class DBLogic implements LogicInterface {
 			final User user = this.userDBManager.getUserDetails(userName, session);
 
 			/*
-			 * get the claimed person for the user
+			 * get the claimed person for the user only if not a dummy user was requested
 			 */
-			final Person claimedPerson = this.personDBManager.getPersonByUser(user.getName(), session);
-			user.setClaimedPerson(claimedPerson);
+			final String foundUserName = user.getName();
+			if (present(foundUserName)) {
+				final Person claimedPerson = this.personDBManager.getPersonByUser(foundUserName, session);
+				user.setClaimedPerson(claimedPerson);
+			}
 
 			/*
 			 * only admin and myself may see which group I'm a member of
 			 * group admins may see the details of the group's dummy user (in
 			 * that case, the group's name is user.getName()
 			 */
-			if (this.permissionDBManager.isAdminOrSelf(this.loginUser, user.getName())
-							|| this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, user.getName(), GroupRole.ADMINISTRATOR)) {
-				user.setGroups(this.groupDBManager.getGroupsForUser(user.getName(), true, true, session));
+			if (this.permissionDBManager.isAdminOrSelf(this.loginUser, foundUserName)
+							|| this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, foundUserName, GroupRole.ADMINISTRATOR)) {
+				user.setGroups(this.groupDBManager.getGroupsForUser(foundUserName, true, true, session));
 				user.setPendingGroups(this.groupDBManager.getPendingMembershipsForUser(userName, session));
 				// inject the reported spammers.
-				final List<User> reportedSpammersList = this.userDBManager.getUserRelation(user.getName(), UserRelation.SPAMMER, NetworkRelationSystemTag.BibSonomySpammerSystemTag, session);
+				final List<User> reportedSpammersList = this.userDBManager.getUserRelation(foundUserName, UserRelation.SPAMMER, NetworkRelationSystemTag.BibSonomySpammerSystemTag, session);
 				user.setReportedSpammers(new HashSet<>(reportedSpammersList));
-				// fill user's spam informations
+				// fill user's spam information
 				this.adminDBManager.getClassifierUserDetails(user, session);
 				return user;
 			}
@@ -378,7 +381,7 @@ public class DBLogic implements LogicInterface {
 				 * pic in such cases.
 				 */
 				final User dummyUser = this.userDBManager.createEmptyUser();
-				dummyUser.setName(user.getName());
+				dummyUser.setName(foundUserName);
 
 				return dummyUser;
 			}
@@ -430,7 +433,7 @@ public class DBLogic implements LogicInterface {
 
 		final List<SynchronizationPost> posts;
 
-		try (DBSession session = this.openSession()) {
+		try (final DBSession session = this.openSession()) {
 			final SynchronizationData data = this.syncDBManager.getLastSyncData(userName, service, resourceType, null, session);
 
 			/*

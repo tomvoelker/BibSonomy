@@ -35,9 +35,9 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 	 * default constructor
 	 *
 	 * @param manager
-	 * @param converter
+	 * @param converter the converter for converting elasticsearch documents to
 	 */
-	public ElasticsearchGroupSearch(ElasticsearchManager<Group, DefaultSearchIndexSyncState> manager, Converter<Group, Map<String, Object>, Object> converter) {
+	public ElasticsearchGroupSearch(final ElasticsearchManager<Group, DefaultSearchIndexSyncState> manager, final Converter<Group, Map<String, Object>, Object> converter) {
 		super(manager, converter);
 	}
 

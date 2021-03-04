@@ -202,14 +202,13 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * Creates a new, empty user w/ default profile picture.
 	 * @return empty user instance
 	 */
-	public User createEmptyUser ()
-	{
+	public User createEmptyUser() {
 		final User user = new User();
 		user.setProfilePicture(new LazyUploadedFile() {
 
 			@Override
 			protected File requestFile() {
-				//get default profile picture
+				// get default profile picture
 				return UserDatabaseManager.this.fileLogic.getProfilePictureForUser("");
 			}
 		});
