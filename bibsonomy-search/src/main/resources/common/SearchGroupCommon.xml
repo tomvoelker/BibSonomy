@@ -13,6 +13,8 @@
 		<result property="internalId"		column="internal_id"	javaType="string" />
 		<result property="homepage"			column="homepage"		javaType="url" />
 		<result property="realname"			column="real_name"		javaType="string" />
+		<result property="allowJoin"		column="allow_join" 	javaType="boolean" />
+		<result property="sharedDocuments"  column="sharedDocuments" javaType="boolean" />
 		<result property="parent" resultMap="SearchGroupCommon.parentGroup" />
 	</resultMap>
 
@@ -21,7 +23,8 @@
 	</resultMap>
 
 	<sql id="groupColumns">
-		g.`group`, g.group_name, u.user_homepage AS homepage, g.organization, g.internal_id, u.user_realname AS real_name, gg.group_name AS parent_group_name
+		g.`group`, g.group_name, u.user_homepage AS homepage, g.organization, g.internal_id, g.allow_join, g.sharedDocuments,
+		u.user_realname AS real_name, gg.group_name AS parent_group_name
 	</sql>
 
 </sqlMap>
