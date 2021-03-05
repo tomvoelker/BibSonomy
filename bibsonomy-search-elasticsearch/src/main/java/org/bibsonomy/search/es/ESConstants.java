@@ -121,7 +121,7 @@ public final class ESConstants {
 									.field("type", "custom")
 									.field("char_filter", Arrays.asList(BIBTEX_MAPPING, BRACKETS_CHAR_FILTER_NAME, CURLY_BRACKETS_CHAR_FILTER_NAME))
 									.field("tokenizer", STANDARD_ANALYSER)
-									.field("filter", Arrays.asList(ASCII_FOLDING_PRESERVE_TOKEN_FILTER_NAME, "lowercase", EDGE_NGRAM_FILTER))
+									.field("filter", Arrays.asList(ASCII_FOLDING_PRESERVE_TOKEN_FILTER_NAME, "lowercase"))
 								.endObject()
 							.endObject()
 						.endObject()
