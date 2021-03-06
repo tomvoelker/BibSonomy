@@ -1889,8 +1889,7 @@ CREATE TABLE `log_projects` (
   `updated_by` varchar(30) DEFAULT NULL,
   `new_id` int(11) NOT NULL,
   `log_date` timestamp NULL DEFAULT NULL,
-  `log_user` varchar(30) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `log_user` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `cris_links` (
@@ -1924,8 +1923,7 @@ CREATE TABLE `log_cris_links` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `new_id` int(11) NOT NULL,
   `log_date` timestamp NULL DEFAULT NULL,
-  `log_user` varchar(30) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `log_user` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `log_groupids`;
@@ -1944,8 +1942,7 @@ CREATE TABLE `log_groupids` (
   `internal_id` VARCHAR(255) DEFAULT NULL,
   `log_reason` int(2) DEFAULT NULL,
   `log_date` timestamp NULL DEFAULT NULL,
-  `log_user` varchar(30) DEFAULT NULL,
-  PRIMARY KEY  (`group`)
+  `log_user` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `log_group_memberships`;
@@ -1958,8 +1955,7 @@ CREATE TABLE `log_group_memberships` (
   `user_shared_documents` tinyint(1) default '0',
   `log_reason` int(2) DEFAULT NULL,
   `log_date` timestamp NULL DEFAULT NULL,
-  `log_user` varchar(30) DEFAULT NULL,
-  PRIMARY KEY (`group`,`user_name`)
+  `log_user` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `phd_advisor_recommendation`(
