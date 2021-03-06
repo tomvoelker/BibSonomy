@@ -60,22 +60,13 @@ public final class ESConstants {
 	/** the registered lowercase normalizer */
 	public static final String LOWERCASE_NORMALIZER = "lowercase_normalizer";
 
-	/** the n gram analyzer */
-	public static final String NGRAM_ANALYZER = "ngram_analyzer";
-
-	public static final String STANDARD_TEXT_ANALYSER = NGRAM_ANALYZER;
+	/** the standard analyser to be used for text */
+	public static final String STANDARD_TEXT_ANALYSER = "text_analyzer";
 
 	/**
 	 * the standard analyzer that must be used for fields indexed with an edge ngram filter
 	 */
 	public static final String STANDARD_ANALYSER = "standard";
-
-	/**
-	 * for a search as you type feature like search, we add an edge ngram filter to each token,
-	 * please use a search_analyser set to standard to avoid that the search is also tokenized into ngrams
-	 * and than matches every ngram token
-	 */
-	private static final String EDGE_NGRAM_FILTER = "edge_ngram_filter";
 
 	static {
 		try {
@@ -110,14 +101,9 @@ public final class ESConstants {
 									.field("type", "asciifolding")
 									.field("preserve_original", true)
 								.endObject()
-								.startObject(EDGE_NGRAM_FILTER)
-									.field("type", "edge_ngram")
-									.field("min_gram", 2)
-									.field("max_gram", 10)
-								.endObject()
 							.endObject()
 							.startObject("analyzer")
-								.startObject(NGRAM_ANALYZER)
+								.startObject(STANDARD_TEXT_ANALYSER)
 									.field("type", "custom")
 									.field("char_filter", Arrays.asList(BIBTEX_MAPPING, BRACKETS_CHAR_FILTER_NAME, CURLY_BRACKETS_CHAR_FILTER_NAME))
 									.field("tokenizer", STANDARD_ANALYSER)
@@ -137,8 +123,6 @@ public final class ESConstants {
 	public interface IndexSettings {
 		/** analyzer */
 		String ANALYZER = "analyzer";
-		/** search analyzer */
-		String SEARCH_ANALYZER = "search_analyzer";
 		/** properties field key */
 		String PROPERTIES = "properties";
 		/** flag to copy the field also to the other fields */

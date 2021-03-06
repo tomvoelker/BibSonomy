@@ -45,9 +45,9 @@ import java.util.Map;
  */
 public class ElasticsearchPersonSearch implements PersonSearch {
 
-	private ElasticsearchOneToManyManager<Person, ResourcePersonRelation> manager;
-	private PersonConverter converter;
-	private PersonResourceRelationConverter personResourceRelationConverter;
+	private final ElasticsearchOneToManyManager<Person, ResourcePersonRelation> manager;
+	private final PersonConverter converter;
+	private final PersonResourceRelationConverter personResourceRelationConverter;
 
 	/**
 	 * default constructor

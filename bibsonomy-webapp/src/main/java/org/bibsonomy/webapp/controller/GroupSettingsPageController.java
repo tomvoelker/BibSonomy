@@ -46,7 +46,9 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.access.AccessDeniedException;
 
 /**
- * TODO: add documentation
+ * controller responsible to render the group settings page
+ *
+ * - /settings/group/GROUPNAME
  * 
  * @author niebler
  */
@@ -134,7 +136,7 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 	/**
 	 * Initiates the group cv page
 	 * 
-	 * @param reqUser
+	 * @param groupUser
 	 * @param command
 	 */
 	private void initiateGroupCV(final User groupUser, final Group group, final GroupSettingsPageCommand command) {

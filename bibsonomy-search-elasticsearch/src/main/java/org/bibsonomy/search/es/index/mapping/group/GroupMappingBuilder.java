@@ -39,7 +39,6 @@ public class GroupMappingBuilder implements MappingBuilder<XContentBuilder> {
 							.startObject(GroupFields.REALNAME)
 								.field(TYPE_FIELD, TEXT_TYPE)
 								.field(ESConstants.IndexSettings.ANALYZER, ESConstants.STANDARD_TEXT_ANALYSER)
-								.field(ESConstants.IndexSettings.SEARCH_ANALYZER, ESConstants.STANDARD_ANALYSER)
 								.startObject("fields")
 									.startObject(GroupFields.REALNAME_SORT)
 										.field(TYPE_FIELD, KEYWORD_TYPE)
