@@ -7,30 +7,36 @@ pipeline {
   options {
     disableConcurrentBuilds()
     buildDiscarder(logRotator(numToKeepStr: '15', artifactNumToKeepStr: '15'))
+    timeout(time: 2, unit: 'HOURS')
   }
-  def server
-  def buildInfo
-  def rtMaven
   stages {
+    script {
+      def server
+      def buildInfo
+      def rtMaven
+    }
     stage ('Artifactory Config') {
-      server = Artifactory.server 'bibsonomy'
-      rtMaven = Artifactory.newMavenBuild()
-      rtMaven.tool = 'Maven 3.6.3'
-      rtMaven.deployer.deployArtifacts = false // Disable artifacts deployment during Maven run
-      rtMaven.deployer server: server, releaseRepo: 'bibsonomy-release', snapshotRepo: 'bibsonomy-snapshot'
-      buildInfo = Artifactory.newBuildInfo()
+      script {
+        server = Artifactory.server 'bibsonomy'
+        rtMaven = Artifactory.newMavenBuild()
+        rtMaven.tool = 'Maven 3.6.3'
+        rtMaven.deployer.deployArtifacts = false // Disable artifacts deployment during Maven run
+        rtMaven.deployer server: server, releaseRepo: 'bibsonomy-release', snapshotRepo: 'bibsonomy-snapshot'
+        buildInfo = Artifactory.newBuildInfo()
+      }
     }
     stage ('Build') {
       steps {
         withMaven(maven: 'Maven 3.6.3', mavenSettingsConfig: 'bibsonomy') {
-          buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
+          // buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
         }
       }
     }
     stage ('Artifactory Deploy') {
       steps {
-        rtMaven.deployer.deployArtifacts buildInfo
-        server.publishBuildInfo buildInfo
+        //rtMaven.deployer.deployArtifacts buildInfo
+        // server.publishBuildInfo buildInfo
+        sh "echo Hallo"
       }
     }
     stage ('Deploy BibLicious Webapp') {
