@@ -32,10 +32,10 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 
 	/**
 	 * default constructor
-	 * @param manager
-	 * @param converter
+	 * @param manager the manager to use for searching
+	 * @param converter the converter to use for converting es hits to our model
 	 */
-	public AbstractElasticsearchSearch(ElasticsearchManager<T, S> manager, Converter<T, Map<String, Object>, O> converter) {
+	public AbstractElasticsearchSearch(final ElasticsearchManager<T, S> manager, final Converter<T, Map<String, Object>, O> converter) {
 		this.manager = manager;
 		this.converter = converter;
 	}
@@ -83,11 +83,11 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 		}, statistics);
 	}
 
-	protected List<Pair<String, SortOrder>> getSortOrder(Q query) {
+	protected List<Pair<String, SortOrder>> getSortOrder(final Q query) {
 		return null;
 	}
 
-	protected O getConversionOptions(User loggedinUser) {
+	protected O getConversionOptions(final User loggedinUser) {
 		return null;
 	}
 
@@ -97,7 +97,7 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 	 * @param query
 	 * @return
 	 */
-	protected final QueryBuilder buildQuery(User loggedinUser, Q query) {
+	protected final QueryBuilder buildQuery(final User loggedinUser, final Q query) {
 		final BoolQueryBuilder mainQuery = this.buildMainQuery(loggedinUser, query);
 		final BoolQueryBuilder filterQuery = this.buildFilterQuery(loggedinUser, query);
 
@@ -112,20 +112,22 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 		// now some general search queries
 		final String search = query.getSearch();
 		if (present(search)) {
-			final MultiMatchQueryBuilder queryStringQueryBuilder = QueryBuilders.multiMatchQuery(search);
-			this.manager.getPublicFields().forEach(queryStringQueryBuilder::field);
-			queryStringQueryBuilder.type(MultiMatchQueryBuilder.Type.PHRASE_PREFIX);
-			mainQuery.must(queryStringQueryBuilder);
+			final SimpleQueryStringBuilder searchQueryBuilder = QueryBuilders.simpleQueryStringQuery(search);
+			this.manager.getPublicFields().forEach(searchQueryBuilder::field);
+			searchQueryBuilder
+					.analyzeWildcard(true)
+					.minimumShouldMatch("75%");
+			mainQuery.must(searchQueryBuilder);
 		}
 
 		return mainQuery.filter(filterQuery);
 	}
 
-	protected BoolQueryBuilder buildMainQuery(User loggedinUser, Q query) {
+	protected BoolQueryBuilder buildMainQuery(final User loggedinUser, final Q query) {
 		return QueryBuilders.boolQuery();
 	}
 
-	protected BoolQueryBuilder buildFilterQuery(User loggedinUser, Q query) {
+	protected BoolQueryBuilder buildFilterQuery(final User loggedinUser, final Q query) {
 		return QueryBuilders.boolQuery();
 	}
 }
