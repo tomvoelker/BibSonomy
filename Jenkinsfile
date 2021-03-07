@@ -25,7 +25,7 @@ pipeline {
     stage ('Build') {
       steps {
         withMaven(maven: 'Maven 3.6.3', mavenSettingsConfig: 'bibsonomy') {
-          buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install' buildInfo: buildInfo
+          buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
         }
       }
     }
