@@ -8,12 +8,10 @@ pipeline {
     disableConcurrentBuilds()
     buildDiscarder(logRotator(numToKeepStr: '15', artifactNumToKeepStr: '15'))
   }
+  def server
+  def buildInfo
+  def rtMaven
   stages {
-
-    def server
-    def buildInfo
-    def rtMaven
-
     stage ('Artifactory Config') {
       server = Artifactory.server 'bibsonomy'
       rtMaven = Artifactory.newMavenBuild()
