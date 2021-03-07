@@ -26,13 +26,15 @@ pipeline {
     }
     stage ('Build') {
       steps {
-        withMaven(maven: 'Maven 3.6.3', mavenSettingsConfig: 'bibsonomy') {
-          rtMavenRun (
-              tool: 'Maven 3.6.3',
-              pom: 'pom.xml',
-              goals: 'clean install',
-              deployerId: "MAVEN_DEPLOYER"
-          )
+        configFileProvider(
+           [configFile(fileId: 'bibsonomy', variable: 'MAVEN_SETTINGS')]) {
+
+           rtMavenRun (
+               tool: 'Maven 3.6.3',
+               pom: 'pom.xml',
+               goals: 'clean install -s $MAVEN_SETTINGS',
+               deployerId: "MAVEN_DEPLOYER"
+           )
         }
       }
     }
