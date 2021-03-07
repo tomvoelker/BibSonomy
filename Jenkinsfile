@@ -11,6 +11,9 @@ pipeline {
   }
   stages {
     stage ('Artifactory Config') {
+      when {
+        branch 'master'
+      }
       steps {
           rtServer (
               id: "bibsonomy"
@@ -26,19 +29,30 @@ pipeline {
     }
     stage ('Build') {
       steps {
-        configFileProvider(
-           [configFile(fileId: 'bibsonomy', variable: 'MAVEN_SETTINGS')]) {
+        script {
+          if (env.BRANCH_NAME == 'master') {
+            configFileProvider(
+               [configFile(fileId: 'bibsonomy', variable: 'MAVEN_SETTINGS')]) {
 
-           rtMavenRun (
-               tool: 'Maven 3.6.3',
-               pom: 'pom.xml',
-               goals: 'clean install -s $MAVEN_SETTINGS',
-               deployerId: "MAVEN_DEPLOYER"
-           )
+               rtMavenRun (
+                   tool: 'Maven 3.6.3',
+                   pom: 'pom.xml',
+                   goals: 'clean install -s $MAVEN_SETTINGS',
+                   deployerId: "MAVEN_DEPLOYER"
+               )
+            }
+          } else {
+            withMaven(maven: 'Maven 3.6.3', mavenSettingsConfig: 'bibsonomy') {
+              sh "mvn clean install"
+            }
+          }
         }
       }
     }
     stage ('Artifactory Deploy') {
+      when {
+        branch 'master'
+      }
       steps {
         rtPublishBuildInfo (
           serverId: "bibsonomy"
