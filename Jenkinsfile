@@ -8,8 +8,8 @@ pipeline {
     disableConcurrentBuilds()
     buildDiscarder(logRotator(numToKeepStr: '15', artifactNumToKeepStr: '15'))
   }
-  withMaven(maven: 'Maven 3.6.3', mavenSettingsConfig: 'bibsonomy') {
-    stages {
+  stages {
+    withMaven(maven: 'Maven 3.6.3', mavenSettingsConfig: 'bibsonomy') {
       stage ('Build') {
         steps {
           sh "mvn clean install"
