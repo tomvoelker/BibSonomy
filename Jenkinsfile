@@ -9,17 +9,30 @@ pipeline {
     buildDiscarder(logRotator(numToKeepStr: '15', artifactNumToKeepStr: '15'))
   }
   stages {
+
+    def server
+    def buildInfo
+    def rtMaven
+
+    stage ('Artifactory Config') {
+      server = Artifactory.server 'bibsonomy'
+      rtMaven = Artifactory.newMavenBuild()
+      rtMaven.tool = 'Maven 3.6.3'
+      rtMaven.deployer.deployArtifacts = false // Disable artifacts deployment during Maven run
+      rtMaven.deployer server: server, releaseRepo: 'bibsonomy-release', snapshotRepo: 'bibsonomy-snapshot'
+      buildInfo = Artifactory.newBuildInfo()
+    }
     stage ('Build') {
       steps {
         withMaven(maven: 'Maven 3.6.3', mavenSettingsConfig: 'bibsonomy') {
-          def server = Artifactory.server 'bibsonomy'
-          def rtMaven = Artifactory.newMavenBuild()
-          rtMaven.tool = 'Maven 3.6.3'
-          rtMaven.deployer server: server, releaseRepo: 'bibsonomy-release', snapshotRepo: 'bibsonomy-snapshot'
-          def buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install'
-          rtMaven.deployer.deployArtifacts buildInfo
-          server.publishBuildInfo buildInfo
+          buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install' buildInfo: buildInfo
         }
+      }
+    }
+    stage ('Artifactory Deploy') {
+      steps {
+        rtMaven.deployer.deployArtifacts buildInfo
+        server.publishBuildInfo buildInfo
       }
     }
     stage ('Deploy BibLicious Webapp') {
