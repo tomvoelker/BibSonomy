@@ -10,33 +10,37 @@ pipeline {
     timeout(time: 2, unit: 'HOURS')
   }
   stages {
-    script {
-      def server
-      def buildInfo
-      def rtMaven
-    }
     stage ('Artifactory Config') {
-      script {
-        server = Artifactory.server 'bibsonomy'
-        rtMaven = Artifactory.newMavenBuild()
-        rtMaven.tool = 'Maven 3.6.3'
-        rtMaven.deployer.deployArtifacts = false // Disable artifacts deployment during Maven run
-        rtMaven.deployer server: server, releaseRepo: 'bibsonomy-release', snapshotRepo: 'bibsonomy-snapshot'
-        buildInfo = Artifactory.newBuildInfo()
+      steps {
+          rtServer (
+              id: "bibsonomy"
+          )
+
+          rtMavenDeployer (
+              id: "MAVEN_DEPLOYER",
+              serverId: "bibsonomy",
+              releaseRepo: "bibsonomy-release",
+              snapshotRepo: "bibsonomy-snapshot"
+          )
       }
     }
     stage ('Build') {
       steps {
         withMaven(maven: 'Maven 3.6.3', mavenSettingsConfig: 'bibsonomy') {
-          // buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
+          rtMavenRun (
+              tool: 'Maven 3.6.3',
+              pom: 'pom.xml',
+              goals: 'clean install',
+              deployerId: "MAVEN_DEPLOYER"
+          )
         }
       }
     }
     stage ('Artifactory Deploy') {
       steps {
-        //rtMaven.deployer.deployArtifacts buildInfo
-        // server.publishBuildInfo buildInfo
-        sh "echo Hallo"
+        rtPublishBuildInfo (
+          serverId: "bibsonomy"
+        )
       }
     }
     stage ('Deploy BibLicious Webapp') {
