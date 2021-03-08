@@ -1,8 +1,10 @@
-package org.bibsonomy.webapp.command;
+package org.bibsonomy.webapp.command.cris;
 
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.ProjectOrder;
 import org.bibsonomy.model.enums.ProjectStatus;
+import org.bibsonomy.webapp.command.EntitySearchAndFilterCommand;
+import org.bibsonomy.webapp.command.ListCommand;
 
 /**
  * command to query projects

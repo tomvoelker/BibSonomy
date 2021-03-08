@@ -170,7 +170,7 @@ public class PersonMappingBuilder implements MappingBuilder<XContentBuilder> {
 							.startObject(ESConstants.IndexSettings.PROPERTIES)
 								.startObject(PersonFields.NAME)
 									.field(ESConstants.IndexSettings.TYPE_FIELD, TEXT_TYPE)
-									.field(ESConstants.IndexSettings.ANALYZER, ESConstants.NGRAM_ANALYZER)
+									.field(ESConstants.IndexSettings.ANALYZER, ESConstants.STANDARD_TEXT_ANALYSER)
 									.array(ESConstants.IndexSettings.COPY_TO, PersonFields.ALL_NAMES)
 								.endObject()
 							.endObject()

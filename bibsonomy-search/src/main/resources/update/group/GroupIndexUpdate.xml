@@ -9,7 +9,7 @@
 			<!-- check for new groups -->
 			(SELECT `group`
 			FROM groupids
-				WHERE `group` >= #lastContentId#
+				WHERE `group` >= #lastContentId# AND `group` >= 3
 			UNION
 			<!-- check for updated groups -->
 			SELECT `group`

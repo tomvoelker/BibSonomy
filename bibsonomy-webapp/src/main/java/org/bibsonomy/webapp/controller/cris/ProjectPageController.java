@@ -1,11 +1,11 @@
-package org.bibsonomy.webapp.controller;
+package org.bibsonomy.webapp.controller.cris;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.webapp.command.ProjectPageCommand;
+import org.bibsonomy.webapp.command.cris.ProjectPageCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -13,6 +13,7 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * controller for a single project
+ * paths:
  *  - /project/PROJECT_ID
  *
  * @author dzo

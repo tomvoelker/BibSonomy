@@ -325,7 +325,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public User getUserDetails(final String userName) {
-		try (DBSession session = this.openSession()) {
+		try (final DBSession session = this.openSession()) {
 			/*
 			 * We don't use userName but user.getName() in the remaining part of
 			 * this method, since the name gets normalized in getUserDetails().
@@ -333,24 +333,27 @@ public class DBLogic implements LogicInterface {
 			final User user = this.userDBManager.getUserDetails(userName, session);
 
 			/*
-			 * get the claimed person for the user
+			 * get the claimed person for the user only if not a dummy user was requested
 			 */
-			final Person claimedPerson = this.personDBManager.getPersonByUser(user.getName(), session);
-			user.setClaimedPerson(claimedPerson);
+			final String foundUserName = user.getName();
+			if (present(foundUserName)) {
+				final Person claimedPerson = this.personDBManager.getPersonByUser(foundUserName, session);
+				user.setClaimedPerson(claimedPerson);
+			}
 
 			/*
 			 * only admin and myself may see which group I'm a member of
 			 * group admins may see the details of the group's dummy user (in
 			 * that case, the group's name is user.getName()
 			 */
-			if (this.permissionDBManager.isAdminOrSelf(this.loginUser, user.getName())
-							|| this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, user.getName(), GroupRole.ADMINISTRATOR)) {
-				user.setGroups(this.groupDBManager.getGroupsForUser(user.getName(), true, true, session));
+			if (this.permissionDBManager.isAdminOrSelf(this.loginUser, foundUserName)
+							|| this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, foundUserName, GroupRole.ADMINISTRATOR)) {
+				user.setGroups(this.groupDBManager.getGroupsForUser(foundUserName, true, true, session));
 				user.setPendingGroups(this.groupDBManager.getPendingMembershipsForUser(userName, session));
 				// inject the reported spammers.
-				final List<User> reportedSpammersList = this.userDBManager.getUserRelation(user.getName(), UserRelation.SPAMMER, NetworkRelationSystemTag.BibSonomySpammerSystemTag, session);
+				final List<User> reportedSpammersList = this.userDBManager.getUserRelation(foundUserName, UserRelation.SPAMMER, NetworkRelationSystemTag.BibSonomySpammerSystemTag, session);
 				user.setReportedSpammers(new HashSet<>(reportedSpammersList));
-				// fill user's spam informations
+				// fill user's spam information
 				this.adminDBManager.getClassifierUserDetails(user, session);
 				return user;
 			}
@@ -378,7 +381,7 @@ public class DBLogic implements LogicInterface {
 				 * pic in such cases.
 				 */
 				final User dummyUser = this.userDBManager.createEmptyUser();
-				dummyUser.setName(user.getName());
+				dummyUser.setName(foundUserName);
 
 				return dummyUser;
 			}
@@ -430,7 +433,7 @@ public class DBLogic implements LogicInterface {
 
 		final List<SynchronizationPost> posts;
 
-		try (DBSession session = this.openSession()) {
+		try (final DBSession session = this.openSession()) {
 			final SynchronizationData data = this.syncDBManager.getLastSyncData(userName, service, resourceType, null, session);
 
 			/*
@@ -1024,8 +1027,7 @@ public class DBLogic implements LogicInterface {
 			this.permissionDBManager.checkStartEnd(this.loginUser, grouping, start, end, "tags");
 		}
 
-		final DBSession session = this.openSession();
-		try {
+		try (final DBSession session = this.openSession()) {
 			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, resourceType, queryScope, grouping, groupingName, tags, hash, sortKey, start, end, startDate, endDate, search, null, this.loginUser);
 			param.setTagRelationType(relation);
 			param.setQueryScope(queryScope);
@@ -1045,8 +1047,6 @@ public class DBLogic implements LogicInterface {
 		} catch (final QueryTimeoutException ex) {
 			// if a query times out, we return an empty list
 			return new ArrayList<>();
-		} finally {
-			session.close();
 		}
 	}
 
@@ -1177,8 +1177,7 @@ public class DBLogic implements LogicInterface {
 		 */
 		final List<String> missingResources = new LinkedList<>();
 
-		final DBSession session = this.openSession();
-		try {
+		try (final DBSession session = this.openSession()) {
 			final String lowerCaseUserName = present(userName) ? userName.toLowerCase() : null;
 			for (final String resourceHash : resourceHashes) {
 				/*
@@ -1200,8 +1199,6 @@ public class DBLogic implements LogicInterface {
 					missingResources.add(resourceHash);
 				}
 			}
-		} finally {
-			session.close();
 		}
 		/*
 		 * throw exception for missing resources
@@ -1753,12 +1750,8 @@ public class DBLogic implements LogicInterface {
 		}
 
 		final List<JobResult> jobResults = new LinkedList<>();
-		/*
-		 * open session
-		 */
-		final DBSession session = this.openSession();
 		final DatabaseException collectedException = new DatabaseException();
-		try {
+		try (final DBSession session = this.openSession()) {
 			for (final Post<?> post : posts) {
 				try {
 					jobResults.add(this.updatePost(post, operation, session));
@@ -1771,8 +1764,6 @@ public class DBLogic implements LogicInterface {
 					collectedException.addToErrorMessages(PostUtils.getKeyForPost(post), new UnspecifiedErrorMessage(ex));
 				}
 			}
-		} finally {
-			session.close();
 		}
 
 		if (collectedException.hasErrorMessages()) {
@@ -1852,8 +1843,7 @@ public class DBLogic implements LogicInterface {
 		this.ensureLoggedIn();
 		this.permissionDBManager.ensureWriteAccess(this.loginUser, user.getName());
 
-		final DBSession session = this.openSession();
-		try {
+		try (final DBSession session = this.openSession()) {
 			if (updateRelations) {
 				if (tagsToReplace.size() != 1 || replacementTags.size() != 1) {
 					throw new ValidationException("tag relations can only be updated, when exactly one tag is exchanged by exactly one other tag.");
@@ -1867,9 +1857,6 @@ public class DBLogic implements LogicInterface {
 			 * finally delegate to tagDBManager
 			 */
 			return this.tagDBManager.updateTags(user, tagsToReplace, replacementTags, session);
-
-		} finally {
-			session.close();
 		}
 	}
 
@@ -1927,45 +1914,42 @@ public class DBLogic implements LogicInterface {
 				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, username);
 			}
 		}
-		final DBSession session = this.openSession();
 
-		try {
+		try (final DBSession session = this.openSession()) {
 			switch (operation) {
-			case UPDATE_PASSWORD:
-				return this.userDBManager.updatePasswordForUser(user, this.loginUser, session);
-			case DELETE_OPENID:
-				this.userDBManager.deleteOpenIDUser(username, session);
-				return username;
-			case UPDATE_SETTINGS:
-				return this.userDBManager.updateUserSettingsForUser(user, this.loginUser, session);
-			case UPDATE_API:
-				this.userDBManager.updateApiKeyForUser(user, this.loginUser, session);
-				break;
-			case UPDATE_CORE:
-				return this.userDBManager.updateUserProfile(user, this.loginUser, session);
-			case UPDATE_LIMITED_USER:
-				return this.userDBManager.updateLimitedUser(user, this.loginUser, session);
-			case ACTIVATE:
-				return this.userDBManager.activateUser(user, session);
-			case UPDATE_SPAMMER_STATUS:
-				/*
-				 * only admins are allowed to change spammer settings
-				 */
-				log.debug("Start update this framework");
-				this.permissionDBManager.ensureAdminAccess(this.loginUser);
-				/*
-				 * open session and update spammer settings
-				 */
-				final String mode = this.adminDBManager.getClassifierSettings(ClassifierSettings.TESTING, session);
-				log.debug("User prediction: " + user.getPrediction());
-				return this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser().getName(), mode, session);
-			case UPDATE_ALL:
-				return this.storeUser(user, true);
-			default:
-				throw new UnsupportedOperationException(operation + " not supported.");
+				case UPDATE_PASSWORD:
+					return this.userDBManager.updatePasswordForUser(user, this.loginUser, session);
+				case DELETE_OPENID:
+					this.userDBManager.deleteOpenIDUser(username, session);
+					return username;
+				case UPDATE_SETTINGS:
+					return this.userDBManager.updateUserSettingsForUser(user, this.loginUser, session);
+				case UPDATE_API:
+					this.userDBManager.updateApiKeyForUser(user, this.loginUser, session);
+					break;
+				case UPDATE_CORE:
+					return this.userDBManager.updateUserProfile(user, this.loginUser, session);
+				case UPDATE_LIMITED_USER:
+					return this.userDBManager.updateLimitedUser(user, this.loginUser, session);
+				case ACTIVATE:
+					return this.userDBManager.activateUser(user, session);
+				case UPDATE_SPAMMER_STATUS:
+					/*
+					 * only admins are allowed to change spammer settings
+					 */
+					log.debug("Start update this framework");
+					this.permissionDBManager.ensureAdminAccess(this.loginUser);
+					/*
+					 * open session and update spammer settings
+					 */
+					final String mode = this.adminDBManager.getClassifierSettings(ClassifierSettings.TESTING, session);
+					log.debug("User prediction: " + user.getPrediction());
+					return this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser().getName(), mode, session);
+				case UPDATE_ALL:
+					return this.storeUser(user, true);
+				default:
+					throw new UnsupportedOperationException(operation + " not supported.");
 			}
-		} finally {
-			session.close();
 		}
 		return null;
 	}

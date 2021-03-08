@@ -54,20 +54,19 @@ public final class ESConstants {
 	/** settings of each created index */
 	public static final String SETTINGS;
 
-	/** fielddata */
-	public static final String FIELDDATA = "fielddata";
-
 	/** normalizer attribute */
 	public static final String NORMALIZER = "normalizer";
-
-	/** analyzer attribute */
-	public static final String ANALYZER = "analyzer";
 
 	/** the registered lowercase normalizer */
 	public static final String LOWERCASE_NORMALIZER = "lowercase_normalizer";
 
-	/** the n gram analyzer */
-	public static final String NGRAM_ANALYZER = "ngram_analyzer";
+	/** the standard analyser to be used for text */
+	public static final String STANDARD_TEXT_ANALYSER = "text_analyzer";
+
+	/**
+	 * the standard analyzer that must be used for fields indexed with an edge ngram filter
+	 */
+	public static final String STANDARD_ANALYSER = "standard";
 
 	static {
 		try {
@@ -104,18 +103,11 @@ public final class ESConstants {
 								.endObject()
 							.endObject()
 							.startObject("analyzer")
-								.startObject(NGRAM_ANALYZER)
+								.startObject(STANDARD_TEXT_ANALYSER)
 									.field("type", "custom")
 									.field("char_filter", Arrays.asList(BIBTEX_MAPPING, BRACKETS_CHAR_FILTER_NAME, CURLY_BRACKETS_CHAR_FILTER_NAME))
-									.field("tokenizer", "ngram_tokenizer")
-									.field("filter", Arrays.asList(ASCII_FOLDING_PRESERVE_TOKEN_FILTER_NAME, "lowercase", "standard"))
-								.endObject()
-							.endObject()
-							.startObject("tokenizer")
-								.startObject("ngram_tokenizer")
-									.field("type", "edge_ngram")
-									.field("min_gram", 2)
-									.field("max_gram", 10)
+									.field("tokenizer", STANDARD_ANALYSER)
+									.field("filter", Arrays.asList(ASCII_FOLDING_PRESERVE_TOKEN_FILTER_NAME, "lowercase"))
 								.endObject()
 							.endObject()
 						.endObject()
@@ -189,7 +181,7 @@ public final class ESConstants {
 	/** contains all field information */
 	public interface Fields {
 		/** the name of the user of the post */
-		public static final String USER_NAME = "user_name";
+		String USER_NAME = "user_name";
 		/** list of all users that posted this post (with the same interhash) */
 		String ALL_USERS = "all_users";
 		/** the groups of the post */

@@ -820,5 +820,3 @@ public class PersonPageController extends SingleResourceListController implement
 		this.crisCollege = crisCollege;
 	}
 }
-
-

@@ -38,13 +38,14 @@ public class GroupMappingBuilder implements MappingBuilder<XContentBuilder> {
 							// real name
 							.startObject(GroupFields.REALNAME)
 								.field(TYPE_FIELD, TEXT_TYPE)
-								.field(ESConstants.IndexSettings.ANALYZER, ESConstants.NGRAM_ANALYZER)
+								.field(ESConstants.IndexSettings.ANALYZER, ESConstants.STANDARD_TEXT_ANALYSER)
 								.startObject("fields")
 									.startObject(GroupFields.REALNAME_SORT)
 										.field(TYPE_FIELD, KEYWORD_TYPE)
 									.endObject()
 								.endObject()
 							.endObject()
+							// prefix of the real name
 							.startObject(GroupFields.REALNAME_PREFIX)
 								.field(TYPE_FIELD, KEYWORD_TYPE)
 							.endObject()

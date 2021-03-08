@@ -1,6 +1,7 @@
-package org.bibsonomy.webapp.command;
+package org.bibsonomy.webapp.command.cris;
 
 import org.bibsonomy.model.cris.Project;
+import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * Command for a project details page

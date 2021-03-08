@@ -40,8 +40,7 @@ CREATE TABLE `log_projects` (
   `updated_by` varchar(30) DEFAULT NULL,
   `new_id` int(11) NOT NULL,
   `log_date` timestamp NULL DEFAULT NULL,
-  `log_user` varchar(30) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `log_user` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- insert the new id into the database

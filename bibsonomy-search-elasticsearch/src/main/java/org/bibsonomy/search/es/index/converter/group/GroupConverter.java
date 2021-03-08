@@ -30,12 +30,11 @@ public class GroupConverter implements Converter<Group, Map<String, Object>, Obj
 			document.put(GroupFields.HOMEPAGE, homepage.toString());
 		}
 
-		document.put(GroupFields.NAME, group.getName());
+		final String name = group.getName();
+		document.put(GroupFields.NAME, name);
 		final String realname = group.getRealname();
 		document.put(GroupFields.REALNAME, realname);
-		if (present(realname)) {
-			document.put(GroupFields.REALNAME_PREFIX, ElasticsearchIndexSearchUtils.getPrefixForString(realname));
-		}
+		document.put(GroupFields.REALNAME_PREFIX, ElasticsearchIndexSearchUtils.getPrefixForString(present(realname) ? realname : name));
 
 		document.put(GroupFields.INTERNAL_ID, group.getInternalId());
 		document.put(GroupFields.ORGANIZATION, group.isOrganization());

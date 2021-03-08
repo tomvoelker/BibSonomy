@@ -22,7 +22,6 @@ public class BasicQuery extends BasicPaginatedQuery implements SearchQuery, Quer
         return search;
     }
 
-
     /**
      * Sets the search string.
      *

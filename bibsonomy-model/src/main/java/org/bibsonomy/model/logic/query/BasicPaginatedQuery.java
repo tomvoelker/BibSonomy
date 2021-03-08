@@ -3,7 +3,7 @@ package org.bibsonomy.model.logic.query;
 /**
  * @author ada
  */
-public abstract class BasicPaginatedQuery implements PaginatedQuery, Query{
+public abstract class BasicPaginatedQuery implements PaginatedQuery, Query {
 
     /**
      * inclusive start index of the view window
