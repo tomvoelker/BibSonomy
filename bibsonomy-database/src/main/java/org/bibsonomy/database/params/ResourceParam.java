@@ -116,11 +116,11 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 		this.personRelation = personRelation;
 	}
 
-	public List<SortCriteria> getSortCriteriums() {
+	public List<SortCriteria> getSortCriteria() {
 		return sortCriteria;
 	}
 
-	public void setSortCriteriums(List<SortCriteria> sortCriteria) {
+	public void setSortCriteria(List<SortCriteria> sortCriteria) {
 		this.sortCriteria = sortCriteria;
 	}
 }

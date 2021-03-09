@@ -119,7 +119,7 @@ public class ConceptPageController extends SingleResourceListController implemen
 			this.preProcessForSearchIndexSort(command);
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), null, command.getSortCriteria(), command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
 			// secondary sorting, if not using elasticsearch index
-			if (!command.isEsIndex()) {
+			if (!command.isIndexUse()) {
 				this.postProcessAndSortList(command, resourceType);
 			}
 		}	

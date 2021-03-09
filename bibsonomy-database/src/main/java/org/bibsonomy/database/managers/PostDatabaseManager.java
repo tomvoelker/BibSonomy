@@ -26,6 +26,18 @@
  */
 package org.bibsonomy.database.managers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.JobResult;
@@ -33,6 +45,7 @@ import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupRole;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
@@ -56,8 +69,6 @@ import org.bibsonomy.database.params.LoggingParam;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.params.metadata.PostParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.services.searcher.PostSearchQuery;
-import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
@@ -67,6 +78,7 @@ import org.bibsonomy.database.validation.DatabaseModelValidator;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.sync.SynchronizationPost;
@@ -74,20 +86,9 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.validation.ModelValidator;
+import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.ReflectionUtils;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Used to create, read, update and delete posts from the database.
@@ -707,44 +708,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return this.postList("get" + this.resourceClassName + "ViewableByTag", param, session);
 	}
 
-
-	/**
-	 * Prepares queries which show all posts of all users belonging to the
-	 * group. This is an aggregated view of all posts of the group members
-	 *
-	 * @param groupId
-	 * @param requestedGroupName
-	 * @param visibleGroupIDs
-	 * @param queryScope
-	 * @param loginUserName
-	 * @param simHash
-	 * @param postAccess
-	 * @param filters
-	 * @param sortCriteria
-	 * @param limit
-	 * @param offset
-	 * @param systemTags
-	 * @param session
-	 * @return list of posts
-	 */
-	public List<Post<R>> getPostsForGroup(final int groupId, final String requestedGroupName, final List<Integer> visibleGroupIDs, final QueryScope queryScope, final String loginUserName, final HashID simHash, final PostAccess postAccess, final Set<Filter> filters, final List<SortCriteria> sortCriteria, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		switch(queryScope) {
-			// FIXME: switch to query call @kch
-			/*case FEDERATED:
-
-				PostSearchQuery<?> query = new PostSearchQuery(this.getResourceClassName());
-				return this.resourceSearch.getPosts(new User(loginUserName), query);
-
-				return this.resourceSearch.getPosts(loginUserName, null, requestedGroupName, null, null, queryScope, null, null, null, null, null, null, null, null, null, SortKey.NONE, limit, offset, systemTags);
-			case SEARCHINDEX:
-				return this.resourceSearch.getPosts(loginUserName, null, requestedGroupName, null, null, queryScope, null, null, null, null, null, null, null, null, null, sortCriteriums, limit, offset, systemTags); */
-			case LOCAL:
-			default:
-				return this.getPostsForGroup(groupId, visibleGroupIDs, loginUserName, simHash, postAccess, filters, limit, offset, systemTags, session);
-		}
-	}
-
-
 	/**
 	 * <em>/group/EineGruppe</em><br/>
 	 * <br/>
@@ -893,10 +856,52 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 
 	/**
+	 *
+	 * This method delegates the request for retrieving all posts for a given
+	 * user name (requestedUserName), depending on the queryscope.
+	 *
+	 * @param loginUserName
+	 * @param requestedUserName
+	 * @param queryScope
+	 * @param simHash
+	 * @param groupId
+	 * @param visibleGroupIDs
+	 * @param postAccess
+	 * @param filters
+	 * @param sortCriteria
+	 * @param limit
+	 * @param offset
+	 * @param systemTags
+	 * @param session
+	 * @return
+	 */
+	public List<Post<R>> getPostsForUser(final String loginUserName, final String requestedUserName, final QueryScope queryScope, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final PostAccess postAccess, final Set<Filter> filters, final List<SortCriteria> sortCriteria, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+		PostSearchQuery<?> query = new PostSearchQuery<>();
+		query.setGrouping(GroupingEntity.USER);
+		query.setGroupingName(requestedUserName);
+
+		query.setScope(queryScope);
+		query.setSortCriteria(sortCriteria);
+		query.setSystemTags(new LinkedList<>(systemTags));
+
+		switch(queryScope) {
+			case SEARCHINDEX:
+			case FEDERATED:
+
+
+				//return getPostsByResourceSearch(new User(loginUserName), query);
+			case LOCAL:
+			default:
+				return getPostsForUser(loginUserName, requestedUserName, simHash, groupId, visibleGroupIDs, postAccess, filters, limit, offset, systemTags, session);
+		}
+
+	}
+
+	/**
 	 * <em>/user/MaxMustermann</em><br/>
 	 * <br/>
 	 *
-	 * This method prepares queries which retrieve all posts for a given
+	 * This method prepares queries using the database, which retrieve all posts for a given
 	 * user name (requestedUserName). Additionally the group to be shown can be
 	 * restricted. The queries are built in a way, that not only public posts
 	 * are retrieved, but also friends or private or other groups, depending

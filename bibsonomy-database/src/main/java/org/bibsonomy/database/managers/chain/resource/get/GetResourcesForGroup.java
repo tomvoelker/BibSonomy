@@ -72,10 +72,10 @@ public class GetResourcesForGroup<R extends Resource, P extends ResourceParam<R>
 			log.debug("group '" + param.getRequestedGroupName() + "' not found or special group");
 			return new ArrayList<>();
 		}
-		
-		return this.databaseManager.getPostsForGroup(group.getGroupId(), param.getRequestedGroupName(), param.getGroups(), param.getQueryScope(),
-				param.getUserName(), HashID.getSimHash(param.getSimHash()), param.getPostAccess(), param.getFilters(),
-				param.getSortCriteriums(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
+
+		return this.databaseManager.getPostsForGroup(group.getGroupId(), param.getGroups(), param.getUserName(),
+				HashID.getSimHash(param.getSimHash()), param.getPostAccess(), param.getFilters(), param.getLimit(),
+				param.getOffset(), param.getSystemTags(), session);
 	}
 
 }

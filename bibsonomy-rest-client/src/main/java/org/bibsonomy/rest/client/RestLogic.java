@@ -278,7 +278,7 @@ public class RestLogic extends AbstractLogicInterface {
 		query.setSearch(search);
 		query.setScope(queryScope);
 		query.setFilters(filters);
-		query.setSortCriteriums(sortCriteria);
+		query.setSortCriteria(sortCriteria);
 		query.setStartDate(startDate);
 		query.setEndDate(endDate);
 		query.setStart(start);
@@ -297,7 +297,7 @@ public class RestLogic extends AbstractLogicInterface {
 		restQuery.setResourceType(query.getResourceClass());
 		restQuery.setTags(query.getTags());
 		restQuery.setSearch(query.getSearch());
-		restQuery.setSortCriteriums(query.getSortCriteriums());
+		restQuery.setSortCriteriums(query.getSortCriteria());
 		restQuery.setUserName(this.getAuthenticatedUser().getName());
 		return (List) execute(restQuery);
 	}

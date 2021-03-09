@@ -47,6 +47,8 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.util.Sets;
@@ -356,7 +358,22 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 		if (present(filter)) {
 			filters.add(filter);
 		}
-		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, queryScope, filters, sortCriteria, startDate, endDate, start, start + itemsPerPage));
+
+		final PostQuery<T> query = new PostQueryBuilder()
+				.setGrouping(groupingEntity)
+				.setGroupingName(groupingName)
+				.setTags(tags)
+				.setHash(hash)
+				.setSearch(search)
+				.setScope(queryScope)
+				.setFilters(filters)
+				.setSortCriteria(sortCriteria)
+				.setStartDate(startDate)
+				.setEndDate(endDate)
+				.setStart(start)
+				.setEnd(start + itemsPerPage)
+				.createPostQuery(resourceType);
+		listCommand.setList(this.logic.getPosts(query));
 		// list settings
 		listCommand.setEntriesPerPage(itemsPerPage);
 	}

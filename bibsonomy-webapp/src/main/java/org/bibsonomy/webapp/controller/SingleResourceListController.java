@@ -72,7 +72,7 @@ public abstract class SingleResourceListController extends ResourceListControlle
 
 	protected void preProcessForSearchIndexSort(final TagResourceViewCommand command) {
 		// set order, default to rank if sort page attribute unknown or equals 'relevance'
-		command.setSortKey(SortKey.getByName(command.getSortPage()));
+		// command.setSortKey(SortKey.getByName(command.getSortPage()));
 		// set sorting criteriums list
 		List<SortKey> sortKeys = SortUtils.parseSortKeys(command.getSortPage());
 		List<SortOrder> sortOrders = SortUtils.parseSortOrders(command.getSortPageOrder());
@@ -80,10 +80,8 @@ public abstract class SingleResourceListController extends ResourceListControlle
 		command.setSortCriteria(sortCriteria);
 
 		// set the scope/searchtype
-		if (command.isEsIndex()) {
+		if (command.isIndexUse()) {
 			command.setScope(QueryScope.SEARCHINDEX);
-		} else {
-			command.setScope(QueryScope.LOCAL);
 		}
 	}
 

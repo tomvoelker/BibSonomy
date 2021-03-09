@@ -50,7 +50,7 @@ public class PublicationsPageController implements MinimalisticController<Public
 		} else {
 			sortCriteria.add(new SortCriteria(SortKey.YEAR, SortOrder.DESC));
 		}
-		query.setSortCriteriums(sortCriteria);
+		query.setSortCriteria(sortCriteria);
 		final List<Post<GoldStandardPublication>> posts = this.logic.getPosts(query);
 		goldStandardPublications.setList(posts);
 

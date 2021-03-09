@@ -6,19 +6,19 @@
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 >
 	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true" />
-	<jsp:directive.attribute name="esIndex" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="indexUse" type="java.lang.Boolean" required="true" />
 	<c:choose>
-		<c:when test="${esIndex}">
+		<c:when test="${indexUse}">
 			<div class="alert alert-warning" role="alert">
-				<fmt:message key="sort.warning.es">
-					<fmt:param value="${mtl:setParam(requPathAndQuery, 'esIndex', '0')}" />
+				<fmt:message key="sort.warning.index">
+					<fmt:param value="${mtl:setParam(requPathAndQuery, 'indexUse', '0')}" />
 				</fmt:message>
 			</div>
 		</c:when>
 		<c:otherwise>
 			<div class="alert alert-warning" role="alert">
 				<fmt:message key="sort.warning.db">
-					<fmt:param value="${mtl:setParam(requPathAndQuery, 'esIndex', '1')}" />
+					<fmt:param value="${mtl:setParam(requPathAndQuery, 'indexUse', '1')}" />
 				</fmt:message>
 			</div>
 		</c:otherwise>

@@ -106,7 +106,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 			this.preProcessForSearchIndexSort(command);
 			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, command.getScope(), null, command.getSortCriteria(), command.getStartDate(), command.getEndDate(), listCommand.getEntriesPerPage());
 			// secondary sorting, if not using elasticsearch index
-			if (!command.isEsIndex()) {
+			if (!command.isIndexUse()) {
 				this.postProcessAndSortList(command, resourceType);
 			}
 			totalNumPosts += listCommand.getTotalCount();

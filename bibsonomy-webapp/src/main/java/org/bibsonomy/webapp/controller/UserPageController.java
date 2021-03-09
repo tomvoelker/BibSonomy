@@ -157,7 +157,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), command.getFilter(), command.getSortCriteria(), command.getStartDate(), command.getEndDate(), entriesPerPage);
 
 			// secondary sorting, if not using elasticsearch index
-			if (!command.isEsIndex()) {
+			if (!command.isIndexUse()) {
 				this.postProcessAndSortList(command, resourceType);
 			}
 

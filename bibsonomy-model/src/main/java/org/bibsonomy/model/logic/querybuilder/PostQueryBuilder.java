@@ -51,7 +51,7 @@ public class PostQueryBuilder {
 		postQuery.setStart(start);
 		postQuery.setEnd(end);
 		postQuery.setCollege(this.college);
-		postQuery.setSortCriteriums(this.sortCriteria);
+		postQuery.setSortCriteria(this.sortCriteria);
 		return postQuery;
 	}
 
@@ -126,9 +126,9 @@ public class PostQueryBuilder {
 	}
 
 	/**
-	 * @param sortCriteria the sortCriteriums to set
+	 * @param sortCriteria the sortCriteria to set
 	 */
-	public PostQueryBuilder setSortCriteriums(List<SortCriteria> sortCriteria) {
+	public PostQueryBuilder setSortCriteria(List<SortCriteria> sortCriteria) {
 		this.sortCriteria = sortCriteria;
 		return this;
 	}

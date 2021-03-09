@@ -62,7 +62,6 @@ import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.index.converter.post.ResourceConverter;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
-import org.bibsonomy.search.es.util.ESSortUtils;
 import org.bibsonomy.util.Sets;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -107,7 +106,7 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 				return posts;
 			}
 
-			final List<Pair<String, SortOrder>> sortParameters = this.buildResourceSpecificSortParameters(postQuery.getSortCriteriums());
+			final List<Pair<String, SortOrder>> sortParameters = this.buildResourceSpecificSortParameters(postQuery.getSortCriteria());
 			final SearchHits hits = this.manager.search(queryBuilder, sortParameters, offset, limit, null, null);
 
 			if (hits != null) {
