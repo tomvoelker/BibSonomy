@@ -20,12 +20,12 @@
 	<c:choose>
 		<c:when test="${sortPage eq 'none' or command.sortPage eq 'date' and command.sortPageOrder eq 'desc'}">
 			<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'date'), 'sortPageOrder', 'asc')}">
-				<fontawesome:icon icon="clock-o" spaceAfter="5"/><fmt:message key="sort.addedAt"/>
+				<fontawesome:icon icon="clock-o" spaceAfter="5"/><fmt:message key="sort.addedAt"/><fontawesome:icon icon="arrow-down" spaceBefore="5"/>
 			</a></li>
 		</c:when>
 		<c:when test="${command.sortPage eq 'date' and command.sortPageOrder eq 'asc'}">
 			<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'date'), 'sortPageOrder', 'desc')}">
-				<fontawesome:icon icon="clock-o" spaceAfter="5"/><fmt:message key="sort.addedAt"/>
+				<fontawesome:icon icon="clock-o" spaceAfter="5"/><fmt:message key="sort.addedAt"/><fontawesome:icon icon="arrow-up" spaceBefore="5"/>
 			</a></li>
 		</c:when>
 		<c:otherwise>
@@ -35,23 +35,23 @@
 		</c:otherwise>
 	</c:choose>
 
-	
+
 
 	<!-- title sorting -->
 	<c:choose>
 		<c:when test="${command.sortPage eq 'title' and command.sortPageOrder eq 'desc'}">
 			<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'title'), 'sortPageOrder', 'asc')}">
-				<fontawesome:icon icon="sort-alpha-desc" spaceAfter="5"/><fmt:message key="sort.title"/>
+				<fontawesome:icon icon="heading" spaceAfter="5"/><fmt:message key="sort.title"/><fontawesome:icon icon="arrow-down" spaceBefore="5"/>
 			</a></li>
 		</c:when>
 		<c:when test="${command.sortPage eq 'title' and command.sortPageOrder eq 'asc'}">
 			<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'title'), 'sortPageOrder', 'desc')}">
-				<fontawesome:icon icon="sort-alpha-asc" spaceAfter="5"/><fmt:message key="sort.title"/>
+				<fontawesome:icon icon="heading" spaceAfter="5"/><fmt:message key="sort.title"/><fontawesome:icon icon="arrow-up" spaceBefore="5"/>
 			</a></li>
 		</c:when>
 		<c:otherwise>
 			<li class="sort-unselected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'title'), 'sortPageOrder', 'asc')}">
-				<fontawesome:icon icon="sort-alpha-asc" spaceAfter="5" /><fmt:message key="sort.title"/>
+				<fontawesome:icon icon="heading" spaceAfter="5" /><fmt:message key="sort.title"/>
 			</a></li>
 		</c:otherwise>
 	</c:choose>
@@ -62,36 +62,17 @@
 		<c:choose>
 			<c:when test="${command.sortPage eq 'author' and command.sortPageOrder eq 'desc'}">
 				<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'author'), 'sortPageOrder', 'asc')}">
-					<fontawesome:icon icon="sort-alpha-desc" spaceAfter="5"/><fmt:message key="sort.author"/>
+					<fontawesome:icon icon="user" spaceAfter="5"/><fmt:message key="sort.author"/><fontawesome:icon icon="arrow-down" spaceBefore="5"/>
 				</a></li>
 			</c:when>
 			<c:when test="${command.sortPage eq 'author' and command.sortPageOrder eq 'asc'}">
 				<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'author'), 'sortPageOrder', 'desc')}">
-					<fontawesome:icon icon="sort-alpha-asc" spaceAfter="5"/><fmt:message key="sort.author"/>
+					<fontawesome:icon icon="user" spaceAfter="5"/><fmt:message key="sort.author"/><fontawesome:icon icon="arrow-up" spaceBefore="5"/>
 				</a></li>
 			</c:when>
 			<c:otherwise>
 				<li class="sort-unselected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'author'), 'sortPageOrder', 'asc')}">
-					<fontawesome:icon icon="sort-alpha-asc" spaceAfter="5" /><fmt:message key="sort.author"/>
-				</a></li>
-			</c:otherwise>
-		</c:choose>
-
-		<!-- year sorting -->
-		<c:choose>
-			<c:when test="${command.sortPage eq 'year' and command.sortPageOrder eq 'desc'}">
-				<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'year'), 'sortPageOrder', 'asc')}">
-					<fontawesome:icon icon="sort-numeric-desc" spaceAfter="5"/><fmt:message key="sort.year"/>
-				</a></li>
-			</c:when>
-			<c:when test="${command.sortPage eq 'year' and command.sortPageOrder eq 'asc'}">
-				<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'year'), 'sortPageOrder', 'desc')}">
-					<fontawesome:icon icon="sort-numeric-asc" spaceAfter="5"/><fmt:message key="sort.year"/>
-				</a></li>
-			</c:when>
-			<c:otherwise>
-				<li class="sort-unselected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'year'), 'sortPageOrder', 'desc')}">
-					<fontawesome:icon icon="sort-numeric-desc" spaceAfter="5" /><fmt:message key="sort.year"/>
+					<fontawesome:icon icon="user" spaceAfter="5" /><fmt:message key="sort.author"/>
 				</a></li>
 			</c:otherwise>
 		</c:choose>
@@ -100,17 +81,17 @@
 		<c:choose>
 			<c:when test="${command.sortPage eq 'pubdate' and command.sortPageOrder eq 'desc'}">
 				<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'pubdate'), 'sortPageOrder', 'asc')}">
-					<fontawesome:icon icon="sort-numeric-desc" spaceAfter="5"/><fmt:message key="sort.pubdate"/>
+					<fontawesome:icon icon="calendar-alt" spaceAfter="5"/><fmt:message key="sort.pubdate"/><fontawesome:icon icon="arrow-down" spaceBefore="5"/>
 				</a></li>
 			</c:when>
 			<c:when test="${command.sortPage eq 'pubdate' and command.sortPageOrder eq 'asc'}">
 				<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'pubdate'), 'sortPageOrder', 'desc')}">
-					<fontawesome:icon icon="sort-numeric-asc" spaceAfter="5"/><fmt:message key="sort.pubdate"/>
+					<fontawesome:icon icon="calendar-alt" spaceAfter="5"/><fmt:message key="sort.pubdate"/><fontawesome:icon icon="arrow-up" spaceBefore="5"/>
 				</a></li>
 			</c:when>
 			<c:otherwise>
 				<li class="sort-unselected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'pubdate'), 'sortPageOrder', 'desc')}">
-					<fontawesome:icon icon="sort-numeric-desc" spaceAfter="5" /><fmt:message key="sort.pubdate"/>
+					<fontawesome:icon icon="calendar-alt" spaceAfter="5" /><fmt:message key="sort.pubdate"/>
 				</a></li>
 			</c:otherwise>
 		</c:choose>
@@ -119,12 +100,12 @@
 		<c:choose>
 			<c:when test="${command.sortPage eq 'entrytype' and command.sortPageOrder eq 'desc'}">
 				<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'entrytype'), 'sortPageOrder', 'asc')}">
-					<fontawesome:icon icon="book" spaceAfter="5"/><fmt:message key="sort.entrytype"/>
+					<fontawesome:icon icon="book" spaceAfter="5"/><fmt:message key="sort.entrytype"/><fontawesome:icon icon="arrow-down" spaceBefore="5"/>
 				</a></li>
 			</c:when>
 			<c:when test="${command.sortPage eq 'entrytype' and command.sortPageOrder eq 'asc'}">
 				<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'entrytype'), 'sortPageOrder', 'desc')}">
-					<fontawesome:icon icon="book" spaceAfter="5"/><fmt:message key="sort.entrytype"/>
+					<fontawesome:icon icon="book" spaceAfter="5"/><fmt:message key="sort.entrytype"/><fontawesome:icon icon="arrow-up" spaceBefore="5"/>
 				</a></li>
 			</c:when>
 			<c:otherwise>

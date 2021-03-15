@@ -27,17 +27,17 @@
 			<c:choose>
 				<c:when test="${command.sortPage eq 'relevance' and command.sortPageOrder eq 'desc'}">
 					<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'relevance'), 'sortPageOrder', 'asc')}">
-						<fontawesome:icon icon="sort-amount-desc" spaceAfter="5"/><fmt:message key="sort.rank"/>
+						<fontawesome:icon icon="sort-amount-down" spaceAfter="5"/><fmt:message key="sort.rank"/><fontawesome:icon icon="arrow-down" spaceBefore="5"/>
 					</a></li>
 				</c:when>
 				<c:when test="${command.sortPage eq 'relevance' and command.sortPageOrder eq 'asc'}">
 					<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'relevance'), 'sortPageOrder', 'desc')}">
-						<fontawesome:icon icon="sort-amount-asc" spaceAfter="5"/><fmt:message key="sort.rank"/>
+						<fontawesome:icon icon="sort-amount-up" spaceAfter="5"/><fmt:message key="sort.rank"/><fontawesome:icon icon="arrow-up" spaceBefore="5"/>
 					</a></li>
 				</c:when>
 				<c:otherwise>
 					<li class="sort-unselected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'relevance'), 'sortPageOrder', 'desc')}">
-						<fontawesome:icon icon="sort-amount-desc" spaceAfter="5" /><fmt:message key="sort.rank"/>
+						<fontawesome:icon icon="sort-amount-down" spaceAfter="5" /><fmt:message key="sort.rank"/>
 					</a></li>
 				</c:otherwise>
 			</c:choose>

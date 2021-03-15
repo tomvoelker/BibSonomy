@@ -169,6 +169,7 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 				case ORGANIZATION:
 					sortParameters.add(new Pair<>("sort_" + sortKey.toString().toLowerCase(), esSortOrder));
 					break;
+				case YEAR:
 				case PUBDATE:
 					sortParameters.add(new Pair<>(Fields.Publication.YEAR, esSortOrder));
 					sortParameters.add(new Pair<>(Fields.Publication.MONTH, ESSortUtils.reverseSortOrder(esSortOrder)));
