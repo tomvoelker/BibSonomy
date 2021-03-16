@@ -16,7 +16,7 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
 
-	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
+	<c:set var="requPathAndQuery" value="/${requPath}"/>
 	<c:set var="isGroupsPage" value="${requPath eq 'groups'}"/>
 	<c:set var="isUserLoggedIn" value="${command.context.userLoggedIn}"/>
 	<fmt:message key="navi.${requPath}" var="pageTitle"/>
@@ -36,20 +36,6 @@
 		 	| content
 		 	+-->
 		<jsp:attribute name="content">
-			<!--+
-				| explain what groups are good for
-				+-->
-			<c:if test="${isUserLoggedIn}">
-				<bs:alert style="info">
-					<jsp:attribute name="alertBody">
-						<fmt:message key="system.groups">
-							<!-- TODO: use URLGenerator -->
-							<fmt:param value="/grouprequest"/>
-						</fmt:message>
-					</jsp:attribute>
-				</bs:alert>
-			</c:if>
-
 			<parts:searchHeader headerMessageKey="${requPath}.header" searchPlaceholderKey="${requPath}.search"
 								requPathAndQuery="${requPathAndQuery}" command="${command}"/>
 
@@ -144,5 +130,25 @@
 				<rc:nextprev listView="${groupListCommand}" listViewStartParamName="groups.start"/>
 			</div>
 		</jsp:attribute>
+
+		<!--+
+			 | sidebar
+			 +-->
+		<jsp:attribute name="sidebar">
+			<!--+
+				| explain what groups are good for
+				+-->
+			<c:if test="${isUserLoggedIn}">
+				<bs:alert style="info">
+					<jsp:attribute name="alertBody">
+						<fmt:message key="system.groups">
+							<!-- TODO: use URLGenerator -->
+							<fmt:param value="/grouprequest"/>
+						</fmt:message>
+					</jsp:attribute>
+				</bs:alert>
+			</c:if>
+		</jsp:attribute>
+
 	</layout:paneLayout>
 </jsp:root>
