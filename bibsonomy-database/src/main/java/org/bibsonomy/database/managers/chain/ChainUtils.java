@@ -84,7 +84,7 @@ public class ChainUtils {
 			return true;
 		}
 
-		if ((param.getQueryScope() == QueryScope.SEARCHINDEX) && (param.getNumSimpleTags() > 0)) {
+		if ((param.getQueryScope() == QueryScope.SEARCHINDEX)) {
 			return true;
 		}
 

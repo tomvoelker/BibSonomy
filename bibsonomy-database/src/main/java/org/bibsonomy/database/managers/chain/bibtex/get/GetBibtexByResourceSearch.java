@@ -28,7 +28,6 @@ package org.bibsonomy.database.managers.chain.bibtex.get;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByResourceSearch;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
@@ -46,6 +45,6 @@ public class GetBibtexByResourceSearch extends GetResourcesByResourceSearch<BibT
 			return true;
 		}
 		return (!present(param.getBibtexKey()) && 
-				(param.getQueryScope() == QueryScope.SEARCHINDEX || present(param.getSearch()) || present(param.getAuthor()) || present(param.getTitle())));
+				(present(param.getSearch()) || present(param.getAuthor()) || present(param.getTitle())));
 	}
 }

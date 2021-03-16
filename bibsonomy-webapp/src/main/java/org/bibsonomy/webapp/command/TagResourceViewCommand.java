@@ -67,9 +67,9 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	private List<SortCriteria> sortCriteria = new LinkedList<>();
 
 	/**
-	 * Use the search index for retrieving and sorting listed posts?
+	 * Use the search index for retrieving and sorting listed posts
 	 */
-	private boolean indexUse = false;
+	private boolean indexUse = true;
 
 	/** bean for related tags */
 	private RelatedTagCommand relatedTagCommand = new RelatedTagCommand();

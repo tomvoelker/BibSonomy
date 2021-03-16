@@ -116,7 +116,7 @@ public class ConceptPageController extends SingleResourceListController implemen
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
-			this.preProcessForSearchIndexSort(command);
+			this.buildSortCriteria(command);
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), null, command.getSortCriteria(), command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
 			// secondary sorting, if not using elasticsearch index
 			if (!command.isIndexUse()) {

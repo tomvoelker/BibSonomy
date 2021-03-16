@@ -143,4 +143,11 @@ public class SortUtils {
 		return singletonSortCriteria(key, SortOrder.DESC);
 	}
 
+	public static SortKey getFirstSortKey(List<SortCriteria> sortCriteria) {
+		if (ValidationUtils.present(sortCriteria)) {
+			return sortCriteria.get(0).getSortKey();
+		}
+		return null;
+	}
+
 }

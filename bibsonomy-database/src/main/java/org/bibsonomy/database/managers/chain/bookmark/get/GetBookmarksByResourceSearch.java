@@ -28,7 +28,6 @@ package org.bibsonomy.database.managers.chain.bookmark.get;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByResourceSearch;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
@@ -45,6 +44,6 @@ public class GetBookmarksByResourceSearch extends GetResourcesByResourceSearch<B
 		if (super.canHandle(param)) {
 			return true;
 		}
-		return (param.getQueryScope() == QueryScope.SEARCHINDEX || present(param.getSearch()) || present(param.getTitle()));
+		return (present(param.getSearch()) || present(param.getTitle()));
 	}
 }

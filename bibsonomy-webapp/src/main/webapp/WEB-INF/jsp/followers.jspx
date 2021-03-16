@@ -46,7 +46,7 @@
 
 		<jsp:attribute name="sidebar">
 			<!--  ranking settings -->
-			<c:if test="${command.order eq 'RANK'}">
+			<c:if test="${command.sortKey eq 'RANK'}">
 				<fmt:message key="navi.go" var="go" />
 				<sidebar:sidebarItem textKey="navi.settings">
 					<jsp:attribute name="content">
@@ -133,7 +133,7 @@
 					<fmt:message key="followersPage.about">
 						<fmt:param>${properties['project.home']}help_${locale.language}/Followers</fmt:param>
 					</fmt:message>
-					<c:if test="${command.order eq 'RANK'}">
+					<c:if test="${command.sortKey eq 'RANK'}">
 						<c:out value=" "/>
 						<c:set var="ofUsers">
 							<c:choose>

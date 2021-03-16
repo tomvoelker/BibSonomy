@@ -31,7 +31,6 @@ import static org.bibsonomy.util.ValidationUtils.presentValidGroupId;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
@@ -56,7 +55,6 @@ public class GetResourcesForUser<R extends Resource, P extends ResourceParam<R>>
 				!presentValidGroupId(param.getGroupId()) &&
 				!present(param.getTagIndex()) &&
 				!present(param.getHash()) &&
-				param.getQueryScope() != QueryScope.SEARCHINDEX &&
 				!present(param.getSearch())) && 
 				!present(param.getAuthor()) && 
 				!present(param.getTitle());
