@@ -856,48 +856,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 
 	/**
-	 *
-	 * This method delegates the request for retrieving all posts for a given
-	 * user name (requestedUserName), depending on the queryscope.
-	 *
-	 * @param loginUserName
-	 * @param requestedUserName
-	 * @param queryScope
-	 * @param simHash
-	 * @param groupId
-	 * @param visibleGroupIDs
-	 * @param postAccess
-	 * @param filters
-	 * @param sortCriteria
-	 * @param limit
-	 * @param offset
-	 * @param systemTags
-	 * @param session
-	 * @return
-	 */
-	public List<Post<R>> getPostsForUser(final String loginUserName, final String requestedUserName, final QueryScope queryScope, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final PostAccess postAccess, final Set<Filter> filters, final List<SortCriteria> sortCriteria, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		PostSearchQuery<?> query = new PostSearchQuery<>();
-		query.setGrouping(GroupingEntity.USER);
-		query.setGroupingName(requestedUserName);
-
-		query.setScope(queryScope);
-		query.setSortCriteria(sortCriteria);
-		query.setSystemTags(new LinkedList<>(systemTags));
-
-		switch(queryScope) {
-			case SEARCHINDEX:
-			case FEDERATED:
-
-
-				//return getPostsByResourceSearch(new User(loginUserName), query);
-			case LOCAL:
-			default:
-				return getPostsForUser(loginUserName, requestedUserName, simHash, groupId, visibleGroupIDs, postAccess, filters, limit, offset, systemTags, session);
-		}
-
-	}
-
-	/**
 	 * <em>/user/MaxMustermann</em><br/>
 	 * <br/>
 	 *
