@@ -27,12 +27,14 @@
 package org.bibsonomy.webapp.controller;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.UnsupportedOrderingException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.RelatedUserCommand;
@@ -95,7 +97,9 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		// handle case when only tags are requested
 		// FIXME we can only retrieve 1000 tags here
 		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, requTags, null, 1000, null);
-		
+
+		// build sort criteria list
+		this.buildSortCriteria(command);
 		
 		int totalNumPosts = 1; 
 		
@@ -103,12 +107,7 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
-			this.buildSortCriteria(command);
 			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, command.getScope(),null, command.getSortCriteria(), command.getStartDate(), command.getEndDate(), entriesPerPage);
-			// secondary sorting, if not using elasticsearch index
-			if (!command.isIndexUse()) {
-				this.postProcessAndSortList(command, resourceType);
-			}
 			this.setTotalCount(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			totalNumPosts += listCommand.getTotalCount();
 		}

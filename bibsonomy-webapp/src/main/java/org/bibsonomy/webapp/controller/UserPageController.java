@@ -152,10 +152,10 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		this.buildSortCriteria(command);
 
 		// set query scope for resource lists
-		QueryScope scope = command.getScope();
+		QueryScope resourceScope = command.getScope();
 		// when sortkey is not present or set to date we still want to use the local scope regardless of flag, since supported by database
 		if (command.isIndexUse() && (present(command.getSortCriteria()) && SortUtils.getFirstSortKey(command.getSortCriteria()) != SortKey.DATE)) {
-			scope = QueryScope.SEARCHINDEX;
+			resourceScope = QueryScope.SEARCHINDEX;
 		}
 
 		int totalNumPosts = 0;
@@ -165,10 +165,10 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, scope, command.getFilter(), command.getSortCriteria(), command.getStartDate(), command.getEndDate(), entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, resourceScope, command.getFilter(), command.getSortCriteria(), command.getStartDate(), command.getEndDate(), entriesPerPage);
 
 			// secondary sorting, if not using search index
-			if (scope != QueryScope.SEARCHINDEX) {
+			if (resourceScope != QueryScope.SEARCHINDEX) {
 				this.postProcessAndSortList(command, resourceType);
 			}
 

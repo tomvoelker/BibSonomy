@@ -172,7 +172,7 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 				case YEAR:
 				case PUBDATE:
 					sortParameters.add(new Pair<>(Fields.Publication.YEAR, esSortOrder));
-					sortParameters.add(new Pair<>(Fields.Publication.MONTH, ESSortUtils.reverseSortOrder(esSortOrder)));
+					sortParameters.add(new Pair<>(Fields.Publication.MONTH, esSortOrder));
 					sortParameters.add(new Pair<>(Fields.Publication.DAY, esSortOrder));
 					break;
 				// more complex order types possible here

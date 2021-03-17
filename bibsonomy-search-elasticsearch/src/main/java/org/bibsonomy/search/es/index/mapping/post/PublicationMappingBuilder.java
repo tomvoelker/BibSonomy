@@ -126,8 +126,7 @@ public class PublicationMappingBuilder extends ResourceMappingBuilder<BibTex> {
 				.field(ESConstants.IndexSettings.ANALYZER, ESConstants.STANDARD_TEXT_ANALYSER)
 			.endObject()
 			.startObject(Fields.Publication.DAY)
-				.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.TEXT_TYPE)
-				.field(ESConstants.IndexSettings.ANALYZER, ESConstants.STANDARD_TEXT_ANALYSER)
+				.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
 			.endObject()
 			.startObject(Fields.Publication.EDITION)
 				.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.TEXT_TYPE)
@@ -164,8 +163,7 @@ public class PublicationMappingBuilder extends ResourceMappingBuilder<BibTex> {
 				.field(ESConstants.IndexSettings.ANALYZER, ESConstants.STANDARD_TEXT_ANALYSER)
 			.endObject()
 			.startObject(Fields.Publication.MONTH)
-				.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.TEXT_TYPE)
-				.field(ESConstants.IndexSettings.ANALYZER, ESConstants.STANDARD_TEXT_ANALYSER)
+				.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
 			.endObject()
 			.startObject(Fields.Publication.NOTE)
 				.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.TEXT_TYPE)
@@ -230,7 +228,7 @@ public class PublicationMappingBuilder extends ResourceMappingBuilder<BibTex> {
 			.startObject(Fields.PERSON_ENTITY_IDS_FIELD_NAME)
 				.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.TEXT_TYPE)
 			.endObject()
-			// search fields
+			// sorting fields
 			.startObject(Fields.Sort.AUTHOR)
 				.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
 				.field(ESConstants.NORMALIZER, ESConstants.LOWERCASE_NORMALIZER)

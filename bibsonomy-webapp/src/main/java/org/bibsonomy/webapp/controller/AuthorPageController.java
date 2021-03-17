@@ -98,17 +98,15 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 
 		// handle case when only tags are requested
 		this.handleTagsOnly(command, groupingEntity, null, null, requTags, null, 1000, null);
-		
+
+		// build sort criteria list
+		this.buildSortCriteria(command);
+
 		int totalNumPosts = 0;
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
-			this.buildSortCriteria(command);
 			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, command.getScope(), null, command.getSortCriteria(), command.getStartDate(), command.getEndDate(), listCommand.getEntriesPerPage());
-			// secondary sorting, if not using elasticsearch index
-			if (!command.isIndexUse()) {
-				this.postProcessAndSortList(command, resourceType);
-			}
 			totalNumPosts += listCommand.getTotalCount();
 		}
 		
