@@ -32,7 +32,7 @@
 				</div>
 			</h3>
 		</c:if>
-		<div id="otherPublications">
+		<div id="myownPosts">
 			<c:forEach var="post" items="${posts}">
 				<per:simplePostView post="${post}"
 									onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}"/>
