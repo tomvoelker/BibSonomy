@@ -46,6 +46,7 @@ public class PersonsPageController implements MinimalisticController<PersonsPage
 		query.setStart(personListStart);
 		query.setEnd(personListStart + personListCommand.getEntriesPerPage());
 		query.setOrder(present(search) ? null : PersonOrder.MAIN_NAME_LAST_NAME);
+		query.setUsePrefixMatch(true);
 		if (!isUserLoggedin || !command.isShowAllPersons()) {
 			query.setCollege(this.crisCollege);
 		}

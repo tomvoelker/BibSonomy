@@ -306,6 +306,7 @@ public class PersonPageController extends SingleResourceListController implement
 	@SuppressWarnings("unchecked")
 	private View searchAction(PersonPageCommand command) {
 		final PersonQuery query = new PersonQuery(command.getFormSelectedName());
+		query.setUsePrefixMatch(true);
 		if (command.isLimitResultsToCRISCollege() && present(this.crisCollege)) {
 			query.setCollege(this.crisCollege);
 		}

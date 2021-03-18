@@ -102,7 +102,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 		});
 	}
 
-	private BoolQueryBuilder buildQuery(PersonQuery query) {
+	private BoolQueryBuilder buildQuery(final PersonQuery query) {
 		final String personQuery = query.getQuery();
 
 		final BoolQueryBuilder mainQuery = QueryBuilders.boolQuery();
@@ -124,7 +124,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 			final InnerHitBuilder innerHit = new InnerHitBuilder();
 			childQuery.innerHit(innerHit);
 
-			final MatchPhrasePrefixQueryBuilder nameQuery = QueryBuilders.matchPhrasePrefixQuery(PersonFields.ALL_NAMES, personQuery);
+			final AbstractQueryBuilder<?> nameQuery = query.isUsePrefixMatch() ? QueryBuilders.matchPhrasePrefixQuery(PersonFields.ALL_NAMES, personQuery) : QueryBuilders.matchQuery(PersonFields.ALL_NAMES, personQuery);
 
 			/*
 			 * build the search query
