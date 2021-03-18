@@ -20,13 +20,7 @@ import org.bibsonomy.search.es.index.converter.person.PersonFields;
 import org.bibsonomy.search.es.index.converter.person.PersonResourceRelationConverter;
 import org.bibsonomy.search.es.management.ElasticsearchOneToManyManager;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.InnerHitBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
-import org.elasticsearch.index.query.MultiMatchQueryBuilder;
-import org.elasticsearch.index.query.Operator;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.TermQueryBuilder;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.join.query.HasChildQueryBuilder;
 import org.elasticsearch.join.query.JoinQueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -76,7 +70,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 	@Override
 	public List<Person> getPersons(final PersonQuery query) {
 		return ElasticsearchIndexSearchUtils.callSearch(() -> {
-			final BoolQueryBuilder mainQuery = buildQuery(query);
+			final BoolQueryBuilder mainQuery = this.buildQuery(query);
 
 			final int offset = BasicQueryUtils.calcOffset(query);
 			final int limit = BasicQueryUtils.calcLimit(query);
@@ -130,7 +124,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 			final InnerHitBuilder innerHit = new InnerHitBuilder();
 			childQuery.innerHit(innerHit);
 
-			final MatchQueryBuilder nameQuery = QueryBuilders.matchQuery(PersonFields.ALL_NAMES, personQuery);
+			final MatchPhrasePrefixQueryBuilder nameQuery = QueryBuilders.matchPhrasePrefixQuery(PersonFields.ALL_NAMES, personQuery);
 
 			/*
 			 * build the search query

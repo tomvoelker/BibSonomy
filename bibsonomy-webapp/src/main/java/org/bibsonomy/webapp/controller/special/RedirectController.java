@@ -205,8 +205,6 @@ public class RedirectController implements MinimalisticController<RedirectComman
 		 */
 		log.debug("generic handling of /scope/search");
 		return "/" + scope + "/" + UrlUtils.encodePathSegment(search);
-
-
 	}
 
 	/** Handles pages starting with /my*, in particular
