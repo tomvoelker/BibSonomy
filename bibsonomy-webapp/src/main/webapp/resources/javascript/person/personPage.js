@@ -195,26 +195,30 @@ $(document).ready(function() {
 	    var $divs = $(sourceDiv+" div.simplePubEntry");
 	    
 	    var opOrder = $divs.sort(function (a, b) {
-	    	if (sortOrdering == 'ASC') {	    		
+	    	if (sortOrdering === 'ASC') {
 	    		return $(a).data(sortBy) > $(b).data(sortBy);
 	    	} else {
 	    		return $(a).data(sortBy) < $(b).data(sortBy);
 	    	}
 	    });
+
+		$('.sort-arrow').each(function() {
+			$(this).removeClass('fa-arrow-up');
+			$(this).removeClass('fa-arrow-down');
+		})
 	    
-	    if (sortOrdering == 'ASC') {
+	    if (sortOrdering === 'ASC') {
 	    	$(this).data('ordering', 'DESC');
+			$(this).children('.sort-arrow').addClass('fa-arrow-up');
 	    } else {
 	    	$(this).data('ordering', 'ASC');
+			$(this).children('.sort-arrow').addClass('fa-arrow-down');
 	    }
 	    
 	    $('.pubSort').each(function() {
-	    	$(this).css('color', '#ccc');
+	    	$(this).css('font-weight', 'normal');
 	    });
-	    
-	    $(this).css('color', '#333');
-	    
-	    replaceFaClass(this);
+	    $(this).css('font-weight', 'bolder');
 	     
 	    $(sourceDiv).html(opOrder)
 

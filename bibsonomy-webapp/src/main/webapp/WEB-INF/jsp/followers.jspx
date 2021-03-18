@@ -27,17 +27,17 @@
 			<!-- ranking sorting -->
 			<c:choose>
 				<c:when test="${command.sortPage eq 'rank' and command.sortPageOrder eq 'desc'}">
-					<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'rank'), 'sortPageOrder', 'asc')}">
+					<li class="sort-selection sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'rank'), 'sortPageOrder', 'asc')}">
 						<fontawesome:icon icon="sort-amount-down" spaceAfter="5"/><fmt:message key="ranking.method"/><fontawesome:icon icon="arrow-down" spaceBefore="5"/>
 					</a></li>
 				</c:when>
 				<c:when test="${command.sortPage eq 'rank' and command.sortPageOrder eq 'asc'}">
-					<li class="sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'rank'), 'sortPageOrder', 'desc')}">
+					<li class="sort-selection sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'rank'), 'sortPageOrder', 'desc')}">
 						<fontawesome:icon icon="sort-amount-up" spaceAfter="5"/><fmt:message key="ranking.method"/><fontawesome:icon icon="arrow-up" spaceBefore="5"/>
 					</a></li>
 				</c:when>
 				<c:otherwise>
-					<li class="sort-unselected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'rank'), 'sortPageOrder', 'desc')}">
+					<li class="sort-selection"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'rank'), 'sortPageOrder', 'desc')}">
 						<fontawesome:icon icon="sort-amount-down" spaceAfter="5" /><fmt:message key="ranking.method"/>
 					</a></li>
 				</c:otherwise>
