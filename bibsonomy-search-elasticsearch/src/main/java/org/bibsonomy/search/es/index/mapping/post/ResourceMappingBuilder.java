@@ -120,10 +120,9 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 							.field(ESConstants.IndexSettings.ANALYZER, ESConstants.STANDARD_TEXT_ANALYSER)
 							.field(ESConstants.IndexSettings.BOOST_FIELD, 2)
 						.endObject()
-						.startObject(Fields.Sort.TITLE) // TODO maybe add asciifolding for special character sorting
+						.startObject(Fields.Sort.TITLE)
 							.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
-							.field(ESConstants.NORMALIZER, ESConstants.LOWERCASE_NORMALIZER)
-							.field(ESConstants.IndexSettings.BOOST_FIELD, 0)
+							.field(ESConstants.NORMALIZER, ESConstants.SORT_NORMALIZER)
 						.endObject();
 
 		this.doResourceSpecificMapping(builder);
