@@ -20,9 +20,6 @@
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 	
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="groups">
-		<jsp:attribute name="content">
-			<rc:sortWarningHeader requPathAndQuery="${requPathAndQuery}" indexUse="${command.isIndexUse()}" sortPage="${command.sortPage}"/>
-		</jsp:attribute>
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.group" formAction="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}" formInputName="tag">
 				<jsp:attribute name="pathPart">
@@ -30,7 +27,7 @@
 				</jsp:attribute>
 			</parts:search>	
 		</jsp:attribute>
-			
+
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">

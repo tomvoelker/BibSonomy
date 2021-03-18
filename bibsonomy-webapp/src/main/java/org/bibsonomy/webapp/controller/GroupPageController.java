@@ -100,21 +100,14 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		// build sort criteria list
 		this.buildSortCriteria(command);
 
-		// set query scope for resource lists
-		QueryScope resourceScope = command.getScope();
-		// when sortkey is not present or set to date we still want to use the local scope regardless of flag, since supported by database
-		if (command.isIndexUse() && (present(command.getSortCriteria()) && SortUtils.getFirstSortKey(command.getSortCriteria()) != SortKey.DATE)) {
-			resourceScope = QueryScope.SEARCHINDEX;
-		}
-
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, resourceScope, command.getFilter(), command.getSortCriteria(), command.getStartDate(), command.getEndDate(), entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), command.getFilter(), command.getSortCriteria(), command.getStartDate(), command.getEndDate(), entriesPerPage);
 
 			// secondary sorting, if not using search index
-			if (resourceScope != QueryScope.SEARCHINDEX) {
+			if (command.getScope() != QueryScope.SEARCHINDEX) {
 				this.postProcessAndSortList(command, resourceType);
 			}
 
