@@ -3,6 +3,8 @@ package org.bibsonomy.model.logic.query;
 
 /**
  * Adds pagination to a query.
+ *
+ * @author ada
  */
 public interface PaginatedQuery {
 

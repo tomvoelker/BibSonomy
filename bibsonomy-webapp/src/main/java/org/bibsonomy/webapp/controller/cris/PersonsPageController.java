@@ -37,6 +37,7 @@ public class PersonsPageController implements MinimalisticController<PersonsPage
 	@Override
 	public View workOn(final PersonsPageCommand command) {
 		final boolean isUserLoggedin = command.getContext().isUserLoggedIn();
+
 		final ListCommand<Person> personListCommand = command.getPersons();
 		final String search = command.getSearch();
 		final PersonQuery query = new PersonQuery(search);

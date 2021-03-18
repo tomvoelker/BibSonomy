@@ -36,10 +36,8 @@ public class ProjectsPageController implements MinimalisticController<ProjectsPa
 
 		// build the query based on the commands
 		final ProjectQuery.ProjectQueryBuilder builder = ProjectQuery.createBuilder();
-		final int start = projectListCommand.getStart();
 		builder.projectStatus(command.getProjectStatus())
-						.start(start)
-						.end(start + projectListCommand.getEntriesPerPage())
+						.entriesStartingAt(projectListCommand.getEntriesPerPage(), projectListCommand.getStart())
 						.search(command.getSearch())
 						.prefix(command.getPrefix())
 						.order(command.getProjectOrder())

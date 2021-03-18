@@ -16,6 +16,7 @@ import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
 import org.elasticsearch.index.query.*;
+import org.elasticsearch.index.search.MatchQuery;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
@@ -112,10 +113,10 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 		// now some general search queries
 		final String search = query.getSearch();
 		if (present(search)) {
-			final SimpleQueryStringBuilder searchQueryBuilder = QueryBuilders.simpleQueryStringQuery(search);
+			final MultiMatchQueryBuilder searchQueryBuilder = QueryBuilders.multiMatchQuery(search);
 			this.manager.getPublicFields().forEach(searchQueryBuilder::field);
 			searchQueryBuilder
-					.analyzeWildcard(true)
+					.type(MatchQuery.Type.PHRASE_PREFIX)
 					.minimumShouldMatch("75%");
 			mainQuery.must(searchQueryBuilder);
 		}

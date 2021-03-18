@@ -143,7 +143,7 @@ public class OrganizationPageController implements MinimalisticController<Organi
 		return Views.ORGANIZATION_PAGE;
 	}
 
-	private void setTotalCount(ListCommand<?> listCommand, Supplier<Statistics> statisticsSupplier) {
+	private void setTotalCount(final ListCommand<?> listCommand, final Supplier<Statistics> statisticsSupplier) {
 		if (!present(listCommand.getTotalCountAsInteger())) {
 			final Statistics statistics = statisticsSupplier.get();
 			listCommand.setTotalCount(statistics.getCount());

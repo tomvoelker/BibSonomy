@@ -69,6 +69,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.GroupQuery;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
@@ -187,12 +188,27 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Ignore
 	public void getPostsByTagName() {
 		LogicInterface anonymousAccess = this.getDbLogic(null, null);
-		List<Post<BibTex>> bibTexPostsList = anonymousAccess.getPosts(BibTex.class, GroupingEntity.ALL, "", DEFAULT_TAG_LIST, "", null, QueryScope.LOCAL, null, null, null, null, 0, 5);
+
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.ALL)
+				.setGroupingName("")
+				.setTags(DEFAULT_TAG_LIST)
+				.setScope(QueryScope.LOCAL)
+				.entriesStartingAt(5, 0);
+
+		List<Post<BibTex>> bibTexPostsList = anonymousAccess.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 		assertEquals(5, bibTexPostsList.size());
 		assertList(bibTexPostsList, null, null, DEFAULT_TAG_SET, null, null, null);
 		
 		anonymousAccess = this.getDbLogic("", null);
-		bibTexPostsList = anonymousAccess.getPosts(BibTex.class, GroupingEntity.ALL, "", DEFAULT_TAG_LIST, null, null, QueryScope.LOCAL, null, null, null, null, 5, 9);
+		final PostQueryBuilder postQueryBuilder2 = new PostQueryBuilder();
+		postQueryBuilder2.setGrouping(GroupingEntity.ALL)
+				.setGroupingName("")
+				.setTags(DEFAULT_TAG_LIST)
+				.setScope(QueryScope.LOCAL)
+				.entriesStartingAt(4, 5);
+
+		bibTexPostsList = anonymousAccess.getPosts(postQueryBuilder2.createPostQuery(BibTex.class));
 		assertEquals(4, bibTexPostsList.size());
 		assertList(bibTexPostsList, null, null, DEFAULT_TAG_SET, null, null, null);
 	}
@@ -205,11 +221,27 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void getPostsByConceptForUser() {
 		final List<String> taglist = Arrays.asList("->researcher");
 
-		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, taglist, "", null, QueryScope.LOCAL, null, SORT_CRITERIUMS_DATE, null, null, 0, 2);
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.USER)
+				.setGroupingName(TEST_REQUEST_USER_NAME)
+				.setTags(taglist)
+				.setScope(QueryScope.LOCAL)
+				.entriesStartingAt(2, 0)
+				.setSortCriteria(SORT_CRITERIUMS_DATE);
+
+		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 		assertEquals(2, bibTexPostsList.size());
 		assertList(bibTexPostsList, DEFAULT_USERNAME_SET, SORT_CRITERIUMS_DATE, null, null, null, null);
+
+		final PostQueryBuilder postQueryBuilder2 = new PostQueryBuilder();
+		postQueryBuilder2.setGrouping(GroupingEntity.USER)
+				.setGroupingName(TEST_REQUEST_USER_NAME)
+				.setTags(taglist)
+				.setScope(QueryScope.LOCAL)
+				.entriesStartingAt(8, 2)
+				.setSortCriteria(SORT_CRITERIUMS_DATE);
 		
-		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, taglist, null, null, QueryScope.LOCAL,null, SORT_CRITERIUMS_DATE, null, null, 2, 10);
+		bibTexPostsList = this.getDbLogic().getPosts(postQueryBuilder2.createPostQuery(BibTex.class));
 		assertEquals(1, bibTexPostsList.size());
 		assertList(bibTexPostsList, DEFAULT_USERNAME_SET, SORT_CRITERIUMS_DATE, null, null, null, null);
 	}

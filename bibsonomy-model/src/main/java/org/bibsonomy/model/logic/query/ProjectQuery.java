@@ -284,6 +284,17 @@ public class ProjectQuery extends BasicQuery {
 		}
 
 		/**
+		 * @param entries the number of entries to retrieve
+		 * @param start the start index
+		 * @return
+		 */
+		public ProjectQueryBuilder entriesStartingAt(final int entries, final int start) {
+			this.start = start;
+
+			return this.end(start + entries);
+		}
+
+		/**
 		 * sets the start
 		 *
 		 * @param start
