@@ -77,9 +77,10 @@ public class ChainUtils {
 		 * Handle requests for simple tags and concepts
 		 */
 		final GroupingEntity grouping = param.getGrouping();
-		if ((grouping == GroupingEntity.ALL) && ((param.getNumSimpleTags()) > 0) || (param.getNumSimpleConcepts() > 0)) {
+		if ((grouping == GroupingEntity.ALL) && ((param.getNumSimpleConcepts() > 0))) {
 			return true;
 		}
+
 		/*
 		 * Handle requests for groups and organizations
 		 */
