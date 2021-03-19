@@ -43,6 +43,13 @@
 	<artifactId>bibsonomy-exporter</artifactId>
 	<description>Various exporters for bookmarks and publications.</description>
 
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, Version 3 or later</name>
+			<url>http://www.gnu.org/licenses/lgpl.html</url>
+		</license>
+	</licenses>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
