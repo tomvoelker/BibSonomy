@@ -59,6 +59,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -476,7 +477,14 @@ public class PostPublicationController extends AbstractEditPublicationController
 						tags.add("sys:title:" + titleToken);
 					}
 				}
-				final List<Post<BibTex>> publicationPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, null, QueryScope.LOCAL, null, null, null, null, 0, 5);
+
+				final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+				postQueryBuilder.setGrouping(GroupingEntity.ALL)
+						.setScope(QueryScope.LOCAL)
+						.setTags(tags)
+						.entriesStartingAt(5, 0);
+
+				final List<Post<BibTex>> publicationPosts = this.logic.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 				final Post<BibTex> bestMatch = getBestMatch(publicationPosts);
 				if (present(bestMatch)) {
 					foundPublication = true;

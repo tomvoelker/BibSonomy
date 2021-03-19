@@ -33,6 +33,7 @@ import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.SortUtils;
@@ -158,7 +159,14 @@ public class PublicationListTag extends SharedTag {
 		 * FIXME: We want these working in a different way. We want the
 		 * publication's year, not the BibSonomy year of the posting.
 		 */
-		List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, this.getGroupingEntity(), requestedName, Arrays.asList(tags.split(" ")), null, null, QueryScope.LOCAL, null, null, null, null, 0, this.maxQuerySize);
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(this.getGroupingEntity())
+				.setGroupingName(requestedName)
+				.setTags(Arrays.asList(tags.split(" ")))
+				.setScope(QueryScope.LOCAL)
+				.entriesStartingAt(this.maxQuerySize, 0);
+
+		List<Post<BibTex>> posts = this.logic.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 		BibTexUtils.removeDuplicates(posts);
 
 		/*
@@ -239,9 +247,7 @@ public class PublicationListTag extends SharedTag {
 			}
 			renderedHTML.append("<div id='publications'>" + this.layoutRenderer.renderLayout(layout, posts, true) + "</div>"); // class='entry
 																																// bibtex'
-		} catch (final LayoutRenderingException e) {
-			log.error(e.getMessage());
-		} catch (final IOException e) {
+		} catch (final LayoutRenderingException | IOException e) {
 			log.error(e.getMessage());
 		}
 	}

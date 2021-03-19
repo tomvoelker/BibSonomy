@@ -48,7 +48,6 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.Status;
-import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
@@ -65,6 +64,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.PostLogicInterface;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.SimHash;
@@ -314,7 +314,13 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		int startCount = 0;
 
 		do {
-			tmp = this.logic.getPosts((Class<RESOURCE>) this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, QueryScope.LOCAL, null, null, null, null, startCount, startCount + this.maxQuerySize);
+			final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+			postQueryBuilder.setGrouping(GroupingEntity.INBOX)
+					.setGroupingName(loginUserName)
+					.setScope(QueryScope.LOCAL)
+					.setHash(hash)
+					.entriesStartingAt(this.maxQuerySize, startCount);
+			tmp = this.logic.getPosts(postQueryBuilder.createPostQuery((Class<RESOURCE>) this.instantiateResource().getClass()));
 			dbPosts.addAll(tmp);
 			startCount += this.maxQuerySize;
 		} while (tmp.size() == this.maxQuerySize);
@@ -473,14 +479,22 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				 */
 				// comparePost is the history revision which will be restored.
 				final int compareVersion = command.getCompareVersion();
+
+				final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+				postQueryBuilder.setGrouping(GroupingEntity.USER)
+						.setGroupingName(this.getGrouping(postOwner))
+						.setHash(intraHashToUpdate)
+						.setScope(QueryScope.LOCAL)
+						.setFilters(Sets.asSet(FilterEntity.HISTORY))
+						.entriesStartingAt(compareVersion + 1, compareVersion);
 				@SuppressWarnings("unchecked")
-				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(postOwner), null, intraHashToUpdate, null, QueryScope.LOCAL, Sets.asSet(FilterEntity.HISTORY), null, null, null, compareVersion, compareVersion + 1).get(0);
+				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(postQueryBuilder.createPostQuery(dbPost.getResource().getClass())).get(0);
 
 				// TODO: why don't we set the dbPost = comparePost? why do we
 				// have to restore all fields by hand?
 				final List<String> diffEntryKeyList = command.getDifferentEntryKeys();
-				for (int i = 0; i < diffEntryKeyList.size(); i++) {
-					this.replacePostFields(dbPost, diffEntryKeyList.get(i), comparePost);
+				for (final String s : diffEntryKeyList) {
+					this.replacePostFields(dbPost, s, comparePost);
 				}
 			}
 

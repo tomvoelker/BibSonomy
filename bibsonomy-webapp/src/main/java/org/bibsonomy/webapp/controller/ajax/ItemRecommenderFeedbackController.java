@@ -36,6 +36,7 @@ import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.recommender.item.model.RecommendationUser;
 import org.bibsonomy.recommender.item.model.RecommendedPost;
 import org.bibsonomy.webapp.command.ajax.AjaxItemRecommenderFeedbackCommand;
@@ -69,18 +70,24 @@ public class ItemRecommenderFeedbackController extends AjaxController implements
 		final String loggedInUserName = command.getContext().getLoginUser().getName();
 		final RecommendationUser recommendationUser = new RecommendationUser();
 		recommendationUser.setUserName(loggedInUserName);
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.USER)
+				.setGroupingName(command.getUserName())
+				.setHash(command.getIntraHash())
+				.setScope(QueryScope.LOCAL)
+				.entriesStartingAt(1, 0);
 		// TODO: why not getpostDetails?
 		if (command.getAction().equalsIgnoreCase(ACTION_BIBTEX)) {
-			List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.USER, command.getUserName(), null, command.getIntraHash(), null, QueryScope.LOCAL, null, null, null, null, 0, 1);
+			List<Post<BibTex>> posts = this.logic.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 			if (present(posts)) {
-				RecommendedPost<BibTex> result = new RecommendedPost<BibTex>();
+				RecommendedPost<BibTex> result = new RecommendedPost<>();
 				result.setPost(posts.get(0));
 				this.multiplexingBibTexRecommender.setFeedback(loggedInUserName, recommendationUser, result);
 			}
 		} else if (command.getAction().equalsIgnoreCase(ACTION_BOOKMARK)) {
-			List<Post<Bookmark>> posts = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, command.getIntraHash(), null, QueryScope.LOCAL, null, null, null, null, 0, 1);
+			List<Post<Bookmark>> posts = this.logic.getPosts(postQueryBuilder.createPostQuery(Bookmark.class));
 			if (present(posts)) {
-				RecommendedPost<Bookmark> result = new RecommendedPost<Bookmark>();
+				RecommendedPost<Bookmark> result = new RecommendedPost<>();
 				result.setPost(posts.get(0));
 				this.multiplexingBookmarkRecommender.setFeedback(loggedInUserName, recommendationUser, result);
 			}
