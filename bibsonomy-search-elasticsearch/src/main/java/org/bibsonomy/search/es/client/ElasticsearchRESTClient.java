@@ -28,6 +28,7 @@ package org.bibsonomy.search.es.client;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import com.carrotsearch.hppc.cursors.ObjectCursor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
@@ -43,6 +44,8 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.get.GetIndexRequest;
+import org.elasticsearch.action.admin.indices.settings.get.GetSettingsRequest;
+import org.elasticsearch.action.admin.indices.settings.get.GetSettingsResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -63,6 +66,8 @@ import org.elasticsearch.client.GetAliasesResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
+import org.elasticsearch.common.collect.ImmutableOpenMap;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -77,11 +82,7 @@ import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -433,6 +434,19 @@ public class ElasticsearchRESTClient implements ESClient {
 			}
 			return !hasFailures;
 		}, false, "error deleting documents from index");
+	}
+
+	@Override
+	public Settings getIndexSettings(final String indexName) {
+		return this.secureCall(() -> {
+			final GetSettingsRequest settingsRequest = new GetSettingsRequest();
+			settingsRequest.indices(indexName);
+			final GetSettingsResponse settingsResponse = this.client.indices().getSettings(settingsRequest, this.buildRequestOptions());
+
+			final ImmutableOpenMap<String, Settings> indexToSettings = settingsResponse.getIndexToSettings();
+			final Iterator<ObjectCursor<Settings>> iterator = indexToSettings.values().iterator();
+			return iterator.next().value;
+		}, null, "error while getting index settings");
 	}
 
 	@Override

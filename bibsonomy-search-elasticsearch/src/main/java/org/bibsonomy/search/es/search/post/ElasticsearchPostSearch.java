@@ -63,6 +63,7 @@ import org.bibsonomy.search.es.index.converter.post.ResourceConverter;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
 import org.bibsonomy.util.Sets;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -91,13 +92,11 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 	 * (friends, groups members)
 	 */
 	protected SearchInfoLogic infoLogic;
-	
+
 	private ElasticsearchManager<R, ?> manager;
 
 	@Override
-	public ResultList<Post<R>> getPosts(final User loggedinUser, PostSearchQuery<?> postQuery) {
-		final int offset = BasicQueryUtils.calcOffset(postQuery);
-		final int limit = BasicQueryUtils.calcLimit(postQuery);
+	public ResultList<Post<R>> getPosts(final User loggedinUser, final PostSearchQuery<?> postQuery) {
 		return ElasticsearchIndexSearchUtils.callSearch(() -> {
 			final ResultList<Post<R>> posts = new ResultList<>();
 			final Set<String> allowedUsers = this.getUsersThatShareDocuments(loggedinUser.getName());
@@ -107,6 +106,27 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 			}
 
 			final List<Pair<String, SortOrder>> sortParameters = this.buildResourceSpecificSortParameters(postQuery.getSortCriteria());
+
+			/*
+			 * FIXME: copy paste code, refactor to use the AbstractElasticsearchSearch class
+			 * there is a limit in the es search how many entries we can skip (max result window)
+			 * here we check the limit set for the index
+			 * we do the following:
+			 * 1. we set this information e.g. for the view
+			 * 2. if the start already exceeds the limit we return an empty result list
+			 * 3. if the end only exceeds the limit we set it to the max result window
+			 */
+			final Settings indexSettings = this.manager.getIndexSettings();
+			final Integer maxResultWindow = indexSettings.getAsInt("index.max_result_window", 10000);
+			posts.setPaginationLimit(maxResultWindow);
+
+			if (postQuery.getStart() > maxResultWindow) {
+				return posts;
+			}
+
+			final int offset = BasicQueryUtils.calcOffset(postQuery);
+			final int limit = BasicQueryUtils.calcLimit(postQuery, maxResultWindow);
+
 			final SearchHits hits = this.manager.search(queryBuilder, sortParameters, offset, limit, null, null);
 
 			if (hits != null) {

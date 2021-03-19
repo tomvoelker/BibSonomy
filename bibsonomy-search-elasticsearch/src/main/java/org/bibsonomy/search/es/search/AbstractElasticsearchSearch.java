@@ -15,6 +15,7 @@ import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.index.search.MatchQuery;
 import org.elasticsearch.search.SearchHit;
@@ -51,8 +52,24 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 			
 			final List<Pair<String, SortOrder>> sortOrder = this.getSortOrder(query);
 
+			/*
+			 * there is a limit in the es search how many entries we can skip (max result window)
+			 * here we check the limit set for the index
+			 * we do the following:
+			 * 1. we set this information e.g. for the view
+			 * 2. if the start already exceeds the limit we return an empty result list
+			 * 3. if the end only exceeds the limit we set it to the max result window
+			 */
+			final Settings indexSettings = this.manager.getIndexSettings();
+			final Integer maxResultWindow = indexSettings.getAsInt("index.max_result_window", 10000);
+			results.setPaginationLimit(maxResultWindow);
+
+			if (query.getStart() > maxResultWindow) {
+				return results;
+			}
+
 			final int offset = BasicQueryUtils.calcOffset(query);
-			final int limit = BasicQueryUtils.calcLimit(query);
+			final int limit = BasicQueryUtils.calcLimit(query, maxResultWindow);
 			final SearchHits hits = this.manager.search(queryBuilder, sortOrder, offset, limit, null, null);
 
 			if (hits == null) {
