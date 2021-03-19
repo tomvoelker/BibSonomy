@@ -15,9 +15,9 @@
 		
 		<c:set var="unknownNumberOfPages" value="${empty listView.totalCountAsInteger}" />
 		<c:set var="unknownPaginationLimit" value="${empty listView.paginationLimit}" />
-		${unknownPaginationLimit}
+
 		<c:set var="paginationLimit" value="${listView.paginationLimit}" />
-		${paginationLimit}
+
 		<c:choose>
 			<c:when test="${unknownNumberOfPages}">
 				<c:set var="isLastPage" value="${listView.numCurrentItems != listView.entriesPerPage}" />
