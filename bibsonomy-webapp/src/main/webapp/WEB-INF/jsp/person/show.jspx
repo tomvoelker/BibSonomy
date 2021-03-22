@@ -15,7 +15,7 @@
 		  xmlns:spring="http://www.springframework.org/tags"
 		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-          xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
+		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<fmt:message key="person.show.close" var="textClose" />
@@ -34,11 +34,11 @@
 	<c:set var="useCRISView" value="${properties['system.cris'] eq 'true'}" />
 
 	<layout:paneLayout pageTitle="${title}"
-		headerLogoClass="publications" 
-		command="${command}" 
-		requPath="${requPath}"
-		noSidebar="${true}"
-		showPageOptions="${true}">
+					   headerLogoClass="publications"
+					   command="${command}"
+					   requPath="${requPath}"
+					   noSidebar="${true}"
+					   showPageOptions="${true}">
 
 		<jsp:attribute name="headerExt">
 			<script type='text/javascript' src='/resources/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
@@ -64,7 +64,7 @@
 			<link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
 
 		</jsp:attribute>
-		
+
 		<jsp:attribute name="heading">
 			<!-- nothing to show -->
 		</jsp:attribute>
