@@ -151,7 +151,9 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 		 * get candidate persons with the name of the author/editor
 		 */
 		final String name = QueryParser.escape(BibTexUtils.cleanBibTex(requestedName.toString()));
-		final List<Person> persons = this.logic.getPersons(new PersonQuery(name));
+		final PersonQuery personQuery = new PersonQuery(name);
+		personQuery.setEnd(5);
+		final List<Person> persons = this.logic.getPersons(personQuery);
 		command.setPersonSuggestions(persons);
 
 		/*
