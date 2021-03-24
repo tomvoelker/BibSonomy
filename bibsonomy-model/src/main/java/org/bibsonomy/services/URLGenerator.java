@@ -1590,7 +1590,7 @@ public class URLGenerator {
 	
 	/**
 	 * @param personId
-	 * @return String
+	 * @return the person url
 	 */
 	public String getPersonUrl(final String personId) {
 		final UrlBuilder url = new UrlBuilder(this.projectHome + URLGenerator.PERSON_PREFIX);
@@ -1614,23 +1614,33 @@ public class URLGenerator {
 			.addPathElement(Integer.toString(authorIndex.intValue()))
 			.asString());
 	}
-	
+
+	/**
+	 * @return the people overview url
+	 */
 	public String getPersonsUrl() {
 		return this.projectHome + URLGenerator.PERSON_INTRO;
 	}
-	
+
+	/**
+	 * @return the post publication url
+	 */
 	public String getPostPublicationUrl() {
 		return this.projectHome + URLGenerator.POST_PUBLICATION;
 	}
 
-
-        public String getScraperInfoUrl(final String clazz) {
-	    if (present(clazz)) {
-		final UrlBuilder builder = new UrlBuilder(this.projectHome + URLGenerator.SCRAPER_INFO);
-		builder.setAnchor(clazz);
-		return this.getUrl(builder.asString());
-	    }
-	    return this.projectHome + URLGenerator.SCRAPER_INFO;
+	/**
+	 * get scraping info page
+	 * @param clazz the scraper class for anchor
+	 * @return thhe scraping info page
+	 */
+	public String getScraperInfoUrl(final String clazz) {
+		if (present(clazz)) {
+			final UrlBuilder builder = new UrlBuilder(this.projectHome + URLGenerator.SCRAPER_INFO);
+			builder.setAnchor(clazz);
+			return this.getUrl(builder.asString());
+		}
+		return this.projectHome + URLGenerator.SCRAPER_INFO;
 	}
 
 	/**
