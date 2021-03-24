@@ -127,7 +127,6 @@ import org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper;
 import org.bibsonomy.scraper.url.kde.openuniversity.OpenUniversityScraper;
 import org.bibsonomy.scraper.url.kde.osa.OSAScraper;
 import org.bibsonomy.scraper.url.kde.osti.OstiScraper;
-import org.bibsonomy.scraper.url.kde.oxfordjournals.OxfordJournalsScraper;
 import org.bibsonomy.scraper.url.kde.phcogres.PharmacognosyResearchScraper;
 import org.bibsonomy.scraper.url.kde.pion.PionScraper;
 import org.bibsonomy.scraper.url.kde.plos.PlosScraper;
@@ -166,9 +165,9 @@ import org.bibsonomy.scraper.url.researchgate.ResearchGateScraper;
 
 /**
  * Contains all active UrlScrapers.
- * 
+ *
  * @author rja
- * 
+ *
  */
 public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 
@@ -222,7 +221,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new InformaWorldScraper());
 		addScraper(new CambridgeScraper());
 		/*
-		 * the scraper and the related information in the xml file are disabled because the website 
+		 * the scraper and the related information in the xml file are disabled because the website
 		 * http://www.isrl.uiuc.edu/ is not longer available
 		 */
 		//addScraper(new LangevScraper());
@@ -264,7 +263,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		//addScraper(new ScientificcommonsScraper());
 		addScraper(new CellScraper());
 		/*
-		 * the scraper and the related information in the xml file are disabled because the version of the website 
+		 * the scraper and the related information in the xml file are disabled because the version of the website
 		 * is session-based and hence, the scraping does not work.
 		 */
 		//addScraper(new WebOfKnowledgeScraper());
@@ -301,7 +300,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new DeGruyterScraper());
 		addScraper(new MorganClaypoolScraper());
 		addScraper(new MDPIScraper());
-		addScraper(new OxfordJournalsScraper());
 		addScraper(new TheLancetScraper());
 		addScraper(new WorldScientificScraper());
 		addScraper(new NowPublishersScraper());
@@ -333,7 +331,5 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new UmanisticaDigitaleScraper());
 		addScraper(new ZfdGScraper());
 		addScraper(new ResearchGateScraper());
-		//addScraper(new AkademiaiScraper()); error = 404
 	}
-
 }
