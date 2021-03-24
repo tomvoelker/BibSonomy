@@ -145,6 +145,7 @@ public class URLGenerator {
 	private static final String VIEWABLE_PUBLIC_SUFFIX = "public";
 	private static final String HISTORY_PREFIX = "history";
 	private static final String USER_RELATION = "handleUserRelation";
+        private static final String SCRAPER_INFO = "scraperinfo";
 
 	private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
 	private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
@@ -1620,6 +1621,16 @@ public class URLGenerator {
 	
 	public String getPostPublicationUrl() {
 		return this.projectHome + URLGenerator.POST_PUBLICATION;
+	}
+
+
+        public String getScraperInfoUrl(final String clazz) {
+	    if (present(clazz)) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome + URLGenerator.SCRAPER_INFO);
+		builder.setAnchor(clazz);
+		return this.getUrl(builder.asString());
+	    }
+	    return this.projectHome + URLGenerator.SCRAPER_INFO;
 	}
 
 	/**
