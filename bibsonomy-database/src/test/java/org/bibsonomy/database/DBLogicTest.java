@@ -327,7 +327,6 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		postQueryBuilder.setGrouping(GroupingEntity.VIEWABLE)
 				.setGroupingName("kde")
 				.setScope(QueryScope.LOCAL)
-				.setHash(TEST_REQUEST_HASH)
 				.setSortCriteria(SORT_CRITERIUMS_DATE)
 				.entriesStartingAt(2, 0);
 		
