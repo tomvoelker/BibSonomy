@@ -20,10 +20,15 @@
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}">
-		<jsp:attribute name="content">
-			<rc:sortWarningHeader requPathAndQuery="${requPathAndQuery}" indexUse="${command.isIndexUse()}" sortPage="${command.sortPage}"/>
-		</jsp:attribute>
+	<layout:resourceLayout
+			pageTitle="${command.pageTitle}"
+			command="${command}"
+			requPath="${requPath}"
+			requQueryString="${requQueryString}"
+			activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}"
+			showSortInfo="${true}"
+			sortPage="${command.sortPage}"
+			indexUse="${command.indexUse}">
 		<jsp:attribute name="heading">
 			<c:choose>
 				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL' and command.scope.name() ne 'SEARCHINDEX'}">

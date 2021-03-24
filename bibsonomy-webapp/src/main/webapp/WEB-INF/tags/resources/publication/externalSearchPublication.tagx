@@ -16,22 +16,24 @@
 		<c:set var="externalQueryString" value="${fn:escapeXml(mtl:cleanBibtex(publication.title))}" />
 		<!-- build the urls -->
 		<c:url var="googleScholarPostUrl"
-			value="http://scholar.google.com/scholar">
+			value="https://scholar.google.com/scholar">
 			<c:param name="hl" value="${locale}" />
 			<c:param name="q" value="${externalQueryString}" />
 		</c:url>
 		
-		<c:url var="microsoftAcademicUrl"
-			value="http://bing.com/search">
-			<c:param name="q" value="${externalQueryString}" />
+		<c:url var="dnbUrl"
+			value="https://portal.dnb.de/opac.htm">
+			<c:param name="query" value="tit all '${externalQueryString}'" />
+			<c:param name="method" value="simpleSearch" />
+			<c:param name="cqlMode" value="true" />
 		</c:url>
 		
-		<c:url var="worldCatUrl" value="http://www.worldcat.org/search">
+		<c:url var="worldCatUrl" value="https://www.worldcat.org/search">
 			<c:param name="qt" value="worldcat_org_all" />
 			<c:param name="q" value="${externalQueryString}" />
 		</c:url>
 		
-		<c:url var="baseSearchUrl" value="http://www.base-search.net/Search/Results">
+		<c:url var="baseSearchUrl" value="https://www.base-search.net/Search/Results">
 			<c:param name="lookfor" value="${externalQueryString}" />
 			<c:param name="type" value="tit" />
 			<c:param name="ling" value="1" />
@@ -57,7 +59,7 @@
 				</a>
 			</c:if>
 			<a href="${googleScholarPostUrl}" target="_blank" class="btn btn-default">Google Scholar</a>
-			<a href="${microsoftAcademicUrl}" target="_blank" class="btn btn-default">Microsoft Bing</a>
+			<a href="${dnbUrl}" target="_blank" class="btn btn-default">DNB</a>
 			<a href="${worldCatUrl}" target="_blank" class="btn btn-default">WorldCat</a>
 			<a href="${baseSearchUrl}" target="_blank" class="btn btn-default">BASE</a>
 		</div>
