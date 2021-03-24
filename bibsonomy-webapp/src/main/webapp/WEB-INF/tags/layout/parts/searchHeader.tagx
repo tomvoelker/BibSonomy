@@ -23,7 +23,7 @@
 										<fontawesome:icon icon="search" size="2x" />
 									</span>
 				<input class="form-control form-control-lg form-control-borderless" id="group-search-box-input"
-					   type="search" name="search" placeholder="${searchPlaceholder}" value="${command.search}" />
+					   type="search" name="search" placeholder="${searchPlaceholder}" value="${fn:escapeXml(command.search)}" />
 				<div class="input-group-btn">
 					<div class="btn bg-white" onclick="$('#group-search-box-input').val('');$('#group-search-box').submit();">
 						<fontawesome:icon icon="times" />
