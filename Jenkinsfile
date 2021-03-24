@@ -1,4 +1,4 @@
-// TODO: email notification, only build webapp and scrapingservice on success or unstable
+// TODO: only build webapp and scrapingservice on success or unstable
 pipeline {
   agent any
   triggers {
@@ -52,6 +52,9 @@ pipeline {
         always {
           archive "**/target/**/*"
           junit '**/target/surefire-reports/*.xml'
+        }
+        changed {
+          emailext attachLog: true, body: '${DEFAULT_CONTENT}', compressLog: true, subject: '${DEFAULT_SUBJECT}', to: 'bibsonomy2-devel@cs.uni-kassel.de'
         }
       }
     }
