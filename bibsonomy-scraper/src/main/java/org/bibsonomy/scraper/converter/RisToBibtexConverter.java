@@ -40,9 +40,12 @@ import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.id.ISBNUtils;
 
 /**
+ * converter to convert the RIS format into a BibTeX string
+ * this class is thread-safe
+ *
  * @author aho
  */
-public class RisToBibtexConverter implements BibtexConverter{
+public class RisToBibtexConverter implements BibtexConverter {
 
 	/**
 	 * String array that maps from month number to month string label
@@ -50,14 +53,15 @@ public class RisToBibtexConverter implements BibtexConverter{
 	private final static String[] MONTHS = new String[] { "jan", "feb", "mar", "apr", "may",
 		"jun", "jul", "aug", "sep", "oct", "nov", "dec" };
 
-	/** Function is taken from JabRef importer
+	/**
+	 * Function is taken from JabRef importer
 	 * 
 	 * @param ris
 	 * @return The resulting BibTeX string.
 	 */
 	@Override
 	public String toBibtex(String ris) {
-		/**
+		/*
 		 * Parse the entries in the source, and return a List of BibtexEntry
 		 * objects.
 		 */

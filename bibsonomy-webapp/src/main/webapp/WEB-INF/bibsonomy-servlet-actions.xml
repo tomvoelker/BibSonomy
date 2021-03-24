@@ -990,9 +990,12 @@
 	<bean id="publicationImporter" class="org.bibsonomy.webapp.util.importer.PublicationImporter">
 		<property name="fileLogic" ref="fileLogic" />
 		<property name="endnoteToBibtexConverter" ref="endnoteToBibtexConverter"/>
+		<property name="risToBibtexConverter" ref="risToBibtexConverter"/>
 	</bean>
 	
 	<bean id="endnoteToBibtexConverter" class="org.bibsonomy.scraper.converter.EndnoteToBibtexConverter"/>
+	
+	<bean id="risToBibtexConverter" class="org.bibsonomy.scraper.converter.RisToBibtexConverter"/>
 	
 	<bean id="publicationRenderingController" class="org.bibsonomy.webapp.controller.PublicationRenderingController" scope="request">
 		<property name="publicationImporter" ref="publicationImporter"/>
