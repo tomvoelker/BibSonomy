@@ -19,12 +19,12 @@
             <div  class="sort-info-content hidden">
                 <c:choose>
                     <c:when test="${indexUse}">
-                        <fmt:message key="sort.warning.index">
+                        <fmt:message key="sort.info.index">
                             <fmt:param value="${mtl:setParam(requPathAndQuery, 'indexUse', '0')}" />
                         </fmt:message>
                     </c:when>
                     <c:otherwise>
-                        <fmt:message key="sort.warning.db">
+                        <fmt:message key="sort.info.db">
                             <fmt:param value="${mtl:setParam(requPathAndQuery, 'indexUse', '1')}"/>
                         </fmt:message>
                     </c:otherwise>
