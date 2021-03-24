@@ -85,14 +85,8 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 		}
 		this.groupingValue = groupingValue;
 
-		// Set search type
-		QueryScope searchType = context.getEnumAttribute(RESTConfig.SEARCH_TYPE_PARAM, QueryScope.class, QueryScope.SEARCHINDEX);
-		// Allowing federated search?
-		if (searchType == QueryScope.FEDERATED) {
-			this.searchType = QueryScope.SEARCHINDEX;
-		} else {
-			this.searchType = searchType;
-		}
+		// set search type
+		this.searchType = context.getEnumAttribute(RESTConfig.SEARCH_TYPE_PARAM, QueryScope.class, QueryScope.LOCAL);
 	}
 
 	@Override

@@ -71,7 +71,7 @@ public class GetPopularPostsStrategy extends AbstractListOfPostsStrategy {
 				.setSearch(this.search)
 				.setTags(tag)
 				.setSortCriteria(SortUtils.singletonSortCriteria(SortKey.POPULAR, SortOrder.DESC))
-				.setScope(QueryScope.SEARCHINDEX)
+				.setScope(this.searchType)
 				.setStart(this.getView().getStartValue())
 				.setEnd(this.getView().getEndValue());
 

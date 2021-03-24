@@ -62,7 +62,7 @@ public class GetNewPostsStrategy extends AbstractListOfPostsStrategy {
 				.setGroupingName(this.groupingValue)
 				.setTags(this.tags)
 				.setSearch(this.search)
-				.setScope(QueryScope.SEARCHINDEX)
+				.setScope(this.searchType)
 				.setSortCriteria(SortUtils.singletonSortCriteria(SortKey.DATE, SortOrder.DESC))
 				.setStart(this.getView().getStartValue())
 				.setEnd(this.getView().getEndValue());
