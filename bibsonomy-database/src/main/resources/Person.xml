@@ -20,7 +20,28 @@
 		FROM person
 		WHERE person.user_name = #user#
 	</select>
-	
+
+	<select id="getPersonByAdditionalKey" resultMap="PersonCommon.lazyLoadingPerson" parameterClass="org.bibsonomy.database.params.person.PersonAdditionalKeyParam">
+		SELECT <include refid="commonPersonColumns"/>
+		FROM person_additional_keys
+		JOIN person USING(person_id)
+		WHERE person_additional_keys.key_name = #keyName#
+		AND person_additional_keys.key_value = #keyValue#
+	</select>
+
+	<select id="getAdditionalKeyByPerson" resultMap="PersonCommon.additionalKey" parameterClass="org.bibsonomy.database.params.person.PersonAdditionalKeyParam">
+		SELECT key_name, key_value
+		FROM person_additional_keys
+		WHERE person_id = #personId#
+		AND key_name = #keyName#
+	</select>
+
+	<select id="getAdditionalKeysByPerson" resultMap="PersonCommon.additionalKey" parameterClass="string">
+		SELECT key_name, key_value
+		FROM person_additional_keys
+		WHERE person_id = #personId#
+	</select>
+
 	<insert id="insertPerson" parameterClass="person">
 		INSERT INTO person (<include refid="commonPersonColumnsPlain"/>)
 			VALUES (<include refid="insertPersonAttributes"/>)
@@ -34,7 +55,7 @@
  		</selectKey>
 	</insert>
 	
-	<insert id="addResourceRelation" parameterClass="personResourceRelation">
+	<insert id="insertResourceRelation" parameterClass="personResourceRelation">
 		INSERT INTO pub_person (<include refid="commonResourcePersonRelationColumnsPlain"/>)
 			VALUES (<include refid="commonResourcePersonRelationAttributes" />)
 			
@@ -42,7 +63,13 @@
     		SELECT @@IDENTITY AS person_change_id
   		</selectKey>
 	</insert>
-	
+
+	<insert id="insertAdditionalKeyForPerson" parameterClass="org.bibsonomy.database.params.person.PersonAdditionalKeyParam">
+		INSERT INTO person_additional_keys (<include refid="commonPersonAdditionalKeysColumns"/>)
+		VALUES (#personId#, #keyName#, #keyValue#)
+		ON DUPLICATE KEY UPDATE key_value = #keyValue#
+	</insert>
+
 	<select id="getNames" resultMap="PersonCommon.personName" parameterClass="string">
 		SELECT <include refid="commonPersonNameColumns"/>
 		FROM person_name
@@ -50,29 +77,35 @@
 	</select>
 
 	<select id="getPersonNameById" resultMap="PersonCommon.personName" parameterClass="int">
-		SELECT <include refid="commonPersonNameColumns"/>
+		SELECT <include refid='commonPersonNameColumns'/>
 		FROM person_name
 		WHERE person_change_id = #personChangeId#
 	</select>
 
 	<update id="updatePerson" parameterClass="person">
 		UPDATE person
-		SET person_change_id = #personChangeId#, college = #college#, email = #email#, homepage = #homepage#, gender = #gender#, dnb_person_id  = #dnbPersonId#, academic_degree = #academicDegree#, orcid = #orcid#, post_ctr = #postCounter#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
+		SET person_change_id = #personChangeId#, college = #college#, email = #email#, homepage = #homepage#, gender = #gender#, dnb_person_id  = #dnbPersonId#, academic_degree = #academicDegree#, orcid = #orcid#, researcherid = #researcherid#, post_ctr = #postCounter#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
 		WHERE person.person_id = #personId#
 	</update>
-	
+
 	<update id="updatePersonOrcid" parameterClass="person">
 		UPDATE person
 		SET person_change_id = #personChangeId#, orcid = #orcid#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
-		WHERE person.person_id = #personId#
+		WHERE person_id = #personId#
 	</update>
-	
+
+	<update id='updatePersonResearcherid' parameterClass='org.bibsonomy.model.Person'>
+		UPDATE person
+		SET researcherid = #researcherid#, person_change_id = #personChangeId#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
+		WHERE person_id = #personId#
+	</update>
+
 	<update id="updatePersonAcademicDegree" parameterClass="person">
 		UPDATE person
 		SET person_change_id = #personChangeId#, academic_degree = #academicDegree#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
 		WHERE person.person_id = #personId#
 	</update>
-	
+
 	<update id="updatePersonCollege" parameterClass="person">
 		UPDATE person
 		SET person_change_id = #personChangeId#, college = #college#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
@@ -96,21 +129,34 @@
 		SET person_change_id = #personChangeId#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
 		WHERE person.person_id = #personId#
 	</update>
-	
+
 	<update id="updatePersonName" parameterClass="personName">
 		UPDATE person_name
 		SET is_main = #isMain#
 		WHERE person_name.person_change_id = #personNameChangeId#
 	</update>
-	
+
+	<update id="updateAdditionalKeyForPerson" parameterClass="org.bibsonomy.database.params.person.PersonAdditionalKeyParam">
+		UPDATE person_additional_keys
+		SET key_value = #keyValue#
+		WHERE person_id = #personId#
+		AND key_name = #keyName#
+	</update>
+
 	<delete id="removeResourceRelation" parameterClass="int">
 		DELETE FROM pub_person
 		WHERE person_change_id = #resourceRelationId#
 	</delete>
-	
+
 	<delete id="removePersonName" parameterClass="int">
 		DELETE FROM person_name
 		WHERE person_change_id = #personNameId#
+	</delete>
+
+	<delete id="deleteAdditionalKeyForPerson" parameterClass="org.bibsonomy.database.params.person.PersonAdditionalKeyParam">
+		DELETE FROM person_additional_keys
+		WHERE person_id = #personId#
+		AND key_name = #keyName#
 	</delete>
 
 	<delete id="deletePersonNamesByPersonId" parameterClass="string">
@@ -122,15 +168,7 @@
 		DELETE FROM person
 		WHERE person_id = #personId#
 	</delete>
-	
-	<select id="getResourcePersonRelationByResourcePersonRelation" resultMap="PersonCommon.lazyLoadingResourcePersonRelation" parameterClass="personResourceRelation">
-		SELECT <include refid="commonResourcePersonRelationColumns" />
-		FROM pub_person
-		WHERE pub_person.simhash1 = #post.resource.interHash#
-		AND pub_person.relator_code = #relationType.relatorCode#
-		AND pub_person.person_index = #personIndex#
-	</select>
-	
+
 	<update id="unlinkUser" parameterClass="string">
 		UPDATE person
 		SET user_name = null,
@@ -139,46 +177,37 @@
 		WHERE user_name = #username#
 	</update>
 	
-	<select id="getPosts" resultMap="BibTexCommon.bibtexPost">
-		SELECT <include refid="commonPublicationAttributesWithoutPrivateNote" />, <include refid="reviewRatingsDummyRows" />
-		FROM bibtex b
-		JOIN tas t1 USING (content_id)
-		JOIN bibhash h ON (b.simhash1 = h.hash AND h.type = 1)
+	<select id="getPosts" resultMap="GoldStandardPublicationCommon.goldStandardPost">
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsDummyRows" />
+		FROM gold_standard b
 		WHERE b.simhash1 = #simhash1#
-		GROUP BY interHash
-		ORDER BY date DESC
 	</select>
 	
-	<select id="getBibTexRelationsForPerson" resultMap="PersonCommon.preFilledResourcePersonRelation" parameterClass="bibtexParam">
-		SELECT <include refid ="bibtexAttributes2"/>, t.change_date, t.tag_name, g.*, b2.count, <include refid="reviewRatingsDummyRows" />, <include refid="commonResourcePersonRelationColumns2" />
-		FROM
-			(SELECT
-					t1.*,
-					pp.person_change_id, pp.qualifying, pp.person_id, pp.relator_code, pp.log_changed_by, pp.log_changed_at, pp.person_index,
-					h.ctr AS count
-				FROM bibtex t1, bibhash h, pub_person pp
-				WHERE
-					<include refid="bibtexSimHash3"/>
-					AND t1.simhash1 = pp.simhash1 AND pp.person_id = #personRelation.person.personId#
-					<include refid="restrictToGroups"/>
-			) AS b2
-		JOIN tas t USING (content_id)
-		JOIN groupids g ON (g.`group` = b2.`group`)
-		ORDER BY b2.date DESC, b2.content_id DESC
+	<!--
+		Queries to find resource <-> person relations
+	-->
+	<select id="getResourcePersonRelationByResourcePersonRelation" resultMap="PersonCommon.lazyLoadingResourcePersonRelation" parameterClass="personResourceRelation">
+		SELECT <include refid="commonResourcePersonRelationColumns" />
+		FROM pub_person
+		WHERE simhash1 = #post.resource.interHash#
+		<isNotNull property="person">
+			AND person_id = #person.personId#
+		</isNotNull>
+		AND relator_code = #relationType.relatorCode#
+		AND person_index = #personIndex#
 	</select>
 	
 	<select id="getCommunityBibTexRelationsForPerson" resultMap="PersonCommon.preFilledCommunityResourcePersonRelation" parameterClass="bibtexParam">
-		SELECT <include refid="allGoldStandardPublicationAttributesAnonym" />, b.simhash2 as intraHash, b.simhash1 as interHash, b.change_date, 0 as count, <include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
 		FROM
 			gold_standard b
-			JOIN pub_person USING (simhash1)
-			<include refid="reviewRatingsJoinPublication" />,
-			bibhash h
+			<include refid="reviewRatingsJoinPublication" />
+			JOIN pub_person USING(simhash1)
 		WHERE
-			<include refid="bibtexSimHash"/>
-		AND pub_person.person_id = #personRelation.person.personId#
+			pub_person.person_id = #personRelation.person.personId#
 	</select>
 	
+
 	<select id="getResourcePersonRelationsByPublication" parameterClass="java.lang.String" resultMap="PersonCommon.resourcePersonRelationWithPersonPrefilled">
 		SELECT <include refid="commonResourcePersonRelationColumns" />, <include refid="commonPersonColumns" />, <include refid="commonPersonNameColumns" />
 		FROM pub_person, person, person_name
@@ -187,23 +216,51 @@
 		AND pub_person.person_id = person_name.person_id
 		ORDER BY pub_person.simhash1, pub_person.relator_code, pub_person.person_index
 	</select>
-	
-
 
 	<select id="getResourcePersonRelationsWithPersonsByInterhash" parameterClass="java.lang.String" resultMap="PersonCommon.resourcePersonRelationWithPersonPrefilled">
 		SELECT <include refid="commonResourcePersonRelationColumns" />, <include refid="commonPersonColumns"/>, <include refid="commonPersonNameColumns"/>
 		FROM pub_person
 		JOIN person USING (person_id)
 		JOIN person_name USING (person_id)
-		WHERE simhash1 = #post.resource.interhash#
+		WHERE simhash1 = #interhash#
 	</select>
-	
+
+	<select id="getComunityBibTexRelationsForPerson" resultMap="PersonCommon.preFilledCommunityResourcePersonRelation" parameterClass="org.bibsonomy.database.params.relations.GetPersonRelations">
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />,
+		       <include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
+		FROM gold_standard b
+			<include refid="reviewRatingsJoinPublication" />
+		JOIN pub_person USING(simhash1)
+		WHERE pub_person.person_id = #personId#
+		<isNotNull property="offset">
+			LIMIT #limit# OFFSET #offset#
+		</isNotNull>
+		<!-- (AD) check is used to support full retrievals. Since the parameter object already ensures that
+		     limit and offset are both set or absent it is sufficient to check one parameter.-->
+	</select>
+
+	<select id="countComunityBibTexRelationsForPerson" resultClass="int" parameterClass="bibtexParam">
+		SELECT count(*)	FROM gold_standard b <include refid="reviewRatingsJoinPublication" />
+			JOIN pub_person USING(simhash1)
+		WHERE
+			pub_person.person_id = #personRelation.person.personId#
+	</select>
+
 	<select id="getMatches" resultMap="PersonCommon.personMatch">
 		SELECT match_id, person1_id, person2_id, state
 		FROM person_match
 		WHERE state = 0
 	</select>
-	
+
+	<!-- FIXME: merge this into the getMatches Query -->
+	<select id="getPostsForPerson" parameterClass="string" resultMap="GoldStandardPublicationCommon.goldStandardPost">
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsDummyRows" />
+		FROM gold_standard b
+		JOIN pub_person p USING(simhash1)
+		WHERE p.person_id = #personId#
+		AND p.relator_code = 'Maut'
+	</select>
+
 	<select id="getMatchbyID" parameterClass="int" resultMap="PersonCommon.personMatch">
 		SELECT match_id, person1_id, person2_id, state
 		FROM person_match
@@ -263,47 +320,26 @@
 		OR (person1_id = #person2.personId# AND person2_id = #person1.personId#)
 	</select>
 
-	<select id="getPostsForPerson" parameterClass="java.lang.String" resultMap="BibTexCommon.bibtexPost">
-		SELECT b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
-		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
-		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
-		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype,
-		IF("hansii" = b.user_name, b.privnote, NULL) AS privnote , b.scraperid, t1.change_date, b.simhash1 AS interHash, b.simhash2 AS intraHash, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsDummyRows" />
-		FROM tas t1, bibhash h, bibtex b, pub_person p
-		WHERE b.content_id = t1.content_id
-		AND b.simhash1 = h.hash	AND h.type=1 AND p.person_id=#personId# AND p.relator_code = 'Maut'
-		AND b.simhash1=p.simhash1
-		GROUP BY interHash ORDER BY b.date DESC
-	</select>
-	
-	<select id="getHabilForPerson" parameterClass="string" resultMap="BibTexCommon.bibtexPost">
-		SELECT <include refid="commonPublicationAttributesWithoutPrivateNote" />, <include refid="reviewRatingsDummyRows" />
-		FROM bibtex b
-		JOIN tas t1 USING (content_id)
-		JOIN bibhash h ON (h.hash = 1 AND b.simhash1 = h.hash)
+	<select id="getHabilForPerson" parameterClass="string" resultMap="GoldStandardPublicationCommon.goldStandardPost">
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsDummyRows" />
+		FROM gold_standard b
 		JOIN pub_person p USING (simhash1)
 		WHERE p.person_id = #personId#
 		AND p.relator_code = 'Maut'
 		AND b.entrytype = 'phdthesis'
 		AND b.type = 'habilitation'
-		GROUP BY interHash <!-- to only get one post -->
-		ORDER BY b.date DESC
 	</select>
-	
-	<select id="getPHDForPerson" parameterClass="string" resultMap="BibTexCommon.bibtexPost">
-		SELECT <include refid="commonPublicationAttributesWithoutPrivateNote" />, <include refid="reviewRatingsDummyRows" />
-		FROM bibtex b
-		JOIN tas t1 USING (content_id)
-		JOIN bibhash h ON (h.hash = 1 AND b.simhash1 = h.hash)
+
+	<select id="getPHDForPerson" parameterClass="string" resultMap="GoldStandardPublicationCommon.goldStandardPost">
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />, <include refid="reviewRatingsDummyRows" />
+		FROM gold_standard b
 		JOIN pub_person p USING (simhash1)
 		WHERE p.person_id = #personId#
 		AND p.relator_code = 'Maut'
 		AND b.entrytype = 'phdthesis'
 		AND (b.type is NULL or b.type != 'habilitation')
-		GROUP BY interHash <!-- to only get one post -->
-		ORDER BY b.date DESC
 	</select>
-	
+
 	<select id="getDeniesForMatch" resultClass="string" parameterClass="int">
 		SELECT user_name
 		FROM user_denied_match
@@ -326,11 +362,42 @@
 		SET dnb_person_id = #dnbId#
 		WHERE dnb_person_id = #otherDnbId#
 	</update>
-	
+
 	<select id="getPhdAdvisorRec" resultMap="PersonCommon.phdRecommendation" parameterClass="string">
 		SELECT doctor_id, advisor_id, confidence, rank
-		FROM phd_advisor_recommendation AS adv 
+		FROM phd_advisor_recommendation AS adv
 	    WHERE adv.doctor_id = #personId#
 		order by confidence desc
 	</select>
+
+	<select id="getPersonsByOrganization" parameterClass="org.bibsonomy.database.params.person.GetPersonByOrganizationParam" resultMap="PersonCommon.personWithNamesPrefilled">
+		SELECT <include refid="commonPersonColumns" />, <include refid="commonPersonNameColumns" />
+		FROM person
+		JOIN person_name ON (person.person_id = person_name.person_id)
+		JOIN cris_links c ON (c.target_id = person.person_change_id)
+		JOIN groupids g ON (c.source_id = g.`group`)
+		WHERE g.group_name = #organizationName#
+			AND c.source_type = 4
+			AND c.target_type = 2
+			AND person_name.is_main = 1
+		ORDER BY person_name.last_name ASC,
+			person_name.first_name ASC
+		LIMIT #limit#
+		OFFSET #offset#
+	</select>
+
+	<select id="getPersonsByOrganizationCount" parameterClass="string" resultClass="int">
+		SELECT COUNT(*)
+		FROM cris_links c
+		JOIN groupids g ON (c.source_id = g.`group`)
+		WHERE g.group_name = #name#
+		AND c.source_type = 4
+		AND c.target_type = 2
+	</select>
+
+	<select id="getUserPersonPostsStyleSettings" resultClass="int">
+		SELECT person_posts_style FROM user
+		WHERE user_name = #userName#
+	</select>
+
 </sqlMap>

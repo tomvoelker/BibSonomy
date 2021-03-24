@@ -39,38 +39,90 @@ package org.bibsonomy.common.enums;
  * The sort order (asc / desc) is defined in org.bibsonomy.common.enums.SortOrder 
  * 
  * @author Dominik Benz
- * @see org.bibsonomy.model.enums.Order
  * @see org.bibsonomy.common.enums.SortOrder
  */
 public enum SortKey {
-	/** no re-sorting, keep order as it comes from DB */
+	/** no re-sorting, keep order as it comes from DB/search index */
 	NONE,
-	/** sort by year */
-	YEAR,
-	/** sort by month */
-	MONTH,
-	/** sort by day */
-	DAY,	
-	/** sort by author */
-	AUTHOR,
-	/** sort by editor */
-	EDITOR,
-	/** by entrytype */
-	ENTRYTYPE,
-	/** by title */
-	TITLE,
-	/** by booktitle */
-	BOOKTITLE,
-	/** by journal */
-	JOURNAL,
-	/** by school */
-	SCHOOL,
-	/** by note */
-	NOTE,	
-	/** by posting date*/
+
+	/** for ordering by adding time */
 	DATE,
-	/** by a (somehow computed) ranking */
-	RANKING,
-	/** by number */
-	NUMBER;
+
+	/** for ordering by popularity */
+	POPULAR,
+
+	/** for ordering by rank (e. g. full text search by score) */
+	RANK,
+
+	/** for ordering by folkrank */
+	FOLKRANK,
+
+	/** for ordering tags by frequency */
+	FREQUENCY,
+
+	/** Some items can be ordered alphabetically ... (in particular groups) */
+	ALPH,
+
+	NUMBER,
+
+	NOTE,
+
+	/** for ordering by entrytype */
+	ENTRYTYPE,
+
+	/** for ordering by title */
+	TITLE,
+
+	/** for ordering by booktitle */
+	BOOKTITLE,
+
+	/** for ordering by journal */
+	JOURNAL,
+
+	/** for ordering by series */
+	SERIES,
+
+	/** for ordering by publisher */
+	PUBLISHER,
+
+	/** for ordering by author names */
+	AUTHOR,
+
+	/** for ordering by editor names */
+	EDITOR,
+
+	/** for ordering by school */
+	SCHOOL,
+
+	/** for ordering by institution */
+	INSTITUTION,
+
+	/** for ordering by organization */
+	ORGANIZATION,
+
+	/** for ordering by publication year */
+	YEAR,
+
+	/** for ordering by publication month */
+	MONTH,
+
+	/** for ordering by publication day */
+	DAY,
+
+	/** for ordering by publication date */
+	PUBDATE;
+
+	/**
+	 * Retrieve Sort Key by name
+	 *
+	 * @param name	the requested sort key (e.g. "folkrank")
+	 * @return the corresponding SortKey enum, returns RANK if no match found
+	 */
+	public static SortKey getByName(String name) {
+		try {
+			return SortKey.valueOf(name.toUpperCase());
+		} catch (NullPointerException | IllegalArgumentException e) {
+			return SortKey.RANK;
+		}
+	}
 }

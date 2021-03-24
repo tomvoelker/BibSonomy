@@ -29,7 +29,6 @@ package org.bibsonomy.search.index.utils;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -67,19 +66,16 @@ public class SimpleFileContentExtractorService implements FileContentExtractorSe
 		final File file = this.fileLogic.getFileForDocument(document);
 		for (final ContentExtractor contentExtractor : this.extractors) {
 			if (contentExtractor.supports(document.getFileName())) {
-				final Future<String> task = this.executorService.submit(new Callable<String>() {
-					@Override
-					public String call() throws Exception {
-						final String absolutePath = file.getAbsolutePath();
-						try {
-							final long time = System.currentTimeMillis();
-							final String result = contentExtractor.extractContent(file);
-							log.warn(absolutePath + " " + (System.currentTimeMillis() - time));
-							return result;
-						} catch (final Exception e) {
-							log.error("error extracting content from file " + absolutePath);
-							return null;
-						}
+				final Future<String> task = this.executorService.submit(() -> {
+					final String absolutePath = file.getAbsolutePath();
+					try {
+						final long time = System.currentTimeMillis();
+						final String result = contentExtractor.extractContent(file);
+						log.warn(absolutePath + " " + (System.currentTimeMillis() - time));
+						return result;
+					} catch (final Exception e) {
+						log.error("error extracting content from file " + absolutePath);
+						return null;
 					}
 				});
 				

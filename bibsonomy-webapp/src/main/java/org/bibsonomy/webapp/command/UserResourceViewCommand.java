@@ -26,14 +26,12 @@
  */
 package org.bibsonomy.webapp.command;
 
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.logic.exception.LogicException;
 
 /**
  * Bean for User-Sites
@@ -41,9 +39,6 @@ import org.bibsonomy.model.logic.exception.LogicException;
  * @author  Dominik Benz
  */
 public class UserResourceViewCommand extends TagResourceViewCommand {
-
-	@Deprecated // FIXME: remove use errors handling build into spring
-	private final Collection<LogicException> logicExceptions = new LinkedList<>();
 	
 	/** the group whode resources are requested*/
 	private ConceptsCommand concepts = new ConceptsCommand();
@@ -58,11 +53,16 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 * Has the requested user added the logged in user to her friend list? 
 	 */
 	private boolean friendOfUser = false;
+
 	/**
 	 * Has the logged in user added the requested user to his friend list?
 	 */
 	private boolean ofFriendUser = false;
-	
+
+	/**
+	 * The claimed person of the user
+	 */
+	private Person claimedPerson = null;
 	/**
 	 * defines the similarity measure by which the related users are computed  
 	 * (default is folkrank)
@@ -150,6 +150,13 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	}
 
 	/**
+	 * @return returning the claimed person
+	 */
+	public Person getClaimedPerson() {
+		return this.claimedPerson;
+	}
+
+	/**
 	 * @param friendOfUser
 	 */
 	public void setFriendOfUser(boolean friendOfUser) {
@@ -176,12 +183,11 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	public void setSharedGroups(List<Group> sharedGroups) {
 		this.sharedGroups = sharedGroups;
 	}
-	
+
 	/**
-	 * @return the logicExceptions
+	 * @param claimedPerson the person claimed by the user
 	 */
-	@Deprecated
-	public Collection<LogicException> getLogicExceptions() {
-		return this.logicExceptions;
+	public void setClaimedPerson(Person claimedPerson) {
+		this.claimedPerson = claimedPerson;
 	}
 }

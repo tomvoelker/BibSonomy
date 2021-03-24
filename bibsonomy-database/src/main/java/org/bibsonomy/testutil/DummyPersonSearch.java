@@ -26,25 +26,30 @@
  */
 package org.bibsonomy.testutil;
 
+import java.util.LinkedList;
 import java.util.List;
 
-import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.query.PersonQuery;
+import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.services.searcher.PersonSearch;
 
 /**
- * TODO: add documentation to this class
+ * dummy implementation of the {@link PersonSearch} interface
  *
- * @author jensi
+ * @author dzo
  */
 public class DummyPersonSearch implements PersonSearch {
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.services.searcher.PersonSearch#getPersonSuggestion(java.lang.String)
-	 */
 	@Override
-	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options) {
-		return null;
+	public List<Person> getPersons(PersonQuery query) {
+		return new LinkedList<>();
+	}
+
+	@Override
+	public Statistics getStatistics(User loggedinUser, PersonQuery query) {
+		return new Statistics();
 	}
 
 }

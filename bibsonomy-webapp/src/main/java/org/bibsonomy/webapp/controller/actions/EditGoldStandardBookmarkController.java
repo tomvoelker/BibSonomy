@@ -96,7 +96,7 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 	}
 
 	@Override
-	protected View finalRedirect(final String userName, final Post<Bookmark> post, final String referer) {
+	protected View finalRedirect(final String userName, final Post<Bookmark> post, final String referer, boolean update) {
 		return new ExtendedRedirectView(this.urlGenerator.getResourceUrl(post.getResource()));
 	}
 
@@ -104,7 +104,7 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 		if (!present(post)) {
 			return null;
 		}
-		final Post<Bookmark> gold = new Post<Bookmark>();
+		final Post<Bookmark> gold = new Post<>();
 		final GoldStandardBookmark goldResource = new GoldStandardBookmark();
 
 		ObjectUtils.copyPropertyValues(post.getResource(), goldResource);

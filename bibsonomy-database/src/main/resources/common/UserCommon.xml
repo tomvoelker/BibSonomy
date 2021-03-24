@@ -71,6 +71,8 @@
 		<result property="tagboxTooltip"   	column="tagbox_tooltip" 	javaType="integer" />
 		<result property="logLevel"        	column="log_level"      	javaType="integer" />
 		<result property="defaultLanguage" 	column="lang" 	       		javaType="string" />
+		<result property="personPostsStyle" column="person_posts_style" javaType="integer" />
+		<result property="personPostsLayout" column="person_posts_layout" javaType="string" />
 		<result property="confirmDelete"   	column="confirmDelete"  	javaType="boolean" />
 		<result property="profilePrivlevel" column="profilegroup"   	javaType="ProfilePrivlevel" />
 		<result property="showBookmark"   	column="show_bookmark"  	javaType="boolean" />
@@ -105,8 +107,8 @@
 	<!-- IMPORTANT: changing this requires you to change "insertUserAttributes", too! -->
 	<sql id="userSettingsAttributes">
 		tagbox_style, tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, 
-		lang, log_level, confirmDelete, profilegroup, tagbox_max_count, is_max_count, 
-		show_bookmark, show_bibtex, simple_interface, favourite_layouts
+		lang, log_level, confirmDelete, profilegroup, tagbox_max_count, is_max_count,
+		show_bookmark, show_bibtex, simple_interface, person_posts_style, person_posts_layout, favourite_layouts
 	</sql>
 
 	<!-- 
@@ -123,8 +125,8 @@
 		<isNotNull property="settings.defaultLanguage">#settings.defaultLanguage#,</isNotNull>
 		<isNull property="settings.defaultLanguage">DEFAULT(lang),</isNull> 
 		#settings.logLevel#, #settings.confirmDelete#, #settings.profilePrivlevel#, #settings.tagboxMaxCount#, #settings.isMaxCount#, 
-		#settings.showBookmark#, #settings.showBibtex#, #settings.layoutSettings.simpleInterface#,
-		#settings.favouriteLayouts,handler=org.bibsonomy.database.common.typehandler.FavouriteLayoutsTypeHandlerCallback#
+		#settings.showBookmark#, #settings.showBibtex#, #settings.layoutSettings.simpleInterface#, #settings.personPostsStyle#,
+		#settings.personPostsLayout#, #settings.favouriteLayouts,handler=org.bibsonomy.database.common.typehandler.FavouriteLayoutsTypeHandlerCallback#
 	</sql>
 
 	<sql id="updateUserProfileAttributes">
@@ -156,6 +158,8 @@
 		show_bookmark = #settings.showBookmark#,
 		show_bibtex = #settings.showBibtex#, 
 		simple_interface = #settings.layoutSettings.simpleInterface#,
+		person_posts_style = #settings.personPostsStyle#,
+		person_posts_layout = #settings.personPostsLayout#,
 		favourite_layouts = #settings.favouriteLayouts,handler=org.bibsonomy.database.common.typehandler.FavouriteLayoutsTypeHandlerCallback#
 	</sql>
 	

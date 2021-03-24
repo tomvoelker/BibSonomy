@@ -1,0 +1,119 @@
+<jsp:root version="2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="sortPage" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="sortPageOrder" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="isBibtex" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="additionalSorting" fragment="true"/>
+
+	<!--+
+		+ actions concerning different sorting criteria
+		+-->
+	<li class="dropdown-header"><fmt:message key="post.meta.sort.criterion" /></li>
+	<!-- date / default sorting -->
+	<c:choose>
+		<c:when test="${sortPage eq 'none' or sortPage eq 'date' and sortPageOrder eq 'desc'}">
+			<li class="sort-selection sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'date'), 'sortPageOrder', 'asc')}">
+				<fontawesome:icon icon="clock-o" spaceAfter="5"/><fmt:message key="sort.addedAt"/><fontawesome:icon icon="arrow-down" spaceBefore="5"/>
+			</a></li>
+		</c:when>
+		<c:when test="${sortPage eq 'date' and sortPageOrder eq 'asc'}">
+			<li class="sort-selection sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'date'), 'sortPageOrder', 'desc')}">
+				<fontawesome:icon icon="clock-o" spaceAfter="5"/><fmt:message key="sort.addedAt"/><fontawesome:icon icon="arrow-up" spaceBefore="5"/>
+			</a></li>
+		</c:when>
+		<c:otherwise>
+			<li class="sort-selection"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'date'), 'sortPageOrder', 'desc')}">
+				<fontawesome:icon icon="clock-o" spaceAfter="5" /><fmt:message key="sort.addedAt"/>
+			</a></li>
+		</c:otherwise>
+	</c:choose>
+
+
+
+	<!-- title sorting -->
+	<c:choose>
+		<c:when test="${sortPage eq 'title' and sortPageOrder eq 'desc'}">
+			<li class="sort-selection sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'title'), 'sortPageOrder', 'asc')}">
+				<fontawesome:icon icon="heading" spaceAfter="5"/><fmt:message key="sort.title"/><fontawesome:icon icon="arrow-down" spaceBefore="5"/>
+			</a></li>
+		</c:when>
+		<c:when test="${sortPage eq 'title' and sortPageOrder eq 'asc'}">
+			<li class="sort-selection sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'title'), 'sortPageOrder', 'desc')}">
+				<fontawesome:icon icon="heading" spaceAfter="5"/><fmt:message key="sort.title"/><fontawesome:icon icon="arrow-up" spaceBefore="5"/>
+			</a></li>
+		</c:when>
+		<c:otherwise>
+			<li class="sort-selection"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'title'), 'sortPageOrder', 'asc')}">
+				<fontawesome:icon icon="heading" spaceAfter="5" /><fmt:message key="sort.title"/>
+			</a></li>
+		</c:otherwise>
+	</c:choose>
+
+	<!-- ONLY FOR BibTeX -->
+	<c:if test="${isBibtex}">
+		<!-- author sorting -->
+		<c:choose>
+			<c:when test="${sortPage eq 'author' and sortPageOrder eq 'desc'}">
+				<li class="sort-selection sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'author'), 'sortPageOrder', 'asc')}">
+					<fontawesome:icon icon="user" spaceAfter="5"/><fmt:message key="sort.author"/><fontawesome:icon icon="arrow-down" spaceBefore="5"/>
+				</a></li>
+			</c:when>
+			<c:when test="${sortPage eq 'author' and sortPageOrder eq 'asc'}">
+				<li class="sort-selection sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'author'), 'sortPageOrder', 'desc')}">
+					<fontawesome:icon icon="user" spaceAfter="5"/><fmt:message key="sort.author"/><fontawesome:icon icon="arrow-up" spaceBefore="5"/>
+				</a></li>
+			</c:when>
+			<c:otherwise>
+				<li class="sort-selection"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'author'), 'sortPageOrder', 'asc')}">
+					<fontawesome:icon icon="user" spaceAfter="5" /><fmt:message key="sort.author"/>
+				</a></li>
+			</c:otherwise>
+		</c:choose>
+
+		<!-- publication date sorting -->
+		<c:choose>
+			<c:when test="${sortPage eq 'pubdate' and sortPageOrder eq 'desc'}">
+				<li class="sort-selection sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'pubdate'), 'sortPageOrder', 'asc')}">
+					<fontawesome:icon icon="calendar-alt" spaceAfter="5"/><fmt:message key="sort.pubdate"/><fontawesome:icon icon="arrow-down" spaceBefore="5"/>
+				</a></li>
+			</c:when>
+			<c:when test="${sortPage eq 'pubdate' and sortPageOrder eq 'asc'}">
+				<li class="sort-selection sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'pubdate'), 'sortPageOrder', 'desc')}">
+					<fontawesome:icon icon="calendar-alt" spaceAfter="5"/><fmt:message key="sort.pubdate"/><fontawesome:icon icon="arrow-up" spaceBefore="5"/>
+				</a></li>
+			</c:when>
+			<c:otherwise>
+				<li class="sort-selection"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'pubdate'), 'sortPageOrder', 'desc')}">
+					<fontawesome:icon icon="calendar-alt" spaceAfter="5" /><fmt:message key="sort.pubdate"/>
+				</a></li>
+			</c:otherwise>
+		</c:choose>
+
+		<!-- entrytype sorting -->
+		<c:choose>
+			<c:when test="${sortPage eq 'entrytype' and sortPageOrder eq 'desc'}">
+				<li class="sort-selection sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'entrytype'), 'sortPageOrder', 'asc')}">
+					<fontawesome:icon icon="book" spaceAfter="5"/><fmt:message key="sort.entrytype"/><fontawesome:icon icon="arrow-down" spaceBefore="5"/>
+				</a></li>
+			</c:when>
+			<c:when test="${sortPage eq 'entrytype' and sortPageOrder eq 'asc'}">
+				<li class="sort-selection sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'entrytype'), 'sortPageOrder', 'desc')}">
+					<fontawesome:icon icon="book" spaceAfter="5"/><fmt:message key="sort.entrytype"/><fontawesome:icon icon="arrow-up" spaceBefore="5"/>
+				</a></li>
+			</c:when>
+			<c:otherwise>
+				<li class="sort-selection"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'entrytype'), 'sortPageOrder', 'asc')}">
+					<fontawesome:icon icon="book" spaceAfter="5" /><fmt:message key="sort.entrytype"/>
+				</a></li>
+			</c:otherwise>
+		</c:choose>
+	</c:if>
+	<jsp:invoke fragment="additionalSorting" />
+</jsp:root>

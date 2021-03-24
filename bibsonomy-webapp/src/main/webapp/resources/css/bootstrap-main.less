@@ -44,8 +44,6 @@ body {
    padding-right: 5px !important;
 }
 
-
-
 /** FIX for right dropdown alignment */
 
 .dropdown-align-right .dropdown-menu {
@@ -63,6 +61,20 @@ ul.dropdown-menu.list-options > li > span {
 	padding: 3px 20px;
 	color: @font-color;
 	font-size: inherit;
+}
+
+/** sorting dropdown menu **/
+ul.dropdown-menu > li.sort-selection > a {
+	color: @font-color;
+}
+
+ul.dropdown-menu > li.sort-selected > a {
+	font-weight: bolder;
+}
+
+/** FIX for breadcrumb text outside of container */
+.breadcrumb {
+	word-break: break-all;
 }
 
 /*
@@ -89,7 +101,7 @@ ul.dropdown-menu.list-options > li > span {
 .container {
 	border-color: @border-color;
 	border-width: 1px;
-	border-style: solid;
+	border-style: @border-style;
 	border-bottom: none;
 	background-color: #FFFFFF;
 }
@@ -99,15 +111,15 @@ ul.dropdown-menu.list-options > li > span {
 	border-top: none;
 	border-bottom: none;
 	margin-top: 30px;
-	-webkit-box-shadow: 2px 2px 30px 6px @border-color;
-	box-shadow: 2px 2px 30px 6px @border-color;
+	-webkit-box-shadow: @container-shadow;
+	box-shadow: @container-shadow;;
 }
 
 .container.main {
-	padding: 20px 30px 0 30px;
+	padding: 20px 30px 30px 30px;
 	border-top: none;
-	-webkit-box-shadow: 2px 2px 30px 6px @border-color;
-	box-shadow: 2px 2px 30px 6px @border-color;
+	-webkit-box-shadow: @container-shadow;
+	box-shadow: @container-shadow;
 }
 
 .container .wrapper {
@@ -201,7 +213,7 @@ a, .btn-link {
  * NAVBAR
  */
 .navbar-bibsonomy {
-	background-color: @main-color;
+	background-color: @navbar-color;
 	border: none;
 	border-radius: 0;
 	margin-bottom: 0;
@@ -209,8 +221,8 @@ a, .btn-link {
 
 .container.navi {
 	padding-left: 0;
-	border-left: 1px @container-navi-border solid;
-	border-right: 1px @container-navi-border solid;
+	border-left: 1px @container-navi-border @border-style;
+	border-right: 1px @container-navi-border @border-style;
 }
 
 .navbar-bibsonomy a {
@@ -611,6 +623,11 @@ a.description-link {
 	overflow: hidden;
 }
 
+// special pub lists
+#organization-publications li.post {
+  height: inherit;
+}
+
 /**
  * SIDEBAR
  */
@@ -625,6 +642,12 @@ div#sidebar {
 	padding-right: 10px;
 	margin-left: 15px;
 	border-left: 1px @border-color solid;
+	
+	.clear-inbox-confirmation-item h3 {
+		line-height: unset;
+		height: auto;
+		font-size: inherit;
+	}
 }
 
 #sidebar ul {
@@ -687,7 +710,8 @@ div#sidebar {
  */
 
 .tagcloud li a{
-	line-height: 1.5em;
+    line-height: 1.5em;
+    word-break: break-word;
 }
 
 ul.news {
@@ -759,8 +783,8 @@ ul.tagcloud {
 
 .tagcloud li {
 	display: inline;
-	padding: 0em .1em 0em .1em;
-	line-height: 1.5em;
+	padding: 0em .2em 0em .2em;
+	line-height: 2em;
 	font-size: 90%;
 }
 
@@ -887,6 +911,10 @@ span.web					{background-position:-2px -1106px;	width:61px;	height:37px; 					ma
  * PUBLICATION PAGE
  */
 
+#desc {
+	word-break: break-word;
+}
+
 h1#pubtitle {
 	font-size: 21px;
 	font-weight: 300;
@@ -903,7 +931,7 @@ img.user-avatar {
 	display: block;
 }
 
-.img-thumbnail span {
+/*.img-thumbnail span {
 	display: block;
 	position: relative;
 	font-size: 11px;
@@ -917,7 +945,7 @@ img.user-avatar {
 	overflow:hidden; 
 	text-overflow: ellipsis; 
 	white-space: nowrap;
-}
+}*/
 
 div.title a:hover {
 	text-decoration: none;
@@ -935,7 +963,8 @@ h4.pub-details {
 }
 
 #resources dd {
-	padding: 4px 0 !important;
+    padding: 4px 0 !important;
+    word-break: break-all;
 }
 
 table a.img-thumbnail {
@@ -1040,17 +1069,17 @@ fieldset.collapsible > legend {
 
 .container.footer {
 	padding: 30px 30px;
-	border-top: none;
 	border: none;
-	background: transparent;
+	background: @footer-background-color;
 
+  	color: @footer-color;
 	margin-bottom: 10px;
 	font-family: Arial, Tahoma, sans-serif;	
 	font-size: 90%;
 }
 
 .container.footer a:not(.btn) {
-	color: #333;
+	color: @footer-color;
 }
 
 
@@ -1058,10 +1087,6 @@ fieldset.collapsible > legend {
 .container.footer a:not(.btn):hover,
 .container.footer a:not(.btn):active {
 	text-decoration: underline;
-}
-
-.container.footer dl {
-	/* line-height: 150%; */
 }
 
 .container.footer dt {
@@ -1288,7 +1313,7 @@ h1.content-header, h1.content-heading {
 	font-size: 12px;
 }
 
-.main h4 {
+.main > h4 {
 	font-size: 16px;
 	line-height: 20px;
 	height: 20px;
@@ -1584,7 +1609,11 @@ ul#urlList {
 	font-size: 10em;
 }
 
-.fa-space-5 {
+.fa-space-before-5 {
+	margin-left: 5px;
+}
+
+.fa-space-after-5 {
 	margin-right: 5px;
 }
 
@@ -1660,6 +1689,78 @@ pre.export {
 	padding: 5px 10px;
 }
 
+.form-search {
+  background-color: #ffffff;
+  border-radius: 5px;
+  padding: 3px 5px 5px 5px;
+
+  .input-group-addon {
+	background-color: transparent;
+	border: none;
+  }
+
+  input {
+	margin-top: 5px;
+	font-size: 150%;
+  }
+
+  .form-control-borderless, .form-control-borderless:hover, .form-control-borderless:active, .form-control-borderless:focus {
+	border: none;
+	outline: none;
+	box-shadow: none;
+  }
+}
+
+ul.prefix-list {
+  margin: 20px 0px 0px 0px;
+  padding: 0px;
+
+  li {
+	display: inline;
+	padding: 5px;
+  }
+}
+
+.jumbotron {
+  ul.prefix-list > li.active {
+	background-color: #ffffff;
+	border-radius: 4px;
+  }
+}
+
+.jumbotron.search {
+  padding: 10px 30px 20px;
+}
+
+#cris-home-logo {
+  max-width: 1110px;
+  padding-bottom: 15px;
+}
+
+div.no-items-found {
+  text-align: center;
+  font-weight: 600;
+  font-size: 150%;
+  color: grey;
+  padding-top: 20px;
+}
+
+hr.option-result-divider {
+  border-color: #ccc;
+}
+
+// TODO: remove with bootstrap 4
+.vcenter {
+  display: inline-block;
+  vertical-align: middle;
+  float: none;
+}
+
+
+#organizations img {
+  max-width: 100px;
+}
+
 /** Show all tags in publication list view **/
 .all-tags-button {
 	margin-top: 2px;
@@ -1695,4 +1796,8 @@ ul.custom-all-tags-list li {
 
 .popover-content-custom-close {
 	margin: -8px -8px 0 0;
+}
+
+.bg-white {
+	background-color: #fff;
 }

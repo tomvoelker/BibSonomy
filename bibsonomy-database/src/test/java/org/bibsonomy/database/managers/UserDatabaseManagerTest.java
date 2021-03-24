@@ -240,7 +240,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// user - implement me...
 		final String newRealName = "New TestUser";
 		newTestuser.setRealname(newRealName);
-		final String userName = userDb.updateUser(newTestuser, this.dbSession);
+		final String userName = userDb.updateUser(newTestuser, newTestuser, this.dbSession);
 		assertEquals(testusername, userName);
 		newTestuser = userDb.getUserDetails(testusername, this.dbSession);
 		assertEquals(newRealName, newTestuser.getRealname());
@@ -248,7 +248,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// you can't change the user's name
 		try {
 			newTestuser.setName(newTestuser.getName() + "-changed");
-			userDb.updateUser(newTestuser, this.dbSession);
+			userDb.updateUser(newTestuser, newTestuser, this.dbSession);
 			fail("expected exception");
 		} catch (final RuntimeException ignore) {
 		}
@@ -275,13 +275,12 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		final UserSettings testUserSettings = testUser.getSettings();
 		testUserSettings.setProfilePrivlevel(level);
-		testUserSettings.setTagboxTooltip(2); // to check if UpdateCore was
-												// executed
+		testUserSettings.setTagboxTooltip(2); // to check if UpdateCore was executed
 
 		/*
 		 * update profile
 		 */
-		userDb.updateUserProfile(testUser, this.dbSession);
+		userDb.updateUserProfile(testUser, testUser, this.dbSession);
 
 		/*
 		 * save user
@@ -304,14 +303,15 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String apiKey = userDb.getApiKeyForUser(testuser, this.dbSession);
 		assertNotNull(apiKey);
 		assertEquals(32, apiKey.length());
-		userDb.updateApiKeyForUser(user, this.dbSession);
+		userDb.updateApiKeyForUser(user, user, this.dbSession);
 		final String updatedApiKey = userDb.getApiKeyForUser(testuser, this.dbSession);
 		assertNotNull(updatedApiKey);
 		assertEquals(32, updatedApiKey.length());
 		assertThat(apiKey, not(equalTo(updatedApiKey)));
 
 		try {
-			userDb.updateApiKeyForUser(new User(ParamUtils.NOUSER_NAME), this.dbSession);
+			final User noUsernameUser = new User(ParamUtils.NOUSER_NAME);
+			userDb.updateApiKeyForUser(noUsernameUser, noUsernameUser, this.dbSession);
 			fail("expected exception");
 		} catch (final Exception ignore) {
 			// ok
@@ -340,7 +340,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// this method is overloaded so you have one method with a String
 		// parameter
 		// and the new one with a User object parameter
-		userDb.deleteUser(user.getName(), this.dbSession);
+		userDb.deleteUser(user.getName(), USER_TESTUSER_1, this.dbSession);
 
 		// get the old user details out of the testdb
 		final User newTestuser = userDb.getUserDetails(user.getName(), this.dbSession);
@@ -365,7 +365,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final int groupid = Integer.MAX_VALUE + 1;
 
 		// get posts for this user
-		final List<Post<BibTex>> posts = bibTexDb.getPostsForUser(user.getName(), user.getName(), HashID.INTER_HASH, groupid, new ArrayList<Integer>(), null, null, 10, 0, null, this.dbSession);
+		final List<Post<BibTex>> posts = bibTexDb.getPostsForUser(user.getName(), user.getName(), HashID.INTER_HASH, groupid, new ArrayList<>(), null, null, 10, 0, null, this.dbSession);
 
 		// there should be at least more then one post with that negative group
 		// id
@@ -378,7 +378,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final User testUserIsGroup = new User("testgroup1");
 		// if anybody tries to delete a user which is a group should get an
 		// exception
-		userDb.deleteUser(testUserIsGroup.getName(), this.dbSession);
+		userDb.deleteUser(testUserIsGroup.getName(), USER_TESTUSER_1, this.dbSession);
 	}
 
 	/**
@@ -577,7 +577,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final User user = userDb.getUserDetails("testuser1", this.dbSession);
 		user.setHobbies("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
 		try {
-			userDb.updateUser(user, this.dbSession);
+			userDb.updateUser(user, user, this.dbSession);
 			fail("missing DatabaseException");
 		} catch (final DatabaseException e) {
 			final List<ErrorMessage> errorMessages = e.getErrorMessages("testuser1");
@@ -589,7 +589,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		user.setHobbies("");
 		user.setHomepage(TestUtils.createURL("http://Loremipsumdolorsitamet,consecteturadipisicingelit,seddoeiusmodtemporincididuntutlaboreetdoloremagnaaliqua.Utenimadminimveniam,quisnostrudexercitationullamcolaborisnisiutaliquipexeacommodoconsequat.Duisauteiruredolorinreprehenderitinvoluptatevelitessecillumdoloreeufugiatnullapariatur.Excepteursintoccaecatcupidatatnonproident,suntinculpaquiofficiadeseruntmollitanimidestlaborum.com"));
 		try {
-			userDb.updateUser(user, this.dbSession);
+			userDb.updateUser(user, user, this.dbSession);
 			fail("missing DatabaseException");
 		} catch (final DatabaseException e) {
 			final List<ErrorMessage> errorMessages = e.getErrorMessages("testuser1");
@@ -621,7 +621,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// We now change SamlRemoteUserId and call updateUser()
 		user_sruid.setUserId("samlUserId1_changed");
 		user_sruid.setIdentityProviderId("saml_changed");
-		userDb.updateUser(user, this.dbSession);
+		userDb.updateUser(user, user, this.dbSession);
 		user = userDb.getUserDetails("testuser1", this.dbSession);
 		if (user.getRemoteUserIds().size() > 1) {
 			fail("testuser1 should have only one SamlRemoteId");

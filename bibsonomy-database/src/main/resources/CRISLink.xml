@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CRISLink">
+
+    <insert id="insertCRISLink" parameterClass="crisLinkParam">
+        INSERT INTO cris_links (id, source_id, source_type, target_id, target_type, start_date, end_date, linktype_type, linktype_value, link_source, updated_by, updated_at)
+          VALUES (#link.id#, #sourceId#, #sourceType.id#, #targetId#, #targetType.id#, #link.startDate#, #link.endDate#, #link.linkType,handler=org.bibsonomy.database.common.typehandler.CRISLinkTypeClassTypeHandlerCallback#, #link.linkType#, #link.dataSource#, #updatedBy#, #updatedAt#)
+    </insert>
+
+    <update id="updateCRISLink" parameterClass="crisLinkParam">
+        UPDATE cris_links
+           SET  id = #link.id#,
+                start_date = #link.startDate#,
+                end_date = #link.endDate#,
+                linktype_type = #link.linkType,handler=org.bibsonomy.database.common.typehandler.CRISLinkTypeClassTypeHandlerCallback#,
+                linktype_value = #link.linkType#,
+                link_source = #link.dataSource#,
+                updated_by = #updatedBy#,
+                updated_at = #updatedAt#
+        WHERE source_id = #sourceId# AND source_type = #sourceType.id# AND target_id = #targetId# AND target_type = #targetType.id#
+    </update>
+
+    <delete id="deleteCRISLink" parameterClass="crisLinkParam">
+        DELETE FROM cris_links
+          WHERE source_id = #sourceId# AND source_type = #sourceType.id# AND target_id = #targetId# AND target_type = #targetType.id#
+    </delete>
+
+    <select id="getCRISLinkDetails" parameterClass="crisLinkParam" resultMap="CRISLinkCommon.simpleCrisLink">
+        SELECT <include refid="simpleCRISColumns" />
+          FROM cris_links c
+          WHERE source_id = #sourceId#
+          AND source_type = #sourceType.id#
+          AND target_id = #targetId#
+          AND target_type = #targetType.id#
+    </select>
+
+    <select id="getPersonCRISLinks" parameterClass="crisLinkParam" resultMap="CRISLinkCommon.personCrisLink">
+        SELECT <include refid="simpleCRISColumns" />, p.person_id, p.academic_degree, pn.person_change_id AS person_name_change_id, pn.first_name, pn.last_name
+          FROM cris_links c
+            JOIN person p ON (p.person_change_id = c.target_id)
+            JOIN person_name pn USING (person_id)
+          WHERE c.source_id = #sourceId#
+          AND c.source_type = #sourceType.id#
+          AND c.target_type = #targetType.id#
+    </select>
+
+    <select id="getProjectCRISLinks" parameterClass="crisLinkParam" resultMap="CRISLinkCommon.projectCrisLink">
+        SELECT <include refid="simpleCRISColumns" />, <include refid="projectColumns" />
+        FROM cris_links c
+        JOIN projects p ON (p.id = c.source_id)
+        WHERE c.target_id = #targetId#
+        AND c.target_type = #targetType.id#
+        AND c.source_type = #sourceType.id#
+    </select>
+
+    <select id="getGroupCRISLinks" parameterClass="crisLinkParam" resultMap="CRISLinkCommon.groupCrisLink">
+        SELECT <include refid="simpleCRISColumns" />, g.`group`, g.group_name, u.user_realname AS group_realname
+        FROM cris_links c
+        JOIN groupids g ON (g.`group` = c.source_id)
+        JOIN user u ON (g.group_name = u.user_name)
+        WHERE c.target_id = #targetId#
+            AND c.target_type = #targetType.id#
+            AND c.source_type = #sourceType.id#
+    </select>
+</sqlMap>

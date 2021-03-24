@@ -42,6 +42,8 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
 
 /**
+ * FIXME: should be a subtype of CitMgrScraper
+ *
  * @author wbi
  */
 public class ACSScraper extends AbstractUrlScraper {

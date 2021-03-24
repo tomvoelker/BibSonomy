@@ -26,13 +26,7 @@
  */
 package org.bibsonomy.model.comparators;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.util.Comparator;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
@@ -40,6 +34,13 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Comparator used to sort bibtex posts
@@ -74,14 +75,14 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 	 */
 	@Override
 	public int compare(final Post<? extends BibTex> post1, final Post<? extends BibTex> post2) {
-		for (final SortCriterium crit : this.sortCriteria) {
+		for (final SortCriteria crit : this.sortCriteria) {
 			try {
 				// author
-				if (SortKey.AUTHOR.equals(crit.sortKey)) {
+				if (SortKey.AUTHOR.equals(crit.getSortKey())) {
 					// if author not present, take editor
 					final List<PersonName> personList1 = (present(post1.getResource().getAuthor()) ? post1.getResource().getAuthor() : post1.getResource().getEditor());
 					final List<PersonName> personList2 = (present(post2.getResource().getAuthor()) ? post2.getResource().getAuthor() : post2.getResource().getEditor());
-					return this.compareAuthor(personList1, personList2, crit.sortOrder);
+					return this.compareAuthor(personList1, personList2, crit.getSortOrder());
 				}
 				// year
 				/**
@@ -90,52 +91,52 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 				 * than the year 2014. Sorting numerically is not completely
 				 * trivial as we must deal with non-numerical values for year.
 				 */
-				else if (SortKey.YEAR.equals(crit.sortKey)) {
-					return this.compareYear(post1.getResource().getYear(), post2.getResource().getYear(), crit.sortOrder);
+				else if (SortKey.YEAR.equals(crit.getSortKey())) {
+					return this.compareYear(post1.getResource().getYear(), post2.getResource().getYear(), crit.getSortOrder());
 				}
 				// month
-				else if (SortKey.MONTH.equals(crit.sortKey)) {
-					return this.compareMonth(post1.getResource().getMonth(), post2.getResource().getMonth(), crit.sortOrder);
+				else if (SortKey.MONTH.equals(crit.getSortKey())) {
+					return this.compareMonth(post1.getResource().getMonth(), post2.getResource().getMonth(), crit.getSortOrder());
 				}
 				// day
-				else if (SortKey.DAY.equals(crit.sortKey)) {
-					return this.compareDay(post1.getResource().getDay(), post2.getResource().getDay(), crit.sortOrder);
+				else if (SortKey.DAY.equals(crit.getSortKey())) {
+					return this.compareDay(post1.getResource().getDay(), post2.getResource().getDay(), crit.getSortOrder());
 				}
 				// editor
-				else if (SortKey.EDITOR.equals(crit.sortKey)) {
-					return this.normalizeAndCompare(PersonNameUtils.getFirstPersonsLastName(post1.getResource().getEditor()), PersonNameUtils.getFirstPersonsLastName(post2.getResource().getEditor()), crit.sortOrder);
+				else if (SortKey.EDITOR.equals(crit.getSortKey())) {
+					return this.normalizeAndCompare(PersonNameUtils.getFirstPersonsLastName(post1.getResource().getEditor()), PersonNameUtils.getFirstPersonsLastName(post2.getResource().getEditor()), crit.getSortOrder());
 				}
 				// entrytype
-				else if (SortKey.ENTRYTYPE.equals(crit.sortKey)) {
-					return this.normalizeAndCompare(post1.getResource().getEntrytype(), post2.getResource().getEntrytype(), crit.sortOrder);
+				else if (SortKey.ENTRYTYPE.equals(crit.getSortKey())) {
+					return this.normalizeAndCompare(post1.getResource().getEntrytype(), post2.getResource().getEntrytype(), crit.getSortOrder());
 				}
 				// title
-				else if (SortKey.TITLE.equals(crit.sortKey)) {
-					return this.normalizeAndCompare(post1.getResource().getTitle(), post2.getResource().getTitle(), crit.sortOrder);
+				else if (SortKey.TITLE.equals(crit.getSortKey())) {
+					return this.normalizeAndCompare(post1.getResource().getTitle(), post2.getResource().getTitle(), crit.getSortOrder());
 				}
 				// booktitle
-				else if (SortKey.BOOKTITLE.equals(crit.sortKey)) {
-					return this.normalizeAndCompare(post1.getResource().getBooktitle(), post2.getResource().getBooktitle(), crit.sortOrder);
+				else if (SortKey.BOOKTITLE.equals(crit.getSortKey())) {
+					return this.normalizeAndCompare(post1.getResource().getBooktitle(), post2.getResource().getBooktitle(), crit.getSortOrder());
 				}
 				// school
-				else if (SortKey.SCHOOL.equals(crit.sortKey)) {
-					return this.normalizeAndCompare(post1.getResource().getSchool(), post2.getResource().getSchool(), crit.sortOrder);
+				else if (SortKey.SCHOOL.equals(crit.getSortKey())) {
+					return this.normalizeAndCompare(post1.getResource().getSchool(), post2.getResource().getSchool(), crit.getSortOrder());
 				}
 				// posting date
-				else if (SortKey.DATE.equals(crit.sortKey)) {
-					return this.compare(post1.getDate(), post2.getDate(), crit.sortOrder);
+				else if (SortKey.DATE.equals(crit.getSortKey())) {
+					return this.compare(post1.getDate(), post2.getDate(), crit.getSortOrder());
 				}
 				// note
-				else if (SortKey.NOTE.equals(crit.sortKey)) {
-					return this.normalizeAndCompare(post1.getResource().getNote(), post2.getResource().getNote(), crit.sortOrder);
+				else if (SortKey.NOTE.equals(crit.getSortKey())) {
+					return this.normalizeAndCompare(post1.getResource().getNote(), post2.getResource().getNote(), crit.getSortOrder());
 				}
 				// ranking
-				else if (SortKey.RANKING.equals(crit.sortKey)) {
-					return this.compare(post1.getRanking(), post2.getRanking(), crit.sortOrder);
+				else if (SortKey.RANK.equals(crit.getSortKey())) {
+					return this.compare(post1.getRanking(), post2.getRanking(), crit.getSortOrder());
 				}
 				// number
-				else if (SortKey.NUMBER.equals(crit.sortKey)) {
-					return this.compareNumber(post1.getResource().getNumber(), post2.getResource().getNumber(), crit.sortOrder);
+				else if (SortKey.NUMBER.equals(crit.getSortKey())) {
+					return this.compareNumber(post1.getResource().getNumber(), post2.getResource().getNumber(), crit.getSortOrder());
 				} else {
 					return 0;
 				}

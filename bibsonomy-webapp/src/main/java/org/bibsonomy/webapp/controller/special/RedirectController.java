@@ -196,13 +196,15 @@ public class RedirectController implements MinimalisticController<RedirectComman
 			log.debug("scope is federated group");
 			return "/bibtexkey/"+ UrlUtils.encodePathSegment(search) + "?scope=FEDERATED";
 		}
+		// we now have a group search, so we redirect to the group search
+		if (scope.equals("group")) {
+			return this.urlGenerator.getGroupsUrl() + "?search=" + UrlUtils.safeURIEncode(search);
+		}
 		/*
 		 * all other pages simply go to /scope/search
 		 */
 		log.debug("generic handling of /scope/search");
 		return "/" + scope + "/" + UrlUtils.encodePathSegment(search);
-
-
 	}
 
 	/** Handles pages starting with /my*, in particular

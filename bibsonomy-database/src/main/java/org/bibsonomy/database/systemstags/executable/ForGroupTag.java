@@ -78,7 +78,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	private static final String NAME = "for";
 	private static boolean toHide = true;
 
-	private DBSessionFactory dbSessionFactory = null;
+	private DBLogicNoAuthInterfaceFactory logicInterfaceFactory = null;
 	private FileLogic fileLogic;
 	
 	@Override
@@ -97,10 +97,10 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	}
 
 	/**
-	 * @param dbSessionFactory the dbSessionFactory to set
+	 * @param logicInterfaceFactory the logicInterfaceFactory to set
 	 */
-	public void setdbSessionFactory(final DBSessionFactory dbSessionFactory) {
-		this.dbSessionFactory = dbSessionFactory;
+	public void setLogicInterfaceFactory(final DBLogicNoAuthInterfaceFactory logicInterfaceFactory) {
+		this.logicInterfaceFactory = logicInterfaceFactory;
 	}
 
 	/**
@@ -335,9 +335,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	}
 
 	protected LogicInterface getGroupDbLogic() {
-		final DBLogicNoAuthInterfaceFactory logicFactory = new DBLogicNoAuthInterfaceFactory();
-		logicFactory.setDbSessionFactory(this.dbSessionFactory);
-		return logicFactory.getLogicAccess(this.getArgument(), "");
+		return this.logicInterfaceFactory.getLogicAccess(this.getArgument(), "");
 	}
 
 	/**

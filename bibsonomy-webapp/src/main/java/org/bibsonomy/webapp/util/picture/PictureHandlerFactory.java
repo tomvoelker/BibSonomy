@@ -40,8 +40,15 @@ public interface PictureHandlerFactory {
 	 * Returns a target {@link PictureHandler} implementation depending on requested user
 	 * and the actual picture command.
 	 * 
-	 * @param requestedUser - requested user
+	 * @param requestedUserName - name of the requested user
 	 * @return target {@link PictureHandler} implementation
 	 */
-	public PictureHandler getPictureHandler(User requestedUser);
+	PictureHandler getPictureHandler(String requestedUserName, User loggedinUser);
+
+	/**
+	 * @param requestedUserName
+	 * @param loggeinUser
+	 * @return <code>true</code> iff the requested user has a profile picture and the loggedin user can view it
+	 */
+	boolean hasVisibleProfilePicture(final String requestedUserName, User loggeinUser);
 }

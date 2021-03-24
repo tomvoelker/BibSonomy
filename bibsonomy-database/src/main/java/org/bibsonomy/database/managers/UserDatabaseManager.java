@@ -35,6 +35,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DuplicateEntryException;
@@ -53,7 +54,6 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.model.util.GroupUtils;
@@ -99,7 +99,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 
 	private FileLogic fileLogic;
 
-	//this should be set through ${user.defaultToClassify}, if not: 1
+	// this should be set through ${user.defaultToClassify}, if not: 1
 	private Integer usersDefaultToClassify = 1;
 
 	private UserDatabaseManager() {
@@ -162,7 +162,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * get user profile picture from fileLogic
 		 */
-		user.setProfilePicture(new LazyUploadedFile(){
+		user.setProfilePicture(new LazyUploadedFile() {
 
 			@Override
 			protected File requestFile() {
@@ -194,7 +194,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		final UserParam param = new UserParam();
 		param.setOffset(start);
 		param.setLimit(end);
-		param.setOrder(Order.ALPH);
+		param.setSortKey(SortKey.ALPH);
 		return this.queryForList("getAllDeletedGroupUsers", param, User.class, session);
 	}
 	
@@ -202,14 +202,13 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * Creates a new, empty user w/ default profile picture.
 	 * @return empty user instance
 	 */
-	public User createEmptyUser ()
-	{
+	public User createEmptyUser() {
 		final User user = new User();
 		user.setProfilePicture(new LazyUploadedFile() {
 
 			@Override
 			protected File requestFile() {
-				//get default profile picture
+				// get default profile picture
 				return UserDatabaseManager.this.fileLogic.getProfilePictureForUser("");
 			}
 		});
@@ -274,12 +273,12 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param user
 	 * @param session
 	 */
-	public void updateApiKeyForUser(final User user, final DBSession session) {
+	public void updateApiKeyForUser(final User user, final User loggedinUser, final DBSession session) {
 		if (!present(this.getUserDetails(user.getName(), session).getName())) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update API key for nonexistent user");
 		}
 		user.setApiKey(UserUtils.generateApiKey());
-		this.plugins.onUserUpdate(user.getName(), session);
+		this.plugins.onUserUpdate(user.getName(), loggedinUser, session);
 		this.update("updateApiKeyForUser", user, session);
 	}
 
@@ -290,12 +289,12 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return the user's name
 	 */
-	public String updatePasswordForUser(final User user, final DBSession session) {
+	public String updatePasswordForUser(final User user, final User loggedinUser, final DBSession session) {
 		final String userName = user.getName();
 		if (!present(this.getUserDetails(userName, session).getName())) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update password for nonexistent user");
 		}
-		this.plugins.onUserUpdate(userName, session);
+		this.plugins.onUserUpdate(userName, loggedinUser, session);
 		this.update("updatePasswordForUser", user, session);
 		return userName;
 	}
@@ -307,12 +306,12 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return the user's name
 	 */
-	public String updateUserSettingsForUser(final User user, final DBSession session) {
+	public String updateUserSettingsForUser(final User user, final User loggedinUser, final DBSession session) {
 		final String userName = user.getName();
 		if (!present(this.getUserDetails(userName, session).getName())) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update user settings for nonexistent user");
 		}
-		this.plugins.onUserUpdate(userName, session);
+		this.plugins.onUserUpdate(userName, loggedinUser, session);
 		this.update("updateUserSettings", user, session);
 		return userName;
 	}
@@ -323,12 +322,12 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return
 	 */
-	public String updateLimitedUser(final User user, final DBSession session) {
+	public String updateLimitedUser(final User user, final User loggedinUser, final DBSession session) {
 		final String userName = user.getName();
 		if (!present(this.getUserDetails(userName, session).getName())) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update role of a nonexistent user");
 		}
-		this.plugins.onUserUpdate(userName, session);
+		this.plugins.onUserUpdate(userName, loggedinUser, session);
 		this.update("updateLimitedUser", user, session);
 		return userName;
 	}
@@ -340,7 +339,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return the user's name
 	 */
-	public String updateUserProfile(final User user, final DBSession session) {
+	public String updateUserProfile(final User user, final User loggedinUser, final DBSession session) {
 		session.beginTransaction();
 		try {
 			final String userName = user.getName();
@@ -348,7 +347,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update user profile for nonexistent user");
 			}
 			this.checkUser(user, session);
-			this.plugins.onUserUpdate(userName, session);
+			this.plugins.onUserUpdate(userName, loggedinUser, session);
 			this.update("updateUserProfile", user, session);
 			session.commitTransaction();
 
@@ -652,7 +651,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Deletes a user from the openID table
 	 *
-	 * @param user user authenticating via OpenID
+	 * @param userName the username of the user authenticating via OpenID
 	 * @param session
 	 */
 	public void deleteOpenIDUser(final String userName, final DBSession session) {
@@ -662,7 +661,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Deletes a user from the ldapUser table
 	 *
-	 * @param user user authenticating via ldap
+	 * @param userName the username of the user authenticating via ldap
 	 * @param session
 	 */
 	private void deleteLdapUserId(final String userName, final DBSession session) {
@@ -671,13 +670,13 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Updates a user (NOT his settings).
-	 * For settings update we have {@link UserDatabaseManager#updateUserSettingsForUser(User, DBSession)}
+	 * For settings update we have {@link UserDatabaseManager#updateUserSettingsForUser(User, User, DBSession)}
 	 *
 	 * @param user the user containing all fields to be updated
 	 * @param session
 	 * @return the user's name iff update was successful
 	 */
-	public String updateUser(final User user, final DBSession session) {
+	public String updateUser(final User user, final User loggedinUser, final DBSession session) {
 		session.beginTransaction();
 		try {
 			final User existingUser = this.getUserDetails(user.getName(), session);
@@ -692,7 +691,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 
 			this.checkUser(existingUser, session);
 
-			this.plugins.onUserUpdate(existingUser.getName(), session);
+			this.plugins.onUserUpdate(existingUser.getName(), loggedinUser, session);
 
 			/*
 			 * FIXME: OpenID and LdapId and RemoteId (saml) were updated in existingUser
@@ -733,12 +732,13 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 *
 	 * @param userName
 	 * 			- the name of the user to be deleteed
+	 * @param loggedinUser
 	 * @param session
 	 * 			- DB session
 	 * @throws UnsupportedOperationException
 	 * 			- when this user is a group, he cannot be deleted
 	 */
-	public void deleteUser(final String userName, final DBSession session) {
+	public void deleteUser(final String userName, final User loggedinUser, final DBSession session) {
 		session.beginTransaction();
 		try {
 			if (!present(userName)) {
@@ -773,7 +773,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			user.setPasswordSalt(null);
 			this.plugins.onUserDelete(userName, session);
 
-			this.updateUser(user, session);
+			this.updateUser(user, loggedinUser, session);
 
 			/*
 			 * check if the user can be deleted or has some dependencies in any
@@ -792,7 +792,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			 * check, if we can delete the user from the corresponding group.
 			 */
 			for (final Group group: groups) {
-				groupDBManager.removeUserFromGroup(group.getName(), userName, false, session);
+				groupDBManager.removeUserFromGroup(group.getName(), userName, false, loggedinUser, session);
 			}
 
 			/*

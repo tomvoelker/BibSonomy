@@ -26,37 +26,34 @@
  */
 package org.bibsonomy.webapp.command;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.services.person.PersonRoleRenderer;
 
 /**
  * @author Christian Pfeiffer
  */
-public class DisambiguationPageCommand extends UserResourceViewCommand {
+public class DisambiguationPageCommand extends BaseCommand {
 	
 	@Deprecated // Use a Java JSPTag
 	private PersonRoleRenderer personRoleRenderer;
 	private String requestedAction;
+	private String requestedPersonId;
+
 	private String requestedHash;
 	private PersonResourceRelationType requestedRole;
 	private Integer requestedIndex;
-	
-	private String requestedPersonId;
-	
-	private Person person;
+
 	private PersonName personName;
-	private Post<BibTex> post;
-	private List<ResourcePersonRelation> personSuggestions;
-	private HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts;
-	private List<Post<BibTex>> suggestedPosts;
+	private Post<? extends BibTex> post;
+	private List<Post<GoldStandardPublication>> suggestedPosts;
+	private List<Person> personSuggestions;
 
 	/**
 	 * @return the requestedHash
@@ -75,29 +72,15 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the post
 	 */
-	public Post<BibTex> getPost() {
+	public Post<? extends BibTex> getPost() {
 		return this.post;
 	}
 
 	/**
 	 * @param post the post to set
 	 */
-	public void setPost(Post<BibTex> post) {
+	public void setPost(Post<? extends BibTex> post) {
 		this.post = post;
-	}
-
-	/**
-	 * @return the person
-	 */
-	public Person getPerson() {
-		return this.person;
-	}
-
-	/**
-	 * @param person the person to set
-	 */
-	public void setPerson(Person person) {
-		this.person = person;
 	}
 
 	/**
@@ -115,17 +98,17 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @return the formAddPersonId
+	 * @return the requestedPersonId
 	 */
 	public String getRequestedPersonId() {
 		return this.requestedPersonId;
 	}
 
 	/**
-	 * @param formAddPersonId the formAddPersonId to set
+	 * @param requestedPersonId the requestedPersonId to set
 	 */
-	public void setRequestedPersonId(String formPersonId) {
-		this.requestedPersonId = formPersonId;
+	public void setRequestedPersonId(String requestedPersonId) {
+		this.requestedPersonId = requestedPersonId;
 	}
 
 	/**
@@ -165,51 +148,44 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @param personSuggestions
+	 * @return the personSuggestions
 	 */
-	public void setPersonSuggestions(List<ResourcePersonRelation> personSuggestions) {
+	public List<Person> getPersonSuggestions() {
+		return personSuggestions;
+	}
+
+	/**
+	 * @param personSuggestions the personSuggestions to set
+	 */
+	public void setPersonSuggestions(List<Person> personSuggestions) {
 		this.personSuggestions = personSuggestions;
 	}
 
-	public List<ResourcePersonRelation> getPersonSuggestions() {
-		return this.personSuggestions;
-	}
-	
-	@Deprecated
+	/**
+	 * @return the personRoleRenderer
+	 */
 	public PersonRoleRenderer getPersonRoleRenderer() {
-		return this.personRoleRenderer;
+		return personRoleRenderer;
 	}
-	
-	@Deprecated
+
+	/**
+	 * @param personRoleRenderer the personRoleRenderer to set
+	 */
 	public void setPersonRoleRenderer(PersonRoleRenderer personRoleRenderer) {
 		this.personRoleRenderer = personRoleRenderer;
 	}
 
 	/**
-	 * @return the suggestedPersonPosts
-	 */
-	public HashMap<ResourcePersonRelation, List<Post<?>>> getSuggestedPersonPosts() {
-		return this.suggestedPersonPosts;
-	}
-
-	/**
-	 * @param suggestedPersonPosts the suggestedPersonPosts to set
-	 */
-	public void setSuggestedPersonPosts(HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts) {
-		this.suggestedPersonPosts = suggestedPersonPosts;
-	}
-
-	/**
 	 * @return the suggestedPosts
 	 */
-	public List<Post<BibTex>> getSuggestedPosts() {
+	public List<Post<GoldStandardPublication>> getSuggestedPosts() {
 		return this.suggestedPosts;
 	}
 
 	/**
 	 * @param otherAdvisorPosts the suggestedPosts to set
 	 */
-	public void setSuggestedPosts(List<Post<BibTex>> otherAdvisorPosts) {
+	public void setSuggestedPosts(List<Post<GoldStandardPublication>> otherAdvisorPosts) {
 		this.suggestedPosts = otherAdvisorPosts;
 	}
 }

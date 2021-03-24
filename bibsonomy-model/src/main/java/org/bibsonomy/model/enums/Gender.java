@@ -28,7 +28,7 @@ package org.bibsonomy.model.enums;
 
 /**
  * seems to be BibSonomy tradition to mix upper and lowercase letters for genders.
- *
+ * FIXME: fix this!
  * @author jensi
  */
 public enum Gender {

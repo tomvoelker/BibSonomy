@@ -114,9 +114,7 @@ public class PostValidator<RESOURCE extends Resource> implements Validator<EditP
 	 * the setting of the group selection box.
 	 * 
 	 * @param errors
-	 * @param post
-	 * @param abstractGrouping
-	 * @param groups
+	 * @param command
 	 */
 	protected void validatePost(final Errors errors, final EditPostCommand<RESOURCE> command) {
 		errors.pushNestedPath("post");
@@ -158,8 +156,7 @@ public class PostValidator<RESOURCE extends Resource> implements Validator<EditP
 	 * either private, public, or other - and with certain other groups only.
 	 * 
 	 * @param errors
-	 * @param abstractGrouping
-	 * @param groups
+	 * @param command
 	 */
 	protected void validateGroups(final Errors errors, final EditPostCommand<RESOURCE> command) {
 		ValidationUtils.invokeValidator(new GroupingValidator(), command, errors);

@@ -57,7 +57,6 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post<? extends Reso
 	 *             if userName or resourceHash are null or empty
 	 */
 	public GetPostDetailsQuery(final String username, final String resourceHash) throws IllegalArgumentException {
-		if (!present(username)) throw new IllegalArgumentException("no username given");
 		if (!present(resourceHash)) throw new IllegalArgumentException("no resourceHash given");
 
 		this.username = username;
@@ -69,6 +68,13 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post<? extends Reso
 		if (this.getHttpStatusCode() == HttpStatus.SC_NOT_FOUND) {
 			return null;
 		}
+
+		// no user name set we assume a community post
+		if (!present(this.username)) {
+			return this.getRenderer().parseCommunityPost(this.downloadedDocument);
+		}
+
+		// else it is a normal post
 		return this.getRenderer().parsePost(this.downloadedDocument, NoDataAccessor.getInstance());
 	}
 

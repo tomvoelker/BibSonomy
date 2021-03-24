@@ -26,17 +26,15 @@
  */
 package org.bibsonomy.webapp.controller;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.util.List;
-
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.UnsupportedOrderingException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.RelatedUserCommand;
@@ -46,6 +44,10 @@ import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+
+import java.util.List;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 
 /**
@@ -60,13 +62,13 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 	public View workOn(final TagResourceViewCommand command) {
 		final String format = command.getFormat();
 		this.startTiming(format);
-		
-		// FIXME: merge sortPage and order, see SearchPageController
+
 		final String pageSort = command.getSortPage();
-		if ("date".equals(pageSort)) {
-			command.setOrder(Order.ADDED);
-		} else if ("folkrank".equals(pageSort)) {
-			command.setOrder(Order.FOLKRANK);
+		// set order, default to rank if sort page attribute unknown or equals 'relevance'
+		try {
+			command.setSortKey(SortKey.getByName(command.getSortPage()));
+		} catch (IllegalArgumentException e){
+			command.setSortKey(SortKey.RANK);
 		}
 		
 		// if no tags given return
@@ -84,10 +86,10 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		if (tagCount == 0 && requTags.size() == 1 && MyOwnSystemTag.NAME.equalsIgnoreCase(requTags.get(0))) {
 			tagCount = 1;
 		}
-		// requested order
-		final Order order = command.getOrder();
-		if (tagCount == 0 && Order.FOLKRANK.equals(order)) {
-			throw new UnsupportedOrderingException(Order.FOLKRANK.name());
+		// requested sort key
+		final SortKey sortKey = command.getSortKey();
+		if (tagCount == 0 && SortKey.FOLKRANK.equals(sortKey)) {
+			throw new UnsupportedOrderingException(SortKey.FOLKRANK.name());
 		}
 		
 		command.setNumberOfNormalTags(tagCount);
@@ -95,7 +97,16 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		// handle case when only tags are requested
 		// FIXME we can only retrieve 1000 tags here
 		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, requTags, null, 1000, null);
-		
+
+		// build sort criteria list
+		this.buildSortCriteria(command);
+
+		// set query scope for resource lists
+		QueryScope resourceScope = command.getScope();
+		// when sortkey is not present or set to date we still want to use the local scope regardless of flag, since supported by database
+		if (command.isIndexUse() && (present(command.getSortCriteria()) && SortUtils.getFirstSortKey(command.getSortCriteria()) != SortKey.DATE)) {
+			resourceScope = QueryScope.SEARCHINDEX;
+		}
 		
 		int totalNumPosts = 1; 
 		
@@ -103,12 +114,14 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
-
-			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, command.getScope(),null, order, command.getStartDate(), command.getEndDate(), entriesPerPage);
-			this.postProcessAndSortList(command, resourceType);
-			
+			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, resourceScope,null, command.getSortCriteria(), command.getStartDate(), command.getEndDate(), entriesPerPage);
 			this.setTotalCount(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			totalNumPosts += listCommand.getTotalCount();
+
+			// secondary sorting, if not using search index
+			if (resourceScope != QueryScope.SEARCHINDEX) {
+				this.postProcessAndSortList(command, resourceType);
+			}
 		}
 		
 		/*
@@ -119,8 +132,8 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		 *   
 		 *  (burst, publrss, swrc) related pages
 		 */
-		if (order.equals(Order.FOLKRANK)) {
-			this.setRelatedUsers(command, GroupingEntity.ALL, requTags, order, UserRelation.FOLKRANK, 0, Parameters.NUM_RELATED_USERS);
+		if (sortKey.equals(SortKey.FOLKRANK)) {
+			this.setRelatedUsers(command, GroupingEntity.ALL, requTags, sortKey, UserRelation.FOLKRANK, 0, Parameters.NUM_RELATED_USERS);
 		}
 		
 		// html format - retrieve related tags and return HTML view
@@ -137,11 +150,11 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 			}
 			
 			if (tagCount > 0) {
-				this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, command.getStartDate(), command.getEndDate(), order, 0, Parameters.NUM_RELATED_TAGS, null);
+				this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, command.getStartDate(), command.getEndDate(), sortKey, 0, Parameters.NUM_RELATED_TAGS, null);
 			}
 			// similar tags only make sense for a single requested tag
 			if (tagCount == 1) {
-				this.setSimilarTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, order, command.getStartDate(), command.getEndDate(), 0, Parameters.NUM_RELATED_TAGS, null);
+				this.setSimilarTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, sortKey, command.getStartDate(), command.getEndDate(), 0, Parameters.NUM_RELATED_TAGS, null);
 			}
 			// set total nr. of posts 
 			command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);
@@ -164,12 +177,12 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 	 * 
 	 * @param cmd
 	 * @param tags
-	 * @param order
+	 * @param sortKey
 	 * @param start
 	 * @param end
 	 */
-	protected void setRelatedUsers(final TagResourceViewCommand cmd, final GroupingEntity grouping, final List<String> tags, final Order order, final UserRelation relation, final int start, final int end) {
+	protected void setRelatedUsers(final TagResourceViewCommand cmd, final GroupingEntity grouping, final List<String> tags, final SortKey sortKey, final UserRelation relation, final int start, final int end) {
 		final RelatedUserCommand relatedUserCommand = cmd.getRelatedUserCommand();
-		relatedUserCommand.setRelatedUsers(this.logic.getUsers(null, grouping, null, tags, null, order, relation, null, start, end));
+		relatedUserCommand.setRelatedUsers(this.logic.getUsers(null, grouping, null, tags, null, sortKey, relation, null, start, end));
 	}
 }

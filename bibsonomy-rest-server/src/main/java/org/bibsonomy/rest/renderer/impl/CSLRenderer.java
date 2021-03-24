@@ -74,7 +74,8 @@ public class CSLRenderer extends AbstractPostExportRenderer {
 			writer.append(BEGIN);
 			while (iter.hasNext()) {
 				final Post<? extends Resource> post = iter.next();
-				writer.append("\"" + post.getResource().getIntraHash() + post.getUser().getName() + "\":");
+				writer.append("\"").append(post.getResource().getIntraHash()).
+						append(post.getUser().getName()).append("\":");
 				serializePost(writer, post, viewModel);
 				if (iter.hasNext()) {
 					writer.append(DELIMITER);
@@ -98,7 +99,7 @@ public class CSLRenderer extends AbstractPostExportRenderer {
 			LOGGER.error(ex);
 		}
 	}
-	
+
 	@Override
 	public void serializeError(final Writer writer, final String errorMessage) {
 		final Map<String, String> errorMsg = new HashMap<String, String>();

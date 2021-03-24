@@ -26,6 +26,13 @@
  */
 package org.bibsonomy.common.enums;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import org.bibsonomy.util.Sets;
+
 /**
  * @author Robert Jäschke
  */
@@ -43,12 +50,21 @@ public enum Role {
 	/** allowed to add private posts via webservice only **/
 	LIMITED(5),
 	/** dummy user for a group **/
-	GROUPUSER(6);
+	GROUPUSER(6),
+	/** a reporting users has access to all reporting pages of the system */
+	REPORTING_USER(7);
 
 	private final int role;
 
-	private Role(final int role) {
+	Role(final int role) {
 		this.role = role;
+	}
+
+	private static Map<Role, Set<Role>> IMPLIED_ROLES = new HashMap<>();
+
+	static {
+		IMPLIED_ROLES.put(ADMIN, Sets.asSet(DEFAULT, SYNC, REPORTING_USER));
+		IMPLIED_ROLES.put(REPORTING_USER, Sets.asSet(DEFAULT));
 	}
 
 	/**
@@ -86,5 +102,18 @@ public enum Role {
 			}
 		}
 		throw new IllegalArgumentException("unknown role id " + role);
+	}
+
+	/**
+	 * get the implied roles of the role
+	 * @param role
+	 * @return
+	 */
+	public static Set<Role> getImpliedRoles(final Role role) {
+		if (IMPLIED_ROLES.containsKey(role)) {
+			return IMPLIED_ROLES.get(role);
+		}
+
+		return Collections.emptySet();
 	}
 }

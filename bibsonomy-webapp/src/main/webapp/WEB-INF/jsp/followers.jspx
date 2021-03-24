@@ -24,19 +24,29 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="additionalSorting">
+			<!-- ranking sorting -->
 			<c:choose>
-				<c:when test="${command.sortPage eq 'ranking'}">
-					<li><span class="italic"><fontawesome:icon icon="sort-numeric-asc " spaceAfter="5" /><fmt:message key="ranking.method"/></span></li>
+				<c:when test="${command.sortPage eq 'rank' and command.sortPageOrder eq 'desc'}">
+					<li class="sort-selection sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'rank'), 'sortPageOrder', 'asc')}">
+						<fontawesome:icon icon="sort-amount-down" spaceAfter="5"/><fmt:message key="ranking.method"/><fontawesome:icon icon="arrow-down" spaceBefore="5"/>
+					</a></li>
+				</c:when>
+				<c:when test="${command.sortPage eq 'rank' and command.sortPageOrder eq 'asc'}">
+					<li class="sort-selection sort-selected"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'rank'), 'sortPageOrder', 'desc')}">
+						<fontawesome:icon icon="sort-amount-up" spaceAfter="5"/><fmt:message key="ranking.method"/><fontawesome:icon icon="arrow-up" spaceBefore="5"/>
+					</a></li>
 				</c:when>
 				<c:otherwise>
-					<li><a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'ranking')}"><fontawesome:icon icon="sort-numeric-asc " spaceAfter="5" /><fmt:message key="ranking.method"/></a></li>
+					<li class="sort-selection"><a href="${mtl:setParam(mtl:setParam(requPathAndQuery, 'sortPage', 'rank'), 'sortPageOrder', 'desc')}">
+						<fontawesome:icon icon="sort-amount-down" spaceAfter="5" /><fmt:message key="ranking.method"/>
+					</a></li>
 				</c:otherwise>
 			</c:choose>
 		</jsp:attribute>
 
 		<jsp:attribute name="sidebar">
 			<!--  ranking settings -->
-			<c:if test="${command.order eq 'RANK'}">
+			<c:if test="${command.sortKey eq 'RANK'}">
 				<fmt:message key="navi.go" var="go" />
 				<sidebar:sidebarItem textKey="navi.settings">
 					<jsp:attribute name="content">
@@ -123,7 +133,7 @@
 					<fmt:message key="followersPage.about">
 						<fmt:param>${properties['project.home']}help_${locale.language}/Followers</fmt:param>
 					</fmt:message>
-					<c:if test="${command.order eq 'RANK'}">
+					<c:if test="${command.sortKey eq 'RANK'}">
 						<c:out value=" "/>
 						<c:set var="ofUsers">
 							<c:choose>

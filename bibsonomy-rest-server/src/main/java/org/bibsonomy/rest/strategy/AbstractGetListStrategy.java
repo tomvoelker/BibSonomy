@@ -26,18 +26,20 @@
  */
 package org.bibsonomy.rest.strategy;
 
-import static org.bibsonomy.util.ValidationUtils.present;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
+import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.rest.RESTConfig;
+import org.bibsonomy.rest.ViewModel;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.util.SortUtils;
+import org.bibsonomy.util.UrlBuilder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Writer;
 import java.util.List;
 
-import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.rest.RESTConfig;
-import org.bibsonomy.rest.ViewModel;
-import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.util.UrlBuilder;
+import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * @author Jens Illig
@@ -56,10 +58,15 @@ public abstract class AbstractGetListStrategy<L extends List<?>> extends Strateg
 		this.view.setEndValue(context.getIntAttribute(RESTConfig.END_PARAM, 20));
 		
 		try {
-			final String orderAsString = context.getStringAttribute(RESTConfig.ORDER_PARAM, null);
-			if (present(orderAsString)) {
-				final Order order = Order.getOrderByName(orderAsString);
-				this.view.setOrder(order);
+			final String sortKeysAsString = context.getStringAttribute(RESTConfig.SORT_KEY_PARAM, null);
+			final String sortOrdersAsString = context.getStringAttribute(RESTConfig.SORT_ORDER_PARAM, null);
+			if (present(sortKeysAsString)) {
+				List<SortKey> sortKeys = SortUtils.parseSortKeys(sortKeysAsString);
+				this.view.setSortKeys(sortKeys);
+			}
+			if (present(sortOrdersAsString)) {
+				List<SortOrder> sortOrders = SortUtils.parseSortOrders(sortOrdersAsString);
+				this.view.setSortOrders(sortOrders);
 			}
 		} catch (final IllegalArgumentException e) {
 			// the client send a wrong query param throw correct exception
@@ -72,8 +79,7 @@ public abstract class AbstractGetListStrategy<L extends List<?>> extends Strateg
 	}
 
 	@Override
-	public final void perform(final ByteArrayOutputStream outStream) throws InternServerException {
-		final L resultList = getList();
+	public final void perform(final ByteArrayOutputStream outStream) throws InternServerException { final L resultList = getList();
 		
 		if (resultList.size() != (getView().getEndValue() - getView().getStartValue())) {
 			this.view.setEndValue( resultList.size() + this.view.getStartValue());

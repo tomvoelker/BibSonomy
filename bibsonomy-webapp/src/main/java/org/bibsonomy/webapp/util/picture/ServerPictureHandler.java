@@ -43,15 +43,24 @@ import org.bibsonomy.webapp.view.Views;
  * 
  * @author cut
  */
-public class ServerPictureHandler implements PictureHandler {
+public class ServerPictureHandler extends PictureHandler {
+
+	/**
+	 * default constructor with the user to handle
+	 *
+	 * @param requestedUser
+	 */
+	public ServerPictureHandler(final User requestedUser) {
+		super(requestedUser);
+	}
 
 	@Override
-	public View getProfilePictureView (final User requestedUser, final PictureCommand command) {
-		final UploadedFile profilePicture = requestedUser.getProfilePicture();
+	public View getProfilePictureView(final PictureCommand command) {
+		final UploadedFile profilePicture = this.requestedUser.getProfilePicture();
 		
 		command.setPathToFile(profilePicture.getAbsolutePath());
 		command.setContentType(FileUtil.getContentType(profilePicture.getFileName()));
-		command.setFilename(requestedUser.getName() + ProfilePictureLogic.FILE_EXTENSION);
+		command.setFilename(this.requestedUser.getName() + ProfilePictureLogic.FILE_EXTENSION);
 		
 		return Views.DOWNLOAD_FILE;
 	}

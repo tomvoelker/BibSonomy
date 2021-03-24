@@ -29,19 +29,25 @@ package org.bibsonomy.model;
 import java.util.LinkedList;
 
 /**
- * Extended List with aditional properties
+ * Extended List with additional properties
+ *
+ * like the total count, that is returned by the search engine while
+ * retrieving objects
  * 
- * @param <T>
- *            resource type
+ * @param <T> resource type
  */
 public class ResultList<T> extends LinkedList<T> {
 	private static final long serialVersionUID = -5889003340930421319L;
-	
-	
+
 	/**
 	 * number of total hits in ResultSet
 	 */
 	private int totalCount;
+
+	/**
+	 * the pagination limit of this list
+	 */
+	private Integer paginationLimit;
 
 	/**
 	 * @return the totalCount
@@ -55,6 +61,19 @@ public class ResultList<T> extends LinkedList<T> {
 	 */
 	public void setTotalCount(int totalCount) {
 		this.totalCount = totalCount;
-		
-	}	
+	}
+
+	/**
+	 * @return the paginationLimit
+	 */
+	public Integer getPaginationLimit() {
+		return paginationLimit;
+	}
+
+	/**
+	 * @param paginationLimit the paginationLimit to set
+	 */
+	public void setPaginationLimit(Integer paginationLimit) {
+		this.paginationLimit = paginationLimit;
+	}
 }

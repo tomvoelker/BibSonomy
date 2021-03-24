@@ -28,6 +28,7 @@ package org.bibsonomy.rest.client.queries.get;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import org.apache.http.HttpStatus;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -57,6 +58,10 @@ public final class GetUserDetailsQuery extends AbstractQuery<User> {
 
 	@Override
 	protected User getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+		if (this.getHttpStatusCode() == HttpStatus.SC_NOT_FOUND) {
+			return null;
+		}
+
 		return this.getRenderer().parseUser(this.downloadedDocument);
 	}
 

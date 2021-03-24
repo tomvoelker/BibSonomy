@@ -96,7 +96,7 @@ public class PublicationImporter {
 				log.debug("the file is in pdf format");
 				file = this.fileLogic.writeTempFile(new ServerUploadedFile(uploadedFile), this.fileLogic.getDocumentExtensionChecker());
 				if (!present(command.getFileName())) {
-					command.setFileName(new ArrayList<String>());
+					command.setFileName(new ArrayList<>());
 				}
 				command.getFileName().add(file.getName() + fileName);
 				keepTempFile = true;

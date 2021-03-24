@@ -28,16 +28,14 @@ package org.bibsonomy.rest.renderer;
 
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.model.Document;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.model.*;
+import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.data.DataAccessor;
@@ -112,6 +110,116 @@ public interface Renderer {
 	public void serializeUser(Writer writer, User user, ViewModel viewModel);
 
 	/**
+	 * Serializes one {@link Person}.
+	 *
+	 * @param writer
+	 *            a {@link Writer} to use.
+	 * @param person
+	 *            one {@link Person} object.
+	 * @param viewModel
+	 *            the {@link ViewModel} encapsulates additional information,
+	 */
+	void serializePerson(Writer writer, Person person, ViewModel viewModel);
+
+	/**
+	 * Serializes a list of persons
+	 * @param writer
+	 * @param persons
+	 * @param viewModel
+	 */
+	void serializePersons(Writer writer, List<Person> persons, ViewModel viewModel);
+
+	/**
+	 * Serializes one {@link Person}.
+	 *  @param writer
+	 *            a {@link Writer} to use.
+	 * @param match
+	 *            one {@link PersonMatch} object.
+	 * @param viewModel
+ *            the {@link ViewModel} encapsulates additional information,
+	 */
+	void serializePersonMatch(Writer writer, PersonMatch match, ViewModel viewModel);
+
+	/**
+	 * Serializes one {@link Project}.
+	 *
+	 * @param writer
+	 *            a {@link Writer} to use.
+	 * @param project
+	 *            one {@link Project} object.
+	 * @param viewModel
+	 *            the {@link ViewModel} encapsulates additional information,
+	 */
+	public void serializeProject(Writer writer, Project project, ViewModel viewModel);
+
+
+	/**
+	 * Serializes a list of {@link Project}
+	 * @param writer
+	 *            a {@link Writer} to use.
+	 * @param projects
+	 *            list of {@link Project} object.
+	 * @param viewModel
+	 *            the {@link ViewModel} encapsulates additional information,
+	 */
+	public void serializeProjects(Writer writer, List<Project> projects, ViewModel viewModel);
+
+	/**
+	 * Serializes one {@link Person}.
+	 *
+	 * @param writer
+	 *            a {@link Writer} to use.
+	 * @param crisLink
+	 *            one {@link CRISLink} object.
+	 * @param viewModel
+	 *            the {@link ViewModel} encapsulates additional information,
+	 */
+	public void serializeCRISLink(Writer writer, CRISLink crisLink, ViewModel viewModel);
+
+	/**
+	 * Serializes one {@link ResourcePersonRelation}.
+	 *
+	 * @param writer
+	 *            a {@link Writer} to use.
+	 * @param resourcePersonRelation
+	 *            one {@link ResourcePersonRelation} object.
+	 * @param viewModel
+	 *            the {@link ViewModel} encapsulates additional information,
+	 */
+	public void serializeResourcePersonRelation(Writer writer, ResourcePersonRelation resourcePersonRelation, ViewModel viewModel);
+
+	/**
+	 * Serializes a list of {@link ResourcePersonRelation}.
+	 * @param writer
+	 * @param relations
+	 */
+	public void serializeResourcePersonRelations(Writer writer, List<ResourcePersonRelation> relations);
+
+	/**
+	 * Serializes a personid
+	 *
+	 * @param writer   the {@link Writer} to use.
+	 * @param personId the personId to send
+	 */
+	public void serializePersonId(Writer writer, String personId);
+
+	/**
+	 * Serializes a projectid
+	 *
+	 * @param writer   the {@link Writer} to use.
+	 * @param projectId the personId to send
+	 */
+	public void serializeProjectId(Writer writer, String projectId);
+
+	/**
+	 * Serializes a cris link id
+	 *
+	 * @param writer   the {@link Writer} to use.
+	 * @param linkId the personId to send
+	 */
+	public void serializeCRISLinkId(Writer writer, String linkId);
+
+	/**
 	 * Serializes a {@link List} of {@link Tag}s.
 	 * 
 	 * @param writer
@@ -159,6 +267,18 @@ public interface Renderer {
 	 *            the {@link ViewModel} encapsulates additional information,
 	 */
 	public void serializeGroup(Writer writer, Group group, ViewModel viewModel);
+
+	/**
+	 * Serializes a collection of {@link GroupMembership}.
+	 *
+	 * @param writer
+	 *            a {@link Writer} to use.
+	 * @param groupMemberships
+	 *            a collection of {@link GroupMembership} object.
+	 * @param viewModel
+	 *            the {@link ViewModel} encapsulates additional information,
+	 */
+	public void serializeGroupMemberships(Writer writer, Collection<GroupMembership> groupMemberships, ViewModel viewModel);
 
 	/**
 	 * Serializes an errormessage.
@@ -294,6 +414,28 @@ public interface Renderer {
 	public String parseUserId(Reader reader) throws BadRequestOrResponseException;
 
 	/**
+	 * Reads an user id from a {@link Reader}
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return a resource hash
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public String parsePersonId(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads a project id from a {@link Reader}
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return a resource hash
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public String parseProjectId(Reader reader) throws BadRequestOrResponseException;
+
+	/**
 	 * Reads a group id from a {@link Reader}
 	 * 
 	 * @param reader
@@ -338,6 +480,86 @@ public interface Renderer {
 	public User parseUser(Reader reader) throws BadRequestOrResponseException;
 
 	/**
+	 * Reads one {@link Person} from a {@link Reader}.
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return one {@link Person} object.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public Person parsePerson(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * reads a list of {@link Person}s from a {@link Reader}
+	 * @param reader
+	 * @return
+	 */
+	List<Person> parsePersons(Reader reader);
+
+	/**
+	 * Reads one {@link Project} from a {@link Reader}.
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return one {@link Project} object.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public Project parseProject(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads a list of {@link Project} from a {@link Reader}.
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return a list of {@link Project} object.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public List<Project> parseProjects(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads one {@link Person} from a {@link Reader}.
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return one {@link CRISLink} object.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public CRISLink parseCRISLink(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads one {@link ResourcePersonRelation} from a {@link Reader}.
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return one {@link ResourcePersonRelation} object.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public ResourcePersonRelation parseResourcePersonRelation(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads one {@link ResourcePersonRelation} from a {@link Reader}.
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return one {@link CRISLink} object.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	//public CRISLink parseCRISLink(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads a list of {@link ResourcePersonRelation}s from a {@link Reader}.
+	 * @param reader  the {@link Reader} to use.
+	 * @return a list of {@link ResourcePersonRelation}s
+	 */
+	List<ResourcePersonRelation> parseResourcePersonRelations(Reader reader);
+
+	/**
 	 * Reads a List of {@link Post}s from a {@link Reader}.
 	 * 
 	 * @param reader
@@ -366,8 +588,7 @@ public interface Renderer {
 	 * 
 	 * @param reader
 	 * 			  the {@link Reader} to use.
-	 * @param uploadFileAccessor 
-	 * @param uploadedFileAccessor provides access to referenced attachments in the read data
+	 * @param uploadFileAccessor provides access to referenced attachments in the read data
 	 * @return one {@link Document} object
 	 * @throws BadRequestOrResponseException
 	 * 				if the document within the reader is errorenous.
@@ -406,6 +627,17 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public Group parseGroup(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads a collection of {@link GroupMembership} from a {@link Reader}.
+	 *
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return a collections of {@link GroupMembership} object.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public Collection<GroupMembership> parseGroupMemberships(Reader reader) throws BadRequestOrResponseException;
 
 	/**
 	 * Reads a List of {@link Tag}s from a {@link Reader}.

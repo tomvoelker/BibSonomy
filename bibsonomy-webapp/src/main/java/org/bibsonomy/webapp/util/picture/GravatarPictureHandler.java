@@ -61,18 +61,25 @@ public class GravatarPictureHandler extends ExternalPictureHandler {
 	 * </p>
 	 */
 	protected static final String DEFAULT_BEHAVIOUR = "mm";
-	
-	
+
+	/**
+	 * default constructor with the user to handle
+	 *
+	 * @param requestedUser
+	 */
+	public GravatarPictureHandler(User requestedUser) {
+		super(requestedUser);
+	}
+
 	/**
 	 * Generates Gravatar URI for this request's email address.
 	 * 
-	 * @param requesteUser :	the requested user
-	 * @param defaultBehav : specifies Gravatar behaviour if there is no picture for the address
+	 * @param requestedUser :	the requested user
 	 * @param fileExtension : requested file extension or empty String.
 	 * @return Gravatar URI as String
 	 */
 	@Override
-	protected URL getPictureURL(User requestedUser, String fileExtension) {
+	protected URL getPictureURL(final User requestedUser, final String fileExtension) {
 		// hash user's gravatar email, use default-picture "mystery-man", use resolution 128x128;
 		try {
 			return new URL(String.format(GRAVATAR_REQ_URL, StringUtils.getMD5Hash(requestedUser.getEmail()), fileExtension, DEFAULT_BEHAVIOUR));

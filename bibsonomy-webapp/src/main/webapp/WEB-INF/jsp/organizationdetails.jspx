@@ -1,0 +1,216 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
+		  xmlns:person="urn:jsptagdir:/WEB-INF/tags/person"
+		  xmlns:project="urn:jsptagdir:/WEB-INF/tags/project"
+		  xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+		  xmlns:organization="urn:jsptagdir:/WEB-INF/tags/organization"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+>
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"/>
+	<!--+
+		| variables, messages
+		+-->
+	<c:set var="organization" value="${command.group}"/>
+
+	<layout:paneLayout pageTitle="${title}" command="${command}" requPath="${requPath}" showPageOptions="${true}">
+		<jsp:attribute name="heading">
+			<!-- nothing to show -->
+		</jsp:attribute>
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:crumb nameKey="person.show.organization" href="${relativeUrlGenerator.getOrganizationsUrl()}" />
+					<nav:crumb name="${organization.realname}" active="true" leadingIcon="fa-sitemap" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+
+		<jsp:attribute name="content">
+			<div class="page-header">
+				<h1 class="organization-title">
+					<c:out value="${organization.realname}"/>
+				</h1>
+				<c:set var="parent" value="${organization.parent}" />
+				<c:if test="${not empty parent}">
+					<div class="organization-parent-title">
+						<organization:organizationName organization="${parent}" showRealname="${true}"/>
+					</div>
+				</c:if>
+			</div>
+
+			<c:set var="subPage" value="${command.subPage}" />
+			<c:set var="orgaName" value="${command.requestedOrganizationName}" />
+
+			<div class="row">
+				<div class="col-md-12">
+					<ul class="nav nav-pills">
+						<li class="${subPage eq 'INFO' ? 'active': ''}">
+							<a href="${relativeUrlGenerator.getOrganizationUrlByName(orgaName)}">
+								<fontawesome:icon icon="info" spaceAfter="5"/>
+								<fmt:message key="organization.description" />
+							</a>
+						</li>
+
+						<c:set var="peopleCount" value="${command.persons.totalCount}" />
+						<c:if test="${peopleCount gt 0}">
+							<li class="${subPage eq 'PERSONS' ? 'active': ''}">
+								<a href="${relativeUrlGenerator.getOrganizationPersonsUrlByName(orgaName)}">
+									<fontawesome:icon icon="users" spaceAfter="5" />
+									<fmt:message key="persons" />
+									<span title="total: ${peopleCount} people" class="badge">${peopleCount}</span>
+								</a>
+							</li>
+						</c:if>
+						<c:set var="publicationCount" value="${command.publications.totalCount}" />
+						<c:if test="${publicationCount gt 0}">
+							<li class="${subPage eq 'PUBLICATIONS' ? 'active': ''}">
+
+								<a href="${relativeUrlGenerator.getOrganizationPublicationsUrlByName(orgaName)}">
+									<fontawesome:icon icon="book" spaceAfter="5" />
+									<fmt:message key="publications" />
+									<span class="badge" title="total:  ${publicationCount} publications">
+										${publicationCount}
+									</span>
+								</a>
+							</li>
+						</c:if>
+						<c:set var="projectCount" value="${command.projects.totalCount}" />
+						<c:if test="${projectCount gt 0}">
+							<li class="${subPage eq 'PROJECTS' ? 'active': ''}">
+								<a href="${relativeUrlGenerator.getOrganizationProjectsUrlByName(orgaName)}">
+									<fontawesome:icon icon="project-diagram" spaceAfter="5" />
+									<fmt:message key="navi.projects" />
+									<span class="badge" title="total:  ${projectCount} projects">${projectCount}</span>
+								</a>
+							</li>
+						</c:if>
+					</ul>
+
+				</div>
+			</div>
+
+			<div class="tab-content">
+				<c:if test="${subPage eq 'INFO'}">
+					<div class="tab-pane fade in active" id="organization-description">
+						<c:if test="${not empty organization.description or not empty organization.homepage}">
+						<div class="row" >
+							<div class="col-md-10">
+								<h3 class="list-headline">
+									<fmt:message key="organization.description" />
+								</h3>
+							</div>
+						</div>
+						</c:if>
+						<c:if test="${not empty organization.description}">
+							<div class="row">
+								<div class="col-md-10">
+									<c:out value="${organization.description}"/>
+								</div>
+							</div>
+
+						<br /> <!-- TODO: use css -->
+						</c:if>
+						<c:if test="${not empty organization.homepage}">
+							<div class="row">
+								<div class="col-md-10">
+									<dl class="dl-horizontal">
+										<dt>Homepage</dt>
+										<dd><a href="${organization.homepage}"><c:out value="${organization.homepage}"/></a></dd>
+									</dl>
+								</div>
+							</div>
+						</c:if>
+						<c:if test="${fn:length(organization.subgroups) gt 0}">
+							<div class="row">
+								<div class="col-md-10">
+									<h3 class="list-headline">
+										<fmt:message key="organization.subOrganizations" />
+									</h3>
+									<ul>
+										<c:forEach var="subOrga" items="${organization.subgroups}">
+											<li>
+												<organization:organizationName organization="${subOrga}" showRealname="${true}"/>
+											</li>
+										</c:forEach>
+									</ul>
+								</div>
+							</div>
+						</c:if>
+
+					</div>
+				</c:if>
+				<c:if test="${subPage eq 'PUBLICATIONS'}">
+					<div id="organization-publications">
+						<div  class="col-md-10 publication-list">
+							<div id="publications_0" class="publicationsContainer standard">
+							<resources:bibtexs listView="${command.publications}"
+											   loginUserName="${command.context.loginUser.name}"
+											   disableListNavigation="${true}"
+											   requPath=""
+											   widthClassName="wide"
+											   isClipboard="${false}"
+											   showBookmark="${false}"
+											   hideCounts="${true}"
+											   hideMetaData="${true}"
+											   showPublication="${true}"
+											   onlyLinkAuthorsWithPersons="${empty command.context.loginUser.name}"
+											   showPageOptions="${false}">
+								<jsp:attribute name="addAsLastItem">
+									<c:if test="true">
+										<div id="publicationsfooter" class="wide">
+											<rc:nextprev listView="${command.publications}" listViewStartParamName="publications.start"/>
+										</div>
+									</c:if>
+								</jsp:attribute>
+							</resources:bibtexs>
+							</div>
+						</div>
+					</div>
+				</c:if>
+				<c:if test="${subPage eq 'PERSONS'}">
+					<div class="row">
+						<div class="col-md-10">
+							<h3 class="list-headline">
+								<c:out value="Persons"/>
+							</h3>
+						</div>
+					</div>
+					<div id="organization-persons">
+						<div class="row">
+							<person:personList listCommand="${command.persons}" showPagination="${true}"/>
+						</div>
+					</div>
+				</c:if>
+				<c:if test="${subPage eq 'PROJECTS'}">
+					<c:if test="${projectCount gt 0}">
+						<div id="organization-projects">
+							<div class="row">
+								<div class="col-md-10">
+									<h3 class="list-headline">
+										<fmt:message key="navi.projects" />
+									</h3>
+								</div>
+							</div>
+							<div class="row" >
+								<div class="col-md-12">
+									<project:listview projectListCommand="${command.projects}" />
+								</div>
+							</div>
+						</div>
+					</c:if>
+				</c:if>
+			</div>
+		</jsp:attribute>
+
+	</layout:paneLayout>
+
+</jsp:root>

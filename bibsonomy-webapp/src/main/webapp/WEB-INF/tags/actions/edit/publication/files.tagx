@@ -10,7 +10,9 @@
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:form="http://www.springframework.org/tags/form">
 
-<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+
+	<c:set var="publication" value="${post.resource}" />
 	
 	<a name="uploadedFiles"><!--  --></a>
 	<bsform:fieldset legendKey="post.bibtex.files">
@@ -24,22 +26,26 @@
 			 	| the documents of the post
 				|
 				+-->
-			<c:if test="${not empty command.post.resource.documents}">
+			<c:set var="hasDocuments" value="${false}" />
+			<c:forEach var="doc" items="${publication.documents}">
+				<c:if test="${not doc.temp}">
+					<c:set var="hasDocuments" value="${true}" />
+				</c:if>
+			</c:forEach>
+			<c:if test="${hasDocuments}">
 				
 				<div class="form-group">
 				
-					<label class="col-sm-3 control-label"><fmt:message key="post.bibtex.uploadedFiles"/></label> 
-					
-				
+					<label class="col-sm-3 control-label"><fmt:message key="post.bibtex.uploadedFiles"/></label>
 					<div class="col-sm-9">
 						<ul class="documents edit-added-files">
-							<c:forEach var="document" items="${command.post.resource.documents}">
+							<c:forEach var="document" items="${publication.documents}">
 								<li>
 									<!-- link to document -->
-									<a class="document-filename edit-added-files" href="/documents/${command.post.resource.intraHash}/${mtl:encodePathSegment(command.post.user.name)}/${mtl:encodePathSegment(document.fileName)}"><c:out value="${document.fileName}"/></a>
+									<a class="document-filename edit-added-files" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}"><c:out value="${document.fileName}"/></a>
 									<!-- link for delete document -->
 									<c:url var="deleteDocumentUrl" value="/ajax/documents">
-										<c:param name="ownerName" value="${command.post.user.name}" />
+										<c:param name="ownerName" value="${post.user.name}" />
 										<c:param name="intraHash" value="${command.intraHashToUpdate}"/>
 										<c:param name="fileName" value="${document.fileName}" />
 										<c:param name="ckey" value="${ckey}" />
@@ -99,7 +105,7 @@
 							<c:if test="${not empty command.fileName}">
 								<c:forEach var="fileN" items="${command.fileName}" varStatus="status">
 									<li id="file_${status.count}">
-										<span class="documentFileName"><c:out value="${fn:substring(fileN, 64, fn:length(fileN))}"/></span>
+										<span class="documentFileName"><c:out value="${fn:substring(fileN, 32, fn:length(fileN))}"/></span>
 										<input type="hidden" class="tempFileName" value="${fn:escapeXml(fileN)}" name="fileName"/>
 									</li>
 									<!-- increase temporary file counter -->

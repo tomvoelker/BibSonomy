@@ -42,6 +42,8 @@ public class HomepageCommand extends SimpleResourceViewCommand{
 	private List<Post<Bookmark>> news;
 
 	/**
+
+	/**
 	 * @return the latest news posts.
 	 */
 	public List<Post<Bookmark>> getNews() {

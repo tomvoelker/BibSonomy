@@ -35,10 +35,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.rest.auth.OAuthAPIAccessor;
 import org.bibsonomy.rest.client.RestLogicFactory;
 import org.eclipse.jetty.server.Request;
@@ -90,9 +91,13 @@ public class OAuthTestHandler extends AbstractHandler {
 				throw new ServletException();
 			}
 		}
-		
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.USER)
+				.setGroupingName(ACCESSOR.getRemoteUserId())
+				.setScope(QueryScope.LOCAL)
+				.entriesStartingAt(9, 0);
 		// print first ten bookmark titles
-		final List<Post<Bookmark>> posts = INTERFACE.getPosts(Bookmark.class, GroupingEntity.USER, ACCESSOR.getRemoteUserId(), null, null, null, SearchType.LOCAL, null, null, null, null, 0, 9);
+		final List<Post<Bookmark>> posts = INTERFACE.getPosts(postQueryBuilder.createPostQuery(Bookmark.class));
 		for (final Post<Bookmark> post : posts) {
 			final Bookmark bookmark = post.getResource();
 			response.getWriter().println("<li><a href=\"" + bookmark.getUrl() + "\">" + bookmark.getTitle() + "</a></li>");

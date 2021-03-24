@@ -52,6 +52,8 @@ public class ListCommand<T> {
 	private List<PageCommand> previousPages;
 	private List<PageCommand> nextPages;
 	private Integer totalCount = null;
+	/** this number tells us the pagination limit of the system that is */
+	private Integer paginationLimit = null;
 	private List<T> list;
 	
 	/**
@@ -80,13 +82,16 @@ public class ListCommand<T> {
 	public List<T> getList() {
 		return this.list;
 	}
+
 	/**
 	 * @param list the sublistlist on the current page
 	 */
 	public void setList(final List<T> list) {
 		this.list = list;
 		if (list instanceof ResultList<?>) {
-			this.setTotalCount(((ResultList<?>) list).getTotalCount());
+			final ResultList<T> resultList = (ResultList<T>) list;
+			this.setTotalCount(resultList.getTotalCount());
+			this.setPaginationLimit(resultList.getPaginationLimit());
 		}
 	}
 	
@@ -96,6 +101,7 @@ public class ListCommand<T> {
 	public int getStart() {
 		return this.curPage.getStart();
 	}
+
 	/**
 	 * @param start inclusive start index of the current page
 	 */
@@ -153,7 +159,7 @@ public class ListCommand<T> {
 	 */
 	public List<PageCommand> getPreviousPages() {
 		if (this.previousPages == null) {
-			this.previousPages = new ArrayList<PageCommand>();
+			this.previousPages = new ArrayList<>();
 			for (int i = (this.numPreviousPages >= this.getCurPage().getNumber()) ? 1 : this.getCurPage().getNumber() - this.numPreviousPages; i < this.getCurPage().getNumber(); ++i) {
 				final int start = (i - 1) * this.entriesPerPage;
 				this.previousPages.add(new PageCommand(i, start));
@@ -169,7 +175,7 @@ public class ListCommand<T> {
 	 */
 	public List<PageCommand> getNextPages() {
 		if (this.nextPages == null) {
-			this.nextPages = new ArrayList<PageCommand>();
+			this.nextPages = new ArrayList<>();
 			for (int i = 1; i <= this.numNextPages; ++i) {
 				final int start = this.curPage.getStart() + (i * this.entriesPerPage);
 				if ((start < this.getTotalCount()) || (this.getTotalCount() == 0)) {
@@ -219,7 +225,7 @@ public class ListCommand<T> {
 	}
 	
 	/**
-	 * @param entriesPerPage number of entities to be diplayed on one page
+	 * @param entriesPerPage number of entities to be displayed on one page
 	 */
 	public void setEntriesPerPage(final int entriesPerPage) {
 		this.entriesPerPage = entriesPerPage;
@@ -255,6 +261,8 @@ public class ListCommand<T> {
 	}
 	
 	/**
+	 * FIXME: this list command can contain also non posts; please move this method
+	 *
 	 * @return the resource type of the posts in the list
 	 */
 	public String getResourcetype() {
@@ -294,4 +302,17 @@ public class ListCommand<T> {
 		return 0;
 	}
 
+	/**
+	 * @return the paginationLimit
+	 */
+	public Integer getPaginationLimit() {
+		return paginationLimit;
+	}
+
+	/**
+	 * @param paginationLimit the paginationLimit to set
+	 */
+	public void setPaginationLimit(Integer paginationLimit) {
+		this.paginationLimit = paginationLimit;
+	}
 }

@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.util.PersonUtils;
 
 /**
  * TODO: add documentation to this class
@@ -50,7 +51,7 @@ public class ResourcePersonAlreadyAssignedException extends LogicException {
 	}
 
 	public PersonName getPubPersonName() {
-		List<PersonName> names = this.existingRelation.getPost().getResource().getPersonNamesByRole(this.existingRelation.getRelationType());
+		List<PersonName> names = PersonUtils.getPersonsByRole(this.existingRelation.getPost().getResource(), this.existingRelation.getRelationType());
 		if (names == null) {
 			return null;
 		}

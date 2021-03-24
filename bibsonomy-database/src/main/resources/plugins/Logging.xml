@@ -47,8 +47,8 @@
 		FROM gold_standard WHERE simhash1 = #oldHash#
 	</insert>
 		
-	<insert id="logGoldStandardRelationDelete">
-		INSERT INTO log_gold_standard_relations (publication, reference, user_name) VALUES (#hash#, #refHash#, #username#)
+	<insert id="logGoldStandardRelationDelete" parameterClass="goldstandardReferenceParam">
+		INSERT INTO log_gold_standard_relations (<include refid="commonLogGoldStandardReferenceAttributes" />) VALUES (#hash#, #refHash#, #username#, #relation#)
 	</insert>
 
 	<insert id="logBookmark" parameterClass="bookmarkParam">
@@ -231,5 +231,33 @@
 		SET current_content_id = #newContentId#
 		WHERE current_content_id = #oldContentId#
 	</update>
-	
+
+	<insert id="logProjectUpdate" parameterClass="loggingParam">
+		INSERT INTO log_projects (<include refid="allProjectAttributes" />, new_id, log_date, log_user)
+		SELECT <include refid="allProjectAttributes" />, #newContentId#, #date#, #postEditor.name#
+		FROM projects
+		WHERE id = #oldContentId#
+	</insert>
+
+	<insert id="logCRISLinkUpdate" parameterClass="loggingParam">
+		INSERT INTO log_cris_links (<include refid="allCRISLinkAttributesLog" />, new_id, log_date, log_user)
+		SELECT <include refid="allCRISLinkAttributes" />, #newContentId#, #date#, #postEditor.name#
+		FROM cris_links c
+		WHERE c.id = #oldContentId#
+	</insert>
+
+	<insert id="logGroup" parameterClass="org.bibsonomy.database.params.logging.InsertGroupLog">
+		INSERT INTO log_groupids (group_name, `group`, privlevel, sharedDocuments, allow_join, shortDescription, organization, internal_id, log_reason, log_date, log_user)
+		SELECT group_name, `group`, privlevel, sharedDocuments, allow_join, shortDescription, organization, internal_id, #logReason#, #loggedTimestamp#, #loggedUser.name#
+		FROM groupids
+		WHERE `group` = #group.groupId#
+	</insert>
+
+	<insert id="logGroupUpdate" parameterClass="org.bibsonomy.database.params.logging.InsertUserGroupLog">
+		INSERT INTO log_groupids (group_name, `group`, privlevel, sharedDocuments, allow_join, shortDescription, organization, internal_id, log_reason, log_date, log_user)
+		SELECT group_name, `group`, privlevel, sharedDocuments, allow_join, shortDescription, organization, internal_id, #logReason#, #loggedTimestamp#, #loggedUser.name#
+		FROM groupids
+		WHERE group_name = #userName#
+	</insert>
+
 </sqlMap>

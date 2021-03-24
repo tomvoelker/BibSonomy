@@ -27,13 +27,18 @@
 package org.bibsonomy.search.es.index.converter.post;
 
 import java.net.URI;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.search.es.ESConstants;
 
 /**
  * converter for {@link GoldStandardPublication}
@@ -65,7 +70,48 @@ public class CommunityPublicationConverter extends PublicationConverter {
 		// nothing to do
 		return null;
 	}
-	
+
+	@Override
+	protected void convertPostInternal(final Map<String, Object> source, final Post<BibTex> post) {
+		// read the resource relations
+		post.setResourcePersonRelations(readPersonResourceRelations(source));
+	}
+
+	private static List<ResourcePersonRelation> readPersonResourceRelations(final Map<String, Object> source) {
+		final List<ResourcePersonRelation> resourcePersonRelations = new LinkedList<>();
+		resourcePersonRelations.addAll(readPersonResourceRelations(source.get(ESConstants.Fields.Publication.EDITORS), PersonResourceRelationType.EDITOR));
+		resourcePersonRelations.addAll(readPersonResourceRelations(source.get(ESConstants.Fields.Publication.AUTHORS), PersonResourceRelationType.AUTHOR));
+
+		// FIXME: other relations are missing
+		return resourcePersonRelations;
+	}
+
+	private static List<ResourcePersonRelation> readPersonResourceRelations(Object source, PersonResourceRelationType type) {
+		final LinkedList<ResourcePersonRelation> relations = new LinkedList<>();
+		if (source instanceof List) {
+			@SuppressWarnings("unchecked")
+			final List<Map<String, String>> personNamesList = (List<Map<String, String>>) source;
+			int index = 0;
+
+			for (final Map<String, String> personNameMap : personNamesList) {
+				if (personNameMap.containsKey(ESConstants.Fields.Publication.PERSON_ID)) {
+					final Person person = new Person();
+					person.setPersonId(personNameMap.get(ESConstants.Fields.Publication.PERSON_ID));
+					person.setCollege(personNameMap.get(ESConstants.Fields.Publication.PERSON_COLLEGE));
+
+					final ResourcePersonRelation relation = new ResourcePersonRelation();
+					relation.setPersonIndex(index);
+					relation.setRelationType(type);
+					relation.setPerson(person);
+					relations.add(relation);
+				}
+				index += 1;
+			}
+		}
+
+		return relations;
+	}
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.index.converter.post.ResourceConverter#fillUser(org.bibsonomy.model.Post, java.lang.String)
 	 */

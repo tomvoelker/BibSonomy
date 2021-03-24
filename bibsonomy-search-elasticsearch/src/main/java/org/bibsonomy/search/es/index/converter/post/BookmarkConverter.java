@@ -48,7 +48,8 @@ public class BookmarkConverter extends ResourceConverter<Bookmark> {
 	}
 
 	@Override
-	protected void convertResource(Map<String, Object> jsonDocument, Bookmark resource) {
+	protected void convertResource(Map<String, Object> jsonDocument, Post<Bookmark> post) {
+		final Bookmark resource = post.getResource();
 		jsonDocument.put(Fields.Bookmark.URL, resource.getUrl());
 	}
 

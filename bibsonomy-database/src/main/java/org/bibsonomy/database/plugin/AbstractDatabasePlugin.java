@@ -35,8 +35,6 @@ import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Person;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.GoldStandardRelation;
@@ -86,16 +84,6 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	}
 
 	@Override
-	public void onGoldStandardDelete(final String interhash, final DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onBookmarkInsert(final Post<? extends Resource> post, final DBSession session) {
-		// noop
-	}
-
-	@Override
 	public void onBookmarkDelete(final int contentId, final DBSession session) {
 		// noop
 	}
@@ -135,16 +123,6 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 
 	@Override
 	public void onUserDelete(final String userName, final DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onUserUpdate(final String userName, final DBSession session) {
-		// noop
-	}
-
-	@Override
-	public void onChangeUserMembershipInGroup(final String userName, final int groupId, final DBSession session) {
 		// noop
 	}
 
@@ -207,7 +185,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonUpdate(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPersonUpdate(String personId, DBSession session) {
+	public void onPersonUpdate(Person oldPerson, Person newPerson, DBSession session) {
 		// noop
 
 	}
@@ -224,7 +202,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPubPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPubPersonDelete(ResourcePersonRelation rel, User loggedinUser, DBSession session) {
+	public void onPubPersonDelete(ResourcePersonRelation rel, User loginUser, DBSession session) {
 		// noop
 	}
 
@@ -235,5 +213,5 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	public void onPersonUpdateByUserName(String userName, DBSession session) {
 		// noop
 	}
-	
+
 }

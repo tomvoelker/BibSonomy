@@ -29,6 +29,7 @@ package org.bibsonomy.util.spring.security;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.User;
@@ -62,13 +63,15 @@ public class UserAdapter implements UserDetails {
 
 	@Override
 	public Collection<GrantedAuthority> getAuthorities() {
-		final Collection<GrantedAuthority> authorities = new LinkedHashSet<GrantedAuthority>();
-		if (!Role.LIMITED.equals(this.user.getRole())) {
+		final Collection<GrantedAuthority> authorities = new LinkedHashSet<>();
+		final Role role = this.user.getRole();
+		if (!Role.LIMITED.equals(role)) {
 			authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 		}
-		if (Role.ADMIN.equals(this.user.getRole())) {
-			authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-		}
+
+		authorities.add(new SimpleGrantedAuthority("ROLE_" + role.toString()));
+		final Set<Role> impliedRoles = Role.getImpliedRoles(role);
+		impliedRoles.stream().map(impliedRole -> new SimpleGrantedAuthority("ROLE_" + impliedRole)).forEach(authorities::add);
 		
 		return Collections.unmodifiableCollection(authorities);
 	}

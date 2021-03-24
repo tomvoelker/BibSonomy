@@ -39,6 +39,7 @@ import java.util.Set;
 import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.model.Tag;
 
 /**
@@ -190,7 +191,6 @@ public class SystemTagsExtractor {
 	 * Go through a collection of tags and removes all hidden System Tags
 	 * 
 	 * @param tags
-	 * @param loginUserName
 	 */
 	public static void removeHiddenSystemTags(Collection<Tag> tags) {
 		for (final Iterator<Tag> iter = tags.iterator(); iter.hasNext();) {
@@ -265,6 +265,28 @@ public class SystemTagsExtractor {
 		}
 
 		return systemTags;
+	}
+
+	/**
+	 * extracts all system tags of the specified tag type from the provided system tags
+	 *
+	 * @param systemTags
+	 * @param tagType
+	 * @return the system tags
+	 */
+	public static List<SystemTag> extractSystemTags(Collection<SystemTag> systemTags, String tagType) {
+		final List<SystemTag> result = new LinkedList<>();
+		if (!present(systemTags)) {
+			return result;
+		}
+		for (final SystemTag systemTag : systemTags) {
+			final String tagName = systemTag.getName();
+			if (tagType != null && tagType.equals(SystemTagsUtil.extractType(tagName))) {
+				result.add(systemTag);
+			}
+		}
+
+		return result;
 	}
 
 }

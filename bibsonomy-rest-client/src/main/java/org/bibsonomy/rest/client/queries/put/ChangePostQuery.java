@@ -29,9 +29,11 @@ package org.bibsonomy.rest.client.queries.put;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.StringWriter;
+import java.util.Set;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -71,29 +73,46 @@ public final class ChangePostQuery extends AbstractQuery<String> {
 	 *             </ul>
 	 */
 	public ChangePostQuery(final String username, final String resourceHash, final Post<? extends Resource> post) throws IllegalArgumentException {
-		if (!present(username)) throw new IllegalArgumentException("no username given");
-		if (!present(resourceHash)) throw new IllegalArgumentException("no resourceHash given");
-		if (!present(post)) throw new IllegalArgumentException("no post specified");
-		if (!present(post.getResource())) throw new IllegalArgumentException("no resource specified");
-
 		/*
 		 * TODO: extract validation
 		 */
-		if (post.getResource() instanceof Bookmark) {
-			final Bookmark bookmark = (Bookmark) post.getResource();
+		if (!present(resourceHash)) {
+			throw new IllegalArgumentException("no resourceHash given");
+		}
+
+		if (!present(post)) {
+			throw new IllegalArgumentException("no post specified");
+		}
+
+		final Resource resource = post.getResource();
+		if (!present(resource)) {
+			throw new IllegalArgumentException("no resource specified");
+		}
+
+		final boolean isCommunityPost = resource instanceof GoldStandard<?>;
+		if (!isCommunityPost && !present(username)) {
+			throw new IllegalArgumentException("no username set");
+		}
+
+		if (resource instanceof Bookmark) {
+			final Bookmark bookmark = (Bookmark) resource;
 			if (!present(bookmark.getUrl())) throw new IllegalArgumentException("no url specified in bookmark");
 		}
 
-		if (post.getResource() instanceof BibTex) {
-			final BibTex publication = (BibTex) post.getResource();
+		if (resource instanceof BibTex) {
+			final BibTex publication = (BibTex) resource;
 			if (!present(publication.getIntraHash())) {
 				throw new IllegalArgumentException("found an publication without intrahash assigned.");
 			}
 		}
 
-		if (!present(post.getTags())) throw new IllegalArgumentException("no tags specified");
-		for (final Tag tag : post.getTags()) {
-			if (!present(tag.getName())) throw new IllegalArgumentException("missing tagname");
+		final Set<Tag> tags = post.getTags();
+		if (!present(tags) && !isCommunityPost) {
+			throw new IllegalArgumentException("no tags specified");
+		}
+
+		for (final Tag tag : tags) {
+			if (!present(tag.getName())) throw new IllegalArgumentException("missing tag name");
 		}
 
 		this.username = username;

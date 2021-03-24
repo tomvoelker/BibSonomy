@@ -1,0 +1,36 @@
+<jsp:root version="2.0"
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<jsp:directive.attribute name="person" type="org.bibsonomy.model.Person" required="true"/>
+	<span class="authorName">
+		<c:if test="${not empty person.academicDegree}">
+			<span class="degree">
+				<c:out value="${person.academicDegree}" />
+			</span>
+			<c:out value=" " />
+		</c:if>
+
+		<c:set var="personName" value="${person.mainName}" />
+		<c:if test="${not empty personName.firstName}">
+			<span class="firstName">
+				<c:out value="${personName.firstName}" />
+			</span>
+			<c:out value=" " />
+		</c:if>
+
+		<c:if test="${not empty personName.lastName}">
+			<span class="lastName">
+				<c:out value="${personName.lastName}" />
+			</span>
+			<c:out value=" " />
+		</c:if>
+	</span>
+
+	<c:if test="${not empty person.college}">
+		<small>
+			<c:out value="${person.college}" />
+		</small>
+	</c:if>
+</jsp:root>

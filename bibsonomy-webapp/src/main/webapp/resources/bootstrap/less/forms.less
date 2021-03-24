@@ -66,7 +66,7 @@ input[type="range"] {
   width: 100%;
 }
 
-// Make multiple select elements height not fixed
+// Make multiple filter elements height not fixed
 select[multiple],
 select[size] {
   height: auto;
@@ -94,7 +94,7 @@ output {
 // Shared size and type resets for form controls. Apply `.form-control` to any
 // of the following form controls:
 //
-// select
+// filter
 // textarea
 // input[type="text"]
 // input[type="password"]
@@ -122,7 +122,7 @@ output {
   background-color: @input-bg;
   background-image: none; // Reset unusual Firefox-on-Android default style; see https://github.com/necolas/normalize.css/issues/214
   border: 1px solid @input-border;
-  border-radius: @input-border-radius; // Note: This has no effect on <select>s in some browsers, due to the limited stylability of <select>s in CSS.
+  border-radius: @input-border-radius; // Note: This has no effect on <filter>s in some browsers, due to the limited stylability of <filter>s in CSS.
   .box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
   .transition(~"border-color ease-in-out .15s, box-shadow ease-in-out .15s");
 
@@ -132,7 +132,7 @@ output {
   // Placeholder
   .placeholder();
 
-  // Unstyle the caret on `<select>`s in IE10+.
+  // Unstyle the caret on `<filter>`s in IE10+.
   &::-ms-expand {
     border: 0;
     background-color: transparent;

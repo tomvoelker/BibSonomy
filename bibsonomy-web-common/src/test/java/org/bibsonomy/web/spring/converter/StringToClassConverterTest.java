@@ -26,8 +26,10 @@
  */
 package org.bibsonomy.web.spring.converter;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -54,6 +56,12 @@ public class StringToClassConverterTest {
 	public void testConvertNormalClassNames() {
 		assertEquals(User.class, STRING_TO_CLASS_CONVERTER.convert("org.bibsonomy.model.User"));
 		assertEquals(Post.class, STRING_TO_CLASS_CONVERTER.convert("org.bibsonomy.model.Post"));
+	}
+
+	@Test
+	public void testConvertModelClasses() {
+		assertThat(STRING_TO_CLASS_CONVERTER.convert("User"), equalTo(User.class));
+		assertThat(STRING_TO_CLASS_CONVERTER.convert("user"), equalTo(User.class));
 	}
 	
 	@Test

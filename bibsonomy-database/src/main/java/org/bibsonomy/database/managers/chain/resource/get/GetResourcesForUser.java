@@ -26,11 +26,8 @@
  */
 package org.bibsonomy.database.managers.chain.resource.get;
 
-import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
 import static org.bibsonomy.util.ValidationUtils.present;
 import static org.bibsonomy.util.ValidationUtils.presentValidGroupId;
-
-import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
@@ -39,7 +36,8 @@ import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
+
+import java.util.List;
 
 /**
  * Returns a list of resources for a given user.
@@ -57,7 +55,6 @@ public class GetResourcesForUser<R extends Resource, P extends ResourceParam<R>>
 				!presentValidGroupId(param.getGroupId()) &&
 				!present(param.getTagIndex()) &&
 				!present(param.getHash()) &&
-				nullOrEqual(param.getOrder(), Order.ADDED) &&
 				!present(param.getSearch())) && 
 				!present(param.getAuthor()) && 
 				!present(param.getTitle());
@@ -65,7 +62,8 @@ public class GetResourcesForUser<R extends Resource, P extends ResourceParam<R>>
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.databaseManager.getPostsForUser(param.getUserName(), param.getRequestedUserName(), param.getSearchType(), HashID.getSimHash(param.getSimHash()), param.getGroupId(), param.getGroups(), param.getPostAccess(), param.getFilters(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
+		return this.databaseManager.getPostsForUser(param.getUserName(), param.getRequestedUserName(),
+				HashID.getSimHash(param.getSimHash()), param.getGroupId(), param.getGroups(), param.getPostAccess(),
+				param.getFilters(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}
-
 }

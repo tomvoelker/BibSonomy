@@ -125,10 +125,7 @@
 		<property name="httpDepositUrl" value="${sword.httpDepositUrl}"/>
 	</bean>
 	
-	<bean id="apiLogicFactory" class="org.bibsonomy.database.DBLogicApiInterfaceFactory">
-		<property name="dbSessionFactory" ref="dbSessionFactory" />
-		<property name="bibtexReader" ref="bibtexReader"/>
-	</bean>
+	<bean id="apiLogicFactory" class="org.bibsonomy.database.DBLogicApiInterfaceFactory" parent="abstractLogicInterfaceFactory" />
 
 	<bean id="realSwordService" class="de.unikassel.puma.openaccess.sword.SwordService">
 		<property name="repositoryConfig" ref="swordConfig"/>

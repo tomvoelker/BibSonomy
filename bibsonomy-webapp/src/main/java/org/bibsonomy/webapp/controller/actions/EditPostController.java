@@ -34,24 +34,25 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.ConceptStatus;
-import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
+import org.bibsonomy.common.information.utils.JobInformationUtils;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.GoldStandard;
@@ -63,6 +64,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.PostLogicInterface;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.SimHash;
@@ -70,6 +72,7 @@ import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.tag.model.RecommendedTag;
 import org.bibsonomy.services.Pingback;
 import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.services.information.PersonResourceLinkInformationAdded;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
@@ -131,19 +134,19 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * initialize lists
 		 */
 		GroupingCommandUtils.initGroupingCommand(command);
-		command.setRelevantGroups(new ArrayList<String>());
-		command.setRelevantTagSets(new HashMap<String, Map<String, List<String>>>());
-		command.setRecommendedTags(new TreeSet<RecommendedTag>());
-		command.setCopytags(new ArrayList<Tag>());
-		command.setFileName(new ArrayList<String>());
+		command.setRelevantGroups(new ArrayList<>());
+		command.setRelevantTagSets(new HashMap<>());
+		command.setRecommendedTags(new TreeSet<>());
+		command.setCopytags(new ArrayList<>());
+		command.setFileName(new ArrayList<>());
 		/*
 		 * initialize post & resource
 		 */
-		command.setPost(new Post<RESOURCE>());
+		command.setPost(new Post<>());
 		command.getPost().setResource(this.instantiateResource());
 
 		// history
-		command.setDifferentEntryKeys(new ArrayList<String>());
+		command.setDifferentEntryKeys(new ArrayList<>());
 
 		/*
 		 * set default values.
@@ -241,9 +244,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		this.initPost(command, post, postOwner);
 
-		if (present(command.getIntraHashToUpdate())) {
+		final String intraHashToUpdate = command.getIntraHashToUpdate();
+		if (present(intraHashToUpdate)) {
 			log.debug("intra hash to update found -> handling update of existing post");
-			return this.handleUpdatePost(command, context, postOwner, post, command.getIntraHashToUpdate());
+			return this.handleUpdatePost(command, context, postOwner, post, intraHashToUpdate);
 		}
 
 		log.debug("no intra hash given -> new post");
@@ -305,12 +309,18 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * and must compare each post against the given user name.
 		 */
 
-		final List<Post<RESOURCE>> dbPosts = new LinkedList<Post<RESOURCE>>();
+		final List<Post<RESOURCE>> dbPosts = new LinkedList<>();
 		List<Post<RESOURCE>> tmp;
 		int startCount = 0;
 
 		do {
-			tmp = this.logic.getPosts((Class<RESOURCE>) this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, SearchType.LOCAL, null, null, null, null, startCount, startCount + this.maxQuerySize);
+			final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+			postQueryBuilder.setGrouping(GroupingEntity.INBOX)
+					.setGroupingName(loginUserName)
+					.setScope(QueryScope.LOCAL)
+					.setHash(hash)
+					.entriesStartingAt(this.maxQuerySize, startCount);
+			tmp = this.logic.getPosts(postQueryBuilder.createPostQuery((Class<RESOURCE>) this.instantiateResource().getClass()));
 			dbPosts.addAll(tmp);
 			startCount += this.maxQuerySize;
 		} while (tmp.size() == this.maxQuerySize);
@@ -469,14 +479,22 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				 */
 				// comparePost is the history revision which will be restored.
 				final int compareVersion = command.getCompareVersion();
+
+				final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+				postQueryBuilder.setGrouping(GroupingEntity.USER)
+						.setGroupingName(this.getGrouping(postOwner))
+						.setHash(intraHashToUpdate)
+						.setScope(QueryScope.LOCAL)
+						.setFilters(Sets.asSet(FilterEntity.HISTORY))
+						.entriesStartingAt(compareVersion + 1, compareVersion);
 				@SuppressWarnings("unchecked")
-				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(postOwner), null, intraHashToUpdate, null, SearchType.LOCAL, Sets.<Filter>asSet(FilterEntity.HISTORY), null, null, null, compareVersion, compareVersion + 1).get(0);
+				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(postQueryBuilder.createPostQuery(dbPost.getResource().getClass())).get(0);
 
 				// TODO: why don't we set the dbPost = comparePost? why do we
 				// have to restore all fields by hand?
 				final List<String> diffEntryKeyList = command.getDifferentEntryKeys();
-				for (int i = 0; i < diffEntryKeyList.size(); i++) {
-					this.replacePostFields(dbPost, diffEntryKeyList.get(i), comparePost);
+				for (final String s : diffEntryKeyList) {
+					this.replacePostFields(dbPost, s, comparePost);
 				}
 			}
 
@@ -523,33 +541,34 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		post.getResource().setIntraHash(command.getIntraHashToUpdate());
 
-		List<String> updatePosts = null;
+		;
 		try {
 			/*
 			 * update post in DB
 			 */
-			updatePosts = this.logic.updatePosts(Collections.<Post<?>> singletonList(post), PostUpdateOperation.UPDATE_ALL);
+			final List<JobResult> updateResults = this.logic.updatePosts(Collections.singletonList(post), PostUpdateOperation.UPDATE_ALL);
+
+			if (Status.FAIL.equals(updateResults.get(0).getStatus())) {
+				/*
+				 * show error page FIXME: when/why can this happen? We get some
+				 * error messages here in the logs, but can't explain them.
+				 */
+				this.errors.reject("error.post.update", "Could not update post.");
+				log.warn("could not update post");
+				return Views.ERROR;
+			}
+
+			/*
+			 * do everything that must be done after a successful create or update
+			 */
+			this.createOrUpdateSuccess(command, postOwner, post);
+			/*
+			 * send final redirect
+			 */
+			return this.finalRedirect(command, post, updateResults, postOwnerName, true);
 		} catch (final DatabaseException ex) {
 			return this.handleDatabaseException(command, postOwner, post, ex, "update");
 		}
-
-		if (!present(updatePosts)) {
-			/*
-			 * show error page FIXME: when/why can this happen? We get some
-			 * error messages here in the logs, but can't explain them.
-			 */
-			this.errors.reject("error.post.update", "Could not update post.");
-			log.warn("could not update post");
-			return Views.ERROR;
-		}
-		/*
-		 * do everything that must be done after a successful create or update
-		 */
-		this.createOrUpdateSuccess(command, postOwner, post);
-		/*
-		 * send final redirect
-		 */
-		return this.finalRedirect(command, post, postOwnerName);
 	}
 
 	/**
@@ -743,13 +762,14 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * Create the final redirect after successful creating / updating a post. We
 	 * redirect to the URL the user was initially coming from. If we don't have
 	 * that URL (for whatever reason), we redirect to the user's page.
-	 * @param userName	the logged in user?
-	 * @param post		the saved post
+	 * @param userName  the logged in user?
+	 * @param post    the saved post
 	 * @param referer
 	 *            - the URL of the page the user is initially coming from
+	 * @param update
 	 * @return the redirect view
 	 */
-	protected View finalRedirect(final String userName, final Post<RESOURCE> post, final String referer) {
+	protected View finalRedirect(final String userName, final Post<RESOURCE> post, final String referer, boolean update) {
 		/*
 		 * If there is no referer URL given, or if we come from a
 		 * postBookmark/postPublication page, redirect to the user's home page.
@@ -770,6 +790,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 	private View handleCreatePost(final COMMAND command, final RequestWrapperContext context, final User loginUser, final Post<RESOURCE> post) {
 		final String loginUserName = loginUser.getName();
+		command.setUser(loginUserName);
 
 		/*
 		 * no intra hash given --> user posts a new entry (which might already
@@ -831,38 +852,55 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			}
 
 			log.debug("finally: creating a new post in the DB");
-			final String createdPost = this.logic.createPosts(Collections.<Post<?>> singletonList(post)).get(0);
-
+			final List<JobResult> results = this.logic.createPosts(Collections.singletonList(post));
+			command.setJobResults(results);
+			final String createdPost = results.get(0).getId();
 			/*
 			 * store intraHash for some later changes (file upload)
 			 */
 			command.setIntraHashToUpdate(createdPost);
 			log.debug("created post: " + createdPost);
+
+			/*
+			 * do everything that must be done after a successful create or update
+			 */
+			this.createOrUpdateSuccess(command, loginUser, post);
+
+			return this.finalRedirect(command, post, results, loginUserName, false);
 		} catch (final DatabaseException de) {
 			return this.handleDatabaseException(command, loginUser, post, de, "create");
 		}
-		/*
-		 * do everything that must be done after a successful create or update
-		 */
-		this.createOrUpdateSuccess(command, loginUser, post);
-
-		return this.finalRedirect(command, post, loginUserName);
 	}
 
-	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, final String postOwnerName) {
+	private static boolean hasAutoLinkingInformation(final List<JobResult> jobResults) {
+		return jobResults.stream().map(JobResult::getInfo).anyMatch(list -> JobInformationUtils.containsInformationType(list, PersonResourceLinkInformationAdded.class));
+	}
+
+	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, List<JobResult> jobResults, final String postOwnerName, boolean update) {
 		if (present(command.getSaveAndRate())) {
 			final String ratingUrl = this.urlGenerator.getCommunityRatingUrl(post);
 			return new ExtendedRedirectView(ratingUrl);
 		}
+
 		/*
 		 * if the user is adding a new thesis to a person's page, he should be redirected to that person's page
 		 */
 		if (present(command.getPost().getResourcePersonRelations())) {
 			final ResourcePersonRelation resourcePersonRelation = post.getResourcePersonRelations().get(post.getResourcePersonRelations().size() - 1);
-			// FIXME: cache url generator!
-			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(resourcePersonRelation.getPerson().getPersonId()));
+			return new ExtendedRedirectView(this.urlGenerator.getPersonUrl(resourcePersonRelation.getPerson().getPersonId()));
 		}
-		return this.finalRedirect(postOwnerName, post, command.getReferer());
+
+		/*
+		 * If the user added an own publications with myown tag and the logic has auto linked persons with the post,
+		 * he should be redirected to his overview page
+		 */
+		final View redirectView = this.finalRedirect(postOwnerName, post, command.getReferer(), update);
+		if (hasAutoLinkingInformation(jobResults)) {
+			command.setJobResults(jobResults);
+			command.setRedirectUrl(redirectView.getName());
+			return Views.AUTOLINK;
+		}
+		return redirectView;
 	}
 
 	/**
@@ -937,7 +975,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 */
 	private void initCommandRelevantForGroups(final EditPostCommand<RESOURCE> command, final Set<Tag> tags) {
 		if (!present(command.getRelevantGroups())) {
-			command.setRelevantGroups(new ArrayList<String>());
+			command.setRelevantGroups(new ArrayList<>());
 		}
 		final List<String> relevantGroups = command.getRelevantGroups();
 
@@ -1087,7 +1125,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * is member of.
 		 */
 		final List<Group> usersGroups = postOwner.getGroups();
-		final List<Group> groupsWithTagSets = new ArrayList<Group>();
+		final List<Group> groupsWithTagSets = new ArrayList<>();
 		for (final Group group : usersGroups) {
 			if (group.getName() != null) {
 				groupsWithTagSets.add(this.logic.getGroupDetails(group.getName(), false));
@@ -1103,7 +1141,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * Returns the userName. Override in GoldStandard Controllers
 	 *
 	 * @param requestedUser
-	 * @param post
 	 * @return
 	 */
 	protected String getGrouping(final User requestedUser) {

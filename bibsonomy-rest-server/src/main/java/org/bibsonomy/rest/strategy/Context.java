@@ -56,15 +56,19 @@ import org.bibsonomy.services.filesystem.FileLogic;
  */
 public final class Context {
 
-	private static final Map<String, ContextHandler> urlHandlers = new HashMap<String, ContextHandler>();
+	private static final Map<String, ContextHandler> urlHandlers = new HashMap<>();
 
 	static {
 		Context.urlHandlers.put(RESTConfig.TAGS_URL, new TagsHandler());
+		Context.urlHandlers.put(RESTConfig.PERSONS_URL, new PersonsHandler());
 		Context.urlHandlers.put(RESTConfig.USERS_URL, new UsersHandler());
 		Context.urlHandlers.put(RESTConfig.GROUPS_URL, new GroupsHandler());
 		Context.urlHandlers.put(RESTConfig.POSTS_URL, new PostsHandler());
 		Context.urlHandlers.put(RESTConfig.CONCEPTS_URL, new ConceptsHandler());
 		Context.urlHandlers.put(RESTConfig.SYNC_URL, new SynchronizationHandler());
+		Context.urlHandlers.put(RESTConfig.PROJECTS_URL, new ProjectsHandler());
+		Context.urlHandlers.put(RESTConfig.ORGANIZATIONS_URL, new OrganizationsHandler());
+		Context.urlHandlers.put(RESTConfig.CRIS_LINKS_URL, new CRISLinksHandler());
 	}
 
 	private final Reader doc;
@@ -73,6 +77,11 @@ public final class Context {
 	 * the logic
 	 */
 	private final LogicInterface logic;
+
+	/**
+	 * the admin logic (use with caution)
+	 */
+	private LogicInterface adminLogic;
 	
 	private final FileLogic fileLogic;
 
@@ -158,6 +167,32 @@ public final class Context {
 		}
 	}
 
+	/**
+	 * @param httpMethod
+	 *            method used in the request: GET, POST, PUT or DELETE
+	 * @param url
+	 * @param renderingFormat	the mediatype of the request and response
+	 * @param rendererFactory	the renderfactory to use to create a
+	 * 							renderer for the specified rendering format
+	 * @param doc
+	 * @param uploadAccessor
+	 * @param logic
+	 * @param fileLogic
+	 * @param parameterMap
+	 *            map of the attributes
+	 * @param additionalInfos
+	 * @throws NoSuchResourceException
+	 *             if the requested url doesnt exist
+	 * @throws ValidationException
+	 *             if '/' is requested
+	 */
+	public Context(final HttpMethod httpMethod, final String url, final RenderingFormat renderingFormat, final RendererFactory rendererFactory, final Reader doc, final UploadedFileAccessor uploadAccessor,
+				   final LogicInterface logic, final FileLogic fileLogic, final Map<?, ?> parameterMap, final Map<String, String> additionalInfos, LogicInterface adminLogic) throws ValidationException, NoSuchResourceException {
+		this(httpMethod, url, renderingFormat, rendererFactory, doc, uploadAccessor, logic, fileLogic, parameterMap, additionalInfos);
+
+		this.adminLogic = adminLogic;
+	}
+
 	private Strategy chooseStrategy(final HttpMethod httpMethod, final String url) {
 		final URLDecodingPathTokenizer urlTokens = new URLDecodingPathTokenizer(url, "/");
 		/*
@@ -186,7 +221,7 @@ public final class Context {
 	 * @param outStream
 	 * @throws InternServerException
 	 * @throws ObjectMovedException
-	 * @throws ResourceNotFoundException 
+	 * @throws ObjectNotFoundException
 	 * @throws NoSuchResourceException 
 	 */
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ObjectNotFoundException, ObjectMovedException {
@@ -209,7 +244,7 @@ public final class Context {
 	 * @return a list of all tags, which might be empty.
 	 */
 	public List<String> getTags(final String parameterName) {
-		final List<String> tags = new LinkedList<String>();
+		final List<String> tags = new LinkedList<>();
 		final String joinParams = this.getStringAttribute(parameterName, null);
 		if ((joinParams != null) && (joinParams.length() > 0)) {
 			final String[] params = joinParams.split("\\s");
@@ -275,6 +310,13 @@ public final class Context {
 	 */
 	public LogicInterface getLogic() {
 		return this.logic;
+	}
+
+	/**
+	 * @return Returns the admin logic.
+	 */
+	public LogicInterface getAdminLogic() {
+		return this.adminLogic;
 	}
 
 	/**

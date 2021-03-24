@@ -198,7 +198,7 @@ public class PublicationValidator implements Validator<BibTex> {
 	 */
 	public static void handleParserWarnings(final Errors errors, final SimpleBibTeXParser parser, final String bibTexAsString, final String authorFieldName) {
 		final List<ExpansionException> warnings = parser.getWarnings();
-		final List<String> warningsToError = new LinkedList<String>();
+		final List<String> warningsToError = new LinkedList<>();
 		if (present(warnings)) {
 			for (final ExpansionException warning : warnings) {
 				final Class<? extends ExpansionException> clazz = warning.getClass();

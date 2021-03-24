@@ -489,5 +489,11 @@
       	FROM groupids gi JOIN group_memberships g ON (gi.group = g.group)
       	WHERE group_name = #requestedGroupName#
 	</sql>
+
+	<sql id="sortOrder">
+		<isEqual property="sortOrder" compareValue="DESC">
+			DESC
+		</isEqual>
+	</sql>
 	
 </sqlMap>

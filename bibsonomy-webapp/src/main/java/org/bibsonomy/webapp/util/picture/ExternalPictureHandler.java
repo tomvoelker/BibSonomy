@@ -45,8 +45,17 @@ import org.springframework.http.HttpStatus;
  * @author cut
  * @see PictureHandler
  */
-public abstract class ExternalPictureHandler implements PictureHandler {
-	
+public abstract class ExternalPictureHandler extends PictureHandler {
+
+	/**
+	 * default constructor with the user to handle
+	 *
+	 * @param requestedUser
+	 */
+	public ExternalPictureHandler(User requestedUser) {
+		super(requestedUser);
+	}
+
 	/**
 	 * Returns URL to profile picture file.</br>
 	 * 
@@ -54,16 +63,16 @@ public abstract class ExternalPictureHandler implements PictureHandler {
 	 * @param fileExtension - requested file extension as {@code .xxx} or empty string
 	 * @return URL to picture file
 	 */
-	protected abstract URL getPictureURL ( User requestedUser, String fileExtension );
+	protected abstract URL getPictureURL(User requestedUser, String fileExtension);
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.webapp.util.picture.PictureHandler#getProfilePictureView(org.bibsonomy.model.User, org.bibsonomy.webapp.command.actions.PictureCommand)
 	 */
 	@Override
-	public View getProfilePictureView(User requestedUser, PictureCommand command) {
-		final URL pictureURL = getPictureURL( requestedUser, ".jpg" );
+	public View getProfilePictureView(PictureCommand command) {
+		final URL pictureURL = getPictureURL(this.requestedUser, ".jpg" );
 		
-		ExtendedRedirectView resultV = new ExtendedRedirectView( (present(pictureURL))? pictureURL.toString() : "" );
+		final ExtendedRedirectView resultV = new ExtendedRedirectView((present(pictureURL))? pictureURL.toString() : "" );
 		resultV.setContentType( "image/jpg" );
 		resultV.setHttp10Compatible(false);
 		resultV.setStatusCode(HttpStatus.TEMPORARY_REDIRECT);

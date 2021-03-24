@@ -40,7 +40,7 @@ import org.bibsonomy.model.ResourcePersonRelationLogStub;
  *
  * @author jensi
  */
-public class PersonSearchDatabaseManager  extends AbstractDatabaseManager {
+public class PersonSearchDatabaseManager extends AbstractDatabaseManager {
 
 	public List<ResourcePersonRelationLogStub> getPubPersonChangesByChangeIdRange(long fromPersonChangeId, long toPersonChangeIdExclusive, DBSession databaseSession) {
 		final Pair<Long, Long> range = new Pair<>(fromPersonChangeId, toPersonChangeIdExclusive);

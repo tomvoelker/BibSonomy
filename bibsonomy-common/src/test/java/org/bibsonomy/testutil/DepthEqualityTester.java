@@ -52,9 +52,9 @@ public final class DepthEqualityTester  {
 
 	private static final Log log = LogFactory.getLog(DepthEqualityTester.class);
 
-	public static interface EqualityChecker {
-		public boolean checkEquals(Object should, Object is, String path);
-		public boolean checkTrue(boolean value, String path, String checkName);
+	public interface EqualityChecker {
+		boolean checkEquals(Object should, Object is, String path);
+		boolean checkTrue(boolean value, String path, String checkName);
 	}
 	
 	private static final EqualityChecker simpleChecker = new EqualityChecker() {
@@ -83,19 +83,19 @@ public final class DepthEqualityTester  {
 	private static Set<String> toSet(final String[] excludeProperties) {
 		final Set<String> skip;
 		if ((excludeProperties != null) && (excludeProperties.length > 0)) {
-			skip = new HashSet<String>();
-			skip.addAll(Arrays.asList(excludeProperties));
+			skip = new HashSet<>(Arrays.asList(excludeProperties));
 		} else {
 			skip = null;
 		}
 		return skip;
 	}
+
 	public static boolean areEqual(Object should, Object is, final EqualityChecker checker, final int maxDepth, final Pattern exclusionPattern, final String... excludeProperties) {
 		return areEqual(should, is, checker, maxDepth, exclusionPattern, toSet(excludeProperties));
 	}
 
 	public static boolean areEqual(Object should, Object is, final EqualityChecker checker, final int maxDepth, final Pattern exclusionPattern, final Set<String> excludeProperties) {
-		return assertPropertyEquality(should, is, checker, maxDepth, exclusionPattern, excludeProperties, "", new HashSet<Object>());
+		return assertPropertyEquality(should, is, checker, maxDepth, exclusionPattern, excludeProperties, "", new HashSet<>());
 	}
 
 	private static boolean assertPropertyEquality(final Object should, final Object is, final EqualityChecker checker, final int remainingDepth, final Pattern exclusionPattern, final Set<String> excludeProperties, final String path, final Set<Object> visited) {
@@ -156,12 +156,12 @@ public final class DepthEqualityTester  {
 				if (!checker.checkTrue(isIterator.hasNext(), entryPath, "should be present")) {
 					return false;
 				}
-				if (assertPropertyEquality(shouldEntry, isIterator.next(), checker, remainingDepth - 1, exclusionPattern, excludeProperties, entryPath, visited) == false) {
+				if (!assertPropertyEquality(shouldEntry, isIterator.next(), checker, remainingDepth - 1, exclusionPattern, excludeProperties, entryPath, visited)) {
 					return false;
 				}
 				i++;
 			}
-			if (!checker.checkTrue(isIterator.hasNext() == false, path, "should not be present")) {
+			if (!checker.checkTrue(!isIterator.hasNext(), path, "should not be present")) {
 				return false;
 			}
 		} else {
@@ -173,19 +173,15 @@ public final class DepthEqualityTester  {
 					final String propertyPath = (path.length() > 0) ? (path + "." + d.getName()) : d.getName();
 					Exception catched = null;
 					try {
-						if ("class".equals(d.getName()) == false) {
+						if (!"class".equals(d.getName())) {
 							final Method getter = d.getReadMethod();
 							if (getter != null) {
-								if (assertPropertyEquality(getter.invoke(should, (Object[]) null), getter.invoke(is, (Object[]) null), checker, remainingDepth - 1, exclusionPattern, excludeProperties, propertyPath, visited) == false) {
+								if (!assertPropertyEquality(getter.invoke(should, (Object[]) null), getter.invoke(is, (Object[]) null), checker, remainingDepth - 1, exclusionPattern, excludeProperties, propertyPath, visited)) {
 									return false;
 								}
 							}
 						}
-					} catch (final IllegalArgumentException ex) {
-						catched = ex;
-					} catch (final IllegalAccessException ex) {
-						catched = ex;
-					} catch (final InvocationTargetException ex) {
+					} catch (final IllegalArgumentException | IllegalAccessException | InvocationTargetException ex) {
 						catched = ex;
 					}
 					if (catched != null) {

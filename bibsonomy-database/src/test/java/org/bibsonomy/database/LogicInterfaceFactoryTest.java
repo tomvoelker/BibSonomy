@@ -41,18 +41,16 @@ import org.junit.Test;
  */
 public class LogicInterfaceFactoryTest extends AbstractDatabaseManagerTest {
 
-	private static DBLogicUserInterfaceFactory userFactory;
-	private static DBLogicApiInterfaceFactory apiFactory;
+	private static LogicInterfaceFactory userFactory;
+	private static LogicInterfaceFactory apiFactory;
 
 	/**
 	 * Initializes the factories
 	 */
 	@BeforeClass
 	public static void initUserAndApiFactory() {
-		userFactory = new DBLogicUserInterfaceFactory();
-		userFactory.setDbSessionFactory(getDbSessionFactory());
-		apiFactory = new DBLogicApiInterfaceFactory();
-		apiFactory.setDbSessionFactory(getDbSessionFactory());
+		userFactory = testDatabaseContext.getBean(USER_LOGICFACTORY_BEAN_NAME, LogicInterfaceFactory.class);
+		apiFactory = testDatabaseContext.getBean(API_LOGICFACTORY_BEAN_NAME, LogicInterfaceFactory.class);
 	}
 
 	/**
