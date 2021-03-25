@@ -375,7 +375,6 @@ public class WebUtils {
 		urlConn.disconnect();
 
 		return buildCookieString(cookies);
-		return getCookies(CLIENT, url);
 	}
 
 	/**
@@ -393,7 +392,7 @@ public class WebUtils {
 
 			final Header[] responseHeaders = response.getHeaders("Set-Cookie");
 			for (int i = 0; i < responseHeaders.length; i++) {
-				cookies.add(responseHeaders[i].getValue().toString());
+				cookies.add(responseHeaders[i].getValue());
 			}
 		} finally {
 			// required, see http://hc.apache.org/httpclient-3.x/threading.html
