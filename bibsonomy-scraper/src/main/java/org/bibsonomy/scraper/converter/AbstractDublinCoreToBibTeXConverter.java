@@ -237,24 +237,4 @@ public abstract class AbstractDublinCoreToBibTeXConverter implements BibtexConve
 	 */
 	protected abstract Map<String, String> extractData(String dublinCore);
 
-	/**
-	 * @param url
-	 * @return <pre>null</pre>
-	 * @throws ScrapingException
-	 */
-	protected static String getDoiFromWebPage(URL url) throws ScrapingException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * @param url
-	 * @return <pre>null</pre>
-	 * @throws ScrapingException
-	 */
-	protected static String getDoiFromURL(URL url) throws ScrapingException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
