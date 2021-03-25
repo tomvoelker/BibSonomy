@@ -24,24 +24,46 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.casesjournal;
+package org.bibsonomy.scraper.url.kde.nrc;
 
-import org.bibsonomy.scraper.UnitTestRunner;
-import org.bibsonomy.scraper.junit.RemoteTest;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 
 /**
- * @author claus
+ * This scraper supports download links from nrcresearchpress.com
+ * 
+ * @author Mohammed Abed
  */
-@Category(RemoteTest.class)
-public class CasesJournalScraperTest {
+public class NRCScraper extends LiteratumScraper {
+	private static final String SITE_NAME = "NRC Research Press";
+	private static final String SITE_HOST = "nrcresearchpress.com";
+	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 
-	/**
-	 * starts URL test with id url_154
-	 */
-	@Test
-	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_154");
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+
+	@Override
+	public String getSupportedSiteName() {
+		return SITE_NAME;
+	}
+
+	@Override
+	public String getSupportedSiteURL() {
+		return SITE_URL;
+	}
+
+	@Override
+	public String getInfo() {
+		return SITE_INFO;
+	}
+
+	@Override
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
+		return PATTERNS;
 	}
 }

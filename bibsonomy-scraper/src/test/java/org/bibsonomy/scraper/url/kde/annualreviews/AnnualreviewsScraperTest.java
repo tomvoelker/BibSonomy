@@ -28,9 +28,7 @@ package org.bibsonomy.scraper.url.kde.annualreviews;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -40,7 +38,6 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class AnnualreviewsScraperTest {
-
 	
 	/**
 	 * starts URL test with id url_106
@@ -52,8 +49,9 @@ public class AnnualreviewsScraperTest {
 		assertScraperResult(url, null, AnnualreviewsScraper.class, resultFile);
 	}
 	
+
 	/**
-	 * starts URL test with id url_107
+	 * url_107
 	 */
 	@Test
 	public void url2TestRun(){
@@ -62,8 +60,9 @@ public class AnnualreviewsScraperTest {
 		assertScraperResult(url, null, AnnualreviewsScraper.class, resultFile);
 	}
 	
+	
 	/**
-	 * starts URL test with id url_228
+	 * url_228
 	 */
 	@Test
 	public void url3TestRun(){

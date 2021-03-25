@@ -26,13 +26,14 @@
  */
 package org.bibsonomy.scraper.url.kde.proeuclid;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * @author Mohammed Abed
+ * @author rja
  */
 @Category(RemoteTest.class)
 public class ProjectEuclidScraperTest {
@@ -41,6 +42,8 @@ public class ProjectEuclidScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_359");
+		final String url = "https://projecteuclid.org/euclid.aoms/1177704711";
+		final String resultFile = "ProjectEuclidScraperUnitURLTest.bib";
+		assertScraperResult(url, null, ProjectEuclidScraper.class, resultFile);
 	}
 }

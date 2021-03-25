@@ -34,7 +34,6 @@ import org.bibsonomy.scraper.url.kde.aappublications.AappublicationsScraper;
 import org.bibsonomy.scraper.url.kde.acl.AclScraper;
 import org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper;
 import org.bibsonomy.scraper.url.kde.acs.ACSScraper;
-import org.bibsonomy.scraper.url.kde.ahajournals.AhaJournalsScraper;
 import org.bibsonomy.scraper.url.kde.aip.AipScitationScraper;
 import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
 import org.bibsonomy.scraper.url.kde.ams.AmsScraper;
@@ -55,7 +54,6 @@ import org.bibsonomy.scraper.url.kde.biorxiv.BioRxivScraper;
 import org.bibsonomy.scraper.url.kde.bmj.BMJOpenScraper;
 import org.bibsonomy.scraper.url.kde.bmj.BMJScraper;
 import org.bibsonomy.scraper.url.kde.cambridge.CambridgeScraper;
-import org.bibsonomy.scraper.url.kde.casesjournal.CasesJournalScraper;
 import org.bibsonomy.scraper.url.kde.catinist.CatinistScraper;
 import org.bibsonomy.scraper.url.kde.cell.CellScraper;
 import org.bibsonomy.scraper.url.kde.cinii.CiniiScraper;
@@ -72,6 +70,7 @@ import org.bibsonomy.scraper.url.kde.dlib.DLibScraper;
 import org.bibsonomy.scraper.url.kde.editlib.EditLibScraper;
 import org.bibsonomy.scraper.url.kde.elsevier.ElsevierScraper;
 import org.bibsonomy.scraper.url.kde.elsevierhealth.ElsevierhealthScraper;
+import org.bibsonomy.scraper.url.kde.emerald.EmeraldScraper;
 import org.bibsonomy.scraper.url.kde.eric.EricScraper;
 import org.bibsonomy.scraper.url.kde.faseb.FASEBJournalScraper;
 import org.bibsonomy.scraper.url.kde.firstmonday.FirstMondayScraper;
@@ -82,10 +81,10 @@ import org.bibsonomy.scraper.url.kde.googlepatent.GooglePatentScraper;
 import org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper;
 import org.bibsonomy.scraper.url.kde.hematologylibrary.HematologyLibraryScraper;
 import org.bibsonomy.scraper.url.kde.hindawi.HindawiScraper;
+import org.bibsonomy.scraper.url.kde.hogrefe.HogrefeScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEXploreScraper;
 import org.bibsonomy.scraper.url.kde.igiglobal.IGIGlobalScraper;
-import org.bibsonomy.scraper.url.kde.informaworld.InformaWorldScraper;
 import org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper;
 import org.bibsonomy.scraper.url.kde.inspire.InspireScraper;
 import org.bibsonomy.scraper.url.kde.iop.IOPScraper;
@@ -111,7 +110,6 @@ import org.bibsonomy.scraper.url.kde.liebert.LiebertScraper;
 import org.bibsonomy.scraper.url.kde.mathscinet.MathSciNetScraper;
 import org.bibsonomy.scraper.url.kde.mdpi.MDPIScraper;
 import org.bibsonomy.scraper.url.kde.mendeley.MendeleyScraper;
-import org.bibsonomy.scraper.url.kde.metapress.MetapressScraper;
 import org.bibsonomy.scraper.url.kde.morganclaypool.MorganClaypoolScraper;
 import org.bibsonomy.scraper.url.kde.muse.ProjectmuseScraper;
 import org.bibsonomy.scraper.url.kde.nasaads.NasaAdsScraper;
@@ -121,19 +119,18 @@ import org.bibsonomy.scraper.url.kde.nature.NatureNewsScraper;
 import org.bibsonomy.scraper.url.kde.nber.NberScraper;
 import org.bibsonomy.scraper.url.kde.nejm.NEJMScraper;
 import org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper;
+import org.bibsonomy.scraper.url.kde.nrc.NRCScraper;
 import org.bibsonomy.scraper.url.kde.opac.OpacScraper;
-import org.bibsonomy.scraper.url.kde.oup.OxfordUniversityPressScraper;
 import org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper;
 import org.bibsonomy.scraper.url.kde.openuniversity.OpenUniversityScraper;
 import org.bibsonomy.scraper.url.kde.osa.OSAScraper;
 import org.bibsonomy.scraper.url.kde.osti.OstiScraper;
 import org.bibsonomy.scraper.url.kde.phcogres.PharmacognosyResearchScraper;
+import org.bibsonomy.scraper.url.kde.oup.OxfordUniversityPressScraper;
 import org.bibsonomy.scraper.url.kde.pion.PionScraper;
 import org.bibsonomy.scraper.url.kde.plos.PlosScraper;
-import org.bibsonomy.scraper.url.kde.pnas.PNASScraper;
 import org.bibsonomy.scraper.url.kde.proeuclid.ProjectEuclidScraper;
 import org.bibsonomy.scraper.url.kde.prola.ProlaScraper;
-import org.bibsonomy.scraper.url.kde.psycontent.PsyContentScraper;
 import org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper;
 import org.bibsonomy.scraper.url.kde.pubmedcentral.PubMedCentralScraper;
 import org.bibsonomy.scraper.url.kde.rsc.RSCScraper;
@@ -146,7 +143,6 @@ import org.bibsonomy.scraper.url.kde.sciencemag.ScienceMagScraper;
 import org.bibsonomy.scraper.url.kde.scientific.ScientificScraper;
 import org.bibsonomy.scraper.url.kde.scopus.ScopusScraper;
 import org.bibsonomy.scraper.url.kde.spiedigitallibrary.SpieDigitalLibraryScraper;
-import org.bibsonomy.scraper.url.kde.spires.SpiresScraper;
 import org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper;
 import org.bibsonomy.scraper.url.kde.springer.SpringerScraper;
 import org.bibsonomy.scraper.url.kde.ssrn.SSRNScraper;
@@ -184,7 +180,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new ScienceDirectScraper());
 		addScraper(new PubMedScraper());
 		addScraper(new PubMedCentralScraper());
-		addScraper(new SpiresScraper());
 		/*
 		 * TODO: lha, 2013-04-29: new L3S web site layout not supported;
 		 * publication lists on web site not in correct format, yet.
@@ -197,7 +192,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new IngentaconnectScraper());
 		addScraper(new LibrarythingScraper());
 		addScraper(new NasaAdsScraper());
-		addScraper(new AipScitationScraper());
 		addScraper(new HematologyLibraryScraper());
 		addScraper(new MathSciNetScraper());
 		addScraper(new WileyIntersienceScraper());
@@ -210,29 +204,59 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new NatureArticleScraper());
 		addScraper(new NatureJournalScraper());
 		addScraper(new NatureNewsScraper());
+		/*
+		 * subclasses of LiteratumScraper
+		 */
+		addScraper(new LiebertScraper());
+		addScraper(new HogrefeScraper());
+		addScraper(new APHAScraper());
+		addScraper(new EmeraldScraper());
+		addScraper(new NRCScraper());
+		addScraper(new ATSScraper());
+		addScraper(new NEJMScraper());
+		addScraper(new MorganClaypoolScraper());
+		addScraper(new WorldScientificScraper());
+		addScraper(new AnnualreviewsScraper());
+		addScraper(new UChicagoScraper());
+		addScraper(new ACSScraper());
+		addScraper(new AmsScraper());
+		addScraper(new AipScitationScraper());
+
+
+		/*
+		 * rja, 2018-08-06, was disabled long ago, URL does no longer exist
+		 */
+		//addScraper(new BlackwellSynergyScraper());
 		addScraper(new DBLPScraper());
 		addScraper(new BioMedCentralScraper());
 		addScraper(new WorldCatScraper());
 		addScraper(new SpringerScraper());
-		addScraper(new ACSScraper());
 		addScraper(new AnthroSourceScraper());
 		addScraper(new BMJScraper());
 		addScraper(new EditLibScraper());
-		addScraper(new InformaWorldScraper());
+		/*
+		 * rja, 2018-03-06, acquired by Taylor and Francis?!
+		 */
+		//addScraper(new InformaWorldScraper());
 		addScraper(new CambridgeScraper());
 		/*
 		 * the scraper and the related information in the xml file are disabled because the website
 		 * http://www.isrl.uiuc.edu/ is not longer available
 		 */
 		//addScraper(new LangevScraper());
-		addScraper(new LiebertScraper());
 		addScraper(new NberScraper());
 		addScraper(new UsenixScraper());
 		addScraper(new IucrScraper());
 		addScraper(new OSAScraper());
-		addScraper(new PsyContentScraper());
+		/*
+		 * rja, 2018-03-13: URLs no longer work
+		 */
+		//addScraper(new PsyContentScraper());
 		addScraper(new RSOCScraper());
-		addScraper(new PNASScraper());
+		/*
+		 * rja, 2018-03-06: now handled by HighwireScraper
+		 */
+		//addScraper(new PNASScraper());
 		addScraper(new ScienceMagScraper());
 		addScraper(new JStorScraper());
 		addScraper(new EricScraper());
@@ -240,16 +264,15 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new JMLRScraper());
 		addScraper(new AclScraper());
 		addScraper(new JStageScraper());
-		addScraper(new AnnualreviewsScraper());
 		addScraper(new ProjectmuseScraper());
 		addScraper(new SSRNScraper());
 		addScraper(new ScopusScraper());
-		addScraper(new MetapressScraper());
+		// 2018-03-21, rja: site does no longer host content?!
+		//addScraper(new MetapressScraper());
 		addScraper(new CiteseerxScraper());
 		addScraper(new OpenrepositoryScraper());
 		addScraper(new PionScraper());
 		addScraper(new CiteulikeScraper());
-		addScraper(new AmsScraper());
 		addScraper(new BibliographyScraper());
 		addScraper(new WormbaseScraper());
 		addScraper(new GoogleScholarScraper());
@@ -263,11 +286,9 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		//addScraper(new ScientificcommonsScraper());
 		addScraper(new CellScraper());
 		/*
-		 * the scraper and the related information in the xml file are disabled because the version of the website
-		 * is session-based and hence, the scraping does not work.
+		 * rja, 2018-03-06, page does no longer exist
 		 */
 		//addScraper(new WebOfKnowledgeScraper());
-		addScraper(new CasesJournalScraper());
 		addScraper(new ElsevierhealthScraper());
 		addScraper(new AandAScraper());
 		addScraper(new JournalogyScraper());
@@ -275,8 +296,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new TaylorAndFrancisScraper());
 		addScraper(new GoogleBooksScraper());
 		addScraper(new JAPScraper());
-		addScraper(new ATSScraper());
-		addScraper(new NEJMScraper());
 		addScraper(new SageJournalScraper());
 		addScraper(new JCIScraper());
 		addScraper(new StanfordInfoLabScraper());
@@ -298,25 +317,24 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new FirstMondayScraper());
 		addScraper(new IGIGlobalScraper());
 		addScraper(new DeGruyterScraper());
-		addScraper(new MorganClaypoolScraper());
 		addScraper(new MDPIScraper());
 		addScraper(new TheLancetScraper());
-		addScraper(new WorldScientificScraper());
 		addScraper(new NowPublishersScraper());
 		addScraper(new GenomeBiologyScraper());
-		addScraper(new APHAScraper());
 		addScraper(new CSHLPScraper());
 		addScraper(new RWTHAachenScraper());
 		addScraper(new OstiScraper());
 		addScraper(new ScientificScraper());
 		addScraper(new CopacScraper());
 		addScraper(new CiniiScraper());
-		addScraper(new AhaJournalsScraper());
+		/*
+		 * rja, 2018-03-07, now handled by HighwireScraper
+		 */
+		//addScraper(new AhaJournalsScraper());
 		addScraper(new KargerScraper());
 		addScraper(new FRONTIERSINScraper());
 		addScraper(new SpieDigitalLibraryScraper());
 		addScraper(new BioOneScraper());
-		addScraper(new UChicagoScraper());
 		addScraper(new CatinistScraper());
 		addScraper(new AappublicationsScraper());
 		addScraper(new ThiemeConnectScraper());

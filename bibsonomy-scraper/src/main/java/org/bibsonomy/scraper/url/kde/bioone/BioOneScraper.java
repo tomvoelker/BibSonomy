@@ -26,71 +26,25 @@
  */
 package org.bibsonomy.scraper.url.kde.bioone;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.RisToBibtexConverter;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 
 /**
  * @author Mohammed Abed
  */
-public class BioOneScraper extends AbstractUrlScraper {
-	
+public class BioOneScraper extends LiteratumScraper {
+
 	private static final String SITE_NAME = "Bio One Research Evolved";
-	private static final String SITE_URL = "http://www.bioone.org/";
-	private static final String INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
-	private static final String BIOONE_HOST = "bioone.org";
-	private static final String DOWNLOAD_URL = "http://www.bioone.org/action/downloadCitation";
-	private static final RisToBibtexConverter ris = new RisToBibtexConverter();
-	private static final Pattern DOI_PATTERN_FROM_URL = Pattern.compile("/abs/(.+?)$");
-	static {
-		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ BIOONE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
-	}
+	private static final String SITE_HOST = "bioone.org";
+	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
-	@Override
-	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
-		scrapingContext.setScraper(this);
-		
-		try {
-			final String cookie = WebUtils.getCookies(scrapingContext.getUrl());
-			String doi = null;
-			final Matcher m = DOI_PATTERN_FROM_URL.matcher(scrapingContext.getUrl().toString());
-			if (m.find()) {
-				doi = "doi=" + m.group(1);
-			}
-			
-			if (doi != null && cookie != null) {
-				String resultAsString = null;
-				try {
-					resultAsString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL), doi);
-				} catch (MalformedURLException ex) {
-					throw new ScrapingFailureException("URL to scrape does not exist. It may be malformed.");
-				}
-
-				final String bibResult = ris.toBibtex(resultAsString);
-				if (bibResult != null) {
-					scrapingContext.setBibtexResult(bibResult);
-					return true;
-				}
-			}
-		} catch (final IOException ex) {
-			throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe Bio One is down.");
-		}
-		return false;
-	}
-	
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
@@ -103,7 +57,7 @@ public class BioOneScraper extends AbstractUrlScraper {
 
 	@Override
 	public String getInfo() {
-		return INFO;
+		return SITE_INFO;
 	}
 
 	@Override

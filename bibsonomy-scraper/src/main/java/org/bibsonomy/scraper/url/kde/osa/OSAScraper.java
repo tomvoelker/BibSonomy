@@ -26,14 +26,9 @@
  */
 package org.bibsonomy.scraper.url.kde.osa;
 
-import java.io.BufferedInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -41,6 +36,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
@@ -48,7 +45,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.UrlUtils;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -80,95 +77,55 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
-		String id = null;
-
-		final Matcher inputMatcher = inputPattern.matcher(sc.getPageContent());
-
-		while(inputMatcher.find()) {
-			String input = inputMatcher.group();
-			if(input.contains("name=\"articles\"")) {
-				Matcher valueMatcher = valuePattern.matcher(input);
-
-				if(valueMatcher.find()) {
-					String value = valueMatcher.group();
-					id = value.substring(7,value.length()-1);
-					break;
-				}
-			}
-		}
+		final String id = getId(sc.getPageContent());
 		
-		String bibResult = null;
+		final String bibResult;
 		try {
-			URL citUrl = new URL(HTTP + OSA_HOST + OSA_BIBTEX_DOWNLOAD_PATH);
-			String cookie = null;
+			final String cookie;
 			try {
 				cookie = WebUtils.getCookies(sc.getUrl());
 			} catch (final IOException ex) {
 				throw new InternalFailureException("An unexpected IO error has occurred. No Cookie has been generated.");
 			}
-			bibResult = getContent(citUrl, cookie, id, "export_bibtex");
+			final List<NameValuePair> postData = new ArrayList<NameValuePair>(2);
+			postData.add(new BasicNameValuePair("articles", id));
+			postData.add(new BasicNameValuePair("ArticleAction", "export_bibtex"));
+			
+			bibResult = WebUtils.getContentAsString(HTTP + OSA_HOST + OSA_BIBTEX_DOWNLOAD_PATH, cookie, postData, null);
 		} catch (MalformedURLException ex) {
 			throw new InternalFailureException(ex);
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
 
-		if(bibResult != null) {
+		if (ValidationUtils.present(bibResult)) {
 			sc.setBibtexResult(bibResult);
 			return true;
 		}
 		throw new ScrapingFailureException("getting bibtex failed");
 	}
 
-	/** FIXME: refactor
-	 * @param queryURL
-	 * @param cookie
-	 * @param id
-	 * @param actions
+	/**
+	 * Extract id from page content.
+	 * 
+	 * @param pageContent
 	 * @return
-	 * @throws IOException
 	 */
-	private static String getContent(URL queryURL, String cookie, String id, String actions) throws IOException {
-		/*
-		 * get BibTex-File from ACS
-		 */
-		final HttpURLConnection urlConn = WebUtils.createConnection(queryURL);
-		urlConn.setAllowUserInteraction(false);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(true);
-		urlConn.setUseCaches(false);
-		urlConn.setRequestMethod("POST");
-		urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+	private static String getId(final String pageContent) {
+		final Matcher inputMatcher = inputPattern.matcher(pageContent);
 
-		//insert cookie
-		urlConn.setRequestProperty("Set-Cookie", cookie);
+		while (inputMatcher.find()) {
+			final String input = inputMatcher.group();
+			if (input.contains("name=\"articles\"")) {
+				final Matcher valueMatcher = valuePattern.matcher(input);
 
-		StringBuffer sbContent = new StringBuffer();
-
-		sbContent.append("articles=");
-		sbContent.append(UrlUtils.safeURIEncode(id) + "&");
-		sbContent.append("ArticleAction=");
-		sbContent.append(UrlUtils.safeURIEncode(actions));
-		
-		urlConn.setRequestProperty("Content-Length", String.valueOf(sbContent.length()));
-				
-		DataOutputStream stream = new DataOutputStream(urlConn.getOutputStream());
-
-		stream.writeBytes(sbContent.toString());
-		stream.flush();
-		stream.close();
-
-		urlConn.connect();
-
-		StringWriter out = new StringWriter();
-		InputStream in = new BufferedInputStream(urlConn.getInputStream());
-		int b;
-		while ((b = in.read()) >= 0) {
-			out.write(b);
+				if(valueMatcher.find()) {
+					final String value = valueMatcher.group();
+					return value.substring(7,value.length()-1);
+				}
+			}
 		}
-		urlConn.disconnect();
-
-		return out.toString();
+		return null;
 	}
 
 	@Override

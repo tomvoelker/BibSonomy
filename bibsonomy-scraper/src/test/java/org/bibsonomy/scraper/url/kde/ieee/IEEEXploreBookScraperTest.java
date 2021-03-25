@@ -27,6 +27,7 @@
 package org.bibsonomy.scraper.url.kde.ieee;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -56,9 +57,8 @@ public class IEEEXploreBookScraperTest {
 	@Test
 	public void urlTestRun1() {
 		final String url = "http://ieeexplore.ieee.org/xpl/bkabstractplus.jsp?bkn=5263132";
-		final String selection = null;
 		final String resultFile = "IEEEXploreBookScraperUnitURLTest.bib";
-		assertScraperResult(url, selection, IEEEXploreBookScraper.class, resultFile);
+		assertScraperResult(url, null, IEEEXploreBookScraper.class, resultFile);
 	}
 	
 	/**
@@ -67,9 +67,8 @@ public class IEEEXploreBookScraperTest {
 	@Test
 	public void urlTestRun2() {
 		final String url = "http://ieeexplore.ieee.org/search/freesrchabstract.jsp?arnumber=5286085&isnumber=5284878&punumber=5284806&k2dockey=5286085@ieecnfs&query=%28limpens+freddy%3Cin%3Eau%29&pos=0&access=no";
-		final String selection = null;
 		final String resultFile = "IEEEXploreBookScraperUnitURLTest1.bib";
-		assertScraperResult(url, selection, IEEEXploreBookScraper.class, resultFile);
+		assertScraperResult(url, null, IEEEXploreBookScraper.class, resultFile);
 	}
 	
 	/**
@@ -78,9 +77,8 @@ public class IEEEXploreBookScraperTest {
 	@Test
 	public void urlTestRun3() {
 		final String url = "http://ieeexplore.ieee.org/search/srchabstract.jsp?arnumber=4383076&isnumber=4407525&punumber=10376&k2dockey=4383076@ieeejrns&query=%28%28hotho%29%3Cin%3Eau+%29&pos=0&access=n0";
-		final String selection = null;
 		final String resultFile = "IEEEXploreBookScraperUnitURLTest2.bib";
-		assertScraperResult(url, selection, IEEEXploreBookScraper.class, resultFile);
+		assertScraperResult(url, null, IEEEXploreBookScraper.class, resultFile);
 	}
 	
 	//TODO currently not working, throws NullPointerException

@@ -29,6 +29,7 @@ package org.bibsonomy.scraper.url.kde.mdpi;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -36,13 +37,14 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.CitedbyScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -52,13 +54,12 @@ import org.bibsonomy.util.WebUtils;
  */
 public class MDPIScraper extends AbstractUrlScraper implements CitedbyScraper{
 	private static final Log log = LogFactory.getLog(MDPIScraper.class);
-	
+
 	private static final String SITE_NAME = "MDPI - Open Access Publishing";
 	private static final String SITE_URL = "http://www.mdpi.com/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<>(Pattern.compile(".*" + "mdpi.com"), AbstractUrlScraper.EMPTY_PATTERN));
-	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<meta name=\"description\" content=\"(.*)\" >");
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "mdpi.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<input type=\"hidden\" name=\"articles_ids\\[\\]\" value=\"(\\d+)\">");
 	private static final Pattern CITATION_PATTERN = Pattern.compile("<meta name=\"citation_doi\" content=\"(.*)\">");
 
@@ -120,11 +121,15 @@ public class MDPIScraper extends AbstractUrlScraper implements CitedbyScraper{
 		scrapingContext.setScraper(this);
 		try {
 			final String pageContent = WebUtils.getContentAsString(scrapingContext.getUrl());
-			final 	Matcher m = BIBTEX_PATTERN.matcher(pageContent);
+			final Matcher m = BIBTEX_PATTERN.matcher(pageContent);
 			if (m.find()) {
 				final String id = m.group(1);
-				// FIXME: avoid building POST data manually
-				final String postData = "articles_ids[]=" + UrlUtils.safeURIEncode(id) + "&export_format_top=bibtex&export_submit_top";
+				final List<NameValuePair> postData = new ArrayList<NameValuePair>(4);
+
+				postData.add(new BasicNameValuePair("articles_ids[]=", id));
+				postData.add(new BasicNameValuePair("export_format_top", "bibtex"));
+				postData.add(new BasicNameValuePair("export_submit_top", ""));
+
 
 				final String bibtex =  WebUtils.getContentAsString(SITE_URL + "export", null, postData, null);
 				if (present(bibtex)) {
@@ -142,5 +147,6 @@ public class MDPIScraper extends AbstractUrlScraper implements CitedbyScraper{
 		}
 		return false;
 	}
+
 
 }

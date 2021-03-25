@@ -29,6 +29,7 @@ package org.bibsonomy.scraper.url.kde.ieee;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -36,9 +37,10 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpException;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.config.RequestConfig.Builder;
+import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -48,6 +50,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Attr;
@@ -80,21 +83,19 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 	private static final String CONST_VOLUME   = "Volume: ";
 	private static final String CONST_DATE	   = "Publication Date: ";
 
-	private static final String EXPORT_ARNUM_URL = "https://ieeexplore.ieee.org/xpl/downloadCitations";
-	private static final String REFERENCE_ARNUM_URL = "https://ieeexplore.ieee.org/xpl/dwnldReferences?arnumber=";
-	private static final String CITEDBY_ARNUM_URL = "https://ieeexplore.ieee.org/xpl/abstractCitations.jsp?arnumber=";
+	private static final String EXPORT_ARNUM_URL = "http://ieeexplore.ieee.org/xpl/downloadCitations";
+	private static final String REFERENCE_ARNUM_URL = "http://ieeexplore.ieee.org/xpl/dwnldReferences?arnumber=";
 
 	private static final Pattern URL_PATTERN_BKN      = Pattern.compile("bkn=([^&]*)");
 	private static final Pattern URL_PATTERN_ARNUMBER = Pattern.compile("arnumber=([^&]*)");
 
 	private static final Pattern PAGE_PATTERN_ISBN = Pattern.compile("ISBN[^>]++>\\s++([\\dx]++)");
-	private static final Pattern CITEDBY_PATTERN = Pattern.compile("(?s)<ol id=\".*\" class=\"docs\">(.*)</ol>");
 	private static final Pattern REFERENCE_PATTERN = Pattern.compile("(?s)<body>(.*)</body>");
 
 
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 
-	
+
 	static {
 		patterns.add(new Pair<>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile(IEEE_BOOK_PATH + ".*")));
 		patterns.add(new Pair<>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile(IEEE_SEARCH_PATH + ".*")));
@@ -103,63 +104,74 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 	@Override
 	public boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
+		final String url = sc.getUrl().toExternalForm();
+
+		/*
+		 * For some reason we need to get the page first, otherwise we get a strange result.
+		 * As we might need the page content later on to extract the ISBN, we store it here.
+		 */
+
+		// We have to proof the visit of several locations
+		final Builder defaultRequestConfig = WebUtils.getDefaultRequestConfig();
+		//we have to allow circular redirects to avoid an exception when we get temporary redirected to the login page
+		defaultRequestConfig.setCircularRedirectsAllowed(true);
+		final HttpClient client = WebUtils.getHttpClient(defaultRequestConfig.build());
+		// infinite redirect loops already prevented in WebUtils.getHttpClient()
+		// better get the page first
+		final String pageContent;
+		try {
+			pageContent = WebUtils.getContentAsString(client, url, null, null, null);
+		} catch (IOException ex) {
+			throw new InternalFailureException(ex);
+		}
 
 		String bibtex = null;
-		String recordId = ExtractID(sc);
+		final String recordId = extractID(url);
 
-		if (recordId != null) {
-
-
-
-			// we have circular redirects that occour while downloading the bibtex
-			final RequestConfig.Builder defaultRequestConfig = WebUtils.getDefaultRequestConfig();
-			defaultRequestConfig.setCircularRedirectsAllowed(true);
-			final HttpClient client = WebUtils.getHttpClient(defaultRequestConfig.build());
+		if (ValidationUtils.present(recordId)) {
 			try {
-				//better get the page first
-				WebUtils.getContentAsString(client, sc.getUrl().toExternalForm());
+				final List<NameValuePair> postData = new ArrayList<NameValuePair>(4);
+				postData.add(new BasicNameValuePair("citations-format", "citation-abstract"));
+				postData.add(new BasicNameValuePair("fromPage", ""));
+				postData.add(new BasicNameValuePair("download-format", "download-bibtex"));
+				postData.add(new BasicNameValuePair("recordIds", recordId));
 
-				//create a post method
-				final String postContent = "citations-format=citation-abstract&fromPage=&download-format=download-bibtex&recordIds=" + recordId;
-
-				bibtex = WebUtils.getContentAsString(client, EXPORT_ARNUM_URL, null, postContent, null);
-			} catch (IOException | HttpException ex) {
+				bibtex = WebUtils.getContentAsString(client, EXPORT_ARNUM_URL, null, postData, null);
+			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
 			}
-		}
-		if (present(bibtex)) {
-			// clean up
-			bibtex = bibtex.replace("<br>", "");
+			if (present(bibtex)) {
+				// clean up
+				bibtex = bibtex.replace("<br>", "");
 
-			// append url
-			bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
+				// append url
+				bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", url);
 
-			// add downloaded bibtex to result 
-			sc.setBibtexResult(bibtex);
-			return true;
-
-		} else {
-
-			//let's try to scrape it by isbn
-			try {
-				Matcher isbnMatcher = PAGE_PATTERN_ISBN.matcher(sc.getPageContent());
-				if (isbnMatcher.find()) {
-					String isbn = isbnMatcher.group(1);
-					bibtex = WorldCatScraper.getBibtexByISBNAndReplaceURL(isbn, sc.getUrl().toExternalForm());
-					if (present(bibtex)) {
-						sc.setBibtexResult(bibtex);
-						return true;
-					}
-				}
-			} catch (IOException ex) {
-				throw new ScrapingException(ex);
+				// add downloaded bibtex to result
+				sc.setBibtexResult(bibtex);
+				return true;
 			}
-
-			log.debug("IEEEXploreBookScraper use JTidy to get Bibtex from " + sc.getUrl().toString());
-			sc.setBibtexResult(ieeeBookScrape(sc));
-			return true;
-
 		}
+
+		// let's try to scrape it by isbn
+		try {
+			final Matcher isbnMatcher = PAGE_PATTERN_ISBN.matcher(pageContent);
+			if (isbnMatcher.find()) {
+				final String isbn = isbnMatcher.group(1);
+				bibtex = WorldCatScraper.getBibtexByISBNAndReplaceURL(isbn, url);
+				if (present(bibtex)) {
+					sc.setBibtexResult(bibtex);
+					return true;
+				}
+			}
+		} catch (IOException ex) {
+			throw new ScrapingException(ex);
+		}
+
+
+		log.debug("IEEEXploreBookScraper use JTidy to get Bibtex from " + url);
+		sc.setBibtexResult(ieeeBookScrape(sc));
+		return true;
 	}
 
 	/**
@@ -169,24 +181,24 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 	 * @return bibtex
 	 * @throws ScrapingException
 	 */
-	private String ExtractID(ScrapingContext sc){
-		String recordIds = null;
-		Matcher matcher = URL_PATTERN_BKN.matcher(sc.getUrl().toString());
-
-		if (matcher.find()){
-			recordIds = matcher.group(1);
-		} else {
-
-			matcher = URL_PATTERN_ARNUMBER.matcher(sc.getUrl().toString());
-
-			if (matcher.find()){
-				recordIds = matcher.group(1);
-			}
-
+	private static String extractID(final String url){
+		final Matcher m1 = URL_PATTERN_BKN.matcher(url);
+		if (m1.find()){
+			return m1.group(1);
 		}
-		return recordIds;
-	}
 
+		final Matcher m2 = URL_PATTERN_ARNUMBER.matcher(url);
+		if (m2.find()){
+			return m2.group(1);
+		}
+
+		return null;
+	}
+	/**
+	 * @param sc
+	 * @return the resulting BibTeX
+	 * @throws ScrapingException
+	 */
 	public String ieeeBookScrape (ScrapingContext sc) throws ScrapingException {
 		try{
 			//-- init all NodeLists and Node
@@ -234,7 +246,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 				}
 			} */
 
-			if (title == null || title.equals("")) {
+			if (!ValidationUtils.present(title)) {
 				ident1 = "<title>";
 				ident2 = "</title>";
 				if (sc.getPageContent().contains(ident1) && sc.getPageContent().contains(ident2)) {
@@ -285,7 +297,6 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 			 *  In every standard page the css-class "bodyCopyBlackLargeSpaced"
 			 *  indicates the collection of all informations.
 			 * */
-			pres = null;
 			pres = doc.getElementsByTagName("p"); //get all <p>-Tags
 			for (int i=0; i<pres.getLength(); i++){
 				currNode = pres.item(i);
@@ -365,7 +376,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 			/*
 			 * get authors
 			 */
-			if (authors == null || authors.equals("")) {
+			if (!ValidationUtils.present(authors)) {
 				ident1 = "<font color=990000><b>";
 				ident2 = "<br>";
 				int _startIndex = sc.getPageContent().indexOf(ident1) + ident1.length();
@@ -382,7 +393,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 			}
 
 			//-- kill special chars and add the year to bibtexkey
-			if (present(isbn) && present(year)) {
+			if (ValidationUtils.present(isbn) && ValidationUtils.present(year)) {
 				bibtexkey = isbn.replaceAll("-", "");
 				bibtexkey = bibtexkey.replaceAll("[^0-9A-Za-z]", "") + ":" + year;
 			}
@@ -430,17 +441,16 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 	 */
 	@Override
 	public boolean scrapeCitedby(ScrapingContext scrapingContext) throws ScrapingException {
-		String citedBy = "";
-		String ids = ExtractID(scrapingContext);
+		final String id = extractID(scrapingContext.getUrl().toExternalForm());
 		try {
-			String url = "http://ieeexplore.ieee.org/rest/document/" + ids + "/citations";
-			citedBy = WebUtils.getContentAsString(url);
+			final String url = "http://ieeexplore.ieee.org/rest/document/" + id + "/citations";
+			final String citedBy = WebUtils.getContentAsString(url);
 
-			if (citedBy != ""){
+			if (ValidationUtils.present(citedBy)){
 				scrapingContext.setCitedBy(citedBy);
 				return true;
 			}
-			
+
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
@@ -451,13 +461,21 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
 	 */
 	@Override
-	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
-		final String ids = ExtractID(scrapingContext);
+	public boolean scrapeReferences(final ScrapingContext scrapingContext) throws ScrapingException {
+		final String ids = extractID(scrapingContext.getUrl().toExternalForm());
 		try {
-			Matcher m = REFERENCE_PATTERN.matcher(WebUtils.getContentAsString(REFERENCE_ARNUM_URL + ids, WebUtils.getCookies(scrapingContext.getUrl())));
+			// using own client because I do not want to configure any client to allow circular redirects
+			final Builder defaultRequestConfig = WebUtils.getDefaultRequestConfig();
+			//we have to allow circular redirects to avoid an exception when we get temporary redirected to the login page
+			defaultRequestConfig.setCircularRedirectsAllowed(true);
+			final HttpClient client = WebUtils.getHttpClient(defaultRequestConfig.build());
+			// infinite redirect loops already prevented in WebUtils.getHttpClient()
+			final String cookies = WebUtils.getCookies(client, scrapingContext.getUrl());
+
+			final String pageContent = WebUtils.getContentAsString(client, REFERENCE_ARNUM_URL + ids, cookies, null, null);
+			final Matcher m = REFERENCE_PATTERN.matcher(pageContent);
 			if (m.find()) {
-				final String reference = m.group(1);
-				scrapingContext.setReferences(reference);
+				scrapingContext.setReferences(m.group(1));
 				return true;
 			}
 		} catch (IOException ex) {

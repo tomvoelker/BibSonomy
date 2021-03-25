@@ -83,8 +83,7 @@ public class JAPScraper extends GenericBibTeXURLScraper implements ReferencesScr
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		try {
-			// using url gives a FileNotFoundException, url.toString() doesn't
-			final String content = WebUtils.getContentAsString(url.toString(), cookies);
+			final String content = WebUtils.getContentAsString(url, cookies);
 			final Matcher m = BIBTEX_URL.matcher(content);
 			if (m.find()) {
 				return SITE_URL + m.group(1);
@@ -101,7 +100,7 @@ public class JAPScraper extends GenericBibTeXURLScraper implements ReferencesScr
 	@Override
 	public boolean scrapeReferences(ScrapingContext sc) throws ScrapingException {
 		try {
-			final Matcher m = REFERENCES_PATTERN.matcher(WebUtils.getContentAsString(sc.getUrl().toString()));
+			final Matcher m = REFERENCES_PATTERN.matcher(WebUtils.getContentAsString(sc.getUrl()));
 			if (m.find()) {
 				sc.setReferences(m.group(1));
 				return true;

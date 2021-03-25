@@ -5,8 +5,12 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
@@ -31,7 +35,7 @@ public abstract class CitMgrScraper extends AbstractUrlScraper {
 	}
 
 	@Override
-	protected final boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
+	protected final boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
 
 		final URL url = scrapingContext.getUrl();
@@ -41,10 +45,17 @@ public abstract class CitMgrScraper extends AbstractUrlScraper {
 			if (!present(doi)) {
 				throw new ScrapingFailureException("can't get doi from url");
 			}
-			// the doi must be not save encoded :(
-			final String postContent = "doi=" + doi + "&downloadFileName=pericles_1467981741&format=bibtex&direct=other-type&include=abs&submit=Download";
+
 			final String downloadUrl = this.getDownloodSiteUrl(url) + "action/downloadCitation";
-			final String bibtex = WebUtils.getContentAsString(downloadUrl, null, postContent, url.toExternalForm());
+			final List<NameValuePair> postData = new LinkedList<>();
+			postData.add(new BasicNameValuePair("doi", doi));
+			postData.add(new BasicNameValuePair("downloadFileName", "pericles_1467981741"));
+			postData.add(new BasicNameValuePair("format", "bibtex"));
+			postData.add(new BasicNameValuePair("direct", "other-type"));
+			postData.add(new BasicNameValuePair("include", "abs"));
+			postData.add(new BasicNameValuePair("submit", "Download"));
+
+			final String bibtex = WebUtils.getContentAsString(downloadUrl, null, postData, url.toExternalForm());
 			if (present(bibtex)) {
 				scrapingContext.setBibtexResult(repairBibTeX(bibtex.trim()));
 			}

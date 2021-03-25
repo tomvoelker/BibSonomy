@@ -27,8 +27,6 @@
 package org.bibsonomy.scraper.url.kde.taylorAndFrancis;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -39,23 +37,20 @@ import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.generic.CitMgrScraper;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * @author schwass
  */
-public class TaylorAndFrancisScraper extends CitMgrScraper implements ReferencesScraper {
+public class TaylorAndFrancisScraper extends LiteratumScraper implements ReferencesScraper {
 
 	private static final String SITE_NAME = "Taylor & Francis Online";
-	private static final String SITE_URL = "https://www.tandfonline.com/";
-	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
-	
-	private static final String TANDF_HOST_NAME = "tandfonline.com";
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(
-					new Pair<>(Pattern.compile(".*" + TANDF_HOST_NAME), AbstractUrlScraper.EMPTY_PATTERN)
-	);
+	private static final String SITE_HOST = "tandfonline.com";
+	private static final String SITE_URL = "http://" + SITE_HOST + "/";
+	private static final String SITE_INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
+
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	private final static Pattern REF_PATTERN = Pattern.compile("(?s)<ul class=\"references\">(.*)</ul></div></div>");
 
@@ -71,7 +66,7 @@ public class TaylorAndFrancisScraper extends CitMgrScraper implements References
 
 	@Override
 	public String getInfo() {
-		return INFO;
+		return SITE_INFO;
 	}
 
 	@Override
@@ -97,12 +92,4 @@ public class TaylorAndFrancisScraper extends CitMgrScraper implements References
 		return false;
 	}
 
-	@Override
-	protected String getDownloodSiteUrl(URL url) throws ScrapingFailureException {
-		try {
-			return new URL(url.getProtocol(), url.getHost(), "").toExternalForm() + "/";
-		} catch (MalformedURLException e) {
-			throw new ScrapingFailureException(e);
-		}
-	}
 }
