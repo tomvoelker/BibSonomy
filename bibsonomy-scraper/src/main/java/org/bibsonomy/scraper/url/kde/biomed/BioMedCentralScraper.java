@@ -35,13 +35,12 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.ExamplePrototype;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
  * @author rja
  */
-public class BioMedCentralScraper extends GenericBibTeXURLScraper implements ExamplePrototype {
+public class BioMedCentralScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_NAME = "BioMed Central";
 	private static final String SITE_HOST = "biomedcentral.com";

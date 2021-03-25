@@ -28,7 +28,7 @@ package org.bibsonomy.scraper.url.kde.proeuclid;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,14 +39,15 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.ExamplePrototype;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
+ * scraper for the Astronomy and Astrophysics
+ *
  * @author rja
  */
-public class ProjectEuclidScraper extends AbstractUrlScraper implements ExamplePrototype {
+public class ProjectEuclidScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "Astronomy and Astrophysics";
 	private static final String SITE_HOST = "projecteuclid.org";
@@ -54,10 +55,7 @@ public class ProjectEuclidScraper extends AbstractUrlScraper implements ExampleP
 	private static final String INFO = "Scraper for references from " + href(SITE_URL, SITE_NAME)+".";
 	private static final String DOWNLOAD_URL = SITE_URL + "export_citations";
 	private static final Pattern ID_PATTERN = Pattern.compile("/(.+)$");
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
-	static {
-		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
-	}
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<>(Pattern.compile(".*"+ SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	@Override
 	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
@@ -66,11 +64,11 @@ public class ProjectEuclidScraper extends AbstractUrlScraper implements ExampleP
 			try {
 				final String id = UrlUtils.safeURIEncode(m.group(1));
 				
-				final List<NameValuePair> postData = new ArrayList<NameValuePair>(2);
+				final List<NameValuePair> postData = new ArrayList<>(2);
 				postData.add(new BasicNameValuePair("h", id));
 				postData.add(new BasicNameValuePair("format", "bibtex"));
 				scrapingContext.setBibtexResult(WebUtils.getContentAsString(DOWNLOAD_URL, null, postData, null));
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				throw new ScrapingException(e);
 			}
 		}

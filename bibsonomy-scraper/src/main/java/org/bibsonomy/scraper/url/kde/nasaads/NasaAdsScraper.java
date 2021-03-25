@@ -35,7 +35,6 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.ExamplePrototype;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.UrlUtils;
 
@@ -45,7 +44,7 @@ import org.bibsonomy.util.UrlUtils;
  *   
  * @author rja
  */
-public class NasaAdsScraper extends GenericBibTeXURLScraper implements ExamplePrototype {
+public class NasaAdsScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_NAME = "The SAO/NASA Astrophysics Data System";
 	private static final String SITE_HOST = "adsabs.harvard.edu";
@@ -54,7 +53,7 @@ public class NasaAdsScraper extends GenericBibTeXURLScraper implements ExamplePr
 	private static final String INFO = "Extracts publications from " + href(SITE_URL, SITE_NAME) + 
 			". Publications can be extracted as a selected BibTeX snippet (one or more publications) or by the URL of a single reference.";
 
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<>(Pattern.compile(".*" + SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	@Override
 	public String getInfo() {

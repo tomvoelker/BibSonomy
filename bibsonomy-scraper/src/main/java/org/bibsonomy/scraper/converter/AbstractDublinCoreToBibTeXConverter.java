@@ -28,7 +28,6 @@ package org.bibsonomy.scraper.converter;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -37,7 +36,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.id.ISBNUtils;
 
 /**

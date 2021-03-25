@@ -40,14 +40,13 @@ import org.bibsonomy.scraper.CitedbyScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.ExamplePrototype;
 import org.bibsonomy.scraper.generic.LiteratumScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * @author Haile
  */
-public class WorldScientificScraper extends LiteratumScraper implements CitedbyScraper, ReferencesScraper, ExamplePrototype {
+public class WorldScientificScraper extends LiteratumScraper implements CitedbyScraper, ReferencesScraper {
 
 	private static final Log log = LogFactory.getLog(WorldScientificScraper.class);
 

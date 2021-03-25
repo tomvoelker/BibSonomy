@@ -32,7 +32,6 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.ExamplePrototype;
 import org.bibsonomy.scraper.generic.LiteratumScraper;
 
 /**
@@ -40,7 +39,7 @@ import org.bibsonomy.scraper.generic.LiteratumScraper;
  * 
  * @author tst
  */
-public class AnnualreviewsScraper extends LiteratumScraper implements ExamplePrototype {
+public class AnnualreviewsScraper extends LiteratumScraper {
 
 	private static final String SITE_NAME = "Annual Reviews";
 	private static final String SITE_HOST = "www.annualreviews.org";
