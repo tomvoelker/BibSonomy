@@ -44,8 +44,6 @@ body {
    padding-right: 5px !important;
 }
 
-
-
 /** FIX for right dropdown alignment */
 
 .dropdown-align-right .dropdown-menu {
@@ -63,6 +61,20 @@ ul.dropdown-menu.list-options > li > span {
 	padding: 3px 20px;
 	color: @font-color;
 	font-size: inherit;
+}
+
+/** sorting dropdown menu **/
+ul.dropdown-menu > li.sort-selection > a {
+	color: @font-color;
+}
+
+ul.dropdown-menu > li.sort-selected > a {
+	font-weight: bolder;
+}
+
+/** FIX for breadcrumb text outside of container */
+.breadcrumb {
+	word-break: break-all;
 }
 
 /*
@@ -89,7 +101,7 @@ ul.dropdown-menu.list-options > li > span {
 .container {
 	border-color: @border-color;
 	border-width: 1px;
-	border-style: solid;
+	border-style: @border-style;
 	border-bottom: none;
 	background-color: #FFFFFF;
 }
@@ -99,15 +111,15 @@ ul.dropdown-menu.list-options > li > span {
 	border-top: none;
 	border-bottom: none;
 	margin-top: 30px;
-	-webkit-box-shadow: 2px 2px 30px 6px @border-color;
-	box-shadow: 2px 2px 30px 6px @border-color;
+	-webkit-box-shadow: @container-shadow;
+	box-shadow: @container-shadow;;
 }
 
 .container.main {
-	padding: 20px 30px 0 30px;
+	padding: 20px 30px 30px 30px;
 	border-top: none;
-	-webkit-box-shadow: 2px 2px 30px 6px @border-color;
-	box-shadow: 2px 2px 30px 6px @border-color;
+	-webkit-box-shadow: @container-shadow;
+	box-shadow: @container-shadow;
 }
 
 .container .wrapper {
@@ -201,7 +213,7 @@ a, .btn-link {
  * NAVBAR
  */
 .navbar-bibsonomy {
-	background-color: @main-color;
+	background-color: @navbar-color;
 	border: none;
 	border-radius: 0;
 	margin-bottom: 0;
@@ -209,8 +221,8 @@ a, .btn-link {
 
 .container.navi {
 	padding-left: 0;
-	border-left: 1px @container-navi-border solid;
-	border-right: 1px @container-navi-border solid;
+	border-left: 1px @container-navi-border @border-style;
+	border-right: 1px @container-navi-border @border-style;
 }
 
 .navbar-bibsonomy a {
@@ -611,6 +623,11 @@ a.description-link {
 	overflow: hidden;
 }
 
+// special pub lists
+#organization-publications li.post {
+  height: inherit;
+}
+
 /**
  * SIDEBAR
  */
@@ -625,6 +642,12 @@ div#sidebar {
 	padding-right: 10px;
 	margin-left: 15px;
 	border-left: 1px @border-color solid;
+	
+	.clear-inbox-confirmation-item h3 {
+		line-height: unset;
+		height: auto;
+		font-size: inherit;
+	}
 }
 
 #sidebar ul {
@@ -687,7 +710,8 @@ div#sidebar {
  */
 
 .tagcloud li a{
-	line-height: 1.5em;
+    line-height: 1.5em;
+    word-break: break-word;
 }
 
 ul.news {
@@ -759,8 +783,8 @@ ul.tagcloud {
 
 .tagcloud li {
 	display: inline;
-	padding: 0em .1em 0em .1em;
-	line-height: 1.5em;
+	padding: 0em .2em 0em .2em;
+	line-height: 2em;
 	font-size: 90%;
 }
 
@@ -790,6 +814,30 @@ div.newsbox ul.news {
 	font-size: 10px;
 	line-height: 18px;
 	margin-right: 2px;
+}
+
+#friendsOrGroups li:not(.keepme){
+	background-color: #f0ad4e;
+	color: #fff;
+	font-size: 14px;
+	margin-right: 5px;
+	line-height: 18px;
+	padding: 2px 3px;
+	border: 1px solid #f0ad4e;
+	border-radius: 3px;
+	-moz-border-radius: 3px; 
+	-webkit-border-radius: 3px;
+	cursor: pointer;
+}
+
+.fa-icon-position {
+	margin-right: 2px;
+	position: relative;
+}
+
+#friendsOrGroupsLabels {
+	margin-top: 100px;
+	margin-left: 20px;
 }
 
 span.help-popover {cursor:help}
@@ -825,30 +873,30 @@ span.entrytype {
 	margin-top: 22px;
 }
 
-span.article				{background-position: 0 0;      width: 58px; height:53px; margin-left: 3px; margin-top: 14px;}
-span.book					{background-position:-4px -54px;  width: 55px; height:46px; margin-left: 0; margin-top: 16px;}
-span.collection				{background-position:-8px -257px; height:60px;			margin-top: 6px; }
-span.booklet				{background-position:-2px -101px; height:65px;			margin-top: 6px; }
-span.conference				{background-position:-2px -167px; height:44px;}
-span.electronic				{background-position: 0 -212px; height:45px; margin-top: 17px; }
-span.inbook					{background-position:-2px -258px; width: 55px; height:60px; margin-top: 10px;}
-span.incollection			{background-position:-5px -319px; height:60px; width: 56px; margin-top: 8px;}
-span.inproceedings			{background-position:-2px -380px; height:49px; margin-left: 9px; margin-top: 14px;}
-span.manual					{background-position:-2px -430px; height:46px;}
-span.mastersthesis			{background-position:0 -477px;    height:64px;}
-span.misc					{background-position:0 -542px;	  height:49px; margin-left: 10px; margin-top: 14px; }
-span.patent					{background-position:0 -592px;width:43px;height:55px; 	  margin-left: 6px; margin-top: 11px;}
-span.pdf					{background-position:0 -648px;width:59px;height:30px;}
-span.periodical				{background-position:0 -679px;width:60px;height:41px;}
-span.phdthesis				{background-position: -2px -721px;width:59px;height:64px; width: 53px; margin-left: 2px; margin-top: 7px; }
-span.preprint				{background-position: 0  -540px;width:45px;height:52px;margin-left: 10px; margin-top: 10px;}
-span.preamble				{background-position:0 -786px;width:50px;height:53px;}
-span.presentation			{background-position:0 -840px;width:55px;height:46px;}
-span.proceedings			{background-position:0 -887px;width:47px;height:60px;}
-span.standard				{background-position:0 -948px;width:42px;height:54px;	  margin-left: 6px; margin-top: 13px;}
-span.techreport				{background-position:0 -1003px;width:55px;height:52px; 	  margin-top: 13px; }
-span.unpublished			{background-position:0 -1056px;width:36px;height:49px; 	  margin-left: 9px; margin-top: 13px;}
-span.web					{background-position:-2px -1106px;width:61px;height:37px; margin-top: 22px;}
+span.article				{background-position: 0 0;      	width: 58px;height:53px; margin-left: 3px; 	margin-top: 14px;}
+span.book					{background-position:-4px -54px;  	width: 55px;height:46px; margin-left: 0; 	margin-top: 16px;}
+span.collection				{background-position:-8px -257px;				height:60px;					margin-top: 6px; }
+span.booklet				{background-position:-2px -101px; 				height:65px;					margin-top: 6px; }
+span.conference				{background-position:-2px -167px; 				height:44px;}
+span.electronic				{background-position: 0 -212px; 				height:45px; 					margin-top: 17px; }
+span.inbook					{background-position:-2px -258px; 	width: 55px;height:60px; 					margin-top: 10px;}
+span.incollection			{background-position:-5px -319px; 	width: 56px;height:60px;  					margin-top: 8px;}
+span.inproceedings			{background-position:-2px -380px; 				height:49px; margin-left: 9px; 	margin-top: 14px;}
+span.manual					{background-position:-2px -430px; 				height:46px;}
+span.mastersthesis			{background-position:0 -477px;    				height:64px;}
+span.misc					{background-position:0 -542px;	  				height:49px; margin-left: 10px; margin-top: 14px; }
+span.patent					{background-position:0 -592px;		width:43px;	height:55px; margin-left: 6px; 	margin-top: 11px;}
+span.pdf					{background-position:0 -648px;		width:59px;	height:30px;}
+span.periodical				{background-position:0 -679px;		width:60px;	height:41px;}
+span.phdthesis				{background-position: -2px -721px;	width:59px;	height:64px; margin-left: 2px; 	margin-top: 7px; }
+span.preprint				{background-position: 0  -1160px;	width: 58px;height:53px; margin-left: 3px; margin-top: 14px;}
+span.preamble				{background-position:0 -786px;		width:50px;	height:53px;}
+span.presentation			{background-position:0 -840px;		width:55px;	height:46px;}
+span.proceedings			{background-position:0 -887px;		width:47px;	height:60px;}
+span.standard				{background-position:0 -948px;		width:42px;	height:54px; margin-left: 6px; 	margin-top: 13px;}
+span.techreport				{background-position:0 -1003px;		width:55px;	height:52px;				   	margin-top: 13px; }
+span.unpublished			{background-position:0 -1056px;		width:36px;	height:49px; margin-left: 9px; 	margin-top: 13px;}
+span.web					{background-position:-2px -1106px;	width:61px;	height:37px; 					margin-top: 22px;}
 
 
 .hiddenSystemTag .post-content a {
@@ -863,9 +911,13 @@ span.web					{background-position:-2px -1106px;width:61px;height:37px; margin-to
  * PUBLICATION PAGE
  */
 
+#desc {
+	word-break: break-word;
+}
+
 h1#pubtitle {
 	font-size: 21px;
-	font-weight: 200;
+	font-weight: 300;
 	line-height: 1.4;
 	margin: 0 0 5px;
 }
@@ -879,7 +931,7 @@ img.user-avatar {
 	display: block;
 }
 
-.img-thumbnail span {
+/*.img-thumbnail span {
 	display: block;
 	position: relative;
 	font-size: 11px;
@@ -893,7 +945,7 @@ img.user-avatar {
 	overflow:hidden; 
 	text-overflow: ellipsis; 
 	white-space: nowrap;
-}
+}*/
 
 div.title a:hover {
 	text-decoration: none;
@@ -904,6 +956,15 @@ h4.pub-details {
 }
 #resources table td {
 	padding: 5px 5px 5px 0;
+}
+
+#resources dt {
+	padding: 4px 0 !important;
+}
+
+#resources dd {
+    padding: 4px 0 !important;
+    word-break: break-all;
 }
 
 table a.img-thumbnail {
@@ -1008,17 +1069,17 @@ fieldset.collapsible > legend {
 
 .container.footer {
 	padding: 30px 30px;
-	border-top: none;
 	border: none;
-	background: transparent;
+	background: @footer-background-color;
 
+  	color: @footer-color;
 	margin-bottom: 10px;
 	font-family: Arial, Tahoma, sans-serif;	
 	font-size: 90%;
 }
 
 .container.footer a:not(.btn) {
-	color: #333;
+	color: @footer-color;
 }
 
 
@@ -1026,10 +1087,6 @@ fieldset.collapsible > legend {
 .container.footer a:not(.btn):hover,
 .container.footer a:not(.btn):active {
 	text-decoration: underline;
-}
-
-.container.footer dl {
-	/* line-height: 150%; */
 }
 
 .container.footer dt {
@@ -1256,7 +1313,7 @@ h1.content-header, h1.content-heading {
 	font-size: 12px;
 }
 
-.main h4 {
+.main > h4 {
 	font-size: 16px;
 	line-height: 20px;
 	height: 20px;
@@ -1266,6 +1323,7 @@ h1.content-header, h1.content-heading {
 	border-bottom: 1px solid @border-color;
 	height: auto;
 	padding-bottom: 2px;
+	padding-top: 6px;
 }
 
 .jumbotron h2 {
@@ -1551,7 +1609,11 @@ ul#urlList {
 	font-size: 10em;
 }
 
-.fa-space-5 {
+.fa-space-before-5 {
+	margin-left: 5px;
+}
+
+.fa-space-after-5 {
 	margin-right: 5px;
 }
 
@@ -1625,4 +1687,117 @@ pre.export {
 
 .citation-box ul li a {
 	padding: 5px 10px;
+}
+
+.form-search {
+  background-color: #ffffff;
+  border-radius: 5px;
+  padding: 3px 5px 5px 5px;
+
+  .input-group-addon {
+	background-color: transparent;
+	border: none;
+  }
+
+  input {
+	margin-top: 5px;
+	font-size: 150%;
+  }
+
+  .form-control-borderless, .form-control-borderless:hover, .form-control-borderless:active, .form-control-borderless:focus {
+	border: none;
+	outline: none;
+	box-shadow: none;
+  }
+}
+
+ul.prefix-list {
+  margin: 20px 0px 0px 0px;
+  padding: 0px;
+
+  li {
+	display: inline;
+	padding: 5px;
+  }
+}
+
+.jumbotron {
+  ul.prefix-list > li.active {
+	background-color: #ffffff;
+	border-radius: 4px;
+  }
+}
+
+.jumbotron.search {
+  padding: 10px 30px 20px;
+}
+
+#cris-home-logo {
+  max-width: 1110px;
+  padding-bottom: 15px;
+}
+
+div.no-items-found {
+  text-align: center;
+  font-weight: 600;
+  font-size: 150%;
+  color: grey;
+  padding-top: 20px;
+}
+
+hr.option-result-divider {
+  border-color: #ccc;
+}
+
+// TODO: remove with bootstrap 4
+.vcenter {
+  display: inline-block;
+  vertical-align: middle;
+  float: none;
+}
+
+
+#organizations img {
+  max-width: 100px;
+}
+
+/** Show all tags in publication list view **/
+.all-tags-button {
+	margin-top: 2px;
+}
+
+.all-tags-button h3.popover-title {
+	font-size: 14px !important;
+	color: #333;
+	line-height: 14px;
+}
+
+.custom-all-tags-list .label {
+	font-size: 115%;
+}
+
+ul.custom-all-tags-list {
+	padding: 0;
+	margin: 0;
+}
+
+.custom-all-tags-list {
+	padding: 0;
+	margin: 0;
+}
+
+ul.custom-all-tags-list li {
+	margin: 0 0 3px 0;
+}
+
+.popover-title button {
+	margin: -8px -8px 0 0;
+}
+
+.popover-content-custom-close {
+	margin: -8px -8px 0 0;
+}
+
+.bg-white {
+	background-color: #fff;
 }

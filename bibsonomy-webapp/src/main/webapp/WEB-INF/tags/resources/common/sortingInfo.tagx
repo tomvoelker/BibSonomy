@@ -1,0 +1,35 @@
+<jsp:root version="2.0"
+          xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+          xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+>
+    <jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true" />
+    <jsp:directive.attribute name="indexUse" type="java.lang.Boolean" required="true" />
+    <jsp:directive.attribute name="sortPage" type="java.lang.String" required="true" />
+
+    <!-- display sorting info to swap queryscope only when not using 'date' criteria -->
+    <c:if test="${not empty sortPage and sortPage ne 'date'}">
+        <span>
+            <a class="sort-info" style="position:relative; top: -1px">
+                <fontawesome:icon icon="info-circle"/>
+            </a>
+            <div  class="sort-info-content hidden">
+                <c:choose>
+                    <c:when test="${indexUse}">
+                        <fmt:message key="sort.info.index">
+                            <fmt:param value="${mtl:setParam(requPathAndQuery, 'indexUse', '0')}" />
+                        </fmt:message>
+                    </c:when>
+                    <c:otherwise>
+                        <fmt:message key="sort.info.db">
+                            <fmt:param value="${mtl:setParam(requPathAndQuery, 'indexUse', '1')}"/>
+                        </fmt:message>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+        </span>
+    </c:if>
+</jsp:root>

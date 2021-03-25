@@ -122,7 +122,7 @@ public abstract class AbstractUrlScraper implements UrlScraper {
 
 	@Override
 	public Collection<Scraper> getScraper() {
-		return Collections.<Scraper>singletonList(this);
+		return Collections.singletonList(this);
 	}
 	
 	@Override

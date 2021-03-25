@@ -28,13 +28,12 @@ package org.bibsonomy.services;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 
 import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.exceptions.UnsupportedFormatException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.Author;
@@ -42,12 +41,13 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.FavouriteLayoutSource;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.enums.SimpleExportLayout;
 import org.bibsonomy.model.factories.ResourceFactory;
@@ -59,14 +59,14 @@ import org.bibsonomy.util.UrlBuilder;
 import org.bibsonomy.util.UrlUtils;
 
 /**
- * FIXME: introduce a factory for the url generator and remove all *AndSysUrl methods
- * 
  * TODO: Unify URL constructions for various cases (history, community posts,
  * regular posts) Generates the URLs used by the web application.
  * 
  * @author rja
  */
 public class URLGenerator {
+
+	private static final String SLASH = "/";
 
 	/**
 	 * Provides page names.
@@ -115,6 +115,10 @@ public class URLGenerator {
 	private static final String FRIEND_PREFIX = "friend";
 	private static final String GROUPS = "groups";
 	private static final String GROUP_PREFIX = "group";
+	private static final String ORGANIZATIONS = "organizations";
+	private static final String ORGANIZATION_PREFIX = "organization";
+	private static final String PROJECTS = "projects";
+	private static final String PROJECT_PREFIX = "project";
 	private static final String LOGIN_PREFIX = "login";
 	private static final String LAYOUT_PREFIX = "layout";
 	private static final String ENDNOTE_PREFIX = "endnote";
@@ -128,6 +132,7 @@ public class URLGenerator {
 	private static final String MYSEARCH_PREFIX = "mySearch";
 	private static final String PICTURE_PREFIX = "picture";
 	private static final String PERSON_PREFIX = "person";
+	private static final String PUBLICATIONS_URL = "publications";
 	private static final String PUBLICATION_PREFIX = "bibtex";
 	private static final String RELEVANTFOR_PREFIX = "relevantfor";
 	private static final String SEARCH_PREFIX = "search";
@@ -140,6 +145,7 @@ public class URLGenerator {
 	private static final String VIEWABLE_PUBLIC_SUFFIX = "public";
 	private static final String HISTORY_PREFIX = "history";
 	private static final String USER_RELATION = "handleUserRelation";
+        private static final String SCRAPER_INFO = "scraperinfo";
 
 	private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
 	private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
@@ -329,7 +335,6 @@ public class URLGenerator {
 	 * 
 	 * @param intraHash
 	 * @param userName
-	 * @param systemUrl
 	 * @return returns the BibTex Export url
 	 */
 	@Deprecated // see getMSWordUrlByIntraHashAndUserName
@@ -342,7 +347,6 @@ public class URLGenerator {
 	 * 
 	 * @param intraHash
 	 * @param userName
-	 * @param systemUrl
 	 * @return returns the Endnote export url
 	 */
 	@Deprecated // FIXME: see getMSWordUrlByIntraHashAndUserName
@@ -355,7 +359,6 @@ public class URLGenerator {
 	 * 
 	 * @param intraHash
 	 * @param userName
-	 * @param systemUrl
 	 * @return returns the MS WORD Reference Manager url
 	 */
 	@Deprecated // FIXME: a more generic method getExportUrlForPost()
@@ -464,6 +467,7 @@ public class URLGenerator {
 	public String getCopyUrlOfPost(final Post<? extends Resource> post) {
 		return getCopyUrlOfPost(post, true, false);
 	}
+
 	/**
 	 * @param post
 	 * @param useSuperiorResourceClass 
@@ -493,6 +497,16 @@ public class URLGenerator {
 			}
 		}
 		
+		return this.getUrl(urlBuilder.asString());
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public String getProjectEditUrl() {
+		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
+		urlBuilder.addPathElement("editProject");
 		return this.getUrl(urlBuilder.asString());
 	}
 
@@ -713,7 +727,100 @@ public class URLGenerator {
 	 *         tagName
 	 */
 	public String getGroupUrlByGroupNameAndTagName(final String groupName, final String tagName) {
-		final String url = this.getGroupUrlString(groupName) + "/" + UrlUtils.encodePathSegment(tagName);
+		final String url = this.getGroupUrlString(groupName) + SLASH + UrlUtils.encodePathSegment(tagName);
+		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL for the organizations page
+	 *
+	 * @return URL pointing to the organizations page
+	 */
+	public String getOrganizationsUrl() {
+		final String url = this.projectHome + ORGANIZATIONS;
+		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL for a specific organization page
+	 * @param organizationName
+	 * @return the url pointing to the organization page
+	 */
+	public String getOrganizationUrlByName(final String organizationName) {
+		final String url = this.projectHome + ORGANIZATION_PREFIX + "/" + UrlUtils.encodePathSegment(organizationName);
+		return this.getUrl(url);
+	}
+
+	/**
+	 * url for persons of a organization
+	 * @param organizationName
+	 * @return
+	 */
+	public String getOrganizationPersonsUrlByName(final String organizationName) {
+		return this.getOrganizationSubPage(organizationName, "persons");
+	}
+
+	/**
+	 * url for publications of a organization
+	 * @param organizationName
+	 * @return
+	 */
+	public String getOrganizationPublicationsUrlByName(final String organizationName) {
+		return this.getOrganizationSubPage(organizationName, "publications");
+	}
+
+	/**
+	 * url for projects of a organization
+	 * @param organizationName
+	 * @return
+	 */
+	public String getOrganizationProjectsUrlByName(final String organizationName) {
+		return this.getOrganizationSubPage(organizationName, "projects");
+	}
+
+	private String getOrganizationSubPage(final String organizationName, final String subPage) {
+		final String url = this.projectHome + ORGANIZATION_PREFIX + "/" + UrlUtils.encodePathSegment(organizationName) + "/" + subPage;
+
+		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL for the projects page
+	 *
+	 * @return URL pointing to the projects page
+	 */
+	public String getProjectsUrl() {
+		final String url = this.projectHome + PROJECTS;
+		return this.getUrl(url);
+	}
+
+	/**
+	 * @param project
+	 * @return the url of the provided project
+	 */
+	public String getProjectUrlByProject(final Project project) {
+		return this.getProjectUrlByProjectId(project.getExternalId());
+	}
+
+	/**
+	 * the project url by the project id
+	 * @param projectId
+	 * @return
+	 */
+	public String getProjectUrlByProjectId(final String projectId) {
+		final String url = this.projectHome + PROJECT_PREFIX + "/" + UrlUtils.encodePathSegment(projectId);
+
+		return this.getUrl(url);
+	}
+
+	/**
+	 * return the url
+	 * @param projectId
+	 * @return
+	 */
+	public String getProjectDeleteUrl(final String projectId) {
+		final String url = this.projectHome + "/deleteProject?projectIdToDelete=" + UrlUtils.encodePathSegment(projectId);
+
 		return this.getUrl(url);
 	}
 
@@ -804,24 +911,24 @@ public class URLGenerator {
 	 * Constructs a URL for the given resource's intrahash. If you have the post
 	 * as object, please use {@link #getPostUrl(Post)}.
 	 * 
-	 * @param resourceType
+	 * @param type
 	 *            - The type of resource. Currently, only URLs for
 	 *            {@link Bookmark} or {@link BibTex} are supported.
-	 * @param intraHash
+	 * @param
 	 * @param userName
 	 * @return The URL pointing to the post of that user for the resource
 	 *         represented by the given intrahash.
 	 */
-	public String getPostUrl(final Class<?> resourceType,
-			final String intraHash, final String userName) {
-		if (resourceType == Bookmark.class) {
-			return this.getBookmarkUrlByIntraHashAndUsername(intraHash,
-					userName);
-		} else if (resourceType == BibTex.class) {
-			return this.getPublicationUrlByIntraHashAndUsername(intraHash,
-					userName);
+	public String getObjectUrl(final Class<?> type, final String id, final String userName) {
+		if (type == Person.class) {
+			return this.getPersonUrl(id);
+		}
+		if (type == Bookmark.class) {
+			return this.getBookmarkUrlByIntraHashAndUsername(id, userName);
+		} else if (type == BibTex.class) {
+			return this.getPublicationUrlByIntraHashAndUsername(id, userName);
 		} else {
-			throw new UnsupportedResourceTypeException();
+			throw new IllegalArgumentException(type + " not supported");
 		}
 	}
 
@@ -845,7 +952,6 @@ public class URLGenerator {
 			throw new UnsupportedResourceTypeException();
 		}
 	}
-	
 	
 	/**
 	 * @param post
@@ -963,7 +1069,16 @@ public class URLGenerator {
 		final Resource resource = post.getResource();
 		return getResourceUrl(resource, post);
 	}
-	
+
+	/**
+	 * the publications overview page (e.g. for a CRIS system)
+	 * @return
+	 */
+	public String getPublicationsUrl() {
+		final String url = this.projectHome + PUBLICATIONS_URL;
+		return this.getUrl(url);
+	}
+
 	/**
 	 * @param publication
 	 * @return the publication url
@@ -1176,16 +1291,16 @@ public class URLGenerator {
 	 * 
 	 * @param toSearch
 	 * @param searchScope the search type such as 'group', 'search', 'sharedResourceSearch'
-	 * @param order
+	 * @param sortKey
 	 * @return URL pointing to the results of the search.
 	 */
-	public String getSearchUrl(final String toSearch, SearchType searchScope, Order order) {
+	public String getSearchUrl(final String toSearch, QueryScope searchScope, SortKey sortKey) {
 		UrlBuilder ub = new UrlBuilder(this.projectHome).addPathElement(SEARCH_PREFIX).addPathElement(toSearch);
-		if (searchScope != SearchType.LOCAL) {
+		if (searchScope != QueryScope.LOCAL) {
 			ub.addParameter("scope", searchScope.name());
 		}
-		if ((order != null) && (order != Order.RANK)) {
-			ub.addParameter("order", order.name().toLowerCase());
+		if ((sortKey != null) && (sortKey != SortKey.RANK)) {
+			ub.addParameter("sortKey", sortKey.name().toLowerCase());
 		}
 		return this.getUrl(ub.asString());
 	}
@@ -1197,7 +1312,7 @@ public class URLGenerator {
 	 * @return URL pointing to the results of the search.
 	 */
 	public String getSearchUrl(final String toSearch) {
-		return getSearchUrl(toSearch, SearchType.LOCAL, Order.RANK);
+		return getSearchUrl(toSearch, QueryScope.LOCAL, SortKey.RANK);
 	}
 
 	/**
@@ -1426,14 +1541,6 @@ public class URLGenerator {
 	}
 
 	/**
-	 * @see URLGenerator#setCheckUrls(boolean)
-	 * @return checkUrls
-	 */
-	public boolean isCheckUrls() {
-		return this.checkUrls;
-	}
-
-	/**
 	 * Checks if the given URL points to the given page. Useful for checking the
 	 * referrer header.
 	 * 
@@ -1470,21 +1577,7 @@ public class URLGenerator {
 	 *            adds all misc field urls to the bibtex in this post
 	 */
 	public void setBibtexMiscUrls(final Post<BibTex> post) {
-		post.getResource().addMiscField(
-				BibTexUtils.ADDITIONAL_MISC_FIELD_BIBURL,
-				this.getPublicationUrl(post.getResource(), post.getUser())
-						.toString());
-	}
-
-	/**
-	 * If set to <code>true</code>, all generated URLs are put into {@link URL}
-	 * objects. If that fails, <code>null</code> is returned. The default is
-	 * <code>false</code> such that no checking occurs.
-	 * 
-	 * @param checkUrls
-	 */
-	public void setCheckUrls(final boolean checkUrls) {
-		this.checkUrls = checkUrls;
+		post.getResource().addMiscField(BibTexUtils.ADDITIONAL_MISC_FIELD_BIBURL, this.getPublicationUrl(post.getResource(), post.getUser()));
 	}
 
 	/**
@@ -1494,23 +1587,10 @@ public class URLGenerator {
 	public String getCommunityRatingUrl(final Post<? extends Resource> post) {
 		return this.getResourceUrl(post) + DISCUSSION_ID;
 	}
-
-	/**
-	 * ProjectHome defaults to <code>/</code>, such that relative URLs are
-	 * generated. Note that this does not work with
-	 * {@link #setCheckUrls(boolean)} set to <code>true</code>, since
-	 * {@link URL} does not support relative URLs (or more correctly: relative
-	 * URLs are not URLs).
-	 * 
-	 * @param projectHome
-	 */
-	public void setProjectHome(final String projectHome) {
-		this.projectHome = projectHome;
-	}
 	
 	/**
 	 * @param personId
-	 * @return String
+	 * @return the person url
 	 */
 	public String getPersonUrl(final String personId) {
 		final UrlBuilder url = new UrlBuilder(this.projectHome + URLGenerator.PERSON_PREFIX);
@@ -1534,13 +1614,33 @@ public class URLGenerator {
 			.addPathElement(Integer.toString(authorIndex.intValue()))
 			.asString());
 	}
-	
+
+	/**
+	 * @return the people overview url
+	 */
 	public String getPersonsUrl() {
 		return this.projectHome + URLGenerator.PERSON_INTRO;
 	}
-	
+
+	/**
+	 * @return the post publication url
+	 */
 	public String getPostPublicationUrl() {
 		return this.projectHome + URLGenerator.POST_PUBLICATION;
+	}
+
+	/**
+	 * get scraping info page
+	 * @param clazz the scraper class for anchor
+	 * @return thhe scraping info page
+	 */
+	public String getScraperInfoUrl(final String clazz) {
+		if (present(clazz)) {
+			final UrlBuilder builder = new UrlBuilder(this.projectHome + URLGenerator.SCRAPER_INFO);
+			builder.setAnchor(clazz);
+			return this.getUrl(builder.asString());
+		}
+		return this.projectHome + URLGenerator.SCRAPER_INFO;
 	}
 
 	/**
@@ -1549,7 +1649,21 @@ public class URLGenerator {
 	 * @return the help page
 	 */
 	public String getHelpPage(final String helpPage, final String language) {
+		return this.getHelpPage(null, helpPage, language);
+	}
+
+	/**
+	 * @param prefixPath
+	 * @param helpPage
+	 * @param language
+	 * @return the help page
+	 */
+	public String getHelpPage(final String prefixPath, final String helpPage, final String language) {
 		final UrlBuilder builder = new UrlBuilder(this.projectHome + "help" + "_" + language);
+
+		if (present(prefixPath)) {
+			builder.addPathElement(prefixPath);
+		}
 
 		final String helpPath;
 		// handle anchor
@@ -1572,5 +1686,37 @@ public class URLGenerator {
 		}
 
 		return this.getUrl(builder.asString());
+	}
+
+	/**
+	 * ProjectHome defaults to <code>/</code>, such that relative URLs are
+	 * generated. Note that this does not work with
+	 * {@link #setCheckUrls(boolean)} set to <code>true</code>, since
+	 * {@link URL} does not support relative URLs (or more correctly: relative
+	 * URLs are not URLs).
+	 *
+	 * @param projectHome
+	 */
+	public void setProjectHome(final String projectHome) {
+		this.projectHome = projectHome;
+	}
+
+	/**
+	 * If set to <code>true</code>, all generated URLs are put into {@link URL}
+	 * objects. If that fails, <code>null</code> is returned. The default is
+	 * <code>false</code> such that no checking occurs.
+	 *
+	 * @param checkUrls
+	 */
+	public void setCheckUrls(final boolean checkUrls) {
+		this.checkUrls = checkUrls;
+	}
+
+	/**
+	 * @see URLGenerator#setCheckUrls(boolean)
+	 * @return checkUrls
+	 */
+	public boolean isCheckUrls() {
+		return this.checkUrls;
 	}
 }

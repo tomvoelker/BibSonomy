@@ -28,7 +28,10 @@ package org.bibsonomy.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Properties;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -67,4 +70,24 @@ public final class BasicUtils {
 		}
 		VERSION = version;
 	}
+
+	/**
+	 * iterates over a list which is queried with limit and offset
+	 * @param limitOffsetIterator
+	 * @param limit
+	 * @param <T>
+	 */
+	public static <T> void iterateListWithLimitAndOffset(final BiFunction<Integer, Integer, List<T>> limitOffsetIterator, Consumer<List<T>> itemWorker, final int limit) {
+		int size;
+
+		int offset = 0;
+
+		do {
+			final List<T> items = limitOffsetIterator.apply(limit, offset);
+			itemWorker.accept(items);
+			offset += limit;
+			size = items.size();
+		} while (size == limit);
+	}
+
 }

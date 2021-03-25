@@ -96,7 +96,7 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 		 * hash - this will be done by the logic behind the LogicInterface!
 		 */
 		try {
-			return this.getLogic().updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_ALL).get(0);
+			return this.getLogic().updatePosts(Collections.singletonList(post), PostUpdateOperation.UPDATE_ALL).get(0).getId();
 		} catch (final DatabaseException de) {
 			for (final String hash: de.getErrorMessages().keySet()) {
 				for (final ErrorMessage em: de.getErrorMessages(hash)) {

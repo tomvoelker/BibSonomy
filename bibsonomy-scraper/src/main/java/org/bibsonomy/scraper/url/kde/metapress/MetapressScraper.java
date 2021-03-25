@@ -27,7 +27,6 @@
 package org.bibsonomy.scraper.url.kde.metapress;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -48,9 +47,9 @@ import org.bibsonomy.util.WebUtils;
 /**
  * Scraper for RIS citations from Metapress.com
  * @author tst
- * 
+ *
  * 2018-03-21, rja: site does no longer host content?!.
- * 
+ *
  */
 @Deprecated
 public class MetapressScraper extends AbstractUrlScraper {
@@ -89,7 +88,7 @@ public class MetapressScraper extends AbstractUrlScraper {
 				 * some kind of exclusive cookie management so rather get an own client
 				 */
 				final HttpClient client = WebUtils.getHttpClient();
-				
+
 				/*
 				 * we just have to get it twice, maybe they don't like robots.
 				 */
@@ -108,9 +107,7 @@ public class MetapressScraper extends AbstractUrlScraper {
 					throw new ScrapingFailureException("convert to bibtex failed");
 				}
 				throw new ScrapingFailureException("ris download failed");
-			} catch (MalformedURLException ex) {
-				throw new InternalFailureException(ex);
-			} catch (IOException ex) {
+			} catch (final IOException ex) {
 				throw new InternalFailureException(ex);
 			}
 		}

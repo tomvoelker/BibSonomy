@@ -71,18 +71,18 @@ public class AIFBScraper extends AbstractUrlScraper {
 	private static final String DELIVERABLE = "Deliverable\\d+";
 	private static final String UNPUBLISHED = "Unpublished\\d+";
 
-	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
+	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<>();
 
 	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + ARTICLE)));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + INPROCEEDINGS)));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + BOOK)));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + INCOLLECTION)));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + PROCEEDINGS)));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + PHDTHESIS)));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + TECHREPORT)));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + DELIVERABLE)));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + UNPUBLISHED)));
+		patterns.add(new Pair<>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + ARTICLE)));
+		patterns.add(new Pair<>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + INPROCEEDINGS)));
+		patterns.add(new Pair<>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + BOOK)));
+		patterns.add(new Pair<>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + INCOLLECTION)));
+		patterns.add(new Pair<>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + PROCEEDINGS)));
+		patterns.add(new Pair<>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + PHDTHESIS)));
+		patterns.add(new Pair<>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + TECHREPORT)));
+		patterns.add(new Pair<>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + DELIVERABLE)));
+		patterns.add(new Pair<>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + UNPUBLISHED)));
 	}
 
 	@Override

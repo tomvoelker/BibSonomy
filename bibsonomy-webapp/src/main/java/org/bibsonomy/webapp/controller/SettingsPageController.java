@@ -29,7 +29,6 @@ package org.bibsonomy.webapp.controller;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -43,10 +42,12 @@ import org.bibsonomy.layout.csl.CSLStyle;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.opensocial.oauth.database.OAuthLogic;
@@ -122,7 +123,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		final String loggedInUserName = loginUser.getName();
 		command.setUserFriends(this.logic.getUserRelationship(loggedInUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
 		command.setFriendsOfUser(this.logic.getUserRelationship(loggedInUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
-		command.setClaimedPerson(this.logic.getPersonByUser(loggedInUserName));
 		
 		/*
 		 * show sync tab only for non-spammers
@@ -138,9 +138,18 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		/*
 		 * Get pending requested groups
 		 */
-		command.setPendingRequestedgroups(this.logic.getGroups(true, loginUser.getName(), 0, Integer.MAX_VALUE));
+		final GroupQuery groupQuery = GroupQuery.builder().end(Integer.MAX_VALUE).
+						userName(loggedInUserName).pending(true).build();
+		command.setPendingRequestedgroups(this.logic.getGroups(groupQuery));
+
+		/*
+		 * Get current Person
+		 */
+		final Person person = loginUser.getClaimedPerson();
+		command.setPerson(person);
+		command.showPersonTab(person);
 		
-		if (!present(selectedTab) || selectedTab.intValue() < SettingsViewCommand.MY_PROFILE_IDX || selectedTab.intValue() > SettingsViewCommand.OAUTH_IDX) {
+		if (!present(selectedTab) || selectedTab.intValue() < SettingsViewCommand.MY_PROFILE_IDX || selectedTab.intValue() > SettingsViewCommand.PERSON_IDX) {
 			this.errors.reject("error.settings.tab");
 		} else {
 			this.checkInstalledJabrefLayout(command);
@@ -201,7 +210,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 * @param command
 	 */
 	private void checkInstalledCSLLayout(final SettingsViewCommand command) {
-		final String loggedInUserName = command.getContext().getLoginUser().getName();		
+		final String loggedInUserName = command.getContext().getLoginUser().getName();
 
 		/*
 		 * load all uploaded csl files
@@ -239,19 +248,13 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		 */
 		final List<OAuthUserInfo> oauthUserInfos = this.oauthLogic.getOAuthUserApplication(command.getContext().getLoginUser().getName());
 		if (present(this.invisibleOAuthConsumers)) {
-			for (final Iterator<OAuthUserInfo> iterator = oauthUserInfos.iterator(); iterator.hasNext();) {
-				final OAuthUserInfo oAuthUserInfo = iterator.next();
-				if (this.invisibleOAuthConsumers.contains(oAuthUserInfo.getConsumerKey())) {
-					iterator.remove();
-				}
-			}
+			oauthUserInfos.removeIf(oAuthUserInfo -> this.invisibleOAuthConsumers.contains(oAuthUserInfo.getConsumerKey()));
 		}
 		/*
 		 * calculate the expiration time and issue time
 		 */
 		for (final OAuthUserInfo userInfo : oauthUserInfos) {
-			userInfo.calculateExpirationTime(); // TODO: can ibatis do that for
-												// us?
+			userInfo.calculateExpirationTime(); // TODO: can ibatis do that for us
 		}
 
 		command.setOauthUserInfo(oauthUserInfos);
@@ -361,7 +364,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	/**
 	 * Handles the cv page request
 	 * @param command
-	 * @param reqGroup
+	 * @param requestedUser
+	 * @param requestedGroup
 	 */
 	private void handleCV(final SettingsViewCommand command, final User requestedUser, final Group requestedGroup) {
 		final String wikiUserName;

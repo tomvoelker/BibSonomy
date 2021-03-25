@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+          xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+
+    <jsp:directive.attribute name="project" type="org.bibsonomy.model.cris.Project" required="true"/>
+
+    <li class="project">
+        <h4 class="title">
+            <a href="${relativeUrlGenerator.getProjectUrlByProject(project)}">
+                <c:out value="${project.title}"/>
+            </a>
+            <c:if test="${not empty project.subTitle}">
+                <c:out value=" " />
+                <small class="sub-title">
+                    <c:out value="${project.subTitle}"/>
+                </small>
+            </c:if>
+        </h4>
+
+        <div class="start-end-date">
+        <c:if test="${not empty project.startDate}">
+            <span class="start-date">
+                <fmt:formatDate value="${project.startDate}" pattern="dd.MM.yyyy" />
+            </span>
+        </c:if>
+        <c:if test="${not empty project.endDate}">
+            &amp;ndash;
+            <span class="end-date">
+                <fmt:formatDate value="${project.endDate}" pattern="dd.MM.yyyy" />
+            </span>
+        </c:if>
+        </div>
+    </li>
+</jsp:root>

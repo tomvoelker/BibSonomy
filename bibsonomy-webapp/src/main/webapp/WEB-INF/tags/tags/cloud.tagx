@@ -75,7 +75,7 @@
 				<li class="${tagclass}">
 					<jspx:element name="a">
 						<c:choose>
-							<c:when test="${not empty scope and scope ne 'LOCAL'}">
+							<c:when test="${not empty scope and scope ne 'LOCAL' and scope ne 'ELASTICSEARCH'}">
 								<jspx:attribute name="href">/${fn:escapeXml(mtl:getPath(requPath))}/${fn:escapeXml(tag.name)}?scope=${scope}</jspx:attribute>
 							</c:when>
 							<c:otherwise>

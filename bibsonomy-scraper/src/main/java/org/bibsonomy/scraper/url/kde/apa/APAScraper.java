@@ -53,7 +53,7 @@ public class APAScraper extends AbstractUrlScraper {
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new ArrayList<Pair<Pattern,Pattern>>();
-
+	
 	static {
 		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "psycnet.apa.org"), EMPTY_PATTERN));
 	}
@@ -88,7 +88,7 @@ public class APAScraper extends AbstractUrlScraper {
 
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
-
+		
 		//Welcome to the story of scraping APA PsycNET
 		scrapingContext.setScraper(this);
 
@@ -132,7 +132,7 @@ public class APAScraper extends AbstractUrlScraper {
 		try {
 
 			//Is the id present?
-			if (!present(lstUIDs)) throw new ScrapingException("could not find lstUIDs");
+		if (!present(lstUIDs)) throw new ScrapingException("could not find lstUIDs");
 
 			// Build link to RIS download
 			final String risURL = "http://psycnet.apa.org/index.cfm?fa=search.export&id=&lstUids=" + lstUIDs;

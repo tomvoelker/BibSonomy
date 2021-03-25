@@ -44,16 +44,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.bibsonomy.common.enums.Filter;
-import org.bibsonomy.common.enums.FilterEntity;
-import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.common.enums.ProfilePrivlevel;
-import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.JobResult;
+import org.bibsonomy.common.SortCriteria;
+import org.bibsonomy.common.enums.*;
+import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
@@ -64,14 +59,17 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Repository;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.query.GroupQuery;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
@@ -81,13 +79,13 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-
 /**
  * @author Jens Illig
  */
 public class DBLogicTest extends AbstractDatabaseManagerTest {
 	private static final String TEST_USER_1 = "testuser1";
 	private static final String TEST_USER_2 = "testuser2";
+	private static final String TEST_USER_3 = "testuser3";
 	private static final String TEST_USER_NAME = "jaeschke";
 	private static final String TEST_SPAMMER_NAME = "testspammer2";
 	private static final String TEST_LIMITED_USER_NAME = "testlimited";
@@ -95,15 +93,18 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	private static final String TEST_SPAMMER_ALGORITHM = "testlogging";
 	private static final int    TEST_SPAMMER_PREDICTION = 1;
 	private static final double TEST_SPAMMER_CONFIDENCE = 0.42;
-	
+
 	private static final String TEST_REQUEST_USER_NAME = "jaeschke";
 	private static final String TEST_REQUEST_HASH = "7d85e1092613fd7c91d6ba5dfcf4a044";
-	
+
 	private static final List<String> DEFAULT_TAG_LIST = new LinkedList<String>(Arrays.asList("semantic"));
 	private static final Set<String> DEFAULT_TAG_SET = new HashSet<String>(DEFAULT_TAG_LIST);
-	
+
 	private static final Set<String> DEFAULT_USERNAME_SET = new HashSet<String>(Arrays.asList(TEST_USER_NAME));
-	
+
+	private static final DBLogic ADMIN_LOGIC = testDatabaseContext.getBean("dbLogicPrototype", DBLogic.class);
+	private static final List<SortCriteria> SORT_CRITERIUMS_DATE = Collections.singletonList(new SortCriteria(SortKey.DATE, SortOrder.DESC));
+
 	private static UserDatabaseManager userDb;
 	
 	/**
@@ -112,6 +113,9 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@BeforeClass
 	public static void setupManagers() {
 		userDb = UserDatabaseManager.getInstance();
+		User loginUser = new User("");
+		loginUser.setRole(Role.ADMIN);
+		ADMIN_LOGIC.setLoginUser(loginUser);
 	}
 	
 	protected static List<String> getUserNamesByGroupId(final int groupId, final DBSession dbSession) {
@@ -119,23 +123,28 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	}
 	
 	protected LogicInterface getDbLogic() {
-		return this.getDbLogic(TEST_USER_NAME);
+		return this.getDbLogic(TEST_USER_1);
 	}
 
 	protected LogicInterface getDbLogic(final String userName) {
-		final User user = new User();
-		user.setName(userName);
-		return new DBLogic(user, getDbSessionFactory(), null);
+		return this.getDbLogic(userName, Role.DEFAULT);
 	}
-	
+
+	protected LogicInterface getDbLogic(final String userName, final Role role) {
+		final User user = ADMIN_LOGIC.getUserDetails(userName);
+		user.setRole(role);
+
+		final DBLogic dbLogic = testDatabaseContext.getBean("dbLogicPrototype", DBLogic.class);
+		dbLogic.setLoginUser(user);
+
+		return dbLogic;
+	}
+
 	protected LogicInterface getAdminDbLogic(final String userName) {
-		final User user = new User();
-		user.setName(userName);
-		user.setRole(Role.ADMIN);
-		return new DBLogic(user, getDbSessionFactory(), null);
+		return this.getDbLogic(userName, Role.ADMIN);
 	}
 	
-	private static void assertList(final List<Post<BibTex>> posts, final Set<String> checkUserNameOneOf, final Order checkOrder, final Set<String> checkTags, final String checkInterHash, final Set<Integer> mustBeInGroups, final Set<Integer> mustNotBeInGroups) {
+	private static void assertList(final List<Post<BibTex>> posts, final Set<String> checkUserNameOneOf, final List<SortCriteria> sortCriteria, final Set<String> checkTags, final String checkInterHash, final Set<Integer> mustBeInGroups, final Set<Integer> mustNotBeInGroups) {
 		final Set<Integer> alreadyFound = new HashSet<Integer>();
 		long orderValue = Long.MAX_VALUE;
 		
@@ -145,7 +154,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 			if (checkUserNameOneOf != null) {
 				assertTrue("userName test with " + post.getUser().getName(), checkUserNameOneOf.contains(post.getUser().getName()));
 			}
-			if (checkOrder == Order.ADDED) {
+			if (sortCriteria == SORT_CRITERIUMS_DATE) {
 				final long nextOrderValue = post.getDate().getTime();
 				assertTrue("order test", (orderValue >= nextOrderValue));
 				orderValue = nextOrderValue;
@@ -170,19 +179,36 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		}
 	}
 
+
+
 	/**
 	 * tests getPostsByTagName
 	 */
 	@Test
 	@Ignore
 	public void getPostsByTagName() {
-		LogicInterface anonymousAccess = this.getDbLogic(null);
-		List<Post<BibTex>> bibTexPostsList = anonymousAccess.getPosts(BibTex.class, GroupingEntity.ALL, "", DEFAULT_TAG_LIST, "", null,SearchType.LOCAL, null, null, null, null, 0, 5);
+		LogicInterface anonymousAccess = this.getDbLogic(null, null);
+
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.ALL)
+				.setGroupingName("")
+				.setTags(DEFAULT_TAG_LIST)
+				.setScope(QueryScope.LOCAL)
+				.entriesStartingAt(5, 0);
+
+		List<Post<BibTex>> bibTexPostsList = anonymousAccess.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 		assertEquals(5, bibTexPostsList.size());
 		assertList(bibTexPostsList, null, null, DEFAULT_TAG_SET, null, null, null);
 		
-		anonymousAccess = this.getDbLogic("");
-		bibTexPostsList = anonymousAccess.getPosts(BibTex.class, GroupingEntity.ALL, "", DEFAULT_TAG_LIST, null, null, SearchType.LOCAL,null, null, null, null, 5, 9);
+		anonymousAccess = this.getDbLogic("", null);
+		final PostQueryBuilder postQueryBuilder2 = new PostQueryBuilder();
+		postQueryBuilder2.setGrouping(GroupingEntity.ALL)
+				.setGroupingName("")
+				.setTags(DEFAULT_TAG_LIST)
+				.setScope(QueryScope.LOCAL)
+				.entriesStartingAt(4, 5);
+
+		bibTexPostsList = anonymousAccess.getPosts(postQueryBuilder2.createPostQuery(BibTex.class));
 		assertEquals(4, bibTexPostsList.size());
 		assertList(bibTexPostsList, null, null, DEFAULT_TAG_SET, null, null, null);
 	}
@@ -194,13 +220,30 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Ignore
 	public void getPostsByConceptForUser() {
 		final List<String> taglist = Arrays.asList("->researcher");
-		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, taglist, "", null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 2);
+
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.USER)
+				.setGroupingName(TEST_REQUEST_USER_NAME)
+				.setTags(taglist)
+				.setScope(QueryScope.LOCAL)
+				.entriesStartingAt(2, 0)
+				.setSortCriteria(SORT_CRITERIUMS_DATE);
+
+		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 		assertEquals(2, bibTexPostsList.size());
-		assertList(bibTexPostsList, DEFAULT_USERNAME_SET, Order.ADDED, null, null, null, null);
+		assertList(bibTexPostsList, DEFAULT_USERNAME_SET, SORT_CRITERIUMS_DATE, null, null, null, null);
+
+		final PostQueryBuilder postQueryBuilder2 = new PostQueryBuilder();
+		postQueryBuilder2.setGrouping(GroupingEntity.USER)
+				.setGroupingName(TEST_REQUEST_USER_NAME)
+				.setTags(taglist)
+				.setScope(QueryScope.LOCAL)
+				.entriesStartingAt(8, 2)
+				.setSortCriteria(SORT_CRITERIUMS_DATE);
 		
-		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, taglist, null, null, SearchType.LOCAL,null, Order.ADDED, null, null, 2, 10);
+		bibTexPostsList = this.getDbLogic().getPosts(postQueryBuilder2.createPostQuery(BibTex.class));
 		assertEquals(1, bibTexPostsList.size());
-		assertList(bibTexPostsList, DEFAULT_USERNAME_SET, Order.ADDED, null, null, null, null);
+		assertList(bibTexPostsList, DEFAULT_USERNAME_SET, SORT_CRITERIUMS_DATE, null, null, null, null);
 	}
 
 	/**
@@ -209,11 +252,17 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getPostsForUser() {
-		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, null, "", null,SearchType.LOCAL, null, null, null, null, 0, 10);
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.USER)
+				.setGroupingName(TEST_REQUEST_USER_NAME)
+				.setScope(QueryScope.LOCAL)
+				.entriesStartingAt(10, 0);
+		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 		assertEquals(10, bibTexPostsList.size());
 		assertList(bibTexPostsList, DEFAULT_USERNAME_SET, null, null, null, null, null);
-		
-		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, new ArrayList<String>(), null, null, SearchType.LOCAL,null, null, null, null, 10, 19);
+
+		postQueryBuilder.entriesStartingAt(10, 10);
+		bibTexPostsList = this.getDbLogic().getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 		assertEquals(9, bibTexPostsList.size());
 		assertList(bibTexPostsList, DEFAULT_USERNAME_SET, null, null, null, null, null);
 	}
@@ -224,14 +273,20 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getPostsByHashBibtex() {
-		final List<Post<BibTex>> listBibtex = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", new ArrayList<String>(), "d9eea4aa159d70ecfabafa0c91bbc9f0", null, SearchType.LOCAL,null, null, null, null, 0, 5);
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.ALL)
+				.setScope(QueryScope.LOCAL)
+				.setHash("d9eea4aa159d70ecfabafa0c91bbc9f0")
+				.entriesStartingAt(5, 0);
+		final List<Post<BibTex>> listBibtex = this.getDbLogic().getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 		assertEquals(1, listBibtex.size());
 		assertEquals(1, listBibtex.get(0).getGroups().size());
 		for (final Group g : listBibtex.get(0).getGroups()){
 			assertEquals("public", g.getName());
 		}
-		
-		final List<Post<Bookmark>> listBookmark = this.getDbLogic().getPosts(Bookmark.class, GroupingEntity.ALL, "", new ArrayList<String>(), "85ab919107e4cc79b345e996b3c0b097", null,SearchType.LOCAL, null, null, null, null, 0, 5);
+
+		postQueryBuilder.setHash("85ab919107e4cc79b345e996b3c0b097");
+		final List<Post<Bookmark>> listBookmark = this.getDbLogic().getPosts(postQueryBuilder.createPostQuery(Bookmark.class));
 		assertEquals(1, listBookmark.size());
 		assertEquals(1, listBookmark.get(0).getGroups().size());
 		for (final Group g : listBookmark.get(0).getGroups()){
@@ -245,7 +300,13 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getPostsByHashForUser() {
-		final List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, new ArrayList<String>(), TEST_REQUEST_HASH, null,SearchType.LOCAL, null, null, null, null, 0, 19);
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.USER)
+				.setGroupingName(TEST_REQUEST_USER_NAME)
+				.setScope(QueryScope.LOCAL)
+				.setHash(TEST_REQUEST_HASH)
+				.entriesStartingAt(20, 0);
+		final List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 		assertEquals(1, bibTexPostsList.size());
 		assertEquals(1, bibTexPostsList.get(0).getGroups().size());
 		assertNull(bibTexPostsList.get(0).getResource().getDocuments());
@@ -257,18 +318,26 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getPostsByViewable() {
-		final Set<Integer> mustGroupIds = new HashSet<Integer>();
-		final Set<String> usersInGroup = new HashSet<String>();
+		final Set<Integer> mustGroupIds = new HashSet<>();
+		final Set<String> usersInGroup = new HashSet<>();
 		usersInGroup.addAll(getUserNamesByGroupId(TESTGROUP1_ID, this.dbSession));
 		mustGroupIds.add(TESTGROUP1_ID);
+
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.VIEWABLE)
+				.setGroupingName("kde")
+				.setScope(QueryScope.LOCAL)
+				.setSortCriteria(SORT_CRITERIUMS_DATE)
+				.entriesStartingAt(2, 0);
 		
-		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.VIEWABLE, "kde", new ArrayList<String>(), "", null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 3);
+		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 		assertEquals(0, bibTexPostsList.size());
-		assertList(bibTexPostsList, usersInGroup, Order.ADDED, null, null, mustGroupIds, null);
-		
-		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.VIEWABLE, "kde", new ArrayList<String>(), "", null,SearchType.LOCAL, null, Order.ADDED, null, null, 3, 100);
+		assertList(bibTexPostsList, usersInGroup, SORT_CRITERIUMS_DATE, null, null, mustGroupIds, null);
+
+		postQueryBuilder.entriesStartingAt(97, 3);
+		bibTexPostsList = this.getDbLogic().getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 		assertEquals(0, bibTexPostsList.size());
-		assertList(bibTexPostsList, usersInGroup, Order.ADDED, null, null, mustGroupIds, null);
+		assertList(bibTexPostsList, usersInGroup, SORT_CRITERIUMS_DATE, null, null, mustGroupIds, null);
 	}
 
 	/**
@@ -277,13 +346,22 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getPostsForUsersInGroup() {
-		final Set<String> usersInGroup = new HashSet<String>();
-		usersInGroup.addAll(getUserNamesByGroupId(TESTGROUP1_ID, this.dbSession) );
-		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.GROUP, "kde", null, "", null,SearchType.LOCAL, null, null, null, null, 0, 10);
+		final Set<String> usersInGroup = new HashSet<>();
+		usersInGroup.addAll(getUserNamesByGroupId(TESTGROUP1_ID, this.dbSession));
+
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.GROUP)
+				.setGroupingName("kde")
+				.setScope(QueryScope.LOCAL)
+				.entriesStartingAt(10, 0);
+
+		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 		assertEquals(10, bibTexPostsList.size());
 		assertList(bibTexPostsList, usersInGroup, null, null, null, null, null);
+
+		postQueryBuilder.entriesStartingAt(10, 10);
 		
-		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.GROUP, "kde", null, "", null,SearchType.LOCAL, null, null, null, null, 10, 19);
+		bibTexPostsList = this.getDbLogic().getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 		assertEquals(9, bibTexPostsList.size());
 		assertList(bibTexPostsList, usersInGroup, null, null, null, null, null);
 	}
@@ -294,15 +372,23 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getPostsForGroupByTag() {
-		final LogicInterface anonymousAccess = this.getDbLogic("");
+		final LogicInterface anonymousAccess = this.getDbLogic("", null);
 		final Set<String> usersInGroup = new HashSet<String>();
 		usersInGroup.addAll(getUserNamesByGroupId(TESTGROUP1_ID, this.dbSession) );
+
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.GROUP)
+				.setGroupingName("kde")
+				.setScope(QueryScope.LOCAL)
+				.setTags(DEFAULT_TAG_LIST)
+				.entriesStartingAt(9, 0);
 		
-		List<Post<BibTex>> bibTexPostsList = anonymousAccess.getPosts(BibTex.class, GroupingEntity.GROUP, "kde", DEFAULT_TAG_LIST, "", null,SearchType.LOCAL, null, null, null, null, 0, 9);
+		List<Post<BibTex>> bibTexPostsList = anonymousAccess.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 		assertEquals(9, bibTexPostsList.size());
 		assertList(bibTexPostsList, usersInGroup, null, DEFAULT_TAG_SET, null, null, null);
-		
-		bibTexPostsList = anonymousAccess.getPosts(BibTex.class, GroupingEntity.GROUP, "kde", DEFAULT_TAG_LIST, "", null,SearchType.LOCAL, null, null, null, null, 9, 19);
+
+		postQueryBuilder.entriesStartingAt(10, 9);
+		bibTexPostsList = anonymousAccess.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 		assertEquals(10, bibTexPostsList.size());
 		assertList(bibTexPostsList, usersInGroup, null, DEFAULT_TAG_SET, null, null, null);
 	}
@@ -313,24 +399,24 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getBibtexOfFriendByTags() {
-		final LogicInterface buzzsAccess = this.getDbLogic("buzz");
+		final LogicInterface buzzsAccess = this.getDbLogic("buzz", null);
 		final List<String> tags = Arrays.asList("java");
-		List<Post<BibTex>> bibTexPostsList = buzzsAccess.getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", tags, null, null, SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		List<Post<BibTex>> bibTexPostsList = buzzsAccess.getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", tags, null, null, QueryScope.LOCAL, null, SORT_CRITERIUMS_DATE, null, null, 0, 19);
 		assertEquals(1, bibTexPostsList.size());
 		final Set<String> tagsSet = new HashSet<String>();
 		tagsSet.addAll(tags);
-		final Set<String> userSet = new HashSet<String>();
+		final Set<String> userSet = new HashSet<>();
 		userSet.add("apo");
 		
-		final Set<Integer> mustGroupIds = new HashSet<Integer>();
+		final Set<Integer> mustGroupIds = new HashSet<>();
 		mustGroupIds.add(FRIENDS_GROUP_ID);
 		
-		final Set<Integer> mustNotGroups = new HashSet<Integer>();
+		final Set<Integer> mustNotGroups = new HashSet<>();
 		mustNotGroups.add(PRIVATE_GROUP_ID);
 		mustNotGroups.add(PUBLIC_GROUP_ID);
-		assertList(bibTexPostsList, userSet, Order.ADDED, tagsSet, null, mustGroupIds, mustNotGroups);
+		assertList(bibTexPostsList, userSet, SORT_CRITERIUMS_DATE, tagsSet, null, mustGroupIds, mustNotGroups);
 
-		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", tags, null, null, SearchType.LOCAL,null, null, null, null, 0, 19);
+		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", tags, null, null, QueryScope.LOCAL,null, null, null, null, 0, 19);
 		assertEquals(0, bibTexPostsList.size());
 	}
 
@@ -340,7 +426,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getBibtexOfFriendByUser() {
-		final LogicInterface buzzsAccess = this.getDbLogic("buzz");
+		final LogicInterface buzzsAccess = this.getDbLogic("buzz", null);
 		final Set<Integer> mustGroupIds = new HashSet<Integer>();
 		mustGroupIds.add(FRIENDS_GROUP_ID);
 		final Set<Integer> mustNotGroups = new HashSet<Integer>();
@@ -349,11 +435,11 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		final Set<String> userSet = new HashSet<String>();
 		userSet.add("apo");
 		
-		List<Post<BibTex>> bibTexPostsList = buzzsAccess.getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", new ArrayList<String>(0), null, null, SearchType.LOCAL,null, Order.ADDED, null, null, 0, 19);
+		List<Post<BibTex>> bibTexPostsList = buzzsAccess.getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", new ArrayList<String>(0), null, null, QueryScope.LOCAL,null, SORT_CRITERIUMS_DATE, null, null, 0, 19);
 		assertEquals(2, bibTexPostsList.size());
-		assertList(bibTexPostsList, userSet, Order.ADDED, null, null, mustGroupIds, mustNotGroups);
+		assertList(bibTexPostsList, userSet, SORT_CRITERIUMS_DATE, null, null, mustGroupIds, mustNotGroups);
 		
-		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", new ArrayList<String>(0), null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", new ArrayList<String>(0), null, null, QueryScope.LOCAL, null, SORT_CRITERIUMS_DATE, null, null, 0, 19);
 		assertEquals(0, bibTexPostsList.size());
 	}
 
@@ -384,15 +470,17 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		final String sharedTag2 = "sharedTag2";
 		
 		final LogicInterface admLogic  = this.getAdminDbLogic(admUser.getName());
-		final LogicInterface srcLogic  = this.getDbLogic(srcUser.getName());
-		final LogicInterface dstLogic  = this.getDbLogic(dstUser1.getName());
-		final LogicInterface dst2Logic = this.getDbLogic(dstUser2.getName());
+
 		
 		 // create users
 		admLogic.createUser(srcUser);
 		admLogic.createUser(dstUser1);
 		admLogic.createUser(dstUser2);
 		admLogic.createUser(dstUser3);
+
+		final LogicInterface srcLogic  = this.getDbLogic(srcUser.getName(), null);
+		final LogicInterface dstLogic  = this.getDbLogic(dstUser1.getName(), null);
+		final LogicInterface dst2Logic = this.getDbLogic(dstUser2.getName(), null);
 
 		//--------------------------------------------------------------------
 		// srcUser creates tagged relations
@@ -425,13 +513,13 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		btPost2.getResource().recalculateHashes();
 		btPosts.add(btPost2);
 
-		List<String> createPosts = dstLogic.createPosts(btPosts);
+		List<JobResult> createPosts = dstLogic.createPosts(btPosts);
 		assertEquals(2, createPosts.size());
 
 		//--------------------------------------------------------------------
 		// dstUser2 creates two posts (bookmarks)
 		//--------------------------------------------------------------------
-		final List<Post<?>> bmPosts = new LinkedList<Post<?>>();
+		final List<Post<?>> bmPosts = new LinkedList<>();
 		final Post<Bookmark> bmPost1 = ModelUtils.generatePost(Bookmark.class);
 		// add tags
 		ModelUtils.addToTagSet(bmPost1.getTags(), "bmPost1Tag", sharedTag1);
@@ -467,49 +555,49 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		//
 		//
 		
-		final List<String> tags1 = new ArrayList<String>();
+		final List<String> tags1 = new ArrayList<>();
 		tags1.add(relationTag1);
 		
-		List<Post<BibTex>> bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags1, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		List<Post<BibTex>> bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags1, null, null, QueryScope.LOCAL, null, SORT_CRITERIUMS_DATE, null, null, 0, 19);
 		assertEquals(2, bibTexPostsList.size());
 		
-		final List<String> tags2 = new ArrayList<String>();
+		final List<String> tags2 = new ArrayList<>();
 		tags2.add(relationTag2);
 		
-		List<Post<Bookmark>> bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		List<Post<Bookmark>> bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null, QueryScope.LOCAL, null, SORT_CRITERIUMS_DATE, null, null, 0, 19);
 		assertEquals(2, bookmarkPostsList.size());
 		
 		tags2.add(relationTag1);
-		bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null, QueryScope.LOCAL, null, SORT_CRITERIUMS_DATE, null, null, 0, 19);
 		assertEquals(0, bookmarkPostsList.size());
-		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null, QueryScope.LOCAL, null, SORT_CRITERIUMS_DATE, null, null, 0, 19);
 		assertEquals(2, bibTexPostsList.size());
 		
 		tags2.add(relationTag3);
-		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null, QueryScope.LOCAL, null, SORT_CRITERIUMS_DATE, null, null, 0, 19);
 		assertEquals(0, bibTexPostsList.size());
 		
 		// retrieve posts restricted by relation tag and 'normal' tag
 		tags2.clear();
 		tags2.add(relationTag2);
 		tags2.add(sharedTag2);
-		bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null, QueryScope.LOCAL, null, SORT_CRITERIUMS_DATE, null, null, 0, 19);
 		assertEquals(1, bookmarkPostsList.size());
-		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null, QueryScope.LOCAL, null, SORT_CRITERIUMS_DATE, null, null, 0, 19);
 		assertEquals(1, bibTexPostsList.size());
 
 		tags2.clear();
 		tags2.add(relationTag2);
 		tags2.add(sharedTag1);
-		bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null, QueryScope.LOCAL, null, SORT_CRITERIUMS_DATE, null, null, 0, 19);
 		assertEquals(2, bookmarkPostsList.size());
-		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, null, QueryScope.LOCAL, null, SORT_CRITERIUMS_DATE, null, null, 0, 19);
 		assertEquals(2, bibTexPostsList.size());
 
 		// retrieve tag cloud
 		tags2.clear();
 		tags2.add(relationTag2);
-		final List<Tag> aspectTagCloud= srcLogic.getTags(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags1, null, null, null, null, Order.FREQUENCY, null, null, 0, 25);
+		final List<Tag> aspectTagCloud= srcLogic.getTags(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags1, null, null, null, null, SortKey.FREQUENCY, null, null, 0, 25);
 		assertEquals(6, aspectTagCloud.size());
 		assertTrue(aspectTagCloud.contains(new Tag(sharedTag1)));
 		assertTrue(aspectTagCloud.contains(new Tag(sharedTag2)));
@@ -539,20 +627,20 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getBibtexByFriends() {
-		final LogicInterface mwkustersAccess = this.getDbLogic("mwkuster");
+		final LogicInterface mwkustersAccess = this.getDbLogic("mwkuster", null);
 		final Set<Integer> mustGroups = new HashSet<Integer>();
 		mustGroups.add(FRIENDS_GROUP_ID);
 		final Set<Integer> mustNotGroups = new HashSet<Integer>();
 		mustNotGroups.add(PRIVATE_GROUP_ID);
 		mustNotGroups.add(PUBLIC_GROUP_ID);
 		
-		List<Post<BibTex>> bibTexPostsList = mwkustersAccess.getPosts(BibTex.class, GroupingEntity.FRIEND, null, null, null, null,SearchType.LOCAL, null, Order.ADDED, null, null, 0, 19);
+		List<Post<BibTex>> bibTexPostsList = mwkustersAccess.getPosts(BibTex.class, GroupingEntity.FRIEND, null, null, null, null, QueryScope.LOCAL, null, SORT_CRITERIUMS_DATE, null, null, 0, 19);
 		assertEquals(19, bibTexPostsList.size());
-		assertList(bibTexPostsList, null, Order.ADDED, null, null, mustGroups, mustNotGroups);
+		assertList(bibTexPostsList, null, SORT_CRITERIUMS_DATE, null, null, mustGroups, mustNotGroups);
 		
-		bibTexPostsList = mwkustersAccess.getPosts(BibTex.class, GroupingEntity.FRIEND, null, null, null, null, SearchType.LOCAL,null, Order.ADDED, null, null, 100, 200);
+		bibTexPostsList = mwkustersAccess.getPosts(BibTex.class, GroupingEntity.FRIEND, null, null, null, null, QueryScope.LOCAL,null, SORT_CRITERIUMS_DATE, null, null, 100, 200);
 		assertEquals(10, bibTexPostsList.size());
-		assertList(bibTexPostsList, null, Order.ADDED, null, null, mustGroups, mustNotGroups);
+		assertList(bibTexPostsList, null, SORT_CRITERIUMS_DATE, null, null, mustGroups, mustNotGroups);
 	}
 
 	/**
@@ -561,13 +649,15 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getPostsPopular() {
-		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", null, null, null,SearchType.LOCAL, null, Order.POPULAR, null, null, 0, 10);
+		final List<SortCriteria> popular = Collections.singletonList(new SortCriteria(SortKey.POPULAR, SortOrder.DESC));
+		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", null, null, null, QueryScope.LOCAL, null, popular, null, null, 0, 10);
 		assertEquals(10, bibTexPostsList.size());
-		assertList(bibTexPostsList, null, Order.POPULAR, null, null, null, null);
+
+		assertList(bibTexPostsList, null, popular, null, null, null, null);
 		
-		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", new ArrayList<String>(), null, null,SearchType.LOCAL, null, Order.POPULAR, null, null, 10, 19);
+		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", new ArrayList<String>(), null, null, QueryScope.LOCAL, null, popular, null, null, 10, 19);
 		assertEquals(9, bibTexPostsList.size());
-		assertList(bibTexPostsList, null, Order.POPULAR, null, null, null, null);
+		assertList(bibTexPostsList, null, popular, null, null, null, null);
 	}
 
 	/**
@@ -576,7 +666,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getPostsHome() {
-		final List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, TEST_REQUEST_USER_NAME, DEFAULT_TAG_LIST, null, null, SearchType.LOCAL,null, null, null, null, 0, 15);
+		final List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, TEST_REQUEST_USER_NAME, DEFAULT_TAG_LIST, null, null, QueryScope.LOCAL, null, null, null, null, 0, 15);
 		assertEquals(15, bibTexPostsList.size());
 	}
 
@@ -612,10 +702,10 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		post.setGroups(Collections.singleton(group));
 
 		final LogicInterface testClassAccess = this.getDbLogic(testUserName);
-		assertEquals(1, testClassAccess.getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null,SearchType.LOCAL, null, null, null, null, 0, 100).size());
+		assertEquals(1, testClassAccess.getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, QueryScope.LOCAL, null, null, null, null, 0, 100).size());
 		testClassAccess.createPosts(Collections.<Post<?>>singletonList(post));
-		assertEquals(1, testClassAccess.getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null,SearchType.LOCAL, null, null, null, null, 0, 100).size());
-		assertEquals(0, this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null,SearchType.LOCAL, null, null, null, null, 0, 100).size());
+		assertEquals(1, testClassAccess.getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, QueryScope.LOCAL, null, null, null, null, 0, 100).size());
+		assertEquals(0, this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, QueryScope.LOCAL, null, null, null, null, 0, 100).size());
 	}
 
 	/**
@@ -710,7 +800,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void testGetUsersByFolkrank(){
 		final List<String> tags = new ArrayList<String>();
 		tags.add("web");
-		final List<User> user = this.getDbLogic().getUsers(null, null, null, tags, null, Order.FOLKRANK, null, null, 0, 20);
+		final List<User> user = this.getDbLogic().getUsers(null, null, null, tags, null, SortKey.FOLKRANK, null, null, 0, 20);
 		assertEquals(20, user.size());
 	}
 	
@@ -795,8 +885,9 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	 * @throws Exception 
 	 */
 	@Test
-	public void testPostUpdateTagOnlyOperationPublication() throws Exception {
-		final LogicInterface dbl = this.getDbLogic(TEST_REQUEST_USER_NAME);
+	public void testPostUpdateTagOnlyOperationPublication() {
+		final LogicInterface dbl = this.getDbLogic(TEST_USER_1);
+		final User user = dbl.getUserDetails(TEST_USER_1);
 		/*
 		 *  create a post (a publication)
 		 */
@@ -805,14 +896,15 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		// add tags
 		ModelUtils.addToTagSet(post.getTags(), "testCenterTag", "secondTag");
 		
-		post.getUser().setName(TEST_REQUEST_USER_NAME);
+		post.getUser().setName(TEST_USER_1);
 
-		final List<Post<?>> posts = new LinkedList<Post<?>>();
+		final List<Post<?>> posts = new LinkedList<>();
 		posts.add(post);
-		final List<String> createPosts = dbl.createPosts(posts);
+		final List<JobResult> createPosts = dbl.createPosts(posts);
 		assertEquals(1, createPosts.size());
-		
-		final Post<? extends Resource> savedPost = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
+
+		final String hash = createPosts.get(0).getId();
+		final Post<? extends Resource> savedPost = dbl.getPostDetails(hash, TEST_USER_1);
 		assertNotNull(savedPost);
 		
 		// get the contentId if more than tags were updated the contentId changes
@@ -832,16 +924,16 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		/*
 		 * update the post
 		 */
-		final List<Post<?>> updates = new LinkedList<Post<?>>();
+		final List<Post<?>> updates = new LinkedList<>();
 		updates.add(savedPost);
 		
-		final List<String> updatedPosts = dbl.updatePosts(updates, PostUpdateOperation.UPDATE_TAGS);
+		final List<JobResult> updatedPosts = dbl.updatePosts(updates, PostUpdateOperation.UPDATE_TAGS);
 		assertEquals(1, updatedPosts.size());
 		
 		/*
 		 * check if only tags were updated
 		 */
-		final Post<? extends Resource> updatedResource = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
+		final Post<? extends Resource> updatedResource = dbl.getPostDetails(hash, TEST_USER_1);
 		assertNotNull(updatedResource);
 		
 		// check content id
@@ -859,25 +951,26 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	 * @throws Exception 
 	 */
 	@Test
-	public void testPostUpdateTagOnlyOperationBookmark() throws Exception {
-		final LogicInterface dbl = this.getDbLogic(TEST_REQUEST_USER_NAME);
-		
+	public void testPostUpdateTagOnlyOperationBookmark() {
+		final LogicInterface dbl = this.getDbLogic(TEST_USER_1);
+		final User user = dbl.getUserDetails(TEST_USER_1);
 		/*
 		 *  create a post (a bookmark)
 		 */
-		final Post<Bookmark> post = ModelUtils.generatePost(Bookmark.class);
+		final Post<Bookmark> post = ModelUtils.generatePost(Bookmark.class, user);
 		
 		// add tags
 		ModelUtils.addToTagSet(post.getTags(), "testCenterTag", "secondTag");
 		
-		post.getUser().setName(TEST_REQUEST_USER_NAME);
+		post.getUser().setName(TEST_USER_1);
 		final Bookmark bookmarkB = post.getResource();
 		final String url = bookmarkB.getUrl();
 		
-		final List<String> createPosts = dbl.createPosts(Collections.<Post<?>>singletonList(post));
+		final List<JobResult> createPosts = dbl.createPosts(Collections.singletonList(post));
 		assertEquals(1, createPosts.size());
-		
-		final Post<? extends Resource> savedPost = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
+
+		final String hash = createPosts.get(0).getId();
+		final Post<? extends Resource> savedPost = dbl.getPostDetails(hash, TEST_USER_1);
 		
 		// get the contentId if more than tags were updated the contentId changes
 		final int contentId = savedPost.getContentId();
@@ -896,16 +989,16 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		/*
 		 * update the post
 		 */
-		final List<Post<?>> updates = new LinkedList<Post<?>>();
+		final List<Post<?>> updates = new LinkedList<>();
 		updates.add(savedPost);
 		
-		final List<String> updatedPosts = dbl.updatePosts(updates, PostUpdateOperation.UPDATE_TAGS);
+		final List<JobResult> updatedPosts = dbl.updatePosts(updates, PostUpdateOperation.UPDATE_TAGS);
 		assertEquals(1, updatedPosts.size());
 		
 		/*
 		 * check if only tags were updated
 		 */
-		final Post<? extends Resource> updatedResource = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
+		final Post<? extends Resource> updatedResource = dbl.getPostDetails(hash, TEST_USER_1);
 		assertNotNull(updatedResource);
 		
 		// check content id
@@ -933,7 +1026,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	 * @throws Exception 
 	 */
 	@Test
-	public void testLimitedUserPosts() throws Exception {
+	public void testLimitedUserPosts() {
 		this.postAndAssertGroup(GroupUtils.buildPublicGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, BibTex.class);
 		this.postAndAssertGroup(GroupUtils.buildPublicGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, Bookmark.class);
 		this.postAndAssertGroup(GroupUtils.buildFriendsGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, BibTex.class);
@@ -941,15 +1034,15 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	}
 
 	private <R extends Resource> void postAndAssertGroup(Group group, Group expectedGroup, String userName, Class<R> resourceType) {
-		
-		final LogicInterface dbl = new DBLogic( getAdminDbLogic(TEST_USER_1).getUserDetails(userName), getDbSessionFactory(), null);
+		final DBLogic dbl = testDatabaseContext.getBean("dbLogicPrototype", DBLogic.class);
+		dbl.setLoginUser(getAdminDbLogic(TEST_USER_1).getUserDetails(userName));
 		final Post<R> post = ModelUtils.generatePost(resourceType);
 		
 		post.getUser().setName(userName);
 		post.setGroups(Collections.singleton(group));
-		final List<String> createPosts = dbl.createPosts(Collections.<Post<?>>singletonList(post));
+		final List<JobResult> createPosts = dbl.createPosts(Collections.singletonList(post));
 		assertEquals(1, createPosts.size());
-		String hash = createPosts.get(0);
+		final String hash = createPosts.get(0).getId();
 		
 		final Post<? extends Resource> savedPost = dbl.getPostDetails(hash, userName);
 		assertEquals(1, savedPost.getGroups().size());
@@ -1000,31 +1093,32 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	}
 	
 	/**
-	 * tests the {@link PostUpdateOperation#UPDATE_ALL}	
-	 * @throws Exception 
+	 * tests the {@link PostUpdateOperation#UPDATE_ALL}
 	 */
 	@Test
-	public void updateOperationAll() throws Exception {
-		final LogicInterface dbl = this.getDbLogic(TEST_REQUEST_USER_NAME);
-		
-		final Post<Bookmark> post = ModelUtils.generatePost(Bookmark.class);
+	public void updateOperationAll() {
+		final LogicInterface dbl = this.getDbLogic(TEST_USER_1);
+
+		final User user = dbl.getUserDetails(TEST_USER_1);
+
+		final Post<Bookmark> post = ModelUtils.generatePost(Bookmark.class, user);
 		post.getResource().setUrl("http://www.notest.org");
 		post.getResource().recalculateHashes();
-		
-		final List<String> createdPosts = dbl.createPosts(Collections.<Post<?>>singletonList(post));
+
+		final List<JobResult> createdPosts = dbl.createPosts(Collections.singletonList(post));
 		assertEquals(1, createdPosts.size());
 		
-		final Post<?> createdPost = dbl.getPostDetails(createdPosts.get(0), TEST_REQUEST_USER_NAME);
+		final Post<?> createdPost = dbl.getPostDetails(createdPosts.get(0).getId(), TEST_USER_1);
 		
 		final Bookmark createdBookmark = (Bookmark) createdPost.getResource();
 		
 		final String newURL = "http://www.testAll2.com";
 		createdBookmark.setUrl(newURL);
 		
-		final List<String> updatedPosts = dbl.updatePosts(Collections.<Post<?>>singletonList(createdPost), PostUpdateOperation.UPDATE_ALL);
+		final List<JobResult> updatedPosts = dbl.updatePosts(Collections.singletonList(createdPost), PostUpdateOperation.UPDATE_ALL);
 		assertEquals(1, updatedPosts.size());
 		
-		final Post<?> updatedPost  = dbl.getPostDetails(updatedPosts.get(0), TEST_REQUEST_USER_NAME); 
+		final Post<?> updatedPost  = dbl.getPostDetails(updatedPosts.get(0).getId(), TEST_USER_1);
 		
 		final Bookmark updatedBookmark = (Bookmark) updatedPost.getResource();
 		assertEquals(newURL, updatedBookmark.getUrl());
@@ -1044,18 +1138,18 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		post.getResource().setTitle("PostUpdateOperation#UPDATE_REPOSITORY");
 		post.getResource().recalculateHashes();
 		
-		final List<String> createdPosts = dbl.createPosts(Collections.<Post<?>>singletonList(post));
+		final List<JobResult> createdPosts = dbl.createPosts(Collections.singletonList(post));
 		assertEquals(1, createdPosts.size());
 		
-		final Post<?> createdPost = dbl.getPostDetails(createdPosts.get(0), TEST_REQUEST_USER_NAME);
-		final List<Repository> repositorys = new ArrayList<Repository>();
-		
+		final Post<?> createdPost = dbl.getPostDetails(createdPosts.get(0).getId(), TEST_REQUEST_USER_NAME);
+		final List<Repository> repositorys = new ArrayList<>();
+
 		Repository repo = new Repository();
 		repo.setId("TEST_REPOSITORY_1");
 		repositorys.add(repo );
 		createdPost.setRepositorys(repositorys );
 
-		List<String> updatedPosts = dbl.updatePosts(Collections.<Post<?>>singletonList(createdPost), PostUpdateOperation.UPDATE_REPOSITORY);
+		List<JobResult> updatedPosts = dbl.updatePosts(Collections.singletonList(createdPost), PostUpdateOperation.UPDATE_REPOSITORY);
 		assertEquals(1, updatedPosts.size());
 
 		repositorys.clear();
@@ -1065,10 +1159,10 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		repositorys.add(repo );
 		createdPost.setRepositorys(repositorys );
 		
-		updatedPosts = dbl.updatePosts(Collections.<Post<?>>singletonList(createdPost), PostUpdateOperation.UPDATE_REPOSITORY);
+		updatedPosts = dbl.updatePosts(Collections.singletonList(createdPost), PostUpdateOperation.UPDATE_REPOSITORY);
 		assertEquals(1, updatedPosts.size());
 		
-		final List<Post<BibTex>> posts = dbl.getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, null, "36a19ee7b7923b062a99a6065fe07792", null, SearchType.LOCAL, Sets.<Filter>asSet(FilterEntity.POSTS_WITH_REPOSITORY), null, null, null, 0, Integer.MAX_VALUE);
+		final List<Post<BibTex>> posts = dbl.getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, null, "36a19ee7b7923b062a99a6065fe07792", null, QueryScope.LOCAL, Sets.asSet(FilterEntity.POSTS_WITH_REPOSITORY), null, null, null, 0, Integer.MAX_VALUE);
 		assertEquals(3, posts.size());
 		
 		Post<BibTex> b = posts.get(0);
@@ -1087,7 +1181,8 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void testValidateGroups() {
 		final User user = new User(TEST_USER_2);
-		final DBLogic logic = new DBLogic(user, dbSessionFactory, null);
+		final DBLogic logic = testDatabaseContext.getBean("dbLogicPrototype", DBLogic.class);
+		logic.setLoginUser(user);
 		
 		/*
 		 * test empty group, public group must be added
@@ -1155,4 +1250,458 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 			// ok
 		}		
 	}
+
+
+	@Test
+	public void testCreateOrganizationAsAdmin() {
+		final String groupName = "my organization";
+
+		final Group organization = new Group(groupName);
+		organization.setDescription("This is an organization");
+		organization.setAllowJoin(true);
+		organization.setOrganization(true);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName(DBLogicTest.TEST_USER_1);
+		groupRequest.setReason("no real reason");
+
+		organization.setGroupRequest(groupRequest);
+
+		LogicInterface dblogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+
+		/*
+		 * organizations are automatically activated, so pending is set to false.
+		 */
+		dblogic.createGroup(organization);
+		Group retrievedGroup = dblogic.getGroupDetails(groupName, false);
+
+		assertThat(retrievedGroup.getName(), equalTo(groupName));
+		assertThat(retrievedGroup.isOrganization(), equalTo(true));
+	}
+
+
+	@Test(expected = AccessDeniedException.class)
+	public void testCreateOrganizationAsDefaultUser() {
+		final String groupName = "my organization";
+
+		final Group organization = new Group(groupName);
+		organization.setDescription("This is an organization");
+		organization.setAllowJoin(true);
+		organization.setOrganization(true);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName(DBLogicTest.TEST_USER_1);
+		groupRequest.setReason("no real reason");
+
+		organization.setGroupRequest(groupRequest);
+
+		LogicInterface dblogic = this.getDbLogic(DBLogicTest.TEST_USER_1);
+
+		dblogic.createGroup(organization);
+	}
+
+
+	@Test
+	public void testCreateGroupAsAdmin() {
+		final String groupName = "my group";
+
+		final Group group = new Group(groupName);
+
+		group.setDescription("This is group");
+		group.setAllowJoin(true);
+		group.setOrganization(false);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName(DBLogicTest.TEST_USER_1);
+		groupRequest.setReason("no real reason");
+
+		group.setGroupRequest(groupRequest);
+
+		LogicInterface dblogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+
+		/*
+		 * organizations are automatically activated, so pending is set to false.
+		 */
+		dblogic.createGroup(group);
+		Group retrievedGroup = dblogic.getGroupDetails(groupName, true);
+
+		assertThat(retrievedGroup.getName(), equalTo(groupName));
+		assertThat(retrievedGroup.isOrganization(), equalTo(false));
+	}
+
+
+	@Test
+	public void testCreateGroupAsDefaultUser() {
+		final String groupName = "my group";
+
+		final Group group = new Group(groupName);
+
+		group.setDescription("This is a group");
+		group.setAllowJoin(true);
+		group.setOrganization(false);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName(DBLogicTest.TEST_USER_1);
+		groupRequest.setReason("no real reason");
+
+		group.setGroupRequest(groupRequest);
+
+		LogicInterface dblogic = this.getDbLogic(DBLogicTest.TEST_USER_1);
+
+		dblogic.createGroup(group);
+
+		Group retrievedGroup = dblogic.getGroupDetails(groupName, true);
+
+		assertThat(retrievedGroup.getName(), equalTo(groupName));
+		assertThat(retrievedGroup.isOrganization(), equalTo(false));
+	}
+
+
+	@Test(expected = AccessDeniedException.class)
+	public void testUpdateOrganizationAsDefaultUser() {
+		final String groupName = "my organization";
+
+		final Group organization = new Group(groupName);
+
+		organization.setDescription("This is an organization");
+		organization.setAllowJoin(true);
+		organization.setOrganization(true);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName(DBLogicTest.TEST_USER_1);
+		groupRequest.setReason("no real reason");
+
+		organization.setGroupRequest(groupRequest);
+
+		LogicInterface adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+
+		/*
+		 * organizations are automatically activated, so pending is set to false.
+		 */
+		adminDbLogic.createGroup(organization);
+
+		LogicInterface defaultDbLogic = this.getDbLogic(groupName);
+		Group retrievedGroup = defaultDbLogic.getGroupDetails(groupName, false);
+
+		defaultDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.UPDATE_SETTINGS, null);
+	}
+
+
+	@Test
+	public void testUpdateOrganizationAsAdminUser() {
+		final String groupName = "my organization";
+
+		final Group organization = new Group(groupName);
+
+		organization.setDescription("This is an organization");
+		organization.setAllowJoin(true);
+		organization.setOrganization(true);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName(DBLogicTest.TEST_USER_1);
+		groupRequest.setReason("no real reason");
+
+		organization.setGroupRequest(groupRequest);
+
+		LogicInterface adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+
+		/*
+		 * organizations are automatically activated, so pending is set to false.
+		 */
+		adminDbLogic.createGroup(organization);
+
+		// requery the groups
+		adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+		Group retrievedGroup = adminDbLogic.getGroupDetails(groupName, false);
+
+		adminDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.UPDATE_SETTINGS, null);
+	}
+
+
+	@Test
+	public void testAddMemberToOrganizationAsAdminUser() {
+		final String groupName = "my organization";
+
+		final Group organization = new Group(groupName);
+
+		organization.setDescription("This is an organization");
+		organization.setAllowJoin(true);
+		organization.setOrganization(true);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName(DBLogicTest.TEST_USER_1);
+		groupRequest.setReason("no real reason");
+
+		organization.setGroupRequest(groupRequest);
+
+		LogicInterface adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+
+		/*
+		 * organizations are automatically activated, so pending is set to false.
+		 */
+		adminDbLogic.createGroup(organization);
+
+		Group retrievedGroup = adminDbLogic.getGroupDetails(groupName, false);
+		GroupMembership membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_2), GroupRole.MODERATOR, false);
+
+		adminDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_MEMBER, membership);
+	}
+
+	@Test
+	public void testUserJoinsOrganisationAfterInviteByModerator() {
+		final String groupName = "my organization";
+
+		final Group organization = new Group(groupName);
+
+		organization.setDescription("This is an organization");
+		organization.setAllowJoin(true);
+		organization.setOrganization(true);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName(DBLogicTest.TEST_USER_1);
+		groupRequest.setReason("no real reason");
+
+		organization.setGroupRequest(groupRequest);
+
+		LogicInterface adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+
+		/*
+		 * organizations are automatically activated, so pending is set to false.
+		 */
+		adminDbLogic.createGroup(organization);
+
+		adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+		Group retrievedGroup = adminDbLogic.getGroupDetails(groupName, false);
+
+		// If a user is added to a group he always gets the USER role first, so we have to adjust it later
+		// add a user to a group
+		GroupMembership membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_2), GroupRole.USER, false);
+		adminDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_MEMBER, membership);
+
+		// retrieve the updated group object
+		retrievedGroup = adminDbLogic.getGroupDetails(groupName, false);
+		membership = retrievedGroup.getGroupMembershipForUser(DBLogicTest.TEST_USER_2);
+
+		// update the role
+		membership.setGroupRole(GroupRole.MODERATOR);
+		adminDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.UPDATE_GROUPROLE, membership);
+
+		// switch to the user that now has the assigned role
+		LogicInterface moderatorDbLogic = this.getDbLogic(DBLogicTest.TEST_USER_2);
+		retrievedGroup = moderatorDbLogic.getGroupDetails(groupName, false);
+		membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_3), GroupRole.USER, false);
+
+		// invite user to join the group
+		moderatorDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_INVITED, membership);
+
+		LogicInterface userDbLogic = this.getDbLogic(DBLogicTest.TEST_USER_3);
+		Group g = userDbLogic.getGroupDetails(groupName, false);
+		GroupMembership m = new GroupMembership(userDbLogic.getUserDetails(DBLogicTest.TEST_USER_3), GroupRole.USER, false);
+
+		userDbLogic.updateGroup(g, GroupUpdateOperation.ADD_MEMBER, m);
+	}
+
+	@Test
+	public void testUserJoinsOrganisationAfterInviteByAdministrator() {
+		final String groupName = "my organization";
+
+		final Group organization = new Group(groupName);
+
+		organization.setDescription("This is an organization");
+		organization.setAllowJoin(true);
+		organization.setOrganization(true);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName(DBLogicTest.TEST_USER_1);
+		groupRequest.setReason("no real reason");
+
+		organization.setGroupRequest(groupRequest);
+
+		LogicInterface adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+
+		/*
+		 * organizations are automatically activated, so pending is set to false.
+		 */
+		adminDbLogic.createGroup(organization);
+
+		adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+		Group retrievedGroup = adminDbLogic.getGroupDetails(groupName, false);
+
+		// If a user is added to a group he always gets the USER role first, so we have to adjust it later
+		// add a user to a group
+		GroupMembership membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_2), GroupRole.USER, false);
+		adminDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_MEMBER, membership);
+
+		// retrieve the updated group object
+		retrievedGroup = adminDbLogic.getGroupDetails(groupName, false);
+		membership = retrievedGroup.getGroupMembershipForUser(DBLogicTest.TEST_USER_2);
+
+		// update the role
+		membership.setGroupRole(GroupRole.ADMINISTRATOR);
+		adminDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.UPDATE_GROUPROLE, membership);
+
+		// switch to the user that now has the assigned role
+		LogicInterface moderatorDbLogic = this.getDbLogic(DBLogicTest.TEST_USER_2);
+		retrievedGroup = moderatorDbLogic.getGroupDetails(groupName, false);
+		membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_3), GroupRole.USER, false);
+
+		// invite user to join the group
+		moderatorDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_INVITED, membership);
+
+		LogicInterface userDbLogic = this.getDbLogic(DBLogicTest.TEST_USER_3);
+		Group g = userDbLogic.getGroupDetails(groupName, false);
+		GroupMembership m = new GroupMembership(userDbLogic.getUserDetails(DBLogicTest.TEST_USER_3), GroupRole.USER, false);
+
+		userDbLogic.updateGroup(g, GroupUpdateOperation.ADD_MEMBER, m);
+	}
+
+
+	@Test(expected=AccessDeniedException.class)
+	public void testUserJoinsOrganisationAfterInviteByUser() {
+		final String groupName = "my organization";
+
+		final Group organization = new Group(groupName);
+
+		organization.setDescription("This is an organization");
+		organization.setAllowJoin(true);
+		organization.setOrganization(true);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName(DBLogicTest.TEST_USER_1);
+		groupRequest.setReason("no real reason");
+
+		organization.setGroupRequest(groupRequest);
+
+		LogicInterface adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+
+		/*
+		 * organizations are automatically activated, so pending is set to false.
+		 */
+		adminDbLogic.createGroup(organization);
+
+		adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+		Group retrievedGroup = adminDbLogic.getGroupDetails(groupName, false);
+
+		// If a user is added to a group he always gets the USER role first, so we have to adjust it later
+		// add a user to a group
+		GroupMembership membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_2), GroupRole.USER, false);
+		adminDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_MEMBER, membership);
+
+		// switch to the user that now has the assigned role
+		LogicInterface moderatorDbLogic = this.getDbLogic(DBLogicTest.TEST_USER_2);
+		retrievedGroup = moderatorDbLogic.getGroupDetails(groupName, false);
+		membership = new GroupMembership(adminDbLogic.getUserDetails(DBLogicTest.TEST_USER_3), GroupRole.USER, false);
+
+		// invite user to join the group
+		moderatorDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_INVITED, membership);
+	}
+
+
+	@Test
+	public void testDeleteOrganizationAsAdminUser() {
+		final String groupName = "my organization";
+
+		final Group organization = new Group(groupName);
+
+		organization.setDescription("This is an organization");
+		organization.setAllowJoin(true);
+		organization.setOrganization(true);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName(DBLogicTest.TEST_USER_1);
+		groupRequest.setReason("no real reason");
+
+		organization.setGroupRequest(groupRequest);
+		LogicInterface adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+
+		/*
+		 * organizations are automatically activated, so pending is set to false.
+		 */
+		adminDbLogic.createGroup(organization);
+
+		// requery the groups
+		adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+		Group retrievedGroup = adminDbLogic.getGroupDetails(groupName, false);
+
+		adminDbLogic.deleteGroup(groupName, false, false);
+	}
+
+
+	@Test(expected = AccessDeniedException.class)
+	public void testDeleteOrganizationAsDefaultUser() {
+		final String groupName = "my organization";
+
+		final Group organization = new Group(groupName);
+
+		organization.setDescription("This is an organization");
+		organization.setAllowJoin(true);
+		organization.setOrganization(true);
+
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName(DBLogicTest.TEST_USER_1);
+		groupRequest.setReason("no real reason");
+
+		organization.setGroupRequest(groupRequest);
+
+		LogicInterface adminDbLogic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+
+		/*
+		 * organizations are automatically activated, so pending is set to false.
+		 */
+		adminDbLogic.createGroup(organization);
+
+		// requery the groups
+		LogicInterface dbLogic = this.getDbLogic(DBLogicTest.TEST_USER_1);
+		dbLogic.deleteGroup(groupName, false, false);
+	}
+
+
+	@Test
+	public void testGetAllGroups() {
+		LogicInterface logic = this.getDbLogic(DBLogicTest.TEST_USER_1);
+
+		final GroupQuery query = GroupQuery.builder().pending(false).userName(DBLogicTest.TEST_USER_1).
+						start(0).end(100).build();
+		final List<Group> groups = logic.getGroups(query);
+
+		assertThat(groups.size(), equalTo(8));
+	}
+
+
+	@Test
+	public void testGetGroupByExternalId() {
+		LogicInterface logic = this.getDbLogic(DBLogicTest.TEST_USER_1);
+		final GroupQuery query = GroupQuery.builder().pending(false).userName(DBLogicTest.TEST_USER_1).
+						start(0).end(100).externalId("extid1").build();
+		List<Group> groups = logic.getGroups(query);
+
+		assertThat(groups.size(), equalTo(1));
+
+		Group g = groups.get(0);
+
+		assertThat(g.getInternalId(), equalTo("extid1"));
+	}
+
+
+	@Test
+	public void testGetAllPendingGroups() {
+		LogicInterface logic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
+		final GroupQuery query = GroupQuery.builder().pending(true).start(0).end(100).build();
+		List<Group> groups = logic.getGroups(query);
+
+		assertThat(groups.size(), equalTo(2));
+
+	}
+
+
+	@Test
+	public void testGetPendingGroupsForUser() {
+		LogicInterface logic = this.getAdminDbLogic("testrequestuser1");
+		final GroupQuery query = GroupQuery.builder().pending(true).start(0).end(100).userName("testrequestuser1").build();
+		List<Group> groups = logic.getGroups(query);
+
+		assertThat(groups.size(), equalTo(1));
+	}
+
+
 }

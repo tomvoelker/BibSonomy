@@ -36,8 +36,8 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
-import org.bibsonomy.search.SearchPost;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.index.database.DatabaseInformationLogic;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
@@ -48,10 +48,10 @@ import org.bibsonomy.services.searcher.ResourceSearch;
  * 
  * @param <R> resource type
  */
-public interface SearchDBInterface<R extends Resource> {
+public interface SearchDBInterface<R extends Resource> extends DatabaseInformationLogic<DefaultSearchIndexSyncState> {
 	
 	/** the max entries to fetch from the database into memory */
-	public static final int SQL_BLOCKSIZE = 10000;
+	public static final int SQL_BLOCKSIZE = 100;
 
 	/** 
 	 * @param userName
@@ -59,7 +59,7 @@ public interface SearchDBInterface<R extends Resource> {
 	 * @param offset
 	 * @return all posts for given user
 	 */
-	public List<SearchPost<R>> getPostsForUser(final String userName, final int limit, final int offset);
+	public List<Post<R>> getPostsForUser(final String userName, final int limit, final int offset);
 	
 	/**
 	 * get list of content ids to delete from index with fromDate<date<=date
@@ -75,7 +75,7 @@ public interface SearchDBInterface<R extends Resource> {
 	 * @param offset 
 	 * @return new posts to insert in the index
 	 */
-	public List<SearchPost<R>> getNewPosts(int lastTasId, int limit, int offset);
+	public List<Post<R>> getNewPosts(int lastTasId, int limit, int offset);
 	
 	/**
 	 * @param fromDate
@@ -88,23 +88,10 @@ public interface SearchDBInterface<R extends Resource> {
 	// methods for building the index
 	// TODO: maybe we should introduce a special class hierarchy
 	//------------------------------------------------------------------------
-	
-	/**
-	 * @return get number of posts
-	 */
-	public int getNumberOfPosts();
-
-	/** 
-	 * @param lastContentId the last content id (all post.contentid > lastContentId)
-	 * @param max size
-	 * @return get post entries for index creation
-	 */
-	public List<SearchPost<R>> getPostEntries(int lastContentId, int max);
 
 	/**
 	 * @param fromPersonChangeId
 	 * @param toPersonChangeIdExclusive
-	 * @param databaseSession
 	 * @return
 	 */
 	public List<ResourcePersonRelationLogStub> getPubPersonRelationsByChangeIdRange(long fromPersonChangeId, long toPersonChangeIdExclusive);
@@ -128,11 +115,6 @@ public interface SearchDBInterface<R extends Resource> {
 	 * @return
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelationsByPublication(String interHash);
-
-	/**
-	 * @return
-	 */
-	public SearchIndexSyncState getDbState();
 
 	/**
 	 * @param lastDocumentDate

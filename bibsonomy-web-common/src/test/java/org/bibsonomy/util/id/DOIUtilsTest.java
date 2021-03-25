@@ -299,6 +299,7 @@ public class DOIUtilsTest {
 	}
 	
 	@Test
+	@Ignore // remote test
 	public void testWebPage() throws IOException {
 		URL testURL;
 		testURL = new URL("https://link.springer.com/book/10.1007/978-3-319-60492-3#about");

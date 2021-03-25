@@ -94,6 +94,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	private static final String CONTROLLER_ATTR_NAME = "minctrlatrr";
 	public static final String PATH_SEPERATOR = "/";
 	public static final String PATH_QUERY_SEPERATOR = "?";
+
 	/**
 	 * @param listCommand
 	 * @return
@@ -366,9 +367,9 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 			 *  cluttered.(dbe)
 			 */
 			// log.warn("Could not complete controller (Service unavailable): " + e.getMessage());
-		} catch (final ResourceMovedException e) {
+		} catch (final ObjectMovedException e) {
 			response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-			response.setHeader("Location", this.urlGenerator.getPostUrl(e.getResourceType(), e.getNewIntraHash(), e.getUserName()));
+			response.setHeader("Location", this.urlGenerator.getObjectUrl(e.getType(), e.getNewId(), e.getUserName()));
 		} catch (final ObjectNotFoundException e) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			errors.reject("error.object.notfound", e.getMessage());

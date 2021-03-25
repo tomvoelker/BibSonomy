@@ -28,9 +28,10 @@ package org.bibsonomy.database.managers;
 
 import java.util.List;
 
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.model.Post;
@@ -46,6 +47,7 @@ import org.bibsonomy.model.User;
  * @author Christian Schenk
  */
 public interface CrudableContent<T extends Resource, P extends GenericParam> {
+
 	/**
 	 * Read
 	 *
@@ -53,7 +55,7 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<T>> getPosts(P param, DBSession session);
+	List<Post<T>> getPosts(P param, DBSession session);
 
 	/**
 	 * Read
@@ -64,7 +66,7 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	 * @param visibleGroupIDs
 	 * @param session
 	 *
-	 * @throws ResourceMovedException - when no resource
+	 * @throws ObjectMovedException - when no resource
 	 * with that hash exists for that user, but once a resource
 	 * with that hash existed that has been moved. The new hash
 	 * is returned inside the exception.
@@ -72,7 +74,7 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	 *
 	 * @return list of posts
 	 */
-	public Post<T> getPostDetails(String loginUserName, String resourceHash, String userName, List<Integer> visibleGroupIDs, DBSession session) throws ResourceMovedException, ObjectNotFoundException;
+	Post<T> getPostDetails(String loginUserName, String resourceHash, String userName, List<Integer> visibleGroupIDs, DBSession session) throws ObjectMovedException, ObjectNotFoundException;
 
 	/**
 	 * Delete
@@ -83,7 +85,7 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	 * @param session
 	 * @return <code>true</code>, if entry existed and was deleted
 	 */
-	public boolean deletePost(String userName, String resourceHash, User loggedinUser, DBSession session);
+	boolean deletePost(String userName, String resourceHash, User loggedinUser, DBSession session);
 
 	/**
 	 * create
@@ -93,7 +95,7 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	 * @param session
 	 * @return true if entry was created
 	 */
-	public boolean createPost(Post<T> post, User loggedinUser, DBSession session);
+	JobResult createPost(Post<T> post, User loggedinUser, DBSession session);
 
 	/**
 	 * update
@@ -105,5 +107,5 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	 * @param session
 	 * @return <code>true</code> iff update was successful
 	 */
-	public boolean updatePost(Post<T> post, String oldHash, User loginUser, PostUpdateOperation operation, DBSession session);
+	JobResult updatePost(Post<T> post, String oldHash, User loginUser, PostUpdateOperation operation, DBSession session);
 }

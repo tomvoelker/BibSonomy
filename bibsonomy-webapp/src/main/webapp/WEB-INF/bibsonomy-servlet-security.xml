@@ -81,12 +81,15 @@
 	<security:http pattern="/oauth/requestToken" security="none" />
 	
 	<!-- all other sites -->
-	<security:http use-expressions="true" entry-point-ref="delegatingEntryPoint" auto-config="false" security-context-repository-ref="contextRepository">		
+	<security:http use-expressions="true" entry-point-ref="delegatingEntryPoint" auto-config="false" security-context-repository-ref="contextRepository">
 		<!-- login -->
 		<security:intercept-url pattern="/login" access="isAnonymous()" />
 		
 		<!-- restrict admin pages to admins -->
 		<security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+		<!-- restrict reporting pages to reporting users -->
+		<security:intercept-url pattern="/reporting/**" access="hasRole('ROLE_REPORTING_USER')" />
+
 		<!-- everything else -->
 		<security:intercept-url pattern="/**" access="permitAll" />
 		

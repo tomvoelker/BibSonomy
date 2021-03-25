@@ -36,8 +36,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.RESTUtils;
@@ -97,10 +97,10 @@ public abstract class Strategy {
 	 * @param outStream 
 	 * @throws InternServerException
 	 * @throws NoSuchResourceException
-	 * @throws ResourceNotFoundException 
-	 * @throws ResourceMovedException 
+	 * @throws ObjectNotFoundException
+	 * @throws ObjectMovedException
 	 */
-	public abstract void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceMovedException, ObjectNotFoundException;
+	public abstract void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ObjectMovedException, ObjectNotFoundException;
 
 	/**
 	 * @param userAgent
@@ -157,13 +157,20 @@ public abstract class Strategy {
 		if (present(this.context.getStringAttribute("friend", null))) {
 			return GroupingEntity.FRIEND;
 		}
+		if (present(this.context.getStringAttribute("person", null))) {
+			return GroupingEntity.PERSON;
+		}
 		return GroupingEntity.ALL;
 	}
 
 	protected LogicInterface getLogic() {
 		return this.context.getLogic();
 	}
-	
+
+	protected LogicInterface getAdminLogic() {
+		return this.context.getAdminLogic();
+	}
+
 	protected UrlRenderer getUrlRenderer() {
 		return this.context.getUrlRenderer();
 	}

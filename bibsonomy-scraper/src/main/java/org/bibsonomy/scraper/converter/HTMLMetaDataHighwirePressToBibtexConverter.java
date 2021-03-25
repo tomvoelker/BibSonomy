@@ -30,6 +30,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -53,10 +54,10 @@ public class HTMLMetaDataHighwirePressToBibtexConverter extends AbstractDublinCo
 
 
 	@Override
-	protected Map<String, String> extractData(final String pageContent) {	
+	protected Map<String, String> extractData(final String pageContent) {
 		final Matcher matcher = EXTRACTION_PATTERN.matcher(pageContent);
 
-		Map<String, Set<String>> data = new HashMap<String, Set<String>>();
+		Map<String, List<String>> data = new HashMap<>();
 
 		String key = "";
 		String value = "";
@@ -122,7 +123,7 @@ public class HTMLMetaDataHighwirePressToBibtexConverter extends AbstractDublinCo
 		return convertMap(data);
 	}
 
-	private static void addValueToDataIfNotContained(final String key, final String value, final Map<String, Set<String>> data) {
+	private static void addValueToDataIfNotContained(final String key, final String value, final Map<String, List<String>> data) {
 		HTMLMetaDataDublinCoreToBibtexConverter.addValueToDataIfNotContained(key, value, null, data);
 	}
 
@@ -165,8 +166,8 @@ public class HTMLMetaDataHighwirePressToBibtexConverter extends AbstractDublinCo
 	 * @param data is a Map<String, List<String>>
 	 * @return a Map<String, String>
 	 */
-	private static Map<String, String> convertMap(Map<String, Set<String>> data) {
-		Map<String, String> r = new HashMap<String, String>();
+	private static Map<String, String> convertMap(Map<String, List<String>> data) {
+		Map<String, String> r = new HashMap<>();
 
 		for (String k : data.keySet()){
 			for (String v : data.get(k)){

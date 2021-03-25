@@ -167,12 +167,12 @@
 					
 					// start tag autocompletion for the input fields
 					$(function() {
-		startTagAutocompletion($("#delTags"), false, true,false, false);
-		startTagAutocompletion($("#addTags"), false, true,false, false);
-		startTagAutocompletion($("#insert_up"), false, false, false, false);
-		startTagAutocompletion($("#insert_lo"), false, true,false, false);
-		startTagAutocompletion($("#delete_up"), false, false, false, false);
-		startTagAutocompletion($("#delete_lo"), false, true,false, false);
+		startTagAutocompletion($("#delTags"), false, true,false, false, false);
+		startTagAutocompletion($("#addTags"), false, true,false, false, false);
+		startTagAutocompletion($("#insert_up"), false, false, false, false, false);
+		startTagAutocompletion($("#insert_lo"), false, true,false, false, false);
+		startTagAutocompletion($("#delete_up"), false, false, false, false, false);
+		startTagAutocompletion($("#delete_lo"), false, true,false, false, false);
 					});
 	
 ]]>			

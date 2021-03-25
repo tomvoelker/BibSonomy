@@ -56,30 +56,35 @@ public class PersonMergeFieldConflict {
 	public String getFieldName() {
 		return this.fieldName;
 	}
+
 	/**
 	 * @param fieldName the fieldName to set
 	 */
 	public void setFieldName(String fieldName) {
 		this.fieldName = fieldName;
 	}
+
 	/**
 	 * @return the person1Value
 	 */
 	public String getPerson1Value() {
 		return this.person1Value;
 	}
+
 	/**
 	 * @param person1Value the person1Value to set
 	 */
 	public void setPerson1Value(String person1Value) {
 		this.person1Value = person1Value;
 	}
+
 	/**
 	 * @return the person2Value
 	 */
 	public String getPerson2Value() {
 		return this.person2Value;
 	}
+
 	/**
 	 * @param person2Value the person2Value to set
 	 */

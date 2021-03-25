@@ -50,7 +50,6 @@ public class DeGruyterScraper extends GenericRISURLScraper {
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		return "http://" + url.getHost() +  url.getPath().replace("/", "$002f").replace("$002fview$002f", "/dg/cite:exportcitation/ris?t:ac=$002f");
-		
 	}
 
 	@Override
@@ -72,6 +71,4 @@ public class DeGruyterScraper extends GenericRISURLScraper {
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;
 	}
-
-
 }

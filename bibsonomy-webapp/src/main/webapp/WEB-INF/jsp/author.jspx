@@ -29,7 +29,7 @@
 		
 		<jsp:attribute name="heading">
 			<c:choose>
-				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL'}">
+				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL' and command.scope.name() ne 'SEARCHINDEX'}">
 					<c:choose>
 						<c:when test="${command.scope.name() eq 'FEDERATED_AUTHOR' }">
 							<c:set var="pathMessageKey" value="navi.federatedAuthor"/>

@@ -40,7 +40,7 @@
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
-		<version>3.9.0-SNAPSHOT</version>
+		<version>4.0.0-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>
@@ -84,10 +84,12 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 		</dependency>
+		<!-- this is a updated version provided by the BibSonomy team,
+			which uses the httpclient version 4.x.x-->
 		<dependency>
 			<groupId>org.swordapp</groupId>
 			<artifactId>sword-common</artifactId>
-			<version>1.1</version>
+			<version>1.2.0</version>
 			<exclusions>
 				<!-- xmlParserAPIs is an old jar file name from xerces (cf http://stackoverflow.com/questions/11677572/dealing-with-xerces-hell-in-java-maven ) -->
 				<exclusion>
@@ -103,7 +105,6 @@
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
-			<version>2.3</version>
 		</dependency>
 	</dependencies>
 	

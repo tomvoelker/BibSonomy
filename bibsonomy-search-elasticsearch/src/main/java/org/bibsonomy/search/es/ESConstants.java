@@ -27,15 +27,16 @@
 package org.bibsonomy.search.es;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.tex.TexDecode;
+import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
 /**
@@ -53,12 +54,39 @@ public final class ESConstants {
 
 	/** settings of each created index */
 	public static final String SETTINGS;
-	
+
+	/** normalizer attribute */
+	public static final String NORMALIZER = "normalizer";
+
+	/** the registered lowercase normalizer */
+	public static final String LOWERCASE_NORMALIZER = "lowercase_normalizer";
+
+	/** normalizer for sorting fields */
+	public static final String SORT_NORMALIZER = "sort_normalizer";
+
+	/** the standard analyser to be used for text */
+	public static final String STANDARD_TEXT_ANALYSER = "text_analyzer";
+
+	/** the standard analyzer that must be used for fields indexed with an edge ngram filter */
+	public static final String STANDARD_ANALYSER = "standard";
+
 	static {
 		try {
-			SETTINGS = XContentFactory.jsonBuilder()
+			SETTINGS = Strings.toString(XContentFactory.jsonBuilder()
 					.startObject()
 						.startObject("analysis")
+							.startObject(NORMALIZER)
+								.startObject(LOWERCASE_NORMALIZER)
+									.field("type", "custom")
+									.array("char_filter")
+									.array("filter", "lowercase")
+								.endObject()
+								.startObject(SORT_NORMALIZER)
+									.field("type", "custom")
+									.field("char_filter", Collections.emptyList())
+									.field("filter", Arrays.asList("lowercase", "asciifolding"))
+								.endObject()
+							.endObject()
 							.startObject("char_filter")
 								.startObject(BIBTEX_MAPPING)
 									.field("type", "mapping")
@@ -69,7 +97,7 @@ public final class ESConstants {
 									.field("pattern", TexDecode.CURLY_BRACKETS)
 									.field("replacement", "")
 								.endObject()
-								.startObject(BRACKETS_CHAR_FILTER_NAME)
+									.startObject(BRACKETS_CHAR_FILTER_NAME)
 									.field("type", "pattern_replace")
 									.field("pattern", TexDecode.BRACKETS)
 									.field("replacement", "")
@@ -82,23 +110,61 @@ public final class ESConstants {
 								.endObject()
 							.endObject()
 							.startObject("analyzer")
-								.startObject("default")
+								.startObject(STANDARD_TEXT_ANALYSER)
 									.field("type", "custom")
 									.field("char_filter", Arrays.asList(BIBTEX_MAPPING, BRACKETS_CHAR_FILTER_NAME, CURLY_BRACKETS_CHAR_FILTER_NAME))
-									.field("tokenizer", "standard")
-									.field("filter", Arrays.asList(ASCII_FOLDING_PRESERVE_TOKEN_FILTER_NAME, "lowercase", "standard"))
+									.field("tokenizer", STANDARD_ANALYSER)
+									.field("filter", Arrays.asList(ASCII_FOLDING_PRESERVE_TOKEN_FILTER_NAME, "lowercase"))
 								.endObject()
 							.endObject()
 						.endObject()
-					.endObject().string();
+					.endObject());
 		} catch (final IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
-	 * Index type for the system information
+	 * some constants for index settings
 	 */
+	public interface IndexSettings {
+		/** analyzer */
+		String ANALYZER = "analyzer";
+		/** properties field key */
+		String PROPERTIES = "properties";
+		/** flag to copy the field also to the other fields */
+		String COPY_TO = "copy_to";
+		/** boost the field (search in _all field) */
+		String BOOST_FIELD = "boost";
+		/** relation field */
+		String RELATION_FIELD = "relations";
+		/** type text */
+		String TEXT_TYPE = "text";
+		/** type keyword used only for filtering */
+		String KEYWORD_TYPE = "keyword";
+		/** type nested */
+		String NESTED_TYPE = "nested";
+		/** date type */
+		String DATE_TYPE = "date";
+		/** join type */
+		String JOIN_TYPE = "join";
+		/** the type field */
+		String TYPE_FIELD = "type";
+		/** the index field */
+		String INDEX_FIELD = "index";
+		/** e.g the date format field */
+		String FORMAT_FIELD = "format";
+		/** iso date format (optional time) */
+		String FORMAT_DATE_OPTIONAL_TIME = "dateOptionalTime";
+		/** iso date format */
+		String DATE_TIME_FORMAT = "date_time";
+		/** field should not be indexed */
+		String NOT_INDEXED = "false";
+		/** set to false to disable indexing */
+		String ENABLED = "enabled";
+	}
+	
+	/** Index type for the system information */
 	public static final String SYSTEM_INFO_INDEX_TYPE = "SystemInformation";
 	
 	/** phdthesis+type resolved to habil, phd, master, bachelor*/
@@ -120,45 +186,11 @@ public final class ESConstants {
 	public static final int BULK_INSERT_SIZE = 1000;
 
 	/** contains all field information */
-	public static final class Fields {
-
-		/** the all field of Elasticsearch */
-		private static final String ALL_FIELD = "_all";
-
-		/** all fields that are mapped */
-		public static final Set<String> ALL_FIELDS = new HashSet<>();
-
-		static {
-			addAllFields(Fields.class);
-			addAllFields(Resource.class);
-			addAllFields(Bookmark.class);
-			addAllFields(Publication.class);
-			addAllFields(Publication.Document.class);
-		}
-
-		private static void addAllFields(final Class<?> clazz) {
-			try {
-				final Field fieldlist[] = clazz.getDeclaredFields();
-				for (final Field field : fieldlist) {
-					if (field.getType().equals(String.class)) {
-						ALL_FIELDS.add((String) field.get(null));
-					}
-				}
-			} catch (Throwable e) {
-				throw new RuntimeException(e);
-			}
-		}
-
-		/** field that contains all docs */
-		public static final String ALL_DOCS = "all_docs";
-
-		/** private search content should be copied to this field */
-		public static final String PRIVATE_ALL_FIELD = "all_private";
-
-		/** the content id of the post */
-		public static final String CONTENT_ID = "content_id";
+	public interface Fields {
 		/** the name of the user of the post */
-		public static final String USER_NAME = "user_name";
+		String USER_NAME = "user_name";
+		/** list of all users that posted this post (with the same interhash) */
+		String ALL_USERS = "all_users";
 		/** the groups of the post */
 		public static final String GROUPS = "groups";
 		/** the tags of the post */
@@ -173,66 +205,118 @@ public final class ESConstants {
 		public static final String DESCRIPTION = "description";
 		/** Ids of the associated authors, editors, supervisors, etc */
 		public static final String PERSON_ENTITY_IDS_FIELD_NAME = "personEntityIds";
-		
-		
-		public static interface Resource {
+
+		public interface Resource {
 			/** the title of the resource */
-			public static final String TITLE = "title";
-			/** the inter hash of the resource */ 
-			public static final String INTERHASH = "interhash";
+			String TITLE = "title";
+			/** the inter hash of the resource */
+			String INTERHASH = "interhash";
 			/** the intra hash of the resource */
-			public static final String INTRAHASH = "intrahash";
+			String INTRAHASH = "intrahash";
 		}
 		
-		public static interface Bookmark {
+		public interface Bookmark {
 			/** the url of the bookmark */
-			public static final String URL = "url";
+			String URL = "url";
 		}
 		
-		public static interface Publication {
-			public static final String AUTHORS = "authors";
-			public static final String EDITORS = "editors";
-			public static final String PERSON_NAME = "name";
-			
-			public static final String SCHOOL = "school";
+		public interface Publication {
+			/** field that contains all docs */
+			String ALL_DOCS = "all_docs";
+
+			/** field that contains all authors */
+			String ALL_AUTHORS = "author";
+
+			String AUTHORS = "authors";
+			String EDITORS = "editors";
+			String PERSON_NAME = "name";
+			String PERSON_ID = "person_id";
+			String PERSON_COLLEGE = "person_college";
+			String OTHER_PERSON_RESOURCE_RELATIONS = "other_relations";
+			String PERSON_RELATION_TYPE = "relation_type";
+
+			String SCHOOL = "school";
 			/** the publication's year */
-			public static final String YEAR = "year";
+			String YEAR = "year";
 			/** the bibtex key field name */
-			public static final String BIBTEXKEY = "bibtexkey";
-			public static final String ADDRESS = "address";
-			public static final String ENTRY_TYPE = "entrytype";
-			public static final String ANNOTE = "annote";
-			public static final String KEY = "bkey";
-			public static final String ABSTRACT = "abstract";
-			public static final String BOOKTITLE = "booktitle";
-			public static final String CHAPTER = "chapter";
-			public static final String CROSSREF = "crossref";
-			public static final String DAY = "day";
-			public static final String EDITION = "edition";
-			public static final String HOWPUBLISHED = "howPublished";
-			public static final String INSTITUTION = "institution";
-			public static final String JOURNAL = "journal";
-			public static final String MISC = "misc";
-			public static final String MONTH = "month";
-			public static final String NOTE = "note";
-			public static final String NUMBER = "number";
-			public static final String ORGANIZATION = "organization";
-			public static final String PAGES = "pages";
-			public static final String PRIVNOTE = "privnote";
-			public static final String PUBLISHER = "publisher";
-			public static final String SERIES = "series";
-			public static final String TYPE = "type";
-			public static final String URL = "url";
-			public static final String VOLUME = "volume";
-			public static final String DOCUMENTS = "documents";
-			
-			public static interface Document {
-				public static final String NAME = "name";
-				public static final String TEXT = "text";
-				public static final String HASH = "hash";
-				public static final String CONTENT_HASH = "content_hash";
-				public static final String DATE = "date";
+			String BIBTEXKEY = "bibtexkey";
+			String ADDRESS = "address";
+			String ENTRY_TYPE = "entrytype";
+			String ANNOTE = "annote";
+			String KEY = "bkey";
+			String ABSTRACT = "abstract";
+			String BOOKTITLE = "booktitle";
+			String CHAPTER = "chapter";
+			String CROSSREF = "crossref";
+			String DAY = "day";
+			String EDITION = "edition";
+			String HOWPUBLISHED = "howPublished";
+			String INSTITUTION = "institution";
+			String JOURNAL = "journal";
+			String MONTH = "month";
+			String NOTE = "note";
+			String NUMBER = "number";
+			String ORGANIZATION = "organization";
+			String PAGES = "pages";
+			String PRIVNOTE = "privnote";
+			String PUBLISHER = "publisher";
+			String SERIES = "series";
+			String TYPE = "type";
+			String URL = "url";
+			String VOLUME = "volume";
+			String DOCUMENTS = "documents";
+			/** the nested field containing all misc fields */
+			String MISC = "misc";
+			/** all misc field values */
+			String MISC_FIELDS_VALUES = "misc_values";
+			/** misc fields */
+			String MISC_FIELDS = "misc_fields";
+			/** key field */
+			String MISC_KEY = "key";
+			/** value field */
+			String MISC_VALUE = "value";
+			/** the doi (special misc field) */
+			String DOI = "doi";
+			/** the issn (special misc field) */
+			String ISSN = "issn";
+			/** the isbn (special misc field) */
+			String ISBN = "isbn";
+
+			/** BEGIN additional special MISC fields until another solution is found **/
+			/** the project (special misc field) */
+			String PROJECT = "project";
+			/** the abteilung (special misc field) */
+			String ABTEILUNG = "abteilung";
+			/** the orcid (special misc field) */
+			String ORCID = "orcid";
+			/** END additional special MISC fields until another solution is found **/
+
+			/** the language */
+			String LANGUAGE = "language";
+			/** a list of special misc fields */
+			Set<String> SPECIAL_MISC_FIELDS = Sets.asSet(DOI, ISSN, ISBN, LANGUAGE, PROJECT, ABTEILUNG, ORCID);
+			/** the document */
+			interface Document {
+				String NAME = "name";
+				String TEXT = "text";
+				String HASH = "hash";
+				String CONTENT_HASH = "content_hash";
+				String DATE = "date";
 			}
+		}
+
+		public interface Sort {
+			/** the title cleaned up */
+			String TITLE = "sort_title";
+			String BOOKTITLE = "sort_booktitle";
+			String JOURNAL = "sort_journal";
+			String SERIES = "sort_series";
+			String PUBLISHER = "sort_publisher";
+			String AUTHOR = "sort_author";
+			String EDITOR = "sort_editor";
+			String SCHOOL = "sort_school";
+			String INSTITUTION = "sort_institution";
+			String ORGANIZATION = "sort_organization";
 		}
 	}
 

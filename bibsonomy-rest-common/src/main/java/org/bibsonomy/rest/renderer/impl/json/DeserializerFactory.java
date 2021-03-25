@@ -48,7 +48,7 @@ public class DeserializerFactory extends BeanDeserializerFactory {
 	}
 	
 	@Override
-	public JsonDeserializer<?> createEnumDeserializer(DeserializationContext ctxt, JavaType type, BeanDescription beanDesc) throws JsonMappingException {
+	public JsonDeserializer<?> createEnumDeserializer(DeserializationContext ctxt, JavaType type, BeanDescription beanDesc) {
 		final Class<?> enumClass = type.getRawClass();
 		return new EnumDeserializer(constructEnumResolver(enumClass, ctxt.getConfig(), beanDesc.findJsonValueMethod()));
 	}

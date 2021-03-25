@@ -29,9 +29,10 @@
 		<property name="username" value="${database.slave.username}" />
 		<property name="password" value="${database.slave.password}" />
 		<property name="maxIdle" value="${database.main.maxIdle}" />
-		<property name="maxActive" value="${database.main.maxActive}" />
-		<property name="maxWait" value="${database.main.maxWait}" />
-		<property name="removeAbandoned" value="${database.main.removeAbandoned}" />
+		<property name="maxTotal" value="${database.main.maxTotal}" />
+		<property name="maxWaitMillis" value="${database.main.maxWait}" />
+		<property name="removeAbandonedOnMaintenance" value="${database.main.removeAbandoned}" />
+		<property name="removeAbandonedOnBorrow" value="${database.main.removeAbandoned}" />
 		<property name="removeAbandonedTimeout" value="${database.main.removeAbandonedTimeout}" />
 	</bean>
 	
@@ -45,10 +46,8 @@
 		<property name="client" ref="slaveSqlMapClient" />
 	</bean>
 	
-	<bean id="slaveLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" scope="request">
+	<bean id="slaveLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" scope="request" parent="abstractLogicInterfaceFactory">
 		<property name="user" ref="loginUser"/>
-		<property name="dbSessionFactory" ref="slaveDbSessionFactory"/>
-		<property name="bibtexReader" ref="bibtexReader"/>
 		<property name="readOnly" value="true" /> <!-- don't write to slaves -->
 	</bean>
 	

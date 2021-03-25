@@ -33,7 +33,7 @@
 
 # environment variables
 export MAVEN_OPTS='-Xmx1024m -Xms512m'
-export JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-amd64/
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64/
 
 # programs
 MAVEN=mvn
@@ -62,7 +62,7 @@ RECIPIENT=${EMAILWEBMASTER}
 TODAY=`date +"%Y-%m-%dT%H:%M:%S"`
 
 declare -A archivable
-archivable[gandalf]=true
+archivable[gimli]=true
 
 declare -A unnoticed
 unnoticed[thewhite]=true

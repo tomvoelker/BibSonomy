@@ -39,6 +39,10 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -75,7 +79,7 @@ public class UsenixScraper extends AbstractUrlScraper {
 	private static final Pattern OLD_PATTERN_GET_AUTHOR = Pattern.compile("<PRE>\\s*(.*)", Pattern.CASE_INSENSITIVE);
 	private static final Pattern OLD_PATTERN_GET_EVENT = Pattern.compile("<title>(.*)</title>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
-	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>(); 
+	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 	private static final Pattern PATTERN_ABSTRACT = Pattern.compile("(?i)(?s)<H\\d>Abstract</H\\d>(.*)\\s+(<LI>View|View|Download) the full text");
 	static {
 		final Pattern hostPattern = Pattern.compile(".*" + SITE_HOST);
@@ -107,7 +111,7 @@ public class UsenixScraper extends AbstractUrlScraper {
 			 * examples for current event/proceeding layout:
 			 * http://usenix.org/events/sec07/tech/drimer.html
 			 * http://usenix.org/publications/library/proceedings/tcl97/libes_writing.html
-			 * 
+			 *
 			 * TODO:
 			 * http://www.usenix.org/events/evt07/tech/full_papers/sandler/sandler_html/
 			 */
@@ -246,7 +250,7 @@ public class UsenixScraper extends AbstractUrlScraper {
 			// append url
 			bibResult = BibTexUtils.addFieldIfNotContained(bibResult, "url", sc.getUrl().toString());
 			bibResult = BibTexUtils.addFieldIfNotContained(bibResult, "abstract", abstractParser(sc.getUrl()));
-			// add downloaded bibtex to result 
+			// add downloaded bibtex to result
 			sc.setBibtexResult(bibResult);
 			return true;
 

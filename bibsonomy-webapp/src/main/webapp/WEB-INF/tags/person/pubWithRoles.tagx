@@ -3,15 +3,7 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
-	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
-	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:per="urn:jsptagdir:/WEB-INF/tags/person">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>

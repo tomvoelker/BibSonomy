@@ -39,7 +39,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>3.9.0-SNAPSHOT</version>
+		<version>4.0.0-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>
@@ -86,14 +86,12 @@
 			<groupId>org.mortbay.jetty</groupId>
 			<artifactId>jetty-embedded</artifactId>
 			<version>6.1.10</version>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>
 			<artifactId>jetty-servlet-tester</artifactId>
 			<version>6.1.10</version>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -110,13 +108,12 @@
 			<groupId>opensymphony</groupId>
 			<artifactId>quartz</artifactId>
 			<version>1.6.3</version>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
-			<type>jar</type>
+			<version>3.2.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

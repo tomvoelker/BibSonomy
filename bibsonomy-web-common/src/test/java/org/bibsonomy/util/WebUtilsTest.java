@@ -32,6 +32,7 @@ import static org.junit.Assert.assertTrue;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -93,7 +94,7 @@ public class WebUtilsTest {
 	 */
 	@Test
 	public void testBuildCookieString() {
-		final List<String> cookies = new LinkedList<String>();
+		final List<String> cookies = new LinkedList<>();
 		assertEquals("", WebUtils.buildCookieString(cookies));
 	}
 
@@ -102,7 +103,7 @@ public class WebUtilsTest {
 	 */
 	@Test
 	public void testBuildCookieString1() {
-		final List<String> cookies = Arrays.asList("Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811; Path=/");
+		final List<String> cookies = Collections.singletonList("Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811; Path=/");
 		assertEquals("Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811; Path=/", WebUtils.buildCookieString(cookies));
 	}
 
@@ -119,11 +120,12 @@ public class WebUtilsTest {
 	 * @throws Exception
 	 */
 	@Test
+	@Ignore // uses remove server
 	public void testGetContentAsString1() throws Exception {
 		/*
 		 * Just check, if we get some output from BibSonomy.
 		 */
-		final String s = WebUtils.getContentAsString("http://www.bibsonomy.org/tag/web?items=1000", null, null, null);
+		final String s = WebUtils.getContentAsString("https://www.bibsonomy.org/tag/web?items=1000", null, null, null);
 		assertTrue(s.length() > 0);
 		/*
 		 * We have a 1MB limit ... 

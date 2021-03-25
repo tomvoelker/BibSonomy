@@ -59,8 +59,7 @@ import org.springframework.validation.Errors;
 
 /**
  * This controller handles the registration of users via generic ID providers,
- * e.g., OpenID or LDAP. 
- * 
+ * e.g., OpenID or LDAP.
  * 
  * @author rja
  * @param <R> 
@@ -84,6 +83,9 @@ public abstract class AbstractUserIDRegistrationController<R> implements ErrorAw
 	 * After successful registration, the user is redirected to this page.
 	 */
 	private String successRedirect = "";
+
+	/** if true the system forces the username to be the same as the user id of the remote authentication service */
+	private boolean forceRemoteIDAsUsername = false;
 
 	/**
 	 * Only users which were successfully authenticated using the ID provider 
@@ -116,12 +118,18 @@ public abstract class AbstractUserIDRegistrationController<R> implements ErrorAw
 		}
 
 		/*
+		 * set basic attributes of the command
+		 */
+		command.setForceRemoteUserIdAsUsername(this.forceRemoteIDAsUsername);
+
+		/*
 		 * user found in session - proceed with the registration 
 		 */
 		log.debug("got user from session");
 		final User user = (User) o;
 
 		setFixedValuesFromUser(command, user);
+
 		/*
 		 * 2 = user has not been on form, yet -> fill it with user data from ID provider
 		 * 3 = user has seen the form and possibly changed data
@@ -193,6 +201,10 @@ public abstract class AbstractUserIDRegistrationController<R> implements ErrorAw
 		 * credentials used to authenticate him
 		 */
 		this.setAuthentication(registerUser, user);
+
+		if (this.forceRemoteIDAsUsername) {
+			registerUser.setName(this.getRemoteId(user));
+		}
 		/*
 		 * create user in DB
 		 */
@@ -229,6 +241,10 @@ public abstract class AbstractUserIDRegistrationController<R> implements ErrorAw
 	 */
 	protected void setFixedValuesFromUser(UserIDRegistrationCommand command, User user) {
 		// noop
+	}
+
+	protected String getRemoteId(final User user) {
+		throw new UnsupportedOperationException("please implement this method if you want to use remote ids for login");
 	}
 
 	/**
@@ -299,6 +315,9 @@ public abstract class AbstractUserIDRegistrationController<R> implements ErrorAw
 	 * @return A user name that does not exist, yet.
 	 */
 	protected String generateUserName(final User user) {
+		if (this.forceRemoteIDAsUsername) {
+			return this.getRemoteId(user);
+		}
 		/*
 		 * Find user name which does not exist yet in the database.
 		 * 
@@ -460,6 +479,13 @@ public abstract class AbstractUserIDRegistrationController<R> implements ErrorAw
 	 */
 	public void setRegistrationFormView(final Views registrationFormView) {
 		this.registrationFormView = registrationFormView;
+	}
+
+	/**
+	 * @param forceRemoteIDAsUsername the forceRemoteIDAsUsername to set
+	 */
+	public void setForceRemoteIDAsUsername(boolean forceRemoteIDAsUsername) {
+		this.forceRemoteIDAsUsername = forceRemoteIDAsUsername;
 	}
 
 	/**

@@ -36,12 +36,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.UserSettings;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.util.TagViewUtils;
 import org.bibsonomy.wiki.tags.SharedTag;
@@ -113,7 +113,7 @@ public class TagcloudTag extends SharedTag {
 		int tagMax = 20000;
 		
 		final Class<? extends Resource> resourceType = getResourceClass(tagAttributes.get(TYPE));
-		final Order order = getOrder(tagAttributes.get(ORDER));
+		final SortKey sortKey = getSortKey(tagAttributes.get(ORDER));
 		final List<String> requestedTags;
 		final String tagsString = tagAttributes.get(TAGS);
 		if (present(tagsString)) {
@@ -121,7 +121,7 @@ public class TagcloudTag extends SharedTag {
 		} else {
 			requestedTags = null;
 		}
-		final List<Tag> tags = this.logic.getTags(resourceType, this.getGroupingEntity(), requestedName, requestedTags, null, null, null, null, order, null, null, 0, tagMax);
+		final List<Tag> tags = this.logic.getTags(resourceType, this.getGroupingEntity(), requestedName, requestedTags, null, null, null, null, sortKey, null, null, 0, tagMax);
 		
 		final int minfreqValue;
 		if (!tagAttributes.containsKey(MINFREQ)) {
@@ -225,11 +225,11 @@ public class TagcloudTag extends SharedTag {
 	 * @param string
 	 * @return
 	 */
-	private static Order getOrder(String string) {
+	private static SortKey getSortKey(String string) {
 		if (ORDER_FREQ.equals(string)) {
-			return Order.FREQUENCY;
+			return SortKey.FREQUENCY;
 		}
-		return Order.ALPH;
+		return SortKey.ALPH;
 	}
 
 	/**

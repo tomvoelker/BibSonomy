@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="CommunityPostGeneration">
+
+	<select id="getBibTexCount" resultClass="int">
+		SELECT COUNT(DISTINCT(b.content_id))
+		FROM bibtex b
+		LEFT JOIN gold_standard gp USING (simhash1)
+		WHERE b.`group` = 0
+		AND gp.title IS NULL
+	</select>
+
+	<select id="getBookmarkCount" resultClass="int">
+		SELECT COUNT(DISTINCT(b.content_id))
+		FROM bookmark b
+		LEFT JOIN gold_standard gb ON (b.book_url_hash = gb.simhash1)
+		WHERE b.`group` = 0
+		AND gb.title IS NULL
+	</select>
+
+	<!-- get number of public goldstandard publication posts -->
+	<select id="getGoldStandardPublicationCount" resultClass="int">
+		SELECT count(*)
+		FROM gold_standard b
+		WHERE b.content_type = 2
+	</select>
+
+	<!-- get number of public goldstandard bookmark posts -->
+	<select id="getGoldStandardBookmarkCount" resultClass="int">
+		SELECT count(*)
+		FROM gold_standard b
+		WHERE b.content_type = 1
+	</select>
+
+	<!-- db state information -->
+	<select id="getLastContentIdCommunity" resultClass="int" parameterClass="int">
+		SELECT MAX(content_id)
+		FROM gold_standard
+		WHERE content_type = #content_type#
+	</select>
+
+	<select id="getLastLogDateCommunity" resultClass="date" parameterClass="int">
+		SELECT MAX(log_date)
+		FROM log_gold_standard l
+		WHERE l.content_type = #content_type#
+	</select>
+
+	<!-- get list of all public publication posts -->
+	<select id="getBibTexForCommunityIndex" parameterClass="searchParam" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
+		SELECT bb.*, <include refid="goldStandardOtherFields" />
+		FROM
+		(
+			SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group
+			FROM bibtex b
+			LEFT JOIN gold_standard gb USING (simhash1) <!-- to exclude publications that have already a community post -->
+			WHERE gb.title IS NULL
+			AND b.group = 0 <!-- only public posts -->
+			AND b.content_id &gt; #lastContentId#
+			ORDER BY b.content_id ASC
+			LIMIT #limit#
+		) AS bb
+		JOIN bibtex p ON (bb.interHash = p.simhash1) <!-- self join to get all users of the post-->
+	</select>
+
+	<select id="getBookmarkForCommunityIndex" parameterClass="searchParam" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
+		SELECT bb.*, <include refid="goldStandardOtherFields" />, u.book_url
+		FROM
+		(
+			SELECT <include refid ="allGoldStandardNormalBookmarkAttributesNoChangeDate"/>, b.change_date, b.group
+			FROM bookmark b
+			LEFT JOIN gold_standard gb ON (b.book_url_hash = gb.simhash1) <!-- to exclude publications that have already a community post -->
+			WHERE gb.title IS NULL
+			AND b.group = 0 <!-- only public posts -->
+			AND b.content_id &gt; #lastContentId#
+			ORDER BY b.content_id ASC
+			LIMIT #limit#
+		) AS bb
+		JOIN urls u ON (u.book_url_hash = bb.interHash)
+		JOIN bookmark p ON (bb.interHash = p.book_url_hash) <!-- self join to get all users of the post-->
+	</select>
+
+	<!-- get list of all commuity publication posts -->
+	<select id="getGoldStandardPublicationForCommunityIndex" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPostWithRelations">
+		SELECT bb.*, <include refid="goldStandardOtherFields" />, <include refid="personResourceRelationExtendedColumns" />
+		FROM
+		(
+			SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group
+			FROM gold_standard b
+			WHERE content_id &gt; #lastContentId#
+			AND content_type = 2
+			ORDER BY content_id ASC
+			LIMIT #limit#
+		) AS bb
+		LEFT JOIN bibtex p ON (bb.interHash = p.simhash1)
+		LEFT JOIN pub_person ppr ON (bb.interHash = ppr.simhash1)
+		LEFT JOIN person per USING (person_id)
+	</select>
+
+	<select id="getGoldStandardBookmarkForCommunityIndex" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
+		SELECT bb.*, <include refid="goldStandardOtherFields" />
+		FROM
+		(
+			SELECT <include refid ="allGoldStandardBookmarkAttributesNoChangeDate"/>, b.change_date, b.group
+			FROM gold_standard b
+			WHERE content_id &gt; #lastContentId#
+			AND content_type = 1
+			ORDER BY content_id ASC
+			LIMIT #limit#
+		) AS bb
+		LEFT JOIN bookmark p ON (bb.interHash = p.book_url_hash)
+	</select>
+</sqlMap>

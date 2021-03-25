@@ -66,7 +66,7 @@ import org.w3c.dom.NodeList;
  */
 public class IEEEXploreBookScraper extends AbstractUrlScraper implements ReferencesScraper, CitedbyScraper {
 	private static final String SITE_NAME = "IEEEXplore Books";
-	private static final String SITE_URL = "http://ieeexplore.ieee.org/books/bkbrowse.jsp";
+	private static final String SITE_URL = "https://ieeexplore.ieee.org/books/bkbrowse.jsp";
 	private static final Log log = LogFactory.getLog(IEEEXploreBookScraper.class);
 	private static final String info = "This scraper creates a BibTeX entry for the books at " +
 			href(SITE_URL, SITE_NAME);
@@ -97,8 +97,8 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 
 
 	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile(IEEE_BOOK_PATH + ".*")));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile(IEEE_SEARCH_PATH + ".*")));
+		patterns.add(new Pair<>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile(IEEE_BOOK_PATH + ".*")));
+		patterns.add(new Pair<>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile(IEEE_SEARCH_PATH + ".*")));
 	}
 
 	@Override
@@ -135,7 +135,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 				postData.add(new BasicNameValuePair("fromPage", ""));
 				postData.add(new BasicNameValuePair("download-format", "download-bibtex"));
 				postData.add(new BasicNameValuePair("recordIds", recordId));
-				
+
 				bibtex = WebUtils.getContentAsString(client, EXPORT_ARNUM_URL, null, postData, null);
 			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
@@ -147,10 +147,10 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 				// append url
 				bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", url);
 
-				// add downloaded bibtex to result 
+				// add downloaded bibtex to result
 				sc.setBibtexResult(bibtex);
 				return true;
-			} 
+			}
 		}
 
 		// let's try to scrape it by isbn
@@ -185,7 +185,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 		final Matcher m1 = URL_PATTERN_BKN.matcher(url);
 		if (m1.find()){
 			return m1.group(1);
-		} 
+		}
 
 		final Matcher m2 = URL_PATTERN_ARNUMBER.matcher(url);
 		if (m2.find()){

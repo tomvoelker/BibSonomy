@@ -26,27 +26,31 @@
  */
 package org.bibsonomy.model;
 
+import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.Linkable;
+import org.bibsonomy.model.enums.Gender;
+import org.bibsonomy.model.extra.AdditionalKey;
+
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
-
-import org.bibsonomy.model.enums.Gender;
 
 /**
  * Entity class of a real person. Note that {@link User} and {@link Author} are
  * not {@link Person} subclasses since they are not modeled as real persons
  * instances.
- * 
+ *
  * @author jil
  */
-public class Person implements Serializable {
+public class Person implements Linkable, Serializable {
 
 	private static final long serialVersionUID = 4578956154246424767L;
-	public static final String[] fieldsWithResolvableMergeConflicts = {"mainName", "academicDegree", "orcid", "gender", "college", "email", "homepage"};
-	
-	private int personChangeId;
+	public static final String[] fieldsWithResolvableMergeConflicts = {"mainName", "academicDegree", "orcid", "researcherid", "gender", "college", "email", "homepage"};
+
+	private Integer personChangeId;
 	/** null means new non-persistent object */
 	private String personId;
 	/** usually current real name */
@@ -57,6 +61,8 @@ public class Person implements Serializable {
 	private String academicDegree;
 	/** researcher id on http://orcid.org/ */
 	private String orcid;
+	/** researcher id on http://researcherID.com/ */
+	private String researcherid;
 	/** sameAs relation to a user */
 	private String user;
 	/** {@link User} who last modified this {@link Person} */
@@ -69,24 +75,27 @@ public class Person implements Serializable {
 	private String dnbPersonId;
 	/** the gender */
 	private Gender gender;
-	
-	
-	
+	/** the college of the person */
 	private String college;
+	/** the email of the person */
 	private String email;
-	// FIXME use URL instead of string
-	//private String homepage;
-	
+	/** the homepage of the person */
 	private URL homepage;
-	
-	
+
+	/** cris links that are connected to this project */
+	private List<CRISLink> crisLinks = new LinkedList<>();
+
+	private List<ResourcePersonRelation> resourceRelations = new LinkedList<>();
+
+	/** additional keys for person */
+	private List<AdditionalKey> additionalKeys = new LinkedList<>();
 	/**
-	 * 
+	 * default constructor
 	 */
 	public Person() {
-		this.names = new ArrayList<PersonName>();
+		this.names = new ArrayList<>();
 	}
-	
+
 	/**
 	 * @return synthetic id. null means new non-persistent object
 	 */
@@ -99,7 +108,7 @@ public class Person implements Serializable {
 	 */
 	public void setPersonId(String string) {
 		this.personId = string;
-		for(PersonName name : this.names)
+		for (PersonName name : this.names)
 			name.setPersonId(this.personId);
 	}
 
@@ -107,21 +116,22 @@ public class Person implements Serializable {
 	 * @return usually current real name
 	 */
 	public PersonName getMainName() {
-		if(this.mainName == null) {
-			for(PersonName name : this.names) {
-				if(name.isMain())
+		if (this.mainName == null) {
+			for (PersonName name : this.names) {
+				if (name.isMain()) {
 					this.mainName = name;
+				}
 			}
 		}
 		return this.mainName;
 	}
 
 	/**
-	 * @param int usually current real name
+	 * @param id usually current real name
 	 */
 	public void setMainName(int id) {
-		for(PersonName name : this.names) {
-			if(name.getPersonNameChangeId() == id) {
+		for (PersonName name : this.names) {
+			if (name.getPersonNameChangeId() == id) {
 				name.setMain(true);
 				this.mainName = name;
 			} else {
@@ -129,42 +139,45 @@ public class Person implements Serializable {
 			}
 		}
 	}
-	
+
 	/**
-	 * 
-	 * @param PersonName name
+	 *
+	  @param name
 	 */
 	public void setMainName(PersonName name) {
-		if(!this.names.contains(name)) {
+		if (!this.names.contains(name)) {
 			name.setPersonId(this.getPersonId());
 			name.setMain(true);
 			this.names.add(name);
 		}
 		this.mainName = name;
 	}
+
 	/**
-	 * 
-	 * @param PersonName name
+	 *
+	 * @param name name
 	 */
 	public void addName(PersonName name) {
-		if(this.getNames().contains(name))
+		if(this.getNames().contains(name)) {
 			return;
-		
-		if(name != null)  {
+		}
+
+		if (name != null) {
 			name.setPersonId(this.getPersonId());
 			name.setMain(false);
 			this.getNames().add(name);
 		}
 	}
-	
+
 	/**
-	 * 
-	 * @param PersonName name
+	 *
+	 * @param name the person name to remove
 	 */
 	public void removeName(PersonName name) {
-		if(!this.getNames().contains(name))
+		if (!this.getNames().contains(name)) {
 			return;
-		if(name != null) {
+		}
+		if (name != null) {
 			this.names.remove(name);
 		}
 	}
@@ -210,6 +223,7 @@ public class Person implements Serializable {
 	public void setChangeDate(Date modifiedAt) {
 		this.changeDate = modifiedAt;
 	}
+
 	/**
 	 * @return the names
 	 */
@@ -229,9 +243,10 @@ public class Person implements Serializable {
 		if (personId == null) {
 			return obj == this;
 		}
-		return ((obj instanceof Person) && (this.getPersonId().equals(((Person)obj).getPersonId())));
+
+		return ((obj instanceof Person) && (this.getPersonId().equals(((Person) obj).getPersonId())));
 	}
-	
+
 	@Override
 	public int hashCode() {
 		if (personId == null) {
@@ -240,7 +255,7 @@ public class Person implements Serializable {
 		return personId.hashCode();
 	}
 
-	/** 
+	/**
 	 * @return {@link User} in sameAs relation to this {@link Person} 
 	 */
 	public String getUser() {
@@ -269,6 +284,20 @@ public class Person implements Serializable {
 	}
 
 	/**
+	 * @return researcher id on http://researcherID.com/
+	 */
+	public String getResearcherid() {
+		return this.researcherid;
+	}
+
+	/**
+	 * @param researcherid researcher id on http://researcherID.com/
+	 */
+	public void setResearcherid(String researcherid) {
+		this.researcherid = researcherid;
+	}
+
+	/**
 	 * @return the number of posts in the system, which this {@link Person} as an author
 	 */
 	public int getPostCounter() {
@@ -283,11 +312,11 @@ public class Person implements Serializable {
 	}
 
 
-	public int getPersonChangeId() {
+	public Integer getPersonChangeId() {
 		return this.personChangeId;
 	}
 
-	public void setPersonChangeId(int personChangeId) {
+	public void setPersonChangeId(Integer personChangeId) {
 		this.personChangeId = personChangeId;
 	}
 
@@ -350,18 +379,148 @@ public class Person implements Serializable {
 	}
 
 	/**
+	 * @return the crisLinks
+	 */
+	public List<CRISLink> getCrisLinks() {
+		return crisLinks;
+	}
+
+	/**
+	 * @param crisLinks the crisLinks to set
+	 */
+	public void setCrisLinks(List<CRISLink> crisLinks) {
+		this.crisLinks = crisLinks;
+	}
+
+	/**
+	 * @return the resourceRelations
+	 */
+	public List<ResourcePersonRelation> getResourceRelations() {
+		return resourceRelations;
+	}
+
+	/**
+	 * @param resourceRelations the resourceRelations to set
+	 */
+	public void setResourceRelations(List<ResourcePersonRelation> resourceRelations) {
+		this.resourceRelations = resourceRelations;
+	}
+
+	/**
+	 * @return	list of additional keys
+	 */
+	public List<AdditionalKey> getAdditionalKeys() {
+		return additionalKeys;
+	}
+
+	/**
+	 * @param additionalKeys to set
+	 */
+	public void setAdditionalKeys(List<AdditionalKey> additionalKeys) {
+		this.additionalKeys = additionalKeys;
+	}
+
+	/**
+	 * Get the person's additional key specified by the key name
+	 *
+	 * @param keyName	the key name
+	 * @return			the additional key as an object, null if not found
+	 */
+	public AdditionalKey getAdditionalKey(String keyName) {
+		for (AdditionalKey additionalKey : this.additionalKeys) {
+			if (additionalKey.getKeyName().equalsIgnoreCase(keyName)) return additionalKey;
+		}
+		return null;
+	}
+
+	/**
+	 * Add a new additional key to the person with key name and value
+	 *
+	 * @param keyName	the key name
+	 * @param keyValue	the key value
+	 * @return 			true, if added or exact same key was already present, false if key couldn't be added
+	 */
+	public boolean addAdditionalKey(String keyName, String keyValue) {
+		AdditionalKey additionalKey = new AdditionalKey(keyName, keyValue);
+		return addAdditionalKey(additionalKey);
+	}
+
+	/**
+	 * Add a new additional key to the person with an additional key object
+	 *
+	 * @param additionalKey		the additional key object
+	 * @return 					true, if added or exact same key was already present, false if key couldn't be added
+	 */
+	public boolean addAdditionalKey(AdditionalKey additionalKey) {
+		AdditionalKey foundKey = getAdditionalKey(additionalKey.getKeyName());
+
+		if (foundKey != null) {
+			// Return true, if exact same key was already present
+			// Return false, if key name with different value was found
+			return foundKey.getKeyValue().equals(additionalKey.getKeyName());
+		} else {
+			// Adding key
+			this.additionalKeys.add(additionalKey);
+			return true;
+		}
+	}
+
+	/**
+	 * Remove an additional key from the person specified by the key name
+	 *
+	 * @param keyName	the key name
+	 * @return true, if removing it was successful or key wasn't present. false otherwise
+	 */
+	public boolean removeAdditionalKey(String keyName) {
+		AdditionalKey foundKey = getAdditionalKey(keyName);
+		if (foundKey != null) {
+			this.additionalKeys.remove(foundKey);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Update an additional key of the person specified by the key name
+	 *
+	 * @param keyName	the key name
+	 * @param keyValue	the new key value
+	 * @return			true, if additional key was updated. False, if key wasn't found to update
+	 */
+	public boolean updateAdditionalKey(String keyName, String keyValue) {
+		AdditionalKey foundKey = getAdditionalKey(keyName);
+		if (foundKey != null) {
+			foundKey.setKeyValue(keyValue);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public String getLinkableId() {
+		return this.getPersonId();
+	}
+
+	@Override
+	public Integer getId() {
+		return this.personChangeId;
+	}
+
+	/**
 	 * returns true if specific attributes are equal or at least null for one person
 	 * @param person
 	 * @return
 	 */
 	public boolean equalsTo(Person person) {
-		return (this.academicDegree == null || person.getAcademicDegree() == null || this.academicDegree.equals(person.getAcademicDegree()))&&
-			(this.college == null || person.getCollege() == null || this.college.equals(person.getCollege()))&&
-			(this.gender == null || person.getGender() == null || this.gender.equals(person.getGender()))&&
-			(this.email == null || person.getEmail() == null || this.email.equals(person.getEmail()))&&
-			(this.homepage == null || person.getHomepage() == null || this.homepage.equals(person.getHomepage()))&&
-			(this.orcid == null || person.orcid == null || this.orcid.equals(person.orcid))&&
-			(this.user == null || person.user == null);
-  }
-
+		return (this.academicDegree == null || person.getAcademicDegree() == null || this.academicDegree.equals(person.getAcademicDegree())) &&
+						(this.college == null || person.getCollege() == null || this.college.equals(person.getCollege())) &&
+						(this.gender == null || person.getGender() == null || this.gender.equals(person.getGender())) &&
+						(this.email == null || person.getEmail() == null || this.email.equals(person.getEmail())) &&
+						(this.homepage == null || person.getHomepage() == null || this.homepage.equals(person.getHomepage())) &&
+						(this.orcid == null || person.orcid == null || this.orcid.equals(person.orcid)) &&
+						(this.researcherid == null || person.researcherid == null || this.researcherid.equals(person.researcherid)) &&
+						(this.user == null || person.user == null);
+	}
 }

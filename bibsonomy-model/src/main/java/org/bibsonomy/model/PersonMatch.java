@@ -26,27 +26,24 @@
  */
 package org.bibsonomy.model;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
-import org.bibsonomy.model.enums.Gender;
-import org.bibsonomy.util.ValidationUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * A PersonMatch object contains the id's of two persons which might be equal and a flag if they are equal
  *
  * @author jhi
  */
-public class PersonMatch implements Serializable, Comparable<PersonMatch> {
-	
+public class PersonMatch implements Serializable {
 	private static final long serialVersionUID = -470932185819510145L;
-	public static final int denieThreshold = 5;
+
+	private static final Log log = LogFactory.getLog(PersonMatch.class);
+
+	public static final int MAX_NUMBER_OF_DENIES = 5;
 	
 	private Person person1;
 	private Person person2;
@@ -116,24 +113,28 @@ public class PersonMatch implements Serializable, Comparable<PersonMatch> {
 	public void setUserDenies(List<String> userDenies) {
 		this.userDenies = userDenies;
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
+
 	@Override
-	public int compareTo(PersonMatch match) {
-		if ((this.person1.getPersonId().equals(match.getPerson1().getPersonId()) && this.person2.getPersonId().equals(match.getPerson2().getPersonId()))
-				|| (this.person1.getPersonId().equals(match.getPerson2().getPersonId()) && this.person2.getPersonId().equals(match.getPerson1().getPersonId()))) {
-			return 0;
-		}
-		return -1;
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		PersonMatch that = (PersonMatch) o;
+		return Objects.equals(person1, that.person1) && Objects.equals(person2, that.person2) ||
+				Objects.equals(person1, that.person2) && Objects.equals(person2, that.person1);
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(person1, person2);
+	}
+
 	/**
 	 * @return the person1Posts
 	 */
 	public List<Post> getPerson1Posts() {
 		return this.person1Posts;
 	}
+
 	/**
 	 * @param person1Posts the person1Posts to set
 	 */
@@ -146,83 +147,12 @@ public class PersonMatch implements Serializable, Comparable<PersonMatch> {
 	public List<Post> getPerson2Posts() {
 		return this.person2Posts;
 	}
+
 	/**
 	 * @param person2Posts the person2Posts to set
 	 */
 	public void setPerson2Posts(List<Post> person2Posts) {
 		this.person2Posts = person2Posts;
 	}
-	
-	/**
-	 * returns a map that contains for each match in matches a list
-	 * @param matches
-	 * @return
-	 */
-	public static Map<Integer, PersonMergeFieldConflict[]> getMergeConflicts(List<PersonMatch> matches){
-		//A map with a list of conflicts for every match of a person
-		//If a match does not have any conflict it has an entry with an empty list
-		Map<Integer, PersonMergeFieldConflict[]> map = new HashMap<Integer, PersonMergeFieldConflict[]>();
-		for(PersonMatch match : matches){
-			//the list of all fields that are holding a conflict
-			List<PersonMergeFieldConflict> conflictFields = new LinkedList<PersonMergeFieldConflict>();
-			try {
-				for (String fieldName : Person.fieldsWithResolvableMergeConflicts) {
-					PropertyDescriptor desc = new PropertyDescriptor(fieldName, Person.class);
-					Object person1Value = desc.getReadMethod().invoke(match.getPerson1());
-					Object person2Value = desc.getReadMethod().invoke(match.getPerson2());
-					if (person1Value != null && person2Value != null) {
-						//test if the values are different and add them to the list
-						if (person1Value.getClass().equals(String.class)) {
-							if (!((String) person1Value).equals((String) person2Value)) {
-								conflictFields.add(new PersonMergeFieldConflict(fieldName, (String)person1Value, (String)person2Value));
-							}
-						} else if (person1Value.getClass().equals(PersonName.class)) {
-							String person1Name = ((PersonName) person1Value).getLastName() + ", " +((PersonName) person1Value).getFirstName();
-							String person2Name = ((PersonName) person2Value).getLastName() + ", " +((PersonName) person2Value).getFirstName();
-							if (!person1Name.equals(person2Name)) {
-								conflictFields.add(new PersonMergeFieldConflict(fieldName, person1Name, person2Name));
-							}
-						} else if (person1Value.getClass().equals(Gender.class)) {
-							if (!((Gender) person1Value).equals((Gender) person2Value)) {
-								conflictFields.add(new PersonMergeFieldConflict(fieldName, ((Gender) person1Value).name(), ((Gender) person2Value).name()));
-							}
-						} else {
-							System.err.println(
-									"Missing " + person1Value.getClass() + " class case for merge conflict detection");
-						}
-					}
-				}
-			} catch (SecurityException | IllegalArgumentException | IllegalAccessException | InvocationTargetException
-					| IntrospectionException e) {
-				System.err.println(e);
-			}
-			PersonMergeFieldConflict[] p = new PersonMergeFieldConflict[conflictFields.size()];
-			conflictFields.toArray(p);
-			map.put(new Integer(match.getMatchID()), p);
-		}
-		return map;
-	}
-	
-	/**
-	 * tests if the merge can be performed without a conflict on user claims
-	 * @param loginUser
-	 * @return
-	 */
-	public Boolean testMergeOnClaims(String loginUser) {
-		Boolean p1Claim = ValidationUtils.present(getPerson1().getUser());
-		Boolean p2Claim = ValidationUtils.present(getPerson2().getUser());
-	
-		if (p1Claim && p2Claim) {
-			return false;
-		} else if (!p1Claim && !p2Claim) {
-			return true;
-		} else if (p1Claim) {
-			//TODO notify user1 that their is a merge
-			return getPerson1().getUser().equals(loginUser);
-		} else {
-			//TODO notify user2 that their is a merge
-			return getPerson2().getUser().equals(loginUser);
-		}	
-	}
-	
+
 }

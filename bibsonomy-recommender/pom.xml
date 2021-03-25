@@ -36,13 +36,13 @@
 	<packaging>jar</packaging>
 	<description>Tag and resource recommender.</description>
 	<properties>
-		<recommender.version>1.0.1</recommender.version>
+		<recommender.version>1.0.2</recommender.version>
 	</properties>
 	
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
-		<version>3.9.0-SNAPSHOT</version>
+		<version>4.0.0-SNAPSHOT</version>
 	</parent>
 	
 	<licenses>
@@ -100,6 +100,11 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-dbcp2</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	

@@ -31,9 +31,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.UnsupportedFileTypeException;
@@ -67,10 +69,15 @@ public class PublicationImporter {
 	 */
 	private EndnoteToBibtexConverter endnoteToBibtexConverter;
 	
+	/**
+	 * converter from Ris to BibTeX
+	 */
+	private RisToBibtexConverter risToBibtexConverter;
+	
 	
 	/**
 	 * Handles an uploaded file and returns its contents - if necessary 
-	 * after converting EndNote to BibTeX;
+	 * after converting EndNote or Ris to BibTeX;
 	 * 
 	 * @param command
 	 * @param errors 
@@ -96,7 +103,7 @@ public class PublicationImporter {
 				log.debug("the file is in pdf format");
 				file = this.fileLogic.writeTempFile(new ServerUploadedFile(uploadedFile), this.fileLogic.getDocumentExtensionChecker());
 				if (!present(command.getFileName())) {
-					command.setFileName(new ArrayList<String>());
+					command.setFileName(new ArrayList<>());
 				}
 				command.getFileName().add(file.getName() + fileName);
 				keepTempFile = true;
@@ -110,8 +117,13 @@ public class PublicationImporter {
 				/*
 				 * In case the uploaded file is in EndNote or RIS format, we convert it to BibTeX.
 				 */
-				log.debug("the file is in EndNote format");
-				fileContent = this.endnoteToBibtexConverter.endnoteToBibtexString(reader);
+				if (FilenameUtils.getExtension(fileName).equals("ris")) {
+					log.debug("the file is in Ris format");
+					fileContent = this.risToBibtexString(reader);
+				} else {
+					log.debug("the file is in EndNote format");
+					fileContent = this.endnoteToBibtexConverter.endnoteToBibtexString(reader);					
+				}
 			} else {
 				/*
 				 * or just use it as it is ...
@@ -159,7 +171,7 @@ public class PublicationImporter {
 			return this.endnoteToBibtexConverter.toBibtex(selection);
 		}
 		if (RisToBibtexConverter.canHandle(selection)) {
-			return new RisToBibtexConverter().toBibtex(selection);
+			return this.risToBibtexConverter.toBibtex(selection);
 		}
 		/*
 		 * should be BibTeX
@@ -167,11 +179,26 @@ public class PublicationImporter {
 		return selection;
 	}
 
+	private String risToBibtexString(final BufferedReader in) throws ConversionException {
+		try {
+			return this.risToBibtexConverter.toBibtex(StringUtils.getStringFromReader(in));
+		} catch (final IOException e) {
+			throw new ConversionException("Could not convert from Ris to BibTeX.");
+		}
+	}
+
 	/**
 	 * @param endnoteToBibtexConverter the endnoteToBibtexConverter to set
 	 */
 	public void setEndnoteToBibtexConverter(final EndnoteToBibtexConverter endnoteToBibtexConverter) {
 		this.endnoteToBibtexConverter = endnoteToBibtexConverter;
+	}
+	
+	/**
+	 * @param risToBibtexConverter the risToBibtexConverter to set
+	 */
+	public void setRisToBibtexConverter(final RisToBibtexConverter risToBibtexConverter) {
+		this.risToBibtexConverter = risToBibtexConverter;
 	}
 
 	/**

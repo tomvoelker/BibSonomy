@@ -28,13 +28,22 @@ package org.bibsonomy.search.management.database;
 
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.search.management.database.manager.PersonSearchDatabaseManager;
 
 /**
  * TODO: change Generic
  * @author dzo
  */
+@Deprecated // TODO: remove TODO_REWORK_SEARCH
 public class SearchGoldStandardLogic extends SearchDBLogic<GoldStandardPublication> {
-	
+
+	/**
+	 * @param personSearchDatabaseManager the person search database manager
+	 */
+	public SearchGoldStandardLogic(final PersonSearchDatabaseManager personSearchDatabaseManager) {
+		super(personSearchDatabaseManager);
+	}
+
 	@Override
 	protected Integer getLastTasId() {
 		final DBSession session = this.openSession();

@@ -34,20 +34,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.bibsonomy.database.common.AbstractDatabaseManager;
+import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagement;
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.common.DBSessionFactory;
 
 /**
- * 
+ * logic to get some basic simple information of
  * @author dzo
  */
-public class SearchInfoDBLogic extends AbstractDatabaseManager implements SearchInfoLogic {	
-	private DBSessionFactory sessionFactory;
-	
-	private DBSession openSession() {
-		return this.sessionFactory.getDatabaseSession();
-	}
+public class SearchInfoDBLogic extends AbstractDatabaseManagerWithSessionManagement implements SearchInfoLogic {
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.SearchInfoLogic#getFriendsForUser(java.lang.String)
@@ -57,12 +51,9 @@ public class SearchInfoDBLogic extends AbstractDatabaseManager implements Search
 		if (!present(userName)) {
 			return Collections.emptySet();
 		}
-		
-		final DBSession session = this.openSession();
-		try {
+
+		try (final DBSession session = this.openSession()) {
 			return this.queryForList("getFriendsForUser", userName, String.class, session);
-		} finally {
-			session.close();
 		}
 	}
 	
@@ -74,7 +65,7 @@ public class SearchInfoDBLogic extends AbstractDatabaseManager implements Search
 	public List<String> getGroupMembersByGroupName(final String groupName) {
 		final DBSession session = this.openSession();
 		try {
-			return this.queryForList("getGroupMembersByGroupName", groupName, String.class, session);
+			return this.queryForList("getGroupMembersByGroupName", groupName, String.class, session); //TODO (AD) query for parent memberships
 		} finally {
 			session.close();
 		}
@@ -82,11 +73,8 @@ public class SearchInfoDBLogic extends AbstractDatabaseManager implements Search
 
 	@Override
 	public List<String> getSubTagsForConceptTag(final String tag) {
-		final DBSession session = this.openSession();
-		try {
+		try (final DBSession session = this.openSession()) {
 			return this.queryForList("getGlobalConceptByName", tag.toLowerCase(), String.class, session);
-		} finally {
-			session.close();
 		}
 	}
 	
@@ -95,13 +83,18 @@ public class SearchInfoDBLogic extends AbstractDatabaseManager implements Search
 	 */
 	@Override
 	public Set<String> getUserNamesThatShareDocumentsWithUser(String userName) {
-		final DBSession session = this.openSession();
-		try {
-			final Set<String> users = new HashSet<String>(this.getUserNamesThatShareDocumentsAsList(userName, session));
+		try (final DBSession session = this.openSession()) {
+			final Set<String> users = new HashSet<>(this.getUserNamesThatShareDocumentsAsList(userName, session));
 			users.add(userName);
 			return users;
-		} finally {
-			session.close();
+		}
+	}
+
+	@Override
+	public Set<String> getPersonsOfOrganization(String organizationName) {
+		try (final DBSession session = this.openSession()) {
+			final List<String> personIds = this.queryForList("getPersonsForOrganization", organizationName, String.class, session);
+			return new HashSet<>(personIds);
 		}
 	}
 
@@ -110,15 +103,7 @@ public class SearchInfoDBLogic extends AbstractDatabaseManager implements Search
 	 * @param session
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	private List<String> getUserNamesThatShareDocumentsAsList(String userName, final DBSession session) {
-		return (List<String>) this.queryForList("getDocumentUsers", userName, session);
-	}
-
-	/**
-	 * @param sessionFactory the sessionFactory to set
-	 */
-	public void setSessionFactory(final DBSessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
+		return this.queryForList("getDocumentUsers", userName, String.class, session);
 	}
 }

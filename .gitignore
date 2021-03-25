@@ -1,0 +1,27 @@
+# maven related files
+target/
+*/src/main/webapp/WEB-INF/lib/
+*/src/main/webapp/WEB-INF/classes/
+*/src/main/webapp/META-INF/
+
+# eclipse related files
+bin/
+work/
+.classpath
+.project
+.settings/
+.externalToolBuilders
+.tomcatplugin
+.springBeans
+
+# netbeans related files
+nbactions.xml
+nb-configuration.xml
+
+# intellij related files
+*.iml
+out/
+.idea/
+
+# other files
+Thumbs.db

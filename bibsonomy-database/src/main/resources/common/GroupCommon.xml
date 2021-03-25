@@ -3,14 +3,22 @@
 
 <sqlMap namespace="GroupCommon">
 
+	<resultMap id="simpleCrisLinkGroup" class="group" groupBy="groupId">
+		<result property="groupId"            column="group"             javaType="int" />
+		<result property="name"               column="group_name"        javaType="string" />
+		<result property="realname"           column="group_realname"    javaType="string" />
+	</resultMap>
+
 	<!-- The basics of every group -->
 	<resultMap id="group_basic" class="group">
 		<result property="groupId"            column="group"             javaType="int" />
 		<result property="name"               column="group_name"        javaType="string" />
 		<result property="privlevel"          column="privlevel"         javaType="Privlevel"/>
 		<result property="sharedDocuments"    column="sharedDocuments"   javaType="boolean"/>
-		<result property="allowJoin"    	  column="allow_join"   	 javaType="boolean"/>	
-		<result property="description"    	  column="shortDescription"  javaType="string"/>	
+		<result property="allowJoin"    	  column="allow_join"   	 javaType="boolean"/>
+		<result property="description"    	  column="shortDescription"  javaType="string"/>
+		<result property="organization"		  column="organization"      javaType="boolean" />
+		<result property="internalId"		  column="internal_id"       javaType="string" />
 	</resultMap>
 
 	<!-- +
@@ -40,6 +48,20 @@
 		<result property="id" column="permission" />
 	</resultMap>
 
+	<!--(AD) We need to replicate the group_basic resultmap here, because there is no way of prefixing the column names when using the result map :-( -->
+	<resultMap id="group_parent" class="group">
+		<result property="groupId"            column="pt_group"             javaType="int" />
+		<result property="name"               column="pt_group_name"        javaType="string" />
+		<result property="privlevel"          column="pt_privlevel"         javaType="Privlevel"/>
+		<result property="sharedDocuments"    column="pt_sharedDocuments"   javaType="boolean"/>
+		<result property="allowJoin"    	  column="pt_allow_join"   	 javaType="boolean"/>
+		<result property="description"    	  column="pt_shortDescription"  javaType="string"/>
+		<result property="organization"       column="pt_organization"       javaType="boolean" />
+		<result property="realname"           column="upt_user_realname"     javaType="string" />
+		<result property="homepage"			  column="upt_user_homepage"     javaType="url" />
+	</resultMap>
+
+
 	<!--+
 	    | Groups with additional fields 
 	    +-->
@@ -49,9 +71,19 @@
 		<result property="homepage"           column="user_homepage"     javaType="url"  />
 	</resultMap>
 
+	<resultMap id="group_extended_with_parent" class="group" extends="group_extended">
+		<result property="parent" resultMap="GroupCommon.group_parent" />
+	</resultMap>
+
 	<resultMap id="group" class="group" extends="group_extended" groupBy="name">
 		<result property="publicationReportingSettings"  resultMap="GroupCommon.publReportingSettings" />
 		<result property="groupRequest"                  resultMap="GroupCommon.groupRequest" />
+	</resultMap>
+
+	<resultMap id="groupWithParent" class="group" extends="group_extended" groupBy="name">
+		<result property="publicationReportingSettings"  resultMap="GroupCommon.publReportingSettings" />
+		<result property="groupRequest"                  resultMap="GroupCommon.groupRequest" />
+		<result property="parent" 						 resultMap="GroupCommon.group_parent" />
 	</resultMap>
 
 	<resultMap id="groupWithMemberships" class="group" extends="group_extended" groupBy="name">
@@ -66,8 +98,16 @@
 		<result property="publicationReportingSettings" resultMap="GroupCommon.publReportingSettings" />
 	</resultMap>
 
+	<resultMap id="groupWithMembershipsAndReportingsAndParent" class="group" extends="groupWithMembershipsAndReportings" groupBy="name">
+		<result property="parent" resultMap="GroupCommon.group_parent" />
+	</resultMap>
+
 	<resultMap id="groupWithMembershipsAndReportingsAndPermissions" class="group" extends="groupWithMembershipsAndReportings" groupBy="name" >
 		<result property="groupLevelPermissions" resultMap="GroupCommon.groupLevelPermission" />
+	</resultMap>
+
+	<resultMap id="groupWithMembershipsAndReportingsAndPermissionsAndParent" class="group" extends="groupWithMembershipsAndReportingsAndPermissions" groupBy="name">
+		<result property="parent" resultMap="GroupCommon.group_parent" />
 	</resultMap>
 
 	<resultMap id="tagsets" class="tagset" groupBy="setName">
@@ -75,11 +115,19 @@
 		<result property="tags"         resultMap="Common.tag" />
 	</resultMap>
 
+	<sql id="basicColumns">
+		i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, i.organization, i.internal_id
+	</sql>
+
 	<sql id="requestColumns">
 		i.request_user_name, i.request_reason, i.request_submission_date
 	</sql>
 
 	<sql id="reportingColumns">
 		i.publ_reporting_mail, i.publ_reporting_mail_template, i.publ_reporting_external_url
+	</sql>
+
+	<sql id="parentColumns">
+		pt.group_name as pt_group_name, pt.group as pt_group, pt.privlevel as pt_privlevel, pt.sharedDocuments as pt_sharedDocuments, pt.allow_join as pt_allow_join, pt.shortDescription as pt_shortDescription, pt.organization as pt_organization, upt.user_realname as upt_user_realname, upt.user_homepage as upt_user_homepage
 	</sql>
 </sqlMap>

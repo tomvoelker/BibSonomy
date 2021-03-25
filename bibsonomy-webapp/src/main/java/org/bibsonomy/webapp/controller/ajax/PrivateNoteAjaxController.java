@@ -82,7 +82,7 @@ public class PrivateNoteAjaxController extends AjaxController implements Minimal
 		final BibTex bib = (BibTex) post.getResource();
 		bib.setPrivnote(command.getPrivateNote());
 		
-		this.logic.updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_ALL);
+		this.logic.updatePosts(Collections.singletonList(post), PostUpdateOperation.UPDATE_ALL);
 		
 		command.setResponseString("OK");
 		return Views.AJAX_JSON;

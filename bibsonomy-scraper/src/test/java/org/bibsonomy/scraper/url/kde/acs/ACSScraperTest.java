@@ -45,7 +45,7 @@ public class ACSScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		final String url = "http://pubs.acs.org/doi/abs/10.1021/ci049894n";
+		final String url = "https://pubs.acs.org/doi/abs/10.1021/ci049894n";
 		final String resultFile = "ACSScraperUnitURLTest.bib";
 		assertScraperResult(url, null, ACSScraper.class, resultFile);
 	}
@@ -55,7 +55,7 @@ public class ACSScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		final String url = "http://pubs.acs.org/action/downloadCitation?doi=10.1021%2Fci049894n&amp;include=abs&amp;format=bibtex";
+		final String url = "https://pubs.acs.org/action/downloadCitation?doi=10.1021%2Fci049894n&amp;include=abs&amp;format=bibtex";
 		final String resultFile = "ACSScraperUnitURLTest.bib";
 		assertScraperResult(url, null, ACSScraper.class, resultFile);
 	}
@@ -64,7 +64,7 @@ public class ACSScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		final String url = "http://pubs.acs.org/doi/pdf/10.1021/nn103618d";
+		final String url = "https://pubs.acs.org/doi/pdf/10.1021/nn103618d";
 		final String resultFile = "ACSScraperUnitURLTest3.bib";
 		assertScraperResult(url, null, ACSScraper.class, resultFile);
 	}

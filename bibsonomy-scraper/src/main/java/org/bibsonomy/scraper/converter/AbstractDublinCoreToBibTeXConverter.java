@@ -107,9 +107,9 @@ public abstract class AbstractDublinCoreToBibTeXConverter implements BibtexConve
 		else if (present(value)) {
 			// append
 			if (data.containsKey(key)) {
-				if(key.equals(AUTHOR_KEY)|| key.equals("editor")){
+				if (key.equals(AUTHOR_KEY) || key.equals("editor")) {
 					data.put(key, data.get(key) + " and " + value);
-				}else{
+				} else {
 					data.put(key, data.get(key) + ", " + value);
 				}
 			} else {

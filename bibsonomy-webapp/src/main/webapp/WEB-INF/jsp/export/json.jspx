@@ -34,6 +34,9 @@
       "User" : {
          "pluralLabel" : "Users"
       },
+      "Group" : {
+         "pluralLabel" : "Groups"
+      },
       "Sphere" : {
          "pluralLabel" : "Spheres"
       }
@@ -125,7 +128,12 @@
       		</c:if>
      	 </c:forEach>
       </mtl:exists>
-
+		<!-- groups -->
+		<mtl:exists path="command.groups">
+	     	 <c:if test="${isCommaNecessary and not empty command.groups.list}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
+		    <!-- groups -->
+		    <json:groups groups="${command.groups.list}" />
+		</mtl:exists>
 	  <!-- friends -->
       <mtl:exists path="command.userFriends">
       	<!-- comma, if friends exist and (tags exist or resources are present) -->

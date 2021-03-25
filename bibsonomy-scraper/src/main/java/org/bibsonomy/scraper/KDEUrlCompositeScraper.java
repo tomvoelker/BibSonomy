@@ -106,28 +106,23 @@ import org.bibsonomy.scraper.url.kde.karlsruhe.BibliographyScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.UBKAScraper;
 import org.bibsonomy.scraper.url.kde.lccnloc.LccnLocScraper;
 import org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper;
-import org.bibsonomy.scraper.url.kde.liebert.LiebertScraper;
 import org.bibsonomy.scraper.url.kde.mathscinet.MathSciNetScraper;
 import org.bibsonomy.scraper.url.kde.mdpi.MDPIScraper;
 import org.bibsonomy.scraper.url.kde.mendeley.MendeleyScraper;
-import org.bibsonomy.scraper.url.kde.morganclaypool.MorganClaypoolScraper;
 import org.bibsonomy.scraper.url.kde.muse.ProjectmuseScraper;
 import org.bibsonomy.scraper.url.kde.nasaads.NasaAdsScraper;
 import org.bibsonomy.scraper.url.kde.nature.NatureArticleScraper;
 import org.bibsonomy.scraper.url.kde.nature.NatureJournalScraper;
 import org.bibsonomy.scraper.url.kde.nature.NatureNewsScraper;
 import org.bibsonomy.scraper.url.kde.nber.NberScraper;
-import org.bibsonomy.scraper.url.kde.nejm.NEJMScraper;
 import org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper;
-import org.bibsonomy.scraper.url.kde.nrc.NRCScraper;
 import org.bibsonomy.scraper.url.kde.opac.OpacScraper;
 import org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper;
 import org.bibsonomy.scraper.url.kde.openuniversity.OpenUniversityScraper;
 import org.bibsonomy.scraper.url.kde.osa.OSAScraper;
 import org.bibsonomy.scraper.url.kde.osti.OstiScraper;
-import org.bibsonomy.scraper.url.kde.oup.OxfordUniversityPressScraper;
-import org.bibsonomy.scraper.url.kde.oxfordjournals.OxfordJournalsScraper;
 import org.bibsonomy.scraper.url.kde.phcogres.PharmacognosyResearchScraper;
+import org.bibsonomy.scraper.url.kde.oup.OxfordUniversityPressScraper;
 import org.bibsonomy.scraper.url.kde.pion.PionScraper;
 import org.bibsonomy.scraper.url.kde.plos.PlosScraper;
 import org.bibsonomy.scraper.url.kde.proeuclid.ProjectEuclidScraper;
@@ -158,12 +153,13 @@ import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
 import org.bibsonomy.scraper.url.kde.worldscientific.WorldScientificScraper;
 import org.bibsonomy.scraper.url.kde.wormbase.WormbaseScraper;
 import org.bibsonomy.scraper.url.kde.zenodo.ZenodoScraper;
+import org.bibsonomy.scraper.url.researchgate.ResearchGateScraper;
 
 /**
  * Contains all active UrlScrapers.
- * 
+ *
  * @author rja
- * 
+ *
  */
 public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 
@@ -222,7 +218,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new AmsScraper());
 		addScraper(new AipScitationScraper());
 
-		
+
 		/*
 		 * rja, 2018-08-06, was disabled long ago, URL does no longer exist
 		 */
@@ -240,7 +236,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		//addScraper(new InformaWorldScraper());
 		addScraper(new CambridgeScraper());
 		/*
-		 * the scraper and the related information in the xml file are disabled because the website 
+		 * the scraper and the related information in the xml file are disabled because the website
 		 * http://www.isrl.uiuc.edu/ is not longer available
 		 */
 		//addScraper(new LangevScraper());
@@ -318,7 +314,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new IGIGlobalScraper());
 		addScraper(new DeGruyterScraper());
 		addScraper(new MDPIScraper());
-		addScraper(new OxfordJournalsScraper());
 		addScraper(new TheLancetScraper());
 		addScraper(new NowPublishersScraper());
 		addScraper(new GenomeBiologyScraper());
@@ -349,7 +344,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new BaseScraper());
 		addScraper(new UmanisticaDigitaleScraper());
 		addScraper(new ZfdGScraper());
-		//addScraper(new AkademiaiScraper()); error = 404
+		addScraper(new ResearchGateScraper());
 	}
-
 }

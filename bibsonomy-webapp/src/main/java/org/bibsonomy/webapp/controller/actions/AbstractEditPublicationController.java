@@ -38,13 +38,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
+import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ScraperMetadata;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -118,6 +121,11 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		if ((present(url) || present(selection))) {
 			this.handleScraper(command, url, selection);
 		}
+		
+		final String loggedInUserName = loginUser.getName();
+		command.setUserFriends(this.logic.getUserRelationship(loggedInUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
+		command.setFriendsOfUser(this.logic.getUserRelationship(loggedInUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
+		command.setClaimedPerson(this.logic.getPersonById(PersonIdType.USER, loggedInUserName));
 	}
 
 	@Override
@@ -133,7 +141,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		}
 		final BibTex publication = post.getResource();
 		if (publication.getDocuments() == null) {
-			publication.setDocuments(new LinkedList<Document>());
+			publication.setDocuments(new LinkedList<>());
 		}
 		for (final String compoundFileName : fileNames) {
 			if (!present(compoundFileName) || compoundFileName.length() < 32) {
@@ -321,12 +329,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		 */
 		try {
 			new PostBibTeXParser(this.instantiateResource().getClass()).updateWithParsedBibTeX(post);
-		} catch (final ParseException ex) {
-			/*
-			 * we silently ignore parsing errors - they have been handled by the
-			 * validator
-			 */
-		} catch (final IOException ex) {
+		} catch (final ParseException | IOException ex) {
 			/*
 			 * we silently ignore parsing errors - they have been handled by the
 			 * validator

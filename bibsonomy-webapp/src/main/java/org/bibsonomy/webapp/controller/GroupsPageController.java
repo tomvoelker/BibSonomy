@@ -24,19 +24,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * 
- */
 package org.bibsonomy.webapp.controller;
 
+import org.bibsonomy.common.enums.SortOrder;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.enums.GroupOrder;
+import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.webapp.command.GroupsListCommand;
+import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 /**
  * Controller for group overview:
  * - /groups
+ * - /organizations (for cris systems)
  * 
  * @author Folke Eisterlehner
  */
@@ -47,12 +52,32 @@ public class GroupsPageController extends SingleResourceListController implement
 	 */
 	@Override
 	public View workOn(final GroupsListCommand command) {
+		final String format = command.getFormat();
+		final ListCommand<Group> groupListCommand = command.getGroups();
 		/*
-		 * get all groups from db; Integer#MAX_VALUE should be enough
+		 * get requested groups
 		 */
-		command.setList(logic.getGroups(false, null, 0, Integer.MAX_VALUE));
-		
-		return Views.GROUPSPAGE;
+		final String search = command.getSearch();
+		final boolean searchPresent = present(search);
+		final GroupOrder order = searchPresent ? GroupOrder.RANK : GroupOrder.GROUP_REALNAME;
+		final SortOrder sortOrder = searchPresent ? SortOrder.DESC : SortOrder.ASC;
+		final GroupQuery groupQuery = GroupQuery.builder()
+						.entriesStartingAt(groupListCommand.getEntriesPerPage(), groupListCommand.getStart())
+						.pending(false)
+						.organization(command.getOrganizations())
+						.prefix(command.getPrefix())
+						.search(search)
+						.order(order)
+						.sortOrder(sortOrder).build();
+		groupListCommand.setList(this.logic.getGroups(groupQuery));
+
+		// html format - retrieve tags and return HTML view
+		if ("html".equals(format)) {
+			return Views.GROUPSPAGE;
+		}
+
+		// export - return the appropriate view
+		return Views.getViewByFormat(format);
 	}
 
 	/**

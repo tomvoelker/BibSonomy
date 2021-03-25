@@ -5,17 +5,12 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:sql="http://java.sun.com/jsp/jstl/sql"
 	xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"
-	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
 	
@@ -64,6 +59,8 @@
 			<settings:sync command="${command}"/>
 			
 			<settings:group command="${command}"/>
+
+			<settings:person command="${command}"/>
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">
@@ -91,11 +88,13 @@
 		<jsp:attribute name="sidebar">
 		
 			<!-- Claimed person -->
-			<c:if test="${not empty command.claimedPerson}">
+			<c:set var="claimedPerson" value="${command.context.loginUser.claimedPerson}"/>
+			<c:if test="${not empty claimedPerson}">
 				<sidebar:sidebarItem textKey="settings.sidebar.claimedPerson">
 					<jsp:attribute name="content">
-						<a href="${relativeUrlGenerator.getPersonUrl(command.claimedPerson.personId)}">
-							${mtl:cleanBibtex(command.claimedPerson.mainName.firstName)} ${mtl:cleanBibtex(command.claimedPerson.mainName.lastName)}
+						<a href="${relativeUrlGenerator.getPersonUrl(claimedPerson.personId)}">
+							<c:set var="mainName" value="${claimedPerson.mainName}" />
+							${mtl:cleanBibtex(mainName.firstName)} ${mtl:cleanBibtex(mainName.lastName)}
 						</a>
 					</jsp:attribute>
 				</sidebar:sidebarItem>
@@ -117,7 +116,7 @@
 			<sidebar:sidebarItem textKey="friends.yourfriends">
 				<jsp:attribute name="content">
 					<span class="friends-of-user">
-						<ul class="more-list">
+						<ul class="">
 							<c:forEach var="user" items="${command.friendsOfUser}">
 								<li>
 									<user:username user="${user}" />

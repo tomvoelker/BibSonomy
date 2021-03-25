@@ -26,64 +26,44 @@
  */
 package org.bibsonomy.scraper.url.kde.wileyintersience;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.generic.LiteratumScraper;
+import org.bibsonomy.scraper.generic.CitMgrScraper;
 
 
 /**
- * Scraper for www3.interscience.wiley.com
+ * Scraper for onlinelibrary.wiley.com
  * @author rja
  */
-public class WileyIntersienceScraper extends LiteratumScraper {
+public class WileyIntersienceScraper extends CitMgrScraper {
 
 	private static final String SITE_HOST = "onlinelibrary.wiley.com";
-	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
-	private static final String SITE_NAME = "Wiley Online Library";
-	private static final String SITE_INFO = "Extracts publications from the abstract page of " + href(SITE_URL,SITE_NAME) + ".";
-	private static final Pattern DOI_PATTERN = Pattern.compile("/doi/.+");
+	private static final String SITE_URL  = "https://" + SITE_HOST + "/";
+	private static final String SITE_NAME = "InterScience";
+	private static final String INFO = "Extracts publications from the abstract page of " + href(SITE_URL,SITE_NAME) + ".";
+	private static final Pattern DOI_PATTERN = Pattern.compile("/doi/(.+)/.*");
 
-	private static final List<Pair<Pattern,Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), DOI_PATTERN)); 
 
-	@Override
-	protected boolean requiresCookie() {
-		return true;
-	}
-	@Override
-	protected List<NameValuePair> getPostContent(String doi) {
-		final ArrayList<NameValuePair> postData = new ArrayList<NameValuePair>(6);
-		postData.add(new BasicNameValuePair("doi", doi));
-		postData.add(new BasicNameValuePair("include", "abs"));
-		postData.add(new BasicNameValuePair("downloadFileName", "foo"));
-		postData.add(new BasicNameValuePair("format", "bibtex"));
-		postData.add(new BasicNameValuePair("direct", "direct"));
-		postData.add(new BasicNameValuePair("submit", "Download"));
-		return postData;
-	}
+	private static final List<Pair<Pattern,Pattern>> patterns = Collections.singletonList(new Pair<>(Pattern.compile(".*" + SITE_HOST), DOI_PATTERN));
 
-	@Override
 	public String getInfo() {
-		return SITE_INFO;
+		return INFO;
 	}
 
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return PATTERNS;
+		return patterns;
 	}
 
-	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
-	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
+
 }

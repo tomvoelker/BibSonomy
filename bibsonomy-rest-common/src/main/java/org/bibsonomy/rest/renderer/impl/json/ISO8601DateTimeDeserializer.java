@@ -36,7 +36,6 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
@@ -55,7 +54,7 @@ public class ISO8601DateTimeDeserializer extends StdDeserializer<XMLGregorianCal
 	}
 
 	@Override
-	public XMLGregorianCalendar deserialize(final JsonParser jp, final DeserializationContext ctxt) throws IOException, JsonProcessingException {
+	public XMLGregorianCalendar deserialize(final JsonParser jp, final DeserializationContext ctxt) throws IOException {
 		final Calendar date = DatatypeConverter.parseDate(jp.getValueAsString());
 		final GregorianCalendar c = new GregorianCalendar();
 		c.setTime(date.getTime());

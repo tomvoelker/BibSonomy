@@ -1,0 +1,23 @@
+<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+	<div class="form-group">
+		<div class="col-md-3">
+			<label>Person</label>
+		</div>
+		<div class="col-md-5">
+			<c:set var="personPlaceHolder" value="" />
+			<c:set var="person" value="${command.person}" />
+			<c:if test="${not empty person.personId}">
+				<c:set var="personPlaceHolder" value="${person.mainName.lastName}, ${person.mainName.firstName}" />
+			</c:if>
+			<input class="form-control typeahead" id="searchPersonAutocomplete" autocomplete="on" placeholder="${personPlaceHolder}"/>
+
+			<button class="btn btn-default btn-sm clean-typeahead" data-id="personField">
+				Clear
+			</button>
+		</div>
+	</div>
+</jsp:root>

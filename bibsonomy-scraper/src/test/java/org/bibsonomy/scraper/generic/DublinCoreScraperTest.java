@@ -85,5 +85,10 @@ public class DublinCoreScraperTest {
 		final String resultFile = "DCScraperTest7.bib";
 		assertScraperResult(url, null, DublinCoreScraper.class, resultFile);	
 	}
+
+	@Test
+	public void testDCScraper8() {
+		assertScraperResult("https://journal.iwmpi.org/index.php/iwmpi/article/view/33", null, DublinCoreScraper.class, "dcscraper/DCScraperText8.bib");
+	}
 	
 }

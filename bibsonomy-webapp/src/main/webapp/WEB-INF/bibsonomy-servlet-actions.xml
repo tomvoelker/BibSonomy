@@ -334,7 +334,8 @@
 								<value>ckey</value>
 								<value>tags</value>
 								<value>postsErrorList</value>
-								
+								<!-- get snippet from external url -->
+								<value>url</value>
 							</list>
 						</property>
 					</bean>
@@ -452,6 +453,39 @@
 								<!-- used to update posts owned by the group user -->
 								<value>groupUser</value>
 								
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/editProject">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="editProjectController"/>
+						<property name="allowedFields">
+							<list>
+								<value>projectIdToUpdate</value>
+								<value>ckey</value>
+								<value>project.title</value>
+								<value>project.subTitle</value>
+								<value>project.description</value>
+								<value>project.type</value>
+								<value>project.sponsor</value>
+								<value>project.budget</value>
+								<value>project.startDate</value>
+								<value>project.endDate</value>
+								<value>project.parentProject.internalId</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/deleteProject">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="deleteProjectController"/>
+						<property name="allowedFields">
+							<list>
+								<value>projectIdToDelete</value>
+								<value>ckey</value>
+								<value>project.internalId</value>
+								<value>project.title</value>
 							</list>
 						</property>
 					</bean>
@@ -700,6 +734,22 @@
 						</property>
 					</bean>
 				</entry>
+
+				<!-- person related actions -->
+				<entry key="/deletePersonResourceRelation">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="deletePersonResourceRelationController"/>
+						<property name="allowedFields" ref="personRelationParameters" />
+					</bean>
+				</entry>
+
+				<entry key="/addPersonResourceRelation">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="addPersonResourceRelationController"/>
+						<property name="allowedFields" ref="personRelationParameters" />
+					</bean>
+				</entry>
+
 				<entry key="/autoRegisterSamlAndOAuth">
 					<bean parent="controllerBase">
 						<property name="presenceCondition" ref="samlActivatedCondition" />
@@ -708,6 +758,23 @@
 							<list>
 								<value>authorizeAction</value>
 								<value>responseString</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+
+				<!-- updates the user settings from the person tab of the settings page -->
+				<entry key="/updateUserPersonSettings">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="updateUserPersonSettingsController" />
+						<property name="allowedFields">
+							<list>
+								<value>logLevel</value>
+								<value>action</value>
+								<value>ckey</value>
+								<value>selTab</value>
+								<value>user.settings.personPostsStyle</value>
+								<value>user.settings.personPostsLayout</value>
 							</list>
 						</property>
 					</bean>
@@ -833,6 +900,14 @@
 		
 	</util:list>
 
+	<util:list id="personRelationParameters">
+		<value>ckey</value>
+        <value>person.personId</value>
+		<value>type</value>
+		<value>interhash</value>
+		<value>index</value>
+	</util:list>
+
 	<!--  #################### controller #################### -->
 	<!-- abstract edit post controller -->
 	<bean id="editPostController" class="org.bibsonomy.webapp.controller.actions.EditPostController" scope="request" abstract="true" parent="resourceController">
@@ -853,12 +928,20 @@
 					<property name="alertType" value="warning" /> 
 				</bean>
 			</list>
-			
 		</property>
 	</bean>
-	
-	
-	<!-- Handles the edit publication process -->
+
+    <bean id="editProjectController" class="org.bibsonomy.webapp.controller.actions.EditProjectController" scope="request">
+        <property name="logic" ref="logic" />
+        <property name="urlGenerator" ref="relativeUrlGenerator"/>
+    </bean>
+
+    <bean id="deleteProjectController" class="org.bibsonomy.webapp.controller.actions.DeleteProjectController" scope="request">
+        <property name="logic" ref="logic" />
+        <property name="urlGenerator" ref="relativeUrlGenerator"/>
+    </bean>
+
+    <!-- Handles the edit publication process -->
 	<bean id="editPublicationController" class="org.bibsonomy.webapp.controller.actions.EditPublicationController" scope="request" parent="editPostController">
 		<property name="scraper" ref="kdeScraperChain"/>
 		<property name="swordService" ref="swordService"/>
@@ -907,9 +990,12 @@
 	<bean id="publicationImporter" class="org.bibsonomy.webapp.util.importer.PublicationImporter">
 		<property name="fileLogic" ref="fileLogic" />
 		<property name="endnoteToBibtexConverter" ref="endnoteToBibtexConverter"/>
+		<property name="risToBibtexConverter" ref="risToBibtexConverter"/>
 	</bean>
 	
 	<bean id="endnoteToBibtexConverter" class="org.bibsonomy.scraper.converter.EndnoteToBibtexConverter"/>
+	
+	<bean id="risToBibtexConverter" class="org.bibsonomy.scraper.converter.RisToBibtexConverter"/>
 	
 	<bean id="publicationRenderingController" class="org.bibsonomy.webapp.controller.PublicationRenderingController" scope="request">
 		<property name="publicationImporter" ref="publicationImporter"/>
@@ -1006,6 +1092,7 @@
 		
 		<property name="authenticationManager" ref="samlAuthenticationManager"/>
 		<property name="rememberMeServices" ref="internalRememberMeServices" />
+		<property name="forceRemoteIDAsUsername" value="${auth.register.saml.forceRemoteIDAsUsername}" />
 	</bean>
 	
 	<bean id="joinGroupController" class="org.bibsonomy.webapp.controller.actions.JoinGroupController" scope="request">
@@ -1156,17 +1243,24 @@
 	<alias name="${project.bean.pingback}" alias="pingback"/>
 	
 	<!-- Handles user's profile picture source -->
-	<bean id="gravatarStdPictureHandlerFactory" class="org.bibsonomy.webapp.util.picture.StandardPictureHandlerFactory" />
+	<bean id="gravatarStdPictureHandlerFactory" class="org.bibsonomy.webapp.util.picture.StandardPictureHandlerFactory">
+		<property name="adminLogic" ref="adminLogic" />
+		<property name="fileLogic" ref="fileLogic" />
+	</bean>
 	
 	<!-- Handles the picture download -->
 	<bean id="pictureController" class="org.bibsonomy.webapp.controller.PictureController" scope="request">
-		<property name="logic" ref="adminLogic" />
 		<property name="requestLogic" ref="requestLogic" />
 		<property name="pictureHandlerFactory" ref="gravatarStdPictureHandlerFactory" />
 	</bean>	
 	
 	<!-- Handles the settings update of a user -->
 	<bean id="updateUserSettingsController" class="org.bibsonomy.webapp.controller.actions.UpdateUserSettingsController" scope="request" parent="settingsPageController">
+		<property name="maxQuerySize" value="${database.maxQuerySize}" />
+	</bean>
+
+	<!-- Handles the personsettings update of a user -->
+	<bean id="updateUserPersonSettingsController" class="org.bibsonomy.webapp.controller.actions.UpdateUserPersonSettingsController" scope="request" parent="settingsPageController">
 		<property name="maxQuerySize" value="${database.maxQuerySize}" />
 	</bean>
 	
@@ -1327,7 +1421,18 @@
 	<bean id="editTagsPageViewController" class="org.bibsonomy.webapp.controller.actions.EditTagsPageViewController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
-	</bean>	
+	</bean>
+
+	<!-- person actions -->
+	<bean id="deletePersonResourceRelationController" class="org.bibsonomy.webapp.controller.person.relation.DeletePersonResourceRelationController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="urlGenerator" ref="relativeUrlGenerator" />
+	</bean>
+
+	<bean id="addPersonResourceRelationController" class="org.bibsonomy.webapp.controller.person.relation.AddPersonResourceRelationController" scope="request">
+		<property name="logic" ref="logic"/>
+        <property name="urlGenerator" ref="relativeUrlGenerator" />
+	</bean>
 	
 	<bean id="vuFindUserInitController" class="org.bibsonomy.webapp.controller.actions.VuFindUserInitController" scope="request" lazy-init="true">
 		<property name="oaAuthorizeController" ref="oAuthAuthorizeController"/>
@@ -1335,6 +1440,5 @@
 		<property name="adminLogic" ref="adminLogic"/>
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="authenticationManager" ref="samlAuthenticationManager"/>
-	</bean>	
-	
+	</bean>
 </beans>

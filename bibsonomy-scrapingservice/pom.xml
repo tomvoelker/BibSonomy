@@ -41,7 +41,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>3.9.0-SNAPSHOT</version>
+		<version>4.0.0-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>
@@ -93,13 +93,13 @@
 
 		<!--+
 		    | Otherwise, the log4j.properties from jena will be loaded. :-(
+		    | TODO: exclude log4j from com.hp.hpl.jena?
 		    +-->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
 		<!--+
 			|
 			| For testing Pingback

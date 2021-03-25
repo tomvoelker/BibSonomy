@@ -55,7 +55,6 @@ import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.springframework.http.HttpMethod;
 
 /**
  * @author rja
@@ -95,9 +94,9 @@ public class WebUtils {
 	 */
 	private static final PoolingHttpClientConnectionManager CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();
 	private static final HttpClient CLIENT = getHttpClient();
-	
+
 	/**
-	 * default config for http client 
+	 * default config for http client
 	 */
 	private static final RequestConfig DEFAULT_REQUEST_CONFIG = RequestConfig.custom()
 		.setConnectTimeout(CONNECTION_TIMEOUT)
@@ -114,11 +113,11 @@ public class WebUtils {
 	}
 	/**
 	 * This method returns an instance of the HttpClient and should only be used
-	 * if the other methods that deliver direct results can not be used. Each 
-	 * call to this method should be documented with an explanation why it is 
+	 * if the other methods that deliver direct results can not be used. Each
+	 * call to this method should be documented with an explanation why it is
 	 * necessary.
-	 * @param defaultRequestConfig 
-	 * 
+	 * @param defaultRequestConfig
+	 *
 	 * @return the configured {@link HttpClient}
 	 */
 	public static HttpClient getHttpClient(final RequestConfig defaultRequestConfig) {
@@ -137,10 +136,10 @@ public class WebUtils {
 
 	/**
 	 * This method returns an instance of the HttpClient and should only be used
-	 * if the other methods that deliver direct results can not be used. Each 
-	 * call to this method should be documented with an explanation why it is 
+	 * if the other methods that deliver direct results can not be used. Each
+	 * call to this method should be documented with an explanation why it is
 	 * necessary.
-	 * 
+	 *
 	 * @return the configured {@link HttpClient}
 	 */
 	public static HttpClient getHttpClient() {
@@ -150,7 +149,7 @@ public class WebUtils {
 
 	/**
 	 * Reads from a URL and writes the content into a string.
-	 * 
+	 *
 	 * @param url
 	 * @return String which holds the page content.
 	 * @throws IOException
@@ -158,29 +157,28 @@ public class WebUtils {
 	public static String getContentAsString(final String url) throws IOException {
 		return getContentAsString(url, null, null, null);
 	}
-	
+
 	/**
 	 * Reads from a URL and writes the content into a string.
-	 * 
+	 *
 	 * @param url the URL of the content.
 	 * @return String which holds the page content.
 	 * @throws IOException
-	 * 
+	 *
 	 * @Deprecated
 	 */
 	public static String getContentAsString(final URL url) throws IOException {
 		return getContentAsString(url, null);
 	}
-	
+
 	/**
 	 * Reads from a URL and writes the content into a string.
-	 * 
+	 *
 	 * @param url the URL of the content.
 	 * @param cookie a cookie which should be included in the header of the request send to the server
 	 * @return String which holds the page content.
-	 * @throws IOException 
-	 * 
-	 * 
+	 * @throws IOException
+	 *
 	 */
 	public static String getContentAsString(final URL url, final String cookie) throws IOException {
 		return getContentAsString(url.toString(), cookie, null, null);
@@ -188,31 +186,31 @@ public class WebUtils {
 
 	/**
 	 * Reads from a URL and writes the content into a string.
-	 * 
+	 *
 	 * @param url
 	 * @param cookie
-	 * @param postData 
+	 * @param postData
 	 * @param visitBefore
-	 * 
+	 *
 	 * @return String which holds the page content.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public static String getContentAsString(final String url, final String cookie, final List<NameValuePair> postData, final String visitBefore) throws IOException {
 		return getContentAsString(CLIENT, url, cookie, postData, visitBefore);
 	}
-	
+
 	/**
 	 * Reads from a URL and writes the content into a string.
-	 * @param client 
-	 * 
+	 * @param client
+	 *
 	 * @param url
 	 * @param cookie
-	 * @param postData 
+	 * @param postData
 	 * @param visitBefore
-	 * 
+	 *
 	 * @return String which holds the page content.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public static String getContentAsString(final HttpClient client, final String url, final String cookie, final List<NameValuePair> postData, final String visitBefore) throws IOException {
@@ -263,11 +261,9 @@ public class WebUtils {
 			}
 
 			/*
-			 * FIXME: check content type header to ensure that we only read textual 
+			 * FIXME: check content type header to ensure that we only read textual
 			 * content (and not a PDF, radio stream or DVD image ...)
 			 */
-
-
 			/*
 			 * collect response
 			 */
@@ -284,28 +280,27 @@ public class WebUtils {
 		}
 
 		return null;
-
 	}
 
 	/**
 	 * Convenience method for getting the page content by passing the {@link HttpClient} and the
-	 * {@link HttpMethod}. If the HTTP status code is other than 200 HTTP OK null will be returned.
-	 * 
+	 * {@link HttpGet}. If the HTTP status code is other than 200 HTTP OK null will be returned.
+	 *
 	 * @param client The client to execute.
 	 * @param method The method to be executed.
 	 * @return The response body as String if and only if the HTTP status code is 200 HTTP OK.
-	 * @throws IOException 
-	 * @throws HttpException 
+	 * @throws IOException
+	 * @throws HttpException
 	 */
 	public static String getContentAsString(final HttpClient client, final HttpGet method) throws HttpException, IOException {
 		try {
 			final HttpResponse response = client.execute(method);
 			switch (response.getStatusLine().getStatusCode()) {
-			case HttpStatus.SC_OK:
+				case HttpStatus.SC_OK:
 				final String charset = extractCharset(response.getFirstHeader(CONTENT_TYPE_HEADER_NAME).getValue());
 				return inputStreamToStringBuilder(response.getEntity().getContent(), charset).toString();
-			default:
-				return null;
+				default:
+					return null;
 			}
 		} finally {
 			// required, see http://hc.apache.org/httpclient-3.x/threading.html
@@ -315,7 +310,7 @@ public class WebUtils {
 
 	/**
 	 * Shortcut for {@link #getRedirectUrl(URL, List)}.
-	 * 
+	 *
 	 * @param url The location to start.
 	 * @return - The redirect URL if received HTTP Status Code 200, null otherwise.
 	 */
@@ -327,7 +322,7 @@ public class WebUtils {
 	 * Executes a request for the given URL following up to {@value #MAX_REDIRECT_COUNT}
 	 * redirects. If response is HTTP Status Code 200 returns the URL for that location,
 	 * otherwise return null. 
-	 * 
+	 *
 	 * @param url The location to start.
 	 * @param headers Additional headers to be added to the request
 	 * @return - The redirect URL if received HTTP Status Code 200, null otherwise.
@@ -363,24 +358,36 @@ public class WebUtils {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param url
 	 * @return the cookies
 	 * @throws IOException
 	 */
 	public static String getCookies(final URL url) throws IOException {
+		final HttpURLConnection urlConn = createConnection(url);
+		urlConn.setAllowUserInteraction(false);
+		urlConn.setDoInput(true);
+		urlConn.setDoOutput(false);
+
+		urlConn.connect();
+
+		final List<String> cookies = urlConn.getHeaderFields().get("Set-Cookie");
+		urlConn.disconnect();
+
+		return buildCookieString(cookies);
 		return getCookies(CLIENT, url);
 	}
+
 	/**
-	 * 
-	 * @param client 
+	 *
+	 * @param client
 	 * @param url
 	 * @return the cookies
 	 * @throws IOException
 	 */
 	public static String getCookies(final HttpClient client, final URL url) throws IOException {
 		final HttpGet get = new HttpGet(url.toString());
-		final List<String> cookies = new ArrayList<String>();
+		final List<String> cookies = new ArrayList<>();
 		try {
 			final HttpResponse response = client.execute(get);
 
@@ -400,7 +407,7 @@ public class WebUtils {
 	 * @throws IOException
 	 */
 	@Deprecated
-	public static HttpURLConnection createConnnection(URL url) throws IOException {
+	public static HttpURLConnection createConnection(URL url) throws IOException {
 		final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
 
 		// set the timeouts
@@ -409,7 +416,7 @@ public class WebUtils {
 		urlConn.setUseCaches(false);
 
 		/*
-		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
+		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some
 		 * pages require it to download content.
 		 */
 		urlConn.setRequestProperty(USER_AGENT_HEADER_NAME, USER_AGENT_PROPERTY_VALUE);
@@ -418,7 +425,7 @@ public class WebUtils {
 
 	/**
 	 * Builds a cookie string as used in the HTTP header.
-	 * 
+	 *
 	 * @param cookies - a list of key/value pairs
 	 * @return The cookies folded into a string.
 	 */
@@ -427,8 +434,9 @@ public class WebUtils {
 
 		if (cookies != null) {
 			for (final String cookie : cookies) {
-				if (result.length() != 0)
+				if (result.length() != 0) {
 					result.append(";");
+				}
 				result.append(cookie);
 			}
 		}
@@ -444,7 +452,7 @@ public class WebUtils {
 	 * </ul>
 	 *
 	 * FIXME: is this also required for HttpClient 4.x? Preferrably, a method from http commons should be used for that.
-	 * 
+	 *
 	 * @param contentType
 	 * @return - The charset.
 	 */
@@ -459,7 +467,7 @@ public class WebUtils {
 			if (charsetPosition > -1) {
 				/*
 				 * cut this:
-				 *                    |<--   -->|             
+				 *                    |<--   -->|
 				 * text/html; charset=utf-8; qs=1
 				 */
 				String charSet = contentType.substring(charsetPosition + CHARSET.length());
@@ -469,7 +477,7 @@ public class WebUtils {
 				if (charsetEnding > -1) {
 					/*
 					 * cut this:
-					 * |<->|             
+					 * |<->|
 					 * utf-8; qs=1
 					 */
 					charSet = charSet.substring(0, charsetEnding);
@@ -482,8 +490,8 @@ public class WebUtils {
 					charSet = charSet.replaceAll("\"", "");
 				}
 				return charSet.trim().toUpperCase();
-			} 
-		} 
+			}
+		}
 		/*
 		 * default charset
 		 */
@@ -492,9 +500,9 @@ public class WebUtils {
 
 	/**
 	 * Copies the stream into the string builder.
-	 * 
+	 *
 	 * @param inputStream
-	 * @param charset 
+	 * @param charset
 	 * @return stringbuilder with the contents of the inputstream
 	 * @throws IOException
 	 */
@@ -505,7 +513,7 @@ public class WebUtils {
 		 */
 		if (!present(charset)) {
 			in = new InputStreamReader(inputStream);
-		} else { 
+		} else {
 			in = new InputStreamReader(inputStream, charset);
 		}
 		/*
@@ -518,7 +526,7 @@ public class WebUtils {
 			sb.append(line).append(NEWLINE);
 		}
 		buf.close();
-
+		
 		return sb;
 	}
 

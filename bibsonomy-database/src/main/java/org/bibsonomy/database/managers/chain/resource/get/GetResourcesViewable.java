@@ -35,12 +35,12 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
 
 /**
  * Returns a list of resources for a given group (which is only viewable for
@@ -58,7 +58,7 @@ public class GetResourcesViewable<R extends Resource, P extends ResourceParam<R>
 				(param.getGrouping() == GroupingEntity.VIEWABLE) &&
 				present(param.getRequestedGroupName()) &&
 				!present(param.getHash()) &&
-				nullOrEqual(param.getOrder(), Order.ADDED) &&
+				nullOrEqual(param.getSortKey(), SortKey.NONE, SortKey.DATE) &&
 				!present(param.getSearch())) && 
 				!present(param.getAuthor()) &&
 				!present(param.getTitle());

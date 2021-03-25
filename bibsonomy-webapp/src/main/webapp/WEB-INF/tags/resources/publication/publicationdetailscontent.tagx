@@ -63,12 +63,11 @@
 			<!--+
 				| DOI
 				+-->
-			<c:set var="doi" value="${publication.miscFields['doi']}" />
+			<c:set var="doi" value="${mtl:extractDOI(publication.miscFields['doi'])}" />
 			<c:if test="${not empty doi}">
 				<dt><fmt:message key="bibtex.actions.doi"/>:</dt>
 				<dd>
-					<c:set var="doi" value="${mtl:extractDOI(doi)}" />
-					<a itemprop="sameAs" href="http://dx.doi.org/${fn:escapeXml(doi)}"><c:out value="${doi}"/></a>
+					<a itemprop="sameAs" href="https://doi.org/${mtl:encodePathSegment(doi)}"><c:out value="${doi}"/></a>
 				</dd>
 			</c:if>
 			
@@ -158,7 +157,7 @@
 			<dd>
 				<fmt:message var="helpText" key="discussion.resourceLink.help"/>
 				<c:set var="linkText" value="[[publication/${interHashId}${publication.interHash}/${mtl:encodePathSegment(post.user.name)}]]" />
-				<bsform:copyInput id="resource-link" value="${linkText}" onclick="$(this).focus().select();" helpText="${helpText}" noHelp="${false}" />
+				<bsform:copyInput id="resource-link" value="${linkText}" onclick="$(this).focus().filter();" helpText="${helpText}" noHelp="${false}" />
 			</dd>-->
 			<!--+ 
 				|

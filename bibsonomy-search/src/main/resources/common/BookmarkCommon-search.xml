@@ -7,9 +7,4 @@
 		<result property="lastTasId"    column="tas_id" />
 	</resultMap>
 
-	<resultMap id="searchLogBookmarkPost" class="searchPost" extends="BookmarkCommon.bookmarkPost">
-		<result property="lastTasId"    column="tas_id" />
-		<result property="lastLogDate"  column="log_date" javaType="date"/>
-	</resultMap>
-
 </sqlMap>

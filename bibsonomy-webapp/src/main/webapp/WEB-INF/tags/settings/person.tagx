@@ -1,0 +1,102 @@
+<jsp:root version="2.0"
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+		  xmlns:form="http://www.springframework.org/tags/form"
+		  xmlns:spring="http://www.springframework.org/tags"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+		  xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings"
+		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+>
+
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+
+	<c:set var="user" value="${command.user}"/>
+	<c:set var="person" value="${command.person}"/>
+	<!-- TODO fix main name empty, why? -->
+	<c:set var="mainName" value="${command.person.mainName}"/>
+	<c:set var="loginUser" value="${command.context.loginUser}"/>
+	<c:set var="relativeUrlGenerator"
+		   value="${urlGeneratorFactory.createURLGeneratorForPrefix(properties['project.home'], '')}"/>
+
+	<div id="selTab7" class="tab-pane ${(command.selTab eq 7) ? 'active' : ''}">
+		<fieldset class="fsOuter">
+
+			<fieldset>
+				<!-- CLAIMED PERSON -->
+				<legend><fmt:message key="settings.person.myperson"/></legend>
+				<div class="form-group clearfix">
+					<div class="col-sm-3">
+						<a title="${mtl:cleanBibtex(person.names[0].firstName)} ${mtl:cleanBibtex(person.names[0].lastName)}"
+						   href="${relativeUrlGenerator.getPersonUrl(person)}" class="img-thumbnail img-responsive">
+							<img class="user-avatar"
+								 src="${relativeUrlGenerator.getUserPictureUrlByUsername(person.user)}"/>
+						</a>
+					</div>
+					<div class="col-sm-9">
+						<p>
+							<!-- TODO styling -->
+							<a href="${relativeUrlGenerator.getPersonUrl(person.personId)}">
+								<c:out value="${mtl:cleanBibtex(person.names[0].firstName)} ${mtl:cleanBibtex(person.names[0].lastName)}"/>
+							</a>
+						</p>
+					</div>
+				</div>
+
+
+				<!-- LAYOUT FOR PUBLICATION LIST -->
+				<legend><fmt:message key="settings.person.publications"/></legend>
+				<form:form cssClass="form-horizontal" method="POST" action="/updateUserPersonSettings?ckey=${ckey}"
+						   enctype="multipart/form-data">
+					<!-- SELECT PERSON'S POSTS STYLE -->
+					<div class="form-group clearfix">
+						<form:label cssClass="col-sm-3 control-label" path="user.settings.personPostsStyle">
+							<fmt:message key="settings.person.style.select"/>
+						</form:label>
+						<div class="col-sm-9">
+							<fmt:message var="goldStandard" key="settings.person.style.goldStandard"/>
+							<fmt:message var="myown" key="settings.person.style.myown"/>
+							<form:select cssClass="form-control" path="user.settings.personPostsStyle">
+								<form:option label="${goldStandard}" value="0"/>
+								<form:option label="${myown}" value="1"/>
+							</form:select>
+						</div>
+					</div>
+					<!-- SELECT PERSON'S POSTS LAYOUT -->
+					<div class="form-group clearfix">
+						<form:label cssClass="col-sm-3 control-label" path="user.settings.personPostsLayout">
+							<fmt:message key="settings.person.layout.select"/>
+						</form:label>
+						<div class="col-sm-9">
+							<form:select cssClass="form-control" path="user.settings.personPostsLayout">
+                                <c:forEach var="favl" items="${user.settings.favouriteLayouts}" varStatus="counter">
+                                    <form:option value="${favl.source}/${favl.style}">
+                                        <mtl:favouriteLayoutDisplayName favouriteLayout="${favl}" />
+                                    </form:option>
+                                </c:forEach>
+							</form:select>
+						</div>
+					</div>
+					<!-- save changes button -->
+					<p class="clearfix"><!--  --></p>
+					<div class="form-group">
+						<input type="hidden" name="ckey" value="${ckey}"/>
+						<input type="hidden" name="action" value="personSettings"/>
+						<input type="hidden" name="selTab" value="7"/>
+
+						<div class="col-sm-offset-3 col-sm-9">
+							<fmt:message var="submitButton" key="settings.saveChanges"/>
+							<bsform:button type="submit" style="primary" size="defaultSize" value="${submitButton}"/>
+						</div>
+					</div>
+				</form:form>
+			</fieldset>
+		</fieldset>
+	</div>
+</jsp:root>

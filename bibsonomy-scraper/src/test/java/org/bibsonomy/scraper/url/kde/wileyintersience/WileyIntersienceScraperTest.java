@@ -29,26 +29,21 @@ package org.bibsonomy.scraper.url.kde.wileyintersience;
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #33 #34 #109 for WileyIntersienceScraper
+ * Scraper URL tests for WileyIntersienceScraper
+ *
  * @author tst
  *
  */
 @Category(RemoteTest.class)
 public class WileyIntersienceScraperTest {
-	
-	/**
-	 * starts URL test with id url_33
-	 */
+
 	@Test
 	public void url1TestRun(){
-		final String url = "https://onlinelibrary.wiley.com/doi/abs/10.1002/jemt.10338";
-		final String resultFile = "WileyIntersienceScraperUnitURLTest1.bib";
-		assertScraperResult(url, null, WileyIntersienceScraper.class, resultFile);
+		assertScraperResult("http://onlinelibrary.wiley.com/doi/abs/10.1002/jemt.10338", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest1.bib");
 	}
 
 	/**
@@ -56,28 +51,23 @@ public class WileyIntersienceScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		final String url = "https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1365-2575.2007.00275.x";
-		final String resultFile = "WileyIntersienceScraperUnitURLTest3.bib";
-		assertScraperResult(url, null, WileyIntersienceScraper.class, resultFile);
+		assertScraperResult("http://onlinelibrary.wiley.com/doi/abs/10.1111/j.1365-2575.2007.00275.x", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest3.bib");
 	}
+	
 	/**
 	 * starts URL test with id url_189
 	 */
 	@Test
 	public void url4TestRun(){
-		final String url = "https://onlinelibrary.wiley.com/doi/abs/10.1002/1521-4095%28200011%2912%3A22%3C1655%3A%3AAID-ADMA1655%3E3.0.CO%3B2-2";
-		final String resultFile = "WileyIntersienceScraperUnitURLTest4.bib";
-		assertScraperResult(url, null, WileyIntersienceScraper.class, resultFile);
-	}
+		assertScraperResult("https://onlinelibrary.wiley.com/doi/abs/10.1002/1521-4095%28200011%2912%3A22%3C1655%3A%3AAID-ADMA1655%3E3.0.CO%3B2-2", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest4.bib");
+	}	
+	
 	/**
 	 * starts URL test with id url_189
-	 * Scraping books is currently not supported, as we can not find the BibTeX for the book, only for individual chapters.
 	 */
 	@Test
-	@Ignore
 	public void url5TestRun(){
-		final String url = "http://onlinelibrary.wiley.com/book/10.1029/AR071";
-		final String resultFile = "WileyIntersienceScraperUnitURLTest5.bib";
-		assertScraperResult(url, null, WileyIntersienceScraper.class, resultFile);
-	}
+		assertScraperResult("https://agupubs.onlinelibrary.wiley.com/doi/book/10.1029/AR071", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest5.bib");
+
+	}	
 }

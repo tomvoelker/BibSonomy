@@ -1,0 +1,46 @@
+<jsp:root version="2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs">
+
+    <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true" />
+    <fmt:message key="person.show.close" var="textClose" />
+    <fmt:message key="person.show.addThesisButton" var="textAddThesisButton" />
+    <fmt:message key="person.show.newThesisButton" var="textNewThesisButton" />
+
+
+    <fmt:message key="person.show.modalAddThesisHeader" var="textModalAddThesisHeader" />
+    <bs:modal modalTitle="${textModalAddThesisHeader}" id="addThesis">
+        <jsp:attribute name="modalBody">
+            <fieldset>
+                <div id="person-scroll-menu" class="form-group">
+                    <label for='addThesisAuto' class="control-label">${textThesis}</label>
+                    <fmt:message key="person.show.modal.addThesis.placeholder" var="tmpMsg" />
+                    <input class='form-control typeahead' id='addThesisAuto' type='text' name='addThesisAuto' autocomplete="off" placeholder="${tmpMsg}"/>
+                </div>
+            </fieldset>
+        </jsp:attribute>
+        <jsp:attribute name="modalFooter">
+            <form action="/postPublication" method="post">
+                <input type="hidden" name="ckey" value="${ckey}"/>
+                <input type="hidden" name='personId' value='${command.person.personId}'/>
+                <input type="hidden" name='personRole' value='AUTHOR'/>
+                <input type="hidden" name='post.resource.entrytype' value='phdthesis'/>
+                <input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
+            </form>
+            <form id="addThesisForm" action="${absoluteUrlGenerator.getPersonUrl(command.person.personId)}" method="post" class='form-inline'>
+                <!-- set via autocomplete -->
+                <input type="hidden" name="ckey" value="${ckey}"/>
+                <input type='hidden' name='formInterHash' value=''/>
+                <input type='hidden' name='resourcePersonRelation.personIndex' value=''/>
+                <!-- set statically -->
+                <input type='hidden' name='formPersonId' value='${command.person.personId}'/>
+                <input type='hidden' name='formPersonRole' value='AUTHOR'/>
+                <input type="hidden" name='formAction' value='addThesis' />
+                <!-- visible elements -->
+                <button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+                <input type="submit" class="btn btn-primary" name='submit' id="addThesisBtn" value='${textAddThesisButton}' />
+            </form>
+            </jsp:attribute>
+    </bs:modal>
+</jsp:root>

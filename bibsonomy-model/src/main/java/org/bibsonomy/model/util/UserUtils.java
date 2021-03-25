@@ -40,6 +40,7 @@ import java.util.Random;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Tag;
@@ -53,39 +54,6 @@ import org.bibsonomy.util.StringUtils;
  * @author Miranda Grahl
  */
 public class UserUtils {
-	
-	/** the name of the dblp user */
-	public static final String DBLP_USER_NAME = "dblp";
-	
-	/** the name of the genealogy user (import from dnb) */
-	public static final String GENEALOGY_USER = "genealogie";
-	
-	/** a set of special users */
-	public static final List<String> USER_NAMES_OF_SPECIAL_USERS = Arrays.asList(DBLP_USER_NAME, GENEALOGY_USER);
-	
-	private static final Map<String, List<Tag>> TAGS_OF_SPECIAL_USERS;
-	
-	static {
-		TAGS_OF_SPECIAL_USERS = new HashMap<>();
-		TAGS_OF_SPECIAL_USERS.put(DBLP_USER_NAME, createFrequentTags(DBLP_USER_NAME));
-		TAGS_OF_SPECIAL_USERS.put(GENEALOGY_USER, createFrequentTags("dnb"));
-	}
-
-	private static List<Tag> createFrequentTags(final String... tagNames) {
-		final List<Tag> tags = new ArrayList<Tag>();
-		for (String tagName : tagNames) {
-			tags.add(createFrequentTag(tagName));
-		}
-		return tags;
-	}
-	
-	private static Tag createFrequentTag(final String tagName) {
-		final Tag tag = new Tag();
-		tag.setName(tagName);
-		tag.setGlobalcount(1000000);
-		tag.setUsercount(1000000);
-		return tag;
-	}
 	
 	/** the length of the password salt */
 	private static final int SALT_LENGTH = 16;
@@ -117,29 +85,6 @@ public class UserUtils {
 	 */
 	public static boolean isValidHomePage(final URL homepage) {
 		return !present(homepage) || "http".equals(homepage.getProtocol()) || "https".equals(homepage.getProtocol());
-	}
-
-
-	/**
-	 * Checks, if the given user is the special DBLP user 
-	 * (which has some special rights).
-	 *  
-	 * @param user
-	 * @return <code>true</code>, if <code>user</code> is the DBLP user.
-	 */
-	public static boolean isDBLPUser(final User user) {
-		return present(user) && isDBLPUser(user.getName());
-	}
-
-
-	/** Checks, if the given user name is the special DBLP user 
-	 * (which has some special rights).
-	 *  
-	 * @param userName - the name of the user in question.
-	 * @return <code>true</code>, if <code>user</code> is the DBLP user.
-	 */
-	public static boolean isDBLPUser(final String userName) {
-		return DBLP_USER_NAME.equalsIgnoreCase(userName);
 	}
 
 	/**
@@ -226,7 +171,7 @@ public class UserUtils {
 	 * @return list of groupIDs extracted from the given user's list of groups
 	 */
 	public static List<Integer> getListOfGroupIDs(final User user) {
-		final List<Integer> groupIDs = new ArrayList<Integer>();
+		final List<Integer> groupIDs = new ArrayList<>();
 		final List<Group> groups = getListOfGroups(user);
 		for (final Group group : groups) {
 			groupIDs.add(group.getGroupId());
@@ -241,7 +186,7 @@ public class UserUtils {
 	 * @return list of groups extracted from the given user's list of groups
 	 */
 	public static List<Group> getListOfGroups(final User user) {
-		final List<Group> groups = new ArrayList<Group>();
+		final List<Group> groups = new ArrayList<>();
 		/*
 		 * every user may see public posts
 		 */ 
@@ -264,7 +209,7 @@ public class UserUtils {
 		if (!present(users)) {
 			return null;
 		}
-		final Set<String> result = new HashSet<String>();
+		final Set<String> result = new HashSet<>();
 		for (final User u : users) {
 			result.add(u.getName());
 		}
@@ -363,18 +308,28 @@ public class UserUtils {
 	/**
 	 * This method returns a new groupuser {@link User} for the given group
 	 * 
-	 * @param groupName the name of the group
+	 * @param group the group
 	 * @return the group user
 	 */
-	public static User buildGroupUser(final String groupName) {
-		final User user = new User(groupName);
+	public static User buildGroupUser(final Group group) {
+		final User user = new User(group.getName());
 		user.setPassword(generateRandomPassword());
-		user.setRealname(""); // XXX: realname can't be null (db schema)
+		final String realname = group.getRealname();
+		if (present(realname)) {
+			user.setRealname(realname);
+		} else {
+			user.setRealname(""); // XXX: realname can't be null (db schema)
+		}
+
+		user.setHomepage(group.getHomepage());
+
 		user.setEmail(""); // XXX: email can't be null (db schema)
 		user.setRole(Role.GROUPUSER);
+		// every info of the group is public; XXX: maybe we want to change it
+		user.getSettings().setProfilePrivlevel(ProfilePrivlevel.PUBLIC);
 		return user;
 	}
-	
+
 	/**
 	 * Return the user's name in a nice format to be used e.g. in emails. If the user has a non-empty real name, that will be returned, otherwise the username.
 	 * @param user
@@ -384,35 +339,8 @@ public class UserUtils {
 	public static String getNiceUserName(final User user, final boolean atPrefix) {
 		if (present(user.getRealname())) {
 			return user.getRealname();
-		} 
-		return (atPrefix? "@" :"") + user.getName();
-	
-	}
-
-	/**
-	 * @param user
-	 * @return true iff there the given user is a special user (usually those with too many posts to handle)
-	 */
-	public static boolean isSpecialUser(User user) {
-		return present(user) && isSpecialUser(user.getName());
-	}
-
-	/**
-	 * @param userName
-	 * @return true iff there the given user is a special user (usually those with too many posts to handle)
-	 */
-	public static boolean isSpecialUser(String userName) {
-		return present(userName) && USER_NAMES_OF_SPECIAL_USERS.contains(userName);
-	}
-
-	/**
-	 * @param requestedUserName
-	 * @return tags used as a replacement for the tag list of the given special user (querying for the real tag list would be too slow)
-	 */
-	public static List<Tag> getTagsOfSpecialUser(String requestedUserName) {
-		if (requestedUserName == null) {
-			return null;
 		}
-		return TAGS_OF_SPECIAL_USERS.get(requestedUserName);
+
+		return (atPrefix? "@" :"") + user.getName();
 	}
 }

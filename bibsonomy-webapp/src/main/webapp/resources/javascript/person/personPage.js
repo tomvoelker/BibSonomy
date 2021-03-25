@@ -63,12 +63,22 @@ function isValidEMail(mail) {
 
 $(document).ready(function() {
 	$('.mergeConflictButton').click(function() {
-		var array = $('#conflictInputForm').serializeArray();
-		var form_data = {
-				formMatchId: $(this).attr('match-id'),
-				formAction: 'conflictMerge',
-				formResponseString: JSON.stringify(array)
-		};
+		var form_data = {};
+		$.each($("#conflictInputForm").serializeArray(), function (i, field) {
+			if(field.name == 'person.mainName'){
+				var mainName = field.value;
+				
+				var names = mainName.split(", ");
+				form_data["newName.firstName"]=names[1];
+				form_data["newName.lastName"]=names[0];
+			} else{
+				form_data[field.name] = field.value;
+		    }
+		});
+		
+		form_data["formMatchId"] = $("#conflictModalAccept").attr("match-id");
+		form_data["formAction"] = "conflictMerge";
+		
 		$.post("/person", form_data).done(function(data){
 			if (data.status) {
 				$("#match_" + form_data.formMatchId).slideUp(500, function(){
@@ -128,7 +138,7 @@ $(document).ready(function() {
 			    $(input).addClass("form-control conflictInput");
 			    $(input)[0].setAttribute("type", "text");
 			    $(input)[0].setAttribute("id", "text");
-			    $(input)[0].setAttribute("name", data[conflict].field);
+			    $(input)[0].setAttribute("name", 'person.' + data[conflict].field);
 			    $(input)[0].setAttribute("placeholder", "( " + data[conflict].person1Value + " | " + data[conflict].person2Value + " )");
 			    if (data[conflict].field == 'gender') {
 			    	$(input)[0].setAttribute("pattern", "(m|F)");
@@ -145,10 +155,10 @@ $(document).ready(function() {
 			    		var fieldName = $(input).attr('name');
 			    		var reg;
 			    		switch(fieldName){
-			    			case 'gender':
+			    			case 'person.gender':
 			    				reg = new RegExp('(m|F)');
 			    				break;
-			    			case 'mainName':
+			    			case 'person.mainName':
 			    				reg = new RegExp('(.+)(,)(.+)');
 			    				break;
 			    			default:
@@ -185,26 +195,30 @@ $(document).ready(function() {
 	    var $divs = $(sourceDiv+" div.simplePubEntry");
 	    
 	    var opOrder = $divs.sort(function (a, b) {
-	    	if (sortOrdering == 'ASC') {	    		
+	    	if (sortOrdering === 'ASC') {
 	    		return $(a).data(sortBy) > $(b).data(sortBy);
 	    	} else {
 	    		return $(a).data(sortBy) < $(b).data(sortBy);
 	    	}
 	    });
+
+		$('.sort-arrow').each(function() {
+			$(this).removeClass('fa-arrow-up');
+			$(this).removeClass('fa-arrow-down');
+		})
 	    
-	    if (sortOrdering == 'ASC') {
+	    if (sortOrdering === 'ASC') {
 	    	$(this).data('ordering', 'DESC');
+			$(this).children('.sort-arrow').addClass('fa-arrow-up');
 	    } else {
 	    	$(this).data('ordering', 'ASC');
+			$(this).children('.sort-arrow').addClass('fa-arrow-down');
 	    }
 	    
 	    $('.pubSort').each(function() {
-	    	$(this).css('color', '#ccc');
+	    	$(this).css('font-weight', 'normal');
 	    });
-	    
-	    $(this).css('color', '#333');
-	    
-	    replaceFaClass(this);
+	    $(this).css('font-weight', 'bolder');
 	     
 	    $(sourceDiv).html(opOrder)
 
@@ -216,6 +230,13 @@ $(document).ready(function() {
 			$(this).parent().parent().find(".personProfileUpdate").removeClass("disabled");
 		}
 	});
+
+    // researcher id formatter
+    $("#formResearcherid").mask("\a-9999-9999", {
+        completed: function() {
+            $(this).parent().parent().find(".personProfileUpdate").removeClass("disabled");
+        }
+    });
 	
 	// toggle view/hide all available roles
 	$(".personPageShowAdditionalRoleFields").click(function() {
@@ -261,6 +282,7 @@ $(document).ready(function() {
 		
 		// save the form values to update the preview
 		orcid =  $("#formOrcid").val();
+		researcherid = $("#formResearcherid").val();
 		academicDegree = $("#formAcademicDegree").val();
 		college = $("#formCollege").val();
 		email = $("#formEmail").val();
@@ -300,6 +322,7 @@ $(document).ready(function() {
 				
 				// TODO: update the preview values (only the updated one)
 				$("#personPageFormAcademicDegreeValue").text(academicDegree);
+				$("#personPageFormResearcheridValue").text(researcherid);
 				$("#personPageFormOrcidValue").text(orcid);
 				$("#personPageFormCollegeValue").text(college);
 				$("#personPageFormEmailValue").text(email);
@@ -457,5 +480,37 @@ $(document).ready(function() {
 			}
 		});
 	});
-	
+
+
+	/**
+	 * Pagination stuff
+	 */
+	$(".personpage-pagination-next-button").hide();
+	$(".personpage-pagination-prev-button").hide();
+
+	// TODO cleanup in case auto loading will live on
+	// $(".personpage-pagination-next-button").click(function() {
+	// 	url = $(this).data('url');
+	// 	page = parseInt($(this).attr('data-page'));
+	//
+	// 	$.post(url+"&page="+page).done(function(data) {
+	// 		$("#otherPublications").html(data);
+	// 	});
+	//
+	// 	$(this).attr('data-page', page+1);
+	// 	$(".personpage-pagination-prev-button").attr('data-page', page);
+	// });
+	//
+	// $(".personpage-pagination-prev-button").click(function() {
+	// 	url = $(this).data('url');
+	// 	page = parseInt($(this).attr('data-page'));
+	//
+	// 	$.post(url+"&page="+page).done(function(data) {
+	// 		$("#otherPublications").html(data);
+	// 	});
+	//
+	// 	$(this).attr('data-page', page-1);
+	// 	$(".personpage-pagination-next-button").attr('data-page', page);
+	// });
+
 });

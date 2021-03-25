@@ -36,9 +36,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  */
 public class UserIDRegistrationCommand extends BaseCommand implements Serializable {
 	
-	/**
-	 * serial uid
-	 */
+	/** serial uid */
 	private static final long serialVersionUID = 1371638749968299277L;
 	
 	/**
@@ -52,6 +50,8 @@ public class UserIDRegistrationCommand extends BaseCommand implements Serializab
 	private int step = 1;
 	
 	private boolean rememberMe;
+
+	private boolean forceRemoteUserIdAsUsername;
 	
 	/**
 	 * @return register user
@@ -95,5 +95,19 @@ public class UserIDRegistrationCommand extends BaseCommand implements Serializab
 	 */
 	public void setRememberMe(boolean rememberMe) {
 		this.rememberMe = rememberMe;
-	}	
+	}
+
+	/**
+	 * @return the forceRemoteUserIdAsUsername
+	 */
+	public boolean isForceRemoteUserIdAsUsername() {
+		return forceRemoteUserIdAsUsername;
+	}
+
+	/**
+	 * @param forceRemoteUserIdAsUsername the forceRemoteUserIdAsUsername to set
+	 */
+	public void setForceRemoteUserIdAsUsername(boolean forceRemoteUserIdAsUsername) {
+		this.forceRemoteUserIdAsUsername = forceRemoteUserIdAsUsername;
+	}
 }

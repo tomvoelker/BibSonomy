@@ -26,17 +26,29 @@
  */
 package org.bibsonomy.search.es;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.search.es.client.DeleteData;
+import org.bibsonomy.search.es.client.IndexData;
+import org.bibsonomy.search.es.client.UpdateData;
 import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;
-import org.elasticsearch.action.count.CountRequestBuilder;
-import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.update.UpdateRequestBuilder;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 
 /**
  * Wrapper around an ElasticSearch Client.
@@ -55,14 +67,26 @@ public interface ESClient {
 	 * @param alias
 	 * @return <code>true</code> iff the index was updated
 	 */
-	boolean createAlias(String indexName, String alias);
+	default boolean createAlias(String indexName, String alias) {
+		return this.updateAliases(Collections.singleton(new Pair<>(indexName, alias)), Collections.emptySet());
+	}
 
 	/**
 	 * @param alias
 	 * @return the index name of the alias
 	 * @throws IllegalStateException if an alias has multiple indices
 	 */
-	public String getIndexNameForAlias(String alias);
+	default String getIndexNameForAlias(final String alias) {
+		final List<String> activeindices = this.getIndexNamesForAlias(alias);
+		if (!activeindices.isEmpty()) {
+			if (activeindices.size() > 1) {
+				throw new IllegalStateException("found more than one index for this system!");
+			}
+
+			return activeindices.iterator().next();
+		}
+		return null;
+	}
 	
 	/**
 	 * @param aliasName
@@ -70,23 +94,15 @@ public interface ESClient {
 	 */
 	public List<String> getIndexNamesForAlias(String aliasName);
 
+	boolean insertNewDocument(String indexName, String id, IndexData indexData);
+
 	/**
+	 *
 	 * @param indexName
-	 * @param type
-	 * @param id
-	 * @param jsonDocument
-	 * @return <code>true</code> iff the document was inserted successfully
-	 */
-	public boolean insertNewDocument(String indexName, String type, String id, Map<String, Object> jsonDocument);
-	
-	/**
-	 * 
-	 * @param indexName
-	 * @param type
 	 * @param jsonDocuments
 	 * @return <code>true</code> iff all documents were inserted successfully
 	 */
-	public boolean insertNewDocuments(String indexName, String type, Map<String, Map<String, Object>> jsonDocuments);
+	boolean insertNewDocuments(String indexName, Map<String, IndexData> jsonDocuments);
 	
 	/**
 	 * @param indexName
@@ -95,24 +111,25 @@ public interface ESClient {
 	boolean existsIndexWithName(String indexName);
 	
 	/**
-	 * @param indexName
+	 * @param indexName the index containing the search index sync state info
+	 * @param syncStateForIndexName the index name of the index
 	 * @return
 	 */
-	public SearchIndexSyncState getSearchIndexStateForIndex(String indexName);
+	<S extends SearchIndexSyncState> S getSearchIndexStateForIndex(String indexName, String syncStateForIndexName, Converter<S, Map<String, Object>, Object> converter);
+	
+	/**
+	 * @param indexName the name of the index
+	 * @param mapping the mapping for the type in the index
+	 * @param settings the settings to apply
+	 * @return
+	 */
+	boolean createIndex(String indexName, Mapping<XContentBuilder> mapping, String settings);
 	
 	/**
 	 * @param indexName
-	 * @param mappings 
-	 * @param settings TODO
-	 * @return
-	 */
-	boolean createIndex(String indexName, Set<Mapping<String>> mappings, String settings);
-	
-	/**
-	 * @param oldIndexName
 	 * @return 
 	 */
-	boolean deleteIndex(String oldIndexName);
+	boolean deleteIndex(String indexName);
 	
 	/**
 	 * Shutdown the ElasticSearch Client. The client will be no more available
@@ -126,67 +143,106 @@ public interface ESClient {
 	 * @return 
 	 */
 	boolean updateAliases(Set<Pair<String, String>> aliasesToAdd, Set<Pair<String, String>> aliasesToRemove);
+	
+	default boolean updateOrCreateDocuments(String indexName, Map<String, IndexData> jsonDocuments) {
+		if (!present(jsonDocuments)) {
+			return true;
+		}
+
+		// convert the index data to delete data
+		final List<DeleteData> deleteData = jsonDocuments.entrySet().stream().map(entry -> {
+			final DeleteData delete = new DeleteData();
+			final IndexData indexData = entry.getValue();
+			delete.setType(indexData.getType());
+			delete.setId(entry.getKey());
+			delete.setRouting(indexData.getRouting());
+			return delete;
+		}).collect(Collectors.toList());
+
+		this.deleteDocuments(indexName, deleteData);
+		return this.insertNewDocuments(indexName, jsonDocuments);
+	}
 
 	/**
+	 * updates the specified document in the index
 	 * @param indexName
-	 * @param resourceTypeAsString
-	 * @param indexID
-	 * @return 
+	 * @param type
+	 * @param id
+	 * @param jsonDocument
+	 * @return <code>true</code> iff the document was updated
 	 */
-	boolean removeDocumentFromIndex(String indexName, String resourceTypeAsString, String indexID);
-	
-	boolean updateOrCreateDocuments(String indexName, String type, Map<String, Map<String, Object>> jsonDocuments);
-	
+	boolean updateDocument(String indexName, String type, String id, Map<String, Object> jsonDocument);
+
+	/**
+	 * @param indexName the index of the documents to update
+	 * @param updates the update map (key: document id and value is the update to apply)
+	 */
+	boolean updateDocuments(String indexName, List<Pair<String, UpdateData>> updates);
+
 	/**
 	 * @param indexName
 	 * @param alias
 	 */
-	void deleteAlias(String indexName, String alias);
+	default void deleteAlias(String indexName, String alias) {
+		this.updateAliases(Collections.emptySet(), Collections.singleton(new Pair<>(indexName,alias)));
+	}
 
 	/**
 	 * @param indexName
 	 * @param query
-	 * @return
+	 * @return the number of documents matching the query in the index
 	 */
 	long getDocumentCount(String indexName, String type, QueryBuilder query);
 
 	/**
-	 * TODO: (re)move
+	 *
 	 * @param indexName
-	 * @return
+	 * @param type
+	 * @param queryBuilder
+	 * @param highlightBuilder
+	 * @param orders
+	 * @param offset
+	 * @param limit
+	 * @param minScore
+	 * @param fieldsToRetrieve
+	 * @return the search hits of the provided query
 	 */
-	public CountRequestBuilder prepareCount(String indexName);
+	SearchHits search(String indexName, final String type, QueryBuilder queryBuilder, HighlightBuilder highlightBuilder, final List<Pair<String, SortOrder>> orders, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve);
 
 	/**
-	 * 
-	 * TODO: (re)move
+	 *
 	 * @param indexName
+	 * @param type
+	 * @param queryBuilder
+	 * @param aggregationBuilder
 	 * @return
 	 */
-	public SearchRequestBuilder prepareSearch(String indexName);
+	Aggregations aggregate(String indexName, final String type, QueryBuilder queryBuilder, AggregationBuilder aggregationBuilder);
 
 	/**
 	 * @param indexName
 	 * @param type
 	 * @param query
 	 */
-	public void deleteDocuments(String indexName, String type, QueryBuilder query);
+	void deleteDocuments(String indexName, String type, QueryBuilder query);
 	
 	/**
 	 * @param indexName
-	 * @param type
-	 * @param idsToDelete
+	 * @param documentsToDelete
 	 * @return 
 	 */
-	public boolean deleteDocuments(String indexName, String type, Set<String> idsToDelete);
+	boolean deleteDocuments(String indexName, List<DeleteData> documentsToDelete);
 
 	/**
-	 * TODO: (re)move
-	 * @param indexName
-	 * @param type
-	 * @param id
+	 * checks if the client can connect to the es instance
 	 * @return
 	 */
-	public UpdateRequestBuilder prepareUpdate(String indexName, String type, String id);
-	
+	boolean isValidConnection();
+
+	/**
+	 * gets the index settings for the specified index
+	 * @param indexName
+	 * @return the index settings
+	 */
+	Settings getIndexSettings(String indexName);
 }

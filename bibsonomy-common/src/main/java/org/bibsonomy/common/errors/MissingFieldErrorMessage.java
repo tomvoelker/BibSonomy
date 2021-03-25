@@ -34,10 +34,20 @@ package org.bibsonomy.common.errors;
  */
 public class MissingFieldErrorMessage extends ErrorMessage {
 
+	private final String missing;
+
 	/**
 	 * @param missing 
 	 */
 	public MissingFieldErrorMessage(final String missing) {
 		super("Missing " + missing + " for this post.", "database.exception.missing." + missing.toLowerCase());
+		this.missing = missing;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getMissing() {
+		return missing;
 	}
 }

@@ -147,24 +147,6 @@
 		<Enabled>false</Enabled>
 		<AdditionalInfo>This entry has been removed</AdditionalInfo>
 	</URLTest>
-	<URLTest id="url_74">
-		<TestDescription>URL test for event page from usenix.org with current layout</TestDescription>
-		<URL>http://www.usenix.org/events/lisa2001/tech/apthorpe.html</URL>
-		<BibFile>UsenixScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.usenix.UsenixScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_75">
-		<TestDescription>URL test for event page from usenix.org with current layout</TestDescription>
-		<URL>http://usenix.org/events/usenix07/tech/kotla.html</URL>
-		<BibFile>UsenixScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.usenix.UsenixScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_76">
-		<TestDescription>URL test for event page from usenix.org with current layout</TestDescription>
-		<URL>http://usenix.org/events/sec07/tech/drimer.html</URL>
-		<BibFile>UsenixScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.usenix.UsenixScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_79">
 		<TestDescription>URL test for proceeding page from usenix.org with current layout</TestDescription>
 		<URL>http://usenix.org/publications/library/proceedings/tcl97/libes_writing.html</URL>
@@ -391,6 +373,12 @@
 		<URL>http://www.worldcat.org/oclc/163641505</URL>
 		<BibFile>WorldCatScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_169">
+		<TestDescription>Scraping test for publications from ingentaconnect.com</TestDescription>
+		<URL>http://www.ingentaconnect.com/content/mcb/026/2007/00000026/00000004/art00005</URL>
+		<BibFile>IngentaconnectScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_190">
 		<TestDescription>test for PNASScraper</TestDescription>

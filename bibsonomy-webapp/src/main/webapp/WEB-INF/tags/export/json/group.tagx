@@ -1,0 +1,15 @@
+<jsp:root version="2.0" 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	>
+
+	<jsp:directive.attribute name="group" type="org.bibsonomy.model.Group" required="true" />
+
+	  <!-- group -->
+      {  
+         "type" : "Group",
+         "name" : "${mtl:quoteJSON(group.name)}",
+         "realname" : "${mtl:quoteJSON(group.realname)}"
+      }
+</jsp:root>

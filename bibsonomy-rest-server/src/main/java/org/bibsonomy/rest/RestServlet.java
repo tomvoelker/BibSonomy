@@ -53,8 +53,8 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ReadOnlyDatabaseException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncService;
@@ -106,13 +106,13 @@ public final class RestServlet extends HttpServlet {
 	public static final String REQUEST_ENCODING = StringUtils.CHARSET_UTF_8;
 
 	/** Name of header, that shows successful ssl verification */
-	public static final String SSL_VERIFY_HEADER = "SSL_CLIENT_VERIFY";
+	public static final String SSL_VERIFY_HEADER = "ssl-client-verify";
 
 	/** String to show successful ssl key check */
-	public static final String SUCCESS = "SUCCESS";
+	public static final String SSL_VERIFY_SUCCESS = "0";
 
 	/** Distinguish name of the client */
-	public static final String SSL_CLIENT_S_DN = "SSL_CLIENT_S_DN";
+	public static final String SSL_CLIENT_S_DN = "ssl-client-s-dn";
 
 	private List<AuthenticationHandler<?>> authenticationHandlers;
 	private FileLogic fileLogic;
@@ -122,7 +122,12 @@ public final class RestServlet extends HttpServlet {
 	
 	// store some infos about the specific request or the webservice (i.e.
 	// document path)
-	private final Map<String, String> additionalInfos = new HashMap<String, String>();
+	private final Map<String, String> additionalInfos = new HashMap<>();
+
+	/**
+	 * TODO
+	 */
+	private LogicInterface adminLogic;
 
 	/**
 	 * Sets the base URL of the project. Typically "project.home" in the file
@@ -211,6 +216,14 @@ public final class RestServlet extends HttpServlet {
 		}
 	}
 
+	public LogicInterface getAdminLogic() {
+		return adminLogic;
+	}
+
+	public void setAdminLogic(LogicInterface adminLogic) {
+		this.adminLogic = adminLogic;
+	}
+
 	/**
 	 * @param request
 	 *            the servletrequest
@@ -242,7 +255,7 @@ public final class RestServlet extends HttpServlet {
 			// create Context which selects the appropriate strategy for the
 			// requested API URL
 			final Reader reader = RESTUtils.getInputReaderForStream(getMainInputStream(request), REQUEST_ENCODING);
-			final Context context = new Context(method, request.getRequestURI(), renderingFormat, this.rendererFactory, reader, uploadAccessor, logic, this.fileLogic, request.getParameterMap(), this.additionalInfos);
+			final Context context = new Context(method, request.getRequestURI(), renderingFormat, this.rendererFactory, reader, uploadAccessor, logic, this.fileLogic, request.getParameterMap(), this.additionalInfos, this.adminLogic);
 
 			// validate request
 			context.canAccess();
@@ -294,12 +307,12 @@ public final class RestServlet extends HttpServlet {
 		} catch (final AccessDeniedException e) {
 			log.info(e.getMessage());
 			this.sendError(request, response, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
-		} catch (final ResourceMovedException e) {
+		} catch (final ObjectMovedException e) {
 			log.info(e.getMessage());
 			/*
 			 * sending new location TODO: add date using
 			 */
-			response.setHeader("Location", this.urlRenderer.createHrefForResource(e.getUserName(), e.getNewIntraHash()));
+			response.setHeader("Location", this.urlRenderer.createHrefForResource(e.getUserName(), e.getNewId()));
 			this.sendError(request, response, HttpServletResponse.SC_MOVED_PERMANENTLY, e.getMessage());
 		} catch (final ReadOnlyDatabaseException e) {
 			this.sendError(request, response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
@@ -445,8 +458,8 @@ public final class RestServlet extends HttpServlet {
 	private static void validateSyncAuthorization(final HttpServletRequest request, final LogicInterface logic) {
 		log.debug("start ssl header check for synchronization");
 		final String verifyHeader = request.getHeader(SSL_VERIFY_HEADER);
-		if (!SUCCESS.equals(verifyHeader)) {
-			log.debug("ssl_verify_header not found or not '" + SUCCESS + "'");
+		if (!SSL_VERIFY_SUCCESS.equals(verifyHeader)) {
+			log.debug("ssl_verify_header not found or not '" + SSL_VERIFY_SUCCESS + "'; was: '" + verifyHeader + "'");
 			return;
 		}
 

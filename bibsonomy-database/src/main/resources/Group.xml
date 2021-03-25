@@ -4,7 +4,7 @@
 <sqlMap namespace="Group">
 	<!-- TODO: do we need the memberships here? -->
 	<select id="getAllGroups" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="groupParam">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date 
+		SELECT <include refid="basicColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date
 		FROM
 			(SELECT * from groupids
 				WHERE `group` > 2
@@ -14,9 +14,22 @@
 		  JOIN user u ON (i.group_name = u.user_name)
 		ORDER BY i.group_name
 	</select>
-	
+
+	<select id="getAllOrganizationGroups" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="groupParam">
+		SELECT <include refid="basicColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date
+		FROM
+		(SELECT * from groupids
+		WHERE `group` > 2
+		AND `organization` = 1
+		ORDER BY group_name
+		LIMIT #limit# OFFSET #offset#) i
+		JOIN group_memberships g USING (`group`)
+		JOIN user u ON (i.group_name = u.user_name)
+		ORDER BY i.group_name
+	</select>
+
 	<select id="getPendingGroups" resultMap="GroupCommon.group" parameterClass="groupParam">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage
+		SELECT <include refid="basicColumns" />, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage
 		FROM pending_groupids i 
 		  JOIN pendingUser u ON (i.group_name = u.user_name)
 		<dynamic prepend="WHERE">
@@ -28,29 +41,34 @@
 		LIMIT #limit# OFFSET #offset#
 	</select>
 	
-	<select id="getPendingGroup" resultMap="GroupCommon.group" parameterClass="groupParam">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage
+	<select id="getPendingGroup" resultMap="GroupCommon.groupWithParent" parameterClass="groupParam">
+		SELECT <include refid="basicColumns" />, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, <include refid="parentColumns" />
 		FROM pending_groupids i 
 		  JOIN pendingUser u ON (i.group_name = u.user_name)
-		WHERE group_name = #requestedGroupName#
+		  LEFT JOIN groupids pt ON (i.parent = pt.group) <!-- join with parent -->
+		  LEFT JOIN user upt ON (upt.user_name = pt.group_name)
+		WHERE i.group_name = #requestedGroupName#
 		<isNotEmpty prepend="AND" property="userName">
 			i.request_user_name = #userName#
 		</isNotEmpty>
 	</select>
 
-	<select id="getGroupWithMemberships" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date
+	<select id="getGroupWithMemberships" resultMap="GroupCommon.groupWithMembershipsAndReportingsAndParent" parameterClass="string">
+		SELECT <include refid="basicColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date, <include refid="parentColumns" />
 		FROM groupids i 
 		<!-- LEFT JOIN is necessary because groups are empty at the point of creation. -->
 		  LEFT JOIN group_memberships g USING (`group`) 
-		  LEFT JOIN user u ON (u.user_name = i.group_name) 
-		WHERE group_name = #groupname#
+		  LEFT JOIN user u ON (u.user_name = i.group_name)
+		  LEFT JOIN groupids pt ON (i.parent = pt.group) <!-- join with parent -->
+		  LEFT JOIN user upt ON (upt.user_name = pt.group_name)
+		WHERE i.group_name = #groupname#
 		  AND i.group > 2
 		ORDER BY g.user_name
 	</select>
+	<!-- post -> tag Beziehung ansehen -->
 
 	<select id="getGroupWithPermissions" resultMap="GroupCommon.groupWithPermissions" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, p.permission
+		SELECT <include refid="basicColumns" />, p.permission
 		FROM groupids i 
 		  LEFT JOIN group_level_permission p USING (`group`)
 		WHERE group_name = #groupname#
@@ -58,14 +76,16 @@
 	</select>
 	
 	<!-- TODO: merge with getGroupWithMembership using a dynamic query -->
-	<select id="getGroupWithMembershipsAndPermissions" resultMap="GroupCommon.groupWithMembershipsAndReportingsAndPermissions" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription,  <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date, p.permission
+	<select id="getGroupWithMembershipsAndPermissions" resultMap="GroupCommon.groupWithMembershipsAndReportingsAndPermissionsAndParent" parameterClass="string">
+		SELECT <include refid="basicColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date, p.permission, <include refid="parentColumns" />
 		FROM groupids i 
 		<!-- LEFT JOIN is necessary because groups are empty at the point of creation. -->
 		  LEFT JOIN group_memberships g USING (`group`) 
 		  LEFT JOIN user u ON (u.user_name = i.group_name) 
 		  LEFT JOIN group_level_permission p USING (`group`)
-		WHERE group_name = #groupname#
+		  LEFT JOIN groupids pt ON (i.parent = pt.group) <!-- join with parent -->
+		  LEFT JOIN user upt ON (upt.user_name = pt.group_name)
+		WHERE i.group_name = #groupname#
 		  AND i.group > 2
 		ORDER BY g.user_name
 	</select>
@@ -76,7 +96,7 @@
 	</select>
 
 	<select id="getGroupsForUser" resultMap="GroupCommon.groupWithMembershipsAndReportingsAndPermissions" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.user_shared_documents, g.group_role, g.start_date, p.permission
+		SELECT <include refid="basicColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.user_shared_documents, g.group_role, g.start_date, p.permission
 		 FROM groupids i
 		   LEFT JOIN group_memberships g USING (`group`)
 		   LEFT JOIN user u ON (u.user_name = i.group_name)
@@ -86,23 +106,16 @@
 	</select>
 	
 	<select id="getSpecialGroupsForUser" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="reportingColumns" />, "" AS user_realname, NULL AS user_homepage, #userName# AS user_name, FALSE AS user_shared_documents, 2 AS group_role, DATE('1970-01-01') AS start_date
+		SELECT <include refid="basicColumns" />, <include refid="reportingColumns" />, "" AS user_realname, NULL AS user_homepage, #userName# AS user_name, FALSE AS user_shared_documents, 2 AS group_role, DATE('1970-01-01') AS start_date
 		 FROM groupids i
 		 WHERE i.group BETWEEN 0 AND 2
 		ORDER BY i.group_name
 	</select>
 
 	<select id="getGroupsForContentId" resultMap="GroupCommon.group_basic" parameterClass="int">
-		SELECT DISTINCT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, FALSE as user_shared_documents 
+		SELECT DISTINCT <include refid="basicColumns" />, FALSE as user_shared_documents
 		  FROM groupids i JOIN grouptas t USING (`group`) 
 		  WHERE t.content_id = #contentId# 
-	</select>
-
-	<select id="getNewGroupId" resultClass="int">
-		SELECT MAX(g.id) + 1 AS id FROM
-			(SELECT MAX(`group`) AS id FROM groupids 
-			UNION 
-			SELECT MAX(`group`) AS id FROM pending_groupids) AS g
 	</select>
 
 	<!-- TODO: Does this need pending_group_memberships as well? -->
@@ -119,6 +132,16 @@
 		        i.user_name = #requestedUserName#
 		        AND i.group = g.group
 		      </isNotNull>
+	</select>
+
+	<!--
+	 	Selects the ids of all groups that are parents of the given group where the user is a member (by group_name).
+	-->
+	<select id="getParentGroupsWhereUserIsMember" resultClass="int" parameterClass="org.bibsonomy.database.params.group.GetParentGroupIdsRecursively">
+		SELECT parent_group_id FROM `group_hierarchy` gh
+		  JOIN `groupids` g ON (gh.child_group_id = g.group)
+		  JOIN `group_memberships` gm ON (gm.group = gh.parent_group_id)
+		WHERE g.group_name = #groupname# and gm.user_name = #username#
 	</select>
 
 	<select id="getTagSetsForGroup" resultMap="GroupCommon.tagsets" parameterClass="string">
@@ -144,8 +167,8 @@
 	</delete>
 
 	<insert id="activateGroup" parameterClass="string">
-		INSERT INTO groupids (group_name, `group`, privlevel, sharedDocuments, shortDescription)
-		SELECT group_name, `group`, privlevel, sharedDocuments, shortDescription
+		INSERT INTO groupids (group_name, `group`, `parent`, privlevel, allow_join, sharedDocuments, shortDescription, organization, internal_id)
+		SELECT group_name, `group`, `parent`, privlevel, sharedDocuments, allow_join, shortDescription, organization, internal_id
 		FROM pending_groupids 
 		WHERE pending_groupids.group_name = #name#
 	</insert>
@@ -156,8 +179,8 @@
 	</delete>
 	
 	<insert id="insertPendingGroup" parameterClass="group">
-		INSERT INTO pending_groupids (group_name, `group`, privlevel, sharedDocuments, shortDescription, request_user_name, request_reason)
-		VALUES (#name#, #groupId#, #privlevel#, #sharedDocuments#, #description#, #groupRequest.userName#, #groupRequest.reason#)
+		INSERT INTO pending_groupids (group_name, `group`, `parent`, privlevel, allow_join, sharedDocuments, shortDescription, `organization`, `internal_id`, request_user_name, request_reason)
+		VALUES (#name#, #groupId#, #parent.groupId#, #privlevel#, #allowJoin#, #sharedDocuments#, #description#, #organization#, #internalId#, #groupRequest.userName#, #groupRequest.reason#)
 	</insert>
 
 	<delete id="deletePendingGroup" parameterClass="string">
@@ -182,7 +205,7 @@
 
 	<update id="updateGroupSettings" parameterClass="group">
 		UPDATE groupids 
-		SET privlevel=#privlevel#, sharedDocuments=#sharedDocuments#, allow_join=#allowJoin#, shortDescription=#description# 
+		SET privlevel=#privlevel#, sharedDocuments=#sharedDocuments#, allow_join=#allowJoin#, shortDescription=#description#, organization=#organization#
 		WHERE `group` = #groupId#
 	</update>
 	
@@ -232,7 +255,7 @@
 	</delete>
 	
 	<select id="getPendingMembershipsForGroup" resultMap="GroupCommon.groupWithMemberships" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date 
+		SELECT <include refid="basicColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date
 		FROM groupids i 
 		  JOIN pending_group_memberships g USING (`group`) 
 		  LEFT JOIN user u ON (u.user_name = i.group_name) 
@@ -241,7 +264,7 @@
 	</select>
 	
 	<select id="getPendingMembershipsForUser" resultMap="GroupCommon.groupWithMemberships" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, u.user_realname, u.user_homepage, g.user_name, g.user_shared_documents, g.group_role, g.start_date
+		SELECT <include refid="basicColumns" />, u.user_realname, u.user_homepage, g.user_name, g.user_shared_documents, g.group_role, g.start_date
 		 FROM groupids i
 		   LEFT JOIN pending_group_memberships g USING (`group`)
 		   LEFT JOIN user u ON (u.user_name = i.group_name)
@@ -262,5 +285,59 @@
 		WHERE `group` = #groupId#
 		  AND `permission` = #groupLevelPermission#
 	</delete>
-	
+
+	<select id="getSubgroupsFor" resultMap="GroupCommon.group_extended_with_parent" parameterClass="int">
+		SELECT <include refid="basicColumns" />, u.user_realname, u.user_homepage, <include refid="parentColumns" />
+			FROM groupids i
+				<!-- LEFT JOIN is necessary because groups are empty at the point of creation. -->
+				LEFT JOIN user u ON (u.user_name = i.group_name)
+				LEFT JOIN groupids pt ON (i.parent = pt.group) <!-- join with parent -->
+				LEFT JOIN user upt ON (upt.user_name = pt.group_name)
+			WHERE i.parent = #groupId#
+			ORDER BY i.group_name
+	</select>
+
+
+	<!--
+	 	Efficiently selects all transitive subgroups for a group, by leveraging the group_hierarchy table.
+	 -->
+	<select id="getSubgroupsTransitively" resultMap="GroupCommon.group_extended_with_parent" parameterClass="list">
+		SELECT <include refid="basicColumns" />, u.user_realname, u.user_homepage, <include refid="parentColumns" />
+			FROM group_hierarchy gh
+			LEFT JOIN groupids i ON (gh.child_group_id = i.group)
+			LEFT JOIN user u ON (u.user_name = i.group_name)
+			LEFT JOIN groupids pt ON (i.parent = pt.group)
+			LEFT JOIN user upt ON (upt.user_name = pt.group_name)
+		WHERE gh.parent_group_id IN
+		<iterate open="(" close=")" conjunction=",">
+			#[]#
+		</iterate>
+		ORDER BY i.group_name
+	</select>
+
+	<select id="getSubgroupIdsTransitively" resultClass="int" parameterClass="list">
+		SELECT DISTINCT gh.child_group_id FROM group_hierarchy gh WHERE gh.parent_group_id IN
+			<iterate open="(" close=")" conjunction=",">
+				#[]#
+			</iterate>
+	</select>
+
+	<select id="getGroupByInternalId" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
+		SELECT <include refid="basicColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date
+			FROM groupids i
+				JOIN group_memberships g USING (`group`)
+				JOIN user u ON (i.group_name = u.user_name)
+			WHERE i.internal_id = #internalId#
+	</select>
+
+	<!--
+	 	Selects the ids of all groups that are parents of the given group where the user is a member (by group_name).
+	-->
+	<insert id="insertParentRelations" parameterClass="org.bibsonomy.database.params.group.InsertParentRelations">
+		INSERT INTO `group_hierarchy`
+		  SELECT #childGroupId#, parent_group_id FROM `group_hierarchy` gh
+		    WHERE gh.child_group_id = #parentGroupId#
+		  UNION
+		  SELECT #childGroupId#, #parentGroupId#
+	</insert>
 </sqlMap>

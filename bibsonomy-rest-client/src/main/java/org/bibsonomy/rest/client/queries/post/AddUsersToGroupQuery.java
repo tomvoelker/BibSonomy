@@ -46,8 +46,8 @@ import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
 public final class AddUsersToGroupQuery extends AbstractQuery<String> {
-	private final List<User> users;
 	private final String groupName;
+	private final List<GroupMembership> groupMemberships;
 
 	/**
 	 * Adds an user to an already existing group. <p/>note that the user and the
@@ -67,17 +67,13 @@ public final class AddUsersToGroupQuery extends AbstractQuery<String> {
 		if (!present(memberships)) throw new IllegalArgumentException("no membership relation specified");
 		
 		this.groupName = groupName;
-		this.users = new LinkedList<>();
-		for (GroupMembership ms : memberships) {
-			this.users.add(ms.getUser());
-		}
-		
+		this.groupMemberships = memberships;
 	}
 	
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
-		this.getRenderer().serializeUsers(sw, this.users, null);
+		this.getRenderer().serializeGroupMemberships(sw, this.groupMemberships, null);
 		final String groupUrl = this.getUrlRenderer().createHrefForGroupMembers(this.groupName);
 		this.downloadedDocument = performRequest(HttpMethod.POST, groupUrl, sw.toString());
 	}

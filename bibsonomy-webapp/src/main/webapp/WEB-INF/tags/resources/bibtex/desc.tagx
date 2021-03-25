@@ -1,7 +1,5 @@
 <jsp:root version="2.0" 
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
@@ -9,14 +7,23 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="false" />
 	<jsp:directive.attribute name="linebreakAfterAuthors" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="publishedIn" type="org.bibsonomy.model.BibTex" required="false" />
+	<jsp:directive.attribute name="restrictToFirstAuthors" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="onlyLinkAuthorsWithPersons" type="java.lang.Boolean" required="false" />
 	
 	<c:if test="${empty linebreakAfterAuthors}">
 		<c:set var="linebreakAfterAuthors" value="${false}" />
 	</c:if>
+
+	<c:if test="${empty onlyLinkAuthorsWithPersons}">
+		<c:set var="onlyLinkAuthorsWithPersons" value="${false}" />
+	</c:if>
 	
 	<c:choose>
 		<c:when test="${publication.entrytype eq 'article'}">
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}"
+						post="${post}"
+						restrictToFirstAuthors="${restrictToFirstAuthors}"
+						onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}" />
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -29,7 +36,10 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'book'}">
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}"
+						post="${post}"
+						restrictToFirstAuthors="${restrictToFirstAuthors}"
+						onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}" />
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -42,7 +52,10 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'inbook'}">
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}"
+						post="${post}"
+						restrictToFirstAuthors="${restrictToFirstAuthors}"
+						onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}" />
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -60,7 +73,10 @@
 		
 		<c:when test="${publication.entrytype eq 'booklet'}">
 			<meta itemprop="bookFormat" content="booklet"/>
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}"
+						post="${post}"
+						restrictToFirstAuthors="${restrictToFirstAuthors}"
+						onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}" />
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -71,7 +87,9 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'incollection'}">
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}"
+						post="${post}"
+						onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}" />
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -90,7 +108,10 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'inproceedings'}">
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}"
+						post="${post}"
+						restrictToFirstAuthors="${restrictToFirstAuthors}"
+						onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}" />
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -107,7 +128,10 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'manual'}">
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}"
+						post="${post}"
+						restrictToFirstAuthors="${restrictToFirstAuthors}"
+						onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}" />
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -122,7 +146,10 @@
 	
 		<c:when test="${publication.entrytype eq 'mastersthesis' or publication.entrytype eq 'phdthesis'}">
 			<meta itemprop="educationalUse" content="thesis"/>
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}"
+						post="${post}"
+						restrictToFirstAuthors="${restrictToFirstAuthors}"
+						onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}" />
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -134,7 +161,10 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'proceedings'}">
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}"
+						post="${post}"
+						restrictToFirstAuthors="${restrictToFirstAuthors}"
+						onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}" />
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -147,7 +177,10 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'techreport'}">
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}"
+						post="${post}"
+						restrictToFirstAuthors="${restrictToFirstAuthors}"
+						onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}"/>
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -159,7 +192,10 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'unpublished'}">
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}"
+						post="${post}"
+						restrictToFirstAuthors="${restrictToFirstAuthors}"
+						onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}"/>
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>
@@ -169,7 +205,10 @@
 		
 		<!-- Misc and others -->
 		<c:otherwise>
-			<bib:author publication="${publication}" post="${post}"/>
+			<bib:author publication="${publication}"
+						post="${post}"
+						restrictToFirstAuthors="${restrictToFirstAuthors}"
+						onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}"/>
 			<c:if test="${linebreakAfterAuthors }">
 				<br />
 			</c:if>

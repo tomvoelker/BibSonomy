@@ -55,4 +55,12 @@ public class OxfordUniversityPressScraperTest {
 	public void urlTest2Run() {
 		assertScraperResult("https://academic.oup.com/rev/article/22/3/157/1521720/A-study-of-global-and-local-visibility-as-web", null, OxfordUniversityPressScraper.class, "OxfordUniversityPressUnitURLTest.bib");	    
 	}
+	
+	/**
+	 * 
+	 */
+	@Test
+	public void url1Test1Run(){		
+		assertScraperResult("https://academic.oup.com/comjnl/article-abstract/55/1/82/511672/Orange4WS-Environment-for-Service-Oriented-Data", null, OxfordUniversityPressScraper.class, "OxfordJournalsScraperUnitURLTest.bib");
+	}
 }

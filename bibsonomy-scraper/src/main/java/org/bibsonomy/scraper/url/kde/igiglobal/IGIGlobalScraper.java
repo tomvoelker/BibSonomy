@@ -47,8 +47,9 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
 
 /**
- * @author Haile
+ * scraper igi global
  *
+ * @author Haile
  */
 public class IGIGlobalScraper extends AbstractUrlScraper {
 
@@ -61,7 +62,7 @@ public class IGIGlobalScraper extends AbstractUrlScraper {
 	private static final Pattern EVENTARGUMENT = Pattern.compile("<input type=\"hidden\" name=\"__EVENTARGUMENT\" id=\"__EVENTARGUMENT\" value=\"(.*?)\" />");
 	private static final Pattern VIEWSTATE = Pattern.compile("<input type=\"hidden\" name=\"__VIEWSTATE\" id=\"__VIEWSTATE\" value=\"(.*?)\" />");
 
-	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "igi-global.com"), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<>(Pattern.compile(".*" + "igi-global.com"), AbstractUrlScraper.EMPTY_PATTERN));
 
 	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
 
@@ -105,7 +106,7 @@ public class IGIGlobalScraper extends AbstractUrlScraper {
 		if(m_viewstate.find())
 			viewstate = m_viewstate.group(1);
 
-		final List<NameValuePair> postData = new ArrayList<NameValuePair>(8);
+		final List<NameValuePair> postData = new ArrayList<>();
 		
 		postData.add(new BasicNameValuePair("ctl00$ctl00$ucBookstoreSearchTop$txtSearch", "Search title, author, ISBN..."));
 		postData.add(new BasicNameValuePair("ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.x", "30"));
@@ -123,14 +124,17 @@ public class IGIGlobalScraper extends AbstractUrlScraper {
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
+
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
+
 	@Override
 	public String getInfo() {
 		return INFO;
 	}
+
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;

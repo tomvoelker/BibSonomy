@@ -36,7 +36,9 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.TagsType;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
@@ -48,9 +50,9 @@ import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.EnumUtils;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.UserResourceViewCommand;
@@ -146,6 +148,16 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			throw new ObjectNotFoundException(groupingName);
 		}
 
+		// build sort criteria list
+		this.buildSortCriteria(command);
+
+		// set query scope for resource lists
+		QueryScope resourceScope = command.getScope();
+		// when sortkey is not present or set to date we still want to use the local scope regardless of flag, since supported by database
+		if (command.isIndexUse() && (present(command.getSortCriteria()) && SortUtils.getFirstSortKey(command.getSortCriteria()) != SortKey.DATE)) {
+			resourceScope = QueryScope.SEARCHINDEX;
+		}
+
 		int totalNumPosts = 0;
 
 		// retrieve and set the requested resource lists, along with total
@@ -153,9 +165,12 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, resourceScope, command.getFilter(), command.getSortCriteria(), command.getStartDate(), command.getEndDate(), entriesPerPage);
 
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), command.getFilter(), null, command.getStartDate(), command.getEndDate(), entriesPerPage);
-			this.postProcessAndSortList(command, resourceType);
+			// secondary sorting, if not using search index
+			if (resourceScope != QueryScope.SEARCHINDEX) {
+				this.postProcessAndSortList(command, resourceType);
+			}
 
 			/*
 			 * set the post counts
@@ -195,7 +210,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 
 			if (present(requTags)) {
 				//TODO: make it federated search enable
-				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), Order.ADDED, 0, 20, null);
+				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), SortKey.DATE, 0, 20, null);
 				command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);
 				this.endTiming();
 

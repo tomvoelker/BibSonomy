@@ -15,7 +15,7 @@
 	<c:set var="escapedRequestPathAndQuery" value="${fn:escapeXml(requPathAndQuery)}" />
 	
 	<!--+
-		+ select resource type
+		+ filter resource type
 		+-->
 	<li class="dropdown-header"><fmt:message key="post.meta.display"/></li>
 	<c:choose>

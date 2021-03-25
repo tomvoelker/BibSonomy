@@ -55,7 +55,6 @@ public class AmsScraperTest {
 		assertScraperResult(url, null, AmsScraper.class, resultFile);
 	}
 
-
 	@Test
 	public void testCitedby() throws Exception {
 		final ScrapingContext sc = new ScrapingContext(new URL("http://journals.ametsoc.org/doi/abs/10.1175/2008BAMS2375.1"));

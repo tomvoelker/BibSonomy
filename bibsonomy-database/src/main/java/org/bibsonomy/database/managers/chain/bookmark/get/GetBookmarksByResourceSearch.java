@@ -44,6 +44,6 @@ public class GetBookmarksByResourceSearch extends GetResourcesByResourceSearch<B
 		if (super.canHandle(param)) {
 			return true;
 		}
-		return (present(param.getSearch()) || present(param.getTitle())); 
+		return (present(param.getSearch()) || present(param.getTitle()));
 	}
 }

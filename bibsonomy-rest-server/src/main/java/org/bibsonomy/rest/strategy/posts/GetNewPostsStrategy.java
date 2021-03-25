@@ -28,11 +28,14 @@ package org.bibsonomy.rest.strategy.posts;
 
 import java.util.List;
 
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.UrlBuilder;
 
 /**
@@ -49,11 +52,21 @@ public class GetNewPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected UrlBuilder getLinkPrefix() {
-		return this.getUrlRenderer().createUrlBuilderForAddedPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, this.order);
+		return this.getUrlRenderer().createUrlBuilderForAddedPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, this.sortCriteria);
 	}
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, search, SearchType.LOCAL, null, Order.ADDED, null, null, this.getView().getStartValue(), this.getView().getEndValue());
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(this.grouping)
+				.setGroupingName(this.groupingValue)
+				.setTags(this.tags)
+				.setSearch(this.search)
+				.setScope(this.searchType)
+				.setSortCriteria(SortUtils.singletonSortCriteria(SortKey.DATE, SortOrder.DESC))
+				.setStart(this.getView().getStartValue())
+				.setEnd(this.getView().getEndValue());
+
+		return this.getLogic().getPosts(postQueryBuilder.createPostQuery(this.resourceType));
 	}
 }

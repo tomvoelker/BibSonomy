@@ -42,6 +42,10 @@
 				<xsd:element name="groups" type="GroupsType" />
 				<xsd:element name="tags" type="TagsType" />
 				<xsd:element name="posts" type="PostsType" />
+				<xsd:element name="persons" type="PersonsType" />
+				<xsd:element name="projects" type="ProjectsType" />
+				<xsd:element name="resourcePersonRelations" type="ResourcePersonRelationsType" />
+				<xsd:element name="groupMemberships" type="GroupMembershipsType" />
 				<!-- single elements -->
 				<xsd:element name="user" type="UserType" />
 				<xsd:element name="group" type="GroupType" />
@@ -50,6 +54,12 @@
 				<xsd:element name="bookmark" type="BookmarkType" />
 				<xsd:element name="bibtex" type="BibtexType" />
 				<xsd:element name="document" type="DocumentType" />
+				<xsd:element name="person" type="PersonType" />
+                <xsd:element name="resourcePersonRelation" type="ResourcePersonRelationType" />
+				<xsd:element name="project" type="ProjectType" />
+				<xsd:element name="cris_link" type="CRISLinkTypeType" />
+				<xsd:element name="personMatch" type="PersonMatchType" />
+				<xsd:element name="additionalKey" type="AdditionalKeyType" />
 				<!-- error -->
 				<xsd:element name="error" type="xsd:string" />
 				<!-- hashes to return when creating / updating resources -->
@@ -57,12 +67,16 @@
 				<!-- user-/group-ids to return when creating / updating users / groups -->
 				<xsd:element name="userid" type="xsd:string" />
 				<xsd:element name="groupid" type="xsd:string" />
+				<xsd:element name="personid" type="xsd:string" />
+				<xsd:element name="projectid" type="xsd:string" />
+				<xsd:element name="crislinkid" type="xsd:string" />
+				<xsd:element name="resourcePersonRelationId" type="xsd:string" />
 				<!-- uri to return (i.e. on uploading documents) -->
 				<xsd:element name="uri" type="xsd:anyURI" />
 				<!-- gold standard references -->
 				<xsd:element name="references" type="ReferencesType" />
-				<xsd:element name="syncPosts" type="SyncPostsType"></xsd:element>
-				<xsd:element name="syncData" type="SyncDataType"></xsd:element>
+				<xsd:element name="syncPosts" type="SyncPostsType" />
+				<xsd:element name="syncData" type="SyncDataType" />
 			</xsd:choice>
 
 		</xsd:sequence>
@@ -87,7 +101,7 @@
 	-->
 	<xsd:complexType name="UserType">
 		<xsd:sequence>
-			<xsd:element name="groups" type="GroupsType" minOccurs="0" maxOccurs="1">
+			<xsd:element name="groups" type="GroupsType" minOccurs="0" >
 				<xsd:annotation>
 					<xsd:documentation>
 						The groups, the user is a member of, excluding
@@ -96,6 +110,7 @@
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="remoteUserId" minOccurs="0" maxOccurs="unbounded" type="RemoteUserIdType" />
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="required" />
 		<xsd:attribute name="realname" type="xsd:string" />
@@ -111,7 +126,13 @@
 
 		<!-- link to details page -->
 		<xsd:attribute name="href" type="xsd:anyURI" />
-		<xsd:attribute name="confidence" type="xsd:double"></xsd:attribute>
+		<xsd:attribute name="confidence" type="xsd:double" />
+	</xsd:complexType>
+
+
+	<xsd:complexType name="RemoteUserIdType">
+		<xsd:attribute name="userId" type="xsd:string" />
+		<xsd:attribute name="identityProvider" type="xsd:string" />
 	</xsd:complexType>
 
 	<!--
@@ -129,9 +150,27 @@
 	<!--
 		a group
 	-->
+	<xsd:simpleType name="lboolean">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="true"/>
+			<xsd:enumeration value="false"/>
+			<xsd:enumeration value=""/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="GroupRequestType">
+		<xsd:sequence>
+			<xsd:element name="requestedUser" type="UserType" />
+		</xsd:sequence>
+		<xsd:attribute type="xsd:string" name="reason" />
+		<xsd:attribute type="xsd:dateTime" name="submissionDate" />
+	</xsd:complexType>
+
 	<xsd:complexType name="GroupType">
 		<xsd:sequence>
 			<xsd:element maxOccurs="unbounded" minOccurs="0" name="user" type="UserType" />
+			<xsd:element name="parent" type="GroupType" minOccurs="0" />
+			<xsd:element name="groupRequest" type="GroupRequestType" minOccurs="0" />
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="required" />
 		<xsd:attribute name="realname" type="xsd:string" />
@@ -139,6 +178,9 @@
 		<xsd:attribute name="description" type="xsd:string" />
 		<!-- link to details page -->
 		<xsd:attribute name="href" type="xsd:anyURI" />
+		<xsd:attribute name="organization" type="lboolean" />
+		<xsd:attribute name="internalId" type="xsd:string" />
+		<xsd:attribute name="allowJoin" type="xsd:boolean" />
 	</xsd:complexType>
 
 	<!--
@@ -184,22 +226,26 @@
 		a post
 	-->
 	<xsd:complexType name="PostType">
-		<xsd:sequence>
-			<xsd:element name="user" type="UserType" />
-			<xsd:element maxOccurs="unbounded" minOccurs="0" name="group" type="GroupType" />
-			<!-- Note: a post must have at least one tag -->
-			<xsd:element maxOccurs="unbounded" name="tag" type="TagType" />				
-			<xsd:element minOccurs="0" maxOccurs="1" name="documents" type="DocumentsType" />
-			<xsd:choice>
-				<xsd:element name="bookmark" maxOccurs="1" type="BookmarkType" />
-				<xsd:element name="bibtex" maxOccurs="1" type="BibtexType" />
-				<xsd:element name="publicationFileUpload" maxOccurs="1"	type="UploadDataType" />
-				<xsd:element name="goldStandardPublication" maxOccurs="1" type="GoldStandardPublicationType" />
-			</xsd:choice>
-		</xsd:sequence>
-		<xsd:attribute name="description" type="xsd:string" />
-		<xsd:attribute name="postingdate" type="xsd:dateTime" />
-		<xsd:attribute name="changedate" type="xsd:dateTime" />
+		<xsd:complexContent>
+			<xsd:extension base="LinkableType">
+				<xsd:sequence>
+					<xsd:element name="user" type="UserType" />
+					<xsd:element maxOccurs="unbounded" minOccurs="0" name="group" type="GroupType" />
+					<!-- Note: a post must have at least one tag -->
+					<xsd:element maxOccurs="unbounded" name="tag" type="TagType" />
+					<xsd:element minOccurs="0" name="documents" type="DocumentsType" />
+					<xsd:choice>
+						<xsd:element name="bookmark" type="BookmarkType" />
+						<xsd:element name="bibtex" type="BibtexType" />
+						<xsd:element name="publicationFileUpload" type="UploadDataType" />
+						<xsd:element name="goldStandardPublication" type="GoldStandardPublicationType" />
+					</xsd:choice>
+				</xsd:sequence>
+				<xsd:attribute name="description" type="xsd:string" />
+				<xsd:attribute name="postingdate" type="xsd:dateTime" />
+				<xsd:attribute name="changedate" type="xsd:dateTime" />
+			</xsd:extension>
+		</xsd:complexContent>
 	</xsd:complexType>
 
 	<!--
@@ -214,7 +260,56 @@
 	<xsd:complexType name="UploadDataType">
 		<xsd:attribute name="multipartName" use="required" type="xsd:string" />
 	</xsd:complexType>
-	
+
+	<!--
+    	a main name
+	-->
+	<xsd:complexType name="PersonNameType">
+		<xsd:attribute name="firstName" type="xsd:string" />
+		<xsd:attribute name="lastName" type="xsd:string" />
+	</xsd:complexType>
+
+	<!--
+    	a person
+	-->
+
+	<xsd:complexType name="PersonsType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="person" type="PersonType" />
+		</xsd:sequence>
+		<xsd:attribute name="start" type="positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="end" type="positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="next" type="xsd:anyURI" />
+	</xsd:complexType>
+
+	<xsd:simpleType name="GenderType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="M" />
+			<xsd:enumeration value="F" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="PersonType">
+		<xsd:complexContent>
+			<xsd:extension base="LinkableType">
+				<xsd:sequence>
+					<xsd:element name="mainName" type="PersonNameType" />
+					<xsd:element name="names" type="PersonNameType" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="user" type="UserType" minOccurs="0" />
+					<xsd:element name="additionalKey" type="AdditionalKeyType" maxOccurs="unbounded"/>
+				</xsd:sequence>
+				<xsd:attribute name="personId" type="xsd:string" />
+				<xsd:attribute name="gender" type="GenderType" />
+				<xsd:attribute name="homepage" type="xsd:anyURI" />
+				<xsd:attribute name="email" type="xsd:string" />
+				<xsd:attribute name="college" type="xsd:string" />
+				<xsd:attribute name="academicDegree" type="xsd:string" />
+				<xsd:attribute name="orcid" type="xsd:string" />
+				<xsd:attribute name="researcherid" type="xsd:string" />
+
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
 	
 	<!-- 
 		list of Documents
@@ -438,5 +533,139 @@
 		<xsd:sequence>
 			<xsd:element name="syncPost" type="SyncPostType" maxOccurs="unbounded" minOccurs="0" />
 		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ResourceLinkType">
+		<xsd:attribute name="interHash" type="hashType" />
+		<xsd:attribute name="intraHash" type="hashType" />
+	</xsd:complexType>
+
+	<xsd:simpleType name="RelationType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="doctor_vater" />
+			<xsd:enumeration value="first_reviewer" />
+			<xsd:enumeration value="reviewer" />
+			<xsd:enumeration value="advisor" />
+			<xsd:enumeration value="author" />
+			<xsd:enumeration value="editor" />
+			<xsd:enumeration value="other" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="ResourcePersonRelationsType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="resourcePersonRelation" type="ResourcePersonRelationType" />
+		</xsd:sequence>
+		<xsd:attribute name="start" type="positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="end" type="positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="next" type="xsd:anyURI" />
+	</xsd:complexType>
+
+    <xsd:complexType name="ResourcePersonRelationType">
+        <xsd:sequence>
+            <xsd:element name="person" type="PersonType" />
+            <xsd:element name="resource" type="ResourceLinkType" />
+			<xsd:element name="relationType" type="RelationType" />
+			<xsd:element name="personIndex" type="xsd:integer" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+	<xsd:simpleType name="GroupRoleType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="user"/>
+			<xsd:enumeration value="moderator"/>
+			<xsd:enumeration value="administrator"/>
+			<xsd:enumeration value="dummy"/>
+			<xsd:enumeration value="invited"/>
+			<xsd:enumeration value="requested"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="GroupMembershipType">
+		<xsd:sequence>
+			<xsd:element name="user" type="UserType"/>
+			<xsd:element name="joinDate" type="xsd:dateTime"/>
+		</xsd:sequence>
+		<xsd:attribute name="userSharedDocuments" type="xsd:boolean"/>
+		<xsd:attribute name="groupRole" type="GroupRoleType"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="GroupMembershipsType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="groupMembership" type="GroupMembershipType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ProjectType">
+		<xsd:complexContent>
+			<xsd:extension base="LinkableType">
+				<xsd:sequence>
+					<xsd:element name="subProjects" type="ProjectType" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="crisLinks" type="CRISLinkTypeType" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="parentProject" type="ProjectType" minOccurs="0" />
+				</xsd:sequence>
+				<xsd:attribute name="externalId" type="xsd:string" />
+				<xsd:attribute name="internalId" type="xsd:string" />
+				<xsd:attribute name="title" type="xsd:string" />
+				<xsd:attribute name="subTitle" type="xsd:string" />
+				<xsd:attribute name="homepage" type="xsd:anyURI" />
+				<xsd:attribute name="description" type="xsd:string" />
+				<xsd:attribute name="type" type="xsd:string" />
+				<xsd:attribute name="budget" type="xsd:float" />
+				<xsd:attribute name="startDate" type="xsd:dateTime" />
+				<xsd:attribute name="endDate" type="xsd:dateTime" />
+				<xsd:attribute name="sponsor" type="xsd:string" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="ProjectsType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="project" type="ProjectType" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="LinkableType" abstract="true" />
+
+	<xsd:simpleType name="ProjectPersonLinkTypeType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="manager" />
+			<xsd:enumeration value="member" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="CRISLinkDataSourceType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="user" />
+			<xsd:enumeration value="system" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="CRISLinkTypeType">
+		<xsd:sequence>
+			<xsd:element name="dataSource" type="CRISLinkDataSourceType" />
+			<xsd:element name="source" type="LinkableType" />
+			<xsd:element name="target" type="LinkableType" />
+			<xsd:element name="linkType" type="ProjectPersonLinkTypeType" />
+		</xsd:sequence>
+		<xsd:attribute name="startDate" type="xsd:dateTime" />
+		<xsd:attribute name="endDate" type="xsd:dateTime" />
+	</xsd:complexType>
+
+	<xsd:complexType name="PersonMatchType">
+		<xsd:sequence>
+			<xsd:element name="person1" type="PersonType" />
+			<xsd:element name="person2" type="PersonType" />
+			<xsd:element name="person1Posts" type="PostType" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="person2Posts" type="PostType" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="userDenies" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="state" type="xsd:int" />
+		<xsd:attribute name="matchId" type="xsd:int" />
+	</xsd:complexType>
+
+	<xsd:complexType name="AdditionalKeyType">
+		<xsd:attribute name="keyName" type="xsd:string" />
+		<xsd:attribute name="keyValue" type="xsd:string" />
 	</xsd:complexType>
 </xsd:schema>

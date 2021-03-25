@@ -29,6 +29,12 @@
 	<typeAlias alias="discussionItem"		type="org.bibsonomy.model.DiscussionItem" />
 	<typeAlias alias="comment"				type="org.bibsonomy.model.Comment" />
 	<typeAlias alias="review"				type="org.bibsonomy.model.Review" />
+
+	<typeAlias alias="person"					type="org.bibsonomy.model.Person" />
+	<typeAlias alias="personName"				type="org.bibsonomy.model.PersonName" />
+	<typeAlias alias="resourcePersonRelation"	type="org.bibsonomy.model.ResourcePersonRelation" />
+	<typeAlias alias="gender"					type="org.bibsonomy.model.enums.Gender" />
+
 	<typeAlias alias="statisticsValues" type="org.bibsonomy.model.statistics.StatisticsValues" />
 	<typeAlias alias="statistics"				type="org.bibsonomy.model.statistics.Statistics" />
 	<typeAlias alias="postMetaData"				type="org.bibsonomy.model.metadata.PostMetaData" />
@@ -37,7 +43,23 @@
 	
 	<typeAlias alias="goldStandardRelation" type="org.bibsonomy.model.enums.GoldStandardRelation" />
 	<typeAlias alias="personResourceRelationType" type="org.bibsonomy.model.enums.PersonResourceRelationType" />
-	
+
+	<!-- CRIS types -->
+	<typeAlias alias="project" 					type="org.bibsonomy.model.cris.Project" />
+	<typeAlias alias="crisLink"					type="org.bibsonomy.model.cris.CRISLink" />
+	<typeAlias alias="projectPersonLinkType"	type="org.bibsonomy.model.cris.ProjectPersonLinkType" />
+	<typeAlias alias="crisLinkType"				type="org.bibsonomy.model.cris.CRISLinkType" />
+	<typeAlias alias="crisLinkDataSource"		type="org.bibsonomy.model.cris.CRISLinkDataSource" />
+
+	<!-- person related classes -->
+	<typeAlias alias="person"						type="org.bibsonomy.model.Person" />
+	<typeAlias alias="personName"					type="org.bibsonomy.model.PersonName" />
+	<typeAlias alias="gender"						type="org.bibsonomy.model.enums.Gender" />
+	<typeAlias alias="personResourceRelation" 		type="org.bibsonomy.model.ResourcePersonRelation" />
+	<typeAlias alias="personResourceRelationType" 	type="org.bibsonomy.model.enums.PersonResourceRelationType" />
+	<typeAlias alias="personMatch"					type="org.bibsonomy.model.PersonMatch" />
+	<typeAlias alias="additionalKey"				type="org.bibsonomy.model.extra.AdditionalKey"/>
+
 	<!-- Synchronization -->
 	<typeAlias alias="syncResource"		  type="org.bibsonomy.model.sync.SynchronizationResource" />
 	<typeAlias alias="syncPost"			  type="org.bibsonomy.model.sync.SynchronizationPost" />	
@@ -75,12 +97,16 @@
 	<typeAlias alias="inboxParam"			type="org.bibsonomy.database.params.InboxParam" />
 	<typeAlias alias="loggingParam"			type="org.bibsonomy.database.params.LoggingParam" />
 	<typeAlias alias="metaDataPostParam"	type="org.bibsonomy.database.params.metadata.PostParam" />
+	<typeAlias alias="goldstandardReferenceParam"	type="org.bibsonomy.database.params.GoldStandardReferenceParam" />
 	<typeAlias alias="wikiParam"			type="org.bibsonomy.database.params.WikiParam" />
 	
 	<typeAlias alias="discussionItemParam"	type="org.bibsonomy.database.params.discussion.DiscussionItemParam" />
 	<typeAlias alias="commentParam"			type="org.bibsonomy.database.params.discussion.CommentParam" />
 	<typeAlias alias="reviewParam"			type="org.bibsonomy.database.params.discussion.ReviewParam" />
-	
+
+	<typeAlias alias="projectParam"         type="org.bibsonomy.database.params.ProjectParam" />
+	<typeAlias alias="crisLinkParam"        type="org.bibsonomy.database.params.CRISLinkParam" />
+
 	<!-- Java types  -->
 	<typeAlias alias="resourceTypeClass"	type="java.lang.Class" />
 	<typeAlias alias="url"					type="java.net.URL" />
@@ -98,4 +124,7 @@
 	<typeAlias alias="GroupLevelPermission"	type="org.bibsonomy.common.enums.GroupLevelPermission" />
 	
 	<typeAlias alias="LayoutSettings"    type="org.bibsonomy.model.user.settings.LayoutSettings" />
+
+	<!-- database specific stuff -->
+	<typeAlias alias="logReason"		 type="org.bibsonomy.database.common.enums.LogReason" />
 </sqlMap>

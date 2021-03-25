@@ -30,15 +30,13 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Duplicates;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.webapp.command.FollowersViewCommand;
 import org.bibsonomy.webapp.command.ListCommand;
@@ -52,12 +50,10 @@ import org.bibsonomy.webapp.view.Views;
 /**
  * @author Christian Kramer
  */
-public class FollowersPageController extends SingleResourceListController implements MinimalisticController<FollowersViewCommand>{
-	private static final Log log = LogFactory.getLog(FollowersPageController.class);
+public class FollowersPageController extends SingleResourceListController implements MinimalisticController<FollowersViewCommand> {
 
 	@Override
 	public View workOn(final FollowersViewCommand command) {
-		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
 		this.startTiming(format);
 		
@@ -67,14 +63,8 @@ public class FollowersPageController extends SingleResourceListController implem
 		}
 		
 		final String pageSort = command.getSortPage();
-		Order order = command.getOrder();
-		
-		if ("date".equals(pageSort)) {
-			order = Order.ADDED;
-		} else if ("ranking".equals(pageSort)) {
-			order = Order.RANK;
-		}
-		command.setOrder(order);
+		final SortKey sortKey = "ranking".equals(pageSort) ? SortKey.RANK : SortKey.DATE;
+		command.setSortKey(sortKey);
 		
 		// set params
 		final UserRelation userRelation = EnumUtils.searchEnumByName(UserRelation.values(), command.getUserSimilarity());
@@ -91,11 +81,11 @@ public class FollowersPageController extends SingleResourceListController implem
 		
 		final String username = command.getContext().getLoginUser().getName();
 		
-		switch (order) {
+		switch (sortKey) {
 		case RANK:
 			
 			// ranking settings
-			final Integer start = command.getRanking().getPeriod() * Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING;
+			final int start = command.getRanking().getPeriod() * Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING;
 			command.getRanking().setPeriodStart(start + 1);
 			command.getRanking().setPeriodEnd(start + Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING);
 			
@@ -147,15 +137,15 @@ public class FollowersPageController extends SingleResourceListController implem
 				this.postProcessAndSortList(command, resourceType);
 				
 				// set total count
-				this.setTotalCount(command, resourceType, groupingEntity, groupingName, null, null, null, null, order, null, null, resourceEntriesPerPage);
+				this.setTotalCount(command, resourceType, groupingEntity, groupingName, null, null, null, null, sortKey, null, null, resourceEntriesPerPage);
 			}
 			break;
 		}
 
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
-			command.setFollowersOfUser(logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.FOLLOWER_OF, null, 0, 0));
-			command.setUserIsFollowing(logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.OF_FOLLOWER, null, 0, 0));
+			command.setFollowersOfUser(this.logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.FOLLOWER_OF, null, 0, 0));
+			command.setUserIsFollowing(this.logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.OF_FOLLOWER, null, 0, 0));
 
 			// retrieve similar users, by the given user similarity measure
 			final List<User> similarUsers = this.logic.getUsers(null, GroupingEntity.USER, username, null, null, null, userRelation, null, 0, 10);

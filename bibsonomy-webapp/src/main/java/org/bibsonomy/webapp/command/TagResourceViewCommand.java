@@ -26,13 +26,15 @@
  */
 package org.bibsonomy.webapp.command;
 
+import org.bibsonomy.common.SortCriteria;
+import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.model.Tag;
+
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.Order;
 
 /**
  * Bean for Tag Sites
@@ -44,7 +46,7 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	/**
 	 * the selected search type such as 'group', 'search', 'sharedResourceSearch'  
 	 */
-	private SearchType scope = SearchType.LOCAL;
+	private QueryScope scope = QueryScope.LOCAL;
 	
 	/** tags to search for */
 	private String requestedTags = "";
@@ -58,9 +60,17 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	 */
 	private int numberOfNormalTags;
 	
-	/** the specified order */
-	private Order order = Order.ADDED;
-		
+	/** the specified sorting key */
+	private SortKey sortKey;
+
+	/** the specified list of sort criteria */
+	private List<SortCriteria> sortCriteria = new LinkedList<>();
+
+	/**
+	 * Use the search index for retrieving and sorting listed posts
+	 */
+	private boolean indexUse = true;
+
 	/** bean for related tags */
 	private RelatedTagCommand relatedTagCommand = new RelatedTagCommand();
 	
@@ -140,17 +150,47 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	}
 
 	/**
-	 * @return order
+	 * @return sortKey
 	 */
-	public Order getOrder() {
-		return this.order;
+	public SortKey getSortKey() {
+		return sortKey;
 	}
 
 	/**
-	 * @param order
+	 * @param sortKey	the sort key to set
 	 */
-	public void setOrder(final Order order) {
-		this.order = order;
+	public void setSortKey(SortKey sortKey) {
+		this.sortKey = sortKey;
+	}
+
+	/**
+	 * Get list of sort criteria
+	 * @return sortCriteria
+	 */
+	public List<SortCriteria> getSortCriteria() {
+		return sortCriteria;
+	}
+
+	/**
+	 * @param sortCriteria	set the list of sort criteria
+	 */
+	public void setSortCriteria(List<SortCriteria> sortCriteria) {
+		this.sortCriteria = sortCriteria;
+	}
+
+	/**
+	 * @return indexUse
+	 */
+	public boolean isIndexUse() {
+		return this.indexUse;
+	}
+
+	/**
+	 * Set wether to use search index for retrieving and sorting posts.
+	 * @param 	indexUse		use search index?
+	 */
+	public void setIndexUse(boolean indexUse) {
+		this.indexUse = indexUse;
 	}
 
 	/**
@@ -297,14 +337,14 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	/**
 	 * @return the selected search type such as 'group', 'search', 'sharedResourceSearch'
 	 */
-	public SearchType getScope() {
+	public QueryScope getScope() {
 		return this.scope;
 	}
 
 	/**
-	 * @param selectedSearchScope the selected search type such as 'group', 'search', 'sharedResourceSearch'
+	 * @param scope the selected search type such as 'group', 'search', 'sharedResourceSearch'
 	 */
-	public void setScope(SearchType scope) {
+	public void setScope(QueryScope scope) {
 		this.scope = scope;
 	}
 }

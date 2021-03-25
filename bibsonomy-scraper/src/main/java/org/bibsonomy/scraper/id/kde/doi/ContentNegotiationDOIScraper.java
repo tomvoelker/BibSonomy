@@ -125,7 +125,7 @@ public class ContentNegotiationDOIScraper implements Scraper {
 		// create request with content negotiation
 		final HttpGet getBibTexMethod = new HttpGet(url.toExternalForm());
 		getBibTexMethod.addHeader("Accept", "application/x-bibtex");
-			
+
 		// send request to dx.doi.org and receive resulting bibtex
 		try {
 			final String content = WebUtils.getContentAsString(WebUtils.getHttpClient(), getBibTexMethod);
@@ -142,9 +142,7 @@ public class ContentNegotiationDOIScraper implements Scraper {
 			}
 			
 			return content;
-		} catch (HttpException ex) {
-			throw new InternalFailureException(ex);
-		} catch (final IOException ex) {
+		} catch (HttpException | IOException ex) {
 			throw new InternalFailureException(ex);
 		} catch (final ParseException e) {
 			throw new InternalFailureException("Server did not return BibTeX during content negotiation. Scraping not supported.");

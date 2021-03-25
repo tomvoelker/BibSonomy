@@ -57,6 +57,7 @@ import bibtex.expansions.MacroReferenceExpander;
 import bibtex.expansions.PersonListExpander;
 import bibtex.parser.BibtexParser;
 import bibtex.parser.ParseException;
+import org.bibsonomy.model.util.PersonNameUtils;
 
 
 /**
@@ -314,7 +315,7 @@ public class SimpleBibTeXParser {
 		/*
 		 * get set of all current fieldnames - like address, author etc. 
 		 */
-		final List<String> nonStandardFieldNames = new ArrayList<String>(entry.getFields().keySet());
+		final List<String> nonStandardFieldNames = new ArrayList<>(entry.getFields().keySet());
 		/*
 		 * remove standard fields from list to retrieve nonstandard ones
 		 * 
@@ -532,28 +533,41 @@ public class SimpleBibTeXParser {
 	 * @return The persons names concatenated with " and ".
 	 */
 	private static List<PersonName> createPersonString (final BibtexAbstractValue fieldValue) {
-		if (present(fieldValue) && fieldValue instanceof BibtexPersonList) {
+		if (present(fieldValue)) {
+			if (fieldValue instanceof BibtexPersonList) {
 
-			/*
-			 * cast into a person list and extract the persons
-			 */
-			@SuppressWarnings("unchecked") // getList specified to return a list of BibtexPersons
-			final List<BibtexPerson> personList = ((BibtexPersonList) fieldValue).getList();
-
-			/*
-			 * result list
-			 */
-			final List<PersonName> persons = new LinkedList<PersonName>();
-			/*
-			 * build person names
-			 */
-			for (final BibtexPerson person : personList) {
 				/*
-				 * next name
+				 * cast into a person list and extract the persons
 				 */
-				persons.add(createPersonName(person));
+				@SuppressWarnings("unchecked") // getList specified to return a list of BibtexPersons
+				final List<BibtexPerson> personList = ((BibtexPersonList) fieldValue).getList();
+
+				/*
+				 * result list
+				 */
+				final List<PersonName> persons = new LinkedList<>();
+				/*
+				 * build person names
+				 */
+				for (final BibtexPerson person : personList) {
+					/*
+					 * next name
+					 */
+					persons.add(createPersonName(person));
+				}
+
+				return persons;
 			}
-			return persons;
+
+			/*
+			 * in some cases (e.g. the list of authors is very long (see Higgs boson paper) the parser returns the person
+			 * field as BibtexString
+			 */
+			if (fieldValue instanceof BibtexString) {
+				final BibtexString fieldString = (BibtexString) fieldValue;
+				final String persons = fieldString.getContent();
+				return PersonNameUtils.discoverPersonNamesIgnoreExceptions(persons);
+			}
 		}
 		return null;
 	}

@@ -45,7 +45,7 @@ import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 public class NatureArticleScraper extends GenericRISURLScraper{	
 	
 	private static final String SITE_NAME = "Nature";
-	private static final String SITE_URL = "http://www.nature.com/";
+	private static final String SITE_URL = "https://www.nature.com/";
 	private static final String INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new LinkedList<Pair<Pattern,Pattern>>();
@@ -82,7 +82,7 @@ public class NatureArticleScraper extends GenericRISURLScraper{
 	 */
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
-		return url.toString() + ".ris";
+		return url.toString().replaceAll("\\?cacheBust=.*", "") + ".ris";
 	}
 
 	/* (non-Javadoc)

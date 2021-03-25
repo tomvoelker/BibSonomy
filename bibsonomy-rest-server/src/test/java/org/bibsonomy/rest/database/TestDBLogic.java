@@ -1,46 +1,36 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
- *
+ * <p>
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
- *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
- *                           L3S Research Center,
- *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
- *
+ * University of Kassel, Germany
+ * http://www.kde.cs.uni-kassel.de/
+ * Data Mining and Information Retrieval Group,
+ * University of Würzburg, Germany
+ * http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ * L3S Research Center,
+ * Leibniz University Hannover, Germany
+ * http://www.l3s.de/
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.bibsonomy.rest.database;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
@@ -51,19 +41,37 @@ import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
+import org.bibsonomy.model.logic.query.GroupQuery;
+import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.statistics.Statistics;
 import org.junit.Ignore;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class is used for demonstrating purposes only. It is not designed to
  * verify any algorithm nor any strategy. Testing strategies with this class is
  * not possible, because one would only test the testcase's algorithm itself.<br/>
- * 
+ *
  * Furthermore the implementation is not complete; especially unimplemented are:
  * <ul>
  * <li>start and end value</li>
@@ -71,14 +79,14 @@ import org.junit.Ignore;
  * <li>popular- and added-flag at the posts-query</li>
  * <li>viewable-stuff</li>
  * </ul>
- * 
+ *
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @author Christian Kramer
  * @author Jens Illig
  */
 @Ignore
 public class TestDBLogic extends AbstractLogicInterface {
-	
+
 	private final User loginUser;
 
 	private final Map<String, Group> dbGroups;
@@ -100,15 +108,15 @@ public class TestDBLogic extends AbstractLogicInterface {
 		this.loginUser = new User(authUserName);
 
 		// use the linked map because ordering matters for the junit tests..
-		this.dbGroups = new LinkedHashMap<String, Group>();
-		this.dbUsers = new LinkedHashMap<String, User>();
-		this.dbTags = new LinkedHashMap<String, Tag>();
-		this.dbResources = new LinkedHashMap<String, Resource>();
+		this.dbGroups = new LinkedHashMap<>();
+		this.dbUsers = new LinkedHashMap<>();
+		this.dbTags = new LinkedHashMap<>();
+		this.dbResources = new LinkedHashMap<>();
 
 		final Calendar cal = Calendar.getInstance();
 		cal.clear();
 		this.date = cal.getTime();
-		
+
 		try {
 			fillDataBase();
 		} catch (final MalformedURLException ex) {
@@ -136,10 +144,8 @@ public class TestDBLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public List<Group> getGroups(boolean pending, String userName, final int start, final int end) {
-		final List<Group> groups = new LinkedList<Group>();
-		groups.addAll(this.dbGroups.values());
-		return groups;
+	public List<Group> getGroups(final GroupQuery query) {
+		return new LinkedList<>(this.dbGroups.values());
 	}
 
 	@Override
@@ -151,37 +157,37 @@ public class TestDBLogic extends AbstractLogicInterface {
 	 * note: the regex is currently not considered
 	 */
 	@Override
-	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags_, final String hash, final String search, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
-		return this.getTags(resourceType, grouping, groupingName, tags_, hash, search, SearchType.LOCAL, regex, relation, order, startDate, endDate, start, end);
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags_, final String hash, final String search, final String regex, final TagSimilarity relation, final SortKey sortKey, final Date startDate, final Date endDate, final int start, final int end) {
+		return this.getTags(resourceType, grouping, groupingName, tags_, hash, search, QueryScope.LOCAL, regex, relation, sortKey, startDate, endDate, start, end);
 	}
 
 	/**
 	 * note: the regex is currently not considered
 	 */
 	@Override
-	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags_, final String hash, final String search, final SearchType searchType,final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
-		final List<Tag> tags = new LinkedList<Tag>();
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags_, final String hash, final String search, final QueryScope queryScope, final String regex, final TagSimilarity relation, final SortKey sortKey, final Date startDate, final Date endDate, final int start, final int end) {
+		final List<Tag> tags = new LinkedList<>();
 
 		switch (grouping) {
-		case VIEWABLE:
-			// simply use groups
-		case GROUP:
-			if (this.dbGroups.get(groupingName) != null) {
-				for (final Post<? extends Resource> post : this.dbGroups.get(groupingName).getPosts()) {
-					tags.addAll(post.getTags());
+			case VIEWABLE:
+				// simply use groups
+			case GROUP:
+				if (this.dbGroups.get(groupingName) != null) {
+					for (final Post<? extends Resource> post : this.dbGroups.get(groupingName).getPosts()) {
+						tags.addAll(post.getTags());
+					}
 				}
-			}
-			break;
-		case USER:
-			if (this.dbUsers.get(groupingName) != null) {
-				for (final Post<? extends Resource> post : this.dbUsers.get(groupingName).getPosts()) {
-					tags.addAll(post.getTags());
+				break;
+			case USER:
+				if (this.dbUsers.get(groupingName) != null) {
+					for (final Post<? extends Resource> post : this.dbUsers.get(groupingName).getPosts()) {
+						tags.addAll(post.getTags());
+					}
 				}
-			}
-			break;
-		default: // ALL
-			tags.addAll(this.dbTags.values());
-		break;
+				break;
+			default: // ALL
+				tags.addAll(this.dbTags.values());
+				break;
 		}
 
 		return tags;
@@ -192,59 +198,75 @@ public class TestDBLogic extends AbstractLogicInterface {
 		return this.dbTags.get(tagName);
 	}
 
-	/** note: popular and added are not considered 
-	 * @param startDate TODO
-	 * @param endDate TODO*/
+	@Deprecated
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping,
+													   final String groupingName, final List<String> tags, final String hash,
+													   final String search, final QueryScope queryScope, final Set<Filter> filters,
+													   final List<SortCriteria> sortCriteria, final Date startDate, final Date endDate,
+													   final int start, final int end) {
+
+		final PostQuery<T> query = new PostQueryBuilder().
+				setScope(queryScope).
+				setGrouping(grouping).
+				setGroupingName(groupingName).
+				setTags(tags).
+				setHash(hash).
+				setSearch(search).
+				setFilters(filters).
+				setStartDate(startDate).
+				setEndDate(endDate).
+				setStart(start).
+				setEnd(end).createPostQuery(resourceType);
+		// delegating to the new method
+		return this.getPosts(query);
+	}
+
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
-		final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
+	public <T extends Resource> List<Post<T>> getPosts(final PostQuery<T> query) {
+		final GroupingEntity grouping = query.getGrouping();
+		final String groupingName = query.getGroupingName();
+		final Class<T> resourceType = query.getResourceClass();
+		final String hash = query.getHash();
+		final List<String> tags = query.getTags();
+		final List<Post<? extends Resource>> posts = new LinkedList<>();
 		// do grouping stuff
 		switch (grouping) {
-		case USER:
-			if (this.dbUsers.get(groupingName) != null) {
-				posts.addAll(this.dbUsers.get(groupingName).getPosts());
-			}
-			break;
-		case VIEWABLE:
-			// simply use groups
-		case GROUP:
-			if (this.dbGroups.get(groupingName) != null) {
-				posts.addAll(this.dbGroups.get(groupingName).getPosts());
-			}
-			break;
-		default: // ALL
-			for (final User user : this.dbUsers.values()) {
-				posts.addAll(user.getPosts());
-			}
-		break;
+			case USER:
+				if (this.dbUsers.get(groupingName) != null) {
+					posts.addAll(this.dbUsers.get(groupingName).getPosts());
+				}
+				break;
+			case VIEWABLE:
+				// simply use groups
+			case GROUP:
+				if (this.dbGroups.get(groupingName) != null) {
+					posts.addAll(this.dbGroups.get(groupingName).getPosts());
+				}
+				break;
+			default: // ALL
+				for (final User user : this.dbUsers.values()) {
+					posts.addAll(user.getPosts());
+				}
+				break;
 		}
 
 		// check resourceType
 		if (resourceType == Bookmark.class) {
-			for (final Iterator<Post<? extends Resource>> it = posts.iterator(); it.hasNext();) {
-				if (!(((Post<? extends Resource>) it.next()).getResource() instanceof Bookmark)) it.remove();
-			}
+			posts.removeIf(post -> !(post.getResource() instanceof Bookmark));
 		} else if (resourceType == BibTex.class) {
-			for (final Iterator<Post<? extends Resource>> it = posts.iterator(); it.hasNext();) {
-				if (!(((Post<? extends Resource>) it.next()).getResource() instanceof BibTex)) it.remove();
-			}
-		} else {
-			// ALL
+			posts.removeIf(post -> !(post.getResource() instanceof BibTex));
 		}
 
 		// now this cast is ok
-		@SuppressWarnings({"unchecked", "rawtypes"})
-		final List<Post<T>> rVal = ((List) posts);
+		@SuppressWarnings({"unchecked", "rawtypes"}) final List<Post<T>> rVal = ((List) posts);
 		// check hash
 		if (hash != null) {
-			for (final Iterator<Post<T>> it = rVal.iterator(); it.hasNext();) {
-				if (!it.next().getResource().getInterHash().equals(hash)) it.remove();
-			}
+			rVal.removeIf(tPost -> !tPost.getResource().getInterHash().equals(hash));
 		}
 
 		// do tag filtering
 		if (tags.size() > 0) {
-			for (final Iterator<Post<T>> it = rVal.iterator(); it.hasNext();) {
+			for (final Iterator<Post<T>> it = rVal.iterator(); it.hasNext(); ) {
 				boolean drin = false;
 				for (final Tag tag : it.next().getTags()) {
 					for (final String searchTag : tags) {
@@ -255,7 +277,9 @@ public class TestDBLogic extends AbstractLogicInterface {
 					}
 
 				}
-				if (!drin) it.remove();
+				if (!drin) {
+					it.remove();
+				}
 			}
 		}
 		return rVal;
@@ -291,7 +315,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 
 		final User userButonic = new User();
 		userButonic.setEmail("joern.dreyer@uni-kassel.de");
-		userButonic.setHomepage(new URL("http://www.butonic.org"));		
+		userButonic.setHomepage(new URL("http://www.butonic.org"));
 		userButonic.setName("butonic");
 		userButonic.setRealname("Joern Dreyer");
 		userButonic.setRegistrationDate(new Date(System.currentTimeMillis()));
@@ -445,7 +469,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		this.dbResources.put(kddResource.getIntraHash(), kddResource);
 
 		// posts
-		final Post<Resource> post_1 = new Post<Resource>();
+		final Post<Resource> post_1 = new Post<>();
 		post_1.setDescription("Neueste Nachrichten aus aller Welt.");
 		post_1.setDate(this.date);
 		post_1.setResource(spiegelOnlineResource);
@@ -459,7 +483,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		post_1.getTags().add(nachrichtenTag);
 		nachrichtenTag.getPosts().add(post_1);
 
-		final Post<Resource> post_2 = new Post<Resource>();
+		final Post<Resource> post_2 = new Post<>();
 		post_2.setDescription("Toller Webhoster und super Coder ;)");
 		post_2.setDate(this.date);
 		post_2.setResource(hostingprojectResource);
@@ -471,7 +495,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		post_2.getTags().add(hostingTag);
 		hostingTag.getPosts().add(post_2);
 
-		final Post<Resource> post_3 = new Post<Resource>();
+		final Post<Resource> post_3 = new Post<>();
 		post_3.setDescription("lustiger blog");
 		post_3.setDate(this.date);
 		post_3.setResource(klabusterbeereResource);
@@ -483,7 +507,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		post_3.getTags().add(lustigTag);
 		lustigTag.getPosts().add(post_3);
 
-		final Post<Resource> post_4 = new Post<Resource>();
+		final Post<Resource> post_4 = new Post<>();
 		post_4.setDescription("lustiger mist ausm irc ^^");
 		post_4.setDate(this.date);
 		post_4.setResource(bildschirmarbeiterResource);
@@ -495,7 +519,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		post_4.getTags().add(lustigTag);
 		lustigTag.getPosts().add(post_4);
 
-		final Post<Resource> post_5 = new Post<Resource>();
+		final Post<Resource> post_5 = new Post<>();
 		post_5.setDescription("Semantic Web Vorlesung im Wintersemester 0506");
 		post_5.setDate(this.date);
 		post_5.setResource(semwebResource);
@@ -511,7 +535,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		post_5.getTags().add(ws0506Tag);
 		ws0506Tag.getPosts().add(post_5);
 
-		final Post<Resource> post_6 = new Post<Resource>();
+		final Post<Resource> post_6 = new Post<>();
 		post_6.setDescription("joerns blog");
 		post_6.setDate(this.date);
 		post_6.setResource(butonicResource);
@@ -523,7 +547,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		post_6.getTags().add(mySiteTag);
 		mySiteTag.getPosts().add(post_6);
 
-		final Post<Resource> post_7 = new Post<Resource>();
+		final Post<Resource> post_7 = new Post<>();
 		post_7.setDescription("online game");
 		post_7.setDate(this.date);
 		post_7.setResource(wowResource);
@@ -535,7 +559,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		post_7.getTags().add(wowTag);
 		wowTag.getPosts().add(post_7);
 
-		final Post<Resource> post_8 = new Post<Resource>();
+		final Post<Resource> post_8 = new Post<>();
 		post_8.setDescription("wow clan");
 		post_8.setDate(this.date);
 		post_8.setResource(dunkleResource);
@@ -547,7 +571,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		post_8.getTags().add(wowTag);
 		wowTag.getPosts().add(post_8);
 
-		final Post<Resource> post_9 = new Post<Resource>();
+		final Post<Resource> post_9 = new Post<>();
 		post_9.setDescription("w3c site zum semantic web");
 		post_9.setDate(this.date);
 		post_9.setResource(w3cResource);
@@ -559,7 +583,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		post_9.getTags().add(semwebTag);
 		semwebTag.getPosts().add(post_9);
 
-		final Post<Resource> post_10 = new Post<Resource>();
+		final Post<Resource> post_10 = new Post<>();
 		post_10.setDescription("wikipedia site zum semantic web");
 		post_10.setDate(this.date);
 		post_10.setResource(wikipediaResource);
@@ -571,7 +595,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		post_10.getTags().add(semwebTag);
 		semwebTag.getPosts().add(post_10);
 
-		final Post<Resource> post_11 = new Post<Resource>();
+		final Post<Resource> post_11 = new Post<>();
 		post_11.setDescription("kdd vorlesung im ss06");
 		post_11.setDate(this.date);
 		post_11.setResource(kddResource);
@@ -585,7 +609,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		post_11.getTags().add(kddTag);
 		kddTag.getPosts().add(post_11);
 
-		final Post<Resource> post_12 = new Post<Resource>();
+		final Post<Resource> post_12 = new Post<>();
 		post_12.setDescription("semantic web vorlesung im ws0506");
 		post_12.setDate(this.date);
 		post_12.setResource(semwebResource);
@@ -613,7 +637,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 
 		final BibTex publicationDemo1 = new BibTex();
 		publicationDemo1.setAuthor(Arrays.asList(new PersonName("R.", "Fielding"), new PersonName("J.", "Gettys"), new PersonName("J.", "Mogul"), new PersonName("H.", "Frystyk"), new PersonName("L.", "Masinter"), new PersonName("P.", "Leach"), new PersonName("T.", "Berners-Lee")));
-		publicationDemo1.setEditor(Arrays.asList(new PersonName("", "")));
+		publicationDemo1.setEditor(Collections.singletonList(new PersonName("", "")));
 		publicationDemo1.setTitle("RFC 2616, Hypertext Transfer Protocol -- HTTP/1.1");
 		publicationDemo1.setType("Paper");
 		publicationDemo1.setYear("1999");
@@ -644,7 +668,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		publicationDemo3.recalculateHashes();
 		this.dbResources.put(publicationDemo3.getIntraHash(), publicationDemo3);
 
-		final Post<Resource> post_13 = new Post<Resource>();
+		final Post<Resource> post_13 = new Post<>();
 		post_13.setDescription("Beschreibung einer allumfassenden Weltformel. Taeglich lesen!");
 		post_13.setDate(this.date);
 		post_13.setResource(publicationDemo);
@@ -658,7 +682,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		post_13.getTags().add(nachrichtenTag);
 		nachrichtenTag.getPosts().add(post_13);
 
-		final Post<Resource> post_14 = new Post<Resource>();
+		final Post<Resource> post_14 = new Post<>();
 		post_14.setDescription("Grundlagen des www");
 		post_14.setDate(this.date);
 		post_14.setResource(publicationDemo1);
@@ -670,7 +694,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		post_14.getTags().add(wwwTag);
 		wwwTag.getPosts().add(post_14);
 
-		final Post<Resource> post_15 = new Post<Resource>();
+		final Post<Resource> post_15 = new Post<>();
 		post_15.setDescription("So ist unsers api konstruiert.");
 		post_15.setDate(this.date);
 		post_15.setResource(publicationDemo2);
@@ -682,7 +706,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		post_15.getTags().add(wwwTag);
 		wwwTag.getPosts().add(post_15);
 
-		final Post<Resource> post_16 = new Post<Resource>();
+		final Post<Resource> post_16 = new Post<>();
 		post_16.setDescription("das ist nur ein beispiel.");
 		post_16.setDate(this.date);
 		post_16.setResource(publicationDemo3);
@@ -694,7 +718,7 @@ public class TestDBLogic extends AbstractLogicInterface {
 		post_16.getTags().add(wwwTag);
 		wwwTag.getPosts().add(post_16);
 	}
-	
+
 	@Override
 	public String createUser(final User user) {
 		this.dbUsers.put(user.getName(), user);
@@ -712,10 +736,10 @@ public class TestDBLogic extends AbstractLogicInterface {
 		this.dbUsers.put(username, user);
 		return username;
 	}
-	
+
 	@Override
-	public List<User> getUsers(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final UserRelation relation, final String search, final int start, final int end) {
-		final List<User> users = new LinkedList<User>();
+	public List<User> getUsers(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final SortKey sortKey, final UserRelation relation, final String search, final int start, final int end) {
+		final List<User> users = new LinkedList<>();
 		if (GroupingEntity.ALL.equals(grouping)) {
 			users.addAll(this.dbUsers.values());
 		}
@@ -731,7 +755,12 @@ public class TestDBLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end) {
+	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, SortKey sortKey, Date startDate, Date endDate, int start, int end) {
 		return new Statistics(0);
+	}
+
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query) {
+		return new ArrayList<>(); //FIXME (AD) provide stubs
 	}
 }

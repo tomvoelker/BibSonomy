@@ -55,9 +55,9 @@ public class PostPublicationCommandValidator implements Validator<PostPublicatio
 		
 		final ListCommand<Post<BibTex>> listCommand = command.getBibtex();
 		
-		//validate resource
+		// validate resource
 		final List<Post<BibTex>> list = listCommand.getList();
-		final PostValidator<BibTex> validator = new PostValidator<BibTex>();
+		final PostValidator<BibTex> validator = new PostValidator<>();
 
 		for (int i = 0; i < list.size(); i++) {
 			errors.pushNestedPath("list[" + i + "]");

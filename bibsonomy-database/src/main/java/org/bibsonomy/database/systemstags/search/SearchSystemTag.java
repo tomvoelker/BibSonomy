@@ -27,7 +27,7 @@
 package org.bibsonomy.database.systemstags.search;
 
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.model.Resource;
 
 

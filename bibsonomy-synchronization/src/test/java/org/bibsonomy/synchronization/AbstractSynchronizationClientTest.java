@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.eclipse.jetty.server.Server;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.DBLogic;
 import org.bibsonomy.database.DBLogicApiInterfaceFactory;
@@ -49,6 +50,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationDirection;
@@ -61,7 +63,6 @@ import org.joda.time.format.DateTimeFormatter;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.mortbay.jetty.Server;
 
 /**
  * @author wla
@@ -109,8 +110,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 	@SuppressWarnings("javadoc")
 	@BeforeClass
 	public static void initRestServer() throws Exception {
-		final DBLogicApiInterfaceFactory dbLogicFactory = new DBLogicApiInterfaceFactory();
-		dbLogicFactory.setDbSessionFactory(dbSessionFactory);
+		final LogicInterfaceFactory dbLogicFactory = testDatabaseContext.getBean(API_LOGICFACTORY_BEAN_NAME, LogicInterfaceFactory.class);
 		final TestServerBuilder buildServer = new TestServerBuilder(dbLogicFactory, PORT);
 		restServer = buildServer.buildServer();
 		restServer.start();
@@ -135,7 +135,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 	
 	private String[] modifiedBookmarkKeys;
 	private String[] modifiedPublicationKeys;
-	
+
 	@SuppressWarnings({ "unchecked", "javadoc" })
 	@Before
 	public void initialize() {
@@ -145,7 +145,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 		this.serverUser = new User();
 		this.serverUser.setName(SERVER_USER_NAME);
 		this.serverUser.setRole(Role.SYNC);
-		this.serverUser.setGroups(new ArrayList<Group>());
+		this.serverUser.setGroups(new ArrayList<>());
 		this.serverUser.getGroups().add(new Group("jbhj"));
 		this.serverUser.setApiKey(SERVER_USER_APIKEY);
 
@@ -159,8 +159,8 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 		/*
 		 * create the logic interfaces
 		 */
-		this.clientLogic = new SyncDBLogic(this.clientUser, dbSessionFactory);
-		this.serverLogic = new SyncDBLogic(this.serverUser, dbSessionFactory);
+		this.clientLogic = createSyncDBLogic(this.clientUser);
+		this.serverLogic = createSyncDBLogic(this.serverUser);
 
 		/*
 		 * iterate over all resource types
@@ -171,7 +171,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 			/*
 			 * create server posts
 			 */
-			final List<Post<?>> serverPosts = new ArrayList<Post<?>>();
+			final List<Post<?>> serverPosts = new ArrayList<>();
 
 			// post 1 "no changes" created and modified before last
 			// synchronization
@@ -202,7 +202,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 			/*
 			 * create client posts
 			 */
-			final List<Post<?>> clientPosts = new ArrayList<Post<?>>();
+			final List<Post<?>> clientPosts = new ArrayList<>();
 
 			// post 1: "post without changes" is the same post as in database
 			clientPosts.add(this.createPost("no changes", "2011-01-10 14:32:00", "2011-01-31 14:32:00", this.clientUser, clazz));
@@ -244,7 +244,13 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 			assertEquals(SYNC_SERVER_URI, this.clientLogic.getSyncServiceSettings(this.clientUser.getName(), null, true).get(0).getService().toString());
 		}
 	}
-	
+
+	private LogicInterface createSyncDBLogic(User clientUser) {
+		final DBLogic logic = testDatabaseContext.getBean(DBLogic.class);
+		logic.setLoginUser(clientUser);
+		return logic;
+	}
+
 
 	/**
 	 * helper method to create posts of the given type
@@ -275,14 +281,10 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 		return post;
 	}
 	
-	private static class SyncDBLogic extends DBLogic {
-		public SyncDBLogic(final User user, final DBSessionFactory dbSessionFactory) {
-			super(user, dbSessionFactory, null);
-		}
-	}
+
 	
 	protected static Map<String, SynchronizationPost> mapFromList(final List<SynchronizationPost> syncPosts) {
-		final Map<String, SynchronizationPost> map = new HashMap<String, SynchronizationPost>();
+		final Map<String, SynchronizationPost> map = new HashMap<>();
 		for (final SynchronizationPost post : syncPosts) {
 			map.put(post.getIntraHash(), post);
 		}

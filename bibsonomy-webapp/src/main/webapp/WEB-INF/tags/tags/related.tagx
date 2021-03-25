@@ -60,7 +60,7 @@
 			<c:choose>
 				<c:when test="${!relevantfor}">
 					<c:choose>
-						<c:when test="${not empty scope and scope ne 'LOCAL'}">
+						<c:when test="${not empty scope and scope ne 'LOCAL' and scope ne 'SEARCHINDEX'}">
 							<c:url var="tagUrl"
 								value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}?scope=${scope}"/>
 							<c:url var="tagsUrl"

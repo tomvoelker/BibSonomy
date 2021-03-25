@@ -78,8 +78,6 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	
 	/** name of the default project theme */
 	private static final String DEFAULT_PROJECT_THEME = "default";
-	
-	private static final Pattern REDIRECT_PATTERN = Pattern.compile("<!--\\s*redirect\\s*:(.*)\\s*-->");
 
 	private Errors errors;
 
@@ -96,6 +94,15 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	/** the url of the project */
 	private String projectHome;
 	
+	/** the mail of the project */
+	private String projectEmail;
+	
+	/** the mail of the project */
+	private String projectNoSpamEmail;
+	
+	/** the mail of the project */
+	private String projectAPIEmail;
+
 	/** the request logic */
 	private RequestLogic requestLogic;
 	
@@ -148,8 +155,9 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 			
 			return Views.DOWNLOAD_FILE;
 		}
-		
-		final Map<String, String> replacements = HelpUtils.buildReplacementMap(this.projectName, theme, this.projectHome);
+
+		// TODO: maybe we should use a prototype for creating the parser
+		final Map<String, String> replacements = HelpUtils.buildReplacementMap(this.projectName, theme, this.projectHome, this.projectEmail, this.projectNoSpamEmail, this.projectAPIEmail);
 		// instantiate a new parser
 		final Parser parser = new Parser(replacements, this.urlGenerator);
 		
@@ -186,7 +194,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		try (final BufferedReader inputReader = new BufferedReader(new InputStreamReader(new FileInputStream(markdownFile), StringUtils.CHARSET_UTF_8))) {
 			final String text = StringUtils.getStringFromReader(inputReader);
 			
-			final Matcher matcher = REDIRECT_PATTERN.matcher(text);
+			final Matcher matcher = HelpSearch.REDIRECT_PATTERN.matcher(text);
 			if (matcher.find()) {
 				final String redirectPage = matcher.group(1).trim();
 				return new ExtendedRedirectView(this.urlGenerator.getHelpPage(redirectPage, requestLanguage), true);
@@ -338,6 +346,27 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	 */
 	public void setProjectHome(String projectHome) {
 		this.projectHome = projectHome;
+	}
+
+	/**
+	 * @param projectEmail the projectEmail to set
+	 */
+	public void setProjectEmail(String projectEmail) {
+		this.projectEmail = projectEmail;
+	}
+	
+	/**
+	 * @param projectNoSpamEmail the projectNoSpamEmail to set
+	 */
+	public void setProjectNoSpamEmail(String projectNoSpamEmail) {
+		this.projectNoSpamEmail = projectNoSpamEmail;
+	}
+
+	/**
+	 * @param projectAPIEmail the projectAPIEmail to set
+	 */
+	public void setProjectAPIEmail(String projectAPIEmail) {
+		this.projectAPIEmail = projectAPIEmail;
 	}
 
 	/**

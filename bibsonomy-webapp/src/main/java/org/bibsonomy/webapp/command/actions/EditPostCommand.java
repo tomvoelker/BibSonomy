@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -85,7 +86,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 * The abstract (or general) group of the post: public, private, or other
 	 */
 	private String abstractGrouping;
-
+	
 	private List<String> groups;
 
 	private List<String> relevantGroups;
@@ -93,6 +94,11 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	private SortedSet<RecommendedTag> recommendedTags;
 
 	private Map<String, Map<String, List<String>>> relevantTagSets;
+
+	/**
+	 * field for the friends or groups dropdowns
+	 */
+	private String friendsOrGroups;
 
 	/**
 	 * stores an id, e.g. for mapping recommendations to posts
@@ -126,6 +132,9 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	private List<String> differentEntryKeys;
 
 	private User groupUser;
+
+	private List<JobResult> jobResults;
+	private String redirectUrl;
 
 	/**
 	 * @return saveAndRate
@@ -276,6 +285,20 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 		this.abstractGrouping = abstractGrouping;
 	}
 
+	/**
+	 * @return the abstractGrouping
+	 */
+	public String getFriendsOrGroups() {
+		return friendsOrGroups;
+	}
+
+	/**
+	 * @param friendsOrGroups
+	 */
+	public void setFriendsOrGroups(String friendsOrGroups) {
+		this.friendsOrGroups=friendsOrGroups;
+	}
+	
 	/**
 	 * @return the diffPost
 	 */
@@ -524,4 +547,31 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 		this.groupUser = groupUser;
 	}
 
+	/**
+	 * @return
+	 */
+	public List<JobResult> getJobResults() {
+		return jobResults;
+	}
+
+	/**
+	 * @param jobResults
+	 */
+	public void setJobResults(List<JobResult> jobResults) {
+		this.jobResults = jobResults;
+	}
+
+	/**
+	 * @return the redirectUrl
+	 */
+	public String getRedirectUrl() {
+		return redirectUrl;
+	}
+
+	/**
+	 * @param redirectUrl the redirectUrl to set
+	 */
+	public void setRedirectUrl(String redirectUrl) {
+		this.redirectUrl = redirectUrl;
+	}
 }

@@ -37,6 +37,8 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
@@ -50,7 +52,6 @@ import org.bibsonomy.database.systemstags.search.SearchSystemTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.UserUtils;
 
@@ -60,29 +61,29 @@ import org.bibsonomy.model.util.UserUtils;
  * @author Jens Illig
  * @author Christian Schenk
  */
-public class LogicInterfaceHelper {	
+public class LogicInterfaceHelper {
 	private static final Log logger = LogFactory.getLog(LogicInterfaceHelper.class);
-	
-	protected static final int DEFAULT_LIST_LIMIT = 10;
-	
+
+	/** the default list limit */
+	protected static final int DEFAULT_LIST_LIMIT = 20;
+
 	/**
 	 * 
 	 * Builds a parameter object for the given parameters from the LogicInterface.
 	 * 
 	 * @param <T>
 	 * @param type
-	 * @param order
 	 * @param start
 	 * @param end
 	 * @return - the filled parameter object
 	 */
-	public static <T extends GenericParam> T buildParam(final Class<T> type, final Order order, int start, final int end) {
+	public static <T extends GenericParam> T buildParam(final Class<T> type, SortKey sortKey, int start, final int end) {
 		final T param = getParam(type);
 		
 		if (start < 0) {
 			start = 0;
 		}
-		param.setOrder(order);
+		param.setSortKey(sortKey);
 		param.setOffset(start);
 		if (end - start < 0) {
 			param.setLimit(DEFAULT_LIST_LIMIT);
@@ -95,15 +96,16 @@ public class LogicInterfaceHelper {
 	
 	/**
 	 * Builds a param object for the given parameters from the LogicInterface.
-	 * 
+	 *
 	 * @param <T> the type of param object to be build
 	 * @param type the type of param object to be build
 	 * @param resourceType the type of the resource
+	 * @param queryScope
 	 * @param grouping as specified for {@link PostLogicInterface#getPosts}
 	 * @param groupingName as specified for {@link PostLogicInterface#getPosts}
 	 * @param tags as specified for {@link PostLogicInterface#getPosts}
 	 * @param hash as specified for {@link PostLogicInterface#getPosts}
-	 * @param order as specified for {@link PostLogicInterface#getPosts}
+	 * @param sortKey as specified for {@link PostLogicInterface#getPosts}
 	 * @param start as specified for {@link PostLogicInterface#getPosts}
 	 * @param end as specified for {@link PostLogicInterface#getPosts}
 	 * @param startDate as specified for {@link PostLogicInterface#getPosts}
@@ -112,11 +114,11 @@ public class LogicInterfaceHelper {
 	 * @param filters as specified for {@link PostLogicInterface#getPosts}
 	 * @param loginUser logged in user as specified for {@link PostLogicInterface#getPosts}         @return the fresh param object
 	 */
-	public static <T extends GenericParam> T buildParam(final Class<T> type, Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, final Date startDate, final Date endDate, final String search, final Set<Filter> filters, final User loginUser) {
+	public static <T extends GenericParam> T buildParam(final Class<T> type, Class<? extends Resource> resourceType, QueryScope queryScope, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final SortKey sortKey, final int start, final int end, final Date startDate, final Date endDate, final String search, final Set<Filter> filters, final User loginUser) {
 		/*
 		 * delegate to simpler method
 		 */
-		final T param = buildParam(type, order, start, end);
+		final T param = buildParam(type, sortKey, start, end);
 
 		// if hash length is 33 ,than use the first character as hash type
 		if (hash != null && hash.length() == 33) {
@@ -128,6 +130,7 @@ public class LogicInterfaceHelper {
 			}
 			
 			if (param instanceof BibTexParam || param instanceof TagParam || param instanceof StatisticsParam) {
+				param.setSortKey(sortKey);
 				param.setSimHash(id);
 			}
 			param.setHash(hash.substring(1));
@@ -141,6 +144,7 @@ public class LogicInterfaceHelper {
 		param.setEndDate(endDate);
 		
 		param.setUserName(loginUser.getName());
+		param.setLoggedinUser(loginUser);
 		param.setGrouping(grouping);
 		
 		// default search searches over all possible fields
@@ -153,6 +157,7 @@ public class LogicInterfaceHelper {
 			case VIEWABLE:
 			case GROUP:
 			case PENDING:
+			case ORGANIZATION:
 				param.setRequestedGroupName(groupingName);
 				break;
 			case INBOX:
@@ -252,6 +257,7 @@ public class LogicInterfaceHelper {
 			logger.debug("input tags are null");
 		}
 
+		param.setQueryScope(queryScope);
 		return param;
 	}
 

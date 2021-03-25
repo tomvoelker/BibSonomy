@@ -43,9 +43,7 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
  * or "PST" as ID?
  * 
  * See also: http://stackoverflow.com/questions/240510/convert-a-string-to-gregoriancalendar
- *  
- *  
- * 
+ *
  * @author rja
  */
 public class TimezoneTypeHandlerCallback extends AbstractTypeHandlerCallback {
@@ -63,6 +61,6 @@ public class TimezoneTypeHandlerCallback extends AbstractTypeHandlerCallback {
 
 	@Override
 	public Object valueOf(final String str) {
-	    return TimeZone.getTimeZone(str);
+		return TimeZone.getTimeZone(str);
 	}
 }

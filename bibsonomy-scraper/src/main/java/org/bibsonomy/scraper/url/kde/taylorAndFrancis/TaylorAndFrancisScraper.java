@@ -49,11 +49,11 @@ public class TaylorAndFrancisScraper extends LiteratumScraper implements Referen
 	private static final String SITE_HOST = "tandfonline.com";
 	private static final String SITE_URL = "http://" + SITE_HOST + "/";
 	private static final String SITE_INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
-	
+
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
-	
+
 	private final static Pattern REF_PATTERN = Pattern.compile("(?s)<ul class=\"references\">(.*)</ul></div></div>");
-	
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
@@ -74,6 +74,9 @@ public class TaylorAndFrancisScraper extends LiteratumScraper implements Referen
 		return PATTERNS;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
+	 */
 	@Override
 	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
 		try{

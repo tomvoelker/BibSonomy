@@ -47,7 +47,7 @@
 						<property name="allowedFields">
 							<list>
 								<value>action</value>
-								<value>resource</value>
+								<value>entity</value>
 								<value>id</value>
 							</list>
 						</property>

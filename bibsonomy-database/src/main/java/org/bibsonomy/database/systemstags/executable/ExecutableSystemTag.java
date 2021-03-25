@@ -28,7 +28,7 @@ package org.bibsonomy.database.systemstags.executable;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
@@ -64,7 +64,7 @@ public interface ExecutableSystemTag extends SystemTag {
 	 * @param post = a VALID post for which action should be performed
 	 * @param session 
 	 */
-	public <T extends Resource> void performAfterCreate(Post<T> post, final DBSession session);
+	<T extends Resource> void performAfterCreate(Post<T> post, final DBSession session);
 	
 	/**
 	 * Action to perform after the update of a post

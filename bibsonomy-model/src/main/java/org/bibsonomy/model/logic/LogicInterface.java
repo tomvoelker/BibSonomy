@@ -41,7 +41,8 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
@@ -54,14 +55,15 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
-import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.PersonMergeFieldConflict;
+import org.bibsonomy.model.PhDRecommendation;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
-import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.logic.query.GroupQuery;
+import org.bibsonomy.model.logic.query.Query;
+import org.bibsonomy.model.logic.query.statistics.meta.MetaDataQuery;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.user.remote.RemoteUserId;
@@ -86,7 +88,7 @@ import org.bibsonomy.model.user.remote.RemoteUserId;
  * @author Jens Illig <illig@innofinity.de>
  * @author Christian Kramer
  */
-public interface LogicInterface extends PersonLogicInterface, PostLogicInterface, GoldStandardPostLogicInterface, DiscussionLogicInterface, SyncLogicInterface {
+public interface LogicInterface extends PersonLogicInterface, PostLogicInterface, GoldStandardPostLogicInterface, DiscussionLogicInterface, SyncLogicInterface, CRISLogicInterface {
 
 	/**
 	 * @return the name of the authenticated user
@@ -106,8 +108,8 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * 			- a list of tags by which to retrieve users (e.g., users related to these tags by folkrank)
 	 * @param hash
 	 * 			- a resourcehash
-	 * @param order
-	 * 			- the order by which to retrieve the users
+	 * @param sortKey
+	 * 			- sort by key
 	 * @param relation
 	 * 			- the relation between the users
 	 * @param search
@@ -117,7 +119,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 *
 	 * @return list of user
 	 */
-	public List<User> getUsers (Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, UserRelation relation, String search, int start, int end);
+	public List<User> getUsers (Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, SortKey sortKey, UserRelation relation, String search, int start, int end);
 
 	/**
 	 * @param grouping TODO
@@ -126,7 +128,6 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param status
 	 * @param startDate
 	 * @param endDate
-	 * @param constraints
 	 * @return statistic informations about the users
 	 */
 	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, final Classifier classifier, final SpamStatus status, Date startDate, Date endDate);
@@ -169,16 +170,14 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 */
 	public void updateWiki(String userName, Wiki wiki);
 
-
 	/**
-	 * Returns all groups of the system.
-	 * @param pending
-	 * @param userName if pending equals <code>true</code> restrict pending groups to this user
-	 * @param start
-	 * @param end
-	 * @return a set of groups, an empty set else
+	 * Returns all groups in the system. The request is handled differently depending on the query details provided in <code>query</code>.
+	 *
+	 * @param query a query object with a specification to select groups.
+	 *
+	 * @return a set of groups, or an empty set if no group in accordance with the specification could be found.
 	 */
-	public List<Group> getGroups(boolean pending, String userName, int start, int end);
+	List<Group> getGroups(GroupQuery query);
 
 	/**
 	 * Returns a list of all deleted group users of the system.
@@ -186,6 +185,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param end
 	 * @return a set of users, an empty set else
 	 */
+	@Deprecated // use getUsers method
 	public List<User> getDeletedGroupUsers(int start, int end);
 
 	/**
@@ -217,14 +217,14 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param regex
 	 *            a regular expression used to filter the tagnames
 	 * @param relation TODO
-	 * @param order
+	 * @param sortKey	sort by key
 	 * @param startDate - if given, only tags of posts that have been created after (inclusive) startDate are returned
 	 * @param endDate - if given, only tags of posts that have been created before (inclusive) endDate are returned
 	 * @param start
 	 * @param end
 	 * @return a set of tags, an empty list else
 	 */
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end);
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, String regex, TagSimilarity relation, SortKey sortKey, Date startDate, Date endDate, int start, int end);
 
 	/**
 	 * Returns a list of tags which can be filtered.
@@ -242,18 +242,18 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param hash
 				  a resource hash (publication or bookmark)
 	 * @param search - search string
-	 * @param searchType the search type
+	 * @param queryScope the search type
 	 * @param regex
 	 *            a regular expression used to filter the tagnames
 	 * @param relation TODO
-	 * @param order
+	 * @param sortKey 	sort by key
 	 * @param startDate - if given, only tags of posts that have been created after (inclusive) startDate are returned
 	 * @param endDate - if given, only tags of posts that have been created before (inclusive) endDate are returned
 	 * @param start
 	 * @param end
 	 * @return a set of tags, an empty list else
 	 */
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end);
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, String regex, TagSimilarity relation, SortKey sortKey, Date startDate, Date endDate, int start, int end);
 
 	/**
 	 * retrieves a filterable list of authors.
@@ -276,11 +276,11 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param start inclusive start index of the view window
 	 * @param end exclusive end index of the view window
 	 * @param search free text search
-	 * @param order a flag indicating the way of sorting
+	 * @param sortKey 	sort by key
 	 * @param filter filter for the retrieved authors
 	 * @return a filtered list of authors. may be empty but not null
 	 */
-	public List<Author> getAuthors(GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search);
+	public List<Author> getAuthors(GroupingEntity grouping, String groupingName, List<String> tags, String hash, SortKey sortKey, FilterEntity filter, int start, int end, String search);
 
 	/**
 	 * Returns details about a tag. Those details are:
@@ -379,7 +379,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * <dt>{@link GroupUpdateOperation#UPDATE_SETTINGS}</dt><dd>Updates the settings of the group.</dd>
 	 * <dt>{@link GroupUpdateOperation#UPDATE_ALL}</dt><dd>Updates the complete group.</dd>
 	 * <dt>{@link GroupUpdateOperation#ACTIVATE}</dt><dd>Activates the group.</dd>
-	 * <dt>{@link GroupUpdateOperation#DELETE}</dt><dd>Deletes the pending group.</dd>
+	 * <dt>{@link GroupUpdateOperation#DELETE_GROUP_REQUEST}</dt><dd>Deletes the pending group.</dd>
 	 * </dl>
 	 *
 	 *
@@ -440,7 +440,6 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param groupingEntity
 	 * @param grouping
 	 * @param filters
-	 * @param constraints
 	 * @param startDate
 	 * @param endDate
 	 * @return the stats
@@ -559,7 +558,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName);
 
 	/**
-	 * TODO: can we merge this with the {@link #getUsers(Class, GroupingEntity, String, List, String, Order, UserRelation, String, int, int)}
+	 * TODO: can we merge this with the {@link #getUsers(Class, GroupingEntity, String, List, String, SortKey, UserRelation, String, int, int)}
 	 * method?
 	 *
 	 * Returns all users that are classified to the specified state by
@@ -695,7 +694,6 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param regex
 	 * @param status
 	 * @param filters
-	 * @param contraints the statistic contraint
 	 * @param startDate
 	 * @param endDate
 	 * @param start
@@ -768,34 +766,23 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);
 
 	/**
-	 * @param personId
-	 */
-	public void linkUser(String personId);
-
-	/**
-	 * @param username
-	 */
-	public void unlinkUser(String username);
-	
-	public List<PersonMatch> getPersonMatches(String personID);
-	
-	public PersonMatch getPersonMatch(int matchID);
-	
-	public void denieMerge(PersonMatch match);
-
-	public boolean acceptMerge(PersonMatch match);
-
-	/**
-	 * @param formMatchId
-	 * @param array
+	 *
+	 * @param query
 	 * @return
 	 */
-	public Boolean conflictMerge(int formMatchId, Map<String, String> map);
-	
+	Statistics getStatistics(final Query query);
+
 	/**
-	 * 
-	 * @param personId
-	 * @return returns the updated personId, if the person was merged to an other person
+	 * returns the meta data the query requests
+	 * @param query
+	 * @param <R>
+	 * @return
 	 */
-	public String getForwardId(String personId);
+	<R> R getMetaData(MetaDataQuery<R> query);
+
+	/**
+	 * @param personID
+	 * @return
+	 */
+	List<PhDRecommendation> getPhdAdvisorRecForPerson(String personID);
 }

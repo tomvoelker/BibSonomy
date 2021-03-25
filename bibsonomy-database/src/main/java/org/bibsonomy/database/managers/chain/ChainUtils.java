@@ -29,24 +29,28 @@ package org.bibsonomy.database.managers.chain;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.systemstags.search.NotTagSystemTag;
+import org.bibsonomy.model.SystemTag;
+import org.bibsonomy.util.Sets;
 
 /**
  * @author mba
  */
 public class ChainUtils {
 
+	private static final Set<GroupingEntity> GROUPING_ENTITIES_SEARCH = Sets.asSet(GroupingEntity.GROUP, GroupingEntity.PERSON, GroupingEntity.ORGANIZATION);
+
 	public static boolean useResourceSearch(final GenericParam param) {
 		final PermissionDatabaseManager pdm = PermissionDatabaseManager.getInstance();
 		final List<TagIndex> tagIndex = param.getTagIndex();
-	
-		
+
 		/*
 		 * Are there Negation tags?
 		 */
@@ -59,18 +63,35 @@ public class ChainUtils {
 		}
 		
 		/*
-		 * Handle the request when:
+		 * Handle the request when one of the following points is met:
 		 * 1. There are TAGS in the query AND the lucene should be uses for the amount of tags
-		 * OR
 		 * 2. There are negated tags
+		 * 3.
 		 */
+		//TODO (AD) define rules for handling the query if groups are involved
 		if ((present(tagIndex) && pdm.useResourceSearchForTagQuery(tagIndex.size())) ||	existsNegatedTags) {
 			return true;
 		}
-		if ((param.getGrouping() == GroupingEntity.ALL) && (param.getNumSimpleConcepts() > 0)) {
+
+		/*
+		 * Handle requests for simple tags and concepts
+		 */
+		final GroupingEntity grouping = param.getGrouping();
+		if ((grouping == GroupingEntity.ALL) && ((param.getNumSimpleConcepts() > 0))) {
 			return true;
 		}
-		
+
+		/*
+		 * Handle requests for groups and organizations
+		 */
+		if (GROUPING_ENTITIES_SEARCH.contains(grouping)) {
+			return true;
+		}
+
+		if ((param.getQueryScope() == QueryScope.SEARCHINDEX)) {
+			return true;
+		}
+
 		return false;
 	}
 
