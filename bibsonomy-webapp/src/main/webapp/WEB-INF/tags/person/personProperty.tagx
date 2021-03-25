@@ -30,17 +30,13 @@
                     <c:when test="${type eq 'homepage'}" >
                         <a class="personPageFormFieldContent" id="personPageForm${typeUpper}Value" rel="external nofollow" href="${fn:escapeXml(value)}" itemprop="url"><c:out value="${value}"/></a>
                     </c:when>
+                    <c:when test="${type eq 'orcid'}">
+                        <per:orcid orcid="${value}" returnUrl="${true}" />
+                    </c:when>
+                    <c:when test="${type eq 'researcherid'}">
+                        <per:researcherid researcherid="${value}" returnUrl="${true}"/>
+                    </c:when>
                     <c:otherwise>
-                        <c:if test="${type eq 'researcherid'}">
-                            <c:set var="value">
-                                <per:researcherid researcherid="${value}"/>
-                            </c:set>
-                        </c:if>
-                        <c:if test="${type eq 'orcid'}" >
-                            <c:set var="value">
-                                <per:orcid orcid="${value}"/>
-                            </c:set>
-                        </c:if>
                         <span class="personPageFormFieldContent" id="personPageForm${typeUpper}Value">${value}</span>
                     </c:otherwise>
                 </c:choose>
