@@ -61,8 +61,8 @@ import bibtex.parser.ParseException;
 public class ContentNegotiationDOIScraper implements Scraper {
 
 	private static final String SITE_NAME = "ContentNegotiationDOIScraper";
-	private static final String SITE_URL = "http://www.doi.org/";
-	private static final String INFO = "The ContentNegotiationDOIScraper resolves bibtex directly from a given " + AbstractUrlScraper.href("http://www.doi.org/", "DOI") +
+	private static final String SITE_URL = "https://www.doi.org/";
+	private static final String INFO = "The ContentNegotiationDOIScraper resolves bibtex directly from a given " + AbstractUrlScraper.href(SITE_URL, "DOI") +
 			", if no URL scraper matched the previously redirected page.";
 	
 	/**
@@ -156,7 +156,7 @@ public class ContentNegotiationDOIScraper implements Scraper {
 
 	@Override
 	public Collection<Scraper> getScraper() {
-		return Collections.<Scraper>singletonList(this);
+		return Collections.singletonList(this);
 	}
 	
 	/**
