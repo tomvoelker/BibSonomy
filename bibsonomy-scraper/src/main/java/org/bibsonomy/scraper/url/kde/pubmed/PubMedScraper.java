@@ -51,11 +51,10 @@ import org.bibsonomy.util.WebUtils;
 /**
  * 
  * @author Christian Kramer
- * 
  */
 public class PubMedScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "PubMed";
-	private static final String SITE_URL = "http://www.ncbi.nlm.nih.gov/";
+	private static final String SITE_URL = "https://www.ncbi.nlm.nih.gov/";
 	private static final String INFO = "This scraper parses a publication page of citations from "
 			+ href(SITE_URL, SITE_NAME)+".";
 
