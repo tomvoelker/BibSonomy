@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.generic;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -42,7 +44,6 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.UrlUtils;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -82,18 +83,17 @@ public abstract class LiteratumScraper extends AbstractUrlScraper {
 		final URL url = sc.getUrl();
 		final String doi = getDOI(url);
 
-		if (ValidationUtils.present(doi)) {
+		if (present(doi)) {
 			try {
-				
-				final List<NameValuePair> postContent = getPostContent(doi);
+				final List<NameValuePair> postContent = this.getPostContent(doi);
 				final StringBuilder citUrl = new StringBuilder(url.getProtocol() + "://" + url.getHost() + BIBTEX_DOWNLOAD_PATH);
-				if (!ValidationUtils.present(postContent)) {
+				if (!present(postContent)) {
 					citUrl.append(BIBTEX_PARAMS + UrlUtils.safeURIEncode(doi));	
 				}
 				final String cookies = getCookies(url);
 				final String bibtex = WebUtils.getContentAsString(citUrl.toString(), cookies, postContent, null);
 
-				if (ValidationUtils.present(bibtex)) {
+				if (present(bibtex)) {
 					// download and add abstract, if necessary
 					final String bibtexWithAbstract = addAbstract(bibtex, url, cookies);
 					// postprocess BibTeX
