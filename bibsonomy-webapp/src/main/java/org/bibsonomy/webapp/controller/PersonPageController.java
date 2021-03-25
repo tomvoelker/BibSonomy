@@ -120,7 +120,7 @@ public class PersonPageController extends SingleResourceListController implement
 		final RequestWrapperContext context = command.getContext();
 		final String formAction = command.getFormAction();
 		final boolean action = present(formAction);
-		if (!action && !present(command.getRequestedPersonId())){
+		if (!action && !present(command.getRequestedPersonId())) {
 			throw new MalformedURLSchemeException("The person page was requested without a person in the request.");
 		}
 
@@ -672,8 +672,6 @@ public class PersonPageController extends SingleResourceListController implement
 			command.setPersonPostsStyleSettings(0);
 		}
 
-
-
 		// TODO: this needs to be removed/refactored as soon as the ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder accepts start/end
 		ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
 				.byPersonId(person.getPersonId())
@@ -697,7 +695,7 @@ public class PersonPageController extends SingleResourceListController implement
 				.setWithPersonsOfPosts(queryBuilder.isWithPersonsOfPosts())
 				.setWithPosts(queryBuilder.isWithPosts());
 
-		ResourcePersonRelationQuery query = builder.build();
+		final ResourcePersonRelationQuery query = builder.build();
 
 		// TODO: maybe this should be done in the view?
 		final List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(query);
