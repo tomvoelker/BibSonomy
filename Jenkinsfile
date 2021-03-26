@@ -68,6 +68,14 @@ pipeline {
         )
       }
     }
+    stage ('Trigger PUMA build') {
+      when {
+        branch 'master'
+      }
+      steps {
+        build wait: false, job: 'puma/master'
+      }
+    }
     stage ('Deploy BibLicious Webapp') {
       when {
         branch 'master'
