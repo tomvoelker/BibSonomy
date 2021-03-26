@@ -28,7 +28,6 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -204,20 +203,9 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 
 		/*
 		 * the search terms should be match in any order and the last token is used in a prefix match
-		 * here we split the string into tokens and build a boolean query
-		 * FIXME: replace this with a bool match prefix query in elasticsearch 7.X
 		 */
 		if (usePrefixMatch) {
-			final BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-			final List<String> tokens = Arrays.asList(searchQuery.split(" "));
-
-			final int lastTokenIndex = tokens.size() - 1;
-			for (final String term : tokens.subList(0, lastTokenIndex)) {
-				boolQueryBuilder.should(QueryBuilders.termQuery(PersonFields.ALL_NAMES, term));
-			}
-
-			boolQueryBuilder.should(QueryBuilders.prefixQuery(PersonFields.ALL_NAMES, tokens.get(lastTokenIndex)));
-			return boolQueryBuilder;
+			return ElasticsearchIndexSearchUtils.buildBoolMatchPrefixQuery(searchQuery, PersonFields.ALL_NAMES);
 		}
 
 		// the search terms should match given the order, last term no order

@@ -11,6 +11,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.query.BasicQuery;
 import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 import org.bibsonomy.model.statistics.Statistics;
+import org.bibsonomy.search.es.index.converter.person.PersonFields;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
 import org.bibsonomy.search.update.SearchIndexSyncState;
@@ -130,15 +131,36 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 		// now some general search queries
 		final String search = query.getSearch();
 		if (present(search)) {
-			final MultiMatchQueryBuilder searchQueryBuilder = QueryBuilders.multiMatchQuery(search);
-			this.manager.getPublicFields().forEach(searchQueryBuilder::field);
-			searchQueryBuilder
-					.type(MatchQuery.Type.PHRASE_PREFIX)
-					.minimumShouldMatch("75%");
+			final QueryBuilder searchQueryBuilder = this.buildSearchQueryBuilder(query);
 			mainQuery.must(searchQueryBuilder);
 		}
 
 		return mainQuery.filter(filterQuery);
+	}
+
+	private QueryBuilder buildSearchQueryBuilder(final Q query) {
+		final String search = query.getSearch();
+		final boolean phraseMatch = query.isPhraseMatch();
+		final boolean prefixMatch = query.isUsePrefixMatch();
+
+		/*
+		 * the search terms must match in the order entered and the last is only a prefix match
+		 */
+		if (phraseMatch) {
+			final MultiMatchQueryBuilder searchQueryBuilder = QueryBuilders.multiMatchQuery(search);
+			this.manager.getPublicFields().forEach(searchQueryBuilder::field);
+			searchQueryBuilder.minimumShouldMatch("75%");
+			if (!prefixMatch) {
+				return searchQueryBuilder;
+			}
+			// prefix config
+			searchQueryBuilder
+					.type(MatchQuery.Type.PHRASE_PREFIX);
+
+			return searchQueryBuilder;
+		}
+
+		return ElasticsearchIndexSearchUtils.buildMultiBoolMatchPrefixQuery(search, this.manager.getPublicFields());
 	}
 
 	protected BoolQueryBuilder buildMainQuery(final User loggedinUser, final Q query) {

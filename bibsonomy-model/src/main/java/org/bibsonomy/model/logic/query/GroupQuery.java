@@ -27,20 +27,23 @@ public class GroupQuery extends BasicQuery {
 	/**
 	 * Creates a group query.
 	 *
-	 * @param search       search terms for the full text search
-	 * @param groupOrder   the order of the found groups
-	 * @param sortOrder    the sort order of the order
-	 * @param pending      if set to <code>true</code> this query will retrieve pending groups, otherwise only activated groups will be retrieved.
-	 * @param userName     if set the query is restricted to groups created by the user (applies only to pending groups).
-	 * @param externalId   if a valid non-empty string is supplied, the query will lookup the group with the supplied external id.
-	 * @param organization if set only organizations or non organizations should be returned
-	 * @param start        start index of the retrieved result set.
-	 * @param end          end index of the retrieved result set.
+	 * @param search         search terms for the full text search
+	 * @param usePrefixMatch flag to indicate that the last token should be matched as a prefix
+	 * @param phraseMatch    the search terms represent a phrase where the tokens should appear in the order entered
+	 * @param groupOrder     the order of the found groups
+	 * @param sortOrder      the sort order of the order
+	 * @param pending        if set to <code>true</code> this query will retrieve pending groups, otherwise only activated groups will be retrieved.
+	 * @param userName       if set the query is restricted to groups created by the user (applies only to pending groups).
+	 * @param externalId     if a valid non-empty string is supplied, the query will lookup the group with the supplied external id.
+	 * @param organization   if set only organizations or non organizations should be returned
+	 * @param start          start index of the retrieved result set.
+	 * @param end            end index of the retrieved result set.
 	 */
-	private GroupQuery(final String search, final GroupOrder groupOrder, SortOrder sortOrder, final Prefix prefix,
-										 final boolean pending, final String userName, final String externalId, final Boolean organization,
-										 int start, int end) {
+	public GroupQuery(String search, boolean usePrefixMatch, boolean phraseMatch, GroupOrder groupOrder, SortOrder sortOrder, Prefix prefix, boolean pending, String userName, String externalId, Boolean organization, int start, int end) {
+		super();
 		this.setSearch(search);
+		this.setUsePrefixMatch(usePrefixMatch);
+		this.setPhraseMatch(phraseMatch);
 		this.setStart(start);
 		this.setEnd(end);
 		this.groupOrder = groupOrder;
@@ -110,6 +113,10 @@ public class GroupQuery extends BasicQuery {
 	 */
 	public final static class GroupQueryBuilder {
 		private String search;
+		private boolean usePrefixMatch = false;
+		private boolean phraseMatch = false;
+
+
 		private int start = 0;
 		private int end = 10;
 
@@ -146,6 +153,26 @@ public class GroupQuery extends BasicQuery {
 		 */
 		public GroupQueryBuilder search(final String search) {
 			this.search = search;
+			return this;
+		}
+
+		/**
+		 * sets the prefix match for the search terms
+		 * @param prefixMatch
+		 * @return the group builder
+		 */
+		public GroupQueryBuilder prefixMatch(final boolean prefixMatch) {
+			this.usePrefixMatch = prefixMatch;
+			return this;
+		}
+
+		/**
+		 * sets the phrase match for the search terms
+		 * @param phraseMatch
+		 * @return the group builder
+		 */
+		public GroupQueryBuilder phraseMatch(final boolean phraseMatch) {
+			this.phraseMatch = phraseMatch;
 			return this;
 		}
 
@@ -229,7 +256,7 @@ public class GroupQuery extends BasicQuery {
 		 * @return the group query
 		 */
 		public GroupQuery build() {
-			return new GroupQuery(search, groupOrder, sortOrder, prefix, pending,
+			return new GroupQuery(search, this.usePrefixMatch, this.phraseMatch, groupOrder, sortOrder, prefix, pending,
 							userName, externalId, organization, start, end);
 		}
 	}
