@@ -28,6 +28,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,14 +52,14 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 	 * @param converter
 	 * @param personResourceRelationConverter
 	 */
-	public ElasticsearchPersonSearch(ElasticsearchOneToManyManager<Person, ResourcePersonRelation> manager, PersonConverter converter, PersonResourceRelationConverter personResourceRelationConverter) {
+	public ElasticsearchPersonSearch(final ElasticsearchOneToManyManager<Person, ResourcePersonRelation> manager, final PersonConverter converter, final PersonResourceRelationConverter personResourceRelationConverter) {
 		this.manager = manager;
 		this.converter = converter;
 		this.personResourceRelationConverter = personResourceRelationConverter;
 	}
 
 	@Override
-	public Statistics getStatistics(User loggedinUser, PersonQuery query) {
+	public Statistics getStatistics(final User loggedinUser, final PersonQuery query) {
 		final Statistics statistics = new Statistics();
 		return ElasticsearchIndexSearchUtils.callSearch(() -> {
 			final BoolQueryBuilder boolQueryBuilder = this.buildQuery(query);
@@ -126,7 +127,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 		final String personQuery = query.getQuery();
 
 		final BoolQueryBuilder mainQuery = QueryBuilders.boolQuery();
-		final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery();
+		final BoolQueryBuilder filterQuery = this.buildFilterQuery(query);
 		if (present(personQuery)) {
 			/*
 			 * maybe some of tokens of the query contain the title of a publication of the author
@@ -144,7 +145,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 			final InnerHitBuilder innerHit = new InnerHitBuilder();
 			childQuery.innerHit(innerHit);
 
-			final AbstractQueryBuilder<?> nameQuery = query.isUsePrefixMatch() ? QueryBuilders.matchPhrasePrefixQuery(PersonFields.ALL_NAMES, personQuery) : QueryBuilders.matchQuery(PersonFields.ALL_NAMES, personQuery);
+			final AbstractQueryBuilder<?> nameQuery = this.getNameQuery(query);
 
 			/*
 			 * build the search query
@@ -155,7 +156,20 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 
 			mainQuery.must(mainSearchQuery);
 			mainQuery.should(childQuery);
-		} else {
+		}
+
+		if (filterQuery.hasClauses()) {
+			mainQuery.filter(filterQuery);
+		}
+
+		return mainQuery;
+	}
+
+	private BoolQueryBuilder buildFilterQuery(final PersonQuery query) {
+		final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery();
+
+		// if no query is provided, filter the entities to only get person results
+		if (!present(query.getQuery())) {
 			filterQuery.must(QueryBuilders.termQuery(PersonFields.JOIN_FIELD, PersonFields.TYPE_PERSON));
 		}
 
@@ -173,13 +187,44 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 			filterQuery.must(ElasticsearchIndexSearchUtils.buildPrefixFilter(prefix, PersonFields.MAIN_NAME_PREFIX));
 		}
 
-		if (filterQuery.hasClauses()) {
-			mainQuery.filter(filterQuery);
-		}
-		return mainQuery;
+		return filterQuery;
 	}
 
-	private List<Pair<String, SortOrder>> getSortOrders(PersonQuery query) {
+	private AbstractQueryBuilder<?> getNameQuery(PersonQuery query) {
+		final boolean usePrefixMatch = query.isUsePrefixMatch();
+		final boolean phraseMatch = query.isPhraseMatch();
+		final String searchQuery = query.getQuery();
+
+		/*
+		 * the search terms must match in the order entered and the last is only a prefix match
+		 */
+		if (usePrefixMatch && phraseMatch) {
+			return QueryBuilders.matchPhrasePrefixQuery(PersonFields.ALL_NAMES, searchQuery);
+		}
+
+		/*
+		 * the search terms should be match in any order and the last token is used in a prefix match
+		 * here we split the string into tokens and build a boolean query
+		 * FIXME: replace this with a bool match prefix query in elasticsearch 7.X
+		 */
+		if (usePrefixMatch) {
+			final BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+			final List<String> tokens = Arrays.asList(searchQuery.split(" "));
+
+			final int lastTokenIndex = tokens.size() - 1;
+			for (final String term : tokens.subList(0, lastTokenIndex)) {
+				boolQueryBuilder.should(QueryBuilders.termQuery(PersonFields.ALL_NAMES, term));
+			}
+
+			boolQueryBuilder.should(QueryBuilders.prefixQuery(PersonFields.ALL_NAMES, tokens.get(lastTokenIndex)));
+			return boolQueryBuilder;
+		}
+
+		// the search terms should match given the order, last term no order
+		return QueryBuilders.matchPhraseQuery(PersonFields.ALL_NAMES, searchQuery);
+	}
+
+	private List<Pair<String, SortOrder>> getSortOrders(final PersonQuery query) {
 		final PersonOrder order = query.getOrder();
 		if (present(order)) {
 			switch (order) {

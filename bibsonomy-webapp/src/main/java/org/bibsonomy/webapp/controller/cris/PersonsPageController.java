@@ -41,6 +41,7 @@ public class PersonsPageController implements MinimalisticController<PersonsPage
 		final ListCommand<Person> personListCommand = command.getPersons();
 		final String search = command.getSearch();
 		final PersonQuery query = new PersonQuery(search);
+		query.setUsePrefixMatch(true);
 		query.setPrefix(command.getPrefix());
 		final int personListStart = personListCommand.getStart();
 		query.setStart(personListStart);
