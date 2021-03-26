@@ -28,7 +28,6 @@ package org.bibsonomy.rest.strategy.posts;
 
 import java.util.List;
 
-import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Post;
@@ -61,11 +60,11 @@ public class GetNewPostsStrategy extends AbstractListOfPostsStrategy {
 		postQueryBuilder.setGrouping(this.grouping)
 				.setGroupingName(this.groupingValue)
 				.setTags(this.tags)
-				.setSearch(this.search)
+				.search(this.search)
 				.setScope(this.searchType)
 				.setSortCriteria(SortUtils.singletonSortCriteria(SortKey.DATE, SortOrder.DESC))
-				.setStart(this.getView().getStartValue())
-				.setEnd(this.getView().getEndValue());
+				.start(this.getView().getStartValue())
+				.end(this.getView().getEndValue());
 
 		return this.getLogic().getPosts(postQueryBuilder.createPostQuery(this.resourceType));
 	}

@@ -1,5 +1,7 @@
 package org.bibsonomy.model.logic.querybuilder;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.*;
 import org.bibsonomy.model.PersonName;
@@ -11,14 +13,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 /**
  * post query builder
  *
  * @author pda
  */
-public class PostQueryBuilder {
+public class PostQueryBuilder extends BasicQueryBuilder<PostQueryBuilder> {
 	private QueryScope scope;
 	private GroupingEntity grouping;
 	private String groupingName;
@@ -30,9 +30,6 @@ public class PostQueryBuilder {
 	private boolean onlyIncludeAuthorsWithoutPersonId;
 	private List<PersonName> personNames;
 	private String college;
-	private String search;
-	private int start = 0;
-	private int end = 10;
 
 	private List<SortCriteria> sortCriteria;
 
@@ -56,25 +53,9 @@ public class PostQueryBuilder {
 		return postQuery;
 	}
 
-	public PostQueryBuilder setEnd(int end) {
-		this.end = end;
+	@Override
+	protected PostQueryBuilder builder() {
 		return this;
-	}
-
-	public PostQueryBuilder setStart(int start) {
-		this.start = start;
-		return this;
-	}
-
-	/**
-	 * @param entries the number of entries to retrieve
-	 * @param start the start index
-	 * @return
-	 */
-	public PostQueryBuilder entriesStartingAt(final int entries, final int start) {
-		this.start = start;
-
-		return this.setEnd(start + entries);
 	}
 
 	public PostQueryBuilder searchAndSortCriteria(final String search, SortCriteria defaultSortCriteria) {
@@ -85,12 +66,7 @@ public class PostQueryBuilder {
 			sortCriteria.add(defaultSortCriteria);
 		}
 		this.setSortCriteria(sortCriteria);
-		return this.setSearch(search);
-	}
-
-	public PostQueryBuilder setSearch(String search) {
-		this.search = search;
-		return this;
+		return this.search(search);
 	}
 
 	public PostQueryBuilder setScope(QueryScope scope) {

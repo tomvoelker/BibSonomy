@@ -32,6 +32,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.enums.ProjectOrder;
 import org.bibsonomy.model.enums.ProjectStatus;
+import org.bibsonomy.model.logic.querybuilder.BasicQueryBuilder;
 
 import java.util.Date;
 
@@ -177,7 +178,7 @@ public class ProjectQuery extends BasicQuery {
 		return person;
 	}
 
-	public static class ProjectQueryBuilder {
+	public static class ProjectQueryBuilder extends BasicQueryBuilder<ProjectQueryBuilder> {
 		/**
 		 * the order of the projects, default {@link ProjectOrder#TITLE}
 		 */
@@ -199,24 +200,9 @@ public class ProjectQuery extends BasicQuery {
 		private String sponsor;
 
 		/**
-		 * the start
-		 */
-		private int start = 0;
-
-		/**
-		 * the end
-		 */
-		private int end = 10;
-
-		/**
 		 * the internalId
 		 */
 		private String internalId;
-
-		/**
-		 * the search
-		 **/
-		private String search;
 
 		private Date startDate;
 
@@ -284,39 +270,6 @@ public class ProjectQuery extends BasicQuery {
 		}
 
 		/**
-		 * @param entries the number of entries to retrieve
-		 * @param start the start index
-		 * @return
-		 */
-		public ProjectQueryBuilder entriesStartingAt(final int entries, final int start) {
-			this.start = start;
-
-			return this.end(start + entries);
-		}
-
-		/**
-		 * sets the start
-		 *
-		 * @param start
-		 * @return
-		 */
-		public ProjectQueryBuilder start(final int start) {
-			this.start = start;
-			return this;
-		}
-
-		/**
-		 * sets the end
-		 *
-		 * @param end
-		 * @return
-		 */
-		public ProjectQueryBuilder end(final int end) {
-			this.end = end;
-			return this;
-		}
-
-		/**
 		 * sets the order
 		 *
 		 * @param order
@@ -361,20 +314,16 @@ public class ProjectQuery extends BasicQuery {
 		}
 
 		/**
-		 * @param search
-		 * @return
-		 */
-		public ProjectQueryBuilder search(final String search) {
-			this.search = search;
-			return this;
-		}
-
-		/**
 		 * @param sponsor
 		 * @return
 		 */
 		public ProjectQueryBuilder sponsor(String sponsor) {
 			this.sponsor = sponsor;
+			return this;
+		}
+
+		@Override
+		protected ProjectQueryBuilder builder() {
 			return this;
 		}
 

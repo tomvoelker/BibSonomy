@@ -3,6 +3,7 @@ package org.bibsonomy.model.logic.query;
 import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.enums.GroupOrder;
+import org.bibsonomy.model.logic.querybuilder.BasicQueryBuilder;
 
 /**
  * Specifies a group query.
@@ -111,15 +112,7 @@ public class GroupQuery extends BasicQuery {
 	/**
 	 * group query builder
 	 */
-	public final static class GroupQueryBuilder {
-		private String search;
-		private boolean usePrefixMatch = false;
-		private boolean phraseMatch = false;
-
-
-		private int start = 0;
-		private int end = 10;
-
+	public final static class GroupQueryBuilder extends BasicQueryBuilder<GroupQueryBuilder> {
 		private GroupOrder groupOrder = GroupOrder.GROUP_NAME;
 		private SortOrder sortOrder = SortOrder.ASC;
 		private Prefix prefix;
@@ -144,35 +137,6 @@ public class GroupQuery extends BasicQuery {
 		 */
 		public GroupQueryBuilder sortOrder(final SortOrder sortOrder) {
 			this.sortOrder = sortOrder;
-			return this;
-		}
-
-		/**
-		 * @param search the search to set
-		 * @return the group builder
-		 */
-		public GroupQueryBuilder search(final String search) {
-			this.search = search;
-			return this;
-		}
-
-		/**
-		 * sets the prefix match for the search terms
-		 * @param prefixMatch
-		 * @return the group builder
-		 */
-		public GroupQueryBuilder prefixMatch(final boolean prefixMatch) {
-			this.usePrefixMatch = prefixMatch;
-			return this;
-		}
-
-		/**
-		 * sets the phrase match for the search terms
-		 * @param phraseMatch
-		 * @return the group builder
-		 */
-		public GroupQueryBuilder phraseMatch(final boolean phraseMatch) {
-			this.phraseMatch = phraseMatch;
 			return this;
 		}
 
@@ -214,40 +178,16 @@ public class GroupQuery extends BasicQuery {
 		}
 
 		/**
-		 * @param start the start index of the list
-		 * @return the group builder
-		 */
-		public GroupQueryBuilder start(final int start) {
-			this.start = start;
-			return this;
-		}
-
-		/**
-		 * @param end the end index of the list
-		 * @return the group builder
-		 */
-		public GroupQueryBuilder end(final int end) {
-			this.end = end;
-			return this;
-		}
-
-		/**
-		 * @param entries the number of entries to retrieve
-		 * @param start the start index
-		 * @return
-		 */
-		public GroupQueryBuilder entriesStartingAt(final int entries, final int start) {
-			this.start = start;
-
-			return this.end(start + entries);
-		}
-
-		/**
 		 * @param externalId the external id of the organization
 		 * @return the group builder
 		 */
 		public GroupQueryBuilder externalId(final String externalId) {
 			this.externalId = externalId;
+			return this;
+		}
+
+		@Override
+		protected GroupQueryBuilder builder() {
 			return this;
 		}
 

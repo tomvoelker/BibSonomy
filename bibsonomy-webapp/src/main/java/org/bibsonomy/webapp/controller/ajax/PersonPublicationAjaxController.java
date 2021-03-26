@@ -110,8 +110,8 @@ public class PersonPublicationAjaxController extends AjaxController implements M
 
 			// Get 'myown' posts of the linked user
 			PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
-					.setStart(start)
-					.setEnd(end)
+					.start(start)
+					.end(end)
 					.setTags(new ArrayList<>(Collections.singletonList("myown")))
 					.setGrouping(GroupingEntity.USER)
 					.setGroupingName(linkedUser);

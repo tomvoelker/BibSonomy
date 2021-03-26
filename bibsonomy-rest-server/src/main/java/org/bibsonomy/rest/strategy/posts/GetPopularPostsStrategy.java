@@ -29,7 +29,6 @@ package org.bibsonomy.rest.strategy.posts;
 import java.util.Collections;
 import java.util.List;
 
-import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Post;
@@ -68,12 +67,12 @@ public class GetPopularPostsStrategy extends AbstractListOfPostsStrategy {
 		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
 		postQueryBuilder.setGrouping(this.grouping)
 				.setGroupingName(this.groupingValue)
-				.setSearch(this.search)
+				.search(this.search)
 				.setTags(tag)
 				.setSortCriteria(SortUtils.singletonSortCriteria(SortKey.POPULAR, SortOrder.DESC))
 				.setScope(this.searchType)
-				.setStart(this.getView().getStartValue())
-				.setEnd(this.getView().getEndValue());
+				.start(this.getView().getStartValue())
+				.end(this.getView().getEndValue());
 
 		return this.getLogic().getPosts(postQueryBuilder.createPostQuery(this.resourceType));
 	}

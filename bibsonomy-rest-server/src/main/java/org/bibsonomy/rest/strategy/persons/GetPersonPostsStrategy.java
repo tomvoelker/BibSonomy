@@ -100,8 +100,8 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 					// TODO: use the myown system tag
 					this.tags.add("myown");
 					final PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
-							.setStart(this.getView().getStartValue())
-							.setEnd(this.getView().getEndValue())
+							.start(this.getView().getStartValue())
+							.end(this.getView().getEndValue())
 							.setTags(this.tags)
 							.setGrouping(GroupingEntity.USER)
 							.setGroupingName(linkedUser);

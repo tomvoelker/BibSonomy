@@ -57,8 +57,8 @@ public class GetClipboardStrategy extends GetUserPostsStrategy {
 		postQueryBuilder.setGrouping(GroupingEntity.CLIPBOARD)
 				.setGroupingName(this.userName)
 				.setScope(QueryScope.LOCAL)
-				.setStart(this.getView().getStartValue())
-				.setEnd(this.getView().getEndValue());
+				.start(this.getView().getStartValue())
+				.end(this.getView().getEndValue());
 		return this.getLogic().getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 	}
 

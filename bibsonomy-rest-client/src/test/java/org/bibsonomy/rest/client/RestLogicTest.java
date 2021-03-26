@@ -37,8 +37,8 @@ public class RestLogicTest extends TestCase {
 	public void testSearch() {
 		PostQuery<BibTex> query = new PostQueryBuilder()
 				.setGrouping(GroupingEntity.ALL)
-				.setSearch("test")
-				.setEnd(100)
+				.search("test")
+				.end(100)
 				.createPostQuery(BibTex.class);
 		List<Post<BibTex>> posts = this.logic.getPosts(query);
 		Assert.assertNotEquals(posts.size(), 0);
@@ -51,8 +51,8 @@ public class RestLogicTest extends TestCase {
 
 		PostQuery<BibTex> query = new PostQueryBuilder()
 				.setGrouping(GroupingEntity.ALL)
-				.setSearch("test")
-				.setEnd(100)
+				.search("test")
+				.end(100)
 				.setSortCriteria(SortUtils.singletonSortCriteria(sortKey, sortOrder))
 				.createPostQuery(BibTex.class);
 
@@ -67,7 +67,7 @@ public class RestLogicTest extends TestCase {
 	public void testGetPosts() {
 		PostQuery<BibTex> query = new PostQueryBuilder()
 				.setGrouping(GroupingEntity.ALL)
-				.setEnd(100)
+				.end(100)
 				.createPostQuery(BibTex.class);
 
 		List<Post<BibTex>> posts = this.logic.getPosts(query);
@@ -81,7 +81,7 @@ public class RestLogicTest extends TestCase {
 
 		PostQuery<BibTex> query = new PostQueryBuilder()
 				.setGrouping(GroupingEntity.ALL)
-				.setEnd(100)
+				.end(100)
 				.setSortCriteria(SortUtils.singletonSortCriteria(sortKey, sortOrder))
 				.createPostQuery(BibTex.class);
 
@@ -99,7 +99,7 @@ public class RestLogicTest extends TestCase {
 
 		PostQuery<BibTex> query = new PostQueryBuilder()
 				.setGrouping(GroupingEntity.ALL)
-				.setEnd(100)
+				.end(100)
 				.setSortCriteria(SortUtils.singletonSortCriteria(sortKey, sortOrder))
 				.createPostQuery(BibTex.class);
 
@@ -117,7 +117,7 @@ public class RestLogicTest extends TestCase {
 
 		PostQuery<BibTex> query = new PostQueryBuilder()
 				.setGrouping(GroupingEntity.ALL)
-				.setEnd(100)
+				.end(100)
 				.setSortCriteria(SortUtils.singletonSortCriteria(sortKey, sortOrder))
 				.createPostQuery(BibTex.class);
 
@@ -133,7 +133,7 @@ public class RestLogicTest extends TestCase {
 		PostQuery<BibTex> query = new PostQueryBuilder()
 				.setGrouping(GroupingEntity.USER)
 				.setGroupingName("hotho")
-				.setEnd(100)
+				.end(100)
 				.setSortCriteria(SortUtils.singletonSortCriteria(SortKey.TITLE, SortOrder.ASC))
 				.createPostQuery(BibTex.class);
 
@@ -149,7 +149,7 @@ public class RestLogicTest extends TestCase {
 		PostQuery<BibTex> query = new PostQueryBuilder()
 				.setGrouping(GroupingEntity.USER)
 				.setGroupingName("hotho")
-				.setEnd(100)
+				.end(100)
 				.setSortCriteria(SortUtils.singletonSortCriteria(sortKey, sortOrder))
 				.createPostQuery(BibTex.class);
 
@@ -165,7 +165,7 @@ public class RestLogicTest extends TestCase {
 		PostQuery<BibTex> query = new PostQueryBuilder()
 				.setGrouping(GroupingEntity.GROUP)
 				.setGroupingName("kde")
-				.setEnd(100)
+				.end(100)
 				.createPostQuery(BibTex.class);
 
 		List<Post<BibTex>> posts = this.logic.getPosts(query);
@@ -180,7 +180,7 @@ public class RestLogicTest extends TestCase {
 		PostQuery<BibTex> query = new PostQueryBuilder()
 				.setGrouping(GroupingEntity.GROUP)
 				.setGroupingName("kde")
-				.setEnd(100)
+				.end(100)
 				.setSortCriteria(SortUtils.singletonSortCriteria(sortKey, sortOrder))
 				.createPostQuery(BibTex.class);
 
@@ -196,7 +196,7 @@ public class RestLogicTest extends TestCase {
 		PostQuery<BibTex> query = new PostQueryBuilder()
 				.setGrouping(GroupingEntity.ALL)
 				.setTags(Arrays.asList("myown"))
-				.setEnd(100)
+				.end(100)
 				.createPostQuery(BibTex.class);
 
 		List<Post<BibTex>> posts = this.logic.getPosts(query);
@@ -211,7 +211,7 @@ public class RestLogicTest extends TestCase {
 		PostQuery<BibTex> query = new PostQueryBuilder()
 				.setGrouping(GroupingEntity.ALL)
 				.setTags(Arrays.asList("myown"))
-				.setEnd(100)
+				.end(100)
 				.setSortCriteria(SortUtils.singletonSortCriteria(sortKey, sortOrder))
 				.createPostQuery(BibTex.class);
 

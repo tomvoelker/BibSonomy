@@ -276,7 +276,7 @@ public class PersonPageController extends SingleResourceListController implement
 	}
 
 	private List<Post<GoldStandardPublication>> getSuggestionPub(final String search) {
-		final PostQuery<GoldStandardPublication> postQuery = new PostQueryBuilder().setSearch(search).
+		final PostQuery<GoldStandardPublication> postQuery = new PostQueryBuilder().search(search).
 						createPostQuery(GoldStandardPublication.class);
 		// TODO limit searches to thesis
 		return this.logic.getPosts(postQuery);
@@ -659,8 +659,8 @@ public class PersonPageController extends SingleResourceListController implement
 
 			// Get 'myown' posts of the linked user
 			PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
-					.setStart(start)
-					.setEnd(end)
+					.start(start)
+					.end(end)
 					.setTags(new ArrayList<>(Collections.singletonList("myown")))
 					.setGrouping(GroupingEntity.USER)
 					.setGroupingName(person.getUser());
@@ -763,7 +763,7 @@ public class PersonPageController extends SingleResourceListController implement
 		final PostQuery<GoldStandardPublication> personNameQuery = new PostQueryBuilder().
 						setPersonNames(person.getNames()).
 						setOnlyIncludeAuthorsWithoutPersonId(true).
-						setEnd(20) // get 20 "recommendations"
+				end(20) // get 20 "recommendations"
 						.createPostQuery(GoldStandardPublication.class);
 		return this.logic.getPosts(personNameQuery);
 	}

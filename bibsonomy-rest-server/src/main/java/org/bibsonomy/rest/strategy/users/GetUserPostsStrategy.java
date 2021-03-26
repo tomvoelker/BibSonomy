@@ -67,11 +67,11 @@ public class GetUserPostsStrategy extends AbstractListOfPostsStrategy {
 		postQueryBuilder.setGrouping(GroupingEntity.USER)
 				.setGroupingName(this.userName)
 				.setTags(this.tags)
-				.setSearch(this.search)
+				.search(this.search)
 				.setScope(this.searchType)
 				.setSortCriteria(sortCriteria)
-				.setStart(this.getView().getStartValue())
-				.setEnd(this.getView().getEndValue());
+				.start(this.getView().getStartValue())
+				.end(this.getView().getEndValue());
 		return this.getLogic().getPosts(postQueryBuilder.createPostQuery(this.resourceType));
 	}
 

@@ -39,6 +39,7 @@ public class ProjectsPageController implements MinimalisticController<ProjectsPa
 		builder.projectStatus(command.getProjectStatus())
 						.entriesStartingAt(projectListCommand.getEntriesPerPage(), projectListCommand.getStart())
 						.search(command.getSearch())
+						.prefixMatch(true)
 						.prefix(command.getPrefix())
 						.order(command.getProjectOrder())
 						.sortOrder(command.getSortOrder());

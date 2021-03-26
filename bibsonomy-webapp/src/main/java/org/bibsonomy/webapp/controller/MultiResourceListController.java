@@ -38,7 +38,6 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
-import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.MultiResourceViewCommand;
 
@@ -94,7 +93,7 @@ public abstract class MultiResourceListController extends ResourceListController
 				.setGroupingName(groupingName)
 				.setTags(tags)
 				.setHash(hash)
-				.setSearch(search)
+				.search(search)
 				.setScope(QueryScope.LOCAL)
 				.setSortCriteria(sortCriteria)
 				.entriesStartingAt(itemsPerPage, listCommand.getStart());

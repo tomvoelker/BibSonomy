@@ -59,12 +59,12 @@ public class PublicationReportingPageController extends AbstractReportingPageCon
 		final ListCommand<Post<GoldStandardPublication>> publicationListCommand = command.getPublications();
 		final int start = publicationListCommand.getStart();
 		final PostQuery<GoldStandardPublication> query = new PostQueryBuilder().setStartDate(command.getStartDate()).
-						setEndDate(command.getEndDate()).setStart(start).
+						setEndDate(command.getEndDate()).start(start).
 						setGrouping(groupingEntity)
 						.setGroupingName(groupingName)
-						.setSearch(command.getSearch())
+						.search(command.getSearch())
 						.college(this.college).
-						setEnd(start + publicationListCommand.getEntriesPerPage()).
+						end(start + publicationListCommand.getEntriesPerPage()).
 						createPostQuery(GoldStandardPublication.class);
 		publicationListCommand.setList(this.logic.getPosts(query));
 	}

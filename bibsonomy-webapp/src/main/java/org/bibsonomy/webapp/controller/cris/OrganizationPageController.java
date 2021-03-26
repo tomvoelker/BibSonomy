@@ -92,8 +92,7 @@ public class OrganizationPageController implements MinimalisticController<Organi
 						.setSortCriteria(Collections.singletonList(new SortCriteria(SortKey.YEAR, SortOrder.DESC)))
 						.setGrouping(GroupingEntity.ORGANIZATION)
 						.setGroupingName(group.getName())
-						.setStart(start)
-						.setEnd(start + publicationsListCommand.getEntriesPerPage())
+						.entriesStartingAt(publicationsListCommand.getEntriesPerPage(), publicationsListCommand.getStart())
 						.createPostQuery(GoldStandardPublication.class);
 
 		/*

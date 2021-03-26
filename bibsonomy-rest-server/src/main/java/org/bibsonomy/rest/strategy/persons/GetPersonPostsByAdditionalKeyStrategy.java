@@ -29,7 +29,6 @@ package org.bibsonomy.rest.strategy.persons;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.*;
-import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
@@ -74,10 +73,10 @@ public class GetPersonPostsByAdditionalKeyStrategy extends AbstractGetListStrate
 	protected List<? extends Post<? extends Resource>> getList() {
 
 		PostQueryBuilder queryBuilder = new PostQueryBuilder()
-				.setStart(this.getView().getStartValue())
-				.setEnd(this.getView().getEndValue())
+				.start(this.getView().getStartValue())
+				.end(this.getView().getEndValue())
 				.setTags(this.tags)
-				.setSearch(this.search);
+				.search(this.search);
 		Person person = this.getLogic().getPersonByAdditionalKey(this.keyName, this.keyValue);
 		// Check, if a user has claimed this person and configured their person settings
 		if (person != null && person.getUser() != null) {

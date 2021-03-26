@@ -2,6 +2,7 @@ package org.bibsonomy.model.logic.query;
 
 /**
  * Makes a query searchable.
+ * @author ada
  */
 public interface SearchQuery {
 
@@ -12,13 +13,4 @@ public interface SearchQuery {
      */
     String getSearch();
 
-
-    /**
-     * Signals that this query has a search string.
-     *
-     * @return <code>true</code> if the query contains a search string, <code>false</code> otherwise.
-     */
-    default boolean hasSearch() {
-        return true;
-    }
 }

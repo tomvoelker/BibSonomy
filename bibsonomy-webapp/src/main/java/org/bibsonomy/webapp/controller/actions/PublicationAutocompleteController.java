@@ -124,7 +124,7 @@ public class PublicationAutocompleteController implements MinimalisticController
 				final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
 				postQueryBuilder.setGrouping(GroupingEntity.ALL)
 						.setTags(tags)
-						.setSearch(search)
+						.search(search)
 						.setScope(QueryScope.LOCAL)
 						.setSortCriteria(SortUtils.singletonSortCriteria(SortKey.RANK))
 						.entriesStartingAt(10, 0);

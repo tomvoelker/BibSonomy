@@ -363,7 +363,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 				.setGroupingName(groupingName)
 				.setTags(tags)
 				.setHash(hash)
-				.setSearch(search)
+				.search(search)
 				.setFilters(filters)
 				.setSortCriteria(sortCriteria)
 				.setStartDate(startDate)

@@ -752,12 +752,12 @@ public class DBLogic implements LogicInterface {
 						setGroupingName(groupingName).
 						setTags(tags).
 						setHash(hash).
-						setSearch(search).
+						search(search).
 						setFilters(filters).
 						setStartDate(startDate).
 						setEndDate(endDate).
-						setStart(start).
-						setEnd(end).createPostQuery(resourceType);
+						start(start).
+						end(end).createPostQuery(resourceType);
 		// delegating to the new method
 		return this.getPosts(query);
 	}
