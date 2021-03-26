@@ -149,7 +149,8 @@ public class ElasticsearchRESTClient implements ESClient {
 			final IndexRequest indexRequest = buildIndexRequest(indexName, id, indexData);
 			final IndexResponse response = this.client.index(indexRequest, this.buildRequestOptions());
 			final boolean created = response.getResult() == DocWriteResponse.Result.CREATED;
-			if (!created) {
+			final boolean updated = response.getResult() == DocWriteResponse.Result.UPDATED;
+			if (!created && !updated) {
 				LOG.error(response.status());
 			}
 			return created;
