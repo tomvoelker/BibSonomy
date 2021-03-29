@@ -9,7 +9,7 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<c:set var="crisSystem" value="${properties['system.cris'] eq 'cris'}" />
+	<c:set var="crisSystem" value="${properties['system.cris'] eq 'true'}" />
 	<c:choose>
 		<c:when test="${not crisSystem}">
 			<fmt:message key="persons.intro.head.title" var="personIntroTitle">
