@@ -23,6 +23,10 @@ public class PersonQuery extends PersonSuggestionQueryBuilder implements Paginat
 	/** find the person claimed by the specified user */
 	private String userName;
 
+	/** the query provided is only a prefix, perform a prefix search */
+	private boolean usePrefixMatch = false;
+	private boolean phraseMatch = false;
+
 	/**
 	 * default person query with empty search
 	 */
@@ -135,5 +139,33 @@ public class PersonQuery extends PersonSuggestionQueryBuilder implements Paginat
 	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	/**
+	 * @return the usePrefixMatch
+	 */
+	public boolean isUsePrefixMatch() {
+		return usePrefixMatch;
+	}
+
+	/**
+	 * @param usePrefixMatch the usePrefixMatch to set
+	 */
+	public void setUsePrefixMatch(boolean usePrefixMatch) {
+		this.usePrefixMatch = usePrefixMatch;
+	}
+
+	/**
+	 * @return the phraseMatch
+	 */
+	public boolean isPhraseMatch() {
+		return phraseMatch;
+	}
+
+	/**
+	 * @param phraseMatch the phraseMatch to set
+	 */
+	public void setPhraseMatch(boolean phraseMatch) {
+		this.phraseMatch = phraseMatch;
 	}
 }

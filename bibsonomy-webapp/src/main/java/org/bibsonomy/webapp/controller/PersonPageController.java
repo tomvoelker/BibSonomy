@@ -85,6 +85,8 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
+ * FIXME: this controller is a mess, please replace it with separate controllers for editing and viewing
+ *
  * controller for a single person details page
  * paths:
  * - /person/PERSON_ID
@@ -120,7 +122,7 @@ public class PersonPageController extends SingleResourceListController implement
 		final RequestWrapperContext context = command.getContext();
 		final String formAction = command.getFormAction();
 		final boolean action = present(formAction);
-		if (!action && !present(command.getRequestedPersonId())){
+		if (!action && !present(command.getRequestedPersonId())) {
 			throw new MalformedURLSchemeException("The person page was requested without a person in the request.");
 		}
 
@@ -276,7 +278,7 @@ public class PersonPageController extends SingleResourceListController implement
 	}
 
 	private List<Post<GoldStandardPublication>> getSuggestionPub(final String search) {
-		final PostQuery<GoldStandardPublication> postQuery = new PostQueryBuilder().setSearch(search).
+		final PostQuery<GoldStandardPublication> postQuery = new PostQueryBuilder().search(search).
 						createPostQuery(GoldStandardPublication.class);
 		// TODO limit searches to thesis
 		return this.logic.getPosts(postQuery);
@@ -306,6 +308,7 @@ public class PersonPageController extends SingleResourceListController implement
 	@SuppressWarnings("unchecked")
 	private View searchAction(PersonPageCommand command) {
 		final PersonQuery query = new PersonQuery(command.getFormSelectedName());
+		query.setUsePrefixMatch(true);
 		if (command.isLimitResultsToCRISCollege() && present(this.crisCollege)) {
 			query.setCollege(this.crisCollege);
 		}
@@ -508,7 +511,6 @@ public class PersonPageController extends SingleResourceListController implement
 		if (!present(person) || !present(command.getNewName())) {
 			jsonResponse.put("status", false);
 			// TODO: set proper error message
-			//jsonResponse.put("message", "Person cannot be found.");
 			command.setResponseString(jsonResponse.toString());
 			return Views.AJAX_JSON;
 		}
@@ -517,7 +519,6 @@ public class PersonPageController extends SingleResourceListController implement
 		personName.setPersonId(command.getPerson().getPersonId());
 		for (PersonName otherName : person.getNames()) {
 			if (personName.equals(otherName)) {
-				//command.setResponseString(otherName.getPersonNameChangeId()+ "");
 				jsonResponse.put("status", true);
 				jsonResponse.put("personNameChangeId", otherName.getPersonNameChangeId());
 				command.setResponseString(jsonResponse.toString());
@@ -562,8 +563,7 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setResponseString(jsonResponse.toString());
 		return Views.AJAX_JSON;	
 	}
-	
-	
+
 	private View setMainNameAction(PersonPageCommand command) {
 		final Person person = logic.getPersonById(PersonIdType.PERSON_ID, command.getPerson().getPersonId());
 		
@@ -605,140 +605,23 @@ public class PersonPageController extends SingleResourceListController implement
 		// FIXME: remove? TODO_CRIS
 		command.setShowProjects(true);
 
-		final String requestedPersonId = command.getRequestedPersonId();
+		final String personId = command.getRequestedPersonId();
 		/*
 		 * get the person; if person with the requested id was merged with another person, this method
 		 * throws a ObjectMovedException and the wrapper will render the redirect
 		 */
-		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, requestedPersonId);
+		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, personId);
 		if (!present(person)) {
 			return Views.ERROR404;
 		}
-
 		command.setPerson(person);
-		command.setPhdAdvisorRecForPerson(this.logic.getPhdAdvisorRecForPerson(person.getPersonId()));
+		command.setPhdAdvisorRecForPerson(this.logic.getPhdAdvisorRecForPerson(personId));
 
-		final User authenticatedUser = this.logic.getAuthenticatedUser();
+		command.setHasPicture(this.pictureHandlerFactory.hasVisibleProfilePicture(person.getUser(), command.getContext().getLoginUser()));
 
-		if (authenticatedUser != null && authenticatedUser.getSettings().getListItemcount() > 0) {
-			command.setPersonPostsPerPage(authenticatedUser.getSettings().getListItemcount());
-		} else {
-			command.setPersonPostsPerPage(20);
-		}
+		fillCommandWithPersonResourceRelations(this.adminLogic, this.logic, command, person, 0, command.getPersonPostsPerPage());
 
-		// default start/end for post query
-		int start = 0;
-		int end = command.getPersonPostsPerPage();
-
-		// override when given via GET param
-		if (present(command.getStart())) {
-			start = Integer.valueOf(command.getStart());
-
-			if (present(command.getEnd())) {
-				end = command.getEnd();
-			} else {
-				end = start+command.getPersonPostsPerPage();
-			}
-		}
-		command.setEnd(end);
-		command.setStart(start);
-
-		if (start < command.getPersonPostsPerPage()) {
-			command.setPrevStart(0);
-		} else {
-			command.setPrevStart(start - command.getPersonPostsPerPage());
-		}
-
-		// Get the linked user's person posts style settings
-		final String linkedUser = person.getUser();
-		if (present(linkedUser)) {
-			final User user = this.adminLogic.getUserDetails(linkedUser);
-
-			command.setPersonPostsStyleSettings(user.getSettings().getPersonPostsStyle());
-
-			// Get 'myown' posts of the linked user
-			PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
-					.setStart(start)
-					.setEnd(end)
-					.setTags(new ArrayList<>(Collections.singletonList("myown")))
-					.setGrouping(GroupingEntity.USER)
-					.setGroupingName(person.getUser());
-			final List<Post<BibTex>> myownPosts = this.logic.getPosts(myOwnqueryBuilder.createPostQuery(BibTex.class));
-			command.setMyownPosts(myownPosts);
-
-		} else {
-			// default to gold standard publications, if no linked user found
-			command.setPersonPostsStyleSettings(0);
-		}
-
-
-
-		// TODO: this needs to be removed/refactored as soon as the ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder accepts start/end
-		ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
-				.byPersonId(person.getPersonId())
-				.withPosts(true)
-				.withPersonsOfPosts(true)
-				.groupByInterhash(true)
-				.orderBy(PersonResourceRelationOrder.PublicationYear)
-				.fromTo(start, end);
-
-		ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder builder = new ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder();
-
-		builder.setAuthorIndex(queryBuilder.getAuthorIndex())
-				.setEnd(queryBuilder.getEnd())
-				.setGroupByInterhash(queryBuilder.isGroupByInterhash())
-				.setInterhash(queryBuilder.getInterhash())
-				.setOrder(queryBuilder.getOrder())
-				.setPersonId(queryBuilder.getPersonId())
-				.setRelationType(queryBuilder.getRelationType())
-				.setStart(queryBuilder.getStart())
-				.setWithPersons(queryBuilder.isWithPersons())
-				.setWithPersonsOfPosts(queryBuilder.isWithPersonsOfPosts())
-				.setWithPosts(queryBuilder.isWithPosts());
-
-		ResourcePersonRelationQuery query = builder.build();
-
-		// TODO: maybe this should be done in the view?
-		final List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(query);
-		final List<ResourcePersonRelation> authorRelations = new ArrayList<>();
-		final List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
-		final List<ResourcePersonRelation> otherAuthorRelations = new ArrayList<>();
-		final List<ResourcePersonRelation> otherAdvisorRelations = new ArrayList<>();
-
-		command.setHasPicture(this.pictureHandlerFactory.hasVisibleProfilePicture(linkedUser, command.getContext().getLoginUser()));
-
-		for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
-			final Post<? extends BibTex> post = resourcePersonRelation.getPost();
-			final BibTex publication = post.getResource();
-			final boolean isThesis = publication.getEntrytype().toLowerCase().endsWith("thesis");
-			final boolean isAuthorEditorRelation = PUBLICATION_RELATED_RELATION_TYPES.contains(resourcePersonRelation.getRelationType());
-
-			if (isAuthorEditorRelation) {
-				if (isThesis) {
-					authorRelations.add(resourcePersonRelation);
-				} else {
-					otherAuthorRelations.add(resourcePersonRelation);
-				}
-			} else {
-				if (isThesis) {
-					advisorRelations.add(resourcePersonRelation);
-				} else {
-					otherAdvisorRelations.add(resourcePersonRelation);
-				}
-			}
-			
-			// we explicitly do not want ratings on the person pages because this might cause users of the genealogy feature to hesitate putting in their dissertations
-			publication.setRating(null);
-			publication.setNumberOfRatings(null);
-		}
-		
-		command.setThesis(authorRelations);
-		command.setOtherPubs(otherAuthorRelations);
-		command.setAdvisedThesis(advisorRelations);
-		// FIXME: not used in the view!!
-		command.setOtherAdvisedPubs(otherAdvisorRelations);
-
-		final List<PersonMatch> personMatches = this.logic.getPersonMatches(person.getPersonId());
+		final List<PersonMatch> personMatches = this.logic.getPersonMatches(personId);
 		command.setPersonMatchList(personMatches);
 		command.setMergeConflicts(PersonMatchUtils.getMergeConflicts(personMatches));
 
@@ -760,11 +643,154 @@ public class PersonPageController extends SingleResourceListController implement
 		return Views.PERSON_SHOW;
 	}
 
+	public static void fillCommandWithPersonResourceRelations(final LogicInterface adminLogic, final LogicInterface logic, final PersonPageCommand command, Person person, final int defaultStart, final int defaultPostsPerPage) {
+		final User authenticatedUser = logic.getAuthenticatedUser();
+		final int listItemcount = authenticatedUser.getSettings().getListItemcount();
+		command.setPersonPostsPerPage(listItemcount);
+
+		final int postsPerPage = defaultPostsPerPage == 0 ? listItemcount : defaultPostsPerPage;
+
+		// default start/end for post query
+		// FIXME: use ListPageCommand!!!
+		int end = postsPerPage;
+		int start = defaultStart;
+
+		// override when given via GET param
+		final Integer commandStart = command.getStart();
+		if (present(commandStart)) {
+			start = Integer.valueOf(commandStart);
+			end = start + postsPerPage;
+		}
+
+		final Integer commandEnd = command.getEnd();
+		if (present(commandEnd)) {
+			end = commandEnd;
+		}
+
+		command.setEnd(end);
+		command.setStart(start);
+
+		if (start < postsPerPage) {
+			command.setPrevStart(0);
+		} else {
+			command.setPrevStart(start - postsPerPage);
+		}
+
+		// Get the linked user's person posts style settings
+		final String linkedUser = person.getUser();
+		if (present(linkedUser)) {
+			final User user = adminLogic.getUserDetails(linkedUser);
+
+			command.setPersonPostsStyleSettings(user.getSettings().getPersonPostsStyle());
+
+			// Get 'myown' posts of the linked user
+			final PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
+					.start(start)
+					.end(end)
+					.setTags(new ArrayList<>(Collections.singletonList("myown")))
+					.setGrouping(GroupingEntity.USER)
+					.setGroupingName(person.getUser());
+			final List<Post<BibTex>> myownPosts = logic.getPosts(myOwnqueryBuilder.createPostQuery(BibTex.class));
+			command.setMyownPosts(myownPosts);
+
+		} else {
+			// default to gold standard publications, if no linked user found
+			command.setPersonPostsStyleSettings(0);
+		}
+
+		// TODO: this needs to be removed/refactored as soon as the ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder accepts start/end
+		final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
+				.byPersonId(person.getPersonId())
+				.withPosts(true)
+				.withPersonsOfPosts(true)
+				.groupByInterhash(true)
+				.orderBy(PersonResourceRelationOrder.PublicationYear)
+				.fromTo(start, end);
+
+		/*
+		 * FIXME: currently the database does not support queries like: give me all thesis related relations
+		 * so we cannot apply the pagination here, otherwise we do not get the PHD information and the other advisor
+		 * infos we need to display on top of the view
+		 * The current workaround is to get all the relations from the db and apply the pagination afterwards which is not
+		 * efficient!
+		 */
+		ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder builder = new ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder();
+
+		builder.setAuthorIndex(queryBuilder.getAuthorIndex())
+				.setEnd(Integer.MAX_VALUE)
+				.setGroupByInterhash(queryBuilder.isGroupByInterhash())
+				.setInterhash(queryBuilder.getInterhash())
+				.setOrder(queryBuilder.getOrder())
+				.setPersonId(queryBuilder.getPersonId())
+				.setRelationType(queryBuilder.getRelationType())
+				//.setStart(queryBuilder.getStart())
+				.setWithPersons(queryBuilder.isWithPersons())
+				.setWithPersonsOfPosts(queryBuilder.isWithPersonsOfPosts())
+				.setWithPosts(queryBuilder.isWithPosts());
+
+		// TODO: maybe this should be done in the view?
+		final List<ResourcePersonRelation> resourceRelations = logic.getResourceRelations(builder.build());
+		final List<ResourcePersonRelation> authorRelations = new ArrayList<>();
+		final List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
+		final List<ResourcePersonRelation> otherAuthorRelations = new ArrayList<>();
+		final List<ResourcePersonRelation> otherAdvisorRelations = new ArrayList<>();
+
+		for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
+			final Post<? extends BibTex> post = resourcePersonRelation.getPost();
+			final BibTex publication = post.getResource();
+			final boolean isThesis = publication.getEntrytype().toLowerCase().endsWith("thesis");
+			final boolean isAuthorEditorRelation = PUBLICATION_RELATED_RELATION_TYPES.contains(resourcePersonRelation.getRelationType());
+
+			if (isAuthorEditorRelation) {
+				if (isThesis) {
+					authorRelations.add(resourcePersonRelation);
+				} else {
+					otherAuthorRelations.add(resourcePersonRelation);
+				}
+			} else {
+				if (isThesis) {
+					advisorRelations.add(resourcePersonRelation);
+				} else {
+					otherAdvisorRelations.add(resourcePersonRelation);
+				}
+			}
+
+			// we explicitly do not want ratings on the person pages because this might cause users of the genealogy feature
+			// to hesitate putting in their dissertations
+			publication.setRating(null);
+			publication.setNumberOfRatings(null);
+		}
+
+		command.setThesis(authorRelations);
+		command.setAdvisedThesis(advisorRelations);
+		command.setOtherPubs(applyStartEnd(otherAuthorRelations, start, end));
+		// FIXME: not used in the view!!
+		command.setOtherAdvisedPubs(otherAdvisorRelations);
+	}
+
+	/**
+	 * @param otherAuthorRelations
+	 * @param requestedStart
+	 * @param requestedEnd
+	 * @return the paginated list
+	 */
+	@Deprecated
+	private static List<ResourcePersonRelation> applyStartEnd(final List<ResourcePersonRelation> otherAuthorRelations,
+													   final int requestedStart, final int requestedEnd) {
+		final int size = otherAuthorRelations.size();
+		if (requestedStart > size) {
+			return Collections.emptyList();
+		}
+
+		final int end = Math.min(requestedEnd, size);
+		return otherAuthorRelations.subList(requestedStart, end);
+	}
+
 	private List<Post<GoldStandardPublication>> getPublicationsOfSimilarAuthor(Person person) {
 		final PostQuery<GoldStandardPublication> personNameQuery = new PostQueryBuilder().
 						setPersonNames(person.getNames()).
 						setOnlyIncludeAuthorsWithoutPersonId(true).
-						setEnd(20) // get 20 "recommendations"
+				end(20) // get 20 "recommendations"
 						.createPostQuery(GoldStandardPublication.class);
 		return this.logic.getPosts(personNameQuery);
 	}

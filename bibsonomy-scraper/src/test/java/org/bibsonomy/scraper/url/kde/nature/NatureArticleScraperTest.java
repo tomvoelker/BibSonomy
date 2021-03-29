@@ -59,4 +59,15 @@ public class NatureArticleScraperTest {
 		final String resultFile = "NatureArticleScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, NatureArticleScraper.class, resultFile);
 	}
+	
+	/**
+	 * 
+	 */
+	@Test
+	public void urlTest3Run(){
+		final String url = "https://www.nature.com/articles/nnano.2014.53?cacheBust=1508217952140";
+		final String resultFile = "NatureArticleScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, NatureArticleScraper.class, resultFile);
+	}
+	
 }

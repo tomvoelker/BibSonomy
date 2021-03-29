@@ -37,7 +37,7 @@ import org.bibsonomy.common.enums.*;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.util.Sets;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.MultiResourceViewCommand;
 
@@ -87,7 +87,17 @@ public abstract class MultiResourceListController extends ResourceListController
 		log.debug("getPosts " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
 
 		final List<SortCriteria> sortCriteria = Collections.singletonList(new SortCriteria(sortKey, SortOrder.DESC));
-		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, QueryScope.LOCAL, Sets.asSet(filter), sortCriteria, null, null, listCommand.getStart(), listCommand.getStart() + itemsPerPage));
+
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(groupingEntity)
+				.setGroupingName(groupingName)
+				.setTags(tags)
+				.setHash(hash)
+				.search(search)
+				.setScope(QueryScope.LOCAL)
+				.setSortCriteria(sortCriteria)
+				.entriesStartingAt(itemsPerPage, listCommand.getStart());
+		listCommand.setList(this.logic.getPosts(postQueryBuilder.createPostQuery(resourceType)));
 		cmd.getListCommand(resourceType).add(listCommand);
 
 		// list settings

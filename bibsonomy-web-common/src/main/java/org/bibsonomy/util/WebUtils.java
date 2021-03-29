@@ -32,9 +32,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
@@ -55,19 +52,14 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * @author rja
  */
 public class WebUtils {
-	private static final Log log = LogFactory.getLog(WebUtils.class);
 
 	/** maximal number of redirects to follow in {@link #getRedirectUrl(URL)} */
 	private static final int MAX_REDIRECT_COUNT = 10;
@@ -82,8 +74,6 @@ public class WebUtils {
 	private static final String USER_AGENT_PROPERTY_VALUE = "BibSonomy/2.0.32 (Linux x86_64; en) Gecko/20120714 Iceweasel/3.5.16 (like Firefox/3.5.16)";
 
 	private static final String CHARSET = "charset=";
-	private static final String EQUAL_SIGN = "=";
-	private static final String AMP_SIGN = "&";
 	private static final String NEWLINE = "\n";
 	private static final String SEMICOLON = ";";
 	private static final String USER_AGENT_HEADER_NAME = "User-Agent";
@@ -98,6 +88,10 @@ public class WebUtils {
 	 */
 	private static final int MAX_CONTENT_LENGTH = 1 * 1024 * 1024;
 
+	/**
+	 * according to http://hc.apache.org/httpclient-3.x/threading.html
+	 * HttpClient is thread safe and we can use one instance for several requests.
+	 */
 	private static final PoolingHttpClientConnectionManager CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();
 	private static final HttpClient CLIENT = getHttpClient();
 
@@ -105,11 +99,11 @@ public class WebUtils {
 	 * default config for http client
 	 */
 	private static final RequestConfig DEFAULT_REQUEST_CONFIG = RequestConfig.custom()
-					.setConnectTimeout(CONNECTION_TIMEOUT)
-					.setSocketTimeout(READ_TIMEOUT)
-					.setConnectionRequestTimeout(READ_TIMEOUT)
-					.setMaxRedirects(MAX_REDIRECT_COUNT)
-					.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
+		.setConnectTimeout(CONNECTION_TIMEOUT)
+		.setSocketTimeout(READ_TIMEOUT)
+		.setConnectionRequestTimeout(READ_TIMEOUT)
+		.setMaxRedirects(MAX_REDIRECT_COUNT)
+		.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
 
 	/**
 	 * @return the default request config used for instances of http client
@@ -117,7 +111,6 @@ public class WebUtils {
 	public static Builder getDefaultRequestConfig() {
 		return RequestConfig.copy(DEFAULT_REQUEST_CONFIG);
 	}
-
 	/**
 	 * This method returns an instance of the HttpClient and should only be used
 	 * if the other methods that deliver direct results can not be used. Each
@@ -136,7 +129,7 @@ public class WebUtils {
 		builder.setConnectionManager(CONNECTION_MANAGER);
 		builder.setUserAgent(USER_AGENT_PROPERTY_VALUE);
 		builder.setRedirectStrategy(new LaxRedirectStrategy()); // to enable following redirects for POST requests
-		builder.setDefaultCookieStore(new BasicCookieStore());
+
 		// build client
 		return builder.build();
 	}
@@ -153,166 +146,42 @@ public class WebUtils {
 		return getHttpClient(DEFAULT_REQUEST_CONFIG);
 	}
 
-	/**
-	 * Do a POST request to the given URL with the given content. Assume the charset of the result to be charset.
-	 *
-	 * @param url
-	 * @param postContent
-	 * @param charset - the assumed charset of the result. If <code>null</code>, the charset from the response header is used.
-	 * @param cookie - the Cookie to be attached to the request. If <code>null</code>, the Cookie header is not set.
-	 * @return The content of the result page.
-	 *
-	 * @throws IOException
-	 *
-	 * @Deprecated
-	 */
-	public static String getPostContentAsString(final URL url, final String postContent, final String charset, final String cookie) throws IOException {
-		final HttpURLConnection urlConn = createConnection(url);
-		urlConn.setAllowUserInteraction(false);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(true);
-		urlConn.setRequestMethod("POST");
-		urlConn.setRequestProperty(CONTENT_TYPE_HEADER_NAME, "application/x-www-form-urlencoded");
-
-		if (cookie != null) {
-			urlConn.setRequestProperty(COOKIE_HEADER_NAME, cookie);
-		}
-
-		writeStringToStream(postContent, urlConn.getOutputStream());
-
-		// connect
-		urlConn.connect();
-
-		/*
-		 * extract character encoding from header
-		 */
-		final String activeCharset;
-		if (charset == null) {
-			activeCharset = getCharset(urlConn);
-		} else {
-			activeCharset = charset;
-		}
-
-		/*
-		 * FIXME: check content type header to ensure that we only read textual
-		 * content (and not a PDF, radio stream or DVD image ...)
-		 */
-		// write into string writer
-		final StringBuilder out = inputStreamToStringBuilder(urlConn.getInputStream(), activeCharset);
-
-		// disconnect
-		urlConn.disconnect();
-
-		return out.toString();
-	}
 
 	/**
-	 * Do a POST request to the given URL with the given content. Assume the charset of the result to be charset.
+	 * Reads from a URL and writes the content into a string.
 	 *
 	 * @param url
-	 * @param postContent
-	 * @param charset - the assumed charset of the result. If <code>null</code>, the charset from the response header is used.
-	 * @return The content of the result page.
-	 *
+	 * @return String which holds the page content.
 	 * @throws IOException
-	 *
-	 * @Deprecated
 	 */
-	public static String getPostContentAsString(final URL url, final String postContent, final String charset) throws IOException {
-		return getPostContentAsString(url, postContent, charset, null);
-	}
-
-	/**
-	 * Do a POST request to the given URL with the given content and cookie. Assume the charset of the result to be charset.
-	 *
-	 * @param url
-	 * @param postContent
-	 * @param cookie
-	 * @return The content of the result page.
-	 *
-	 * @throws IOException
-	 *
-	 * @Deprecated
-	 */
-	public static String getPostContentAsString(final String cookie, final URL url, final String postContent) throws IOException {
-		return getPostContentAsString(url, postContent, null, cookie);
-	}
-
-	/**
-	 * Do a POST request to the given URL with the given content.
-	 *
-	 * @param url
-	 * @param postContent
-	 * @return The content of the result page.
-	 *
-	 * @throws IOException
-	 *
-	 * @Deprecated
-	 */
-	public static String getPostContentAsString(final URL url, final String postContent) throws IOException {
-		return getPostContentAsString(url, postContent, null, null);
+	public static String getContentAsString(final String url) throws IOException {
+		return getContentAsString(url, null, null, null);
 	}
 
 	/**
 	 * Reads from a URL and writes the content into a string.
 	 *
-	 * @param inputURL the URL of the content.
+	 * @param url the URL of the content.
+	 * @return String which holds the page content.
+	 * @throws IOException
+	 *
+	 * @Deprecated
+	 */
+	public static String getContentAsString(final URL url) throws IOException {
+		return getContentAsString(url, null);
+	}
+
+	/**
+	 * Reads from a URL and writes the content into a string.
+	 *
+	 * @param url the URL of the content.
 	 * @param cookie a cookie which should be included in the header of the request send to the server
 	 * @return String which holds the page content.
 	 * @throws IOException
 	 *
-	 * @Deprecated
 	 */
-	public static String getContentAsString(final URL inputURL, final String cookie) throws IOException {
-		try {
-			final HttpURLConnection urlConn = createConnection(inputURL);
-			urlConn.setAllowUserInteraction(false);
-			urlConn.setDoInput(true);
-			urlConn.setDoOutput(false);
-
-			if (cookie != null) {
-				urlConn.setRequestProperty(COOKIE_HEADER_NAME, cookie);
-			}
-			urlConn.connect();
-
-			/*
-			 * extract character encoding from header
-			 */
-			final String charSet = getCharset(urlConn);
-
-			/*
-			 * FIXME: check content type header to ensure that we only read textual
-			 * content (and not a PDF, radio stream or DVD image ...)
-			 */
-
-			/*
-			 * write content into string buffer
-			 */
-			final StringBuilder out = inputStreamToStringBuilder(urlConn.getInputStream(), charSet);
-
-			urlConn.disconnect();
-
-			return out.toString();
-		} catch (final ConnectException cex) {
-			log.debug("Could not get content for URL " + inputURL.toString() + " : " + cex.getMessage());
-			throw new IOException(cex);
-		} catch (final IOException ioe) {
-			log.debug("Could not get content for URL " + inputURL.toString() + " : " + ioe.getMessage());
-			throw ioe;
-		}
-	}
-
-	/**
-	 * Reads from a URL and writes the content into a string.
-	 *
-	 * @param inputURL the URL of the content.
-	 * @return String which holds the page content.
-	 * @throws IOException
-	 *
-	 * @Deprecated
-	 */
-	public static String getContentAsString(final URL inputURL) throws IOException {
-		return getContentAsString(inputURL, null);
+	public static String getContentAsString(final URL url, final String cookie) throws IOException {
+		return getContentAsString(url.toString(), cookie, null, null);
 	}
 
 	/**
@@ -327,12 +196,13 @@ public class WebUtils {
 	 *
 	 * @throws IOException
 	 */
-	public static String getContentAsString(final String url, final String cookie, final String postData, final String visitBefore) throws IOException {
+	public static String getContentAsString(final String url, final String cookie, final List<NameValuePair> postData, final String visitBefore) throws IOException {
 		return getContentAsString(CLIENT, url, cookie, postData, visitBefore);
 	}
 
 	/**
 	 * Reads from a URL and writes the content into a string.
+	 * @param client
 	 *
 	 * @param url
 	 * @param cookie
@@ -343,7 +213,7 @@ public class WebUtils {
 	 *
 	 * @throws IOException
 	 */
-	public static String getContentAsString(final HttpClient client, final String url, final String cookie, final String postData, final String visitBefore) throws IOException {
+	public static String getContentAsString(final HttpClient client, final String url, final String cookie, final List<NameValuePair> postData, final String visitBefore) throws IOException {
 		if (present(visitBefore)) {
 			/*
 			 * visit URL to get cookies if needed
@@ -364,21 +234,9 @@ public class WebUtils {
 			 */
 			method = new HttpPost(url);
 			/*
-			 * prepare parameters
+			 * add parameters
 			 */
-			final List<NameValuePair> params = new ArrayList<>();
-
-			for (final String s : postData.split(AMP_SIGN)) {
-				final String[] p = s.split(EQUAL_SIGN);
-
-				if (p.length != 2) {
-					continue;
-				}
-
-				params.add(new BasicNameValuePair(p[0], p[1]));
-			}
-
-			((HttpPost)method).setEntity(new UrlEncodedFormEntity(params));
+			((HttpPost)method).setEntity(new UrlEncodedFormEntity(postData));
 		} else {
 			/*
 			 * do a GET request
@@ -417,33 +275,11 @@ public class WebUtils {
 				return string;
 			}
 		} finally {
+			// required, see http://hc.apache.org/httpclient-3.x/threading.html
 			method.releaseConnection();
 		}
 
 		return null;
-	}
-
-	/**
-	 * Reads from a URL and writes the content into a string.
-	 *
-	 * @param url
-	 * @return String which holds the page content.
-	 * @throws IOException
-	 */
-	public static String getContentAsString(final String url) throws IOException {
-		return getContentAsString(url, null, null, null);
-	}
-
-	/**
-	 * Reads from a URL and writes the content into a string.
-	 *
-	 * @param url
-	 * @param cookie
-	 * @return String which holds the page content.
-	 * @throws IOException
-	 */
-	public static String getContentAsString(final String url, final String cookie) throws IOException {
-		return getContentAsString(url, cookie, null, null);
 	}
 
 	/**
@@ -456,13 +292,13 @@ public class WebUtils {
 	 * @throws IOException
 	 * @throws HttpException
 	 */
-	public static String getContentAsString(HttpClient client, HttpGet method) throws HttpException, IOException {
+	public static String getContentAsString(final HttpClient client, final HttpGet method) throws HttpException, IOException {
 		try {
 			final HttpResponse response = client.execute(method);
 			switch (response.getStatusLine().getStatusCode()) {
 				case HttpStatus.SC_OK:
-					final String charset = extractCharset(response.getFirstHeader(CONTENT_TYPE_HEADER_NAME).getValue());
-					return inputStreamToStringBuilder(response.getEntity().getContent(), charset).toString();
+				final String charset = extractCharset(response.getFirstHeader(CONTENT_TYPE_HEADER_NAME).getValue());
+				return inputStreamToStringBuilder(response.getEntity().getContent(), charset).toString();
 				default:
 					return null;
 			}
@@ -470,48 +306,6 @@ public class WebUtils {
 			// required, see http://hc.apache.org/httpclient-3.x/threading.html
 			method.releaseConnection();
 		}
-	}
-
-	/**
-	 * Convenience method for getting the page content by passing the {@link HttpGet} executed by the exisitng client.
-	 * It calls {@link WebUtils#getContentAsString(HttpClient, HttpGet)}
-	 * @param method
-	 * @return
-	 * @throws HttpException
-	 * @throws IOException
-	 */
-	public static String getContentAsString(HttpGet method) throws HttpException, IOException {
-		return getContentAsString(CLIENT, method);
-	}
-
-	/**
-	 * Convenience method for getting the page content by passing the {@link HttpClient} and the
-	 * {@link URI}. It calls {@link WebUtils#getContentAsString(HttpClient, HttpGet)}.
-	 *
-	 * @param client The client to execute.
-	 * @param uri The URI to be requested.
-	 * @return The response body as String if and only if the HTTP status code is 200 HTTP OK.
-	 * @throws HttpException
-	 * @throws IOException
-	 */
-	public static String getContentAsString(HttpClient client, URI uri) throws HttpException, IOException {
-		final HttpGet method = new HttpGet();
-		method.setURI(uri);
-		return getContentAsString(client, method);
-	}
-
-	/**
-	 * Convenience method for getting the page content by passing the {@link HttpClient} and the
-	 * URI as String. It calls {@link WebUtils#getContentAsString(HttpClient, HttpGet)}.
-	 *
-	 * @param client The client to execute.
-	 * @param uri The URI to be requested as String.
-	 * @return The response body as String if and only if the HTTP status code is 200 HTTP OK.
-	 * @throws HttpException
-	 * @throws IOException
-	 */
-	public static String getContentAsString(HttpClient client, String uri) throws HttpException, IOException {
-		return getContentAsString(client, new HttpGet(uri));
 	}
 
 	/**
@@ -533,7 +327,7 @@ public class WebUtils {
 	 * @param headers Additional headers to be added to the request
 	 * @return - The redirect URL if received HTTP Status Code 200, null otherwise.
 	 */
-	public static URL getRedirectUrl(final URL url, final List<Header> headers) {
+	protected static URL getRedirectUrl(final URL url, final List<Header> headers) {
 		final HttpGet method = new HttpGet(url.toExternalForm());
 		if (present(headers)) {
 			for (final Header header : headers) {
@@ -564,11 +358,9 @@ public class WebUtils {
 	}
 
 	/**
-	 * Returns the cookies returned by the server on accessing the URL. 
-	 * The format of the returned cookies is as
 	 *
 	 * @param url
-	 * @return The cookies as string, build by {@link #buildCookieString(List)}.
+	 * @return the cookies
 	 * @throws IOException
 	 */
 	public static String getCookies(final URL url) throws IOException {
@@ -586,10 +378,34 @@ public class WebUtils {
 	}
 
 	/**
+	 *
+	 * @param client
+	 * @param url
+	 * @return the cookies
+	 * @throws IOException
+	 */
+	public static String getCookies(final HttpClient client, final URL url) throws IOException {
+		final HttpGet get = new HttpGet(url.toString());
+		final List<String> cookies = new ArrayList<>();
+		try {
+			final HttpResponse response = client.execute(get);
+
+			final Header[] responseHeaders = response.getHeaders("Set-Cookie");
+			for (int i = 0; i < responseHeaders.length; i++) {
+				cookies.add(responseHeaders[i].getValue());
+			}
+		} finally {
+			// required, see http://hc.apache.org/httpclient-3.x/threading.html
+			get.releaseConnection();
+		}
+		return buildCookieString(cookies);
+	}
+	/**
 	 * @param url the url
 	 * @return the proper configured http connection for the url
 	 * @throws IOException
 	 */
+	@Deprecated
 	public static HttpURLConnection createConnection(URL url) throws IOException {
 		final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
 
@@ -612,7 +428,7 @@ public class WebUtils {
 	 * @param cookies - a list of key/value pairs
 	 * @return The cookies folded into a string.
 	 */
-	public static String buildCookieString(final List<String> cookies) {
+	protected static String buildCookieString(final List<String> cookies) {
 		final StringBuffer result = new StringBuffer();
 
 		if (cookies != null) {
@@ -626,16 +442,6 @@ public class WebUtils {
 		return result.toString();
 	}
 
-
-	/** Extracts the charset ID of a web page as returned by the server.
-	 *
-	 * @param urlConn
-	 * @return
-	 */
-	private static String getCharset(final HttpURLConnection urlConn) {
-		return extractCharset(urlConn.getContentType());
-	}
-
 	/**
 	 * Extracts the charset from the given string. The string should resemble
 	 * the content type header of an HTTP request. Valid examples are:
@@ -644,9 +450,12 @@ public class WebUtils {
 	 * <li>
 	 * </ul>
 	 *
+	 * FIXME: is this also required for HttpClient 4.x? Preferrably, a method from http commons should be used for that.
+	 *
 	 * @param contentType
 	 * @return - The charset.
 	 */
+	@Deprecated
 	public static String extractCharset(final String contentType) {
 		/*
 		 * this typically looks like that:
@@ -696,7 +505,7 @@ public class WebUtils {
 	 * @return stringbuilder with the contents of the inputstream
 	 * @throws IOException
 	 */
-	public static StringBuilder inputStreamToStringBuilder(final InputStream inputStream, final String charset) throws IOException {
+	protected static StringBuilder inputStreamToStringBuilder(final InputStream inputStream, final String charset) throws IOException {
 		final InputStreamReader in;
 		/*
 		 * set charset
@@ -716,22 +525,8 @@ public class WebUtils {
 			sb.append(line).append(NEWLINE);
 		}
 		buf.close();
-
+		
 		return sb;
 	}
 
-	/** Writes the given string to the stream.
-	 *
-	 * @param s
-	 * @param outputStream
-	 * @throws IOException
-	 */
-	private static void writeStringToStream(final String s, final OutputStream outputStream) throws IOException {
-		final StringReader reader = new StringReader(s);
-		int b;
-		while ((b = reader.read()) >= 0) {
-			outputStream.write(b);
-		}
-		outputStream.flush();
-	}
 }

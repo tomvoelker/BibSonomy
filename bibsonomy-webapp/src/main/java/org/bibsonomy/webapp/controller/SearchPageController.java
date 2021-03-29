@@ -79,7 +79,7 @@ public class SearchPageController extends SingleResourceListController implement
 			} catch (IllegalArgumentException e){
 				command.setSortKey(SortKey.RANK);
 			}
-			this.preProcessForSearchIndexSort(command);
+			this.buildSortCriteria(command);
 
 			this.startTiming(format);
 			String search = command.getRequestedSearch();

@@ -1,14 +1,15 @@
 package org.bibsonomy.model.logic.querybuilder;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.common.SortCriteria;
-import org.bibsonomy.common.enums.Filter;
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.*;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.logic.query.PostQuery;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -17,7 +18,7 @@ import java.util.Set;
  *
  * @author pda
  */
-public class PostQueryBuilder {
+public class PostQueryBuilder extends BasicQueryBuilder<PostQueryBuilder> {
 	private QueryScope scope;
 	private GroupingEntity grouping;
 	private String groupingName;
@@ -29,13 +30,10 @@ public class PostQueryBuilder {
 	private boolean onlyIncludeAuthorsWithoutPersonId;
 	private List<PersonName> personNames;
 	private String college;
-	private String search;
-	private int start = 0;
-	private int end = 10;
 
 	private List<SortCriteria> sortCriteria;
 
-	public <R extends Resource> PostQuery<R> createPostQuery(Class<R> resourceClass) {
+	public <R extends Resource> PostQuery<R> createPostQuery(final Class<R> resourceClass) {
 		final PostQuery<R> postQuery = new PostQuery<>(resourceClass);
 		postQuery.setSearch(search);
 		postQuery.setScope(scope);
@@ -51,23 +49,24 @@ public class PostQueryBuilder {
 		postQuery.setStart(start);
 		postQuery.setEnd(end);
 		postQuery.setCollege(this.college);
-		postQuery.setSortCriteriums(this.sortCriteria);
+		postQuery.setSortCriteria(this.sortCriteria);
 		return postQuery;
 	}
 
-	public PostQueryBuilder setEnd(int end) {
-		this.end = end;
+	@Override
+	protected PostQueryBuilder builder() {
 		return this;
 	}
 
-	public PostQueryBuilder setStart(int start) {
-		this.start = start;
-		return this;
-	}
-
-	public PostQueryBuilder setSearch(String search) {
-		this.search = search;
-		return this;
+	public PostQueryBuilder searchAndSortCriteria(final String search, SortCriteria defaultSortCriteria) {
+		final List<SortCriteria> sortCriteria = new LinkedList<>();
+		if (present(search)) {
+			sortCriteria.add(new SortCriteria(SortKey.RANK, SortOrder.ASC));
+		} else {
+			sortCriteria.add(defaultSortCriteria);
+		}
+		this.setSortCriteria(sortCriteria);
+		return this.search(search);
 	}
 
 	public PostQueryBuilder setScope(QueryScope scope) {
@@ -126,9 +125,9 @@ public class PostQueryBuilder {
 	}
 
 	/**
-	 * @param sortCriteria the sortCriteriums to set
+	 * @param sortCriteria the sortCriteria to set
 	 */
-	public PostQueryBuilder setSortCriteriums(List<SortCriteria> sortCriteria) {
+	public PostQueryBuilder setSortCriteria(List<SortCriteria> sortCriteria) {
 		this.sortCriteria = sortCriteria;
 		return this;
 	}

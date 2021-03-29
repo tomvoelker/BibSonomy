@@ -49,7 +49,7 @@ import org.bibsonomy.model.Resource;
  */
 public class ResourceViewCommand extends BaseCommand {
 	/** default value for sortPage */
-	public static final String DEFAULT_SORTPAGE = "year";
+	public static final String DEFAULT_SORTPAGE = "date";
 	/** default value for sortPageOrder */
 	public static final String DEFAULT_SORTPAGEORDER = "desc";
 	

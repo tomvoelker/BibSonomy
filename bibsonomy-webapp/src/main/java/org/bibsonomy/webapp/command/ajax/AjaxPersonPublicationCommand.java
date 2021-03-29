@@ -26,39 +26,16 @@
  */
 package org.bibsonomy.webapp.command.ajax;
 
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.ResourcePersonRelation;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import org.bibsonomy.webapp.command.PersonPageCommand;
 
 /**
- * @author wla
+ * @author mho
  */
-public class AjaxPersonPublicationCommand extends AjaxCommand<String> {
+public class AjaxPersonPublicationCommand extends PersonPageCommand {
 
-	private Person person;
 	private int page;
 	private int size;
-
-	private int personPostsStyleSettings;
-	private int personPostsPerPage;
-
-	private List<Post<BibTex>> myownPosts;
-	private List<ResourcePersonRelation> otherPubs;
-
-	/** personId of the person requested */
-	private String requestedPersonId;
-
-	public Person getPerson() {
-		return person;
-	}
-
-	public void setPerson(Person person) {
-		this.person = person;
-	}
 
 	public int getPage() {
 		return page;
@@ -74,49 +51,5 @@ public class AjaxPersonPublicationCommand extends AjaxCommand<String> {
 
 	public void setSize(int size) {
 		this.size = size;
-	}
-
-	public int getPersonPostsStyleSettings() {
-		return personPostsStyleSettings;
-	}
-
-	public void setPersonPostsStyleSettings(int personPostsStyleSettings) {
-		this.personPostsStyleSettings = personPostsStyleSettings;
-	}
-
-	public String getRequestedPersonId() {
-		return requestedPersonId;
-	}
-
-	public void setRequestedPersonId(String requestedPersonId) {
-		this.requestedPersonId = requestedPersonId;
-	}
-
-	public List<Post<BibTex>> getMyownPosts() {
-		return myownPosts;
-	}
-
-	public void setMyownPosts(List<Post<BibTex>> myownPosts) {
-		this.myownPosts = myownPosts;
-	}
-
-	public List<ResourcePersonRelation> getOtherPubs() {
-		return otherPubs;
-	}
-
-	public void setOtherPubs(List<ResourcePersonRelation> otherPubs) {
-		this.otherPubs = otherPubs;
-	}
-
-	/**
-	 * Number of publications displayed per page on the person page
-	 * @return
-	 */
-	public int getPersonPostsPerPage() {
-		return personPostsPerPage;
-	}
-
-	public void setPersonPostsPerPage(int personPostsPerPage) {
-		this.personPostsPerPage = personPostsPerPage;
 	}
 }

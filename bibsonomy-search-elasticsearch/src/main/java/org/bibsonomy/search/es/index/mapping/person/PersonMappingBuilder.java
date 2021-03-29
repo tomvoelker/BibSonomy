@@ -39,6 +39,7 @@ import static org.bibsonomy.search.es.ESConstants.IndexSettings.TEXT_TYPE;
 import static org.bibsonomy.search.es.ESConstants.IndexSettings.TYPE_FIELD;
 
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.index.converter.person.PersonFields;
 import org.bibsonomy.search.es.index.mapping.post.ResourceMappingBuilder;
@@ -165,15 +166,19 @@ public class PersonMappingBuilder implements MappingBuilder<XContentBuilder> {
 	 */
 	public static XContentBuilder buildNameMapping(XContentBuilder builder) throws IOException {
 		return builder
-						.startObject(PersonFields.NAMES)
-							.field(TYPE_FIELD, NESTED_TYPE)
-							.startObject(ESConstants.IndexSettings.PROPERTIES)
-								.startObject(PersonFields.NAME)
-									.field(ESConstants.IndexSettings.TYPE_FIELD, TEXT_TYPE)
-									.field(ESConstants.IndexSettings.ANALYZER, ESConstants.STANDARD_TEXT_ANALYSER)
-									.array(ESConstants.IndexSettings.COPY_TO, PersonFields.ALL_NAMES)
-								.endObject()
-							.endObject()
-						.endObject();
+			.startObject(PersonFields.NAMES)
+				.field(TYPE_FIELD, NESTED_TYPE)
+				.startObject(ESConstants.IndexSettings.PROPERTIES)
+					.startObject(PersonFields.NAME)
+						.field(ESConstants.IndexSettings.TYPE_FIELD, TEXT_TYPE)
+						.field(ESConstants.IndexSettings.ANALYZER, ESConstants.STANDARD_TEXT_ANALYSER)
+						.array(ESConstants.IndexSettings.COPY_TO, PersonFields.ALL_NAMES)
+					.endObject()
+				.endObject()
+			.endObject()
+			.startObject(PersonFields.ALL_NAMES)
+				.field(TYPE_FIELD, TEXT_TYPE)
+				.field(ESConstants.IndexSettings.ANALYZER, ESConstants.STANDARD_TEXT_ANALYSER)
+			.endObject();
 	}
 }

@@ -1,4 +1,4 @@
-// TODO: email notification, only build webapp and scrapingservice on success or unstable
+// TODO: only build webapp and scrapingservice on success or unstable
 pipeline {
   agent any
   triggers {
@@ -48,6 +48,15 @@ pipeline {
           }
         }
       }
+      post {
+        always {
+          archive "**/target/**/*"
+          junit '**/target/surefire-reports/*.xml'
+        }
+        changed {
+          emailext attachLog: true, body: '${DEFAULT_CONTENT}', compressLog: true, subject: '${DEFAULT_SUBJECT}', to: 'bibsonomy2-devel@cs.uni-kassel.de'
+        }
+      }
     }
     stage ('Artifactory Deploy') {
       when {
@@ -57,6 +66,14 @@ pipeline {
         rtPublishBuildInfo (
           serverId: "bibsonomy"
         )
+      }
+    }
+    stage ('Trigger PUMA build') {
+      when {
+        branch 'master'
+      }
+      steps {
+        build wait: false, job: 'puma/master'
       }
     }
     stage ('Deploy BibLicious Webapp') {

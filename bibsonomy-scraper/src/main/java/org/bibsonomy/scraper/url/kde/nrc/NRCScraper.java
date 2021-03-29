@@ -24,25 +24,46 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.oxfordjournals;
+package org.bibsonomy.scraper.url.kde.nrc;
 
-import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 
 /**
- * @author Haile
+ * This scraper supports download links from nrcresearchpress.com
+ * 
+ * @author Mohammed Abed
  */
-@Category(RemoteTest.class)
-public class OxfordJournalsScraperTest {
-		
-	@Test
-	public void url1Test1Run(){		
-		final String url = "https://academic.oup.com/comjnl/article-abstract/55/1/82/511672/Orange4WS-Environment-for-Service-Oriented-Data";
-		final String resultFile = "OxfordJournalsScraperUnitURLTest.bib";
-		assertScraperResult(url, null, OxfordJournalsScraper.class, resultFile);
+public class NRCScraper extends LiteratumScraper {
+	private static final String SITE_NAME = "NRC Research Press";
+	private static final String SITE_HOST = "nrcresearchpress.com";
+	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
+
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+
+	@Override
+	public String getSupportedSiteName() {
+		return SITE_NAME;
 	}
-	
+
+	@Override
+	public String getSupportedSiteURL() {
+		return SITE_URL;
+	}
+
+	@Override
+	public String getInfo() {
+		return SITE_INFO;
+	}
+
+	@Override
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
+		return PATTERNS;
+	}
 }

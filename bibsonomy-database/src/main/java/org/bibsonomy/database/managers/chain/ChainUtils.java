@@ -73,10 +73,14 @@ public class ChainUtils {
 			return true;
 		}
 
+		/*
+		 * Handle requests for simple tags and concepts
+		 */
 		final GroupingEntity grouping = param.getGrouping();
-		if ((grouping == GroupingEntity.ALL) && (param.getNumSimpleConcepts() > 0)) {
+		if ((grouping == GroupingEntity.ALL) && ((param.getNumSimpleConcepts() > 0))) {
 			return true;
 		}
+
 		/*
 		 * Handle requests for groups and organizations
 		 */
@@ -84,7 +88,7 @@ public class ChainUtils {
 			return true;
 		}
 
-		if ((param.getQueryScope() == QueryScope.SEARCHINDEX) && (param.getNumSimpleTags() > 0)) {
+		if ((param.getQueryScope() == QueryScope.SEARCHINDEX)) {
 			return true;
 		}
 

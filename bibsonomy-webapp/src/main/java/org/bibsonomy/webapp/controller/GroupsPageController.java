@@ -67,6 +67,7 @@ public class GroupsPageController extends SingleResourceListController implement
 						.organization(command.getOrganizations())
 						.prefix(command.getPrefix())
 						.search(search)
+						.prefixMatch(true)
 						.order(order)
 						.sortOrder(sortOrder).build();
 		groupListCommand.setList(this.logic.getGroups(groupQuery));

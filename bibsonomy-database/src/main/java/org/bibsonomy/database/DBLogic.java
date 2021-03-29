@@ -752,12 +752,12 @@ public class DBLogic implements LogicInterface {
 						setGroupingName(groupingName).
 						setTags(tags).
 						setHash(hash).
-						setSearch(search).
+						search(search).
 						setFilters(filters).
 						setStartDate(startDate).
 						setEndDate(endDate).
-						setStart(start).
-						setEnd(end).createPostQuery(resourceType);
+						start(start).
+						end(end).createPostQuery(resourceType);
 		// delegating to the new method
 		return this.getPosts(query);
 	}
@@ -773,7 +773,7 @@ public class DBLogic implements LogicInterface {
 		final GroupingEntity grouping = query.getGrouping();
 		final String groupingName = query.getGroupingName();
 		final Set<Filter> filters = query.getFilters();
-		final List<SortCriteria> sortCriteria = query.getSortCriteriums();
+		final List<SortCriteria> sortCriteria = query.getSortCriteria();
 		final List<String> tags = query.getTags();
 		final int start = query.getStart();
 		final int end = query.getEnd();
@@ -814,7 +814,7 @@ public class DBLogic implements LogicInterface {
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, queryScope, grouping, groupingName, tags, hash, firstSortKey, start, end, startDate, endDate, search, filters, this.loginUser);
 				// sets the sort order
-				param.setSortCriteriums(sortCriteria);
+				param.setSortCriteria(sortCriteria);
 
 				// check permissions for displaying links to documents
 				final boolean allowedToAccessUsersOrGroupDocuments = this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, session);
@@ -841,7 +841,7 @@ public class DBLogic implements LogicInterface {
 				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, resourceType, queryScope, grouping, groupingName, tags, hash, firstSortKey, start, end, startDate, endDate, search, filters, this.loginUser);
 				param.setQuery((PostQuery<Bookmark>) query);
 				// sets the sort order to search index
-				param.setSortCriteriums(sortCriteria);
+				param.setSortCriteria(sortCriteria);
 				final List<Post<R>> bookmarks = (List) this.bookmarkDBManager.getPosts(param, session);
 				SystemTagsExtractor.handleHiddenSystemTags(bookmarks, this.loginUser.getName());
 				return bookmarks;

@@ -17,14 +17,18 @@
 
 	<div class="jumbotron search">
 		<h2><fmt:message key="${headerMessageKey}" /></h2>
-		<form class="form-search" action="${requPathAndQuery}">
+		<form class="form-search" id="group-search-box" action="${requPathAndQuery}">
 			<div class="input-group">
-									<span class="input-group-addon">
-										<fontawesome:icon icon="search" size="2x" />
-									</span>
-				<input class="form-control form-control-lg form-control-borderless"
-					   type="search" name="search" placeholder="${searchPlaceholder}" value="${command.search}" />
+				<span class="input-group-addon">
+					<fontawesome:icon icon="search" size="2x" />
+				</span>
+				<input class="form-control form-control-lg form-control-borderless" id="group-search-box-input"
+					   type="search" name="search" placeholder="${searchPlaceholder}" value="${fn:escapeXml(command.search)}" />
 				<div class="input-group-btn">
+					<!-- TODO: do not use inline javascript -->
+					<div class="btn bg-white" onclick="$('#group-search-box-input').val('');$('#group-search-box').submit();">
+						<fontawesome:icon icon="times" />
+					</div>
 					<button class="btn btn-primary"><fmt:message key="navi.search" /></button>
 				</div>
 			</div>
@@ -45,7 +49,7 @@
 								<c:set var="prefixMessage" value="${prefix}" />
 							</c:if>
 							<li class="${prefixSelected ? 'active' : ''}">
-								<a href="${mtl:setParam(requPathAndQuery, 'prefix', prefix)}">${prefixMessage}</a>
+								<a href="${mtl:removeParam(mtl:setParam(requPathAndQuery, 'prefix', prefix), 'groups.start')}">${prefixMessage}</a>
 							</li>
 						</c:forEach>
 					</ul>

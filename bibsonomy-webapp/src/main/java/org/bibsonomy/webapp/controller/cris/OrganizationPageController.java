@@ -89,11 +89,10 @@ public class OrganizationPageController implements MinimalisticController<Organi
 		final ListCommand<Post<GoldStandardPublication>> publicationsListCommand = command.getPublications();
 		final int start = publicationsListCommand.getStart();
 		final PostQuery<GoldStandardPublication> postOrganizationQuery = new PostQueryBuilder()
-						.setSortCriteriums(Collections.singletonList(new SortCriteria(SortKey.YEAR, SortOrder.DESC)))
+						.setSortCriteria(Collections.singletonList(new SortCriteria(SortKey.YEAR, SortOrder.DESC)))
 						.setGrouping(GroupingEntity.ORGANIZATION)
 						.setGroupingName(group.getName())
-						.setStart(start)
-						.setEnd(start + publicationsListCommand.getEntriesPerPage())
+						.entriesStartingAt(publicationsListCommand.getEntriesPerPage(), publicationsListCommand.getStart())
 						.createPostQuery(GoldStandardPublication.class);
 
 		/*
@@ -143,7 +142,7 @@ public class OrganizationPageController implements MinimalisticController<Organi
 		return Views.ORGANIZATION_PAGE;
 	}
 
-	private void setTotalCount(ListCommand<?> listCommand, Supplier<Statistics> statisticsSupplier) {
+	private void setTotalCount(final ListCommand<?> listCommand, final Supplier<Statistics> statisticsSupplier) {
 		if (!present(listCommand.getTotalCountAsInteger())) {
 			final Statistics statistics = statisticsSupplier.get();
 			listCommand.setTotalCount(statistics.getCount());

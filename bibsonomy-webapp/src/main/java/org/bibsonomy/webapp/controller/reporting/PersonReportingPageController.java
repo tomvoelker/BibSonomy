@@ -34,6 +34,7 @@ public class PersonReportingPageController extends AbstractReportingPageControll
 		query.setStart(start);
 		query.setCollege(this.college);
 		query.setEnd(start + personListCommand.getEntriesPerPage());
+		query.setUsePrefixMatch(true);
 		personListCommand.setList(this.logic.getPersons(query));
 	}
 

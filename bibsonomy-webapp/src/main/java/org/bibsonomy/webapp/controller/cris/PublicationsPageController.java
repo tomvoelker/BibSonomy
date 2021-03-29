@@ -1,8 +1,5 @@
 package org.bibsonomy.webapp.controller.cris;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.SortCriteria;
@@ -11,7 +8,7 @@ import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.cris.PublicationsPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -35,23 +32,14 @@ public class PublicationsPageController implements MinimalisticController<Public
 	}
 
 	@Override
-	public View workOn(PublicationsPageCommand command) {
+	public View workOn(final PublicationsPageCommand command) {
 		final ListCommand<Post<GoldStandardPublication>> goldStandardPublications = command.getPublications();
-		final PostQuery<GoldStandardPublication> query = new PostQuery<>(GoldStandardPublication.class);
-		query.setCollege(this.college);
-		final int start = goldStandardPublications.getStart();
-		query.setStart(start);
-		query.setEnd(start + goldStandardPublications.getEntriesPerPage());
-		final String search = command.getSearch();
-		query.setSearch(search);
-		final List<SortCriteria> sortCriteria = new LinkedList<>();
-		if (present(search)) {
-			sortCriteria.add(new SortCriteria(SortKey.RANK, SortOrder.ASC));
-		} else {
-			sortCriteria.add(new SortCriteria(SortKey.YEAR, SortOrder.DESC));
-		}
-		query.setSortCriteriums(sortCriteria);
-		final List<Post<GoldStandardPublication>> posts = this.logic.getPosts(query);
+		final PostQueryBuilder queryBuilder = new PostQueryBuilder()
+				.college(this.college)
+				.entriesStartingAt(goldStandardPublications.getEntriesPerPage(), goldStandardPublications.getStart())
+				.searchAndSortCriteria(command.getSearch(), new SortCriteria(SortKey.YEAR, SortOrder.DESC));
+
+		final List<Post<GoldStandardPublication>> posts = this.logic.getPosts(queryBuilder.createPostQuery(GoldStandardPublication.class));
 		goldStandardPublications.setList(posts);
 
 		return Views.PUBLICATIONS_OVERVIEW;

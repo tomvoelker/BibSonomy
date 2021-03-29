@@ -43,6 +43,7 @@ import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -120,7 +121,14 @@ public class PublicationAutocompleteController implements MinimalisticController
 				}
 			}
 			try {
-				final List<Post<BibTex>> postsBySearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, search, QueryScope.LOCAL, null, SortUtils.singletonSortCriteria(SortKey.RANK), null, null, 0, 10);
+				final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+				postQueryBuilder.setGrouping(GroupingEntity.ALL)
+						.setTags(tags)
+						.search(search)
+						.setScope(QueryScope.LOCAL)
+						.setSortCriteria(SortUtils.singletonSortCriteria(SortKey.RANK))
+						.entriesStartingAt(10, 0);
+				final List<Post<BibTex>> postsBySearch = this.logic.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 				allPosts.addAll(postsBySearch);
 			} catch (final InvalidSearchRequestException e) {
 				// ignore

@@ -26,13 +26,15 @@
  */
 package org.bibsonomy.scraper.url.kde.ingenta;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+import static org.junit.Assert.assertEquals;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #15 #169 for IngentaconnectScraper
+ * Scraper URL tests
  * @author tst
  *
  */
@@ -44,7 +46,7 @@ public class IngentaconnectScraperTest {
 	 */
 	@Test
 	public void urlTestRun1(){
-		UnitTestRunner.runSingleTest("url_15");
+		assertScraperResult("http://www.ingentaconnect.com/search/article?option1=tka&value1=ArticleRank%3a+a+PageRank-based+alternative+to+numbers+of+citations+for+analysing+citation+networks&pageSize=10&index=1", null, IngentaconnectScraper.class, "IngentaconnectScraperUnitURLTest1.bib");
 	}
 	
 	/**
@@ -52,7 +54,19 @@ public class IngentaconnectScraperTest {
 	 */
 	@Test
 	public void urlTestRun2(){
-		UnitTestRunner.runSingleTest("url_169");
+		assertScraperResult("http://www.ingentaconnect.com/content/mcb/026/2007/00000026/00000004/art00005", null, IngentaconnectScraper.class, "IngentaconnectScraperUnitURLTest2.bib");
+	}
+
+	@Test
+	public void testFixSpaceInKey() {
+		final String b = "number = \"4\",\n" + 
+				"publication date =\"2007-04-17T00:00:00\",\n" + 
+				"pages = \"370-380\","; 
+		final String r = IngentaconnectScraper.fixSpaceInKey(b);
+		final String should = "number = \"4\",\n" + 
+				"publicationdate =\"2007-04-17T00:00:00\",\n" + 
+				"pages = \"370-380\",";
+		assertEquals(should, r);
 	}
 	
 }

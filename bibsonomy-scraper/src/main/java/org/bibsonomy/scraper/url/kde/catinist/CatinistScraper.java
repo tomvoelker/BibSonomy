@@ -33,58 +33,23 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
- * @author Mohammed Abed
+ * @author rja
  */
-public class CatinistScraper extends AbstractUrlScraper {
+public class CatinistScraper extends GenericBibTeXURLScraper {
 	
-	private static final Log log = LogFactory.getLog(CatinistScraper.class);
 	private final static String SITE_NAME = "Refdoc";
-	private final static String SITE_URL = "http://cat.inist.fr";
+	private final static String SITE_HOST = "www.refdoc.fr";
+	private final static String SITE_URL  = "http://www.refdoc.fr/";
 	private final static String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
-	private final static String HOST = "cat.inist.fr";
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
-	private static Pattern pattern = Pattern.compile("cpsidt=(.*\\d+)");
-	private static String PARAMETER = "aExport=export_endnote&cPanier=exporter&cpsidt=";
-	private static EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
-	
-	@Override
-	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
-		String requestURL = null;
-		if (!scrapingContext.getUrl().toString().contains("exportN")) {
-			requestURL = scrapingContext.getUrl().toString().replace("afficheN", "exportN");
-		} else {
-			requestURL = scrapingContext.getUrl().toString();
-		}
-		Matcher m = pattern.matcher(scrapingContext.getUrl().toString());
-		if (m.find()) {
-			try {
-				final String endNote = WebUtils.getPostContentAsString(new URL(requestURL), PARAMETER + m.group(1));
-				final String bibtexResult = cleanBibtex(converter.toBibtex(endNote));
-				if (bibtexResult != null) {
-					scrapingContext.setBibtexResult(bibtexResult);
-					return true;
-				}
-			} catch (final IOException e) {
-				log.error("error while scraping  " + requestURL, e);
-			}
-		}
-		return false;
-	}
-	
-	private static String cleanBibtex(final String bibtex) {
-		String bibtexResult = bibtex.replace("#160", "");
-		return bibtexResult;
-	}
+
+	private final static Pattern PATH_PATTERN = Pattern.compile("cpsidt=(\\d+)");
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), Pattern.compile("/Detailnotice.*")));
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
@@ -103,5 +68,21 @@ public class CatinistScraper extends AbstractUrlScraper {
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return PATTERNS;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL, java.lang.String)
+	 */
+	@Override
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
+		/*
+		 * input:  http://www.refdoc.fr/Detailnotice?cpsidt=3620772
+		 * output: http://www.refdoc.fr/Detailnotice/exportnotice?typeExport=BIB&idarticle=16263823
+		 */
+		final Matcher m = PATH_PATTERN.matcher(url.getQuery());
+		if (m.find()) {
+			return "http://" + url.getHost() + "/Detailnotice/exportnotice?typeExport=BIB&idarticle=" + m.group(1);
+		}
+		return null;
 	}
 }

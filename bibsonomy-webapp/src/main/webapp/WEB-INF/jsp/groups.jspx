@@ -28,7 +28,7 @@
 		 	+-->
 		<jsp:attribute name="heading">
 			<c:if test="${isGroupsPage}">
-				<parts:search pathMessageKey="navi.groups" formAction="/group/" formInputName="group"/>
+				<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search" />
 			</c:if>
 		</jsp:attribute>
 
@@ -36,20 +36,6 @@
 		 	| content
 		 	+-->
 		<jsp:attribute name="content">
-			<!--+
-				| explain what groups are good for
-				+-->
-			<c:if test="${isUserLoggedIn}">
-				<bs:alert style="info">
-					<jsp:attribute name="alertBody">
-						<fmt:message key="system.groups">
-							<!-- TODO: use URLGenerator -->
-							<fmt:param value="/grouprequest"/>
-						</fmt:message>
-					</jsp:attribute>
-				</bs:alert>
-			</c:if>
-
 			<parts:searchHeader headerMessageKey="${requPath}.header" searchPlaceholderKey="${requPath}.search"
 								requPathAndQuery="${requPathAndQuery}" command="${command}"/>
 
@@ -144,5 +130,25 @@
 				<rc:nextprev listView="${groupListCommand}" listViewStartParamName="groups.start"/>
 			</div>
 		</jsp:attribute>
+
+		<!--+
+			 | sidebar
+			 +-->
+		<jsp:attribute name="sidebar">
+			<!--+
+				| explain what groups are good for
+				+-->
+			<c:if test="${isUserLoggedIn}">
+				<bs:alert style="info">
+					<jsp:attribute name="alertBody">
+						<fmt:message key="system.groups">
+							<!-- TODO: use URLGenerator -->
+							<fmt:param value="/grouprequest"/>
+						</fmt:message>
+					</jsp:attribute>
+				</bs:alert>
+			</c:if>
+		</jsp:attribute>
+
 	</layout:paneLayout>
 </jsp:root>

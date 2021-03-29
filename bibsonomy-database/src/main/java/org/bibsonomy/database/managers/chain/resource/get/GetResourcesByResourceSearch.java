@@ -97,6 +97,7 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 		query.setEntryType(entryType);
 		query.setBibtexKey(param.getBibtexKey());
 		query.setTags(tags); // override tags to remove system tags
+		query.setSortCriteria(param.getSortCriteria());
 
 		// query the resource searcher
 		//TODO (dzo) Do we really need the hashId in GetResourcesForGroup?

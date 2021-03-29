@@ -24,24 +24,54 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.casesjournal;
+package org.bibsonomy.scraper.url.kde.hogrefe;
 
-import org.bibsonomy.scraper.UnitTestRunner;
-import org.bibsonomy.scraper.junit.RemoteTest;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 
 /**
- * @author claus
+ * Scraper for hogrefe.com
+ * @author rja
  */
-@Category(RemoteTest.class)
-public class CasesJournalScraperTest {
+public class HogrefeScraper extends LiteratumScraper {
 
-	/**
-	 * starts URL test with id url_154
-	 */
-	@Test
-	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_154");
+	private static final String SITE_NAME = "Hogrefe";
+	private static final String SITE_HOST = "econtent.hogrefe.com";
+	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_INFO = "This scraper parses publications from " + href(SITE_URL, SITE_NAME) + ".";
+
+	private static final String PATH_DOI_ABS = "/doi/abs/";
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(
+			Pattern.compile(".*" + SITE_HOST), 
+			Pattern.compile(PATH_DOI_ABS + ".*")
+			));
+
+	@Override
+	public String getInfo() {
+		return SITE_INFO;
+	}
+	
+	@Override
+	protected boolean requiresCookie() {
+		return true;
+	}
+
+	@Override
+	public String getSupportedSiteName() {
+		return SITE_NAME;
+	}
+
+	@Override
+	public String getSupportedSiteURL() {
+		return SITE_URL;
+	}
+
+	@Override
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
+		return PATTERNS;
 	}
 }

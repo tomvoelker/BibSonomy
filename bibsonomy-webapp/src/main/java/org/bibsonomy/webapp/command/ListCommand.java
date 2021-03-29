@@ -52,6 +52,8 @@ public class ListCommand<T> {
 	private List<PageCommand> previousPages;
 	private List<PageCommand> nextPages;
 	private Integer totalCount = null;
+	/** this number tells us the pagination limit of the system that is */
+	private Integer paginationLimit = null;
 	private List<T> list;
 	
 	/**
@@ -87,7 +89,9 @@ public class ListCommand<T> {
 	public void setList(final List<T> list) {
 		this.list = list;
 		if (list instanceof ResultList<?>) {
-			this.setTotalCount(((ResultList<?>) list).getTotalCount());
+			final ResultList<T> resultList = (ResultList<T>) list;
+			this.setTotalCount(resultList.getTotalCount());
+			this.setPaginationLimit(resultList.getPaginationLimit());
 		}
 	}
 	
@@ -298,4 +302,17 @@ public class ListCommand<T> {
 		return 0;
 	}
 
+	/**
+	 * @return the paginationLimit
+	 */
+	public Integer getPaginationLimit() {
+		return paginationLimit;
+	}
+
+	/**
+	 * @param paginationLimit the paginationLimit to set
+	 */
+	public void setPaginationLimit(Integer paginationLimit) {
+		this.paginationLimit = paginationLimit;
+	}
 }

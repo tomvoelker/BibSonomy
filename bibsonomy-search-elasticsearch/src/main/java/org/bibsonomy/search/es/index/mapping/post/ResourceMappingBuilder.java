@@ -88,6 +88,7 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 						.endObject()
 						.startObject(ESConstants.Fields.TAGS)
 							.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
+							.field(ESConstants.NORMALIZER, ESConstants.LOWERCASE_NORMALIZER)
 						.endObject()
 						.startObject(ESConstants.Fields.USER_NAME)
 							.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
@@ -121,8 +122,7 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 						.endObject()
 						.startObject(Fields.Sort.TITLE)
 							.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
-							.field(ESConstants.NORMALIZER, ESConstants.LOWERCASE_NORMALIZER)
-							.field(ESConstants.IndexSettings.BOOST_FIELD, 0)
+							.field(ESConstants.NORMALIZER, ESConstants.SORT_NORMALIZER)
 						.endObject();
 
 		this.doResourceSpecificMapping(builder);

@@ -12,11 +12,12 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 	>
-	
+
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="requQueryString" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="listIndex" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="extTitle" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="widthClassName"  type="java.lang.String" required="true"/>
@@ -26,8 +27,12 @@
 	<jsp:directive.attribute name="hideMetaData" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="hidePostMenu" type="java.lang.Boolean" required="false" />
 
+	<jsp:directive.attribute name="showSortInfo" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="indexUse" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="sortPage" type="java.lang.String" required="false" />
+
 	<jsp:directive.attribute name="onlyLinkAuthorsWithPersons" type="java.lang.Boolean" required="false" />
-	
+
 	<!-- list Headline options -->
 	<jsp:directive.attribute name="hideHeadline" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="showPageOptions" type="java.lang.Boolean" required="false"/>
@@ -35,15 +40,15 @@
 	<jsp:directive.attribute name="showPublication" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
-	
+
 	<!-- fragments -->
 	<jsp:directive.attribute name="addAsFirstItem" fragment="true" required="false" />
 	<jsp:directive.attribute name="addAsLastItem" fragment="true" required="false" />
 	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
 	<jsp:directive.attribute name="additionalSorting" fragment="true"/>
-	
+
 	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
-	
+
 	<c:if test="${empty listIndex}">
 		<c:set var="listIndex" value="0"/>
 	</c:if>
@@ -66,7 +71,7 @@
 
 	<!-- FIXME: find a better way to disable the headline -->
 	<rc:list
-		titleKey="publications" 
+		titleKey="publications"
 		loginUserName="${loginUserName}"
 		listViewStartParamName="bibtex.start"
 		otherPostsUrlPrefix="/bibtex/${interHashId}"
@@ -85,10 +90,15 @@
 			<h3 class="list-headline">
 				<fmt:message key="publications" />
 				&amp;nbsp;<small class="hidden-lg hidden-md">(<a id="hide-publications" href=""><fmt:message key="list.hide" /></a>)</small>
-				<!-- Display total number of entries in list --> 
+				<!-- Display total number of entries in list -->
 				<c:if test="${not hideCounts and not empty listView.list and listView.totalCount != 0}">
 					<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${listView.totalCount} "/> <fmt:message key="publications" /></c:set>
 					<span class="badge" title="${totalTitle}" style="position:relative; top: -3px; left: 3px;">${listView.totalCount}</span>
+					&amp;nbsp;
+				</c:if>
+
+				<c:if test="${showSortInfo}">
+					<rc:sortingInfo requPathAndQuery="/${requPath}${requQueryString}" indexUse="${indexUse}" sortPage="${sortPage}"/>
 				</c:if>
 				
 				<c:if test="${empty showPageOptions or showPageOptions}">
@@ -99,13 +109,13 @@
 						</c:when>
 						<c:otherwise>
 							<div class="pull-right btn-group dropdown-align-right all-resources-menu">
-								<rc:actions resourceType="bibtex" 
-									sortPage="${command.sortPage}" 
+								<rc:actions resourceType="bibtex"
+									sortPage="${command.sortPage}"
 									sortPageOrder="${command.sortPageOrder}"
 									entriesPerPage="${listView.entriesPerPage}"
-									showBookmark="${showBookmark}" 
-									showPublication="${showPublication}" 
-									showInboxActions="${showInboxActions}" 
+									showBookmark="${showBookmark}"
+									showPublication="${showPublication}"
+									showInboxActions="${showInboxActions}"
 									isClipboard="${isClipboard}"
 									disableListNavigation="${disableListNavigation}"
 									disableResourcetypeSelection="${disableResourcetypeSelection}"
@@ -127,7 +137,7 @@
 				</c:otherwise>
 			</c:choose>
 		</jsp:attribute>
-		
+
 		<!-- Bibtex description -->
 		<jsp:attribute name="desc">
 			<bib:desc publication="${post.resource}"
@@ -135,7 +145,7 @@
 					  restrictToFirstAuthors="${true}"
 					  onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}"/>
 		</jsp:attribute>
-		
+
 		<!-- BibTeX action -->
 		<jsp:attribute name="actions">
 			<buttons:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}" resourceType="bibtex"/>
@@ -145,7 +155,7 @@
 		<jsp:attribute name="documents">
 			<bib:documents post="${post}"/>
 		</jsp:attribute>
-		
+
 	</rc:list>
-	
+
 </jsp:root>

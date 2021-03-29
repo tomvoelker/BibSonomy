@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -43,7 +41,6 @@ import org.bibsonomy.scraper.generic.GenericRISURLScraper;
  * @author tst
  */
 public class CellScraper extends GenericRISURLScraper{
-	private static final Log log = LogFactory.getLog(CellScraper.class);
 	
 	private static final String SITE_NAME = "Cell";
 	private static final String SITE_URL = "http://www.cell.com/";

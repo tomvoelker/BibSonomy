@@ -11,11 +11,14 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.query.BasicQuery;
 import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 import org.bibsonomy.model.statistics.Statistics;
+import org.bibsonomy.search.es.index.converter.person.PersonFields;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.query.*;
+import org.elasticsearch.index.search.MatchQuery;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
@@ -50,8 +53,24 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 			
 			final List<Pair<String, SortOrder>> sortOrder = this.getSortOrder(query);
 
+			/*
+			 * there is a limit in the es search how many entries we can skip (max result window)
+			 * here we check the limit set for the index
+			 * we do the following:
+			 * 1. we set this information e.g. for the view
+			 * 2. if the start already exceeds the limit we return an empty result list
+			 * 3. if the end only exceeds the limit we set it to the max result window
+			 */
+			final Settings indexSettings = this.manager.getIndexSettings();
+			final Integer maxResultWindow = indexSettings.getAsInt("index.max_result_window", 10000);
+			results.setPaginationLimit(maxResultWindow);
+
+			if (query.getStart() > maxResultWindow) {
+				return results;
+			}
+
 			final int offset = BasicQueryUtils.calcOffset(query);
-			final int limit = BasicQueryUtils.calcLimit(query);
+			final int limit = BasicQueryUtils.calcLimit(query, maxResultWindow);
 			final SearchHits hits = this.manager.search(queryBuilder, sortOrder, offset, limit, null, null);
 
 			if (hits == null) {
@@ -112,15 +131,36 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 		// now some general search queries
 		final String search = query.getSearch();
 		if (present(search)) {
-			final SimpleQueryStringBuilder searchQueryBuilder = QueryBuilders.simpleQueryStringQuery(search);
-			this.manager.getPublicFields().forEach(searchQueryBuilder::field);
-			searchQueryBuilder
-					.analyzeWildcard(true)
-					.minimumShouldMatch("75%");
+			final QueryBuilder searchQueryBuilder = this.buildSearchQueryBuilder(query);
 			mainQuery.must(searchQueryBuilder);
 		}
 
 		return mainQuery.filter(filterQuery);
+	}
+
+	private QueryBuilder buildSearchQueryBuilder(final Q query) {
+		final String search = query.getSearch();
+		final boolean phraseMatch = query.isPhraseMatch();
+		final boolean prefixMatch = query.isUsePrefixMatch();
+
+		/*
+		 * the search terms must match in the order entered and the last is only a prefix match
+		 */
+		if (phraseMatch) {
+			final MultiMatchQueryBuilder searchQueryBuilder = QueryBuilders.multiMatchQuery(search);
+			this.manager.getPublicFields().forEach(searchQueryBuilder::field);
+			searchQueryBuilder.minimumShouldMatch("75%");
+			if (!prefixMatch) {
+				return searchQueryBuilder;
+			}
+			// prefix config
+			searchQueryBuilder
+					.type(MatchQuery.Type.PHRASE_PREFIX);
+
+			return searchQueryBuilder;
+		}
+
+		return ElasticsearchIndexSearchUtils.buildMultiBoolMatchPrefixQuery(search, this.manager.getPublicFields());
 	}
 
 	protected BoolQueryBuilder buildMainQuery(final User loggedinUser, final Q query) {

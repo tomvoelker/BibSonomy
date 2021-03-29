@@ -38,11 +38,16 @@ import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.CitationManagerScraper;
+import org.bibsonomy.scraper.generic.HighwireScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * @author clemens
+ * 
+ * URLs are scraped by {@link HighwireScraper}. 
+ * 
  */
+@Deprecated
 public class PNASScraper extends CitationManagerScraper implements ReferencesScraper{
 	private static final String SITE_NAME = "PNAS";
 	private static final String SITE_URL = "http://www.pnas.org/";

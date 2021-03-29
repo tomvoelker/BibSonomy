@@ -146,15 +146,12 @@
 										</c:otherwise>
 									</c:choose>
 									<a class='btnLinkPerson' data-toggle="${dataToggle}" data-target="${dataTarget}" href="${href}" data-person-url="${relativeUrlGenerator.getPersonUrl(person.personId)}" data-person-id="${fn:escapeXml(person.personId)}" >
-
 										<h4 class="list-group-item-heading">
 											<per:simplePerson person="${person}" />
 										</h4>
-										<p class="list-group-item-text">Test<a href="Test" >TestLink</a></p>
 									</a>
 									<!-- person information -->
 									<c:if test="${not empty topRelation}">
-										${topRelation.relationType}
 										<per:simplePub post="${topPost}" />
 									</c:if>
 									<c:if test="${personHasRelations}">

@@ -45,6 +45,7 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
@@ -93,7 +94,11 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 		}
 
 		// get the post that should be displayed
-		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, requestedHash, null, null, null, null, null, null, 0, 1);
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.ALL)
+				.setHash(requestedHash)
+				.entriesStartingAt(1, 0);
+		final List<Post<BibTex>> posts = this.logic.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 
 		if (!present(posts)) {
 			throw new ObjectNotFoundException(requestedHash);
@@ -146,7 +151,9 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 		 * get candidate persons with the name of the author/editor
 		 */
 		final String name = QueryParser.escape(BibTexUtils.cleanBibTex(requestedName.toString()));
-		final List<Person> persons = this.logic.getPersons(new PersonQuery(name));
+		final PersonQuery personQuery = new PersonQuery(name);
+		personQuery.setEnd(5);
+		final List<Person> persons = this.logic.getPersons(personQuery);
 		command.setPersonSuggestions(persons);
 
 		/*

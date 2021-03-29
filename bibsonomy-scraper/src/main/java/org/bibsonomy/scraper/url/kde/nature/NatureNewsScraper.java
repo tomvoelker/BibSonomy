@@ -113,15 +113,13 @@ public class NatureNewsScraper extends AbstractUrlScraper{
 			sc.setScraper(this);
 		} catch (IOException e) {
 			throw new ScrapingException(e);
-		} catch (ParseException e) {
-			throw new ScrapingException(e);
 		}
 		return true;
 	}
 
-	private String constructBibtexFromHtmlMeta(final ScrapingContext sc) throws IOException, ParseException {
+	private static String constructBibtexFromHtmlMeta(final ScrapingContext sc) throws IOException {
 		final URL url = sc.getUrl();
-		final String content = WebUtils.getContentAsString(url.toExternalForm());
+		final String content = WebUtils.getContentAsString(url);
 		final StringBuilder bibtex = new StringBuilder();
 		bibtex.append("@article{nokey,\n");
 		bibtex.append("url = {" + url + "},\n");

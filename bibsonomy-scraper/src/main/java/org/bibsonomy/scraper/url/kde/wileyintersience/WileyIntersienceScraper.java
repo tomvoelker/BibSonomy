@@ -41,13 +41,13 @@ import org.bibsonomy.scraper.generic.CitMgrScraper;
 public class WileyIntersienceScraper extends CitMgrScraper {
 
 	private static final String SITE_HOST = "onlinelibrary.wiley.com";
-	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_URL  = "https://" + SITE_HOST + "/";
 	private static final String SITE_NAME = "InterScience";
 	private static final String INFO = "Extracts publications from the abstract page of " + href(SITE_URL,SITE_NAME) + ".";
 	private static final Pattern DOI_PATTERN = Pattern.compile("/doi/(.+)/.*");
 
 
-	private static final List<Pair<Pattern,Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), DOI_PATTERN));
+	private static final List<Pair<Pattern,Pattern>> patterns = Collections.singletonList(new Pair<>(Pattern.compile(".*" + SITE_HOST), DOI_PATTERN));
 
 	public String getInfo() {
 		return INFO;

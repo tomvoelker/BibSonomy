@@ -41,6 +41,7 @@ import org.bibsonomy.search.es.client.UpdateData;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHits;
@@ -236,5 +237,12 @@ public interface ESClient {
 	 * checks if the client can connect to the es instance
 	 * @return
 	 */
-	public boolean isValidConnection();
+	boolean isValidConnection();
+
+	/**
+	 * gets the index settings for the specified index
+	 * @param indexName
+	 * @return the index settings
+	 */
+	Settings getIndexSettings(String indexName);
 }

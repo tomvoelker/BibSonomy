@@ -264,16 +264,16 @@ public class PostQuery<R extends Resource> extends BasicQuery {
 	}
 
 	/**
-	 * @return the sortCriteriums
+	 * @return the sortCriteria
 	 */
-	public List<SortCriteria> getSortCriteriums() {
+	public List<SortCriteria> getSortCriteria() {
 		return sortCriteria;
 	}
 
 	/**
-	 * @param sortCriteria the sortCriteriums to set
+	 * @param sortCriteria the sortCriteria to set
 	 */
-	public void setSortCriteriums(List<SortCriteria> sortCriteria) {
+	public void setSortCriteria(List<SortCriteria> sortCriteria) {
 		this.sortCriteria = sortCriteria;
 	}
 }

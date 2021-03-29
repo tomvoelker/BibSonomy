@@ -54,6 +54,7 @@ import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.util.BasicUtils;
 import org.bibsonomy.util.Sets;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHits;
@@ -632,6 +633,14 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 	 */
 	public SearchHits search(final QueryBuilder query, final List<Pair<String, SortOrder>> order, int offset, int limit, Float minScore, final Set<String> fieldsToRetrieve) {
 		return this.client.search(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query, null, order, offset, limit, minScore, fieldsToRetrieve);
+	}
+
+	/**
+	 * get the index settings of the current active index
+	 * @return the index settings
+	 */
+	public Settings getIndexSettings() {
+		return this.client.getIndexSettings(this.getActiveLocalAlias());
 	}
 
 	/**

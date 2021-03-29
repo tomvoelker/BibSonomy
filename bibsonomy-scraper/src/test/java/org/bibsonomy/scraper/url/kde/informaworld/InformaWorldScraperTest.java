@@ -26,16 +26,25 @@
  */
 package org.bibsonomy.scraper.url.kde.informaworld;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #77 #78 #123 #135 for DBLPScraper
+ * Scraper URL tests #77 #78 #123 #135 for 
  * @author wbi
+ * 
+ * acquired by Taylor and Francis?
+ * 
  */
 @Category(RemoteTest.class)
+@Ignore
+@Deprecated
 public class InformaWorldScraperTest {
 	
 	/**
@@ -43,7 +52,7 @@ public class InformaWorldScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_77");
+		assertScraperResult("http://www.informaworld.com/smpp/content~content=a779504357~db=all~order=page", null, InformaWorldScraper.class, "InformaworldUnitURLTest1.bib");
 	}
 	
 	/**
@@ -51,7 +60,7 @@ public class InformaWorldScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_78");
+		assertScraperResult("http://www.informaworld.com/smpp/content~db=all~content=a779504357~tab=citation", null, InformaWorldScraper.class, "InformaworldUnitURLTest2.bib");
 	}
 	
 	/**
@@ -59,7 +68,7 @@ public class InformaWorldScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_123");
+		assertScraperResult("http://prod.informaworld.com/smpp/title~content=t748423783~db=all", null, InformaWorldScraper.class, "InformaworldUnitURLTest3.bib");
 	}
 	
 	/**
@@ -67,7 +76,7 @@ public class InformaWorldScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		UnitTestRunner.runSingleTest("url_135");
+		assertScraperResult("http://www.informaworld.com/smpp/content~content=a905990187~db=all~jumptype=rss", null, InformaWorldScraper.class, "InformaworldUnitURLTest4.bib");
 	}
 	
 }

@@ -34,9 +34,7 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -56,8 +54,7 @@ public class AmsScraperTest {
 		final String resultFile = "AmsScraperUnitURLTest.bib";
 		assertScraperResult(url, null, AmsScraper.class, resultFile);
 	}
-	
-	
+
 	@Test
 	public void testCitedby() throws Exception {
 		final ScrapingContext sc = new ScrapingContext(new URL("http://journals.ametsoc.org/doi/abs/10.1175/2008BAMS2375.1"));

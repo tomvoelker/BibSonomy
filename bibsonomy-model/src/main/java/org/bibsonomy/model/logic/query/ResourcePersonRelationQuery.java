@@ -2,6 +2,7 @@ package org.bibsonomy.model.logic.query;
 
 import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.querybuilder.BasicPaginatedQueryBuilder;
 
 /**
  * A class for specifying queries that yield resource - person relations.
@@ -13,7 +14,7 @@ public class ResourcePersonRelationQuery extends BasicPaginatedQuery {
 	/**
 	 * A builder for constructing queries.
 	 */
-	public static class ResourcePersonRelationQueryBuilder {
+	public static class ResourcePersonRelationQueryBuilder extends BasicPaginatedQueryBuilder<ResourcePersonRelationQueryBuilder> {
 
 		private boolean withPersons;
 		private boolean withPosts;
@@ -91,6 +92,11 @@ public class ResourcePersonRelationQuery extends BasicPaginatedQuery {
 			this.end = end;
 			return this;
 		}
+
+		@Override
+		protected ResourcePersonRelationQueryBuilder builder() {
+			return this;
+		}
 	}
 
 	private boolean withPersons;
@@ -106,17 +112,13 @@ public class ResourcePersonRelationQuery extends BasicPaginatedQuery {
 
 	private boolean groupByInterhash;
 
-	public ResourcePersonRelationQuery(int start,
-																		 int end,
-																		 boolean withPersons,
-																		 boolean withPosts,
-																		 boolean withPersonsOfPosts,
-																		 PersonResourceRelationType relationType,
-																		 String interhash,
-																		 Integer authorIndex,
-																		 String personId,
-																		 PersonResourceRelationOrder order,
-																		 boolean groupByInterhash) {
+	public ResourcePersonRelationQuery(int start, int end, boolean withPersons, boolean withPosts, boolean withPersonsOfPosts,
+									 PersonResourceRelationType relationType,
+									 String interhash,
+									 Integer authorIndex,
+									 String personId,
+									 PersonResourceRelationOrder order,
+									 boolean groupByInterhash) {
 
 		super(start, end);
 		this.withPersons = withPersons;

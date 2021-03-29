@@ -51,8 +51,8 @@
 		<value>userRelation</value>
 		<value>sortPage</value>
 		<value>sortPageOrder</value>
+		<value>indexUse</value><!-- for checking, if using a search index -->
 		<value>duplicates</value>
-		<value>esIndex</value><!-- for checking, if to use elasticsearch index -->
 		<value>restrictToTags</value>
 		<value>callback</value><!-- for JSONP -->
 		<value>format</value><!-- html, bib, publ, etc. -->

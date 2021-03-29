@@ -28,7 +28,6 @@ package org.bibsonomy.scraper.url.kde.apa;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
 import org.junit.Test;
@@ -38,8 +37,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class APAScraperTest {
-	
-	
+
 	/**
 	 * starts URL test with id url_244
 	 */
@@ -49,7 +47,7 @@ public class APAScraperTest {
 		final String resultFile = "APAScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, APAScraper.class, resultFile);
 	}
-	
+
 	/**
 	 * starts URL test with id url_245
 	 */

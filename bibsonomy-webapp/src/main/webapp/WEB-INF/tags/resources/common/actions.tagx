@@ -78,7 +78,7 @@
 		<div class="btn-group">
 			<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
 			<ul class="dropdown-menu">
-				<rc:sortOrder requPathAndQuery="${requPathAndQuery}" sortPage="${sortPage}" sortPageOrder="${sortPageOrder}" isBibtex="${isPublication}" additionalSorting="${additionalSorting}"/>
+				<rc:sorting requPathAndQuery="${requPathAndQuery}" sortPage="${sortPage}" sortPageOrder="${sortPageOrder}" isBibtex="${isPublication}" additionalSorting="${additionalSorting}"/>
 				<li class="divider"><!-- keep me --></li>
 				<c:if test="${isPublication}">
 					<fmt:message var="helpLink" key="post.meta.helplink"/>

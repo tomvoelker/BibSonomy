@@ -28,6 +28,7 @@ package org.bibsonomy.search.es;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -60,12 +61,13 @@ public final class ESConstants {
 	/** the registered lowercase normalizer */
 	public static final String LOWERCASE_NORMALIZER = "lowercase_normalizer";
 
+	/** normalizer for sorting fields */
+	public static final String SORT_NORMALIZER = "sort_normalizer";
+
 	/** the standard analyser to be used for text */
 	public static final String STANDARD_TEXT_ANALYSER = "text_analyzer";
 
-	/**
-	 * the standard analyzer that must be used for fields indexed with an edge ngram filter
-	 */
+	/** the standard analyzer that must be used for fields indexed with an edge ngram filter */
 	public static final String STANDARD_ANALYSER = "standard";
 
 	static {
@@ -78,6 +80,11 @@ public final class ESConstants {
 									.field("type", "custom")
 									.array("char_filter")
 									.array("filter", "lowercase")
+								.endObject()
+								.startObject(SORT_NORMALIZER)
+									.field("type", "custom")
+									.field("char_filter", Collections.emptyList())
+									.field("filter", Arrays.asList("lowercase", "asciifolding"))
 								.endObject()
 							.endObject()
 							.startObject("char_filter")

@@ -45,6 +45,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.model.Group;
@@ -62,8 +63,8 @@ import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.index.converter.post.ResourceConverter;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
-import org.bibsonomy.search.es.util.ESSortUtils;
 import org.bibsonomy.util.Sets;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -92,13 +93,11 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 	 * (friends, groups members)
 	 */
 	protected SearchInfoLogic infoLogic;
-	
+
 	private ElasticsearchManager<R, ?> manager;
 
 	@Override
-	public ResultList<Post<R>> getPosts(final User loggedinUser, PostSearchQuery<?> postQuery) {
-		final int offset = BasicQueryUtils.calcOffset(postQuery);
-		final int limit = BasicQueryUtils.calcLimit(postQuery);
+	public ResultList<Post<R>> getPosts(final User loggedinUser, final PostSearchQuery<?> postQuery) {
 		return ElasticsearchIndexSearchUtils.callSearch(() -> {
 			final ResultList<Post<R>> posts = new ResultList<>();
 			final Set<String> allowedUsers = this.getUsersThatShareDocuments(loggedinUser.getName());
@@ -107,7 +106,28 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 				return posts;
 			}
 
-			final List<Pair<String, SortOrder>> sortParameters = this.buildResourceSpecificSortParameters(postQuery.getSortCriteriums());
+			final List<Pair<String, SortOrder>> sortParameters = this.buildResourceSpecificSortParameters(postQuery.getSortCriteria());
+
+			/*
+			 * FIXME: copy paste code, refactor to use the AbstractElasticsearchSearch class
+			 * there is a limit in the es search how many entries we can skip (max result window)
+			 * here we check the limit set for the index
+			 * we do the following:
+			 * 1. we set this information e.g. for the view
+			 * 2. if the start already exceeds the limit we return an empty result list
+			 * 3. if the end only exceeds the limit we set it to the max result window
+			 */
+			final Settings indexSettings = this.manager.getIndexSettings();
+			final Integer maxResultWindow = indexSettings.getAsInt("index.max_result_window", 10000);
+			posts.setPaginationLimit(maxResultWindow);
+
+			if (postQuery.getStart() > maxResultWindow) {
+				return posts;
+			}
+
+			final int offset = BasicQueryUtils.calcOffset(postQuery);
+			final int limit = BasicQueryUtils.calcLimit(postQuery, maxResultWindow);
+
 			final SearchHits hits = this.manager.search(queryBuilder, sortParameters, offset, limit, null, null);
 
 			if (hits != null) {
@@ -259,6 +279,22 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 			}
 		}
 
+		// hash filter
+		final String hash = postQuery.getHash();
+		if (present(hash)) {
+			final String realHash;
+			final String hashField;
+			if (hash.length() == 33) {
+				realHash = hash.substring(1);
+				hashField = HashID.getSimHash(Integer.parseInt(hash.substring(0, 1))) == HashID.INTER_HASH ? Fields.Resource.INTERHASH : Fields.Resource.INTRAHASH;
+			} else {
+				realHash = hash;
+				hashField = Fields.Resource.INTRAHASH;
+			}
+			final TermQueryBuilder hashFilter = QueryBuilders.termQuery(hashField, realHash);
+			mainFilterBuilder.must(hashFilter);
+		}
+
 		// restricting access to posts visible to the user
 		final BoolQueryBuilder groupFilter = buildGroupFilter(allowedGroups);
 		if (present(loggedinUserName)) {
@@ -382,11 +418,13 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 	}
 
 	private static QueryStringQueryBuilder buildStringQueryForSearchTerms(String searchTerms, final Set<String> fields) {
-		final QueryStringQueryBuilder builder = QueryBuilders.queryStringQuery(searchTerms).tieBreaker(1f);
+		final QueryStringQueryBuilder builder = QueryBuilders.queryStringQuery(searchTerms);
 		// set the fields where the string query should search for the string
 		fields.forEach(builder::field);
 		// set the type to phrase prefix match
-		builder.analyzeWildcard(true);
+		builder.analyzeWildcard(true)
+				.minimumShouldMatch("75%")
+				.tieBreaker(1f);;
 		return builder;
 	}
 

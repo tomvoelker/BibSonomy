@@ -51,6 +51,7 @@ import org.bibsonomy.model.EvaluatorUser;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.ajax.AdminAjaxCommand;
@@ -237,7 +238,14 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 				filters = Sets.asSet(FilterEntity.ADMIN_SPAM_POSTS);
 			}
 
-			final List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, QueryScope.LOCAL, filters, SortUtils.singletonSortCriteria(SortKey.DATE), null, null, 0, 5);
+			final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+			postQueryBuilder.setGrouping(GroupingEntity.USER)
+					.setGroupingName(command.getUserName())
+					.setScope(QueryScope.LOCAL)
+					.setSortCriteria(SortUtils.singletonSortCriteria(SortKey.DATE))
+					.entriesStartingAt(5, 0);
+
+			final List<Post<Bookmark>> bookmarks = this.logic.getPosts(postQueryBuilder.createPostQuery(Bookmark.class));
 			command.setBookmarks(bookmarks);
 
 			final int totalBookmarks = this.logic.getPostStatistics(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, filters, null, null, null, 0, 100).getCount();

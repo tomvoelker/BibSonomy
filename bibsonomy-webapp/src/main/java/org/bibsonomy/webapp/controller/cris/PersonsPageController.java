@@ -37,14 +37,17 @@ public class PersonsPageController implements MinimalisticController<PersonsPage
 	@Override
 	public View workOn(final PersonsPageCommand command) {
 		final boolean isUserLoggedin = command.getContext().isUserLoggedIn();
+
 		final ListCommand<Person> personListCommand = command.getPersons();
 		final String search = command.getSearch();
 		final PersonQuery query = new PersonQuery(search);
+		query.setUsePrefixMatch(true);
 		query.setPrefix(command.getPrefix());
 		final int personListStart = personListCommand.getStart();
 		query.setStart(personListStart);
 		query.setEnd(personListStart + personListCommand.getEntriesPerPage());
 		query.setOrder(present(search) ? null : PersonOrder.MAIN_NAME_LAST_NAME);
+		query.setUsePrefixMatch(true);
 		if (!isUserLoggedin || !command.isShowAllPersons()) {
 			query.setCollege(this.crisCollege);
 		}

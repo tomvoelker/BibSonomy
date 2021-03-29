@@ -44,6 +44,7 @@ public enum QueryScope {
 	SEARCHINDEX,
 
 	/**
+	 * FIXME: rename, used to indicate that the database system should be used
 	 * search all viewable posts on the local system
 	 */
 	LOCAL;

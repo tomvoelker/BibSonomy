@@ -63,13 +63,13 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	/** the specified sorting key */
 	private SortKey sortKey;
 
-	/** the specified list of sort criteriums */
+	/** the specified list of sort criteria */
 	private List<SortCriteria> sortCriteria = new LinkedList<>();
 
 	/**
-	 * Use the elasticsearch index for retrieving and sorting listed posts?
+	 * Use the search index for retrieving and sorting listed posts
 	 */
-	private boolean esIndex = true;
+	private boolean indexUse = true;
 
 	/** bean for related tags */
 	private RelatedTagCommand relatedTagCommand = new RelatedTagCommand();
@@ -179,18 +179,18 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	}
 
 	/**
-	 * @return esIndex
+	 * @return indexUse
 	 */
-	public boolean isEsIndex() {
-		return this.esIndex;
+	public boolean isIndexUse() {
+		return this.indexUse;
 	}
 
 	/**
-	 * Set wether to use elasticsearch index for retrieving and sorting posts.
-	 * @param 	esIndex		use elasticsearch index?
+	 * Set wether to use search index for retrieving and sorting posts.
+	 * @param 	indexUse		use search index?
 	 */
-	public void setEsIndex(boolean esIndex) {
-		this.esIndex = esIndex;
+	public void setIndexUse(boolean indexUse) {
+		this.indexUse = indexUse;
 	}
 
 	/**

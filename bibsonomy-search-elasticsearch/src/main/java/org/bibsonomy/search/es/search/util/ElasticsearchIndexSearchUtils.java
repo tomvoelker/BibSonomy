@@ -9,11 +9,16 @@ import org.bibsonomy.model.ResultList;
 import org.bibsonomy.search.InvalidSearchRequestException;
 import org.elasticsearch.ElasticsearchStatusException;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.sort.SortOrder;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
@@ -110,5 +115,57 @@ public class ElasticsearchIndexSearchUtils {
 		}
 
 		return SortOrder.DESC;
+	}
+
+	/**
+	 * builds a bool match prefix query
+	 * here we split the string into tokens and build a boolean query
+	 * where the first n-1 tokens will generate term queries and the last token a prefix query
+	 *
+	 * FIXME: replace this with a bool match prefix query in elasticsearch 7.X
+	 *
+	 * @param search the search terms
+	 * @param field the field term
+	 * @return the bool query builder
+	 */
+	public static BoolQueryBuilder buildBoolMatchPrefixQuery(final String search, final String field) {
+		final BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+		final List<String> tokens = Arrays.asList(search.split(" "));
+
+		final int lastTokenIndex = tokens.size() - 1;
+		for (final String term : tokens.subList(0, lastTokenIndex)) {
+			boolQueryBuilder.should(QueryBuilders.termQuery(field, term));
+		}
+
+		boolQueryBuilder.should(QueryBuilders.prefixQuery(field, tokens.get(lastTokenIndex)));
+		return boolQueryBuilder;
+	}
+
+	/**
+	 * FIXME: replace this with a mulit match bool prefix query in elasticsearch 7.X
+	 *
+	 * @param search the search terms
+	 * @param fields the fields to use
+	 * @return the bool mutli bool match prefix query
+	 */
+	public static QueryBuilder buildMultiBoolMatchPrefixQuery(final String search, final Set<String> fields) {
+		final BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+		final List<String> tokens = Arrays.asList(search.split(" "));
+
+		final int lastTokenIndex = tokens.size() - 1;
+		for (final String term : tokens.subList(0, lastTokenIndex)) {
+			final MultiMatchQueryBuilder queryBuilder = QueryBuilders.multiMatchQuery(term);
+			fields.forEach(queryBuilder::field);
+			boolQueryBuilder.should(queryBuilder);
+		}
+
+		final MultiMatchQueryBuilder queryBuilder = QueryBuilders.multiMatchQuery(tokens.get(lastTokenIndex));
+		fields.forEach(queryBuilder::field);
+		queryBuilder.type(MultiMatchQueryBuilder.Type.PHRASE_PREFIX);
+		boolQueryBuilder.should(queryBuilder);
+
+		// config the bool should match
+		boolQueryBuilder.minimumShouldMatch("75%");
+		return boolQueryBuilder;
 	}
 }

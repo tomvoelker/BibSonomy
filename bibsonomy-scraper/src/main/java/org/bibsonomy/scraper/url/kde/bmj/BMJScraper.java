@@ -82,12 +82,10 @@ public class BMJScraper extends GenericBibTeXURLScraper implements ReferencesScr
 	 */
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException {
-		String st_url = SITE_URL;
 		try{
-			Matcher m = BIBTEX_PATTERN.matcher(WebUtils.getContentAsString(url.toString()));
+			final Matcher m = BIBTEX_PATTERN.matcher(WebUtils.getContentAsString(url));
 			if (m.find()) {
-				st_url += m.group(1);
-				return st_url;
+				return SITE_URL + m.group(1);
 			}
 		} catch (IOException e) {
 			throw new ScrapingException(e);
@@ -102,7 +100,7 @@ public class BMJScraper extends GenericBibTeXURLScraper implements ReferencesScr
 	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
 		String references = null;
 		try {
-			final Matcher m = REFERENCES_PATTERN.matcher(WebUtils.getContentAsString(scrapingContext.getUrl().toString()));
+			final Matcher m = REFERENCES_PATTERN.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
 			if (m.find()) {
 				references = m.group(1);
 			}

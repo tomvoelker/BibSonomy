@@ -119,9 +119,9 @@ public class ProlaScraper extends GenericBibTeXURLScraper implements ReferencesS
 	public boolean scrapeCitedby(ScrapingContext sc) throws ScrapingException {
 		try {
 			final Matcher m = PATTERN_URL.matcher(WebUtils.getContentAsString(sc.getUrl()));
-			if(m.find()) {
+			if (m.find()) {
 				final Matcher m2 = PATTERN_CITEDBY.matcher(WebUtils.getContentAsString(m.group(1).replaceAll("pdf|abstract|article|export", "cited-by")));
-				if(m2.find()) {
+				if (m2.find()) {
 					sc.setCitedBy(m2.group(1));
 					return true;
 				}

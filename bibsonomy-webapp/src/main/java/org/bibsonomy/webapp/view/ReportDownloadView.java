@@ -4,8 +4,6 @@ import org.apache.commons.io.output.CountingOutputStream;
 import org.bibsonomy.common.exceptions.UnsupportedFormatException;
 import org.bibsonomy.export.ExcelExporter;
 import org.bibsonomy.export.Exporter;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;

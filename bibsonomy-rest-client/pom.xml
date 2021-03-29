@@ -51,6 +51,10 @@
 			<artifactId>bibsonomy-rest-common</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-model</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 		</dependency>

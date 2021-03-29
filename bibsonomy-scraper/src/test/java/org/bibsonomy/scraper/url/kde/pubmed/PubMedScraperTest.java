@@ -33,7 +33,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #27 #35 #91 for PubMedScraper
+ * Scraper URL tests for PubMedScraper
  * @author tst
  *
  */
@@ -41,7 +41,7 @@ import org.junit.experimental.categories.Category;
 public class PubMedScraperTest {
 	
 	/**
-	 * starts URL test with id url_27
+	 * starts URL test
 	 */
 	@Test
 	public void url1TestRun(){
@@ -51,7 +51,7 @@ public class PubMedScraperTest {
 	}
 	
 	/**
-	 * starts URL test with id url_35
+	 * starts URL test
 	 */
 	@Test
 	public void url2TestRun(){
@@ -61,7 +61,7 @@ public class PubMedScraperTest {
 	}
 
 	/**
-	 * starts URL test with id url_91
+	 * starts URL test
 	 */
 	@Test
 	public void url3TestRun(){
@@ -69,24 +69,26 @@ public class PubMedScraperTest {
 		final String resultFile = "PubMedScraperUnitURLTest3.bib";
 		assertScraperResult(url, null, PubMedScraper.class, resultFile);
 	}
-	
+
 	/**
-	 * starts URL test with id url_176
+	 * starts URL test
+	 *
+	 * domain does not exist anymore
 	 */
 	@Test
 	public void url4TestRun(){
-		final String url = "http://ukpmc.ac.uk/abstract/MED/19426458";
+		final String url = "https://europepmc.org/article/MED/19426458";
 		final String resultFile = "PubMedScraperUnitURLTest4.bib";
 		assertScraperResult(url, null, PubMedScraper.class, resultFile);
 	}
+	
 	/**
-	 * starts URL test with id url_246
+	 * starts URL test
 	 */
 	@Test
-	public void url5TestRun(){
-		final String url = "http://europepmc.org/abstract/MED/19426458";
+	public void url6TestRun(){
+		final String url = "https://www.ncbi.nlm.nih.gov/pubmed/29552975";
 		final String resultFile = "PubMedScraperUnitURLTest5.bib";
 		assertScraperResult(url, null, PubMedScraper.class, resultFile);
 	}
-
 }

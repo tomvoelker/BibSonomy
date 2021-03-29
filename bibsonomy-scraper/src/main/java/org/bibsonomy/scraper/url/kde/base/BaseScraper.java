@@ -28,10 +28,13 @@ package org.bibsonomy.scraper.url.kde.base;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -50,9 +53,13 @@ public class BaseScraper extends AbstractUrlScraper {
 	private static final String SITE_HOST = "base-search.net";
 	private static final String SITE_URL  = "https://www." + SITE_HOST + "/";
 	private static final String INFO = "This scraper extracts publication metadata from " + href(SITE_URL, SITE_NAME) + ".";
+	private static final List<NameValuePair> POSTDATA = new ArrayList<NameValuePair>(4);
+
+
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
 	static {
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), Pattern.compile("/Record/.*")));
+		POSTDATA.add(new BasicNameValuePair("style[]=", "BibTeX"));
 	}
 
 	@Override
@@ -69,7 +76,10 @@ public class BaseScraper extends AbstractUrlScraper {
 				queryUrl = url.toString() + "/Export";
 			}
 			// get data with post request
-			final String bibtex = WebUtils.getContentAsString(queryUrl, null, "style[]=BibTeX", null);
+			
+
+
+			final String bibtex = WebUtils.getContentAsString(queryUrl, null, POSTDATA, null);
 
 			sc.setBibtexResult(bibtex);
 			return true;

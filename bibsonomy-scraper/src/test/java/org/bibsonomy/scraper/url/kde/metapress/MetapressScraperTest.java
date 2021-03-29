@@ -26,8 +26,11 @@
  */
 package org.bibsonomy.scraper.url.kde.metapress;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -36,6 +39,7 @@ import org.junit.experimental.categories.Category;
  * @author tst
  *
  */
+@Deprecated
 @Category(RemoteTest.class)
 public class MetapressScraperTest {
 	
@@ -44,7 +48,9 @@ public class MetapressScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_111");
+		final String url = "http://www.metapress.com/content/718t4p3m1380140t/";
+		final String resultFile = "MetapressScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, MetapressScraper.class, resultFile);
 	}
 
 }

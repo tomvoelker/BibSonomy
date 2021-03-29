@@ -105,8 +105,7 @@ public class IWAPonlineScraper extends GenericBibTeXURLScraper {
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		try {
-			// using url gives a FileNotFoundException, url.toString() doesn't
-			final String content = WebUtils.getContentAsString(url.toString(), cookies);
+			final String content = WebUtils.getContentAsString(url, cookies);
 			final Matcher m = BIBTEX_PATTERN.matcher(content);
 			if (m.find()) {
 				return "http://" + url.getHost() + m.group(1);

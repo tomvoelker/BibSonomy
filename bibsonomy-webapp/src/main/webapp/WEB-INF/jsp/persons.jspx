@@ -9,9 +9,9 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<c:set var="bibsonomySystem" value="${properties['project.theme'] eq 'bibsonomy'}" />
+	<c:set var="crisSystem" value="${properties['system.cris'] eq 'true'}" />
 	<c:choose>
-		<c:when test="${bibsonomySystem}">
+		<c:when test="${not crisSystem}">
 			<fmt:message key="persons.intro.head.title" var="personIntroTitle">
 				<fmt:param value="${properties['project.name']}" />
 			</fmt:message>
@@ -24,7 +24,7 @@
 	<layout:paneLayout pageTitle="${personIntroTitle}" headerMessageKey="gettingStarted.headline" command="${command}" requPath="${requPath}" noSidebar="${true}" activeTab="persons">
 
 		<jsp:attribute name="heading">
-			<c:if test="${bibsonomySystem}">
+			<c:if test="${not crisSystem}">
 				<parts:search pathMessageKey="navi.persons" formAction="/search" formInputName="search"/>
 			</c:if>
 		</jsp:attribute>
@@ -42,7 +42,7 @@
 		
 		<jsp:attribute name="content">
 			<c:choose>
-				<c:when test="${bibsonomySystem}">
+				<c:when test="${not crisSystem}">
 					<persons:bmbfPersons title="${personIntroTitle}" command="${command}" />
 				</c:when>
 				<c:otherwise>

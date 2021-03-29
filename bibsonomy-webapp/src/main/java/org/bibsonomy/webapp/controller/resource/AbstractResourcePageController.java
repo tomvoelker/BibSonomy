@@ -41,11 +41,13 @@ import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListControllerWithTags;
@@ -280,7 +282,12 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			 */
 			final RequestWrapperContext context = command.getContext();
 			final User loggedinUser = context.getLoginUser();
-			final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, QueryScope.LOCAL, null, null, null, null, 0, this.maxQuerySize);
+			final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+			postQueryBuilder.setGrouping(GroupingEntity.ALL)
+					.setHash(firstResource.getInterHash())
+					.setScope(QueryScope.LOCAL)
+					.entriesStartingAt(this.maxQuerySize, 0);
+			final List<Post<R>> allPosts = this.logic.getPosts(postQueryBuilder.createPostQuery(this.getResourceClass()));
 			for (final Post<R> post : allPosts) {
 				final User user = post.getUser();
 				if (user.equals(loggedinUser)) {

@@ -358,18 +358,18 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	}
 
 	private static void buildSortingAttributesFromResource(Map<String, Object> jsonDocument, BibTex resource) {
-		jsonDocument.put(Fields.Sort.BOOKTITLE, BibTexUtils.cleanBibTex(resource.getBooktitle()).toLowerCase());
-		jsonDocument.put(Fields.Sort.JOURNAL, BibTexUtils.cleanBibTex(resource.getJournal()).toLowerCase());
-		jsonDocument.put(Fields.Sort.SERIES, BibTexUtils.cleanBibTex(resource.getSeries()).toLowerCase());
-		jsonDocument.put(Fields.Sort.PUBLISHER, BibTexUtils.cleanBibTex(resource.getPublisher()).toLowerCase());
-		jsonDocument.put(Fields.Sort.SCHOOL, BibTexUtils.cleanBibTex(resource.getSchool()).toLowerCase());
-		jsonDocument.put(Fields.Sort.INSTITUTION, BibTexUtils.cleanBibTex(resource.getInstitution()).toLowerCase());
-		jsonDocument.put(Fields.Sort.ORGANIZATION, BibTexUtils.cleanBibTex(resource.getOrganization()).toLowerCase());
+		jsonDocument.put(Fields.Sort.BOOKTITLE, BibTexUtils.cleanBibTex(resource.getBooktitle()));
+		jsonDocument.put(Fields.Sort.JOURNAL, BibTexUtils.cleanBibTex(resource.getJournal()));
+		jsonDocument.put(Fields.Sort.SERIES, BibTexUtils.cleanBibTex(resource.getSeries()));
+		jsonDocument.put(Fields.Sort.PUBLISHER, BibTexUtils.cleanBibTex(resource.getPublisher()));
+		jsonDocument.put(Fields.Sort.SCHOOL, BibTexUtils.cleanBibTex(resource.getSchool()));
+		jsonDocument.put(Fields.Sort.INSTITUTION, BibTexUtils.cleanBibTex(resource.getInstitution()));
+		jsonDocument.put(Fields.Sort.ORGANIZATION, BibTexUtils.cleanBibTex(resource.getOrganization()));
 		if (present(resource.getAuthor())) {
-			jsonDocument.put(Fields.Sort.AUTHOR, BibTexUtils.cleanBibTex(convertToPersonIndex(resource.getAuthor())).toLowerCase());
+			jsonDocument.put(Fields.Sort.AUTHOR, BibTexUtils.cleanBibTex(convertToPersonIndex(resource.getAuthor())));
 		}
 		if (present(resource.getEditor())) {
-			jsonDocument.put(Fields.Sort.EDITOR, BibTexUtils.cleanBibTex(convertToPersonIndex(resource.getEditor())).toLowerCase());
+			jsonDocument.put(Fields.Sort.EDITOR, BibTexUtils.cleanBibTex(convertToPersonIndex(resource.getEditor())));
 		}
 	}
 

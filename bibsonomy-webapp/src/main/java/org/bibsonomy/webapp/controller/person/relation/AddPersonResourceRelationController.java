@@ -12,6 +12,7 @@ import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.person.relation.PersonResourceRelationCommand;
@@ -45,7 +46,11 @@ public class AddPersonResourceRelationController implements MinimalisticControll
 		final String interhash = command.getInterhash();
 		final int index = command.getIndex();
 		PersonResourceRelationType type = command.getType();
-		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, interhash, null, null, null, null, null, null, 0, 100);
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.ALL)
+				.setHash(interhash)
+				.entriesStartingAt(100, 0);
+		final List<Post<BibTex>> posts = this.logic.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 
 		/*
 		 * check the ckey
