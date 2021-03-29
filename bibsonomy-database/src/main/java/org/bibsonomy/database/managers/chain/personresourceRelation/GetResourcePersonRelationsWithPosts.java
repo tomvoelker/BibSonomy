@@ -30,7 +30,6 @@ public class GetResourcePersonRelationsWithPosts extends ResourcePersonRelationC
 	protected List<ResourcePersonRelation> handle(QueryAdapter<ResourcePersonRelationQuery> adapter, DBSession session) {
 		final ResourcePersonRelationQuery query = adapter.getQuery();
 
-
 		final int offset = query.getStart();
 		final int limit = query.getEnd() - offset;
 		final List<ResourcePersonRelation> relations = this.getPersonDatabaseManager().getResourcePersonRelationsWithPosts(query.getPersonId(), limit, offset, session);

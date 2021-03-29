@@ -288,30 +288,29 @@
 								<per:thesis command="${command}" thesis="${command.advisedThesis}" isOwnThesis="${false}" />
 							</div>
 						</div>
-						<c:choose>
-							<!-- FIXME: remove dupliate publication view rendering -->
-							<c:when test="${personHasPublications}">
-							<c:choose>
-								<c:when test="${command.personPostsStyleSettings gt 0}">
-									<per:myownPostList command="${command}" posts="${command.myownPosts}" hideHeadline="${true}"/>
-									<div class="cust-loader"><span class="cust-spinner"><!-- KEEP MY --></span></div>
-								</c:when>
-								<c:otherwise>
-									<per:otherPubList command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}" onlyLinkAuthorsWithPersons="${not isLoggedIn}" hideHeadline="${true}"/>
-									<div class="cust-loader"><span class="cust-spinner"><!-- KEEP MY --></span></div>
-								</c:otherwise>
-							</c:choose>
-							</c:when>
-							<c:otherwise>
-								<c:if test="${isLoggedIn}">
-									<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
-								</c:if>
-							</c:otherwise>
-						</c:choose>
 					</c:otherwise>
 				</c:choose>
 			</div>
 
+			<c:set var="numberOfOtherPubs" value="${fn:length(command.otherPubs)}" />
+
+			<!-- Other publications -->
+			<c:if test="${command.personPostsStyleSettings eq 0 and numberOfOtherPubs gt 0 and not useCRISView}">
+				<per:otherPubList command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}"/>
+			</c:if>
+
+			<c:if test="${command.personPostsStyleSettings eq 1 and fn:length(command.myownPosts) gt 0 and not useCRISView}">
+				<c:set var="numberOfOtherPubs" value="${fn:length(command.myownPosts)}" />
+				<per:myownPostList command="${command}" posts="${command.myownPosts}"/>
+			</c:if>
+
+			<!-- Other publications of similar authors -->
+			<c:if test="${fn:length(command.similarAuthorPubs) gt 0 and not useCRISView}">
+				<per:otherPubList command="${command}" publications="${command.similarAuthorPubs}" useOtherPubs="${false}" />
+			</c:if>
+
+			<!-- claim info -->
+			<!-- TODO: disable if CRIS system and person is in the configured college? -->
 			<div>
 				<h3>
 					<fontawesome:icon icon="link" spaceAfter="5" />
@@ -337,22 +336,7 @@
 						<p><fmt:message key="person.sidebar.linkedUserDefaultInfoText" /></p>
 					</c:otherwise>
 				</c:choose>
-
 			</div>
-
-			<!-- Other publications -->
-			<c:if test="${command.personPostsStyleSettings gt 0 and fn:length(command.otherPubs) gt 0 and not useCRISView}">
-				<per:otherPubList command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}"/>
-			</c:if>
-
-			<c:if test="${command.personPostsStyleSettings le 0 and fn:length(command.myownPosts) gt 0 and not useCRISView}">
-				<per:myownPostList command="${command}" posts="${command.myownPosts}"/>
-			</c:if>
-
-			<!-- Other publications of similar authors -->
-			<c:if test="${fn:length(command.similarAuthorPubs) gt 0 and not useCRISView}">
-				<per:otherPubList command="${command}" publications="${command.similarAuthorPubs}" useOtherPubs="${false}" />
-			</c:if>
 
 			<!-- similar persons, that one could merge -->
 			<c:if test="${fn:length(command.personMatchList) gt 0 and isAdmin}">
@@ -370,17 +354,20 @@
 			</c:if>
 
 			<!-- ################################################################### -->
-			<!-- ############### Simple Pagination - Move in Future! ############### -->
+			<!-- ############### Simple Pagination - TODO: Move in Future! ######### -->
 			<!-- ################################################################### -->
+			<!-- XXX: js lib requires pagesize and page as parameter, but only personPostsPerPage and page are used by our
+			controller -->
 			<script type="text/javascript">
 				$(document).ready(function(){
 					$('#otherPublications').scrollPagination({
-						'url': "/ajax/person/publications?requestedPersonId=${command.person.personId}&amp;ckey=${ckey}", // The url you are fetching the results.
+						'url': "/ajax/person/publications?requestedPersonId=${command.person.personId}", // The url you are fetching the results.
 						'data': {
 							// These are the variables you can pass to the request
-							'page': 1, // Which page at the firsttime
-							'size': 1000, // Number of pages TODO FIXME: set acutal number of max entries!
+							'page': 1, // Which page at the first time
+							'size': "${numberOfOtherPubs}", // Number of pages FIXME: controller should get the actual number after fixing the controller
 							'pagesize': "${command.personPostsPerPage}",
+							'personPostsPerPage': "${command.personPostsPerPage}"
 						},
 						'scroller': $(window), // Who gonna scroll? default is the full window
 						'autoload': true, // Change this to false if you want to load manually, default true.
@@ -390,11 +377,7 @@
 						'loadingNomoreText': 'No more.', // No more of loading prompt.
 						'manuallyText': 'click to loading more.', // Click of loading prompt.
 						'before': function(){
-							// Before load function, you can display a preloader div
-							// example:
-							//$(this.loading).fadeIn();
 							$(".cust-loader").fadeIn();
-							//$(".cust-loader").fadeOut();
 						},
 						'after': function(elementsLoaded){
 							// After loading content, you can use this function to animate your new elements

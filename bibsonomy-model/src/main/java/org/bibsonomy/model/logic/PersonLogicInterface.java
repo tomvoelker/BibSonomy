@@ -33,7 +33,6 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
-import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
@@ -55,7 +54,7 @@ public interface PersonLogicInterface {
 	 * @param id
 	 * @return
 	 */
-	public Person getPersonById(final PersonIdType idType, final String id);
+	Person getPersonById(final PersonIdType idType, final String id);
 
 	/**
 	 * gets the person by any additional key and value

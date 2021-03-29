@@ -27,39 +27,26 @@
 package org.bibsonomy.webapp.controller.ajax;
 
 
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.model.BibTex;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.model.Person;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonIdType;
-import org.bibsonomy.model.enums.PersonResourceRelationOrder;
-import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
-import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
-import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
+import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.ajax.AjaxPersonPublicationCommand;
 import org.bibsonomy.webapp.controller.PersonPageController;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * TODO: document controller
  *
- * FIXME: remove copy paste code
- *
  * œauthor mho
- *
  */
 public class PersonPublicationAjaxController extends AjaxController implements MinimalisticController<AjaxPersonPublicationCommand> {
+
+	private LogicInterface adminLogic;
 
 	@Override
 	public AjaxPersonPublicationCommand instantiateCommand() {
@@ -68,109 +55,38 @@ public class PersonPublicationAjaxController extends AjaxController implements M
 
 	@Override
 	public View workOn(final AjaxPersonPublicationCommand command) {
-		final RequestWrapperContext context = command.getContext();
-
-		/*
-		 * check ckey
-		 */
-		//if (!command.getContext().isValidCkey()) {
-			//command.setResponseString(getXmlError("error.field.valid.ckey", null, command.getFileID(), null, locale));
-			// TODO ERROR MESSAGE
-		//	command.setResponseString("ERROR");
-		//	return Views.AJAX_ERRORS;
-		//}
-
 		final String requestedPersonId = command.getRequestedPersonId();
-		/*
-		 * get the person; if person with the requested id was merged with another person, this method
-		 * throws a ObjectMovedException and the wrapper will render the redirect
-		 */
-		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, requestedPersonId);
-		if (!present(person) || !present(command.getPage())) {
+
+		final Person person = this.getPersonById(requestedPersonId);
+		if (!present(person)) {
 			return Views.AJAX_ERRORS;
 		}
 
-		command.setPersonPostsStyleSettings(0);
-		int postsPerPage = 20;
-
-		final User authenticatedUser = this.logic.getAuthenticatedUser();
-
-		if (authenticatedUser != null && authenticatedUser.getSettings().getListItemcount() > 0) {
-			postsPerPage = authenticatedUser.getSettings().getListItemcount();
-		}
-
-		int start = command.getPage() * postsPerPage;
-		int end = start + postsPerPage;
-
-		// Get the linked user's person posts style settings
-		String linkedUser = person.getUser();
-		if (present(linkedUser)) {
-			User user = this.logic.getUserDetails(linkedUser);
-			command.setPersonPostsStyleSettings(user.getSettings().getPersonPostsStyle());
-
-			// Get 'myown' posts of the linked user
-			PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
-					.start(start)
-					.end(end)
-					.setTags(new ArrayList<>(Collections.singletonList("myown")))
-					.setGrouping(GroupingEntity.USER)
-					.setGroupingName(linkedUser);
-			final List<Post<BibTex>> myownPosts = this.logic.getPosts(myOwnqueryBuilder.createPostQuery(BibTex.class));
-
-
-			command.setMyownPosts(myownPosts);
-		}
-
-		// TODO: this needs to be removed/refactored as soon as the ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder accepts start/end
-		ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
-				.byPersonId(person.getPersonId())
-				.withPosts(true)
-				.withPersonsOfPosts(true)
-				.groupByInterhash(true)
-				.orderBy(PersonResourceRelationOrder.PublicationYear)
-				.fromTo(start, end);
-		ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder builder = new ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder();
-
-		builder.setAuthorIndex(queryBuilder.getAuthorIndex())
-				.setEnd(queryBuilder.getEnd())
-				.setGroupByInterhash(queryBuilder.isGroupByInterhash())
-				.setInterhash(queryBuilder.getInterhash())
-				.setOrder(queryBuilder.getOrder())
-				.setPersonId(queryBuilder.getPersonId())
-				.setRelationType(queryBuilder.getRelationType())
-				.setStart(queryBuilder.getStart())
-				.setWithPersons(queryBuilder.isWithPersons())
-				.setWithPersonsOfPosts(queryBuilder.isWithPersonsOfPosts())
-				.setWithPosts(queryBuilder.isWithPosts());
-
-		ResourcePersonRelationQuery query = builder.build();
-
-
-		// TODO: maybe this should be done in the view?
-		final List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(query);
-		final List<ResourcePersonRelation> otherAuthorRelations = new ArrayList<>();
-
-		for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
-			final Post<? extends BibTex> post = resourcePersonRelation.getPost();
-			final BibTex publication = post.getResource();
-			final boolean isThesis = publication.getEntrytype().toLowerCase().endsWith("thesis");
-			final boolean isAuthorEditorRelation = PersonPageController.PUBLICATION_RELATED_RELATION_TYPES.contains(resourcePersonRelation.getRelationType());
-
-			if (isAuthorEditorRelation) {
-				if (!isThesis) {
-					otherAuthorRelations.add(resourcePersonRelation);
-				}
-			}
-
-			// we explicitly do not want ratings on the person pages because this might cause users of the genealogy feature to hesitate putting in their dissertations
-			publication.setRating(null);
-			publication.setNumberOfRatings(null);
-		}
-
-
-		command.setOtherPubs(otherAuthorRelations);
+		final int postsPerPage = command.getPersonPostsPerPage();
+		final int start = postsPerPage * command.getPage();
+		PersonPageController.fillCommandWithPersonResourceRelations(this.adminLogic, this.logic, command, person, start, postsPerPage);
 
 		return Views.AJAX_PERSON_PUBLICATIONS;
 	}
 
+	private Person getPersonById(final String requestedPersonId) {
+		try {
+			/*
+			 * get the person; if person with the requested id was merged with another person, this method
+			 * throws a ObjectMovedException and the wrapper would render the redirect, that we do not want
+			 */
+			return this.logic.getPersonById(PersonIdType.PERSON_ID, requestedPersonId);
+
+		} catch (final ObjectMovedException e) {
+			final String newPersonId = e.getNewId();
+			return this.logic.getPersonById(PersonIdType.PERSON_ID, newPersonId);
+		}
+	}
+
+	/**
+	 * @param adminLogic the adminLogic to set
+	 */
+	public void setAdminLogic(LogicInterface adminLogic) {
+		this.adminLogic = adminLogic;
+	}
 }
