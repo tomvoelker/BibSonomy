@@ -153,6 +153,7 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 		final String name = QueryParser.escape(BibTexUtils.cleanBibTex(requestedName.toString()));
 		final PersonQuery personQuery = new PersonQuery(name);
 		personQuery.setEnd(5);
+		personQuery.setPhraseMatch(true);
 		final List<Person> persons = this.logic.getPersons(personQuery);
 		command.setPersonSuggestions(persons);
 
