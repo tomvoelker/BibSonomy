@@ -9,6 +9,7 @@ import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
@@ -19,13 +20,17 @@ import org.bibsonomy.util.ValidationUtils;
 public class GetResourceHistory<R extends Resource> extends QueryBasedResourceChainElement<R> {
 
 	@Override
-	protected List<Post<R>> handle(QueryAdapter<PostQuery<R>> param, DBSession session) {
+	protected List<Post<R>> handle(final QueryAdapter<PostQuery<R>> param, final DBSession session) {
 		final PostQuery<R> query = param.getQuery();
-		return this.databaseManager.getPostsWithHistory(query.getHash(), query.getGroupingName(), query.getEnd(), query.getStart(), session);
+
+		final int limit = BasicQueryUtils.calcLimit(query);
+		final int offset = BasicQueryUtils.calcOffset(query);
+
+		return this.databaseManager.getPostsWithHistory(query.getHash(), query.getGroupingName(), limit, offset, session);
 	}
 
 	@Override
-	protected boolean canHandle(QueryAdapter<PostQuery<R>> param) {
+	protected boolean canHandle(final QueryAdapter<PostQuery<R>> param) {
 		final PostQuery<R> query = param.getQuery();
 		return ValidationUtils.safeContains(query.getFilters(), FilterEntity.HISTORY);
 	}

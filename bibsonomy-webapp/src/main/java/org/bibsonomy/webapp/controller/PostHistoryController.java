@@ -30,18 +30,22 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.GoldStandardBookmark;
-import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
+ * controller for history page of posts
+ *
+ * responsible for the flowing urls
+ *
+ * - /history/RESOURCE_CLASS/HASH/USER
+ * - /history/RESOURCE_CLASS/HASH
+ *
  * @author pba
  * @author Nasim Nabavi
  * @param <R>
@@ -50,7 +54,7 @@ public class PostHistoryController<R extends Resource> extends SingleResourceLis
 
 	@Override
 	public ResourcePageCommand<R> instantiateCommand() {
-		return new ResourcePageCommand<R>();
+		return new ResourcePageCommand<>();
 	}
 
 	@Override
@@ -64,21 +68,14 @@ public class PostHistoryController<R extends Resource> extends SingleResourceLis
 		 */
 		final String longHash = command.getRequestedHash();
 		final String requUser = command.getRequestedUser();
-		final String requestedType = command.getRequestedType();
+		final Class<R> resourceClass = command.getResourceClass();
 		final GroupingEntity groupingEntity = present(requUser) ? GroupingEntity.USER : GroupingEntity.ALL;
 
-		Class<R> resourceClass;
-		if (present(requUser)) {
-			// case community post
-			resourceClass = (Class<R>) (URLGenerator.BOOKMARK_PREFIX.equals(requestedType) ? Bookmark.class : BibTex.class);
-		} else {
-			resourceClass = (Class<R>) (URLGenerator.BOOKMARK_PREFIX.equals(requestedType) ? GoldStandardBookmark.class : GoldStandardPublication.class);
+		final ListCommand<Post<R>> resourceCommand = command.getListCommand(resourceClass);
+		this.setList(command, resourceClass, groupingEntity, requUser, null, longHash, null, FilterEntity.HISTORY, null, command.getStartDate(), command.getEndDate(), resourceCommand.getEntriesPerPage());
 
-		}
-
-		this.setList(command, resourceClass, groupingEntity, requUser, null, longHash, null, FilterEntity.HISTORY, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceClass).getEntriesPerPage());
 		this.postProcessAndSortList(command, resourceClass);
-		if (!present(command.getListCommand(resourceClass).getList())) {
+		if (!present(resourceCommand.getList())) {
 			return Views.ERROR;
 		}
 
@@ -92,5 +89,4 @@ public class PostHistoryController<R extends Resource> extends SingleResourceLis
 		// export - return the appropriate view
 		return Views.getViewByFormat(format);
 	}
-
 }

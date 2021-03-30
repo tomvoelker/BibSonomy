@@ -476,7 +476,7 @@
 						<property name="controllerBeanName" value="postHistoryController" />
 						<property name="allowedFields">
 							<list>
-								<value>requestedType</value>
+								<value>resourceClass</value>
 								<value>requestedHash</value>
 								<value>requestedUser</value>
 							</list>

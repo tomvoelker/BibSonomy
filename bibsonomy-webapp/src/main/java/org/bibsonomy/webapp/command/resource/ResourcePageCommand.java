@@ -35,31 +35,36 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.TagResourceViewCommand;
 
 /**
+ * Command for a page that handles a single resource
+ *
  * @author dzo
+ *
  * @param <R> the resource
  */
 public class ResourcePageCommand<R extends Resource> extends TagResourceViewCommand {
 	private String requestedHash;
 
 	private Map<String, List<String>> copyUsersMap;
-	
+
+	/** sets the post of the loggedin user */
 	private Post<R> postOfLoggedInUser;
-	
+
+	/** the discussion items of the reosurce */
 	private List<DiscussionItem> discussionItems;
 
 	private String postOwner;
 
+	@Deprecated // FIXME: currently unused
 	private String intraHash;
 
 	private Class<R> resourceClass;
-
-	private String requestedType;
 	
 	private String requestedTitle;
 
 	/**
 	 * @return the intraHash of a post
 	 */
+	@Deprecated
 	public String getIntraHash() {
 		return this.intraHash;
 	}
@@ -69,6 +74,7 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	 * 
 	 * @param intraHash
 	 */
+	@Deprecated
 	public void setIntraHash(final String intraHash) {
 		this.intraHash = intraHash;
 	}
@@ -157,20 +163,6 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	 */
 	public void setResourceClass(final Class<R> resourceClass) {
 		this.resourceClass = resourceClass;
-	}
-
-	/**
-	 * @return the requestedType
-	 */
-	public String getRequestedType() {
-		return this.requestedType;
-	}
-
-	/**
-	 * @param requestedType the requestedType to set
-	 */
-	public void setRequestedType(String requestedType) {
-		this.requestedType = requestedType;
 	}
 
 	/**
