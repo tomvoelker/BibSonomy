@@ -21,7 +21,7 @@ public class GetResourceHistory<R extends Resource> extends QueryBasedResourceCh
 	@Override
 	protected List<Post<R>> handle(QueryAdapter<PostQuery<R>> param, DBSession session) {
 		final PostQuery<R> query = param.getQuery();
-		return this.databaseManager.getPostsWithHistory(query.getHash(), query.getGroupingName(), query.getStart(), query.getEnd(), session);
+		return this.databaseManager.getPostsWithHistory(query.getHash(), query.getGroupingName(), query.getEnd(), query.getStart(), session);
 	}
 
 	@Override
