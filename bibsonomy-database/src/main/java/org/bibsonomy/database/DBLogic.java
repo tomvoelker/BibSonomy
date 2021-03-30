@@ -140,6 +140,7 @@ import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
@@ -3519,20 +3520,6 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/**
-	 * @param byInterHash
-	 * @param resourcePersonRelationsWithPosts
-	 */
-	private static void addToMapIfNotPresent(final Map<String, ResourcePersonRelation> byInterHash, final List<ResourcePersonRelation> resourcePersonRelationsWithPosts) {
-		for (final ResourcePersonRelation rpr : resourcePersonRelationsWithPosts) {
-			final String interhash = rpr.getPost().getResource().getInterHash();
-			if (byInterHash.containsKey(interhash)) {
-				continue;
-			}
-			byInterHash.put(interhash, rpr);
-		}
-	}
-
 	@Override
 	public void createPersonName(final PersonName personName) {
 		this.ensureLoggedInAndNoSpammer();
@@ -3550,10 +3537,45 @@ public class DBLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query) {
+	public List<ResourcePersonRelation> getResourceRelations(final ResourcePersonRelationQuery query) {
 		try (final DBSession session = this.openSession()) {
-			return this.personDBManager.queryForResourcePersonRelations(new QueryAdapter<>(query, this.loginUser), session);
+			final List<ResourcePersonRelation> personPublicationRelations = this.personDBManager.queryForResourcePersonRelations(new QueryAdapter<>(query, this.loginUser), session);
+			return this.postProcess(personPublicationRelations, query);
 		}
+	}
+
+	@Deprecated // FIXME solve this with a query or the index
+	private List<ResourcePersonRelation> postProcess(final List<ResourcePersonRelation> rVal, final ResourcePersonRelationQuery query) {
+		List<ResourcePersonRelation> relations = rVal;
+		if (query.isGroupByInterhash()) {
+			final Map<String, ResourcePersonRelation> byInterHash = new HashMap<>();
+			for (final ResourcePersonRelation rpr : relations) {
+				final String interhash = rpr.getPost().getResource().getInterHash();
+				if (byInterHash.containsKey(interhash)) {
+					continue;
+				}
+				byInterHash.put(interhash, rpr);
+			}
+			relations = new LinkedList<>(byInterHash.values());
+		}
+		final PersonResourceRelationOrder order = query.getOrder();
+		if (order == PersonResourceRelationOrder.PublicationYear) {
+			relations.sort((o1, o2) -> {
+				try {
+					final int year1 = Integer.parseInt(o1.getPost().getResource().getYear().trim());
+					final int year2 = Integer.parseInt(o2.getPost().getResource().getYear().trim());
+					if (year1 != year2) {
+						return year2 - year1;
+					}
+				} catch (final Exception e) {
+					log.warn(e);
+				}
+				return System.identityHashCode(o1) - System.identityHashCode(o2);
+			});
+		} else if (order != null) {
+			throw new UnsupportedOperationException();
+		}
+		return relations;
 	}
 
 	@Deprecated

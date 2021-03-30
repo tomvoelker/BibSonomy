@@ -5,6 +5,7 @@ import org.bibsonomy.database.managers.PersonDatabaseManager;
 import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
+import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 
 import java.util.List;
@@ -30,8 +31,8 @@ public class GetResourcePersonRelationsWithPosts extends ResourcePersonRelationC
 	protected List<ResourcePersonRelation> handle(QueryAdapter<ResourcePersonRelationQuery> adapter, DBSession session) {
 		final ResourcePersonRelationQuery query = adapter.getQuery();
 
-		final int offset = query.getStart();
-		final int limit = query.getEnd() - offset;
+		final int offset = BasicQueryUtils.calcOffset(query);
+		final int limit = BasicQueryUtils.calcLimit(query);
 		final List<ResourcePersonRelation> relations = this.getPersonDatabaseManager().getResourcePersonRelationsWithPosts(query.getPersonId(), limit, offset, session);
 
 		//FIXME use a join to retrieve the necessary information
@@ -53,7 +54,7 @@ public class GetResourcePersonRelationsWithPosts extends ResourcePersonRelationC
 	}
 
 	@Override
-	protected boolean canHandle(QueryAdapter<ResourcePersonRelationQuery> adapter) {
+	protected boolean canHandle(final QueryAdapter<ResourcePersonRelationQuery> adapter) {
 		final ResourcePersonRelationQuery query = adapter.getQuery();
 		return present(query.getPersonId()) &&
 						!query.isWithPersons() &&
