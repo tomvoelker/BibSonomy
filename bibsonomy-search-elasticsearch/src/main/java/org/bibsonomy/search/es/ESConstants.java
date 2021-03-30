@@ -67,8 +67,37 @@ public final class ESConstants {
 	/** the standard analyser to be used for text */
 	public static final String STANDARD_TEXT_ANALYSER = "text_analyzer";
 
+	/** the standard ngram analyser to be used for text */
+	public static final String STANDARD_TEXT_NGRAM_ANALYSER = "text_ngram_analyzer";
+
 	/** the standard analyzer that must be used for fields indexed with an edge ngram filter */
 	public static final String STANDARD_ANALYSER = "standard";
+
+	private static final String NGRAM_TOKENIZER = "ngram_tokenizer";
+
+	/** the edge ngram field of a field */
+	public static final String NGRAM_SUFFIX = "ngram";
+
+	/** the raw version of a field */
+	public static final String RAW_SUFFIX = "raw";
+
+	/**
+	 * returns the standard ngram field for the parent field
+	 * @param fieldName
+	 * @return the field name for the ngram subfield
+	 */
+	public static final String getNgramField(final String fieldName) {
+		return fieldName + "." + NGRAM_SUFFIX;
+	}
+
+	/**
+	 * returns the row field of the parent field (e.g. useful for sorting)
+	 * @param fieldName
+	 * @return the field name for the raw subfield
+	 */
+	public static final String getRawField(final String fieldName) {
+		return fieldName + "." + RAW_SUFFIX;
+	}
 
 	static {
 		try {
@@ -109,11 +138,24 @@ public final class ESConstants {
 									.field("preserve_original", true)
 								.endObject()
 							.endObject()
+							.startObject("tokenizer")
+								.startObject(NGRAM_TOKENIZER)
+									.field("type", "edge_ngram")
+									.field("min_gram", 1)
+									.field("max_gram", 5)
+								.endObject()
+							.endObject()
 							.startObject("analyzer")
 								.startObject(STANDARD_TEXT_ANALYSER)
 									.field("type", "custom")
 									.field("char_filter", Arrays.asList(BIBTEX_MAPPING, BRACKETS_CHAR_FILTER_NAME, CURLY_BRACKETS_CHAR_FILTER_NAME))
 									.field("tokenizer", STANDARD_ANALYSER)
+									.field("filter", Arrays.asList(ASCII_FOLDING_PRESERVE_TOKEN_FILTER_NAME, "lowercase"))
+								.endObject()
+								.startObject(STANDARD_TEXT_NGRAM_ANALYSER)
+									.field("type", "custom")
+									.field("char_filter", Arrays.asList(BIBTEX_MAPPING, BRACKETS_CHAR_FILTER_NAME, CURLY_BRACKETS_CHAR_FILTER_NAME))
+									.field("tokenizer", NGRAM_TOKENIZER)
 									.field("filter", Arrays.asList(ASCII_FOLDING_PRESERVE_TOKEN_FILTER_NAME, "lowercase"))
 								.endObject()
 							.endObject()
@@ -136,6 +178,8 @@ public final class ESConstants {
 		String COPY_TO = "copy_to";
 		/** boost the field (search in _all field) */
 		String BOOST_FIELD = "boost";
+		/** subfields */
+		String FIELDS = "fields";
 		/** relation field */
 		String RELATION_FIELD = "relations";
 		/** type text */
@@ -162,6 +206,8 @@ public final class ESConstants {
 		String NOT_INDEXED = "false";
 		/** set to false to disable indexing */
 		String ENABLED = "enabled";
+		/** the analyser to use for the search queries */
+		String SEARCH_ANALYSER = "search_analyzer";
 	}
 	
 	/** Index type for the system information */

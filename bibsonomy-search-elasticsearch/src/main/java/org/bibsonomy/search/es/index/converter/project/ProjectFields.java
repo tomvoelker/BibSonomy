@@ -19,8 +19,6 @@ public interface ProjectFields {
 	String EXTERNAL_ID = "external_id";
 	/** the title */
 	String TITLE = "title";
-	/** title for sorting */
-	String TITLE_SORT = "title_sort";
 	/** the lowercase title for prefix match */
 	String TITLE_PREFIX = "title_prefix";
 	/** the subtitle */

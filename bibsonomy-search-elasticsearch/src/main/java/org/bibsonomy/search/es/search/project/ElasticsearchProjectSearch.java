@@ -10,6 +10,7 @@ import org.bibsonomy.auth.util.SimpleAuthUtils;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.services.searcher.ProjectSearch;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
@@ -93,8 +94,12 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 	@Override
 	protected List<Pair<String, SortOrder>> getSortOrder(final ProjectQuery query) {
 		final SortOrder sortOrderQuery = ElasticsearchIndexSearchUtils.convertSortOrder(query.getSortOrder());
-		Pair<String, SortOrder> pair = query.getOrder() == ProjectOrder.START_DATE ? new Pair<>(ProjectFields.START_DATE, sortOrderQuery) : new Pair<>(ProjectFields.TITLE + "." + ProjectFields.TITLE_SORT, sortOrderQuery);
-		return Collections.singletonList(pair);
+		final ProjectOrder order = query.getOrder();
+		switch (order) {
+			case TITLE: return Collections.singletonList(new Pair<>(ESConstants.getRawField(ProjectFields.TITLE), sortOrderQuery));
+			case START_DATE: return Collections.singletonList(new Pair<>(ProjectFields.START_DATE, sortOrderQuery));
+		}
+		return null;
 	}
 
 	@Override

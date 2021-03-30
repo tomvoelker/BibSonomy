@@ -20,8 +20,15 @@ import org.bibsonomy.search.es.index.converter.person.PersonFields;
 import org.bibsonomy.search.es.index.converter.person.PersonResourceRelationConverter;
 import org.bibsonomy.search.es.management.ElasticsearchOneToManyManager;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
+import org.bibsonomy.util.Sets;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.index.query.*;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.InnerHitBuilder;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
+import org.elasticsearch.index.query.Operator;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.join.query.HasChildQueryBuilder;
 import org.elasticsearch.join.query.JoinQueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -144,7 +151,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 			final InnerHitBuilder innerHit = new InnerHitBuilder();
 			childQuery.innerHit(innerHit);
 
-			final AbstractQueryBuilder<?> nameQuery = this.getNameQuery(query);
+			final QueryBuilder nameQuery = this.getNameQuery(query);
 
 			/*
 			 * build the search query
@@ -168,9 +175,9 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 		final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery();
 
 		// if no query is provided, filter the entities to only get person results
-		if (!present(query.getQuery())) {
-			filterQuery.must(QueryBuilders.termQuery(PersonFields.JOIN_FIELD, PersonFields.TYPE_PERSON));
-		}
+		//if (!present(query.getQuery())) {
+		filterQuery.must(QueryBuilders.termQuery(PersonFields.JOIN_FIELD, PersonFields.TYPE_PERSON));
+		//}
 
 		/*
 		 * add filters
@@ -189,7 +196,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 		return filterQuery;
 	}
 
-	private AbstractQueryBuilder<?> getNameQuery(PersonQuery query) {
+	private QueryBuilder getNameQuery(final PersonQuery query) {
 		final boolean usePrefixMatch = query.isUsePrefixMatch();
 		final boolean phraseMatch = query.isPhraseMatch();
 		final String searchQuery = query.getQuery();
@@ -198,18 +205,20 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 		 * the search terms must match in the order entered and the last is only a prefix match
 		 */
 		if (usePrefixMatch && phraseMatch) {
-			return QueryBuilders.matchPhrasePrefixQuery(PersonFields.ALL_NAMES, searchQuery);
+			final MultiMatchQueryBuilder multiMatchQueryBuilder = QueryBuilders.multiMatchQuery(searchQuery, PersonFields.ALL_NAMES, ESConstants.getNgramField(PersonFields.ALL_NAMES));
+			multiMatchQueryBuilder.type(MultiMatchQueryBuilder.Type.PHRASE_PREFIX);
+			return multiMatchQueryBuilder;
 		}
 
 		/*
 		 * the search terms should be match in any order and the last token is used in a prefix match
 		 */
 		if (usePrefixMatch) {
-			return ElasticsearchIndexSearchUtils.buildBoolMatchPrefixQuery(searchQuery, PersonFields.ALL_NAMES);
+			return ElasticsearchIndexSearchUtils.buildMultiBoolMatchPrefixQuery(searchQuery, Sets.asSet(PersonFields.ALL_NAMES, ESConstants.getNgramField(PersonFields.ALL_NAMES)));
 		}
 
 		// the search terms should match given the order, last term no order
-		return QueryBuilders.matchPhraseQuery(PersonFields.ALL_NAMES, searchQuery);
+		return QueryBuilders.multiMatchQuery(searchQuery, PersonFields.ALL_NAMES, ESConstants.getNgramField(PersonFields.ALL_NAMES));
 	}
 
 	private List<Pair<String, SortOrder>> getSortOrders(final PersonQuery query) {
