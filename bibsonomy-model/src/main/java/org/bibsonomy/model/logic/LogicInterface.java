@@ -93,10 +93,11 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	/**
 	 * @return the name of the authenticated user
 	 */
-	public User getAuthenticatedUser();
+	User getAuthenticatedUser();
 
 	/**
 	 * Generic method to retrieve lists of users
+	 * TODO: introduce a query based method
 	 *
 	 * @param resourceType
 	 * 			- restrict users by a certain resource type
@@ -119,7 +120,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 *
 	 * @return list of user
 	 */
-	public List<User> getUsers (Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, SortKey sortKey, UserRelation relation, String search, int start, int end);
+	List<User> getUsers(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, SortKey sortKey, UserRelation relation, String search, int start, int end);
 
 	/**
 	 * @param grouping TODO
@@ -128,9 +129,9 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param status
 	 * @param startDate
 	 * @param endDate
-	 * @return statistic informations about the users
+	 * @return statistic information about the users
 	 */
-	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, final Classifier classifier, final SpamStatus status, Date startDate, Date endDate);
+	Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, final Classifier classifier, final SpamStatus status, Date startDate, Date endDate);
 
 	/**
 	 * Returns details about a specified user
@@ -143,13 +144,13 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param userName name of the user we want to get details from
 	 * @return details about a named user
 	 */
-	public User getUserDetails(String userName);
+	User getUserDetails(String userName);
 
 	/**
 	 * @param userName
 	 * @return WikiVersions
 	 */
-	public List<Date> getWikiVersions(String userName);
+	List<Date> getWikiVersions(String userName);
 
 	/**
 	 * @param userName
@@ -224,6 +225,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param end
 	 * @return a set of tags, an empty list else
 	 */
+	@Deprecated
 	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, String regex, TagSimilarity relation, SortKey sortKey, Date startDate, Date endDate, int start, int end);
 
 	/**
@@ -779,10 +781,4 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @return
 	 */
 	<R> R getMetaData(MetaDataQuery<R> query);
-
-	/**
-	 * @param personID
-	 * @return
-	 */
-	List<PhDRecommendation> getPhdAdvisorRecForPerson(String personID);
 }

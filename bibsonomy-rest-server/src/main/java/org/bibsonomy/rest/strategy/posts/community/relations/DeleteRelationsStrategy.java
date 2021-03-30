@@ -57,7 +57,7 @@ public class DeleteRelationsStrategy extends AbstractDeleteStrategy {
 	@Override
 	protected boolean delete() {
 		final Set<String> references = this.getRenderer().parseReferences(this.doc);
-		this.getLogic().deleteRelations(this.hash, references, this.relation);
+		this.getLogic().deleteResourceRelations(this.hash, references, this.relation);
 
 		// no exception => delete successful
 		return true;

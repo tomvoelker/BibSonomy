@@ -47,7 +47,7 @@ public interface CRISLogicInterface {
 	 * @param query
 	 * @return
 	 */
-	List<Project> getProjects(ProjectQuery query);
+	List<Project> getProjects(final ProjectQuery query);
 
 	/**
 	 * Returns details to a project. A project is uniquely identified by the external project id.

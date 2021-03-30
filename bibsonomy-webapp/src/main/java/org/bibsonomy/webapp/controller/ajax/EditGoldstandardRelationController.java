@@ -84,10 +84,10 @@ public class EditGoldstandardRelationController extends AjaxController implement
 		
 		switch (httpMethod) {
 		case POST: 
-			this.logic.createRelations(hash, references, relation);
+			this.logic.createResourceRelations(hash, references, relation);
 			break;
 		case DELETE: 
-			this.logic.deleteRelations(hash, references, relation);
+			this.logic.deleteResourceRelations(hash, references, relation);
 			break;
 		default: 
 			this.responseLogic.setHttpStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);

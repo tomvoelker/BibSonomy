@@ -29,6 +29,7 @@ package org.bibsonomy.webapp.controller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -38,7 +39,9 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * Controller for popular tags page /tags
+ * Controller for popular tags page
+ *
+ * - /tags
  * 
  * @author Stefan Stützer
  */
@@ -55,7 +58,7 @@ public class PopularTagsPageController implements MinimalisticController<TagClou
 		command.setPageTitle("Tags"); // TODO: i18n
 		
 		/* fill command with tags */
-		command.setTags(this.logic.getTags(Resource.class, GroupingEntity.ALL, null, null, null, null, null, null, SortKey.POPULAR, null, null, 0, 100));
+		command.setTags(this.logic.getTags(Resource.class, GroupingEntity.ALL, null, null, null, null, QueryScope.LOCAL, null, null, SortKey.POPULAR, null, null, 0, 100));
 		
 		return Views.POPULAR_TAGS;
 	}

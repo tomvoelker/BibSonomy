@@ -720,40 +720,6 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class,
-	 * org.bibsonomy.common.enums.GroupingEntity, java.lang.String,
-	 * java.util.List, java.lang.String, org.bibsonomy.common.SortCriteria,
-	 * org.bibsonomy.common.enums.FilterEntity, int, int, java.lang.String)
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	@Deprecated
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping,
-													   final String groupingName, final List<String> tags, final String hash,
-													   final String search, final QueryScope queryScope, final Set<Filter> filters,
-													   final List<SortCriteria> sortCriteria, final Date startDate, final Date endDate,
-													   final int start, final int end) {
-
-		final PostQuery<T> query = new PostQueryBuilder().
-						setScope(queryScope).
-						setGrouping(grouping).
-						setGroupingName(groupingName).
-						setTags(tags).
-						setHash(hash).
-						search(search).
-						setFilters(filters).
-						setStartDate(startDate).
-						setEndDate(endDate).
-						start(start).
-						end(end).createPostQuery(resourceType);
-		// delegating to the new method
-		return this.getPosts(query);
-	}
-
 	@Override
 	public <R extends Resource> List<Post<R>> getPosts(final PostQuery<R> query) {
 		final Class<R> resourceType = query.getResourceClass();
@@ -2893,7 +2859,7 @@ public class DBLogic implements LogicInterface {
 	 * (java.lang.String, java.util.Set)
 	 */
 	@Override
-	public void createRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
+	public void createResourceRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
 		// only admins can create references
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 
@@ -2910,7 +2876,7 @@ public class DBLogic implements LogicInterface {
 	 * (java.lang.String, java.util.Set)
 	 */
 	@Override
-	public void deleteRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
+	public void deleteResourceRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
 		// only admins can delete references
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 
@@ -3249,7 +3215,7 @@ public class DBLogic implements LogicInterface {
 						.byInterhash(resourcePersonRelation.getPost().getResource().getInterHash())
 						.byRelationType(resourcePersonRelation.getRelationType())
 						.byAuthorIndex(Integer.valueOf(resourcePersonRelation.getPersonIndex()));
-		final List<ResourcePersonRelation> existingRelations = this.getResourceRelations(builder);
+		final List<ResourcePersonRelation> existingRelations = this.getResourceRelations(builder.build());
 		if (existingRelations.size() > 0) {
 			final ResourcePersonRelation existingRelation = existingRelations.get(0);
 			throw new ResourcePersonAlreadyAssignedException(existingRelation);
@@ -3578,29 +3544,6 @@ public class DBLogic implements LogicInterface {
 		return relations;
 	}
 
-	@Deprecated
-	@Override
-	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQueryBuilder queryBuilder) {
-		ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder builder = new ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder();
-
-		builder.setAuthorIndex(queryBuilder.getAuthorIndex())
-				.setEnd(queryBuilder.getEnd())
-				.setGroupByInterhash(queryBuilder.isGroupByInterhash())
-				.setInterhash(queryBuilder.getInterhash())
-				.setOrder(queryBuilder.getOrder())
-				.setPersonId(queryBuilder.getPersonId())
-				.setRelationType(queryBuilder.getRelationType())
-				.setStart(queryBuilder.getStart())
-				.setWithPersons(queryBuilder.isWithPersons())
-				.setWithPersonsOfPosts(queryBuilder.isWithPersonsOfPosts())
-				.setWithPosts(queryBuilder.isWithPosts());
-
-		ResourcePersonRelationQuery query = builder.build();
-		query.setStart(0);
-		query.setEnd(Integer.MAX_VALUE);
-		return this.getResourceRelations(query);
-	}
-
 	/**
 	 * 
 	 * @param personID
@@ -3624,7 +3567,7 @@ public class DBLogic implements LogicInterface {
 	 * @return
 	 */
 	@Override
-	public void denieMerge(PersonMatch match) {
+	public void denyPersonMerge(PersonMatch match) {
 		try (final DBSession session = this.openSession()) {
 			if (present(this.loginUser.getName())) {
 				this.personDBManager.denyMatch(match, this.loginUser.getName(), session);
@@ -3653,7 +3596,7 @@ public class DBLogic implements LogicInterface {
 	 * @return the match with given matchID
 	 */
 	@Override
-	public PersonMatch getPersonMatch(int matchID) {
+	public PersonMatch getPersonMergeRequest(int matchID) {
 		try (final DBSession session = this.openSession()) {
 			return personDBManager.getMatch(matchID, session);
 		}
@@ -3666,7 +3609,7 @@ public class DBLogic implements LogicInterface {
 	 * @return
 	 */
 	@Override
-	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
+	public Boolean mergePersonsWithConflicts(int formMatchId, Map<String, String> map) {
 		final DBSession session = this.openSession();
 		if (present(this.loginUser.getName())) {
 			return this.personDBManager.mergePersonsWithConflicts(formMatchId, map, this.loginUser, session);

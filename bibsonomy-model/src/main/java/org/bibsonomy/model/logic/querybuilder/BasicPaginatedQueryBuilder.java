@@ -16,6 +16,9 @@ public abstract class BasicPaginatedQueryBuilder<B extends BasicPaginatedQueryBu
 	 * @return the builder
 	 */
 	public B start(final int start) {
+		if (start < 0) {
+			throw new IllegalArgumentException(String.format("end must be >=0, was %d", start));
+		}
 		this.start = start;
 		return this.builder();
 	}
@@ -25,8 +28,28 @@ public abstract class BasicPaginatedQueryBuilder<B extends BasicPaginatedQueryBu
 	 * @return the builder
 	 */
 	public B end(final int end) {
+		if (end < 0) {
+			throw new IllegalArgumentException(String.format("end must be >=0, was %d", end));
+		}
 		this.end = end;
 		return this.builder();
+	}
+
+	/**
+	 * Retrieve only resources from [<code>start</code>; <code>end</code>).
+	 *
+	 * @param start index of the first item.
+	 * @param end index of the last item.
+	 *
+	 * @return the builder.
+	 */
+	public B fromTo(int start, int end) {
+		if (start > end) {
+			throw new IllegalArgumentException(String.format("start must be <= end: %d > %d", start, end));
+		}
+
+		this.start(start);
+		return this.end(end);
 	}
 
 	/**
@@ -35,7 +58,11 @@ public abstract class BasicPaginatedQueryBuilder<B extends BasicPaginatedQueryBu
 	 * @return the builder
 	 */
 	public B entriesStartingAt(final int entries, final int start) {
-		this.start = start;
+		this.start(start);
+
+		if (entries < 0) {
+			throw new IllegalArgumentException(String.format("number of entries must be >= 0, was %d", entries));
+		}
 
 		return this.end(start + entries);
 	}

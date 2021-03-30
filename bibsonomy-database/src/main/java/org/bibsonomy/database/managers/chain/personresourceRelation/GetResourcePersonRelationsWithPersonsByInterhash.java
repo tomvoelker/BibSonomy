@@ -1,5 +1,8 @@
 package org.bibsonomy.database.managers.chain.personresourceRelation;
 
+
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.PersonDatabaseManager;
 import org.bibsonomy.database.managers.chain.util.QueryAdapter;
@@ -7,8 +10,6 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 
 import java.util.List;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * @author ada

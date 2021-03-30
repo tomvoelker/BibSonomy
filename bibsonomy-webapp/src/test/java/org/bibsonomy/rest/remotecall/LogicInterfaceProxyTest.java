@@ -61,6 +61,7 @@ import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.rest.BasicAuthenticationHandler;
 import org.bibsonomy.rest.RestServlet;
@@ -623,19 +624,30 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	}
 	
 	/**
-	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, Set, SortKey, Date, Date, int, int)} with arguments as used for the getBookmarkByTagName query
+	 * runs the test with arguments as used for the getBookmarkByTagName query
 	 */
 	@Test
 	public void getPostsTestBookmarkByTag() {
-		this.getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, QueryScope.LOCAL,null, null, null, null, 7, 1264);
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.ALL)
+						.setTags(Arrays.asList("bla", "blub"))
+						.setScope(QueryScope.LOCAL)
+						.fromTo(7, 1264);
+		this.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 	}
 	
 	/**
-	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, Set, SortKey, Date, Date, int, int)} with arguments as used for the getPublicationForGroupAndTag query
+	 * runs the test with arguments as used for the getPublicationForGroupAndTag query
 	 */
 	@Test
 	public void getPostsTestPublicationByGroupAndTag() {
-		this.getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null, QueryScope.LOCAL, null,null, null, null, 0, 1);
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.GROUP)
+						.setGroupingName("testGroup")
+						.setTags(Arrays.asList("blub", "bla"))
+						.setScope(QueryScope.LOCAL)
+						.fromTo(0, 1);
+		this.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 	}
 	
 	/**
@@ -643,26 +655,45 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByTagWithUmlaut() {
-		this.getPosts(BibTex.class, GroupingEntity.ALL, null, Arrays.asList("blüb"), null, null, QueryScope.LOCAL, null, null, null, null, 0, 1);
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.ALL)
+						.setTags(Collections.singletonList("blüb"))
+						.setScope(QueryScope.LOCAL)
+						.fromTo(0, 5);
+		this.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 	}
 	
 	/**
-	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, Set, SortKey, Date, Date, int, int)} with arguments as used for the getPublicationByHashForUser query
+	 * runs the test with arguments as used for the getPublicationByHashForUser query
 	 */
 	@Test
 	public void getPostsTestPublicationByUserAndHash() {
-		this.getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null, QueryScope.LOCAL, null, null, null, null, 0, 5);
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.USER)
+						.setGroupingName("testUser")
+						.setHash(ModelUtils.getBibTex().getIntraHash())
+						.setSortCriteria(SortUtils.singletonSortCriteria(SortKey.FOLKRANK))
+						.setScope(QueryScope.LOCAL)
+						.fromTo(0, 5);
+		this.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 	}
 	
 	@Test
 	public void getPostsTestWithSearchAndSortKey() {
-		this.getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), "search", QueryScope.LOCAL, null, SortUtils.singletonSortCriteria(SortKey.FOLKRANK), null, null, 0, 5);
+		// FIXME: search with folkrank sort does not make sense
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.ALL)
+						.search("search")
+						.setSortCriteria(SortUtils.singletonSortCriteria(SortKey.FOLKRANK))
+						.setScope(QueryScope.LOCAL)
+						.fromTo(0, 5);
+		this.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 	}
-	
+
 	@Override
-	@SuppressWarnings("unchecked")
-	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final QueryScope queryScope, final Set<Filter> filters, final List<SortCriteria> sortCriteria, final Date startDate, final Date endDate, final int start, final int end) {
-		final List<Post<T>> expectedPosts = new ArrayList<>();
+	public <R extends Resource> List<Post<R>> getPosts(final PostQuery<R> query) {
+		final Class<R> resourceType = query.getResourceClass();
+		final List<Post<R>> expectedPosts = new ArrayList<>();
 		expectedPosts.add(ModelUtils.generatePost(resourceType));
 		expectedPosts.get(0).setDescription("erstes");
 		expectedPosts.add(ModelUtils.generatePost(resourceType));
@@ -671,21 +702,10 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 			expectedPosts.add( (Post) ModelUtils.generatePost(BibTex.class));
 		}
 
-		final PostQuery<T> query = new PostQuery<>(resourceType);
-		query.setGrouping(grouping);
-		query.setGroupingName(groupingName);
-		query.setTags(tags);
-		query.setSearch(search);
-		query.setScope(queryScope);
-		query.setFilters(filters);
-		query.setSortCriteria(sortCriteria == null ? new LinkedList<>() : sortCriteria);
-		query.setStart(start);
-		query.setEnd(end);
-
 		EasyMock.expect(this.serverLogic.getPosts(PropertyEqualityArgumentMatcher.eq(query))).andReturn(expectedPosts);
 		EasyMock.replay(this.serverLogic);
 
-		final List<Post<T>> returnedPosts = this.clientLogic.getPosts(query);
+		final List<Post<R>> returnedPosts = this.clientLogic.getPosts(query);
 		CommonModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(" + COMMON_USER_PROPERTIES + "|confidence|activationCode|reminderPassword|openID|ldapId|remoteUserIds|prediction|algorithm|mode)|.*\\.date|.*\\.scraperId|.*\\.openURL|.*\\.numberOfRatings|.*\\.rating"));
 		EasyMock.verify(this.serverLogic);
 		assertLogin();
@@ -713,7 +733,6 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 		return returned;
 	}
 
-	
 	/**
 	 * runs the test defined by {@link #getTags(Class, GroupingEntity, String, String, List, String, SortKey, int, int, String, TagSimilarity)} with certain arguments
 	 */
