@@ -24,9 +24,6 @@
 	<fmt:message var="frequency" key="settings.frequency"/>
 	<fmt:message var="yes" key="settings.yes"/>
 	<fmt:message var="no" key="settings.no"/>
-	<fmt:message var="english" key="settings.english"/>
-	<fmt:message var="german" key="settings.german"/>
-	<fmt:message var="russian" key="settings.russian"/>
 	<fmt:message var="setlayout" key="settings.setlayout"/>
 	<fmt:message var="generateapikey" key="settings.generateapikey"/>
 	<fmt:message var="updatesettings" key="settings.updatesettings" />
@@ -284,9 +281,11 @@
 						
 						<div class="col-sm-9">
 							<form:select cssClass="form-control help-popover" path="user.settings.defaultLanguage" >
-								<form:option label="${english}" value="en"/>
-								<form:option label="${german}" value="de"/>
-								<form:option label="${russian}" value="ru"/>
+								<c:set var="supportedLocales" value="${fn:split(properties['system.locales.supported'],',')}"/>
+								<c:forEach var="lang" items="${supportedLocales}" varStatus="status">
+									<fmt:message var="langLabel" key="settings.locales.${lang}" />
+									<form:option label="${langLabel}" value="${lang}"/>
+								</c:forEach>
 							</form:select >
 							
 							<div class="help help-header hide"><fmt:message key="settings.tag.defaultLanguage"/></div>

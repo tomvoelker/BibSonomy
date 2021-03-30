@@ -213,13 +213,16 @@
 	<!--  #################### interceptors #################### -->
 	<bean id="localeChangeInterceptor" class="org.bibsonomy.webapp.util.spring.i18n.LocaleChangeInterceptor">
 		<property name="paramName" value="lang" />
+		<property name="defaultLocale" value="${system.locales.default}" />
+		<property name="supportedLocales" value="${system.locales.supported}" />
 	</bean>	
 	
 	<bean id="requestWrapperContextInterceptor" class="org.bibsonomy.webapp.util.spring.RequestWrapperContextHandlerInterceptor" />
 	
 	<!--  #################### locale and theme resolver #################### -->
 	<bean id="localeResolver" class="org.bibsonomy.webapp.util.spring.i18n.SecurityContextAwareSessionLocaleResolver">
-		<property name="defaultLocale" value="${project.defaultLocale}" />
+		<property name="defaultLocale" value="${system.locales.default}" />
+		<property name="supportedLocale" value="${system.locales.supported}" />
 	</bean>
 	
 	<bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver">
