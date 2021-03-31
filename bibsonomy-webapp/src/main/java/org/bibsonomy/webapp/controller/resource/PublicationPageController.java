@@ -39,6 +39,7 @@ import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
+import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.resource.PublicationPageCommand;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
@@ -46,6 +47,11 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
+ * controller that is responsible for the community view of a publication
+ *
+ * - /bibtex/INTERHASH
+ * - /publication/INTERHASH
+ *
  * @author dzo
  */
 public class PublicationPageController extends AbstractResourcePageController<BibTex, GoldStandardPublication> {
@@ -146,8 +152,8 @@ public class PublicationPageController extends AbstractResourcePageController<Bi
 		 * set the resource relations for the goldstandard
 		 */
 		if (present(goldStandard)) {
-			final ResourcePersonRelationQuery query = new ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder()
-							.setInterhash(goldHash)
+			final ResourcePersonRelationQuery query = new ResourcePersonRelationQueryBuilder()
+							.byPersonId(goldHash)
 							.build();
 			goldStandard.setResourcePersonRelations(this.logic.getResourceRelations(query));
 		}

@@ -30,13 +30,13 @@ import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.PhDRecommendation;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
-import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 
 import java.util.List;
 import java.util.Map;
@@ -62,26 +62,30 @@ public interface PersonLogicInterface {
 	 * @param keyValue
 	 * @return
 	 */
-	public Person getPersonByAdditionalKey(final String keyName, final String keyValue);
+	Person getPersonByAdditionalKey(final String keyName, final String keyValue);
 
 	/**
 	 * sets id for new persons
 	 *
 	 * @param person the person to be saved or updated
 	 */
-	public String createPerson(Person person);
+	String createPerson(final Person person);
 
 	/**
 	 * Updates the given person
 	 * @param person		the person to update
 	 * @param operation		the desired update operation
 	 */
-	public void updatePerson(final Person person, final PersonUpdateOperation operation);
-
-	public void createResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException;
+	void updatePerson(final Person person, final PersonUpdateOperation operation);
 
 	/**
-	 * FIXME: remove database id
+	 * stores the specified person relation
+	 * @param resourcePersonRelation
+	 * @throws ResourcePersonAlreadyAssignedException
+	 */
+	void createResourceRelation(final ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException;
+
+	/**
 	 * removes a resource relation
 	 *
 	 * @param personId
@@ -89,41 +93,29 @@ public interface PersonLogicInterface {
 	 * @param index
 	 * @param type
 	 */
-	void removeResourceRelation(String personId, String interHash, int index, PersonResourceRelationType type);
+	void removeResourceRelation(final String personId, final String interHash, final int index, final PersonResourceRelationType type);
 
 	/**
 	 * @param withPersonId
 	 */
 	@Deprecated // use update person
-	public void createPersonName(PersonName withPersonId);
+	void createPersonName(PersonName withPersonId);
 
 	/**
-	 * FIXME: remove database id TODO_PERSONS
+	 * FIXME: remove database id
+	 *
 	 * removes a person name from a specific person
 	 * @param personNameId
 	 */
 	@Deprecated // use update person
-	public void removePersonName(Integer personNameId);
-
+	void removePersonName(final Integer personNameId);
 
 	/**
-	 * retrieves persons from the database
-	 * @param query
-	 * @return
+	 * retrieves persons
+	 * @param query the query specifying what person should be returned
+	 * @return the persons
 	 */
 	List<Person> getPersons(final PersonQuery query);
-
-
-	/**
-	 * Retrieves a list with resources according to the query.
-	 *
-	 * @param builder a query builder object with the query options.
-	 *
-	 * @return a list of resources according to the query.
-	 */
-	@Deprecated
-	List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQueryBuilder builder);
-
 
 	/**
 	 * Retrieves a list with resource - person relations according to the query.
@@ -138,20 +130,52 @@ public interface PersonLogicInterface {
 	 * @param username
 	 */
 	@Deprecated // FIXME: add to update person logic
-	public void unlinkUser(String username);
-
-	public List<PersonMatch> getPersonMatches(String personID);
-
-	public PersonMatch getPersonMatch(int matchID);
-
-	public void denieMerge(PersonMatch match);
-
-	public boolean acceptMerge(PersonMatch match);
+	void unlinkUser(String username);
 
 	/**
+	 * TODO: add documentation
+	 *
+	 * @param personID the id of the person
+	 * @return
+	 */
+	List<PersonMatch> getPersonMatches(final String personID);
+
+	/**
+	 * TODO: add documentation
+	 * FIXME: do not use database ids in the logic!!!!!!!!
+	 *
+	 * @param matchID
+	 * @return
+	 */
+	PersonMatch getPersonMergeRequest(int matchID);
+
+	/**
+	 * TODO: add documentation
+	 *
+	 * @param match
+	 */
+	void denyPersonMerge(final PersonMatch match);
+
+	/**
+	 * TODO: add documentation
+	 *
+	 * @param match
+	 * @return
+	 */
+	boolean acceptMerge(final PersonMatch match);
+
+	/**
+	 * TODO: add
+	 *
 	 * @param formMatchId
 	 * @param map
 	 * @return
 	 */
-	public Boolean conflictMerge(int formMatchId, Map<String, String> map);
+	Boolean mergePersonsWithConflicts(final int formMatchId, final Map<String, String> map);
+
+	/**
+	 * @param personID
+	 * @return
+	 */
+	List<PhDRecommendation> getPhdAdvisorRecForPerson(String personID);
 }

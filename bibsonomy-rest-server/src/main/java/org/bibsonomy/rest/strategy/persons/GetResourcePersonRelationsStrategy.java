@@ -2,6 +2,7 @@ package org.bibsonomy.rest.strategy.persons;
 
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelationOrder;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class GetResourcePersonRelationsStrategy extends AbstractGetListStrategy<List<ResourcePersonRelation>> {
 
-	private String personId;
+	private final String personId;
 
 	/**
 	 * default constructor
@@ -36,13 +37,13 @@ public class GetResourcePersonRelationsStrategy extends AbstractGetListStrategy<
 
 	@Override
 	protected List<ResourcePersonRelation> getList() {
-		ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
+		final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
 						.byPersonId(this.personId)
 						.withPosts(true)
 						.withPersonsOfPosts(true)
 						.groupByInterhash(true)
 						.orderBy(PersonResourceRelationOrder.PublicationYear);
-		return this.getLogic().getResourceRelations(queryBuilder);
+		return this.getLogic().getResourceRelations(queryBuilder.build());
 	}
 
 	@Override

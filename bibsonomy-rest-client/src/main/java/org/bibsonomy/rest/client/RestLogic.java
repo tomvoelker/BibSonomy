@@ -269,25 +269,6 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, Set<Filter> filters, List<SortCriteria> sortCriteria, Date startDate, Date endDate, int start, int end) {
-		final PostQuery<T> query = new PostQuery<>(resourceType);
-		query.setGrouping(grouping);
-		query.setGroupingName(groupingName);
-		query.setTags(tags);
-		query.setHash(hash);
-		query.setSearch(search);
-		query.setScope(queryScope);
-		query.setFilters(filters);
-		query.setSortCriteria(sortCriteria);
-		query.setStartDate(startDate);
-		query.setEndDate(endDate);
-		query.setStart(start);
-		query.setEnd(end);
-
-		return this.getPosts(query);
-	}
-
-	@Override
 	public <R extends Resource> List<Post<R>> getPosts(PostQuery<R> query) {
 		// TODO: properly implement searchtype in query and rest-server
 		// TODO: clientside chain of responsibility
@@ -560,7 +541,7 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 	
 	@Override
-	public void createRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
+	public void createResourceRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
 		if (!present(postHash) || !present(references) || !present(relation)) {
 			// FIXME: who needs/reads this warning? 
 			log.warn("can't create references because no post hash/ no references/ no relation given");
@@ -612,11 +593,6 @@ public class RestLogic extends AbstractLogicInterface {
 	@Override
 	public List<Person> getPersons(PersonQuery query) {
 		return execute(new GetPersonsQuery(query));
-	}
-
-	@Override
-	public List<ResourcePersonRelation> getResourceRelations(final ResourcePersonRelationQueryBuilder builder) {
-		return this.execute(new GetResourcePersonRelationsQuery(builder.getPersonId()));
 	}
 
 	@Override

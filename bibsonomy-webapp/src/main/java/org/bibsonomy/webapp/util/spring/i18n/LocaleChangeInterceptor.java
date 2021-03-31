@@ -26,12 +26,16 @@
  */
 package org.bibsonomy.webapp.util.spring.i18n;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.util.StringUtils;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.support.RequestContextUtils;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.List;
 
 /**
  * To fix feature request SPR-9456
@@ -41,14 +45,45 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LocaleChangeInterceptor extends org.springframework.web.servlet.i18n.LocaleChangeInterceptor {
 	private static final Log log = LogFactory.getLog(LocaleChangeInterceptor.class);
+
+	private String defaultLocale;
+	private List<String> supportedLocales;
 	
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws ServletException {
+	public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) throws ServletException {
+
 		try {
-			return super.preHandle(request, response, handler);
+			String newLocale = request.getParameter(this.getParamName());
+
+			if (newLocale != null) {
+				// check, if selected new locale is supported, otherwise use default locale
+				if (!this.supportedLocales.contains(newLocale)) {
+					newLocale = defaultLocale;
+				}
+
+				LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
+				if (localeResolver == null) {
+					throw new IllegalStateException("No LocaleResolver found: not in a DispatcherServlet request?");
+				}
+
+				localeResolver.setLocale(request, response, StringUtils.parseLocaleString(newLocale));
+			}
+
+			return true;
 		} catch (final IllegalArgumentException e) {
 			log.info("parameter for lang was not correct.", e);
 		}
 		return true;
+	}
+
+	public void setDefaultLocale(String defaultLocale) {
+		this.defaultLocale = defaultLocale;
+	}
+
+	/**
+	 * @param supportedLocales the supportedLocales to set
+	 */
+	public void setSupportedLocales(List<String> supportedLocales) {
+		this.supportedLocales = supportedLocales;
 	}
 }

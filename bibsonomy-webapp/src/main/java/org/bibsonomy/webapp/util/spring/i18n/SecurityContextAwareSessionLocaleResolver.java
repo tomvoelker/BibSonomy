@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.webapp.util.spring.i18n;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,24 +42,28 @@ import org.springframework.web.util.WebUtils;
  * @author dzo
  */
 public class SecurityContextAwareSessionLocaleResolver extends SessionLocaleResolver {
+
+	private List<String> supportedLocales;
 	
 	@Override
 	protected Locale determineDefaultLocale(final HttpServletRequest request) {
 		/*
-		 * check if an user is logged in to use the user's default language
+		 * check if an user is logged in to use the user's default language,
+		 * only if we support it
 		 */
 		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null) {
 			final Object principal = authentication.getPrincipal();
-			if ((principal != null) && (principal instanceof UserAdapter)) {
+			if (principal instanceof UserAdapter) {
 				final User user = ((UserAdapter) principal).getUser();
 				final String lang = user.getSettings().getDefaultLanguage();
 				final Locale locale = new Locale(lang);
-				/*
-				 * save it in the session
-				 */
-				WebUtils.setSessionAttribute(request, LOCALE_SESSION_ATTRIBUTE_NAME, locale);
-				return locale;
+
+				if (this.supportedLocales.contains(lang)) {
+					// save it in the session, if supported
+					WebUtils.setSessionAttribute(request, LOCALE_SESSION_ATTRIBUTE_NAME, locale);
+					return locale;
+				}
 			}
 		}
 		
@@ -68,4 +73,10 @@ public class SecurityContextAwareSessionLocaleResolver extends SessionLocaleReso
 		return super.determineDefaultLocale(request);
 	}
 
+	/**
+	 * @param supportedLocales the supportedLocale to set
+	 */
+	public void setSupportedLocale(List<String> supportedLocales) {
+		this.supportedLocales = supportedLocales;
+	}
 }

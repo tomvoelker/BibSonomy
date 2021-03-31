@@ -28,11 +28,15 @@
 package org.bibsonomy.rest.strategy.persons;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.model.*;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
-import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.rest.RESTConfig;
@@ -42,7 +46,6 @@ import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.UrlBuilder;
 
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -100,8 +103,7 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 					// TODO: use the myown system tag
 					this.tags.add("myown");
 					final PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
-							.start(this.getView().getStartValue())
-							.end(this.getView().getEndValue())
+							.fromTo(this.getView().getStartValue(), this.getView().getEndValue())
 							.setTags(this.tags)
 							.setGrouping(GroupingEntity.USER)
 							.setGroupingName(linkedUser);
@@ -117,9 +119,6 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 //				queryBuilder.setGrouping(GroupingEntity.PERSON)
 //						.setGroupingName(this.personId);
 
-////////////////////////////////////////////////////////////////////
-/////////////	REFACTOR 	////////////////////////////////
-////////////////////////////////////////////////////////////////////
 				// TODO: this needs to be removed/refactored as soon as the ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder accepts start/end
 				ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
 						.byPersonId(person.getPersonId())
@@ -129,25 +128,8 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 						.orderBy(PersonResourceRelationOrder.PublicationYear)
 						.fromTo(this.getView().getStartValue(), this.getView().getEndValue());
 
-				ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder builder = new ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder();
-
-				builder.setAuthorIndex(queryBuilder.getAuthorIndex())
-						.setEnd(queryBuilder.getEnd())
-						.setGroupByInterhash(queryBuilder.isGroupByInterhash())
-						.setInterhash(queryBuilder.getInterhash())
-						.setOrder(queryBuilder.getOrder())
-						.setPersonId(queryBuilder.getPersonId())
-						.setRelationType(queryBuilder.getRelationType())
-						.setStart(queryBuilder.getStart())
-						.setWithPersons(queryBuilder.isWithPersons())
-						.setWithPersonsOfPosts(queryBuilder.isWithPersonsOfPosts())
-						.setWithPosts(queryBuilder.isWithPosts());
-
-				ResourcePersonRelationQuery query = builder.build();
-
-				final List<ResourcePersonRelation> resourceRelations = this.getLogic().getResourceRelations(query);
-				final List<Post<? extends BibTex>> otherAuthorRelations = new ArrayList<>(); // !!
-
+				final List<ResourcePersonRelation> resourceRelations = this.getLogic().getResourceRelations(queryBuilder.build());
+				final List<Post<? extends BibTex>> otherAuthorRelations = new LinkedList<>();
 
 				for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
 					final Post<? extends BibTex> post = resourcePersonRelation.getPost();
@@ -167,11 +149,6 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 				}
 
 				return otherAuthorRelations;
-////////////////////////////////////////////////////////////////////
-/////////////	REFACTOR 	////////////////////////////////
-////////////////////////////////////////////////////////////////////
-
-				//return this.getLogic().getPosts(queryBuilder.createPostQuery(GoldStandardPublication.class));
 			}
 		}
 		return new LinkedList<>();

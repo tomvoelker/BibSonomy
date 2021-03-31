@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * An abstract element of the chain handling ResourcePersonRelation queries.
+ *
  * @author ada
  */
 public abstract class ResourcePersonRelationChainElement extends ChainElement<List<ResourcePersonRelation>, QueryAdapter<ResourcePersonRelationQuery>> {
@@ -21,7 +22,7 @@ public abstract class ResourcePersonRelationChainElement extends ChainElement<Li
 	 *
 	 * @param personDatabaseManager an instance.
 	 */
-	public ResourcePersonRelationChainElement(PersonDatabaseManager personDatabaseManager) {
+	public ResourcePersonRelationChainElement(final PersonDatabaseManager personDatabaseManager) {
 		this.personDatabaseManager = personDatabaseManager;
 	}
 

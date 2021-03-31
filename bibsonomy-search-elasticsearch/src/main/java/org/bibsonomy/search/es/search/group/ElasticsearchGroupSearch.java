@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Prefix;
+import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.services.searcher.GroupSearch;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
@@ -34,7 +35,7 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 	/**
 	 * default constructor
 	 *
-	 * @param manager
+	 * @param manager the manager that is responsible for this search
 	 * @param converter the converter for converting elasticsearch documents to
 	 */
 	public ElasticsearchGroupSearch(final ElasticsearchManager<Group, DefaultSearchIndexSyncState> manager, final Converter<Group, Map<String, Object>, Object> converter) {
@@ -57,7 +58,7 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 				case GROUP_REALNAME:
 					// here we add the name as a second search order to handle groups without real names
 					return Arrays.asList(
-							new Pair<>(GroupFields.REALNAME + "." + GroupFields.REALNAME_SORT, sortOrder),
+							new Pair<>(ESConstants.getRawField(GroupFields.REALNAME), sortOrder),
 							new Pair<>(GroupFields.NAME, sortOrder)
 							);
 				case RANK:

@@ -127,7 +127,7 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 		final int requestedIndex = command.getRequestedIndex().intValue();
 
 		final BibTex publication = post.getResource();
-		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byInterhash(publication.getInterHash()).byRelationType(requestedRole).byAuthorIndex(requestedIndex));
+		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byInterhash(publication.getInterHash()).byRelationType(requestedRole).byAuthorIndex(requestedIndex).build());
 
 		/*
 		 * redirect to the person page of the author/editor
@@ -153,6 +153,7 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 		final String name = QueryParser.escape(BibTexUtils.cleanBibTex(requestedName.toString()));
 		final PersonQuery personQuery = new PersonQuery(name);
 		personQuery.setEnd(5);
+		personQuery.setPhraseMatch(true);
 		final List<Person> persons = this.logic.getPersons(personQuery);
 		command.setPersonSuggestions(persons);
 

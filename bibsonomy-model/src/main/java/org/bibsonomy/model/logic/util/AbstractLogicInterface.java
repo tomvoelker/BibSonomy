@@ -34,7 +34,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bibsonomy.common.JobResult;
-import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -87,7 +86,6 @@ import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.query.Query;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.query.statistics.meta.MetaDataQuery;
-import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -181,24 +179,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations()
-	 */
-	@Override
-	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQueryBuilder builder) {
-		this.doDefaultAction();
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.SearchType, java.util.Set, org.bibsonomy.common.SortCriterium, java.util.Date, java.util.Date, int, int)
-	 */
-	@Override
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, Set<Filter> filters, List<SortCriteria> sortCriteria, Date startDate, Date endDate, int start, int end) {
-		this.doDefaultAction();
-		return null;
-	}
-
 	@Override
 	public <R extends Resource> List<Post<R>> getPosts(PostQuery<R> query) {
 		this.doDefaultAction();
@@ -262,7 +242,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#createRelations(java.lang.String, java.util.Set, org.bibsonomy.model.enums.GoldStandardRelation)
 	 */
 	@Override
-	public void createRelations(String postHash, Set<String> references, GoldStandardRelation relation) {
+	public void createResourceRelations(String postHash, Set<String> references, GoldStandardRelation relation) {
 		this.doDefaultAction();
 	}
 
@@ -270,7 +250,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#deleteRelations(java.lang.String, java.util.Set, org.bibsonomy.model.enums.GoldStandardRelation)
 	 */
 	@Override
-	public void deleteRelations(String postHash, Set<String> references, GoldStandardRelation relation) {
+	public void deleteResourceRelations(String postHash, Set<String> references, GoldStandardRelation relation) {
 		this.doDefaultAction();
 	}
 
@@ -947,6 +927,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public List<PersonMatch> getPersonMatches(String personID) {
+		this.doDefaultAction();
 		return null;
 	}
 	
@@ -954,17 +935,18 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#denieMerge(org.bibsonomy.model.PersonMatch)
 	 */
 	@Override
-	public void denieMerge(PersonMatch match) {
+	public void denyPersonMerge(PersonMatch match) {
 		this.doDefaultAction();
 	}
 	
 	@Override
 	public boolean acceptMerge(PersonMatch match) {
+		this.doDefaultAction();
 		return false;
 	}
 	
 	@Override
-	public PersonMatch getPersonMatch(int matchID) {
+	public PersonMatch getPersonMergeRequest(int matchID) {
 		this.doDefaultAction();
 		return null;
 	}
@@ -973,12 +955,14 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#conflictMerge(int, org.json.JSONArray)
 	 */
 	@Override
-	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
+	public Boolean mergePersonsWithConflicts(int formMatchId, Map<String, String> map) {
+		this.doDefaultAction();
 		return null;
 	}
 
 	@Override
 	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query) {
+		this.doDefaultAction();
 		return null;
 	}
 
@@ -1041,13 +1025,10 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 		this.doDefaultAction();
 		return null;
 	}
-	
-	/* 
-	 * PhD Advisor Recommendations for a person
-	 */
+
 	@Override
 	public List<PhDRecommendation> getPhdAdvisorRecForPerson(String personID) {
-		// TODO Auto-generated method stub
+		this.doDefaultAction();
 		return null;
 	}
 }

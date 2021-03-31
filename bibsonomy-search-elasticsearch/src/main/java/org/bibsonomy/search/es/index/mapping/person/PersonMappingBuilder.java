@@ -39,7 +39,6 @@ import static org.bibsonomy.search.es.ESConstants.IndexSettings.TEXT_TYPE;
 import static org.bibsonomy.search.es.ESConstants.IndexSettings.TYPE_FIELD;
 
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Person;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.index.converter.person.PersonFields;
 import org.bibsonomy.search.es.index.mapping.post.ResourceMappingBuilder;
@@ -179,6 +178,13 @@ public class PersonMappingBuilder implements MappingBuilder<XContentBuilder> {
 			.startObject(PersonFields.ALL_NAMES)
 				.field(TYPE_FIELD, TEXT_TYPE)
 				.field(ESConstants.IndexSettings.ANALYZER, ESConstants.STANDARD_TEXT_ANALYSER)
+				.startObject(ESConstants.IndexSettings.FIELDS)
+						.startObject(ESConstants.NGRAM_SUFFIX)
+							.field(TYPE_FIELD, TEXT_TYPE)
+							.field(ESConstants.IndexSettings.ANALYZER, ESConstants.STANDARD_TEXT_NGRAM_ANALYSER)
+							.field(ESConstants.IndexSettings.SEARCH_ANALYSER, ESConstants.STANDARD_TEXT_ANALYSER)
+						.endObject()
+				.endObject()
 			.endObject();
 	}
 }

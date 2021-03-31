@@ -42,7 +42,7 @@ public interface DiscussionLogicInterface {
 	 * @param username
 	 * @param discussionItem
 	 */
-	public void createDiscussionItem(String interHash, String username, DiscussionItem discussionItem);
+	void createDiscussionItem(String interHash, String username, DiscussionItem discussionItem);
 	
 	/**
 	 * updates a discussion item for the specified resource (interHash) and user
@@ -53,7 +53,7 @@ public interface DiscussionLogicInterface {
 	 * @param interHash
 	 * @param discussionItem
 	 */
-	public void updateDiscussionItem(String username, String interHash, DiscussionItem discussionItem);
+	void updateDiscussionItem(String username, String interHash, DiscussionItem discussionItem);
 	
 	/**
 	 * deletes the specified discussion item (hash) for the specified user and
@@ -63,7 +63,7 @@ public interface DiscussionLogicInterface {
 	 * @param interHash
 	 * @param discussionItemHash
 	 */
-	public void deleteDiscussionItem(String username, String interHash, String discussionItemHash);
+	void deleteDiscussionItem(String username, String interHash, String discussionItemHash);
 	
 	/**
 	 * get all 
@@ -71,5 +71,5 @@ public interface DiscussionLogicInterface {
 	 * @param interHash
 	 * @return a list of discussion items (comment, reviews, …)
 	 */
-	public List<DiscussionItem> getDiscussionSpace(String interHash);	
+	List<DiscussionItem> getDiscussionSpace(String interHash);
 }

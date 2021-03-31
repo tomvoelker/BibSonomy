@@ -28,13 +28,16 @@ package org.bibsonomy.model.logic.querybuilder;
 
 import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 
 /**
- * TODO: add documentation to this class
- * FIXME: (AD) refactor into separate builder and query object classes, add a build method with validation and move validation checks from DBLogic implementations into the build method!
+ * builder for a {@link ResourcePersonRelationQuery}
+ *
  * @author jensi
+ * @author ada
+ * @author dzo
  */
-public class ResourcePersonRelationQueryBuilder {
+public class ResourcePersonRelationQueryBuilder extends BasicPaginatedQueryBuilder<ResourcePersonRelationQueryBuilder> {
 
 	private boolean withPersons;
 	private boolean withPosts;
@@ -46,11 +49,6 @@ public class ResourcePersonRelationQueryBuilder {
 	private PersonResourceRelationOrder order;
 	private boolean groupByInterhash;
 
-	private boolean paginated;
-	private int start;
-	private int end;
-
-	
 	/**
 	 * @param withPersons whether to initialize the person references in the result objects
 	 * @return this builder
@@ -108,113 +106,17 @@ public class ResourcePersonRelationQueryBuilder {
 		return this;
 	}
 
-
 	/**
-	 * Retrieve only resources from [<code>start</code>; <code>end</code>).
-	 *
-	 * @param start index of the first item.
-	 * @param end index of the last item.
-	 *
-	 * @return the builder.
+	 * builds the query
+	 * @return the query
 	 */
-	public ResourcePersonRelationQueryBuilder fromTo(int start, int end) {
-		if (start < 0 || end < 0) {
-			throw new IllegalArgumentException(String.format("Indices must be >= 0. start=%d, end=%d", start, end));
-		}
+	public ResourcePersonRelationQuery build() {
+		return new ResourcePersonRelationQuery(start, end, withPersons, withPosts, withPersonsOfPosts,
+						relationType, interhash, authorIndex, personId, order, groupByInterhash);
+	}
 
-		if (start > end) {
-			throw new IllegalArgumentException(String.format("start must be <= end: %d > %d", start, end));
-		}
-
-		this.paginated = true;
-		this.start = start;
-		this.end = end;
-
+	@Override
+	protected ResourcePersonRelationQueryBuilder builder() {
 		return this;
-	}
-
-	
-	/**
-	 * @return the withPersons
-	 */
-	public boolean isWithPersons() {
-		return this.withPersons;
-	}
-
-	public String getInterhash() {
-		return this.interhash;
-	}
-	
-	/**
-	 * @return the relationType
-	 */
-	public PersonResourceRelationType getRelationType() {
-		return this.relationType;
-	}
-	
-	/**
-	 * @return the authorIndex
-	 */
-	public Integer getAuthorIndex() {
-		return this.authorIndex;
-	}
-	
-	/**
-	 * @return the withPosts
-	 */
-	public boolean isWithPosts() {
-		return this.withPosts;
-	}
-	
-	/**
-	 * @return the personId
-	 */
-	public String getPersonId() {
-		return this.personId;
-	}
-
-	public PersonResourceRelationOrder getOrder() {
-		return this.order;
-	}
-	
-	/**
-	 * @return the groupByInterhash
-	 */
-	public boolean isGroupByInterhash() {
-		return this.groupByInterhash;
-	}
-
-	public boolean isWithPersonsOfPosts() {
-		return this.withPersonsOfPosts;
-	}
-
-
-	/**
-	 * Tells whether the query should be paginated.
-	 *
-	 * @return <code>true</code> if a paginated query should be performed, <code>false</code> otherwise.
-	 */
-	public boolean isPaginated() {
-		return paginated;
-	}
-
-
-	/**
-	 * Gets the start index of the page.
-	 *
-	 * @return the start index.
-	 */
-	public int getStart() {
-		return start;
-	}
-
-
-	/**
-	 * Gets the end index of the page.
-	 *
-	 * @return the end index.
-	 */
-	public int getEnd() {
-		return end;
 	}
 }

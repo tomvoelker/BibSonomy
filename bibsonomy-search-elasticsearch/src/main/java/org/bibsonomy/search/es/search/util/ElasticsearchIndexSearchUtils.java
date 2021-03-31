@@ -18,6 +18,7 @@ import org.elasticsearch.search.sort.SortOrder;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -134,10 +135,13 @@ public class ElasticsearchIndexSearchUtils {
 
 		final int lastTokenIndex = tokens.size() - 1;
 		for (final String term : tokens.subList(0, lastTokenIndex)) {
-			boolQueryBuilder.should(QueryBuilders.termQuery(field, term));
+			boolQueryBuilder.should(QueryBuilders.matchQuery(field, term));
 		}
 
-		boolQueryBuilder.should(QueryBuilders.prefixQuery(field, tokens.get(lastTokenIndex)));
+		final String prefix = tokens.get(lastTokenIndex).toLowerCase();
+		boolQueryBuilder.should(QueryBuilders.prefixQuery(field, prefix));
+
+		boolQueryBuilder.should(QueryBuilders.matchQuery(field, search).boost(0.75f)); // to score docs with more than one match higher
 		return boolQueryBuilder;
 	}
 
@@ -166,6 +170,7 @@ public class ElasticsearchIndexSearchUtils {
 
 		// config the bool should match
 		boolQueryBuilder.minimumShouldMatch("75%");
+		boolQueryBuilder.should(QueryBuilders.multiMatchQuery(search).boost(0.75f)); // to score documents with more matches higher
 		return boolQueryBuilder;
 	}
 }

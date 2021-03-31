@@ -22,17 +22,18 @@ public class GetResourcePersonRelationsByInterhash extends ResourcePersonRelatio
 	 *
 	 * @param personDatabaseManager an instance.
 	 */
-	public GetResourcePersonRelationsByInterhash(PersonDatabaseManager personDatabaseManager) {
+	public GetResourcePersonRelationsByInterhash(final PersonDatabaseManager personDatabaseManager) {
 		super(personDatabaseManager);
 	}
 
 	@Override
-	protected List<ResourcePersonRelation> handle(QueryAdapter<ResourcePersonRelationQuery> adapter, DBSession session) {
-		return this.getPersonDatabaseManager().getResourcePersonRelations(adapter.getQuery().getInterhash(), adapter.getQuery().getAuthorIndex(), adapter.getQuery().getRelationType(), session);
+	protected List<ResourcePersonRelation> handle(final QueryAdapter<ResourcePersonRelationQuery> adapter, final DBSession session) {
+		final ResourcePersonRelationQuery query = adapter.getQuery();
+		return this.getPersonDatabaseManager().getResourcePersonRelations(query.getInterhash(), query.getAuthorIndex(), query.getRelationType(), session);
 	}
 
 	@Override
-	protected boolean canHandle(QueryAdapter<ResourcePersonRelationQuery> adapter) {
+	protected boolean canHandle(final QueryAdapter<ResourcePersonRelationQuery> adapter) {
 		final ResourcePersonRelationQuery query = adapter.getQuery();
 		return present(query.getInterhash()) &&
 						present(query.getAuthorIndex()) &&

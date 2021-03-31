@@ -49,7 +49,6 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
-import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
@@ -186,7 +185,7 @@ public class PersonPageController extends SingleResourceListController implement
 				map.put("mainName", PersonNameUtils.serializePersonName(newName));
 			}
 
-			jsonResponse.put("status", this.logic.conflictMerge(command.getFormMatchId(), map));
+			jsonResponse.put("status", this.logic.mergePersonsWithConflicts(command.getFormMatchId(), map));
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IntrospectionException e) {
 			log.error("error while building cpm", e);
 			jsonResponse.put("status", false);
@@ -204,7 +203,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	private View getConflicts(final PersonPageCommand command) {
 		final int formMatchId = command.getFormMatchId();
-		final PersonMatch personMatch = this.logic.getPersonMatch(formMatchId);
+		final PersonMatch personMatch = this.logic.getPersonMergeRequest(formMatchId);
 
 		final JSONArray array = new JSONArray();
 		for (PersonMergeFieldConflict conflict : PersonMatchUtils.getPersonMergeConflicts(personMatch)) {
@@ -437,12 +436,12 @@ public class PersonPageController extends SingleResourceListController implement
 		int id = command.getFormMatchId();
 		JSONObject jsonResponse = new JSONObject();
 
-		PersonMatch match = this.logic.getPersonMatch(id);
+		PersonMatch match = this.logic.getPersonMergeRequest(id);
 		boolean result = true;
 		if (command.getUpdateOperation() == PersonUpdateOperation.MERGE_ACCEPT) {
 			result = this.logic.acceptMerge(match);
 		} else if (command.getUpdateOperation() == PersonUpdateOperation.MERGE_DENIED) {
-			this.logic.denieMerge(match);
+			this.logic.denyPersonMerge(match);
 		}
 		jsonResponse.put("status", result);
 		command.setResponseString(jsonResponse.toString());
@@ -698,15 +697,6 @@ public class PersonPageController extends SingleResourceListController implement
 			command.setPersonPostsStyleSettings(0);
 		}
 
-		// TODO: this needs to be removed/refactored as soon as the ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder accepts start/end
-		final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
-				.byPersonId(person.getPersonId())
-				.withPosts(true)
-				.withPersonsOfPosts(true)
-				.groupByInterhash(true)
-				.orderBy(PersonResourceRelationOrder.PublicationYear)
-				.fromTo(start, end);
-
 		/*
 		 * FIXME: currently the database does not support queries like: give me all thesis related relations
 		 * so we cannot apply the pagination here, otherwise we do not get the PHD information and the other advisor
@@ -714,22 +704,16 @@ public class PersonPageController extends SingleResourceListController implement
 		 * The current workaround is to get all the relations from the db and apply the pagination afterwards which is not
 		 * efficient!
 		 */
-		ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder builder = new ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder();
-
-		builder.setAuthorIndex(queryBuilder.getAuthorIndex())
-				.setEnd(Integer.MAX_VALUE)
-				.setGroupByInterhash(queryBuilder.isGroupByInterhash())
-				.setInterhash(queryBuilder.getInterhash())
-				.setOrder(queryBuilder.getOrder())
-				.setPersonId(queryBuilder.getPersonId())
-				.setRelationType(queryBuilder.getRelationType())
-				//.setStart(queryBuilder.getStart())
-				.setWithPersons(queryBuilder.isWithPersons())
-				.setWithPersonsOfPosts(queryBuilder.isWithPersonsOfPosts())
-				.setWithPosts(queryBuilder.isWithPosts());
+		final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
+				.byPersonId(person.getPersonId())
+				.withPosts(true)
+				.withPersonsOfPosts(true)
+				.groupByInterhash(true)
+				.orderBy(PersonResourceRelationOrder.PublicationYear)
+				.fromTo(0, Integer.MAX_VALUE);
 
 		// TODO: maybe this should be done in the view?
-		final List<ResourcePersonRelation> resourceRelations = logic.getResourceRelations(builder.build());
+		final List<ResourcePersonRelation> resourceRelations = logic.getResourceRelations(queryBuilder.build());
 		final List<ResourcePersonRelation> authorRelations = new ArrayList<>();
 		final List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
 		final List<ResourcePersonRelation> otherAuthorRelations = new ArrayList<>();

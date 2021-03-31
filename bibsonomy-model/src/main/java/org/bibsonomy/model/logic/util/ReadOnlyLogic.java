@@ -81,7 +81,6 @@ import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.Query;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.query.statistics.meta.MetaDataQuery;
-import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -105,6 +104,22 @@ import java.util.Set;
  * @author dzo
  */
 public class ReadOnlyLogic implements LogicInterface {
+
+	private static void throwReadOnlyException() throws RuntimeException {
+		throw new ReadOnlyDatabaseException();
+	}
+
+	/**
+	 * @param logicAccess
+	 * @param readOnly
+	 * @return the mask logic
+	 */
+	public static LogicInterface maskLogic(LogicInterface logicAccess, boolean readOnly) {
+		if (!readOnly) {
+			return logicAccess;
+		}
+		return new ReadOnlyLogic(logicAccess);
+	}
 	
 	private final LogicInterface logicinterface;
 
@@ -114,14 +129,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	public ReadOnlyLogic(LogicInterface logicinterface) {
 		super();
 		this.logicinterface = logicinterface;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.SearchType, java.util.Set, org.bibsonomy.common.SortCriterium, java.util.Date, java.util.Date, int, int)
-	 */
-	@Override
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, Set<Filter> filters, List<SortCriteria> sortCriteria, Date startDate, Date endDate, int start, int end) {
-		return this.logicinterface.getPosts(resourceType, grouping, groupingName, tags, hash, search, queryScope, filters, sortCriteria, startDate, endDate, start, end);
 	}
 
 	@Override
@@ -183,7 +190,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#createRelations(java.lang.String, java.util.Set, org.bibsonomy.model.enums.GoldStandardRelation)
 	 */
 	@Override
-	public void createRelations(String postHash, Set<String> references, GoldStandardRelation relation) {
+	public void createResourceRelations(String postHash, Set<String> references, GoldStandardRelation relation) {
 		throwReadOnlyException();
 	}
 
@@ -191,7 +198,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#deleteRelations(java.lang.String, java.util.Set, org.bibsonomy.model.enums.GoldStandardRelation)
 	 */
 	@Override
-	public void deleteRelations(String postHash, Set<String> references, GoldStandardRelation relation) {
+	public void deleteResourceRelations(String postHash, Set<String> references, GoldStandardRelation relation) {
 		throwReadOnlyException();
 	}
 
@@ -854,14 +861,6 @@ public class ReadOnlyLogic implements LogicInterface {
 		return this.logicinterface.getPersonByAdditionalKey(keyName, keyValue);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations()
-	 */
-	@Override
-	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQueryBuilder builder) {
-		return this.logicinterface.getResourceRelations(builder);
-	}
-
 	@Override
 	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query) {
 		return this.logicinterface.getResourceRelations(query);
@@ -898,22 +897,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	public void unlinkUser(String username) {
 		throwReadOnlyException();
 	}
-	
-	private static void throwReadOnlyException() throws RuntimeException {
-		throw new ReadOnlyDatabaseException();
-	}
-
-	/**
-	 * @param logicAccess
-	 * @param readOnly
-	 * @return the mask logic
-	 */
-	public static LogicInterface maskLogic(LogicInterface logicAccess, boolean readOnly) {
-		if (!readOnly) {
-			return logicAccess;
-		}
-		return new ReadOnlyLogic(logicAccess);
-	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getPersonMatches(java.lang.String)
@@ -927,8 +910,8 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#denieMerge(org.bibsonomy.model.PersonMatch)
 	 */
 	@Override
-	public void denieMerge(PersonMatch match) {
-
+	public void denyPersonMerge(PersonMatch match) {
+		throwReadOnlyException();
 	}
 
 	@Override
@@ -938,19 +921,21 @@ public class ReadOnlyLogic implements LogicInterface {
 
 	@Override
 	public boolean acceptMerge(PersonMatch match) {
+		throwReadOnlyException();
 		return false;
 	}
 	
 	@Override
-	public PersonMatch getPersonMatch(int matchID) {
-		return null;
+	public PersonMatch getPersonMergeRequest(int matchID) {
+		return this.logicinterface.getPersonMergeRequest(matchID);
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#conflictMerge(int, org.json.JSONArray)
 	 */
 	@Override
-	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
+	public Boolean mergePersonsWithConflicts(int formMatchId, Map<String, String> map) {
+		throwReadOnlyException();
 		return null;
 	}
 
@@ -1015,7 +1000,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	 */
 	@Override
 	public List<PhDRecommendation> getPhdAdvisorRecForPerson(String personID) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.logicinterface.getPhdAdvisorRecForPerson(personID);
 	}
 }
