@@ -692,14 +692,22 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 
 	@Override
 	public <R extends Resource> List<Post<R>> getPosts(final PostQuery<R> query) {
+		// set some default values of the rest server
+		if (query.getTags() == null) {
+			query.setTags(Collections.emptyList());
+		}
+		if (query.getSortCriteria() == null) {
+			query.setSortCriteria(Collections.emptyList());
+		}
+
 		final Class<R> resourceType = query.getResourceClass();
 		final List<Post<R>> expectedPosts = new ArrayList<>();
 		expectedPosts.add(ModelUtils.generatePost(resourceType));
 		expectedPosts.get(0).setDescription("erstes");
 		expectedPosts.add(ModelUtils.generatePost(resourceType));
 		if (resourceType == org.bibsonomy.model.Resource.class) {
-			expectedPosts.add( (Post) ModelUtils.generatePost(Bookmark.class));
-			expectedPosts.add( (Post) ModelUtils.generatePost(BibTex.class));
+			expectedPosts.add((Post) ModelUtils.generatePost(Bookmark.class));
+			expectedPosts.add((Post) ModelUtils.generatePost(BibTex.class));
 		}
 
 		EasyMock.expect(this.serverLogic.getPosts(PropertyEqualityArgumentMatcher.eq(query))).andReturn(expectedPosts);
