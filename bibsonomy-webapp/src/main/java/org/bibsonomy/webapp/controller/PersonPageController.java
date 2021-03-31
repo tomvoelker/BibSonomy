@@ -43,6 +43,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -680,7 +681,7 @@ public class PersonPageController extends SingleResourceListController implement
 		if (present(linkedUser)) {
 			final User user = adminLogic.getUserDetails(linkedUser);
 
-			command.setPersonPostsStyleSettings(user.getSettings().getPersonPostsStyle());
+			command.setPersonPostsStyle(user.getSettings().getPersonPostsStyle());
 
 			// Get 'myown' posts of the linked user
 			final PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
@@ -694,7 +695,7 @@ public class PersonPageController extends SingleResourceListController implement
 
 		} else {
 			// default to gold standard publications, if no linked user found
-			command.setPersonPostsStyleSettings(0);
+			command.setPersonPostsStyle(PersonPostsStyle.GOLDSTANDARD);
 		}
 
 		/*

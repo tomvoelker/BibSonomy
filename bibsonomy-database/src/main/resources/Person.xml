@@ -395,9 +395,16 @@
 		AND c.target_type = 2
 	</select>
 
-	<select id="getUserPersonPostsStyleSettings" resultClass="int">
-		SELECT person_posts_style FROM user
-		WHERE user_name = #userName#
+	<select id="getPersonPostsStyle" parameterClass="string" resultClass="org.bibsonomy.model.enums.PersonPostsStyle">
+		SELECT person_posts_layout FROM person
+		LEFT JOIN user ON person.user_name = user.user_name
+		WHERE person_id = #personId#;
+	</select>
+
+	<select id="getPersonPostsLayout" parameterClass="string" resultClass="string">
+		SELECT person_posts_layout FROM person
+		LEFT JOIN user ON person.user_name = user.user_name
+		WHERE person_id = #personId#;
 	</select>
 
 </sqlMap>

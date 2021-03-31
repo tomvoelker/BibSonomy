@@ -37,6 +37,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.util.PersonMatchUtils;
@@ -405,6 +406,18 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		final Person person = PERSON_DATABASE_MANAGER.getPersonByAdditionalKey(addKey, addKeyValue, this.dbSession);
 		assertThat(person.getPersonId(), is(personId));
+	}
+
+	@Test
+	public void testGetPersonPostsStyle() {
+		final PersonPostsStyle personPostsStyle = PERSON_DATABASE_MANAGER.getPersonPostsStyle(PERSON_ID, this.dbSession);
+		assertThat(personPostsStyle, is(PersonPostsStyle.GOLDSTANDARD));
+	}
+
+	@Test
+	public void testGetPersonPostsLayout() {
+		final String personPostsLayout = PERSON_DATABASE_MANAGER.getPersonPostsLayout(PERSON_ID, this.dbSession);
+		assertThat(personPostsLayout, is(""));
 	}
 
 	private static PersonMatch getMatchById(List<PersonMatch> matches, int id) {

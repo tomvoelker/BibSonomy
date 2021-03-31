@@ -76,6 +76,7 @@ import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
@@ -962,6 +963,18 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 
 	@Override
 	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	@Override
+	public PersonPostsStyle getPersonPostsStyle(String personId) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	@Override
+	public String getPersonPostsLayout(String personId) {
 		this.doDefaultAction();
 		return null;
 	}

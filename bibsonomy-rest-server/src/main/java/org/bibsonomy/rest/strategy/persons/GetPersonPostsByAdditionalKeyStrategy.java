@@ -29,6 +29,7 @@ package org.bibsonomy.rest.strategy.persons;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.*;
+import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
@@ -82,9 +83,10 @@ public class GetPersonPostsByAdditionalKeyStrategy extends AbstractGetListStrate
 		if (person != null && person.getUser() != null) {
 			// Check, if the user set their person posts to gold standards or 'myown'-tagged posts
 			User user = this.getLogic().getUserDetails(person.getUser());
-			int personPostsStyleSettings = user.getSettings().getPersonPostsStyle();
-			if (personPostsStyleSettings > 0) {
+			PersonPostsStyle personPostsStyleSettings = user.getSettings().getPersonPostsStyle();
+			if (personPostsStyleSettings == PersonPostsStyle.MYOWN) {
 				// 'myown'-tagged posts
+				// TODO use system tag
 				this.tags.add("myown");
 				queryBuilder.setGrouping(GroupingEntity.USER)
 						.setGroupingName(person.getUser())

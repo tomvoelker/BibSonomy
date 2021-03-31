@@ -42,6 +42,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.cris.Project;
+import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
 
@@ -113,8 +114,9 @@ public class PersonPageCommand extends BaseCommand {
 	private Person person;
 	private Post<? extends Resource> post;
 
-	private int personPostsStyleSettings;
 	private int personPostsPerPage;
+	private PersonPostsStyle personPostsStyle;
+	private String personPostsLayout;
 	private List<Post<BibTex>> myownPosts;
 
 	private List<ResourcePersonRelation> thesis;
@@ -239,19 +241,31 @@ public class PersonPageCommand extends BaseCommand {
 	}
 
 	/**
-	 * 0 = gold standard publications, 1 = 'myown'-tagged posts by linked user
-	 * @return the person posts style setting as integer
+	 * @return personPostsStyle the person posts style setting
 	 */
-	public int getPersonPostsStyleSettings() {
-		return personPostsStyleSettings;
+	public PersonPostsStyle getPersonPostsStyle() {
+		return personPostsStyle;
 	}
 
 	/**
-	 * 0 = gold standard publications, 1 = 'myown'-tagged posts by linked user
-	 * @param personPostsStyleSettings the person posts style setting as integer
+	 * @param personPostsStyle the person posts style setting
 	 */
-	public void setPersonPostsStyleSettings(int personPostsStyleSettings) {
-		this.personPostsStyleSettings = personPostsStyleSettings;
+	public void setPersonPostsStyle(PersonPostsStyle personPostsStyle) {
+		this.personPostsStyle = personPostsStyle;
+	}
+
+	/**
+	 * @return personPostsLayout the selected CSL-layout for person posts
+	 */
+	public String getPersonPostsLayout() {
+		return personPostsLayout;
+	}
+
+	/**
+	 * @param personPostsLayout set the CSL-layout for person posts
+	 */
+	public void setPersonPostsLayout(String personPostsLayout) {
+		this.personPostsLayout = personPostsLayout;
 	}
 
 	/**

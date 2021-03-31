@@ -61,6 +61,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.Gender;
+import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.logic.query.PersonQuery;
@@ -1363,12 +1364,33 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 *
-	 * @param userName
+	 * @param personId
 	 * @param session
 	 * @return
 	 */
-	public int getUserPersonPostsStyleSettings(final String userName, final DBSession session) {
-		return this.queryForObject("getUserPersonPostsStyleSettings", userName, Integer.class, session);
+	public PersonPostsStyle getPersonPostsStyle(final String personId, final DBSession session) {
+		final PersonPostsStyle personPostsStyle = this.queryForObject("getPersonPostsStyle", personId, PersonPostsStyle.class, session);
+		if (present(personPostsStyle)) {
+			return personPostsStyle;
+		}
+		return PersonPostsStyle.GOLDSTANDARD;
+	}
+
+	/**
+	 *
+	 * @param personId
+	 * @param session
+	 * @return
+	 */
+	public String getPersonPostsLayout(final String personId, final DBSession session) {
+
+		final String personPostsLayout = this.queryForObject("getPersonPostsLayout", personId, String.class, session);
+		if (present(personPostsLayout)) {
+			return personPostsLayout;
+		}
+
+		// TODO what would be the default layout?
+		return "";
 	}
 
 	@Override

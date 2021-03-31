@@ -71,6 +71,7 @@ import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
@@ -937,6 +938,16 @@ public class ReadOnlyLogic implements LogicInterface {
 	public Boolean mergePersonsWithConflicts(int formMatchId, Map<String, String> map) {
 		throwReadOnlyException();
 		return null;
+	}
+
+	@Override
+	public PersonPostsStyle getPersonPostsStyle(String personId) {
+		return this.logicinterface.getPersonPostsStyle(personId);
+	}
+
+	@Override
+	public String getPersonPostsLayout(String personId) {
+		return this.logicinterface.getPersonPostsLayout(personId);
 	}
 
 	@Override

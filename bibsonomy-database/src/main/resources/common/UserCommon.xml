@@ -71,7 +71,7 @@
 		<result property="tagboxTooltip"   	column="tagbox_tooltip" 	javaType="integer" />
 		<result property="logLevel"        	column="log_level"      	javaType="integer" />
 		<result property="defaultLanguage" 	column="lang" 	       		javaType="string" />
-		<result property="personPostsStyle" column="person_posts_style" javaType="integer" />
+		<result property="personPostsStyle" column="person_posts_style" javaType="org.bibsonomy.model.enums.PersonPostsStyle" />
 		<result property="personPostsLayout" column="person_posts_layout" javaType="string" />
 		<result property="confirmDelete"   	column="confirmDelete"  	javaType="boolean" />
 		<result property="profilePrivlevel" column="profilegroup"   	javaType="ProfilePrivlevel" />
@@ -145,7 +145,7 @@
 	</sql>
 	
 	<sql id="updateUserSettingsAttributes">
-		log_level = #settings.logLevel#, 
+		log_level = #settings.logLevel#,
 		lang = #settings.defaultLanguage#,
 		list_itemcount = #settings.listItemcount#,
 		tagbox_tooltip = #settings.tagboxTooltip#,
@@ -154,11 +154,11 @@
 		tagbox_sort = #settings.tagboxSort#,
 		tagbox_style = #settings.tagboxStyle#,
 		is_max_count = #settings.isMaxCount#,
-		confirmDelete = #settings.confirmDelete#, 
+		confirmDelete = #settings.confirmDelete#,
 		show_bookmark = #settings.showBookmark#,
-		show_bibtex = #settings.showBibtex#, 
+		show_bibtex = #settings.showBibtex#,
 		simple_interface = #settings.layoutSettings.simpleInterface#,
-		person_posts_style = #settings.personPostsStyle#,
+		person_posts_style = #settings.personPostsStyle,handler=org.bibsonomy.database.common.typehandler.PersonPostsStyleTypeHandlerCallback#,
 		person_posts_layout = #settings.personPostsLayout#,
 		favourite_layouts = #settings.favouriteLayouts,handler=org.bibsonomy.database.common.typehandler.FavouriteLayoutsTypeHandlerCallback#
 	</sql>
