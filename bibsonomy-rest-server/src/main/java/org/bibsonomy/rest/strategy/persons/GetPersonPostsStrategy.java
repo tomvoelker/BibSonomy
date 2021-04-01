@@ -27,6 +27,8 @@
 
 package org.bibsonomy.rest.strategy.persons;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
@@ -44,12 +46,9 @@ import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.UrlBuilder;
-import org.bibsonomy.util.ValidationUtils;
 
 import java.io.Writer;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Strategy to get the publications of a person by their ID.
@@ -87,32 +86,26 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 		final Person person = this.getLogic().getPersonById(PersonIdType.PERSON_ID, personId);
 		if (person != null) {
 			// check, if a user has claimed this person
-			if (ValidationUtils.present(person.getUser())) {
-				// Check, if the user set their person posts to gold standards or 'myown'-tagged posts
-
+			if (present(person.getUser())) {
+				// Get person posts style settings of the linked user
 				final PersonPostsStyle personPostsStyle = this.getLogic().getPersonPostsStyle(personId);
 
-				if (personPostsStyle == PersonPostsStyle.GOLDSTANDARD) {
+				if (personPostsStyle == PersonPostsStyle.MYOWN) {
 					// Get 'myown' posts of the linked user
 
 					// TODO: use the myown system tag
 					this.tags.add("myown");
 					final PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
 							.fromTo(this.getView().getStartValue(), this.getView().getEndValue())
-							.setTags(this.tags)
 							.setGrouping(GroupingEntity.USER)
-							.setGroupingName(person.getUser());
+							.setGroupingName(person.getUser())
+							.setTags(this.tags)
+							.search(this.search);
+
 					return this.getLogic().getPosts(myOwnqueryBuilder.createPostQuery(BibTex.class));
 				}
 
 				// Default: gold standards
-//				final PostQueryBuilder queryBuilder = new PostQueryBuilder()
-//						.setStart(this.getView().getStartValue())
-//						.setEnd(this.getView().getEndValue())
-//						.setTags(this.tags)
-//						.setSearch(this.search);
-//				queryBuilder.setGrouping(GroupingEntity.PERSON)
-//						.setGroupingName(this.personId);
 
 				// TODO: this needs to be removed/refactored as soon as the ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder accepts start/end
 				ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
@@ -153,4 +146,5 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 	protected UrlBuilder getLinkPrefix() {
 		return this.getUrlRenderer().createUrlBuilderForPersonPosts(this.personId);
 	}
+
 }

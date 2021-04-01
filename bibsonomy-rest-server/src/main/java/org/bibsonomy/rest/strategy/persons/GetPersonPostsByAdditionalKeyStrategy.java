@@ -40,6 +40,8 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 /**
  * Strategy to get the publications of a person by an additional key.
  *
@@ -79,12 +81,17 @@ public class GetPersonPostsByAdditionalKeyStrategy extends AbstractGetListStrate
 				.setTags(this.tags)
 				.search(this.search);
 		Person person = this.getLogic().getPersonByAdditionalKey(this.keyName, this.keyValue);
+
+		// Return empty list, if no person with given additional key was found
+		if (!present(person)) {
+			return new ArrayList<>();
+		}
+
 		// Check, if a user has claimed this person and configured their person settings
-		if (person != null && person.getUser() != null) {
-			// Check, if the user set their person posts to gold standards or 'myown'-tagged posts
-			User user = this.getLogic().getUserDetails(person.getUser());
-			PersonPostsStyle personPostsStyleSettings = user.getSettings().getPersonPostsStyle();
-			if (personPostsStyleSettings == PersonPostsStyle.MYOWN) {
+		if (present(person.getUser())) {
+			// Get person posts style settings of the linked user
+			final PersonPostsStyle personPostsStyle = this.getLogic().getPersonPostsStyle(person.getPersonId());
+			if (personPostsStyle == PersonPostsStyle.MYOWN) {
 				// 'myown'-tagged posts
 				// TODO use system tag
 				this.tags.add("myown");
@@ -93,12 +100,11 @@ public class GetPersonPostsByAdditionalKeyStrategy extends AbstractGetListStrate
 						.setTags(this.tags);
 				return this.getLogic().getPosts(queryBuilder.createPostQuery(BibTex.class));
 			}
-			// Default: gold standards
-			queryBuilder.setGrouping(GroupingEntity.PERSON)
-					.setGroupingName(person.getPersonId());
-			return this.getLogic().getPosts(queryBuilder.createPostQuery(GoldStandardPublication.class));
 		}
-		return new ArrayList<>();
+		// Default: gold standards
+		queryBuilder.setGrouping(GroupingEntity.PERSON)
+				.setGroupingName(person.getPersonId());
+		return this.getLogic().getPosts(queryBuilder.createPostQuery(GoldStandardPublication.class));
 	}
 
 	@Override
