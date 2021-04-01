@@ -29,6 +29,13 @@
 	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="postIsPublic" type="java.lang.Boolean" required="true"/>
 
+	<!-- TODO: implement -->
+	<c:set var="showFolkSonomyLinks" value="${true}"/>
+	<!-- in cris mode only show folksonomy links to loggedin users -->
+	<c:if test="${properties['system.cris'] eq 'true'}">
+		<c:set var="showFolkSonomyLinks" value="${not empty loginUser.name}" />
+	</c:if>
+
 	<c:set var="isAdmin" value="${loginUser.role eq 'ADMIN'}" />
 
 	<c:set var="goldstandard" value="${post.resource}" />
@@ -51,6 +58,9 @@
 	<div id="goldstandard" data-interhash="${goldstandard.interHash}">
 		<div itemtype="${itemType}" itemscope="itemscope" id="${goldstandard.interHash}">
 
+			<!--+
+				| HEADER
+				+-->
 			<div class="content-header" id="info">
 
 				<h1 itemprop="name">
@@ -58,55 +68,16 @@
 				</h1>
 
 				<h2>
-					<bib:author publication="${goldstandard}" post="${post}"/>
-					<!--<bib:desc publication="${goldstandard}" linebreakAfterAuthors="${true}" publishedIn="${publishedIn}"/>-->
+					<!--<bib:author publication="${goldstandard}" post="${post}"/>-->
+					<bib:desc publication="${goldstandard}"
+							  post="${post}"
+							  linebreakAfterAuthors="${true}"
+							  restrictToFirstAuthors="${false}"
+							  onlyLinkAuthorsWithPersons="${not showFolkSonomyLinks}"
+							  publishedIn="${publishedIn}"/>
 				</h2>
 
-				<div class="content-header-additional-info hidden-xs">
-					<fmt:message key="goldStandard.users" var="inCollectionOf"/>
-					<div class="content-header-additional-info-item badge" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(inCollectionOf)}">
-						<span class="content-header-additional-info-count"><c:out value="${command.relatedUserCommand.relatedUsers.size()}" /></span>
 
-						<span class="content-header-additional-info-description"><fmt:message key="users" /></span>
-					</div>
-
-					<div class="content-header-additional-info-spacer"><!-- keep me --></div>
-
-					<fmt:message key="tags.of_resource" var="tagsTotal"/>
-					<div class="content-header-additional-info-item badge" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(tagsTotal)}">
-						<span class="content-header-additional-info-count"><c:out value="${command.tagcloud.tags.size()}" /></span>
-
-						<span class="content-header-additional-info-description"><fmt:message key="tags" /></span>
-					</div>
-
-
-					<c:if test="${hasRelatedPublication or (isAdmin and isRealGoldstandard)}">
-						<c:if test="${not empty goldstandard.references}">
-							<div class="content-header-additional-info-spacer"><!-- keep me --></div>
-
-							<fmt:message key="goldStandard.resource.info.references" var="referencesTotal"/>
-							<div class="content-header-additional-info-item badge" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(referencesTotal)}">
-								<span class="content-header-additional-info-count"><c:out value="${goldstandard.references.size()}" /></span>
-
-								<span class="content-header-additional-info-description"><fmt:message key="goldStandard.resource.info.references" /></span>
-							</div>
-						</c:if>
-
-						<c:if test="${not empty goldstandard.referencedBy}">
-							<div class="content-header-additional-info-spacer"><!-- keep me --></div>
-
-							<fmt:message key="goldStandard.resource.info.citations" var="referencedByTotal"/>
-							<div class="content-header-additional-info-item badge" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(referencedByTotal)}">
-								<span class="content-header-additional-info-count"><c:out value="${goldstandard.referencedBy.size()}" /></span>
-
-								<span class="content-header-additional-info-description"><fmt:message key="goldStandard.resource.info.citations" /></span>
-							</div>
-						</c:if>
-
-					</c:if>
-
-
-				</div>
 
 				<div class="content-header-buttons">
 					<c:if test="${post.approved}">
@@ -117,9 +88,77 @@
 					</c:if>
 
 					<buttons:communityPostActionButtons post="${post}" resourceType="bibtex" communityPostExists="${isRealGoldstandard}"/>
+
+					<!-- Addition Info Badges -->
+
+					<!-- In collection of users -->
+					<c:if test="${showFolkSonomyLinks}">
+						<fmt:message key="goldStandard.users" var="inCollectionOf"/>
+						<a class="content-header-additional-info-item btn btn-default hidden-xs"
+						   data-toggle="tooltip"
+						   data-placement="bottom"
+						   title="${fn:escapeXml(inCollectionOf)}"
+						   href="#goldStandardPublicationUsers"
+						>
+							<span class="content-header-additional-info-count"><c:out value="${command.relatedUserCommand.relatedUsers.size()}" /></span>
+
+							<span class="content-header-additional-info-description"><fmt:message key="users" /></span>
+						</a>
+					</c:if>
+
+					<!-- Tag count -->
+					<c:if test="${showFolkSonomyLinks}">
+						<fmt:message key="tags.of_resource" var="tagsTotal"/>
+						<a class="content-header-additional-info-item btn btn-default hidden-xs"
+						   data-toggle="tooltip"
+						   data-placement="bottom"
+						   title="${fn:escapeXml(tagsTotal)}"
+						   href="#goldStandardPublicationTags"
+						>
+							<span class="content-header-additional-info-count"><c:out value="${command.tagcloud.tags.size()}" /></span>
+
+							<span class="content-header-additional-info-description"><fmt:message key="tags" /></span>
+						</a>
+					</c:if>
+
+					<c:if test="${hasRelatedPublication or (isAdmin and isRealGoldstandard)}">
+						<c:if test="${not empty goldstandard.references}">
+							<fmt:message key="goldStandard.resource.info.references" var="referencesTotal"/>
+							<a class="content-header-additional-info-item btn btn-default hidden-xs"
+							   data-toggle="tooltip"
+							   data-placement="bottom"
+							   title="${fn:escapeXml(referencesTotal)}"
+							   href="#goldStandardPublicationReferences"
+							>
+								<span class="content-header-additional-info-count"><c:out value="${goldstandard.references.size()}" /></span>
+
+								<span class="content-header-additional-info-description"><fmt:message key="goldStandard.resource.info.references" /></span>
+							</a>
+						</c:if>
+
+						<c:if test="${not empty goldstandard.referencedBy}">
+							<fmt:message key="goldStandard.resource.info.citations" var="referencedByTotal"/>
+							<a class="content-header-additional-info-item btn btn-default hidden-xs"
+							   data-toggle="tooltip"
+							   data-placement="bottom"
+							   title="${fn:escapeXml(referencedByTotal)}"
+							   href="#goldStandardPublicationReferences"
+							>
+								<span class="content-header-additional-info-count"><c:out value="${goldstandard.referencedBy.size()}" /></span>
+
+								<span class="content-header-additional-info-description"><fmt:message key="goldStandard.resource.info.citations" /></span>
+							</a>
+						</c:if>
+
+					</c:if>
+
+					<div class="clearfix"><!-- keep me --></div>
 				</div>
 			</div>
 
+			<!--+
+                | CONTENT
+                +-->
 			<div class="goldstandard-content">
 
 				<div class="row">
@@ -154,55 +193,62 @@
 							| full description table
 							+-->
 						<div class="goldstandard-metadata">
-							<bib:allFieldsTable publication="${goldstandard}" post="${post}" publishedIn="${publishedIn}" ></bib:allFieldsTable>
+							<bib:allFieldsTable publication="${goldstandard}" post="${post}" publishedIn="${publishedIn}" />
 						</div>
 
-
-
-
-
-
-
-						<!--<bib:desc publication="${goldstandard}" linebreakAfterAuthors="${true}" publishedIn="${publishedIn}"/>-->
-
-						<!-- 					goldstandard.tags -->
-
-
-
 						<!-- tags -->
-						<h3 id="tags">
-							<span class="fa fa-tag"><!-- keep me --></span>
-							<c:out value=" "/>
+						<c:if test="${showFolkSonomyLinks}">
+							<h3 id="goldStandardPublicationTags">
+								<span class="fa fa-tag"><!-- keep me --></span>
+								<c:out value=" "/>
 
-							<fmt:message key="publications.tags.headline"/>
-							<c:if test="${not empty postOfLoggedInUser.tags}">
-								<small>
-									<c:out value=" " /><fmt:message key="community.tags.myown"/>
-								</small>
-							</c:if>
-						</h3>
-						<c:choose>
-							<c:when test="${properties['goldstandard.tags'] eq 'tagcloud'}">
-								<goldstandard:tagcloud tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
-							</c:when>
-							<c:when test="${properties['goldstandard.tags'] eq 'list'}">
-								<goldstandard:tags tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
-							</c:when>
-							<c:when test="${properties['goldstandard.tags'] eq 'disabled'}">
-								<!-- do nothing -->
-							</c:when>
-							<c:otherwise>
-								<!-- tag list as default fallback -->
-								<goldstandard:tags tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
-							</c:otherwise>
-						</c:choose>
+								<fmt:message key="publications.tags.headline"/>
+								<c:if test="${not empty postOfLoggedInUser.tags}">
+									<small>
+										<c:out value=" " /><fmt:message key="community.tags.myown"/>
+									</small>
+								</c:if>
+							</h3>
+							<c:choose>
+								<c:when test="${properties['goldstandard.tags'] eq 'tagcloud'}">
+									<goldstandard:tagcloud tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
+								</c:when>
+								<c:when test="${properties['goldstandard.tags'] eq 'list'}">
+									<goldstandard:tags tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
+								</c:when>
+								<c:when test="${properties['goldstandard.tags'] eq 'disabled'}">
+									<!-- do nothing -->
+								</c:when>
+								<c:otherwise>
+									<!-- tag list as default fallback -->
+									<goldstandard:tags tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
+								</c:otherwise>
+							</c:choose>
+						</c:if>
+
+
+						<!-- users that have this resource in their collection -->
+						<c:if test="${showFolkSonomyLinks}">
+							<h3 id="goldStandardPublicationUsers">
+								<span class="fa fa-user"><!-- keep me --></span>
+								<c:out value=" "/>
+
+								<fmt:message key="goldstandard.resource.relatedUsers"/>
+							</h3>
+
+							<common:relatedUsers
+									userList="${command.relatedUserCommand.relatedUsers}"
+									interHash="${goldstandard.interHash}"
+									showHeadline="false"
+							/>
+						</c:if>
 
 
 						<!-- Referenced and Referencing posts -->
 						<c:if test="${hasRelatedPublication or (isAdmin and isRealGoldstandard)}">
 							<c:set var="tabActive" value="false" />
 							<div id="related-publications">
-								<h3>
+								<h3 id="goldStandardPublicationReferences">
 									<span class="fa fa-link"><!-- keep me --></span>
 									<c:out value=" "/>
 									<fmt:message key="publications.related.referencedAndCited" />
@@ -341,33 +387,33 @@
 						<pub2:citation post="${post}" isCommunityPost="${true}" />
 
 
-						<!--+
-							| discussion 
-							+-->
-						<c:set var="collapseClass" value="collapse" />
-						<c:set var="collapseExpanded" value="false" />
-						<c:if test="${not empty goldstandard.discussionItems}">
-							<c:set var="collapseClass" value="collapse in" />
-							<c:set var="collapseExpanded" value="true" />
+						<c:if test="${showFolkSonomyLinks}">
+							<!--+
+								| discussion
+								+-->
+							<c:set var="collapseClass" value="collapse" />
+							<c:set var="collapseExpanded" value="false" />
+							<c:if test="${not empty goldstandard.discussionItems}">
+								<c:set var="collapseClass" value="collapse in" />
+								<c:set var="collapseExpanded" value="true" />
+							</c:if>
+							<h3>
+								<span class="fa fa-comments"><!-- keep me --></span>
+								<c:out value=" "/>
+								<fmt:message key="publications.discussion.headline"/>
+
+								<a class="discussion-toggle-link btn-primary badge" data-toggle="collapse" href="#discussion-section" role="button" aria-expanded="${collapseExpanded}" aria-controls="discussion-section">
+									<fmt:message key="show" />
+									/
+									<fmt:message key="hide" />
+								</a>
+							</h3>
+
+							<div class="${collapseClass}" id="discussion-section" aria-expanded="${collapseExpanded}">
+								<!-- discussion -->
+								<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}" postIsPublic="${postIsPublic}" />
+							</div>
 						</c:if>
-						<h3>
-							<span class="fa fa-comments"><!-- keep me --></span>
-							<c:out value=" "/>
-							<fmt:message key="publications.discussion.headline"/>
-
-							<a class="discussion-toggle-link btn-primary badge" data-toggle="collapse" href="#discussion-section" role="button" aria-expanded="${collapseExpanded}" aria-controls="discussion-section">
-								<fmt:message key="show" />
-								/
-								<fmt:message key="hide" />
-							</a>
-						</h3>
-
-
-
-						<div class="${collapseClass}" id="discussion-section" aria-expanded="${collapseExpanded}">
-							<!-- discussion -->
-							<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}" postIsPublic="${postIsPublic}" />
-						</div>
 
 
 					</div>
@@ -375,7 +421,11 @@
 
 					<!-- SIDEBAR -->
 					<div class="col-md-3 hidden-xs hidden-sm sidebar">
+
+						<!-- Quick cite -->
 						<h3>
+							<span class="fa fa-quote-right"><!-- keep me --></span>
+							<c:out value=" "/>
 							<fmt:message key="publications.citations.headline" />
 						</h3>
 
@@ -392,7 +442,12 @@
 						</div>
 
 
-						<h3><fmt:message key="resources.searchExternal.dropDownLabel" /></h3>
+						<!-- Search on... -->
+						<h3>
+							<span class="fa fa-search"><!-- keep me --></span>
+							<c:out value=" "/>
+							<fmt:message key="resources.searchExternal.dropDownLabel" />
+						</h3>
 						<pub2:externalSearchPublication loggedinUser="${loginUser}" publication="${goldstandard}" buttonGroupClass="sidebar-links" />
 
 

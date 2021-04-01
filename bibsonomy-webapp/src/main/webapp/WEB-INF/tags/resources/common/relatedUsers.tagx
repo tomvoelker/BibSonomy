@@ -8,9 +8,16 @@
 
 	<jsp:directive.attribute name="userList" type="java.util.Collection" required="true"/>
 	<jsp:directive.attribute name="interHash" type="java.lang.String" required="false"/>
-	
+	<jsp:directive.attribute name="showHeadline" type="java.lang.Boolean" required="false" />
+
+	<c:if test="${empty showHeadline}">
+		<c:set var="showHeadline" value="${true}" />
+	</c:if>
+
 	<c:if test="${not empty userList}">
-		<h2 class="page-header" id="users"><fmt:message key="goldstandard.resource.relatedUsers"/></h2>
+		<c:if test="${showHeadline}">
+			<h2 class="page-header" id="users"><fmt:message key="goldstandard.resource.relatedUsers"/></h2>
+		</c:if>
 		<fmt:message key="show.more.users" var="moreMessage">
 			<fmt:param value="${fn:length(userList)}" />
 		</fmt:message>
