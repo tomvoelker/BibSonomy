@@ -396,7 +396,7 @@
 	</select>
 
 	<select id="getPersonPostsStyle" parameterClass="string" resultClass="org.bibsonomy.model.enums.PersonPostsStyle">
-		SELECT person_posts_layout FROM person
+		SELECT person_posts_style FROM person
 		LEFT JOIN user ON person.user_name = user.user_name
 		WHERE person_id = #personId#;
 	</select>
