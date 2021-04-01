@@ -679,9 +679,8 @@ public class PersonPageController extends SingleResourceListController implement
 		// Get the linked user's person posts style settings
 		final String linkedUser = person.getUser();
 		if (present(linkedUser)) {
-			final User user = adminLogic.getUserDetails(linkedUser);
-
-			command.setPersonPostsStyle(user.getSettings().getPersonPostsStyle());
+			final PersonPostsStyle personPostsStyle = adminLogic.getPersonPostsStyle(person.getPersonId());
+			command.setPersonPostsStyle(personPostsStyle);
 
 			// Get 'myown' posts of the linked user
 			final PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
