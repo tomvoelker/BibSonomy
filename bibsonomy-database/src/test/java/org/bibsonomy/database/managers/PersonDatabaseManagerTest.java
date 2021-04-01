@@ -408,18 +408,6 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertThat(person.getPersonId(), is(personId));
 	}
 
-	@Test
-	public void testGetPersonPostsStyle() {
-		final PersonPostsStyle personPostsStyle = PERSON_DATABASE_MANAGER.getPersonPostsStyle(PERSON_ID, this.dbSession);
-		assertThat(personPostsStyle, is(PersonPostsStyle.GOLDSTANDARD));
-	}
-
-	@Test
-	public void testGetPersonPostsLayout() {
-		final String personPostsLayout = PERSON_DATABASE_MANAGER.getPersonPostsLayout(PERSON_ID, this.dbSession);
-		assertThat(personPostsLayout, is(""));
-	}
-
 	private static PersonMatch getMatchById(List<PersonMatch> matches, int id) {
 		for (PersonMatch match : matches) {
 			if (match.getMatchID() == id) {

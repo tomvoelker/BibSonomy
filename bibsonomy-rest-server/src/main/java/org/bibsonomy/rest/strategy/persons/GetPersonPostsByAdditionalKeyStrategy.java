@@ -90,7 +90,9 @@ public class GetPersonPostsByAdditionalKeyStrategy extends AbstractGetListStrate
 		// Check, if a user has claimed this person and configured their person settings
 		if (present(person.getUser())) {
 			// Get person posts style settings of the linked user
-			final PersonPostsStyle personPostsStyle = this.getLogic().getPersonPostsStyle(person.getPersonId());
+			final User user = this.getAdminLogic().getUserDetails(person.getUser());
+			final PersonPostsStyle personPostsStyle = user.getSettings().getPersonPostsStyle();
+
 			if (personPostsStyle == PersonPostsStyle.MYOWN) {
 				// 'myown'-tagged posts
 				// TODO use system tag

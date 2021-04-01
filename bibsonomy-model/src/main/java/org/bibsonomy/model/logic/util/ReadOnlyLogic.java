@@ -27,7 +27,6 @@
 package org.bibsonomy.model.logic.util;
 
 import org.bibsonomy.common.JobResult;
-import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -71,7 +70,6 @@ import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.PersonIdType;
-import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
@@ -121,7 +119,7 @@ public class ReadOnlyLogic implements LogicInterface {
 		}
 		return new ReadOnlyLogic(logicAccess);
 	}
-	
+
 	private final LogicInterface logicinterface;
 
 	/**
@@ -234,7 +232,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	public List<DiscussionItem> getDiscussionSpace(String interHash) {
 		return this.logicinterface.getDiscussionSpace(interHash);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getAutoSyncServer()
 	 */
@@ -242,7 +240,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	public List<SyncService> getAutoSyncServer() {
 		return this.logicinterface.getAutoSyncServer();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServiceDetails(java.net.URI)
 	 */
@@ -250,7 +248,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	public SyncService getSyncServiceDetails(URI serviceURI) {
 		return this.logicinterface.getSyncServiceDetails(serviceURI);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServices(boolean, java.lang.String)
 	 */
@@ -258,7 +256,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	public List<SyncService> getSyncServices(boolean server, String sslDn) {
 		return this.logicinterface.getSyncServices(server, sslDn);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServiceSettings(java.lang.String, java.net.URI, boolean)
 	 */
@@ -370,7 +368,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	public List<User> getDeletedGroupUsers(int start, int end) {
 		return this.logicinterface.getDeletedGroupUsers(start, end);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getUserStatistics(org.bibsonomy.common.enums.GroupingEntity, java.util.Set, org.bibsonomy.common.enums.Classifier, org.bibsonomy.common.enums.SpamStatus, java.util.Date, java.util.Date)
 	 */
@@ -528,7 +526,7 @@ public class ReadOnlyLogic implements LogicInterface {
 		throwReadOnlyException();
 		return null;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#restoreGroup(org.bibsonomy.model.Group)
 	 */
@@ -562,7 +560,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	public Document getDocument(String userName, String resourceHash, String fileName) {
 		return this.logicinterface.getDocument(userName, resourceHash, fileName);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getDocuments(java.lang.String)
 	 */
@@ -814,7 +812,7 @@ public class ReadOnlyLogic implements LogicInterface {
 		throwReadOnlyException();
 		return 0;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createResourceRelation(org.bibsonomy.model.ResourcePersonRelation)
 	 */
@@ -822,7 +820,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	public void createResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException {
 		throwReadOnlyException();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
 	 */
@@ -831,7 +829,7 @@ public class ReadOnlyLogic implements LogicInterface {
 		throwReadOnlyException();
 		return null;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#updatePerson(org.bibsonomy.model.Person, org.bibsonomy.common.enums.PersonUpdateOperation)
@@ -840,7 +838,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	public void updatePerson(Person person, PersonUpdateOperation operation) {
 		throwReadOnlyException();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createPersonName(org.bibsonomy.model.PersonName)
 	 */
@@ -848,7 +846,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	public void createPersonName(PersonName withPersonId) {
 		throwReadOnlyException();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonById(org.bibsonomy.model.enums.PersonIdType, java.lang.String)
 	 */
@@ -882,7 +880,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	public void removePersonName(Integer personNameId) {
 		throwReadOnlyException();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removeResourceRelation(int)
 	 */
@@ -890,7 +888,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	public void removeResourceRelation(String personId, String interHash, int index, PersonResourceRelationType type) {
 		throwReadOnlyException();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#unlinkUser(java.lang.String)
 	 */
@@ -925,12 +923,12 @@ public class ReadOnlyLogic implements LogicInterface {
 		throwReadOnlyException();
 		return false;
 	}
-	
+
 	@Override
 	public PersonMatch getPersonMergeRequest(int matchID) {
 		return this.logicinterface.getPersonMergeRequest(matchID);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#conflictMerge(int, org.json.JSONArray)
 	 */
@@ -938,16 +936,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	public Boolean mergePersonsWithConflicts(int formMatchId, Map<String, String> map) {
 		throwReadOnlyException();
 		return null;
-	}
-
-	@Override
-	public PersonPostsStyle getPersonPostsStyle(String personId) {
-		return this.logicinterface.getPersonPostsStyle(personId);
-	}
-
-	@Override
-	public String getPersonPostsLayout(String personId) {
-		return this.logicinterface.getPersonPostsLayout(personId);
 	}
 
 	@Override
@@ -1005,8 +993,8 @@ public class ReadOnlyLogic implements LogicInterface {
 		throwReadOnlyException();
 		return null;
 	}
-	
-	/* 
+
+	/*
 	 * PhD Advisor Recommendations for a person
 	 */
 	@Override

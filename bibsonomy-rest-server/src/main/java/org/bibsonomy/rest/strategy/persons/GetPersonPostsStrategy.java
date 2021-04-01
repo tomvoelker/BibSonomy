@@ -35,6 +35,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationOrder;
@@ -84,11 +85,12 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
 		final Person person = this.getLogic().getPersonById(PersonIdType.PERSON_ID, personId);
-		if (person != null) {
+		if (present(person)) {
 			// check, if a user has claimed this person
 			if (present(person.getUser())) {
 				// Get person posts style settings of the linked user
-				final PersonPostsStyle personPostsStyle = this.getLogic().getPersonPostsStyle(personId);
+				final User user = this.getAdminLogic().getUserDetails(person.getUser());
+				final PersonPostsStyle personPostsStyle = user.getSettings().getPersonPostsStyle();
 
 				if (personPostsStyle == PersonPostsStyle.MYOWN) {
 					// Get 'myown' posts of the linked user

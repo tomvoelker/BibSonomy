@@ -180,20 +180,4 @@ public interface PersonLogicInterface {
 	 */
 	List<PhDRecommendation> getPhdAdvisorRecForPerson(String personID);
 
-	/**
-	 * Get the person posts style selected by the linked user.
-	 *
-	 * @param personId
-	 * @return the person posts style (goldstandard or myown posts)
-	 */
-	PersonPostsStyle getPersonPostsStyle(final String personId);
-
-	/**
-	 * Get the person posts layout selected by the linked user.
-	 *
-	 * @param personId
-	 * @return name of the selected CSL layout
-	 */
-	String getPersonPostsLayout(final String personId);
-
 }

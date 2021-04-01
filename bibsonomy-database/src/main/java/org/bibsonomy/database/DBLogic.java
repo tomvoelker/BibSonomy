@@ -138,7 +138,10 @@ import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
-import org.bibsonomy.model.enums.*;
+import org.bibsonomy.model.enums.GoldStandardRelation;
+import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationOrder;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -150,7 +153,6 @@ import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.Query;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.query.statistics.meta.MetaDataQuery;
-import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -3612,18 +3614,6 @@ public class DBLogic implements LogicInterface {
 			return this.personDBManager.mergePersonsWithConflicts(formMatchId, map, this.loginUser, session);
 		}
 		return false;
-	}
-
-	@Override
-	public PersonPostsStyle getPersonPostsStyle(String personId) {
-		final DBSession session = this.openSession();
-		return this.personDBManager.getPersonPostsStyle(personId, session);
-	}
-
-	@Override
-	public String getPersonPostsLayout(String personId) {
-		final DBSession session = this.openSession();
-		return this.personDBManager.getPersonPostsLayout(personId, session);
 	}
 
 	@Override

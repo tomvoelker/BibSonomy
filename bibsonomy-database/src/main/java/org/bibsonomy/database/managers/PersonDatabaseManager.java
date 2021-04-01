@@ -1362,37 +1362,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		return this.queryForObject("getPersonForward", personId, String.class, session);
 	}
 
-	/**
-	 *
-	 * @param personId
-	 * @param session
-	 * @return
-	 */
-	public PersonPostsStyle getPersonPostsStyle(final String personId, final DBSession session) {
-		final PersonPostsStyle personPostsStyle = this.queryForObject("getPersonPostsStyle", personId, PersonPostsStyle.class, session);
-		if (present(personPostsStyle)) {
-			return personPostsStyle;
-		}
-		return PersonPostsStyle.GOLDSTANDARD;
-	}
-
-	/**
-	 *
-	 * @param personId
-	 * @param session
-	 * @return
-	 */
-	public String getPersonPostsLayout(final String personId, final DBSession session) {
-
-		final String personPostsLayout = this.queryForObject("getPersonPostsLayout", personId, String.class, session);
-		if (present(personPostsLayout)) {
-			return personPostsLayout;
-		}
-
-		// TODO what would be the default layout?
-		return "";
-	}
-
 	@Override
 	public Integer getIdForLinkable(final Person linkable, final DBSession session) {
 		final Integer loadedId = linkable.getPersonChangeId();
