@@ -61,6 +61,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.Gender;
+import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.logic.query.PersonQuery;
@@ -1359,16 +1360,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	private String getForwardId(String personId, DBSession session) {
 		return this.queryForObject("getPersonForward", personId, String.class, session);
-	}
-
-	/**
-	 *
-	 * @param userName
-	 * @param session
-	 * @return
-	 */
-	public int getUserPersonPostsStyleSettings(final String userName, final DBSession session) {
-		return this.queryForObject("getUserPersonPostsStyleSettings", userName, Integer.class, session);
 	}
 
 	@Override

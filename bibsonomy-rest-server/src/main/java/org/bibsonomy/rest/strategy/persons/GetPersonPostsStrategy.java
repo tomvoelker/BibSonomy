@@ -27,6 +27,8 @@
 
 package org.bibsonomy.rest.strategy.persons;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
@@ -35,6 +37,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
@@ -46,9 +49,7 @@ import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.UrlBuilder;
 
 import java.io.Writer;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Strategy to get the publications of a person by their ID.
@@ -84,40 +85,29 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
 		final Person person = this.getLogic().getPersonById(PersonIdType.PERSON_ID, personId);
-		if (person != null) {
-			// check, if a user has claimed this person and configured their person settings
-			final String linkedUser = person.getUser();
-			if (linkedUser != null) {
-				// Check, if the user set their person posts to gold standards or 'myown'-tagged posts
-				// we use the admin logic here, because the setting might not be visible to the current logged in user
+		if (present(person)) {
+			// check, if a user has claimed this person
+			if (present(person.getUser())) {
+				// Get person posts style settings of the linked user
+				final User user = this.getAdminLogic().getUserDetails(person.getUser());
+				final PersonPostsStyle personPostsStyle = user.getSettings().getPersonPostsStyle();
 
-				// FIXME: because we need this also in the webapp, this should be moved to the logic and not handled by
-				// the rest server or the webapp controller
-				final User user = this.getAdminLogic().getUserDetails(linkedUser);
-				int personPostsStyleSettings = user.getSettings().getPersonPostsStyle();
-
-				// TODO: replace check after using an enum for this setting
-				if (personPostsStyleSettings > 0) {
+				if (personPostsStyle == PersonPostsStyle.MYOWN) {
 					// Get 'myown' posts of the linked user
 
 					// TODO: use the myown system tag
 					this.tags.add("myown");
 					final PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
 							.fromTo(this.getView().getStartValue(), this.getView().getEndValue())
-							.setTags(this.tags)
 							.setGrouping(GroupingEntity.USER)
-							.setGroupingName(linkedUser);
+							.setGroupingName(person.getUser())
+							.setTags(this.tags)
+							.search(this.search);
+
 					return this.getLogic().getPosts(myOwnqueryBuilder.createPostQuery(BibTex.class));
 				}
 
 				// Default: gold standards
-//				final PostQueryBuilder queryBuilder = new PostQueryBuilder()
-//						.setStart(this.getView().getStartValue())
-//						.setEnd(this.getView().getEndValue())
-//						.setTags(this.tags)
-//						.setSearch(this.search);
-//				queryBuilder.setGrouping(GroupingEntity.PERSON)
-//						.setGroupingName(this.personId);
 
 				// TODO: this needs to be removed/refactored as soon as the ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder accepts start/end
 				ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
@@ -158,4 +148,5 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 	protected UrlBuilder getLinkPrefix() {
 		return this.getUrlRenderer().createUrlBuilderForPersonPosts(this.personId);
 	}
+
 }

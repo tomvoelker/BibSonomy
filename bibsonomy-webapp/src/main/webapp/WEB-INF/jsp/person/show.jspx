@@ -242,7 +242,7 @@
 								<c:choose>
 									<c:when test="${personHasPublications}">
 										<c:choose>
-											<c:when test="${command.personPostsStyleSettings gt 0}">
+											<c:when test="${command.personPostsStyle == 'MYOWN'}">
 												<per:myownPostList command="${command}" posts="${command.myownPosts}" hideHeadline="${true}"/>
 												<div class="cust-loader"><span class="cust-spinner"><!-- KEEP MY --></span></div>
 											</c:when>
@@ -295,11 +295,11 @@
 			<c:set var="numberOfOtherPubs" value="${fn:length(command.otherPubs)}" />
 
 			<!-- Other publications -->
-			<c:if test="${command.personPostsStyleSettings eq 0 and numberOfOtherPubs gt 0 and not useCRISView}">
+			<c:if test="${command.personPostsStyle == 'GOLDSTANDARD' and numberOfOtherPubs gt 0 and not useCRISView}">
 				<per:otherPubList command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}"/>
 			</c:if>
 
-			<c:if test="${command.personPostsStyleSettings eq 1 and fn:length(command.myownPosts) gt 0 and not useCRISView}">
+			<c:if test="${command.personPostsStyle == 'MYOWN' and fn:length(command.myownPosts) gt 0 and not useCRISView}">
 				<c:set var="numberOfOtherPubs" value="${fn:length(command.myownPosts)}" />
 				<per:myownPostList command="${command}" posts="${command.myownPosts}"/>
 			</c:if>

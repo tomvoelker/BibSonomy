@@ -33,6 +33,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.PhDRecommendation;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.PersonQuery;
@@ -178,4 +179,5 @@ public interface PersonLogicInterface {
 	 * @return
 	 */
 	List<PhDRecommendation> getPhdAdvisorRecForPerson(String personID);
+
 }

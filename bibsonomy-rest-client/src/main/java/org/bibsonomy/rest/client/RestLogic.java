@@ -37,7 +37,6 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.*;
 import org.bibsonomy.common.errors.ErrorMessage;

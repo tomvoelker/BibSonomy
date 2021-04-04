@@ -63,8 +63,8 @@
 							<fmt:message var="goldStandard" key="settings.person.style.goldStandard"/>
 							<fmt:message var="myown" key="settings.person.style.myown"/>
 							<form:select cssClass="form-control" path="user.settings.personPostsStyle">
-								<form:option label="${goldStandard}" value="0"/>
-								<form:option label="${myown}" value="1"/>
+								<form:option label="${goldStandard}" value="GOLDSTANDARD"/>
+								<form:option label="${myown}" value="MYOWN"/>
 							</form:select>
 						</div>
 					</div>

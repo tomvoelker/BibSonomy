@@ -35,6 +35,7 @@ import java.util.TimeZone;
 import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.common.enums.TagCloudStyle;
+import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.user.settings.FavouriteLayout;
 import org.bibsonomy.model.user.settings.LayoutSettings;
 
@@ -102,10 +103,9 @@ public class UserSettings implements Serializable {
 	private String defaultLanguage;
 
 	/**
-	 * style for person's page posts; 0 = gold standards, 1 = 'myown' posts
-	 * FIXME: should be an enum!
+	 * style for person's page posts
 	 */
-	private int personPostsStyle = 0;
+	private PersonPostsStyle personPostsStyle = PersonPostsStyle.GOLDSTANDARD;
 
 	/**
 	 * layout for person's page posts
@@ -258,14 +258,14 @@ public class UserSettings implements Serializable {
 	/**
 	 * @return style for person's page posts
 	 */
-	public int getPersonPostsStyle() {
+	public PersonPostsStyle getPersonPostsStyle() {
 		return personPostsStyle;
 	}
 
 	/**
 	 * @param personPostsStyle style for person's page posts
 	 */
-	public void setPersonPostsStyle(int personPostsStyle) {
+	public void setPersonPostsStyle(PersonPostsStyle personPostsStyle) {
 		this.personPostsStyle = personPostsStyle;
 	}
 

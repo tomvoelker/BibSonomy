@@ -395,9 +395,4 @@
 		AND c.target_type = 2
 	</select>
 
-	<select id="getUserPersonPostsStyleSettings" resultClass="int">
-		SELECT person_posts_style FROM user
-		WHERE user_name = #userName#
-	</select>
-
 </sqlMap>
