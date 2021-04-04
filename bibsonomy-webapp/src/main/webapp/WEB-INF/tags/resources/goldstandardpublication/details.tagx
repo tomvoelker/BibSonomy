@@ -21,7 +21,9 @@
 		  xmlns:goldstandard="urn:jsptagdir:/WEB-INF/tags/resources/goldstandard"
 		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 		  xmlns:common="urn:jsptagdir:/WEB-INF/tags/resources/common"
-		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
+		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
+		  xmlns:bsold="urn:jsptagdir:/WEB-INF/tags/bs"
+		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form">
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="postOfLoggedInUser" type="org.bibsonomy.model.Post" required="false"/>
@@ -440,6 +442,45 @@
 								<div id="goldstandard-quick-cite-select"><!-- keep me --></div>
 							</div>
 						</div>
+
+						<bsold:modal id="sidebar-quick-cite-box-modal" modalTitle="TODO blabla">
+							<jsp:attribute name="modalBody">
+								...
+							</jsp:attribute>
+
+							<jsp:attribute name="modalFooter">
+								<bsform:button
+										id="sidebar-quick-cite-box-modal-clipboard-button"
+										size="defaultSize"
+										style="defaultStyle"
+										valueKey="export.copyToLocalClipboard"
+										icon="clipboard"/>
+
+								<fmt:message key="box.close" var="modalCloseText" />
+								<bsform:button
+										size="defaultSize"
+										style="secondary"
+										dataDismiss="modal"
+										title="${modalCloseText}"
+										value="${modalCloseText}"
+								/>
+
+							</jsp:attribute>
+						</bsold:modal>
+
+						<div class="hidden" id="sidebar-quick-cite-box-endnote">
+							<textarea style="width:100%;font-size:80%;border:none;" rows="15" readonly="readonly">
+								<export:endnote post="${post}" escapeXml="${true}" />
+							</textarea>
+						</div>
+
+						<div class="hidden" id="sidebar-quick-cite-box-bibtex">
+							<textarea style="width:100%;font-size:80%;border:none;" rows="15" readonly="readonly">
+								<export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/>
+							</textarea>
+						</div>
+
+
 
 
 						<!-- Search on... -->
