@@ -959,10 +959,18 @@ public class URLGenerator {
 	 * @return url
 	 */
 	public String getPostExportUrl(final Post<? extends Resource> post, final FavouriteLayout favl) {
+		return getPostExportUrl(post, favl, post.getUser());
+	}
+
+	/**
+	 * @param post
+	 * @param favl
+	 * @return url
+	 */
+	public String getPostExportUrl(final Post<? extends Resource> post, final FavouriteLayout favl, final User user) {
 		final Resource resource = post.getResource();
 		final FavouriteLayoutSource source = favl.getSource();
 		final String style = favl.getStyle();
-		final User user = post.getUser();
 		if (resource instanceof Bookmark) {
 			return "/layout/" + style.toLowerCase() + "/" + this.getBookmarkUrl(((Bookmark) resource), user);
 		}
@@ -970,27 +978,29 @@ public class URLGenerator {
 			final BibTex publication = (BibTex) resource;
 			final String publicationUrl = this.getPublicationUrl(publication, user);
 			switch (source) {
-			case CSL:
-				final String normedStyle = CSLUtils.normStyle(style);
-				return "/csl-layout/" + normedStyle.toUpperCase() + publicationUrl;
-			case JABREF:
-				return "/layout/" + style.toLowerCase() + publicationUrl;
-			case SIMPLE:
-				if (SimpleExportLayout.BIBTEX.toString().equals(style)) {
-					return "/bib" + this.getPublicationUrl(publication, post.getUser());
-				}
-				if (SimpleExportLayout.ENDNOTE.toString().equals(style)) {
-					return "/endnote" + publicationUrl;
-				}
-				//$FALL-THROUGH$
-			default:
-				throw new UnsupportedFormatException(source + "/" + style);
+				case CSL:
+					final String normedStyle = CSLUtils.normStyle(style);
+					return "/csl-layout/" + normedStyle.toUpperCase() + publicationUrl;
+				case JABREF:
+					return "/layout/" + style.toLowerCase() + publicationUrl;
+				case SIMPLE:
+					if (SimpleExportLayout.BIBTEX.toString().equals(style)) {
+						return "/bib" + this.getPublicationUrl(publication, post.getUser());
+					}
+					if (SimpleExportLayout.ENDNOTE.toString().equals(style)) {
+						return "/endnote" + publicationUrl;
+					}
+					//$FALL-THROUGH$
+				default:
+					throw new UnsupportedFormatException(source + "/" + style);
 			}
 		}
-		
+
 		throw new UnsupportedResourceTypeException(resource.getClass() + " not supported");
 	}
-	
+
+
+
 	/**
 	 * @param favl
 	 * @param intraHash
